@@ -9,6 +9,9 @@
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/realtime_conversation_input.h"
 #include "q4t/server/realtime_prompt_settings.h"
+#include "q4t/server/realtime_mcp_context.h"
+#include "q4t/server/realtime_mcp_imports.h"
+#include "q4t/server/realtime_mcp_calls.h"
 #include "q4t/server/realtime_response_output.h"
 #include "q4t/server/realtime_speech_execution.h"
 #include "q4t/server/realtime_speech_history.h"
@@ -29,6 +32,8 @@ struct RealtimeConversationJob {
   std::optional<PromptSnapshot> prompt = {};
   // Private proof from the connected session owner, never a JSON option.
   bool native_input = false;
+  std::shared_ptr<const RealtimeMcpContext> mcp = {};
+  bool mcp_definitions_only = false;
 };
 struct RealtimeGenerationResult {
   ObjectReply reply;
@@ -66,6 +71,10 @@ struct RealtimeConversationCallbacks {
   uint32_t max_audio_seconds = 600;
   // Injectable monotonic clock for bounded protocol timers; no wire override.
   std::function<std::chrono::steady_clock::time_point()> now;
+  // Both native adapters are required before MCP settings can be accepted.
+  // The session binds publication and IDs; worker callbacks bind fresh scope.
+  std::optional<RealtimeMcpImportCallbacks> mcp_import = {};
+  std::optional<RealtimeMcpCallCallbacks> mcp_call = {};
 };
 
 class RealtimeConversationSession {
@@ -86,6 +95,10 @@ class RealtimeConversationSession {
   size_t HistoryBytes() const { return history_.ChargedBytes(); }
   size_t SpeechBytes() const { return speech_.ChargedBytes(); }
   size_t PendingInputs() const { return input_ ? input_->PendingItems() : 0; }
+  size_t PendingMcp() const {
+    return (mcp_imports_ ? mcp_imports_->Pending() : 0) +
+           (mcp_calls_ ? mcp_calls_->Pending() : 0);
+  }
   size_t InputAudioBytes() const {
     return input_ ? input_->AudioBytes() + input_->RetainedAudioBytes() : 0;
   }
@@ -97,6 +110,15 @@ class RealtimeConversationSession {
   bool Event(std::string_view type, io::Json fields);
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
   ObjectReply ValidateSelection(const RealtimePromptSelection& selection);
+  ObjectReply SelectMcp(const RealtimePromptSelection& source,
+                        const io::Json& response, bool refresh,
+                        RealtimeMcpSelection* selection,
+                        std::shared_ptr<const RealtimeMcpContext>* context,
+                        bool* commit);
+  ObjectReply CaptureMcp(const RealtimeMcpSelection& selection,
+                         std::shared_ptr<const RealtimeMcpContext>* context);
+  bool ImportMcp(const RealtimeMcpSelection& selection, Work* work = nullptr);
+  io::Json PublicSettings() const;
   RealtimePromptResolver PromptResolver();
   bool Settings(const io::Json& update, std::string_view event_id);
   bool CreateItem(const io::Json& event);
@@ -123,6 +145,11 @@ class RealtimeConversationSession {
   RealtimeConversation history_;
   RealtimeSpeechHistory speech_;
   std::unique_ptr<RealtimeConversationInput> input_;
+  RealtimeMcpDefinitions mcp_definitions_;
+  RealtimeMcpSelection mcp_selection_;
+  std::shared_ptr<const RealtimeMcpContext> mcp_current_;
+  std::unique_ptr<RealtimeMcpImports> mcp_imports_;
+  std::unique_ptr<RealtimeMcpCalls> mcp_calls_;
   std::optional<RealtimeSpeechOptions> locked_voice_;
   std::deque<std::unique_ptr<Work>> work_;
   std::deque<std::string> events_;

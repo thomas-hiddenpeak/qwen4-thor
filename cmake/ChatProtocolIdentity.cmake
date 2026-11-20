@@ -737,6 +737,22 @@ set(protocol_inputs
   include/q4t/server/realtime_conversation_pump.h
   src/server/realtime_conversation_pump.cpp
   include/q4t/server/realtime_chat_plan.h
+  include/q4t/server/realtime_mcp_definitions.h
+  src/server/realtime_mcp_definitions.cpp
+  include/q4t/server/realtime_mcp_catalog.h
+  include/q4t/server/realtime_mcp_imports.h
+  include/q4t/server/realtime_mcp_item.h
+  include/q4t/server/realtime_mcp_execution.h
+  include/q4t/server/realtime_mcp_calls.h
+  include/q4t/server/realtime_mcp_context.h
+  include/q4t/server/realtime_mcp_history.h
+  src/server/realtime_mcp_catalog.cpp
+  src/server/realtime_mcp_imports.cpp
+  src/server/realtime_mcp_item.cpp
+  src/server/realtime_mcp_execution.cpp
+  src/server/realtime_mcp_calls.cpp
+  src/server/realtime_mcp_context.cpp
+  src/server/realtime_mcp_history.cpp
   include/q4t/server/realtime_prompt_settings.h
   src/server/realtime_prompt_settings.cpp
   include/q4t/server/realtime_file_inputs.h

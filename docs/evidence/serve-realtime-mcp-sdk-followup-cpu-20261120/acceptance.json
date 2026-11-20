@@ -1,0 +1,20 @@
+{
+  "status": "PASS_FOLLOWUP_VERIFIER_CPU_REAL_BUSINESS_INCOMPLETE",
+  "cpu_tests": 14,
+  "cpu_seconds": 0.2642843467183411,
+  "original_business_status": "FAILED",
+  "original_model_starts": 1,
+  "original_model_jobs": 4,
+  "original_seconds": 54.96967895235866,
+  "original_nvml_samples": 53,
+  "original_model_exit": 0,
+  "prior_launcher_model_starts": 0,
+  "original_failed_answer_preserved": true,
+  "runtime_unchanged": true,
+  "followup_budget": {
+    "starts": 2,
+    "model_jobs": 5,
+    "seconds": 900
+  },
+  "master_goal_active": true
+}

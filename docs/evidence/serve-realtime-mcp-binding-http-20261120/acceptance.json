@@ -1,0 +1,75 @@
+{
+  "status": "PASS_MCP_BINDING_GUARD_TARGETED_HTTP",
+  "successful": {
+    "status": "PASS_MCP_BINDING_GUARD_PRIMARY_LIGHT",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 100,
+      "cleanup_complete": true,
+      "lease_result_sha256": "e9a5903619e877e7993a84bd38635a0661482f17d855752cbf0fe85c89691eb2"
+    },
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "controls": 66,
+      "websocket_sessions": 2,
+      "ingress_starts": 2
+    },
+    "seconds": 105.92408532695845,
+    "observations": {
+      "primary": {
+        "tokens": 1659,
+        "jobs": 2,
+        "ids": [
+          "resp_38199e320a086d78b7439c0f0d1ce0da",
+          "resp_6076a12c19013ce74c13487f38c3ba42",
+          "mcp_d2f3bf32e6766f0fe52f85f8aa2330d5"
+        ],
+        "actual_reads": 1,
+        "history_authenticated": 0,
+        "quality": [
+          {
+            "case": "document",
+            "answer": "Title: MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\nCitation: [docs/MODEL.md:L1-L3]",
+            "status": "PASS"
+          }
+        ],
+        "model_quality_status": "PASS"
+      },
+      "light": {
+        "tokens": 1653,
+        "jobs": 2,
+        "ids": [
+          "resp_474da73b32ca08bd177dda4fd24a0767",
+          "resp_c40b1575ddcd68453ace669e481d549d",
+          "mcp_64c012ce9f67679af56c440dfb30cd70"
+        ],
+        "actual_reads": 1,
+        "history_authenticated": 0,
+        "quality": [
+          {
+            "case": "document",
+            "answer": "# MODEL.md \u2014 Qwen3.8-Flash-Next (qwen4_exp) \u67b6\u6784\u7b14\u8bb0\n[docs/MODEL.md:L1-L3]",
+            "status": "PASS"
+          }
+        ],
+        "model_quality_status": "PASS"
+      }
+    },
+    "default_unchanged": true,
+    "model_quality_status": "PASS",
+    "original_failures_preserved": true,
+    "new_managed_faults": false
+  },
+  "total_starts": 3,
+  "total_actual_generations": 5,
+  "total_reserved_generations": 6,
+  "strict_lease_seconds": 159.3220474338159,
+  "nvml_queries": 150,
+  "original_driver_failure_preserved": true,
+  "original_model_quality_failures_preserved": true,
+  "default_changed": false,
+  "managed_recovery_repeated": false
+}

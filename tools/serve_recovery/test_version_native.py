@@ -15,8 +15,10 @@ from tools.serve_recovery import test_runtime as runtime, version_policy, versio
 ROOT=Path(__file__).resolve().parents[2]
 
 
-def fixture(service, *, hung_probe=False, bad_fallback=False):
+def fixture(service, *, hung_probe=False, bad_fallback=False, prepare_children=None):
     config=service.config
+    if prepare_children is not None:
+        (service.directory/'version-prepare-children').write_text(prepare_children)
     payloads={};identities={}
     for name,binary,protocol in [('primary','c','d'),('fallback','e','f')]:
         binding=dict(binary_sha256=binary*64,protocol_sha256=protocol*64,
@@ -75,6 +77,56 @@ class NativeTests(unittest.TestCase):
         self.assertEqual(service.persistent()['desired'],'STOPPED')
         self.assertFalse(any(service.persistent()['active'].values()))
         service.assert_lease_free()
+
+    def preparing(self):
+        service=runtime.Service(self.output,models=True,gateway=True,
+            capacity_fingerprint='a'*64,
+            version_fixture=lambda s:fixture(s,prepare_children='hold'))
+        self.services.append(service)
+        path=service.directory/'prepare-children-primary.json'
+        before=service.wait(lambda s:path.exists() and path.stat().st_size>0)
+        self.assertEqual(before['model_generation'],0)
+        return service,before,json.loads(path.read_text())
+
+    def assert_children_gone(self,row):
+        for key in ('child','grandchild'):
+            expected=row[key]
+            try:
+                current=runtime.journal.process_start(expected['pid'])
+            except (OSError,ValueError):
+                continue
+            self.assertNotEqual(current,expected['start_ticks'],key)
+
+    def test_prepare_subtree_survives_initial_and_fallback_payload_cleanup(self):
+        service,before=self.launch(prepare_children='complete')
+        first=json.loads((service.directory/'prepare-children-primary.json').read_text())
+        self.assertEqual(first['exit_code'],0)
+        time.sleep(.3)
+        self.signal(before,'controller',signal.SIGABRT)
+        after=service.wait(lambda s:s['business_ready'] and
+            s['version_recovery']['selected']=='fallback',timeout=20)
+        second=json.loads((service.directory/'prepare-children-fallback.json').read_text())
+        self.assertEqual(second['exit_code'],0)
+        self.assertEqual(after['model_generation'],before['model_generation']+1)
+        self.assert_children_gone(first);self.assert_children_gone(second)
+        self.finish(service)
+
+    def test_stop_during_preparation_reaps_worker_children_without_model_start(self):
+        service,before,row=self.preparing()
+        self.finish(service)
+        self.assert_children_gone(row)
+        self.assertEqual(service.persistent()['generations']['model'],0)
+
+    def test_dead_prepare_worker_leaves_no_exempt_orphans_on_retry(self):
+        service,before,row=self.preparing()
+        (service.directory/'version-prepare-children').unlink()
+        version=before['version_recovery']
+        runtime.signal_identity(version['worker_pid'],version['worker_start_ticks'],signal.SIGKILL)
+        after=service.wait(lambda s:s['business_ready'],timeout=15)
+        self.assertNotEqual(after['version_recovery']['worker_pid'],version['worker_pid'])
+        self.assertEqual(after['model_generation'],1)
+        self.assert_children_gone(row)
+        self.finish(service)
 
     def test_actual_controller_fault_replaces_whole_tree_then_fallback_fault_protects(self):
         service,before=self.launch()

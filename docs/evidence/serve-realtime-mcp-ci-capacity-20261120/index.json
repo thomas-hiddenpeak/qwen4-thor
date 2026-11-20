@@ -1,0 +1,113 @@
+{
+  "files": {
+    "ci-repro-01/plan.json": {
+      "bytes": 626,
+      "sha256": "e35680bf4c994f0c8a9cc30b7f52d389191f6040f0abed249573c79ffebc49fc"
+    },
+    "ci-repro-01/result.json": {
+      "bytes": 612,
+      "sha256": "39fc049cd6c92a68c71d946c85517d14a76e574646fffd54038e62bd389748cb"
+    },
+    "ci-repro-01/0.log": {
+      "bytes": 175,
+      "sha256": "a05bfb97788ceb0f9364acec0aaffc6040f37e8789f070ea55084d4f77db01c4"
+    },
+    "ci-repro-01/1.log": {
+      "bytes": 1040,
+      "sha256": "d900c966e2977e0c8698c9db41ea361363d6e398ec7471f08827157e43c78cae"
+    },
+    "ci-capacity-cpu-01/plan.json": {
+      "bytes": 3308,
+      "sha256": "7b9e869109fc8da4388e8425405a8e22ac26131b4365ebd219cc5bdbd7e5b72c"
+    },
+    "ci-capacity-cpu-01/frozen.json": {
+      "bytes": 2029,
+      "sha256": "82fdb8a218918b764bf8b9755bf3aa94f4d73335fd26a5d142cc1ffd84048780"
+    },
+    "ci-capacity-cpu-01/required.txt": {
+      "bytes": 1304,
+      "sha256": "9bd57cd3ee6d8fe9a3b466d4bb6629c55a357db6b711f1deb462f4ca749ea356"
+    },
+    "ci-capacity-cpu-01/result.json": {
+      "bytes": 413,
+      "sha256": "7c779f3c466d09c3f7970405bbaf084c8dc37a46b46299bd3bdb8aabfd3958c1"
+    },
+    "ci-capacity-cpu-01/0.log": {
+      "bytes": 1577,
+      "sha256": "b0933d76b58ef83ea28044b7598632ed0493f8f15d98429cadd08bab3c155a25"
+    },
+    "ci-capacity-cpu-01/1.log": {
+      "bytes": 774,
+      "sha256": "b8b32169b2508f00dc8a4d4c8c26680875282c9cdfebac75a8b58460e4d87b5a"
+    },
+    "ci-capacity-cpu-01/original-output-test.cpp": {
+      "bytes": 19052,
+      "sha256": "cf54dc6eeb10ab71cd37154c5b9e99875b4350bb03040f2c32baaa6679ae874b"
+    },
+    "ci-capacity-cpu-02/plan.json": {
+      "bytes": 836,
+      "sha256": "14a70917f9c62d4118f214174385df6a77e9b85e471190b2da540377fbc8930e"
+    },
+    "ci-capacity-cpu-02/result.json": {
+      "bytes": 110,
+      "sha256": "f1fd8a6a8faa96ea501e5f35131c9ec33b2a2296c1187653bb34ecb36f7d7cb2"
+    },
+    "ci-capacity-cpu-02/tests.log": {
+      "bytes": 115,
+      "sha256": "326c1b33de3dfaae51255fa3d0a8fc0838a4f0a068791ba56e708323f0c59431"
+    },
+    "ci-capacity-build-01/plan.json": {
+      "bytes": 180391,
+      "sha256": "f900ea3ca1f4e883fa22dfdf3a53cd1a1a2cac7d385926ecfc395289e901971b"
+    },
+    "ci-capacity-build-01/result.json": {
+      "bytes": 293,
+      "sha256": "fc6a71e434f090f891a7cddeb21a35cb5ced19260b87e3f7e75fa3ffb8106623"
+    },
+    "ci-capacity-build-01/build.log": {
+      "bytes": 1915,
+      "sha256": "2f6db72b8c467cee95946b890a51af605fea4ea87d6ffc56dfc150b45081089e"
+    },
+    "ci-capacity-build-02/plan.json": {
+      "bytes": 180391,
+      "sha256": "279e84fc92a6833d9e0b96520c2d7a2b2e99b9a2d463624268f9bcc2b5e20abb"
+    },
+    "ci-capacity-build-02/result.json": {
+      "bytes": 291,
+      "sha256": "d46ccca307cc51aaa5a2dc9a43096ea9fb48e74a8682baa7729aabe92fadf8d5"
+    },
+    "ci-capacity-build-02/build.log": {
+      "bytes": 321,
+      "sha256": "8d668889eedf2f7f4f4993adff5fd95face1b8faa186d32d9fca8a2419f65dce"
+    },
+    "retired-host-tests-03/plan.json": {
+      "bytes": 13166,
+      "sha256": "d4e0554ef771c9e469d74607078f323f7b5f56d33a8249715b2355de8937f24f"
+    },
+    "retired-host-tests-03/result.json": {
+      "bytes": 239,
+      "sha256": "173a91cd17cd7509427290141edde913c830995d8300f78e00c0f0f72ca8eb8d"
+    },
+    "retired-host-tests-03/restoration-review.json": {
+      "bytes": 154,
+      "sha256": "414d0379c66ecdaa8a6837c9a77149bbf10552eac74f3f183703cbad0c4920a1"
+    },
+    "retired-host-tests-03/restore.py": {
+      "bytes": 639,
+      "sha256": "976670acad10a872dfab44aae80b251dd1dcdf476a4ad1c0220ccc542dab9617"
+    },
+    "source/src/server/realtime_response_output.cpp": {
+      "bytes": 27922,
+      "sha256": "cbe344926dd1ced6d2d3e6f453238f5185affa7bd4583081a76bf6eb3b9699f0"
+    },
+    "source/tests/server_realtime_mcp_output_test.cpp": {
+      "bytes": 19138,
+      "sha256": "4bbcc5e3766ae625c850ddfcc968afe9fa74ea691a8062510a4750930429e0a0"
+    },
+    "source/tools/serve_recovery/test_native_bundle.py": {
+      "bytes": 44109,
+      "sha256": "1a2558ec9dd43e8668290eb94b758291e98c82a9c5e818dead6a2aa5450b5180"
+    }
+  },
+  "archive_sha256": "db32eb456105c3ae4b99d5bbc5356d496c983b73cdf768d8f318ca6bcecaded8"
+}

@@ -1,0 +1,309 @@
+{
+  "files": {
+    "archive_lifecycle_01.py": {
+      "bytes": 6778,
+      "sha256": "a5a580cf2b3141ebfe44f3e70d02b0cb2d33d80cb6533e76ec5a34be1e6efa63"
+    },
+    "sdk-cpu-03/plan.json": {
+      "bytes": 919,
+      "sha256": "ccf14bc51039e6be9564164bef32b118d2ba678d9ccf690b209ee48be0465e9a"
+    },
+    "sdk-cpu-03/result.json": {
+      "bytes": 987,
+      "sha256": "8d2bd13e85b2e00314e050a09adb9728b967644a63d32b58c6895d52651fd2d8"
+    },
+    "sdk-cpu-03/stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "sdk-cpu-03/stderr.txt": {
+      "bytes": 120,
+      "sha256": "92aab79fae166e50dadcb3faaeac5800ddab30c0cb50203ed554fe1c7d6335a7"
+    },
+    "sdk-cpu-03/node-check.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lifecycle-build-01/plan.json": {
+      "bytes": 180248,
+      "sha256": "e375f56b6767c42a75b4a0bd998153e95e9fa74842ab646bc6a1af5b7041d8e8"
+    },
+    "lifecycle-build-01/result.json": {
+      "bytes": 293,
+      "sha256": "1eded492b38afb63ce9a477de79688c02fb9efc952291cf74200bb584e38f14e"
+    },
+    "lifecycle-build-01/build.log": {
+      "bytes": 315,
+      "sha256": "c0557284a3e9fb70a436b06b63f92d1bdfbeac89b515d5b70f770ec3d9829ed8"
+    },
+    "lifecycle-cpu-01/result.json": {
+      "bytes": 3499,
+      "sha256": "0d6c7bf0c52bfc08993faebeba0151be1e64cac0e8a95629ea24299d30a03dbe"
+    },
+    "lifecycle-cpu-01/stdout.txt": {
+      "bytes": 388,
+      "sha256": "ef751465733c57c0f891d3a47cd796f4b8bca1e8f935421462b7f25f0450f3e6"
+    },
+    "lifecycle-cpu-01/stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lifecycle-inspection-01/result.json": {
+      "bytes": 1723,
+      "sha256": "49ded9acc0e5b64428f92ab82448727fcc01d5bd5b7ba5b400c163796d4dda68"
+    },
+    "lifecycle-plan.json": {
+      "bytes": 3532,
+      "sha256": "69b386103d16d637b8a39fd4c860b7dd5d39b68fb8952ba59d254093e83a00f2"
+    },
+    "lifecycle-required.txt": {
+      "bytes": 314,
+      "sha256": "5cba282a099ca6637da99cbad9012e4fffae20a1cfc2b7e437c38bb155e212d1"
+    },
+    "build_lifecycle_01.py": {
+      "bytes": 3001,
+      "sha256": "6dbb93fb3986eca1b2d52412a15b128fae41516938e62dffe4e0edb2a9cf56c4"
+    },
+    "run_lifecycle_cpu_01.py": {
+      "bytes": 1667,
+      "sha256": "88c2331e230e0ea64149d7710f80a29d16562a37e78466379ffbee994d4f074b"
+    },
+    "source/tools/serve_realtime/mcp_acceptance.py": {
+      "bytes": 18104,
+      "sha256": "8513b058c4fa01b10ad5dc8cf0816a0a1ca0484744ef7f0ab601d921161ced3d"
+    },
+    "source/tools/serve_realtime/mcp_sdk.mjs": {
+      "bytes": 11020,
+      "sha256": "13fc3bcdd2d9f74ab1c2a0a3220a07b31e88cb335aec8b616bcadfe7b9aea6cf"
+    },
+    "source/tools/serve_realtime/mcp_checks.py": {
+      "bytes": 16131,
+      "sha256": "cb3b9152e525556dea17984f8b15d26ecf4b72372328dd85ce10b5380f566b4c"
+    },
+    "source/tools/serve_realtime/mcp_lifecycle.py": {
+      "bytes": 2342,
+      "sha256": "2eeac5b8c86f2bb0ac233eb50c26cf2ff90ce70ca20396e1a5cc6e617f8b85f6"
+    },
+    "source/tools/serve_realtime/test_mcp_checks.py": {
+      "bytes": 10493,
+      "sha256": "e64f29a88984b6a96bb84e867817bbb1f6b0166d9c39625511eafe03bd075a27"
+    },
+    "source/tools/serve_realtime/test_mcp_finish.py": {
+      "bytes": 6358,
+      "sha256": "cface8e5f793ae65cc011e0b82a90afda0ddf700839db9b4ff43c00ffde64bb7"
+    },
+    "source/CMakeLists.txt": {
+      "bytes": 63668,
+      "sha256": "756b9d6c7c70ea8fbf832f927c75d722e7e53613084a8ed72f65f0d92c76f6a3"
+    },
+    "source/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 32039,
+      "sha256": "b18841c1865d8bed420ebe2b6fa5e545edca9d8d7a9a0111338fc2c41308f048"
+    },
+    "source/cmake/HostTestSources.cmake": {
+      "bytes": 40508,
+      "sha256": "c328e5d2723c6a1b585e32ab33607cf32ff2507893d36cdbfbd25cae9795c824"
+    },
+    "source/include/q4t/server/realtime_chat_plan.h": {
+      "bytes": 2705,
+      "sha256": "b71c0bd43b6b30d86e3513067013ac9b4f944b3932e287755b4d2824e79579aa"
+    },
+    "source/include/q4t/server/realtime_conversation.h": {
+      "bytes": 10325,
+      "sha256": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745"
+    },
+    "source/include/q4t/server/realtime_conversation_session.h": {
+      "bytes": 7538,
+      "sha256": "e0efcae480341007ef3d31a9b5d56ff731669be50dfc3b7383a4ce598d050465"
+    },
+    "source/include/q4t/server/realtime_mcp_context.h": {
+      "bytes": 1419,
+      "sha256": "ff0ec45632de3eb497b7244e20c1294b018183eeb5e1105b8a9c601675a5bcbc"
+    },
+    "source/include/q4t/server/realtime_mcp_history.h": {
+      "bytes": 1020,
+      "sha256": "423c22077aafde2d9a1e97ff3b68279bff45b32fcae47ac3f1c588abd14e2e45"
+    },
+    "source/include/q4t/server/realtime_mcp_imports.h": {
+      "bytes": 3679,
+      "sha256": "ac5ad773b3b8221740e07c2eb9db1c02812624d33b906fb378e77110dddcf172"
+    },
+    "source/include/q4t/server/realtime_prompt_settings.h": {
+      "bytes": 2749,
+      "sha256": "fbed82464875dbd6004faf0594463663d42805c63c93d19891c5069b54834922"
+    },
+    "source/include/q4t/server/realtime_response_output.h": {
+      "bytes": 5243,
+      "sha256": "6723964cbbe23db59440f8f84ab2f5b74c5aa8fa64f7b5abe4eeb8087a8f33df"
+    },
+    "source/src/server/chat_capabilities.cpp": {
+      "bytes": 61431,
+      "sha256": "8e4046a47b5bd2971b57f9c59b0e7c9f2b1f855daf56bc5b1f635639740bac34"
+    },
+    "source/src/server/chat_realtime_conversation.cpp": {
+      "bytes": 23981,
+      "sha256": "aeb2de1a7673918ebd8f747ad27180de070dfa48b71a57c2db64542afdbd4555"
+    },
+    "source/src/server/realtime_chat_plan.cpp": {
+      "bytes": 19507,
+      "sha256": "d52d4be4e224e137656714182a85628b125f30ac12a59e5b8988c26683db0ab4"
+    },
+    "source/src/server/realtime_conversation.cpp": {
+      "bytes": 33883,
+      "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8"
+    },
+    "source/src/server/realtime_conversation_input.cpp": {
+      "bytes": 26542,
+      "sha256": "b62d85ed3df13aae09cddfe54e0bc441d076b06fb406ca43e7f6624d31e2ab9d"
+    },
+    "source/src/server/realtime_conversation_session.cpp": {
+      "bytes": 50133,
+      "sha256": "10da01b11bfb5ae588c155bb48b185c77ce89d1e2dbc1d34c7f9ed2998b97c45"
+    },
+    "source/src/server/realtime_mcp_calls.cpp": {
+      "bytes": 23073,
+      "sha256": "9d1d68fe7cdf80a96a1fc5abe27f49c7198eb9f2e1bf01edd62021c52489fc39"
+    },
+    "source/src/server/realtime_mcp_context.cpp": {
+      "bytes": 8030,
+      "sha256": "81e777b20558160ed0d61fee5a84b0851a7e5136f502227e24455798f1dd78a3"
+    },
+    "source/src/server/realtime_mcp_history.cpp": {
+      "bytes": 5238,
+      "sha256": "ea32968850f68939313a84fc695e00a595dd7a10676523e1c5b297a3d02524b0"
+    },
+    "source/src/server/realtime_mcp_imports.cpp": {
+      "bytes": 15353,
+      "sha256": "53c76e0a9bbda56f44e9b9288d51e6f1213b8eb77424279cd46954d378ffa753"
+    },
+    "source/src/server/realtime_response_output.cpp": {
+      "bytes": 27808,
+      "sha256": "9b5fa928932a263ae319b8ce1e19ff30baf79b6eaec444391ee108cf90d8a056"
+    },
+    "source/tests/server_mcp_transport_test.cpp": {
+      "bytes": 276189,
+      "sha256": "576ad803ef8824aeac7354dc426921135c204ca7ba6d68bdc0c9d211c3177a08"
+    },
+    "source/tests/server_realtime_chat_plan_test.cpp": {
+      "bytes": 28620,
+      "sha256": "310ffb456e0bb7e618f9fb8bdf4e7b3704207cb1e9c952eb23d4f759dc09a5d1"
+    },
+    "source/tests/server_realtime_conversation_session_test.cpp": {
+      "bytes": 99253,
+      "sha256": "97bbad31f5cea51ae487a7fa4d202597b563290de1d54241d9e0bb0d92008879"
+    },
+    "source/tests/server_realtime_mcp_context_test.cpp": {
+      "bytes": 10283,
+      "sha256": "130ebcc1ca4cc66638eebab0c28359622cda629369300cd3a4e3d36f801d294f"
+    },
+    "sdk-business-03/plan.json": {
+      "bytes": 1000331,
+      "sha256": "86e5b0301b69b322704c0386818c3b6b8e8d533398dc0b2e7bea67aed74c6bfe"
+    },
+    "sdk-business-03/result.json": {
+      "bytes": 1229,
+      "sha256": "e7242e51be80bfb7afbdc1b440a53c145cae59083cbd72a74704ab68e8deb9c0"
+    },
+    "sdk-business-03/counts.json": {
+      "bytes": 100,
+      "sha256": "a931527229a01a737e3efd9ed675fdc2342843db5505415f1a0169496dcc61c9"
+    },
+    "sdk-business-03/cleanup.json": {
+      "bytes": 8940,
+      "sha256": "87cf595089c083830c01024e60ba68b432bb611ad838b004b52a2a379f740ab2"
+    },
+    "sdk-business-03/primary-cleanup.json": {
+      "bytes": 4529,
+      "sha256": "970f799331627cce496dffc0830da5ebfdd2edf684056b4c217b96597c283976"
+    },
+    "sdk-business-03/observations.json": {
+      "bytes": 355,
+      "sha256": "cfcab8b094dc494a956e7a056beb0d299b4e2649c6ea9cdf613a98f220968e52"
+    },
+    "sdk-business-03/lease/exit.json": {
+      "bytes": 709,
+      "sha256": "1c01cf8f04ea8fae095a71b37139d65b38514bdfaa95a1c4cec84abe7e941451"
+    },
+    "sdk-business-03/lease/events.jsonl": {
+      "bytes": 19326,
+      "sha256": "670e0dfecc63bd273f76ea1cc55fbda6472b482aa97bfae44639b13008b0d288"
+    },
+    "sdk-business-03/lease/nvml-queries.jsonl": {
+      "bytes": 240580,
+      "sha256": "89e791d8b8ef5744793c6fd0e98b3ef50f0160dc51762bb196b265b91612f99e"
+    },
+    "sdk-business-03/primary-mcp.sdk.json": {
+      "bytes": 10933,
+      "sha256": "9a54530f23c727bd73622d1d8dc4c12afcad64b25ae433ec86dabc81ace10717"
+    },
+    "sdk-business-03/primary-mcp.events.jsonl": {
+      "bytes": 10183,
+      "sha256": "4ae46d3c8612f9e7acb67ba616b5d3e6d8206dc42d991d42acee71d970b20563"
+    },
+    "sdk-business-03/primary-mcp.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "sdk-business-03/primary-mcp-observed.json": {
+      "bytes": 16699,
+      "sha256": "27cac4e75351aaffa57ae7a83609ab9c3e0e7b9a3ce280cbaef1a94e685d0896"
+    },
+    "sdk-business-03/primary-peer-results.json": {
+      "bytes": 106,
+      "sha256": "ac61904c2130d4b4708e356d18396da11a27d6d024b169a66af0aa11bb84a37d"
+    },
+    "sdk-business-03/primary-config.json": {
+      "bytes": 20965,
+      "sha256": "4a20307ac646173a93c1e8f1019add0e07b4c1210ac55e89d7143d31a6744b75"
+    },
+    "sdk-business-03/primary-capabilities.json": {
+      "bytes": 60183,
+      "sha256": "3250fa9d8a032f40bfac42e1d6163f6ab530e20b6733975aec9eb8d9ac62a6d3"
+    },
+    "sdk-business-03/light-mcp.sdk.json": {
+      "bytes": 54473,
+      "sha256": "629ec42acf5b53f1946598f3dcf194a56f7d8f5c8999fee5e88cc36ebe6afb36"
+    },
+    "sdk-business-03/light-mcp.events.jsonl": {
+      "bytes": 50748,
+      "sha256": "59e66fc3d50384a7bfae685ef6e642bb1dc58b68b0b534388f332167befedcf3"
+    },
+    "sdk-business-03/light-mcp.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "sdk-business-03/light-mcp-observed.json": {
+      "bytes": 79329,
+      "sha256": "108d97cfcad1a67660de7050efad020cea79bb75c0cd9d230c20988791111d99"
+    },
+    "sdk-business-03/light-peer-results.json": {
+      "bytes": 818,
+      "sha256": "72f91de0ecd3a81b81675f1eb1a8ed64b8f10e4064165a71031d22de2aae7a8d"
+    },
+    "sdk-business-03/light-config.json": {
+      "bytes": 20970,
+      "sha256": "4df19fdaef8a29875eef8bea586dff81f35a25fb62abd8898ff727f59f1a6978"
+    },
+    "sdk-business-03/light-capabilities.json": {
+      "bytes": 60184,
+      "sha256": "92942438e931fdc223a88fa84fc0caf6a34259f37e0d058b46e6dc1ba745cbc7"
+    },
+    "original-source/tools/serve_realtime/mcp_sdk.mjs": {
+      "bytes": 10378,
+      "sha256": "edc5cde45fe9e5ab87c81e8af82d6ce8ce9cc3b771571938862eafee225bf0f3"
+    },
+    "original-source/tools/serve_realtime/mcp_acceptance.py": {
+      "bytes": 16566,
+      "sha256": "762e0dc397ec62e25b150bbf3d2aed120554ba585df54341178cb4c3292165f1"
+    },
+    "original-source/tools/serve_realtime/mcp_checks.py": {
+      "bytes": 10955,
+      "sha256": "2953fa89d5c4a6cc76c7e188e46620a748b7de4aa9294f4398b77f7d8931b08e"
+    },
+    "original-source/tools/serve_realtime/test_mcp_checks.py": {
+      "bytes": 10493,
+      "sha256": "e64f29a88984b6a96bb84e867817bbb1f6b0166d9c39625511eafe03bd075a27"
+    }
+  },
+  "archive_sha256": "12196b0865d1691cbf7e3619d6f5759181d1c675fbe8d497cf8f8f6f49261f5d"
+}

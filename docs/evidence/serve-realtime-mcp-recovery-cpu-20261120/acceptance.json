@@ -1,0 +1,124 @@
+{
+  "status": "PASS_TARGETED_MCP_RECOVERY_CPU",
+  "distinct_cases": 24,
+  "executions": 26,
+  "first_pass": 23,
+  "first_fail": 1,
+  "repair_pass": 2,
+  "original_failure_retained": true,
+  "fix": "CPU peer sent its separate serialized unmodified response; fix only actual transmitted negative terminal",
+  "seconds": 8.752885077614337,
+  "gpu_actions": 0,
+  "model_requests": 0,
+  "default_unchanged": true,
+  "production_runtime_changed": false,
+  "synthetic_sdk_peer_not_actual_model_acceptance": true,
+  "records_sha256": "647c7968697bd737929fb616736eeff3b6039c2607683bf30289b4566d2a80f8",
+  "files": [
+    {
+      "path": "recovery-cpu-01/plan.json",
+      "bytes": 3108,
+      "sha256": "1e32bf92d732744e915102dc5e4abfa0b2f9e59258a8481a72b583969bcdd32f"
+    },
+    {
+      "path": "recovery-cpu-01/result.json",
+      "bytes": 781,
+      "sha256": "fdae40bb7075bf262f38144955b11086b25647cbbe93af442c417136f3539512"
+    },
+    {
+      "path": "recovery-cpu-01/0-stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "recovery-cpu-01/0-stderr.txt",
+      "bytes": 14641,
+      "sha256": "33dc17552d42f220db94ef33cada074f980f27c9b9114dc2efcf89c32c22b380"
+    },
+    {
+      "path": "recovery-cpu-01/1-stdout.txt",
+      "bytes": 360,
+      "sha256": "87b0c6f827e033b284a2fedc309230bf997496315eb0b8464e68c6d30390b775"
+    },
+    {
+      "path": "recovery-cpu-01/1-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "recovery-cpu-02/plan.json",
+      "bytes": 2266,
+      "sha256": "225f24908aae04fe5b729e656ffaf7ebe80b3362351203eccc54902d623f17b8"
+    },
+    {
+      "path": "recovery-cpu-02/result.json",
+      "bytes": 136,
+      "sha256": "86d4be5e7fa36c1288f21c91186e150d85ecf5028f81d73f38dc46acd79e6955"
+    },
+    {
+      "path": "recovery-cpu-02/stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "recovery-cpu-02/stderr.txt",
+      "bytes": 416,
+      "sha256": "4e79a852c7493f976be28a7cba6b032952f70fd9a663005b828eb62a75ae4df8"
+    },
+    {
+      "path": "original-source/tools/serve_realtime/mcp_managed.py",
+      "bytes": 9910,
+      "sha256": "57add91d8481c054f4ee35240760cde9e2518d74662aea94988fbf854bf3d978"
+    },
+    {
+      "path": "original-source/tools/serve_realtime/mcp_recovery_checks.py",
+      "bytes": 10903,
+      "sha256": "0696e7a4e1ea6eb5f503eb84cec912bee59015ffba1dfd5b4add739324c78a0a"
+    },
+    {
+      "path": "original-source/tools/serve_realtime/mcp_recovery_journal.mjs",
+      "bytes": 697,
+      "sha256": "9d45be900d58d18a648589ae715509391920fb3642797a5dad06ea86911782f7"
+    },
+    {
+      "path": "original-source/tools/serve_realtime/mcp_recovery_journal.test.mjs",
+      "bytes": 1005,
+      "sha256": "2cd218741936a287aeedf6f3190ae013493aa33cebe1d3603e28b8c4b663eea1"
+    },
+    {
+      "path": "original-source/tools/serve_realtime/mcp_recovery_sdk.mjs",
+      "bytes": 10650,
+      "sha256": "fefeba08dc71c028de92659b577c839a3d23741107d5f89471eac68441ebd6d1"
+    },
+    {
+      "path": "original-source/tools/serve_realtime/mcp_service_acceptance.py",
+      "bytes": 13329,
+      "sha256": "e66bf44fede97831efded1e697b920202bd10a6a0a16e2227aea92be6892b170"
+    },
+    {
+      "path": "original-source/tools/serve_realtime/test_mcp_recovery_sdk.py",
+      "bytes": 10587,
+      "sha256": "d07de7296e639649a4e75daebeb30b2e7d1b4ee0f79a8140a338adf3ff8207fe"
+    },
+    {
+      "path": "original-source/tools/serve_realtime/test_mcp_service.py",
+      "bytes": 11575,
+      "sha256": "3857fd2dd09a7a9785e57ee8e28e5e430658512a21c987824bb8bf73fb3d544a"
+    },
+    {
+      "path": "original-source/tools/serve_responses/mcp_business_peer.py",
+      "bytes": 9015,
+      "sha256": "afb33604fd31514a68f04fe9a39531baa7052df0a5131d11552a9e86624437ad"
+    },
+    {
+      "path": "original-source/tools/serve_responses/test_mcp_business_peer.py",
+      "bytes": 3128,
+      "sha256": "0a459c0543a76ad66de73e076fecea2ad6f1d419295e735dfc347e6b44ffb903"
+    },
+    {
+      "path": "repaired-source/tools/serve_realtime/test_mcp_recovery_sdk.py",
+      "bytes": 10777,
+      "sha256": "17935e483a45207a6df240f75635298bad1217021d505dd3e5dec063992a9d64"
+    }
+  ]
+}

@@ -29,6 +29,9 @@ struct RealtimeConversationSnapshot {
   // must not execute until Resolve has cleared these positions.
   std::vector<size_t> pending_inputs = {};
   std::vector<size_t> pending_outputs = {};
+  // Private provenance from exact native entries, never parsed from JSON.
+  // Client copies (even with the same ID) must authenticate durable evidence.
+  std::vector<bool> owned_mcp = {};
 };
 
 // One session thread owns mutations. Workers receive independent snapshots
@@ -62,6 +65,11 @@ class RealtimeConversation {
   Status Create(const io::Json& item, std::string_view generated_id,
                 std::optional<std::string_view> previous,
                 RealtimeItemTicket* output);
+  // Only the connected MCP approval owner may use this after validating its
+  // native proposal or reserving the exact user decision. No dispatch grant.
+  Status CreateMcpMetadata(const io::Json& item, std::string_view generated_id,
+                           std::optional<std::string_view> previous,
+                           RealtimeItemTicket* output);
   // Reserve before publishing model output. Updates cannot grow beyond this
   // reservation or change identity; only a terminal update releases the slack.
   Status BeginOutput(const io::Json& item, std::string_view generated_id,
@@ -98,11 +106,20 @@ class RealtimeConversation {
   Status FailAudioPart(const RealtimeItemTicket& ticket, size_t index);
   Status Update(const RealtimeItemTicket& ticket, const io::Json& item,
                 bool terminal, bool grow = false);
+  // Attach a durable native approval proposal to its pending server call.
+  // This is not authentication or dispatch permission. The caller must own
+  // the native proposal; its arguments/name/server must exactly match here.
+  // A previously attached ID is immutable, and client-created items cannot
+  // acquire this server-owned transition through ordinary Update.
+  Status BindMcpApproval(const RealtimeItemTicket& ticket,
+                         const io::Json& approval);
   // grow opts into atomic growth within this ledger's already bounded global
   // reservation. Existing fixed-reservation callers keep their old contract.
   // Null selects the default conversation; [] selects an empty context.
   // Explicit item_reference resolves only this session's completed entries.
   // Pending server output fails rather than silently dropping partial tools.
+  // Owned pending MCP catalogs alone are omitted from default context, so an
+  // auxiliary tools/list cannot block an unrelated ordinary response.
   // A terminal incomplete server tool remains retrievable but is not executable
   // context. Default snapshots omit it; an explicit reference fails. Client
   // status fields have no such authority and cannot hide submitted history.
@@ -137,6 +154,7 @@ class RealtimeConversation {
     bool native_input = false, transcript_visible = false, input_failed = false;
     bool idle_timeout = false;
     bool input_committed = false;
+    bool native_mcp_metadata = false;
     std::vector<size_t> pending_input_parts;
   };
   Status InsertAudioInput(std::string_view id,
@@ -151,7 +169,7 @@ class RealtimeConversation {
   Status FinishAudioPart(const RealtimeItemTicket& ticket, size_t index,
                          std::optional<std::string_view> transcript);
   Status UpdateEntry(const RealtimeItemTicket& ticket, const io::Json& item,
-                     bool terminal, bool grow);
+                     bool terminal, bool grow, bool bind_mcp_approval = false);
   size_t Position(const RealtimeItemTicket& ticket) const;
   Status Insert(const io::Json& item, std::string_view generated_id,
                 std::optional<std::string_view> previous, bool in_conversation,

@@ -6,6 +6,7 @@ CPU executable, not evidence of CUDA usability or model service acceptance.
 """
 import os
 from pathlib import Path
+import subprocess
 import sys
 
 sys.dont_write_bytecode = True
@@ -17,6 +18,14 @@ def prepare(binding,selected,args):
     if args['payload'] != version_journal.policy.launch_payload(selected):
         raise ValueError('CPU fixture wrong selection')
     expected=selected['registry']['payloads'][args['payload']]
+    directory = Path(binding['state_directory'])
+    mode = directory/'version-prepare-children'
+    if mode.exists():
+        child = subprocess.run([sys.executable, '-I', '-B',
+            str(Path(__file__).with_name('version_prepare_children.py')),
+            str(directory), args['payload'], mode.read_text()], check=False)
+        if child.returncode != 0:
+            raise RuntimeError('CPU preparation child failed')
     return dict(payload=args['payload'],manifest_sha256=expected['manifest_sha256'],
         binding_sha256=expected['binding_sha256'],profile_registry_sha256='9'*64,
         profile_revision=1)

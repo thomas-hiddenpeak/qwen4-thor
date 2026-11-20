@@ -111,7 +111,10 @@ Status ParseRealtimeChatTarget(std::string_view target,
 Status PlanRealtimeChat(const Json& settings, const Json& response,
                         const Json& items, const ChatPlanConfig& config,
                         RealtimeChatPlan* plan, ChatPlanError* error,
-                        const PromptSnapshot* prompt, bool native_input) {
+                        const PromptSnapshot* prompt, bool native_input,
+                        const RealtimeMcpContext* mcp,
+                        bool mcp_definitions_only,
+                        const Json* native_mcp_items) {
   if (!plan || !error) return Status::Fail("Missing Realtime plan owner");
   *error = {};
   auto status = ValidateRealtimeWireShape(
@@ -183,6 +186,11 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
   if (!request.Has("reasoning"))
     Set(&request, "reasoning", Object({{"effort", String("none")}}));
 
+  if (mcp) {
+    if (!request.Has("tools")) Set(&request, "tools", Array());
+    status = MapRealtimeMcpTools(*mcp, &request, mcp_definitions_only, error);
+    if (!status) return status;
+  }
   if (auto* tools = request.Has("tools") ? &Field(request, "tools") : nullptr)
     for (size_t i = 0; i < tools->array.size(); ++i) {
       auto& tool = tools->array[i];
@@ -253,8 +261,19 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
     auto item = original;
     std::erase_if(item.object,
                   [](const auto& field) { return field.first == "object"; });
-    if (item.GetString("type").starts_with("mcp_"))
-      return Processor(error, path);
+    if (item.GetString("type").starts_with("mcp_")) {
+      // Prepared only by the native history owner. Public JSON cannot supply
+      // this parallel array or replace another input position.
+      if (!native_mcp_items || !native_mcp_items->IsArray() ||
+          native_mcp_items->array.size() != items.array.size())
+        return Processor(error, path);
+      const auto& native = native_mcp_items->array[i];
+      if (native.GetString("type") != item.GetString("type") ||
+          native.GetString("id") != item.GetString("id"))
+        return Invalid(error, path, "Native MCP history identity differs",
+                       "realtime_mcp_history_invalid", 500);
+      item = native;
+    }
     if (auto* content = item.Has("content") ? &Field(item, "content") : nullptr)
       for (size_t j = 0; j < content->array.size(); ++j) {
         auto& part = content->array[j];

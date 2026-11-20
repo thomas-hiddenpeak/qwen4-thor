@@ -1,0 +1,137 @@
+{
+  "files": {
+    "archive_business_04.py": {
+      "bytes": 6329,
+      "sha256": "410eef78651b6107a5b9c217dac1e2b1c207e4de4394e64596dcaddae8b44906"
+    },
+    "finalize_remaining_01.py": {
+      "bytes": 3101,
+      "sha256": "4ac64a75d44becfb8b4e15fff56647dc5264b93e2efd3315b1c5b150de276129"
+    },
+    "sdk-business-04/plan.json": {
+      "bytes": 998161,
+      "sha256": "94bf826b1362c8f07710057fefd97977b2aff043ed9f2a3e6847bf2dd846d093"
+    },
+    "sdk-business-04/result.json": {
+      "bytes": 295,
+      "sha256": "55d4822910cad6bb4234c70e0d2186e292384afeab3668abca27053377ab56a2"
+    },
+    "sdk-business-04/counts.json": {
+      "bytes": 100,
+      "sha256": "ef1f5d1915085be1a744693eaf9bff0a68da74682cebe44d0620ddaf9912fc31"
+    },
+    "sdk-business-04/cleanup.json": {
+      "bytes": 4530,
+      "sha256": "0baa919a4797f054850eb7ab9bec1c704adc7515ab282e5720169a16310cf0ef"
+    },
+    "sdk-business-04/acceptance.json": {
+      "bytes": 2143,
+      "sha256": "5ca6461c0dd9c298b31c768f4966d19a2dcae6465f500cf0de1748f59ed0d3c0"
+    },
+    "sdk-business-04/observations.json": {
+      "bytes": 337,
+      "sha256": "695eac1c9d3fe16e5fcde5eb56971db985d6e936f467a40fb986e62ae40d0987"
+    },
+    "sdk-business-04/finalizer-original-failure.json": {
+      "bytes": 272,
+      "sha256": "c81c5e198a7e95471e39286a4a0033fa352dad81653983ff8e4a50f8d6e82b2f"
+    },
+    "sdk-business-04/light-mcp.sdk.json": {
+      "bytes": 17343,
+      "sha256": "d74361244c525b1a67224ef6db437897b0694b88a626f950f64ae4256fd8b4e9"
+    },
+    "sdk-business-04/light-mcp.events.jsonl": {
+      "bytes": 15700,
+      "sha256": "fc4ffc79628221dc0cb1e140d0b313dd03b025c9b9bc1963f2ce8c8161271337"
+    },
+    "sdk-business-04/light-mcp-observed.json": {
+      "bytes": 26815,
+      "sha256": "ba427707711710c6e54653bf3dc501a376cd35d8b9f5ba2e3854beaf4b7975e6"
+    },
+    "sdk-business-04/light-mcp.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "sdk-business-04/light-peer-results.json": {
+      "bytes": 749,
+      "sha256": "25f7cfba45540a5421bb976d704369e4acc773d2c96b2cf1f9ebdc4a650cfaae"
+    },
+    "sdk-business-04/light-entry-cleanup.json": {
+      "bytes": 64,
+      "sha256": "57019af5b39f4300c600c3da514340880fba696a654a04656e427382bb55b100"
+    },
+    "sdk-business-04/light-config.json": {
+      "bytes": 20970,
+      "sha256": "b53605aeff3d2919983a53fdc48e0d218d99c2a47949ad760269cd372ae13149"
+    },
+    "sdk-business-04/light-capabilities.json": {
+      "bytes": 60184,
+      "sha256": "92942438e931fdc223a88fa84fc0caf6a34259f37e0d058b46e6dc1ba745cbc7"
+    },
+    "sdk-business-04/lease/exit.json": {
+      "bytes": 704,
+      "sha256": "2ae089b9393f94a548af2aed8beccd9b7015430855039998e2d18caf4b839c72"
+    },
+    "sdk-business-04/lease/events.jsonl": {
+      "bytes": 9463,
+      "sha256": "34a3f2282d361eeceaf6b1c7dc9906064ea57aa05fa5bf8218904f1ff408f828"
+    },
+    "sdk-business-04/lease/nvml-queries.jsonl": {
+      "bytes": 113985,
+      "sha256": "a1bf6be61a69df8d0e48af4182e1f4a16e882df2cd7201798732e0a2185dba2b"
+    },
+    "finalizer-repair-01/plan.json": {
+      "bytes": 510,
+      "sha256": "6cc26786493c52737b687de08920b1d89dd8771970bbc7399485661a29e3af7a"
+    },
+    "finalizer-repair-01/result.json": {
+      "bytes": 475,
+      "sha256": "2fd61ab60f9eeb558f6d15aa5a13dc891488978ead543c429342ea0d2afc510a"
+    },
+    "finalizer-repair-01/stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "finalizer-repair-01/stderr.txt": {
+      "bytes": 101,
+      "sha256": "08dca83af6e5a88faabb0cd08dd77f18333cc622ec256ed10d83eeb76081b0d1"
+    },
+    "original-source/tools/serve_recovery/profile_acceptance.py": {
+      "bytes": 61553,
+      "sha256": "13c6a0f46ed163f29d30369254a15fc8a53a5529bc31b2619aee9213453ef5aa"
+    },
+    "original-source/tools/serve_realtime/test_mcp_finish.py": {
+      "bytes": 6358,
+      "sha256": "cface8e5f793ae65cc011e0b82a90afda0ddf700839db9b4ff43c00ffde64bb7"
+    },
+    "original-source/tools/serve_realtime/mcp_acceptance.py": {
+      "bytes": 18104,
+      "sha256": "8513b058c4fa01b10ad5dc8cf0816a0a1ca0484744ef7f0ab601d921161ced3d"
+    },
+    "finalizer-source/tools/serve_recovery/profile_acceptance.py": {
+      "bytes": 61660,
+      "sha256": "edd4fd40051f79eac2a9114ff92b6d21b93f5507d493ca14c0196e857eb3ffa9"
+    },
+    "finalizer-source/tools/serve_realtime/mcp_acceptance.py": {
+      "bytes": 18155,
+      "sha256": "62dcc2efbe71105767aef5718c2619263cf13034b3b11bd49e3ddc4f6254ab52"
+    },
+    "finalizer-source/tools/serve_realtime/test_mcp_finish.py": {
+      "bytes": 8235,
+      "sha256": "4ace45f8fa6232df072b152b2e68f0fe70482443aae341d622040432d833a62e"
+    },
+    "source/tools/serve_realtime/mcp_checks.py": {
+      "bytes": 16131,
+      "sha256": "cb3b9152e525556dea17984f8b15d26ecf4b72372328dd85ce10b5380f566b4c"
+    },
+    "source/tools/serve_realtime/mcp_lifecycle.py": {
+      "bytes": 2342,
+      "sha256": "2eeac5b8c86f2bb0ac233eb50c26cf2ff90ce70ca20396e1a5cc6e617f8b85f6"
+    },
+    "source/tools/serve_realtime/mcp_sdk.mjs": {
+      "bytes": 11020,
+      "sha256": "13fc3bcdd2d9f74ab1c2a0a3220a07b31e88cb335aec8b616bcadfe7b9aea6cf"
+    }
+  },
+  "archive_sha256": "2eeb5d921fec066b45ee1b98bdaab20eb874f0b5664daf7e43e6703223036ffa"
+}

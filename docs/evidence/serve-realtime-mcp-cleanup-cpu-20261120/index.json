@@ -1,0 +1,169 @@
+{
+  "files": {
+    "cleanup-plan.json": {
+      "bytes": 2632,
+      "sha256": "ac850c8990848232e7c21fcebc5b92f2f591b97e9d156b774fc6bfbf9645bae9"
+    },
+    "cleanup-repair-plan.json": {
+      "bytes": 2198,
+      "sha256": "0a40144d4fe57623d2b83728f1e5de9fc58d2455a347516b2070ffe362eaabfd"
+    },
+    "cleanup-applied-repair-plan.json": {
+      "bytes": 2380,
+      "sha256": "cd8e4517d780c482a4b4e6ed9bfd5fb28ccfef5e9f236208bfba3127db3d3aeb"
+    },
+    "cleanup-required.txt": {
+      "bytes": 666,
+      "sha256": "18af35363ac1e246db409616687f98d8bff5aee09f490541195f31a5122f17ec"
+    },
+    "cleanup-repair-required.txt": {
+      "bytes": 138,
+      "sha256": "f98434ae5db28799b4c44da614a5f87362eb097b22bddd872211d48d061245e5"
+    },
+    "cleanup-original-test.cpp": {
+      "bytes": 254640,
+      "sha256": "da67a58fa07ab26f426c9f2005c524195fcaec00a0c919b35d8947b7151586ac"
+    },
+    "archive_cleanup_01.py": {
+      "bytes": 6533,
+      "sha256": "831b39c56243c4464627ce7b389102d4f18b1d25c553e9fcda184fbc1322159c"
+    },
+    "build_cleanup_01.py": {
+      "bytes": 2918,
+      "sha256": "030556b00ace01233cfdf326a83ffc7bbb249a560936697d9e6bbe9d6ac3b80d"
+    },
+    "cleanup-build-01/plan.json": {
+      "bytes": 179380,
+      "sha256": "cb73aa4f5952fb5294ac917072f89de39da7e654acfa68b2de51115fb41225f5"
+    },
+    "cleanup-build-01/result.json": {
+      "bytes": 293,
+      "sha256": "8384d414ab2fa7009ecf7eb88738d4d7c4ff6f8d92f5d83cb1b44dc5fa3a8180"
+    },
+    "cleanup-build-01/build.log": {
+      "bytes": 1907,
+      "sha256": "e785be5ba896945da6340627aa7b2ee6fb3ac8d3785a3b3e3c3a8b7564a8e653"
+    },
+    "build_cleanup_02.py": {
+      "bytes": 2918,
+      "sha256": "d0c8ce50a5f8360e2acaea374fb43f666ae89677141f160a74bf99f41f48f568"
+    },
+    "cleanup-build-02/plan.json": {
+      "bytes": 179380,
+      "sha256": "7a21bde21835a4a79d3714c37523260af798f11747fca5053da4769a4bfd6831"
+    },
+    "cleanup-build-02/result.json": {
+      "bytes": 293,
+      "sha256": "39c00e9428ed0d5dc48ad912df88f9c78ae5de6c6ca4d0316f9ed6e2ea45673d"
+    },
+    "cleanup-build-02/build.log": {
+      "bytes": 188,
+      "sha256": "ed875b0d7a16ac05eaa4e4c8bd0d2f56f90a1730698760fb94721cdb437eaa3f"
+    },
+    "build_cleanup_03.py": {
+      "bytes": 2918,
+      "sha256": "b36909660aa33750719153bc7468757f3a92bb117c54bc37801644b3417a3b17"
+    },
+    "cleanup-build-03/plan.json": {
+      "bytes": 179380,
+      "sha256": "08afbec9a263fbd5b59d29f66bc19c44eb4bc63448f2ce5fc60b620982147155"
+    },
+    "cleanup-build-03/result.json": {
+      "bytes": 294,
+      "sha256": "0cfa73d23f4c05f501ff0ea745e0fa951e984c98bd1b5897045450a6d4a8bc6f"
+    },
+    "cleanup-build-03/build.log": {
+      "bytes": 315,
+      "sha256": "713db9d0867cfdf35b18985d3d76cba3b878214b3f6fa53e7dd3f034c60b1f48"
+    },
+    "run_cleanup_cpu_01.py": {
+      "bytes": 1661,
+      "sha256": "e510977cc33450ddc4f38b309c7c61c719e4f2501e267942495d77bf9feea7a6"
+    },
+    "cleanup-cpu-01/result.json": {
+      "bytes": 2074,
+      "sha256": "43aa7d3fdc5ba7a8e9c42e99ff7582a3bea8ef4619b1eef2bdb84196df86c1c8"
+    },
+    "cleanup-cpu-01/stdout.txt": {
+      "bytes": 1121,
+      "sha256": "2d5dd9fed37fd55921eb148af7c91db4e88f96447f37f1599140ab05f775e7e9"
+    },
+    "cleanup-cpu-01/stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run_cleanup_cpu_02.py": {
+      "bytes": 1680,
+      "sha256": "87d8b1d0a30eb961dd6752c66716270f43b72e4e7383462c8e507be544ed338f"
+    },
+    "cleanup-cpu-02/result.json": {
+      "bytes": 2081,
+      "sha256": "2a16e09da9488c3f8d1518716688e35ad13bf5ae1f10f1a55680d3e0b2be2e98"
+    },
+    "cleanup-cpu-02/stdout.txt": {
+      "bytes": 191,
+      "sha256": "5a7cb530e3e046607c63da3bcc90fb534120c8d37f66d66e8300e444f3c36608"
+    },
+    "cleanup-cpu-02/stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/include/q4t/server/realtime_mcp_execution.h": {
+      "bytes": 3583,
+      "sha256": "1080365b9864412c87c08cf2b12405fa3ca4eeabf3f324904d9aa869bd8876a5"
+    },
+    "source/src/server/realtime_mcp_execution.cpp": {
+      "bytes": 15807,
+      "sha256": "20eece0a80d5a728c4bc28889c2414cb2efae011a959544d811118a42bcba645"
+    },
+    "source/tests/server_mcp_transport_test.cpp": {
+      "bytes": 254834,
+      "sha256": "0b037af85507676282642f5646bce57cb9717fcd41de814039069816b0eeaa4a"
+    },
+    "source/tests/server_responses_mcp_state_test.cpp": {
+      "bytes": 91127,
+      "sha256": "0498887a896abd86edace84075af8049d1bb1b5e5f13584b39f7d2d4b60bacc3"
+    },
+    "source/include/q4t/server/realtime_mcp_catalog.h": {
+      "bytes": 1566,
+      "sha256": "ad8d3db24f6b373cb122e5888ec6e0542a30262a9de1dc5c9adeae6fe5eb8ead"
+    },
+    "source/src/server/realtime_mcp_catalog.cpp": {
+      "bytes": 6565,
+      "sha256": "e1cd8c3e2be79be373f1ded4145391abf1861b64f0df775af82866e7c73be305"
+    },
+    "source/include/q4t/server/realtime_mcp_item.h": {
+      "bytes": 801,
+      "sha256": "8264f7d4e6813148316dcaf8a952104caac5d71415661878b14d5970850f4709"
+    },
+    "source/src/server/realtime_mcp_item.cpp": {
+      "bytes": 3724,
+      "sha256": "0d3eeb1b7da1d9db3dfb2ce582fdcfa12247a80b41abc5f3a2c8d323e3f8ed59"
+    },
+    "source/include/q4t/server/responses_mcp_state.h": {
+      "bytes": 6861,
+      "sha256": "aeaf5e0ff66e98fde9e3676c5793a3fb9629889abe67a4ee8db6a9643abb94b8"
+    },
+    "source/src/server/responses_mcp_state.cpp": {
+      "bytes": 63711,
+      "sha256": "cae74a7b7ffa4c380f2a2b8d524edf8dca78bb80da06cd02eed345f1c0c70451"
+    },
+    "source/src/server/mcp_transport.cpp": {
+      "bytes": 22570,
+      "sha256": "7499d77f2ba98dc7d55ee8b2143522ffaeb5e61751fcdd7f7f7dcbbf9ccda99a"
+    },
+    "source/CMakeLists.txt": {
+      "bytes": 63352,
+      "sha256": "d5071e38508e7dc40806f7e0a8571e284d113140356a1353646719f184cf0728"
+    },
+    "source/cmake/HostTestSources.cmake": {
+      "bytes": 40163,
+      "sha256": "de86f70112d05f0b31e1bbcfaa97256b29c9bddba645eb353ef79e65ff129eb0"
+    },
+    "source/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 31797,
+      "sha256": "f2c2fb0f67aec0bb4adbc8c1c90d573bab5bb0610c58938e25265b2adc5141e7"
+    }
+  },
+  "archive_sha256": "06b2ef6ef95825c41f21aeb19fb98860f5281780b191aaaa82acde840dd8b731"
+}

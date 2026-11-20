@@ -1,0 +1,33 @@
+{
+  "files": {
+    "plan.json": {
+      "bytes": 904,
+      "sha256": "9800a6423247168328b3dbbba7fd67b8c579f65506c8858cdd73d122005fce7b"
+    },
+    "result.json": {
+      "bytes": 109,
+      "sha256": "d76c83554427c69ec7d02729238d4f651301066bc4f71f5b68324b35c4360775"
+    },
+    "tests.log": {
+      "bytes": 2055,
+      "sha256": "9115d0a0dd3862938a28b857f5e123dce0064232769c3112d0a07fa3f3e1a897"
+    },
+    "source/tools/serve_recovery/profile_mcp_reuse.py": {
+      "bytes": 5478,
+      "sha256": "c1da2ae33277ca9e250bdaabf29c5d4ed4490981a4d3aa297845088207490f3d"
+    },
+    "source/tools/serve_recovery/profile_mcp_source.py": {
+      "bytes": 18162,
+      "sha256": "ca8f30b89a355623bc7d2ae8a3d3bb8b63fe797c49699ff5ec8e65746e0efff6"
+    },
+    "source/tools/serve_recovery/test_profile_mcp.py": {
+      "bytes": 13133,
+      "sha256": "6a9c97dfabe074309143450cb60cab1116b9a69dffb3771034f7a6876a41befc"
+    },
+    "source/tools/serve_recovery/test_native_bundle.py": {
+      "bytes": 44109,
+      "sha256": "1a2558ec9dd43e8668290eb94b758291e98c82a9c5e818dead6a2aa5450b5180"
+    }
+  },
+  "archive_sha256": "d70655db486d33c3d317d9c7c438df1b5f73592cd42fa567b67a7596fbfa2abb"
+}

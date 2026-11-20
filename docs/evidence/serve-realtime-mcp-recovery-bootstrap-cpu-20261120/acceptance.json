@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "seconds": 0.3642498073168099,
+  "tests": 3,
+  "gpu_actions": 0,
+  "scope": "Frozen fixture no longer imports development PKI issuer in sealed production gateway namespace",
+  "original_launch_status": "COMMAND_FAILED",
+  "original_starts": 0,
+  "original_model_requests": 0,
+  "original_failure_retained": true,
+  "production_runtime_unchanged": true,
+  "default_unchanged": true,
+  "archive_sha256": "ab69811f675bea153b935d0e993b7913da389ac180f63eb878d444e031ccdba5",
+  "files": [
+    {
+      "path": "managed-configured-retained-01/plan.json",
+      "bytes": 1047986,
+      "sha256": "c093cdca277c80917e94cd40304cfd0064ed221ba4dcce9560921f607d14c250"
+    },
+    {
+      "path": "managed-configured-retained-01/execution/counts.json",
+      "bytes": 135,
+      "sha256": "2038445cb5a49d4d5a91efb8be92f0726be3d7074e75b6ad001be0d9edf9c596"
+    },
+    {
+      "path": "managed-configured-retained-01/guard-stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "managed-configured-retained-01/guard-stderr.txt",
+      "bytes": 815,
+      "sha256": "2d6f37c1b00a8b7e7a41e27e3b74d5961f11b73b1b827f27bcd80d1329f9adb3"
+    },
+    {
+      "path": "managed-configured-retained-01/lease/exit.json",
+      "bytes": 825,
+      "sha256": "a169065426f2c45716946779383e9cdaaaa5c5a7c499b0e7b0c1e20831155b2f"
+    },
+    {
+      "path": "managed-configured-retained-01/lease/events.jsonl",
+      "bytes": 1105,
+      "sha256": "99cc61727f3007ad6d719423b8123bb0b2a9a19839bb3d718109aa334ff6573d"
+    },
+    {
+      "path": "managed-configured-retained-01/lease/nvml-queries.jsonl",
+      "bytes": 6853,
+      "sha256": "7cb24e772edccbfb57751da3eb64ad8ec77539a49f4f6349a756d50676c4d062"
+    },
+    {
+      "path": "recovery-cpu-03/plan.json",
+      "bytes": 715,
+      "sha256": "d66cda0a8e4d2928b21992b99379b586b322833c1d6721b040dcc0594eecd85c"
+    },
+    {
+      "path": "recovery-cpu-03/result.json",
+      "bytes": 108,
+      "sha256": "6da6ffe2a8235dcfa96731b8798122252c4ea2dd5275404e2ba80b984c0770f0"
+    },
+    {
+      "path": "recovery-cpu-03/stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "recovery-cpu-03/stderr.txt",
+      "bytes": 679,
+      "sha256": "b9a3cfbd287c8e0f4dd240c1fa28d071fbbd4d7be483612a0d45ecab1e2fea65"
+    },
+    {
+      "path": "managed-group-01.json",
+      "bytes": 3936,
+      "sha256": "b0a2bd9bd1dd6335df3ac84069f1312599dd008635420055dcbd438b22f4d82b"
+    },
+    {
+      "path": "source/tools/serve_responses/mcp_business_peer.py",
+      "bytes": 9019,
+      "sha256": "1be4bd27776aa2ae318e84136a9808617b37afe14167ec817bc7fb388b58ab5e"
+    },
+    {
+      "path": "source/tools/serve_responses/test_mcp_business_peer.py",
+      "bytes": 4414,
+      "sha256": "4d2bbb46c79afcf84929f5a2ab711e0f9d4c69a58621f0d4b7192d659202b34d"
+    }
+  ]
+}

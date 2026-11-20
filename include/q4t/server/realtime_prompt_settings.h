@@ -1,12 +1,16 @@
 // Transactional prompt/default/explicit-setting precedence for one session.
 #pragma once
 
+#include <memory>
+
 #include "q4t/server/prompt_registry.h"
 
 namespace q4t::server {
+struct RealtimeMcpContext;
 struct RealtimePromptSelection {
   io::Json settings;
   std::optional<PromptSnapshot> prompt;
+  std::shared_ptr<const RealtimeMcpContext> mcp = {};
 };
 using RealtimePromptResolver =
     std::function<ObjectReply(const io::Json&, size_t, PromptSnapshot*)>;

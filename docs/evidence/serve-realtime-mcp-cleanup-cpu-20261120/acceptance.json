@@ -1,0 +1,20 @@
+{
+  "status": "PASS_REALTIME_MCP_CLEANUP_AND_AUXILIARY_SESSION_FAILURE_CPU",
+  "distinct_cases": 10,
+  "case_executions": 12,
+  "initial_passed": 8,
+  "initial_failed": 2,
+  "affected_recheck_passed": 2,
+  "unchanged_passes_reused": 8,
+  "cpu_seconds": 0.7291211485862732,
+  "builds_zero_warnings": 3,
+  "intermediate_identical_relink_after_edit_assertion_no_cpu": true,
+  "binary_sha256": "f153a7c314abcb208517382b2b62e07b16274a1960b6b244bda88a3442e56c7d",
+  "runtime_connected": false,
+  "gpu_actions": 0,
+  "llm_requests": 0,
+  "default_revision": 396,
+  "default_unchanged": true,
+  "service_state": "STOPPED",
+  "all_master_tasks_active": true
+}

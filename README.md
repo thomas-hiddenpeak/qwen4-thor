@@ -410,6 +410,14 @@ Responses现已原生执行MCP工具：列表与过滤、默认逐调用审批�
 私网agent与未知结果不重放已通过[业务和发行验收](docs/evidence/serve-mcp-delivery-20261116/README.md)。
 数据源失能只影响相应工具，不重启健康模型，也不让核心readiness失败。
 
+Realtime会话也已接通MCP：`session.tools`和`response.tools`使用真实
+目录、参数增量、审批及结果事件；完成历史在恢复后重新认证。审批
+等待中断和结果未知都不会自动重放，工具完成后的回答由客户端显式
+提交`response.create`。私有凭据属于当前连接，不进入公开会话/历史。
+[协议和实际恢复说明](docs/SERVE_REALTIME_MCP_2026-11-20.md)与
+[rev416可回退交付](docs/evidence/serve-realtime-mcp-binding-delivery-20261120/README.md)
+保留原模型质量失败，不能据此宣称完整OpenAI兼容或整模型质量通过。
+
 请求使用`tools:[{"type":"mcp","server_label":"project",
 "server_url":"https://mcp.example.com/mcp"}]`，根据返回的
 `mcp_approval_request`发送绑定其ID的`mcp_approval_response`继续。
@@ -908,15 +916,15 @@ print(reply.choices[0].message.content)
 时长和转录输出预算，不静默截断。准备阶段与主回答共用deadline、
 RPM/TPM和取消；`usage.q4t_audio_preparation`报告真实准备量，
 多choice只计一次。此输入路径识别语音内容，非语言声学理解仍待补齐。
-语音输出及assistant音频历史已交付；当前rev396接通同一
+语音输出及assistant音频历史已交付；当前rev416保留同一
 Realtime conversation的真实音频输入、手动commit、VAD自动回答/
 打断、混合输入及空闲。原生WebSocket/TLS、PCM/G.711、音色/语速、
 播放取回/截断、函数工具与持久Prompt沿用同一核心与客户配额；取消
 按实际文字/音频用量结算。已完成[真实恢复与可回退交付](docs/evidence/serve-realtime-duplex-delivery-20261120/README.md)。
-当前包与回退包已[重新签发初始凭据](docs/evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)，
-保持相同引擎、客户配额和用量，旧包保留作历史证据。
-原错误答案与模型质量FAIL独立保留，默认采样未改。MCP、追踪及Live
-继续按总计划实现，正常播放听感仍待用户安排。
+前序rev396已[重新签发初始凭据](docs/evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)，
+rev416继承更正后的初始化凭据，客户配额和用量保持，旧包保留作历史证据。
+原错误答案与模型质量FAIL独立保留，默认采样未改。Realtime MCP也已
+交付；追踪、Live及剩余兼容继续按总计划实现，正常播放听感仍待用户安排。
 
 真实时间戳由独立Qwen3-ForcedAligner-0.6B提供，通过
 `--aligner-model-dir DIR`启用；默认30秒、4096上下文token、512词、

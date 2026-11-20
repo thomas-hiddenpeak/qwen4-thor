@@ -1,0 +1,73 @@
+{
+  "files": {
+    "archive_profiles_02.py": {
+      "bytes": 5216,
+      "sha256": "600dc4f2260cfde9adbf1a17d159fbd1f2a2cf97a450977bf6034cbc488d5e2c"
+    },
+    "qualify_profiles_02.py": {
+      "bytes": 8754,
+      "sha256": "13dfaa278cc1b6cd1658afca0ece90c5bf721bcac1f59beb5c17a48d155a49ce"
+    },
+    "build_native_helpers_01.py": {
+      "bytes": 2642,
+      "sha256": "80cfaf4e9ddc7507be50b0120aec72e4ad1097b7841a8a633c937d814377c52a"
+    },
+    "qualified-profiles-02/environment-composition.json": {
+      "bytes": 3611,
+      "sha256": "196584af1aa1f99ee96da9a07be2f2d83f33092fd8c6bd2e7c90b96f27e659ef"
+    },
+    "qualified-profiles-02/acceptance.json": {
+      "bytes": 904,
+      "sha256": "2bde9c4a586c05c2959734f6a43b0b9680bc7e2a8156682667df82737dd1fb5f"
+    },
+    "qualified-profiles-02/primary-capabilities.json": {
+      "bytes": 60183,
+      "sha256": "3250fa9d8a032f40bfac42e1d6163f6ab530e20b6733975aec9eb8d9ac62a6d3"
+    },
+    "qualified-profiles-02/source-composition.json": {
+      "bytes": 12616,
+      "sha256": "ad91ca7e8c8b9f430f6caa0cd7925f48f40bc5989312602f4142933c383fe70a"
+    },
+    "qualified-profiles-02/light-config.json": {
+      "bytes": 20970,
+      "sha256": "b53605aeff3d2919983a53fdc48e0d218d99c2a47949ad760269cd372ae13149"
+    },
+    "qualified-profiles-02/plan.json": {
+      "bytes": 925742,
+      "sha256": "cca96c06b6324a0a85ee714c7e3f7576d00282eaddf106e2c7c56bd1c3d4a958"
+    },
+    "qualified-profiles-02/primary-config.json": {
+      "bytes": 20965,
+      "sha256": "4a20307ac646173a93c1e8f1019add0e07b4c1210ac55e89d7143d31a6744b75"
+    },
+    "qualified-profiles-02/light-capabilities.json": {
+      "bytes": 60184,
+      "sha256": "92942438e931fdc223a88fa84fc0caf6a34259f37e0d058b46e6dc1ba745cbc7"
+    },
+    "qualified-profiles-02/qualified/light.json": {
+      "bytes": 8340821,
+      "sha256": "67f572f5cf309d963f57f138d2441577f0d1d023be6626261862482114a09513"
+    },
+    "qualified-profiles-02/qualified/registry.json": {
+      "bytes": 54228,
+      "sha256": "5a44b4a3df68c45cb34f0b0758b51aeb4acd556a98d549db3992a106cb159fa3"
+    },
+    "qualified-profiles-02/qualified/primary.json": {
+      "bytes": 5631868,
+      "sha256": "9fed0a0aff7a9287cce971e539f3c015ba814e04a1e40bdb9a185ed2ad69cc91"
+    },
+    "native-build-01/plan.json": {
+      "bytes": 9716,
+      "sha256": "71d27140874880d7affd28b41007205173949fd1826e221b6177bb5383b748a3"
+    },
+    "native-build-01/result.json": {
+      "bytes": 572,
+      "sha256": "ed24582b2394a5cd4c997bf3c784cd1363a7431b3d6d0cb97a920533ab2bc7de"
+    },
+    "native-build-01/build.log": {
+      "bytes": 1256,
+      "sha256": "59cd5bda6159401f2ef8af32ed4f558e2f30bdd2c056f88c78aad47baabaf473"
+    }
+  },
+  "archive_sha256": "ff7edecb22232dd8123a7420c42f40a7bcd13b05eff657de1fb08d12625deeac"
+}

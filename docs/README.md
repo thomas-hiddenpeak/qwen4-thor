@@ -1,5 +1,11 @@
 # docs/ — 开发记录文档体系
 
+- [Realtime MCP参数流与执行交接CPU](evidence/serve-realtime-mcp-output-cpu-20261120/README.md)
+
+- [Realtime MCP异步目录与历史隔离CPU](evidence/serve-realtime-mcp-imports-cpu-20261120/README.md)
+
+- [双向音频及凭据更正PR #55合入主线](evidence/serve-pr55-merged-20261120/README.md)
+
 - [双向输入预留与上下文冻结CPU](evidence/serve-realtime-duplex-capture-cpu-20261120/README.md)
 - [双向输入生命周期组合CPU](evidence/serve-realtime-duplex-owner-cpu-20261120/README.md)
 
@@ -703,3 +709,6 @@
 - [双向音频原生恢复](evidence/serve-realtime-duplex-managed-recovery-20261120/README.md)：入口/控制器/整包，错误回答独立保留。
 - [双向音频rev386交付](evidence/serve-realtime-duplex-delivery-20261120/README.md)：STOPPED升级、回退、预算保持与可逆归档。
 - [初始凭据重新签发与rev396交付](evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)：公共证据更正、候选/回退凭据替换和来源复用。
+- [Realtime MCP实现计划](SERVE_REALTIME_MCP_2026-11-20.md)：会话定义、目录、审批执行及恢复交付。
+- [Realtime MCP容量修复交付](evidence/serve-realtime-mcp-binding-delivery-20261120/README.md)：确切主轻资格、rev416整根回退与状态保持。
+- [Realtime MCP实际目录CPU](evidence/serve-realtime-mcp-catalog-cpu-20261120/README.md)：原生网络导入、私有授权与公开SDK投影。

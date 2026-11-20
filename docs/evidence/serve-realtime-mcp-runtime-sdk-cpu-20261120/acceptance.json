@@ -1,0 +1,20 @@
+{
+  "status": "PASS_MCP_RUNTIME_AND_SDK_VERIFIER_CPU",
+  "build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 152.37639655312523,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "a84fda9519bdc19d20a725e9c259a74bea89c8c6e70d133876b3e2007c1ebf7b",
+    "free_bytes_after": 615096320
+  },
+  "verifier_cases": 10,
+  "cpu_seconds": 0.2641311497427523,
+  "runtime_connected": true,
+  "gpu_actions": 0,
+  "actual_sdk_business_pending": true,
+  "master_goal_active": true
+}

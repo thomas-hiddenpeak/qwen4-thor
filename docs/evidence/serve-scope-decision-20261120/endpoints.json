@@ -1,0 +1,3141 @@
+{
+  "date": "2026-11-20",
+  "source": "docs/evidence/serve-goal-reaudit-20261108/openai-endpoints.json",
+  "source_sha256": "b9cbb69fea0f70cffe83fd1ec7b50d784966f206c776f804d4c5c21b66f021d9",
+  "source_date": "2026-11-08",
+  "path_count": 245,
+  "counts": {
+    "required_inference_or_application_service": 157,
+    "excluded_platform_management_by_user": 88
+  },
+  "not_a_support_claim": true,
+  "endpoints": [
+    {
+      "path": "/agents",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/automations",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/automations/{automation_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/automations/{automation_id}/invocations",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/automations/{automation_id}/invocations/{invocation_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/automations/{automation_id}/pause",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/automations/{automation_id}/resume",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/environments",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/environments/templates",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/environments/templates/{environment_template_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/environments/{environment_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/environments/{environment_id}/files",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts/{artifact_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts/{artifact_id}/content",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/events",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/items",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/items",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/traces",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns/{turn_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns/{turn_id}/items",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/agents/{agent_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/assistants",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/assistants/{assistant_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/audio/speech",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/audio/transcriptions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/audio/translations",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/audio/voice_consents",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/audio/voice_consents/{consent_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/audio/voices",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/audio/voices/{voice_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/batches",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/batches/{batch_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/batches/{batch_id}/cancel",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/chat/completions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/chat/completions/{completion_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/chat/completions/{completion_id}/messages",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/chatkit/sessions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/chatkit/sessions/{session_id}/cancel",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/chatkit/threads",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/chatkit/threads/{thread_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/chatkit/threads/{thread_id}/items",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/completions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A06"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A06"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/containers",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/containers/{container_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/containers/{container_id}/files",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/containers/{container_id}/files/{file_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/containers/{container_id}/files/{file_id}/content",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/content_provenance_checks",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/conversations",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/conversations/{conversation_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/conversations/{conversation_id}/items",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/conversations/{conversation_id}/items/{item_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/decisions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/embeddings",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/evals",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/evals/{eval_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/evals/{eval_id}/runs",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/cancel",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/files",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/files/{file_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/files/{file_id}/content",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/alpha/graders/run",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/alpha/graders/validate",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/jobs",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/cancel",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/checkpoints",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/events",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/pause",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/fine_tuning/jobs/{fine_tuning_job_id}/resume",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "微调训练、训练评分和检查点管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/images/edits",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/images/generations",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/images/variations",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/live/sessions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/live/sessions/{session_id}/accept",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/live/sessions/{session_id}/content",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/live/sessions/{session_id}/fork",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/live/sessions/{session_id}/hangup",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/live/sessions/{session_id}/refer",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/live/sessions/{session_id}/reject",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/models",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A06"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A06"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/models/{model}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A06"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A06"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/moderations",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/admin_api_keys",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/admin_api_keys/{key_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/audit_logs",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/certificates",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/certificates/activate",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/certificates/deactivate",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/certificates/{certificate_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/costs",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/data_retention",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/external_keys",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/external_keys/{external_key_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/external_keys/{external_key_id}/validate",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/external_storage",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/external_storage/{external_storage_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/external_storage/{external_storage_id}/validate",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/groups",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/groups/{group_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/groups/{group_id}/roles",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/groups/{group_id}/roles/{role_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/groups/{group_id}/users",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/groups/{group_id}/users/{user_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/invites",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/invites/{invite_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/api_keys",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/api_keys/{api_key_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/archive",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/certificates",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/certificates/activate",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/certificates/deactivate",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/data_retention",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/groups",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/groups/{group_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/hosted_tool_permissions",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/model_permissions",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/rate_limits",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/rate_limits/{rate_limit_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/service_accounts",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/service_accounts/{service_account_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/service_accounts/{service_account_id}/api_keys",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/service_tier_settings",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/spend_alerts",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/spend_alerts/{alert_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/spend_limit",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/users",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/projects/{project_id}/users/{user_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/roles",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/roles/{role_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/spend_alerts",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/spend_alerts/{alert_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/spend_limit",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/audio_speeches",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/audio_transcriptions",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/code_interpreter_sessions",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/completions",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/decisions",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/embeddings",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/file_search_calls",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/images",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/moderations",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/vector_stores",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/usage/web_search_calls",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/users",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/users/{user_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/users/{user_id}/roles",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/users/{user_id}/roles/{role_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/workload_identity_providers",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/workload_identity_providers/{workload_identity_provider_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/workload_identity_providers/{workload_identity_provider_id}/federation_rules",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/organization/workload_identity_providers/{workload_identity_provider_id}/federation_rules/{workload_identity_federation_rule_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云组织、项目、账单、管理身份和组织级统计 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/projects/{project_id}/groups/{group_id}/roles",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云项目角色与成员管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/projects/{project_id}/groups/{group_id}/roles/{role_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云项目角色与成员管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/projects/{project_id}/roles",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云项目角色与成员管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/projects/{project_id}/roles/{role_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云项目角色与成员管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/projects/{project_id}/users/{user_id}/roles",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云项目角色与成员管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/projects/{project_id}/users/{user_id}/roles/{role_id}",
+      "scope": "excluded_platform_management_by_user",
+      "tasks": [
+        "G00"
+      ],
+      "reason": "云项目角色与成员管理 API",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/realtime/calls",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/realtime/calls/{call_id}/accept",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/realtime/calls/{call_id}/hangup",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/realtime/calls/{call_id}/refer",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/realtime/calls/{call_id}/reject",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/realtime/client_secrets",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/realtime/sessions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/realtime/transcription_sessions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/realtime/translations/client_secrets",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/compact",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/compact?beta=true",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/input_tokens",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/input_tokens?beta=true",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/{response_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/{response_id}/cancel",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/{response_id}/cancel?beta=true",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/{response_id}/input_items",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/{response_id}/input_items?beta=true",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses/{response_id}?beta=true",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/responses?beta=true",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/safety/alerts/{id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/safety/cases/{id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/skills",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/skills/{skill_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/skills/{skill_id}/content",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/skills/{skill_id}/versions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/skills/{skill_id}/versions/{version}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/skills/{skill_id}/versions/{version}/content",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/runs",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/{thread_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/{thread_id}/messages",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/{thread_id}/messages/{message_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/{thread_id}/runs",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/cancel",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/steps",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/steps/{step_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A08",
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/uploads",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/uploads/{upload_id}/cancel",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/uploads/{upload_id}/complete",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/uploads/{upload_id}/parts",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A09"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A09"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vaults",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vaults/{vault_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vaults/{vault_id}/credentials",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vaults/{vault_id}/credentials/{credential_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}/files",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/files",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}/content",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/search",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A11"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A11"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/videos",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/videos/characters",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/videos/characters/{character_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/videos/edits",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/videos/extensions",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/videos/{video_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/videos/{video_id}/content",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/videos/{video_id}/remix",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A10"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "A10"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/webhook_endpoints",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/webhook_endpoints/{webhook_endpoint_id}",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/webhook_endpoints/{webhook_endpoint_id}/rotate_secret",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/webhook_endpoints/{webhook_endpoint_id}/test",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    },
+    {
+      "path": "/webhook_event_types",
+      "scope": "required_inference_or_application_service",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "reason": "推理/应用服务保留；范围决定不代表已实现或已验收",
+      "prior_tasks": [
+        "G00"
+      ],
+      "implementation_acceptance": "not_assessed_by_scope_decision"
+    }
+  ]
+}

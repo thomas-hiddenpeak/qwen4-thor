@@ -1,0 +1,17 @@
+{
+  "status": "PASS_REALTIME_MCP_ASYNC_CALL_OWNER_CPU",
+  "distinct_cases": 20,
+  "case_executions": 20,
+  "cpu_seconds": 0.3143642689101398,
+  "native_http_compositions": 3,
+  "builds_zero_warnings": 2,
+  "original_18_case_build_not_executed": true,
+  "binary_sha256": "c28f8d8e568c56d3fe915cc9806217ab2f13ba549b886610abc0a5ffe7c7fd11",
+  "runtime_connected": false,
+  "gpu_actions": 0,
+  "llm_requests": 0,
+  "default_revision": 396,
+  "default_unchanged": true,
+  "service_state": "STOPPED",
+  "master_goal_active": true
+}

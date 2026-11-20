@@ -1,0 +1,21 @@
+{
+  "status": "PASS_TARGETED_CPU_ONLY",
+  "distinct_tests": 9,
+  "executions": 11,
+  "original_failures_preserved": [
+    "native pre-fix reproduction",
+    "diagnostic06 invalid CPU fixture quota/handoff combination",
+    "managed configured version 0-model failure"
+  ],
+  "passed": {
+    "native_lifecycle": 7,
+    "namespace_bootstrap": 1,
+    "real_sealed_prepare": 1
+  },
+  "guardian_sha256": "822fb3ca8f1859d90eeec8517c7c346de4d6e1a5c9f21916887e57768135f8a2",
+  "engine_unchanged": true,
+  "default_unchanged": true,
+  "new_gpu_actions": 0,
+  "artifact_sha256": "ee81e89ae091bb4c78e0fe9a00797b4fcb8e4bb3cbf96460ca276459c849378b",
+  "preliminary_diagnostic_executions": 5
+}

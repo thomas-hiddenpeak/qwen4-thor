@@ -1,0 +1,41 @@
+{
+  "status": "ACCEPT_NATIVE_REALTIME_MCP_SERVICE_COMPOSITION",
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-mcp-20261120/service-package-03/bundle",
+    "manifest_sha256": "17fc1464a6bb19068521e8b6515d581a5a9d2efbeebfe177077b29f9f64127bc"
+  },
+  "automatic_fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-mcp-20261120/retained-03/bundle",
+    "manifest_sha256": "25ebd972797652541284794ba4cb1fb3e0ad558f86dbed82f7008a48b41c560c"
+  },
+  "counts": {
+    "starts": 8,
+    "chats": 22,
+    "websocket_sessions": 9,
+    "probes": 2
+  },
+  "actual_reads": 5,
+  "authenticated_history": 2,
+  "service_seconds": 617.1786876423284,
+  "nvml_queries": 580,
+  "nvml_all_ok": true,
+  "cleanup_complete": true,
+  "model_quality_status": "FAIL",
+  "original_profile_model_quality_failures_preserved": true,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "default_unchanged": true,
+  "publication_pending": true,
+  "guardian_repair": {
+    "source_delta": [
+      "src/service/guardian_main.cpp"
+    ],
+    "cpu_evidence": "docs/evidence/serve-mcp-guardian-subtree-cpu-20261120/README.md",
+    "fixed_candidate_and_retained_roots": true,
+    "configured_version_uses_fixed_root": true,
+    "prior_TLS_root_retains_original_identity": true
+  },
+  "original_failures_preserved": true,
+  "archive_sha256": "1f1c4430252d622d0fdcf97c8d2e69097e844d70f3a298fb99015042ea6fa3b3",
+  "scope": "Explicit configured MCP and exact default-policy packages, bounded real model recovery. Original model answers retained; no full-model-quality acceptance."
+}

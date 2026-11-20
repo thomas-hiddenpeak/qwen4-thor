@@ -7,6 +7,41 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #56的CI容量回归及旧版封包清单已修复，
+[24项针对性CPU](evidence/serve-realtime-mcp-ci-capacity-20261120/README.md)、
+[主轻真实MCP短验](evidence/serve-realtime-mcp-binding-http-20261120/README.md)及
+[11项资格边界CPU](evidence/serve-realtime-mcp-binding-gate-20261120/README.md)通过。
+含首次驱动漏参失败共3启动/5实际生成/159.322秒，150次NVML正常；
+修复后两条资料回答通过，原质量FAIL保持。
+[rev416已包含修复并可回退交付](evidence/serve-realtime-mcp-binding-delivery-20261120/README.md)，
+19条管理命令通过，350.683秒，客户状态及恢复预算保持、服务STOPPED。
+继续PR #56最终CI与main；未变恢复行为复用原身份证据，没有重跑。
+[审计清单遗漏已修复](evidence/serve-realtime-mcp-inventory-review-20261120/README.md)：
+39个来源及3条Realtime描述经代码/证据复核，20项反例检查通过；0GPU。
+
+[G00范围决定已落实](evidence/serve-scope-decision-20261120/README.md)：
+完整推理与应用服务保留，平台管理API按用户决定排除；157条冻结
+路径归入实现任务、88条排除，分类不代表兼容通过。总目标继续active。
+
+Realtime MCP的定义、目录、参数流、审批/调用、历史隔离、公开会话
+及主轻资格已完成；逐组原始CPU/GPU记录见[阶段计划](SERVE_REALTIME_MCP_2026-11-20.md)。
+[实际恢复五组合通过](evidence/serve-realtime-mcp-managed-recovery-20261120/README.md)：
+8启动/22工作（含8自检）/9连接/2探测，含原零模型失败共617.179秒，
+580次NVML正常且清理完成。实际读取项目资料5次、完成历史认证2次；
+TLS恢复保留健康核心，控制器恢复等满配额窗口，整包回退保留能力。
+确切默认策略被拒绝的MCP访问不影响普通问答；没有自动重放。
+
+协议/恢复通过，**生成质量仍为FAIL**：配置回退后的一个标题漏掉
+“架构笔记”四字，原答案保留，主轻原错答/拒答也保持失败记录。
+[Guardian准备子树修复](evidence/serve-mcp-guardian-subtree-cpu-20261120/README.md)
+已有7项原生CPU及实际封包准备、命名空间检查；死亡/停止仍完整清理。
+新默认候选`17fc1464`及保留包`25ebd972`均实测，资格registry为
+`5a44b4a3df68c45cb34f0b0758b51aeb4acd556a98d549db3992a106cb159fa3`。
+原TLS证据保留原身份，仅复用未变行为。
+[rev406已可回退交付](evidence/serve-realtime-mcp-delivery-20261120/README.md)：
+19条管理命令通过，实际整根回退/再前进、客户状态及预算保持，服务
+STOPPED。继续main收尾，然后tracing、Live和其他全部任务。
+
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，
 运行时未改。代理误将内部网关初始凭据纳入公共恢复证据，当前公共
@@ -18,7 +53,8 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 [rev386双向音频已可回退交付](evidence/serve-realtime-duplex-delivery-20261120/README.md)，
 服务保持STOPPED。19条原生CLI完成升级、登记、整根回退和再前进，
 新增GPU启动0，客户配额、用量、profile历史与恢复预算保持。主线
-已有PR #54的rev376；本阶段等待最终PR检查与合入，随后继续MCP、
+已包含[PR #55的完整双向音频与凭据更正](evidence/serve-pr55-merged-20261120/README.md)，
+合并提交`abf4dab67`；两条最终检查通过。MCP后续交付见上文；继续
 追踪、Live及全部master任务。
 
 同一conversation已接通实际音频输入/ASR、手动commit、VAD自动回答
@@ -42,24 +78,25 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 | 项目 | 当前值 |
 |---|---|
-| 发布 | rev396；服务包`a53986ce688a6ae3a9c62695cb01518854ad1ad1f2a39998af9fe366303364e9` |
-| 引擎 | `ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580` |
-| 协议 | `f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11` |
-| 引擎发布记录 | `cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3` |
+| 发布 | rev416；服务包`4ca02574aca05e98081f3db5fde79ca40ef5549f051c03af2684139df84a5568` |
+| 引擎 | `40359a27d7c59bf892a85aa239de3db81b9670305170849d6c9118088f99ec95` |
+| 协议 | `98fa9452fce551cfaed7c344869fa599780d43cd0122e2f4013e0a59f0934001` |
+| 引擎发布记录 | `644044a61796e8ec1153f3e50d983d01ce8a182cdd285a1e29ee6e9518437e7d` |
 | 原生入口 | `4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826` |
 | 状态 | STOPPED；本阶段没有启动生产服务 |
 | 客户限制 | alpha RPM30/TPM6000/输出3457；beta RPM1/TPM6000/输出256；保留动态值与已消费预算 |
-| 主轻资格 | `3c1e823a6c5c847da6a072c3d593a5c164f6cee1985492020f8b099faeb737ab` |
-| 保留控制包 | `d98f1fa0fa7dbfc9566846ad8760db77a1a78e0d3b174fcd88808b8a37f8521f`；同一已修复引擎和双向能力，只切换已验旧控制器 |
+| 主轻资格 | `82be1c49a5cc21cbebadb1a7fffbc3ef60f58467937d9ae6de258392ee59a615` |
+| 保留控制包 | `2fc04b4767f7b3cc7750442af253c80147c323fe1fcdd9b2d953f75713db94d3`；同一容量修复引擎和Guardian，只切换已验旧控制器 |
 
 发行完成19条原生管理命令，包括实际升级、STOPPED整根回退和再前进。
-候选到保留包的运行故障回退已验；反向登记和STOPPED回退已验，
-未另做反向运行故障注入。rev396仅重新签发初始凭据与封包身份，
+容量修复补了确切新引擎主轻业务；运行故障回退复用原包中未变恢复
+行为，原记录保留原身份。反向登记和STOPPED回退已验，未另做反向
+运行故障注入。前序rev396仅重新签发初始凭据与封包身份，
 运行时代码、资产和配置合同保持，明确复用原真实业务证据，新增GPU0。
 旧rev386/rev376和历史发布原件保留；旧披露初始值不得手动复用。
 
 当前Realtime已交付独立转写会话、语义VAD、文字/函数工具对话、
-持久Prompt、原生语音输出及同会话双向输入。MCP/追踪、Live及其余
+持久Prompt、原生语音输出、同会话双向输入及MCP。追踪、Live及其余
 矩阵仍是实现任务，不能宣称完整Realtime或完整OpenAI兼容完成。
 原答案/模型质量、数值边界、声纹与驱动失败保持各自记录。
 
@@ -69,14 +106,14 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 | 范围 | 当前状态 |
 |---|---|
-| G00 | 平台管理API范围仍待用户决定，不阻塞已确定的实现 |
+| G00 | 用户范围决定已落实；完整推理/应用服务必做，平台管理API不纳入 |
 | A03—A06/A08 | 采样、工具控制、结构化输出、Completions/Models与持久会话已交付 |
-| A01/A02/A07/A09—A12 | 已有大量实际业务交付；剩余字段/媒体/内建后端、Realtime MCP/追踪/Live及完整客户端组合继续 |
+| A01/A02/A07/A09—A12 | 已有大量实际业务交付；剩余字段/媒体/内建后端、Realtime追踪/Live及完整客户端组合继续 |
 | N01—N07 | 原生接入、TLS/CORS/Key/配额、HTTP、运维和发行已交付；nginx/systemd为可选集成 |
 | R01—R06/R10 | 辅助故障隔离、自监护和已验恢复已交付；新增能力的恢复组合继续 |
 | R07—R09 | 冷准入、物理DRAM边界及压力/宿主组合仍需完成；未获维护交接不干预其他服务 |
 | Q01 | 项目资料查询真实闭环已交付，新增后端/客户端/故障组合继续 |
-| Q02/Q03 | rev396已可回退交付，待本阶段main合入；后续实现、最终矩阵和长稳交接继续 |
+| Q02/Q03 | rev416已可回退交付，MCP的main收尾继续；最终矩阵和长稳交接继续 |
 
 辅助依赖失能不能连带停止健康核心业务；监控恢复不自动重启模型，
 真正设备故障仍保留保护。真实云账户验证依赖部署方配置，不能把
@@ -85,8 +122,8 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 工作区、证据与保留候选
 
-有效工作分支仍为`codex/serve-resilience-cd`，包含尚未进入main的双向
-输入开发，因此继续保留。仅在独有提交、未提交内容、活动PR和证据
+有效工作分支仍为`codex/serve-resilience-cd`，包含尚未进入main的Realtime
+MCP开发，因此继续保留。仅在独有提交、未提交内容、活动PR和证据
 路径均核对后整理重复分支，不删除其他任务内容或已发表回退包。
 
 为当前构建恢复了591个host对象，未覆盖后续更新的runtime库；旧
@@ -96,6 +133,11 @@ CPU夹具和退役构建库的可逆归档、SHA和恢复脚本保留在
 磁盘余量不足时另将67个退役CPU测试程序精确压缩归档，释放
 188854224字节；当前host测试、runtime和发行包保持，原路径及
 逐字节恢复方法见该目录的`retired-host-tests-03/plan.json`与`restore.py`。
+本MCP阶段另对14个本阶段退役CPU程序可逆压缩，释放335235523字节；
+当前host/runtime/default未改。原路径、SHA和实际恢复核对记录见
+`.q4t-work/serve-realtime-mcp-20261120/retired-host-tests-01/`与`-02/`。
+其后`-03/`和`-04/`另可逆归档22个退役CPU程序，释放523849368字节，
+原SHA、恢复脚本及实际恢复核对保留；当前host/runtime和发行包未改。
 
 另将14个2026-10-31及以前历史包的同字节head副本转为只读共享inode，
 保留全部原路径和SHA，释放4362113024字节。原权限/时间、独立恢复

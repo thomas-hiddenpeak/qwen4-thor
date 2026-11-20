@@ -3,6 +3,7 @@
 #include "object_protocol.h"
 #include "q4t/io/base64.h"
 #include "q4t/server/asr_response.h"
+#include "q4t/server/realtime_mcp_context.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/realtime_audio_export.h"
@@ -29,6 +30,8 @@ bool CaptureBounded(const RealtimeInputCommit& notice) {
       RealtimeTranscriptionSettingsJson(notice.settings.processing, false);
   std::vector<const Json*> values{&notice.context.items, &processing};
   if (notice.response) {
+    if (notice.response->mcp)
+      total += notice.response->mcp->retained_bytes;
     values.push_back(&notice.response->settings);
     if (notice.response->prompt) {
       values.push_back(&notice.response->prompt->reference);

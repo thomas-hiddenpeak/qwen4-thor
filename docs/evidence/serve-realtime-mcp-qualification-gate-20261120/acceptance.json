@@ -1,0 +1,11 @@
+{
+  "status": "PASS_SHARED_MCP_CAPABILITY_GATE_CPU",
+  "tests": 11,
+  "seconds": 0.6148714413866401,
+  "original_qualification_failure_preserved": true,
+  "original_registry_issued": false,
+  "new_qualification_issued": false,
+  "gpu_actions": 0,
+  "runtime_changed": false,
+  "default_unchanged": true
+}

@@ -73,7 +73,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 24)
+        self.assertEqual(value['version'], 25)
         self.assertNotIn('bin/q4t-device-control', value['files'])
         self.assertIn('source/tools/serve_recovery/cold_admission.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
@@ -115,7 +115,7 @@ class BundleTests(unittest.TestCase):
             self.assertFalse((self.directory/'package').exists())
         self.save(self.build, original)
         receipt = self.prepare()
-        self.assertEqual(bundle.verify(receipt['package'], receipt['manifest_sha256'])['version'], 24)
+        self.assertEqual(bundle.verify(receipt['package'], receipt['manifest_sha256'])['version'], 25)
 
     def test_explicit_deployment_repository_keeps_actual_builder_sources(self):
         deployment = self.directory/'deployment';deployment.mkdir()
@@ -149,6 +149,28 @@ class BundleTests(unittest.TestCase):
         with mock.patch.object(service, 'acquire_lease') as lease, self.assertRaises(ValueError):
             service.launch(receipt['package'], receipt['manifest_sha256'], self.directory/'state')
         lease.assert_not_called()
+
+    def test_mcp_verifier_is_self_contained_and_v24_remains_valid(self):
+        receipt = self.prepare()
+        package = Path(receipt['package'])
+        command = [sys.executable, '-I', '-B', '-c',
+            'import sys; sys.path.insert(0, sys.argv[1]); '
+            'from tools.serve_recovery import profile_mcp_evidence; '
+            'assert "tools.serve_responses.mcp_business_peer" not in sys.modules; '
+            'assert "tools.serve_realtime.conversation_acceptance" not in sys.modules',
+            str(package/'source')]
+        result = subprocess.run(command, capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        manifest = bundle.engine.read(package/'manifest.json')
+        for name in set(bundle.SOURCES) - set(bundle.V24_SOURCES):
+            manifest['files'].pop('source/'+name)
+        manifest.update(version=24, profile='q4t-service-recovery-v24')
+        (package/'manifest.json').chmod(0o600)
+        self.save(package/'manifest.json', manifest)
+        digest = bundle.engine.sha(package/'manifest.json')
+        launch = package/'bin/q4t'; launch.chmod(0o700)
+        launch.write_bytes(bundle.launcher(digest, manifest['python']['path']))
+        self.assertEqual(bundle.verify(package, digest)['version'], 24)
 
     def test_dynamic_profile_keeps_recovery_gate_when_initial_quotas_are_off(self):
         value = json.loads(self.backend.read_bytes())
@@ -233,7 +255,7 @@ class BundleTests(unittest.TestCase):
                ('profile_speech_evidence', 'profile_speech_reuse', 'profile_speech_source'))})
 
     def test_v24_duplex_validator_closure_is_sealed(self):
-        added = set(bundle.SOURCES) - set(bundle.V23_SOURCES)
+        added = set(bundle.V24_SOURCES) - set(bundle.V23_SOURCES)
         self.assertEqual(added, {
             *('tools/serve_realtime/'+n+'.py' for n in
               ('duplex_checks', 'duplex_quality_checks', 'duplex_task_checks')),
@@ -242,6 +264,23 @@ class BundleTests(unittest.TestCase):
                'profile_duplex_source', 'profile_duplex_followup',
                'profile_duplex_followup_source', 'profile_duplex_composed',
                'profile_duplex_composed_reuse', 'profile_duplex_composed_source'))})
+        receipt = self.prepare()
+        directory = Path(receipt['package'])
+        original = bundle.engine.read(directory/'manifest.json')
+        for name in added:
+            changed = dict(original, files=dict(original['files']))
+            del changed['files']['source/'+name]
+            bundle.engine.save(directory/'manifest.json', changed)
+            with self.assertRaisesRegex(ValueError, 'source inventory'):
+                bundle.verify(directory, bundle.engine.sha(directory/'manifest.json'))
+
+    def test_v25_mcp_validator_closure_is_sealed(self):
+        added = set(bundle.SOURCES) - set(bundle.V24_SOURCES)
+        self.assertEqual(added, {
+            'tools/serve_realtime/mcp_checks.py',
+            *('tools/serve_recovery/'+n+'.py' for n in
+              ('profile_mcp_reuse', 'profile_mcp_codec',
+               'profile_mcp_evidence', 'profile_mcp_source'))})
         receipt = self.prepare()
         directory = Path(receipt['package'])
         original = bundle.engine.read(directory/'manifest.json')
@@ -350,7 +389,7 @@ print('sealed speech imports passed')
         receipt = self.prepare()
         package = Path(receipt['package'])
         value = bundle.verify(package, receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 24)
+        self.assertEqual(value['version'], 25)
         self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
         # Re-signing a v10 label cannot grant capabilities its format lacks.
         value.update(version=10, profile='q4t-service-recovery-v10')
@@ -376,7 +415,7 @@ print('sealed speech imports passed')
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 24)
+        self.assertEqual(value['version'], 25)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],

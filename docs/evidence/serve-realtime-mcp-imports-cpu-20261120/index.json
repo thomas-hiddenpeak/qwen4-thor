@@ -1,0 +1,85 @@
+{
+  "files": {
+    "imports-plan.json": {
+      "bytes": 2789,
+      "sha256": "c391c706747ffc8d1e81fdb004309ec6bcf9ddd98f6ef0c72c155769a1882bc5"
+    },
+    "imports-required.txt": {
+      "bytes": 1281,
+      "sha256": "95f0226a6816767e972531fdcc5034bf18af76a19d09e6886be0e64bd89c375a"
+    },
+    "build_imports_01.py": {
+      "bytes": 2925,
+      "sha256": "494a5318a1c315b63a78ee7329f68055e670421cf28792a6e50ee60a1f8a6bc7"
+    },
+    "run_imports_cpu_01.py": {
+      "bytes": 1599,
+      "sha256": "d99e7a7561c681dff13cb94f9f9f21537224a582f8c748e4492634e03831602f"
+    },
+    "archive_imports_01.py": {
+      "bytes": 6478,
+      "sha256": "1664563d1575e9f5e963fa050bbc377db1b9ac05ffc973c9751bbc495395ea88"
+    },
+    "imports-build-01/plan.json": {
+      "bytes": 178661,
+      "sha256": "ddf3ce400bdaed1f6e106bd193ca26fba061e7a363cf69129639e3783b286460"
+    },
+    "imports-build-01/result.json": {
+      "bytes": 293,
+      "sha256": "9b9982c9989e5d92ccb0ce5069850891e42a3ac174763d68e2a4533abec54da5"
+    },
+    "imports-build-01/build.log": {
+      "bytes": 4983,
+      "sha256": "aa03dc948aebb7b02339b6fae937c849d041795cba66e91057e6cb45b8b437d5"
+    },
+    "imports-cpu-01/result.json": {
+      "bytes": 1529,
+      "sha256": "6a564c608fd3704d2d8d73b77c331eeb99cbff1b949554c9e54c58d28ecf1dda"
+    },
+    "imports-cpu-01/stdout.txt": {
+      "bytes": 1462,
+      "sha256": "7397562e5a39b35ce5ee7dddda118ef8747e59f14744a0d2c7fe8d15537fbeaf"
+    },
+    "imports-cpu-01/stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/include/q4t/server/realtime_mcp_imports.h": {
+      "bytes": 3598,
+      "sha256": "63105d40cd25eb266fa6a08f3cb988d6807214edffd038d072096803767f75f0"
+    },
+    "source/src/server/realtime_mcp_imports.cpp": {
+      "bytes": 15084,
+      "sha256": "ea9fab0f2c8f3a989cac4717aaae9d0d9e85248cb8930336cddd78b1f08e8cce"
+    },
+    "source/tests/server_realtime_mcp_imports_test.cpp": {
+      "bytes": 19887,
+      "sha256": "b135c0e48c9d3b7d8676cb3768064e6afd5c0264cfa515ab9a9f93708add3a84"
+    },
+    "source/include/q4t/server/realtime_conversation.h": {
+      "bytes": 9223,
+      "sha256": "0f1d9d3b318b15266c3d6001df2ccf7d5b6d8e2bec379dbe1261ccc2c90f13a6"
+    },
+    "source/src/server/realtime_conversation.cpp": {
+      "bytes": 31284,
+      "sha256": "42ef6e42a7621a7368f28094fc5887f51a38451448f9a25f87daa75fdec832cb"
+    },
+    "source/tests/server_realtime_conversation_test.cpp": {
+      "bytes": 56038,
+      "sha256": "8dc7c54a42f414089df08a6c413900333d19cd0268509b531bbd2cf2d8e78ba5"
+    },
+    "source/cmake/HostTestSources.cmake": {
+      "bytes": 39886,
+      "sha256": "fabc1bab8bf3feba042d2415fc5af69cf5c568546c9495cf9f6d267cbbb2bb1a"
+    },
+    "source/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 31635,
+      "sha256": "d9bf2de32ed3d5a4c2aebe179552ff43e676aaba58fd675804329a29963f858b"
+    },
+    "source/CMakeLists.txt": {
+      "bytes": 63112,
+      "sha256": "889bd6e01be1d5c63627b0f438c056becd109fd8af955f7825768e11cc5ec73a"
+    }
+  },
+  "archive_sha256": "2ad928beade647a820ac651c966511bbfde06e189c250be9b78d6ba0fd73f13b"
+}

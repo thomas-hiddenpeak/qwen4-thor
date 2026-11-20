@@ -1,0 +1,113 @@
+{
+  "files": {
+    "archive_qualification_gate_01.py": {
+      "bytes": 4173,
+      "sha256": "189e07618595117c66f45407d071b4576b1e74194a692300a960ecfd9c01d7ab"
+    },
+    "qualify_profiles_01.py": {
+      "bytes": 8786,
+      "sha256": "a07e5743f2683898b1af0694871d9eba4d28d0b979951c3d4f88d07cc9ce18ff"
+    },
+    "qualification-cpu-03/plan.json": {
+      "bytes": 1921,
+      "sha256": "273fb78cacb5501c49e0a402003276323178bfe4d6004a0ac822495d30dd88af"
+    },
+    "qualification-cpu-03/result.json": {
+      "bytes": 1510,
+      "sha256": "cb98970dc00bf79cc0fe31abe48e8624e503c35c27e42eda97bf1aac8f0709fc"
+    },
+    "qualification-cpu-03/stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "qualification-cpu-03/stderr.txt": {
+      "bytes": 110,
+      "sha256": "5e765c14cb31806ec19aa555dca730c7006c90817928b2b8c24f5e110aab020a"
+    },
+    "original-source/tools/serve_recovery/test_profile_mcp.py": {
+      "bytes": 7796,
+      "sha256": "8eadb011333e6a9c4e77c33ad74741cff2e0c2d7842bf03347dfd98ac8c4c940"
+    },
+    "original-source/tools/serve_recovery/profile_evidence.py": {
+      "bytes": 95471,
+      "sha256": "a62872e57a13f8a909e531238703d729dc0faf6e2db6d44e88148010fb178aef"
+    },
+    "original-source/tools/serve_recovery/profile_mcp_reuse.py": {
+      "bytes": 2960,
+      "sha256": "e02ed2d77a3acf3212d49411ce5850011a9700d03db40ac17296033bb8b525bc"
+    },
+    "source/tools/serve_recovery/profile_mcp_codec.py": {
+      "bytes": 1881,
+      "sha256": "7e15a4c46f22822e1b22f85d49756f4f486e42b701c2b7ff90ec7a84674ea722"
+    },
+    "source/tools/serve_recovery/profile_mcp_evidence.py": {
+      "bytes": 7737,
+      "sha256": "c6b8b14a3e7e20e665c6abc338b7891eb16fb4074b8672732473d636623ea6ac"
+    },
+    "source/tools/serve_recovery/profile_mcp_reuse.py": {
+      "bytes": 3015,
+      "sha256": "b2524bc67e3648807e41dfdbf5bb4ae7b7a7108356d5a65089ff1dd057220b6b"
+    },
+    "source/tools/serve_recovery/profile_mcp_source.py": {
+      "bytes": 16054,
+      "sha256": "e6f23db24b926736573f2e48b040be3b5c1dc9f7d216278ccafc3648a45e675e"
+    },
+    "source/tools/serve_recovery/profile_evidence.py": {
+      "bytes": 95780,
+      "sha256": "aa1b49297f3cbbc8bcbfaf081c1744dfea332d17aa134aebfb26d97b6c4b25f2"
+    },
+    "source/tools/serve_recovery/profile_record.py": {
+      "bytes": 4868,
+      "sha256": "8b616c9fb9a5028451ac44e0a58f41f17a84464bd271d26ce94af49a44255537"
+    },
+    "source/tools/serve_recovery/bundle.py": {
+      "bytes": 25667,
+      "sha256": "42815c26778da1bbcc4d27218058b37227945eeb5e863360ef906012deb70633"
+    },
+    "source/tools/serve_recovery/test_profile_mcp.py": {
+      "bytes": 9316,
+      "sha256": "2f2fa69e31ee86666d1a141d02c2735fb62d77085a2b9f4b7039189411693196"
+    },
+    "source/tools/serve_recovery/test_native_bundle.py": {
+      "bytes": 43212,
+      "sha256": "a47b63820cd4537c26564d3ab9085d7f6cbf5d07534260e9e8d0c84dd7442d6a"
+    },
+    "source/tools/serve_realtime/mcp_checks.py": {
+      "bytes": 16438,
+      "sha256": "860ecdaa05b20c852a3dbe8e49da5e096904ea961dbfb70c3c4a0a186ea6ef75"
+    },
+    "source/tools/serve_realtime/test_mcp_checks.py": {
+      "bytes": 10488,
+      "sha256": "d58dd60415463f0bb6395536284f987bc26137ebdbb846cf54e2ed95eccbfabf"
+    },
+    "source/tools/serve_realtime/test_mcp_finish.py": {
+      "bytes": 8235,
+      "sha256": "4ace45f8fa6232df072b152b2e68f0fe70482443aae341d622040432d833a62e"
+    },
+    "qualified-profiles-01/plan.json": {
+      "bytes": 925742,
+      "sha256": "a09a431294b93d92c225106e34c6aa2331cd26eda8721c0d19c46ce0a385ebcb"
+    },
+    "qualified-profiles-01/failure.json": {
+      "bytes": 313,
+      "sha256": "81d6a8ce9561e40970635af2883c0d085a9d008d473e4a1c1a2acb8af402bcc1"
+    },
+    "qualified-profiles-01/environment-composition.json": {
+      "bytes": 3611,
+      "sha256": "196584af1aa1f99ee96da9a07be2f2d83f33092fd8c6bd2e7c90b96f27e659ef"
+    }
+  },
+  "archive_sha256": "3f8b5d5a9bebe5a60323e32a04ac4281eb960282417672ad4372ca440292f199",
+  "private_unaccepted_partial_records": {
+    "light.json": {
+      "bytes": 8340821,
+      "sha256": "67f572f5cf309d963f57f138d2441577f0d1d023be6626261862482114a09513",
+      "accepted": false
+    },
+    "primary.json": {
+      "bytes": 5631868,
+      "sha256": "9fed0a0aff7a9287cce971e539f3c015ba814e04a1e40bdb9a185ed2ad69cc91",
+      "accepted": false
+    }
+  }
+}
