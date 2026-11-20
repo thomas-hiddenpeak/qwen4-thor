@@ -1,9 +1,11 @@
 #include "q4t/server/live_frontend.h"
+#include "q4t/server/live_client_context.h"
 
 #include <algorithm>
 
 #include "../src/server/object_protocol.h"
 #include "q4t/io/base64.h"
+#include "q4t/server/http_response.h"
 #include "q4t/test.h"
 
 namespace {
@@ -35,6 +37,7 @@ struct Fixture {
   RequestRegistry requests;
   std::atomic<size_t> asr{0}, models{0}, model_released{0}, asr_released{0};
   std::atomic<bool> hold_model{false}, hold_asr{false};
+  std::atomic<bool> delegate_next{false};
   std::atomic<bool> model_alive{false}, asr_alive{false};
   std::atomic<bool> overlap{false}, early_release{false};
   bool fail_asr = false, fail_model = false, fail_completion = false;
@@ -127,6 +130,25 @@ struct Fixture {
         result.reply = Error(409, control->Reason(), "Model cancelled");
       } else if (fail_model) {
         result.reply = Error(503, "fixture_model_failure", "Model failed");
+      } else if (delegate_next.exchange(false)) {
+        ResponseDelta call;
+        call.kind = ResponseDelta::Kind::kTool;
+        call.call = {0, detail::NewRequestId("call_"),
+                     std::string(kLiveDelegateTool),
+                     R"({"task":"Read project resources"})"};
+        result.reply = delta(call);
+        result.message = Object(
+            {{"role", String("assistant")},
+             {"content", String("")},
+             {"tool_calls",
+              Array({Object(
+                  {{"id", String(call.call.id)},
+                   {"type", String("function")},
+                   {"function", Object({{"name", String(call.call.name)},
+                                        {"arguments",
+                                         String(call.call.arguments)}})}})})}});
+        result.usage->output_text = 7;
+        result.usage->output_audio = 0;
       } else {
         ResponseDelta text;
         text.text = "answer";
@@ -171,9 +193,9 @@ struct Fixture {
       return ObjectReply{};
     };
   }
-  ObjectReply Start(const Json& initial = Array()) {
+  ObjectReply Start(const Json& initial = Array(), Json settings = Settings()) {
     frontend = std::make_unique<LiveFrontend>("live_cpu", native, 30);
-    return frontend->Prepare(Settings(), initial,
+    return frontend->Prepare(std::move(settings), initial,
                              {RealtimeAudioEncoding::kPcm16, rate});
   }
   bool Wait(const std::function<bool()>& predicate) {
@@ -199,6 +221,62 @@ struct Fixture {
     return std::count_if(events.begin(), events.end(), [&](const auto& event) {
       return event.GetString("type") == type;
     });
+  }
+};
+struct ContextFixture {
+  Fixture f;
+  std::unique_ptr<LiveClientContext> context;
+  Clock::time_point now = Clock::now();
+  size_t tokens = 1, count_calls = 0;
+  bool fail_emit = false, fail_count = false;
+  bool Start(Json settings = LiveClientFrontendSettings(Settings())) {
+    const auto completed = f.native.completed;
+    f.native.completed = [this, completed](const auto& job, const auto& result,
+                                           const auto& output) {
+      auto reply = completed(job, result, output);
+      return reply.ok() ? context->Complete(job, result, output) : reply;
+    };
+    Q4T_CHECK(f.Start(Array(), settings).ok());
+    LiveClientContextCallbacks callbacks;
+    callbacks.count_text = [this](auto, size_t* out, ChatPlanError* error) {
+      ++count_calls;
+      if (fail_count) {
+        *error = {"fixture_tokenizer", "content", 503};
+        return q4t::Status::Fail("Actual CPU counter unavailable");
+      }
+      *out = tokens;
+      return q4t::Status{};
+    };
+    callbacks.emit = [this](Json event) {
+      if (fail_emit) return Error(503, "fixture_sink", "Output not accepted");
+      return f.native.emit(std::move(event));
+    };
+    callbacks.now = [this] { return now; };
+    context = std::make_unique<LiveClientContext>(
+        "live_cpu", *f.frontend, std::move(settings), std::move(callbacks));
+    return context->Valid();
+  }
+  ObjectReply Append(std::string kind, std::string text,
+                     std::string delegation = {},
+                     std::string id = "context_cpu") {
+    return context->Append(
+        Object({{"type", String("session." + kind + ".append")},
+                {"content", String(std::move(text))},
+                {"delegation_id",
+                 delegation.empty() ? Json() : String(std::move(delegation))},
+                {"event_id", String(std::move(id))}}));
+  }
+  bool Delegate() {
+    const auto completed = f.completions;
+    f.delegate_next = true;
+    Q4T_CHECK(f.frontend->Respond().ok());
+    return f.Wait([&] { return f.completions == completed + 1; });
+  }
+  std::string LastDelegation() const {
+    for (auto it = f.events.rbegin(); it != f.events.rend(); ++it)
+      if (it->GetString("type") == "session.delegation.created")
+        return it->Find("delegation")->GetString("id");
+    return {};
   }
 };
 }  // namespace
@@ -388,5 +466,264 @@ Q4T_TEST(live_frontend_preparation_failure_never_executes_or_publishes) {
     Q4T_CHECK(f.model_released == 0 && f.asr_released == 0);
     Q4T_CHECK(!f.frontend->Respond().ok() && !f.frontend->Tick().ok());
   }
+  return true;
+}
+
+Q4T_TEST(live_client_context_instructions_persist_and_ids_require_real_owner) {
+  ContextFixture c;
+  Q4T_CHECK(c.Start());
+  const auto original = c.context->Settings().GetString("instructions");
+  Q4T_CHECK(c.Append("instructions", "Remember the project name.").ok());
+  Q4T_CHECK(c.f.Wait([&] { return c.f.completions == 1; }));
+  Q4T_CHECK(c.f.snapshots[0].settings.GetString("instructions") ==
+            original + "\n\nRemember the project name.");
+  Q4T_CHECK(c.f.snapshots[0].response.GetString("tool_choice") == "none");
+  Q4T_CHECK(c.f.Count("session.instructions.appended") == 1);
+  const auto history = c.f.frontend->HistoryItems();
+  Q4T_CHECK(!c.Append("thinking", "Unowned context", "foreign").ok());
+  Q4T_CHECK(c.f.frontend->HistoryItems() == history && c.count_calls == 1);
+  Q4T_CHECK(c.Delegate() && c.context->Known(c.LastDelegation()));
+  Q4T_CHECK(
+      c.Append("thinking", "Confirmed application context", c.LastDelegation())
+          .ok());
+  Q4T_CHECK(c.context->Settings().GetString("instructions") ==
+            original + "\n\nRemember the project name.");
+  return true;
+}
+
+Q4T_TEST(
+    live_client_context_uses_token_counter_and_bounded_persistent_storage) {
+  ContextFixture c;
+  Q4T_CHECK(c.Start());
+  c.tokens = 500;
+  Q4T_CHECK(c.Append("thinking", std::string(8192, 'x')).ok());
+  const auto history = c.f.frontend->HistoryItems();
+  const auto events = c.f.events.size();
+  c.tokens = 501;
+  Q4T_CHECK(!c.Append("thinking", "short bytes are not token counts").ok());
+  c.fail_count = true;
+  Q4T_CHECK(!c.Append("instructions", "No fake count on failure").ok());
+  Q4T_CHECK(c.f.frontend->HistoryItems() == history &&
+            c.f.events.size() == events);
+  Q4T_CHECK(c.f.models == 0 && c.count_calls == 3);
+  ContextFixture bounded;
+  auto settings = LiveClientFrontendSettings(Settings());
+  Set(&settings, "instructions",
+      String(std::string(LiveClientContext::kInstructionsBytes - 3, 'x')));
+  Q4T_CHECK(bounded.Start(settings));
+  Q4T_CHECK(!bounded.Append("instructions", "beyond").ok());
+  Q4T_CHECK(bounded.context->Settings().GetString("instructions") ==
+            settings.GetString("instructions"));
+  Q4T_CHECK(bounded.f.frontend->QueuedTurns() == 0 && bounded.f.models == 0);
+  return true;
+}
+
+Q4T_TEST(live_client_context_thinking_is_silent_commentary_runs_real_worker) {
+  ContextFixture c;
+  Q4T_CHECK(c.Start() && c.Append("thinking", "Lookup is in progress").ok());
+  Q4T_CHECK(c.f.frontend->QueuedTurns() == 0 && c.f.models == 0);
+  Q4T_CHECK(c.Append("commentary", "The project uses native serving").ok());
+  Q4T_CHECK(c.f.frontend->QueuedTurns() == 1);
+  Q4T_CHECK(c.f.Wait([&] { return c.f.completions == 1; }));
+  Q4T_CHECK(c.f.models == 1 && c.f.results[0].reply.ok());
+  Q4T_CHECK(c.f.snapshots[0].snapshot.items.array.size() == 2);
+  Q4T_CHECK(c.f.snapshots[0].response.GetString("tool_choice") == "none");
+  Q4T_CHECK(c.f.Count("session.thinking.appended") == 1);
+  Q4T_CHECK(c.f.Count("session.commentary.appended") == 1);
+  Q4T_CHECK(c.f.Count("session.output_transcript.delta") == 1);
+  for (const auto& event : c.f.events)
+    if (event.GetString("type").ends_with(".appended")) {
+      Q4T_CHECK(event.GetString("client_event_id") == "context_cpu");
+      Q4T_CHECK(event.Find("start_ms")->number == event.Find("end_ms")->number);
+    }
+  return true;
+}
+
+Q4T_TEST(
+    live_client_delegation_metadata_and_native_receipt_never_claim_task_done) {
+  ContextFixture c;
+  Q4T_CHECK(c.Start() && c.context->AcknowledgementDelay(1000).ok());
+  Q4T_CHECK(c.Delegate());
+  Q4T_CHECK(c.context->Delegations() == 1 &&
+            c.context->Known(c.LastDelegation()));
+  Q4T_CHECK(c.f.Count("session.delegation.created") == 1);
+  const auto& event = c.f.events.back();
+  Q4T_CHECK(event.GetString("type") == "session.delegation.created");
+  Q4T_CHECK(event.Find("delegation")->object.size() == 3);
+  Q4T_CHECK(!event.Has("task") && !event.Has("arguments"));
+  Q4T_CHECK(c.f.Count("session.output_audio.delta") == 0);
+  Q4T_CHECK(c.context->Tick().ok() && c.f.frontend->QueuedTurns() == 0);
+  Q4T_CHECK(
+      !c.context->Complete(c.f.snapshots[0], c.f.results[0], c.f.outputs[0])
+           .ok());
+  Q4T_CHECK(c.context->Delegations() == 1);
+  Q4T_CHECK(c.f.frontend->Respond().ok() &&
+            c.f.Wait([&] { return c.f.completions == 2; }));
+  bool found = false;
+  for (const auto& item : c.f.snapshots[1].snapshot.items.array) {
+    if (item.GetString("type") != "function_call_output") continue;
+    Json receipt;
+    Q4T_CHECK(q4t::io::ParseJson(item.GetString("output"), &receipt));
+    Q4T_CHECK(receipt.GetString("status") == "created");
+    Q4T_CHECK(receipt.Find("task_completed")->IsBool() &&
+              !receipt.GetBool("task_completed"));
+    Q4T_CHECK(receipt.GetString("delegation_id") == c.LastDelegation());
+    found = true;
+  }
+  Q4T_CHECK(found && c.f.models == 2);
+  return true;
+}
+
+Q4T_TEST(live_client_delegation_rejects_partial_foreign_and_mismatched_calls) {
+  ContextFixture c;
+  Q4T_CHECK(c.Start() && c.Delegate());
+  const auto events = c.f.events.size();
+  for (int mode = 0; mode < 8; ++mode) {
+    auto job = c.f.snapshots[0];
+    auto result = c.f.results[0];
+    auto output = c.f.outputs[0];
+    const auto id = "call_negative_" + std::to_string(mode);
+    auto& call = Field(result.message, "tool_calls").array[0];
+    Set(&call, "id", String(id));
+    Set(&output.array[0], "call_id", String(id));
+    if (mode == 0) job.snapshot.owner = "foreign";
+    if (mode == 1)
+      Set(&Field(call, "function"), "name", String("foreign_tool"));
+    if (mode == 2) output = Array();
+    if (mode == 3) Set(&output.array[0], "arguments", String("{}"));
+    if (mode == 4) Set(&output.array[0], "status", String("incomplete"));
+    if (mode == 5) Set(&job.response, "tool_choice", String("none"));
+    if (mode == 6 || mode == 7) {
+      auto args = OutputJson(
+          Object({{"task", String(mode == 6 ? " " : std::string(4097, 'x'))}}));
+      Set(&Field(call, "function"), "arguments", String(args));
+      Set(&output.array[0], "arguments", String(args));
+    }
+    Q4T_CHECK(!c.context->Complete(job, result, output).ok());
+  }
+  for (auto state : {RealtimeResponseEnd::State::kIncomplete,
+                     RealtimeResponseEnd::State::kCancelled,
+                     RealtimeResponseEnd::State::kFailed}) {
+    auto result = c.f.results[0];
+    result.state = state;
+    Q4T_CHECK(
+        c.context->Complete(c.f.snapshots[0], result, c.f.outputs[0]).ok());
+  }
+  Q4T_CHECK(c.context->Delegations() == 1 && c.f.events.size() == events);
+  return true;
+}
+
+Q4T_TEST(live_client_ack_deadlines_freeze_and_any_context_cancels_all) {
+  ContextFixture c;
+  Q4T_CHECK(c.Start() && c.context->AcknowledgementDelay(1000).ok());
+  Q4T_CHECK(c.Delegate());
+  const auto first = c.LastDelegation();
+  Q4T_CHECK(c.context->AcknowledgementDelay(2000).ok() && c.Delegate());
+  const auto second = c.LastDelegation();
+  Q4T_CHECK(first != second && c.context->Delegations() == 2);
+  Q4T_CHECK(c.context->AcknowledgementDelay(0).ok());
+  c.now += 900ms;
+  Q4T_CHECK(c.context->Tick().ok() && c.f.frontend->QueuedTurns() == 0);
+  c.now += 100ms;
+  Q4T_CHECK(c.context->Tick().ok() && c.f.frontend->QueuedTurns() == 1);
+  Q4T_CHECK(c.Append("thinking", "Both tasks are in progress", second).ok());
+  Q4T_CHECK(c.f.frontend->QueuedTurns() == 0);
+  c.now += 3s;
+  Q4T_CHECK(c.context->Tick().ok() && c.f.frontend->QueuedTurns() == 0);
+  Q4T_CHECK(c.context->Known(first) && c.context->Known(second) &&
+            c.f.models == 2);
+  return true;
+}
+
+Q4T_TEST(live_client_delegation_accepts_multiple_real_context_updates) {
+  ContextFixture c;
+  Q4T_CHECK(c.Start() && c.Delegate());
+  const auto id = c.LastDelegation();
+  Q4T_CHECK(c.Append("thinking", "First progress update", id).ok());
+  Q4T_CHECK(c.Append("commentary", "First confirmed result", id).ok());
+  Q4T_CHECK(c.Append("commentary", "Second confirmed result", id).ok());
+  Q4T_CHECK(c.f.Wait([&] { return c.f.completions == 3; }));
+  Q4T_CHECK(c.context->Known(id) && c.context->Delegations() == 1);
+  Q4T_CHECK(c.f.Count("session.commentary.appended") == 2);
+  Q4T_CHECK(c.f.Count("session.output_transcript.delta") == 2);
+  Q4T_CHECK(c.f.snapshots[1].response.GetString("tool_choice") == "none");
+  Q4T_CHECK(c.f.snapshots[2].response.GetString("tool_choice") == "none");
+  return true;
+}
+
+Q4T_TEST(
+    live_client_context_unknown_publication_never_replays_committed_state) {
+  ContextFixture c;
+  Q4T_CHECK(c.Start());
+  c.fail_emit = true;
+  const auto reply = c.Append("thinking", "Only one history mutation");
+  Q4T_CHECK(!reply.ok() && reply.commit_unknown);
+  Q4T_CHECK(c.f.frontend->HistoryItems() == 1 && c.f.events.empty());
+  c.fail_emit = false;
+  Q4T_CHECK(!c.Append("thinking", "Only one history mutation").ok());
+  Q4T_CHECK(!c.context->Tick().ok());
+  Q4T_CHECK(c.f.frontend->HistoryItems() == 1 && c.f.models == 0);
+  ContextFixture full;
+  Q4T_CHECK(full.Start() && full.Delegate());
+  while (full.f.frontend->HistoryItems() < RealtimeConversation::kMaximumItems)
+    Q4T_CHECK(full.f.frontend->Create(User("retained")).ok());
+  auto result = full.f.results[0];
+  auto output = full.f.outputs[0];
+  Set(&Field(result.message, "tool_calls").array[0], "id", String("call_full"));
+  Set(&output.array[0], "call_id", String("call_full"));
+  const auto events = full.f.events.size();
+  Q4T_CHECK(!full.context->Complete(full.f.snapshots[0], result, output).ok());
+  Q4T_CHECK(full.f.events.size() == events && !full.context->Tick().ok());
+  return true;
+}
+
+Q4T_TEST(
+    live_client_context_close_cancels_pending_ack_without_invented_completion) {
+  ContextFixture c;
+  Q4T_CHECK(c.Start() && c.Delegate() && c.context->Tick().ok());
+  Q4T_CHECK(c.f.frontend->QueuedTurns() == 1);
+  c.context->Close();
+  Q4T_CHECK(c.f.frontend->QueuedTurns() == 0);
+  Q4T_CHECK(c.f.frontend->Close().ok() &&
+            c.f.Wait([&] { return c.f.frontend->Drained(); }));
+  Q4T_CHECK(!c.Append("commentary", "late", c.LastDelegation()).ok());
+  Q4T_CHECK(
+      c.context->Complete(c.f.snapshots[0], c.f.results[0], c.f.outputs[0])
+          .ok());
+  Q4T_CHECK(c.context->Tick().ok() && c.f.models == 1);
+  Q4T_CHECK(c.f.Count("session.output_audio.delta") == 0);
+  Q4T_CHECK(c.f.Count("session.closed") == 0);
+  return true;
+}
+
+Q4T_TEST(live_frontend_response_options_and_context_queue_are_atomic) {
+  Fixture f;
+  Q4T_CHECK(f.Start().ok());
+  std::vector<std::string> ids;
+  for (size_t i = 0; i < LiveFrontend::kQueuedTurns; ++i) {
+    auto reply = f.frontend->Respond();
+    Q4T_CHECK(reply.ok());
+    ids.push_back(reply.value.GetString("response_id"));
+  }
+  Q4T_CHECK(!f.frontend->Settings(Settings("not committed"), true).ok());
+  Q4T_CHECK(f.frontend->CancelResponse(ids[0]));
+  Q4T_CHECK(!f.frontend->CancelResponse(ids[0]));
+  const auto items = f.frontend->HistoryItems();
+  Q4T_CHECK(
+      !f.frontend
+           ->Create(User("rolled back"), true, {}, String("invalid response"))
+           .ok());
+  Q4T_CHECK(f.frontend->HistoryItems() == items);
+  Q4T_CHECK(f.frontend
+                ->Settings(Settings("committed"), true, "settings_cpu",
+                           Object({{"tool_choice", String("none")}}))
+                .ok());
+  Q4T_CHECK(
+      f.Wait([&] { return f.completions == LiveFrontend::kQueuedTurns; }));
+  Q4T_CHECK(f.snapshots.back().settings.GetString("instructions") ==
+            "committed");
+  Q4T_CHECK(f.snapshots.back().response.GetString("tool_choice") == "none");
+  for (size_t i = 0; i + 1 < f.snapshots.size(); ++i)
+    Q4T_CHECK(f.snapshots[i].settings.GetString("instructions") == "old");
   return true;
 }

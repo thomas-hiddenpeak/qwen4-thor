@@ -611,6 +611,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/live_audio_output.cpp
   src/server/live_frontend_work.cpp
   src/server/live_frontend.cpp
+  src/server/live_client_context.cpp
   src/server/realtime_mcp_definitions.cpp
   src/server/realtime_mcp_catalog.cpp
   src/server/realtime_mcp_imports.cpp
@@ -1060,6 +1061,7 @@ if(Q4T_BUILD_TESTS)
   src/server/live_audio_output.cpp
   src/server/live_frontend_work.cpp
   src/server/live_frontend.cpp
+  src/server/live_client_context.cpp
   src/server/realtime_mcp_definitions.cpp
   src/server/realtime_mcp_catalog.cpp
   src/server/realtime_mcp_imports.cpp

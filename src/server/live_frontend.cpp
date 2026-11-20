@@ -138,8 +138,12 @@ ObjectReply LiveFrontend::Capture(Turn* turn, const Json& settings) {
   const auto status = history_.Capture(nullptr, &turn->job.snapshot, true);
   return status ? Charge(turn) : Invalid(status.message());
 }
-ObjectReply LiveFrontend::Settings(Json settings) {
+ObjectReply LiveFrontend::Settings(Json settings, bool respond,
+                                   std::string client_event, Json response) {
   if (!Active()) return Unavailable();
+  if (respond && queue_.size() >= kQueuedTurns) return Capacity();
+  if (!response.IsNull() && !response.IsObject())
+    return Invalid("Expected native response settings");
   RealtimeSpeechOptions speech;
   ChatPlanError error;
   if (!PlanRealtimeSpeech(settings, Object(), &speech, &error) ||
@@ -147,14 +151,20 @@ ObjectReply LiveFrontend::Settings(Json settings) {
       speech.format != speech_.format ||
       speech.chat.speech.speed != speech_.chat.speech.speed)
     return Invalid("Active frontend voice and format are immutable");
-  Turn preview;
-  auto reply = Capture(&preview, settings);
+  Turn turn;
+  turn.client_event = std::move(client_event);
+  auto reply = Capture(&turn, settings);
+  if (!Accepted(reply)) return reply;
+  if (!response.IsNull()) turn.job.response = std::move(response);
+  reply = Charge(&turn);
   if (!Accepted(reply)) return reply;
   // A settings validation cannot ask the real planner to execute unresolved
   // context. Input/settings validation is independent of pending turn work.
-  preview.job.snapshot = {};
-  preview.job.snapshot.items = Array();
-  reply = native_.prepare(preview.job);
+  auto preview = turn.job;
+  preview.snapshot = {};
+  preview.snapshot.items = Array();
+  reply = native_.prepare(preview);
+  if (Accepted(reply) && respond) reply = Enqueue(std::move(turn));
   if (Accepted(reply)) settings_ = std::move(settings);
   return reply;
 }
@@ -163,20 +173,42 @@ ObjectReply LiveFrontend::Enqueue(Turn turn) {
       turn.charge > kQueuedTurns * kSnapshotBytes - queued_bytes_)
     return Capacity();
   const size_t charge = turn.charge;
+  ObjectReply reply;
+  reply.value = Object({{"response_id", String(turn.job.response_id)}});
   queue_.push_back(std::move(turn));
   queued_bytes_ += charge;
-  return {};
+  return reply;
 }
-ObjectReply LiveFrontend::Respond(std::string client_event) {
+ObjectReply LiveFrontend::Respond(std::string client_event, Json response) {
   if (!Active()) return Unavailable();
   if (queue_.size() >= kQueuedTurns) return Capacity();
+  if (!response.IsNull() && !response.IsObject())
+    return Invalid("Expected native response settings");
   Turn turn;
   turn.client_event = std::move(client_event);
   auto reply = Capture(&turn, settings_);
+  if (Accepted(reply) && !response.IsNull()) {
+    turn.job.response = std::move(response);
+    reply = Charge(&turn);
+  }
   return Accepted(reply) ? Enqueue(std::move(turn)) : reply;
 }
+bool LiveFrontend::CancelResponse(std::string_view response_id) {
+  if (response_id.empty()) return false;
+  if (work_ && active_->job.response_id == response_id) {
+    work_->Cancel();
+    return true;
+  }
+  for (auto it = queue_.begin(); it != queue_.end(); ++it) {
+    if (it->job.response_id != response_id) continue;
+    queued_bytes_ -= it->charge;
+    queue_.erase(it);
+    return true;
+  }
+  return false;
+}
 ObjectReply LiveFrontend::Create(Json item, bool respond,
-                                 std::string client_event) {
+                                 std::string client_event, Json response) {
   if (!Active()) return Unavailable();
   if (respond && queue_.size() >= kQueuedTurns) return Capacity();
   if (client_event.size() > 256) return Invalid("Client event ID too long");
@@ -187,7 +219,7 @@ ObjectReply LiveFrontend::Create(Json item, bool respond,
   auto status = history_.Create(item, generated, {}, &ticket);
   if (!status) return Invalid(status.message());
   if (!respond) return {};
-  auto reply = Respond(std::move(client_event));
+  auto reply = Respond(std::move(client_event), std::move(response));
   if (!Accepted(reply)) {
     status = history_.Erase(ticket);
     if (!status) {

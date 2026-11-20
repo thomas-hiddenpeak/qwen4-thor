@@ -1,0 +1,37 @@
+{
+  "status": "PASS_NATIVE_LIVE_CLIENT_CONTEXT_CPU_PREPARATION",
+  "returncode": 0,
+  "build_seconds": 35.79500928288326,
+  "cpu_seconds": 0.11370915919542313,
+  "tests": 13,
+  "commands": [
+    {
+      "command": 0,
+      "returncode": 0
+    },
+    {
+      "command": 1,
+      "returncode": 0
+    }
+  ],
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-20261121/context-plan-01/required-01.txt"
+  ],
+  "binary_sha256": "e606b0a02e872c18e692ab518acde6fa4f0cccc8532fff9d2fe51a7d93368166",
+  "sources_unchanged": true,
+  "protected_unchanged": true,
+  "gpu_actions": 0,
+  "distinct_tests": 13,
+  "new_tests": 10,
+  "direct_existing_tests": 3,
+  "inventory_reviewed_sources": 6,
+  "inventory_mutation_checks": 22,
+  "real_model_business_accepted": false,
+  "new_gpu_starts": 0,
+  "default_revision": 426,
+  "default_changed": false,
+  "master_active": true,
+  "archive_sha256": "667deb7eee312b0753d4050ac03188f5c4f1f6e4e81c8131ccceba952aeae31a"
+}

@@ -16216,7 +16216,7 @@
     }
   },
   "native_live_20261121": {
-    "state": "native_frontend_scheduler_cpu_pass_context_delegation_in_progress",
+    "state": "client_context_delegation_cpu_pass_real_binding_in_progress",
     "plan": "SERVE_LIVE_2026-11-21.md",
     "master_active": true,
     "default_revision": 426,
@@ -16226,7 +16226,7 @@
     "type_nodes": 941,
     "live_sdk_vectors": 808,
     "realtime_regression_vectors": 476,
-    "distinct_native_cpu_tests": 93,
+    "distinct_native_cpu_tests": 103,
     "original_build_failure_preserved": true,
     "subtasks": [
       {
@@ -16241,7 +16241,7 @@
       },
       {
         "id": "L03",
-        "state": "in_progress",
+        "state": "client_context_delegation_cpu_verified_server_backends_and_fixtures_in_progress",
         "title": "委派与上下文"
       },
       {
@@ -16281,6 +16281,9 @@
     "frontend_repair_tests": 4,
     "frontend_evidence": "evidence/serve-live-frontend-cpu-20261121/README.md",
     "scheduler_tests": 10,
-    "scheduler_evidence": "evidence/serve-live-scheduler-cpu-20261121/README.md"
+    "scheduler_evidence": "evidence/serve-live-scheduler-cpu-20261121/README.md",
+    "context_tests": 13,
+    "context_new_tests": 10,
+    "context_evidence": "evidence/serve-live-context-cpu-20261121/README.md"
   }
 }

@@ -2358,8 +2358,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "ec515a247e0247efff998a15a313f67e39871c08d6237ae5266133807e88bdf8",
-    "cmake/ChatProtocolIdentity.cmake": "0bd3ef9bd4f68c37c7ff6a390c01c7d9ce20e4c206bab711840c7353c19f23a5",
+    "CMakeLists.txt": "8d66bb2ed16366789079a039103f693509facaffbf05d5eb3aaa17495322829d",
+    "cmake/ChatProtocolIdentity.cmake": "a035455b3e142939a2d06bf23cb988dff9244b7c8a2fbd641021c86eb40ac9bc",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3472,8 +3472,10 @@
     "include/q4t/server/live_frontend_work.h": "dce523c4b969a43db09489a287d145019803849054e028c008788e5884a98ca0",
     "src/server/live_audio_output.cpp": "534f8fb669d57a01c3aa1b3d051699ee673430a161ec53228310653028ed0a01",
     "src/server/live_frontend_work.cpp": "687184fbd311cf01cec2215d5b4fb8348d89ea019f10bb56683c93621b0895b4",
-    "include/q4t/server/live_frontend.h": "361564910bfcf1790079f8a162dace6ad64ffa7fe240f25bd84edf05287b7cb7",
-    "src/server/live_frontend.cpp": "8bd16b209b0061c66e3bdb1a9092da7eec7fd0500d5088d7a82108bc18ecfdaf"
+    "include/q4t/server/live_frontend.h": "11d02427c04e386d4915b6e3c407e4938382d7c70cc6b77078bacef0080570f9",
+    "src/server/live_frontend.cpp": "7518303eea9ec4efdbab4a493b637225397a6b787fa61fcc70e92af7f10815ba",
+    "include/q4t/server/live_client_context.h": "288eb2626e404495826789cfded9fff961ad368fdbd3388276d6d83d2e515840",
+    "src/server/live_client_context.cpp": "c4652e148cc5ec4b23714e887fd6c4b35ca68b3d8b4c5a6f45cc1dd2c49c76c7"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -9598,6 +9600,19 @@
     ],
     "evidence": "docs/evidence/serve-live-scheduler-cpu-20261121/README.md",
     "status": "CPU verified native scheduler with controlled model callbacks; actual route/model binding pending",
+    "no_route_accepted": true
+  },
+  "live_context_review_20261121": {
+    "sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/live_client_context.h",
+      "include/q4t/server/live_frontend.h",
+      "src/server/live_client_context.cpp",
+      "src/server/live_frontend.cpp"
+    ],
+    "evidence": "docs/evidence/serve-live-context-cpu-20261121/README.md",
+    "status": "CPU verified client context/delegation with actual native frontend workers and controlled model/tokenizer callbacks; actual model/route binding pending",
     "no_route_accepted": true
   }
 }

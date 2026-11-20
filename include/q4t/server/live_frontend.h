@@ -34,10 +34,13 @@ class LiveFrontend {
   // No generation or output during preparation. A failed instance is discarded.
   ObjectReply Prepare(io::Json settings, const io::Json& initial,
                       RealtimeAudioFormat format);
-  ObjectReply Settings(io::Json settings);
+  ObjectReply Settings(io::Json settings, bool respond = false,
+                       std::string client_event = {}, io::Json response = {});
   ObjectReply Create(io::Json item, bool respond = false,
-                     std::string client_event = {});
-  ObjectReply Respond(std::string client_event = {});
+                     std::string client_event = {}, io::Json response = {});
+  ObjectReply Respond(std::string client_event = {}, io::Json response = {});
+  // Native scheduler IDs only; do not authorize client-supplied cancellation.
+  bool CancelResponse(std::string_view response_id);
   ObjectReply AppendAudio(std::string_view audio,
                           std::string_view client_event = {});
   ObjectReply Mute(bool muted, std::string_view client_event = {});
