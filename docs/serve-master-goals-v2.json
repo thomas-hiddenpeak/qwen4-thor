@@ -14568,7 +14568,7 @@
       "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
     },
     "mcp_20261120": {
-      "state": "mcp_qualification_and_bundle_contracts_verified_issuing_profiles",
+      "state": "shared_capability_gate_repaired_retrying_offline_qualification",
       "plan": "SERVE_REALTIME_MCP_2026-11-20.md",
       "cpu_cases_frozen": 18,
       "gpu_actions": 0,
@@ -14998,7 +14998,19 @@
         "isolated_package_import": true,
         "master_goal_active": true
       },
-      "qualification_cpu_evidence": "evidence/serve-realtime-mcp-qualification-cpu-20261120/README.md"
+      "qualification_cpu_evidence": "evidence/serve-realtime-mcp-qualification-cpu-20261120/README.md",
+      "qualification_gate_cpu": {
+        "status": "PASS_SHARED_MCP_CAPABILITY_GATE_CPU",
+        "tests": 11,
+        "seconds": 0.6148714413866401,
+        "original_qualification_failure_preserved": true,
+        "original_registry_issued": false,
+        "new_qualification_issued": false,
+        "gpu_actions": 0,
+        "runtime_changed": false,
+        "default_unchanged": true
+      },
+      "qualification_gate_evidence": "evidence/serve-realtime-mcp-qualification-gate-20261120/README.md"
     },
     "duplex_main": {
       "status": "PASS_REALTIME_DUPLEX_PR55_MERGED",

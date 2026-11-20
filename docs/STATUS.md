@@ -66,7 +66,10 @@ helper写死双启动而失败，3项CPU修复及[离线收尾已通过](evidenc
 16份新增逐项绑定；保留原失败。新增证据使用有界压缩，资格文件仍
 限8MiB、解压上限2MiB；原v24与旧资格继续兼容。[42项不同CPU完成](evidence/serve-realtime-mcp-qualification-cpu-20261120/README.md)，
 43次执行含原夹具失败及2项修复补验；不重复GPU或音频/视觉矩阵。
-正在生成主轻资格，尚未完成服务恢复或发行。
+首次完整资格生成在共用Realtime声明校验处失败：旧门遗漏新增MCP，
+尚未签发registry、原中间记录不获准使用。已补能力门和严格类型检查，
+[11项针对性CPU通过](evidence/serve-realtime-mcp-qualification-gate-20261120/README.md)，
+接着重新离线生成；不重跑GPU，恢复/发行继续。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

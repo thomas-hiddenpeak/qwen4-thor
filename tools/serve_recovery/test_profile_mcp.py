@@ -9,7 +9,7 @@ import tarfile
 import unittest
 from unittest import mock
 
-from tools.serve_recovery import ledger, profile_record
+from tools.serve_recovery import ledger, profile_record, profile_evidence
 from tools.serve_recovery import profile_mcp_codec as codec
 from tools.serve_recovery import profile_mcp_evidence as evidence
 from tools.serve_recovery import profile_mcp_reuse as reuse
@@ -103,6 +103,36 @@ class ActualEvidence(unittest.TestCase):
         for changed in (dict(value, profile='light'), dict(value, source_review_sha256='0'*64),
                         envelope('primary', actual('light'))):
             with self.assertRaises(ValueError): evidence.business(changed)
+
+
+class Capabilities(unittest.TestCase):
+    @staticmethod
+    def value():
+        return leaf('serve-realtime-mcp-remaining-http-20261120',
+                    'sdk-business-04/light-capabilities.json')
+
+    def test_real_mcp_capability_passes_complete_shared_gate(self):
+        value = self.value()
+        self.assertTrue(profile_evidence.conversation_enabled(value))
+        self.assertTrue(profile_evidence.duplex_enabled(value))
+        self.assertEqual(profile_evidence.format_for({}, capabilities=value),
+                         profile_evidence.MCP_FORMAT)
+
+    def test_previous_duplex_declaration_remains_exactly_accepted(self):
+        value = self.value()
+        chat = value['realtime']['conversation']; chat.pop('mcp')
+        chat['pending_execution'] = ['mcp', 'tracing']
+        self.assertTrue(profile_evidence.conversation_enabled(value))
+        self.assertEqual(profile_evidence.format_for({}, capabilities=value),
+                         profile_evidence.DUPLEX_FORMAT)
+
+    def test_replay_or_weakly_typed_capability_cannot_pass_shared_gate(self):
+        for field, replacement in (('automatic_tool_replay', True), ('approval', 1),
+                                   ('maximum_servers', 128)):
+            value = self.value()
+            value['realtime']['conversation']['mcp'][field] = replacement
+            with self.assertRaises(ValueError): profile_evidence.conversation_enabled(value)
+            with self.assertRaises(ValueError): reuse.old_capabilities(value)
 
 
 class SourceReuse(unittest.TestCase):

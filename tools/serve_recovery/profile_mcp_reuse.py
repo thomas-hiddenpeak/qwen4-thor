@@ -11,7 +11,8 @@ def old_capabilities(value):
     result = copy.deepcopy(value)
     result['protocol_source_sha256'] = REVIEW['previous_protocol']
     chat = result['realtime']['conversation']
-    ledger.require(chat.pop('mcp') == CAPABILITY and chat['pending_execution'] == ['tracing'],
+    ledger.require(ledger.canonical(chat.pop('mcp')) == ledger.canonical(CAPABILITY) and
+                   chat['pending_execution'] == ['tracing'],
                    'new MCP capability differs from reviewed source')
     chat['pending_execution'] = ['mcp', 'tracing']
     return result

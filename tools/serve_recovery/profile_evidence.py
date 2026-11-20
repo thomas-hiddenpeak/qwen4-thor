@@ -1075,6 +1075,10 @@ def conversation_enabled(capabilities):
                 expected.update(input_audio=audio, pending_execution=['mcp','tracing'],
                     session_host_reservation_bytes=(2 << 30) +
                         (audio['additional_host_reservation_bytes'] if configured else 0))
+        if 'mcp' in value:
+            from tools.serve_recovery.profile_mcp_evidence import CAPABILITY
+            expected.update(mcp=CAPABILITY, pending_execution=[
+                item for item in expected['pending_execution'] if item != 'mcp'])
     ledger.require(type(value) is dict and
         ledger.canonical(value) == ledger.canonical(expected),
         'native Realtime Chat capability differs')
@@ -1518,7 +1522,8 @@ def business(value, identity, selected=None, capabilities=None):
                        (('realtime_mcp',) if mcp_enabled(capabilities) else ()))
     if mcp_enabled(capabilities):
         from tools.serve_recovery import profile_mcp_evidence as mcp
-        ledger.require(capabilities['realtime']['conversation']['mcp'] == mcp.CAPABILITY,
+        ledger.require(ledger.canonical(capabilities['realtime']['conversation']['mcp']) ==
+                       ledger.canonical(mcp.CAPABILITY),
                        'qualified MCP capability differs')
         mcp.business(value['realtime_mcp'])
     if duplex_enabled(capabilities):
