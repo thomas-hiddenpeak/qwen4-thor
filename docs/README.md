@@ -699,3 +699,6 @@
 - [实际Realtime会话输入与轮次CPU](evidence/serve-realtime-duplex-session-cpu-20261120/README.md)：待ASR回答、设置冻结、VAD与准入交接、借用故障隔离及严格引用入口修复。
 
 - [原生Realtime输入后端构建与CPU](evidence/serve-realtime-duplex-backend-cpu-20261120/README.md)：共享ASR/VAD、私有来源和组合预算，实际q4t已构建；真实业务继续。
+
+- [双向音频原生恢复](evidence/serve-realtime-duplex-managed-recovery-20261120/README.md)：入口/控制器/整包，错误回答独立保留。
+- [双向音频rev386交付](evidence/serve-realtime-duplex-delivery-20261120/README.md)：STOPPED升级、回退、预算保持与可逆归档。

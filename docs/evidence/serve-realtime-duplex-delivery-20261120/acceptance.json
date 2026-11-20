@@ -1,0 +1,64 @@
+{
+  "status": "PASS_NATIVE_REALTIME_DUPLEX_DELIVERED",
+  "revision": 386,
+  "state": "STOPPED",
+  "current": {
+    "engine_binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+    "engine_release_sha256": "cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3",
+    "generation_sha256": "292c8d9214f87cacc871c38f549eb26ca936f5e103ebeeb30ab315a4c01e4fc2",
+    "manifest_sha256": "1fbaf0cb3cf106cc6b165810559697f9085d463499ead41e2af445b5fbfb12b8",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/service-package-01/bundle",
+    "service_acceptance_sha256": "6ffee31b93835479331758ae744714ea5c5629b34dd3d8343bc07232f39dcc73",
+    "service_release_sha256": "931499ee08cd87fa583e801dc5337cfff4cab36ade6127d054b7cd757660e6b8"
+  },
+  "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+  "protocol_sha256": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+  "successful_commands": 19,
+  "seconds": 349.2686820998788,
+  "new_gpu_starts": 0,
+  "outer_enabled": true,
+  "outer_charged_total": 0,
+  "persistent_client_limits": {
+    "alpha": {
+      "requests_per_minute": 30,
+      "tokens_per_minute": 6000,
+      "max_output_tokens": 3457
+    },
+    "beta": {
+      "requests_per_minute": 1,
+      "tokens_per_minute": 6000,
+      "max_output_tokens": 256
+    }
+  },
+  "usage_reset": false,
+  "profile_history_and_cooldown_preserved": true,
+  "version_cycles_preserved": true,
+  "manual_root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+    "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+  },
+  "automatic_payload": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+    "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+  },
+  "candidate_to_retained_automatic_fault_actually_tested": true,
+  "reciprocal_automatic_fault_additionally_injected": false,
+  "reciprocal_registration_and_stopped_rollback_verified": true,
+  "previous_rev376_preserved": true,
+  "retired_records_archived_per_pool": 4,
+  "deleted_files": 0,
+  "maintenance_seconds": 124.12811847496778,
+  "model_quality_status": "FAIL",
+  "model_quality_separate": true,
+  "original_model_quality_failures_preserved": true,
+  "original_driver_failure_preserved": true,
+  "listening_deferred_by_owner": true,
+  "main_integration_pending": true,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "long_stability_run": false,
+  "full_openai_compatibility": false,
+  "all_master_tasks_active": true,
+  "secret_scan_matches": 0,
+  "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+}
