@@ -12461,13 +12461,13 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "complete_duplex_runtime_and_driver_ready_real_business_pending",
+      "state": "interrupt_evidence_repaired_cpu_one_bounded_business_continuation_ready",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 227,
       "case_executions": 373,
       "source_counterexamples_per_group": 20,
-      "gpu_actions": 0,
+      "gpu_actions": 1,
       "runtime_entry_qualified": false,
       "default_revision": 376,
       "remaining": [
@@ -12871,6 +12871,103 @@
           "default_revision": 376,
           "default_unchanged": true,
           "actual_duplex_business": "pending",
+          "master_active": true
+        }
+      },
+      "business_first_attempt": {
+        "evidence": "docs/evidence/serve-realtime-duplex-env-abort-20261120/README.md",
+        "result": {
+          "status": "ENV_ABORT_NOT_BUSINESS_ACCEPTANCE",
+          "runtime_binary": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+          "driver_status": "FAIL",
+          "lease_status": "ENV_ABORT",
+          "seconds": 90.48527272697538,
+          "model_starts": 1,
+          "pre_model_launch_failure": {
+            "status": "LAUNCH_CONFIGURATION_FAILED_BEFORE_MODEL",
+            "reason": "Initial wrapper invocation omitted --inherit-lease; existing driver requires Q4T_MANAGED_LEASE_FD during construction",
+            "model_starts": 0,
+            "http_requests": 0,
+            "websocket_sessions": 0,
+            "default_unchanged": true,
+            "repair": "Keep original failed lease; correct command by adding --inherit-lease; identical frozen plan and binary; no model attempt consumed"
+          },
+          "reserved_attempt_counts": {
+            "starts": 1,
+            "ingress_starts": 1,
+            "websocket_sessions": 1,
+            "responses": 6,
+            "audio_inputs": 5,
+            "chats": 1,
+            "controls": 31
+          },
+          "actual_ws_transcript_available": false,
+          "actual_generated_answer_quality": "unverified_missing_actor_receipt",
+          "core_before": "42",
+          "nvml": {
+            "OK": 59,
+            "CLEANUP_FAILED": 1
+          },
+          "last_query_api": "init",
+          "model_exit": -9,
+          "owned_processes_remaining": [],
+          "ports_released": true,
+          "cooperative_lock_available": true,
+          "default_unchanged": true,
+          "default_revision": 376,
+          "automatic_retry": false,
+          "master_active": true
+        }
+      },
+      "interrupted_evidence_repair": {
+        "evidence": "docs/evidence/serve-realtime-duplex-interrupt-evidence-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_INTERRUPTED_EVIDENCE_CPU",
+          "result": {
+            "status": "PASS",
+            "commands": [
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "-m",
+                  "unittest",
+                  "-v",
+                  "tools.serve_realtime.test_duplex_acceptance.Checks.test_actor_timeout_retains_written_stdout_and_stderr",
+                  "tools.serve_realtime.test_duplex_acceptance.Checks.test_journal_receipt_must_keep_all_original_events_and_attempts"
+                ],
+                "returncode": 0
+              },
+              {
+                "command": [
+                  "node",
+                  "--test",
+                  "tools/serve_realtime/bounded_journal.test.mjs"
+                ],
+                "returncode": 0
+              },
+              {
+                "command": [
+                  "node",
+                  "--check",
+                  "tools/serve_realtime/duplex_sdk.mjs"
+                ],
+                "returncode": 0
+              }
+            ],
+            "seconds": 1.4145317869260907,
+            "new_python_cases": 2,
+            "new_node_cases": 4,
+            "original_python_cases_reused": 10,
+            "default_unchanged": true,
+            "gpu_starts": 0
+          },
+          "original_environment_abort_preserved": true,
+          "runtime_unchanged": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+          "nvml_root_cause": "unresolved",
+          "default_revision": 376,
+          "default_unchanged": true,
+          "real_business": "pending",
           "master_active": true
         }
       }

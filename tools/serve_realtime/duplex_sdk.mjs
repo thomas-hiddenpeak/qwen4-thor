@@ -4,12 +4,15 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { check, terminal, usage, text, functionCall, streamAgrees } from './conversation_checks.mjs';
+import { openJournal } from './bounded_journal.mjs';
 
 let input = '';
 for await (const part of process.stdin) {
   input += part; check(Buffer.byteLength(input) <= 65536, 'argument bound');
 }
 const args = JSON.parse(input), sdk = path.resolve(process.env.Q4T_NODE_SDK_DIR);
+const journal = openJournal(args.journal_file);
+process.once('exit', () => journal.close());
 for (const [name, version] of [['openai', '7.47.0'], ['ws', '8.21.0']])
   check(JSON.parse(fs.readFileSync(path.join(sdk, 'node_modules', name, 'package.json')))
     .version === version, 'fixed SDK version');
@@ -41,6 +44,9 @@ rt.on('event', (value) => {
   if (bytes > (12 << 20) || events.length >= 8192) {
     fatal = new Error('event bound'); rt.socket.terminate(); return;
   }
+  try { journal.append('server', value); } catch (error) {
+    fatal = error; rt.socket.terminate(); return;
+  }
   events.push(value);
 });
 async function until(predicate, allowClosed = false) {
@@ -51,7 +57,10 @@ async function until(predicate, allowClosed = false) {
     await new Promise((resolve) => setTimeout(resolve, 2));
   }
 }
-function send(value) { check(++sent <= 200, 'event attempt bound'); rt.send(value); }
+function send(value) {
+  check(++sent <= 200, 'event attempt bound');
+  journal.append('client', value); rt.send(value);
+}
 async function waitEvent(at, type, predicate = () => true) {
   let found;
   await until(() => {

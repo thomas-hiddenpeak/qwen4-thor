@@ -19,6 +19,18 @@ def text(response):
                    if p['type'] == 'output_text')
 
 
+def journal_matches(rows, receipt):
+    require(rows and all(r['direction'] in ('client','server') and
+            type(r['event']) is dict and type(r['event'].get('type')) is str
+            and type(r['monotonic_ns']) is str and r['monotonic_ns'].isdigit()
+            for r in rows), 'invalid original event journal')
+    require([r['event'] for r in rows if r['direction'] == 'server'] ==
+            receipt['events'], 'receipt differs from continuously written events')
+    require(sum(r['direction'] == 'client' and r['event']['type'] == 'response.create'
+                for r in rows) == receipt['response_creates'],
+            'actual client attempts differ from receipt')
+
+
 def response_rows(value):
     mode, events, rows = value['mode'], value['events'], value['responses']
     require(mode in LABELS and [r['label'] for r in rows] == LABELS[mode],

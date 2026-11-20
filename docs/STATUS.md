@@ -91,7 +91,20 @@ WSS/ASR/TTS、受影响恢复/交付，全部master继续；0GPU、默认rev376�
 q4t构建147.168秒、零警告，10项驱动CPU反例与SDK语法0.262秒通过。
 真实短验固定同一租约最多1模型/2WSS/9回答/7音频输入/2Chat/1200秒，
 覆盖ASR→回答→TTS→ASR、真实工具、VAD打断及空闲。下一步执行该组
-真实业务并记录所有失败，然后受影响恢复/交付。当前0GPU，默认rev376保持。
+真实业务并记录所有失败，然后受影响恢复/交付。该准备阶段0GPU；后续实际执行见下条。
+
+[真实双向短验ENV_ABORT](evidence/serve-realtime-duplex-env-abort-20261120/README.md)：
+1模型/90.485秒，59次NVML正常后init查询未回收，严格验证监控中止。
+原启动漏传锁参数的0模型失败也保留。普通Chat回答42；SDK最终事件
+未落盘，不能认定双向业务/质量通过。模型退出-9，所属进程/端口/锁
+已核实清理，默认rev376不变。先补验收驱动的持续事件落盘及中断CPU
+检查，再补缺项；受影响恢复和交付仍待完成，总目标保持active。
+
+[中断取证修复CPU](evidence/serve-realtime-duplex-interrupt-evidence-cpu-20261120/README.md)：
+2 Python+4 Node及SDK语法/1.415秒通过，包含实际SIGKILL和超时子进程。
+事件与stdout/stderr持续落盘，原10项按函数身份复用；未追加GPU。
+候选运行时不变，原ENV_ABORT保留。NVML根因仍未确定；按工具缺陷
+修复准备仅一轮独立有界补验，严格互斥/监控保持，不盲目重启循环。
 
 ## 当前实际默认
 

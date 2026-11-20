@@ -1,8 +1,14 @@
 """CPU counterexamples for the real duplex evidence checker; no fake GPU pass."""
 import copy
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
 import unittest
 from tools.serve_realtime import duplex_checks as c
-from tools.serve_realtime.duplex_acceptance import accounting, check_plan, CONTRACT, LIMITS, ROOT
+from tools.serve_realtime.duplex_acceptance import accounting, capture_actor, check_plan, CONTRACT, LIMITS, ROOT
 
 
 def response_fixture():
@@ -114,6 +120,28 @@ class Checks(unittest.TestCase):
         actual = accounting(metrics,'alpha',observed)
         self.assertEqual(actual['private_asr_counter_residual'],7)
         self.assertIs(actual['private_asr_exact_token_oracle'],False)
+
+    def test_actor_timeout_retains_written_stdout_and_stderr(self):
+        root = Path(os.environ.get('Q4T_TEST_OUTPUT_DIR', ROOT/'.q4t-work/realtime-cpu'))
+        root.mkdir(parents=True, exist_ok=True)
+        directory = Path(tempfile.mkdtemp(prefix='capture-',dir=root))
+        output, errors = directory/'partial.json', directory/'partial.stderr'
+        command = [sys.executable,'-u','-c',
+            "import time,sys;print('{\"partial\":true}');print('before timeout',file=sys.stderr);time.sleep(10)"]
+        with self.assertRaises(subprocess.TimeoutExpired):
+            capture_actor(command, {}, output, errors, dict(os.environ), 1)
+        self.assertEqual(json.loads(output.read_text()), {'partial':True})
+        self.assertIn('before timeout', errors.read_text())
+
+    def test_journal_receipt_must_keep_all_original_events_and_attempts(self):
+        event = dict(type='response.done')
+        rows = [dict(direction='client',monotonic_ns='1',event=dict(type='response.create')),
+                dict(direction='server',monotonic_ns='2',event=event)]
+        receipt = dict(events=[event],response_creates=1)
+        c.journal_matches(rows, receipt)
+        for bad in ([rows[0]], [rows[1]], rows + [rows[1]]):
+            with self.assertRaises(RuntimeError): c.journal_matches(bad, receipt)
+
 
     def test_frozen_plan_cannot_expand_scope_or_replace_real_source(self):
         plan = dict(schema='q4t-realtime-duplex-business-v1',limits=copy.deepcopy(LIMITS),

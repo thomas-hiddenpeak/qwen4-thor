@@ -8832,5 +8832,20 @@
     "negative_tests": 10,
     "sdk_syntax": true,
     "actual_business": "pending"
+  },
+  "duplex_business_driver_interrupt_repair_20261120": {
+    "evidence": "docs/evidence/serve-realtime-duplex-interrupt-evidence-cpu-20261120/README.md",
+    "sources_sha256": {
+      "tools/serve_realtime/duplex_acceptance.py": "0259bd2238d9f7ce51a590dd7dc8d14565fb465f63e70ec7856dba705fb7f081",
+      "tools/serve_realtime/duplex_checks.py": "75dad71f5303aa5e14128558040e3ae888505b25bb7a61fc264b1bb8163ae227",
+      "tools/serve_realtime/duplex_sdk.mjs": "a5d651a0b32f94b9be5ac59e7dbaef2096a03867e4393bfd52ed8dc3f1ddc900",
+      "tools/serve_realtime/test_duplex_acceptance.py": "e555d0b57aeef7db4b46957553e00248a6a671740fb3fa451e1498ef9c506a33",
+      "tools/serve_realtime/bounded_journal.mjs": "40f82277bd10de1c9aee2df2b40d7bd796ff9a9e0d10d0b24ec40b1997846129",
+      "tools/serve_realtime/bounded_journal.test.mjs": "7aef1122dbf6731748998473df0d3cd48ed0d142ab660ea4f6c41ca76979f43a",
+      ".github/workflows/host-checks.yml": "6e865ca02e5746a87be00968575ad39d37ae822f7c3a22a63d12d4758ca14323"
+    },
+    "python_new": 2,
+    "node_new": 4,
+    "python_reused": 10
   }
 }

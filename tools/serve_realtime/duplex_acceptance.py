@@ -54,6 +54,15 @@ def accounting(metrics, client, observed):
                 admitted=observed['admitted'])
 
 
+def capture_actor(command, arguments, output, errors, env, timeout):
+    # Keep partial evidence even when the parent is interrupted before the
+    # actor can serialize its final receipt. Do not buffer stdout in Python.
+    with Path(output).open('xb') as stdout, Path(errors).open('xb') as stderr:
+        return subprocess.run(command, input=json.dumps(arguments).encode(),
+                              stdout=stdout, stderr=stderr, env=env,
+                              timeout=timeout)
+
+
 def prepare(args):
     require(not subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT),
             'commit reviewed driver/source before freezing')
@@ -65,9 +74,11 @@ def prepare(args):
         require(sha(ROOT/name) == digest, 'built native source drift')
     binary = args.binary.resolve(strict=True)
     require(sha(binary) == built['binary_sha256'], 'native build identity')
-    cpu = WORK / 'duplex-driver-cpu-01'
+    cpu = WORK / 'duplex-driver-cpu-02'
     require(json.loads((cpu/'result.json').read_text())['status'] == 'PASS',
             'verifier negative cases not qualified')
+    for name,digest in json.loads((cpu/'plan.json').read_text())['sources'].items():
+        require(sha(ROOT/name) == digest, 'qualified driver source drift')
     previous = base.WORK / 'transcription-business-04/run'
     require(json.loads((previous/'result.json').read_text())['status'] == 'PASS',
             'reused original audio not qualified')
@@ -142,16 +153,20 @@ class Stage(base.Stage):
         args = dict(mode=mode, base_url=f"https://127.0.0.1:{self.plan['public_port']}/v1",
             api_key=self.keys[client], ca_file=self.plan['tls']['certificate'],
             clip=clip['path'], clip_sha256=clip['sha256'], expected=self.plan['expected']['zh'],
-            record_file=record['path'], record_sha256=record['sha256'], expected_version=record['version'])
+            record_file=record['path'], record_sha256=record['sha256'], expected_version=record['version'],
+            journal_file=str(self.out/(mode+'.events.jsonl')))
         env = {k:v for k,v in os.environ.items() if k not in ('NODE_OPTIONS','NODE_PATH','LD_PRELOAD')}
         env['Q4T_NODE_SDK_DIR'] = self.plan['sdk_directory']
-        run = subprocess.run(['node',str(ROOT/'tools/serve_realtime/duplex_sdk.mjs')],
-            input=json.dumps(args), text=True, capture_output=True, env=env, timeout=430)
-        (self.out/(mode+'.sdk.json')).write_text(run.stdout)
-        (self.out/(mode+'.stderr')).write_text(run.stderr)
-        require(run.returncode == 0 and len(run.stdout.encode()) <= 16 << 20,
+        output = self.out/(mode+'.sdk.json')
+        run = capture_actor(['node',str(ROOT/'tools/serve_realtime/duplex_sdk.mjs')],
+            args, output, self.out/(mode+'.stderr'), env, 430)
+        require(run.returncode == 0 and output.stat().st_size <= 16 << 20,
                 'actual duplex SDK failed: '+mode)
-        observed = checks.observe(json.loads(run.stdout), args['expected'], record)
+        receipt = json.loads(output.read_text())
+        journal = Path(args['journal_file'])
+        require(journal.stat().st_size <= 32 << 20, 'event journal bound')
+        checks.journal_matches([json.loads(line) for line in journal.read_text().splitlines()], receipt)
+        observed = checks.observe(receipt, args['expected'], record)
         self.same_model()
         settlement = accounting(self.snapshot(mode+'-drained'), client, observed)
         save(self.out/(mode+'-receipt.json'), dict(observed=observed, settlement=settlement))

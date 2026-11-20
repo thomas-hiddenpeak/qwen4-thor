@@ -261,6 +261,10 @@ jobs:
         run: python3 -B -m unittest tools.serve_soak.test_native_soak
       - name: Check JavaScript schema input contracts
         run: node --test tools/examples/js/test_schema_client.mjs
+      - name: Realtime interrupted evidence journal
+        run: |
+          mkdir -p .q4t-work/realtime-journal-ci
+          Q4T_TEST_OUTPUT_DIR="$PWD/.q4t-work/realtime-journal-ci" node --test tools/serve_realtime/bounded_journal.test.mjs
       - name: Check Chat citation history schemas and clients
         run: >-
           build/public-host/schema-venv/bin/python -B -m unittest

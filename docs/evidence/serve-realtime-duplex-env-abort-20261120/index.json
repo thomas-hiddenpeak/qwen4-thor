@@ -1,0 +1,96 @@
+{
+  "records": [
+    {
+      "path": "run/model-identity.json",
+      "bytes": 1478,
+      "sha256": "096e5f230da4cd9413b2aad638061de9cbe1e52381fec326a2b52c5be9e18edd"
+    },
+    {
+      "path": "run/result.json",
+      "bytes": 1809,
+      "sha256": "5f967df36ebd14a83328a522f48e2d9ca254cfe160b7566ba3d74d730683f79d"
+    },
+    {
+      "path": "run/core-before.wire",
+      "bytes": 336,
+      "sha256": "a6481d7d14c6aba9ccd067ecc2a6b3742fe0e78c245bc9d5aca4a07233ee193c"
+    },
+    {
+      "path": "run/counts.json",
+      "bytes": 139,
+      "sha256": "cfdc3857d98cfa8934e16aaa8aaab3abda0b8b045b41b8458e90435ed66bf4bc"
+    },
+    {
+      "path": "run/plan.json",
+      "bytes": 1112360,
+      "sha256": "dba04daf878f713d74fc7447607ed24801b4ec872a746164a967e3aa24216127"
+    },
+    {
+      "path": "run/model-command.json",
+      "bytes": 1159,
+      "sha256": "77d3eda36cf04ae2611c9626987de803794c843ea089000904589621c59f6e4e"
+    },
+    {
+      "path": "run/model.log",
+      "bytes": 23932,
+      "sha256": "719e59b9484a0bd68e74853d1eef694d4e951b658d7445e4362a449d62bf4acd"
+    },
+    {
+      "path": "run/before.json",
+      "bytes": 24666,
+      "sha256": "90fda51827bc7bd9800032653fde651509f963375dd53a3d572733e8bd284d51"
+    },
+    {
+      "path": "run/cleanup.json",
+      "bytes": 2868,
+      "sha256": "6711adf7ba48c0cd590cf3da9b5811cb237c8fb0a8bea30a762596bfb1b222ac"
+    },
+    {
+      "path": "lease/nvml-queries.jsonl",
+      "bytes": 6851,
+      "sha256": "5ce17a4d8806dd5555a7e389003d4bc3d697713aed056d5f7d8eb095e3315599"
+    },
+    {
+      "path": "lease/events.jsonl",
+      "bytes": 1098,
+      "sha256": "398ffc61fb2e410d4e1519360f2b7269badada290d4a4867e2a591a3f6a34b68"
+    },
+    {
+      "path": "lease/exit.json",
+      "bytes": 650,
+      "sha256": "6e442fe8b24c976f81812775a36c6aa47ba8219085b80ac30e71fce746fec216"
+    },
+    {
+      "path": "lease-02/nvml-queries.jsonl",
+      "bytes": 141777,
+      "sha256": "0d1cad61693daa50ecc8f8ce696bb8141536be52a4fbc425d2919401f06ca621"
+    },
+    {
+      "path": "lease-02/events.jsonl",
+      "bytes": 11446,
+      "sha256": "641b0829b2dd4f53dd2717145a9e93326b2baa76efc8bd07ef3685ca33e6104b"
+    },
+    {
+      "path": "lease-02/exit.json",
+      "bytes": 910,
+      "sha256": "e3a58e27817cb5d9aeb6f33d60f208d1102f8c0a4ccf40483427c8d49c0025e7"
+    },
+    {
+      "path": "launch-correction.json",
+      "bytes": 437,
+      "sha256": "9acdd8b85b6b62a6bd00c3cf36cfd2486dfb697001c6221387a80bd4ca180b13"
+    },
+    {
+      "path": "post-cleanup-readonly.json",
+      "bytes": 241,
+      "sha256": "5f93575427419366d8ab8b1253f3291a8044c197442ff8c5c2b051b375d42124"
+    },
+    {
+      "path": "run/ingress/ingress.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "omitted": {},
+  "archive_sha256": "ef49ca0211e736aa96eaae9e14677a0809afa72d6a227912d4d13aa08dd3c302"
+}
