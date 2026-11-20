@@ -1,0 +1,93 @@
+{
+  "files": {
+    "catalog-plan-initial.json": {
+      "bytes": 1899,
+      "sha256": "d2006fbc3b427648a19fc8fc940dd1abc3c2a687824a6ea4498b757035f4a64e"
+    },
+    "catalog-plan.json": {
+      "bytes": 2039,
+      "sha256": "0d0d52fb4199a2081ff633e2d674d69803c9132905c0842ce6fd7a26754b4fe1"
+    },
+    "catalog-required.txt": {
+      "bytes": 760,
+      "sha256": "75c7853b59b98a20fe0154dba06b15bb058e3fefc20db52cdf2a7216dde4341c"
+    },
+    "build_catalog_01.py": {
+      "bytes": 2911,
+      "sha256": "78b5c2f20c886061835dccb05f6cf9f10eff430018e3a2e85d5ca64f2e84ef1b"
+    },
+    "build_catalog_02.py": {
+      "bytes": 2911,
+      "sha256": "9c3ab3f28383f41e2a2a374c0009f07cb146308f41e5b2540ab8c9934a8aa7ca"
+    },
+    "archive_catalog_01.py": {
+      "bytes": 5547,
+      "sha256": "1b3ff85a0a72c69d3ac3532996299cbc39132d8b1445bc30b9a5a9a3d038def6"
+    },
+    "catalog-build-01/plan.json": {
+      "bytes": 178301,
+      "sha256": "b44dcad1dd900c267af478d84447ef35b51ba0c23341e8846abc42726e7d33b6"
+    },
+    "catalog-build-01/result.json": {
+      "bytes": 231,
+      "sha256": "8d0617dc6be58286f82e0365ff41db567cb62078460f59d7156fe9fcd3988243"
+    },
+    "catalog-build-01/build.log": {
+      "bytes": 3971,
+      "sha256": "ccfccedbe7c2e964bece1ca7735c7189a367f3f2c07fcc17238781e480a6922b"
+    },
+    "catalog-build-02/plan.json": {
+      "bytes": 178301,
+      "sha256": "f43fa625c706609fc9f819c2724e100c167a9ec7e13009f7457eeffa2fe72775"
+    },
+    "catalog-build-02/result.json": {
+      "bytes": 294,
+      "sha256": "319895e43d8a0e9832f97c7f8a1f2fb51aaba25952708879a5a0f68cf8da8523"
+    },
+    "catalog-build-02/build.log": {
+      "bytes": 1778,
+      "sha256": "c99aaa569f39deae97a38a638b63faf938d15527cdbe6be786c26f9d8e6bb512"
+    },
+    "catalog-cpu-01/result.json": {
+      "bytes": 1330,
+      "sha256": "29addcaa2d177fa070be0912cecf091cdbfeadc9f97ab5ebb7dccbac6a4cba54"
+    },
+    "catalog-cpu-01/stdout.txt": {
+      "bytes": 885,
+      "sha256": "78549678bc8e3a472df3560fb0889d87e92bf0fbc93d6d40d7bf9363a5b16319"
+    },
+    "catalog-cpu-01/stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source/include/q4t/server/realtime_mcp_catalog.h": {
+      "bytes": 1566,
+      "sha256": "ad8d3db24f6b373cb122e5888ec6e0542a30262a9de1dc5c9adeae6fe5eb8ead"
+    },
+    "source/src/server/realtime_mcp_catalog.cpp": {
+      "bytes": 6565,
+      "sha256": "e1cd8c3e2be79be373f1ded4145391abf1861b64f0df775af82866e7c73be305"
+    },
+    "source/tests/server_realtime_mcp_catalog_test.cpp": {
+      "bytes": 5135,
+      "sha256": "0991bcaa4acbb4140446728b279c86fb8b06b8980dcb8718d302f5fed36a7ca4"
+    },
+    "source/tests/server_mcp_transport_test.cpp": {
+      "bytes": 231003,
+      "sha256": "2faac35cfe873e8c2e7de45d73cf99934a22633bc957adbc38549bcf05f3f524"
+    },
+    "source/cmake/HostTestSources.cmake": {
+      "bytes": 39745,
+      "sha256": "f5387fe2cc2fcbf19bbf4e20c630dfbf84d907181f91a72b204b90d5a0ea922a"
+    },
+    "source/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 31553,
+      "sha256": "fdfe7cd3521af8b8528611a3460c89eddcc9773e74252827a76311fcb0edd36d"
+    },
+    "source/CMakeLists.txt": {
+      "bytes": 62989,
+      "sha256": "e1ccc1b0ad17e067ff3d3d849c2d99d172420c11ef74fbe231973f88b6f809d1"
+    }
+  },
+  "archive_sha256": "0d862eb13b76129194f82eea7d16d1cf2c4a1b334c7e750192d84a3775890d6b"
+}

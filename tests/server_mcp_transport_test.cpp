@@ -28,6 +28,8 @@
 #include "q4t/server/lifetime.h"
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_mcp_state.h"
+#include "q4t/server/realtime_mcp_catalog.h"
+#include "q4t/server/realtime_shape.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/server/responses_jobs.h"
 #include "q4t/server/responses_owner.h"
@@ -5266,5 +5268,168 @@ Q4T_TEST(responses_mcp_native_unknown_transport_is_durable) {
   Q4T_CHECK(
       !state.Permit(call.GetString("id"), definition, ExecutionAccess()).ok() &&
       peer.called == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_import_preserves_actual_authority_and_secrets) {
+  Server server;
+  server.handler = [](const Request& request, int fd, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/list") return false;
+    const auto* params = request.rpc.Find("params");
+    const bool next = params && params->GetString("cursor") == "next";
+    auto tool = Tool(next ? "hidden" : "read_project");
+    Set(&tool, "outputSchema", Object({{"type", String("object")}}));
+    auto result = Object({{"tools", Array({tool})}});
+    if (!next) Set(&result, "nextCursor", String("next"));
+    Send(fd, Http(200, OutputJson(Rpc(request, result))));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto tool = ExecutionRequest(server).GetArray("tools")->array[0];
+  Set(&tool, "allowed_tools", Array({String("read_project")}));
+  ResponsesMcpDefinition definition;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesMcpDefinition(tool, &definition, &error));
+  RealtimeMcpCatalog imported;
+  Q4T_CHECK(ExecutionOk(ImportRealtimeMcpCatalog(
+      objects, config, definition, ExecutionAccess(), "mcpl_real", &imported)));
+  Q4T_CHECK(imported.loaded && imported.item.GetString("id") == "mcpl_real" &&
+            imported.item.GetArray("tools")->array.size() == 1);
+  Q4T_CHECK(ValidateRealtimeShape(imported.item, RealtimeShape::kItem, &error));
+  const auto projected = OutputJson(imported.item);
+  for (const auto* hidden :
+       {"mcp-request-secret", "mcp-header-secret", "opaque", "outputSchema"})
+    Q4T_CHECK(projected.find(hidden) == projected.npos);
+  ResponsesMcpState state(objects, config);
+  auto opened = state.OpenCatalog(imported.authority, imported.definition,
+                                  ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(opened));
+  Q4T_CHECK(opened.value.GetArray("tools")->array[0].Has("outputSchema"));
+  Q4T_CHECK(ExecutionOk(
+      state.Session("mcpl_real", imported.definition, ExecutionAccess())));
+  auto foreign = ExecutionAccess();
+  foreign.scope = "client:foreign";
+  Q4T_CHECK(!state.Authenticate(imported.authority, foreign).ok());
+  size_t listed = 0;
+  for (const auto& request : server.Requests()) {
+    if (request.rpc.GetString("method") != "tools/list") continue;
+    ++listed;
+    Q4T_CHECK(request.headers.at("authorization") ==
+              "Bearer mcp-request-secret");
+    Q4T_CHECK(request.headers.at("x-private") == "mcp-header-secret");
+  }
+  Q4T_CHECK(listed == 2 && server.calls == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_import_records_remote_failure_without_callables) {
+  Server server;
+  server.handler = [](const Request& request, int fd, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/list") return false;
+    auto rpc = Object(
+        {{"jsonrpc", String("2.0")},
+         {"id", *request.rpc.Find("id")},
+         {"error", Object({{"code", Number(-32603)},
+                           {"message", String("fixture remote failure")}})}});
+    Send(fd, Http(200, OutputJson(rpc)));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  ResponsesMcpDefinition definition;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesMcpDefinition(
+      ExecutionRequest(server).GetArray("tools")->array[0], &definition,
+      &error));
+  RealtimeMcpCatalog imported;
+  Q4T_CHECK(ExecutionOk(ImportRealtimeMcpCatalog(objects, config, definition,
+                                                 ExecutionAccess(),
+                                                 "mcpl_failed", &imported)));
+  Q4T_CHECK(!imported.loaded &&
+            imported.item.GetArray("tools")->array.empty() &&
+            !imported.item.Has("error") && imported.authority.Has("error"));
+  ResponsesMcpState state(objects, config);
+  Q4T_CHECK(
+      ExecutionOk(state.Authenticate(imported.authority, ExecutionAccess())));
+  Q4T_CHECK(server.calls == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_import_rejects_remote_schema_without_success) {
+  Server server;
+  server.handler = [](const Request& request, int fd, std::stop_token) {
+    if (request.rpc.GetString("method") != "tools/list") return false;
+    auto tool = Tool();
+    Set(&tool, "inputSchema", Object({{"type", String("array")}}));
+    Send(fd, Http(200, OutputJson(
+                           Rpc(request, Object({{"tools", Array({tool})}})))));
+    return true;
+  };
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  ResponsesMcpDefinition definition;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesMcpDefinition(
+      ExecutionRequest(server).GetArray("tools")->array[0], &definition,
+      &error));
+  RealtimeMcpCatalog imported;
+  Q4T_CHECK(ExecutionOk(ImportRealtimeMcpCatalog(objects, config, definition,
+                                                 ExecutionAccess(),
+                                                 "mcpl_invalid", &imported)));
+  Q4T_CHECK(!imported.loaded &&
+            imported.item.GetArray("tools")->array.empty() &&
+            !imported.authority.GetString("error").empty());
+  Q4T_CHECK(server.calls == 0 && !server.Requests().empty());
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_native_import_cancel_identity_and_scope_preflight_no_io) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  auto config = ExecutionConfig(server);
+  ResponsesMcpDefinition definition;
+  ChatPlanError error;
+  Q4T_CHECK(PlanResponsesMcpDefinition(
+      ExecutionRequest(server).GetArray("tools")->array[0], &definition,
+      &error));
+  RealtimeMcpCatalog imported;
+  imported.item = String("unchanged");
+  auto access = ExecutionAccess();
+  access.cancelled = [] { return true; };
+  Q4T_CHECK(ImportRealtimeMcpCatalog(objects, config, definition, access,
+                                     "mcpl_cancel", &imported)
+                .http_status == 499);
+  access = ExecutionAccess();
+  access.deadline = Clock::now() - 1ms;
+  Q4T_CHECK(ImportRealtimeMcpCatalog(objects, config, definition, access,
+                                     "mcpl_expired", &imported)
+                .http_status == 408);
+  Q4T_CHECK(!ImportRealtimeMcpCatalog(objects, config, definition,
+                                      ExecutionAccess(), "invalid", &imported)
+                 .ok());
+  auto declaration =
+      Object({{"type", String("mcp")},
+              {"server_label", String("drive")},
+              {"connector_id", String("connector_googledrive")}});
+  Q4T_CHECK(PlanResponsesMcpDefinition(declaration, &definition, &error));
+  auto policy = std::make_shared<McpDeploymentPolicy>();
+  policy->fetch = server.Options();
+  policy->targets.push_back({"connector_id",
+                             "connector_googledrive",
+                             server.Endpoint().url,
+                             "configured",
+                             {"client:other"}});
+  config.mcp_policy = policy;
+  Q4T_CHECK(ImportRealtimeMcpCatalog(objects, config, definition,
+                                     ExecutionAccess(), "mcpl_denied",
+                                     &imported)
+                .http_status == 403);
+  Q4T_CHECK(imported.item.str == "unchanged" && server.Requests().empty() &&
+            server.calls == 0);
   return true;
 }

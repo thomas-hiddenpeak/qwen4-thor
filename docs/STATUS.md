@@ -12,6 +12,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 通过；原失败保留）。支持同连接标签复用、私有凭据/覆盖事务和数量/
 存储边界，0GPU；当前尚未连接公开运行时，继续[实际目录、审批/执行
 事件、真实闭环与恢复交付](SERVE_REALTIME_MCP_2026-11-20.md)。
+[真实目录与投影](evidence/serve-realtime-mcp-catalog-cpu-20261120/README.md)
+12项CPU通过，包含4项实际本机MCP网络夹具；0模型启动。接着连接
+异步会话事件、审批和调用；模型驱动工具闭环与恢复仍待验。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，
