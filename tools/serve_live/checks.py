@@ -59,20 +59,36 @@ def observe(receipt, journal, before, after, record):
     require(len(progress) == 1 and progress[0]['delegation_id'] == target['id'] and
             record['version'] in progress[0]['content'] and
             record['sha256'] in progress[0]['content'], 'real result actually fed back')
-    spoken = one('session.output_transcript.delta')
-    audio = [e for e in events if e['type'] == 'session.output_audio.delta']
-    require(audio and all(set(e) == {'type', 'delta'} for e in audio),
-            'audio deltas have no synthetic terminal or event metadata')
-    raw = b''.join(base64.b64decode(e['delta'], validate=True) for e in audio)
-    require(0 < len(raw) <= 2 << 20 and len(raw) % 2 == 0 and any(raw),
-            'actual bounded nonempty PCM16')
-    require(events.index(commentary) < events.index(audio[0]) < events.index(spoken)
-            < events.index(closed), 'actual output before final close')
-    for item in (*sources, spoken, thinking, commentary):
+    transcripts = [e for e in events if e['type'] == 'session.output_transcript.delta']
+    answers = [e for e in transcripts if e.get('client_event_id') == 'project_answer']
+    require(len(answers) == 1 and 1 <= len(transcripts) <= 2,
+            'one actual spoken result, optional same-generation preface')
+    spoken = answers[0]
+    pending = bytearray(); raw = bytearray(); segments = []
+    for event in events:
+        if event['type'] == 'session.output_audio.delta':
+            require(set(event) == {'type','delta'},
+                    'audio deltas have no synthetic terminal or event metadata')
+            data = base64.b64decode(event['delta'], validate=True)
+            pending.extend(data);raw.extend(data)
+            require(len(raw) <= 2 << 20, 'bounded actual PCM output')
+        elif event['type'] == 'session.output_transcript.delta':
+            require(pending and len(pending)%2 == 0 and any(pending),
+                    'actual nonempty speech segment')
+            require(abs(event['end_ms']-event['start_ms']-len(pending)/48) <= 1,
+                    'produced waveform agrees with actual transcript interval')
+            segments.append(dict(transcript=event['delta'],bytes=len(pending),
+                sha256=hashlib.sha256(pending).hexdigest(),
+                client_event_id=event.get('client_event_id')))
+            pending.clear()
+    require(not pending and raw, 'no unfinalized audio after normal close')
+    answer_at=events.index(spoken);context_at=events.index(commentary)
+    require(context_at < answer_at < events.index(closed) and
+            any(e['type']=='session.output_audio.delta' for e in events[context_at:answer_at]),
+            'actual answer audio follows its application context')
+    for item in (*sources, *transcripts, thinking, commentary):
         require(all(type(item[k]) is int and item[k] >= 0 for k in ('start_ms', 'end_ms'))
                 and item['end_ms'] >= item['start_ms'], 'native timeline interval')
-    require(abs(spoken['end_ms']-spoken['start_ms']-len(raw)/48) <= 1,
-            'produced waveform duration agrees with actual transcript interval')
     seconds = [e['usage']['seconds'] for e in events if e['type'] in
                ('session.usage.updated', 'session.closed')]
     require(seconds and all(type(v) in (int,float) and math.isfinite(v) and v >= 0
@@ -92,5 +108,5 @@ def observe(receipt, journal, before, after, record):
     for row in quality: row['status'] = 'PASS' if normalize(row['actual']) == normalize(row['expected']) else 'FAIL'
     return dict(protocol='PASS', quality=quality, admitted=admitted, settled_tokens=tokens,
         private_token_breakdown_not_exposed=True, activity_seconds=seconds[-1],
-        waveform_bytes=len(raw), waveform_sha256=hashlib.sha256(raw).hexdigest(),
+        speech_segments=segments, waveform_bytes=len(raw), waveform_sha256=hashlib.sha256(raw).hexdigest(),
         listener_heard_audio=False, session_id=started['session']['id'])

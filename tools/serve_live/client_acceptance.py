@@ -44,7 +44,7 @@ def prepare(out):
             'formal warning-free runtime build')
     for n,h in read(WORK/'native-build-01/plan.json')['sources'].items():
         require(sha(ROOT/n)==h,'built native source drift')
-    cpu=read(WORK/'client-driver-cpu-02/result.json')
+    cpu=read(WORK/'client-driver-cpu-03/result.json')
     require(cpu['status']=='PASS','driver negative checks missing')
     for n,h in cpu['sources'].items():require(sha(ROOT/n)==h,'driver source drift')
     require(read(WORK/'binding-cpu-01/result.json')['status']=='PASS','binding CPU')

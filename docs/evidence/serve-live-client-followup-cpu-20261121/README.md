@@ -5,3 +5,5 @@
 下一轮冻结 1 模型/1 TLS/1 SDK 连接，实际原生 TTS 合成“请查询当前项目版本号。”、1 次音频 ASR、2 次前台生成、1 次普通 Chat，总 600 秒。合成录音明确标注为测试输入，ASR 只收到音频；期望文字仅供验收对照。保留原人声录音的识别通过与原未委派失败；不改模型采样/服务默认，不把提示改动追认为原业务通过。
 
 [evidence.tar.gz](evidence.tar.gz) 与 [result.json](result.json) 保留确切驱动、计划与命令；GPU 尚待执行。默认 rev426 不变，总目标 active。
+
+补充：[5项受影响音频片段检查](segments-result.json)通过，4项等待检查按未变SHA复用。一个前台生成可在工具交接前说简短提示，不能把它当作资料查询结果；现在逐段核对实际PCM/转录时长，并以 `project_answer` 关联真实回填之后的语音答复。额外前台调用仍按原计数拒绝，原“没有委派”失败不变。确切源码与日志见 [segments-evidence.tar.gz](segments-evidence.tar.gz)。

@@ -8,7 +8,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 ## 正在推进
 
 [Live短验驱动修复4项CPU](evidence/serve-live-client-followup-cpu-20261121/README.md)
-通过，10项未变检查按SHA复用。接着用原生TTS生成明确项目查询录音，
+通过；另5项受影响音频片段/结果关联检查通过，等待逻辑按SHA复用。
+接着用原生TTS生成明确项目查询录音，
 ASR不提供原文，补同一原生引擎的委派/回填短验；原失败保持。
 
 [Live首轮真实短验未通过](evidence/serve-live-client-business-failed-20261121/README.md)：

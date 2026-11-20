@@ -25,7 +25,7 @@ def fixture():
     event('session.thinking.appended',client_event_id='project_result',start_ms=1000,end_ms=1000)
     event('session.commentary.appended',client_event_id='project_answer',start_ms=1000,end_ms=1000)
     event('session.output_audio.delta',delta=base64.b64encode(bytes([1,2])*2400).decode())
-    event('session.output_transcript.delta',delta='rev426',start_ms=1000,end_ms=1100)
+    event('session.output_transcript.delta',delta='rev426',start_ms=1000,end_ms=1100,client_event_id='project_answer')
     event('session.usage.updated',usage=dict(seconds=1.5))
     event('session.closed',session=copy.deepcopy(resource),reason='close_requested',
           client_event_id='finish',usage=dict(seconds=2.0))
@@ -55,6 +55,18 @@ class Checks(unittest.TestCase):
         self.assertEqual(r['protocol'],'PASS')
         self.assertEqual(r['quality'][1]['status'],'FAIL')
         self.assertEqual(r['quality'][1]['actual'],'wrong original answer')
+
+    def test_same_generation_preface_is_not_the_tool_result(self):
+        args=fixture();events=args[0]['events']
+        prefix=[dict(type='session.output_audio.delta',delta=base64.b64encode(bytes([2,3])*480).decode()),
+                dict(type='session.output_transcript.delta',event_id='preface_id',
+                     delta='正在查询',start_ms=1000,end_ms=1020)]
+        events[6:6]=prefix
+        args[1][6:6]=[dict(direction='server',event=e) for e in prefix]
+        result=observe(*args)
+        self.assertEqual(len(result['speech_segments']),2)
+        self.assertEqual(result['quality'][1]['actual'],'rev426')
+        self.assertEqual(result['waveform_bytes'],5760)
 
     def rejected(self,mutate):
         args=fixture();mutate(args)
