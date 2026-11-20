@@ -91,6 +91,7 @@ namespace server {
 struct EmbeddingStepResult;
 class RequestDiagnostics;
 class AsrStreamPass;
+struct NativeChatSpeech;
 
 // Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
 // le boundaries in seconds; sum is accumulated in microseconds.
@@ -226,7 +227,7 @@ class ChatServer {
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, ClientRateLease& rate,
       const std::function<bool(int, const std::string&, bool)>& delta,
-      io::Json* completion);
+      io::Json* completion, const NativeChatSpeech* native = nullptr);
   // Caller owns auxiliary_mu_ and an admitted slot; never evict active work.
   ObjectReply ActivateAuxiliaryFamily(bool speech_output,
                                       const std::function<bool()>& cancelled);
@@ -333,7 +334,7 @@ class ChatServer {
   RealtimeGenerationResult RunRealtimeConversation(
       const ClientIdentity& client, const RealtimeConversationJob& job,
       const std::shared_ptr<RequestControl>& control,
-      const RealtimeDeltaSink& emit);
+      const RealtimeDeltaSink& emit, const RealtimeSpeechSink& speech);
   ObjectReply RunRealtimeTranscription(
       const ClientIdentity& client, const RealtimeTranscriptionJob& job,
       const std::array<std::span<const uint8_t>, 2>& bytes,

@@ -1,0 +1,45 @@
+{
+  "status": "PASS_TARGETED_CPU",
+  "unique_tests": 21,
+  "test_executions": 27,
+  "first_passed": 15,
+  "first_errors": 6,
+  "failed_only_followup_passed": 6,
+  "source_counterexamples": 20,
+  "gpu_starts": 0,
+  "default_unchanged": true,
+  "original_failures_preserved": true,
+  "cpu_seconds": 8.671368361916393,
+  "build": {
+    "status": "PASS",
+    "returncode": 0,
+    "seconds": 1.765683975070715,
+    "warnings": [],
+    "binaries": {
+      "q4t-guardian": "35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0",
+      "q4t-cuda-probe": "c748d66936a03e0cee48892869897ee37d3971f5a32c5a73e3868fb5fdf84acc",
+      "q4t-ingress": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "sources_unchanged": true,
+    "engine_cache_protocol_default_unchanged": true,
+    "gpu_actions": 0
+  },
+  "files": {
+    "recovery-cpu-01/plan.json": "412ff1dd83b3b4c78b30a2eae1a3df950635fa30ee6eb1020e5f6f951adc2d33",
+    "recovery-cpu-01/result.json": "f15f2e593ce92e494777b6ccddfb6f6e11b5cfa5e6d86e6135a1eadf1f1b8693",
+    "recovery-cpu-01/command-0.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recovery-cpu-01/command-0.stderr": "df326b2678235e35491a96d9e7ca8d08c3a6bb1e1582605dac016f5466825f92",
+    "recovery-cpu-02/plan.json": "2c0db286bd52dfd6d07cffa25d9340a01691ab12629d561b09e084d261f9baf7",
+    "recovery-cpu-02/result.json": "00af6369aae5262cb9c2765660101cb454b84ba2edad8eee158e227a60334b34",
+    "recovery-cpu-02/command-0.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recovery-cpu-02/command-0.stderr": "2dc5eb652d68d69624fd48c8e0f57dc0f7f86f477e030e788181cde7020aa35f",
+    "recovery-cpu-02/command-1.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recovery-cpu-02/command-1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recovery-cpu-02/command-2.stdout": "68b16676f85067b46378148feef500d3642f02eb89cb9b802474694412986048",
+    "recovery-cpu-02/command-2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-build-01/plan.json": "275ff958b6bbf3e639a388bed48d2ada647402492cb09f32044eecd6d0263dcc",
+    "native-build-01/result.json": "1dacfc1f02fba666ab29026bf09c71c3c0b358fa3fa8620e99f4e6ff9a046cf5",
+    "native-build-01/build.log": "e9485ec346767a24b90875e84b930624073c891e8819642aecf6e15b4a46132c"
+  }
+}

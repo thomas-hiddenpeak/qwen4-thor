@@ -1,0 +1,30 @@
+{
+  "prefix": "tls-controller-speech",
+  "mode": "complete",
+  "before": {
+    "admitted": 0,
+    "settled": 0,
+    "reserved": 0,
+    "active": 0,
+    "sessions": 0,
+    "host_bytes": 0,
+    "free_slots": 1,
+    "total": 1,
+    "success": 1,
+    "aborted": 0,
+    "errors": 0
+  },
+  "after": {
+    "admitted": 1,
+    "settled": 595,
+    "reserved": 0,
+    "active": 0,
+    "sessions": 0,
+    "host_bytes": 0,
+    "free_slots": 1,
+    "total": 2,
+    "success": 2,
+    "aborted": 0,
+    "errors": 0
+  }
+}

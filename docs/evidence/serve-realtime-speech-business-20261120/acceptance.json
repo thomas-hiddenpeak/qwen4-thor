@@ -1,0 +1,88 @@
+{
+  "status": "PROTOCOL_OBSERVED_QUALITY_FAILED",
+  "original_status": "FAIL",
+  "engine": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 2,
+    "response_creates": 9,
+    "chats": 2,
+    "transcriptions": 3,
+    "controls": 36
+  },
+  "seconds": 81.5316670439206,
+  "nvml_ok": 77,
+  "core_before_after": "42",
+  "protocol_checks": [
+    "PCM24k/PCMU8k/PCMA8k actual byte events and exact retrieval",
+    "0.75 fractional speed",
+    "voice lock, playback truncate/delete and no late resurrection",
+    "active speech cancellation then successful new text",
+    "single RPM and exact actual TPM for both clients",
+    "one clean official SDK connection per client",
+    "native TTS ready then healthy ASR-driven weight release"
+  ],
+  "quality": [
+    {
+      "label": "tool_audio",
+      "actual": "</q4t_refusal publi>{\"version\":\"log4t\"}",
+      "expected": "rev366",
+      "status": "FAIL"
+    },
+    {
+      "label": "pcm",
+      "actual": "rev366",
+      "expected": "Hello, this is a native speech test.",
+      "status": "FAIL"
+    },
+    {
+      "label": "mulaw",
+      "actual": "rev366",
+      "expected": "Hello, this is a native speech test.",
+      "status": "FAIL"
+    },
+    {
+      "label": "alaw",
+      "actual": "rev366",
+      "expected": "Hello, this is a native speech test.",
+      "status": "FAIL"
+    },
+    {
+      "label": "after_cancel",
+      "actual": "42",
+      "expected": "42",
+      "status": "PASS"
+    },
+    {
+      "label": "quota_audio",
+      "actual": "Hello, this is a native speech test.",
+      "expected": "Hello, this is a native speech test.",
+      "status": "PASS"
+    },
+    {
+      "label": "pcm",
+      "expected": "Hello, this is a native speech test.",
+      "actual": "brief\u4e09\u516d\u516d\u3002",
+      "status": "FAIL"
+    },
+    {
+      "label": "mulaw",
+      "expected": "Hello, this is a native speech test.",
+      "actual": "Rivf\u4e09\u516d\u516d\u3002",
+      "status": "FAIL"
+    },
+    {
+      "label": "alaw",
+      "expected": "Hello, this is a native speech test.",
+      "actual": "brief\u4e09\u516d\u516d\u3002",
+      "status": "FAIL"
+    }
+  ],
+  "default_unchanged": true,
+  "default_revision": 366,
+  "cleanup": [],
+  "automatic_retry": false,
+  "business_accepted": false,
+  "all_master_tasks_active": true
+}

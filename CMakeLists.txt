@@ -607,6 +607,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/realtime_semantic_session.cpp
   src/server/realtime_vad.cpp
   src/server/realtime_audio_export.cpp
+  src/server/realtime_speech_encoder.cpp
+  src/server/realtime_speech_history.cpp
+  src/server/realtime_speech_execution.cpp
   src/server/realtime_audio_history.cpp
   src/server/realtime_pcm.cpp
   src/server/realtime_audio_queue.cpp
@@ -849,6 +852,10 @@ if(Q4T_BUILD_TESTS)
     tests/server_http_upgrade_test.cpp
     tests/server_websocket_test.cpp
     tests/server_realtime_audio_export_test.cpp
+    tests/server_realtime_speech_encoder_test.cpp
+    tests/server_realtime_speech_history_test.cpp
+    tests/server_realtime_speech_execution_test.cpp
+    tests/server_realtime_speech_output_test.cpp
     tests/server_realtime_audio_history_test.cpp
     tests/server_realtime_pcm_test.cpp
     tests/noise_reduction_test.cpp
@@ -1023,6 +1030,9 @@ if(Q4T_BUILD_TESTS)
   src/server/realtime_semantic_session.cpp
     src/server/realtime_vad.cpp
     src/server/realtime_audio_export.cpp
+  src/server/realtime_speech_encoder.cpp
+  src/server/realtime_speech_history.cpp
+  src/server/realtime_speech_execution.cpp
   src/server/realtime_audio_history.cpp
   src/server/realtime_pcm.cpp
     src/server/realtime_audio_queue.cpp

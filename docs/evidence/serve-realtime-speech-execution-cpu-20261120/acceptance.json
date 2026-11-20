@@ -1,0 +1,55 @@
+{
+  "status": "ACCEPT_TARGETED_NATIVE_AUDIO_CPU",
+  "source_commit_before_snapshot": "3587ce6ee617c22332f3b3e409325d39af1556e0",
+  "unique_tests": 110,
+  "total_test_attempts": 116,
+  "original_failed_tests": 2,
+  "known_fixture_failures_preserved": true,
+  "preflight_without_build_record_preserved": true,
+  "cpu_seconds": 1.874140528962016,
+  "source_counterexample_types": 20,
+  "source_check_executions": 2,
+  "builds": [
+    {
+      "status": "BUILD_PASS",
+      "exit_code": 0,
+      "seconds": 45.47156409593299,
+      "warnings": 0,
+      "gpu_actions": 0,
+      "default_unchanged": true,
+      "prior_unchanged": true,
+      "binary_sha256": "4ce45a8460dbffc3ab3ce5769fa5568fd0e994bf884baecf6ef14384f1153b57",
+      "free_bytes_after": 437837824
+    },
+    {
+      "status": "BUILD_PASS",
+      "exit_code": 0,
+      "seconds": 245.2662377441302,
+      "warnings": 0,
+      "gpu_actions": 0,
+      "default_unchanged": true,
+      "prior_unchanged": true,
+      "binary_sha256": "eb92dcc22958e49ff2b1f6da7243cecb07339e0a3d4cb51f465afab3b0101841",
+      "free_bytes_after": 365355008
+    },
+    {
+      "status": "BUILD_PASS",
+      "exit_code": 0,
+      "seconds": 26.700940147973597,
+      "warnings": 0,
+      "gpu_actions": 0,
+      "default_unchanged": true,
+      "prior_unchanged": true,
+      "binary_sha256": "948dcef9d69a75aa0f176dd1b4deefffa70573020fc53776da072a95bd2e4f87",
+      "free_bytes_after": 308625408
+    }
+  ],
+  "final_host_sha256": "948dcef9d69a75aa0f176dd1b4deefffa70573020fc53776da072a95bd2e4f87",
+  "gpu_actions": 0,
+  "default_revision": 366,
+  "default_unchanged": true,
+  "native_runtime_build": "pending",
+  "actual_speech_business": "pending",
+  "duplex_input": "pending",
+  "all_master_tasks_active": true
+}

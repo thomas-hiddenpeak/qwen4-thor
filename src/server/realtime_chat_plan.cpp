@@ -64,15 +64,22 @@ Status Storage(const RealtimeChatPlan& candidate, ChatPlanError* error) {
 
 Json DefaultRealtimeChatSettings(const ChatPlanConfig& config,
                                  std::string model) {
-  return Object({{"type", String("realtime")},
-                 {"model", String(model.empty() ? config.model : model)},
-                 {"instructions", String("You are a helpful assistant.")},
-                 {"max_output_tokens", String("inf")},
-                 {"output_modalities", Array({String("text")})},
-                 {"parallel_tool_calls", Boolean(true)},
-                 {"tools", Array()},
-                 {"tool_choice", String("auto")},
-                 {"truncation", String("auto")}});
+  return Object(
+      {{"type", String("realtime")},
+       {"model", String(model.empty() ? config.model : model)},
+       {"instructions", String("You are a helpful assistant.")},
+       {"max_output_tokens", String("inf")},
+       {"output_modalities", Array({String("text")})},
+       {"audio",
+        Object({{"output",
+                 Object({{"format", Object({{"type", String("audio/pcm")},
+                                            {"rate", Number(24000)}})},
+                         {"voice", String("vivian")},
+                         {"speed", Number(1)}})}})},
+       {"parallel_tool_calls", Boolean(true)},
+       {"tools", Array()},
+       {"tool_choice", String("auto")},
+       {"truncation", String("auto")}});
 }
 
 Status ParseRealtimeChatTarget(std::string_view target,
@@ -129,12 +136,11 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
     return Invalid(error, "response.metadata", "Invalid response metadata");
   // These processors are connected separately. Never acknowledge a setting
   // here and silently drop its actual audio, trace or remote tool work.
-  for (const auto* field : {"audio"}) {
-    if (const auto* value = Option(settings, response, field);
-        value && !value->IsNull() &&
-        (!value->IsObject() || !value->object.empty()))
-      return Processor(error, field);
-  }
+  if (const auto* audio = settings.Find("audio"))
+    if (const auto* input = audio->Find("input");
+        input && !input->IsNull() &&
+        (!input->IsObject() || !input->object.empty()))
+      return Processor(error, "audio.input");
   const auto* reference = Option(settings, response, "prompt");
   if (reference && !reference->IsNull()) {
     if (!prompt) return Processor(error, "prompt");
@@ -153,9 +159,9 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
   if (const auto* include = settings.GetArray("include");
       include && !include->array.empty())
     return Processor(error, "include");
-  if (const auto* modes = Option(settings, response, "output_modalities");
-      modes && (modes->array.size() != 1 || modes->array[0].str != "text"))
-    return Processor(error, "output_modalities");
+  RealtimeSpeechOptions speech;
+  status = PlanRealtimeSpeech(settings, response, &speech, error);
+  if (!status) return status;
 
   auto request =
       Object({{"model", String(settings.GetString("model", config.model))},
@@ -199,6 +205,7 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
   Set(&request, "max_output_tokens", Number(output));
 
   RealtimeChatPlan candidate;
+  candidate.speech = std::move(speech);
   candidate.truncation = settings.Has("truncation")
                              ? *settings.Find("truncation")
                              : String("auto");
@@ -247,8 +254,14 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
       for (size_t j = 0; j < content->array.size(); ++j) {
         auto& part = content->array[j];
         const auto type = part.GetString("type");
-        if (type == "input_audio" || type == "output_audio")
+        if (type == "output_audio" && item.GetString("role") == "assistant" &&
+            part.Find("transcript") && part.Find("transcript")->IsString() &&
+            !part.Has("audio")) {
+          part = Object({{"type", String("output_text")},
+                         {"text", *part.Find("transcript")}});
+        } else if (type == "input_audio" || type == "output_audio") {
           return Processor(error, path + ".content[" + std::to_string(j) + ']');
+        }
         if (type.empty() && part.Has("text") && part.object.size() == 1)
           Set(&part, "type",
               String(item.GetString("role") == "assistant" ? "output_text"

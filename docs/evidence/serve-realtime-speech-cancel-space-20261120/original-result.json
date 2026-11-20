@@ -1,0 +1,15 @@
+{
+  "status": "FAIL",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 304, in run\n    self.start(); self.business(); result['status'] = 'PASS'\n                  ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_cancel_acceptance.py\", line 159, in business\n    interrupted=self.sdk('hold_stream');after=self.observe('after',managed.clean)\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_cancel_acceptance.py\", line 120, in observe\n    self.same_model();status,raw=self.http('/metrics',timeout=1)\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_grammar_reap/acceptance.py\", line 143, in http\n    self.budget('controls')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_cancel_acceptance.py\", line 112, in budget\n    require(shutil.disk_usage(self.out).free>=32<<20,'bounded repair disk reserve')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: bounded repair disk reserve\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "response_creates": 2,
+    "chats": 0,
+    "controls": 32
+  },
+  "seconds": 61.95368974329904,
+  "binary_sha256": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e"
+}

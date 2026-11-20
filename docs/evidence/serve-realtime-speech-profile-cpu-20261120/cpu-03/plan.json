@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "tools/serve_audit/check_inventory.py",
+    "--self-check"
+  ],
+  "seconds_limit": 120,
+  "reused_tests": 28,
+  "actual_old_records": 2,
+  "previous": [
+    "21ca8449a5b0cdb9d707b279bc1078d6ac942ace7e108726dd015b98cbc277a9",
+    "b4f408adc6f464094f298d3c41b339778452e207e5a79de6d9f984f0e803c2ad"
+  ]
+}

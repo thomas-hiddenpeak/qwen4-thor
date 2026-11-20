@@ -1,0 +1,18 @@
+{
+  "status": "SOURCE_REVIEW_ACTUAL_CANCELLATION_PENDING",
+  "previous_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+  "previous_protocol": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+  "candidate_binary": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+  "candidate_protocol": "c0571cd5ee593142b679e016862b492187cb5425132ec9bb6aa60d2b759aaea4",
+  "previous_registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+  "runtime_diff": "7562687473a26ceb77feaff06b1daa925acd848adbe1165bc85ac14eb7fe3120",
+  "changed": [
+    "include/q4t/server/chat_audio_output.h",
+    "src/server/chat_audio_output.cpp",
+    "src/server/chat_generation.cpp"
+  ],
+  "unchanged": 790,
+  "removed": [],
+  "added": [],
+  "scope": "Only Chat audio cancellation metric classification and genuine-error guard. No model/kernels, tokenization, synthesis, ownership, numerical or endpoint behavior changes. Original failed metrics remain failed; actual repaired cancellation pending."
+}

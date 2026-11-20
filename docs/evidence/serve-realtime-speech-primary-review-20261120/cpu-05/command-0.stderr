@@ -1,0 +1,6 @@
+test_all_three_sessions_require_exact_single_admission_and_settlement (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_all_three_sessions_require_exact_single_admission_and_settlement) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.008s
+
+OK

@@ -1,0 +1,87 @@
+{
+  "status": "ACCEPT_EXPLICIT_USER_SPEECH_CONTENT",
+  "engine": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "response_creates": 5,
+    "chats": 2,
+    "transcriptions": 3,
+    "controls": 34
+  },
+  "seconds": 76.38156169233844,
+  "nvml_ok": 73,
+  "quality": [
+    {
+      "label": "tool_audio",
+      "actual": "rev366",
+      "expected": "rev366",
+      "status": "PASS"
+    },
+    {
+      "label": "pcm",
+      "actual": "Hello, this is a native speech test.",
+      "expected": "Hello, this is a native speech test.",
+      "status": "PASS"
+    },
+    {
+      "label": "mulaw",
+      "actual": "Hello, this is a native speech test.",
+      "expected": "Hello, this is a native speech test.",
+      "status": "PASS"
+    },
+    {
+      "label": "alaw",
+      "actual": "Hello, this is a native speech test.",
+      "expected": "Hello, this is a native speech test.",
+      "status": "PASS"
+    },
+    {
+      "label": "pcm",
+      "expected": "Hello, this is a native speech test.",
+      "actual": "Hello. This is a native speech test.",
+      "status": "PASS"
+    },
+    {
+      "label": "mulaw",
+      "expected": "Hello, this is a native speech test.",
+      "actual": "Hello. This is a native speech test.",
+      "status": "PASS"
+    },
+    {
+      "label": "alaw",
+      "expected": "Hello, this is a native speech test.",
+      "actual": "Hello. This is a native speech test.",
+      "status": "PASS"
+    }
+  ],
+  "original_failures_preserved": true,
+  "original_run_sha256": "3f91f6c942b68fa42c491cec70722ea6ddef049ca8c5db72036ebd8e11f96507",
+  "reused_protocol_evidence": "docs/evidence/serve-realtime-speech-business-20261120/acceptance.json",
+  "fixed_seed_observations": {
+    "tool_audio": {
+      "index": 0,
+      "text": "rev366",
+      "finish_reason": "stop",
+      "logprobs": null
+    },
+    "pcm": {
+      "index": 0,
+      "text": "rev366",
+      "finish_reason": "stop",
+      "logprobs": null
+    }
+  },
+  "independent_leases": 2,
+  "total_starts": 2,
+  "total_response_creates": 14,
+  "total_chat_or_completions": 4,
+  "total_asr": 6,
+  "total_seconds": 157.91322873625904,
+  "total_nvml_ok": 150,
+  "default_unchanged": true,
+  "default_revision": 366,
+  "delivery_accepted": false,
+  "master_complete": false
+}

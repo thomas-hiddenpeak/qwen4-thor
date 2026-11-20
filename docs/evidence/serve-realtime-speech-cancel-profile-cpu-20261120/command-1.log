@@ -1,0 +1,13 @@
+{
+  "inventory_current": false,
+  "semantics_certified": false,
+  "fields": 53,
+  "completion_fields": 21,
+  "routes": 85,
+  "native_routes": 142,
+  "reviewed_source_anchors": 1050,
+  "mutation_checks": 20,
+  "errors": [
+    "sources_sha256 requires renewed review: ['tools/serve_recovery/profile_evidence.py', 'tools/serve_recovery/profile_record.py', 'tools/serve_recovery/profile_speech_reuse.py', 'tools/serve_recovery/profile_speech_source.py']"
+  ]
+}

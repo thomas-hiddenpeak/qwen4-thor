@@ -1,0 +1,109 @@
+{
+  "status": "FAILED_PREPARATION",
+  "error": "invalid private gateway client policy",
+  "reason": "Private immutable policy was hard-linked; policy contract requires one link.",
+  "gpu_starts": 0,
+  "files": [
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/native-build.json",
+      "sha256": "b50f7c1bb8146f027e7bb1e71f2efcc92c3acf357020608a9c98305577b1eef1",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/profile-primary.json",
+      "sha256": "71998b6aa4f418d82201f7ec6d2e920dca77ed5327d7ca8ed7db7e8c031761d5",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/profile-light.json",
+      "sha256": "4a854638019a5974812f3bed77ba850f340e5095e35c6cbe69ed2f73038cae37",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/q4t.release.json",
+      "sha256": "06aac054f2b937f16ab009ff9d50147932328e2e4327912f2f7454b6a063c18d",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/acceptance.json",
+      "sha256": "756875459d7bcf04720ff82fb6a482311d07c1759dd27c65760fe7738812d3b9",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/client-policy.json",
+      "sha256": "87264b5cc81c014ad665b0cfe6271c9dd84f4b10c076206d87a224aab43974c7",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/configuration.json",
+      "sha256": "b476005cd5fa2e81c430a7dbb0c133a8e8fd6ef5df680744a7644b23ae2bdd45",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/capabilities.json",
+      "sha256": "a7014745b1c71f0b6f989b06e18c2e2011fac42c3119271ea089bd8cb5b3f95d",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/openapi.json",
+      "sha256": "f14ed9f9ad4048571521e28e0570f2d34aa4b89aef5e31c9688872e6e721c59c",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/stop.json",
+      "sha256": "25989a444b4dc6a8ad7a0b8f723dbe96a26f9b97feb1e75016452e30536d4067",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/preflight.json",
+      "sha256": "a9f39deeb3c987f361c8c127eea3611590231c63ef794425624435a6e0f01b62",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/thinking.json",
+      "sha256": "1353743d9290215253fab2d8d0952ff99d833444e24323a01efacc6b10cf1bd7",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/response.json",
+      "sha256": "02bee1717d922f30997c20da2244f4368817a4f236dd614fe7a2c595844ad6a5",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/config.json",
+      "sha256": "68290efb719bb9c4ce74b37715643393851eb7255ac82eea3445e9ff93e1bbbf",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/reasoning.json",
+      "sha256": "e0e24e50afc2146757deac6fd8028377613e1305ff4dad4a1756c74961b938a4",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/completion_request.json",
+      "sha256": "1bd8923ee0bb6bb33e2dc8ee7a8dee0aa8d0fba2a26731d4c377b1aca7b3c3d6",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/application.json",
+      "sha256": "24d2966c06e9c3b0a3a010c13743f38bbe381525b8f2abeeb9327593bae50e36",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/completion_response.json",
+      "sha256": "31822bddf33f4d4dac3c9816b9dfa88bc5d6451e496bedb8bf74735e5b7f5916",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/declarations/schemas/message.json",
+      "sha256": "47a20db88ad0746801051ca9d426800e7726b755d195eaa32c158470700dbe8d",
+      "links": 2
+    },
+    {
+      "path": ".q4t-work/serve-realtime-audio-20261120/retained-01/bundle/engine/licenses/quickjs/SOURCE.json",
+      "sha256": "4700fba616d4fbd4a9275a3b7ca7fefadc7370f7040a799c1cd52c9b3a95ad32",
+      "links": 2
+    }
+  ],
+  "original_driver_sha256": "15ad19d457eafff8388711f880d51de047fb255ab9dd68b943d2abbbc812d7d9"
+}

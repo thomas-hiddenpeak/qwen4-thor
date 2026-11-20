@@ -8,6 +8,7 @@
 #include "q4t/server/actual_usage.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/object_store.h"
+#include "q4t/server/realtime_speech_encoder.h"
 
 namespace q4t::server {
 bool RealtimeMetadataBounded(const io::Json& metadata);
@@ -31,7 +32,10 @@ struct RealtimeResponseOutputOptions {
   bool in_conversation = true;
   io::Json metadata;
   size_t maximum_bytes = 1ULL << 20, maximum_items = 128;
+  std::optional<RealtimeAudioFormat> audio_format = {};
+  size_t maximum_audio_bytes = kRealtimeAudioBytes;
 };
+enum class RealtimeAudioCommit { kAppend, kComplete, kInterrupted };
 class RealtimeResponseOutput {
  public:
   using EventSink = std::function<ObjectReply(const io::Json&)>;
@@ -40,10 +44,20 @@ class RealtimeResponseOutput {
   using ItemSink =
       std::function<ObjectReply(const io::Json&, bool begin, bool terminal)>;
   using IdFactory = std::function<std::string(std::string_view prefix)>;
+  // The same session owner retains real waveform bytes outside public
+  // response items. Terminal events contain transcripts, never duplicate audio.
+  using AudioSink = std::function<ObjectReply(
+      std::string_view item_id, std::string_view bytes, RealtimeAudioCommit)>;
   RealtimeResponseOutput(RealtimeResponseOutputOptions options, EventSink emit,
-                         ItemSink item, IdFactory ids);
+                         ItemSink item, IdFactory ids, AudioSink audio = {});
   ObjectReply Begin();
   ObjectReply Append(const ResponseDelta& delta);
+  ObjectReply AppendAudio(std::string_view bytes);
+  ObjectReply CompleteAudio(const RealtimeSpeechReceipt& receipt,
+                            std::string_view spoken_input);
+  // The session has already truncated its waveform/transcript and cancelled
+  // the request. Discard queued late output without resurrecting that history.
+  ObjectReply TruncateAudio(std::string_view item_id);
   ObjectReply Finish(const RealtimeResponseEnd& end);
   bool Terminal() const { return terminal_; }
   bool UsageAvailable() const { return usage_available_; }
@@ -69,10 +83,14 @@ class RealtimeResponseOutput {
   EventSink emit_;
   ItemSink item_;
   IdFactory ids_;
+  AudioSink audio_;
   std::vector<Item> items_;
   size_t bytes_ = 0;
   bool begun_ = false, terminal_ = false, sink_failed_ = false;
   bool usage_available_ = false;
+  std::optional<size_t> audio_index_;
+  size_t audio_bytes_ = 0;
+  bool audio_complete_ = false, audio_truncated_ = false;
   ObjectReply error_;
 };
 }  // namespace q4t::server

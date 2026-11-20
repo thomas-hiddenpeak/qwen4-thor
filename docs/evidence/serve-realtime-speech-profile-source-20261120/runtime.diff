@@ -1,0 +1,2006 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index cfda57374..225a06d14 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -607,6 +607,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
+   src/server/realtime_semantic_session.cpp
+   src/server/realtime_vad.cpp
+   src/server/realtime_audio_export.cpp
++  src/server/realtime_speech_encoder.cpp
++  src/server/realtime_speech_history.cpp
++  src/server/realtime_speech_execution.cpp
+   src/server/realtime_audio_history.cpp
+   src/server/realtime_pcm.cpp
+   src/server/realtime_audio_queue.cpp
+@@ -849,6 +852,10 @@ if(Q4T_BUILD_TESTS)
+     tests/server_http_upgrade_test.cpp
+     tests/server_websocket_test.cpp
+     tests/server_realtime_audio_export_test.cpp
++    tests/server_realtime_speech_encoder_test.cpp
++    tests/server_realtime_speech_history_test.cpp
++    tests/server_realtime_speech_execution_test.cpp
++    tests/server_realtime_speech_output_test.cpp
+     tests/server_realtime_audio_history_test.cpp
+     tests/server_realtime_pcm_test.cpp
+     tests/noise_reduction_test.cpp
+@@ -1023,6 +1030,9 @@ if(Q4T_BUILD_TESTS)
+   src/server/realtime_semantic_session.cpp
+     src/server/realtime_vad.cpp
+     src/server/realtime_audio_export.cpp
++  src/server/realtime_speech_encoder.cpp
++  src/server/realtime_speech_history.cpp
++  src/server/realtime_speech_execution.cpp
+   src/server/realtime_audio_history.cpp
+   src/server/realtime_pcm.cpp
+     src/server/realtime_audio_queue.cpp
+diff --git a/cmake/ChatProtocolIdentity.cmake b/cmake/ChatProtocolIdentity.cmake
+index cc31e407c..6b0efc6d2 100644
+--- a/cmake/ChatProtocolIdentity.cmake
++++ b/cmake/ChatProtocolIdentity.cmake
+@@ -658,6 +658,12 @@ set(protocol_inputs
+   include/q4t/server/realtime_semantic_score.h
+   include/q4t/server/realtime_vad.h
+   include/q4t/server/realtime_audio_export.h
++  include/q4t/server/realtime_speech_encoder.h
++  src/server/realtime_speech_encoder.cpp
++  include/q4t/server/realtime_speech_history.h
++  include/q4t/server/realtime_speech_execution.h
++  src/server/realtime_speech_history.cpp
++  src/server/realtime_speech_execution.cpp
+   include/q4t/server/realtime_audio_history.h
+   src/server/realtime_audio_history.cpp
+   src/server/realtime_audio_export.cpp
+diff --git a/include/q4t/server/chat_audio_output.h b/include/q4t/server/chat_audio_output.h
+index 7573757bc..4400d839b 100644
+--- a/include/q4t/server/chat_audio_output.h
++++ b/include/q4t/server/chat_audio_output.h
+@@ -19,6 +19,11 @@ struct ChatAudioOptions {
+ // generation; the parser never invents spoken content or maps voice identities.
+ Status ParseChatAudioOptions(const io::Json& request, ChatAudioOptions* out,
+                              ChatPlanError* error);
++// Validate the actual generated utterance without losing resolved native
++// voice/tempo options. Atomic; fractional speed must survive serialization.
++Status ValidateChatSpeechRequest(const SpeechRequest& request,
++                                 SpeechRequest* validated,
++                                 ChatPlanError* error);
+ std::string_view ChatAudioFormatName(SpeechFormat format);
+ 
+ // Input history accepts only an assistant audio reference. Retrieval and
+diff --git a/include/q4t/server/chat_server.h b/include/q4t/server/chat_server.h
+index 18ec961af..2f78c34c6 100644
+--- a/include/q4t/server/chat_server.h
++++ b/include/q4t/server/chat_server.h
+@@ -91,6 +91,7 @@ namespace server {
+ struct EmbeddingStepResult;
+ class RequestDiagnostics;
+ class AsrStreamPass;
++struct NativeChatSpeech;
+ 
+ // Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
+ // le boundaries in seconds; sum is accumulated in microseconds.
+@@ -226,7 +227,7 @@ class ChatServer {
+       const std::shared_ptr<RequestControl>& control,
+       RequestDiagnostics& diagnostic, ClientRateLease& rate,
+       const std::function<bool(int, const std::string&, bool)>& delta,
+-      io::Json* completion);
++      io::Json* completion, const NativeChatSpeech* native = nullptr);
+   // Caller owns auxiliary_mu_ and an admitted slot; never evict active work.
+   ObjectReply ActivateAuxiliaryFamily(bool speech_output,
+                                       const std::function<bool()>& cancelled);
+@@ -333,7 +334,7 @@ class ChatServer {
+   RealtimeGenerationResult RunRealtimeConversation(
+       const ClientIdentity& client, const RealtimeConversationJob& job,
+       const std::shared_ptr<RequestControl>& control,
+-      const RealtimeDeltaSink& emit);
++      const RealtimeDeltaSink& emit, const RealtimeSpeechSink& speech);
+   ObjectReply RunRealtimeTranscription(
+       const ClientIdentity& client, const RealtimeTranscriptionJob& job,
+       const std::array<std::span<const uint8_t>, 2>& bytes,
+diff --git a/include/q4t/server/native_chat_generation.h b/include/q4t/server/native_chat_generation.h
+index 5d24a5389..c14404332 100644
+--- a/include/q4t/server/native_chat_generation.h
++++ b/include/q4t/server/native_chat_generation.h
+@@ -8,14 +8,24 @@
+ #include "q4t/server/object_store.h"
+ #include "q4t/server/request_limits.h"
+ #include "q4t/server/chat_plan.h"
++#include "q4t/server/speech_output.h"
+ 
+ namespace q4t::server {
+ class ModelPreparation;
++// Borrowed synchronous PCM observer. The ordinary Chat owner performs the TTS
++// step and settles its original rate lease; this observer never runs a model.
++struct NativeChatSpeech {
++  std::function<ObjectReply(std::string_view)> append;
++  std::function<ObjectReply(std::string_view, const SpeechEncodingReceipt&,
++                            const ActualUsage&)>
++      complete;
++};
+ // Borrowed native proofs. The execution owner keeps the prepared plan and
+ // accounting alive through generation; no HTTP field may construct these.
+ struct NativeChatInputs {
+   const ChatRequestPlan* plan = nullptr;
+   ModelPreparation* preparation = nullptr;
++  const NativeChatSpeech* speech = nullptr;
+ };
+ class NativeChatGeneration {
+  public:
+@@ -34,11 +44,19 @@ class NativeChatGeneration {
+   const io::Json& Request() const { return request_; }
+   const ChatRequestPlan* PreparedPlan() const { return inputs_.plan; }
+   ModelPreparation* Preparation() const { return inputs_.preparation; }
++  const NativeChatSpeech* Speech() const { return inputs_.speech; }
+   bool Valid() const {
+-    // Realtime's model step emits text/functions. Output audio and hosted MCP
+-    // belong to their own native owners. Do not stream private Chat web-tool
+-    // or moderation steps through this primary-output observer.
++    // Public JSON cannot grant a native speech observer or prepared proofs.
++    // Speech keeps the primary transcript for final message verification.
++    const bool speech =
++        inputs_.speech && inputs_.plan && inputs_.speech->append &&
++        inputs_.speech->complete && inputs_.plan->audio_output.enabled &&
++        inputs_.plan->audio_output.text &&
++        inputs_.plan->audio_output.speech.format == SpeechFormat::kPcm;
+     return (!inputs_.preparation || inputs_.plan) && sink_ && maximum_bytes_ &&
++           (inputs_.speech
++                ? speech
++                : !inputs_.plan || !inputs_.plan->audio_output.enabled) &&
+            maximum_bytes_ <= kChatBodyBytes && request_.IsObject() &&
+            !request_.Has("moderation") && !request_.Has("web_search_options") &&
+            !request_.Has("modalities") && !request_.Has("audio");
+diff --git a/include/q4t/server/realtime_chat_plan.h b/include/q4t/server/realtime_chat_plan.h
+index fe0c45cca..624efcf39 100644
+--- a/include/q4t/server/realtime_chat_plan.h
++++ b/include/q4t/server/realtime_chat_plan.h
+@@ -3,6 +3,7 @@
+ 
+ #include "q4t/server/responses_plan.h"
+ #include "q4t/server/prompt_registry.h"
++#include "q4t/server/realtime_speech_execution.h"
+ 
+ namespace q4t::server {
+ struct RealtimeChatPlan {
+@@ -11,6 +12,7 @@ struct RealtimeChatPlan {
+   io::Json truncation;
+   size_t prompt_items = 0;
+   bool input_ready = false;
++  RealtimeSpeechOptions speech;
+ };
+ // Pure preparation. References have already been resolved by the session owner.
+ // No model, network, file access, token reservation or response publication.
+diff --git a/include/q4t/server/realtime_conversation.h b/include/q4t/server/realtime_conversation.h
+index b27993681..e5565ebba 100644
+--- a/include/q4t/server/realtime_conversation.h
++++ b/include/q4t/server/realtime_conversation.h
+@@ -50,6 +50,9 @@ class RealtimeConversation {
+   Status Find(std::string_view id, RealtimeItemTicket* output) const;
+   Status Get(const RealtimeItemTicket& ticket, io::Json* output) const;
+   Status Erase(const RealtimeItemTicket& ticket);
++  // No word/sample alignment is available. A valid playback truncation clears
++  // the complete transcript, preserving allocated capacity and item identity.
++  Status TruncateAudioTranscript(const RealtimeItemTicket& ticket);
+   // Missing previous appends; "root" inserts first. An out-of-band or absent
+   // predecessor is an error. Client-supplied status never hides valid history.
+   Status Create(const io::Json& item, std::string_view generated_id,
+@@ -75,7 +78,8 @@ class RealtimeConversation {
+   Status Snapshot(const io::Json* input,
+                   RealtimeConversationSnapshot* output) const;
+   // Persist a successful default response's context cut without deleting its
+-  // retrievable history. Generation tickets protect entries recreated meanwhile.
++  // retrievable history. Generation tickets protect entries recreated
++  // meanwhile.
+   Status TruncateDefault(const RealtimeConversationSnapshot& snapshot,
+                          std::span<const size_t> retained);
+ 
+diff --git a/include/q4t/server/realtime_conversation_session.h b/include/q4t/server/realtime_conversation_session.h
+index 2b8fefec5..d6c4fec3d 100644
+--- a/include/q4t/server/realtime_conversation_session.h
++++ b/include/q4t/server/realtime_conversation_session.h
+@@ -9,6 +9,8 @@
+ #include "q4t/server/realtime_conversation.h"
+ #include "q4t/server/realtime_prompt_settings.h"
+ #include "q4t/server/realtime_response_output.h"
++#include "q4t/server/realtime_speech_execution.h"
++#include "q4t/server/realtime_speech_history.h"
+ #include "q4t/server/websocket_session.h"
+ 
+ namespace q4t::server {
+@@ -51,9 +53,9 @@ struct RealtimeConversationCallbacks {
+   std::function<void(const std::shared_ptr<RequestControl>&)> release;
+   // Cooperative worker. Normal client admission/quota/model accounting is
+   // owned here; no secondary model or RPM reservation in the session.
+-  std::function<RealtimeGenerationResult(const RealtimeConversationJob&,
+-                                         const std::shared_ptr<RequestControl>&,
+-                                         const RealtimeDeltaSink&)>
++  std::function<RealtimeGenerationResult(
++      const RealtimeConversationJob&, const std::shared_ptr<RequestControl>&,
++      const RealtimeDeltaSink&, const RealtimeSpeechSink&)>
+       execute;
+ };
+ 
+@@ -73,6 +75,7 @@ class RealtimeConversationSession {
+   void Join() noexcept;
+   size_t ActiveResponses() const { return work_.size(); }
+   size_t HistoryBytes() const { return history_.ChargedBytes(); }
++  size_t SpeechBytes() const { return speech_.ChargedBytes(); }
+ 
+  private:
+   struct Work;
+@@ -85,10 +88,14 @@ class RealtimeConversationSession {
+   bool Settings(const io::Json& update, std::string_view event_id);
+   bool CreateItem(const io::Json& event);
+   bool ItemCommand(const io::Json& event, bool erase);
++  bool TruncateItem(const io::Json& event);
++  ObjectReply ValidateSpeech(const RealtimeSpeechOptions& speech) const;
+   bool CreateResponse(const io::Json& event);
+   bool CancelResponse(const io::Json& event);
+   ObjectReply Store(Work& work, const io::Json& item, bool begin,
+                     bool terminal);
++  ObjectReply StoreAudio(Work& work, std::string_view id,
++                         std::string_view bytes, RealtimeAudioCommit commit);
+   void Release(Work& work) noexcept;
+   const std::string id_, conversation_id_;
+   RealtimePromptSettings settings_;
+@@ -96,6 +103,8 @@ class RealtimeConversationSession {
+   const RealtimeConversationCallbacks callbacks_;
+   const size_t message_bytes_;
+   RealtimeConversation history_;
++  RealtimeSpeechHistory speech_;
++  std::optional<RealtimeSpeechOptions> locked_voice_;
+   std::deque<std::unique_ptr<Work>> work_;
+   std::deque<std::string> events_;
+   size_t event_bytes_ = 0;
+diff --git a/include/q4t/server/realtime_response_output.h b/include/q4t/server/realtime_response_output.h
+index 4d96cf6ef..87c386e66 100644
+--- a/include/q4t/server/realtime_response_output.h
++++ b/include/q4t/server/realtime_response_output.h
+@@ -8,6 +8,7 @@
+ #include "q4t/server/actual_usage.h"
+ #include "q4t/server/chat_response_parser.h"
+ #include "q4t/server/object_store.h"
++#include "q4t/server/realtime_speech_encoder.h"
+ 
+ namespace q4t::server {
+ bool RealtimeMetadataBounded(const io::Json& metadata);
+@@ -31,7 +32,10 @@ struct RealtimeResponseOutputOptions {
+   bool in_conversation = true;
+   io::Json metadata;
+   size_t maximum_bytes = 1ULL << 20, maximum_items = 128;
++  std::optional<RealtimeAudioFormat> audio_format = {};
++  size_t maximum_audio_bytes = kRealtimeAudioBytes;
+ };
++enum class RealtimeAudioCommit { kAppend, kComplete, kInterrupted };
+ class RealtimeResponseOutput {
+  public:
+   using EventSink = std::function<ObjectReply(const io::Json&)>;
+@@ -40,10 +44,20 @@ class RealtimeResponseOutput {
+   using ItemSink =
+       std::function<ObjectReply(const io::Json&, bool begin, bool terminal)>;
+   using IdFactory = std::function<std::string(std::string_view prefix)>;
++  // The same session owner retains real waveform bytes outside public
++  // response items. Terminal events contain transcripts, never duplicate audio.
++  using AudioSink = std::function<ObjectReply(
++      std::string_view item_id, std::string_view bytes, RealtimeAudioCommit)>;
+   RealtimeResponseOutput(RealtimeResponseOutputOptions options, EventSink emit,
+-                         ItemSink item, IdFactory ids);
++                         ItemSink item, IdFactory ids, AudioSink audio = {});
+   ObjectReply Begin();
+   ObjectReply Append(const ResponseDelta& delta);
++  ObjectReply AppendAudio(std::string_view bytes);
++  ObjectReply CompleteAudio(const RealtimeSpeechReceipt& receipt,
++                            std::string_view spoken_input);
++  // The session has already truncated its waveform/transcript and cancelled
++  // the request. Discard queued late output without resurrecting that history.
++  ObjectReply TruncateAudio(std::string_view item_id);
+   ObjectReply Finish(const RealtimeResponseEnd& end);
+   bool Terminal() const { return terminal_; }
+   bool UsageAvailable() const { return usage_available_; }
+@@ -69,10 +83,14 @@ class RealtimeResponseOutput {
+   EventSink emit_;
+   ItemSink item_;
+   IdFactory ids_;
++  AudioSink audio_;
+   std::vector<Item> items_;
+   size_t bytes_ = 0;
+   bool begun_ = false, terminal_ = false, sink_failed_ = false;
+   bool usage_available_ = false;
++  std::optional<size_t> audio_index_;
++  size_t audio_bytes_ = 0;
++  bool audio_complete_ = false, audio_truncated_ = false;
+   ObjectReply error_;
+ };
+ }  // namespace q4t::server
+diff --git a/include/q4t/server/realtime_speech_encoder.h b/include/q4t/server/realtime_speech_encoder.h
+new file mode 100644
+index 000000000..7a21bf2df
+--- /dev/null
++++ b/include/q4t/server/realtime_speech_encoder.h
+@@ -0,0 +1,49 @@
++// Continuous native TTS PCM -> the negotiated Realtime wire audio format.
++#pragma once
++
++#include <functional>
++#include <string_view>
++
++#include "q4t/audio/stream_resample.h"
++#include "q4t/server/object_store.h"
++#include "q4t/server/realtime_audio_queue.h"
++
++namespace q4t::server {
++struct RealtimeSpeechReceipt {
++  uint64_t input_samples = 0, output_samples = 0, bytes = 0;
++};
++
++// One worker owns this converter. Input is actual 24kHz mono S16LE output
++// from native speech synthesis. Odd chunks retain one byte, never pad a sample.
++// The sink synchronously accepts each bounded binary chunk. Any failure ends
++// this stream; partially accepted output must not be replayed or marked done.
++class RealtimeSpeechEncoder {
++ public:
++  using Sink = std::function<ObjectReply(std::string_view)>;
++  static constexpr size_t kMaximumChunkBytes = 64 * 1024;
++  static constexpr size_t kOutputChunkBytes = 2048;
++  RealtimeSpeechEncoder(RealtimeAudioFormat format, size_t maximum_samples,
++                        size_t maximum_bytes,
++                        std::function<bool()> cancelled = {});
++  RealtimeSpeechEncoder(const RealtimeSpeechEncoder&) = delete;
++  RealtimeSpeechEncoder& operator=(const RealtimeSpeechEncoder&) = delete;
++  bool Valid() const { return valid_; }
++  bool Finished() const { return finished_; }
++  ObjectReply Append(std::string_view pcm, const Sink& sink);
++  // Only full natural EOF publishes a receipt. It remains unchanged on error.
++  ObjectReply Finish(const Sink& sink, RealtimeSpeechReceipt* receipt);
++
++ private:
++  ObjectReply Fail(std::string_view code, std::string_view message);
++  ObjectReply Check();
++  ObjectReply Write(std::span<const float> samples, const Sink& sink);
++  const RealtimeAudioFormat format_;
++  const size_t maximum_samples_, maximum_bytes_;
++  const std::function<bool()> cancelled_;
++  audio::AsrStreamResampler resampler_;
++  uint64_t input_bytes_ = 0, output_bytes_ = 0;
++  uint8_t pending_byte_ = 0;
++  bool valid_ = false, pending_ = false, finished_ = false;
++  ObjectReply error_;
++};
++}  // namespace q4t::server
+diff --git a/include/q4t/server/realtime_speech_execution.h b/include/q4t/server/realtime_speech_execution.h
+new file mode 100644
+index 000000000..f6b900244
+--- /dev/null
++++ b/include/q4t/server/realtime_speech_execution.h
+@@ -0,0 +1,55 @@
++// Native speech delivery on the original Realtime response worker.
++#pragma once
++
++#include "q4t/server/chat_audio_output.h"
++#include "q4t/server/realtime_speech_encoder.h"
++#include "q4t/server/speech_output.h"
++#include "q4t/trace/sha256.h"
++
++namespace q4t::server {
++struct RealtimeSpeechOptions {
++  bool enabled = false;
++  RealtimeAudioFormat format;
++  ChatAudioOptions chat;
++};
++// Merge per-response output options with effective session settings. Input
++// audio is owned separately. No lookup, voice substitution or model execution.
++Status PlanRealtimeSpeech(const io::Json& settings, const io::Json& response,
++                          RealtimeSpeechOptions* out, ChatPlanError* error);
++bool SameRealtimeVoice(const RealtimeSpeechOptions& left,
++                       const RealtimeSpeechOptions& right);
++struct RealtimeSpeechEvent {
++  enum class Kind { kChunk, kDone } kind = Kind::kChunk;
++  std::string bytes, transcript;
++  RealtimeSpeechReceipt receipt;
++};
++using RealtimeSpeechSink =
++    std::function<ObjectReply(const RealtimeSpeechEvent&)>;
++
++// Verifies actual post-tempo PCM against the native EOF receipt before
++// publishing completion. No waveform accumulation or extra RPM/model owner.
++class RealtimeSpeechExecution {
++ public:
++  RealtimeSpeechExecution(const RealtimeSpeechOptions& options,
++                          RealtimeSpeechSink sink,
++                          std::function<bool()> cancelled);
++  bool Valid() const { return valid_; }
++  bool Completed() const { return completed_; }
++  const std::optional<ActualUsage>& Usage() const { return usage_; }
++  ObjectReply Append(std::string_view pcm);
++  ObjectReply Finish(std::string_view transcript,
++                     const SpeechEncodingReceipt& native,
++                     const ActualUsage& usage);
++
++ private:
++  ObjectReply Fail(std::string_view message);
++  ObjectReply Emit(const RealtimeSpeechEvent& event);
++  RealtimeSpeechEncoder encoder_;
++  trace::Sha256Stream hash_;
++  const RealtimeSpeechSink sink_;
++  const std::function<bool()> cancelled_;
++  bool valid_ = false, completed_ = false;
++  std::optional<ActualUsage> usage_;
++  ObjectReply error_;
++};
++}  // namespace q4t::server
+diff --git a/include/q4t/server/realtime_speech_history.h b/include/q4t/server/realtime_speech_history.h
+new file mode 100644
+index 000000000..d6135e5f8
+--- /dev/null
++++ b/include/q4t/server/realtime_speech_history.h
+@@ -0,0 +1,59 @@
++// Actual generated wire audio, owned by one Realtime session thread.
++#pragma once
++
++#include "q4t/server/realtime_audio_queue.h"
++#include "q4t/server/realtime_conversation.h"
++
++namespace q4t::server {
++struct RealtimeSpeechView {
++  RealtimeAudioFormat format;
++  std::string_view bytes;
++  uint64_t generated_samples = 0;
++  bool complete = false, truncated = false, interrupted = false;
++};
++
++// Views are synchronous borrows: no worker may retain one across a mutation.
++// Reserve binary capacity before publishing the first chunk. JSON/transcript,
++// metadata, retrieval encoding and transient construction have separate bounds
++// in the session owner. Truncation itself retains its allocation; EOF or owner
++// settlement may compact it. Generated extent is distinct from retained audio.
++class RealtimeSpeechHistory {
++ public:
++  static constexpr size_t kMaximumBytes = 128ULL << 20;
++  explicit RealtimeSpeechHistory(std::string owner,
++                                 size_t maximum_bytes = kMaximumBytes,
++                                 size_t maximum_items = 128);
++  RealtimeSpeechHistory(const RealtimeSpeechHistory&) = delete;
++  RealtimeSpeechHistory& operator=(const RealtimeSpeechHistory&) = delete;
++  bool Valid() const { return valid_; }
++  size_t ChargedBytes() const { return charged_; }
++  size_t Items() const { return entries_.size(); }
++  Status Begin(const RealtimeItemTicket& ticket, RealtimeAudioFormat format,
++               size_t maximum_record_bytes);
++  Status Append(const RealtimeItemTicket& ticket, std::string_view bytes);
++  Status Complete(const RealtimeItemTicket& ticket);
++  Status Interrupt(const RealtimeItemTicket& ticket);
++  // WebSocket clients supply their actual played duration. It must not exceed
++  // generated audio. Calling this seals the record against all late output.
++  Status Truncate(const RealtimeItemTicket& ticket, uint64_t audio_end_ms);
++  Status Get(const RealtimeItemTicket& ticket, RealtimeSpeechView* view) const;
++  Status Erase(const RealtimeItemTicket& ticket);
++
++ private:
++  struct Entry {
++    RealtimeItemTicket ticket;
++    RealtimeAudioFormat format;
++    std::string bytes;
++    size_t maximum = 0;
++    uint64_t generated_samples = 0;
++    bool complete = false, truncated = false, interrupted = false;
++  };
++  size_t Position(const RealtimeItemTicket& ticket) const;
++  void Compact(Entry& entry) noexcept;
++  const std::string owner_;
++  const size_t maximum_bytes_, maximum_items_;
++  bool valid_ = false;
++  size_t charged_ = 0;
++  std::vector<Entry> entries_;
++};
++}  // namespace q4t::server
+diff --git a/src/server/chat_audio_output.cpp b/src/server/chat_audio_output.cpp
+index 22813d4ce..348d5ada1 100644
+--- a/src/server/chat_audio_output.cpp
++++ b/src/server/chat_audio_output.cpp
+@@ -94,6 +94,26 @@ Status ParseChatAudioOptions(const io::Json& request, ChatAudioOptions* out,
+   return {};
+ }
+ 
++Status ValidateChatSpeechRequest(const SpeechRequest& request,
++                                 SpeechRequest* validated,
++                                 ChatPlanError* error) {
++  if (!std::isfinite(request.speed))
++    return Invalid(error, "speed", "Speech speed must be finite");
++  Json speed;
++  speed.type = Json::Type::kNumber;
++  speed.number = request.speed;
++  auto wire = Object(
++      {{"model", String(request.model)},
++       {"input", String(request.input)},
++       {"voice", request.voice_id ? Object({{"id", String(request.voice)}})
++                                  : String(request.voice)},
++       {"response_format", String(std::string(SpeechFormatName(request.format)))},
++       {"speed", std::move(speed)}});
++  if (!request.instructions.empty())
++    Set(&wire, "instructions", String(request.instructions));
++  return ParseSpeechRequest(OutputJson(wire), validated, error);
++}
++
+ Status ChatAudioHistoryId(const io::Json& message, std::string* id,
+                           ChatPlanError* error) {
+   if (!id || !message.IsObject())
+diff --git a/src/server/chat_audio_synthesis.cpp b/src/server/chat_audio_synthesis.cpp
+index 15be5ee13..6a1335e64 100644
+--- a/src/server/chat_audio_synthesis.cpp
++++ b/src/server/chat_audio_synthesis.cpp
+@@ -8,6 +8,7 @@
+ #include "q4t/server/chat_audio_output.h"
+ #include "q4t/server/chat_choices.h"
+ #include "q4t/server/request_diagnostics.h"
++#include "q4t/server/native_chat_generation.h"
+ 
+ namespace q4t::server {
+ ObjectReply ChatServer::SynthesizeChatAudio(
+@@ -16,12 +17,16 @@ ObjectReply ChatServer::SynthesizeChatAudio(
+     const std::shared_ptr<RequestControl>& control,
+     RequestDiagnostics& diagnostic, ClientRateLease& rate,
+     const std::function<bool(int, const std::string&, bool)>& delta,
+-    io::Json* completion) {
++    io::Json* completion, const NativeChatSpeech* native) {
+   using namespace object_detail;
+   auto* http = detail::HttpResponseContext::Current(fd);
+-  if (!completion || !http || !objects_ || !http->Client().Allowed() ||
+-      !options.enabled || !completion->GetArray("choices") ||
+-      completion->GetArray("choices")->array.size() != choice_tokens.size())
++  if (!completion || !http || (!objects_ && !native) ||
++      !http->Client().Allowed() || !options.enabled ||
++      !completion->GetArray("choices") ||
++      completion->GetArray("choices")->array.size() != choice_tokens.size() ||
++      (native && (!native->append || !native->complete ||
++                  options.speech.format != SpeechFormat::kPcm ||
++                  !options.text || choice_tokens.size() != 1)))
+     return Error(503, "chat_audio_state_unavailable",
+                  "Authenticated audio state unavailable");
+   auto next = *completion;
+@@ -50,15 +55,8 @@ ObjectReply ChatServer::SynthesizeChatAudio(
+     SpeechRequest request = options.speech;
+     request.input = transcript;
+     request.model = request.voice_id ? kNativeTtsBaseModel : kNativeTtsModel;
+-    const auto wire = Object(
+-        {{"model", String(request.model)},
+-         {"input", String(request.input)},
+-         {"voice", request.voice_id ? Object({{"id", String(request.voice)}})
+-                                    : String(request.voice)},
+-         {"response_format",
+-          String(std::string(SpeechFormatName(request.format)))}});
+     ChatPlanError error;
+-    if (!ParseSpeechRequest(OutputJson(wire), &request, &error))
++    if (!ValidateChatSpeechRequest(request, &request, &error))
+       return Error(502, "chat_audio_text_invalid",
+                    "Generated utterance exceeds speech input contract");
+     audio::TtsPrompt prompt;
+@@ -89,6 +87,38 @@ ObjectReply ChatServer::SynthesizeChatAudio(
+     const auto previous = http->Usage().Total();
+     if (!previous)
+       return Error(500, "tts_usage_invalid", "Prior Chat usage unavailable");
++    if (native) {
++      SpeechEncodingReceipt receipt;
++      auto reply =
++          RunNativeTts(fd, request, prompt, frames, control, diagnostic, rate,
++                       http->Usage(), native->append, &receipt);
++      if (!reply.ok() || reply.commit_unknown) return reply;
++      const auto actual = http->Usage().Total();
++      if (!actual || actual->input < previous->input ||
++          actual->output < previous->output)
++        return Error(502, "tts_usage_invalid", "Native speech usage invalid");
++      const ActualUsage synthesis{actual->input - previous->input,
++                                  actual->output - previous->output};
++      const auto status = AddChatAudioUsage(
++          synthesis,
++          receipt.input_samples / audio::TtsConfig::kSamplesPerFrame *
++              audio::TtsConfig::kCodeGroups,
++          &Field(next, "usage"));
++      if (!status) return Error(502, "tts_usage_invalid", status.message());
++      reply = native->complete(transcript, receipt, synthesis);
++      if (!reply.ok() || reply.commit_unknown || reply.http_status < 200 ||
++          reply.http_status >= 300) {
++        if (reply.code.empty()) {
++          reply.code = "native_speech_receipt_unconfirmed";
++          reply.message = "Native speech completion was not confirmed";
++          reply.http_status = 503;
++        }
++        return reply;
++      }
++      // Realtime owns waveform/history; retain the actual text/tool message
++      // without duplicate Chat base64, audio IDs, or persistent audio objects.
++      continue;
++    }
+     const auto audio_id = NewObjectId(ObjectKind::kAudio);
+     std::string event;
+     if (!ChatAudioIdDelta(audio_id, &event))
+diff --git a/src/server/chat_capabilities.cpp b/src/server/chat_capabilities.cpp
+index cf8eff4e5..905ce6299 100644
+--- a/src/server/chat_capabilities.cpp
++++ b/src/server/chat_capabilities.cpp
+@@ -92,7 +92,7 @@ std::string ChatCapabilitiesJson(
+          R"("session_host_reservation_bytes":1073741824,"silent_eviction":false},)"
+          R"("conversation":{"implemented":true,"endpoint":"/v1/realtime",)"
+          R"("profile":"q4t-native-realtime-chat-v2","requires_asr":false,)"
+-         R"("output_modalities":["text"],"function_calls":true,)"
++         R"("output_modalities":["text","audio"],"function_calls":true,)"
+          R"("per_response_client_admission":true,"usage":"actual_tokens",)"
+          R"("automatic_replay":false,"out_of_band":true,"cancel":true,)"
+          R"("persistent_context_truncation":true,"max_output_tokens":4096,)"
+@@ -116,7 +116,13 @@ std::string ChatCapabilitiesJson(
+          std::to_string(RealtimePromptSettings::kMaximumBytes) +
+          R"(,"maximum_expansion_bytes":)" +
+          std::to_string(RealtimePromptSettings::kMaximumExpansionBytes) +
+-         R"(},"pending_execution":["audio","mcp","tracing"]},)"
++         R"(},"speech_output":{"profile":"q4t-realtime-speech-v1",)"
++         R"("backend":"native_tts_same_chat_owner","default_voice":"vivian",)"
++         R"("formats":["audio/pcm","audio/pcmu","audio/pcma"],)"
++         R"("speed_min":0.25,"speed_max":1.5,"rpm":"once_per_response",)"
++         R"("voice_lock":"first_audio","retrieve":true,"truncate":true,)"
++         R"("audio_history_bytes":134217728,"silent_eviction":false},)"
++         R"("pending_execution":["audio_input","mcp","tracing"]},)"
+          R"("pending_execution":["conversation","live"]},)"
+          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
+          R"("profile":)" +
+diff --git a/src/server/chat_generation.cpp b/src/server/chat_generation.cpp
+index 4a950ed4c..7d12b69bb 100644
+--- a/src/server/chat_generation.cpp
++++ b/src/server/chat_generation.cpp
+@@ -646,8 +646,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+     }
+   }
+   const auto& audio_output = request_plan.audio_output;
+-  if (audio_output.enabled &&
+-      (!objects_ || !http || !http->Client().Allowed())) {
++  if (audio_output.enabled && ((!objects_ && (!native || !native->Speech() ||
++                                              audio_output.speech.voice_id)) ||
++                               !http || !http->Client().Allowed())) {
+     SendError(fd, 503, "Authenticated audio history unavailable", {},
+               "object_scope_unavailable", "audio");
+     return;
+@@ -1397,10 +1398,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+       if (stream) emit = emit_audio;
+       const auto synthesized = SynthesizeChatAudio(
+           fd, audio_output, prompt_budget.available_output, audio_choice_tokens,
+-          control, diagnostic, rate_lease, emit, &completed);
+-      if (!synthesized.ok()) {
+-        SendError(fd, synthesized.http_status, synthesized.ClientMessage(), {},
+-                  synthesized.ClientCode(), "audio");
++          control, diagnostic, rate_lease, emit, &completed,
++          native ? native->Speech() : nullptr);
++      if (!synthesized.ok() || synthesized.commit_unknown ||
++          synthesized.http_status < 200 || synthesized.http_status >= 300) {
++        SendError(
++            fd, synthesized.http_status >= 400 ? synthesized.http_status : 503,
++            synthesized.ClientMessage(), {}, synthesized.ClientCode(), "audio");
+         return false;
+       }
+       result = OutputJson(completed);
+diff --git a/src/server/chat_realtime_conversation.cpp b/src/server/chat_realtime_conversation.cpp
+index a8a09a72e..f888c6c29 100644
+--- a/src/server/chat_realtime_conversation.cpp
++++ b/src/server/chat_realtime_conversation.cpp
+@@ -123,8 +123,8 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
+   };
+   callbacks.release = [&](const auto& control) { requests_.Remove(control); };
+   callbacks.execute = [&](const auto& job, const auto& control,
+-                          const auto& emit) {
+-    return RunRealtimeConversation(client, job, control, emit);
++                          const auto& emit, const auto& speech) {
++    return RunRealtimeConversation(client, job, control, emit, speech);
+   };
+   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
+                          kWebSocketMaximumLimit);
+@@ -168,7 +168,7 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
+ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
+     const ClientIdentity& original, const RealtimeConversationJob& job,
+     const std::shared_ptr<RequestControl>& control,
+-    const RealtimeDeltaSink& emit) {
++    const RealtimeDeltaSink& emit, const RealtimeSpeechSink& speech) {
+   RealtimeGenerationResult result;
+   const auto client = clients_.RecoveryIdentity(original.Index());
+   if (!clients_.OwnsIdentity(original) || !client.Allowed() ||
+@@ -328,6 +328,27 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
+       return result;
+     }
+     diagnostic.Stage("execute");
++    std::optional<RealtimeSpeechExecution> delivery;
++    NativeChatSpeech native_speech;
++    if (plan.speech.enabled) {
++      delivery.emplace(plan.speech, speech, cancelled);
++      if (!delivery->Valid()) {
++        result.reply = Error(503, "realtime_speech_owner_unavailable",
++                             "Native speech delivery unavailable");
++        return result;
++      }
++      // Add native output only after file/context preparation has preserved
++      // its existing private proofs. Public JSON cannot create these observers.
++      plan.generation.chat.audio_output = plan.speech.chat;
++      native_speech.append = [&](std::string_view pcm) {
++        return delivery->Append(pcm);
++      };
++      native_speech.complete = [&](std::string_view transcript,
++                                   const SpeechEncodingReceipt& receipt,
++                                   const ActualUsage& usage) {
++        return delivery->Finish(transcript, receipt, usage);
++      };
++    }
+     result = ExecuteRealtimeChat(
+         plan.generation.generation_request, client, permit, control, emit,
+         [&](NativeChatGeneration& native) {
+@@ -335,8 +356,11 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
+                      &native);
+         },
+         body_budget_,
+-        {&plan.generation.chat, accounting ? &*accounting : nullptr},
++        {&plan.generation.chat, accounting ? &*accounting : nullptr,
++         delivery ? &native_speech : nullptr},
+         &invocation);
++    if (result.usage && delivery && delivery->Usage())
++      result.usage->output_audio = delivery->Usage()->output;
+     preparation_context.Usage().Merge(
+         result.usage ? std::optional<ActualUsage>(result.usage->total)
+                      : std::nullopt);
+@@ -357,10 +381,16 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
+   // This also settles completed preparation when context fitting or primary
+   // admission failed. No response terminal is published before settlement.
+   preparation_rate.Settle();
++  const auto audio_tokens =
++      result.usage ? result.usage->output_audio : std::nullopt;
+   result.usage.reset();
+   if (auto observed = preparation_context.Usage().Total()) {
+     RealtimeResponseUsage usage;
+     usage.total = *observed;
++    if (audio_tokens && *audio_tokens <= observed->output) {
++      usage.output_audio = audio_tokens;
++      usage.output_text = observed->output - *audio_tokens;
++    }
+     result.usage = usage;
+   }
+   if (!result.reply.ok()) result.state = RealtimeResponseEnd::State::kFailed;
+diff --git a/src/server/realtime_chat_plan.cpp b/src/server/realtime_chat_plan.cpp
+index a86985358..e6df6cee8 100644
+--- a/src/server/realtime_chat_plan.cpp
++++ b/src/server/realtime_chat_plan.cpp
+@@ -64,15 +64,22 @@ Status Storage(const RealtimeChatPlan& candidate, ChatPlanError* error) {
+ 
+ Json DefaultRealtimeChatSettings(const ChatPlanConfig& config,
+                                  std::string model) {
+-  return Object({{"type", String("realtime")},
+-                 {"model", String(model.empty() ? config.model : model)},
+-                 {"instructions", String("You are a helpful assistant.")},
+-                 {"max_output_tokens", String("inf")},
+-                 {"output_modalities", Array({String("text")})},
+-                 {"parallel_tool_calls", Boolean(true)},
+-                 {"tools", Array()},
+-                 {"tool_choice", String("auto")},
+-                 {"truncation", String("auto")}});
++  return Object(
++      {{"type", String("realtime")},
++       {"model", String(model.empty() ? config.model : model)},
++       {"instructions", String("You are a helpful assistant.")},
++       {"max_output_tokens", String("inf")},
++       {"output_modalities", Array({String("text")})},
++       {"audio",
++        Object({{"output",
++                 Object({{"format", Object({{"type", String("audio/pcm")},
++                                            {"rate", Number(24000)}})},
++                         {"voice", String("vivian")},
++                         {"speed", Number(1)}})}})},
++       {"parallel_tool_calls", Boolean(true)},
++       {"tools", Array()},
++       {"tool_choice", String("auto")},
++       {"truncation", String("auto")}});
+ }
+ 
+ Status ParseRealtimeChatTarget(std::string_view target,
+@@ -129,12 +136,11 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
+     return Invalid(error, "response.metadata", "Invalid response metadata");
+   // These processors are connected separately. Never acknowledge a setting
+   // here and silently drop its actual audio, trace or remote tool work.
+-  for (const auto* field : {"audio"}) {
+-    if (const auto* value = Option(settings, response, field);
+-        value && !value->IsNull() &&
+-        (!value->IsObject() || !value->object.empty()))
+-      return Processor(error, field);
+-  }
++  if (const auto* audio = settings.Find("audio"))
++    if (const auto* input = audio->Find("input");
++        input && !input->IsNull() &&
++        (!input->IsObject() || !input->object.empty()))
++      return Processor(error, "audio.input");
+   const auto* reference = Option(settings, response, "prompt");
+   if (reference && !reference->IsNull()) {
+     if (!prompt) return Processor(error, "prompt");
+@@ -153,9 +159,9 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
+   if (const auto* include = settings.GetArray("include");
+       include && !include->array.empty())
+     return Processor(error, "include");
+-  if (const auto* modes = Option(settings, response, "output_modalities");
+-      modes && (modes->array.size() != 1 || modes->array[0].str != "text"))
+-    return Processor(error, "output_modalities");
++  RealtimeSpeechOptions speech;
++  status = PlanRealtimeSpeech(settings, response, &speech, error);
++  if (!status) return status;
+ 
+   auto request =
+       Object({{"model", String(settings.GetString("model", config.model))},
+@@ -199,6 +205,7 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
+   Set(&request, "max_output_tokens", Number(output));
+ 
+   RealtimeChatPlan candidate;
++  candidate.speech = std::move(speech);
+   candidate.truncation = settings.Has("truncation")
+                              ? *settings.Find("truncation")
+                              : String("auto");
+@@ -247,8 +254,14 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
+       for (size_t j = 0; j < content->array.size(); ++j) {
+         auto& part = content->array[j];
+         const auto type = part.GetString("type");
+-        if (type == "input_audio" || type == "output_audio")
++        if (type == "output_audio" && item.GetString("role") == "assistant" &&
++            part.Find("transcript") && part.Find("transcript")->IsString() &&
++            !part.Has("audio")) {
++          part = Object({{"type", String("output_text")},
++                         {"text", *part.Find("transcript")}});
++        } else if (type == "input_audio" || type == "output_audio") {
+           return Processor(error, path + ".content[" + std::to_string(j) + ']');
++        }
+         if (type.empty() && part.Has("text") && part.object.size() == 1)
+           Set(&part, "type",
+               String(item.GetString("role") == "assistant" ? "output_text"
+diff --git a/src/server/realtime_conversation.cpp b/src/server/realtime_conversation.cpp
+index ab11b005d..ee42bf680 100644
+--- a/src/server/realtime_conversation.cpp
++++ b/src/server/realtime_conversation.cpp
+@@ -245,6 +245,26 @@ Status RealtimeConversation::Update(const RealtimeItemTicket& ticket,
+   ++revision_;
+   return {};
+ }
++Status RealtimeConversation::TruncateAudioTranscript(
++    const RealtimeItemTicket& ticket) {
++  const auto index = Position(ticket);
++  if (index == entries_.size() || !entries_[index].server_output ||
++      revision_ == UINT64_MAX)
++    return Invalid("audio output ticket is stale");
++  auto& item = entries_[index].item;
++  const auto* content = item.GetArray("content");
++  if (item.GetString("role") != "assistant" || !content ||
++      content->array.size() != 1 ||
++      content->array[0].GetString("type") != "output_audio")
++    return Invalid("item has no generated audio transcript");
++  auto& part = Field(item, "content").array[0];
++  if (!part.Find("transcript") || !part.Find("transcript")->IsString())
++    return Invalid("audio transcript is unavailable");
++  Field(part, "transcript").str.clear();
++  ++revision_;
++  return {};
++}
++
+ Status RealtimeConversation::Snapshot(
+     const Json* input, RealtimeConversationSnapshot* output) const {
+   if (!valid_ || !output ||
+diff --git a/src/server/realtime_conversation_session.cpp b/src/server/realtime_conversation_session.cpp
+index 0bb263e38..d02edc34d 100644
+--- a/src/server/realtime_conversation_session.cpp
++++ b/src/server/realtime_conversation_session.cpp
+@@ -1,6 +1,9 @@
+ #include "q4t/server/realtime_conversation_session.h"
+ 
+ #include <algorithm>
++#include <variant>
++
++#include "q4t/io/base64.h"
+ 
+ #include "object_protocol.h"
+ #include "q4t/server/http_response.h"
+@@ -36,16 +39,20 @@ ObjectReply Shape(const Json& event, RealtimeShape kind) {
+ 
+ struct RealtimeConversationSession::Work {
+   RealtimeConversationJob job;
++  RealtimeSpeechOptions speech;
+   std::shared_ptr<RequestControl> control;
+   std::unique_ptr<RealtimeResponseOutput> output;
+   std::map<std::string, RealtimeItemTicket> tickets;
+   std::unordered_set<std::string> deleted;
+   std::thread worker;
+   std::atomic<bool> done{false};
++  // Native generation may already be Finished while its output is queued.
++  // The public response still belongs to this session until response.done.
++  bool cancelled_after_generation = false;
+   RealtimeGenerationResult result;
+   ObjectReply local_error;
+   struct Queued {
+-    ResponseDelta delta;
++    std::variant<ResponseDelta, RealtimeSpeechEvent> delta;
+     size_t charge = 0;
+   };
+   std::mutex mutex;
+@@ -63,6 +70,29 @@ struct RealtimeConversationSession::Work {
+                                     "Delta exceeds its storage limit");
+       charge += value->capacity();
+     }
++    return Enqueue({std::move(copy), charge});
++  }
++  ObjectReply Push(const RealtimeSpeechEvent& input) {
++    if (!speech.enabled ||
++        (input.kind != RealtimeSpeechEvent::Kind::kChunk &&
++         input.kind != RealtimeSpeechEvent::Kind::kDone) ||
++        input.bytes.size() > RealtimeSpeechEncoder::kMaximumChunkBytes ||
++        input.transcript.size() > 1ULL << 20 ||
++        (input.kind == RealtimeSpeechEvent::Kind::kChunk
++             ? input.bytes.empty() || !input.transcript.empty()
++             : !input.bytes.empty() || input.transcript.empty()))
++      return object_detail::Error(503, "realtime_audio_delta_invalid",
++                                  "Invalid native audio fragment");
++    auto copy = input;
++    const auto charge =
++        sizeof(Queued) + copy.bytes.capacity() + copy.transcript.capacity();
++    if (charge > kDeltaBytes)
++      return object_detail::Error(503, "realtime_audio_delta_too_large",
++                                  "Audio fragment exceeds storage capacity");
++    return Enqueue({std::move(copy), charge});
++  }
++  ObjectReply Enqueue(Queued queued) {
++    const auto charge = queued.charge;
+     const auto deadline =
+         std::min(control->deadline(), Clock::now() + std::chrono::seconds(15));
+     std::unique_lock lock(mutex);
+@@ -74,7 +104,7 @@ struct RealtimeConversationSession::Work {
+     }
+     if (control->Cancelled())
+       return object_detail::Error(409, control->Reason(), "Response cancelled");
+-    deltas.push_back({std::move(copy), charge});
++    deltas.push_back(std::move(queued));
+     bytes += charge;
+     ++count;
+     return {};
+@@ -91,7 +121,8 @@ RealtimeConversationSession::RealtimeConversationSession(
+       output_(output),
+       callbacks_(std::move(callbacks)),
+       message_bytes_(message_bytes),
+-      history_(id_) {}
++      history_(id_),
++      speech_(id_) {}
+ RealtimeConversationSession::~RealtimeConversationSession() {
+   Cancel();
+   Join();
+@@ -196,12 +227,36 @@ bool RealtimeConversationSession::Start() {
+ }
+ ObjectReply RealtimeConversationSession::ValidateSelection(
+     const RealtimePromptSelection& selection) {
++  RealtimeSpeechOptions speech;
++  ChatPlanError error;
++  auto status =
++      PlanRealtimeSpeech(selection.settings, Object(), &speech, &error);
++  if (!status) return Invalid(error.code, status.message(), error.param);
++  auto reply = ValidateSpeech(speech);
++  if (!Accepted(reply)) return reply;
+   if (callbacks_.validate_prompt) return callbacks_.validate_prompt(selection);
+   if (selection.prompt)
+     return object_detail::Error(503, "realtime_prompt_owner_unavailable",
+                                 "Prompt execution owner unavailable");
+   return callbacks_.validate(selection.settings);
+ }
++ObjectReply RealtimeConversationSession::ValidateSpeech(
++    const RealtimeSpeechOptions& speech) const {
++  if (locked_voice_ && !SameRealtimeVoice(speech, *locked_voice_))
++    return Invalid("realtime_voice_locked",
++                   "Voice is locked after audio output", "audio.output.voice");
++  for (const auto& work : work_) {
++    if (!work->speech.enabled) continue;
++    if (!SameRealtimeVoice(speech, work->speech))
++      return Invalid("realtime_voice_locked",
++                     "An audio response owns the voice", "audio.output.voice");
++    if (speech.chat.speech.speed != work->speech.chat.speech.speed)
++      return Invalid("realtime_speed_locked",
++                     "Speed changes require an idle turn",
++                     "audio.output.speed");
++  }
++  return {};
++}
+ RealtimePromptResolver RealtimeConversationSession::PromptResolver() {
+   return [this](const Json& reference, size_t budget, PromptSnapshot* out) {
+     const auto cancelled = [this] {
+@@ -264,13 +319,70 @@ bool RealtimeConversationSession::ItemCommand(const Json& event, bool erase) {
+     return ErrorEvent(
+         Invalid("realtime_item_not_found", status.message(), "item_id"),
+         event.GetString("event_id"));
+-  if (!erase)
++  RealtimeSpeechView view;
++  const bool audio = speech_.Get(ticket, &view).ok();
++  if (!erase) {
++    if (audio) {
++      std::string encoded;
++      if (!view.bytes.empty() &&
++          !io::EncodeBase64(view.bytes, 4 * ((kRealtimeAudioBytes + 2) / 3),
++                            &encoded))
++        return ErrorEvent(
++            object_detail::Error(503, "realtime_audio_retrieval_failed",
++                                 "Audio encoding failed"),
++            event.GetString("event_id"));
++      Set(&Field(item, "content").array[0], "audio",
++          String(std::move(encoded)));
++    }
+     return Event("conversation.item.retrieved",
+                  Object({{"item", std::move(item)}}));
++  }
++  if (audio && !speech_.Erase(ticket)) return false;
+   for (auto& work : work_)
+-    if (work->tickets.contains(id)) work->deleted.insert(id);
++    if (work->tickets.contains(id)) {
++      work->deleted.insert(id);
++      if (audio) {
++        if (!Accepted(work->output->TruncateAudio(id))) return false;
++        work->cancelled_after_generation |= !work->control->Cancel();
++        work->changed.notify_all();
++      }
++    }
+   return Event("conversation.item.deleted", Object({{"item_id", String(id)}}));
+ }
++bool RealtimeConversationSession::TruncateItem(const Json& event) {
++  const auto id = event.GetString("item_id");
++  RealtimeItemTicket ticket;
++  RealtimeSpeechView view;
++  const auto* index = event.Find("content_index");
++  if (!index || !IsInputInteger(*index) || index->number != 0 ||
++      !history_.Find(id, &ticket) || !speech_.Get(ticket, &view))
++    return ErrorEvent(
++        Invalid("realtime_audio_item_not_found",
++                "No owned audio content at this position", "item_id"),
++        event.GetString("event_id"));
++  const auto* end = event.Find("audio_end_ms");
++  if (!end || !IsInputInteger(*end) || end->number < 0 || end->number > 600000)
++    return ErrorEvent(Invalid("realtime_audio_truncate_invalid",
++                              "Invalid played duration", "audio_end_ms"),
++                      event.GetString("event_id"));
++  auto status = speech_.Truncate(ticket, static_cast<uint64_t>(end->number));
++  if (!status)
++    return ErrorEvent(Invalid("realtime_audio_truncate_invalid",
++                              status.message(), "audio_end_ms"),
++                      event.GetString("event_id"));
++  if (!history_.TruncateAudioTranscript(ticket)) return false;
++  for (auto& work : work_) {
++    if (!work->tickets.contains(id)) continue;
++    if (!Accepted(work->output->TruncateAudio(id))) return false;
++    work->cancelled_after_generation |= !work->control->Cancel();
++    work->changed.notify_all();
++  }
++  return Event("conversation.item.truncated",
++               Object({{"item_id", String(id)},
++                       {"content_index", Number(0)},
++                       {"audio_end_ms", *end}}));
++}
++
+ ObjectReply RealtimeConversationSession::Store(Work& work, const Json& item,
+                                                bool begin, bool terminal) {
+   const auto id = item.GetString("id");
+@@ -285,6 +397,10 @@ ObjectReply RealtimeConversationSession::Store(Work& work, const Json& item,
+     RealtimeItemTicket ticket;
+     status =
+         history_.BeginOutput(item, id, work.job.in_conversation, 8192, &ticket);
++    if (status && work.speech.enabled && item.GetString("type") == "message") {
++      status = speech_.Begin(ticket, work.speech.format, kRealtimeAudioBytes);
++      if (!status) history_.Erase(ticket);
++    }
+     if (status) work.tickets.emplace(id, std::move(ticket));
+   } else {
+     const auto found = work.tickets.find(id);
+@@ -302,6 +418,27 @@ ObjectReply RealtimeConversationSession::Store(Work& work, const Json& item,
+     Set(&result.value, "previous_item_id", String(previous));
+   return result;
+ }
++ObjectReply RealtimeConversationSession::StoreAudio(
++    Work& work, std::string_view id, std::string_view bytes,
++    RealtimeAudioCommit commit) {
++  const auto found = work.tickets.find(std::string(id));
++  if (found == work.tickets.end())
++    return object_detail::Error(500, "realtime_audio_owner_missing",
++                                "No matching waveform owner");
++  if (work.deleted.contains(found->first)) return {};
++  Status status;
++  if (commit == RealtimeAudioCommit::kAppend) {
++    status = speech_.Append(found->second, bytes);
++    if (status && !locked_voice_) locked_voice_ = work.speech;
++  } else if (commit == RealtimeAudioCommit::kComplete) {
++    status = speech_.Complete(found->second);
++  } else {
++    status = speech_.Interrupt(found->second);
++  }
++  return status ? ObjectReply{}
++                : object_detail::Error(503, "realtime_audio_history_failed",
++                                       status.message());
++}
+ bool RealtimeConversationSession::CreateResponse(const Json& event) {
+   const auto event_id = event.GetString("event_id");
+   const auto* parameters = event.Find("response");
+@@ -342,7 +479,16 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
+                {},
+                in_conversation,
+                std::move(selection.prompt)};
+-  auto status = history_.Snapshot(response.Find("input"), &work->job.snapshot);
++  ChatPlanError speech_error;
++  auto status = PlanRealtimeSpeech(work->job.settings, response, &work->speech,
++                                   &speech_error);
++  if (!status)
++    return ErrorEvent(
++        Invalid(speech_error.code, status.message(), speech_error.param),
++        event_id);
++  reply = ValidateSpeech(work->speech);
++  if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
++  status = history_.Snapshot(response.Find("input"), &work->job.snapshot);
+   if (!status)
+     return ErrorEvent(
+         Invalid("realtime_input_invalid", status.message(), "response.input"),
+@@ -369,6 +515,7 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
+   options.response_id = work->job.response_id;
+   options.conversation_id = conversation_id_;
+   options.in_conversation = in_conversation;
++  if (work->speech.enabled) options.audio_format = work->speech.format;
+   if (const auto* metadata = response.Find("metadata"))
+     options.metadata = *metadata;
+   work->output = std::make_unique<RealtimeResponseOutput>(
+@@ -378,6 +525,10 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
+       },
+       [](std::string_view prefix) {
+         return detail::NewRequestId(std::string(prefix));
++      },
++      [this, active](std::string_view id, std::string_view bytes,
++                     RealtimeAudioCommit commit) {
++        return StoreAudio(*active, id, bytes, commit);
+       });
+   // Establish ownership before publishing or spawning, including exception
+   // paths.
+@@ -389,6 +540,9 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
+         active->result = callbacks_.execute(
+             active->job, active->control, [active](const ResponseDelta& delta) {
+               return active->Push(delta);
++            },
++            [active](const RealtimeSpeechEvent& audio) {
++              return active->Push(audio);
+             });
+       } catch (...) {
+         active->result.reply = object_detail::Error(
+@@ -408,7 +562,7 @@ bool RealtimeConversationSession::CancelResponse(const Json& event) {
+   for (auto& work : work_) {
+     if (id.empty() ? !work->job.in_conversation : id != work->job.response_id)
+       continue;
+-    if (!work->control->Cancel()) break;
++    work->cancelled_after_generation |= !work->control->Cancel();
+     work->changed.notify_all();
+     return true;
+   }
+@@ -443,6 +597,7 @@ bool RealtimeConversationSession::Message(WebSocketOpcode opcode,
+   if (type == "conversation.item.create") return CreateItem(event);
+   if (type == "conversation.item.delete") return ItemCommand(event, true);
+   if (type == "conversation.item.retrieve") return ItemCommand(event, false);
++  if (type == "conversation.item.truncate") return TruncateItem(event);
+   if (type == "response.create") return CreateResponse(event);
+   if (type == "response.cancel") return CancelResponse(event);
+   return ErrorEvent(
+@@ -468,7 +623,15 @@ bool RealtimeConversationSession::Tick() {
+         work.deltas.pop_front();
+       }
+       if (Accepted(work.local_error)) {
+-        work.local_error = work.output->Append(queued.delta);
++        if (const auto* delta = std::get_if<ResponseDelta>(&queued.delta)) {
++          work.local_error = work.output->Append(*delta);
++        } else {
++          const auto& audio = std::get<RealtimeSpeechEvent>(queued.delta);
++          work.local_error =
++              audio.kind == RealtimeSpeechEvent::Kind::kChunk
++                  ? work.output->AppendAudio(audio.bytes)
++                  : work.output->CompleteAudio(audio.receipt, audio.transcript);
++        }
+         if (!Accepted(work.local_error))
+           work.control->Cancel(RequestControl::State::kFailure);
+       }
+@@ -502,7 +665,10 @@ bool RealtimeConversationSession::Tick() {
+           error.code.empty() ? "realtime_execution_failed" : error.code;
+       end.error_message = error.ClientMessage();
+     }
+-    if (work.control->Cancelled() && !work.control->Failed()) {
++    if (work.cancelled_after_generation) {
++      end.state = RealtimeResponseEnd::State::kCancelled;
++      end.reason = "client_cancelled";
++    } else if (work.control->Cancelled() && !work.control->Failed()) {
+       if (std::string_view(work.control->Reason()) == "explicit_cancel") {
+         end.state = RealtimeResponseEnd::State::kCancelled;
+         end.reason = "client_cancelled";
+diff --git a/src/server/realtime_response_output.cpp b/src/server/realtime_response_output.cpp
+index 6f4691a83..38dc368b2 100644
+--- a/src/server/realtime_response_output.cpp
++++ b/src/server/realtime_response_output.cpp
+@@ -3,6 +3,7 @@
+ #include <algorithm>
+ 
+ #include "object_protocol.h"
++#include "q4t/io/base64.h"
+ #include "q4t/server/input_contract.h"
+ #include "q4t/server/lifetime.h"
+ #include "q4t/server/realtime_shape.h"
+@@ -32,6 +33,10 @@ Json EventTextPart(std::string text) {
+   // values: output_text in conversation items, text in content-part events.
+   return Object({{"type", String("text")}, {"text", String(std::move(text))}});
+ }
++Json AudioPart(std::string transcript, bool event = false) {
++  return Object({{"type", String(event ? "audio" : "output_audio")},
++                 {"transcript", String(std::move(transcript))}});
++}
+ Json TextMessage(std::string id) {
+   return Object({{"id", String(std::move(id))},
+                  {"object", String("realtime.item")},
+@@ -83,11 +88,12 @@ bool RealtimeMetadataBounded(const Json& metadata) {
+ 
+ RealtimeResponseOutput::RealtimeResponseOutput(
+     RealtimeResponseOutputOptions options, EventSink emit, ItemSink item,
+-    IdFactory ids)
++    IdFactory ids, AudioSink audio)
+     : options_(std::move(options)),
+       emit_(std::move(emit)),
+       item_(std::move(item)),
+-      ids_(std::move(ids)) {}
++      ids_(std::move(ids)),
++      audio_(std::move(audio)) {}
+ 
+ ObjectReply RealtimeResponseOutput::Fail(std::string_view code,
+                                          std::string_view message) {
+@@ -124,11 +130,24 @@ Json RealtimeResponseOutput::Output() const {
+   return result;
+ }
+ Json RealtimeResponseOutput::Response(std::string_view status) const {
+-  auto result = Object({{"id", String(options_.response_id)},
+-                        {"object", String("realtime.response")},
+-                        {"status", String(std::string(status))},
+-                        {"output", Output()},
+-                        {"output_modalities", Array({String("text")})}});
++  auto result =
++      Object({{"id", String(options_.response_id)},
++              {"object", String("realtime.response")},
++              {"status", String(std::string(status))},
++              {"output", Output()},
++              {"output_modalities",
++               Array({String(options_.audio_format ? "audio" : "text")})}});
++  if (options_.audio_format) {
++    const auto& format = *options_.audio_format;
++    const bool pcm = format.encoding == RealtimeAudioEncoding::kPcm16;
++    auto encoded = Object(
++        {{"type", String(pcm ? "audio/pcm"
++                         : format.encoding == RealtimeAudioEncoding::kMuLaw
++                             ? "audio/pcmu"
++                             : "audio/pcma")}});
++    if (pcm) Set(&encoded, "rate", Number(format.rate));
++    Set(&result, "audio", Object({{"output", Object({{"format", encoded}})}}));
++  }
+   if (options_.in_conversation)
+     Set(&result, "conversation_id", String(options_.conversation_id));
+   if (!options_.metadata.IsNull()) Set(&result, "metadata", options_.metadata);
+@@ -142,6 +161,11 @@ ObjectReply RealtimeResponseOutput::Begin() {
+       !options_.maximum_items || options_.maximum_items > 128 ||
+       !MetadataBounded(options_.metadata))
+     return Fail("realtime_response_owner_invalid", "Invalid response owner");
++  if (options_.audio_format &&
++      (!audio_ || !RealtimeSpeechEncoder(*options_.audio_format, 1,
++                                         options_.maximum_audio_bytes)
++                       .Valid()))
++    return Fail("realtime_response_owner_invalid", "Invalid audio owner");
+   auto response = Response("in_progress");
+   ChatPlanError shape;
+   if (!ValidateRealtimeShape(response, RealtimeShape::kResponse, &shape))
+@@ -187,8 +211,10 @@ ObjectReply RealtimeResponseOutput::AddItem(Json value,
+     if (!reply.ok()) return reply;
+   }
+   if (!call_index) {
++    if (options_.audio_format) audio_index_ = index;
+     auto event = Position(index, true);
+-    Set(&event, "part", EventTextPart(""));
++    Set(&event, "part",
++        options_.audio_format ? AudioPart("", true) : EventTextPart(""));
+     reply = Emit("response.content_part.added", std::move(event));
+     if (!reply.ok()) return reply;
+   }
+@@ -199,9 +225,13 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
+   if (!error_.ok()) return error_;
+   if (!begun_ || terminal_)
+     return Fail("realtime_response_state_invalid", "Response is not active");
++  if (audio_truncated_) return {};
+   if (delta.kind == ResponseDelta::Kind::kReasoning) return {};
+   const bool tool = delta.kind == ResponseDelta::Kind::kTool;
+   const auto& piece = tool ? delta.call.arguments : delta.text;
++  if (!tool && audio_complete_ && !piece.empty())
++    return Fail("realtime_audio_transcript_sealed",
++                "Transcript changed after speech completed");
+   if (piece.size() > options_.maximum_bytes - bytes_)
+     return Fail("realtime_output_capacity_exhausted",
+                 "Output text limit exceeded");
+@@ -235,8 +265,12 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
+       return Fail("realtime_tool_identity_invalid",
+                   "Unbound function fragment");
+     }
++  } else if (options_.audio_format && audio_index_) {
++    index = *audio_index_;
+   } else if (items_.empty() || items_.back().call_index) {
+-    auto reply = AddItem(TextMessage(ids_("item_")), {}, &index);
++    auto message = TextMessage(ids_("item_"));
++    if (options_.audio_format) Set(&message, "content", Array({AudioPart("")}));
++    auto reply = AddItem(std::move(message), {}, &index);
+     if (!reply.ok()) return reply;
+   } else {
+     index = items_.size() - 1;
+@@ -245,7 +279,9 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
+   if (tool)
+     Field(next, "arguments").str += piece;
+   else
+-    Field(Field(next, "content").array[0], "text").str += piece;
++    Field(Field(next, "content").array[0],
++          options_.audio_format ? "transcript" : "text")
++        .str += piece;
+   const auto stored = item_(next, false, false);
+   if (!AcceptSink(stored)) return error_;
+   items_[index].deleted |= stored.value.GetBool("deleted");
+@@ -255,10 +291,66 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
+   Set(&event, "delta", String(piece));
+   if (tool)
+     Set(&event, "call_id", String(items_[index].value.GetString("call_id")));
+-  return Emit(tool ? "response.function_call_arguments.delta"
+-                   : "response.output_text.delta",
++  return Emit(tool                    ? "response.function_call_arguments.delta"
++              : options_.audio_format ? "response.output_audio_transcript.delta"
++                                      : "response.output_text.delta",
+               std::move(event));
+ }
++ObjectReply RealtimeResponseOutput::AppendAudio(std::string_view bytes) {
++  if (!error_.ok()) return error_;
++  if (!begun_ || terminal_ || !options_.audio_format || !audio_index_)
++    return Fail("realtime_audio_owner_invalid", "No audio utterance owner");
++  if (audio_truncated_) return {};
++  const size_t width =
++      options_.audio_format->encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
++  if (audio_complete_ || bytes.empty() || bytes.size() % width ||
++      bytes.size() > RealtimeSpeechEncoder::kMaximumChunkBytes ||
++      bytes.size() > options_.maximum_audio_bytes - audio_bytes_)
++    return Fail("realtime_audio_extent_invalid", "Invalid audio chunk extent");
++  std::string encoded;
++  if (!io::EncodeBase64(bytes, 4 * ((bytes.size() + 2) / 3), &encoded))
++    return Fail("realtime_audio_encoding_failed", "Audio encoding failed");
++  const auto& item = items_[*audio_index_].value;
++  if (!AcceptSink(
++          audio_(item.GetString("id"), bytes, RealtimeAudioCommit::kAppend)))
++    return error_;
++  audio_bytes_ += bytes.size();
++  auto event = Position(*audio_index_, true);
++  Set(&event, "delta", String(std::move(encoded)));
++  return Emit("response.output_audio.delta", std::move(event));
++}
++ObjectReply RealtimeResponseOutput::CompleteAudio(
++    const RealtimeSpeechReceipt& receipt, std::string_view spoken_input) {
++  if (!error_.ok()) return error_;
++  if (!begun_ || terminal_ || !options_.audio_format || !audio_index_)
++    return Fail("realtime_audio_owner_invalid", "No audio utterance owner");
++  if (audio_truncated_) return {};
++  const auto format = *options_.audio_format;
++  const size_t width = format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
++  if (audio_complete_ || !audio_bytes_ || receipt.bytes != audio_bytes_ ||
++      receipt.output_samples != audio_bytes_ / width ||
++      !receipt.input_samples || receipt.input_samples > 600ULL * 24000 ||
++      receipt.output_samples != receipt.input_samples * format.rate / 24000 ||
++      spoken_input !=
++          items_[*audio_index_].value.GetArray("content")->array[0].GetString(
++              "transcript"))
++    return Fail("realtime_audio_receipt_invalid", "Audio receipt differs");
++  if (!AcceptSink(audio_(items_[*audio_index_].value.GetString("id"), {},
++                         RealtimeAudioCommit::kComplete)))
++    return error_;
++  audio_complete_ = true;
++  return {};
++}
++ObjectReply RealtimeResponseOutput::TruncateAudio(std::string_view item_id) {
++  if (!error_.ok()) return error_;
++  if (!begun_ || terminal_ || !audio_index_ ||
++      items_[*audio_index_].value.GetString("id") != item_id)
++    return Fail("realtime_audio_owner_invalid", "No matching audio owner");
++  auto& part = Field(items_[*audio_index_].value, "content").array[0];
++  Field(part, "transcript").str.clear();
++  audio_truncated_ = true;
++  return {};
++}
+ bool RealtimeResponseOutput::Matches(const Json& message,
+                                      bool truncated) const {
+   if (!message.IsObject() || message.GetString("role") != "assistant")
+@@ -268,7 +360,8 @@ bool RealtimeResponseOutput::Matches(const Json& message,
+   const auto* calls = message.GetArray("tool_calls");
+   for (const auto& item : items_) {
+     if (!item.call_index) {
+-      text += item.value.GetArray("content")->array[0].GetString("text");
++      text += item.value.GetArray("content")->array[0].GetString(
++          options_.audio_format ? "transcript" : "text");
+       continue;
+     }
+     if (!calls || call == calls->array.size()) {
+@@ -312,6 +405,8 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
+   if (has_message && (!end.message || !Matches(*end.message, truncated)))
+     return Fail("realtime_output_mismatch",
+                 "Actual response does not match deltas");
++  if (has_message && audio_index_ && (!audio_complete_ || audio_truncated_))
++    return Fail("realtime_audio_incomplete", "Audio did not reach natural EOF");
+   auto response = Response(StateName(end.state));
+   if (end.state != RealtimeResponseEnd::State::kCompleted) {
+     auto details =
+@@ -348,6 +443,10 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
+   if (!ValidateRealtimeShape(response, RealtimeShape::kResponse, &shape))
+     return Fail("realtime_terminal_invalid",
+                 "Invalid response terminal metadata");
++  if (audio_index_ && !audio_complete_ &&
++      !AcceptSink(audio_(items_[*audio_index_].value.GetString("id"), {},
++                         RealtimeAudioCommit::kInterrupted)))
++    return error_;
+   const auto status = end.state == RealtimeResponseEnd::State::kCompleted
+                           ? "completed"
+                           : "incomplete";
+@@ -368,11 +467,21 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
+       if (!reply.ok()) return reply;
+     } else {
+       const auto& part = item.value.GetArray("content")->array[0];
+-      Set(&event, "text", String(part.GetString("text")));
+-      auto reply = Emit("response.output_text.done", std::move(event));
++      if (options_.audio_format) {
++        auto reply = Emit("response.output_audio.done", event);
++        if (!reply.ok()) return reply;
++      }
++      const auto text =
++          part.GetString(options_.audio_format ? "transcript" : "text");
++      Set(&event, options_.audio_format ? "transcript" : "text", String(text));
++      auto reply =
++          Emit(options_.audio_format ? "response.output_audio_transcript.done"
++                                     : "response.output_text.done",
++               std::move(event));
+       if (!reply.ok()) return reply;
+       event = Position(i, true);
+-      Set(&event, "part", EventTextPart(part.GetString("text")));
++      Set(&event, "part",
++          options_.audio_format ? AudioPart(text, true) : EventTextPart(text));
+       reply = Emit("response.content_part.done", std::move(event));
+       if (!reply.ok()) return reply;
+     }
+diff --git a/src/server/realtime_speech_encoder.cpp b/src/server/realtime_speech_encoder.cpp
+new file mode 100644
+index 000000000..a332c7265
+--- /dev/null
++++ b/src/server/realtime_speech_encoder.cpp
+@@ -0,0 +1,173 @@
++#include "q4t/server/realtime_speech_encoder.h"
++
++#include <algorithm>
++#include <array>
++#include <cmath>
++
++#include "object_protocol.h"
++#include "q4t/server/realtime_audio_export.h"
++#include "q4t/server/realtime_pcm.h"
++
++namespace q4t::server {
++RealtimeSpeechEncoder::RealtimeSpeechEncoder(RealtimeAudioFormat format,
++                                             size_t maximum_samples,
++                                             size_t maximum_bytes,
++                                             std::function<bool()> cancelled)
++    : format_(format),
++      maximum_samples_(maximum_samples),
++      maximum_bytes_(maximum_bytes),
++      cancelled_(std::move(cancelled)),
++      resampler_(24000, maximum_samples, format.rate, false) {
++  const bool pcm = format.encoding == RealtimeAudioEncoding::kPcm16;
++  const bool g711 = format.encoding == RealtimeAudioEncoding::kMuLaw ||
++                    format.encoding == RealtimeAudioEncoding::kALaw;
++  valid_ = (pcm ? format.rate == 24000 : g711 && format.rate == 8000) &&
++           maximum_samples && maximum_samples <= 600ULL * 24000 &&
++           maximum_bytes && maximum_bytes <= kRealtimeAudioBytes &&
++           resampler_.Valid();
++}
++
++ObjectReply RealtimeSpeechEncoder::Fail(std::string_view code,
++                                        std::string_view message) {
++  if (error_.ok())
++    error_ = object_detail::Error(502, std::string(code), std::string(message));
++  return error_;
++}
++
++ObjectReply RealtimeSpeechEncoder::Check() {
++  if (!error_.ok()) return error_;
++  if (!valid_ || finished_)
++    return Fail("realtime_audio_state_invalid", "Audio stream is not active");
++  try {
++    if (cancelled_ && cancelled_())
++      return Fail("realtime_audio_cancelled", "Audio conversion cancelled");
++  } catch (...) {
++    return Fail("realtime_audio_cancel_failed", "Cancellation check failed");
++  }
++  return {};
++}
++
++ObjectReply RealtimeSpeechEncoder::Write(std::span<const float> samples,
++                                         const Sink& sink) {
++  auto reply = Check();
++  if (!reply.ok() || samples.empty()) return reply;
++  const bool pcm = format_.encoding == RealtimeAudioEncoding::kPcm16;
++  const size_t width = pcm ? 2 : 1;
++  if (samples.size() > kOutputChunkBytes / width ||
++      samples.size() > (maximum_bytes_ - output_bytes_) / width)
++    return Fail("realtime_audio_capacity", "Audio output exceeds its budget");
++  std::string bytes;
++  bytes.reserve(samples.size() * width);
++  for (const float value : samples) {
++    if (!std::isfinite(value))
++      return Fail("realtime_audio_invalid", "Audio sample is not finite");
++    // Preserve sinc overshoot until final quantization, as in audio export.
++    const auto linear = int16_t(std::clamp<long>(
++        std::lround(double(std::clamp(value, -1.f, 1.f)) * 32768), -32768,
++        32767));
++    if (pcm) {
++      const auto word = uint16_t(linear);
++      bytes.push_back(char(word & 255));
++      bytes.push_back(char(word >> 8));
++    } else {
++      bytes.push_back(char(EncodeRealtimeG711(
++          linear, format_.encoding == RealtimeAudioEncoding::kMuLaw)));
++    }
++  }
++  try {
++    reply = sink(bytes);
++  } catch (...) {
++    return Fail("realtime_audio_sink_failed", "Audio sink raised an error");
++  }
++  if (!reply.ok() || reply.commit_unknown || reply.http_status < 200 ||
++      reply.http_status >= 300) {
++    if (reply.code.empty()) {
++      reply.code = "realtime_audio_sink_unconfirmed";
++      reply.message = "Audio sink did not confirm acceptance";
++      reply.http_status = 503;
++    }
++    error_ = std::move(reply);
++    return error_;
++  }
++  output_bytes_ += bytes.size();
++  return Check();
++}
++
++ObjectReply RealtimeSpeechEncoder::Append(std::string_view pcm,
++                                          const Sink& sink) {
++  auto reply = Check();
++  if (!reply.ok()) return reply;
++  if (!sink || pcm.empty() || pcm.size() > kMaximumChunkBytes ||
++      pcm.size() > maximum_samples_ * 2 - input_bytes_)
++    return Fail("realtime_audio_input_invalid", "Invalid bounded PCM chunk");
++  const uint64_t next_bytes = input_bytes_ + pcm.size();
++  const uint64_t next_samples = next_bytes / 2 * format_.rate / 24000;
++  const size_t width =
++      format_.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
++  if (next_samples > maximum_bytes_ / width)
++    return Fail("realtime_audio_capacity", "Audio output exceeds its budget");
++  input_bytes_ = next_bytes;
++  std::array<float, 1024> decoded, converted;
++  size_t cursor = 0;
++  while (cursor < pcm.size()) {
++    reply = Check();
++    if (!reply.ok()) return reply;
++    size_t count = 0;
++    if (pending_) {
++      decoded[count++] = DecodeRealtimeSample(RealtimeAudioEncoding::kPcm16,
++                                              pending_byte_, pcm[cursor++]);
++      pending_ = false;
++    }
++    while (cursor + 1 < pcm.size() && count < decoded.size()) {
++      decoded[count++] = DecodeRealtimeSample(RealtimeAudioEncoding::kPcm16,
++                                              pcm[cursor], pcm[cursor + 1]);
++      cursor += 2;
++    }
++    if (cursor + 1 == pcm.size()) {
++      pending_byte_ = pcm[cursor++];
++      pending_ = true;
++    }
++    size_t position = 0;
++    while (position < count) {
++      audio::ResampleProgress progress;
++      const auto status =
++          resampler_.Process(std::span(decoded).first(count).subspan(position),
++                             converted, &progress);
++      if (!status || (!progress.consumed && !progress.produced))
++        return Fail("realtime_audio_conversion_failed",
++                    "Audio conversion made no valid progress");
++      position += progress.consumed;
++      reply = Write(std::span(converted).first(progress.produced), sink);
++      if (!reply.ok()) return reply;
++    }
++  }
++  return Check();
++}
++
++ObjectReply RealtimeSpeechEncoder::Finish(const Sink& sink,
++                                          RealtimeSpeechReceipt* receipt) {
++  auto reply = Check();
++  if (!reply.ok()) return reply;
++  if (!sink || !receipt || pending_ || !input_bytes_)
++    return Fail("realtime_audio_incomplete", "PCM ended without full samples");
++  std::array<float, 1024> converted;
++  do {
++    size_t produced = 0;
++    const auto status = resampler_.Finish(converted, &produced);
++    if (!status)
++      return Fail("realtime_audio_conversion_failed", "Audio tail failed");
++    reply = Write(std::span(converted).first(produced), sink);
++    if (!reply.ok()) return reply;
++  } while (!resampler_.Drained());
++  const size_t width =
++      format_.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
++  const uint64_t samples = input_bytes_ / 2;
++  if (!output_bytes_ || resampler_.InputSamples() != samples ||
++      resampler_.OutputSamples() != samples * format_.rate / 24000 ||
++      output_bytes_ != resampler_.OutputSamples() * width)
++    return Fail("realtime_audio_incomplete", "Audio extent did not complete");
++  finished_ = true;
++  *receipt = {samples, resampler_.OutputSamples(), output_bytes_};
++  return {};
++}
++}  // namespace q4t::server
+diff --git a/src/server/realtime_speech_execution.cpp b/src/server/realtime_speech_execution.cpp
+new file mode 100644
+index 000000000..2599803ae
+--- /dev/null
++++ b/src/server/realtime_speech_execution.cpp
+@@ -0,0 +1,194 @@
++#include "q4t/server/realtime_speech_execution.h"
++
++#include <cmath>
++
++#include "object_protocol.h"
++#include "q4t/audio/tts_generation.h"
++
++namespace q4t::server {
++namespace {
++using namespace object_detail;
++constexpr size_t kSamples = 600ULL * 24000;
++bool Accepted(const ObjectReply& reply) {
++  return reply.ok() && !reply.commit_unknown && reply.http_status >= 200 &&
++         reply.http_status < 300;
++}
++const io::Json* Output(const io::Json& settings) {
++  const auto* audio = settings.Find("audio");
++  return audio ? audio->Find("output") : nullptr;
++}
++}  // namespace
++
++Status PlanRealtimeSpeech(const io::Json& settings, const io::Json& response,
++                          RealtimeSpeechOptions* out, ChatPlanError* error) {
++  if (!out || !error) return Status::Fail("Missing speech plan owner");
++  const auto invalid = [&](std::string path, std::string message) {
++    *error = {"invalid_request", std::move(path), 400};
++    return Status::Fail(std::move(message));
++  };
++  RealtimeSpeechOptions next;
++  const auto* modes = response.Find("output_modalities");
++  if (!modes) modes = settings.Find("output_modalities");
++  if (modes) {
++    if (!modes->IsArray() || modes->array.size() != 1 ||
++        !modes->array[0].IsString() ||
++        (modes->array[0].str != "text" && modes->array[0].str != "audio"))
++      return invalid("output_modalities", "Expected text or audio output");
++    next.enabled = modes->array[0].str == "audio";
++  }
++  auto selected = Object({{"voice", String("vivian")},
++                          {"format", Object({{"type", String("audio/pcm")},
++                                             {"rate", Number(24000)}})},
++                          {"speed", Number(1)}});
++  for (const auto* source : {Output(settings), Output(response)}) {
++    if (!source) continue;
++    if (!source->IsObject())
++      return invalid("audio.output", "Expected output options");
++    for (const auto& [name, value] : source->object) {
++      if (source == Output(response) && name == "speed")
++        return invalid("audio.output.speed", "Speed is a session setting");
++      if (name != "voice" && name != "format" && name != "speed")
++        return invalid("audio.output." + name, "Unknown output option");
++      Set(&selected, name, value);
++    }
++  }
++  const auto* format = selected.Find("format");
++  if (!format || !format->IsObject())
++    return invalid("audio.output.format", "Expected an audio format");
++  if (format->Has("type") && !format->Find("type")->IsString())
++    return invalid("audio.output.format.type", "Expected a format name");
++  const auto type = format->GetString("type", "audio/pcm");
++  if (type == "audio/pcm") {
++    if (const auto* rate = format->Find("rate");
++        rate && (!rate->IsNumber() || rate->number != 24000))
++      return invalid("audio.output.format.rate", "PCM requires 24000 Hz");
++  } else if (type == "audio/pcmu" || type == "audio/pcma") {
++    next.format = {type == "audio/pcmu" ? RealtimeAudioEncoding::kMuLaw
++                                        : RealtimeAudioEncoding::kALaw,
++                   8000};
++    if (format->Has("rate"))
++      return invalid("audio.output.format.rate", "G.711 has a fixed rate");
++  } else {
++    return invalid("audio.output.format.type", "Unknown output encoding");
++  }
++  for (const auto& [key, value] : format->object) {
++    (void)value;
++    if (key != "type" && key != "rate")
++      return invalid("audio.output.format." + key, "Unknown format option");
++  }
++  const auto* speed = selected.Find("speed");
++  if (!speed || !speed->IsNumber() || !std::isfinite(speed->number) ||
++      speed->number < 0.25 || speed->number > 1.5)
++    return invalid("audio.output.speed", "Expected a speed from 0.25 to 1.5");
++  auto wire = Object({{"modalities", Array({String("text"), String("audio")})},
++                      {"audio", Object({{"format", String("pcm16")},
++                                        {"voice", *selected.Find("voice")}})}});
++  auto status = ParseChatAudioOptions(wire, &next.chat, error);
++  if (!status) {
++    error->param = error->param.starts_with("audio.")
++                       ? "audio.output." + error->param.substr(6)
++                       : "audio.output";
++    return status;
++  }
++  if (!next.chat.speech.voice_id &&
++      audio::TtsBuiltinVoiceId(next.chat.speech.voice) < 0)
++    return invalid("audio.output.voice",
++                   "Requested native voice is unavailable");
++  next.chat.enabled = next.enabled;
++  next.chat.speech.speed = speed->number;
++  *out = std::move(next);
++  *error = {};
++  return {};
++}
++
++bool SameRealtimeVoice(const RealtimeSpeechOptions& left,
++                       const RealtimeSpeechOptions& right) {
++  if (left.chat.speech.voice_id != right.chat.speech.voice_id) return false;
++  if (left.chat.speech.voice_id)
++    return left.chat.speech.voice == right.chat.speech.voice;
++  const auto id = audio::TtsBuiltinVoiceId(left.chat.speech.voice);
++  return id >= 0 && id == audio::TtsBuiltinVoiceId(right.chat.speech.voice);
++}
++
++RealtimeSpeechExecution::RealtimeSpeechExecution(
++    const RealtimeSpeechOptions& options, RealtimeSpeechSink sink,
++    std::function<bool()> cancelled)
++    : encoder_(options.format, kSamples, kRealtimeAudioBytes, cancelled),
++      hash_(kSamples * 2),
++      sink_(std::move(sink)),
++      cancelled_(std::move(cancelled)) {
++  valid_ = options.enabled && options.chat.enabled && options.chat.text &&
++           options.chat.speech.format == SpeechFormat::kPcm &&
++           encoder_.Valid() && sink_;
++}
++ObjectReply RealtimeSpeechExecution::Fail(std::string_view message) {
++  if (error_.ok())
++    error_ =
++        Error(502, "realtime_speech_receipt_invalid", std::string(message));
++  return error_;
++}
++ObjectReply RealtimeSpeechExecution::Emit(const RealtimeSpeechEvent& event) {
++  if (!Accepted(error_)) return error_;
++  try {
++    if (cancelled_ && cancelled_()) return Fail("Speech delivery cancelled");
++    auto reply = sink_(event);
++    if (!Accepted(reply)) {
++      if (reply.code.empty()) {
++        reply.code = "realtime_speech_sink_unconfirmed";
++        reply.message = "Speech delivery was not confirmed";
++        reply.http_status = 503;
++      }
++      error_ = std::move(reply);
++    }
++  } catch (...) {
++    return Fail("Speech delivery callback failed");
++  }
++  return error_;
++}
++ObjectReply RealtimeSpeechExecution::Append(std::string_view pcm) {
++  if (!Accepted(error_)) return error_;
++  if (!valid_ || completed_) return Fail("Speech owner is not active");
++  if (!hash_.Add({reinterpret_cast<const uint8_t*>(pcm.data()), pcm.size()}))
++    return Fail("Speech PCM exceeds its byte capacity");
++  auto reply = encoder_.Append(pcm, [&](std::string_view bytes) {
++    return Emit(
++        {RealtimeSpeechEvent::Kind::kChunk, std::string(bytes), {}, {}});
++  });
++  if (!Accepted(reply)) error_ = std::move(reply);
++  return error_;
++}
++ObjectReply RealtimeSpeechExecution::Finish(std::string_view transcript,
++                                            const SpeechEncodingReceipt& native,
++                                            const ActualUsage& usage) {
++  if (!Accepted(error_)) return error_;
++  if (!valid_ || completed_ || transcript.empty() ||
++      transcript.size() > 1ULL << 20 || !native.input_samples ||
++      native.input_samples > kSamples || !native.output_samples ||
++      native.output_samples > kSamples ||
++      native.bytes != native.output_samples * 2 ||
++      native.bytes != hash_.bytes() ||
++      native.sha256 != trace::HexDigest(hash_.Snapshot()) || !usage.input ||
++      !usage.output)
++    return Fail("Native speech EOF does not match actual PCM and usage");
++  RealtimeSpeechReceipt receipt;
++  auto reply = encoder_.Finish(
++      [&](std::string_view bytes) {
++        return Emit(
++            {RealtimeSpeechEvent::Kind::kChunk, std::string(bytes), {}, {}});
++      },
++      &receipt);
++  if (!Accepted(reply)) {
++    error_ = std::move(reply);
++    return error_;
++  }
++  if (receipt.input_samples != native.output_samples)
++    return Fail("Converted waveform differs from native PCM extent");
++  reply = Emit(
++      {RealtimeSpeechEvent::Kind::kDone, {}, std::string(transcript), receipt});
++  if (Accepted(reply)) {
++    completed_ = true;
++    usage_ = usage;
++  }
++  return reply;
++}
++}  // namespace q4t::server
+diff --git a/src/server/realtime_speech_history.cpp b/src/server/realtime_speech_history.cpp
+new file mode 100644
+index 000000000..a713ea162
+--- /dev/null
++++ b/src/server/realtime_speech_history.cpp
+@@ -0,0 +1,160 @@
++#include "q4t/server/realtime_speech_history.h"
++
++#include <algorithm>
++
++#include "q4t/server/input_contract.h"
++#include "q4t/server/lifetime.h"
++#include "q4t/server/realtime_speech_encoder.h"
++
++namespace q4t::server {
++namespace {
++Status Invalid(std::string_view reason) {
++  return Status::Fail("Realtime audio history: " + std::string(reason));
++}
++size_t Width(RealtimeAudioFormat format) {
++  return format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
++}
++bool FormatValid(RealtimeAudioFormat format) {
++  return format.encoding == RealtimeAudioEncoding::kPcm16
++             ? format.rate == 24000
++             : (format.encoding == RealtimeAudioEncoding::kMuLaw ||
++                format.encoding == RealtimeAudioEncoding::kALaw) &&
++                   format.rate == 8000;
++}
++}  // namespace
++
++RealtimeSpeechHistory::RealtimeSpeechHistory(std::string owner,
++                                             size_t maximum_bytes,
++                                             size_t maximum_items)
++    : owner_(std::move(owner)),
++      maximum_bytes_(maximum_bytes),
++      maximum_items_(maximum_items) {
++  valid_ = ValidRequestId(owner_) && maximum_bytes &&
++           maximum_bytes <= kMaximumBytes && maximum_items &&
++           maximum_items <= RealtimeConversation::kMaximumItems;
++}
++
++size_t RealtimeSpeechHistory::Position(const RealtimeItemTicket& ticket) const {
++  if (valid_ && ticket.owner == owner_ && ticket.generation &&
++      ValidRequestId(ticket.id))
++    for (size_t i = 0; i < entries_.size(); ++i)
++      if (entries_[i].ticket == ticket) return i;
++  return entries_.size();
++}
++
++Status RealtimeSpeechHistory::Begin(const RealtimeItemTicket& ticket,
++                                    RealtimeAudioFormat format,
++                                    size_t maximum_record_bytes) {
++  if (!valid_ || ticket.owner != owner_ || !ticket.generation ||
++      !ValidRequestId(ticket.id) || !FormatValid(format) ||
++      entries_.size() == maximum_items_ || !maximum_record_bytes ||
++      maximum_record_bytes > kRealtimeAudioBytes ||
++      maximum_record_bytes % Width(format) ||
++      maximum_record_bytes > maximum_bytes_ - charged_)
++    return Invalid("invalid owner, format or reservation");
++  if (std::ranges::any_of(entries_, [&](const auto& entry) {
++        return entry.ticket.id == ticket.id;
++      }))
++    return Invalid("item already owns audio");
++  Entry entry;
++  entry.ticket = ticket;
++  entry.format = format;
++  entry.maximum = maximum_record_bytes;
++  entry.bytes.reserve(maximum_record_bytes);
++  const auto charge = entry.bytes.capacity();
++  if (charge > maximum_bytes_ - charged_)
++    return Invalid("allocated audio capacity exceeds reservation");
++  entries_.push_back(std::move(entry));
++  charged_ += charge;
++  return {};
++}
++
++Status RealtimeSpeechHistory::Append(const RealtimeItemTicket& ticket,
++                                     std::string_view bytes) {
++  const auto position = Position(ticket);
++  if (position == entries_.size()) return Invalid("stale audio ticket");
++  auto& entry = entries_[position];
++  if (entry.complete || entry.truncated || entry.interrupted || bytes.empty() ||
++      bytes.size() > RealtimeSpeechEncoder::kMaximumChunkBytes ||
++      bytes.size() % Width(entry.format) ||
++      bytes.size() > entry.maximum - entry.bytes.size())
++    return Invalid("invalid audio state or chunk extent");
++  // Capacity was charged at Begin. Append cannot allocate or grow the quota.
++  entry.bytes.append(bytes);
++  entry.generated_samples = entry.bytes.size() / Width(entry.format);
++  return {};
++}
++
++void RealtimeSpeechHistory::Compact(Entry& entry) noexcept {
++  // One bounded transient copy is covered by the session reservation. Failure
++  // keeps the existing charge and valid audio; it cannot fail healthy output.
++  if (entry.bytes.size() >= entry.bytes.capacity() / 2) return;
++  try {
++    std::string compact(entry.bytes);
++    if (compact.capacity() < entry.bytes.capacity()) {
++      charged_ -= entry.bytes.capacity() - compact.capacity();
++      entry.bytes.swap(compact);
++    }
++  } catch (...) {
++  }
++}
++
++Status RealtimeSpeechHistory::Complete(const RealtimeItemTicket& ticket) {
++  const auto position = Position(ticket);
++  if (position == entries_.size()) return Invalid("stale audio ticket");
++  auto& entry = entries_[position];
++  if (entry.complete || entry.truncated || entry.interrupted ||
++      entry.bytes.empty())
++    return Invalid("audio cannot complete in its current state");
++  entry.complete = true;
++  Compact(entry);
++  return {};
++}
++
++Status RealtimeSpeechHistory::Interrupt(const RealtimeItemTicket& ticket) {
++  const auto position = Position(ticket);
++  if (position == entries_.size()) return Invalid("stale audio ticket");
++  auto& entry = entries_[position];
++  // An earlier client truncate or a verified EOF remains the stronger fact.
++  if (!entry.complete) {
++    if (!entry.truncated) entry.interrupted = true;
++    Compact(entry);
++  }
++  return {};
++}
++
++Status RealtimeSpeechHistory::Truncate(const RealtimeItemTicket& ticket,
++                                       uint64_t audio_end_ms) {
++  const auto position = Position(ticket);
++  if (position == entries_.size()) return Invalid("stale audio ticket");
++  auto& entry = entries_[position];
++  const uint64_t samples = entry.bytes.size() / Width(entry.format);
++  // Compare before multiplication to reject oversized/overflowing requests.
++  if (audio_end_ms > samples * 1000 / entry.format.rate)
++    return Invalid("played duration exceeds available audio");
++  const uint64_t retained = audio_end_ms * entry.format.rate / 1000;
++  entry.bytes.resize(retained * Width(entry.format));
++  entry.truncated = true;
++  entry.complete = false;
++  return {};
++}
++
++Status RealtimeSpeechHistory::Get(const RealtimeItemTicket& ticket,
++                                  RealtimeSpeechView* view) const {
++  const auto position = Position(ticket);
++  if (!view || position == entries_.size()) return Invalid("stale audio view");
++  const auto& entry = entries_[position];
++  *view = {entry.format,   entry.bytes,     entry.generated_samples,
++           entry.complete, entry.truncated, entry.interrupted};
++  return {};
++}
++
++Status RealtimeSpeechHistory::Erase(const RealtimeItemTicket& ticket) {
++  const auto position = Position(ticket);
++  if (position == entries_.size()) return Invalid("stale audio ticket");
++  const auto charge = entries_[position].bytes.capacity();
++  entries_.erase(entries_.begin() + position);
++  charged_ -= charge;
++  return {};
++}
++}  // namespace q4t::server

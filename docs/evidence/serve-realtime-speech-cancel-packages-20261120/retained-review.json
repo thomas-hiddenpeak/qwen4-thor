@@ -1,0 +1,62 @@
+{
+  "status": "NEW_COMPOSITION_ACTUAL_BUSINESS_PENDING",
+  "previous": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-refusal-interference-20261120/retained-01/bundle",
+    "manifest_sha256": "f40df9e985f94de06f8c5a1d94ce99a1476139ae68e0d2e603bacfdcdbdf3aa2"
+  },
+  "candidate": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/service-package-02/bundle",
+    "manifest_sha256": "68345e1781eebda59d530bcad2d235e9fe08365f64929a0caa97f0cecd6a84dd"
+  },
+  "fallback": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-02/bundle",
+    "manifest_sha256": "77b25732b6a04471a080fadb73fdc9be2de7f33be34ec3b844a6b151fe3a9d30"
+  },
+  "changed_from_candidate": [
+    "source/tools/serve_recovery/controller.py"
+  ],
+  "exact_retained_controller_sha256": "0f1070c404b6f10a70dd5c88a6699f500854f609a60c37d0bc462abe7f0cf8e6",
+  "compatibility": {
+    "format": "q4t-profile-migration-permit-v1",
+    "from_registry": "7b525e299ca53ab876db6019053e300501948d296e03839ef574fe418ed04b01",
+    "to_registry": "7b525e299ca53ab876db6019053e300501948d296e03839ef574fe418ed04b01",
+    "profiles": {
+      "primary": "627ebdd0badbf29d0b185e98939e8ee5e3e50cef8c49e543ec0b504b62702c1e",
+      "light": "a14aef7989723d111d5ff116c9e0be7928eef5339350cef45f94a11a500bc839"
+    },
+    "from_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "to_configuration": {
+      "version": 1,
+      "degrade_below_mib": 8192,
+      "recover_above_mib": 16384,
+      "pressure_seconds": 30,
+      "recovery_seconds": 120,
+      "minimum_light_seconds": 300,
+      "cooldown_seconds": 300,
+      "switches_per_hour": 2,
+      "switches_per_day": 4
+    },
+    "from_identity": "5bbc52375a18ad4504d7f4e7f464fe023146fa0ed03ff4f102f9c740da170057",
+    "to_identity": "5bbc52375a18ad4504d7f4e7f464fe023146fa0ed03ff4f102f9c740da170057",
+    "capabilities_sha256": "9f64673c645a7db00c3e102e2548a41e1f81ffeb6215ab443168513f4578cbdb",
+    "automatic": true
+  },
+  "rationale": "The same modern retained root will undergo actual standalone business and actual automatic payload recovery, then stopped root rollback. No need for a second legacy controller composition to prove these same two roles.",
+  "same_qualified_engine": true,
+  "older_engine_fallback": false,
+  "original_acceptance_not_relabelled": true,
+  "shared_immutable_engine": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/service-package-02/bundle/engine/q4t",
+  "default_unchanged": true,
+  "model_actions": 0,
+  "driver_sha256": "6e4e44ea88baee7d581081b2ab02dcdcd4f72114d5f5599e0254eb6453588624"
+}

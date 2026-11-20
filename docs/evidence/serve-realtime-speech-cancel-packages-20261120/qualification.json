@@ -1,0 +1,30 @@
+{
+  "status": "ACCEPT_SPEECH_CANCELLATION_PRIMARY_LIGHT",
+  "registry_sha256": "d28ba7ac49169a0a4bd411ecd7e4f99cebe217b18cf7fd9e1c920e7c531f8b4f",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 63,
+    "cleanup_complete": true,
+    "lease_result_sha256": "cf4ffeaf618a791d16c4a2ba5d79c8247daa55a9798963b7e7059428608aabdc"
+  },
+  "original_environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "cleanup_complete": true,
+    "nvml_queries": 151,
+    "lease_result_sha256": "dda0d5ef909a05a3ec1a7778d8e51dd71e94850b4751bf3bfbfef154929c0310"
+  },
+  "actual_cancellation_acceptance_sha256": "3ad7e1d1d206624e31b5a40634e696d1bc295e24f27da06b8f9787b1c9ca0d29",
+  "original_registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+  "gpu_starts": 0,
+  "full_profile_rerun": false,
+  "managed_recovery_accepted": false,
+  "original_failures_preserved": true,
+  "default_unchanged": true,
+  "performance_claim": false,
+  "listening_deferred": true,
+  "seconds": 0.7395387678407133
+}

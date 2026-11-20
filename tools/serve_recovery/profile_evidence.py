@@ -21,6 +21,7 @@ REALTIME_FORMAT = 'q4t-profile-business-v15'
 SEMANTIC_FORMAT = 'q4t-profile-business-v16'
 CONVERSATION_FORMAT = 'q4t-profile-business-v17'
 PROMPT_FORMAT = 'q4t-profile-business-v18'
+SPEECH_FORMAT = 'q4t-profile-business-v19'
 REALTIME_INPUT_SHA = '1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc'
 REALTIME_WAVEFORM_SHA = '7b84bf310eb247a51433720050487c9a79ea8d87505a8c24e83a52a4067ed71f'
 # Exact saved state and full outputs from the accepted official SDK/TLS run.
@@ -575,6 +576,8 @@ MEDIA_SHA = 'c1fddb4c848b966195302d193392a22856710fc6eb50640d891673f26de4b408'
 
 
 def format_for(profile, identity=None, capabilities=None, business_value=None):
+    if speech_enabled(capabilities):
+        return SPEECH_FORMAT
     if prompt_enabled(capabilities):
         return PROMPT_FORMAT
     if conversation_enabled(capabilities):
@@ -1050,6 +1053,10 @@ def conversation_enabled(capabilities):
         from tools.serve_recovery.profile_prompt_evidence import DECLARATION
         expected.update(profile='q4t-native-realtime-chat-v2', prompt=DECLARATION,
                         pending_execution=['audio', 'mcp', 'tracing'])
+        if 'speech_output' in value:
+            from tools.serve_recovery.profile_speech_evidence import DECLARATION as speech
+            expected.update(speech_output=speech, output_modalities=['text', 'audio'],
+                            pending_execution=['audio_input', 'mcp', 'tracing'])
     ledger.require(type(value) is dict and
         ledger.canonical(value) == ledger.canonical(expected),
         'native Realtime Chat capability differs')
@@ -1060,6 +1067,11 @@ def prompt_enabled(capabilities):
     if not conversation_enabled(capabilities):
         return False
     return capabilities['realtime']['conversation']['profile'] == 'q4t-native-realtime-chat-v2'
+
+
+def speech_enabled(capabilities):
+    return (conversation_enabled(capabilities) and
+            'speech_output' in capabilities['realtime']['conversation'])
 
 
 def conversation_output(source, session, pending_response_id=None):
@@ -1476,7 +1488,11 @@ def business(value, identity, selected=None, capabilities=None):
                        (('realtime',) if realtime_enabled(identity, capabilities) else ()) +
                        (('semantic_vad',) if semantic_vad_enabled(identity, capabilities) else ()) +
                        (('conversation',) if conversation_enabled(capabilities) else ()) +
-                       (('prompt',) if prompt_enabled(capabilities) else ()))
+                       (('prompt',) if prompt_enabled(capabilities) else ()) +
+                       (('realtime_speech',) if speech_enabled(capabilities) else ()))
+    if speech_enabled(capabilities):
+        from tools.serve_recovery.profile_speech_evidence import business as speech_business
+        speech_business(value['realtime_speech'])
     if prompt_enabled(capabilities):
         from tools.serve_recovery.profile_prompt_evidence import business as prompt_business
         prompt_business(value['prompt'])
@@ -1566,6 +1582,10 @@ def validate(value, registry, name, digest):
     business(value['business'], value['identity'], value['capacity'], value['capabilities'])
     if 'reused_business' in value:
         if value['reused_business'].get('format') in (
+                'q4t-speech-source-reuse-v1',
+                'q4t-speech-cancellation-source-reuse-v1'):
+            from tools.serve_recovery import profile_speech_reuse as verifier
+        elif value['reused_business'].get('format') in (
                 'q4t-prompt-refusal-source-reuse-v1',
                 'q4t-prompt-refusal-source-assembly-v1'):
             from tools.serve_recovery import profile_refusal_reuse as verifier

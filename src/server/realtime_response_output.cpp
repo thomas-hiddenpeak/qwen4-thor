@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "object_protocol.h"
+#include "q4t/io/base64.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/realtime_shape.h"
@@ -31,6 +32,10 @@ Json EventTextPart(std::string text) {
   // The pinned GA item and content-part event have distinct discriminator
   // values: output_text in conversation items, text in content-part events.
   return Object({{"type", String("text")}, {"text", String(std::move(text))}});
+}
+Json AudioPart(std::string transcript, bool event = false) {
+  return Object({{"type", String(event ? "audio" : "output_audio")},
+                 {"transcript", String(std::move(transcript))}});
 }
 Json TextMessage(std::string id) {
   return Object({{"id", String(std::move(id))},
@@ -83,11 +88,12 @@ bool RealtimeMetadataBounded(const Json& metadata) {
 
 RealtimeResponseOutput::RealtimeResponseOutput(
     RealtimeResponseOutputOptions options, EventSink emit, ItemSink item,
-    IdFactory ids)
+    IdFactory ids, AudioSink audio)
     : options_(std::move(options)),
       emit_(std::move(emit)),
       item_(std::move(item)),
-      ids_(std::move(ids)) {}
+      ids_(std::move(ids)),
+      audio_(std::move(audio)) {}
 
 ObjectReply RealtimeResponseOutput::Fail(std::string_view code,
                                          std::string_view message) {
@@ -124,11 +130,24 @@ Json RealtimeResponseOutput::Output() const {
   return result;
 }
 Json RealtimeResponseOutput::Response(std::string_view status) const {
-  auto result = Object({{"id", String(options_.response_id)},
-                        {"object", String("realtime.response")},
-                        {"status", String(std::string(status))},
-                        {"output", Output()},
-                        {"output_modalities", Array({String("text")})}});
+  auto result =
+      Object({{"id", String(options_.response_id)},
+              {"object", String("realtime.response")},
+              {"status", String(std::string(status))},
+              {"output", Output()},
+              {"output_modalities",
+               Array({String(options_.audio_format ? "audio" : "text")})}});
+  if (options_.audio_format) {
+    const auto& format = *options_.audio_format;
+    const bool pcm = format.encoding == RealtimeAudioEncoding::kPcm16;
+    auto encoded = Object(
+        {{"type", String(pcm ? "audio/pcm"
+                         : format.encoding == RealtimeAudioEncoding::kMuLaw
+                             ? "audio/pcmu"
+                             : "audio/pcma")}});
+    if (pcm) Set(&encoded, "rate", Number(format.rate));
+    Set(&result, "audio", Object({{"output", Object({{"format", encoded}})}}));
+  }
   if (options_.in_conversation)
     Set(&result, "conversation_id", String(options_.conversation_id));
   if (!options_.metadata.IsNull()) Set(&result, "metadata", options_.metadata);
@@ -142,6 +161,11 @@ ObjectReply RealtimeResponseOutput::Begin() {
       !options_.maximum_items || options_.maximum_items > 128 ||
       !MetadataBounded(options_.metadata))
     return Fail("realtime_response_owner_invalid", "Invalid response owner");
+  if (options_.audio_format &&
+      (!audio_ || !RealtimeSpeechEncoder(*options_.audio_format, 1,
+                                         options_.maximum_audio_bytes)
+                       .Valid()))
+    return Fail("realtime_response_owner_invalid", "Invalid audio owner");
   auto response = Response("in_progress");
   ChatPlanError shape;
   if (!ValidateRealtimeShape(response, RealtimeShape::kResponse, &shape))
@@ -187,8 +211,10 @@ ObjectReply RealtimeResponseOutput::AddItem(Json value,
     if (!reply.ok()) return reply;
   }
   if (!call_index) {
+    if (options_.audio_format) audio_index_ = index;
     auto event = Position(index, true);
-    Set(&event, "part", EventTextPart(""));
+    Set(&event, "part",
+        options_.audio_format ? AudioPart("", true) : EventTextPart(""));
     reply = Emit("response.content_part.added", std::move(event));
     if (!reply.ok()) return reply;
   }
@@ -199,9 +225,13 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
   if (!error_.ok()) return error_;
   if (!begun_ || terminal_)
     return Fail("realtime_response_state_invalid", "Response is not active");
+  if (audio_truncated_) return {};
   if (delta.kind == ResponseDelta::Kind::kReasoning) return {};
   const bool tool = delta.kind == ResponseDelta::Kind::kTool;
   const auto& piece = tool ? delta.call.arguments : delta.text;
+  if (!tool && audio_complete_ && !piece.empty())
+    return Fail("realtime_audio_transcript_sealed",
+                "Transcript changed after speech completed");
   if (piece.size() > options_.maximum_bytes - bytes_)
     return Fail("realtime_output_capacity_exhausted",
                 "Output text limit exceeded");
@@ -235,8 +265,12 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
       return Fail("realtime_tool_identity_invalid",
                   "Unbound function fragment");
     }
+  } else if (options_.audio_format && audio_index_) {
+    index = *audio_index_;
   } else if (items_.empty() || items_.back().call_index) {
-    auto reply = AddItem(TextMessage(ids_("item_")), {}, &index);
+    auto message = TextMessage(ids_("item_"));
+    if (options_.audio_format) Set(&message, "content", Array({AudioPart("")}));
+    auto reply = AddItem(std::move(message), {}, &index);
     if (!reply.ok()) return reply;
   } else {
     index = items_.size() - 1;
@@ -245,7 +279,9 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
   if (tool)
     Field(next, "arguments").str += piece;
   else
-    Field(Field(next, "content").array[0], "text").str += piece;
+    Field(Field(next, "content").array[0],
+          options_.audio_format ? "transcript" : "text")
+        .str += piece;
   const auto stored = item_(next, false, false);
   if (!AcceptSink(stored)) return error_;
   items_[index].deleted |= stored.value.GetBool("deleted");
@@ -255,9 +291,65 @@ ObjectReply RealtimeResponseOutput::Append(const ResponseDelta& delta) {
   Set(&event, "delta", String(piece));
   if (tool)
     Set(&event, "call_id", String(items_[index].value.GetString("call_id")));
-  return Emit(tool ? "response.function_call_arguments.delta"
-                   : "response.output_text.delta",
+  return Emit(tool                    ? "response.function_call_arguments.delta"
+              : options_.audio_format ? "response.output_audio_transcript.delta"
+                                      : "response.output_text.delta",
               std::move(event));
+}
+ObjectReply RealtimeResponseOutput::AppendAudio(std::string_view bytes) {
+  if (!error_.ok()) return error_;
+  if (!begun_ || terminal_ || !options_.audio_format || !audio_index_)
+    return Fail("realtime_audio_owner_invalid", "No audio utterance owner");
+  if (audio_truncated_) return {};
+  const size_t width =
+      options_.audio_format->encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+  if (audio_complete_ || bytes.empty() || bytes.size() % width ||
+      bytes.size() > RealtimeSpeechEncoder::kMaximumChunkBytes ||
+      bytes.size() > options_.maximum_audio_bytes - audio_bytes_)
+    return Fail("realtime_audio_extent_invalid", "Invalid audio chunk extent");
+  std::string encoded;
+  if (!io::EncodeBase64(bytes, 4 * ((bytes.size() + 2) / 3), &encoded))
+    return Fail("realtime_audio_encoding_failed", "Audio encoding failed");
+  const auto& item = items_[*audio_index_].value;
+  if (!AcceptSink(
+          audio_(item.GetString("id"), bytes, RealtimeAudioCommit::kAppend)))
+    return error_;
+  audio_bytes_ += bytes.size();
+  auto event = Position(*audio_index_, true);
+  Set(&event, "delta", String(std::move(encoded)));
+  return Emit("response.output_audio.delta", std::move(event));
+}
+ObjectReply RealtimeResponseOutput::CompleteAudio(
+    const RealtimeSpeechReceipt& receipt, std::string_view spoken_input) {
+  if (!error_.ok()) return error_;
+  if (!begun_ || terminal_ || !options_.audio_format || !audio_index_)
+    return Fail("realtime_audio_owner_invalid", "No audio utterance owner");
+  if (audio_truncated_) return {};
+  const auto format = *options_.audio_format;
+  const size_t width = format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+  if (audio_complete_ || !audio_bytes_ || receipt.bytes != audio_bytes_ ||
+      receipt.output_samples != audio_bytes_ / width ||
+      !receipt.input_samples || receipt.input_samples > 600ULL * 24000 ||
+      receipt.output_samples != receipt.input_samples * format.rate / 24000 ||
+      spoken_input !=
+          items_[*audio_index_].value.GetArray("content")->array[0].GetString(
+              "transcript"))
+    return Fail("realtime_audio_receipt_invalid", "Audio receipt differs");
+  if (!AcceptSink(audio_(items_[*audio_index_].value.GetString("id"), {},
+                         RealtimeAudioCommit::kComplete)))
+    return error_;
+  audio_complete_ = true;
+  return {};
+}
+ObjectReply RealtimeResponseOutput::TruncateAudio(std::string_view item_id) {
+  if (!error_.ok()) return error_;
+  if (!begun_ || terminal_ || !audio_index_ ||
+      items_[*audio_index_].value.GetString("id") != item_id)
+    return Fail("realtime_audio_owner_invalid", "No matching audio owner");
+  auto& part = Field(items_[*audio_index_].value, "content").array[0];
+  Field(part, "transcript").str.clear();
+  audio_truncated_ = true;
+  return {};
 }
 bool RealtimeResponseOutput::Matches(const Json& message,
                                      bool truncated) const {
@@ -268,7 +360,8 @@ bool RealtimeResponseOutput::Matches(const Json& message,
   const auto* calls = message.GetArray("tool_calls");
   for (const auto& item : items_) {
     if (!item.call_index) {
-      text += item.value.GetArray("content")->array[0].GetString("text");
+      text += item.value.GetArray("content")->array[0].GetString(
+          options_.audio_format ? "transcript" : "text");
       continue;
     }
     if (!calls || call == calls->array.size()) {
@@ -312,6 +405,8 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
   if (has_message && (!end.message || !Matches(*end.message, truncated)))
     return Fail("realtime_output_mismatch",
                 "Actual response does not match deltas");
+  if (has_message && audio_index_ && (!audio_complete_ || audio_truncated_))
+    return Fail("realtime_audio_incomplete", "Audio did not reach natural EOF");
   auto response = Response(StateName(end.state));
   if (end.state != RealtimeResponseEnd::State::kCompleted) {
     auto details =
@@ -348,6 +443,10 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
   if (!ValidateRealtimeShape(response, RealtimeShape::kResponse, &shape))
     return Fail("realtime_terminal_invalid",
                 "Invalid response terminal metadata");
+  if (audio_index_ && !audio_complete_ &&
+      !AcceptSink(audio_(items_[*audio_index_].value.GetString("id"), {},
+                         RealtimeAudioCommit::kInterrupted)))
+    return error_;
   const auto status = end.state == RealtimeResponseEnd::State::kCompleted
                           ? "completed"
                           : "incomplete";
@@ -368,11 +467,21 @@ ObjectReply RealtimeResponseOutput::Finish(const RealtimeResponseEnd& end) {
       if (!reply.ok()) return reply;
     } else {
       const auto& part = item.value.GetArray("content")->array[0];
-      Set(&event, "text", String(part.GetString("text")));
-      auto reply = Emit("response.output_text.done", std::move(event));
+      if (options_.audio_format) {
+        auto reply = Emit("response.output_audio.done", event);
+        if (!reply.ok()) return reply;
+      }
+      const auto text =
+          part.GetString(options_.audio_format ? "transcript" : "text");
+      Set(&event, options_.audio_format ? "transcript" : "text", String(text));
+      auto reply =
+          Emit(options_.audio_format ? "response.output_audio_transcript.done"
+                                     : "response.output_text.done",
+               std::move(event));
       if (!reply.ok()) return reply;
       event = Position(i, true);
-      Set(&event, "part", EventTextPart(part.GetString("text")));
+      Set(&event, "part",
+          options_.audio_format ? AudioPart(text, true) : EventTextPart(text));
       reply = Emit("response.content_part.done", std::move(event));
       if (!reply.ok()) return reply;
     }

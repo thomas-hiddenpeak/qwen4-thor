@@ -1,0 +1,7 @@
+{
+  "scope": "Inventory JSON serialization only after successful checks; original annotated values and source SHA map identical",
+  "before_sha256": "e683a0571d03ee925dfca44d166106c4774b3c0b2a61ea6c43a774310c10279f",
+  "after_sha256": "fa95c7d3a88c51b6127039f1ae1119df2345ff8c50aca4cd084164d8ec50683b",
+  "parsed_values_identical": true,
+  "tests_reused_without_repeat": true
+}

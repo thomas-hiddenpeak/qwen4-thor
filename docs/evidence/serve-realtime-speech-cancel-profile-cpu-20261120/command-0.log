@@ -1,0 +1,17 @@
+test_all_original_business_is_exact_and_cannot_be_added_or_removed (tools.serve_recovery.test_profile_speech_cancel.CancellationSource.test_all_original_business_is_exact_and_cannot_be_added_or_removed) ... ok
+test_attachment_cannot_hide_unknown_original_identity (tools.serve_recovery.test_profile_speech_cancel.CancellationSource.test_attachment_cannot_hide_unknown_original_identity) ... ok
+test_capacity_or_observed_configuration_cannot_drift (tools.serve_recovery.test_profile_speech_cancel.CancellationSource.test_capacity_or_observed_configuration_cannot_drift) ... ok
+test_different_binary_protocol_or_backend_cannot_reuse (tools.serve_recovery.test_profile_speech_cancel.CancellationSource.test_different_binary_protocol_or_backend_cannot_reuse) ... ok
+test_evidence_bound_remains_explicit_and_finite (tools.serve_recovery.test_profile_speech_cancel.CancellationSource.test_evidence_bound_remains_explicit_and_finite) ... ok
+test_exact_sources_keep_history_and_separate_fresh_repair (tools.serve_recovery.test_profile_speech_cancel.CancellationSource.test_exact_sources_keep_history_and_separate_fresh_repair) ... ok
+test_old_environment_memory_and_provenance_are_not_new_measurements (tools.serve_recovery.test_profile_speech_cancel.CancellationSource.test_old_environment_memory_and_provenance_are_not_new_measurements) ... ok
+test_relabelled_failed_or_modified_repair_never_qualifies (tools.serve_recovery.test_profile_speech_cancel.CancellationSource.test_relabelled_failed_or_modified_repair_never_qualifies) ... ok
+test_exact_compact_source_retains_witness_hashes_without_nested_record (tools.serve_recovery.test_profile_speech.SourceReuse.test_exact_compact_source_retains_witness_hashes_without_nested_record) ... ok
+test_reused_business_must_match_each_exact_digest (tools.serve_recovery.test_profile_speech.SourceReuse.test_reused_business_must_match_each_exact_digest) ... ok
+test_eight_mib_bound_only_for_explicit_reviewed_v19 (tools.serve_recovery.test_profile_speech.SpeechCapabilities.test_eight_mib_bound_only_for_explicit_reviewed_v19) ... ok
+test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.335s
+
+OK

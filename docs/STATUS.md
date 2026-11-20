@@ -7,6 +7,197 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+发行文档检查840条旧链接通过、1条历史日志相对链接失败；保留原日志，
+补兼容入口并核对两个受影响路径，原失败保留。rev376发行结果不变，
+继续PR #54最终检查合入与总计划。
+
+[rev376原生语音已交付](evidence/serve-realtime-speech-delivery-20261120/README.md)：
+默认b156d976/c0571cd5，v23包68345e17、保留包77b25732，主轻d28ba7ac。
+19条原生CLI完成升级/回退/前进，0新增GPU，服务STOPPED；动态配额
+TPM6000、用量、profile历史和外层恢复预算保持。原FAIL及旧rev366
+快照保留。PR #54待最终检查合入；随后双向输入等全部master继续。
+
+[语音恢复与取消修复已验](evidence/serve-realtime-speech-recovery-20261120/README.md)：
+新保留包及自动整包回退通过，累计含原失败9模型/22生成/11连接/
+1探测/604.676秒，570次NVML正常并清理。原TLS错误统计FAILED保持，
+恢复组件按精确来源复用、修复另有真实补验；默认rev366仍STOPPED。
+继续归档已退役发布记录并执行可回退发行，随后PR #54及全部master。
+
+[修复后资格与封包就绪](evidence/serve-realtime-speech-cancel-packages-20261120/README.md)：
+v19 registry d28ba7ac绑定原主轻和实际取消修复；新v23候选与保留包
+使用b156d976，后者只换精确旧控制器，尚待实际保留包及整包回退。
+冻结新增1模型/2生成保留包，随后原2模型/4生成回退；累计含所有
+失败9模型/22生成/11连接/1探测/1200秒。默认rev366保持，继续交付。
+
+[取消修复资格CPU通过](evidence/serve-realtime-speech-cancel-profile-cpu-20261120/README.md)：
+12项及20来源反例通过；原摘要续审拒绝保留，只补受影响来源检查。
+现有v23模块绑定原v19主轻与实际取消证据，不新增依赖。继续新资格
+组装和整包回退，默认rev366保持，全部master继续。
+
+[取消修复真实短验通过](evidence/serve-realtime-speech-cancel-http-20261120/README.md)：
+新候选b156d976，1模型/2连接/3响应，67.013秒/63次NVML正常；
+abort=1/error=0、实际取消581 tokens、清理及原模型后续完整语音通过。
+原失败保持、默认rev366不变。继续在现有v23模块绑定精确旧主轻来源
+与新修复证据，CPU最多16项+20来源反例/120秒，再完成整包回退和发行。
+
+[取消补验因磁盘下限停止](evidence/serve-realtime-speech-cancel-space-20261120/README.md)：
+新候选 b156d976 构建零警告；实际 1 模型/1连接/2响应在结算采集前
+触发32 MiB保留量，原FAIL保留并完成清理。14旧验证程序可逆归档
+释放248341499字节；至少256 MiB余量后仅重试原1模型/3响应短验。
+累计含旧失败和整包待验上限8模型/20生成/10连接/1探测/1200秒；
+默认rev366保持，未完成项继续。
+
+[取消补验驱动CPU通过](evidence/serve-realtime-speech-cancel-driver-cpu-20261120/README.md)：
+5项/0.625秒及JS通过；原误分类、未计实际工作或核心重启均拒绝。
+继续冻结单模型直接补验，原FAILED和默认rev366不变。
+
+取消缺陷短验驱动已写入：先验5个证据反例与JS语法/120秒，随后
+同一严格租约最多1模型/2连接/3响应/2入口/420秒，断连后显式新
+连接仍用原模型；不补跑控制器或完整后端矩阵。全恢复累计上限
+含旧失败及未跑整包为7模型/18生成/9连接/1探测/1200秒。
+
+[音频取消计数CPU修复通过](evidence/serve-realtime-speech-cancellation-cpu-20261120/README.md)：
+4新+4保护/0.471秒与20来源反例通过，独立构建4.746秒零警告。
+原TLS FAILED保持，runtime尚待新构建与真实取消补验；设备/合成
+错误和未知提交保护保持。默认rev366不动，整包回退尚未执行。
+
+实际TLS恢复发现音频取消计数缺陷：网关和控制器恢复、真实语音、
+完整配额等待及清理均完成，但断连误计error而非aborted，原FAILED
+保持，尚不发行。已补合成取消分类，只将409且真实取消的健康后端
+请求纳入abort，设备/合成错误与未知提交仍保留错误；先做针对CPU
+最多12项及20来源反例/120秒，再规划新身份的直接业务短验。
+
+构建中间产物已可逆归档至`.q4t-work/serve-realtime-audio-20261120/`
+`build-intermediates-01`；完整host构建前须用其restore.py恢复591个
+单链接对象，运行时构建前恢复2个库。当前执行程序和发行包保持。
+
+[语音恢复语速修正CPU通过](evidence/serve-realtime-speech-speed-recovery-20261120/README.md)：
+14项/4.640秒及JS/20来源反例通过，原非法请求FAIL保留。保留包
+实际接受，61.107秒/58次NVML正常；原命令断言有单独路径复核。
+仅补未完成TLS与整包回退，累计上限6模型/15生成/7连接/1200秒。
+
+语音保留包实际已通过并完成命令路径离线复核；原逐字argv拒绝保留。
+TLS首段完整语音成功，第二请求因驱动错用response级speed而400，
+故障尚未注入，原FAIL/COMMAND_FAILED保持。按固定SDK改用轮次间
+session.update；冻结14项CPU/20来源反例/180秒后仅补缺失TLS恢复。
+累计恢复预算含失败为6模型/15生成/7连接/1探测/1200秒；默认保持。
+
+[语音恢复冷入口修正通过](evidence/serve-realtime-speech-recovery-entry-20261120/README.md)：
+2项CPU/1.116秒及20来源反例通过；只在封包来源固定后导入。
+原COMMAND_FAILED和两个准备错误保留，0模型/0请求；继续原实际
+恢复预算，默认rev366保持，全部master继续。
+
+语音恢复首次入口在模型启动前拒绝：驱动提前导入生产校验模块，
+违反封包来源固定。原租约COMMAND_FAILED保留、0模型/0请求；改为
+固定来源后再导入，补2项CPU与来源检查后重冻入口。默认保持。
+
+[语音恢复CPU通过](evidence/serve-realtime-speech-recovery-cpu-20261120/README.md)：
+21个不同用例/27次执行/8.671秒、20来源反例与JS通过，原6项ERROR
+保留；原生TLS/SDK合成对端不算模型验收。helper构建1.766秒零警告，
+0GPU/default保持；继续实际恢复、可回退发行及全部master。
+
+语音恢复首轮CPU 21项中15通过、6失败：5项测试程序路径错误，
+1项缺失终态的反例抛未分类异常。原记录保留；修正路径并提前拒绝
+缺失终态，仅补6失败及未执行JS/20来源反例，0GPU/default保持。
+
+语音进入原生恢复与发行接线：发行封包v23补入4项语音资格依赖，
+保留v1～v22原清单。复用现有Guardian、配额等待与整包回退，不
+新增外部服务。先完成封包和语音故障时序驱动，冻结针对CPU最多
+24项/20来源反例/180秒；随后受影响恢复最多5模型、12生成（7语音响应加5启动自检）、
+6连接、1 CUDA探测、1200秒，三个独立场景各持完整严格租约。
+网关失败保持健康模型；控制器死亡按原预算重建；中断不自动重放。
+默认rev366不变，主轻证据复用，双向音频和全部master继续。
+
+[Realtime语音主轻资格完成](evidence/serve-realtime-speech-profiles-20261120/README.md)：
+两独立租约累计2模型/6WSS/10响应尝试/157.384秒、151次NVML正常，
+所属资源已清理。主轻实际音色/字节/权限拒绝后42/单次计费通过；
+原主组FAILED/COMMAND_FAILED保持，v19 registry d2ff5b3b。
+默认rev366不变；继续受影响原生恢复、可回退发行和全部master。
+
+[主配置实际语音离线复核通过](evidence/serve-realtime-speech-primary-review-20261120/README.md)：
+两音色完整PCM与旧独立ASR见证一致，越权零计费且随后文本42；
+31个不同CPU累计通过。原回显断言FAIL、结算夹具FAIL和原租约
+COMMAND_FAILED均保留，78次NVML正常并已清理。仅补未执行轻
+配置1模型/3WSS/5尝试/900秒；默认rev366及全部master保持。
+
+主配置实际完成共享Chat、内置/注册音色及越权后文本42，但驱动
+误把可选response.audio.output.voice当作必填回显而FAIL。实际音频
+完整字节与独立ASR旧见证相同；81.269秒、78次NVML正常并清理。
+原FAILED/COMMAND_FAILED保持；修正断言以有效session设置和声音
+为据，冻结10项CPU/20来源反例/120秒与原现场复核，随后仅补未执行
+轻配置1模型/3WSS/5响应尝试/900秒，不重跑主配置。默认rev366不变。
+
+[Realtime语音主轻CPU已闭合](evidence/serve-realtime-speech-profile-cpu-20261120/README.md)：
+28项/29次执行、20来源反例及两份旧主轻完整记录通过，累计2.486秒、
+0GPU。原异常类型夹具与来源清单拒绝均保留；仅补失败项。v19
+显式保留原始摘要，语音能力不可随恢复丢失；默认rev366不变。
+继续冻结2模型/6WSS/10响应尝试/1200秒实际主轻与后续全部master。
+
+语音输出主轻验收进入[来源与有界计划](evidence/serve-realtime-speech-profile-source-20261120/README.md)：
+16改动/6新增均在服务层，771来源保持；旧主轻完整校验通过。
+补v19语音资格及精确来源复用，冻结CPU最多32项/20来源反例/120秒；
+随后同租约2模型/2入口/6WSS/10响应尝试/1200秒，仅受影响路径。
+可逆压缩退役CPU程序释放61158380字节；默认rev366及原FAIL保持。
+继续恢复、发行、双向音频和全部master。
+
+[Realtime语音内容短验通过](evidence/serve-realtime-speech-content-20261120/README.md)：
+明确新user后工具回答rev366，三格式/0.75语速的真实语音与无提示ASR
+均通过。补验1模型/5响应/2固定种子对照/3ASR，76.382秒、73次NVML
+正常并清理；两租约累计157.913秒，原随机/旧轮次FAIL保留。
+复用已过协议/配额/截断，默认rev366不变；继续受影响主轻/恢复/发行
+及双向音频和全部master，未宣称完整Realtime交付。
+
+[Realtime语音输入对照完成](evidence/serve-realtime-speech-input-review-20261120/README.md)：
+6个实际历史重建确认audio/text/native提示逐字节一致；格式场景末项
+仍是旧assistant，明确新user会改变当前询问。补验6项CPU/JS通过，
+原质量FAIL保留。仅补1模型/1WSS/5响应/2固定种子对照/3ASR/600秒，
+已过协议/配额/取消不重跑，候选和默认rev366保持，全部master继续。
+
+[Realtime真实音频首轮保留FAIL](evidence/serve-realtime-speech-business-20261120/README.md)：
+1模型/2WSS/9响应/2Chat/3ASR，81.532秒，77次NVML正常并清理。
+实际字节/三格式/0.75语速/截断取消/单RPM与TPM通过；工具答错，
+格式场景没有新user轮次且仍答版本号，原质量失败完整保留。
+默认rev366不变；先离线核对实际提示，再仅补内容缺项，总目标继续。
+
+[Realtime语音驱动CPU已验](evidence/serve-realtime-speech-business-cpu-20261120/README.md)：
+17项及20来源反例通过；原Node报告格式汇总失败保留，实际通过项
+逐份复核复用。候选cfae4d60零警告，0GPU/default rev366不变。
+接下来按已冻结1模型/2WSS/9响应/2Chat/3ASR/1200秒真实短验，
+不扩展完整性能/模型质量矩阵；全部master继续。
+
+Realtime音频候选cfae4d60已零警告构建（176.414秒），默认rev366保持。
+固定官方SDK/WSS真实短验驱动已实现，先验11项证据反例、5项旧SDK
+保护及20来源反例/120秒/0GPU。随后同一租约最多1模型、2WSS、
+9响应创建、2Chat、3条不带原文的ASR/1200秒，检查三格式、0.75语速、
+工具语音、截断取消和单RPM结算；恢复/交付及全部master继续。
+
+[Realtime音频接线CPU通过](evidence/serve-realtime-speech-execution-cpu-20261120/README.md)：
+110个不同用例/116次执行/1.874秒，两次20种来源反例通过；原两项
+小数夹具失败及构建前拒绝保留。最终host构建26.701秒零警告。
+同一请求/RPM、PCM回执、会话历史/截断和完成后取消已接源码，0GPU；
+实际程序与业务待验，默认rev366保持，继续双向输入及全部master。
+
+Realtime小数修正3项及20来源反例通过；此前106通过复用，保留原
+失败。补代码审查发现的Finished模型/未排空音频边界：网络响应尚属
+会话时仍接受取消，实际设备/期限失败不被覆盖。冻结1新用例和4项
+直接取消保护，累计不同CPU用例110项，仍0GPU/default rev366不变。
+
+[PR #53已实际合入main](evidence/serve-pr53-main-20261120/README.md)：
+最终4469b3670两组CI成功，合并811dadab3e并fetch确认包含关系。
+持久Prompt/rev366交付进入主线；原失败保持，0新增GPU。当前音频
+接线未混入该PR，分支因独有提交/修改/证据保留；全部master继续。
+
+Realtime音频首轮108项中106通过、2项夹具小数误转整数失败。沿同一
+调用检查发现新原生语速序列化也使用整数构造器，已提取保持小数的
+实际校验函数并补直接回归；原失败保留，仅重验2失败+1新用例及
+未执行的20来源反例，仍0GPU/default不变。全部master继续。
+
+Realtime音频已开始接会话与原生Chat/TTS：同一请求/RPM和取消归属，
+真实PCM回执、类型化邮箱、历史retrieve/delete/truncate及音色/语速
+边界成组补齐。当前仅源码实现，尚未构建或验收；冻结直接CPU最多
+110项/180秒、20来源反例/0GPU，随后才准备对应真实短验。默认rev366
+保持，PR #53仅夹具修复head在CI中，未推入本组。全部master继续。
+
 [PR #53夹具修正CPU通过](evidence/serve-pr53-ci-fixtures-20261120/README.md)：
 10项/7.462秒和20来源反例通过，构建37.971秒零警告，0GPU。
 正常准备改用既有默认期限，实际丢回执/超时保护断言保持；原CI
@@ -18,6 +209,34 @@ PR #53最终CI保留一成功、一失败原记录：失败均在故障注入前
 默认I/O期限，第二次写入丢回执和禁止重放断言保持；补子进程原因。
 冻结10项针对CPU及20来源反例/120秒/0GPU；生产/default rev366不变。
 音频两提交保留在原分支，本修复从PR原head隔离，全部master继续。
+
+[Realtime音频事件与历史CPU通过](evidence/serve-realtime-speech-output-cpu-20261120/README.md)：
+32项/0.506秒及20来源反例通过，构建33.643秒零警告，0GPU。
+实际夹具字节/标准事件/历史/截断/EOF闭合；原清单缩进拒绝保留，
+修正前0用例执行。尚未接真实会话/TTS；继续线程、模型、配额和
+双向输入接线，默认rev366及全部master保持，PR #53待最终CI。
+
+音频输出组首轮在执行前被严格测试入口拒绝：清单生成器保留了
+格式化后的用例名换行缩进，0用例进入。原FAILED记录保留；仅修正
+清单空白，沿同一零警告程序继续原32项和来源检查，0GPU。
+
+Realtime音频下一组补输出字节历史、标准事件和播放截断，按
+session/item/generation绑定真实样本，预留后写入，取消/删除不复活。
+冻结对应CPU及旧文字/工具保护最多40项/120秒/20来源反例/0GPU；
+成组完成后统一验证，默认rev366与PR #53提交保持，全部master继续。
+
+[Realtime连续语音编码CPU通过](evidence/serve-realtime-speech-encoder-cpu-20261120/README.md)：
+8项新用例+5项保护/0.554秒，20来源反例通过，0GPU；最终构建
+26.086秒零警告。PCM全码值、G.711相位/尾长和失败归属已验，
+尚未接音频入口；继续协议/历史/原生TTS和全部master。默认rev366
+及原失败保持，PR #53仍待最终CI合入。
+
+Realtime音频输出已进入[连续编码与接线计划](SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md)：
+24k PCM分块转PCM/G.711组件已写入，跨块相位、尾部、取消和背压
+归属有界；冻结8项新CPU+5项已有保护用例/20来源反例/120秒/0GPU。
+组件尚未验证或接入口，不宣称音频已可用；默认rev366 STOPPED保持，
+PR #53最终CI继续，随后推进协议/历史/真实TTS与全部master。
+[旧测试只读程序共享](evidence/serve-realtime-audio-storage-20261120/README.md)释放750592000字节，原路径/字节/恢复入口保留。
 
 [rev366原生Realtime Prompt已交付](evidence/serve-realtime-prompt-delivery-20261120/README.md)：
 19项STOPPED命令/391.724秒，真实回退再前进，0新增GPU。

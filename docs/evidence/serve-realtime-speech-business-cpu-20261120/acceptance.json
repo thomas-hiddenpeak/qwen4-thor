@@ -1,0 +1,31 @@
+{
+  "status": "ACCEPT_TARGETED_SPEECH_BUSINESS_DRIVER_CPU",
+  "runtime": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 176.41397853335366,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+    "free_bytes_after": 243433472
+  },
+  "cpu": {
+    "status": "PASS",
+    "seconds": 0.26407044706866145,
+    "exit_code": 0,
+    "new_tests": 1,
+    "reused_tests": 16,
+    "total_tests": 17,
+    "source_counterexamples": 20,
+    "original_report_failure_preserved": true,
+    "gpu_starts": 0
+  },
+  "first_report_failure_preserved": true,
+  "actual_model_business": "pending",
+  "default_revision": 366,
+  "default_unchanged": true,
+  "gpu_starts": 0,
+  "all_master_tasks_active": true
+}

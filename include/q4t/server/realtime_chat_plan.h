@@ -3,6 +3,7 @@
 
 #include "q4t/server/responses_plan.h"
 #include "q4t/server/prompt_registry.h"
+#include "q4t/server/realtime_speech_execution.h"
 
 namespace q4t::server {
 struct RealtimeChatPlan {
@@ -11,6 +12,7 @@ struct RealtimeChatPlan {
   io::Json truncation;
   size_t prompt_items = 0;
   bool input_ready = false;
+  RealtimeSpeechOptions speech;
 };
 // Pure preparation. References have already been resolved by the session owner.
 // No model, network, file access, token reservation or response publication.

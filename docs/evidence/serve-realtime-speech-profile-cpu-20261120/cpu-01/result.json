@@ -1,0 +1,23 @@
+{
+  "status": "FAIL",
+  "seconds": 0.8177020461298525,
+  "tests": 28,
+  "source_counterexamples": 0,
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tools.serve_recovery.test_profile_speech",
+        "tools.serve_recovery.test_profile_prompt_reuse",
+        "tools.serve_realtime.test_speech_followup",
+        "-v"
+      ],
+      "exit_code": 1
+    }
+  ],
+  "gpu_starts": 0,
+  "default_unchanged": true
+}

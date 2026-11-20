@@ -1,0 +1,15 @@
+test_all_three_sessions_require_exact_single_admission_and_settlement (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_all_three_sessions_require_exact_single_admission_and_settlement) ... ok
+test_complete_voice_outputs_and_foreign_failure_have_actual_usage (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_complete_voice_outputs_and_foreign_failure_have_actual_usage) ... ok
+test_content_receipt_cannot_hide_wrong_voice_or_waveform (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_content_receipt_cannot_hide_wrong_voice_or_waveform) ... ok
+test_foreign_voice_leak_or_hidden_work_fails (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_foreign_voice_leak_or_hidden_work_fails) ... ok
+test_lost_replayed_and_relabelled_terminals_fail (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_lost_replayed_and_relabelled_terminals_fail) ... ok
+test_old_or_missing_user_turn_cannot_qualify (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_old_or_missing_user_turn_cannot_qualify) ... ok
+test_continuation_budget_cannot_reload_primary_or_add_responses (tools.serve_recovery.test_profile_speech.PrimaryContinuation.test_continuation_budget_cannot_reload_primary_or_add_responses) ... ok
+test_new_light_lease_cannot_relabel_failed_environment (tools.serve_recovery.test_profile_speech.PrimaryContinuation.test_new_light_lease_cannot_relabel_failed_environment) ... ok
+test_only_exact_checker_failure_and_completed_work_is_reviewable (tools.serve_recovery.test_profile_speech.PrimaryContinuation.test_only_exact_checker_failure_and_completed_work_is_reviewable) ... ok
+test_result_requires_both_capacities_all_connections_and_exact_requests (tools.serve_recovery.test_profile_speech.DriverBudget.test_result_requires_both_capacities_all_connections_and_exact_requests) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.016s
+
+OK

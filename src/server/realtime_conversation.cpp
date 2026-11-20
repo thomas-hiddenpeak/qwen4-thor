@@ -245,6 +245,26 @@ Status RealtimeConversation::Update(const RealtimeItemTicket& ticket,
   ++revision_;
   return {};
 }
+Status RealtimeConversation::TruncateAudioTranscript(
+    const RealtimeItemTicket& ticket) {
+  const auto index = Position(ticket);
+  if (index == entries_.size() || !entries_[index].server_output ||
+      revision_ == UINT64_MAX)
+    return Invalid("audio output ticket is stale");
+  auto& item = entries_[index].item;
+  const auto* content = item.GetArray("content");
+  if (item.GetString("role") != "assistant" || !content ||
+      content->array.size() != 1 ||
+      content->array[0].GetString("type") != "output_audio")
+    return Invalid("item has no generated audio transcript");
+  auto& part = Field(item, "content").array[0];
+  if (!part.Find("transcript") || !part.Find("transcript")->IsString())
+    return Invalid("audio transcript is unavailable");
+  Field(part, "transcript").str.clear();
+  ++revision_;
+  return {};
+}
+
 Status RealtimeConversation::Snapshot(
     const Json* input, RealtimeConversationSnapshot* output) const {
   if (!valid_ || !output ||

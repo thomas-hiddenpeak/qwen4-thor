@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "seconds": 1.116447257809341,
+  "tests": 2,
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tools.serve_realtime.test_speech_service.Contract.test_cold_entry_defers_production_imports_until_sealed_source_pin",
+        "tools.serve_realtime.test_speech_service.Contract.test_frozen_budget_counts_startup_selfcheck_and_every_speech_attempt",
+        "-v"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "tools/serve_realtime/speech_recovery_sdk.mjs"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py",
+        "--self-check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "gpu_starts": 0,
+  "default_unchanged": true
+}

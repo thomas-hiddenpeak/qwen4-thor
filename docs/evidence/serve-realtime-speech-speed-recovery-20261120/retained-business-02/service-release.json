@@ -1,0 +1,19 @@
+{
+  "version": 4,
+  "profile": "q4t-service-recovery-v4",
+  "acceptance": "ACCEPT_REALTIME_SPEECH_SERVICE_RETAINED",
+  "recovery_accepted": true,
+  "acceptance_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-business-02/decision.json",
+  "acceptance_sha256": "fc5f1f09687141116b90f2ea39d6cf806a5a9bcb904b9a10cfbd517de150447b",
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-01/bundle",
+  "manifest_sha256": "0360199b625edd1498531e9875494e20aaeeb96671aceaee952ea195c7198a8b",
+  "engine_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+  "engine_release_sha256": "06aac054f2b937f16ab009ff9d50147932328e2e4327912f2f7454b6a063c18d",
+  "ingress_mode": "native",
+  "state": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-business-02/execution/state",
+  "service_id": "7d77602a-fed4-48b4-99ca-3a03d2bd8f44",
+  "initial_desired": "STOPPED",
+  "automatically_started": false,
+  "scope": "Native speech survives gateway/controller/whole-payload recovery.\n\nEvery model control action belongs to the sealed production Guardian. The\nacceptance actor only signals exact owned fault targets and explicitly starts\nnew client connections; interrupted work is never replayed.\n",
+  "default_replaced": false
+}

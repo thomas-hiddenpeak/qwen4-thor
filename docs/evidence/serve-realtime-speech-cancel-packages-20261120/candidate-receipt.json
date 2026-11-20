@@ -1,0 +1,6 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/service-package-02/bundle",
+  "manifest_sha256": "68345e1781eebda59d530bcad2d235e9fe08365f64929a0caa97f0cecd6a84dd",
+  "engine_binary_sha256": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+  "recovery_accepted": false
+}

@@ -1,0 +1,61 @@
+diff --git a/include/q4t/server/chat_audio_output.h b/include/q4t/server/chat_audio_output.h
+index 4400d839b..50bc530f5 100644
+--- a/include/q4t/server/chat_audio_output.h
++++ b/include/q4t/server/chat_audio_output.h
+@@ -9,6 +9,14 @@
+ #include "q4t/server/actual_usage.h"
+ 
+ namespace q4t::server {
++struct ObjectReply;
++class RequestControl;
++
++// A cancelled synthesis belongs to the existing Chat request's abort counter.
++// Backend failures and unconfirmed mutations must retain their error outcome.
++bool ChatAudioWasCancelled(const ObjectReply& reply, RequestControl* control,
++                           bool shared_backend_healthy);
++
+ struct ChatAudioOptions {
+   bool enabled = false;
+   bool text = true;
+diff --git a/src/server/chat_audio_output.cpp b/src/server/chat_audio_output.cpp
+index 348d5ada1..9c8af789f 100644
+--- a/src/server/chat_audio_output.cpp
++++ b/src/server/chat_audio_output.cpp
+@@ -5,7 +5,9 @@
+ #include <utility>
+ 
+ #include "q4t/io/base64.h"
++#include "q4t/server/object_store.h"
+ #include "q4t/server/output_schema.h"
++#include "q4t/server/request_control.h"
+ #include "responses_json.h"
+ 
+ namespace q4t::server {
+@@ -29,6 +31,13 @@ Status Delta(io::Json fields, std::string* out) {
+ }
+ }  // namespace
+ 
++bool ChatAudioWasCancelled(const ObjectReply& reply, RequestControl* control,
++                           bool shared_backend_healthy) {
++  return shared_backend_healthy && control && reply.http_status == 409 &&
++         !reply.commit_unknown && control->Cancelled() && !control->Failed() &&
++         (reply.code == control->Reason() || reply.code == "tts_cancelled");
++}
++
+ std::string_view ChatAudioFormatName(SpeechFormat format) {
+   return format == SpeechFormat::kPcm ? "pcm16" : SpeechFormatName(format);
+ }
+diff --git a/src/server/chat_generation.cpp b/src/server/chat_generation.cpp
+index 7d12b69bb..3c5864502 100644
+--- a/src/server/chat_generation.cpp
++++ b/src/server/chat_generation.cpp
+@@ -1402,6 +1402,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
+           native ? native->Speech() : nullptr);
+       if (!synthesized.ok() || synthesized.commit_unknown ||
+           synthesized.http_status < 200 || synthesized.http_status >= 300) {
++        if (ChatAudioWasCancelled(synthesized, control.get(),
++                                  ObserveHealth().Healthy()))
++          count_abort();
+         SendError(
+             fd, synthesized.http_status >= 400 ? synthesized.http_status : 503,
+             synthesized.ClientMessage(), {}, synthesized.ClientCode(), "audio");

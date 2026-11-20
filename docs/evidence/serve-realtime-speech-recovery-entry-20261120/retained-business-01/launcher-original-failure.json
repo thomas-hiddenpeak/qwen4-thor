@@ -1,0 +1,7 @@
+{
+  "status": "FAILED_BEFORE_LEASE",
+  "error": "ModuleNotFoundError: No module named 'nvml_process_query'",
+  "reason": "python -I disables sibling imports required by gpu_exclusive entrypoint",
+  "model_starts": 0,
+  "gpu_lease_acquired": false
+}

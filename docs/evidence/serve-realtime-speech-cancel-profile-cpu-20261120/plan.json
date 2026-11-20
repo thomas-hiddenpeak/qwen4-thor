@@ -1,0 +1,40 @@
+{
+  "scope": "Targeted cancellation qualification checks; no model, perf or GPU actions.",
+  "tests": 12,
+  "source_counterexamples": 20,
+  "seconds": 120,
+  "commands": [
+    [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "tools.serve_recovery.test_profile_speech_cancel",
+      "tools.serve_recovery.test_profile_speech.SourceReuse.test_exact_compact_source_retains_witness_hashes_without_nested_record",
+      "tools.serve_recovery.test_profile_speech.SourceReuse.test_reused_business_must_match_each_exact_digest",
+      "tools.serve_recovery.test_profile_speech.SpeechCapabilities.test_eight_mib_bound_only_for_explicit_reviewed_v19",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources"
+    ],
+    [
+      "/usr/bin/python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ]
+  ],
+  "sources": {
+    "tools/serve_recovery/profile_speech_source.py": "59f6b5121572ae77e25132a0a84d493d5badb1a13b96798943e538e09488a0bf",
+    "tools/serve_recovery/profile_speech_reuse.py": "6acb092818557009ea0e64e091cb57e28443baffdc064b8e81ab8093d64d1767",
+    "tools/serve_recovery/profile_evidence.py": "4c6f9e3d7ebd0c95c1b2870e3bdadf54e6aa8c0c1b10b4a65df3459566b4957a",
+    "tools/serve_recovery/profile_record.py": "67599a4aba20a726f553e32943dc02761db1122d547e5dea4e36b93b7e8cb509",
+    "tools/serve_recovery/test_profile_speech_cancel.py": "ca08deae1903fe512b7b8bd74ba0774e27b772713ecc43321badcd780a64eca2"
+  },
+  "protected": {
+    "build/q4t": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "build/q4t.release.json": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "build/service/manifest.json": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "build/service.release.json": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  }
+}

@@ -1,6 +1,9 @@
 #include "q4t/server/realtime_conversation_session.h"
 
 #include <algorithm>
+#include <variant>
+
+#include "q4t/io/base64.h"
 
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
@@ -36,16 +39,20 @@ ObjectReply Shape(const Json& event, RealtimeShape kind) {
 
 struct RealtimeConversationSession::Work {
   RealtimeConversationJob job;
+  RealtimeSpeechOptions speech;
   std::shared_ptr<RequestControl> control;
   std::unique_ptr<RealtimeResponseOutput> output;
   std::map<std::string, RealtimeItemTicket> tickets;
   std::unordered_set<std::string> deleted;
   std::thread worker;
   std::atomic<bool> done{false};
+  // Native generation may already be Finished while its output is queued.
+  // The public response still belongs to this session until response.done.
+  bool cancelled_after_generation = false;
   RealtimeGenerationResult result;
   ObjectReply local_error;
   struct Queued {
-    ResponseDelta delta;
+    std::variant<ResponseDelta, RealtimeSpeechEvent> delta;
     size_t charge = 0;
   };
   std::mutex mutex;
@@ -63,6 +70,29 @@ struct RealtimeConversationSession::Work {
                                     "Delta exceeds its storage limit");
       charge += value->capacity();
     }
+    return Enqueue({std::move(copy), charge});
+  }
+  ObjectReply Push(const RealtimeSpeechEvent& input) {
+    if (!speech.enabled ||
+        (input.kind != RealtimeSpeechEvent::Kind::kChunk &&
+         input.kind != RealtimeSpeechEvent::Kind::kDone) ||
+        input.bytes.size() > RealtimeSpeechEncoder::kMaximumChunkBytes ||
+        input.transcript.size() > 1ULL << 20 ||
+        (input.kind == RealtimeSpeechEvent::Kind::kChunk
+             ? input.bytes.empty() || !input.transcript.empty()
+             : !input.bytes.empty() || input.transcript.empty()))
+      return object_detail::Error(503, "realtime_audio_delta_invalid",
+                                  "Invalid native audio fragment");
+    auto copy = input;
+    const auto charge =
+        sizeof(Queued) + copy.bytes.capacity() + copy.transcript.capacity();
+    if (charge > kDeltaBytes)
+      return object_detail::Error(503, "realtime_audio_delta_too_large",
+                                  "Audio fragment exceeds storage capacity");
+    return Enqueue({std::move(copy), charge});
+  }
+  ObjectReply Enqueue(Queued queued) {
+    const auto charge = queued.charge;
     const auto deadline =
         std::min(control->deadline(), Clock::now() + std::chrono::seconds(15));
     std::unique_lock lock(mutex);
@@ -74,7 +104,7 @@ struct RealtimeConversationSession::Work {
     }
     if (control->Cancelled())
       return object_detail::Error(409, control->Reason(), "Response cancelled");
-    deltas.push_back({std::move(copy), charge});
+    deltas.push_back(std::move(queued));
     bytes += charge;
     ++count;
     return {};
@@ -91,7 +121,8 @@ RealtimeConversationSession::RealtimeConversationSession(
       output_(output),
       callbacks_(std::move(callbacks)),
       message_bytes_(message_bytes),
-      history_(id_) {}
+      history_(id_),
+      speech_(id_) {}
 RealtimeConversationSession::~RealtimeConversationSession() {
   Cancel();
   Join();
@@ -196,11 +227,35 @@ bool RealtimeConversationSession::Start() {
 }
 ObjectReply RealtimeConversationSession::ValidateSelection(
     const RealtimePromptSelection& selection) {
+  RealtimeSpeechOptions speech;
+  ChatPlanError error;
+  auto status =
+      PlanRealtimeSpeech(selection.settings, Object(), &speech, &error);
+  if (!status) return Invalid(error.code, status.message(), error.param);
+  auto reply = ValidateSpeech(speech);
+  if (!Accepted(reply)) return reply;
   if (callbacks_.validate_prompt) return callbacks_.validate_prompt(selection);
   if (selection.prompt)
     return object_detail::Error(503, "realtime_prompt_owner_unavailable",
                                 "Prompt execution owner unavailable");
   return callbacks_.validate(selection.settings);
+}
+ObjectReply RealtimeConversationSession::ValidateSpeech(
+    const RealtimeSpeechOptions& speech) const {
+  if (locked_voice_ && !SameRealtimeVoice(speech, *locked_voice_))
+    return Invalid("realtime_voice_locked",
+                   "Voice is locked after audio output", "audio.output.voice");
+  for (const auto& work : work_) {
+    if (!work->speech.enabled) continue;
+    if (!SameRealtimeVoice(speech, work->speech))
+      return Invalid("realtime_voice_locked",
+                     "An audio response owns the voice", "audio.output.voice");
+    if (speech.chat.speech.speed != work->speech.chat.speech.speed)
+      return Invalid("realtime_speed_locked",
+                     "Speed changes require an idle turn",
+                     "audio.output.speed");
+  }
+  return {};
 }
 RealtimePromptResolver RealtimeConversationSession::PromptResolver() {
   return [this](const Json& reference, size_t budget, PromptSnapshot* out) {
@@ -264,13 +319,70 @@ bool RealtimeConversationSession::ItemCommand(const Json& event, bool erase) {
     return ErrorEvent(
         Invalid("realtime_item_not_found", status.message(), "item_id"),
         event.GetString("event_id"));
-  if (!erase)
+  RealtimeSpeechView view;
+  const bool audio = speech_.Get(ticket, &view).ok();
+  if (!erase) {
+    if (audio) {
+      std::string encoded;
+      if (!view.bytes.empty() &&
+          !io::EncodeBase64(view.bytes, 4 * ((kRealtimeAudioBytes + 2) / 3),
+                            &encoded))
+        return ErrorEvent(
+            object_detail::Error(503, "realtime_audio_retrieval_failed",
+                                 "Audio encoding failed"),
+            event.GetString("event_id"));
+      Set(&Field(item, "content").array[0], "audio",
+          String(std::move(encoded)));
+    }
     return Event("conversation.item.retrieved",
                  Object({{"item", std::move(item)}}));
+  }
+  if (audio && !speech_.Erase(ticket)) return false;
   for (auto& work : work_)
-    if (work->tickets.contains(id)) work->deleted.insert(id);
+    if (work->tickets.contains(id)) {
+      work->deleted.insert(id);
+      if (audio) {
+        if (!Accepted(work->output->TruncateAudio(id))) return false;
+        work->cancelled_after_generation |= !work->control->Cancel();
+        work->changed.notify_all();
+      }
+    }
   return Event("conversation.item.deleted", Object({{"item_id", String(id)}}));
 }
+bool RealtimeConversationSession::TruncateItem(const Json& event) {
+  const auto id = event.GetString("item_id");
+  RealtimeItemTicket ticket;
+  RealtimeSpeechView view;
+  const auto* index = event.Find("content_index");
+  if (!index || !IsInputInteger(*index) || index->number != 0 ||
+      !history_.Find(id, &ticket) || !speech_.Get(ticket, &view))
+    return ErrorEvent(
+        Invalid("realtime_audio_item_not_found",
+                "No owned audio content at this position", "item_id"),
+        event.GetString("event_id"));
+  const auto* end = event.Find("audio_end_ms");
+  if (!end || !IsInputInteger(*end) || end->number < 0 || end->number > 600000)
+    return ErrorEvent(Invalid("realtime_audio_truncate_invalid",
+                              "Invalid played duration", "audio_end_ms"),
+                      event.GetString("event_id"));
+  auto status = speech_.Truncate(ticket, static_cast<uint64_t>(end->number));
+  if (!status)
+    return ErrorEvent(Invalid("realtime_audio_truncate_invalid",
+                              status.message(), "audio_end_ms"),
+                      event.GetString("event_id"));
+  if (!history_.TruncateAudioTranscript(ticket)) return false;
+  for (auto& work : work_) {
+    if (!work->tickets.contains(id)) continue;
+    if (!Accepted(work->output->TruncateAudio(id))) return false;
+    work->cancelled_after_generation |= !work->control->Cancel();
+    work->changed.notify_all();
+  }
+  return Event("conversation.item.truncated",
+               Object({{"item_id", String(id)},
+                       {"content_index", Number(0)},
+                       {"audio_end_ms", *end}}));
+}
+
 ObjectReply RealtimeConversationSession::Store(Work& work, const Json& item,
                                                bool begin, bool terminal) {
   const auto id = item.GetString("id");
@@ -285,6 +397,10 @@ ObjectReply RealtimeConversationSession::Store(Work& work, const Json& item,
     RealtimeItemTicket ticket;
     status =
         history_.BeginOutput(item, id, work.job.in_conversation, 8192, &ticket);
+    if (status && work.speech.enabled && item.GetString("type") == "message") {
+      status = speech_.Begin(ticket, work.speech.format, kRealtimeAudioBytes);
+      if (!status) history_.Erase(ticket);
+    }
     if (status) work.tickets.emplace(id, std::move(ticket));
   } else {
     const auto found = work.tickets.find(id);
@@ -301,6 +417,27 @@ ObjectReply RealtimeConversationSession::Store(Work& work, const Json& item,
   if (!previous.empty())
     Set(&result.value, "previous_item_id", String(previous));
   return result;
+}
+ObjectReply RealtimeConversationSession::StoreAudio(
+    Work& work, std::string_view id, std::string_view bytes,
+    RealtimeAudioCommit commit) {
+  const auto found = work.tickets.find(std::string(id));
+  if (found == work.tickets.end())
+    return object_detail::Error(500, "realtime_audio_owner_missing",
+                                "No matching waveform owner");
+  if (work.deleted.contains(found->first)) return {};
+  Status status;
+  if (commit == RealtimeAudioCommit::kAppend) {
+    status = speech_.Append(found->second, bytes);
+    if (status && !locked_voice_) locked_voice_ = work.speech;
+  } else if (commit == RealtimeAudioCommit::kComplete) {
+    status = speech_.Complete(found->second);
+  } else {
+    status = speech_.Interrupt(found->second);
+  }
+  return status ? ObjectReply{}
+                : object_detail::Error(503, "realtime_audio_history_failed",
+                                       status.message());
 }
 bool RealtimeConversationSession::CreateResponse(const Json& event) {
   const auto event_id = event.GetString("event_id");
@@ -342,7 +479,16 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
                {},
                in_conversation,
                std::move(selection.prompt)};
-  auto status = history_.Snapshot(response.Find("input"), &work->job.snapshot);
+  ChatPlanError speech_error;
+  auto status = PlanRealtimeSpeech(work->job.settings, response, &work->speech,
+                                   &speech_error);
+  if (!status)
+    return ErrorEvent(
+        Invalid(speech_error.code, status.message(), speech_error.param),
+        event_id);
+  reply = ValidateSpeech(work->speech);
+  if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+  status = history_.Snapshot(response.Find("input"), &work->job.snapshot);
   if (!status)
     return ErrorEvent(
         Invalid("realtime_input_invalid", status.message(), "response.input"),
@@ -369,6 +515,7 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
   options.response_id = work->job.response_id;
   options.conversation_id = conversation_id_;
   options.in_conversation = in_conversation;
+  if (work->speech.enabled) options.audio_format = work->speech.format;
   if (const auto* metadata = response.Find("metadata"))
     options.metadata = *metadata;
   work->output = std::make_unique<RealtimeResponseOutput>(
@@ -378,6 +525,10 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
       },
       [](std::string_view prefix) {
         return detail::NewRequestId(std::string(prefix));
+      },
+      [this, active](std::string_view id, std::string_view bytes,
+                     RealtimeAudioCommit commit) {
+        return StoreAudio(*active, id, bytes, commit);
       });
   // Establish ownership before publishing or spawning, including exception
   // paths.
@@ -389,6 +540,9 @@ bool RealtimeConversationSession::CreateResponse(const Json& event) {
         active->result = callbacks_.execute(
             active->job, active->control, [active](const ResponseDelta& delta) {
               return active->Push(delta);
+            },
+            [active](const RealtimeSpeechEvent& audio) {
+              return active->Push(audio);
             });
       } catch (...) {
         active->result.reply = object_detail::Error(
@@ -408,7 +562,7 @@ bool RealtimeConversationSession::CancelResponse(const Json& event) {
   for (auto& work : work_) {
     if (id.empty() ? !work->job.in_conversation : id != work->job.response_id)
       continue;
-    if (!work->control->Cancel()) break;
+    work->cancelled_after_generation |= !work->control->Cancel();
     work->changed.notify_all();
     return true;
   }
@@ -443,6 +597,7 @@ bool RealtimeConversationSession::Message(WebSocketOpcode opcode,
   if (type == "conversation.item.create") return CreateItem(event);
   if (type == "conversation.item.delete") return ItemCommand(event, true);
   if (type == "conversation.item.retrieve") return ItemCommand(event, false);
+  if (type == "conversation.item.truncate") return TruncateItem(event);
   if (type == "response.create") return CreateResponse(event);
   if (type == "response.cancel") return CancelResponse(event);
   return ErrorEvent(
@@ -468,7 +623,15 @@ bool RealtimeConversationSession::Tick() {
         work.deltas.pop_front();
       }
       if (Accepted(work.local_error)) {
-        work.local_error = work.output->Append(queued.delta);
+        if (const auto* delta = std::get_if<ResponseDelta>(&queued.delta)) {
+          work.local_error = work.output->Append(*delta);
+        } else {
+          const auto& audio = std::get<RealtimeSpeechEvent>(queued.delta);
+          work.local_error =
+              audio.kind == RealtimeSpeechEvent::Kind::kChunk
+                  ? work.output->AppendAudio(audio.bytes)
+                  : work.output->CompleteAudio(audio.receipt, audio.transcript);
+        }
         if (!Accepted(work.local_error))
           work.control->Cancel(RequestControl::State::kFailure);
       }
@@ -502,7 +665,10 @@ bool RealtimeConversationSession::Tick() {
           error.code.empty() ? "realtime_execution_failed" : error.code;
       end.error_message = error.ClientMessage();
     }
-    if (work.control->Cancelled() && !work.control->Failed()) {
+    if (work.cancelled_after_generation) {
+      end.state = RealtimeResponseEnd::State::kCancelled;
+      end.reason = "client_cancelled";
+    } else if (work.control->Cancelled() && !work.control->Failed()) {
       if (std::string_view(work.control->Reason()) == "explicit_cancel") {
         end.state = RealtimeResponseEnd::State::kCancelled;
         end.reason = "client_cancelled";

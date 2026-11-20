@@ -675,3 +675,9 @@
 - [Prompt受影响消费者主轻复核](evidence/serve-refusal-reviewed-profiles-20261120/README.md)：确切新输出、原后端来源与全部失败保留。
 - [Prompt原生恢复](evidence/serve-prompt-native-recovery-20261120/README.md)：持久模板/工具、网关中断、冷控制器与整包回退。
 - [rev366原生Realtime Prompt交付](evidence/serve-realtime-prompt-delivery-20261120/README.md)：19项STOPPED检查、可回退默认与实际客户预算保持。
+
+- [Realtime原生音频输出与打断计划](SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md)：连续编码、实际TTS、会话历史、双向输入与同能力恢复。
+
+- [Realtime连续语音编码CPU](evidence/serve-realtime-speech-encoder-cpu-20261120/README.md)：PCM全值、G.711相位/尾长与失败终态；实际音频接线继续。
+
+- [Realtime音频事件与历史CPU](evidence/serve-realtime-speech-output-cpu-20261120/README.md)：真实夹具字节、标准事件、截断与失败归属；会话/模型接线继续。

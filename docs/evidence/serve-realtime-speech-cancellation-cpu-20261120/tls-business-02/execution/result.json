@@ -1,0 +1,100 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 200, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_service_acceptance.py\", line 137, in exercise\n    save(self.output/'media-usage.json',check_business(self.output))\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_service_acceptance.py\", line 149, in check_business\n    rows=speech.check(out,plan)\n         ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_managed.py\", line 133, in check\n    used=accounting(receipt['before'],after,total,mode=='hold_stream')\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_managed.py\", line 96, in accounting\n    require(after['admitted']==before['admitted']+count and\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-package-01/bundle/source/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: speech work duplicated, lost or incorrectly terminated\n",
+  "cleanup_failure": null,
+  "seconds": 155.9763932991773,
+  "budget": {
+    "counts": {
+      "starts": 2,
+      "chats": 6,
+      "probes": 0,
+      "controls": 433,
+      "websocket_sessions": 3
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 3325168977109017
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 3325203208190367
+      },
+      {
+        "kind": "websocket_sessions",
+        "label": "tls-before-speech",
+        "ordinal": 1,
+        "monotonic_ns": 3325205417228883
+      },
+      {
+        "kind": "chats",
+        "label": "tls-before-speech",
+        "ordinal": 2,
+        "monotonic_ns": 3325205417469687
+      },
+      {
+        "kind": "chats",
+        "label": "tls-before-speech",
+        "ordinal": 3,
+        "monotonic_ns": 3325205417652454
+      },
+      {
+        "kind": "websocket_sessions",
+        "label": "tls-after-speech",
+        "ordinal": 2,
+        "monotonic_ns": 3325235369731364
+      },
+      {
+        "kind": "chats",
+        "label": "tls-after-speech",
+        "ordinal": 4,
+        "monotonic_ns": 3325235369958288
+      },
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 2,
+        "monotonic_ns": 3325247714987428
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 5,
+        "monotonic_ns": 3325281850399968
+      },
+      {
+        "kind": "websocket_sessions",
+        "label": "tls-controller-speech",
+        "ordinal": 3,
+        "monotonic_ns": 3325301137788006
+      },
+      {
+        "kind": "chats",
+        "label": "tls-controller-speech",
+        "ordinal": 6,
+        "monotonic_ns": 3325301138033559
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 921333,
+      "start_ticks": 332516897
+    },
+    "2": {
+      "pid": 922388,
+      "start_ticks": 332524771
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-package-01/bundle",
+    "manifest_sha256": "ca36e5e399506cc7105af0f8c05c73cab77614c6313620688d256d78260d889a"
+  },
+  "scenario": "tls",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

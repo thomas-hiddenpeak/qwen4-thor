@@ -1,0 +1,62 @@
+{
+  "limits": {
+    "tests": 24,
+    "seconds": 180,
+    "source_counterexamples": 20,
+    "gpu_starts": 0
+  },
+  "commands": [
+    [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_realtime.test_speech_service",
+      "tools.serve_realtime.test_speech_recovery_sdk",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_realtime_native_sources_cannot_be_omitted_or_changed_in_build_receipt",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_explicit_deployment_repository_keeps_actual_builder_sources",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_v22_includes_refusal_review_without_changing_v21",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_v23_seals_speech_dependencies_and_preserves_v22",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v23_can_import_speech_evidence_without_repository",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources",
+      "tools.serve_recovery.test_native_bundle.BundleTests.test_native_tls_paths_are_sealed_but_credentials_are_reloadable",
+      "-v"
+    ],
+    [
+      "node",
+      "--check",
+      "tools/serve_realtime/speech_recovery_sdk.mjs"
+    ],
+    [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ]
+  ],
+  "sources": {
+    "tools/serve_realtime/speech_managed.py": "7a1bbaec26e951961c8412631a0cc0118afebada1c312acadbf740436c6ffa9f",
+    "tools/serve_realtime/test_speech_followup.py": "385686f6dd8d7ba2aa7356eac7cb25b9abbcaf2027293d8cf7011a8cb97a630d",
+    "tools/serve_realtime/speech_followup.py": "0c66174eb8dd08a024bbe69276cd9e25c775a447c22a5e0ace1d9d44834b19ff",
+    "tools/serve_realtime/speech_service_acceptance.py": "af83ee5e96f87915f9c4775ba0c025133a1e03fe4f4418521f56bfdc8041060e",
+    "tools/serve_realtime/test_speech_acceptance.py": "7246499d43fbde37cf13fe3ee42665e585c2b2eac6006ddf90a9271ad5bf8dca",
+    "tools/serve_realtime/test_speech_recovery_sdk.py": "f5d02d1728f15f5b8f98127a8c7013698e15b7a5c6402dc325793144b76cabcc",
+    "tools/serve_realtime/test_speech_service.py": "23f3838a9a8f965f45aea99db051961986ae2950779f51e37a45c0e714d5c89d",
+    "tools/serve_realtime/speech_acceptance.py": "94bc70aabd7312c3867dffbc542583f13729628a0de07dc281648a7e149fd691",
+    "tools/serve_realtime/speech_recovery_sdk.mjs": "236e304ee73118da6f25ebcf6b4736af1ea916d7dec92698d3044edc901b7aab",
+    "tools/serve_realtime/speech_sdk.mjs": "3cea51c2414777007bf390257c3a53376bc5a3cb60411a2604c931ff45f26a04",
+    "tools/serve_realtime/speech_checks.py": "2474ad0a0c575c6ad61610bc9170292707dd4a00deede6b24a9b8c356a78a639",
+    "tools/serve_recovery/bundle.py": "da437de71ce7cb016f03ee8214b139b12124022102a7592da166b2de9c2fe420",
+    "tools/serve_recovery/test_native_bundle.py": "cf05818939e7f89f107f4c8d856c457ba30e0f40acc45ff6e0e6194d80b4ba07",
+    "tools/serve_audit/inventory.json": "4ad57be2ca108e4ab983af72e5c47f1d920ed3b0bd6dc94ba44e61d46b6c2956"
+  },
+  "protected": {
+    "build/q4t": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "build/q4t.release.json": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "build/service/manifest.json": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "build/service.release.json": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  }
+}

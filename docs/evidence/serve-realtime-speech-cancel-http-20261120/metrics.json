@@ -1,0 +1,54 @@
+{
+  "before": {
+    "admitted": 0,
+    "settled": 0,
+    "reserved": 0,
+    "active": 0,
+    "sessions": 0,
+    "host_bytes": 0,
+    "free_slots": 1,
+    "total": 0,
+    "success": 0,
+    "aborted": 0,
+    "errors": 0
+  },
+  "held": {
+    "admitted": 2,
+    "settled": 595,
+    "reserved": 3720,
+    "active": 1,
+    "sessions": 1,
+    "host_bytes": 2147483648,
+    "free_slots": 0,
+    "total": 2,
+    "success": 1,
+    "aborted": 0,
+    "errors": 0
+  },
+  "after": {
+    "admitted": 2,
+    "settled": 1176,
+    "reserved": 0,
+    "active": 0,
+    "sessions": 0,
+    "host_bytes": 0,
+    "free_slots": 1,
+    "total": 2,
+    "success": 1,
+    "aborted": 1,
+    "errors": 0
+  },
+  "final": {
+    "admitted": 3,
+    "settled": 1771,
+    "reserved": 0,
+    "active": 0,
+    "sessions": 0,
+    "host_bytes": 0,
+    "free_slots": 1,
+    "total": 3,
+    "success": 2,
+    "aborted": 1,
+    "errors": 0
+  }
+}

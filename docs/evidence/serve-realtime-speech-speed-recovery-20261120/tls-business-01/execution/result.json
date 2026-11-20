@@ -1,0 +1,60 @@
+{
+  "status": "FAILED",
+  "failure": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_responses/web_service_acceptance.py\", line 200, in run\n    self.exercise(); LEGACY['verify'](self.plan)\n    ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_service_acceptance.py\", line 104, in exercise\n    actor.start('tls-before' if tls else 'primary')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_managed.py\", line 168, in start\n    require(ready.get('phase')=='ready' and ready.get('mode')==mode,'real speech not ready for fault')\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-package-01/bundle/source/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: real speech not ready for fault\n",
+  "cleanup_failure": null,
+  "seconds": 59.175551649648696,
+  "budget": {
+    "counts": {
+      "starts": 1,
+      "chats": 3,
+      "probes": 0,
+      "controls": 154,
+      "websocket_sessions": 1
+    },
+    "events": [
+      {
+        "kind": "starts",
+        "label": "managed-model",
+        "ordinal": 1,
+        "monotonic_ns": 3324939803606474
+      },
+      {
+        "kind": "chats",
+        "label": "managed-self-check",
+        "ordinal": 1,
+        "monotonic_ns": 3324973359173769
+      },
+      {
+        "kind": "websocket_sessions",
+        "label": "tls-before-speech",
+        "ordinal": 1,
+        "monotonic_ns": 3324975618851505
+      },
+      {
+        "kind": "chats",
+        "label": "tls-before-speech",
+        "ordinal": 2,
+        "monotonic_ns": 3324975619090577
+      },
+      {
+        "kind": "chats",
+        "label": "tls-before-speech",
+        "ordinal": 3,
+        "monotonic_ns": 3324975619504462
+      }
+    ]
+  },
+  "models": {
+    "1": {
+      "pid": 920029,
+      "start_ticks": 332493980
+    }
+  },
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-package-01/bundle",
+    "manifest_sha256": "ca36e5e399506cc7105af0f8c05c73cab77614c6313620688d256d78260d889a"
+  },
+  "scenario": "tls",
+  "default_replaced": false,
+  "performance_acceptance": false
+}

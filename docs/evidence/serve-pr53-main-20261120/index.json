@@ -1,0 +1,17 @@
+{
+  "records": [
+    {
+      "path": "acceptance.json",
+      "sha256": "e0a75129fc6af7ce8898e4ddd2757f64110774dd5f96212265fc921aebf8a8f0"
+    },
+    {
+      "path": "after.json",
+      "sha256": "d134251a40db1e7daa2e5b2ea8545590ff827bdab1ebfa1ebd5c64736c321749"
+    },
+    {
+      "path": "before.json",
+      "sha256": "ef92e277d518d5ea71d9e4ead5e599fd05d4789ae98e68544b4a110a2370d0aa"
+    }
+  ],
+  "archive_sha256": "ae62103b5f83fbe82de286ef8c43408b1ceb26990e7705ed5f101cc558c2c0ee"
+}

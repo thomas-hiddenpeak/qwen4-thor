@@ -1,0 +1,29 @@
+{
+  "scope": "One historical candidate backup executable, one path of this same Serve master; current accepted host/engine/default and retained release package stay intact. Current host/engine/default/model/reference are protected. Exact bytes, links, mode and timestamps recoverable; no test or GPU execution.",
+  "files": [
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/runtime-build-02/previous_q4t"
+      ],
+      "sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+      "bytes": 30021576,
+      "mode": 509,
+      "atime_ns": 1795135702925989234,
+      "mtime_ns": 1795129957164097309,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-06/binary-0.gz",
+      "archive_sha256": "1c2e57b56088740377dd6adc37f8f41ccc1ec10fbcf4ff23be7ba76ceaca5cbd",
+      "archive_bytes": 12342626,
+      "original_links": 1
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "948dcef9d69a75aa0f176dd1b4deefffa70573020fc53776da072a95bd2e4f87"
+  },
+  "free_before": 25399296
+}

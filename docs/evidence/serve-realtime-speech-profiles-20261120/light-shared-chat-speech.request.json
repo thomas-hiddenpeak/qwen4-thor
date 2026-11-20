@@ -1,0 +1,20 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "enable_thinking": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "Repeat exactly this sentence without adding words: Hello, this is a native speech test."
+    }
+  ],
+  "modalities": [
+    "audio"
+  ],
+  "audio": {
+    "voice": "ryan",
+    "format": "wav"
+  },
+  "stream": false,
+  "store": true
+}

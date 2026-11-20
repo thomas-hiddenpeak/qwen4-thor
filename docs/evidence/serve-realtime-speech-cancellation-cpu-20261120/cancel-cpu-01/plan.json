@@ -1,0 +1,56 @@
+{
+  "scope": "Owned cancellation classification and genuine error protections; directly compiled candidate helper plus unchanged native cancellation contracts",
+  "limits": {
+    "tests": 8,
+    "source_counterexamples": 20,
+    "seconds": 120,
+    "gpu_starts": 0
+  },
+  "tests": [
+    "chat_audio_cancellation_keeps_disconnect_explicit_shutdown_and_deadline",
+    "chat_audio_cancellation_requires_actual_owner_and_cancelled_reply",
+    "chat_audio_cancellation_does_not_hide_device_or_backend_failure",
+    "chat_audio_cancellation_keeps_unknown_commit_and_finished_owner",
+    "realtime_speech_delivery_unknown_receipts_and_cancel_never_replay",
+    "realtime_chat_execution_rejects_cross_client_and_cancelled_owners",
+    "realtime_chat_execution_preserves_quota_and_native_callback_failure",
+    "realtime_speech_options_reject_invalid_values_without_substitution"
+  ],
+  "commands": [
+    [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-build-02/cancellation-tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-cpu-01/new.txt"
+    ],
+    [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-cpu-01/old.txt"
+    ],
+    [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ]
+  ],
+  "sources": {
+    "src/server/chat_generation.cpp": "0fbf93be755a1e874dec81140401a9018ab6df7b22e46d23ce33b6b802a2783d",
+    "src/server/chat_audio_output.cpp": "3186aeeadc4f7d21a195e606de150c700649414672b3ddceb26eeb6fa20b6bf0",
+    "include/q4t/server/chat_audio_output.h": "2dfb777c8fe18063f558fa426f699c01de3a325dc73c0a04f177f7c8a298dded",
+    "tests/server_chat_audio_cancellation_test.cpp": "29b05f2f06143b9fb20d14c29464abb512977af02b36fc8bca994552998e4421",
+    "cmake/HostTestSources.cmake": "3e7875f3e2b4917b1431ebcd74b65f5bc33f02ffe5fabeb5519384b99913423c",
+    "tools/serve_audit/inventory.json": "07f74966c208fc819c30be3aada3687b5ddeb155d51a511e61d2619be674a31c"
+  },
+  "binaries": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-build-02/cancellation-tests": "9f12b2b6a83395e23653acd0283e08136795b0f5dcc3ec63aa7e4d80c912abab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "948dcef9d69a75aa0f176dd1b4deefffa70573020fc53776da072a95bd2e4f87"
+  },
+  "protected": {
+    "build/q4t": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "build/q4t.release.json": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "build/service/manifest.json": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "build/service.release.json": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  }
+}

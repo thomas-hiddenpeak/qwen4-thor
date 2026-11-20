@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "seconds": 0.6980693298391998,
+  "reused_tests": 28,
+  "actual_old_records": [
+    {
+      "profile": "primary",
+      "sha256": "f464a70fe3362fb3843c814c32b604e6ff972470f65e2b8c6853ab087a581365",
+      "status": "PASS"
+    },
+    {
+      "profile": "light",
+      "sha256": "9fa847221198a1919d0dfd9373a6983800174a30e37f5da575de5bbc44cfe460",
+      "status": "PASS"
+    }
+  ],
+  "source_counterexamples": 20,
+  "gpu_starts": 0,
+  "original_failures_preserved": true
+}

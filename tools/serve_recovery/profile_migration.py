@@ -367,7 +367,11 @@ def realtime_prompt_capabilities(value):
         return
     chat = value['realtime']['conversation']
     chat['profile'] = 'q4t-native-realtime-chat-v1'
+    # A reviewed output implementation replaces only its old pending label.
+    # Keep speech_output and audio modality: automatic fallback still needs
+    # exact capabilities and cannot select the old text-only program.
     chat['pending_execution'] = ['audio', 'mcp', 'tracing']
+    chat['output_modalities'] = {kind: True for kind in chat['output_modalities']}
 
 
 def semantic_capabilities(value):

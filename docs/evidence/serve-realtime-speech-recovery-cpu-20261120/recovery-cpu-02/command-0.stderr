@@ -1,0 +1,11 @@
+test_replay_dropped_terminal_and_transport_fallback_fail (tools.serve_realtime.test_speech_service.Contract.test_replay_dropped_terminal_and_transport_fallback_fail) ... ok
+test_actual_mismatched_retrieval_cannot_pass_offline_verification (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_actual_mismatched_retrieval_cannot_pass_offline_verification) ... ok
+test_complete_official_tls_keeps_audio_bytes_history_and_normal_close (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_complete_official_tls_keeps_audio_bytes_history_and_normal_close) ... ok
+test_explicit_plain_connection_recovers_after_whole_transport_loss (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_explicit_plain_connection_recovers_after_whole_transport_loss) ... ok
+test_gateway_loss_interrupts_actual_audio_without_reconnect (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_gateway_loss_interrupts_actual_audio_without_reconnect) ... ok
+test_wrong_certificate_cannot_fall_back_to_plaintext (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_wrong_certificate_cannot_fall_back_to_plaintext) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 3.417s
+
+OK

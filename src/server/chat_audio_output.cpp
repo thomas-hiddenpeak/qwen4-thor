@@ -5,7 +5,9 @@
 #include <utility>
 
 #include "q4t/io/base64.h"
+#include "q4t/server/object_store.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/request_control.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -28,6 +30,13 @@ Status Delta(io::Json fields, std::string* out) {
   return {};
 }
 }  // namespace
+
+bool ChatAudioWasCancelled(const ObjectReply& reply, RequestControl* control,
+                           bool shared_backend_healthy) {
+  return shared_backend_healthy && control && reply.http_status == 409 &&
+         !reply.commit_unknown && control->Cancelled() && !control->Failed() &&
+         (reply.code == control->Reason() || reply.code == "tts_cancelled");
+}
 
 std::string_view ChatAudioFormatName(SpeechFormat format) {
   return format == SpeechFormat::kPcm ? "pcm16" : SpeechFormatName(format);
@@ -92,6 +101,26 @@ Status ParseChatAudioOptions(const io::Json& request, ChatAudioOptions* out,
   next.speech.input.clear();
   *out = std::move(next);
   return {};
+}
+
+Status ValidateChatSpeechRequest(const SpeechRequest& request,
+                                 SpeechRequest* validated,
+                                 ChatPlanError* error) {
+  if (!std::isfinite(request.speed))
+    return Invalid(error, "speed", "Speech speed must be finite");
+  Json speed;
+  speed.type = Json::Type::kNumber;
+  speed.number = request.speed;
+  auto wire = Object(
+      {{"model", String(request.model)},
+       {"input", String(request.input)},
+       {"voice", request.voice_id ? Object({{"id", String(request.voice)}})
+                                  : String(request.voice)},
+       {"response_format", String(std::string(SpeechFormatName(request.format)))},
+       {"speed", std::move(speed)}});
+  if (!request.instructions.empty())
+    Set(&wire, "instructions", String(request.instructions));
+  return ParseSpeechRequest(OutputJson(wire), validated, error);
 }
 
 Status ChatAudioHistoryId(const io::Json& message, std::string* id,

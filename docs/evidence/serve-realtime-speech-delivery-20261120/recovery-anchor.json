@@ -1,0 +1,8 @@
+{
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-02/bundle",
+  "manifest_sha256": "77b25732b6a04471a080fadb73fdc9be2de7f33be34ec3b844a6b151fe3a9d30",
+  "service_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/retained-service.release.json",
+  "service_release_sha256": "c1bfb5437f7d8f8630acc6f04f14de0208a765c76b7765b5af3875c64ee103a2",
+  "manual_root_rollback_requires_stopped": true,
+  "retains_native_outer_and_cycle_migration": true
+}

@@ -1,0 +1,46 @@
+test_result_requires_both_capacities_all_connections_and_exact_requests (tools.serve_recovery.test_profile_speech.DriverBudget.test_result_requires_both_capacities_all_connections_and_exact_requests) ... ERROR
+test_exact_compact_source_retains_witness_hashes_without_nested_record (tools.serve_recovery.test_profile_speech.SourceReuse.test_exact_compact_source_retains_witness_hashes_without_nested_record) ... ok
+test_fresh_scope_is_mandatory_and_cannot_cover_other_changes (tools.serve_recovery.test_profile_speech.SourceReuse.test_fresh_scope_is_mandatory_and_cannot_cover_other_changes) ... ok
+test_other_binary_asset_capacity_and_capability_cannot_reuse (tools.serve_recovery.test_profile_speech.SourceReuse.test_other_binary_asset_capacity_and_capability_cannot_reuse) ... ok
+test_reused_business_must_match_each_exact_digest (tools.serve_recovery.test_profile_speech.SourceReuse.test_reused_business_must_match_each_exact_digest) ... ok
+test_unknown_origin_or_modified_legacy_witness_cannot_reuse (tools.serve_recovery.test_profile_speech.SourceReuse.test_unknown_origin_or_modified_legacy_witness_cannot_reuse) ... ok
+test_eight_mib_bound_only_for_explicit_reviewed_v19 (tools.serve_recovery.test_profile_speech.SpeechCapabilities.test_eight_mib_bound_only_for_explicit_reviewed_v19) ... ok
+test_extension_preserves_speech_in_automatic_equivalence (tools.serve_recovery.test_profile_speech.SpeechCapabilities.test_extension_preserves_speech_in_automatic_equivalence) ... ok
+test_unknown_partial_or_false_declared_speech_is_rejected (tools.serve_recovery.test_profile_speech.SpeechCapabilities.test_unknown_partial_or_false_declared_speech_is_rejected) ... ok
+test_v19_requires_complete_audio_and_keeps_legacy_text_v18 (tools.serve_recovery.test_profile_speech.SpeechCapabilities.test_v19_requires_complete_audio_and_keeps_legacy_text_v18) ... ok
+test_all_three_sessions_require_exact_single_admission_and_settlement (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_all_three_sessions_require_exact_single_admission_and_settlement) ... ok
+test_complete_voice_outputs_and_foreign_failure_have_actual_usage (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_complete_voice_outputs_and_foreign_failure_have_actual_usage) ... ok
+test_content_receipt_cannot_hide_wrong_voice_or_waveform (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_content_receipt_cannot_hide_wrong_voice_or_waveform) ... ok
+test_foreign_voice_leak_or_hidden_work_fails (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_foreign_voice_leak_or_hidden_work_fails) ... ok
+test_lost_replayed_and_relabelled_terminals_fail (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_lost_replayed_and_relabelled_terminals_fail) ... ok
+test_old_or_missing_user_turn_cannot_qualify (tools.serve_recovery.test_profile_speech.SpeechEvidence.test_old_or_missing_user_turn_cannot_qualify) ... ok
+test_explicit_original_source_is_preserved_and_new_record_validates (tools.serve_recovery.test_profile_prompt_reuse.SourceReuse.test_explicit_original_source_is_preserved_and_new_record_validates) ... ok
+test_fresh_scope_cannot_be_replaced_by_changed_old_values (tools.serve_recovery.test_profile_prompt_reuse.SourceReuse.test_fresh_scope_cannot_be_replaced_by_changed_old_values) ... ok
+test_legacy_responses_requires_actual_source_version_answer_and_usage (tools.serve_recovery.test_profile_prompt_reuse.SourceReuse.test_legacy_responses_requires_actual_source_version_answer_and_usage) ... ok
+test_other_build_asset_capacity_or_capability_cannot_reuse (tools.serve_recovery.test_profile_prompt_reuse.SourceReuse.test_other_build_asset_capacity_or_capability_cannot_reuse) ... ok
+test_unknown_origin_or_recursive_transfer_is_rejected (tools.serve_recovery.test_profile_prompt_reuse.SourceReuse.test_unknown_origin_or_recursive_transfer_is_rejected) ... ok
+test_unrelated_legacy_record_still_uses_original_strict_contract (tools.serve_recovery.test_profile_prompt_reuse.SourceReuse.test_unrelated_legacy_record_still_uses_original_strict_contract) ... ok
+test_actual_new_turns_and_audio_have_exact_usage (tools.serve_realtime.test_speech_followup.FollowupEvidence.test_actual_new_turns_and_audio_have_exact_usage) ... ok
+test_changed_task_or_role_does_not_certify_new_user (tools.serve_realtime.test_speech_followup.FollowupEvidence.test_changed_task_or_role_does_not_certify_new_user) ... ok
+test_fixed_seed_comparison_uses_exact_original_prompts (tools.serve_realtime.test_speech_followup.FollowupEvidence.test_fixed_seed_comparison_uses_exact_original_prompts) ... ok
+test_frozen_scope_cannot_expand_or_change_sampling_defaults (tools.serve_realtime.test_speech_followup.FollowupEvidence.test_frozen_scope_cannot_expand_or_change_sampling_defaults) ... ok
+test_missing_or_late_user_turn_does_not_certify_content (tools.serve_realtime.test_speech_followup.FollowupEvidence.test_missing_or_late_user_turn_does_not_certify_content) ... ok
+test_wrong_quality_replay_and_partial_formats_do_not_pass (tools.serve_realtime.test_speech_followup.FollowupEvidence.test_wrong_quality_replay_and_partial_formats_do_not_pass) ... ok
+
+======================================================================
+ERROR: test_result_requires_both_capacities_all_connections_and_exact_requests (tools.serve_recovery.test_profile_speech.DriverBudget.test_result_requires_both_capacities_all_connections_and_exact_requests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_profile_speech.py", line 213, in test_result_requires_both_capacities_all_connections_and_exact_requests
+    with self.assertRaises(ValueError):stage.check_result(wrong)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_speech_targeted.py", line 140, in check_result
+    require(result['status'] == SUCCESS and result['binary_sha256'] == reuse.REVIEW['candidate_binary'] and
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py", line 72, in require
+    raise RuntimeError(message)
+RuntimeError: speech work or bounded result incomplete
+
+----------------------------------------------------------------------
+Ran 28 tests in 0.252s
+
+FAILED (errors=1)

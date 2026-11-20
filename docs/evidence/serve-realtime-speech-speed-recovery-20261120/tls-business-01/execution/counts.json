@@ -1,0 +1,41 @@
+{
+  "counts": {
+    "starts": 1,
+    "chats": 3,
+    "probes": 0,
+    "controls": 154,
+    "websocket_sessions": 1
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "managed-model",
+      "ordinal": 1,
+      "monotonic_ns": 3324939803606474
+    },
+    {
+      "kind": "chats",
+      "label": "managed-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 3324973359173769
+    },
+    {
+      "kind": "websocket_sessions",
+      "label": "tls-before-speech",
+      "ordinal": 1,
+      "monotonic_ns": 3324975618851505
+    },
+    {
+      "kind": "chats",
+      "label": "tls-before-speech",
+      "ordinal": 2,
+      "monotonic_ns": 3324975619090577
+    },
+    {
+      "kind": "chats",
+      "label": "tls-before-speech",
+      "ordinal": 3,
+      "monotonic_ns": 3324975619504462
+    }
+  ]
+}

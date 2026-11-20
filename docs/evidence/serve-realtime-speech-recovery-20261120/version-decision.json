@@ -1,0 +1,33 @@
+{
+  "status": "PASS_REALTIME_SPEECH_SERVICE_VERSION",
+  "acceptance": "ACCEPT_REALTIME_SPEECH_SERVICE_VERSION",
+  "manifest_sha256": "68345e1781eebda59d530bcad2d235e9fe08365f64929a0caa97f0cecd6a84dd",
+  "engine_binary_sha256": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+  "actual_business": {
+    "status": "ACCEPT_REALTIME_SPEECH_SERVICE_VERSION",
+    "strict_lease_seconds": 131.8421931359917,
+    "nvml_queries": 123,
+    "env_abort": false,
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 1,
+      "controls": 354,
+      "websocket_sessions": 2
+    },
+    "source_commit": "abcea12c091fa198ed33df3381863d1f7f8723fd",
+    "plan_sha256": "ae1c3d157eb615e166596a96b63cff3294a5a7f0e15929dfa7a3c5664087a549",
+    "result_sha256": "3a672fc8e969aa0340e3e4af204f8a81314c08f1f63983eadf48c683809b67d5",
+    "lease_result_sha256": "c3f6880c37ed8d66479eb050b77a4a4cf3c33823a6070c328a582601f95598dd",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    }
+  },
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "long_stability_accepted": false
+}

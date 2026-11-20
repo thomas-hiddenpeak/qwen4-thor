@@ -1,0 +1,12 @@
+{
+  "status": "PASS_SPEECH_PRIMARY_LIGHT",
+  "counts": {
+    "starts": 1,
+    "chats": 5,
+    "controls": 40,
+    "websocket_sessions": 3,
+    "ingress_starts": 1
+  },
+  "seconds": 76.11470153182745,
+  "binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c"
+}

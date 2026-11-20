@@ -1,0 +1,39 @@
+{
+  "status": "FAIL",
+  "seconds": 0.970584852155298,
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tools.serve_recovery.test_profile_speech.DriverBudget",
+        "-v"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "tools/serve_realtime/speech_sdk.mjs"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py",
+        "--self-check"
+      ],
+      "exit_code": 1
+    }
+  ],
+  "new_tests": 1,
+  "reused_tests": 27,
+  "source_counterexamples": 0,
+  "original_failed_record_preserved": true,
+  "gpu_starts": 0
+}

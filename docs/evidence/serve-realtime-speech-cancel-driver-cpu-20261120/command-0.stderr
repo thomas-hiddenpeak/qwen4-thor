@@ -1,0 +1,10 @@
+test_every_real_response_and_ingress_restart_is_budgeted (tools.serve_realtime.test_speech_cancel_acceptance.Evidence.test_every_real_response_and_ingress_restart_is_budgeted) ... ok
+test_hidden_model_restart_or_unhealthy_auxiliary_is_rejected (tools.serve_realtime.test_speech_cancel_acceptance.Evidence.test_hidden_model_restart_or_unhealthy_auxiliary_is_rejected) ... ok
+test_original_error_instead_of_aborted_never_qualifies (tools.serve_realtime.test_speech_cancel_acceptance.Evidence.test_original_error_instead_of_aborted_never_qualifies) ... ok
+test_owned_partial_audio_settles_once_and_same_model_completes (tools.serve_realtime.test_speech_cancel_acceptance.Evidence.test_owned_partial_audio_settles_once_and_same_model_completes) ... ok
+test_partial_without_usage_or_active_reservation_cannot_pass (tools.serve_realtime.test_speech_cancel_acceptance.Evidence.test_partial_without_usage_or_active_reservation_cannot_pass) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.010s
+
+OK

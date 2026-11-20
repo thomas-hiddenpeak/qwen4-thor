@@ -1,0 +1,10 @@
+{
+  "status": "ARCHIVED_BUILD_INTERMEDIATES_REVERSIBLY",
+  "files": 593,
+  "original_bytes": 115589770,
+  "archive_bytes": 36068289,
+  "free_after": 141967360,
+  "restore_before_build": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/build-intermediates-01/restore.py",
+  "executables_and_defaults_unchanged": true,
+  "gpu_actions": 0
+}

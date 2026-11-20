@@ -50,6 +50,9 @@ class RealtimeConversation {
   Status Find(std::string_view id, RealtimeItemTicket* output) const;
   Status Get(const RealtimeItemTicket& ticket, io::Json* output) const;
   Status Erase(const RealtimeItemTicket& ticket);
+  // No word/sample alignment is available. A valid playback truncation clears
+  // the complete transcript, preserving allocated capacity and item identity.
+  Status TruncateAudioTranscript(const RealtimeItemTicket& ticket);
   // Missing previous appends; "root" inserts first. An out-of-band or absent
   // predecessor is an error. Client-supplied status never hides valid history.
   Status Create(const io::Json& item, std::string_view generated_id,
@@ -75,7 +78,8 @@ class RealtimeConversation {
   Status Snapshot(const io::Json* input,
                   RealtimeConversationSnapshot* output) const;
   // Persist a successful default response's context cut without deleting its
-  // retrievable history. Generation tickets protect entries recreated meanwhile.
+  // retrievable history. Generation tickets protect entries recreated
+  // meanwhile.
   Status TruncateDefault(const RealtimeConversationSnapshot& snapshot,
                          std::span<const size_t> retained);
 

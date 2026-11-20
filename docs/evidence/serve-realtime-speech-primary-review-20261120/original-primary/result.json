@@ -1,0 +1,13 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 295, in run\n    try:self.start();self.business();result['status']=self.success_status\n                     ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_acceptance.py\", line 844, in business\n    self.profile_business()\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_speech_targeted.py\", line 133, in profile_business\n    fresh = dict(tts=tts, realtime_speech=profile_speech.run(self))\n                                          ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_speech.py\", line 83, in run\n    evidence.business(value)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_speech_evidence.py\", line 106, in business\n    total = session(witness['session'], mode)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/profile_speech_evidence.py\", line 80, in session\n    ledger.require(response['audio']['output']['voice'] == voice and\n                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\nKeyError: 'voice'\n",
+  "counts": {
+    "starts": 1,
+    "chats": 5,
+    "controls": 43,
+    "websocket_sessions": 3,
+    "ingress_starts": 1
+  },
+  "seconds": 81.26897564390674,
+  "binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c"
+}

@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "seconds": 0.47142067179083824,
+  "commands": [
+    {
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-build-02/cancellation-tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-cpu-01/new.txt"
+      ],
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+        "--required-list",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-cpu-01/old.txt"
+      ],
+      "returncode": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py",
+        "--self-check"
+      ],
+      "returncode": 0
+    }
+  ],
+  "tests": 8,
+  "gpu_starts": 0,
+  "default_unchanged": true
+}

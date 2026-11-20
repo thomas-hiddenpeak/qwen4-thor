@@ -1,0 +1,10 @@
+{
+  "status": "ARCHIVED_HISTORICAL_BACKUPS_REVERSIBLY",
+  "identities": 2,
+  "paths": 2,
+  "bytes_released": 34155179,
+  "free_after": 155521024,
+  "protected_unchanged": true,
+  "gpu_starts": 0,
+  "restore": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-05/restore.py"
+}

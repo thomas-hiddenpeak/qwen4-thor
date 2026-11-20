@@ -123,8 +123,8 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
   };
   callbacks.release = [&](const auto& control) { requests_.Remove(control); };
   callbacks.execute = [&](const auto& job, const auto& control,
-                          const auto& emit) {
-    return RunRealtimeConversation(client, job, control, emit);
+                          const auto& emit, const auto& speech) {
+    return RunRealtimeConversation(client, job, control, emit, speech);
   };
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
@@ -168,7 +168,7 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
 RealtimeGenerationResult ChatServer::RunRealtimeConversation(
     const ClientIdentity& original, const RealtimeConversationJob& job,
     const std::shared_ptr<RequestControl>& control,
-    const RealtimeDeltaSink& emit) {
+    const RealtimeDeltaSink& emit, const RealtimeSpeechSink& speech) {
   RealtimeGenerationResult result;
   const auto client = clients_.RecoveryIdentity(original.Index());
   if (!clients_.OwnsIdentity(original) || !client.Allowed() ||
@@ -328,6 +328,27 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
       return result;
     }
     diagnostic.Stage("execute");
+    std::optional<RealtimeSpeechExecution> delivery;
+    NativeChatSpeech native_speech;
+    if (plan.speech.enabled) {
+      delivery.emplace(plan.speech, speech, cancelled);
+      if (!delivery->Valid()) {
+        result.reply = Error(503, "realtime_speech_owner_unavailable",
+                             "Native speech delivery unavailable");
+        return result;
+      }
+      // Add native output only after file/context preparation has preserved
+      // its existing private proofs. Public JSON cannot create these observers.
+      plan.generation.chat.audio_output = plan.speech.chat;
+      native_speech.append = [&](std::string_view pcm) {
+        return delivery->Append(pcm);
+      };
+      native_speech.complete = [&](std::string_view transcript,
+                                   const SpeechEncodingReceipt& receipt,
+                                   const ActualUsage& usage) {
+        return delivery->Finish(transcript, receipt, usage);
+      };
+    }
     result = ExecuteRealtimeChat(
         plan.generation.generation_request, client, permit, control, emit,
         [&](NativeChatGeneration& native) {
@@ -335,8 +356,11 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
                      &native);
         },
         body_budget_,
-        {&plan.generation.chat, accounting ? &*accounting : nullptr},
+        {&plan.generation.chat, accounting ? &*accounting : nullptr,
+         delivery ? &native_speech : nullptr},
         &invocation);
+    if (result.usage && delivery && delivery->Usage())
+      result.usage->output_audio = delivery->Usage()->output;
     preparation_context.Usage().Merge(
         result.usage ? std::optional<ActualUsage>(result.usage->total)
                      : std::nullopt);
@@ -357,10 +381,16 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
   // This also settles completed preparation when context fitting or primary
   // admission failed. No response terminal is published before settlement.
   preparation_rate.Settle();
+  const auto audio_tokens =
+      result.usage ? result.usage->output_audio : std::nullopt;
   result.usage.reset();
   if (auto observed = preparation_context.Usage().Total()) {
     RealtimeResponseUsage usage;
     usage.total = *observed;
+    if (audio_tokens && *audio_tokens <= observed->output) {
+      usage.output_audio = audio_tokens;
+      usage.output_text = observed->output - *audio_tokens;
+    }
     result.usage = usage;
   }
   if (!result.reply.ok()) result.state = RealtimeResponseEnd::State::kFailed;

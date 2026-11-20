@@ -1,0 +1,7 @@
+test_cold_entry_defers_production_imports_until_sealed_source_pin (tools.serve_realtime.test_speech_service.Contract.test_cold_entry_defers_production_imports_until_sealed_source_pin) ... ok
+test_frozen_budget_counts_startup_selfcheck_and_every_speech_attempt (tools.serve_realtime.test_speech_service.Contract.test_frozen_budget_counts_startup_selfcheck_and_every_speech_attempt) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.089s
+
+OK

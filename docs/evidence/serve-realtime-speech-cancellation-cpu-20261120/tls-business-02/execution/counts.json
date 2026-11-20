@@ -1,0 +1,77 @@
+{
+  "counts": {
+    "starts": 2,
+    "chats": 6,
+    "probes": 0,
+    "controls": 433,
+    "websocket_sessions": 3
+  },
+  "events": [
+    {
+      "kind": "starts",
+      "label": "managed-model",
+      "ordinal": 1,
+      "monotonic_ns": 3325168977109017
+    },
+    {
+      "kind": "chats",
+      "label": "managed-self-check",
+      "ordinal": 1,
+      "monotonic_ns": 3325203208190367
+    },
+    {
+      "kind": "websocket_sessions",
+      "label": "tls-before-speech",
+      "ordinal": 1,
+      "monotonic_ns": 3325205417228883
+    },
+    {
+      "kind": "chats",
+      "label": "tls-before-speech",
+      "ordinal": 2,
+      "monotonic_ns": 3325205417469687
+    },
+    {
+      "kind": "chats",
+      "label": "tls-before-speech",
+      "ordinal": 3,
+      "monotonic_ns": 3325205417652454
+    },
+    {
+      "kind": "websocket_sessions",
+      "label": "tls-after-speech",
+      "ordinal": 2,
+      "monotonic_ns": 3325235369731364
+    },
+    {
+      "kind": "chats",
+      "label": "tls-after-speech",
+      "ordinal": 4,
+      "monotonic_ns": 3325235369958288
+    },
+    {
+      "kind": "starts",
+      "label": "managed-model",
+      "ordinal": 2,
+      "monotonic_ns": 3325247714987428
+    },
+    {
+      "kind": "chats",
+      "label": "managed-self-check",
+      "ordinal": 5,
+      "monotonic_ns": 3325281850399968
+    },
+    {
+      "kind": "websocket_sessions",
+      "label": "tls-controller-speech",
+      "ordinal": 3,
+      "monotonic_ns": 3325301137788006
+    },
+    {
+      "kind": "chats",
+      "label": "tls-controller-speech",
+      "ordinal": 6,
+      "monotonic_ns": 3325301138033559
+    }
+  ]
+}

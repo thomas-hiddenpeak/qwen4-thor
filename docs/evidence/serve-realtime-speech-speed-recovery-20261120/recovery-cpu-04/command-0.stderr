@@ -1,0 +1,19 @@
+test_changed_waveform_voice_or_actual_session_cannot_pass (tools.serve_realtime.test_speech_service.Contract.test_changed_waveform_voice_or_actual_session_cannot_pass) ... ok
+test_cold_entry_defers_production_imports_until_sealed_source_pin (tools.serve_realtime.test_speech_service.Contract.test_cold_entry_defers_production_imports_until_sealed_source_pin) ... ok
+test_complete_and_cancelled_accounting_requires_exact_request_ownership (tools.serve_realtime.test_speech_service.Contract.test_complete_and_cancelled_accounting_requires_exact_request_ownership) ... ok
+test_complete_and_interrupted_audio_keep_exact_bytes_and_positive_usage (tools.serve_realtime.test_speech_service.Contract.test_complete_and_interrupted_audio_keep_exact_bytes_and_positive_usage) ... ok
+test_completed_or_silent_request_cannot_be_claimed_interrupted (tools.serve_realtime.test_speech_service.Contract.test_completed_or_silent_request_cannot_be_claimed_interrupted) ... ok
+test_frozen_budget_counts_startup_selfcheck_and_every_speech_attempt (tools.serve_realtime.test_speech_service.Contract.test_frozen_budget_counts_startup_selfcheck_and_every_speech_attempt) ... ok
+test_gateway_stage_and_controller_stage_keep_explicit_connections (tools.serve_realtime.test_speech_service.Contract.test_gateway_stage_and_controller_stage_keep_explicit_connections) ... ok
+test_replay_dropped_terminal_and_transport_fallback_fail (tools.serve_realtime.test_speech_service.Contract.test_replay_dropped_terminal_and_transport_fallback_fail) ... ok
+test_slow_pending_speech_must_use_only_a_between_response_session_update (tools.serve_realtime.test_speech_service.Contract.test_slow_pending_speech_must_use_only_a_between_response_session_update) ... ok
+test_actual_mismatched_retrieval_cannot_pass_offline_verification (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_actual_mismatched_retrieval_cannot_pass_offline_verification) ... ok
+test_complete_official_tls_keeps_audio_bytes_history_and_normal_close (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_complete_official_tls_keeps_audio_bytes_history_and_normal_close) ... ok
+test_explicit_plain_connection_recovers_after_whole_transport_loss (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_explicit_plain_connection_recovers_after_whole_transport_loss) ... ok
+test_gateway_loss_interrupts_actual_audio_without_reconnect (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_gateway_loss_interrupts_actual_audio_without_reconnect) ... ok
+test_wrong_certificate_cannot_fall_back_to_plaintext (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_wrong_certificate_cannot_fall_back_to_plaintext) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 3.527s
+
+OK

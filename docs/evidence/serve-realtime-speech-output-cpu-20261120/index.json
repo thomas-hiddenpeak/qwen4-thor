@@ -1,0 +1,138 @@
+{
+  "output-build-01/result.json": {
+    "bytes": 292,
+    "sha256": "f73c2319fc172bdbb8abe680ca7653871330bdddf2939a478476279b129e827e"
+  },
+  "output-build-01/plan.json": {
+    "bytes": 176064,
+    "sha256": "5c3128ad52ecc46b254a72b78e6535a97435299cb6c8a49bd8e4a2af1e33d365"
+  },
+  "output-build-01/build.log": {
+    "bytes": 3399,
+    "sha256": "4735350b6ff205c65358e35e23b00b0716c512b11e27c921668d94ac8a7e9fe5"
+  },
+  "output-build-01/previous-chat_protocol_sources.json": {
+    "bytes": 85056,
+    "sha256": "dc8cce0717d426a7b124737906a737213aae4fd62988a1b98a1bb90b3ddb8467"
+  },
+  "output-build-01/previous-CMakeCache.txt": {
+    "bytes": 35359,
+    "sha256": "49fbe0d60ffc13fbcdc0d7365e17c2db0ffdde0280c8c1ae27e7564d2716d319"
+  },
+  "output-cpu-01/command-0.stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "output-cpu-01/result.json": {
+    "bytes": 636,
+    "sha256": "039e4626d8bb2990099473678705934efc2f838b3e8466f7541c2e676f31b686"
+  },
+  "output-cpu-01/plan.json": {
+    "bytes": 5009,
+    "sha256": "d56e182d18ebe265609f304266c8af6012c131aa8e854b2433fe6e9bcc0641c2"
+  },
+  "output-cpu-01/command-0.stderr": {
+    "bytes": 110,
+    "sha256": "50c0cd23a568851e178d50e76659e0026b3d62aad3a636634084771c0583c776"
+  },
+  "output-cpu-02/command-0.stdout": {
+    "bytes": 2253,
+    "sha256": "19ee98abd1051d49ee44626c49c9b446621045ed202b79b5e39be36465ce750f"
+  },
+  "output-cpu-02/result.json": {
+    "bytes": 834,
+    "sha256": "39225d4185cca671a94834e0e76bce0bebfd45f4842b635b38cedcb521b403b6"
+  },
+  "output-cpu-02/command-1.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "output-cpu-02/plan.json": {
+    "bytes": 5205,
+    "sha256": "bc78b694eef0f29959ebb25a9e11a9ff6061bfcd9dda5a2c26bc34579ab3d2c2"
+  },
+  "output-cpu-02/command-1.stdout": {
+    "bytes": 223,
+    "sha256": "0117e1bdccbec8a3be7f56bdfc18fa9e3c90598f9eaccb76feb63cfc8270bc57"
+  },
+  "output-cpu-02/command-0.stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "output-scope-01.json": {
+    "bytes": 3860,
+    "sha256": "9ae86574879298d51be8e6a8424fb8dd9bc2c24f42800a54ceedc537c0f62b84"
+  },
+  "output-scope-02.json": {
+    "bytes": 4052,
+    "sha256": "3ae3351313f508f1ed018e404d800f305503747e6819cf9d8736754a8676e997"
+  },
+  "output_cpu_01.py": {
+    "bytes": 2836,
+    "sha256": "c789b7e0b071c8573d6013de566d875d7f5f5b9bc0cb2b63defba0b3e871ce0a"
+  },
+  "output_cpu_02.py": {
+    "bytes": 2836,
+    "sha256": "0f472be3089ed75f02ce34e54a55ff0793199e2f6a0fdec81bd08c6a301a3106"
+  },
+  "build_output_01.py": {
+    "bytes": 3052,
+    "sha256": "16aff87ba2633bdfaf357cd461f4212f67a42a43574569b8aec1af8129061bd1"
+  },
+  "required-output-01.txt": {
+    "bytes": 1993,
+    "sha256": "0c5b194dcace17f6e484b179c0701906eda15881ae677c231524f5caf17a1bbc"
+  },
+  "required-output-02.txt": {
+    "bytes": 1988,
+    "sha256": "660e0c1be58b16a909a621b70ddd816415784866f9a8b64428435a580a8e926b"
+  },
+  "source/tests/server_realtime_speech_history_test.cpp": {
+    "bytes": 7242,
+    "sha256": "6bc05feb85ca7596e78722b267e3e3262b6edef7bbc985b31b8b135a3975a208"
+  },
+  "source/tests/server_realtime_speech_output_test.cpp": {
+    "bytes": 13219,
+    "sha256": "cc1dbc3d29341188012aecc57c3aa7c3f73c6ada9e03a3d1c9c4618839fec729"
+  },
+  "source/tests/server_realtime_response_output_test.cpp": {
+    "bytes": 16369,
+    "sha256": "4457757a4d44b512eb9ea1ff4c751dcd1a9f02b8ca4ad160153a5136925dd17a"
+  },
+  "source/include/q4t/server/realtime_speech_history.h": {
+    "bytes": 2494,
+    "sha256": "202b18bbcd92cd6f4764ef002ca5f35fb676bc4e3a431dc96ec6d772588f7727"
+  },
+  "source/src/server/realtime_speech_history.cpp": {
+    "bytes": 5892,
+    "sha256": "7114fdb67ceba61f8005417dbebc366b20e8352c077480fb6eb158d3b345606e"
+  },
+  "source/include/q4t/server/realtime_response_output.h": {
+    "bytes": 4044,
+    "sha256": "cb2d2429f3aa4beec90c73cb052ba0ec205873239d36160ec1a7b385edf2ba3e"
+  },
+  "source/src/server/realtime_response_output.cpp": {
+    "bytes": 22700,
+    "sha256": "601dfb11bc774094c22595e0143cb44b2a44e0817c741aa2df0e4233cb3fdd07"
+  },
+  "source/CMakeLists.txt": {
+    "bytes": 62285,
+    "sha256": "4064e443e7ad89a1d8144f9c492fadcc84c917190924f8eaff11878e65af00e1"
+  },
+  "source/cmake/HostTestSources.cmake": {
+    "bytes": 38866,
+    "sha256": "6242ba08d0dbf80aeac882816910978340cbe84a92df4b7356e85bd808bc2d0b"
+  },
+  "source/cmake/ChatProtocolIdentity.cmake": {
+    "bytes": 31035,
+    "sha256": "d7acd69759d6738f118686123377ef84c43d17d97a09264470c1a20c9ba23375"
+  },
+  "source/tools/serve_audit/inventory.json": {
+    "bytes": 570021,
+    "sha256": "6583a4ed906e7219d636b6331926665fd492cff65f2c594a391f714855d31598"
+  },
+  "source/tools/release/required_host_tests.txt": {
+    "bytes": 17221,
+    "sha256": "1439ee5c174920bddd7e47c79d57a6506e46d0f0aba876e3330485d751b27881"
+  }
+}
