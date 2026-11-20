@@ -1,0 +1,92 @@
+{
+  "status": "PASS_LIVE_CLIENT_BUSINESS_OFFLINE_REVIEW",
+  "original_result": "FAIL",
+  "original_guard": "COMMAND_FAILED",
+  "reason": "Final assertion mistook normal auxiliary weight eviction for failure; unchanged wire observer and actual saved health verified independently",
+  "source_commit": "14856e654756725454b5ca97c7a803a3629df6dc",
+  "binary_sha256": "68bcc25eef0422ed68057bcdb84d0ad3e7a30947ed642007ae31eca5c4bed908",
+  "new_gpu_starts": 0,
+  "actual_run_starts": 1,
+  "actual_run_work": 4,
+  "actual_run_seconds": 64.03999772807583,
+  "observation": {
+    "protocol": "PASS",
+    "quality": [
+      {
+        "label": "input_transcription",
+        "actual": "请查询当前项目版本号。",
+        "expected": "请查询当前项目版本号。",
+        "status": "PASS"
+      },
+      {
+        "label": "project_version",
+        "actual": "rev426",
+        "expected": "rev426",
+        "status": "PASS"
+      }
+    ],
+    "admitted": 3.0,
+    "settled_tokens": 1730.0,
+    "private_token_breakdown_not_exposed": true,
+    "activity_seconds": 23.081272312,
+    "speech_segments": [
+      {
+        "transcript": "rev426",
+        "bytes": 107520,
+        "sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c",
+        "client_event_id": "project_answer"
+      }
+    ],
+    "waveform_bytes": 107520,
+    "waveform_sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c",
+    "listener_heard_audio": false,
+    "session_id": "live_7be0af726ebba5dacd6bc5689a69599c"
+  },
+  "speech_health": {
+    "native_asr_health": {
+      "asset_cleanup_pending": false,
+      "compute_failures": 0,
+      "core_readiness_dependency": false,
+      "device_bytes": 0,
+      "load_attempts": 2,
+      "load_failures": 0,
+      "reason": "none",
+      "recovery": "request_driven",
+      "state": "metadata_ready"
+    },
+    "native_tts_health": {
+      "asset_cleanup_pending": false,
+      "compute_failures": 0,
+      "core_readiness_dependency": false,
+      "device_bytes": 8123997956,
+      "load_attempts": 2,
+      "load_failures": 0,
+      "reason": "none",
+      "recovery": "request_driven",
+      "state": "ready"
+    }
+  },
+  "core_quality": "PASS",
+  "core_tokens": 102,
+  "environment": {
+    "env_abort": false,
+    "nvml_queries": 62,
+    "all_queries_ok": true,
+    "owned_cleanup": true,
+    "lock_and_ports_released": true,
+    "original_command_success": false
+  },
+  "default_unchanged": true,
+  "review_seconds": 0.16795920999720693,
+  "original_public_archive_sha256": "7e08eec149f58cd3c610fa731d4615b7590fd5c66d46d46fdd0b8a1f1356726b",
+  "original_plan_sha256": "7857b2beab06ce4e93866e66ae76368710a4c56fe8b11bd559d78a0d7b8dcd61",
+  "cumulative_live_attempts": {
+    "starts": 3,
+    "actual_work": 10,
+    "seconds": 255.28212142223492
+  },
+  "listener_validation": false,
+  "managed_recovery": false,
+  "master_active": true,
+  "archive_sha256": "c7046d6f92d419f3dafd98ee0b957d8e5e5f236c770e630237b1daa87c09c90c"
+}

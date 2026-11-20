@@ -80,7 +80,7 @@ def prepare(out):
             'formal warning-free runtime build')
     for n,h in read(WORK/'native-build-02/plan.json')['sources'].items():
         require(sha(ROOT/n)==h,'built native source drift')
-    cpu=read(WORK/'client-driver-cpu-05/result.json')
+    cpu=read(WORK/'client-driver-cpu-07/result.json')
     require(cpu['status']=='PASS','driver negative checks missing')
     for n,h in cpu['sources'].items():require(sha(ROOT/n)==h,'driver source drift')
     require(read(WORK/'binding-cpu-01/result.json')['status']=='PASS','binding CPU')
@@ -193,10 +193,7 @@ class Stage(base.Stage):
         save(self.out/'observation.json',observation)
         self.core('core-after');self.snapshot('final-drained')
         status,raw=self.http('/v1/config',label='final-config');require(status==200,'core diagnostics')
-        for name in ('native_asr_health','native_tts_health'):
-            health=json.loads(raw)[name]
-            require(health['state']=='ready' and health['compute_failures']==0,
-                    'actual speech backend health')
+        save(self.out/'speech-health.json',checks.speech_health(json.loads(raw)))
         for p in (self.out/'client.sdk.json',journal):
             require(all(secret.encode() not in p.read_bytes() for secret in [self.token,*self.keys.values()]),
                     'private credential in public evidence candidate')

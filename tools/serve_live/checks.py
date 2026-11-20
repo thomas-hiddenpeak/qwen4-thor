@@ -6,6 +6,36 @@ import re
 from tools.serve_service.package import require
 
 
+def speech_health(config):
+    """A drained auxiliary family can retain metadata without device weights."""
+    result = {}
+    for name in ('native_asr_health', 'native_tts_health'):
+        health = config.get(name)
+        fields = {'state', 'reason', 'core_readiness_dependency', 'device_bytes',
+                  'load_attempts', 'load_failures', 'compute_failures',
+                  'recovery', 'asset_cleanup_pending'}
+        require(isinstance(health, dict) and fields <= health.keys(),
+                'complete actual speech health record')
+        require(health['state'] in ('ready', 'metadata_ready') and
+                health['reason'] == 'none' and
+                health['core_readiness_dependency'] is False and
+                health['asset_cleanup_pending'] is False and
+                health['recovery'] == 'request_driven',
+                'actual speech backend health')
+        for counter in ('device_bytes', 'load_attempts', 'load_failures',
+                        'compute_failures'):
+            require(type(health[counter]) is int and health[counter] >= 0,
+                    'actual speech health counter')
+        require(health['load_attempts'] > 0 and health['load_failures'] == 0 and
+                health['compute_failures'] == 0 and
+                ((health['state'] == 'metadata_ready' and
+                  health['device_bytes'] == 0) or
+                 (health['state'] == 'ready' and health['device_bytes'] > 0)),
+                'speech residency and failure counters')
+        result[name] = {field: health[field] for field in sorted(fields)}
+    return result
+
+
 def observe(receipt, journal, before, after, record):
     events = [row['event'] for row in journal if row['direction'] == 'server']
     require(events == receipt['events'] and receipt['status'] == 'PASS' and

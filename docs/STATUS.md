@@ -7,82 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-[Live关闭尾部修复18项CPU](evidence/serve-live-close-tail-cpu-20261121/README.md)
-通过；另5项录音复用校验通过，6来源语义复核/28项反例通过。实际
-引擎构建零警告，已判静音不多做ASR，未知/有声保留，显式commit
-不改。接着按原RPM3、原录音补1启动/4实际工作/600秒短验；默认不变。
+[Live主WSS客户端真实闭环已验](evidence/serve-live-client-http-20261121/README.md)：
+正确ASR、真实资料委派/回填、语音rev426、正常closed/1000及后续Chat=42。
+1启动/4工作/64.040秒，原RPM3下无额外ASR，1730 tokens结算/预留归零，
+62次NVML正常且清理完成。最后的旧健康断言错误要求ASR同时常驻；
+原FAIL保持，5项反例与独立原件复核通过，复核新增GPU0。累计三轮
+3启动/10实际工作/255.282秒。继续fixture、服务端委派及其余Live/master
+任务；默认rev426保持STOPPED，尚未发行本候选。
 
-[Live第二轮真实关闭缺陷](evidence/serve-live-close-tail-failed-20261121/README.md)：
-明确查询录音的ASR、真实委派/资料读取/回填及语音rev426均通过；
-关闭把剩余静音再提交ASR，触发RPM拒绝，整轮仍FAIL。77.921秒/
-1启动/实际4项工作，资源清理与默认保持。正在针对关闭尾部修复，
-不提高配额绕过，原失败保留。
-
-[Live短验驱动修复4项CPU](evidence/serve-live-client-followup-cpu-20261121/README.md)
-通过；另5项受影响音频片段/结果关联检查通过，等待逻辑按SHA复用。
-接着用原生TTS生成明确项目查询录音，
-ASR不提供原文，补同一原生引擎的委派/回填短验；原失败保持。
-
-[Live首轮真实短验未通过](evidence/serve-live-client-business-failed-20261121/README.md)：
-原生TLS/SDK、真实ASR和语音输出运行，模型只说“明白。”，未委派。
-原回答保留；113.321秒/1启动/实际2项工作，107次NVML正常，资源清理
-完成、默认rev426保持。继续修正业务场景与有界失败收据，不追认原失败。
-
-[Live实际客户端驱动10项CPU](evidence/serve-live-client-driver-cpu-20261121/README.md)
-通过，官方SDK actor语法/驱动解析通过。接着冻结1模型/1连接/
-1ASR+2前台生成+1普通Chat、600秒的严格租约短验；原始语音、
-项目资料读取、原答案、结算与释放分别记录。首轮实际结果见上文。
-
-[Live原生主WSS绑定12项CPU](evidence/serve-live-binding-cpu-20261121/README.md)
-全部通过（9新增/3直接保护），宿主构建零警告。已接实际tokenizer、
-当前客户身份及原生ASR/LLM/TTS入口；SDK省略历史type字段兼容修复，
-提示顺序、配置更新保留追加指令、委派与真实线程清理已验证。
-8个来源语义复核/28项清单反例通过，累计112项不同CPU。完整原生
-构建163.330秒零警告，引擎43683066；真实短验继续，录制/其他委派/媒体待实现，
-默认rev426不变、GPU新增0。
-
-[Live客户端上下文/委派13项CPU](evidence/serve-live-context-cpu-20261121/README.md)
-全部通过（新增10/受影响旧项3），正式构建零警告。追加指令持久、
-真实计数器接口、静默/可说上下文、完整内部工具交接、延迟确认取消
-及未知发布不重放已准备；内部回填只确认交接创建，不冒充任务完成。
-6个来源语义复核/22项清单反例通过；累计103项不同CPU。计数器/模型
-仍为受控夹具，实际WSS及其余委派/媒体继续，默认rev426不变、GPU新增0。
-
-[Live会话调度10项CPU](evidence/serve-live-scheduler-cpu-20261121/README.md)
-全部通过，正式构建零警告。已组合真实线程、输入历史及音频回执；
-插话等待旧生成Join后准入ASR，关闭丢弃未开始回答并排空接受输入，
-失败用量保留且新轮次可继续。5个来源语义复核/22项清单反例通过。
-累计93项不同CPU；模型回调受控，实际资产与路由绑定继续，不算业务
-验收。默认rev426保持STOPPED，GPU新增0。
-
-[Live输出与工作线程CPU](evidence/serve-live-frontend-cpu-20261121/README.md)
-闭合10项：原24k回执与有限消息校验、Live16k/G.711转换、取消/失败
-用量保持、真实借用者Join后释放和有界背压。首轮6过/4夹具失败保留，
-补验4项通过，运行时代码未为夹具改写；正式构建零警告，6个来源语义
-复核及22项清单反例通过。Live准备累计83项不同CPU场景；实际模型
-绑定/路由继续，GPU新增0，默认rev426不变，不把CPU准备当业务交付。
-
-[Live连续输入CPU](evidence/serve-live-input-cpu-20261121/README.md)已闭合15项
-不同场景：复用原生音频队列、VAD/ASR线程和历史，任务时间范围、
-静音/半样本、冻结上下文及真实排空均验证。首轮10过/4失败保留；
-补齐不足一个ASR样本的关闭清理后8项针对性通过，构建零警告。
-VAD/ASR仍为CPU回调，真实模型绑定/路由继续；没有把局部准备当业务通过。
-
-[Live生命周期/传输CPU](evidence/serve-live-lifecycle-transport-cpu-20261121/README.md)
-通过：10项生命周期与24项传输组合去重31项，正式构建零警告。
-后端真实排空后才发布session.closed；全部事件写出后发1000关闭，
-断线/超时/撤权不记完成。活动秒包含静音/等待，与后端tokens分开。
-8个来源语义复核、22项清单反例通过；真实模型绑定/路由仍待完成，
-受控CPU后端不计业务验收。默认rev426不变、GPU新增0。
-
-[Live合同源码](SERVE_LIVE_2026-11-21.md)已接入工作树：
-[6项针对性CPU](evidence/serve-live-contract-cpu-20261121/README.md)
-通过，正式宿主构建零警告，808个Live和476个Realtime SDK正反例
-无差异，三种类型图重建字节一致。首轮独立链接及提前归档的失败
-保留。原生路由/模型业务尚待实现，默认rev426
-不变。另[配置与16k连续输出21项CPU](evidence/serve-live-configuration-pcm-cpu-20261121/README.md)
-通过；独立状态机/传输进展见上，计数/实际模型绑定和路由继续L02—L06。
-本组单独提交，不把CPU准备当作Live业务完成。
+Live已有118项不同原生CPU场景；[主连接绑定](evidence/serve-live-binding-cpu-20261121/README.md)
+与[关闭尾部18项针对性验证](evidence/serve-live-close-tail-cpu-20261121/README.md)
+通过，实际引擎68bcc25e构建零警告。SDK合同、生命周期、连续输入、
+输出/工作线程、调度及客户端上下文的逐组原件见
+[Live阶段计划](SERVE_LIVE_2026-11-21.md)。早期夹具/业务失败均保留；
+本次只接受主连接客户端资料闭环，未验其他委派、录制/媒体或完整兼容。
 
 [原生Realtime追踪](SERVE_REALTIME_TRACING_2026-11-20.md)已通过
 [主轻实际TLS/SDK业务](evidence/serve-realtime-tracing-http-20261121/README.md)：

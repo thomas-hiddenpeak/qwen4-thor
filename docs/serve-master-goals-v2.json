@@ -16216,17 +16216,17 @@
     }
   },
   "native_live_20261121": {
-    "state": "client_context_delegation_cpu_pass_real_binding_in_progress",
+    "state": "primary_client_business_accepted_remaining_live_implementation",
     "plan": "SERVE_LIVE_2026-11-21.md",
     "master_active": true,
     "default_revision": 426,
     "default_changed": false,
-    "gpu_starts": 0,
+    "gpu_starts": 3,
     "type_roots": 16,
     "type_nodes": 941,
     "live_sdk_vectors": 808,
     "realtime_regression_vectors": 476,
-    "distinct_native_cpu_tests": 103,
+    "distinct_native_cpu_tests": 118,
     "original_build_failure_preserved": true,
     "subtasks": [
       {
@@ -16236,12 +16236,12 @@
       },
       {
         "id": "L02",
-        "state": "native_scheduler_cpu_verified_real_binding_in_progress",
+        "state": "primary_client_wss_business_accepted_profile_recovery_delivery_pending",
         "title": "主WSS与持续语音业务"
       },
       {
         "id": "L03",
-        "state": "client_context_delegation_cpu_verified_server_backends_and_fixtures_in_progress",
+        "state": "client_delegation_business_accepted_fixture_server_backends_and_retention_in_progress",
         "title": "委派与上下文"
       },
       {
@@ -16284,6 +16284,16 @@
     "scheduler_evidence": "evidence/serve-live-scheduler-cpu-20261121/README.md",
     "context_tests": 13,
     "context_new_tests": 10,
-    "context_evidence": "evidence/serve-live-context-cpu-20261121/README.md"
+    "context_evidence": "evidence/serve-live-context-cpu-20261121/README.md",
+    "actual_work": 10,
+    "gpu_seconds": 255.28212142223492,
+    "binding_tests": 12,
+    "binding_new_tests": 9,
+    "close_tail_tests": 18,
+    "close_tail_new_tests": 6,
+    "business_evidence": "evidence/serve-live-client-http-20261121/README.md",
+    "original_health_assertion_failure_retained": true,
+    "original_business_failures_retained": true,
+    "release_pending": true
   }
 }
