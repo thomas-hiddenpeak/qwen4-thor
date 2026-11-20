@@ -270,6 +270,7 @@ jobs:
         run: |
           mkdir -p .q4t-work/realtime-journal-ci
           Q4T_TEST_OUTPUT_DIR="$PWD/.q4t-work/realtime-journal-ci" node --test tools/serve_realtime/bounded_journal.test.mjs
+          node --test tools/serve_realtime/duplex_task_requests.test.mjs
       - name: Check Chat citation history schemas and clients
         run: >-
           build/public-host/schema-venv/bin/python -B -m unittest

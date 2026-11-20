@@ -181,6 +181,18 @@ mixed重复内容、vad_auto译成英文两条原答案FAIL，轻量未跑。生
 客户端明确任务和实际音频打断前提，候选485a38a3未变。接着轻量
 1模型/8工作/2WSS/600秒，原质量失败保持；继续恢复/交付和master。
 
+[轻量语音/工具实测](evidence/serve-realtime-duplex-task-scoped-http-20261120/README.md)：
+1模型/2WSS/103.428秒，NVML正常、清理通过。实际语音往返、工具
+回填rev376和6次准入结算通过。打断客户端误用conversation:none，
+未被VAD取消并最终耗尽TTS帧，整组原FAIL保留。只修默认对话归属并
+补1模型/1WSS/2工作/420秒；不重跑已通过业务，默认rev376保持。
+
+[打断客户端归属修复](evidence/serve-realtime-duplex-barge-in-cpu-20261120/README.md)：
+实际SDK明确conversation:auto，1 Node构造和1 Python归属反例通过，
+20来源反例/语法通过。汇总器单数test误计FAIL保留，离线核实全部
+原命令通过，没有重跑。只补轻量1模型/1WSS/2工作/420秒；继续恢复
+和交付，运行候选与默认rev376均不变。
+
 ## 当前实际默认
 
 | 项目 | 当前值 |

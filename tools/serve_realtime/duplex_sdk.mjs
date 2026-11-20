@@ -5,6 +5,7 @@ import crypto from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { check, terminal, usage, text, functionCall, streamAgrees } from './conversation_checks.mjs';
 import { openJournal } from './bounded_journal.mjs';
+import { bargeInResponse } from './duplex_task_requests.mjs';
 
 let input = '';
 for await (const part of process.stdin) {
@@ -188,10 +189,7 @@ try {
         silence_duration_ms: 300, create_response: false, interrupt_response: true,
         idle_timeout_ms: null } } } });
     const start = events.length;
-    const id = await begin('interrupt', { ...base, output_modalities: ['audio'],
-      max_output_tokens: 3457,
-      instructions: '用几句话介绍本地语音助手如何识别录音、查询资料和回答问题。',
-      input: [user('speech_request', [inputText('请介绍一下这些功能。')])] });
+    const id = await begin('interrupt', bargeInResponse(base));
     const chunk = await waitEvent(start, 'response.output_audio.delta',
       (e) => e.response_id === id && Buffer.from(e.delta, 'base64').length > 0);
     // A completed response cannot be used as evidence of cancellation.

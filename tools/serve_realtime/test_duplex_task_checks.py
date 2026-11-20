@@ -20,6 +20,13 @@ def fixture():
 
 
 class AudioBoundary(unittest.TestCase):
+    def test_side_response_is_not_a_vad_cancellation_target(self):
+        for conversation in ({}, {'conversation':'auto'}):
+            c.default_response([dict(conversation, output_modalities=['audio'])])
+        for wrong in ([], [dict(conversation='none', output_modalities=['audio'])],
+                      [dict(conversation='auto', output_modalities=['text'])]):
+            with self.assertRaises(RuntimeError): c.default_response(wrong)
+
     def test_actual_audio_then_vad_cancellation(self):
         events, response = fixture()
         self.assertEqual(c.barge_in(events, response), 'input')

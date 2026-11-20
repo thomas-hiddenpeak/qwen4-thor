@@ -55,7 +55,8 @@ def run(stage):
 
 
 def run_sessions(stage, modes):
-    require(modes in (('manual','vad'),('mixed','vad_once'),('speech_tool','barge_in')),
+    require(modes in (('manual','vad'),('mixed','vad_once'),
+                     ('speech_tool','barge_in'),('barge_in',)),
             'fixed duplex session scope')
     plan=stage.plan['duplex'];label=stage.profile_name+'-duplex'
     for path,digest in plan['files'].items():require(sha(path)==digest,'duplex fixture drift')

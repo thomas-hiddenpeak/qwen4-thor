@@ -59,6 +59,12 @@ def tool_result(events, responses, actual, record):
     return calls[0]['id']
 
 
+def default_response(creates):
+    require(len(creates) == 1 and creates[0].get('conversation', 'auto') == 'auto'
+            and creates[0]['output_modalities'] == ['audio'],
+            'VAD must interrupt a default audio response, not a side response')
+
+
 def observe(value, phrase, record, journal):
     c.journal_matches(journal, value)
     mode, events = value['mode'], value['events']
@@ -99,6 +105,7 @@ def observe(value, phrase, record, journal):
         input_tokens, asr = c.input_rows(events,
             [('temporary_audio', 1), ('temporary_roundtrip', 0)], phrase)
     else:
+        default_response(creates)
         require(not any(e['type'] == 'error' for e in events), 'barge-in protocol error')
         setting = updates[-1]['audio']
         require(setting['output']['speed'] == .25 and

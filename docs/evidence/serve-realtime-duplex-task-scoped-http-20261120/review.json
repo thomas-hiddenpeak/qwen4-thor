@@ -1,0 +1,78 @@
+{
+  "original_status": "FAILED",
+  "counts": {
+    "starts": 1,
+    "chats": 8,
+    "controls": 33,
+    "websocket_sessions": 2,
+    "ingress_starts": 1
+  },
+  "seconds": 103.4282176150009,
+  "nvml": {
+    "OK": 98
+  },
+  "speech_tool": {
+    "observed": {
+      "admitted": 6,
+      "private_asr": 0,
+      "visible_tokens": 2059,
+      "quality": [
+        {
+          "label": "inline_audio",
+          "actual": "甚至出现交易几乎停滞的情况。",
+          "expected": "甚至出现交易几乎停滞的情况。",
+          "status": "PASS"
+        },
+        {
+          "label": "roundtrip",
+          "actual": "甚至出现交易几乎停滞的情况。",
+          "expected": "甚至出现交易几乎停滞的情况。",
+          "status": "PASS"
+        },
+        {
+          "label": "tool_answer",
+          "actual": "rev376",
+          "expected": "rev376",
+          "status": "PASS"
+        },
+        {
+          "label": "asr_temporary_audio_1",
+          "actual": "甚至出现交易几乎停滞的情况。",
+          "expected": "甚至出现交易几乎停滞的情况。",
+          "status": "PASS"
+        },
+        {
+          "label": "asr_temporary_roundtrip_0",
+          "actual": "甚至出现交易几乎停滞的情况。",
+          "expected": "甚至出现交易几乎停滞的情况。",
+          "status": "PASS"
+        }
+      ]
+    },
+    "before": {
+      "admitted": 0,
+      "settled": 0,
+      "reserved": 0,
+      "active": 0,
+      "sessions": 0,
+      "host_bytes": 0,
+      "free_slots": 1
+    },
+    "after": {
+      "admitted": 6,
+      "settled": 2059,
+      "reserved": 0,
+      "active": 0,
+      "sessions": 0,
+      "host_bytes": 0,
+      "free_slots": 1
+    },
+    "original_stage_status": "FAILED"
+  },
+  "barge_in_driver_failure": "conversation:none deliberately immune to VAD cancellation; TTS later reached frame bound",
+  "barge_in_actual_error": "response status: failed",
+  "cleanup_complete": true,
+  "default_unchanged": true,
+  "qualification_issued": false,
+  "master_active": true
+}

@@ -12461,7 +12461,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "task_scoped_client_cpu_pass_targeted_light_business_pending",
+      "state": "barge_in_default_scope_cpu_pass_actual_followup_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
@@ -13526,6 +13526,140 @@
           "websocket_sessions": 2,
           "ingress_starts": 1,
           "seconds": 600
+        }
+      },
+      "task_scoped_business": {
+        "evidence": "docs/evidence/serve-realtime-duplex-task-scoped-http-20261120/README.md",
+        "result": {
+          "original_status": "FAILED",
+          "counts": {
+            "starts": 1,
+            "chats": 8,
+            "controls": 33,
+            "websocket_sessions": 2,
+            "ingress_starts": 1
+          },
+          "seconds": 103.4282176150009,
+          "nvml": {
+            "OK": 98
+          },
+          "speech_tool": {
+            "observed": {
+              "admitted": 6,
+              "private_asr": 0,
+              "visible_tokens": 2059,
+              "quality": [
+                {
+                  "label": "inline_audio",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                },
+                {
+                  "label": "roundtrip",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                },
+                {
+                  "label": "tool_answer",
+                  "actual": "rev376",
+                  "expected": "rev376",
+                  "status": "PASS"
+                },
+                {
+                  "label": "asr_temporary_audio_1",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                },
+                {
+                  "label": "asr_temporary_roundtrip_0",
+                  "actual": "甚至出现交易几乎停滞的情况。",
+                  "expected": "甚至出现交易几乎停滞的情况。",
+                  "status": "PASS"
+                }
+              ]
+            },
+            "before": {
+              "admitted": 0,
+              "settled": 0,
+              "reserved": 0,
+              "active": 0,
+              "sessions": 0,
+              "host_bytes": 0,
+              "free_slots": 1
+            },
+            "after": {
+              "admitted": 6,
+              "settled": 2059,
+              "reserved": 0,
+              "active": 0,
+              "sessions": 0,
+              "host_bytes": 0,
+              "free_slots": 1
+            },
+            "original_stage_status": "FAILED"
+          },
+          "barge_in_driver_failure": "conversation:none deliberately immune to VAD cancellation; TTS later reached frame bound",
+          "barge_in_actual_error": "response status: failed",
+          "cleanup_complete": true,
+          "default_unchanged": true,
+          "qualification_issued": false,
+          "master_active": true
+        }
+      },
+      "barge_in_scope_cpu": {
+        "evidence": "docs/evidence/serve-realtime-duplex-barge-in-cpu-20261120/README.md",
+        "result": {
+          "status": "PASS",
+          "tests": 1,
+          "reused_unaffected_tests": 19,
+          "original_failed_tests": 0,
+          "node_tests": 1,
+          "commands": [
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_realtime.test_duplex_task_checks.AudioBoundary.test_side_response_is_not_a_vad_cancellation_target"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "tools/serve_audit/check_inventory.py",
+                "--self-check"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "node",
+                "--check",
+                "tools/serve_realtime/duplex_sdk.mjs"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "node",
+                "--test",
+                "tools/serve_realtime/duplex_task_requests.test.mjs"
+              ],
+              "exit_code": 0
+            }
+          ],
+          "seconds": 0.645915464963764,
+          "gpu_starts": 0,
+          "default_unchanged": true,
+          "verification": "Offline correction of singular unittest count; original commands exited 0, no tests rerun",
+          "new_test_executions": 0
         }
       }
     }
