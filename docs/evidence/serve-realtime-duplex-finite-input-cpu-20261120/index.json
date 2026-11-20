@@ -1,0 +1,130 @@
+{
+  "archive_sha256": "df8145bb11865efaf8c86240835dc7dc7732565b79c4f57abee70be0df27871e",
+  "records": [
+    {
+      "path": "finite-input-plan-01.json",
+      "bytes": 3936,
+      "sha256": "b09200ca2fdd65584cb57d17ed534217d6b3123e8ac90921a9a586bcb419d168"
+    },
+    {
+      "path": "build_finite_input_01.py",
+      "bytes": 2821,
+      "sha256": "e8a9c36a7b3c3a624761d4f0233b9192c3fd4eb42e83b851205975349b678f92"
+    },
+    {
+      "path": "run_finite_input_cpu_01.py",
+      "bytes": 2141,
+      "sha256": "dee65416c53ddf885e2b0547f3701ae685e742160b91b309637591ec64e730b2"
+    },
+    {
+      "path": "prepare_finite_input_01.py",
+      "bytes": 4803,
+      "sha256": "08a9792451c24030806f14790229b69e1f111e3a1d7d3de59cd620979503e858"
+    },
+    {
+      "path": "finite-input-build-01/build.log",
+      "bytes": 3808,
+      "sha256": "a2e7bdc5381d5402c8a747f42d296d35e8bc08fe4aae5f4ac53ba7ded8e5805f"
+    },
+    {
+      "path": "finite-input-build-01/plan.json",
+      "bytes": 177298,
+      "sha256": "ba602c20672f095dc2cbe99bd7f99bfe317f4589f178f78330bdb1fc5daad593"
+    },
+    {
+      "path": "finite-input-build-01/previous-CMakeCache.txt",
+      "bytes": 35359,
+      "sha256": "49fbe0d60ffc13fbcdc0d7365e17c2db0ffdde0280c8c1ae27e7564d2716d319"
+    },
+    {
+      "path": "finite-input-build-01/previous-chat_protocol_sources.json",
+      "bytes": 85992,
+      "sha256": "c46e4e2a64e4d58a27309f7854362608c076c67b76da749dfd1a04a511d9dac6"
+    },
+    {
+      "path": "finite-input-build-01/result.json",
+      "bytes": 294,
+      "sha256": "ec379027e0ff08dffcbb4c48687b85c052fdd5248e93791131503a5a6e2f0633"
+    },
+    {
+      "path": "finite-input-cpu-01/command-0.stderr",
+      "bytes": 209,
+      "sha256": "354a53bf4f7177bdbeb8647bcb3325f2d95784d34bb0c5aec57caeb33c56bae0"
+    },
+    {
+      "path": "finite-input-cpu-01/command-0.stdout",
+      "bytes": 1560,
+      "sha256": "ae5264d89183c03ba34e7ddd8ae6a0192f79923f7b4abc850a892a973ace4513"
+    },
+    {
+      "path": "finite-input-cpu-01/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "finite-input-cpu-01/command-1.stdout",
+      "bytes": 223,
+      "sha256": "04e63a3fd266ce6c5de1c3aa38c513028be085e4b535f9e5c396776fbb9cf72f"
+    },
+    {
+      "path": "finite-input-cpu-01/new.txt",
+      "bytes": 1365,
+      "sha256": "1119141fbfd972ea680fc0f48f7f1f49efa27303f2278cee725950f2eb7a831c"
+    },
+    {
+      "path": "finite-input-cpu-01/old.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "finite-input-cpu-01/plan.json",
+      "bytes": 179360,
+      "sha256": "56ba156e53c46247ad3b5c08eeaebe591eea5d180a3f46a9d6958a372b652abd"
+    },
+    {
+      "path": "finite-input-cpu-01/result.json",
+      "bytes": 608,
+      "sha256": "6fa324606dfb8c6bc728c196d5b5f8bd5f58a73b7a5bf178f55835e59c108981"
+    },
+    {
+      "path": "source/include/q4t/server/realtime_audio_history.h",
+      "bytes": 3941,
+      "sha256": "9f6557845b00a5d451bdd5393d20475280e5b8a1d12c73da60c46a38376a7ef7"
+    },
+    {
+      "path": "source/include/q4t/server/realtime_transcription_session.h",
+      "bytes": 10647,
+      "sha256": "01aa92a01e85efed75efdc7e5333c9729bcdbf0fa8ad0430f88c3d0e486ddf0e"
+    },
+    {
+      "path": "source/src/server/realtime_audio_history.cpp",
+      "bytes": 6487,
+      "sha256": "3fe037064091a04fc1ee14c42694918889c782e4490cba23bc7921a753c52038"
+    },
+    {
+      "path": "source/src/server/realtime_transcription_session.cpp",
+      "bytes": 51493,
+      "sha256": "027563b5c296e938781fb5e00b4518e9027b2c40c4b9ea74d803e0e9a1f836b8"
+    },
+    {
+      "path": "source/tests/server_realtime_audio_history_test.cpp",
+      "bytes": 10900,
+      "sha256": "72a0f85260860e1702aab7807c9c979bd1a3f858b6f8ea93e1e8117cf1a234ac"
+    },
+    {
+      "path": "source/tests/server_realtime_transcription_test.cpp",
+      "bytes": 101643,
+      "sha256": "1f83992497a3f19dc5cd12d2293efeb9968dc1068e698e8c57f62c9b9164e730"
+    },
+    {
+      "path": "source/tools/release/required_host_tests.txt",
+      "bytes": 31054,
+      "sha256": "57afaadcc9531bfc70845ce03f52cf19a869f828b026bc4143c58dcb20bb565f"
+    },
+    {
+      "path": "source/tools/serve_audit/inventory.json",
+      "bytes": 585219,
+      "sha256": "5b2b9077ec9523393923bd6af27f26e2254e6356dee5166a0206fe474a96aae8"
+    }
+  ]
+}

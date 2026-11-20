@@ -38,6 +38,9 @@ struct RealtimeTranscriptionJob {
   std::shared_ptr<RealtimeSemanticTurn> semantic;
   RealtimeTranscriptTicket transcript;
   bool idle_timeout = false;  // Native timer provenance, never client JSON.
+  std::string source_item_id;  // Finite part; empty for the input buffer.
+  size_t content_index = 0;
+  bool Finite() const { return !source_item_id.empty(); }
   bool deleted =
       false;  // Session owner only; worker cancellation uses control.
 };
@@ -91,7 +94,8 @@ class RealtimeTranscriptionSession {
   RealtimeTranscriptionSession(std::string id, WebSocketOutput& output,
                                RealtimeTranscriptionCallbacks callbacks,
                                uint32_t max_audio_seconds,
-                               size_t message_bytes = kWebSocketMessageLimit);
+                               size_t message_bytes = kWebSocketMessageLimit,
+                               uint64_t lifetime_ticks = kRealtimeSessionTicks);
   ~RealtimeTranscriptionSession();
   bool Start();
   // Session-owner transaction for a composed conversation. Validates the
@@ -126,6 +130,12 @@ class RealtimeTranscriptionSession {
   void CancelIdleCapture() { idle_begin_.reset(); }
   bool IdleReady() const;
   bool CommitIdle();
+  // Composed-owner finite part. No buffer commit/item events; the caller owns
+  // publication of the complete mixed item. Workers start only from Tick().
+  ObjectReply SubmitFinite(std::span<const uint8_t> bytes,
+                           std::string_view item_id, size_t content_index,
+                           RealtimeTranscriptTicket* output);
+  uint64_t LifetimeTicks() const { return AcceptedTicks() + finite_ticks_; }
 
  private:
   bool Emit(io::Json event, bool deferred = false);
@@ -156,6 +166,7 @@ class RealtimeTranscriptionSession {
   WebSocketOutput& output_;
   const RealtimeTranscriptionCallbacks callbacks_;
   const uint64_t max_item_ticks_;
+  const uint64_t lifetime_ticks_;
   const size_t message_bytes_;
   RealtimeTranscriptHistory history_;
   RealtimeAudioHistory audio_history_;
@@ -168,6 +179,7 @@ class RealtimeTranscriptionSession {
   size_t stream_storage_ = 0;
   uint64_t stream_epoch_ = 0;
   uint64_t cancelled_ticks_ = 0;
+  uint64_t finite_ticks_ = 0;
   bool stream_fault_ = false;
   std::unique_ptr<RealtimeVad> vad_;
   std::optional<uint64_t> idle_begin_;

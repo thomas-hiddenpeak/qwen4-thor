@@ -2212,3 +2212,191 @@ Q4T_TEST(realtime_input_owner_settlement_failure_is_honest_and_isolated) {
             snapshot.items.array.size() == 2);
   return true;
 }
+
+namespace {
+const std::array<uint8_t, 48> kFiniteBytes{};
+}  // namespace
+
+Q4T_TEST(realtime_finite_input_does_not_mix_pending_buffer) {
+  Fixture f;
+  InputOwner owner;
+  f.callbacks.owner = &owner;
+  std::vector<RealtimeTranscriptionJob> seen;
+  f.callbacks.execute = [&](const auto& job, const auto& bytes, const auto&,
+                            const auto&) {
+    ++f.calls;
+    seen.push_back(job);
+    if (job.Finite() && (!bytes[0].empty() || !bytes[1].empty()))
+      return Error(500, "unexpected_ring_borrow", "Finite input borrowed ring");
+    return Completed();
+  };
+  RealtimeTranscriptionSession s("sess_input", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kAppend));
+  Drain(f.output);
+  RealtimeTranscriptTicket ticket;
+  Q4T_CHECK(s.SubmitFinite(kFiniteBytes, "mixed", 3, &ticket).ok());
+  Q4T_CHECK(Drain(f.output).empty() && s.AudioBytes() == 4 &&
+            s.AcceptedTicks() == 4 && s.LifetimeTicks() == 52 && f.calls == 0);
+  Q4T_CHECK(Send(s, kCommit));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events));
+  Q4T_CHECK(seen.size() == 2 && seen[0].source_item_id == "mixed" &&
+            seen[0].content_index == 3 && seen[0].transcript == ticket &&
+            seen[0].processed_audio->Samples().size() == 16 &&
+            !seen[1].Finite() &&
+            seen[1].processed_audio->Samples().size() == 1);
+  Q4T_CHECK(Events(events, "input_audio_buffer.committed") == 1 &&
+            f.calls == 2 && f.released == 2 && owner.finished == 2);
+  for (const auto& event : events)
+    if (event.GetString("item_id") == ticket.id &&
+        event.GetString("type").ends_with(".completed"))
+      Q4T_CHECK(event.GetInt("content_index") == 3);
+  return true;
+}
+
+Q4T_TEST(realtime_finite_input_interleaves_borrowed_ring_without_replay) {
+  Fixture f;
+  InputOwner owner;
+  f.callbacks.owner = &owner;
+  std::atomic<bool> hold{true}, entered{false}, intact{true};
+  std::vector<bool> order;
+  f.callbacks.execute = [&](const auto& job, const auto& bytes,
+                            const auto& control, const auto&) {
+    ++f.calls;
+    order.push_back(job.Finite());
+    if (f.calls == 1) {
+      entered = true;
+      while (hold && !control->Cancelled()) std::this_thread::sleep_for(1ms);
+      intact = bytes[0].size() == 4 && bytes[0][0] == 1 && bytes[0][2] == 2;
+    }
+    return Completed();
+  };
+  RealtimeTranscriptionSession s("sess_input", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start() && Send(s, kAppend) && Send(s, kCommit) && s.Tick());
+  const auto until = Clock::now() + 1s;
+  while (!entered && Clock::now() < until) std::this_thread::sleep_for(1ms);
+  ScopeExit release([&] {
+    hold = false;
+    s.Cancel();
+    s.Join();
+  });
+  Q4T_CHECK(entered);
+  RealtimeTranscriptTicket ticket;
+  Q4T_CHECK(s.SubmitFinite(kFiniteBytes, "middle", 1, &ticket).ok() &&
+            Send(s, kAppend) && Send(s, kCommit));
+  hold = false;
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events));
+  Q4T_CHECK(intact && order == std::vector<bool>({false, true, false}) &&
+            f.calls == 3 && f.released == 3 && s.AudioBytes() == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_finite_input_owner_rejections_are_atomic) {
+  for (bool unknown : {false, true}) {
+    Fixture f;
+    InputOwner owner;
+    owner.reject_reserve = !unknown;
+    owner.unknown_commit = unknown;
+    f.callbacks.owner = &owner;
+    RealtimeTranscriptionSession s("sess_input", f.output, f.callbacks, 30);
+    Q4T_CHECK(s.Start() && Send(s, kAppend));
+    Drain(f.output);
+    RealtimeTranscriptTicket ticket{"unchanged", "unchanged", 7};
+    const auto old = ticket;
+    const auto result = s.SubmitFinite(kFiniteBytes, "mixed", 1, &ticket);
+    Q4T_CHECK(!result.ok() && ticket == old && s.AudioBytes() == 4 &&
+              s.LifetimeTicks() == 4 && s.QueuedItems() == 0 &&
+              s.RetainedAudioBytes() == 0 && owner.history.Items() == 0 &&
+              Drain(f.output).empty());
+    owner.reject_reserve = owner.unknown_commit = false;
+    Q4T_CHECK(s.SubmitFinite(kFiniteBytes, "mixed", 1, &ticket).ok());
+    std::vector<Json> events;
+    Q4T_CHECK(Finish(s, f.output, &events));
+    Q4T_CHECK(f.calls == 1 && f.released == 1 && s.AudioBytes() == 4 &&
+              s.LifetimeTicks() == 52);
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_finite_input_deadline_and_delete_prevent_execution) {
+  for (bool erase : {false, true}) {
+    Fixture f;
+    InputOwner owner;
+    owner.ready = false;
+    f.callbacks.owner = &owner;
+    if (!erase)
+      f.callbacks.acquire = [&](const auto& id) {
+        return f.requests.Register(id, "", Clock::now() - 1ms);
+      };
+    RealtimeTranscriptionSession s("sess_input", f.output, f.callbacks, 30);
+    Q4T_CHECK(s.Start());
+    Drain(f.output);
+    RealtimeTranscriptTicket ticket;
+    Q4T_CHECK(s.SubmitFinite(kFiniteBytes, "mixed", 1, &ticket).ok() &&
+              s.Tick());
+    if (erase) Q4T_CHECK(s.EraseInput(ticket).ok());
+    std::vector<Json> events;
+    Q4T_CHECK(Finish(s, f.output, &events));
+    Q4T_CHECK(f.calls == 0 && f.released == 1 && s.QueuedItems() == 0 &&
+              s.LifetimeTicks() == 48);
+    Q4T_CHECK(Events(events,
+                     "conversation.item.input_audio_transcription.completed") ==
+              0);
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_finite_input_shares_queue_limit_with_buffer_commits) {
+  Fixture f;
+  InputOwner owner;
+  owner.ready = false;
+  f.callbacks.owner = &owner;
+  RealtimeTranscriptionSession s("sess_input", f.output, f.callbacks, 30);
+  Q4T_CHECK(s.Start());
+  Drain(f.output);
+  RealtimeTranscriptTicket ticket;
+  for (size_t i = 0; i < kRealtimeQueuedItems; ++i)
+    Q4T_CHECK(s.SubmitFinite(kFiniteBytes, "mixed", i, &ticket).ok());
+  const auto lifetime = s.LifetimeTicks();
+  const auto old = ticket;
+  Q4T_CHECK(!s.SubmitFinite(kFiniteBytes, "overflow", 0, &ticket).ok() &&
+            ticket == old && s.LifetimeTicks() == lifetime);
+  Q4T_CHECK(Send(s, kAppend) && Send(s, kCommit));
+  auto events = Drain(f.output);
+  Q4T_CHECK(Events(events, "error") == 1 &&
+            Events(events, "input_audio_buffer.committed") == 0 &&
+            s.QueuedItems() == kRealtimeQueuedItems && s.AudioBytes() == 4 &&
+            f.calls == 0);
+  const auto retained = s.RetainedAudioBytes();
+  s.Cancel();
+  s.Join();
+  Q4T_CHECK(s.QueuedItems() == 0 && s.RetainedAudioBytes() == retained);
+  return true;
+}
+
+Q4T_TEST(realtime_finite_input_lifetime_survives_local_recovery) {
+  Fixture f;
+  InputOwner owner;
+  f.callbacks.owner = &owner;
+  RealtimeTranscriptionSession s("sess_input", f.output, f.callbacks, 30,
+                                 kWebSocketMessageLimit, 100);
+  Q4T_CHECK(s.Start() && Send(s, kAppend) && Send(s, kCommit));
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(s, f.output, &events));
+  RealtimeTranscriptTicket ticket;
+  Q4T_CHECK(s.SubmitFinite(kFiniteBytes, "first", 1, &ticket).ok() &&
+            Finish(s, f.output, &events) && s.LifetimeTicks() == 52);
+  s.Cancel();
+  s.Join();
+  Q4T_CHECK(s.Recover({}).ok() && s.LifetimeTicks() == 52);
+  Q4T_CHECK(s.SubmitFinite(kFiniteBytes, "second", 1, &ticket).ok() &&
+            Finish(s, f.output, &events) && s.LifetimeTicks() == 100);
+  Q4T_CHECK(!s.SubmitFinite(kFiniteBytes, "overflow", 1, &ticket).ok());
+  Q4T_CHECK(Send(s, kAppend));
+  const auto rejected = Drain(f.output);
+  Q4T_CHECK(Events(rejected, "error") == 1 && s.AudioBytes() == 0 &&
+            s.AcceptedTicks() == 4 && s.LifetimeTicks() == 100 &&
+            f.calls == 3 && f.released == 3);
+  return true;
+}

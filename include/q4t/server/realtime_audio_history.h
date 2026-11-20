@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "q4t/server/asr_stream_input.h"
+#include "q4t/audio/noise_reduction.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/realtime_pcm.h"
 #include "q4t/server/realtime_transcript_history.h"
@@ -60,6 +61,14 @@ class RealtimeAudioHistory {
   // A native idle timeout with no received samples; no synthesized waveform.
   Status Empty(const RealtimeTranscriptTicket& ticket,
                std::shared_ptr<RealtimeAudioRecord>* output);
+  // Independent finite wire input. Uses the same configured normalization as
+  // streaming input and the same retained-audio budget; never borrows its ring.
+  Status DecodeFinite(const RealtimeTranscriptTicket& ticket,
+                      const RealtimeAudioItem& item,
+                      std::span<const uint8_t> bytes,
+                      audio::NoiseReduction noise, size_t max_samples,
+                      std::shared_ptr<RealtimeAudioRecord>* output,
+                      const std::function<bool()>& cancelled = {});
   std::shared_ptr<RealtimeAudioRecord> Find(
       const RealtimeTranscriptTicket& ticket) const;
   Status Erase(const RealtimeTranscriptTicket& ticket);

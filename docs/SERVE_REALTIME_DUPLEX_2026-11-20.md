@@ -137,3 +137,11 @@ WSS/ASR/TTS短验、受影响恢复与交付，全部master继续。
 部分完成预算、隐私、失败与generation保护已具备组件证据；直接
 原生音频处理及item/response.create入口继续，随后统一业务短验与
 恢复交付，全部master继续。0GPU、默认rev376保持。
+
+## 有限音频准备与队列CPU结果
+
+[有限音频CPU](evidence/serve-realtime-duplex-finite-input-cpu-20261120/README.md)
+22项和20来源反例通过，host零警告。PCM/G.711/配置降噪复用既有处理，
+原生有限音频和append ring分开存储但共用总预算、队列和累计时长，
+原借用/期限/删除与恢复边界保持。仍待实际item/response入口组合与
+统一WSS/ASR/TTS、恢复交付，全部master继续。0GPU、默认rev376不变。

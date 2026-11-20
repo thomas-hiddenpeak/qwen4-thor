@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "q4t/server/input_contract.h"
+#include "q4t/server/realtime_noise_input.h"
 
 namespace q4t::server {
 namespace {
@@ -88,6 +89,49 @@ Status RealtimeAudioHistory::Empty(
   if (!output || !CanAdd(ticket)) return Invalid();
   auto record =
       std::shared_ptr<RealtimeAudioRecord>(new RealtimeAudioRecord(budget_));
+  entries_.push_back({ticket, record});
+  *output = std::move(record);
+  return {};
+}
+Status RealtimeAudioHistory::DecodeFinite(
+    const RealtimeTranscriptTicket& ticket, const RealtimeAudioItem& item,
+    std::span<const uint8_t> bytes, audio::NoiseReduction noise,
+    size_t max_samples, std::shared_ptr<RealtimeAudioRecord>* output,
+    const std::function<bool()>& cancelled) {
+  if (noise == audio::NoiseReduction::kOff)
+    return Decode(ticket, item, {bytes, {}}, max_samples, output, cancelled);
+  RealtimeNoiseInput processor(item.format, noise, 0, cancelled);
+  const size_t width =
+      item.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+  if (!output || !CanAdd(ticket) || !processor.Valid() || !item.epoch ||
+      !item.sequence || !item.samples || item.bytes > kRealtimeAudioBytes ||
+      item.samples > kRealtimeAudioBytes / width ||
+      bytes.size() != item.samples * width || bytes.size() != item.bytes ||
+      item.end_ticks > kRealtimeSessionTicks ||
+      item.begin_ticks > item.end_ticks ||
+      item.end_ticks - item.begin_ticks !=
+          item.samples * (kRealtimeTicksPerSecond / item.format.rate) ||
+      !max_samples || max_samples > 600ULL * 16000)
+    return Invalid();
+  const size_t samples = uint64_t(item.samples) * 16000 / item.format.rate;
+  if (!samples || samples > max_samples) return Invalid();
+  auto record =
+      std::shared_ptr<RealtimeAudioRecord>(new RealtimeAudioRecord(budget_));
+  if (!record->lease_.Acquire(samples * sizeof(float))) return Full();
+  record->pcm_.resize(samples);
+  if (!record->lease_.GrowTo(record->pcm_.capacity() * sizeof(float)))
+    return Full();
+  size_t written = 0;
+  const auto sink = [&](std::span<const float> block) {
+    if (block.size() > samples - written) return Invalid();
+    std::copy(block.begin(), block.end(), record->pcm_.begin() + written);
+    written += block.size();
+    return Status{};
+  };
+  auto status = processor.Append(bytes, sink);
+  if (status) status = processor.Finish(sink);
+  if (!status) return status;
+  if (written != samples || processor.PartialSample()) return Invalid();
   entries_.push_back({ticket, record});
   *output = std::move(record);
   return {};
