@@ -93,6 +93,18 @@ bool SameIdentity(const Json& left, const Json& right) {
   }
   return true;
 }
+Status InputText(const Json& item, Json* copy) {
+  const auto* content = item.GetArray("content");
+  const auto* transcript = content && content->array.size() == 1
+                               ? content->array[0].Find("transcript")
+                               : nullptr;
+  if (!transcript || !transcript->IsString())
+    return Invalid("native input has no completed ASR transcript");
+  // Execution snapshot only. Client transcripts never receive this authority.
+  Set(copy, "content",
+      Array({Object({{"type", String("input_text")}, {"text", *transcript}})}));
+  return {};
+}
 }  // namespace
 
 Status MeasureRealtimeStorage(const Json& value, size_t maximum,
@@ -129,7 +141,8 @@ Status RealtimeConversation::Find(std::string_view id,
                                   RealtimeItemTicket* output) const {
   if (!valid_ || !output) return Invalid("invalid history owner");
   for (const auto& entry : entries_)
-    if (entry.item.GetString("id") == id) {
+    if (entry.item.GetString("id") == id &&
+        (!entry.native_input || entry.input_committed)) {
       RealtimeItemTicket ticket{owner_, std::string(id), entry.generation};
       *output = std::move(ticket);
       return {};
@@ -140,6 +153,8 @@ Status RealtimeConversation::Get(const RealtimeItemTicket& ticket,
                                  Json* output) const {
   const auto index = Position(ticket);
   if (index == entries_.size() || !output) return Invalid("item not found");
+  if (entries_[index].native_input && !entries_[index].input_committed)
+    return Invalid("input has not been committed");
   auto copy = entries_[index].item;
   if (entries_[index].native_input && !entries_[index].transcript_visible)
     std::erase_if(
@@ -176,20 +191,69 @@ Status RealtimeConversation::BeginAudioInput(
     std::string_view id, std::optional<std::string_view> previous,
     bool transcript_visible, size_t reserved_bytes,
     RealtimeItemTicket* output) {
+  return InsertAudioInput(id, previous, true, transcript_visible,
+                          reserved_bytes, output);
+}
+Status RealtimeConversation::ReserveAudioInput(std::string_view id,
+                                               bool transcript_visible,
+                                               size_t reserved_bytes,
+                                               RealtimeItemTicket* output) {
+  return InsertAudioInput(id, {}, false, transcript_visible, reserved_bytes,
+                          output);
+}
+Status RealtimeConversation::InsertAudioInput(
+    std::string_view id, std::optional<std::string_view> previous,
+    bool committed, bool transcript_visible, size_t reserved_bytes,
+    RealtimeItemTicket* output) {
   if (!reserved_bytes) return Invalid("input needs a reservation");
   const auto item =
       Object({{"type", String("message")},
               {"role", String("user")},
               {"content", Array({Object({{"type", String("input_audio")}})})}});
-  const auto status = Insert(item, id, previous, true, reserved_bytes, output);
+  const auto status =
+      Insert(item, id, previous, committed, reserved_bytes, output);
   if (!status) return status;
   auto& entry = entries_[Position(*output)];
   entry.native_input = true;
+  entry.input_committed = committed;
   entry.transcript_visible = transcript_visible;
   entry.server_output = false;
-  // Input committed successfully; its independently pending ASR still blocks
-  // snapshots. ASR failure does not erase an accepted conversation item.
+  // Public status on eventual commit is independent of the pending ASR.
   Field(entry.item, "status").str = "completed";
+  return {};
+}
+Status RealtimeConversation::CommitAudioInput(
+    const RealtimeItemTicket& ticket,
+    std::optional<std::string_view> previous) {
+  const auto index = Position(ticket);
+  if (index == entries_.size() || !entries_[index].native_input ||
+      entries_[index].input_committed || !entries_[index].pending ||
+      revision_ == UINT64_MAX)
+    return Invalid("native input reservation is stale or already committed");
+  size_t position = entries_.size();
+  if (previous) {
+    position = 0;
+    if (*previous != "root") {
+      const auto it = std::find_if(
+          entries_.begin(), entries_.end(), [&](const auto& entry) {
+            return entry.in_conversation &&
+                   entry.item.GetString("id") == *previous;
+          });
+      if (it == entries_.end()) return Invalid("predecessor not found");
+      position = static_cast<size_t>(it - entries_.begin()) + 1;
+    }
+  }
+  // All validation precedes non-allocating moves inside the reserved vector.
+  auto& entry = entries_[index];
+  entry.input_committed = true;
+  entry.in_conversation = true;
+  if (position < index)
+    std::rotate(entries_.begin() + position, entries_.begin() + index,
+                entries_.begin() + index + 1);
+  else if (position > index + 1)
+    std::rotate(entries_.begin() + index, entries_.begin() + index + 1,
+                entries_.begin() + position);
+  ++revision_;
   return {};
 }
 Status RealtimeConversation::CompleteAudioInput(
@@ -206,6 +270,9 @@ Status RealtimeConversation::FinishAudioInput(
   if (index == entries_.size() || !entries_[index].native_input ||
       !entries_[index].pending)
     return Invalid("native input ticket is stale or already terminal");
+  if (!entries_[index].input_committed)
+    return transcript ? Invalid("native input has not been committed")
+                      : Erase(ticket);
   if (transcript && transcript->size() > entries_[index].charge)
     return Invalid("input transcript exceeds its reservation");
   auto item = entries_[index].item;
@@ -324,6 +391,15 @@ Status RealtimeConversation::TruncateAudioTranscript(
 
 Status RealtimeConversation::Snapshot(
     const Json* input, RealtimeConversationSnapshot* output) const {
+  return SnapshotImpl(input, false, output);
+}
+Status RealtimeConversation::Capture(
+    const Json* input, RealtimeConversationSnapshot* output) const {
+  return SnapshotImpl(input, true, output);
+}
+Status RealtimeConversation::SnapshotImpl(
+    const Json* input, bool allow_pending,
+    RealtimeConversationSnapshot* output) const {
   if (!valid_ || !output ||
       (input && (!input->IsArray() || input->array.size() > maximum_items_)))
     return Invalid("invalid snapshot input");
@@ -338,28 +414,19 @@ Status RealtimeConversation::Snapshot(
   };
   auto append = [&](const Json& item, bool pending, uint64_t generation = 0,
                     bool native_input = false) -> Status {
-    if (pending) return Invalid("output item is still pending");
+    if (pending && (!allow_pending || !native_input))
+      return Invalid("input or output item is still pending");
     if (snapshot.items.array.size() == maximum_items_)
       return Invalid("snapshot item limit exceeded");
     auto status = Shape(item, remaining);
     if (!status) return status;
     auto copy = item;
-    if (native_input) {
-      const auto* content = item.GetArray("content");
-      const auto* transcript = content && content->array.size() == 1
-                                   ? content->array[0].Find("transcript")
-                                   : nullptr;
-      if (!transcript || !transcript->IsString())
-        return Invalid("native input has no completed ASR transcript");
-      // This is an execution snapshot, not the public retained audio item.
-      // No client transcript or raw audio is relabelled as native ASR output.
-      Set(&copy, "content",
-          Array({Object(
-              {{"type", String("input_text")}, {"text", *transcript}})}));
-    }
+    if (native_input && !pending && !(status = InputText(item, &copy)))
+      return status;
     size_t bytes = 0;
     status = Measure(copy, remaining, &bytes);
     if (!status) return status;
+    if (pending) snapshot.pending_inputs.push_back(snapshot.items.array.size());
     snapshot.items.array.push_back(std::move(copy));
     snapshot.tickets.push_back({owner_, item.GetString("id"), generation});
     remaining -= bytes;
@@ -398,11 +465,60 @@ Status RealtimeConversation::Snapshot(
   return {};
 }
 
+Status RealtimeConversation::Resolve(RealtimeConversationSnapshot* snapshot,
+                                     bool* ready) const {
+  if (ready) *ready = false;
+  if (!valid_ || !snapshot || !ready || snapshot->owner != owner_ ||
+      snapshot->revision > revision_ || !snapshot->items.IsArray() ||
+      snapshot->items.array.size() > maximum_items_ ||
+      snapshot->tickets.size() != snapshot->items.array.size() ||
+      snapshot->pending_inputs.size() > snapshot->items.array.size())
+    return Invalid("invalid pending input snapshot");
+  std::array<bool, kMaximumItems> waiting{};
+  bool pending = false;
+  for (const auto index : snapshot->pending_inputs) {
+    if (index >= snapshot->items.array.size() || waiting[index])
+      return Invalid("invalid pending input position");
+    waiting[index] = true;
+    const auto& ticket = snapshot->tickets[index];
+    const auto position = Position(ticket);
+    if (position == entries_.size() ||
+        ticket.id != snapshot->items.array[index].GetString("id"))
+      return Invalid("pending input generation was deleted");
+    const auto& entry = entries_[position];
+    if (!entry.native_input || !entry.input_committed || entry.input_failed ||
+        !SameIdentity(snapshot->items.array[index], entry.item))
+      return Invalid("pending input failed or lost its native owner");
+    pending |= entry.pending;
+  }
+  if (pending) return {};
+  if (!snapshot->pending_inputs.empty()) {
+    auto copy = *snapshot;
+    size_t remaining = maximum_bytes_;
+    for (size_t i = 0; i < copy.items.array.size(); ++i) {
+      auto& item = copy.items.array[i];
+      if (waiting[i]) {
+        const auto& entry = entries_[Position(copy.tickets[i])];
+        auto status = InputText(entry.item, &item);
+        if (!status) return status;
+      }
+      size_t bytes = 0;
+      auto status = Measure(item, remaining, &bytes);
+      if (!status) return status;
+      remaining -= bytes;
+    }
+    copy.pending_inputs.clear();
+    *snapshot = std::move(copy);
+  }
+  *ready = true;
+  return {};
+}
+
 Status RealtimeConversation::TruncateDefault(
     const RealtimeConversationSnapshot& snapshot,
     std::span<const size_t> retained) {
   if (!valid_ || snapshot.owner != owner_ || !snapshot.default_context ||
-      !snapshot.items.IsArray() ||
+      !snapshot.items.IsArray() || !snapshot.pending_inputs.empty() ||
       snapshot.items.array.size() > maximum_items_ ||
       snapshot.tickets.size() != snapshot.items.array.size() ||
       revision_ == UINT64_MAX)

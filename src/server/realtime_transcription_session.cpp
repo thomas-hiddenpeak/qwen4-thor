@@ -14,6 +14,10 @@ namespace q4t::server {
 namespace {
 using namespace object_detail;
 using Clock = std::chrono::steady_clock;
+bool Accepted(const ObjectReply& reply) {
+  return reply.ok() && !reply.commit_unknown && reply.http_status >= 200 &&
+         reply.http_status < 300;
+}
 Json Event(std::string type) {
   return Object({{"type", String(std::move(type))},
                  {"event_id", String(detail::NewRequestId("event_"))}});
@@ -65,6 +69,48 @@ void RealtimeTranscriptionSession::Cancel() noexcept {
 void RealtimeTranscriptionSession::Join() noexcept {
   if (worker_.joinable()) worker_.join();
   Release();
+  for (auto& job : jobs_) DiscardJob(job);
+}
+ObjectReply RealtimeTranscriptionSession::ReserveJob(
+    RealtimeTranscriptionJob& job) {
+  if (!callbacks_.owner) return {};
+  if (input_owners_.size() >= kRealtimeQueuedItems ||
+      !input_owners_.emplace(job.id, InputOwnership{job.transcript, {}}).second)
+    return Error(503, "transcription_owner_capacity", "Input owners full");
+  ObjectReply result;
+  try {
+    result = callbacks_.owner->Reserve(job);
+  } catch (...) {
+    DiscardJob(job);
+    throw;
+  }
+  if (!Accepted(result)) DiscardJob(job);
+  if (!Accepted(result) && result.ok())
+    return Error(503, "transcription_owner_unknown",
+                 "Input reservation was not confirmed");
+  return result;
+}
+ObjectReply RealtimeTranscriptionSession::CommitJob(
+    RealtimeTranscriptionJob& job, bool automatic) {
+  if (!callbacks_.owner) return {};
+  const auto found = input_owners_.find(job.id);
+  if (found == input_owners_.end() || found->second.ticket != job.transcript)
+    return Error(500, "transcription_owner_missing", "Input owner missing");
+  auto previous = job.previous_id;
+  auto result = callbacks_.owner->Commit(job, automatic, &previous);
+  if (Accepted(result)) found->second.previous_id = std::move(previous);
+  if (!Accepted(result) && result.ok())
+    return Error(503, "transcription_owner_unknown",
+                 "Input commit was not confirmed");
+  return result;
+}
+void RealtimeTranscriptionSession::DiscardJob(
+    RealtimeTranscriptionJob& job) noexcept {
+  const auto found = input_owners_.find(job.id);
+  if (found == input_owners_.end() || found->second.ticket != job.transcript)
+    return;
+  callbacks_.owner->Discard(job);
+  input_owners_.erase(found);
 }
 bool RealtimeTranscriptionSession::Emit(Json event, bool deferred) {
   return EmitText(OutputJson(event), deferred);
@@ -355,6 +401,8 @@ void RealtimeTranscriptionSession::ResetVad() {
 }
 bool RealtimeTranscriptionSession::SpeechEvent(bool started, uint64_t ticks,
                                                bool deferred) {
+  if (callbacks_.owner && !callbacks_.owner->Speech(started, speech_id_, ticks))
+    return false;
   auto event = Event(started ? "input_audio_buffer.speech_started"
                              : "input_audio_buffer.speech_stopped");
   Set(&event, "item_id", String(speech_id_));
@@ -430,10 +478,33 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
         event_id);
     return sent && !automatic;
   }
-  jobs_.push_back(std::move(job));
+  auto owned = ReserveJob(job);
+  if (!Accepted(owned)) {
+    if (!history_.Fail(job.transcript) || !audio_history_.Erase(job.transcript))
+      return false;
+    const bool sent = ErrorEvent(std::move(owned), event_id);
+    return sent && !automatic;
+  }
+  try {
+    jobs_.push_back(std::move(job));
+  } catch (...) {
+    DiscardJob(job);
+    throw;
+  }
   auto& last = jobs_.back();
+  owned = CommitJob(last, automatic);
+  if (!Accepted(owned)) {
+    DiscardJob(last);
+    if (!history_.Fail(last.transcript) ||
+        !audio_history_.Erase(last.transcript))
+      return false;
+    jobs_.pop_back();
+    const bool sent = ErrorEvent(std::move(owned), event_id);
+    return sent && !automatic;
+  }
   status = queue_.CommitPrefix(1, end_ticks, &last.audio);
   if (!status) {
+    DiscardJob(last);
     if (!history_.Fail(last.transcript) ||
         !audio_history_.Erase(last.transcript))
       return false;
@@ -461,14 +532,20 @@ bool RealtimeTranscriptionSession::Commit(uint64_t end_ticks,
 }
 bool RealtimeTranscriptionSession::CommitEvents(
     const RealtimeTranscriptionJob& last, bool automatic) {
+  const auto found = input_owners_.find(last.id);
+  if (callbacks_.owner &&
+      (found == input_owners_.end() || found->second.ticket != last.transcript))
+    return false;
+  const auto& previous =
+      callbacks_.owner ? found->second.previous_id : last.previous_id;
   auto committed = Event("input_audio_buffer.committed");
   Set(&committed, "item_id", String(last.id));
   Set(&committed, "previous_item_id",
-      last.previous_id.empty() ? Json{} : String(last.previous_id));
+      previous.empty() ? Json{} : String(previous));
   if (!Emit(std::move(committed), automatic)) return false;
   auto created = Event("conversation.item.created");
   Set(&created, "previous_item_id",
-      last.previous_id.empty() ? Json{} : String(last.previous_id));
+      previous.empty() ? Json{} : String(previous));
   Set(&created, "item",
       Object({{"id", String(last.id)},
               {"object", String("realtime.item")},
@@ -566,11 +643,12 @@ bool RealtimeTranscriptionSession::RetrieveItem(
 }
 
 bool RealtimeTranscriptionSession::DropFrontJob() {
-  const auto& job = jobs_.front();
+  auto& job = jobs_.front();
   if (job.stream)
     stream_storage_ -= job.stream->StorageBytes();
   else if (!queue_.Acknowledge(job.audio.epoch, job.audio.sequence))
     return false;
+  DiscardJob(job);
   jobs_.pop_front();
   return true;
 }
@@ -657,7 +735,19 @@ bool RealtimeTranscriptionSession::StreamMessage(
       }
       auto input = job.processed_audio->Stream();
       job.stream = input;
-      jobs_.push_back(std::move(job));
+      auto owned = ReserveJob(job);
+      if (!Accepted(owned)) {
+        if (!history_.Fail(job.transcript) ||
+            !audio_history_.Erase(job.transcript))
+          return false;
+        return ErrorEvent(std::move(owned), command.event_id);
+      }
+      try {
+        jobs_.push_back(std::move(job));
+      } catch (...) {
+        DiscardJob(job);
+        throw;
+      }
       stream_storage_ += input->StorageBytes();
       stream_epoch_ = epoch;
       live_input_ = std::move(input);
@@ -692,8 +782,10 @@ bool RealtimeTranscriptionSession::StreamMessage(
     return false;
   }
   // Queue both standard commit/item events before EOF permits final output.
-  if (jobs_.empty() || jobs_.back().id != live_id_ ||
-      !history_.Commit(jobs_.back().transcript) ||
+  if (jobs_.empty() || jobs_.back().id != live_id_) return false;
+  auto owned = CommitJob(jobs_.back(), false);
+  if (!Accepted(owned)) return ErrorEvent(std::move(owned), command.event_id);
+  if (!history_.Commit(jobs_.back().transcript) ||
       !CommitEvents(jobs_.back(), false) || !live_input_->Seal(stream_epoch_))
     return false;
   previous_id_ = live_id_;
@@ -729,7 +821,10 @@ bool RealtimeTranscriptionSession::Tick() {
   if (!vad_events_.empty()) return true;
   if (control_ && done_.load(std::memory_order_acquire)) {
     if (worker_.joinable()) worker_.join();
-    const auto& job = jobs_.front();
+    auto& job = jobs_.front();
+    if (!Accepted(result_) && result_.ok())
+      result_ = Error(503, "transcription_result_unknown",
+                      "Transcription outcome was not confirmed");
     if (result_.ok() && job.stream && !job.stream->Drained())
       result_ = Error(502, "transcription_result_invalid",
                       "Streaming audio did not drain before completion");
@@ -764,6 +859,17 @@ bool RealtimeTranscriptionSession::Tick() {
         speech_id_.clear();
       }
     }
+    if (const auto found = input_owners_.find(job.id);
+        found != input_owners_.end()) {
+      auto settled = callbacks_.owner->Finish(job, result_);
+      input_owners_.erase(found);
+      if (!Accepted(settled)) {
+        if (Accepted(result_)) result_ = std::move(settled);
+        if (result_.ok())
+          result_ = Error(503, "transcription_owner_unknown",
+                          "Input settlement was not confirmed");
+      }
+    }
     auto event =
         Event(std::string("conversation.item.input_audio_transcription.") +
               (result_.ok() ? "completed" : "failed"));
@@ -794,13 +900,25 @@ bool RealtimeTranscriptionSession::Tick() {
     const auto* audio = queue_.Front();
     if (!audio || *audio != jobs_.front().audio) return false;
   }
-  control_ = callbacks_.acquire(jobs_.front().id);
-  if (!control_) return false;
-  // Preallocate the exception fallback before starting the worker. Exception
-  // handling inside the producer must not allocate during host exhaustion.
-  result_ =
-      Error(500, "transcription_failed", "Transcription execution failed");
-  done_.store(false, std::memory_order_relaxed);
+  if (!control_) {
+    control_ = callbacks_.acquire(jobs_.front().id);
+    if (!control_) return false;
+    if (control_->id() != jobs_.front().id) {
+      // Never cancel or release a request belonging to a different owner.
+      control_.reset();
+      return false;
+    }
+    // Preallocate the exception fallback before starting the worker.
+    result_ =
+        Error(500, "transcription_failed", "Transcription execution failed");
+    done_.store(false, std::memory_order_relaxed);
+  }
+  if (control_->Cancelled()) {
+    result_ = Error(409, control_->Reason(), "Transcription cancelled");
+    done_.store(true, std::memory_order_release);
+    return true;
+  }
+  if (callbacks_.owner && !callbacks_.owner->Ready(jobs_.front())) return true;
   auto& next = jobs_.front();
   if (!history_.ContextBefore(next.transcript, kAsrPromptBytes,
                               &next.settings.request.previous_transcript)) {

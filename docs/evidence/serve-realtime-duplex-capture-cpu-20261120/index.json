@@ -1,0 +1,95 @@
+{
+  "records": [
+    {
+      "path": "capture-plan-01.json",
+      "bytes": 1613,
+      "sha256": "73687e7b61bcdaa8fcd479ce4fe2487b008e0734dc47bdca9d550372754dd85d"
+    },
+    {
+      "path": "build_capture_01.py",
+      "bytes": 1970,
+      "sha256": "ca2372ebc835143b3c0c18206a57e6988af61f5eaf8d061d545e582d7a39fe4a"
+    },
+    {
+      "path": "run_capture_cpu_01.py",
+      "bytes": 2499,
+      "sha256": "9eaf988502ca8585b906ce090056b82beacf1bf25c5e3c3c69ded16d89631169"
+    },
+    {
+      "path": "capture-build-01/build.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "capture-build-01/result.json",
+      "bytes": 234,
+      "sha256": "372d0af43b632762d2d3d8e7fa012a54ba278ba231542985eecaa345c8cbb8b8"
+    },
+    {
+      "path": "capture-build-01/build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "capture-build-01/plan.json",
+      "bytes": 2679,
+      "sha256": "61e5eda71ff80e324af034db32028e840cd76b26bf2582c7b469eef2d78ca224"
+    },
+    {
+      "path": "capture-cpu-01/command-0.stdout",
+      "bytes": 2961,
+      "sha256": "77b254babd39980a5e7cb3c499b9448e0a29ef67cde27351005f5c9a767bfe70"
+    },
+    {
+      "path": "capture-cpu-01/result.json",
+      "bytes": 626,
+      "sha256": "8978ad1d3a0710e4c66c55fb6466417606aa984300d3633cb29e2dae72421715"
+    },
+    {
+      "path": "capture-cpu-01/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "capture-cpu-01/plan.json",
+      "bytes": 5594,
+      "sha256": "0c04e1598726e7094df67c0e95f0a96eb574f8e65fe881849b57c1460a284106"
+    },
+    {
+      "path": "capture-cpu-01/command-1.stdout",
+      "bytes": 223,
+      "sha256": "944b5aa6826e5a6c2c56bd09743560dd53978893fdb49db7efc9d31a2baa5ca4"
+    },
+    {
+      "path": "capture-cpu-01/new.txt",
+      "bytes": 2626,
+      "sha256": "4a557ed059aa33827d169165e02564dccd279f6042b409fb383576ff0c2c6a6b"
+    },
+    {
+      "path": "capture-cpu-01/old.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "capture-cpu-01/command-0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source/include/q4t/server/realtime_conversation.h",
+      "bytes": 7905,
+      "sha256": "7fd37109d8108494ce644c9e17268c161dfb7d1150e6f27e93ae8bb80fddb2c3"
+    },
+    {
+      "path": "source/src/server/realtime_conversation.cpp",
+      "bytes": 23220,
+      "sha256": "9fddee229bb5ad06ee8f38a0de6844812f6e5233292793f614873899f361e73e"
+    },
+    {
+      "path": "source/tests/server_realtime_conversation_test.cpp",
+      "bytes": 38379,
+      "sha256": "31f440ec6fe1c9c4f4803a68a962d3247c3bba55d61f59f0375a2be13df6edba"
+    }
+  ],
+  "archive_sha256": "7f4719b5be62d124f486e6ff827439421efef64c225472c814cf313eb753456a"
+}

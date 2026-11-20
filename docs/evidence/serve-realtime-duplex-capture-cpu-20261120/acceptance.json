@@ -1,0 +1,22 @@
+{
+  "status": "ACCEPT_TARGETED_NATIVE_INPUT_RESERVATION_AND_CAPTURE_CPU",
+  "new_cases": 12,
+  "affected_existing_cases": 30,
+  "seconds": 0.4693547831848264,
+  "source_counterexamples": 20,
+  "build": {
+    "status": "BUILD_PASS",
+    "returncode": 0,
+    "seconds": 17.558060814160854,
+    "warnings": 0,
+    "binary_sha256": "24a58a7c453da728f1ee4097a105a8d8015c85f67e35bca91b65e237da78b277",
+    "default_unchanged": true,
+    "gpu_actions": 0
+  },
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "native_conversation_entry": "pending",
+  "actual_duplex_business": "pending",
+  "remaining_master_active": true
+}

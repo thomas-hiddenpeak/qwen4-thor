@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <deque>
+#include <map>
 #include <thread>
 
 #include "q4t/server/asr_stream_input.h"
@@ -40,6 +41,27 @@ struct RealtimeTranscriptionJob {
       false;  // Session owner only; worker cancellation uses control.
 };
 using RealtimeTranscriptSink = std::function<bool(const io::Json&)>;
+// Optional composition with the conversation's single owner, never a second
+// socket or worker. Calls are bounded and occur on the session thread only.
+// Reserve/Commit reject atomically; Finish settles success or failure. A
+// failed Finish must leave the associated input terminal, never pending.
+class IRealtimeTranscriptionOwner {
+ public:
+  virtual ~IRealtimeTranscriptionOwner() = default;
+  virtual ObjectReply Reserve(const RealtimeTranscriptionJob& job) = 0;
+  // Only the predecessor output may change; job identity and audio are fixed.
+  virtual ObjectReply Commit(const RealtimeTranscriptionJob& job,
+                             bool automatic, std::string* previous_id) = 0;
+  virtual ObjectReply Finish(const RealtimeTranscriptionJob& job,
+                             const ObjectReply& result) = 0;
+  // Idempotent rollback/abandon of this generation. Audio borrowers remain
+  // owned by the input processor until its actual worker has joined.
+  virtual void Discard(const RealtimeTranscriptionJob& job) noexcept = 0;
+  virtual bool Speech(bool started, std::string_view id, uint64_t ticks) = 0;
+  // The request's finite deadline already runs while this gate waits, e.g.
+  // until an interrupted generation releases its actual client admission.
+  virtual bool Ready(const RealtimeTranscriptionJob& job) = 0;
+};
 struct RealtimeTranscriptionCallbacks {
   // Cooperative stop from the socket owner; checked between CPU blocks.
   std::function<bool()> interrupted;
@@ -59,6 +81,8 @@ struct RealtimeTranscriptionCallbacks {
                             const std::shared_ptr<RequestControl>&,
                             const RealtimeTranscriptSink&)>
       execute;
+  // Must outlive this processor, including Cancel/Join/destruction.
+  IRealtimeTranscriptionOwner* owner = nullptr;
 };
 
 class RealtimeTranscriptionSession {
@@ -91,6 +115,9 @@ class RealtimeTranscriptionSession {
   bool SettingsEvent(bool legacy, bool created = false);
   bool Commit(uint64_t end_ticks, std::string_view event_id, bool automatic);
   bool CommitEvents(const RealtimeTranscriptionJob& job, bool automatic);
+  ObjectReply ReserveJob(RealtimeTranscriptionJob& job);
+  ObjectReply CommitJob(RealtimeTranscriptionJob& job, bool automatic);
+  void DiscardJob(RealtimeTranscriptionJob& job) noexcept;
   bool DeleteItem(const RealtimeTranscriptionCommand& command);
   bool RetrieveItem(const RealtimeTranscriptionCommand& command);
   bool DropFrontJob();
@@ -131,6 +158,13 @@ class RealtimeTranscriptionSession {
   size_t vad_event_bytes_ = 0;
   std::chrono::steady_clock::time_point vad_event_deadline_;
   std::deque<RealtimeTranscriptionJob> jobs_;
+  // Owner-only state, outside jobs borrowed by active ASR. Stream commit can
+  // update the public predecessor without changing a worker's job snapshot.
+  struct InputOwnership {
+    RealtimeTranscriptTicket ticket;
+    std::string previous_id;
+  };
+  std::map<std::string, InputOwnership> input_owners_;
   std::string previous_id_, terminal_;
   std::shared_ptr<RequestControl> control_;
   std::thread worker_;

@@ -21,6 +21,251 @@ Json Reference(std::string id) {
 }
 }  // namespace
 
+Q4T_TEST(realtime_audio_reservation_hidden_until_owned_commit) {
+  RealtimeConversation history("sess_input", 2, 16384);
+  Ticket input, other;
+  Q4T_CHECK(history.ReserveAudioInput("input", true, 8192, &input));
+  const auto revision = history.Revision();
+  Json visible = String("unchanged");
+  Q4T_CHECK(!history.Find("input", &other) && !history.Get(input, &visible));
+  Q4T_CHECK(visible.str == "unchanged" && history.LastId().empty());
+  Q4T_CHECK(!history.Create(Message(), "input", {}, &other));
+  Q4T_CHECK(!history.Create(Message(), "other", "input", &other));
+  Q4T_CHECK(!history.CompleteAudioInput(input, "premature success"));
+  Q4T_CHECK(history.Revision() == revision && history.ChargedBytes() == 8192);
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot) &&
+            snapshot.items.array.empty());
+  Q4T_CHECK(history.CommitAudioInput(input));
+  Q4T_CHECK(history.Find("input", &other) && other == input);
+  Q4T_CHECK(history.Get(input, &visible) &&
+            visible.GetString("status") == "completed");
+  Q4T_CHECK(!history.CommitAudioInput(input));
+  Q4T_CHECK(!history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(history.CompleteAudioInput(input, "real speech"));
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[0].GetString(
+                "text") == "real speech");
+  return true;
+}
+
+Q4T_TEST(realtime_audio_reservation_commit_tracks_mixed_history_position) {
+  RealtimeConversation history("sess_input");
+  Ticket first, streamed, tail, front, middle;
+  Q4T_CHECK(history.Create(Message("first"), "first", {}, &first));
+  Q4T_CHECK(history.ReserveAudioInput("stream", true, 8192, &streamed));
+  Q4T_CHECK(history.Create(Message("while listening"), "tail", {}, &tail));
+  Q4T_CHECK(history.CommitAudioInput(streamed));
+  Q4T_CHECK(history.CompleteAudioInput(streamed, "stream end"));
+  Q4T_CHECK(history.ReserveAudioInput("front", false, 8192, &front));
+  Q4T_CHECK(history.ReserveAudioInput("middle", false, 8192, &middle));
+  Q4T_CHECK(history.CommitAudioInput(middle, "first"));
+  Q4T_CHECK(history.CommitAudioInput(front, "root"));
+  Q4T_CHECK(history.CompleteAudioInput(front, "front") &&
+            history.CompleteAudioInput(middle, "middle"));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.tickets ==
+            std::vector<Ticket>({front, first, middle, tail, streamed}));
+  Q4T_CHECK(history.LastId() == "stream");
+  return true;
+}
+
+Q4T_TEST(realtime_audio_reservation_rejected_commit_is_atomic) {
+  RealtimeConversation history("sess_input"), foreign("sess_foreign");
+  Ticket a, hidden, outside, output;
+  Q4T_CHECK(history.ReserveAudioInput("a", true, 8192, &a));
+  Q4T_CHECK(history.ReserveAudioInput("hidden", true, 8192, &hidden));
+  Q4T_CHECK(foreign.ReserveAudioInput("a", true, 8192, &outside));
+  Q4T_CHECK(history.BeginOutput(Message("", "assistant"), "output", false, 8192,
+                                &output));
+  const auto revision = history.Revision(), charge = history.ChargedBytes();
+  for (const auto previous : {"a", "hidden", "missing", "output"})
+    Q4T_CHECK(!history.CommitAudioInput(a, previous));
+  Q4T_CHECK(!history.CommitAudioInput(outside) &&
+            !history.CommitAudioInput(output));
+  Q4T_CHECK(history.Revision() == revision && history.ChargedBytes() == charge);
+  Q4T_CHECK(history.CommitAudioInput(a));
+  Q4T_CHECK(history.LastId() == "a");
+  return true;
+}
+
+Q4T_TEST(realtime_audio_reservation_failure_releases_uncommitted_owner) {
+  RealtimeConversation history("sess_input", 1, 8192);
+  Ticket old, fresh;
+  Q4T_CHECK(history.ReserveAudioInput("same", true, 8192, &old));
+  Q4T_CHECK(!history.ReserveAudioInput("full", true, 8192, &fresh));
+  Q4T_CHECK(history.FailAudioInput(old));
+  Q4T_CHECK(history.Items() == 0 && history.ChargedBytes() == 0);
+  Q4T_CHECK(history.ReserveAudioInput("same", true, 8192, &fresh));
+  Q4T_CHECK(fresh != old && !history.CommitAudioInput(old));
+  Q4T_CHECK(!history.FailAudioInput(old) &&
+            !history.CompleteAudioInput(old, "late"));
+  Q4T_CHECK(history.Erase(fresh) && history.ChargedBytes() == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_audio_capture_freezes_existing_context_while_waiting) {
+  RealtimeConversation history("sess_input");
+  Ticket old, speech, added;
+  Q4T_CHECK(history.Create(Message("original context"), "old", {}, &old));
+  Q4T_CHECK(history.BeginAudioInput("speech", {}, false, 8192, &speech));
+  RealtimeConversationSnapshot captured;
+  Q4T_CHECK(history.Capture(nullptr, &captured));
+  const auto saved = OutputJson(captured.items);
+  const auto revision = captured.revision;
+  Q4T_CHECK(captured.pending_inputs == std::vector<size_t>{1});
+  bool ready = true;
+  Q4T_CHECK(history.Resolve(&captured, &ready) && !ready);
+  Q4T_CHECK(OutputJson(captured.items) == saved &&
+            captured.revision == revision);
+  Q4T_CHECK(history.Erase(old));
+  Q4T_CHECK(history.Create(Message("future context"), "new", {}, &added));
+  Q4T_CHECK(history.CompleteAudioInput(speech, "actual private speech"));
+  Q4T_CHECK(history.Resolve(&captured, &ready) && ready);
+  Q4T_CHECK(captured.pending_inputs.empty() && captured.revision == revision);
+  Q4T_CHECK(captured.tickets == std::vector<Ticket>({old, speech}));
+  Q4T_CHECK(captured.items.array[0].GetArray("content")->array[0].GetString(
+                "text") == "original context");
+  Q4T_CHECK(captured.items.array[1].GetArray("content")->array[0].GetString(
+                "text") == "actual private speech");
+  Json public_item;
+  Q4T_CHECK(history.Get(speech, &public_item) &&
+            !public_item.GetArray("content")->array[0].Has("transcript"));
+  Q4T_CHECK(history.Erase(speech));
+  Q4T_CHECK(history.Resolve(&captured, &ready) && ready);
+  return true;
+}
+
+Q4T_TEST(realtime_audio_capture_resolves_exact_order_and_real_empty_text) {
+  RealtimeConversation history("sess_input");
+  Ticket a, b;
+  Q4T_CHECK(history.BeginAudioInput("a", {}, true, 8192, &a));
+  Q4T_CHECK(history.BeginAudioInput("b", {}, true, 8192, &b));
+  auto input = Array({Reference("b"), Message("between"), Reference("a")});
+  RealtimeConversationSnapshot captured;
+  Q4T_CHECK(history.Capture(&input, &captured));
+  const auto saved = OutputJson(captured.items);
+  Q4T_CHECK(captured.pending_inputs == std::vector<size_t>({0, 2}));
+  Q4T_CHECK(history.CompleteAudioInput(b, ""));
+  bool ready = true;
+  Q4T_CHECK(history.Resolve(&captured, &ready) && !ready);
+  Q4T_CHECK(OutputJson(captured.items) == saved);
+  Q4T_CHECK(history.CompleteAudioInput(a, "first spoken"));
+  Q4T_CHECK(history.Resolve(&captured, &ready) && ready);
+  const auto& empty = captured.items.array[0].GetArray("content")->array[0];
+  Q4T_CHECK(empty.Find("text")->IsString() && empty.GetString("text").empty());
+  Q4T_CHECK(captured.items.array[2].GetArray("content")->array[0].GetString(
+                "text") == "first spoken");
+  return true;
+}
+
+Q4T_TEST(realtime_audio_capture_deleted_generation_cannot_be_substituted) {
+  RealtimeConversation history("sess_input");
+  Ticket old, replacement;
+  Q4T_CHECK(history.BeginAudioInput("same", {}, true, 8192, &old));
+  RealtimeConversationSnapshot captured;
+  Q4T_CHECK(history.Capture(nullptr, &captured));
+  const auto saved = OutputJson(captured.items);
+  Q4T_CHECK(history.Erase(old));
+  Q4T_CHECK(history.BeginAudioInput("same", {}, true, 8192, &replacement));
+  Q4T_CHECK(history.CompleteAudioInput(replacement, "different user turn"));
+  bool ready = true;
+  Q4T_CHECK(!history.Resolve(&captured, &ready) && !ready);
+  Q4T_CHECK(OutputJson(captured.items) == saved && captured.tickets[0] == old);
+  return true;
+}
+
+Q4T_TEST(realtime_audio_capture_failed_asr_does_not_execute_old_context) {
+  RealtimeConversation history("sess_input");
+  Ticket waiting, failed, text;
+  Q4T_CHECK(history.Create(Message("old context"), "text", {}, &text));
+  Q4T_CHECK(history.BeginAudioInput("waiting", {}, true, 8192, &waiting));
+  Q4T_CHECK(history.BeginAudioInput("failed", {}, true, 8192, &failed));
+  RealtimeConversationSnapshot captured;
+  Q4T_CHECK(history.Capture(nullptr, &captured));
+  Q4T_CHECK(history.FailAudioInput(failed));
+  bool ready = true;
+  // Inspect every captured generation; an earlier wait cannot mask a failure.
+  Q4T_CHECK(!history.Resolve(&captured, &ready) && !ready);
+  Q4T_CHECK(captured.pending_inputs.size() == 2);
+  Q4T_CHECK(history.FailAudioInput(waiting));
+  RealtimeConversationSnapshot next;
+  Q4T_CHECK(history.Snapshot(nullptr, &next));
+  Q4T_CHECK(next.tickets == std::vector<Ticket>{text});
+  return true;
+}
+
+Q4T_TEST(realtime_audio_capture_rejects_output_hidden_and_foreign_owners) {
+  RealtimeConversation history("sess_input"), other("sess_other");
+  Ticket output, hidden;
+  Q4T_CHECK(history.ReserveAudioInput("hidden", true, 8192, &hidden));
+  RealtimeConversationSnapshot captured{"unchanged", 1, String("kept")};
+  auto input = Array({Reference("hidden")});
+  Q4T_CHECK(!history.Capture(&input, &captured));
+  Q4T_CHECK(captured.owner == "unchanged" && captured.items.str == "kept");
+  Q4T_CHECK(history.BeginOutput(Message("", "assistant"), "output", true, 8192,
+                                &output));
+  Q4T_CHECK(!history.Capture(nullptr, &captured));
+  Q4T_CHECK(history.Erase(output));
+  Q4T_CHECK(history.Capture(nullptr, &captured));
+  bool ready = true;
+  Q4T_CHECK(!other.Resolve(&captured, &ready) && !ready);
+  return true;
+}
+
+Q4T_TEST(realtime_audio_capture_explicit_input_ignores_unrelated_waits) {
+  RealtimeConversation history("sess_input");
+  Ticket pending, text;
+  Q4T_CHECK(history.BeginAudioInput("pending", {}, true, 8192, &pending));
+  Q4T_CHECK(history.Create(Message("selected text"), "text", {}, &text));
+  for (auto input : {Array(), Array({Reference("text")})}) {
+    RealtimeConversationSnapshot captured;
+    Q4T_CHECK(history.Capture(&input, &captured));
+    bool ready = false;
+    Q4T_CHECK(captured.pending_inputs.empty() && !captured.default_context);
+    Q4T_CHECK(history.Resolve(&captured, &ready) && ready);
+    Q4T_CHECK(captured.items.array.size() == input.array.size());
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_audio_capture_resolution_capacity_failure_is_atomic) {
+  RealtimeConversation history("sess_input", 2, 32768);
+  Ticket speech;
+  Q4T_CHECK(history.BeginAudioInput("speech", {}, true, 32768, &speech));
+  auto input = Array({Reference("speech"), Message(std::string(10000, 'x'))});
+  RealtimeConversationSnapshot captured;
+  Q4T_CHECK(history.Capture(&input, &captured));
+  const auto saved = OutputJson(captured.items);
+  Q4T_CHECK(history.CompleteAudioInput(speech, std::string(24000, 's')));
+  bool ready = true;
+  Q4T_CHECK(!history.Resolve(&captured, &ready) && !ready);
+  Q4T_CHECK(OutputJson(captured.items) == saved &&
+            captured.pending_inputs == std::vector<size_t>{0});
+  return true;
+}
+
+Q4T_TEST(realtime_audio_capture_invalid_positions_cannot_mutate_snapshot) {
+  RealtimeConversation history("sess_input");
+  Ticket speech;
+  Q4T_CHECK(history.BeginAudioInput("speech", {}, true, 8192, &speech));
+  RealtimeConversationSnapshot captured;
+  Q4T_CHECK(history.Capture(nullptr, &captured));
+  const size_t keep = 0;
+  Q4T_CHECK(!history.TruncateDefault(captured, {&keep, 1}));
+  for (auto positions : {std::vector<size_t>{1}, std::vector<size_t>{0, 0}}) {
+    auto invalid = captured;
+    invalid.pending_inputs = positions;
+    bool ready = true;
+    Q4T_CHECK(!history.Resolve(&invalid, &ready) && !ready);
+    Q4T_CHECK(invalid.pending_inputs == positions &&
+              OutputJson(invalid.items) == OutputJson(captured.items));
+  }
+  Q4T_CHECK(!history.Resolve(&captured, nullptr));
+  return true;
+}
+
 Q4T_TEST(realtime_audio_input_pending_commit_cannot_become_empty_prompt) {
   RealtimeConversation history("sess_input");
   Ticket ticket;

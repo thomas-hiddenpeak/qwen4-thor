@@ -47,7 +47,19 @@ bool RealtimeTranscriptionSession::StartSemantic(uint64_t begin_ticks) {
     return false;
   }
   job.stream = job.processed_audio->Stream();
-  jobs_.push_back(std::move(job));
+  auto owned = ReserveJob(job);
+  if (!owned.ok() || owned.commit_unknown) {
+    if (!history_.Fail(job.transcript) || !audio_history_.Erase(job.transcript))
+      return false;
+    ErrorEvent(std::move(owned));
+    return false;
+  }
+  try {
+    jobs_.push_back(std::move(job));
+  } catch (...) {
+    DiscardJob(job);
+    throw;
+  }
   const auto& last = jobs_.back();
   semantic_ = last.semantic;
   semantic_audio_end_ = begin_ticks;
@@ -91,6 +103,11 @@ bool RealtimeTranscriptionSession::FinishSemantic(uint64_t end_ticks,
       !FeedSemantic(end_ticks))
     return false;
   auto& job = jobs_.back();
+  auto owned = CommitJob(job, automatic);
+  if (!owned.ok() || owned.commit_unknown) {
+    ErrorEvent(std::move(owned));
+    return false;
+  }
   if (!history_.Commit(job.transcript) ||
       !SpeechEvent(false, end_ticks, automatic) ||
       !CommitEvents(job, automatic))

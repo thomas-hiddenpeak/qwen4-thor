@@ -26,11 +26,20 @@ conversation的音频输入、原生ASR/VAD、手动提交、打断和自动回�
 - [处理器配置事务](evidence/serve-realtime-duplex-configure-cpu-20261120/README.md)：
   5新+10相关用例，旧音频和借用未清理时拒绝改管线，只有一次会话
   设置确认，失败/未知验证不提交；独立转写入口复用同一路径。
+- [提交前预留与上下文冻结](evidence/serve-realtime-duplex-capture-cpu-20261120/README.md)：
+  12新+30相关用例；提交前的流式输入不公开，待ASR请求冻结确切
+  历史和generation，失败/删除/复用不能偷换输入。
+- [原生输入生命周期](evidence/serve-realtime-duplex-owner-cpu-20261120/README.md)：
+  11新+17相关用例；手动/连续/语义输入同一owner，通知先于执行，
+  准入等待沿用原期限，真实借用保留到join，未知结果不能报成功。
 
-三组均完成相应来源反例检查，构建零警告，新增GPU为0。最新host
-测试程序为`cdf072849cbf2d3f313fa253625061baf26be90364aaebe696233b93384dc111`；
+五组均完成相应来源反例检查，构建零警告，新增GPU为0。累计92个
+不同用例/140次执行，保留9次原失败。最新host测试程序为
+`9b357f066366235185678cbd47b1869e42728b688b7c7a19e9b73930ae4de4ef`；
 它不是默认运行时程序。接下来实现输入事件、待提交借用和轮次调度，
-然后做相关CPU与真实WSS/ASR/TTS短验、受影响恢复和可回退发行。
+包括公开转写关闭、删除/检索、待输入的response.create、VAD打断/自动
+回答和空闲触发。随后做原生接线、真实WSS/ASR/TTS
+短验、受影响恢复和可回退发行。
 
 ## 当前实际默认
 

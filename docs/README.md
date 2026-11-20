@@ -1,5 +1,8 @@
 # docs/ — 开发记录文档体系
 
+- [双向输入预留与上下文冻结CPU](evidence/serve-realtime-duplex-capture-cpu-20261120/README.md)
+- [双向输入生命周期组合CPU](evidence/serve-realtime-duplex-owner-cpu-20261120/README.md)
+
 - [原生 Realtime Chat CPU](evidence/serve-realtime-native-chat-cpu-20261119/README.md)
 
 - [共享 Realtime 消息泵 CPU](evidence/serve-realtime-shared-pump-cpu-20261119/README.md)

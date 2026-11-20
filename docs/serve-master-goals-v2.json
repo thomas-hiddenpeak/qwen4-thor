@@ -12461,18 +12461,19 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "settings_history_processing_configuration_cpu_accepted_entry_pending",
+      "state": "settings_history_configuration_capture_lifecycle_cpu_accepted_entry_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
-      "unique_cpu_cases": 45,
-      "case_executions": 55,
+      "unique_cpu_cases": 92,
+      "case_executions": 140,
       "source_counterexamples_per_group": 20,
       "gpu_actions": 0,
       "runtime_entry_qualified": false,
       "default_revision": 376,
       "remaining": [
-        "native processing composition and transactional settings",
-        "manual/VAD/idle response scheduling and input deletion ownership",
+        "connect native conversation input and public event filtering",
+        "manual/VAD/idle scheduling and pending response ownership",
+        "native retrieval/deletion with preserved ASR borrowers",
         "targeted real WSS/ASR/TTS and affected recovery/publication",
         "all remaining Serve master tasks"
       ],
@@ -12483,6 +12484,59 @@
         "seconds": 0.5974072138778865,
         "host_binary_sha256": "cdf072849cbf2d3f313fa253625061baf26be90364aaebe696233b93384dc111",
         "gpu_actions": 0
+      },
+      "original_failed_executions": 9,
+      "reservation_and_capture": {
+        "evidence": "docs/evidence/serve-realtime-duplex-capture-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_NATIVE_INPUT_RESERVATION_AND_CAPTURE_CPU",
+          "new_cases": 12,
+          "affected_existing_cases": 30,
+          "seconds": 0.4693547831848264,
+          "source_counterexamples": 20,
+          "build": {
+            "status": "BUILD_PASS",
+            "returncode": 0,
+            "seconds": 17.558060814160854,
+            "warnings": 0,
+            "binary_sha256": "24a58a7c453da728f1ee4097a105a8d8015c85f67e35bca91b65e237da78b277",
+            "default_unchanged": true,
+            "gpu_actions": 0
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "native_conversation_entry": "pending",
+          "actual_duplex_business": "pending",
+          "remaining_master_active": true
+        }
+      },
+      "native_lifecycle": {
+        "evidence": "docs/evidence/serve-realtime-duplex-owner-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_NATIVE_INPUT_LIFECYCLE_CPU",
+          "new_cases": 11,
+          "affected_existing_cases": 17,
+          "seconds": 0.8958885432220995,
+          "source_counterexamples": 20,
+          "build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 42.65759042277932,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "9b357f066366235185678cbd47b1869e42728b688b7c7a19e9b73930ae4de4ef",
+            "free_bytes_after": 138682368
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "native_conversation_entry": "pending",
+          "actual_duplex_business": "pending",
+          "remaining_master_active": true
+        }
       }
     }
   },

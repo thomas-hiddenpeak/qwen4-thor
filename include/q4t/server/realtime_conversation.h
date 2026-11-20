@@ -25,6 +25,9 @@ struct RealtimeConversationSnapshot {
   io::Json items;
   std::vector<RealtimeItemTicket> tickets = {};
   bool default_context = false;
+  // Captured positions awaiting their exact native ASR generation. A worker
+  // must not execute until Resolve has cleared these positions.
+  std::vector<size_t> pending_inputs = {};
 };
 
 // One session thread owns mutations. Workers receive independent snapshots
@@ -71,6 +74,14 @@ class RealtimeConversation {
                          std::optional<std::string_view> previous,
                          bool transcript_visible, size_t reserved_bytes,
                          RealtimeItemTicket* output);
+  // Streaming/semantic input borrows before public commit. Reserve identity
+  // and capacity without exposing an item or changing default context. Commit
+  // joins the then-current mixed conversation; a rejected predecessor leaves
+  // the reservation intact. Failure before commit releases the reservation.
+  Status ReserveAudioInput(std::string_view id, bool transcript_visible,
+                           size_t reserved_bytes, RealtimeItemTicket* output);
+  Status CommitAudioInput(const RealtimeItemTicket& ticket,
+                          std::optional<std::string_view> previous = {});
   Status CompleteAudioInput(const RealtimeItemTicket& ticket,
                             std::string_view transcript);
   Status FailAudioInput(const RealtimeItemTicket& ticket);
@@ -88,6 +99,15 @@ class RealtimeConversation {
   // not alter a snapshot already handed to a worker.
   Status Snapshot(const io::Json* input,
                   RealtimeConversationSnapshot* output) const;
+  // Capture freezes all existing executable items and the exact generations
+  // of committed, pending native inputs. Later context changes are excluded.
+  // Pending model output still fails. Resolve waits only for those native
+  // inputs; deletion/reuse/failure fails instead of selecting another turn.
+  // Waiting and failure leave the captured snapshot unchanged; ready is set
+  // false on failure. Successful resolution preserves the capture revision.
+  Status Capture(const io::Json* input,
+                 RealtimeConversationSnapshot* output) const;
+  Status Resolve(RealtimeConversationSnapshot* snapshot, bool* ready) const;
   // Persist a successful default response's context cut without deleting its
   // retrievable history. Generation tickets protect entries recreated
   // meanwhile.
@@ -102,7 +122,14 @@ class RealtimeConversation {
     bool in_conversation = true, pending = false, server_output = false;
     bool in_context = true;
     bool native_input = false, transcript_visible = false, input_failed = false;
+    bool input_committed = false;
   };
+  Status InsertAudioInput(std::string_view id,
+                          std::optional<std::string_view> previous,
+                          bool committed, bool transcript_visible,
+                          size_t reserved_bytes, RealtimeItemTicket* output);
+  Status SnapshotImpl(const io::Json* input, bool allow_pending,
+                      RealtimeConversationSnapshot* output) const;
   Status FinishAudioInput(const RealtimeItemTicket& ticket,
                           std::optional<std::string_view> transcript);
   Status UpdateEntry(const RealtimeItemTicket& ticket, const io::Json& item,
