@@ -24,9 +24,11 @@
 
 [PR #55已进入main](evidence/serve-pr55-merged-20261120/README.md)，包含
 真实同会话双向音频、工具/Prompt组合和凭据更正；默认rev396 STOPPED。
-Realtime MCP定义与原生目录组件已通过各自CPU，尚待会话异步接线、
-调用审批、实际业务和恢复交付，按[后续计划](SERVE_REALTIME_MCP_2026-11-20.md)
-继续。以下原始审计及各阶段证据保留，不能替代当前逐项剩余状态。
+随后Realtime MCP已完成异步目录、调用审批、实际业务和恢复，
+[rev406可回退交付](evidence/serve-realtime-mcp-delivery-20261120/README.md)
+保持STOPPED；8启动/22工作实测、19条发布/回退管理命令通过，原模型
+质量失败保留。继续该阶段main收尾、追踪/Live及全部剩余任务。
+以下原始审计及各阶段证据保留，不能替代当前逐项剩余状态。
 
 ## 本轮审计发现
 

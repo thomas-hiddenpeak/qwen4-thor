@@ -4,6 +4,12 @@
 音频阶段PR #55独立完成检查和合入；本计划不改变其已验发行。
 总目标保持active，以下步骤是实现边界，不是删减功能范围。
 
+当前本模块已完成原生公开接线、主轻资格和五组实际恢复，
+[rev406可回退交付](evidence/serve-realtime-mcp-delivery-20261120/README.md)
+保持STOPPED。实际恢复8启动/22工作，19条发布/回退管理命令通过；
+Guardian准备子树缺陷已修复，原失败与模型漏字/错答仍保留。以下
+实施记录保留各自当时状态，继续main、追踪/Live及全部总任务。
+
 ## 已核对的协议与复用
 
 2026-11-20核对[官方Realtime工具指南](https://developers.openai.com/api/docs/guides/realtime-mcp)

@@ -2889,7 +2889,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Native Realtime MCP asynchronous catalog/session integration, owned invocation and approvals, real SDK business and reversible recovery delivery; continue tracing/Live and all remaining master tasks. Duplex PR55 is merged; rev396 STOPPED retained.",
+      "next": "Finish accepted rev406 Realtime MCP main integration, then implement native Realtime tracing/Live and all remaining required master tasks. Preserve original model quality failures and user-owned long-soak/listening.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -10164,7 +10164,7 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
       },
-      "next": "Native Realtime MCP asynchronous catalog/session integration, owned invocation and approvals, real SDK business and reversible recovery delivery; continue tracing/Live and all remaining master tasks. Duplex PR55 is merged; rev396 STOPPED retained.",
+      "next": "Finish accepted rev406 Realtime MCP main integration, then implement native Realtime tracing/Live and all remaining required master tasks. Preserve original model quality failures and user-owned long-soak/listening.",
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
@@ -10435,7 +10435,7 @@
       }
     }
   ],
-  "next_task": "Native Realtime MCP asynchronous catalog/session integration, owned invocation and approvals, real SDK business and reversible recovery delivery; continue tracing/Live and all remaining master tasks. Duplex PR55 is merged; rev396 STOPPED retained.",
+  "next_task": "Finish accepted rev406 Realtime MCP main integration, then implement native Realtime tracing/Live and all remaining required master tasks. Preserve original model quality failures and user-owned long-soak/listening.",
   "next": "PR #55已合入main；继续Realtime MCP异步目录、调用审批与真实闭环/恢复，再推进追踪、Live及全部计划。原质量失败保留。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -15863,5 +15863,17 @@
     "original_failures_preserved": true,
     "default_unchanged": true,
     "next": "STOPPED reversible release/main, then tracing/Live and all remaining master tasks."
+  },
+  "native_realtime_mcp_delivery_20261120": {
+    "state": "delivered_stopped_main_pending",
+    "evidence": "docs/evidence/serve-realtime-mcp-delivery-20261120/README.md",
+    "publication_revision": 406,
+    "candidate_manifest": "17fc1464a6bb19068521e8b6515d581a5a9d2efbeebfe177077b29f9f64127bc",
+    "retained_manifest": "25ebd972797652541284794ba4cb1fb3e0ad558f86dbed82f7008a48b41c560c",
+    "commands": 19,
+    "new_gpu_starts": 0,
+    "customers_quotas_usage_and_budgets_preserved": true,
+    "model_quality_status": "FAIL",
+    "master_goal_active": true
   }
 }
