@@ -2,6 +2,7 @@
 import hashlib
 import http.server
 import json
+from pathlib import Path
 import secrets
 import ssl
 import threading
@@ -43,18 +44,29 @@ class DocumentSource:
                             text=record['source']['text'])
 
 
+def prepare_tls(output):
+    """Prepare private fixture PKI offline, before sealing a recovery policy."""
+    issuer = tls_fixture.ca(output/'ca')
+    now = time.time()
+    certificate, key = tls_fixture.issue(output/'leaf', 'localhost', issuer,
+        now-30, now+86400, host='localhost')
+    return dict(ca_certificate=str(issuer[0]), ca_key=str(issuer[1]),
+                certificate=str(certificate), key=str(key))
+
+
 class ProjectMcp:
-    def __init__(self, root, output, port, *, source=None):
+    def __init__(self, root, output, port, *, source=None, tls=None):
         self.source = source if source is not None else DocumentSource(root)
         self.calls, self.reads, self.methods, self.deleted = [], [], [], []
         self.sessions = set()
         self.drop_next = False
         self.lock = threading.Lock()
         self.secret = secrets.token_urlsafe(32)
-        self.ca = tls_fixture.ca(output/'ca')
-        now = time.time()
-        self.certificate, self.key = tls_fixture.issue(output/'leaf', 'localhost', self.ca,
-            now-30, now+86400, host='localhost')
+        material = prepare_tls(output) if tls is None else tls
+        require(set(material) == {'ca_certificate', 'ca_key', 'certificate', 'key'},
+                'exact private fixture PKI required')
+        self.ca = (Path(material['ca_certificate']), Path(material['ca_key']))
+        self.certificate, self.key = Path(material['certificate']), Path(material['key'])
         peer = self
 
         class Handler(http.server.BaseHTTPRequestHandler):

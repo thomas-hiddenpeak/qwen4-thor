@@ -72,7 +72,13 @@ helper写死双启动而失败，3项CPU修复及[离线收尾已通过](evidenc
 [主轻完整资格已签发](evidence/serve-realtime-mcp-qualified-profiles-20261120/README.md)，
 registry为`5a44b4a3df68c45cb34f0b0758b51aeb4acd556a98d549db3992a106cb159fa3`。
 主/轻5631868/8340821字节，仍限8MiB；原失败保持，新增GPU 0。
-原生helper重建零警告、二进制未改；接着同能力封包和恢复/发行。
+原生helper重建零警告、二进制未改。候选包`d851e503`和同能力保留包
+`338a57ad`已封装/离线校验，保留包仅替换已验旧控制器，自动回退
+兼容检查通过。[恢复驱动24项CPU完成](evidence/serve-realtime-mcp-recovery-cpu-20261120/README.md)：
+首轮23通过/1夹具失败，仅修正负例实际发出的终态，2项补验通过。
+共26次执行、8.753秒，0GPU；生产运行时保持，原失败保留。
+GPU拟分五个完整驱动：累计8启动/22工作（含8自检）/9连接/2探测/
+1500秒，同时验证显式私网组合和确切默认策略包；实际恢复/发行待验。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

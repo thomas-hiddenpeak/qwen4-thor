@@ -5249,6 +5249,10 @@
           "/safety/cases/{id}"
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
+      },
+      "native_realtime_mcp_recovery_20261120": {
+        "evidence": "evidence/serve-realtime-mcp-recovery-cpu-20261120/README.md",
+        "state": "targeted_cpu_pass_managed_business_pending"
       }
     },
     {
@@ -15800,5 +15804,28 @@
     "report": "evidence/serve-scope-decision-20261120/README.md",
     "goal_state": "active",
     "g00_state": "completed_user_scope_decision"
+  },
+  "native_realtime_mcp_recovery_20261120": {
+    "state": "targeted_cpu_pass_managed_business_pending",
+    "evidence": "evidence/serve-realtime-mcp-recovery-cpu-20261120/README.md",
+    "distinct_cpu_cases": 24,
+    "cpu_executions": 26,
+    "original_failure_retained": true,
+    "production_runtime_changed": false,
+    "default_unchanged": true,
+    "planned_gpu_bounds": {
+      "starts": 8,
+      "work_including_selfchecks": 22,
+      "websocket_sessions": 9,
+      "device_probes": 2,
+      "seconds": 1500
+    },
+    "configured_and_default_policy_separate": true,
+    "remaining": [
+      "real retained/TLS/controller/whole-payload MCP recovery",
+      "exact default-policy candidate/retained isolation and fallback",
+      "rollback-capable publication and main",
+      "all remaining master tasks"
+    ]
   }
 }

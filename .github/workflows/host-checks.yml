@@ -257,6 +257,9 @@ jobs:
             tools.serve_realtime.test_duplex_task_checks \
             tools.serve_realtime.test_mcp_checks \
             tools.serve_realtime.test_mcp_finish \
+            tools.serve_realtime.test_mcp_service \
+            tools.serve_realtime.test_mcp_recovery_sdk \
+            tools.serve_responses.test_mcp_business_peer \
             tools.serve_recovery.test_profile_mcp \
             tools.serve_recovery.test_native_bundle.BundleTests.test_mcp_verifier_is_self_contained_and_v24_remains_valid \
             tools.serve_realtime.test_idle_acceptance \
@@ -278,6 +281,7 @@ jobs:
           mkdir -p .q4t-work/realtime-journal-ci
           Q4T_TEST_OUTPUT_DIR="$PWD/.q4t-work/realtime-journal-ci" node --test tools/serve_realtime/bounded_journal.test.mjs
           node --test tools/serve_realtime/duplex_task_requests.test.mjs
+          node --test tools/serve_realtime/mcp_recovery_journal.test.mjs
       - name: Check Chat citation history schemas and clients
         run: >-
           build/public-host/schema-venv/bin/python -B -m unittest
