@@ -1,0 +1,25 @@
+{
+  "status": "ACCEPT_SPEECH_PRIMARY_LIGHT",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "cleanup_complete": true,
+    "nvml_queries": 151,
+    "lease_result_sha256": "dda0d5ef909a05a3ec1a7778d8e51dd71e94850b4751bf3bfbfef154929c0310"
+  },
+  "counts": {
+    "starts": 1,
+    "chats": 5,
+    "controls": 40,
+    "websocket_sessions": 3,
+    "ingress_starts": 1
+  },
+  "seconds": 76.11470153182745,
+  "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+  "default_unchanged": true,
+  "managed_recovery_accepted": false,
+  "performance_claim": false,
+  "original_quality_failure_preserved": true,
+  "listening_deferred": true
+}

@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Realtime语音主轻资格完成](evidence/serve-realtime-speech-profiles-20261120/README.md)：
+两独立租约累计2模型/6WSS/10响应尝试/157.384秒、151次NVML正常，
+所属资源已清理。主轻实际音色/字节/权限拒绝后42/单次计费通过；
+原主组FAILED/COMMAND_FAILED保持，v19 registry d2ff5b3b。
+默认rev366不变；继续受影响原生恢复、可回退发行和全部master。
+
 [主配置实际语音离线复核通过](evidence/serve-realtime-speech-primary-review-20261120/README.md)：
 两音色完整PCM与旧独立ASR见证一致，越权零计费且随后文本42；
 31个不同CPU累计通过。原回显断言FAIL、结算夹具FAIL和原租约

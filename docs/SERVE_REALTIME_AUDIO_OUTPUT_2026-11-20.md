@@ -117,3 +117,11 @@ Realtime音频候选cfae4d60已零警告构建（176.414秒），默认rev366保
 随后同租约2模型/2入口/6WSS/10响应尝试/1200秒，仅受影响路径。
 可逆压缩退役CPU程序释放61158380字节；默认rev366及原FAIL保持。
 继续恢复、发行、双向音频和全部master。
+
+## 输出主轻结果
+
+[Realtime语音主轻资格完成](evidence/serve-realtime-speech-profiles-20261120/README.md)：
+两独立租约累计2模型/6WSS/10响应尝试/157.384秒、151次NVML正常，
+所属资源已清理。主轻实际音色/字节/权限拒绝后42/单次计费通过；
+原主组FAILED/COMMAND_FAILED保持，v19 registry d2ff5b3b。
+默认rev366不变；继续受影响原生恢复、可回退发行和全部master。

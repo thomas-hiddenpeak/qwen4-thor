@@ -1,0 +1,11 @@
+{
+  "format": "q4t-speech-two-lease-environment-v1",
+  "primary_exit_sha256": "d43fea08c610f2650c46d54043dfacbe810ce8c34562e1f4a0d93467f91ecd9d",
+  "primary_exit_status": "COMMAND_FAILED",
+  "primary_cause": "checker_required_optional_response_voice",
+  "primary_business_review": "PASS",
+  "light_exit_sha256": "3f3f42cb5234a664e3eca0313d22783bc4616b3e17fefdac2b03c2b1b1cb08a7",
+  "light_exit_status": "COMPLETED",
+  "nvml_queries": 151,
+  "cleanup_complete": true
+}

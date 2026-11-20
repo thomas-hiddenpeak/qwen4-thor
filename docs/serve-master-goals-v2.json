@@ -585,6 +585,23 @@
         "full_realtime_complete": false,
         "owner_listening_deferred": true,
         "pull_request": 54
+      },
+      "realtime_speech_primary_light_20261120": {
+        "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
+        "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
+        "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+        "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+        "model_starts": 2,
+        "response_attempts": 10,
+        "wss": 6,
+        "seconds": 157.3836771757342,
+        "nvml_ok": 151,
+        "original_failures_preserved": true,
+        "default_unchanged": true,
+        "recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "master_complete": false
       }
     },
     {
@@ -910,6 +927,23 @@
         "full_realtime_complete": false,
         "owner_listening_deferred": true,
         "pull_request": 54
+      },
+      "realtime_speech_primary_light_20261120": {
+        "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
+        "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
+        "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+        "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+        "model_starts": 2,
+        "response_attempts": 10,
+        "wss": 6,
+        "seconds": 157.3836771757342,
+        "nvml_ok": 151,
+        "original_failures_preserved": true,
+        "default_unchanged": true,
+        "recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "master_complete": false
       }
     },
     {
@@ -4959,6 +4993,23 @@
         "full_realtime_complete": false,
         "owner_listening_deferred": true,
         "pull_request": 54
+      },
+      "realtime_speech_primary_light_20261120": {
+        "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
+        "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
+        "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+        "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+        "model_starts": 2,
+        "response_attempts": 10,
+        "wss": 6,
+        "seconds": 157.3836771757342,
+        "nvml_ok": 151,
+        "original_failures_preserved": true,
+        "default_unchanged": true,
+        "recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "master_complete": false
       }
     },
     {
@@ -6409,6 +6460,23 @@
         "full_realtime_complete": false,
         "owner_listening_deferred": true,
         "pull_request": 54
+      },
+      "realtime_speech_primary_light_20261120": {
+        "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
+        "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
+        "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+        "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+        "model_starts": 2,
+        "response_attempts": 10,
+        "wss": 6,
+        "seconds": 157.3836771757342,
+        "nvml_ok": 151,
+        "original_failures_preserved": true,
+        "default_unchanged": true,
+        "recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "master_complete": false
       }
     },
     {
@@ -8525,12 +8593,29 @@
         "full_realtime_complete": false,
         "owner_listening_deferred": true,
         "pull_request": 54
+      },
+      "realtime_speech_primary_light_20261120": {
+        "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
+        "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
+        "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+        "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+        "model_starts": 2,
+        "response_attempts": 10,
+        "wss": 6,
+        "seconds": 157.3836771757342,
+        "nvml_ok": 151,
+        "original_failures_preserved": true,
+        "default_unchanged": true,
+        "recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "master_complete": false
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev366_delivered_pr53_final_checks_pending_remaining_master_active",
+      "state": "rev366_delivered_pr53_main_merged_remaining_master_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9538,6 +9623,23 @@
         "revision": 366,
         "evidence": "evidence/serve-realtime-prompt-delivery-20261120/README.md",
         "main_integration_pending": false
+      },
+      "realtime_speech_primary_light_20261120": {
+        "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
+        "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
+        "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+        "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+        "model_starts": 2,
+        "response_attempts": 10,
+        "wss": 6,
+        "seconds": 157.3836771757342,
+        "nvml_ok": 151,
+        "original_failures_preserved": true,
+        "default_unchanged": true,
+        "recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "master_complete": false
       }
     },
     {
@@ -9777,11 +9879,28 @@
         "full_realtime_complete": false,
         "owner_listening_deferred": true,
         "pull_request": 54
+      },
+      "realtime_speech_primary_light_20261120": {
+        "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
+        "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
+        "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+        "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+        "model_starts": 2,
+        "response_attempts": 10,
+        "wss": 6,
+        "seconds": 157.3836771757342,
+        "nvml_ok": 151,
+        "original_failures_preserved": true,
+        "default_unchanged": true,
+        "recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "master_complete": false
       }
     }
   ],
   "next_task": "Realtime speech output: affected profile/recovery qualification and reversible delivery; then remaining duplex audio, MCP/tracing/Live and all A/N/R/Q tasks. PR53 merged; PR54 draft.",
-  "next": "Continue all remaining Serve master implementation, targeted verification and delivery; this reversible publication is not total goal completion.",
+  "next": "Realtime语音受影响恢复与可回退发行，随后双向音频、MCP/追踪/Live及全部未完成任务；不得以阶段代替总目标。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -12511,5 +12630,22 @@
     "full_realtime_complete": false,
     "owner_listening_deferred": true,
     "pull_request": 54
+  },
+  "realtime_speech_primary_light_20261120": {
+    "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
+    "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
+    "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+    "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+    "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+    "model_starts": 2,
+    "response_attempts": 10,
+    "wss": 6,
+    "seconds": 157.3836771757342,
+    "nvml_ok": 151,
+    "original_failures_preserved": true,
+    "default_unchanged": true,
+    "recovery_delivery_pending": true,
+    "duplex_input_pending": true,
+    "master_complete": false
   }
 }

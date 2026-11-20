@@ -1,0 +1,59 @@
+{
+  "scope": "Three retired verification executable identities, five paths of this same Serve master; current accepted host/engine/default and retained release package stay intact. Current host/engine/default/model/reference are protected. Exact bytes, links, mode and timestamps recoverable; no test or GPU execution.",
+  "files": [
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/encoder-build-01/previous_host_tests",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/../serve-refusal-interference-20261120/cpu-01/qualified-contracts"
+      ],
+      "sha256": "8ddea6c05ff004a28f730ea01ba73d4ed57b24f7767ec410403348a6368bff64",
+      "bytes": 41305504,
+      "mode": 509,
+      "atime_ns": 1795125907230987996,
+      "mtime_ns": 1795119468410895949,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-03/binary-0.gz",
+      "archive_sha256": "09b2024b207ab6de496dd04e6ca40a3266d45fcc60981afc46343fcbcd4f9250",
+      "archive_bytes": 17567435,
+      "original_links": 2
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/../serve-refusal-interference-20261120/cpu-01/previous-contracts",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/../serve-realtime-prompt-20261120/profile-cpu-02/qualified-contracts"
+      ],
+      "sha256": "c89ed64ad605a57af2773b76c1fb6826fd01f0a7bff1031f3e671678ef0ec1ec",
+      "bytes": 41305128,
+      "mode": 509,
+      "atime_ns": 1795119437443092858,
+      "mtime_ns": 1795115642059653452,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-03/binary-1.gz",
+      "archive_sha256": "2d29c368a24f6bbb73b605d2906fc38466ad51ada2c04a9f702c778f0f8943d2",
+      "archive_bytes": 17568589,
+      "original_links": 2
+    },
+    {
+      "paths": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/runtime-build-01/previous_q4t"
+      ],
+      "sha256": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+      "bytes": 29938384,
+      "mode": 509,
+      "atime_ns": 1795129780821020975,
+      "mtime_ns": 1795119511570621099,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retired-binaries-03/binary-2.gz",
+      "archive_sha256": "5b48f1c4f6e72ef11553fcbf8d248c7f52b136762b4eb253b6da99e129083bc5",
+      "archive_bytes": 12298976,
+      "original_links": 1
+    }
+  ],
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/q4t": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests": "948dcef9d69a75aa0f176dd1b4deefffa70573020fc53776da072a95bd2e4f87"
+  },
+  "free_before": 119013376
+}

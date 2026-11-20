@@ -1,0 +1,50 @@
+{
+  "status": "ACCEPT_EXACT_PRIMARY_LIGHT_SPEECH",
+  "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+  "profiles": {
+    "primary": {
+      "sha256": "71998b6aa4f418d82201f7ec6d2e920dca77ed5327d7ca8ed7db7e8c031761d5",
+      "bytes": 4044747
+    },
+    "light": {
+      "sha256": "4a854638019a5974812f3bed77ba850f340e5095e35c6cbe69ed2f73038cae37",
+      "bytes": 3037090
+    }
+  },
+  "independent_leases": [
+    {
+      "name": "profiles-01",
+      "status": "FAILED",
+      "counts": {
+        "starts": 1,
+        "chats": 5,
+        "controls": 43,
+        "websocket_sessions": 3,
+        "ingress_starts": 1
+      },
+      "seconds": 81.26897564390674,
+      "lease_status": "COMMAND_FAILED"
+    },
+    {
+      "name": "profiles-02",
+      "status": "PASS_SPEECH_PRIMARY_LIGHT",
+      "counts": {
+        "starts": 1,
+        "chats": 5,
+        "controls": 40,
+        "websocket_sessions": 3,
+        "ingress_starts": 1
+      },
+      "seconds": 76.11470153182745,
+      "lease_status": "COMPLETED"
+    }
+  ],
+  "cumulative_seconds": 157.3836771757342,
+  "cumulative_model_starts": 2,
+  "cumulative_response_attempts": 10,
+  "cumulative_wss": 6,
+  "cumulative_nvml_ok": 151,
+  "default_unchanged": true,
+  "managed_recovery_accepted": false,
+  "original_failed_status_preserved": true
+}
