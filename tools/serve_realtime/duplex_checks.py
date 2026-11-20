@@ -5,7 +5,7 @@ from tools.serve_service.package import require
 
 LABELS = dict(manual=['manual_private', 'mixed', 'inline_audio', 'roundtrip',
                       'tool', 'tool_answer'], vad=['vad_auto', 'idle', 'interrupt'],
-              idle=['vad_auto', 'idle'])
+              idle=['vad_auto', 'idle'], mixed=['mixed'], vad_once=['vad_auto'])
 
 
 def judgment(label, actual, expected):

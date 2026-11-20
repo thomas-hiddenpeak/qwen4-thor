@@ -42,6 +42,14 @@ def save_observed(path,value):
 
 
 def run(stage):
+    sessions=run_sessions(stage, ('manual','vad'))
+    value=dict(format=evidence.FORMAT,source=stage.plan['duplex']['source'],sessions=sessions)
+    save_observed(stage.out/(stage.profile_name+'-duplex-observed.json'),value)
+    evidence.business(value);return value
+
+
+def run_sessions(stage, modes):
+    require(modes in (('manual','vad'),('mixed','vad_once')), 'fixed duplex session scope')
     plan=stage.plan['duplex'];label=stage.profile_name+'-duplex'
     for path,digest in plan['files'].items():require(sha(path)==digest,'duplex fixture drift')
     policy=read(stage.out/'client-policy.json')
@@ -55,9 +63,9 @@ def run(stage):
     stage.history[edge.process.pid]=guard.processes()[edge.process.pid]
     sessions={}
     try:
-        for mode in ('manual','vad'):
+        for mode in modes:
             case=label+'-'+mode
-            client=profile_realtime.encrypted.CLIENT if mode=='manual' else 'audio'
+            client=profile_realtime.encrypted.CLIENT if mode in ('manual','mixed') else 'audio'
             def observe(suffix):
                 status,raw=stage.http('/metrics',label=case+'-'+suffix)
                 require(status==200,'duplex actual metrics unavailable')
@@ -65,13 +73,15 @@ def run(stage):
                     profile_realtime.encrypted.foreground.base.lifecycle.parse_metrics(raw),client)
             before=observe('before')
             stage.budget('websocket_sessions')
-            for _ in range(11 if mode=='manual' else 5):stage.budget('chats')
+            for _ in range(dict(manual=11,vad=5,mixed=3,vad_once=2)[mode]):stage.budget('chats')
             clip=plan['clip'];record=plan['source']
             args=dict(mode=mode,base_url=f"https://127.0.0.1:{plan['public_port']}/v1",
                 api_key=clients[client],ca_file=plan['tls']['certificate'],clip=clip['path'],
                 clip_sha256=clip['sha256'],expected=evidence.PHRASE,
                 record_file=str(ROOT/record['path']),record_sha256=record['sha256'],
                 expected_version=record['version'],journal_file=str(stage.out/(case+'.events.jsonl')))
+            if 'instruction_policy' in plan:
+                args['instruction_policy']=plan['instruction_policy']
             env={k:v for k,v in os.environ.items() if k not in ('NODE_OPTIONS','NODE_PATH','LD_PRELOAD')}
             env['Q4T_NODE_SDK_DIR']=plan['sdk_directory']
             out=stage.out/(case+'.sdk.json')
@@ -87,9 +97,8 @@ def run(stage):
             while (after['sessions'] or after['host_bytes']) and time.monotonic()<end:
                 time.sleep(.02);index+=1;after=observe('after-'+str(index))
             sessions[mode]=dict(session=session,before=before,after=after)
-        value=dict(format=evidence.FORMAT,source=plan['source'],sessions=sessions)
-        save_observed(stage.out/(label+'-observed.json'),value)
-        evidence.business(value);return value
+        save_observed(stage.out/(label+'-sessions-observed.json'),sessions)
+        return sessions
     finally:
         edge.close()
         save(stage.out/(label+'-entry-cleanup.json'),dict(exit_code=edge.process.returncode,

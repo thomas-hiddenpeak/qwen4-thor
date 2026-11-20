@@ -35,6 +35,13 @@ def state(value):
 
 
 def business(value):
+    if value.get('format') == 'q4t-profile-realtime-duplex-followup-v1':
+        from tools.serve_recovery.profile_duplex_followup import business as followup
+        return followup(value)
+    return original_business(value)
+
+
+def original_business(value, *, quality_check=None):
     ledger.keys(value, ('format','source','sessions'))
     ledger.require(value['format'] == FORMAT, 'duplex evidence format')
     source = value['source']
@@ -51,8 +58,11 @@ def business(value):
         ledger.require(len(ledger.canonical(session)) <= 4 << 20 and
                        len(session['events']) <= 8192, 'duplex receipt bound')
         observed = duplex_checks.observe(session, PHRASE, source)
-        ledger.require(all(q['status']=='PASS' for q in observed['quality']),
-                       'duplex original model quality failed')
+        if quality_check is None:
+            ledger.require(all(q['status']=='PASS' for q in observed['quality']),
+                           'duplex original model quality failed')
+        else:
+            quality_check(mode, observed['quality'])
         before, after = witness['before'], witness['after']
         state(before);state(after)
         settled = after['settled']-before['settled']

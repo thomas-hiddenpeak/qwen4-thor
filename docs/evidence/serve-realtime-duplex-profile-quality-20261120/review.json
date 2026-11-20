@@ -1,0 +1,80 @@
+{
+  "status": "PRIMARY_PROTOCOL_ACCEPTED_ORIGINAL_QUALITY_FAIL_FOLLOWUP_PENDING",
+  "original_counts": {
+    "starts": 1,
+    "chats": 21,
+    "controls": 45,
+    "websocket_sessions": 5,
+    "ingress_starts": 3
+  },
+  "original_seconds": 109.24024037318304,
+  "original_guard": "COMMAND_FAILED",
+  "original_nvml_ok": 103,
+  "original_cleanup_complete": true,
+  "original_quality_failures": [
+    {
+      "label": "mixed",
+      "actual": "甚至出现交易几乎停滞的情况。Second audio follows.甚至出现交易几乎停滞的情况。"
+    },
+    {
+      "label": "vad_auto",
+      "actual": "even in cases where trading nearly comes to a complete halt."
+    }
+  ],
+  "production_prompt_reconstruction": {
+    "status": "PASS_PRODUCTION_PROMPT_RECONSTRUCTION",
+    "records": {
+      "mixed": {
+        "raw_sha256": "1cda565c5c8dd957aa8908093cd1814ece56ef2e9e797a0a0b99d7560cfffc4a",
+        "response_id": "resp_ba1930b979855771bff58e0e4f09ff7d",
+        "actual": "甚至出现交易几乎停滞的情况。Second audio follows.甚至出现交易几乎停滞的情况。",
+        "prompt_sha256": {
+          "before": "500b0fbb8f6dd0f7418e8f26b5e20bad5f356538800187009ff7754ecd8ce249",
+          "after": "55e83fc9dbad94dfc3e60665b6e57eb217baeeb5640abd313ec303ee2851e3e1"
+        },
+        "only_caller_instructions_change": true,
+        "actual_asr_preserved": true,
+        "not_live_prompt_capture": true
+      },
+      "vad_auto": {
+        "raw_sha256": "b70c2d0cbf335f77c731b89db86457c82052a64234bab289c7179732bbe21e31",
+        "response_id": "resp_269fe09f3867e55f9c2897e75be2cc11",
+        "actual": "even in cases where trading nearly comes to a complete halt.",
+        "prompt_sha256": {
+          "before": "15cb8e06aa6c883900a0b3cba5ee3b240d9816527ba12a5f810de17b82b9a577",
+          "after": "7033e230deb65b7eb7b6a22c6af3de5ea308382cbfc5ff38bdc55e44728a240d"
+        },
+        "only_caller_instructions_change": true,
+        "actual_asr_preserved": true,
+        "not_live_prompt_capture": true
+      }
+    },
+    "seconds": 6.5290562361478806,
+    "gpu_starts": 0,
+    "model_quality_failure_preserved": true,
+    "policy": "逐字抄写本条用户消息中第一段语音的原始转写，仅输出其中第一个完整句子一次。保持原语言，不翻译，不包含前后的文字说明或第二段语音，不增加任何解释。如果收到的是原生空闲未检测到语音的提示，只输出 READY。"
+  },
+  "cpu": {
+    "status": "PASS",
+    "seconds": 0.4660690249875188,
+    "source_counterexamples": 20,
+    "ci_syntax": 0,
+    "reused_python_cases": 21,
+    "new_python_executions": 0,
+    "gpu_starts": 0,
+    "default_unchanged": true,
+    "original_gate_failure_preserved": true
+  },
+  "new_followup_limits": {
+    "starts": 2,
+    "native_admissions": 34,
+    "websocket_sessions": 7,
+    "tls_entries": 4,
+    "seconds": 1200
+  },
+  "model_or_default_sampling_changed": false,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "managed_recovery": false,
+  "master_active": true
+}

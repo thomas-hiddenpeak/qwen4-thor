@@ -21,7 +21,7 @@ const { OpenAIRealtimeWS } = await import(pathToFileURL(path.join(sdk, 'node_mod
 const url = new URL(args.base_url);
 check(url.protocol === 'https:' && url.hostname === '127.0.0.1' && url.pathname === '/v1'
   && !url.search && !url.hash && !url.username && !url.password && args.ca_file &&
-  ['manual', 'vad', 'idle'].includes(args.mode), 'verified local TLS scope');
+  ['manual', 'vad', 'idle', 'mixed', 'vad_once'].includes(args.mode), 'verified local TLS scope');
 const clip = fs.readFileSync(args.clip);
 check(clip.length > 0 && clip.length <= (1 << 20) && clip.length % 2 === 0 &&
   crypto.createHash('sha256').update(clip).digest('hex') === args.clip_sha256, 'actual clip identity');
@@ -123,8 +123,12 @@ function append(raw) {
   for (let offset = 0; offset < raw.length; offset += 24000)
     send({ type: 'input_audio_buffer.append', audio: raw.subarray(offset, offset + 24000).toString('base64') });
 }
-const instructions = 'Repeat only the first sentence from the latest user audio verbatim. '
+const originalInstructions = 'Repeat only the first sentence from the latest user audio verbatim. '
   + 'Do not add explanations. If no speech was detected during the idle interval, reply exactly READY.';
+check(args.instruction_policy === undefined || args.instruction_policy === 'original_language_v1',
+  'unknown caller instruction policy');
+const instructions = args.instruction_policy === undefined ? originalInstructions :
+  '逐字抄写本条用户消息中第一段语音的原始转写，仅输出其中第一个完整句子一次。保持原语言，不翻译，不包含前后的文字说明或第二段语音，不增加任何解释。如果收到的是原生空闲未检测到语音的提示，只输出 READY。';
 const base = { conversation: 'none', output_modalities: ['text'], tools: [], tool_choice: 'none',
   max_output_tokens: 128, instructions };
 let toolRecord = null;
@@ -134,7 +138,23 @@ try {
     audio: { input: { format: { type: 'audio/pcm', rate: 24000 }, turn_detection: null,
       noise_reduction: null, transcription: null },
     output: { voice: 'vivian', format: { type: 'audio/pcm', rate: 24000 } } } });
-  if (args.mode === 'manual') {
+  if (args.mode === 'mixed') {
+    await update({ audio: { input: { transcription: { model: 'qwen3-asr-0.6b' } } } });
+    await add(user('mixed_input', [inputText('Repeat the first audio sentence only.'),
+      audio(clip, 'REFERENCE_ONLY_NEVER_SPOKEN'), inputText('Second audio follows.'), audio(clip)]));
+    const mixed = await create('mixed', { ...base, input: [{ type: 'item_reference', id: 'mixed_input' }] });
+    judge('mixed', text(mixed), args.expected);
+    await retrieve('mixed_input', 'mixed');
+  } else if (args.mode === 'vad_once') {
+    await update({ audio: { input: { transcription: { model: 'qwen3-asr-0.6b' },
+      turn_detection: { type: 'server_vad', threshold: .5, prefix_padding_ms: 300,
+        silence_duration_ms: 300, create_response: true, interrupt_response: true,
+        idle_timeout_ms: null } } } });
+    const at = events.length;
+    append(Buffer.concat([Buffer.alloc(28800), clip, Buffer.alloc(57600)]));
+    const auto = await waitEvent(at, 'response.created');
+    judge('vad_auto', text(await finish('vad_auto', auto.response.id)), args.expected);
+  } else if (args.mode === 'manual') {
     append(clip);
     const committed = await action({ type: 'input_audio_buffer.commit' }, 'input_audio_buffer.committed');
     const manual = await create('manual_private', { ...base, input: [{ type: 'item_reference', id: committed.item_id }] });
@@ -218,6 +238,7 @@ try {
   check(closeCode === 1000 && connections === 1, 'one clean connection');
   process.stdout.write(JSON.stringify({ status: 'PASS', mode: args.mode, transport: 'official-openai-wss',
     connections, close_code: closeCode, automatic_replay: false, response_creates: creates,
+    ...(args.instruction_policy ? { instruction_policy: args.instruction_policy } : {}),
     responses, retrievals, checks, quality, tool_record: toolRecord, events }));
 } catch (error) {
   clearTimeout(guard); rt.socket.terminate();

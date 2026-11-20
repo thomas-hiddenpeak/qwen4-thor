@@ -3377,8 +3377,11 @@
     "tools/serve_recovery/profile_duplex_reuse.py": "0d6c2471452b65fd27478360eaab2720ef3d2166f0a5fc9b520ac45eab741156",
     "tools/serve_recovery/profile_duplex_targeted.py": "5e50d2fbd64f411d8e7f80c706ad72dcf6a342b94bd3fbfb4c68f36ed75e091a",
     "tools/serve_recovery/profile_duplex_source.py": "b05094553f2aa4db55da549e5c08e3cb3a038726fa101610745ecd3b26d8da13",
-    "tools/serve_recovery/profile_duplex.py": "1fd67631f3bcfa2ae1b1e64a3d3f5976197dbe81a24e5d45b350a00050395caf",
-    "tools/serve_recovery/profile_duplex_evidence.py": "e8372a23c2932686a823e94adaca5789838188594d008a448ad811ff2b4b3941"
+    "tools/serve_recovery/profile_duplex.py": "ac47a316177efbcb03826b32a828aa47b65ff257c06dc85f0151d8390cf28ac6",
+    "tools/serve_recovery/profile_duplex_evidence.py": "6ae6689804b36f7509ef8690f05e15c57276d55659b7032afb5e8fc9d5b0dc9a",
+    "tools/serve_recovery/profile_duplex_followup.py": "915e9050c4253bb1f65e6da551d9c1691398df470b4e5bfc8a60541105b49238",
+    "tools/serve_recovery/profile_duplex_followup_source.py": "59fa749bc41359930ca44f8f6471263a51bf26fb4f0579bd75da2641044aec2a",
+    "tools/serve_recovery/profile_duplex_followup_targeted.py": "fe60240a59cb76e4ab8da6ecbf81723bbdb54ce99d872876fe47d68826964bf9"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8913,5 +8916,26 @@
     "model_automatic_restart": false,
     "master_active": true,
     "state": "development_targeted_cpu_pending"
+  },
+  "duplex_profile_quality_followup_20261120": {
+    "state": "development_targeted_cpu_pending",
+    "scope": "Retain original mixed/VAD quality FAIL; exact production prompt reconstruction, bounded caller clarification and fixed-seed diagnostics; reuse unaffected primary receipts; no runtime/model/default sampling change",
+    "sources_sha256": {
+      "tools/serve_recovery/profile_duplex.py": "ac47a316177efbcb03826b32a828aa47b65ff257c06dc85f0151d8390cf28ac6",
+      "tools/serve_recovery/profile_duplex_evidence.py": "6ae6689804b36f7509ef8690f05e15c57276d55659b7032afb5e8fc9d5b0dc9a",
+      "tools/serve_recovery/profile_duplex_followup.py": "915e9050c4253bb1f65e6da551d9c1691398df470b4e5bfc8a60541105b49238",
+      "tools/serve_recovery/profile_duplex_followup_source.py": "59fa749bc41359930ca44f8f6471263a51bf26fb4f0579bd75da2641044aec2a",
+      "tools/serve_recovery/profile_duplex_followup_targeted.py": "fe60240a59cb76e4ab8da6ecbf81723bbdb54ce99d872876fe47d68826964bf9",
+      "tools/serve_realtime/duplex_checks.py": "a66046b1a378cfd78e802586e632e61b43bd456c4385ea1d418695069a2f4da1",
+      "tools/serve_realtime/duplex_sdk.mjs": "48962e8d1d61b8303a8405014d6366a3df709a0bf5a4da52fb43eb38af70fc48",
+      "tools/serve_realtime/duplex_quality_checks.py": "667a93296d7e40f2d2db2f64c716e635b96a0e2cc72d025102984afa278be600"
+    },
+    "limits": {
+      "starts": 2,
+      "native_admissions": 34,
+      "websocket_sessions": 7,
+      "ingress_starts": 4,
+      "seconds": 1200
+    }
   }
 }
