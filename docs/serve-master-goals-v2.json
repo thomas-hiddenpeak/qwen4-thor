@@ -10451,8 +10451,8 @@
       }
     }
   ],
-  "next_task": "Confirm PR #57 checks and merge native Realtime tracing; rev426 STOPPED reversibly delivered. Then implement Live and every remaining inference/application, recovery and final delivery task. Platform management excluded by explicit user decision.",
-  "next": "rev426追踪可回退交付，PR #57检查/合入；Live来源与合同已作私有准备，随后连续实现全部剩余任务。",
+  "next_task": "Implement native Live session lifecycle and actual ASR/LLM/TTS composition, then L03-L06 and every remaining Serve master task. PR #57 merged as 22669a162; default rev426 STOPPED unchanged. Live contract/configuration/PCM CPU preparations are not business completion.",
+  "next": "PR #57已合main；Live合同/配置/16k PCM 27项CPU，继续实际会话、模型和全部总任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16001,7 +16001,7 @@
     "evidence": "evidence/serve-pr56-merged-20261120/README.md"
   },
   "native_realtime_tracing_20261120": {
-    "status": "IDLE_TRACE_RECOVERY_NATIVE_BUILD_CPU_ACCEPTED_BUSINESS_PENDING",
+    "status": "REV426_DELIVERED_PR57_MERGED",
     "native_cpu_distinct": 40,
     "cpu_executions": 58,
     "integration_cpu_cases": 26,
@@ -16014,7 +16014,6 @@
     "default_revision": 426,
     "default_state": "STOPPED",
     "remaining": [
-      "PR #57 checks/merge",
       "Live and all remaining master tasks"
     ],
     "native_build": {
@@ -16138,7 +16137,7 @@
       },
       "evidence": "evidence/serve-realtime-tracing-idle-recovery-20261121/README.md"
     },
-    "state": "delivered_stopped_pr57_checks_pending",
+    "state": "delivered_stopped_merged_main",
     "actual_business": {
       "evidence": "evidence/serve-realtime-tracing-http-20261121/README.md",
       "status": "PASS",
@@ -16200,6 +16199,73 @@
         "live_state_unchanged": true
       },
       "archive_sha256": "bbe1c0c66b84ebfa5d146f0209774876495613a79b3dfab49ef6a52ce412affa"
+    },
+    "historical_pre_business_status": "IDLE_TRACE_RECOVERY_NATIVE_BUILD_CPU_ACCEPTED_BUSINESS_PENDING",
+    "merge": {
+      "status": "MERGED_VERIFIED",
+      "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/57",
+      "head": "5a4370937f36d1f87eb6da05f3ddc7ced17e866b",
+      "merge": "22669a16295d3101876e2234fd9d0419536c9a11",
+      "checks": 2,
+      "unchanged_default_revision": 426,
+      "new_gpu_starts": 0,
+      "live_work_preserved": true,
+      "source_files_preserved": 28,
+      "branch_retained_for_active_live": true,
+      "master_goal_active": true
     }
+  },
+  "native_live_20261121": {
+    "state": "contract_configuration_pcm_cpu_pass_runtime_pending",
+    "plan": "SERVE_LIVE_2026-11-21.md",
+    "master_active": true,
+    "default_revision": 426,
+    "default_changed": false,
+    "gpu_starts": 0,
+    "type_roots": 16,
+    "type_nodes": 941,
+    "live_sdk_vectors": 808,
+    "realtime_regression_vectors": 476,
+    "distinct_native_cpu_tests": 27,
+    "original_build_failure_preserved": true,
+    "subtasks": [
+      {
+        "id": "L01",
+        "state": "source_cpu_verified",
+        "title": "有界合同与原生校验"
+      },
+      {
+        "id": "L02",
+        "state": "configuration_pcm_cpu_verified_session_backend_in_progress",
+        "title": "主WSS与持续语音业务"
+      },
+      {
+        "id": "L03",
+        "state": "planned",
+        "title": "委派与上下文"
+      },
+      {
+        "id": "L04",
+        "state": "planned",
+        "title": "存储/sideband/fork"
+      },
+      {
+        "id": "L05",
+        "state": "planned",
+        "title": "WebRTC/SIP媒体接入"
+      },
+      {
+        "id": "L06",
+        "state": "planned",
+        "title": "组合验收与可回退交付"
+      }
+    ],
+    "all_remaining_master_tasks_required": true,
+    "cpu_evidence": "evidence/serve-live-contract-cpu-20261121/README.md",
+    "formal_host_build_pass": true,
+    "generator_compatibility_pass": true,
+    "configuration_pcm_evidence": "evidence/serve-live-configuration-pcm-cpu-20261121/README.md",
+    "configuration_tests": 9,
+    "pcm_tests": 12
   }
 }

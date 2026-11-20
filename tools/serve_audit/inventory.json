@@ -2358,8 +2358,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "eee0a8a42edd7ac9d03e881f7e9cf08e1a70e84d4368f117eb59d956f5a35688",
-    "cmake/ChatProtocolIdentity.cmake": "a8f3915b698db8e8189b39dc7827fefd1584c12593bcf91443655bb03209026e",
+    "CMakeLists.txt": "8a1b944b8ad99c9cb927d3546dbbec8d6e8cb0ae6da15e93753f78b4d8b1c23f",
+    "cmake/ChatProtocolIdentity.cmake": "f5b2b9de313378c3d70919e2fa80511fcb8c8bda1b57cd0c61fe999a772f0cff",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2594,7 +2594,7 @@
     "include/q4t/server/realtime_semantic_vad.h": "83060f9dfeca44382b5ae2956980bbfbd2fe9d71c23475bb424f5233b68c9152",
     "include/q4t/server/realtime_session_pump.h": "503f251af1509b870abecfae2236f3c25f2aca17a76dd9353f2f8e53a76f2ad3",
     "include/q4t/server/realtime_shape.h": "5e8cd4b5b77c27fcd5808666f5517731078027ee4a753e45cd1f1904db2b0309",
-    "include/q4t/server/realtime_speech_encoder.h": "44c81c5252df13aa5609f2de8dd4341c2bcf6a67294913afd3be62009728fec8",
+    "include/q4t/server/realtime_speech_encoder.h": "d505fcafc7900f10730e9a3fad7789b5e779adef14cfa8562ee26469b833e2d5",
     "include/q4t/server/realtime_speech_execution.h": "ca7a4fe46fa9b58ac38d43fa524973fc6753a74b803926ee8649c4fadcb6d929",
     "include/q4t/server/realtime_speech_history.h": "3dd99a69429f0f69fd82753327631af36cd7946e93123353ea68de1bf98de9ba",
     "include/q4t/server/realtime_trace.h": "7e70111a950b9698f82f2594edb7b4e5928baa671899b7072b5f4fdc01499720",
@@ -3072,7 +3072,7 @@
     "src/server/realtime_semantic_turn.cpp": "7b8784ffffe44d1e291adec9c6d40a777d32f9e872be2c9b6e682853914b614a",
     "src/server/realtime_semantic_vad.cpp": "46b367a997d3f5ad480c2c341c448c061139392a93fa058344fe052973113891",
     "src/server/realtime_session_pump.cpp": "912ab3d7d822a3f4f63868b4f5b320c4631f3e531680e25649af05caa5945356",
-    "src/server/realtime_speech_encoder.cpp": "930869c4ef9defc61c9a4c585efa67183c646d3fec47fc76f1fb5ddfd099cd13",
+    "src/server/realtime_speech_encoder.cpp": "157b991895135cf15db83eeb0da4a41837cfe3dbf257f447865dab6eae0bc440",
     "src/server/realtime_speech_execution.cpp": "cf4a323cb3d790dd16c56a42fdf28e4ccc8f8eb7ae8af076d78ccdae004a8f14",
     "src/server/realtime_speech_history.cpp": "8bfc45f741ac4f9b8265255895360dee2919856a41e846fec9baabc82a6690d8",
     "src/server/realtime_trace.cpp": "0bb1d2576e4f5121ffc14e323b08359cf1fc58d7603482490853225d98a96c7c",
@@ -3105,7 +3105,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "8e38d0648c4808719fece1f9836a8141e63762d1d9465375949ed16338ae8c48",
-    "src/server/responses_item_shape.cpp": "3861030a86c009f07049f07cb5999c9c275bb8034d6de88865e3c6f911e2aeb1",
+    "src/server/responses_item_shape.cpp": "2b823dcb5c0043073444926674ed54d49ee6dc885a9543ff5c84914343fb82af",
     "src/server/responses_jobs.cpp": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -3457,7 +3457,11 @@
     "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
     "tools/serve_recovery/profile_trace_evidence.py": "53911aa0c4004bad4be1304a7dc29a662cf076704279b6d97bb284279c3007e9",
     "tools/serve_recovery/profile_trace_reuse.py": "1d2c7685c43cdc721f2de9d0fa39a8b8e61e0332ea2a66bcb5863ec3b8bb0aa4",
-    "tools/serve_recovery/profile_trace_source.py": "597c6ae44bbe80a2694790680175c1176370b52bd7465ce72d05f54129208674"
+    "tools/serve_recovery/profile_trace_source.py": "597c6ae44bbe80a2694790680175c1176370b52bd7465ce72d05f54129208674",
+    "include/q4t/server/live_shape.h": "cc95c6a8a0dc4bb3ed5545c0f5aa336ad61c20fd281d3b5943d2093d1b37dd71",
+    "src/server/contracts/openai_live_types_v1.json": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
+    "include/q4t/server/live_configuration.h": "831dd4499b2f2186baebfd264e636a45f4bc6cce7bebf8007955583ede289389",
+    "src/server/live_configuration.cpp": "da2e7c69ecd1bfe9b63dd1dd1c167503e0fb6f5653fe718cb0d53c3855536f79"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -9500,5 +9504,34 @@
     "evidence": "docs/evidence/serve-realtime-tracing-qualification-cpu-20261121/README.md",
     "new_gpu_starts": 0,
     "does_not_certify_full_compatibility": true
+  },
+  "native_live_shape_review_20261121": {
+    "sources": [
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/live_shape.h",
+      "src/server/contracts/openai_live_types_v1.json",
+      "src/server/responses_item_shape.cpp"
+    ],
+    "scope": "16 pinned SDK type roots, 941 nodes; reuse existing native bounded validator. Live wrapper charges actual JSON storage before any open-map/type walk. Native CPU matches 808 independent SDK vectors; 476 Realtime vectors retained. Route, media/model execution, authorization semantics and delivery are separate pending work.",
+    "plan": "docs/SERVE_LIVE_2026-11-21.md",
+    "standalone_native_tests": 6,
+    "gpu_actions": 0,
+    "full_live_compatibility": false
+  },
+  "native_live_configuration_pcm_review_20261121": {
+    "sources": [
+      "CMakeLists.txt",
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/live_configuration.h",
+      "include/q4t/server/realtime_speech_encoder.h",
+      "src/server/live_configuration.cpp",
+      "src/server/realtime_speech_encoder.cpp"
+    ],
+    "scope": "Transactional Live startup/sparse updates, typed transport formats, delegated backend ownership, actual tokenizer callback requirements, 16MiB storage; internal PCM16k conversion reuses unchanged phase-preserving sinc and native EOF checks. Realtime wire format selection remains strict. CMake registers the same native implementation. Backend execution and route publication pending.",
+    "configuration_cpu_tests": 9,
+    "pcm_cpu_tests": 12,
+    "evidence": "docs/evidence/serve-live-configuration-pcm-cpu-20261121/README.md",
+    "gpu_actions": 0,
+    "full_live_compatibility": false
   }
 }

@@ -4,6 +4,9 @@
 #include <unordered_set>
 
 #include "q4t/server/input_contract.h"
+#include "q4t/server/live_shape.h"
+#include "q4t/server/live_types_data.h"
+#include "q4t/server/realtime_conversation.h"
 #include "q4t/server/responses_item_types_data.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/server/realtime_types_data.h"
@@ -36,6 +39,10 @@ const Graph& Types() {
 const Graph& RealtimeTypes() {
   static const Graph graph(realtime_types::kData,
                             "q4t-openai-realtime-types-v1");
+  return graph;
+}
+const Graph& LiveTypes() {
+  static const Graph graph(live_types::kData, "q4t-openai-live-types-v1");
   return graph;
 }
 std::string FieldPath(std::string_view path, std::string_view name) {
@@ -207,5 +214,33 @@ Status ValidateRealtimeShape(const Json& value, RealtimeShape shape,
     case RealtimeShape::kResponse: root = "response"; break;
   }
   return Validate(RealtimeTypes(), value, root, error, path);
+}
+Status ValidateLiveShape(const Json& value, LiveShape shape,
+                         ChatPlanError* error, std::string_view path) {
+  size_t storage = 0;
+  if (!MeasureRealtimeStorage(value, 16ULL << 20, &storage)) {
+    if (error) *error = {"item_validation_limit_exceeded", std::string(path), 503};
+    return Status::Fail("Live event exceeds validation storage limit");
+  }
+  const char* root = "";
+  switch (shape) {
+    case LiveShape::kClientEvent: root = "client_event"; break;
+    case LiveShape::kServerEvent: root = "server_event"; break;
+    case LiveShape::kSessionStart: root = "session_start"; break;
+    case LiveShape::kSessionUpdate: root = "session_update"; break;
+    case LiveShape::kSession: root = "session"; break;
+    case LiveShape::kMediaCreate: root = "media_create"; break;
+    case LiveShape::kMediaCreated: root = "media_created"; break;
+    case LiveShape::kSidebandClient: root = "sideband_client"; break;
+    case LiveShape::kSidebandServer: root = "sideband_server"; break;
+    case LiveShape::kForkClient: root = "fork_client"; break;
+    case LiveShape::kForkServer: root = "fork_server"; break;
+    case LiveShape::kSessionAccept: root = "session_accept"; break;
+    case LiveShape::kSessionFork: root = "session_fork"; break;
+    case LiveShape::kSessionForked: root = "session_forked"; break;
+    case LiveShape::kSessionRefer: root = "session_refer"; break;
+    case LiveShape::kSessionReject: root = "session_reject"; break;
+  }
+  return Validate(LiveTypes(), value, root, error, path);
 }
 }  // namespace q4t::server

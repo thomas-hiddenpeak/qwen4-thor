@@ -1,0 +1,13 @@
+{
+  "status": "MERGED_VERIFIED",
+  "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/57",
+  "head": "5a4370937f36d1f87eb6da05f3ddc7ced17e866b",
+  "merge": "22669a16295d3101876e2234fd9d0419536c9a11",
+  "checks": 2,
+  "unchanged_default_revision": 426,
+  "new_gpu_starts": 0,
+  "live_work_preserved": true,
+  "source_files_preserved": 28,
+  "branch_retained_for_active_live": true,
+  "master_goal_active": true
+}

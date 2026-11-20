@@ -18,6 +18,7 @@ if (JSON.parse(read(resolve(sdk, 'package.json'))).version !== '7.47.0' ||
   throw new Error('pinned compiler/SDK identity mismatch');
 const ts = createRequire(resolve(compiler, 'package.json'))(resolve(compiler, 'lib/typescript.js'));
 const graph = JSON.parse(read(graphFile));
+const live = graph.profile === 'q4t-openai-live-types-v1';
 const realtime = graph.profile === 'q4t-openai-realtime-types-v1';
 for (const [file, expected] of Object.entries(graph.sources_sha256))
   if (hash(resolve(sdk, file)) !== expected) throw new Error(`source drift: ${file}`);
@@ -66,7 +67,7 @@ for (const [shape, root] of Object.entries(graph.roots)) {
   }
 }
 // Independent, explicit shapes exercise optional/null/open-map boundaries.
-if (!realtime) vectors.push(
+if (!realtime && !live) vectors.push(
   { name: 'manual_pending_tool', shape: 'input_item', input: { type: 'function_call', call_id: 'call_1', name: 'lookup', arguments: '{' } },
   { name: 'manual_missing_tool_name', shape: 'input_item', input: { type: 'function_call', call_id: 'call_1', arguments: '{}' } },
   { name: 'manual_refusal', shape: 'conversation_item', input: { type: 'message', id: 'msg_1', role: 'assistant', status: 'completed', content: [{ type: 'refusal', refusal: 'No' }] } },
@@ -86,15 +87,43 @@ if (realtime) vectors.push(
   { name: 'manual_update_turn_null', shape: 'client_event', input: { type: 'session.update', session: { type: 'realtime', audio: { input: { turn_detection: null } } } }, positive: true },
   { name: 'manual_argument_delta', shape: 'server_event', input: { type: 'response.function_call_arguments.delta', event_id: 'e_1', response_id: 'r_1', item_id: 'i_1', output_index: 0, call_id: 'c_1', delta: '{' }, positive: true },
 );
-const types = realtime ? {
+const liveTypes = {
+  client_event: ['live', 'ClientEvent'], server_event: ['live', 'ServerEvent'],
+  session_start: ['live', 'SessionConfig'], session_update: ['live', 'SessionUpdateConfig'],
+  session: ['live', 'SessionResource'], media_create: ['live', 'LiveCreateParams'],
+  media_created: ['live', 'LiveCreateResponse'],
+  sideband_client: ['sideband/sideband', 'ConnectClientEvent'],
+  sideband_server: ['sideband/sideband', 'ConnectServerEvent'],
+  fork_client: ['forks/forks', 'ForkClientEvent'],
+  fork_server: ['forks/forks', 'ForkServerEvent'],
+  session_accept: ['sessions', 'SessionAcceptParams'],
+  session_fork: ['sessions', 'SessionForkParams'],
+  session_forked: ['sessions', 'SessionForkResponse'],
+  session_refer: ['sessions', 'SessionReferParams'],
+  session_reject: ['sessions', 'SessionRejectParams'],
+};
+const types = live ? Object.fromEntries(Object.entries(liveTypes).map(([k,v])=>[k,v[1]])) : realtime ? {
   conversation_item: 'ConversationItem', client_event: 'RealtimeClientEvent',
-  server_event: 'RealtimeServerEvent',
-  response_create: 'RealtimeResponseCreateParamsWithReferencesParam',
+  server_event: 'RealtimeServerEvent', response_create: 'RealtimeResponseCreateParamsWithReferencesParam',
   session: 'RealtimeSessionCreateRequest', response: 'RealtimeResponse',
-} : { input_item: 'ResponseInputItem', output_item: 'ResponseOutputItem', conversation_item: 'ConversationItem' };
+} : {input_item:'ResponseInputItem',output_item:'ResponseOutputItem',conversation_item:'ConversationItem'};
+if(live) vectors.push(
+ {name:'manual_start_native_model_pcm',shape:'client_event',positive:true,input:{type:'session.start',event_id:'s1',session:{model:'q4t',audio:{format:{type:'audio/pcm',rate:16000}},store:false}}},
+ {name:'manual_start_model_missing',shape:'client_event',input:{type:'session.start',session:{audio:{format:{type:'audio/pcm',rate:24000}}}}},
+ {name:'manual_pcm_bad_rate',shape:'session_start',input:{model:'q4t',audio:{format:{type:'audio/pcm',rate:44100}}}},
+ {name:'manual_update_voice_is_not_mutable',shape:'session_update',input:{audio:{output:{voice:'alloy'}}}},
+ {name:'manual_nullable_delegation_and_empty_triggers',shape:'session_update',positive:true,input:{delegation:null,triggers:[]}},
+ {name:'manual_initial_history',shape:'session_start',positive:true,input:{model:'q4t',input:[{role:'user',content:[{type:'input_text',text:'hello'}]}]}},
+ {name:'manual_append_has_no_realtime_alias',shape:'client_event',input:{type:'input_audio_buffer.append',audio:'AA=='}},
+ {name:'manual_usage_is_duration',shape:'server_event',positive:true,input:{type:'session.usage.updated',event_id:'e1',usage:{seconds:0.25}}},
+ {name:'manual_tokens_do_not_replace_duration',shape:'server_event',input:{type:'session.usage.updated',event_id:'e1',usage:{total_tokens:42}}},
+ {name:'manual_closed_snapshot_remains_active',shape:'server_event',positive:true,input:{type:'session.closed',event_id:'e2',reason:'close_requested',session:{id:'live_1',expires_at:1000,model:'q4t',status:'active'},usage:{seconds:0.25}}},
+ {name:'manual_closed_without_usage',shape:'server_event',input:{type:'session.closed',event_id:'e2',reason:'close_requested',session:{id:'live_1',expires_at:1000,model:'q4t',status:'active'}}},
+ {name:'manual_thinking_silent_context',shape:'client_event',positive:true,input:{type:'session.thinking.append',content:'working',delegation_id:null}},
+);
 const directory = resolve(outputDir); mkdirSync(directory, { recursive: true });
 const fixture = resolve(directory, 'sdk-shape-cases.mts');
-let source = realtime ? `import type { ${Object.values(types).join(', ')} } from ${JSON.stringify(resolve(sdk, 'src/resources/realtime/realtime.ts'))};\n` :
+let source = live ? Object.entries(liveTypes).map(([shape,[file,name]])=>`import type { ${name} } from ${JSON.stringify(resolve(sdk,'src/resources/live/'+file+'.ts'))};`).filter((x,i,a)=>a.indexOf(x)===i).join('\n')+'\n' : realtime ? `import type { ${Object.values(types).join(', ')} } from ${JSON.stringify(resolve(sdk, 'src/resources/realtime/realtime.ts'))};\n` :
   `import type { ResponseInputItem, ResponseOutputItem } from ${JSON.stringify(resolve(sdk, 'src/resources/responses/responses.ts'))};\n` +
   `import type { ConversationItem } from ${JSON.stringify(resolve(sdk, 'src/resources/conversations/items.ts'))};\n`;
 const ranges = [];
@@ -121,7 +150,7 @@ for (let i = 0; i < vectors.length; ++i) {
 const checker = program.getTypeChecker();
 const memberNames = {};
 for (const [shape, name] of Object.entries(types)) {
-  const file = resolve(sdk, realtime ? 'src/resources/realtime/realtime.ts' : shape === 'conversation_item'
+  const file = resolve(sdk, live ? 'src/resources/live/'+liveTypes[shape][0]+'.ts' : realtime ? 'src/resources/realtime/realtime.ts' : shape === 'conversation_item'
     ? 'src/resources/conversations/items.ts' : 'src/resources/responses/responses.ts');
   const module = checker.getSymbolAtLocation(program.getSourceFile(file));
   const symbol = checker.getExportsOfModule(module).find(x => x.name === name);
@@ -173,7 +202,7 @@ for (const [i, item] of vectors.entries()) {
   if (item.union_accepted && !item.accepted)
     item.concrete_rejections = rejectedMembers.get(i);
 }
-const result = { profile: realtime ? 'q4t-sdk-realtime-shape-oracle-v1' : 'q4t-sdk-item-shape-oracle-v1', sdk_version: '7.47.0',
+const result = { profile: live ? 'q4t-sdk-live-shape-oracle-v1' : realtime ? 'q4t-sdk-realtime-shape-oracle-v1' : 'q4t-sdk-item-shape-oracle-v1', sdk_version: '7.47.0',
   compiler_version: '5.9.3', validation_mode: 'concrete-sdk-union-members',
   graph_sha256: hash(graphFile), fixture_sha256: hash(fixture),
   concrete_fixture_sha256: hash(concreteFixture), member_names: memberNames,

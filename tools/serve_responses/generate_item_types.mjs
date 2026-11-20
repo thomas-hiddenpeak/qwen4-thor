@@ -7,9 +7,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -26,9 +26,14 @@ const conversations = resolve(sdk, 'src/resources/conversations/conversations.ts
 const inputItems = resolve(sdk, 'src/resources/responses/input-items.ts');
 const inputTokens = resolve(sdk, 'src/resources/responses/input-tokens.ts');
 const realtime = resolve(sdk, 'src/resources/realtime/realtime.ts');
+const live = resolve(sdk, 'src/resources/live/live.ts');
+const liveSessions = resolve(sdk, 'src/resources/live/sessions.ts');
+const liveSideband = resolve(sdk, 'src/resources/live/sideband/sideband.ts');
+const liveForks = resolve(sdk, 'src/resources/live/forks/forks.ts');
 const program = ts.createProgram([source, conversation,
   ...(mode === '--api' ? [conversations, inputItems, inputTokens] : []),
-  ...(mode === '--realtime' ? [realtime] : [])], {
+  ...(mode === '--realtime' ? [realtime] : []),
+  ...(mode === '--live' ? [live, liveSessions, liveSideband, liveForks] : [])], {
   target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext,
   moduleResolution: ts.ModuleResolutionKind.NodeNext,
@@ -126,7 +131,24 @@ function exported(file, name) {
   track(symbol);
   return encode(checker.getDeclaredTypeOfSymbol(symbol));
 }
-const roots = mode === '--realtime' ? {
+const roots = mode === '--live' ? {
+  client_event: exported(live, 'ClientEvent'),
+  server_event: exported(live, 'ServerEvent'),
+  session_start: exported(live, 'SessionConfig'),
+  session_update: exported(live, 'SessionUpdateConfig'),
+  session: exported(live, 'SessionResource'),
+  media_create: exported(live, 'LiveCreateParams'),
+  media_created: exported(live, 'LiveCreateResponse'),
+  sideband_client: exported(liveSideband, 'ConnectClientEvent'),
+  sideband_server: exported(liveSideband, 'ConnectServerEvent'),
+  fork_client: exported(liveForks, 'ForkClientEvent'),
+  fork_server: exported(liveForks, 'ForkServerEvent'),
+  session_accept: exported(liveSessions, 'SessionAcceptParams'),
+  session_fork: exported(liveSessions, 'SessionForkParams'),
+  session_forked: exported(liveSessions, 'SessionForkResponse'),
+  session_refer: exported(liveSessions, 'SessionReferParams'),
+  session_reject: exported(liveSessions, 'SessionRejectParams'),
+} : mode === '--realtime' ? {
   conversation_item: exported(realtime, 'ConversationItem'),
   client_event: exported(realtime, 'RealtimeClientEvent'),
   server_event: exported(realtime, 'RealtimeServerEvent'),
@@ -159,7 +181,7 @@ if (mode === '--api') Object.assign(roots, {
   input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
 });
 const result = {
-  profile: mode === '--realtime' ? 'q4t-openai-realtime-types-v1' :
+  profile: mode === '--live' ? 'q4t-openai-live-types-v1' : mode === '--realtime' ? 'q4t-openai-realtime-types-v1' :
     mode === '--api' ? 'q4t-openai-application-types-v1' :
       'q4t-openai-item-types-v1',
   sdk_version: '7.47.0',

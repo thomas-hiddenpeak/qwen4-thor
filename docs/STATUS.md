@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Live合同源码](SERVE_LIVE_2026-11-21.md)已接入工作树：
+[6项针对性CPU](evidence/serve-live-contract-cpu-20261121/README.md)
+通过，正式宿主构建零警告，808个Live和476个Realtime SDK正反例
+无差异，三种类型图重建字节一致。首轮独立链接及提前归档的失败
+保留。原生路由/模型业务尚待实现，默认rev426
+不变。另[配置与16k连续输出21项CPU](evidence/serve-live-configuration-pcm-cpu-20261121/README.md)
+通过；计数/后端回调的实际绑定、独立会话状态机和路由继续L02—L06。
+本组单独提交，不把CPU准备当作Live业务完成。
+
 [原生Realtime追踪](SERVE_REALTIME_TRACING_2026-11-20.md)已通过
 [主轻实际TLS/SDK业务](evidence/serve-realtime-tracing-http-20261121/README.md)：
 2模型启动、6实际生成、159.604秒，149次NVML正常，租约与资源清理完成。
@@ -19,8 +28,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 主轻资格已签发；六个资格/封包来源经语义复核，22项清单反例通过。
 [rev426已可回退交付](evidence/serve-realtime-tracing-delivery-20261121/README.md)：
 19条原生命令通过/422.580秒，实际整根回退和再前进、客户状态及预算保持。
-当前STOPPED；[PR #57](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/57)
-检查中，随后合入main并继续Live及全部任务。未扩展性能/全模型质量矩阵。
+当前STOPPED；[PR #57已合入main](evidence/serve-pr57-merged-20261121/README.md)，
+合并提交`22669a162`，最终两条检查通过。继续Live及全部任务，
+未扩展性能/全模型质量矩阵。
 
 PR #56的CI容量回归及旧版封包清单已修复，
 [24项针对性CPU](evidence/serve-realtime-mcp-ci-capacity-20261120/README.md)、
@@ -129,7 +139,7 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 | R01—R06/R10 | 辅助故障隔离、自监护和已验恢复已交付；新增能力的恢复组合继续 |
 | R07—R09 | 冷准入、物理DRAM边界及压力/宿主组合仍需完成；未获维护交接不干预其他服务 |
 | Q01 | 项目资料查询真实闭环已交付，新增后端/客户端/故障组合继续 |
-| Q02/Q03 | rev426已可回退交付，追踪PR #57检查中；最终矩阵和长稳交接继续 |
+| Q02/Q03 | rev426已可回退交付，追踪PR #57已合main；最终矩阵和长稳交接继续 |
 
 辅助依赖失能不能连带停止健康核心业务；监控恢复不自动重启模型，
 真正设备故障仍保留保护。真实云账户验证依赖部署方配置，不能把
@@ -138,8 +148,8 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 工作区、证据与保留候选
 
-有效工作分支仍为`codex/serve-resilience-cd`，已快进对齐PR #56合并
-提交，并继续承载原生追踪的私有准备与后续实现，因此本阶段保留。仅在独有提交、未提交内容、活动PR和证据
+有效工作分支仍为`codex/serve-resilience-cd`，已快进对齐PR #57合并
+提交，28份未提交Live来源逐字节保持，继续承载Live实现，因此保留。仅在独有提交、未提交内容、活动PR和证据
 路径均核对后整理重复分支，不删除其他任务内容或已发表回退包。
 
 为当前构建恢复了591个host对象，未覆盖后续更新的runtime库；旧
@@ -159,6 +169,10 @@ CPU夹具和退役构建库的可逆归档、SHA和恢复脚本保留在
 保留全部原路径和SHA，释放4362113024字节。原权限/时间、独立恢复
 脚本及一次实际恢复/再共享记录见上述输入组合证据；原路径仍可读取，
 若需写入须先独立恢复。当前host/runtime/default、模型和reference未改。
+
+Live阶段另可逆压缩37份本任务退役交付快照，释放347293682字节。
+原SHA、路径、权限与恢复脚本保留于
+`.q4t-work/serve-live-20261121/retired-previous-01/`；当前默认/服务包未动。
 
 视觉行最大值候选及原环境阻断继续保留，见
 [视觉补验结果](VISION_ROWMAX_COMPLETION_RESULT_2026-11-07.md)；

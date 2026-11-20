@@ -628,6 +628,11 @@ set(protocol_inputs
   include/q4t/server/realtime_shape.h
   src/server/contracts/openai_realtime_types_v1.json
   cmake/realtime_types.h.in
+  include/q4t/server/live_shape.h
+  include/q4t/server/live_configuration.h
+  src/server/live_configuration.cpp
+  src/server/contracts/openai_live_types_v1.json
+  cmake/live_types.h.in
   src/server/grammar_worker.cpp
   src/server/grammar_worker_internal.h
   include/q4t/server/abort_reason.h
@@ -873,3 +878,12 @@ if(NOT realtime_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/realtime_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/realtime_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_live_types_v1.json"
+  Q4T_LIVE_TYPES)
+string(FIND "${Q4T_LIVE_TYPES}" ")q4t_types\"" live_delimiter)
+if(NOT live_delimiter EQUAL -1)
+  message(FATAL_ERROR "live type graph contains its C++ literal delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/live_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/live_types_data.h" @ONLY)

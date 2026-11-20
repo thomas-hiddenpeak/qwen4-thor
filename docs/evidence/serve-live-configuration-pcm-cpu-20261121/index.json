@@ -1,0 +1,146 @@
+{
+  "configuration-cpu-01/0-build.log": {
+    "sha256": "7366deaab8d48d9212399771bf08c4363fcae38897577e84fa1dda243f0dd89f",
+    "bytes": 459
+  },
+  "configuration-cpu-01/1-build.log": {
+    "sha256": "63afd1609dea0105d8322355ed7c10f506f93a3afe0aaea871f92bf04f2e4185",
+    "bytes": 8708
+  },
+  "configuration-cpu-01/failed-live-configuration.cpp": {
+    "sha256": "a9b9c88a1ba608b285ae99c267d2b2470b17a0d81641124a548667008b854da2",
+    "bytes": 10032
+  },
+  "configuration-cpu-01/plan.json": {
+    "sha256": "e6155be12246f16b5543ffcb3dfd4e849b73ca7162d8c4087ea1acf8d9dff030",
+    "bytes": 2516
+  },
+  "configuration-cpu-01/result.json": {
+    "sha256": "289c9eb51f63083371bc4e2b0296f8cfbe0b36694bcf4c1989da073735be23a3",
+    "bytes": 234
+  },
+  "configuration-cpu-02/0-build.log": {
+    "sha256": "7366deaab8d48d9212399771bf08c4363fcae38897577e84fa1dda243f0dd89f",
+    "bytes": 459
+  },
+  "configuration-cpu-02/1-build.log": {
+    "sha256": "cd93ad4359749ed394600988f911b74670696692be37fa6fba40e6dab7fcf33a",
+    "bytes": 1449
+  },
+  "configuration-cpu-02/cpu.log": {
+    "sha256": "1b029856c5d9d952aef6ffe179f7d7f2fdfd22aae12168be32b1d36e9f79e7a1",
+    "bytes": 583
+  },
+  "configuration-cpu-02/plan.json": {
+    "sha256": "f8a27f72edfe4ec162695cc2ce87cc2650bce50c06bb47c6c3a3627148044b67",
+    "bytes": 2516
+  },
+  "configuration-cpu-02/result.json": {
+    "sha256": "26db12c1ff246e5d46a1eb486b57b91afdd900af1f54ba5685ccd98dd77142c5",
+    "bytes": 675
+  },
+  "configuration-plan-01/plan.json": {
+    "sha256": "25aec553eb710ef8ba45867cb76b57459c3d39b3776793fb0b235ac5268c4e48",
+    "bytes": 1718
+  },
+  "configuration-plan-01/required.txt": {
+    "sha256": "019168d26e8621e19e27877c336eab3786fccef2955170edfb43106dcf13994b",
+    "bytes": 481
+  },
+  "driver/archive_configuration_pcm_01.py": {
+    "sha256": "6088893dd59a6e0f99deaf40061f53035400c28566d310234e55bc23615a30f1",
+    "bytes": 3448
+  },
+  "driver/configuration-inventory-before.json": {
+    "sha256": "de05bc1b4d819b3f2c7946cdc344fd3d8654fb97b2153e343f2ad202d0fde170",
+    "bytes": 568
+  },
+  "driver/configuration-inventory-reviewed-02.json": {
+    "sha256": "9c50d91d5a777ec367e3b73e1c4fd80818119d726155003e90b4e66bd753bd36",
+    "bytes": 223
+  },
+  "driver/configuration-inventory-reviewed.json": {
+    "sha256": "731a4fe9c744fc988befcd7bfe7da0a8733e85704f63f79b091b1699dcca623a",
+    "bytes": 498
+  },
+  "driver/configuration_cpu_01.py": {
+    "sha256": "37c6027f6065c6587b91e8ce5f45e456bb16cf3399b99fe2222371eee04ba780",
+    "bytes": 2989
+  },
+  "driver/configuration_cpu_02.py": {
+    "sha256": "0723ef0dce778c6dd214d2e10a214fd6be4919074dc631e40aad6c44c40d9a37",
+    "bytes": 2989
+  },
+  "driver/pcm_cpu_01.py": {
+    "sha256": "e5a31e93a6851893908be31003ed72aaca840cf92cfd8c0a5d02456f0a9a5d9c",
+    "bytes": 3160
+  },
+  "pcm-cpu-01/0-build.log": {
+    "sha256": "7366deaab8d48d9212399771bf08c4363fcae38897577e84fa1dda243f0dd89f",
+    "bytes": 459
+  },
+  "pcm-cpu-01/1-build.log": {
+    "sha256": "3a91b375bfac4581fe4696896a96fa10fec7b6d8c8632cc13dbc0c207a934437",
+    "bytes": 4391
+  },
+  "pcm-cpu-01/cpu.log": {
+    "sha256": "6caab2b3f6c1301bf67a534fa41fbccfde773367bc88f257f5f378eed4a75b74",
+    "bytes": 837
+  },
+  "pcm-cpu-01/plan.json": {
+    "sha256": "2633c5601eb38132e36b127f5a36bc894591077603fba1574446cca5b2b8f9e6",
+    "bytes": 2990
+  },
+  "pcm-cpu-01/result.json": {
+    "sha256": "f0eee1d68152cdc529ddcae644f2eb3d5fb96353450af4be440083d233759f06",
+    "bytes": 664
+  },
+  "pcm-plan-01/plan.json": {
+    "sha256": "40abdc04f93300555f065f9f0aab5e09656dc23125cf614158be288782c48633",
+    "bytes": 645
+  },
+  "pcm-plan-01/required.txt": {
+    "sha256": "9c14e01a84b27d888d49f1b734fd4514088b101a60c6ad78f6f44056426511c8",
+    "bytes": 712
+  },
+  "source/CMakeLists.txt": {
+    "sha256": "8a1b944b8ad99c9cb927d3546dbbec8d6e8cb0ae6da15e93753f78b4d8b1c23f",
+    "bytes": 63925
+  },
+  "source/cmake/ChatProtocolIdentity.cmake": {
+    "sha256": "f5b2b9de313378c3d70919e2fa80511fcb8c8bda1b57cd0c61fe999a772f0cff",
+    "bytes": 32989
+  },
+  "source/cmake/HostTestSources.cmake": {
+    "sha256": "cf8c79e24ad885e6986dae8431afc2764aaa81f61e3f83a1e3d85a01cbb7f312",
+    "bytes": 41260
+  },
+  "source/include/q4t/server/live_configuration.h": {
+    "sha256": "831dd4499b2f2186baebfd264e636a45f4bc6cce7bebf8007955583ede289389",
+    "bytes": 1895
+  },
+  "source/include/q4t/server/realtime_speech_encoder.h": {
+    "sha256": "d505fcafc7900f10730e9a3fad7789b5e779adef14cfa8562ee26469b833e2d5",
+    "bytes": 2208
+  },
+  "source/src/server/live_configuration.cpp": {
+    "sha256": "da2e7c69ecd1bfe9b63dd1dd1c167503e0fb6f5653fe718cb0d53c3855536f79",
+    "bytes": 9812
+  },
+  "source/src/server/realtime_speech_encoder.cpp": {
+    "sha256": "157b991895135cf15db83eeb0da4a41837cfe3dbf257f447865dab6eae0bc440",
+    "bytes": 6964
+  },
+  "source/tests/server_live_configuration_test.cpp": {
+    "sha256": "c1ca1694a6cb629f3cb3f9d85c4cff07aad0e1cbdc8b09af0726d079207605ef",
+    "bytes": 11491
+  },
+  "source/tests/server_realtime_speech_encoder_test.cpp": {
+    "sha256": "62ef1d3b004e09d3bf9eecef397883804e2b0daf41097a6d590948f2384c2d02",
+    "bytes": 12232
+  },
+  "source/tests/server_realtime_speech_execution_test.cpp": {
+    "sha256": "785b8260fc2d934a37d1b7ba6a3bcbf81b6b46c8b6a488c080ad83b5fba8fa97",
+    "bytes": 11201
+  }
+}

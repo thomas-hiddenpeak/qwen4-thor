@@ -1,0 +1,21 @@
+{
+  "status": "PASS_LIVE_NATIVE_CONTRACT_CPU",
+  "distinct_tests": 6,
+  "successful_test_executions": 12,
+  "live_sdk_vectors": 808,
+  "realtime_sdk_vectors": 476,
+  "concrete_sdk_compiler_checks": 3096,
+  "initial_link_failure_preserved": true,
+  "standalone_cpu_seconds": 0.03161728102713823,
+  "host_cpu_seconds": 0.03165552718564868,
+  "host_build_seconds": 34.27716279774904,
+  "host_binary_sha256": "fdcdfcc6c0061cdec11a8ab9deb5a3e5fd7630925e9e07f7d0244327c861e3b3",
+  "generator_compatibility": true,
+  "inventory_mutation_checks": 22,
+  "live_business_accepted": false,
+  "new_gpu_starts": 0,
+  "default_revision": 426,
+  "default_changed": false,
+  "master_goal_active": true,
+  "archive_sha256": "79b8b27edc5cbc6d1351d19c3b9941f21ad4776487db6c6b6f47dbd38e65b7ca"
+}

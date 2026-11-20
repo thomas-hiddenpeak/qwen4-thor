@@ -1,0 +1,21 @@
+{
+  "status": "PASS_LIVE_CONFIGURATION_PCM_CPU",
+  "configuration_tests": 9,
+  "pcm_tests": 12,
+  "configuration_cpu_seconds": 0.015539273153990507,
+  "pcm_cpu_seconds": 0.06368000712245703,
+  "configuration_build_seconds": 31.776836534030735,
+  "pcm_build_seconds": 93.14343515504152,
+  "host_binary_sha256": "d58e84f450d65f047826e1f465a2c0c5bdd3f757d71800e0593f5154b4d955dd",
+  "original_build_and_inventory_failures_preserved": true,
+  "count_and_backend_callbacks": "controlled CPU fixtures; native integration pending",
+  "actual_audio_converter": true,
+  "resampler_math_unchanged": true,
+  "realtime_public_pcm_contract_unchanged": true,
+  "live_business_accepted": false,
+  "default_changed": false,
+  "new_gpu_starts": 0,
+  "default_revision": 426,
+  "master_goal_active": true,
+  "archive_sha256": "e67a8f5f9e8c48235538e5d7eefc803d35ff4ca02981e5dec64ed41f73e42c24"
+}

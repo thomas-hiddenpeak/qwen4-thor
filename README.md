@@ -916,15 +916,18 @@ print(reply.choices[0].message.content)
 时长和转录输出预算，不静默截断。准备阶段与主回答共用deadline、
 RPM/TPM和取消；`usage.q4t_audio_preparation`报告真实准备量，
 多choice只计一次。此输入路径识别语音内容，非语言声学理解仍待补齐。
-语音输出及assistant音频历史已交付；当前rev416保留同一
+语音输出及assistant音频历史已交付；当前rev426保留同一
 Realtime conversation的真实音频输入、手动commit、VAD自动回答/
 打断、混合输入及空闲。原生WebSocket/TLS、PCM/G.711、音色/语速、
 播放取回/截断、函数工具与持久Prompt沿用同一核心与客户配额；取消
 按实际文字/音频用量结算。已完成[真实恢复与可回退交付](docs/evidence/serve-realtime-duplex-delivery-20261120/README.md)。
 前序rev396已[重新签发初始凭据](docs/evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)，
-rev416继承更正后的初始化凭据，客户配额和用量保持，旧包保留作历史证据。
+后续rev416/rev426继承更正后的初始化凭据，客户配额和用量保持，旧包保留作历史证据。
 原错误答案与模型质量FAIL独立保留，默认采样未改。Realtime MCP也已
-交付；追踪、Live及剩余兼容继续按总计划实现，正常播放听感仍待用户安排。
+交付；[原生追踪](docs/SERVE_REALTIME_TRACING_2026-11-20.md)已随rev426
+可回退交付，辅助存储/采集恢复不重启健康核心。
+[Live及剩余兼容](docs/SERVE_LIVE_2026-11-21.md)继续按总计划实现，
+正常播放听感仍待用户安排。
 
 真实时间戳由独立Qwen3-ForcedAligner-0.6B提供，通过
 `--aligner-model-dir DIR`启用；默认30秒、4096上下文token、512词、
