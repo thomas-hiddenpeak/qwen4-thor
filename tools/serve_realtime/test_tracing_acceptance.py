@@ -10,6 +10,18 @@ from tools.serve_realtime import tracing_acceptance as t
 
 
 class Driver(unittest.TestCase):
+    def test_cross_scope_client_fits_original_fair_queue(self):
+        stage=object.__new__(t.Stage)
+        policy=t.encrypted.Stage.client_policy(stage)
+        policy['clients'][0]['max_inflight']=1
+        policy['clients'] += [dict(policy['clients'][0],id='voice-other'),
+                              dict(policy['clients'][0],id='voice-tiny')]
+        with mock.patch.object(t.previous.Stage,'client_policy',return_value=policy):
+            actual=stage.client_policy()
+        self.assertIs(actual,policy);self.assertEqual(len(actual['clients']),3)
+        t.full.capacity.check_clients(dict(max_queued_requests=3,max_inflight_requests=8),actual)
+        self.assertNotEqual(t.OTHER,t.encrypted.CLIENT)
+
     def test_valid_trace_constructor_uses_its_own_scope(self):
         plan=dict(output='/owned/cpu-fixture',limits=t.LIMITS)
         def initialize(owner,actual):

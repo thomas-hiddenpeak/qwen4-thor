@@ -1,0 +1,13 @@
+{
+  "status": "FAILED",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_schema_v2/acceptance.py\", line 295, in run\n    try:self.start();self.business();result['status']=self.success_status\n        ^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/tracing_acceptance.py\", line 135, in start\n    super().start(selected)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/mcp_acceptance.py\", line 166, in start\n    policy = self.client_policy(); full.capacity.check_clients(self.plan['profiles'][name],policy)\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/capacity.py\", line 60, in check_clients\n    require(not clients.get('fair_queue', False) or (\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: client fairness exceeds global capacity\n",
+  "counts": {
+    "starts": 0,
+    "chats": 0,
+    "controls": 0,
+    "websocket_sessions": 0,
+    "ingress_starts": 0
+  },
+  "seconds": 11.1811826932244,
+  "binary_sha256": "e482c5276c3f32988845e177a679a5084f754767346393b7c9e8fc84fdc7d93f"
+}

@@ -1,0 +1,30 @@
+{
+  "status": "LAUNCHER_PREFLIGHT_FAIL",
+  "failure": "Guard invocation omitted --inherit-lease; generic stage requires Q4T_MANAGED_LEASE_FD",
+  "model_starts": 0,
+  "model_jobs": 0,
+  "repair": "Run unchanged source with explicit --inherit-lease; no relaxed exclusive admission",
+  "original_exit": {
+    "status": "COMMAND_FAILED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/serve_realtime/tracing_acceptance.py",
+      "run",
+      "--output",
+      ".q4t-work/serve-realtime-tracing-20261120/sdk-business-02"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 1,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-11-20T16:07:50.093347+00:00",
+      "monotonic": 3380952.610230549,
+      "pid": 1121477
+    }
+  }
+}

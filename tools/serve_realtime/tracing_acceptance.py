@@ -33,7 +33,8 @@ LIMITS = dict(starts=2, chats=6, controls=1200, seconds=900,
 FORMAT = 'q4t-realtime-tracing-business-v1'
 SUCCESS = 'PASS_REALTIME_TRACING_PRIMARY_LIGHT_PROTOCOL'
 STORAGE_MARKER = b'q4t-owned-trace-unavailable-fixture-v1\n'
-OTHER = 'tracing-other'
+# Retain the already qualified secondary principal; do not grow the fair queue.
+OTHER = 'voice-other'
 guard = encrypted.foreground.base.lifecycle.guard
 
 
@@ -68,12 +69,15 @@ def check_plan(plan):
     require(all(plan[k] == old[k] for k in ('profiles','native_assets','model_assets')) and
         plan['base']['settings'] == old['base']['settings'], 'backend/capacity/settings drift')
     for n,h in plan['reviewed_sources'].items():require(sha(ROOT/n)==h,'built source drift: '+n)
+    probe=object.__new__(Stage);probe.plan=plan
+    policy=probe.client_policy()
+    for profile in plan['profiles'].values():full.capacity.check_clients(profile,policy)
 
 
 def prepare(out):
     require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),
             'commit reviewed implementation and verifier before GPU')
-    cpu = read(WORK/'sdk-cpu-02/result.json')
+    cpu = read(WORK/'sdk-cpu-03/result.json')
     require(cpu['status']=='PASS','targeted driver/checker CPU missing')
     for n,h in cpu['sources'].items():require(sha(ROOT/n)==h,'verified source drift')
     require(read(WORK/'native-integration-cpu-01/result.json')['status']=='PASS',
@@ -101,7 +105,7 @@ def prepare(out):
     for p in [REFERENCE,Path(plan['ingress']),Path(plan['tls']['certificate']),
         Path(plan['tls']['key']),WORK/'native-runtime-03/result.json',
         WORK/'native-runtime-03/plan.json',WORK/'native-integration-cpu-01/result.json',
-        WORK/'sdk-cpu-02/result.json']:
+        WORK/'sdk-cpu-03/result.json']:
         plan['sources'][str(p)]=sha(p)
     plan['protected']={str(ROOT/n):sha(ROOT/n) for n in ('build/q4t','build/q4t.release.json',
         'build/service/manifest.json','build/service.release.json','build/service-native-state/ledger.json')}
@@ -126,7 +130,8 @@ class Stage(previous.Stage):
 
     def client_policy(self):
         policy=super().client_policy()
-        policy['clients'].append(dict(copy.deepcopy(policy['clients'][0]),id=OTHER))
+        require(any(c['id']==OTHER for c in policy['clients']) and OTHER!=encrypted.CLIENT,
+                'qualified independent observation client missing')
         return policy
 
     def start(self,selected=None):

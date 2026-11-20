@@ -1,0 +1,6 @@
+test_cross_scope_client_fits_original_fair_queue (tools.serve_realtime.test_tracing_acceptance.Driver.test_cross_scope_client_fits_original_fair_queue) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

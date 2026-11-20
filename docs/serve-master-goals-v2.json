@@ -16040,7 +16040,7 @@
       "binary_sha256": "e482c5276c3f32988845e177a679a5084f754767346393b7c9e8fc84fdc7d93f",
       "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935"
     },
-    "driver_cpu_cases": 20,
+    "driver_cpu_cases": 21,
     "driver_cpu_seconds": 0.014,
     "inventory_negative_checks": 22,
     "business_limits": {
@@ -16055,6 +16055,11 @@
       "model_starts": 0,
       "model_jobs": 0,
       "repaired": true
-    }
+    },
+    "preflight_attempts": 3,
+    "preflight_model_starts": 0,
+    "preflight_model_jobs": 0,
+    "capacity_unchanged": true,
+    "preflight_evidence": "evidence/serve-realtime-tracing-preflight-20261121/README.md"
   }
 }
