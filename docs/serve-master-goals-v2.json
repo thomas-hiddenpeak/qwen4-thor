@@ -12461,7 +12461,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "managed_original_failure_retained_checker_fixed_accounting_repair_pending",
+      "state": "actual_managed_recovery_accepted_model_quality_failures_retained_delivery_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
@@ -14225,6 +14225,20 @@
           "default_unchanged": true,
           "master_active": true
         }
+      },
+      "managed_recovery": {
+        "evidence": "docs/evidence/serve-realtime-duplex-managed-recovery-20261120/README.md",
+        "starts": 6,
+        "native_work_items": 21,
+        "connections": 7,
+        "device_probes": 1,
+        "strict_lease_seconds": 353.3388093775138,
+        "nvml_queries": 332,
+        "cleanup_complete": true,
+        "model_quality_status": "FAIL",
+        "original_failure_preserved": true,
+        "default_revision": 376,
+        "master_active": true
       }
     }
   },
