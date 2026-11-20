@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "commands": [
+    {
+      "index": 0,
+      "returncode": 0
+    },
+    {
+      "index": 1,
+      "returncode": 0
+    },
+    {
+      "index": 2,
+      "returncode": 0
+    }
+  ],
+  "seconds": 0.20936526264995337,
+  "sources": {
+    "tools/serve_live/checks.py": "5c5d1f96f28aaf44a37d61e9fb75e154690dc496e72439ea35b783f1b36c03c5",
+    "tools/serve_live/client_acceptance.py": "abeea643b31a19e9c222777219f562585d871c5013fef730753203477cd18faf",
+    "tools/serve_live/client_sdk.mjs": "df8d0b96b06aae1a81fa2870c72836315bf89085dcaa8d22b52fdecad626d0b6",
+    "tools/serve_live/test_checks.py": "334216bc558b2c076a47aa2a4dfeae22ae9290ce87e3c79a7089ac61a4a16fb4"
+  },
+  "sources_unchanged": true,
+  "tests": 10,
+  "gpu_actions": 0,
+  "new_gpu_starts": 0,
+  "actual_sdk_business_accepted": false,
+  "archive_sha256": "f9bc81cb3bb7011fb8ce83d6587d7a16a50d36e47c043402f99b63efb21f51c3"
+}
