@@ -943,7 +943,7 @@ Q4T_TEST(
   Q4T_CHECK(history.Resolve(&deferred, &ready) && ready);
   const auto cue =
       deferred.items.array[0].GetArray("content")->array[0].GetString("text");
-  Q4T_CHECK(cue.find("No speech was detected") != std::string::npos);
+  Q4T_CHECK(cue == "[No speech was detected during the idle interval.]");
   RealtimeConversationSnapshot current;
   Q4T_CHECK(history.Snapshot(nullptr, &current) &&
             OutputJson(current.items) == OutputJson(deferred.items));
@@ -953,6 +953,28 @@ Q4T_TEST(
             current.items.array[0].GetArray("content")->array[0].GetString(
                 "type") == "input_audio");
   Q4T_CHECK(OutputJson(current.items).find(cue) == std::string::npos);
+  return true;
+}
+
+Q4T_TEST(realtime_idle_fact_never_replaces_received_speech_or_finite_empty) {
+  for (const bool idle : {false, true}) {
+    RealtimeConversation history("sess_fact");
+    Ticket input;
+    Q4T_CHECK(history.BeginAudioInput("speech", {}, false, 8192, &input));
+    Q4T_CHECK(history.CompleteAudioInput(input, "Actual received speech", idle));
+    RealtimeConversationSnapshot snapshot;
+    Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+    Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[0].GetString(
+                  "text") == "Actual received speech");
+  }
+  RealtimeConversation history("sess_empty");
+  Ticket input;
+  Q4T_CHECK(history.BeginAudioInput("finite", {}, true, 8192, &input));
+  Q4T_CHECK(history.CompleteAudioInput(input, ""));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[0].GetString(
+                "text").empty());
   return true;
 }
 

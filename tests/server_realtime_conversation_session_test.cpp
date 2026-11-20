@@ -1623,6 +1623,9 @@ Q4T_TEST(realtime_session_idle_empty_turn_reaches_actual_chat_planner) {
   auto now = Clock::now();
   f.cb.now = [&] { return now; };
   EnableIdle(f);
+  const std::string instructions =
+      "If no speech was detected during the idle interval, reply exactly READY.";
+  Set(&f.settings, "instructions", String(instructions));
   ChatPlanConfig config;
   config.model = "q4t-test";
   f.cb.prepare = [&](const RealtimeConversationJob& job) {
@@ -1631,6 +1634,15 @@ Q4T_TEST(realtime_session_idle_empty_turn_reaches_actual_chat_planner) {
     const auto status = PlanRealtimeChat(
         job.settings, job.response, job.snapshot.items, config, &plan, &error,
         job.prompt ? &*job.prompt : nullptr, job.native_input);
+    if (status) {
+      const auto* messages =
+          plan.generation.generation_request.GetArray("messages");
+      if (!messages || messages->array.front().GetString("content") !=
+                           instructions ||
+          job.settings.GetString("instructions") != instructions)
+        return object_detail::Error(500, "instruction_changed",
+                                    "Native input changed application policy");
+    }
     return status ? ObjectReply{}
                   : object_detail::Error(400, error.code, status.message());
   };

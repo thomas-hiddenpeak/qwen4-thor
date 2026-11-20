@@ -103,10 +103,12 @@ Status InputText(const Json& item, Json* copy, bool idle_timeout = false) {
     if (!transcript || !transcript->IsString())
       return Invalid("native input has no completed ASR transcript");
     // Execution snapshot only. Client transcripts never gain this authority.
+    // Report the observed input, without adding a response policy that could
+    // compete with the caller's instructions.
     const auto text = idle_timeout && transcript->str.empty()
                           ? String(
                                 "[No speech was detected during the idle "
-                                "interval. Invite the user to continue.]")
+                                "interval.]")
                           : *transcript;
     part = Object({{"type", String("input_text")}, {"text", text}});
   }

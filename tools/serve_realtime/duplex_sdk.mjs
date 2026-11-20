@@ -21,7 +21,7 @@ const { OpenAIRealtimeWS } = await import(pathToFileURL(path.join(sdk, 'node_mod
 const url = new URL(args.base_url);
 check(url.protocol === 'https:' && url.hostname === '127.0.0.1' && url.pathname === '/v1'
   && !url.search && !url.hash && !url.username && !url.password && args.ca_file &&
-  ['manual', 'vad'].includes(args.mode), 'verified local TLS scope');
+  ['manual', 'vad', 'idle'].includes(args.mode), 'verified local TLS scope');
 const clip = fs.readFileSync(args.clip);
 check(clip.length > 0 && clip.length <= (1 << 20) && clip.length % 2 === 0 &&
   crypto.createHash('sha256').update(clip).digest('hex') === args.clip_sha256, 'actual clip identity');
@@ -198,17 +198,21 @@ try {
     const empty = await finish('idle', next.response.id);
     judge('idle', text(empty), 'READY');
     await update({ audio: { input: { turn_detection: { ...vad, idle_timeout_ms: null, create_response: false } } } });
-    const start = events.length;
-    const id = await begin('interrupt', { output_modalities: ['text'], max_output_tokens: 1024,
-      tools: [], tool_choice: 'none', instructions: 'Count from 1 to 200, writing every integer on a separate line without skipping any.' });
-    await waitEvent(start, 'response.output_text.delta', (e) => e.response_id === id && e.delta.length > 0);
-    append(padded);
-    const speech = await waitEvent(start, 'input_audio_buffer.speech_started');
-    const interrupted = await finish('interrupt', id, 'cancelled');
-    check(interrupted.id === id, 'interruption response owner');
-    await waitEvent(start, 'conversation.item.input_audio_transcription.completed', (e) => e.item_id === speech.item_id);
-    checks.push({ type: 'interrupt', response_id: id, item_id: speech.item_id, event_id: speech.event_id });
-    check(events.filter((e) => e.type === 'response.created').length === 3, 'unexpected automatic answer');
+    if (args.mode === 'vad') {
+      const start = events.length;
+      const id = await begin('interrupt', { output_modalities: ['text'], max_output_tokens: 1024,
+        tools: [], tool_choice: 'none', instructions: 'Count from 1 to 200, writing every integer on a separate line without skipping any.' });
+      await waitEvent(start, 'response.output_text.delta', (e) => e.response_id === id && e.delta.length > 0);
+      append(padded);
+      const speech = await waitEvent(start, 'input_audio_buffer.speech_started');
+      const interrupted = await finish('interrupt', id, 'cancelled');
+      check(interrupted.id === id, 'interruption response owner');
+      await waitEvent(start, 'conversation.item.input_audio_transcription.completed', (e) => e.item_id === speech.item_id);
+      checks.push({ type: 'interrupt', response_id: id, item_id: speech.item_id, event_id: speech.event_id });
+      check(events.filter((e) => e.type === 'response.created').length === 3, 'unexpected automatic answer');
+    } else {
+      check(events.filter((e) => e.type === 'response.created').length === 2, 'unexpected idle answer');
+    }
   }
   rt.close(); await until(() => closed, true); clearTimeout(guard);
   check(closeCode === 1000 && connections === 1, 'one clean connection');

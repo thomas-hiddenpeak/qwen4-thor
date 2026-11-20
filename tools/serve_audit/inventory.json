@@ -2996,7 +2996,7 @@
     "src/server/realtime_audio_queue.cpp": "4e7b582330cd3d00c6568777b30e39706c084d1d39b95039126442eeec58b5ee",
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
     "src/server/realtime_chat_plan.cpp": "9c3f9704cc05cb58a9e32c651591c1ae72a0eb1282b0000dfbbab2b479ce5658",
-    "src/server/realtime_conversation.cpp": "5e72e06a951257acfe2ca2a72a08abd47b249b6ba6b6249cdf839d0490e0743d",
+    "src/server/realtime_conversation.cpp": "6fabdb045164a939499429ad10467e1d30701bf5a3c0deb10f4c50f4381f1081",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
     "src/server/realtime_conversation_session.cpp": "4af78292fcc0c946695eda555c06bbc27fa88a6a3ad0815395b743eb37ce79dd",
     "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
@@ -8847,5 +8847,42 @@
     "python_new": 2,
     "node_new": 4,
     "python_reused": 10
+  },
+  "duplex_idle_fact_20261120": {
+    "scope": "Remove response-policy injection from native zero-sample idle fact; preserve caller instructions, real ASR and public history. Reconstruct exact production planner inputs from original business events, no hardcoded answer or sampling changes.",
+    "tests": [
+      "realtime_idle_fact_never_replaces_received_speech_or_finite_empty",
+      "realtime_chat_idle_fact_preserves_response_policy_and_roles",
+      "realtime_idle_cue_requires_native_provenance_and_never_becomes_transcript",
+      "realtime_session_idle_empty_turn_reaches_actual_chat_planner",
+      "realtime_session_idle_uses_actual_output_playback_duration",
+      "realtime_chat_defaults_and_per_response_override_are_effective",
+      "realtime_composed_input_private_transcript_still_drives_context",
+      "realtime_session_native_input_wait_uses_original_deadline"
+    ],
+    "limits": {
+      "cpu_tests": 8,
+      "source_counterexamples": 20,
+      "cpu_seconds": 120,
+      "gpu_starts": 1,
+      "websocket_sessions": 1,
+      "responses": 2,
+      "audio_inputs": 1,
+      "chats": 6,
+      "gpu_seconds": 900
+    },
+    "gpu_contract": {
+      "diagnostic_seeds": [
+        41,
+        42
+      ],
+      "diagnostic_temperature": 1,
+      "old_and_new_inputs_only_differ_in_native_idle_fact": true,
+      "default_sampling_unchanged": true,
+      "no_replay": true,
+      "original_failure_preserved": true,
+      "manual_business_reused": true
+    },
+    "state": "development_targeted_validation_pending"
   }
 }

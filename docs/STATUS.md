@@ -15,7 +15,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 正在按[双向音频计划](SERVE_REALTIME_DUPLEX_2026-11-20.md)连接同一个
 conversation的音频输入、原生ASR/VAD、手动提交、打断和自动回答。
-当前已完成下列开发与CPU组件检查，**实际HTTP后端已接线，真实业务尚未验收**：
+当前已完成下列开发与CPU组件检查；真实双向协议已有原始证据，
+空闲模型回答、受影响恢复与交付仍待完成：
 
 - [有效输入设置](evidence/serve-realtime-duplex-settings-cpu-20261120/README.md)：
   15个不同用例/17次执行，独立回答与打断开关、公开转写开关、输入
@@ -47,13 +48,13 @@ conversation的音频输入、原生ASR/VAD、手动提交、打断和自动回�
   16个不同用例/18次执行，14项按精确源码复用，原2夹具失败保留。
   ChatServer接入共享原生ASR/VAD及组合内存预算；实际q4t构建零警告。
 
-十三组均完成相应来源反例检查，构建零警告，新增GPU为0。累计按原始
-测试名去重为227个不同用例/373次执行，保留20次原CPU失败与
+十四组均完成相应来源反例检查，构建零警告，新增GPU为0。累计按原始
+测试名去重为229个不同用例/381次执行，保留20次原CPU失败与
 1次来源门禁失败；之前前五组92的误计已纠正为91，原记录不改。
-host为`83f8fe997fc00f08ea319f178c5bc43a624c69b8249865d5b45dad4e389be3e6`，
-已构建q4t候选为`fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11`，
-保存在`.q4t-work/serve-realtime-duplex-20261120/mixed-entry-runtime-01/q4t`。
-两者都不是当前默认。实际HTTP后端已接线，**尚未执行真实双向业务**。
+host为`9ccf3773c0c3002188b78661526b1410c4e10db7dee300892e557d12a81e5c25`，
+已构建q4t候选为`9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c`，
+保存在`.q4t-work/serve-realtime-duplex-20261120/idle-fact-runtime-01/q4t`。
+两者都不是当前默认。实际双向业务已执行，最新结果见下方独立记录。
 继续统一WSS/
 ASR/TTS短验、受影响恢复与可回退交付。
 [同会话本地输入恢复CPU](evidence/serve-realtime-duplex-recovery-cpu-20261120/README.md)
@@ -105,6 +106,22 @@ q4t构建147.168秒、零警告，10项驱动CPU反例与SDK语法0.262秒通过
 事件与stdout/stderr持续落盘，原10项按函数身份复用；未追加GPU。
 候选运行时不变，原ENV_ABORT保留。NVML根因仍未确定；按工具缺陷
 修复准备仅一轮独立有界补验，严格互斥/监控保持，不盲目重启循环。
+
+[双向业务原记录](evidence/serve-realtime-duplex-business-20261120/README.md)：
+1模型/2WSS/9回答/7音频/2Chat，88.259秒，82次NVML正常，模型退出0，
+资源清理、默认rev376保持。混合/临时输入、语音往返、实际工具rev376、
+VAD自动回答/打断及结算通过协议核对；13项质量12通过，空闲READY
+回答失败，整组原FAIL保留。服务端空闲cue额外注入“邀请用户继续”，
+先离线核对并移除响应策略注入；不把该推测当唯一根因。针对性修复/
+短验之后继续主轻、Guardian恢复和可回退交付，全部master保持active。
+
+
+[空闲事实修复CPU/构建](evidence/serve-realtime-idle-fact-cpu-20261120/README.md)：
+8 C++/4 Python/20来源反例及SDK语法0.773秒通过，host28.296秒、runtime
+22.537秒均零警告。实际记录经过生产规划器重建，新旧只差空闲cue；
+应用指令、历史、采样保持。候选9376abee…仅供后续有界短验，不是
+默认。原失败保留；最多1模型/1WSS/2回答/1音频/6Chat/900秒，新旧
+seed41/42对照及真实空闲；继续主轻、恢复、交付和全部master。
 
 ## 当前实际默认
 

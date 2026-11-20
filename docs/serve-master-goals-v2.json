@@ -12461,13 +12461,13 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "interrupt_evidence_repaired_cpu_one_bounded_business_continuation_ready",
+      "state": "native_idle_fact_cpu_ready_bounded_followup_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
-      "unique_cpu_cases": 227,
-      "case_executions": 373,
+      "unique_cpu_cases": 229,
+      "case_executions": 381,
       "source_counterexamples_per_group": 20,
-      "gpu_actions": 1,
+      "gpu_actions": 2,
       "runtime_entry_qualified": false,
       "default_revision": 376,
       "remaining": [
@@ -12968,6 +12968,179 @@
           "default_revision": 376,
           "default_unchanged": true,
           "real_business": "pending",
+          "master_active": true
+        }
+      },
+      "business_second_attempt": {
+        "evidence": "docs/evidence/serve-realtime-duplex-business-20261120/README.md",
+        "result": {
+          "status": "PROTOCOL_OBSERVED_IDLE_MODEL_QUALITY_FAIL",
+          "original_status": "FAIL",
+          "lease_status": "COMMAND_FAILED",
+          "source_commit": "eb539d797932beefc6ccd2c77f36444f864ec108",
+          "runtime_binary": "fe4a47d4a663786c05b3bb4ba4e42effa0fd1b3d268e49a187f8c370f8ffaa11",
+          "seconds": 88.25879859179258,
+          "counts": {
+            "starts": 1,
+            "ingress_starts": 1,
+            "websocket_sessions": 2,
+            "responses": 9,
+            "audio_inputs": 7,
+            "chats": 2,
+            "controls": 35
+          },
+          "nvml": {
+            "OK": 82
+          },
+          "quality": [
+            {
+              "label": "manual_private",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "mixed",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "inline_audio",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "roundtrip",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "tool_answer",
+              "actual": "rev376",
+              "expected": "rev376",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_mixed_input_1",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_mixed_input_3",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_temporary_audio_1",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_temporary_roundtrip_0",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "vad_auto",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "idle",
+              "actual": "我无法模拟音频交互或邀请用户继续。请通过文本窗口输入您的问题。",
+              "expected": "READY",
+              "status": "FAIL"
+            },
+            {
+              "label": "asr_item_eca335dc67c08f6509752eb8f9cbf71b_0",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_item_86f6531fe2dca735b79890f4f215a9bd_0",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            }
+          ],
+          "settlement": {
+            "manual": {
+              "actual_settled_tokens": 2711.0,
+              "visible_tokens": 2630,
+              "private_asr_counter_residual": 81.0,
+              "private_asr_exact_token_oracle": false,
+              "admitted": 11
+            },
+            "vad": {
+              "actual_settled_tokens": 661.0,
+              "visible_tokens": 661,
+              "private_asr_counter_residual": 0.0,
+              "private_asr_exact_token_oracle": null,
+              "admitted": 5
+            }
+          },
+          "model_exit": 0,
+          "owned_processes_remaining": [],
+          "ports_released": true,
+          "default_unchanged": true,
+          "default_revision": 376,
+          "guardian_recovery": false,
+          "master_active": true
+        }
+      },
+      "idle_fact_repair": {
+        "evidence": "docs/evidence/serve-realtime-idle-fact-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_CPU_RUNTIME_BUILD_READY",
+          "cpp_cases": 8,
+          "new_cpp_cases": 2,
+          "python_negative_cases": 4,
+          "source_counterexamples": 20,
+          "sdk_syntax": true,
+          "seconds": 0.7729820208624005,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 28.295519575942308,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "9ccf3773c0c3002188b78661526b1410c4e10db7dee300892e557d12a81e5c25",
+            "free_bytes_after": 3448295424
+          },
+          "runtime_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 22.537270754110068,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c",
+            "free_bytes_after": 3387404288
+          },
+          "reconstruction": {
+            "original_event_source": "business-02/run/vad.sdk.json",
+            "fixture_sha256": "8b1a0ceb8f92f870426828f8931cc00748400b9e1765b5430739d8d75a1a548f",
+            "before_prompt_sha256": "a7559072edd02e9a37fd2116cb9e11dd5c2722d7ff91c5349fca7186905c62a4",
+            "after_prompt_sha256": "80805bd535d876cdccc7028502a34bdbddfebf2e047cfaf9001a8b3d2fc7542b",
+            "difference": "native zero-sample idle fact only",
+            "live_capture": false
+          },
+          "gpu_actions": 0,
+          "default_unchanged": true,
+          "default_revision": 376,
+          "original_failures_preserved": true,
           "master_active": true
         }
       }

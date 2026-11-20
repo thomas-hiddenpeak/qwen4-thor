@@ -69,6 +69,38 @@ Q4T_TEST(realtime_chat_defaults_and_per_response_override_are_effective) {
   return true;
 }
 
+Q4T_TEST(realtime_chat_idle_fact_preserves_response_policy_and_roles) {
+  RealtimeConversation history("sess_idle_plan");
+  RealtimeItemTicket input;
+  Q4T_CHECK(history.BeginAudioInput("idle", {}, true, 8192, &input));
+  Q4T_CHECK(history.CompleteAudioInput(input, "", true));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Fixture f;
+  Set(&f.settings, "instructions", String("Reply READY on silence."));
+  for (const bool response_override : {false, true}) {
+    auto response =
+        response_override
+            ? Object({{"instructions", String("Ask to continue.")}})
+            : Object();
+    Q4T_CHECK(f.Build(response, snapshot.items));
+    const auto* messages = f.plan.generation.generation_request.GetArray(
+        "messages");
+    Q4T_CHECK(messages && messages->array.size() == 2);
+    Q4T_CHECK(messages->array[0].GetString("role") == "developer");
+    Q4T_CHECK(messages->array[0].GetString("content") ==
+              (response_override ? "Ask to continue."
+                                 : "Reply READY on silence."));
+    Q4T_CHECK(messages->array[1].GetString("role") == "user");
+    Q4T_CHECK(OutputJson(messages->array[1]).find(
+                  "[No speech was detected during the idle interval.]") !=
+              std::string::npos);
+    Q4T_CHECK(OutputJson(messages->array[1]).find("Invite") == std::string::npos);
+  }
+  Q4T_CHECK(f.settings.GetString("instructions") == "Reply READY on silence.");
+  return true;
+}
+
 Q4T_TEST(
     realtime_chat_inf_uses_model_and_client_limits_without_loosening_number) {
   Fixture f;
