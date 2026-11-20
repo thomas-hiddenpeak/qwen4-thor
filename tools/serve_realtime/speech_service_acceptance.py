@@ -19,7 +19,6 @@ P=runpy.run_path(str(ROOT/'tools/serve_realtime/prompt_service_acceptance.py'))
 BASE,GLOBALS=P['BASE'],P['GLOBALS']
 VERSION,MANAGED,LEGACY=P['VERSION'],P['MANAGED'],P['LEGACY']
 require,save=P['require'],P['save']
-from tools.serve_realtime import speech_managed as speech
 
 # chats includes one actual startup selfcheck for every model, as required by
 # the shared native recovery driver, in addition to seven WSS response creates.
@@ -31,6 +30,7 @@ LIMITS=dict(
 
 def prepare(args):
     bundle,_,_,_,_,engine=LEGACY['load_modules']()
+    from tools.serve_realtime import speech_managed as speech
     from tools.serve_recovery import profile_evidence,profile_record
     from tools.serve_realtime import managed
     require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),
@@ -95,6 +95,7 @@ def prepare(args):
 
 class Stage(P['Stage']):
     def exercise(self):
+        from tools.serve_realtime import speech_managed as speech
         version=self.plan['scenario']=='tool_version';tls=self.plan['scenario']=='tls'
         first=self.version_ready(1,'primary') if version else self.ready(1,'primary')
         self.request('capabilities',path='/v1/capabilities')
@@ -138,6 +139,7 @@ class Stage(P['Stage']):
 
 
 def check_business(out):
+    from tools.serve_realtime import speech_managed as speech
     from tools.serve_service import package
     from tools.serve_recovery import profile_evidence
     out=Path(out);plan=package.read(out.parent/'plan.json')

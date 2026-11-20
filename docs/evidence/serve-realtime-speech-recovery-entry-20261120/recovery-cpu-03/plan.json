@@ -1,0 +1,53 @@
+{
+  "limits": {
+    "tests": 24,
+    "seconds": 180,
+    "source_counterexamples": 20,
+    "gpu_starts": 0
+  },
+  "commands": [
+    [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_realtime.test_speech_service.Contract.test_cold_entry_defers_production_imports_until_sealed_source_pin",
+      "tools.serve_realtime.test_speech_service.Contract.test_frozen_budget_counts_startup_selfcheck_and_every_speech_attempt",
+      "-v"
+    ],
+    [
+      "node",
+      "--check",
+      "tools/serve_realtime/speech_recovery_sdk.mjs"
+    ],
+    [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ]
+  ],
+  "sources": {
+    "tools/serve_realtime/speech_managed.py": "06fa8175c7b50077935db47e92865484fba632084b5f96fe023914b03eeffd5b",
+    "tools/serve_realtime/test_speech_followup.py": "385686f6dd8d7ba2aa7356eac7cb25b9abbcaf2027293d8cf7011a8cb97a630d",
+    "tools/serve_realtime/speech_followup.py": "0c66174eb8dd08a024bbe69276cd9e25c775a447c22a5e0ace1d9d44834b19ff",
+    "tools/serve_realtime/speech_service_acceptance.py": "5287f5205c36e544e70a544efbe29d338b3d6a8d2fc333717bacc7925867ef89",
+    "tools/serve_realtime/test_speech_acceptance.py": "7246499d43fbde37cf13fe3ee42665e585c2b2eac6006ddf90a9271ad5bf8dca",
+    "tools/serve_realtime/test_speech_recovery_sdk.py": "f5d02d1728f15f5b8f98127a8c7013698e15b7a5c6402dc325793144b76cabcc",
+    "tools/serve_realtime/test_speech_service.py": "58ddbd59f58f39556cb0ed39816c6d2e7b2a6dbe86fe8bc2526cae03d14e7c0d",
+    "tools/serve_realtime/speech_acceptance.py": "94bc70aabd7312c3867dffbc542583f13729628a0de07dc281648a7e149fd691",
+    "tools/serve_realtime/speech_recovery_sdk.mjs": "236e304ee73118da6f25ebcf6b4736af1ea916d7dec92698d3044edc901b7aab",
+    "tools/serve_realtime/speech_sdk.mjs": "3cea51c2414777007bf390257c3a53376bc5a3cb60411a2604c931ff45f26a04",
+    "tools/serve_realtime/speech_checks.py": "2474ad0a0c575c6ad61610bc9170292707dd4a00deede6b24a9b8c356a78a639",
+    "tools/serve_recovery/bundle.py": "da437de71ce7cb016f03ee8214b139b12124022102a7592da166b2de9c2fe420",
+    "tools/serve_recovery/test_native_bundle.py": "cf05818939e7f89f107f4c8d856c457ba30e0f40acc45ff6e0e6194d80b4ba07",
+    "tools/serve_audit/inventory.json": "4ad57be2ca108e4ab983af72e5c47f1d920ed3b0bd6dc94ba44e61d46b6c2956"
+  },
+  "protected": {
+    "build/q4t": "648d6d68553a45eb3c5fb703b68dba2e63dd1ed7171f68c1c420b599819723f5",
+    "build/q4t.release.json": "1c299d94ea1bcd143c43a8f586dbe3c3cc058593a50fc93c7ae78a0c2d2ae6cf",
+    "build/service/manifest.json": "7be0a6a599f964bb7f5560119832aa9843fbe9841283854177548293b1323fce",
+    "build/service.release.json": "db3766880f49123dc6fc67f7d4f8b5ce9d7b71b30bd8226123bff029831b676c",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  }
+}

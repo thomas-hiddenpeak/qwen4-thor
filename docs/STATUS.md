@@ -7,6 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[语音恢复冷入口修正通过](evidence/serve-realtime-speech-recovery-entry-20261120/README.md)：
+2项CPU/1.116秒及20来源反例通过；只在封包来源固定后导入。
+原COMMAND_FAILED和两个准备错误保留，0模型/0请求；继续原实际
+恢复预算，默认rev366保持，全部master继续。
+
+语音恢复首次入口在模型启动前拒绝：驱动提前导入生产校验模块，
+违反封包来源固定。原租约COMMAND_FAILED保留、0模型/0请求；改为
+固定来源后再导入，补2项CPU与来源检查后重冻入口。默认保持。
+
 [语音恢复CPU通过](evidence/serve-realtime-speech-recovery-cpu-20261120/README.md)：
 21个不同用例/27次执行/8.671秒、20来源反例与JS通过，原6项ERROR
 保留；原生TLS/SDK合成对端不算模型验收。helper构建1.766秒零警告，

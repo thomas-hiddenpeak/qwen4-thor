@@ -2,6 +2,9 @@
 import base64
 import copy
 import hashlib
+from pathlib import Path
+import subprocess
+import sys
 import unittest
 from unittest import mock
 
@@ -36,6 +39,18 @@ def fixture(mode='complete'):
 
 
 class Contract(unittest.TestCase):
+    def test_cold_entry_defers_production_imports_until_sealed_source_pin(self):
+        script=Path(service.__file__).resolve()
+        code='''import runpy,sys
+entry=runpy.run_path(sys.argv[1])
+assert entry['GLOBALS']['Stage'] is entry['Stage']
+assert not any(n == 'tools.serve_recovery' or n.startswith('tools.serve_recovery.')
+               for n in sys.modules), 'production module loaded before sealed source pin'
+'''
+        result=subprocess.run([sys.executable,'-I','-B','-c',code,str(script)],
+            stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=5)
+        self.assertEqual(result.returncode,0,result.stderr.decode())
+
     def setUp(self):
         raw=c.decode64(fixture()['retrievals'][0]['content'][0]['audio'])
         patch=mock.patch.object(evidence,'PCM',dict(builtin=(len(raw),hashlib.sha256(raw).hexdigest())))
