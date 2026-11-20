@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+发行文档检查840条旧链接通过、1条历史日志相对链接失败；保留原日志，
+补兼容入口并核对两个受影响路径，原失败保留。rev376发行结果不变，
+继续PR #54最终检查合入与总计划。
+
 [rev376原生语音已交付](evidence/serve-realtime-speech-delivery-20261120/README.md)：
 默认b156d976/c0571cd5，v23包68345e17、保留包77b25732，主轻d28ba7ac。
 19条原生CLI完成升级/回退/前进，0新增GPU，服务STOPPED；动态配额
