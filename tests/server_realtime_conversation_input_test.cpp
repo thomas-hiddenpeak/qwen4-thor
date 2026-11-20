@@ -102,6 +102,14 @@ bool Audio(RealtimeConversationInput& input, size_t samples) {
              OutputJson(Object({{"type", String("input_audio_buffer.append")},
                                 {"audio", String(encoded)}})));
 }
+bool Committed(RealtimeConversationInput& input, const Fixture& fixture) {
+  const auto end = Clock::now() + 1s;
+  while (fixture.commits.empty() && Clock::now() < end) {
+    if (!input.Tick()) return false;
+    std::this_thread::sleep_for(1ms);
+  }
+  return fixture.commits.size() == 1;
+}
 bool AddText(RealtimeConversation& history, const char* id) {
   RealtimeItemTicket ticket;
   return bool(history.Create(
@@ -285,6 +293,83 @@ Q4T_TEST(realtime_composed_input_fatal_processor_does_not_poison_text) {
   settings.enabled = false;
   Q4T_CHECK(input.Configure(settings).ok());
   Q4T_CHECK(f.calls == 0 && f.correct_thread);
+  return true;
+}
+
+Q4T_TEST(realtime_composed_input_captures_prompt_before_public_commit) {
+  Fixture f;
+  int frames = 0, captures = 0;
+  std::string setting = "at commit";
+  f.native.vad_step = [&](auto, auto*, float* probability) {
+    *probability = ++frames <= 3 ? .9f : 0.f;
+    return q4t::Status{};
+  };
+  f.callbacks.capture_response = [&](RealtimePromptSelection* selected) {
+    ++captures;
+    selected->settings = Object({{"instructions", String(setting)}});
+    selected->prompt = PromptSnapshot{PromptApi::kRealtime, "client:fixture",
+                                      Object({{"version", String(setting)}}),
+                                      Object({{"input", Array()}})};
+    return ObjectReply{};
+  };
+  const auto emit = f.callbacks.emit;
+  f.callbacks.emit = [&](const Json& event) {
+    if (event.GetString("type") == "input_audio_buffer.committed")
+      setting = "after commit";
+    return emit(event);
+  };
+  auto settings = Options();
+  settings.processing.turn = RealtimeTranscriptionSettings::Turn::kServerVad;
+  settings.processing.request.chunking.silence_duration_ms = 32;
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  Q4T_CHECK(input.Configure(settings).ok() && Audio(input, 6 * 768 + 48) &&
+            Committed(input, f) && Finish(input));
+  Q4T_CHECK(captures == 1 && setting == "after commit" &&
+            f.commits.size() == 1);
+  const auto& response = *f.commits[0].response;
+  Q4T_CHECK(response.settings.GetString("instructions") == "at commit" &&
+            response.prompt->reference.GetString("version") == "at commit");
+  return true;
+}
+
+Q4T_TEST(realtime_composed_input_bad_capture_keeps_owned_input_without_retry) {
+  for (bool oversized : {false, true}) {
+    Fixture f;
+    int frames = 0, captures = 0;
+    f.native.vad_step = [&](auto, auto*, float* probability) {
+      *probability = ++frames <= 3 ? .9f : 0.f;
+      return q4t::Status{};
+    };
+    f.callbacks.capture_response = [&](RealtimePromptSelection* selected) {
+      ++captures;
+      ObjectReply reply;
+      if (oversized) {
+        selected->settings = Object({{"instructions", String("bounded")}});
+        // Actual retained capacity, not JSON length, must hit the budget.
+        Field(selected->settings, "instructions").str.reserve(97ULL << 20);
+      } else {
+        reply.commit_unknown = true;
+      }
+      return reply;
+    };
+    auto settings = Options();
+    settings.processing.turn = RealtimeTranscriptionSettings::Turn::kServerVad;
+    settings.processing.request.chunking.silence_duration_ms = 32;
+    RealtimeConversationInput input("sess_asr", f.history, f.native,
+                                    f.callbacks, 30);
+    Q4T_CHECK(input.Configure(settings).ok() && Audio(input, 6 * 768 + 48) &&
+              Committed(input, f) && Finish(input));
+    Q4T_CHECK(captures == 1 && f.commits.size() == 1 && f.calls == 1);
+    const auto& notice = f.commits[0];
+    Q4T_CHECK(
+        (notice.context_status.commit_unknown || !notice.context_status.ok()) &&
+        !notice.response);
+    RealtimeConversationSnapshot snapshot;
+    Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot) &&
+              snapshot.items.array.size() == 1);
+    Q4T_CHECK(input.Tick() && captures == 1);
+  }
   return true;
 }
 

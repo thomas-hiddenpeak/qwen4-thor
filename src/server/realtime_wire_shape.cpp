@@ -21,6 +21,24 @@ Status ValidateRealtimeWireShape(const io::Json& value, RealtimeShape shape,
                                  ChatPlanError* error, std::string_view path) {
   auto status = ValidateRealtimeShape(value, shape, error, path);
   if (status) return status;
+  if (shape == RealtimeShape::kClientEvent &&
+      value.GetString("type") == "response.create") {
+    size_t storage = 0;
+    if (!MeasureRealtimeStorage(value, 16ULL << 20, &storage)) return status;
+    auto envelope = value;
+    auto* response = UniqueField(&envelope, "response");
+    if (!response) return status;
+    // SDK 7.47.0 exports the GA WithReferencesParam shape separately from
+    // its older RealtimeClientEvent union. Validate the full response using
+    // that exact pinned root, then the unchanged outer envelope. Do not drop
+    // unrecognized response fields or grant references new-item authority.
+    status = ValidateRealtimeShape(*response, RealtimeShape::kResponseCreate,
+                                   error, std::string(path) + ".response");
+    if (!status) return status;
+    *response = io::Json{};
+    response->type = io::Json::Type::kObject;
+    return ValidateRealtimeShape(envelope, shape, error, path);
+  }
   if (shape != RealtimeShape::kSession &&
       shape != RealtimeShape::kClientEvent &&
       shape != RealtimeShape::kServerEvent)

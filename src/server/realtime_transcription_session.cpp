@@ -70,6 +70,20 @@ void RealtimeTranscriptionSession::Join() noexcept {
   if (worker_.joinable()) worker_.join();
   Release();
   for (auto& job : jobs_) DiscardJob(job);
+  if (cancelled_) {
+    jobs_.clear();
+    while (const auto* item = queue_.Front())
+      if (!queue_.Acknowledge(item->epoch, item->sequence)) break;
+    semantic_.reset();
+    live_input_.reset();
+    stream_processor_.reset();
+    stream_storage_ = 0;
+  }
+}
+bool RealtimeTranscriptionSession::TryJoinCancelled() noexcept {
+  if (!cancelled_ || (worker_.joinable() && !done_.load())) return false;
+  Join();
+  return true;
 }
 ObjectReply RealtimeTranscriptionSession::ReserveJob(
     RealtimeTranscriptionJob& job) {

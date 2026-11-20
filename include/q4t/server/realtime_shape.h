@@ -17,7 +17,8 @@ Status ValidateRealtimeShape(const io::Json& value, RealtimeShape shape,
                              std::string_view path = "event");
 // Documented GA wire semantics can differ from the pinned SDK declaration.
 // Preserve the exact SDK oracle above; this checks the narrowly enumerated
-// nullable audio settings without modifying the caller's effective values.
+// nullable audio settings and the SDK's separately exported response reference
+// parameters without modifying the caller's effective values.
 Status ValidateRealtimeWireShape(const io::Json& value, RealtimeShape shape,
                                  ChatPlanError* error,
                                  std::string_view path = "event");

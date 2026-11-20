@@ -12461,19 +12461,19 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "input_event_composition_cpu_accepted_actual_session_pending",
+      "state": "conversation_owner_turn_cpu_accepted_http_backend_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
-      "unique_cpu_cases": 111,
-      "case_executions": 174,
+      "unique_cpu_cases": 159,
+      "case_executions": 235,
       "source_counterexamples_per_group": 20,
       "gpu_actions": 0,
       "runtime_entry_qualified": false,
       "default_revision": 376,
       "remaining": [
-        "connect native conversation input to actual Chat session",
-        "manual/VAD/idle scheduling, frozen effective settings and pending response ownership",
-        "direct mixed audio items and bounded same-session input recovery",
+        "wire ChatServer native ASR/VAD callbacks and actual admission budget",
+        "idle response scheduling and direct mixed audio input",
+        "bounded same-session input pipeline recovery",
         "targeted real WSS/ASR/TTS and affected recovery/publication",
         "all remaining Serve master tasks"
       ],
@@ -12485,7 +12485,7 @@
         "host_binary_sha256": "cdf072849cbf2d3f313fa253625061baf26be90364aaebe696233b93384dc111",
         "gpu_actions": 0
       },
-      "original_failed_executions": 10,
+      "original_failed_executions": 18,
       "reservation_and_capture": {
         "evidence": "docs/evidence/serve-realtime-duplex-capture-cpu-20261120/README.md",
         "result": {
@@ -12590,6 +12590,45 @@
             "gpu_actions": 0,
             "restore": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/dedup-historical-heads-06/restore.py"
           }
+        }
+      },
+      "conversation_turn_owner": {
+        "evidence": "docs/evidence/serve-realtime-duplex-session-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_CONVERSATION_INPUT_AND_TURN_OWNER_CPU",
+          "unique_cases": 53,
+          "case_executions": 61,
+          "new_cases": 19,
+          "original_failed_executions": 8,
+          "original_failures_preserved": true,
+          "all_failed_cases_repaired": true,
+          "unchanged_passes_reused": 41,
+          "repaired_compiled_sources": [
+            "include/q4t/server/realtime_shape.h",
+            "src/server/realtime_wire_shape.cpp",
+            "tests/server_realtime_conversation_input_test.cpp",
+            "tests/server_realtime_conversation_session_test.cpp"
+          ],
+          "reuse_scope": "The only runtime behavior repair is the response.create WithReferencesParam validation fallback; its 2 direct new cases and 2 prior wire guards were checked. All other previously passing session/input runtime code stayed exact; tests corrected fractional threshold, actual-commit wait and validation-call baseline. Original SDK graph unchanged.",
+          "source_counterexamples": 20,
+          "build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 35.94839578215033,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "e3768696482282454f1df5a10eedb222a6e05ea17fe883eaab842cf4ee0f9901",
+            "free_bytes_after": 4199251968
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "http_native_backend_entry": "pending",
+          "idle_direct_audio_and_pipeline_recovery": "pending",
+          "real_wss_asr_tts": "pending",
+          "master_active": true
         }
       }
     }

@@ -107,7 +107,11 @@ class RealtimeTranscriptionSession {
   // Session-owner only. The separate socket owner signals the pump to cancel.
   void Cancel() noexcept;
   void Join() noexcept;
+  // Nonblocking reap after Cancel. Never detaches or releases a live borrower.
+  bool TryJoinCancelled() noexcept;
   size_t QueuedItems() const { return jobs_.size(); }
+  // Session-owner only; a completed worker still owns admission until join.
+  bool Executing() const { return worker_.joinable(); }
   size_t AudioBytes() const { return queue_.UsedBytes() + stream_storage_; }
   size_t RetainedAudioBytes() const { return audio_history_.ChargedBytes(); }
 

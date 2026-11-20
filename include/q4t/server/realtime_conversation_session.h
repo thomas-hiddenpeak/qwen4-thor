@@ -7,6 +7,7 @@
 #include <unordered_set>
 
 #include "q4t/server/realtime_conversation.h"
+#include "q4t/server/realtime_conversation_input.h"
 #include "q4t/server/realtime_prompt_settings.h"
 #include "q4t/server/realtime_response_output.h"
 #include "q4t/server/realtime_speech_execution.h"
@@ -57,6 +58,10 @@ struct RealtimeConversationCallbacks {
       const RealtimeConversationJob&, const std::shared_ptr<RequestControl>&,
       const RealtimeDeltaSink&, const RealtimeSpeechSink&)>
       execute;
+  // Connected once by the actual native handler; no auxiliary socket. The
+  // handler separately reserves kRealtimeConversationInputHostBytes.
+  std::optional<RealtimeTranscriptionCallbacks> input;
+  uint32_t max_audio_seconds = 600;
 };
 
 class RealtimeConversationSession {
@@ -76,6 +81,10 @@ class RealtimeConversationSession {
   size_t ActiveResponses() const { return work_.size(); }
   size_t HistoryBytes() const { return history_.ChargedBytes(); }
   size_t SpeechBytes() const { return speech_.ChargedBytes(); }
+  size_t PendingInputs() const { return input_ ? input_->PendingItems() : 0; }
+  size_t InputAudioBytes() const {
+    return input_ ? input_->AudioBytes() + input_->RetainedAudioBytes() : 0;
+  }
 
  private:
   struct Work;
@@ -90,7 +99,12 @@ class RealtimeConversationSession {
   bool ItemCommand(const io::Json& event, bool erase);
   bool TruncateItem(const io::Json& event);
   ObjectReply ValidateSpeech(const RealtimeSpeechOptions& speech) const;
-  bool CreateResponse(const io::Json& event);
+  bool CreateResponse(const io::Json& event,
+                      RealtimeInputCommit* automatic = nullptr);
+  void StartWork(Work& work);
+  void AdvanceWork(Work& work);
+  bool InputReady();
+  bool InputSpeech(bool started, bool interrupt);
   bool CancelResponse(const io::Json& event);
   ObjectReply Store(Work& work, const io::Json& item, bool begin,
                     bool terminal);
@@ -104,6 +118,7 @@ class RealtimeConversationSession {
   const size_t message_bytes_;
   RealtimeConversation history_;
   RealtimeSpeechHistory speech_;
+  std::unique_ptr<RealtimeConversationInput> input_;
   std::optional<RealtimeSpeechOptions> locked_voice_;
   std::deque<std::unique_ptr<Work>> work_;
   std::deque<std::string> events_;

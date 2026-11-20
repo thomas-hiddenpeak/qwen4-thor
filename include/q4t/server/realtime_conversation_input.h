@@ -5,6 +5,7 @@
 
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/realtime_duplex_input.h"
+#include "q4t/server/realtime_prompt_settings.h"
 #include "q4t/server/realtime_transcription_session.h"
 
 namespace q4t::server {
@@ -16,6 +17,7 @@ struct RealtimeInputCommit {
   // Present only when this turn requests an automatic response.
   RealtimeConversationSnapshot context;
   ObjectReply context_status;
+  std::optional<RealtimePromptSelection> response;
 };
 struct RealtimeConversationInputCallbacks {
   std::function<ObjectReply(const io::Json&)> emit;
@@ -26,8 +28,11 @@ struct RealtimeConversationInputCallbacks {
   // Called after the public input commit and item.done, exactly once. The
   // caller schedules a new response, using the already frozen context.
   std::function<ObjectReply(RealtimeInputCommit)> committed;
+  // Same-owner bounded copy at actual commit, before deferred public events.
+  std::function<ObjectReply(RealtimePromptSelection*)> capture_response;
 };
-// At most 32 queued commit notices, each capped by the 16MiB history limit.
+// At most four response captures, each <=96MiB including history, effective
+// settings and pinned prompt. Metadata/settings retain the input queue bound.
 // Actual audio and all outstanding borrowers keep the existing input budget.
 inline constexpr size_t kRealtimeConversationInputHostBytes =
     kRealtimeSessionHostBytes + (512ULL << 20);
@@ -52,6 +57,7 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   void Join() noexcept;
   bool Failed() const { return failed_; }
   size_t PendingItems() const { return processor_.QueuedItems(); }
+  bool Executing() const { return processor_.Executing(); }
   size_t AudioBytes() const { return processor_.AudioBytes(); }
   size_t RetainedAudioBytes() const { return processor_.RetainedAudioBytes(); }
 
@@ -62,6 +68,7 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
     std::shared_ptr<RealtimeAudioRecord> audio;
     RealtimeDuplexInput settings;
     std::optional<RealtimeInputCommit> notice;
+    bool captured = false;
     bool committed = false, settled = false, published = false;
   };
   RealtimeTranscriptionCallbacks Bind(RealtimeTranscriptionCallbacks native);
@@ -73,6 +80,7 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   void Discard(const RealtimeTranscriptionJob& job) noexcept override;
   bool Speech(bool started, std::string_view id, uint64_t ticks) override;
   bool Ready(const RealtimeTranscriptionJob& job) override;
+  void ReleaseNotice(Binding& binding);
   bool Drain();
   bool Forward(io::Json event);
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
@@ -85,6 +93,7 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   RealtimeDuplexInput settings_;
   RealtimeAudioFormat retrieval_format_;
   std::map<std::string, Binding> bindings_;
+  size_t captures_ = 0;
   WebSocketOutput output_{kWebSocketOutputMaximumBytes, 64,
                           kWebSocketMaximumLimit};
   WebSocketDecoder decoder_{false, kWebSocketMaximumLimit};

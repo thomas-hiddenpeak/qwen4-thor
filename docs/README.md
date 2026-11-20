@@ -695,3 +695,5 @@
 - [2026-11-20状态历史原件](HISTORY_STATUS_2026-11-20.md)：整理前逐字保留；当前事实以STATUS为准。
 
 - [同一会话输入事件组合CPU](evidence/serve-realtime-duplex-composition-cpu-20261120/README.md)：GA事件、转写隐私、真实音频检索/删除、上下文冻结及原失败；实际入口继续。
+
+- [实际Realtime会话输入与轮次CPU](evidence/serve-realtime-duplex-session-cpu-20261120/README.md)：待ASR回答、设置冻结、VAD与准入交接、借用故障隔离及严格引用入口修复。

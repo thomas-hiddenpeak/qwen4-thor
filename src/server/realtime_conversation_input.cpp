@@ -20,6 +20,30 @@ Json Event(std::string type) {
 ObjectReply Missing() {
   return Error(400, "realtime_audio_item_not_found", "Audio item not found");
 }
+bool CaptureBounded(const RealtimeInputCommit& notice) {
+  // Fixed ledger/ticket metadata is bounded by 128 items. Include actual JSON
+  // capacities and the copied native settings before retaining any capture.
+  size_t total = 64ULL << 10;
+  auto processing =
+      RealtimeTranscriptionSettingsJson(notice.settings.processing, false);
+  std::vector<const Json*> values{&notice.context.items, &processing};
+  if (notice.response) {
+    values.push_back(&notice.response->settings);
+    if (notice.response->prompt) {
+      values.push_back(&notice.response->prompt->reference);
+      values.push_back(&notice.response->prompt->request);
+      total += notice.response->prompt->scope.capacity();
+    }
+  }
+  for (const auto* value : values) {
+    size_t bytes = 0;
+    if (total > (96ULL << 20) ||
+        !MeasureRealtimeStorage(*value, (96ULL << 20) - total, &bytes))
+      return false;
+    total += bytes;
+  }
+  return true;
+}
 }  // namespace
 
 RealtimeConversationInput::RealtimeConversationInput(
@@ -112,7 +136,11 @@ bool RealtimeConversationInput::Message(std::string_view message) {
 }
 bool RealtimeConversationInput::Tick() {
   if (cancelled_) return false;
-  if (!started_ || failed_) return true;
+  if (failed_) {
+    processor_.TryJoinCancelled();
+    return true;
+  }
+  if (!started_) return true;
   if (!Drain()) return false;
   const bool alive = processor_.Tick();
   if (!Drain()) return false;
@@ -127,7 +155,7 @@ void RealtimeConversationInput::FailPending() noexcept {
     } catch (...) {
     }
     binding.settled = true;
-    binding.notice.reset();
+    ReleaseNotice(binding);
   }
 }
 bool RealtimeConversationInput::StopInput() {
@@ -185,9 +213,25 @@ ObjectReply RealtimeConversationInput::Commit(
   binding.committed = true;
   if (notice.settings.RespondOnCommit(automatic)) {
     const auto captured = history_.Capture(nullptr, &notice.context, true);
-    if (!captured)
+    if (!captured) {
       notice.context_status =
           Error(400, "realtime_input_context_invalid", captured.message());
+    } else if (callbacks_.capture_response) {
+      notice.response.emplace();
+      notice.context_status = callbacks_.capture_response(&*notice.response);
+    }
+    if (Accepted(notice.context_status) &&
+        (captures_ == 4 || !CaptureBounded(notice)))
+      notice.context_status =
+          Error(429, "realtime_response_capture_capacity",
+                "Pending automatic response storage exhausted");
+    if (Accepted(notice.context_status)) {
+      binding.captured = true;
+      ++captures_;
+    } else {
+      notice.context = {};
+      notice.response.reset();
+    }
   }
   binding.notice = std::move(notice);
   *previous_id = std::move(previous);
@@ -222,6 +266,7 @@ void RealtimeConversationInput::Discard(
     history_.Erase(found->second.conversation);
   } catch (...) {
   }
+  ReleaseNotice(found->second);
   bindings_.erase(found);
 }
 bool RealtimeConversationInput::Speech(bool started, std::string_view id,
@@ -231,6 +276,13 @@ bool RealtimeConversationInput::Speech(bool started, std::string_view id,
 }
 bool RealtimeConversationInput::Ready(const RealtimeTranscriptionJob&) {
   return !failed_ && !cancelled_ && callbacks_.ready();
+}
+void RealtimeConversationInput::ReleaseNotice(Binding& binding) {
+  if (binding.captured) {
+    --captures_;
+    binding.captured = false;
+  }
+  binding.notice.reset();
 }
 
 bool RealtimeConversationInput::Drain() {
@@ -275,7 +327,7 @@ bool RealtimeConversationInput::Forward(Json event) {
     binding.published = true;
     if (!binding.notice) return false;
     auto notice = std::move(*binding.notice);
-    binding.notice.reset();
+    ReleaseNotice(binding);
     const auto reply = callbacks_.committed(std::move(notice));
     return Accepted(reply) || ErrorEvent(reply);
   }
@@ -293,7 +345,10 @@ bool RealtimeConversationInput::Forward(Json event) {
       Set(&error, "error", *event.Find("error"));
       sent = Accepted(callbacks_.emit(error));
     }
-    if (terminal && !binding.committed) bindings_.erase(found);
+    if (terminal && !binding.committed) {
+      ReleaseNotice(found->second);
+      bindings_.erase(found);
+    }
     return sent;
   }
   return Accepted(callbacks_.emit(event));
@@ -328,6 +383,7 @@ ObjectReply RealtimeConversationInput::Erase(const RealtimeItemTicket& ticket) {
   const auto status = history_.Erase(ticket);
   if (!status)
     return Error(500, "realtime_input_history_invalid", status.message());
+  ReleaseNotice(found->second);
   bindings_.erase(found);
   return {};
 }

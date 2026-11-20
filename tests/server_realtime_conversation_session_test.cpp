@@ -275,6 +275,119 @@ struct PromptFixture : Fixture {
                         {"session", std::move(update)}}));
   }
 };
+struct InputFixture : Fixture {
+  std::atomic<bool> asr_hold{false}, asr_fail{false};
+  std::atomic<size_t> asr_calls{0}, asr_released{0};
+  std::atomic<int> busy{0}, overlap{0};
+  int vad_calls = 0, input_validations = 0;
+  bool vad_fail = false, reject_language = false;
+  std::vector<std::string> execution_order;
+  InputFixture() {
+    Set(&settings, "audio",
+        Object({{"input", Object({{"turn_detection", Json()},
+                                  {"transcription", Json()}})}}));
+    RealtimeTranscriptionCallbacks native;
+    native.validate = [&](const auto& value) {
+      ++input_validations;
+      return reject_language && value.request.language == "fr"
+                 ? object_detail::Error(400, "fixture_input_rejected",
+                                        "Native input rejected")
+                 : ObjectReply{};
+    };
+    native.acquire = [&](const auto& id) {
+      return requests.Register(id, "", Clock::now() + 5s);
+    };
+    native.release = [&](const auto& control) {
+      requests.Remove(control);
+      ++asr_released;
+    };
+    native.vad_step = [&](auto, auto*, float* probability) {
+      ++vad_calls;
+      *probability = vad_calls <= 3 ? .9f : 0.f;
+      return vad_fail ? q4t::Status::Fail("Injected native VAD failure")
+                      : q4t::Status{};
+    };
+    native.execute = [&](const auto& job, const auto&, const auto& control,
+                         const auto&) {
+      ++asr_calls;
+      if (busy.fetch_add(1)) ++overlap;
+      ScopeExit leave([&] { --busy; });
+      {
+        std::lock_guard lock(mutex);
+        execution_order.push_back("asr");
+      }
+      while (asr_hold && !control->Cancelled())
+        std::this_thread::sleep_for(1ms);
+      if (control->Cancelled())
+        return object_detail::Error(409, control->Reason(), "Input cancelled");
+      if (asr_fail)
+        return object_detail::Error(503, "fixture_asr_failed", "ASR failed");
+      if (!job.processed_audio || job.processed_audio->Samples().empty())
+        return object_detail::Error(500, "fixture_audio_missing",
+                                    "Actual input samples missing");
+      ObjectReply reply;
+      reply.value = Object({{"text", String("native fixture transcript")},
+                            {"usage", Object({{"type", String("tokens")},
+                                              {"input_tokens", Number(23)},
+                                              {"output_tokens", Number(7)},
+                                              {"total_tokens", Number(30)}})}});
+      return reply;
+    };
+    cb.input = std::move(native);
+    const auto generate = cb.execute;
+    cb.execute = [&, generate](const auto& job, const auto& control,
+                               const auto& emit, const auto& speech) {
+      if (busy.fetch_add(1)) ++overlap;
+      ScopeExit leave([&] { --busy; });
+      {
+        std::lock_guard lock(mutex);
+        execution_order.push_back("response");
+      }
+      return generate(job, control, emit, speech);
+    };
+  }
+  ~InputFixture() { session.reset(); }
+  bool Append(size_t samples = 2) {
+    std::string encoded;
+    return io::EncodeBase64(std::string(samples * 2, '\0'),
+                            kWebSocketMessageLimit, &encoded) &&
+           Send(Object({{"type", String("input_audio_buffer.append")},
+                        {"audio", String(std::move(encoded))}}));
+  }
+  bool Commit() {
+    return Send(Object({{"type", String("input_audio_buffer.commit")}}));
+  }
+  bool Vad(bool respond = true, bool interrupt = true) {
+    Json threshold;
+    if (!io::ParseJson("0.5", &threshold)) return false;
+    return Send(Object(
+        {{"type", String("session.update")},
+         {"session",
+          Object(
+              {{"type", String("realtime")},
+               {"audio",
+                Object({{"input",
+                         Object({{"turn_detection",
+                                  Object({{"type", String("server_vad")},
+                                          {"threshold", threshold},
+                                          {"prefix_padding_ms", Number(16)},
+                                          {"silence_duration_ms", Number(32)},
+                                          {"create_response", Boolean(respond)},
+                                          {"interrupt_response",
+                                           Boolean(interrupt)}})}})}})}})}}));
+  }
+  bool Instructions(std::string value) {
+    return Send(
+        Object({{"type", String("session.update")},
+                {"session", Object({{"type", String("realtime")},
+                                    {"instructions", String(value)}})}}));
+  }
+  bool AllFinished() {
+    return Wait([&] {
+      return session->ActiveResponses() == 0 && session->PendingInputs() == 0;
+    });
+  }
+};
 }  // namespace
 
 Q4T_TEST(realtime_session_item_order_retrieve_delete_and_sdk_events) {
@@ -326,7 +439,7 @@ Q4T_TEST(realtime_session_function_result_returns_to_actual_history_snapshot) {
 
 Q4T_TEST(
     realtime_session_settings_atomic_merge_and_response_override_snapshot) {
-  Fixture f;
+  InputFixture f;
   Q4T_CHECK(f.Start());
   auto update =
       Object({{"type", String("session.update")},
@@ -1040,6 +1153,375 @@ Q4T_TEST(realtime_session_audio_cancel_after_native_finish_keeps_public_owner) {
               done.Find("usage")->GetInt("total_tokens") == 44);
     Q4T_CHECK(f.Retrieve(id) &&
               RetrievedAudio(f).size() == (truncate ? 1776 : 48000));
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_input_wait_freezes_manual_request) {
+  InputFixture f;
+  f.asr_hold = true;
+  Q4T_CHECK(f.Start() && f.Add(User("prior", "original")) && f.Append() &&
+            f.Commit());
+  Q4T_CHECK(f.Count("response.created") == 0 && f.Create());
+  Q4T_CHECK(f.session->ActiveResponses() == 1 && f.calls == 0);
+  const auto id = f.Last("response.created").Find("response")->GetString("id");
+  Q4T_CHECK(f.Wait([&] { return f.asr_calls == 1; }));
+  Q4T_CHECK(f.Instructions("future setting") && f.Add(User("later", "later")));
+  f.asr_hold = false;
+  Q4T_CHECK(f.AllFinished() && f.calls == 1 && f.asr_calls == 1 &&
+            f.released == 1 && f.asr_released == 1 && f.overlap == 0);
+  const auto job = f.Snapshot(0);
+  Q4T_CHECK(job.response_id == id &&
+            job.settings.GetString("instructions") == "old");
+  Q4T_CHECK(job.snapshot.items.array.size() == 2 &&
+            job.snapshot.pending_inputs.empty());
+  Q4T_CHECK(job.snapshot.items.array[1].GetArray("content")->array[0].GetString(
+                "text") == "native fixture transcript");
+  Q4T_CHECK(f.Count("session.created") == 1 &&
+            f.Count("conversation.created") == 1 &&
+            f.Count("response.created") == 1 && f.Count("response.done") == 1);
+  Q4T_CHECK(f.Count("conversation.item.input_audio_transcription.completed") ==
+            0);
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_input_wait_cancel_does_not_execute) {
+  InputFixture f;
+  f.asr_hold = true;
+  Q4T_CHECK(f.Start() && f.Append() && f.Commit() && f.Create());
+  Q4T_CHECK(f.Wait([&] { return f.asr_calls == 1; }));
+  Q4T_CHECK(f.Send(Object({{"type", String("response.cancel")}})) &&
+            f.Finish());
+  Q4T_CHECK(f.calls == 0 && f.released == 1 && f.asr_released == 0 &&
+            f.Last("response.done").Find("response")->GetString("status") ==
+                "cancelled");
+  f.asr_hold = false;
+  Q4T_CHECK(f.AllFinished() && f.Create() && f.AllFinished());
+  Q4T_CHECK(f.calls == 1 && f.released == 2 && f.asr_released == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_input_wait_uses_original_deadline) {
+  InputFixture f;
+  f.asr_hold = true;
+  int acquired = 0;
+  f.cb.acquire = [&](const auto& id) {
+    ++acquired;
+    return f.requests.Register(id, "", Clock::now() + 15ms);
+  };
+  Q4T_CHECK(f.Start() && f.Append() && f.Commit() && f.Create() && f.Finish());
+  const auto done = *f.Last("response.done").Find("response");
+  Q4T_CHECK(done.GetString("status") == "failed" && f.calls == 0 &&
+            acquired == 1 && f.released == 1);
+  Q4T_CHECK(done.Find("status_details")->Find("error")->GetString("code") ==
+            "deadline_exceeded");
+  f.asr_hold = false;
+  Q4T_CHECK(f.AllFinished() && f.calls == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_input_delete_retains_worker_borrow) {
+  InputFixture f;
+  f.asr_hold = true;
+  Q4T_CHECK(f.Start() && f.Append(2400) && f.Commit() && f.Create());
+  const auto id = f.Last("input_audio_buffer.committed").GetString("item_id");
+  Q4T_CHECK(f.Wait([&] { return f.asr_calls == 1; }));
+  Q4T_CHECK(f.Send(Object({{"type", String("conversation.item.retrieve")},
+                           {"item_id", String(id)}})));
+  Q4T_CHECK(f.Last("conversation.item.retrieved")
+                .Find("item")
+                ->GetArray("content")
+                ->array[0]
+                .Has("audio"));
+  Q4T_CHECK(f.Send(Object({{"type", String("conversation.item.delete")},
+                           {"item_id", String(id)}})));
+  Q4T_CHECK(f.asr_released == 0 && f.session->InputAudioBytes() > 0 &&
+            f.Count("conversation.item.deleted") == 1);
+  Q4T_CHECK(f.AllFinished() && f.asr_released == 1 &&
+            f.session->InputAudioBytes() == 0 && f.calls == 0);
+  Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
+            "failed");
+  Q4T_CHECK(f.Add(User(id, "replacement")) && f.Create() && f.AllFinished());
+  Q4T_CHECK(f.calls == 1 && f.Snapshot(0).snapshot.items.array.size() == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_input_failure_never_uses_stale_turn) {
+  InputFixture f;
+  f.asr_fail = true;
+  Q4T_CHECK(f.Start() && f.Add(User("old", "old text")) && f.Append() &&
+            f.Commit() && f.Create() && f.AllFinished());
+  Q4T_CHECK(f.calls == 0 && f.released == 1 && f.Count("error") == 1);
+  Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
+            "failed");
+  Q4T_CHECK(f.Create() && f.AllFinished());
+  Q4T_CHECK(f.calls == 1 && f.Snapshot(0).snapshot.items.array.size() == 1 &&
+            f.Snapshot(0).snapshot.items.array[0].GetString("id") == "old");
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_input_admission_handoff_precedes_next_asr) {
+  InputFixture f;
+  f.asr_hold = true;
+  Q4T_CHECK(f.Start() && f.Append() && f.Commit() && f.Create());
+  Q4T_CHECK(f.Wait([&] { return f.asr_calls == 1; }));
+  Q4T_CHECK(f.Append() && f.Commit());
+  f.asr_hold = false;
+  Q4T_CHECK(f.AllFinished() && f.asr_calls == 2 && f.calls == 1 &&
+            f.overlap == 0 && f.asr_released == 2);
+  Q4T_CHECK((f.execution_order ==
+             std::vector<std::string>{"asr", "response", "asr"}));
+  Q4T_CHECK(f.Snapshot(0).snapshot.items.array.size() == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_vad_auto_context_and_settings_are_frozen) {
+  InputFixture f;
+  f.asr_hold = true;
+  Q4T_CHECK(f.Start() && f.Add(User("before", "before")) && f.Vad() &&
+            f.Append(6 * 768 + 48));
+  Q4T_CHECK(f.Wait([&] { return f.Count("response.created") == 1; }));
+  Q4T_CHECK(f.Count("input_audio_buffer.speech_started") == 1 &&
+            f.Count("input_audio_buffer.speech_stopped") == 1 && f.calls == 0);
+  Q4T_CHECK(f.Instructions("future") && f.Add(User("future", "future")));
+  f.asr_hold = false;
+  Q4T_CHECK(f.AllFinished() && f.calls == 1 && f.asr_calls == 1 &&
+            f.overlap == 0);
+  const auto job = f.Snapshot(0);
+  Q4T_CHECK(job.settings.GetString("instructions") == "old" &&
+            job.snapshot.items.array.size() == 2 &&
+            job.snapshot.items.array[0].GetString("id") == "before");
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_vad_interrupt_preserves_out_of_band) {
+  InputFixture f;
+  f.hold = true;
+  Q4T_CHECK(f.Start() && f.Vad() && f.Create());
+  Q4T_CHECK(f.Wait([&] { return f.calls == 1; }));
+  const auto old = f.Last("response.created").Find("response")->GetString("id");
+  Q4T_CHECK(
+      f.Create(Object({{"conversation", String("none")}, {"input", Array()}})));
+  const auto oob = f.Last("response.created").Find("response")->GetString("id");
+  Q4T_CHECK(f.Append(6 * 768 + 48));
+  Q4T_CHECK(f.Wait([&] { return f.calls == 2; }));
+  const auto cancelled = *f.Last("response.done").Find("response");
+  Q4T_CHECK(cancelled.GetString("id") == old &&
+            cancelled.GetString("status") == "cancelled" && f.asr_calls == 0);
+  f.hold = false;
+  Q4T_CHECK(f.AllFinished() && f.calls == 3 && f.asr_calls == 1 &&
+            f.overlap == 0);
+  bool preserved = false;
+  for (const auto& event : f.events)
+    if (event.GetString("type") == "response.done" &&
+        event.Find("response")->GetString("id") == oob)
+      preserved = event.Find("response")->GetString("status") == "completed";
+  Q4T_CHECK(preserved && f.released == 3);
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_vad_controls_do_not_invent_response) {
+  InputFixture f;
+  f.hold = true;
+  Q4T_CHECK(f.Start() && f.Vad(false, false) && f.Create());
+  Q4T_CHECK(f.Wait([&] { return f.calls == 1; }));
+  Q4T_CHECK(f.Append(6 * 768 + 48));
+  Q4T_CHECK(
+      f.Wait([&] { return f.Count("input_audio_buffer.committed") == 1; }));
+  Q4T_CHECK(f.Count("response.created") == 1 && f.Count("response.done") == 0 &&
+            f.asr_calls == 0);
+  f.hold = false;
+  Q4T_CHECK(f.AllFinished() && f.calls == 1 && f.asr_calls == 1 &&
+            f.overlap == 0);
+  Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
+            "completed");
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_input_settings_rejection_is_atomic) {
+  InputFixture f;
+  f.reject_language = true;
+  Q4T_CHECK(f.Start());
+  const auto prior_validations = f.input_validations;
+  const auto update = Object(
+      {{"type", String("session.update")},
+       {"session",
+        Object(
+            {{"type", String("realtime")},
+             {"instructions", String("rejected")},
+             {"audio",
+              Object(
+                  {{"input",
+                    Object({{"transcription",
+                             Object({{"model",
+                                      String(q4t::audio::AsrConfig::kModelId)},
+                                     {"language", String("fr")}})}})}})}})}});
+  Q4T_CHECK(f.Send(update) && f.Count("session.updated") == 0 &&
+            f.Count("error") == 1 &&
+            f.input_validations == prior_validations + 1);
+  Q4T_CHECK(f.Append() && f.Commit() && f.Create() && f.AllFinished());
+  Q4T_CHECK(f.Snapshot(0).settings.GetString("instructions") == "old" &&
+            f.Count("conversation.item.input_audio_transcription.completed") ==
+                0);
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_input_fatal_vad_keeps_text_and_updates) {
+  InputFixture f;
+  f.vad_fail = true;
+  Q4T_CHECK(f.Start() && f.Vad() && f.Append(768 + 48));
+  Q4T_CHECK(f.Wait([&] { return f.Count("error") > 0; }));
+  Q4T_CHECK(f.vad_calls == 1 && f.asr_calls == 0 && f.calls == 0);
+  Q4T_CHECK(f.Instructions("healthy text") && f.Add(User("text", "hello")) &&
+            f.Create() && f.AllFinished());
+  Q4T_CHECK(f.calls == 1 &&
+            f.Snapshot(0).settings.GetString("instructions") == "healthy text");
+  Q4T_CHECK(f.Count("session.updated") == 2 &&
+            f.Last("response.done").Find("response")->GetString("status") ==
+                "completed");
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_input_fault_reaps_active_borrow_for_text) {
+  InputFixture f;
+  f.asr_hold = true;
+  Q4T_CHECK(f.Start() && f.Vad() && f.Append(6 * 768 + 48));
+  Q4T_CHECK(f.Wait([&] { return f.asr_calls == 1; }));
+  f.vad_fail = true;
+  Q4T_CHECK(f.Append(768));
+  Q4T_CHECK(f.Wait([&] { return f.Count("error") > 0; }));
+  Q4T_CHECK(f.AllFinished() && f.calls == 0 && f.asr_released == 1);
+  Q4T_CHECK(f.Add(User("healthy", "text")) && f.Create() && f.AllFinished());
+  Q4T_CHECK(f.calls == 1 && f.overlap == 0 &&
+            f.Snapshot(0).snapshot.items.array.size() == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_session_missing_input_backend_keeps_text_contract) {
+  Fixture f;
+  Q4T_CHECK(f.Start());
+  Q4T_CHECK(f.Send(Object(
+      {{"type", String("session.update")},
+       {"session", Object({{"type", String("realtime")},
+                           {"audio", Object({{"input", Object()}})}})}})));
+  Q4T_CHECK(f.Count("session.updated") == 0 && f.Count("error") == 1);
+  Q4T_CHECK(f.Create() && f.Finish() && f.calls == 1);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_session_native_input_resolved_unknown_prepare_never_executes) {
+  InputFixture f;
+  size_t prepared = 0;
+  f.cb.prepare = [&](const auto& job) {
+    ++prepared;
+    ObjectReply reply;
+    reply.commit_unknown = !job.snapshot.items.array.empty();
+    return reply;
+  };
+  Q4T_CHECK(f.Start() && f.Append() && f.Commit() && f.Create() &&
+            f.AllFinished());
+  Q4T_CHECK(prepared == 2 && f.calls == 0 && f.asr_calls == 1 &&
+            f.released == 1);
+  Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
+            "failed");
+  return true;
+}
+
+Q4T_TEST(realtime_session_native_waiting_responses_remain_capacity_bounded) {
+  InputFixture f;
+  f.asr_hold = true;
+  Q4T_CHECK(f.Start() && f.Append() && f.Commit() && f.Create());
+  const auto input =
+      f.Last("input_audio_buffer.committed").GetString("item_id");
+  const auto isolated =
+      Object({{"conversation", String("none")},
+              {"input", Array({Object({{"type", String("item_reference")},
+                                       {"id", String(input)}})})}});
+  for (size_t i = 0; i < 4; ++i) Q4T_CHECK(f.Create(isolated));
+  Q4T_CHECK(f.session->ActiveResponses() == 4 &&
+            f.Count("response.created") == 4 && f.Count("error") == 1 &&
+            f.calls == 0);
+  std::vector<std::string> ids;
+  for (const auto& event : f.events)
+    if (event.GetString("type") == "response.created")
+      ids.push_back(event.Find("response")->GetString("id"));
+  for (const auto& id : ids)
+    Q4T_CHECK(f.Send(Object(
+        {{"type", String("response.cancel")}, {"response_id", String(id)}})));
+  Q4T_CHECK(f.Finish() && f.released == 4 && f.calls == 0);
+  f.asr_hold = false;
+  Q4T_CHECK(f.AllFinished() && f.asr_released == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_wire_response_references_use_exact_separate_sdk_shape) {
+  const auto response =
+      Object({{"input", Array({Object({{"type", String("item_reference")},
+                                       {"id", String("owned")}})})}});
+  const auto event =
+      Object({{"type", String("response.create")}, {"response", response}});
+  const auto original = OutputJson(event);
+  ChatPlanError error;
+  Q4T_CHECK(
+      ValidateRealtimeShape(response, RealtimeShape::kResponseCreate, &error));
+  Q4T_CHECK(!ValidateRealtimeShape(event, RealtimeShape::kClientEvent, &error));
+  Q4T_CHECK(
+      ValidateRealtimeWireShape(event, RealtimeShape::kClientEvent, &error));
+  Q4T_CHECK(OutputJson(event) == original);
+  Fixture f;
+  Q4T_CHECK(f.Start() && f.Add(User("owned", "reference content")) &&
+            f.Create(response) && f.Finish());
+  Q4T_CHECK(f.calls == 1 && f.Snapshot(0).snapshot.items.array.size() == 1);
+  Q4T_CHECK(f.Send(Object({{"type", String("conversation.item.delete")},
+                           {"item_id", String("owned")}})));
+  Q4T_CHECK(f.Create(response) && f.Count("response.created") == 1 &&
+            f.Count("error") == 1 && f.calls == 1);
+  // Referencing cannot create an input item or turn client transcript text
+  // into an owned native ASR result.
+  Q4T_CHECK(f.Add(response.Find("input")->array[0]) && f.Count("error") == 2);
+  return true;
+}
+
+Q4T_TEST(realtime_wire_reference_projection_preserves_full_strict_envelope) {
+  Json event;
+  Q4T_CHECK(io::ParseJson(
+      R"({"type":"response.create","response":{"input":[
+        {"type":"item_reference","id":"owned"}]}})",
+      &event));
+  ChatPlanError error;
+  for (size_t variation = 0; variation < 8; ++variation) {
+    auto invalid = event;
+    auto& response = Field(invalid, "response");
+    auto& reference = Field(response, "input").array[0];
+    switch (variation) {
+      case 0:
+        invalid.object.push_back(invalid.object.back());
+        break;
+      case 1:
+        Set(&invalid, "unknown", Boolean(true));
+        break;
+      case 2:
+        response.object.push_back(response.object.back());
+        break;
+      case 3:
+        Set(&response, "unknown", Boolean(true));
+        break;
+      case 4:
+        reference.object.push_back(reference.object.back());
+        break;
+      case 5:
+        Set(&reference, "transcript", String("forged"));
+        break;
+      case 6:
+        Field(reference, "id") = Number(7);
+        break;
+      case 7:
+        Set(&invalid, "event_id", Number(7));
+        break;
+    }
+    Q4T_CHECK(!ValidateRealtimeWireShape(invalid, RealtimeShape::kClientEvent,
+                                         &error));
   }
   return true;
 }
