@@ -11,82 +11,22 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 完整推理与应用服务保留，平台管理API按用户决定排除；157条冻结
 路径归入实现任务、88条排除，分类不代表兼容通过。总目标继续active。
 
-[Realtime MCP会话定义](evidence/serve-realtime-mcp-definitions-cpu-20261120/README.md)
-已通过18项针对性CPU（首次17通过/1失败，补原生函数校验后重验该项
-通过；原失败保留）。支持同连接标签复用、私有凭据/覆盖事务和数量/
-存储边界，0GPU；当前尚未连接公开运行时，继续[实际目录、审批/执行
-事件、真实闭环与恢复交付](SERVE_REALTIME_MCP_2026-11-20.md)。
-[真实目录与投影](evidence/serve-realtime-mcp-catalog-cpu-20261120/README.md)
-12项CPU通过，包含4项实际本机MCP网络夹具；0模型启动。接着连接
-异步会话事件、审批和调用；模型驱动工具闭环与恢复仍待验。
-[异步目录与历史隔离20项CPU](evidence/serve-realtime-mcp-imports-cpu-20261120/README.md)
-已通过，0GPU；删除/替换、迟到结果、线程/存储边界一并覆盖。公开
-运行时尚未连接，继续会话配置事务和调用审批。
-[MCP参数流与交接20项CPU](evidence/serve-realtime-mcp-output-cpu-20261120/README.md)
-完成：首轮19通过/1失败，容量夹具修正后暴露别名校验缺口，补精确
-映射后12项MCP通过，原8项复用。两次失败保留；后续原生结果、审批
-回填和历史关联继续，不能把生成完成当成工具完成。
-[结果投影与审批历史16项CPU](evidence/serve-realtime-mcp-item-cpu-20261120/README.md)
-全部通过，0.064秒，构建零警告；默认保持。继续原生审批/执行，
-公开会话仍待接线，不将本组当成真实工具闭环。
-[原生审批与调用16项CPU](evidence/serve-realtime-mcp-execution-cpu-20261120/README.md)
-通过，包含12项真实本机MCP网络夹具；0模型/GPU。缺声明头的首次
-构建失败保留；修复后零警告。继续会话所有者、公开接线及实际业务。
-[清理与辅助会话存储10项CPU](evidence/serve-realtime-mcp-cleanup-cpu-20261120/README.md)
-完成：8项首轮通过、2项夹具修正后通过，原失败保留。失路由仍可
-否决审批；旧连接不能取消新执行者，会话存储冲突保留已落盘终态。
-[异步调用所有者20项CPU](evidence/serve-realtime-mcp-calls-cpu-20261120/README.md)
-全部通过，含3项实际原生MCP HTTP组合。两次构建零警告；首构建
-未运行CPU，审查修复未发布审批的取消关联后首次20项通过。
-[公开会话38项CPU](evidence/serve-realtime-mcp-session-cpu-20261120/README.md)
-完成，含5项真实本机MCP HTTP；累计45次执行，五次构建零警告。
-首轮35通过，审批ID修正后1项通过；强制工具夹具的XML/收据/schema
-方言修正后2项通过。运行时源码在各轮间相同，四轮失败完整保留。
-实际运行时152.376秒构建零警告，默认/旧程序保持。正在准备官方SDK
-主轻各一次启动、共8次生成/900秒业务；[10项验收器CPU通过](evidence/serve-realtime-mcp-runtime-sdk-cpu-20261120/README.md)。
-CPU模型夹具不作为GPU/SDK业务通过证据。首个业务入口遗漏租约
-继承参数，在0模型/0请求时失败；原件保留，修正入口后同预算继续。
-首次实际主档1启动/4生成/54.970秒：真实资料查询、审批拒绝和导入
-故障正常，最后普通问答错答并在32token截断；原FAIL保留，模型正常
-退出、53次NVML均正常。补明确新user轮次，计划复用前三项，冻结
-主档1次针对性生成+尚未运行的轻档4次，共2启动/5生成/900秒。
-第二轮实际2启动/4生成/106.497秒：主档故障后回答42通过，轻档审批/
-资料查询/标题引用通过，第三次生成无关拒答，回执丢失场景尚未运行。
-原FAIL保留，主/轻816/3048 tokens准确结算并清理，两模型正常退出、
-101次NVML正常。累计3启动/8生成/161.466秒；预留计数不当实际生成。
-源码确认远端会话由密封目录持有供恢复，原“全部应删除”断言过宽；
-改查所有权与固定期限，不破坏恢复。[5项原生CPU与21项验收器CPU通过](evidence/serve-realtime-mcp-lifecycle-cpu-20261120/README.md)，
-随后一次轻档启动/2生成只补未执行的回执丢失/普通问答。
-剩余两项实际通过：1启动/2生成/48.636秒，真实读取后unknown不重放，
-普通问答42，1019 tokens结算、正常退出、48次NVML正常。离线收尾
-helper写死双启动而失败，3项CPU修复及[离线收尾已通过](evidence/serve-realtime-mcp-remaining-http-20261120/README.md)，
-原执行记录保持、未重跑GPU。累计4启动/10生成/210.102秒；资格/恢复
-及可回退发行继续，默认保持。
-已冻结新MCP资格与v25封包实现：970份未改运行时来源复用，15份修改/
-16份新增逐项绑定；保留原失败。新增证据使用有界压缩，资格文件仍
-限8MiB、解压上限2MiB；原v24与旧资格继续兼容。[42项不同CPU完成](evidence/serve-realtime-mcp-qualification-cpu-20261120/README.md)，
-43次执行含原夹具失败及2项修复补验；不重复GPU或音频/视觉矩阵。
-首次完整资格生成在共用Realtime声明校验处失败：旧门遗漏新增MCP，
-尚未签发registry、原中间记录不获准使用。已补能力门和严格类型检查，
-[11项针对性CPU通过](evidence/serve-realtime-mcp-qualification-gate-20261120/README.md)，
-[主轻完整资格已签发](evidence/serve-realtime-mcp-qualified-profiles-20261120/README.md)，
-registry为`5a44b4a3df68c45cb34f0b0758b51aeb4acd556a98d549db3992a106cb159fa3`。
-主/轻5631868/8340821字节，仍限8MiB；原失败保持，新增GPU 0。
-原生helper重建零警告、二进制未改。候选包`d851e503`和同能力保留包
-`338a57ad`已封装/离线校验，保留包仅替换已验旧控制器，自动回退
-兼容检查通过。[恢复驱动24项CPU完成](evidence/serve-realtime-mcp-recovery-cpu-20261120/README.md)：
-首轮23通过/1夹具失败，仅修正负例实际发出的终态，2项补验通过。
-共26次执行、8.753秒，0GPU；生产运行时保持，原失败保留。
-GPU拟分五个完整驱动：累计8启动/22工作（含8自检）/9连接/2探测/
-1500秒，同时验证显式私网组合和确切默认策略包。首次入口0模型/
-0请求时触发测试PKI导入失败；改离线按需导入，[3项CPU补验通过](evidence/serve-realtime-mcp-recovery-bootstrap-cpu-20261120/README.md)。
-原失败保留，运行时/封包不变，同预算重新冻结实际恢复。
-实际配置保留包和TLS/控制器恢复通过，累计3启动/10工作；整包阶段
-在0模型时暴露Guardian误清理版本校验子进程，原失败保留且正常清理。
-[所有权修复CPU已通过](evidence/serve-mcp-guardian-subtree-cpu-20261120/README.md)：
-7项原生生命周期、1项封包命名空间和1项实际封包准备，LLM引擎不变，
-新Guardian零警告。工作进程死亡/停止仍清理全部子孙，没有扩大超时。
-继续重新封装修复后的控制根，补整包及确切默认策略恢复短验和发行。
+Realtime MCP的定义、目录、参数流、审批/调用、历史隔离、公开会话
+及主轻资格已完成；逐组原始CPU/GPU记录见[阶段计划](SERVE_REALTIME_MCP_2026-11-20.md)。
+[实际恢复五组合通过](evidence/serve-realtime-mcp-managed-recovery-20261120/README.md)：
+8启动/22工作（含8自检）/9连接/2探测，含原零模型失败共617.179秒，
+580次NVML正常且清理完成。实际读取项目资料5次、完成历史认证2次；
+TLS恢复保留健康核心，控制器恢复等满配额窗口，整包回退保留能力。
+确切默认策略被拒绝的MCP访问不影响普通问答；没有自动重放。
+
+协议/恢复通过，**生成质量仍为FAIL**：配置回退后的一个标题漏掉
+“架构笔记”四字，原答案保留，主轻原错答/拒答也保持失败记录。
+[Guardian准备子树修复](evidence/serve-mcp-guardian-subtree-cpu-20261120/README.md)
+已有7项原生CPU及实际封包准备、命名空间检查；死亡/停止仍完整清理。
+新默认候选`17fc1464`及保留包`25ebd972`均实测，资格registry为
+`5a44b4a3df68c45cb34f0b0758b51aeb4acd556a98d549db3992a106cb159fa3`。
+原TLS证据保留原身份，仅复用未变行为。准备可回退发布/main，当前
+默认rev396继续STOPPED；完成后继续tracing、Live和其他全部任务。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

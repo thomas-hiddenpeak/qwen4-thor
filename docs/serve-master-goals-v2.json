@@ -15845,5 +15845,23 @@
       ]
     },
     "next": "Seal repaired native control root; finish configured whole-payload and exact default-policy recovery, reversible release/main, then continue every remaining master task."
+  },
+  "native_realtime_mcp_managed_20261120": {
+    "state": "actual_recovery_pass_publication_pending",
+    "evidence": "docs/evidence/serve-realtime-mcp-managed-recovery-20261120/README.md",
+    "counts": {
+      "starts": 8,
+      "work": 22,
+      "websocket_sessions": 9,
+      "device_probes": 2
+    },
+    "strict_lease_seconds": 617.1786876423284,
+    "nvml_queries": 580,
+    "actual_reads": 5,
+    "authenticated_history": 2,
+    "model_quality_status": "FAIL",
+    "original_failures_preserved": true,
+    "default_unchanged": true,
+    "next": "STOPPED reversible release/main, then tracing/Live and all remaining master tasks."
   }
 }
