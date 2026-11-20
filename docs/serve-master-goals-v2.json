@@ -16216,7 +16216,7 @@
     }
   },
   "native_live_20261121": {
-    "state": "native_audio_input_cpu_pass_llm_tts_backend_in_progress",
+    "state": "native_audio_frontend_cpu_pass_real_binding_in_progress",
     "plan": "SERVE_LIVE_2026-11-21.md",
     "master_active": true,
     "default_revision": 426,
@@ -16226,7 +16226,7 @@
     "type_nodes": 941,
     "live_sdk_vectors": 808,
     "realtime_regression_vectors": 476,
-    "distinct_native_cpu_tests": 73,
+    "distinct_native_cpu_tests": 83,
     "original_build_failure_preserved": true,
     "subtasks": [
       {
@@ -16236,7 +16236,7 @@
       },
       {
         "id": "L02",
-        "state": "lifecycle_transport_input_cpu_verified_llm_tts_binding_in_progress",
+        "state": "lifecycle_transport_io_worker_cpu_verified_real_binding_in_progress",
         "title": "主WSS与持续语音业务"
       },
       {
@@ -16275,6 +16275,10 @@
     "input_tests": 15,
     "input_original_failures": 4,
     "input_repair_tests": 8,
-    "input_evidence": "evidence/serve-live-input-cpu-20261121/README.md"
+    "input_evidence": "evidence/serve-live-input-cpu-20261121/README.md",
+    "frontend_tests": 10,
+    "frontend_original_cpu_failures": 4,
+    "frontend_repair_tests": 4,
+    "frontend_evidence": "evidence/serve-live-frontend-cpu-20261121/README.md"
   }
 }

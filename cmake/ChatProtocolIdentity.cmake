@@ -637,6 +637,10 @@ set(protocol_inputs
   src/server/live_session_pump.cpp
   include/q4t/server/live_audio_input.h
   src/server/live_audio_input.cpp
+  include/q4t/server/live_audio_output.h
+  src/server/live_audio_output.cpp
+  include/q4t/server/live_frontend_work.h
+  src/server/live_frontend_work.cpp
   src/server/contracts/openai_live_types_v1.json
   cmake/live_types.h.in
   src/server/grammar_worker.cpp

@@ -1,0 +1,21 @@
+{
+  "status": "PASS_NATIVE_LIVE_FRONTEND_CPU_PREPARATION",
+  "original_build_failure_preserved": true,
+  "original_cpu_tests": 10,
+  "original_cpu_pass": 6,
+  "original_cpu_fail": 4,
+  "targeted_repair_tests": 4,
+  "distinct_tests": 10,
+  "production_changed_after_first_cpu": false,
+  "original_cpu_seconds": 0.0316110560670495,
+  "repair_cpu_seconds": 0.2639292352832854,
+  "host_binary_sha256": "e5228d4b0e88d3bd6e0bc1ef16ac39d7313adc38c2951c084e52176528bc27e2",
+  "inventory_reviewed_sources": 6,
+  "inventory_mutation_checks": 22,
+  "real_model_business_accepted": false,
+  "new_gpu_starts": 0,
+  "default_revision": 426,
+  "default_changed": false,
+  "master_active": true,
+  "archive_sha256": "ae52f9876d442999d19b38d8b5fbaee81b7e8865d22c458f0b3fea343786b1d0"
+}
