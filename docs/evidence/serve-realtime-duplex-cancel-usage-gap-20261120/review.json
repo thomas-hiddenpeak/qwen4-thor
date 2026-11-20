@@ -1,0 +1,38 @@
+{
+  "status": "ACTUAL_BARGE_IN_CANCELLED_USAGE_CATEGORIES_MISSING",
+  "original_status": "FAILED",
+  "counts": {
+    "starts": 1,
+    "chats": 2,
+    "controls": 32,
+    "websocket_sessions": 1,
+    "ingress_starts": 1
+  },
+  "seconds": 66.63681192928925,
+  "nvml": {
+    "OK": 64
+  },
+  "cancelled_usage": {
+    "input_token_details": {
+      "cached_tokens": 0
+    },
+    "input_tokens": 196,
+    "output_token_details": {},
+    "output_tokens": 421,
+    "total_tokens": 617
+  },
+  "asr_usage": {
+    "input_token_details": {
+      "audio_tokens": 50,
+      "text_tokens": 15
+    },
+    "input_tokens": 65,
+    "output_tokens": 11,
+    "total_tokens": 76,
+    "type": "tokens"
+  },
+  "settled_tokens": 693,
+  "cleanup_complete": true,
+  "default_unchanged": true,
+  "master_active": true
+}

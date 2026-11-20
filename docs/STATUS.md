@@ -193,6 +193,18 @@ mixed重复内容、vad_auto译成英文两条原答案FAIL，轻量未跑。生
 原命令通过，没有重跑。只补轻量1模型/1WSS/2工作/420秒；继续恢复
 和交付，运行候选与默认rev376均不变。
 
+[实际打断的用量明细缺口](evidence/serve-realtime-duplex-cancel-usage-gap-20261120/README.md)：
+轻量1模型/1WSS/2工作，真实音频被VAD取消、ASR正确、693 tokens结算
+且清理通过。但取消response.done缺音频/文字分类，原阶段FAIL保留。
+已定位分类仅依赖成功EOF回执，接着传递实际TTS阶段计量并针对CPU/
+短验，不改变推理或扣费，不从波形长度推测token；默认rev376保持。
+
+[取消语音分类修复CPU](evidence/serve-realtime-duplex-cancel-usage-cpu-20261120/README.md)：
+实际TTS阶段观察覆盖成功/取消/异常，分类不再依赖成功EOF，不改配额
+和推理。10CPU/20来源反例通过，host/runtime零警告，原候选保留。
+仍需轻量1模型/1WSS/2工作/420秒实际取消短验；原FAIL、默认rev376
+保持，之后恢复/交付与全部master继续。
+
 ## 当前实际默认
 
 | 项目 | 当前值 |

@@ -63,4 +63,10 @@ Status AttachChatAudio(const io::Json& message, const ChatAudioOptions& options,
                        size_t max_json_bytes, io::Json* out);
 Status AddChatAudioUsage(const ActualUsage& synthesis, uint64_t audio_tokens,
                          io::Json* usage);
+// Observe a finished native TTS step even on cancellation/exception. Counts
+// come from the original execution counter, not PCM size or reserved tokens.
+// Unknown or inconsistent observations remain unknown; no rate mutation.
+void ObserveChatSpeechUsage(const std::optional<ActualUsage>& before,
+                            const std::optional<ActualUsage>& after,
+                            ActualUsageCounter* speech) noexcept;
 }  // namespace q4t::server

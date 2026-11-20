@@ -1,0 +1,160 @@
+{
+  "records": [
+    {
+      "path": "build_cancel_usage_host_01.py",
+      "bytes": 2882,
+      "sha256": "69faa83a3457521664c52b32e30808d9a258d99f783a995b76962cb1c7dbba5b"
+    },
+    {
+      "path": "build_cancel_usage_runtime_01.py",
+      "bytes": 2804,
+      "sha256": "257049ede34c333a77c3972770eca5effd79f379f75fbe3f76ffec3d7fd29720"
+    },
+    {
+      "path": "run_cancel_usage_cpu_01.py",
+      "bytes": 2177,
+      "sha256": "b1f6271023e7c92198e7a7a2d707134671cbb8d2a6091b4d89e43eb5b8c1fe19"
+    },
+    {
+      "path": "cancel_usage_business_01.py",
+      "bytes": 8130,
+      "sha256": "4c7f39af3e07d93f14f22d3debe67cdf84614a3ec24b36d2929d8fa1ae708fec"
+    },
+    {
+      "path": "cancel-usage-scope-01.json",
+      "bytes": 1368,
+      "sha256": "17ba066cbc5a6ad77588ca83e76fd4ce7af587a1e1c73dd2db45a474def38199"
+    },
+    {
+      "path": "cancel-usage-build-01/result.json",
+      "bytes": 293,
+      "sha256": "baad8dfa200d4df1e8c6c21dc60ce7ca562ca297bf04d3347af229ab2d04284b"
+    },
+    {
+      "path": "cancel-usage-build-01/plan.json",
+      "bytes": 177579,
+      "sha256": "06c95bfc3602b8d39bb003721811cfd65843dadf0ddab7613df2208775d88315"
+    },
+    {
+      "path": "cancel-usage-build-01/build.log",
+      "bytes": 32035,
+      "sha256": "dba44d809092fb12ebb39ed3d10e70fe04309cc59f68b28d4caa303b22d80439"
+    },
+    {
+      "path": "cancel-usage-build-01/previous-chat_protocol_sources.json",
+      "bytes": 86210,
+      "sha256": "ac594feec08c068c2a77f7042c059f406b87559b75aeb315ce9b6724b5858f46"
+    },
+    {
+      "path": "cancel-usage-build-01/previous-CMakeCache.txt",
+      "bytes": 35359,
+      "sha256": "49fbe0d60ffc13fbcdc0d7365e17c2db0ffdde0280c8c1ae27e7564d2716d319"
+    },
+    {
+      "path": "cancel-usage-runtime-01/result.json",
+      "bytes": 293,
+      "sha256": "b50f491c0355a62be9aaadfb6d5ef76752d4a6ae31a95735a688ee1e58679f27"
+    },
+    {
+      "path": "cancel-usage-runtime-01/plan.json",
+      "bytes": 107821,
+      "sha256": "29071d2a34872a612f4d27347cd5d99e72aedfd1aafeb6d52cfdc8c1ced1f9f7"
+    },
+    {
+      "path": "cancel-usage-runtime-01/build.log",
+      "bytes": 17796,
+      "sha256": "9ef07370ce1ed026e454f43132c50c2691328a4e707d17330be8e3df7e4735b9"
+    },
+    {
+      "path": "cancel-usage-runtime-01/previous-chat_protocol_sources.json",
+      "bytes": 86210,
+      "sha256": "ac594feec08c068c2a77f7042c059f406b87559b75aeb315ce9b6724b5858f46"
+    },
+    {
+      "path": "cancel-usage-runtime-01/previous-CMakeCache.txt",
+      "bytes": 54898,
+      "sha256": "4cef22c9ea29e78fda0324a0a69960b3302999906cc37dbad60c334e73cf3d83"
+    },
+    {
+      "path": "cancel-usage-cpu-01/1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cancel-usage-cpu-01/1.stdout",
+      "bytes": 223,
+      "sha256": "35252903dc94d4240af5f5ac6bd8a3f5480fce707ee122cb94fc453695904da0"
+    },
+    {
+      "path": "cancel-usage-cpu-01/0.stdout",
+      "bytes": 754,
+      "sha256": "dd0b4309cc989b544c064f6a20909709590318d26d439b1bc3cc6cc9963256f5"
+    },
+    {
+      "path": "cancel-usage-cpu-01/result.json",
+      "bytes": 1328,
+      "sha256": "081a4f5c46c9147824b9340bcdfa429928cf528a337cf3fdd0445c0fd3f56346"
+    },
+    {
+      "path": "cancel-usage-cpu-01/plan.json",
+      "bytes": 179996,
+      "sha256": "5be8a1c70937a4576b1d5802f1ba0681548df49285b2a808561fcf8ed002befe"
+    },
+    {
+      "path": "cancel-usage-cpu-01/0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cancel-usage-cpu-01/required.txt",
+      "bytes": 643,
+      "sha256": "d15e35f001c0eb9f050367248b1ff2db0e2e3d024a812f6358dee4f4ace2c65f"
+    },
+    {
+      "path": "source/include/q4t/server/native_chat_generation.h",
+      "bytes": 3578,
+      "sha256": "d9699ab365012e9fa21b3229bab4d07b32c4c05e5295b9863ea6b0c9c136d77f"
+    },
+    {
+      "path": "source/include/q4t/server/chat_audio_output.h",
+      "bytes": 3418,
+      "sha256": "c7d0cc8e5baa648a61b124a18fe5a6a08b5e01bcb4bf44f4a6cdbf2b0819294d"
+    },
+    {
+      "path": "source/src/server/chat_audio_output.cpp",
+      "bytes": 12666,
+      "sha256": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390"
+    },
+    {
+      "path": "source/src/server/chat_audio_synthesis.cpp",
+      "bytes": 9730,
+      "sha256": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f"
+    },
+    {
+      "path": "source/src/server/chat_realtime_conversation.cpp",
+      "bytes": 18620,
+      "sha256": "4a330646684270a6a5f1f4e2b39d9bc3d7b19c5b7c6ed5b5bf4c8560ad51dc84"
+    },
+    {
+      "path": "source/tests/server_chat_audio_output_test.cpp",
+      "bytes": 17180,
+      "sha256": "6bc18a1a3f85db71a63795f08ffa1b3a8511d4e67fd432218529ebfa6b17665b"
+    },
+    {
+      "path": "source/tests/server_realtime_speech_execution_test.cpp",
+      "bytes": 11201,
+      "sha256": "785b8260fc2d934a37d1b7ba6a3bcbf81b6b46c8b6a488c080ad83b5fba8fa97"
+    },
+    {
+      "path": "source/tests/server_realtime_speech_output_test.cpp",
+      "bytes": 14703,
+      "sha256": "1848b20acd89f397dc303c6f41ae1e37e32813501a51c71ede2b18f7b574ce9a"
+    },
+    {
+      "path": "source/tools/release/required_host_tests.txt",
+      "bytes": 32604,
+      "sha256": "752af8bc18f388f4f60bab2e219be579db4a64099357dc84ba31314de25e2af4"
+    }
+  ],
+  "archive_sha256": "c5def731e6c13f0b11db563f5b925fe2253aa12aa6061963c07094596bdc4b10"
+}

@@ -4,6 +4,7 @@
 #include "q4t/server/chat_plan.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/lifetime.h"
 #include "q4t/server/object_retention.h"
 
 #include <chrono>
@@ -234,6 +235,65 @@ Q4T_TEST(chat_audio_output_usage_adds_actual_codes_without_recounting_text) {
   Q4T_CHECK(!AddChatAudioUsage({1, 1}, 2, &usage));
   Q4T_CHECK(!AddChatAudioUsage({kActualUsageLimit, 1}, 1, &usage));
   Q4T_CHECK(OutputJson(usage) == prior);
+  return true;
+}
+
+Q4T_TEST(chat_speech_partial_usage_survives_cancel_and_exception_unwind) {
+  for (const bool throwing : {false, true}) {
+    ActualUsageCounter execution, speech;
+    execution.Enable();
+    speech.Enable();
+    execution.Merge(ActualUsage{100, 21, 20, 5});
+    const auto before = execution.Total();
+    try {
+      ScopeExit observe([&] {
+        ObserveChatSpeechUsage(before, execution.Total(), &speech);
+      });
+      execution.BeginStep();
+      ScopeExit finish([&] { execution.EndStep(); });
+      execution.Observe({12, 32});
+      if (throwing) throw std::runtime_error("CPU interrupted synthesis");
+      // A cancelled producer returns without a successful waveform EOF.
+    } catch (const std::runtime_error&) {
+    }
+    Q4T_CHECK(speech.Total() == (ActualUsage{12, 32}));
+    Q4T_CHECK(execution.Total() == (ActualUsage{112, 53, 20, 5}));
+  }
+  return true;
+}
+
+Q4T_TEST(chat_speech_usage_unknown_or_regression_cannot_become_zero) {
+  const ActualUsage before{100, 21, 20, 5, 2};
+  for (int fault = 0; fault < 8; ++fault) {
+    ActualUsageCounter speech;
+    speech.Enable();
+    std::optional<ActualUsage> old = before, next = ActualUsage{112, 53, 20, 5, 2};
+    if (fault == 0) old.reset();
+    if (fault == 1) next.reset();
+    if (fault == 2) next->input = 99;
+    if (fault == 3) next->output = 20;
+    if (fault == 4) ++next->cached;
+    if (fault == 5) ++next->reasoning;
+    if (fault == 6) ++next->cache_write;
+    if (fault == 7) next->output = kActualUsageLimit;
+    ObserveChatSpeechUsage(old, next, &speech);
+    Q4T_CHECK(!speech.Total());
+    ObserveChatSpeechUsage(before, ActualUsage{112, 53, 20, 5, 2}, &speech);
+    Q4T_CHECK(!speech.Total());
+  }
+  return true;
+}
+
+Q4T_TEST(chat_speech_usage_zero_and_completed_eos_preserve_original_counts) {
+  const ActualUsage previous{100, 21, 20, 5};
+  ActualUsageCounter speech;
+  speech.Enable();
+  ObserveChatSpeechUsage(previous, previous, &speech);
+  Q4T_CHECK(speech.Total() == ActualUsage{});
+  ObserveChatSpeechUsage(previous, ActualUsage{112, 54, 20, 5}, &speech);
+  Q4T_CHECK(speech.Total() == (ActualUsage{12, 33}));
+  // Accepted synthesis tokens include EOS as on the previous successful
+  // Realtime path; neither PCM extent nor reserved max frames enter here.
   return true;
 }
 

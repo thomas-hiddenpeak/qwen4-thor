@@ -1,0 +1,146 @@
+{
+  "records": [
+    {
+      "path": "barge-in-business-01/light-duplex-barge_in-after-0.http.json",
+      "bytes": 247,
+      "sha256": "f0a75177a7f99b42fbeb11b5114ab97db1c0567ffece586374007687dfc53828"
+    },
+    {
+      "path": "barge-in-business-01/light-duplex-barge_in.events.jsonl",
+      "bytes": 779178,
+      "sha256": "44235370882c63d752b1cced09074c4062e14b5b5cd3eea6465f961c62004b5c"
+    },
+    {
+      "path": "barge-in-business-01/light-duplex-entry-cleanup.json",
+      "bytes": 63,
+      "sha256": "8cd203f54d045c541897d5780484673f107b097251cc94a1f0e078e0c5a4e82c"
+    },
+    {
+      "path": "barge-in-business-01/light-config.http.json",
+      "bytes": 238,
+      "sha256": "84d97ee0a439632ba02e693192fc9266a54d48275374eed6f5825f6ffa477931"
+    },
+    {
+      "path": "barge-in-business-01/light-duplex-barge_in.sdk.json",
+      "bytes": 377883,
+      "sha256": "f58b5f17ebd6720f3ccd872eca5d700a40bceb9a2904ab0a25595cc5d07b1150"
+    },
+    {
+      "path": "barge-in-business-01/result.json",
+      "bytes": 1254,
+      "sha256": "d7516b5dc305e6c51a39ca536efbd659844b794c091035d4ca94125fa0ee8ef4"
+    },
+    {
+      "path": "barge-in-business-01/light-config.json",
+      "bytes": 20883,
+      "sha256": "5ba92580c39dc029358d04c65cf9375bb79c3bcce1af554dd93287ccb18ff8b1"
+    },
+    {
+      "path": "barge-in-business-01/light-duplex-barge_in-before.wire",
+      "bytes": 33632,
+      "sha256": "cc1297933f7e8830e9c9fe8d8b3bf78b9f65ab910486ffc2949dc9bdff2025f6"
+    },
+    {
+      "path": "barge-in-business-01/counts.json",
+      "bytes": 100,
+      "sha256": "ef1f5d1915085be1a744693eaf9bff0a68da74682cebe44d0620ddaf9912fc31"
+    },
+    {
+      "path": "barge-in-business-01/plan.json",
+      "bytes": 1087177,
+      "sha256": "bff703e5ef0a1af46401e6dc5aa74d5ab280d6557e9080e73a604e9ed9f645e1"
+    },
+    {
+      "path": "barge-in-business-01/light-command.json",
+      "bytes": 2881,
+      "sha256": "f27152bfbc625e7a368561ec3e9841cfc8b41b574181351372adc42181408add"
+    },
+    {
+      "path": "barge-in-business-01/light-config.wire",
+      "bytes": 16016,
+      "sha256": "85d7d15e69c335996a7084d655bc8484dbfabc3c781e5aaff4011fdd01b2cb36"
+    },
+    {
+      "path": "barge-in-business-01/light-duplex-barge_in.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "barge-in-business-01/light-duplex-sessions-observed.json",
+      "bytes": 381548,
+      "sha256": "de9f2455bef6b7a59a44f2a262d82fcba988d44f46cbe12373a89f97cd9412a6"
+    },
+    {
+      "path": "barge-in-business-01/light-duplex-barge_in-before.http.json",
+      "bytes": 246,
+      "sha256": "f397fedbedfabc2b837fcbd376ff4490ee5c58a606dc78820befa398e1d900b9"
+    },
+    {
+      "path": "barge-in-business-01/light-identity.json",
+      "bytes": 3317,
+      "sha256": "66d9b7cb72f113f4c90630bdc67f78c40c947bcf1e16c17f75132265cd134eed"
+    },
+    {
+      "path": "barge-in-business-01/light-duplex-barge_in-drain.metrics.json",
+      "bytes": 23244,
+      "sha256": "bae67eb3a925993602a7b53f6c75c23eb983fe1b430cd4253e543d7ec705db5d"
+    },
+    {
+      "path": "barge-in-business-01/light-capabilities.json",
+      "bytes": 59755,
+      "sha256": "b1758f2a987912ad1d36ddd89c41f682fe3a41cfc2f60ffe9dabcf9a8bb4efbb"
+    },
+    {
+      "path": "barge-in-business-01/cleanup.json",
+      "bytes": 4400,
+      "sha256": "2757dac5c7a500da00e3ceb6c0e4b287e86369d3c36ada1deed6b1eb5b7a329a"
+    },
+    {
+      "path": "barge-in-business-01/light-capabilities.http.json",
+      "bytes": 238,
+      "sha256": "86afb25a199c33c5f5504dbefdcfc1fe55ab6dd88c5b9ddfb9be5897dde56fd2"
+    },
+    {
+      "path": "barge-in-business-01/light-duplex-barge_in-after-0.wire",
+      "bytes": 33665,
+      "sha256": "66fa56755bc3431e406c2bf52837f18d4749a46a33c9ea0ad17cd538f91a300e"
+    },
+    {
+      "path": "barge-in-business-01/light-capabilities.wire",
+      "bytes": 46235,
+      "sha256": "1c85d20baed4067c0272e395ed6fa7740be496666bd1d17a0f3e105cf7156727"
+    },
+    {
+      "path": "barge-in-business-01/light-model.log",
+      "bytes": 9420,
+      "sha256": "903432a68d9722e0709d2d175c8ced6421491af1b988c50855763a5af7bc70a0"
+    },
+    {
+      "path": "barge-in-business-01/lease/nvml-queries.jsonl",
+      "bytes": 152410,
+      "sha256": "3a9b14d4cbe0bfa5eff0c0e1f34dbe75318bef2c1fd6e24262fcdfe5b83eb00e"
+    },
+    {
+      "path": "barge-in-business-01/lease/events.jsonl",
+      "bytes": 12374,
+      "sha256": "1e5c49fc76abe9a14d0efe129c5ec19e5bb7549b998416ae36e1e339e1c4a5dd"
+    },
+    {
+      "path": "barge-in-business-01/lease/exit.json",
+      "bytes": 742,
+      "sha256": "da51a2c4c1c804d7fdd2a68e4be3c56b368f067de5110300fffcd724d5e4b4bf"
+    },
+    {
+      "path": "barge_in_business_01.py",
+      "bytes": 6428,
+      "sha256": "9d7a400b712dac287248cf53d362c9ec13ce6a16b856fa5bbc6c7c3244b9f340"
+    },
+    {
+      "path": "archive_barge_in_business_01.py",
+      "bytes": 5213,
+      "sha256": "93b58ba999e73549116bf5c6246e039e3e4a778632c7ad863a64272959408c6b"
+    }
+  ],
+  "omitted": [],
+  "archive_sha256": "2fe9cc67a82256d07540efdeec8345a33cec2bb7beadba37a46e7774a094e86e"
+}

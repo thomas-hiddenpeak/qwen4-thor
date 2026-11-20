@@ -12461,7 +12461,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "barge_in_default_scope_cpu_pass_actual_followup_pending",
+      "state": "cancel_usage_categories_cpu_pass_runtime_followup_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
@@ -13660,6 +13660,148 @@
           "default_unchanged": true,
           "verification": "Offline correction of singular unittest count; original commands exited 0, no tests rerun",
           "new_test_executions": 0
+        }
+      },
+      "barge_in_usage_gap": {
+        "evidence": "docs/evidence/serve-realtime-duplex-cancel-usage-gap-20261120/README.md",
+        "result": {
+          "status": "ACTUAL_BARGE_IN_CANCELLED_USAGE_CATEGORIES_MISSING",
+          "original_status": "FAILED",
+          "counts": {
+            "starts": 1,
+            "chats": 2,
+            "controls": 32,
+            "websocket_sessions": 1,
+            "ingress_starts": 1
+          },
+          "seconds": 66.63681192928925,
+          "nvml": {
+            "OK": 64
+          },
+          "cancelled_usage": {
+            "input_token_details": {
+              "cached_tokens": 0
+            },
+            "input_tokens": 196,
+            "output_token_details": {},
+            "output_tokens": 421,
+            "total_tokens": 617
+          },
+          "asr_usage": {
+            "input_token_details": {
+              "audio_tokens": 50,
+              "text_tokens": 15
+            },
+            "input_tokens": 65,
+            "output_tokens": 11,
+            "total_tokens": 76,
+            "type": "tokens"
+          },
+          "settled_tokens": 693,
+          "cleanup_complete": true,
+          "default_unchanged": true,
+          "master_active": true
+        }
+      },
+      "cancel_usage_cpu": {
+        "evidence": "docs/evidence/serve-realtime-duplex-cancel-usage-cpu-20261120/README.md",
+        "result": {
+          "cpu": {
+            "status": "PASS",
+            "tests": [
+              "chat_speech_partial_usage_survives_cancel_and_exception_unwind",
+              "chat_speech_usage_unknown_or_regression_cannot_become_zero",
+              "chat_speech_usage_zero_and_completed_eos_preserve_original_counts",
+              "realtime_interrupted_speech_usage_keeps_categories_without_eof",
+              "realtime_native_speech_requires_prepared_pcm_and_borrowed_owner",
+              "realtime_speech_delivery_matches_actual_pcm_and_typed_eof",
+              "realtime_speech_delivery_unknown_receipts_and_cancel_never_replay",
+              "realtime_speech_output_missing_eof_fails_without_fake_completion",
+              "chat_audio_output_usage_adds_actual_codes_without_recounting_text",
+              "realtime_chat_execution_borrows_online_identity_and_records_actual_usage"
+            ],
+            "commands": [
+              {
+                "command": [
+                  "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+                  "--required-list",
+                  "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/cancel-usage-cpu-01/required.txt"
+                ],
+                "exit_code": 0
+              },
+              {
+                "command": [
+                  "python3",
+                  "-B",
+                  "tools/serve_audit/check_inventory.py",
+                  "--self-check"
+                ],
+                "exit_code": 0
+              }
+            ],
+            "seconds": 0.47717021498829126,
+            "gpu_starts": 0,
+            "default_unchanged": true
+          },
+          "builds": {
+            "cancel-usage-build-01": {
+              "status": "BUILD_PASS",
+              "exit_code": 0,
+              "seconds": 259.6566523029469,
+              "warnings": 0,
+              "gpu_actions": 0,
+              "default_unchanged": true,
+              "prior_unchanged": true,
+              "binary_sha256": "b21dcb50183c67e00c7f37cf1a6872d93b01bddf941fd00bfe40fde3ee7988e3",
+              "free_bytes_after": 2740637696
+            },
+            "cancel-usage-runtime-01": {
+              "status": "BUILD_PASS",
+              "exit_code": 0,
+              "seconds": 348.6717506912537,
+              "warnings": 0,
+              "gpu_actions": 0,
+              "default_unchanged": true,
+              "prior_unchanged": true,
+              "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+              "free_bytes_after": 2706702336
+            }
+          },
+          "new_gpu_starts": 0,
+          "runtime_accepted": false,
+          "default_unchanged": true,
+          "original_failures_preserved": true,
+          "scope": {
+            "scope": "Actual TTS category observation through cancellation/exception, no model/sampling/rate mutation or EOF fabrication",
+            "tests": [
+              "chat_speech_partial_usage_survives_cancel_and_exception_unwind",
+              "chat_speech_usage_unknown_or_regression_cannot_become_zero",
+              "chat_speech_usage_zero_and_completed_eos_preserve_original_counts",
+              "realtime_interrupted_speech_usage_keeps_categories_without_eof",
+              "realtime_native_speech_requires_prepared_pcm_and_borrowed_owner",
+              "realtime_speech_delivery_matches_actual_pcm_and_typed_eof",
+              "realtime_speech_delivery_unknown_receipts_and_cancel_never_replay",
+              "realtime_speech_output_missing_eof_fails_without_fake_completion",
+              "chat_audio_output_usage_adds_actual_codes_without_recounting_text",
+              "realtime_chat_execution_borrows_online_identity_and_records_actual_usage"
+            ],
+            "limits": {
+              "cpu_cases": 10,
+              "source_counterexamples": 20,
+              "gpu_starts": 1,
+              "websocket_sessions": 1,
+              "native_jobs": 2,
+              "seconds": 420
+            },
+            "prior_runtime": "485a38a3a998e03f86ac0897fe712631a2a23b56f18423c56e400d274faf2dbb",
+            "runtime_files": [
+              "include/q4t/server/chat_audio_output.h",
+              "include/q4t/server/native_chat_generation.h",
+              "src/server/chat_audio_output.cpp",
+              "src/server/chat_audio_synthesis.cpp",
+              "src/server/chat_realtime_conversation.cpp"
+            ]
+          }
         }
       }
     }

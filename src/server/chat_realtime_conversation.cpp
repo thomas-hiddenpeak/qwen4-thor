@@ -344,6 +344,7 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
     }
     diagnostic.Stage("execute");
     std::optional<RealtimeSpeechExecution> delivery;
+    ActualUsageCounter speech_usage;
     NativeChatSpeech native_speech;
     if (plan.speech.enabled) {
       delivery.emplace(plan.speech, speech, cancelled);
@@ -355,6 +356,8 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
       // Add native output only after file/context preparation has preserved
       // its existing private proofs. Public JSON cannot create these observers.
       plan.generation.chat.audio_output = plan.speech.chat;
+      speech_usage.Enable();
+      native_speech.usage = &speech_usage;
       native_speech.append = [&](std::string_view pcm) {
         return delivery->Append(pcm);
       };
@@ -374,8 +377,10 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
         {&plan.generation.chat, accounting ? &*accounting : nullptr,
          delivery ? &native_speech : nullptr},
         &invocation);
-    if (result.usage && delivery && delivery->Usage())
-      result.usage->output_audio = delivery->Usage()->output;
+    if (result.usage && delivery) {
+      if (const auto observed = speech_usage.Total())
+        result.usage->output_audio = observed->output;
+    }
     preparation_context.Usage().Merge(
         result.usage ? std::optional<ActualUsage>(result.usage->total)
                      : std::nullopt);
