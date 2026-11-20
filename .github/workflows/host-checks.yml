@@ -230,6 +230,7 @@ jobs:
             tools.serve_recovery.test_profile_prompt \
             tools.serve_recovery.test_profile_prompt_reuse \
             tools.serve_recovery.test_profile_speech \
+            tools.serve_recovery.test_profile_duplex \
             tools.serve_recovery.test_profile_speech_cancel \
             tools.serve_recovery.test_profile_prompt_targeted \
             tools.serve_recovery.test_profile_refusal \

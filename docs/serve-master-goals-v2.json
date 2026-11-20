@@ -12461,7 +12461,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "bounded_native_duplex_business_accepted_profiles_recovery_delivery_pending",
+      "state": "duplex_profile_cpu_accepted_actual_primary_light_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
@@ -13229,6 +13229,41 @@
           "guardian_recovery": false,
           "original_failures_preserved": true,
           "quality_causation": "not established: before and after both passed seeds 41/42",
+          "master_active": true
+        }
+      },
+      "primary_light_contract": {
+        "evidence": "docs/evidence/serve-realtime-duplex-profile-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_DUPLEX_PROFILE_CONTRACT_CPU",
+          "python_cases": 16,
+          "new_cases": 12,
+          "affected_cases": 4,
+          "original_execution_seconds": 1.0164845478720963,
+          "source_correction": {
+            "status": "PASS",
+            "seconds": 0.46502656769007444,
+            "source_counterexamples": 20,
+            "reused_python_cases": 16,
+            "new_python_executions": 0,
+            "original_source_failure_preserved": true,
+            "default_unchanged": true,
+            "gpu_starts": 0
+          },
+          "source_review": {
+            "sha256": "a2c7bab8cbbdbb3286ec91c161a475901cbde6e373b44d19ba416d62b97b007c",
+            "changed": 24,
+            "added": 4,
+            "unchanged": 956,
+            "previous_binary": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+            "candidate_binary": "9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c",
+            "candidate_protocol": "d55cb38d4b5c9251612fdacd8e20b403a1842e67d50f016f9f76bfc60c1f8310"
+          },
+          "new_actual_profiles": false,
+          "guardian_recovery": false,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "gpu_starts": 0,
           "master_active": true
         }
       }
