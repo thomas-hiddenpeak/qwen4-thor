@@ -1195,6 +1195,22 @@ class Guardian {
     return result;
   }
 
+  std::set<pid_t> JournalTree(
+      const std::vector<s::ProcessRecord>& records) const {
+    std::set<pid_t> result;
+    for (const auto& record : records) {
+      if (record.identity != journal_.Worker() &&
+          !(versions_ && versions_->Owns(record.identity)))
+        continue;
+      // Sealed preparation can invoke bounded native policy validators.
+      // They belong to the live worker, not the payload being retired.
+      // Adopted children lose this exemption when their parent exits.
+      const auto tree = Subtree(records, record.identity);
+      result.insert(tree.begin(), tree.end());
+    }
+    return result;
+  }
+
   // A replacement controller/model cannot rely only on the reported main
   // model PID disappearing. Every descendant in the model/auxiliary domain
   // must have exited; workers are stopped and reaped before requesting this.
@@ -1202,9 +1218,9 @@ class Guardian {
     std::vector<s::ProcessRecord> records;
     if (!s::OwnDescendants(&records).ok()) return false;
     const auto gateway = Subtree(records, gateway_.identity);
+    const auto journals = JournalTree(records);
     return std::all_of(records.begin(), records.end(), [&](const auto& item) {
-      return item.identity == journal_.Worker() ||
-             (versions_ && versions_->Owns(item.identity)) ||
+      return journals.contains(item.identity.pid) ||
              item.identity == controller_.identity ||
              gateway.contains(item.identity.pid);
     });
@@ -1514,10 +1530,10 @@ class Guardian {
       return false;
     }
     const auto protected_tree = Subtree(descendants, protected_root);
+    const auto journals = JournalTree(descendants);
     bool empty = true;
     for (const auto& record : descendants) {
-      if (record.identity == journal_.Worker() ||
-          (versions_ && versions_->Owns(record.identity)) ||
+      if (journals.contains(record.identity.pid) ||
           protected_tree.contains(record.identity.pid))
         continue;
       empty = false;

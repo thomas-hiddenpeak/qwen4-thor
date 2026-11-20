@@ -203,9 +203,11 @@ def business_record(version):
 
 def finalize(path):
     import socket
-    from tools.serve_service.package import read
-    plan=read(path)
-    row=read(Path(plan['output'])/'execution/mcp-peer-cleanup.json')
+    plan=json.loads(Path(path).read_bytes())
+    # Production imports must follow namespace pinning, including metadata
+    # readers. Otherwise the checkout shadows the sealed recovery package.
+    _,_,_,_,_,engine=LEGACY['load_modules'](plan)
+    row=engine.read(Path(plan['output'])/'execution/mcp-peer-cleanup.json')
     require(row==dict(closed=True,port=plan['mcp_recovery']['fixture']['port']),
             'owned MCP peer cleanup missing')
     with socket.socket() as sock:

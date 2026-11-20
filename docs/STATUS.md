@@ -81,6 +81,12 @@ GPU拟分五个完整驱动：累计8启动/22工作（含8自检）/9连接/2�
 1500秒，同时验证显式私网组合和确切默认策略包。首次入口0模型/
 0请求时触发测试PKI导入失败；改离线按需导入，[3项CPU补验通过](evidence/serve-realtime-mcp-recovery-bootstrap-cpu-20261120/README.md)。
 原失败保留，运行时/封包不变，同预算重新冻结实际恢复。
+实际配置保留包和TLS/控制器恢复通过，累计3启动/10工作；整包阶段
+在0模型时暴露Guardian误清理版本校验子进程，原失败保留且正常清理。
+[所有权修复CPU已通过](evidence/serve-mcp-guardian-subtree-cpu-20261120/README.md)：
+7项原生生命周期、1项封包命名空间和1项实际封包准备，LLM引擎不变，
+新Guardian零警告。工作进程死亡/停止仍清理全部子孙，没有扩大超时。
+继续重新封装修复后的控制根，补整包及确切默认策略恢复短验和发行。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，
@@ -172,6 +178,9 @@ CPU夹具和退役构建库的可逆归档、SHA和恢复脚本保留在
 磁盘余量不足时另将67个退役CPU测试程序精确压缩归档，释放
 188854224字节；当前host测试、runtime和发行包保持，原路径及
 逐字节恢复方法见该目录的`retired-host-tests-03/plan.json`与`restore.py`。
+本MCP阶段另对14个本阶段退役CPU程序可逆压缩，释放335235523字节；
+当前host/runtime/default未改。原路径、SHA和实际恢复核对记录见
+`.q4t-work/serve-realtime-mcp-20261120/retired-host-tests-01/`与`-02/`。
 
 另将14个2026-10-31及以前历史包的同字节head副本转为只读共享inode，
 保留全部原路径和SHA，释放4362113024字节。原权限/时间、独立恢复

@@ -15827,5 +15827,23 @@
       "rollback-capable publication and main",
       "all remaining master tasks"
     ]
+  },
+  "native_realtime_mcp_guardian_subtree_20261120": {
+    "state": "targeted_cpu_pass_managed_remaining",
+    "evidence": "docs/evidence/serve-mcp-guardian-subtree-cpu-20261120/README.md",
+    "native_tests": 7,
+    "sealed_prepare_checks": 1,
+    "namespace_tests": 1,
+    "original_failures_preserved": true,
+    "new_gpu_actions": 0,
+    "managed_completed": {
+      "starts": 3,
+      "work": 10,
+      "stages": [
+        "configured retained",
+        "TLS and controller"
+      ]
+    },
+    "next": "Seal repaired native control root; finish configured whole-payload and exact default-policy recovery, reversible release/main, then continue every remaining master task."
   }
 }

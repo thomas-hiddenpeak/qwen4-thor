@@ -258,6 +258,7 @@ jobs:
             tools.serve_realtime.test_mcp_checks \
             tools.serve_realtime.test_mcp_finish \
             tools.serve_realtime.test_mcp_service \
+            tools.serve_realtime.test_mcp_finalizer \
             tools.serve_realtime.test_mcp_recovery_sdk \
             tools.serve_responses.test_mcp_business_peer \
             tools.serve_recovery.test_profile_mcp \
