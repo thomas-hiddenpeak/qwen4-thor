@@ -1,0 +1,217 @@
+{
+  "files": {
+    "binding_business_01.py": {
+      "bytes": 9569,
+      "sha256": "e2608cbf070a4ad2ee01da1391cc787de869d3155a9645c4d88c23aa41d3be58"
+    },
+    "binding_business_02.py": {
+      "bytes": 9778,
+      "sha256": "ef1e1e5f22fe535afe186988d7bff292614c69cff005239beb462687b2bea93b"
+    },
+    "binding-group-02.json": {
+      "bytes": 754,
+      "sha256": "f5b9b8544cc916b21a3d09e5297f37f9e535a7a56199935c3c71e331da584bea"
+    },
+    "ci-capacity-runtime-01/plan.json": {
+      "bytes": 109656,
+      "sha256": "9792b0c655a76c85c6a126ff665cf1f488bb1b20e80dc65abdc57acad57008d9"
+    },
+    "ci-capacity-runtime-01/result.json": {
+      "bytes": 293,
+      "sha256": "80d3a4bd80e407af1ab9f8bfaafdf4a688f6a788b23831c3c29409e68659c2e5"
+    },
+    "ci-capacity-runtime-01/build.log": {
+      "bytes": 2068,
+      "sha256": "2b71913d1eae85c5a5341da09900db62930b6b89939c2373338c9e0240a40f7a"
+    },
+    "binding-business-01/plan.json": {
+      "bytes": 999183,
+      "sha256": "70139ecc2ebde82c67c9bc2255b88b81284a543702b2fd2edc7925888417ddd5"
+    },
+    "binding-business-01/result.json": {
+      "bytes": 1275,
+      "sha256": "b8d4afd77a818762b6b2ab46fcf1c090e5b03487e223047a7f560665c85facc3"
+    },
+    "binding-business-01/counts.json": {
+      "bytes": 100,
+      "sha256": "13aafe6d9e6f7a40a6bd33aa9b567333c4fed22a66c46658917fab3e85991a6a"
+    },
+    "binding-business-01/cleanup.json": {
+      "bytes": 4549,
+      "sha256": "27454dc17e8279b184212e61359595c72136aa9ff7cbcf216c869c250f2cb74a"
+    },
+    "binding-business-01/lease/events.jsonl": {
+      "bytes": 9839,
+      "sha256": "50b53cef6836aca39958cbd5ee0f1b51be042405ea6d00db819cd00381b480c2"
+    },
+    "binding-business-01/lease/exit.json": {
+      "bytes": 654,
+      "sha256": "af562cf1cc233d273128411716ab55a3fb31616969c656d19f1a3572186317c6"
+    },
+    "binding-business-01/lease/nvml-queries.jsonl": {
+      "bytes": 118815,
+      "sha256": "06920f210503e7ce3969bb6ce53b70453d623febbf5ca280d0ab9190ab398d50"
+    },
+    "binding-business-01/primary-config.json": {
+      "bytes": 20965,
+      "sha256": "e52ce7ddd76e94a076442c8ffd82148f3886c2617aef0a41ae86f1539777961b"
+    },
+    "binding-business-01/primary-capabilities.json": {
+      "bytes": 60183,
+      "sha256": "7d3f5c130c34f7f3aed4451ea185d115039869a43107f84a90cc4139b0493899"
+    },
+    "binding-business-01/primary-model.log": {
+      "bytes": 8068,
+      "sha256": "c929100f37690d1cdb4b64b4538db192584cd845c3e3b61f9fb10fb9143a540a"
+    },
+    "binding-business-01/primary-identity.json": {
+      "bytes": 3456,
+      "sha256": "660f5a4588a07d5db5a772abfa6c0257dff197d34abac89ed793330aade6bcb7"
+    },
+    "binding-business-01/primary-peer-results.json": {
+      "bytes": 177,
+      "sha256": "7d372024f7a178e0a3d817cc7a9e962f53d1d28f4b8409f907bcfe8dce8a2f13"
+    },
+    "binding-business-01/primary-binding.sdk.json": {
+      "bytes": 11829,
+      "sha256": "9f75c6b626b10bf017a3c9a7b5d5f0214a61125383673f6ab9ed31ac0b09c7ba"
+    },
+    "binding-business-01/primary-binding.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "binding-business-01/primary-binding.events.jsonl": {
+      "bytes": 14406,
+      "sha256": "828b62a9f196aff740b6ddcf247d8c7052de7e4fb6faa2a917d13d1884cae62a"
+    },
+    "binding-business-01/primary-binding-witness.json": {
+      "bytes": 39952,
+      "sha256": "1d5901af807e23ca3489250009b6cb3d8800868967956e51845bcbfd3e8155d1"
+    },
+    "binding-business-02/plan.json": {
+      "bytes": 999183,
+      "sha256": "ee38e4da74467730eaa277b7178e398ad7f7531ae1a9f8d0afebe19573a67526"
+    },
+    "binding-business-02/result.json": {
+      "bytes": 300,
+      "sha256": "0682270614292bcacd22f39f0b95f93285769301798984fa23355779ab6e57b0"
+    },
+    "binding-business-02/acceptance.json": {
+      "bytes": 1736,
+      "sha256": "1e47dc13f5348d9e7fc3f46cbaa827eb412c67fbd98e2e1a265a81522a893531"
+    },
+    "binding-business-02/counts.json": {
+      "bytes": 100,
+      "sha256": "d9b5aeef1562a03a4e983a8eec2d475857b4435372b73458fd5128240db44894"
+    },
+    "binding-business-02/observations.json": {
+      "bytes": 1046,
+      "sha256": "eca1255214f4eda4d70db0823cbb5aeb4bc526f3fe9824b9dd3c4d56d36e3611"
+    },
+    "binding-business-02/cleanup.json": {
+      "bytes": 8980,
+      "sha256": "0f167f185bdeb60957b4cf774d6d66b9f84f357e4096f99b5a885de606dd891a"
+    },
+    "binding-business-02/primary-cleanup.json": {
+      "bytes": 4549,
+      "sha256": "4da35425bc33c8dba3b115b3558cfe488637e8581f6fb7d7b7d17c003025ea1f"
+    },
+    "binding-business-02/lease/events.jsonl": {
+      "bytes": 19134,
+      "sha256": "fea263dd9196c0e78715763ea577ca0f400298d9b253ddeb5e6216f2d751c839"
+    },
+    "binding-business-02/lease/exit.json": {
+      "bytes": 649,
+      "sha256": "e9a5903619e877e7993a84bd38635a0661482f17d855752cbf0fe85c89691eb2"
+    },
+    "binding-business-02/lease/nvml-queries.jsonl": {
+      "bytes": 238332,
+      "sha256": "bdfd2e01b5b0c806255757fada9c3c13c5be8804389a9565d35c39dce4d19663"
+    },
+    "binding-business-02/primary-config.json": {
+      "bytes": 20965,
+      "sha256": "68aaea1f864f00326d38e42bcf5721b2a5c933439109f68632a4553587ce58dc"
+    },
+    "binding-business-02/primary-capabilities.json": {
+      "bytes": 60183,
+      "sha256": "7d3f5c130c34f7f3aed4451ea185d115039869a43107f84a90cc4139b0493899"
+    },
+    "binding-business-02/primary-model.log": {
+      "bytes": 11986,
+      "sha256": "c0b75c14958e33917520d1dc88f0daecea022d68684552274b71e8932e7d0c70"
+    },
+    "binding-business-02/primary-identity.json": {
+      "bytes": 3456,
+      "sha256": "b02436d5cd22acb8281fde452052c55575501b6ba5d1a9a2f96e484ccd1db31f"
+    },
+    "binding-business-02/primary-peer-results.json": {
+      "bytes": 749,
+      "sha256": "25f7cfba45540a5421bb976d704369e4acc773d2c96b2cf1f9ebdc4a650cfaae"
+    },
+    "binding-business-02/primary-entry-cleanup.json": {
+      "bytes": 64,
+      "sha256": "7a4f2f5d9ab48b9c846877cdb8605039f97d4acf579489a1d702222182adb0f0"
+    },
+    "binding-business-02/primary-binding.sdk.json": {
+      "bytes": 32014,
+      "sha256": "d5471f66b206d65787e8c228c7914cdf24c2b9a2b30b76f1970839e6e5b69474"
+    },
+    "binding-business-02/primary-binding.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "binding-business-02/primary-binding.events.jsonl": {
+      "bytes": 36933,
+      "sha256": "141c7dfcc5ee6c06c150d1123e74816d2c209a766776005e58419fc2aac4432c"
+    },
+    "binding-business-02/primary-binding-witness.json": {
+      "bytes": 99185,
+      "sha256": "42a0cdfa767cf3912ffe5c4224c2d1fed01b1fce32a1437747b689a5e0a83e73"
+    },
+    "binding-business-02/light-config.json": {
+      "bytes": 20970,
+      "sha256": "34491c8f8afeefd831f2b30deb51c8ae88128eadb697a6e393e5a7a1594c4159"
+    },
+    "binding-business-02/light-capabilities.json": {
+      "bytes": 60184,
+      "sha256": "6e8cc70416d8a37d4c10ffcb21e36bb2d0e561f54961d458fce48bb4cb8c16cd"
+    },
+    "binding-business-02/light-model.log": {
+      "bytes": 11563,
+      "sha256": "3b705c1277e70bcfa71182d6bacfc7ce08d123a6c7fd2b23dbb77339e45168d5"
+    },
+    "binding-business-02/light-identity.json": {
+      "bytes": 3459,
+      "sha256": "1fdc033fe1d0d3a46426c9df86a280936c24942335509334530f3dda471bbd60"
+    },
+    "binding-business-02/light-peer-results.json": {
+      "bytes": 749,
+      "sha256": "25f7cfba45540a5421bb976d704369e4acc773d2c96b2cf1f9ebdc4a650cfaae"
+    },
+    "binding-business-02/light-entry-cleanup.json": {
+      "bytes": 64,
+      "sha256": "74c7d0e9d8715beb9b9ea03b2b2c8081d5c3e92fa7f1dc0f9e4aec51eab6dccf"
+    },
+    "binding-business-02/light-binding.sdk.json": {
+      "bytes": 30949,
+      "sha256": "926cf48033c7865325ee7df6f435c78cdca43979056f27b22024115419f76163"
+    },
+    "binding-business-02/light-binding.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "binding-business-02/light-binding.events.jsonl": {
+      "bytes": 35623,
+      "sha256": "f00680fe8e7bdad8e6e35bee90b1e2b37abc3971d3d6665d6575b40a8ffc6554"
+    },
+    "binding-business-02/light-binding-witness.json": {
+      "bytes": 96030,
+      "sha256": "9e43fd1e4145a377ccced85a939deba7d78ee0bb7b7fe045d73a828f1bdb89ac"
+    },
+    "source/src/server/realtime_response_output.cpp": {
+      "bytes": 27922,
+      "sha256": "cbe344926dd1ced6d2d3e6f453238f5185affa7bd4583081a76bf6eb3b9699f0"
+    }
+  },
+  "archive_sha256": "70ad8bcc3bc4bf028387065ae253acbf2ac49372a752fd1505d50341ff4e2d6b"
+}

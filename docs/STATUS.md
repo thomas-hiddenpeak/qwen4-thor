@@ -8,10 +8,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 ## 正在推进
 
 PR #56的CI容量回归及旧版封包清单已修复，
-[24项针对性CPU闭合](evidence/serve-realtime-mcp-ci-capacity-20261120/README.md)，
-原失败及上限夹具误带129项工具的失败保留。运行程序构建后，最多
-2启动/4生成/2 TLS会话/600秒补主轻实际MCP短验；不重复未变恢复
-组合。rev406 STOPPED尚未包含修复，继续确切身份资格、交付和main。
+[24项针对性CPU](evidence/serve-realtime-mcp-ci-capacity-20261120/README.md)、
+[主轻真实MCP短验](evidence/serve-realtime-mcp-binding-http-20261120/README.md)及
+[11项资格边界CPU](evidence/serve-realtime-mcp-binding-gate-20261120/README.md)通过。
+含首次驱动漏参失败共3启动/5实际生成/159.322秒，150次NVML正常；
+修复后两条资料回答通过，原质量FAIL保持。rev406 STOPPED尚未包含
+修复，继续离线确切身份资格、可回退交付和main；不重复未变恢复组合。
 
 [G00范围决定已落实](evidence/serve-scope-decision-20261120/README.md)：
 完整推理与应用服务保留，平台管理API按用户决定排除；157条冻结

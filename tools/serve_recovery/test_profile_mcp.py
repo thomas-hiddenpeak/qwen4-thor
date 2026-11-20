@@ -178,4 +178,71 @@ class SourceReuse(unittest.TestCase):
         with self.assertRaises(ValueError): profile_record.shape(dict(value, format='arbitrary'), 3 << 20)
 
 
+class BindingGuard(unittest.TestCase):
+    def setUp(self):
+        SourceReuse.setUp(self)
+        from tools.serve_recovery.profile_mcp_source import BINDING_GUARD
+        from tools.serve_ops import contracts
+        self.review = BINDING_GUARD
+        archive = 'serve-realtime-mcp-binding-http-20261120'
+        self.witness = leaf(archive, 'binding-business-02/primary-binding-witness.json')
+        configuration = leaf(archive, 'binding-business-02/primary-config.json')
+        self.value = reuse.attach(self.value)
+        self.value.update(configuration=contracts.configuration(configuration, version=5),
+            startup_memory=configuration['startup_memory']['checks']['before_allocations'])
+        self.value['identity'].update(binary_sha256=BINDING_GUARD['binary_sha256'],
+                                      protocol_sha256=BINDING_GUARD['protocol_sha256'])
+        self.value['capabilities']['protocol_source_sha256'] = BINDING_GUARD['protocol_sha256']
+
+    def test_exact_observation_keeps_prior_business_and_does_not_mutate_input(self):
+        before = copy.deepcopy(self.value)
+        result = reuse.attach_binding_guard(self.value, self.witness)
+        reuse.validate(result)
+        self.assertEqual(self.value, before)
+        self.assertEqual(result['business'], before['business'])
+        self.assertEqual(result['identity'], before['identity'])
+
+    def test_new_engine_cannot_use_old_evidence_without_supplement(self):
+        with self.assertRaises(ValueError): reuse.validate(self.value)
+
+    def test_another_engine_protocol_backend_or_capacity_is_not_authorized(self):
+        for field in ('binary_sha256', 'protocol_sha256', 'backend', 'capacity'):
+            changed = copy.deepcopy(self.value)
+            if field == 'capacity': changed['capacity']['max_seq'] = 2
+            else: changed['identity'][field] = 'changed'
+            with self.assertRaises(ValueError):
+                reuse.attach_binding_guard(changed, self.witness)
+
+    def test_actual_settlement_dispatch_and_response_cannot_be_relabelled(self):
+        for field in ('settlement', 'dispatch', 'response'):
+            changed = copy.deepcopy(self.witness)
+            if field == 'settlement': changed['after']['settled'] += 1
+            elif field == 'dispatch': changed['remote']['calls'] = []
+            else: changed['session']['responses'][-1]['status'] = 'failed'
+            with self.assertRaises(ValueError): reuse.attach_binding_guard(self.value, changed)
+
+    def test_profile_witness_is_not_interchangeable(self):
+        wrong = leaf('serve-realtime-mcp-binding-http-20261120',
+                     'binding-business-02/light-binding-witness.json')
+        with self.assertRaises(ValueError): reuse.attach_binding_guard(self.value, wrong)
+
+    def test_actual_configuration_and_startup_observation_are_bound(self):
+        for field in ('configuration', 'startup_memory'):
+            changed = copy.deepcopy(self.value)
+            changed[field]['unobserved'] = 1
+            with self.assertRaises(ValueError): reuse.attach_binding_guard(changed, self.witness)
+
+    def test_review_capability_prior_business_and_duplicate_rejected(self):
+        value = reuse.attach_binding_guard(self.value, self.witness)
+        for field in ('review', 'capability', 'prior_business'):
+            changed = copy.deepcopy(value)
+            if field == 'review':
+                changed['reused_business']['binding_guard']['review_sha256'] = '0'*64
+            elif field == 'capability':
+                changed['capabilities']['protocol_source_sha256'] = '0'*64
+            else: changed['business']['existing']['actual'] = 2
+            with self.assertRaises(ValueError): reuse.validate(changed)
+        with self.assertRaises(ValueError): reuse.attach_binding_guard(value, self.witness)
+
+
 if __name__ == '__main__': unittest.main()

@@ -15875,5 +15875,19 @@
     "customers_quotas_usage_and_budgets_preserved": true,
     "model_quality_status": "FAIL",
     "master_goal_active": true
+  },
+  "native_realtime_mcp_binding_guard_20261120": {
+    "state": "targeted_cpu_http_passed_qualification_delivery_pending",
+    "cpu_evidence": "evidence/serve-realtime-mcp-ci-capacity-20261120/README.md",
+    "http_evidence": "evidence/serve-realtime-mcp-binding-http-20261120/README.md",
+    "qualification_evidence": "evidence/serve-realtime-mcp-binding-gate-20261120/README.md",
+    "binary_sha256": "40359a27d7c59bf892a85aa239de3db81b9670305170849d6c9118088f99ec95",
+    "actual_starts": 3,
+    "actual_generations": 5,
+    "strict_lease_seconds": 159.3220474338159,
+    "nvml_queries": 150,
+    "default_contains_fix": false,
+    "original_failures_preserved": true,
+    "master_active": true
   }
 }

@@ -148,3 +148,26 @@ SOURCES = {'light': {'business': {'asr': '2926bcfd553349f3b51c5c136f98e73d1f816b
              'identity': '7cbb22d8bacab64ee2669d2e4d8538fcd3ad71ce67062d444fb38183448a895d',
              'record_sha256': '21273f6370d5264403fdae3f3375133748a8027cc189cc1c30ab17198e6a12b8',
              'reuse': '87300fb276b6d20f2782ceefcad4818920bbb7a62a512cff56316b95319ec977'}}
+
+
+# Exact supplemental business for the owned-capacity validation repair.
+BINDING_GUARD = {'binary_sha256': '40359a27d7c59bf892a85aa239de3db81b9670305170849d6c9118088f99ec95',
+ 'cpu_acceptance_sha256': 'cc6e9c9fecfb38c6967e94148bf9056ea8937f3138f3849866fef8af3b6b692d',
+ 'guardian_previously_accepted': '822fb3ca8f1859d90eeec8517c7c346de4d6e1a5c9f21916887e57768135f8a2',
+ 'http_acceptance_sha256': '859bd19ade28217665145d201f2e8031e74f0fc258ceedb1ab937f448160af6a',
+ 'model_quality_repaired': False,
+ 'original_failures_preserved': True,
+ 'previous_binary': 'a84fda9519bdc19d20a725e9c259a74bea89c8c6e70d133876b3e2007c1ebf7b',
+ 'previous_protocol': '78696063ccaaddf09704dbed2566122fd92824ae0d356057a90e5cb35b6df2c7',
+ 'prior_registry_sha256': '5a44b4a3df68c45cb34f0b0758b51aeb4acd556a98d549db3992a106cb159fa3',
+ 'profiles': {'light': {'configuration_sha256': '1e203f39f3f8a0cae288fe25d43ae53ebb2ae71fc38a392ddcce77ce9fbe4dbc',
+                        'prior_record_sha256': '67f572f5cf309d963f57f138d2441577f0d1d023be6626261862482114a09513',
+                        'startup_memory_sha256': 'ad11e24a38564d5d35fbb748188791dc6b672fa63d10038265ffe91ee21728a7',
+                        'witness_sha256': '373a8f25d73746728dba401af1b49ef72b19313a8b552ed1912d21d64826240c'},
+              'primary': {'configuration_sha256': '26221f05c8ab459c5a7f6057b5c5a5ca316f211319805730ed02b03359952e33',
+                          'prior_record_sha256': '9fed0a0aff7a9287cce971e539f3c015ba814e04a1e40bdb9a185ed2ad69cc91',
+                          'startup_memory_sha256': '0d74833d85599436520991b96514d3da0a30fe0f16e7dcfeb1812dbde591e281',
+                          'witness_sha256': '60ad0f31e20e14fe4e41e1bed9b9cd2af2cb937c690fe91c0760424f2ea16fe6'}},
+ 'protocol_sha256': '98fa9452fce551cfaed7c344869fa599780d43cd0122e2f4013e0a59f0934001',
+ 'runtime_delta': {'src/server/realtime_response_output.cpp': {'after': 'cbe344926dd1ced6d2d3e6f453238f5185affa7bd4583081a76bf6eb3b9699f0',
+                                                               'before': '9b5fa928932a263ae319b8ce1e19ff30baf79b6eaec444391ee108cf90d8a056'}}}

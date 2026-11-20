@@ -20,6 +20,9 @@ def old_capabilities(value):
 
 def validate(value):
     from tools.serve_recovery import profile_evidence as e, profile_mcp_evidence as m
+    original = value
+    if 'binding_guard' in value['reused_business']:
+        value = binding_guard_base(value)
     name = value['profile']
     source = SOURCES[name]
     reuse = value['reused_business']
@@ -46,7 +49,7 @@ def validate(value):
     ledger.require(value['business']['realtime_mcp']['profile'] == name,
                    'MCP profile owner changed')
     m.business(value['business']['realtime_mcp'])
-    return reuse
+    return original['reused_business']
 
 
 def attach(value):
@@ -55,5 +58,50 @@ def attach(value):
     result['reused_business'] = dict(format=FORMAT, review_sha256=ledger.digest(REVIEW),
         source=copy.deepcopy(SOURCES[name]), observed=copy.deepcopy(OBSERVED[name]),
         keys=sorted(SOURCES[name]['business']), fresh_keys=['realtime_mcp'])
+    validate(result)
+    return result
+
+
+def binding_guard_base(value):
+    """Recognize one reviewed allocation fix, without re-signing old evidence.
+
+    The supplemental witness is the exact, independently checked real SDK
+    read/approval/answer and accounting. Original business leaves, including
+    failures, still pass the preceding source-bound verifier unchanged.
+    """
+    from tools.serve_recovery import profile_mcp_codec as codec
+    from tools.serve_recovery.profile_mcp_source import BINDING_GUARD
+    result = copy.deepcopy(value)
+    supplement = result['reused_business'].pop('binding_guard')
+    ledger.keys(supplement, ('review_sha256', 'witness'))
+    name = result['profile']
+    ledger.require(name in BINDING_GUARD['profiles'] and
+        supplement['review_sha256'] == ledger.digest(BINDING_GUARD),
+        'unknown MCP allocation guard review')
+    source = BINDING_GUARD['profiles'][name]
+    witness = codec.unpack(supplement['witness'])
+    ledger.require(ledger.digest(witness) == source['witness_sha256'] and
+        ledger.digest(result['configuration']) == source['configuration_sha256'] and
+        ledger.digest(result['startup_memory']) == source['startup_memory_sha256'],
+        'allocation guard actual business or observations changed')
+    identity = result['identity']
+    ledger.require(identity['binary_sha256'] == BINDING_GUARD['binary_sha256'] and
+        identity['protocol_sha256'] == BINDING_GUARD['protocol_sha256'] and
+        result['capabilities']['protocol_source_sha256'] == BINDING_GUARD['protocol_sha256'],
+        'allocation guard engine or protocol differs')
+    identity.update(binary_sha256=REVIEW['candidate_binary'],
+                    protocol_sha256=REVIEW['candidate_protocol'])
+    result['capabilities']['protocol_source_sha256'] = REVIEW['candidate_protocol']
+    return result
+
+
+def attach_binding_guard(value, witness):
+    from tools.serve_recovery import profile_mcp_codec as codec
+    from tools.serve_recovery.profile_mcp_source import BINDING_GUARD
+    result = copy.deepcopy(value)
+    ledger.require('binding_guard' not in result['reused_business'],
+                   'allocation guard already attached')
+    result['reused_business']['binding_guard'] = dict(
+        review_sha256=ledger.digest(BINDING_GUARD), witness=codec.pack(witness))
     validate(result)
     return result
