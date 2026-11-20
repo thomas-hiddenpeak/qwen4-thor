@@ -35,6 +35,9 @@ def state(value):
 
 
 def business(value):
+    if value.get('format') == 'q4t-profile-realtime-duplex-composed-v1':
+        from tools.serve_recovery.profile_duplex_composed import business as composed
+        return composed(value)
     if value.get('format') == 'q4t-profile-realtime-duplex-followup-v1':
         from tools.serve_recovery.profile_duplex_followup import business as followup
         return followup(value)

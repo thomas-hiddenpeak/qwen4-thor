@@ -233,6 +233,7 @@ jobs:
             tools.serve_recovery.test_profile_duplex \
             tools.serve_recovery.test_profile_duplex_followup \
             tools.serve_recovery.test_profile_duplex_resume \
+            tools.serve_recovery.test_profile_duplex_composed \
             tools.serve_recovery.test_profile_speech_cancel \
             tools.serve_recovery.test_profile_prompt_targeted \
             tools.serve_recovery.test_profile_refusal \

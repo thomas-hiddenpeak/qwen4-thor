@@ -1,0 +1,126 @@
+{
+  "records": [
+    {
+      "path": "composed-profiles-01/environment-composition.json",
+      "bytes": 6996,
+      "sha256": "34681f02da3b41f5f70f6362abcc5b6e0f0e6f754400e395a2f8a2b0123ac28e"
+    },
+    {
+      "path": "composed-profiles-01/acceptance.json",
+      "bytes": 817,
+      "sha256": "c042fd8a5fe8354ffb30183835644b855cefe69f88ca985cd5bc9a45cc011561"
+    },
+    {
+      "path": "composed-profiles-01/primary-capabilities.json",
+      "bytes": 59754,
+      "sha256": "966b0c4299019791625f2677a835117310476a73a6e2e1603ca558b638ed47df"
+    },
+    {
+      "path": "composed-profiles-01/source-composition.json",
+      "bytes": 9253,
+      "sha256": "a1f659eab3a44bea6d9eeae29131f690a9844d3439c7f46c33041ec737d1d1e8"
+    },
+    {
+      "path": "composed-profiles-01/light-config.json",
+      "bytes": 20883,
+      "sha256": "9e66af4a1261efd372c74dcb67b07e771ba99e8b7337d411301a22e86d4a1ee1"
+    },
+    {
+      "path": "composed-profiles-01/plan.json",
+      "bytes": 923510,
+      "sha256": "a708ca40c19e3ccf5d2dc59c2cd796463b0d6cc4b405a499fbd2551bf4d904d9"
+    },
+    {
+      "path": "composed-profiles-01/primary-config.json",
+      "bytes": 20872,
+      "sha256": "f05d6ecbf583f11cfefae70173bd7ddbb58a324e862481b9be2d9c5460494b71"
+    },
+    {
+      "path": "composed-profiles-01/light-capabilities.json",
+      "bytes": 59755,
+      "sha256": "72481e165764088d66cf12d88833b5c712d848cee2df5b23369bddc5f592d13a"
+    },
+    {
+      "path": "composed-profiles-01/qualified/light.json",
+      "bytes": 8325651,
+      "sha256": "3b07ae60d3dca92494e5629df45046e6028e102bd2eae7a31a8139aca16cd8dd"
+    },
+    {
+      "path": "composed-profiles-01/qualified/registry.json",
+      "bytes": 54228,
+      "sha256": "3c1e823a6c5c847da6a072c3d593a5c164f6cee1985492020f8b099faeb737ab"
+    },
+    {
+      "path": "composed-profiles-01/qualified/primary.json",
+      "bytes": 5618996,
+      "sha256": "21273f6370d5264403fdae3f3375133748a8027cc189cc1c30ab17198e6a12b8"
+    },
+    {
+      "path": "profile-composition-cpu-01/1.stderr",
+      "bytes": 1176,
+      "sha256": "f85b33f891bdad4e9895ab48ae786a531b1cb11e074fff8bba5826be3647e7df"
+    },
+    {
+      "path": "profile-composition-cpu-01/2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profile-composition-cpu-01/1.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profile-composition-cpu-01/0.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "profile-composition-cpu-01/result.json",
+      "bytes": 1407,
+      "sha256": "0092a9d6ad4c9270bef8aaf82c51fb4b9107f3b5f790eb913f0cb174da55efd8"
+    },
+    {
+      "path": "profile-composition-cpu-01/plan.json",
+      "bytes": 3165,
+      "sha256": "d6cddb3bfd981d48587bd0ac494a27ffecd96ee8a334f0eb1c35a121d9693791"
+    },
+    {
+      "path": "profile-composition-cpu-01/2.stdout",
+      "bytes": 223,
+      "sha256": "40be35b1dc83ba5c6337f43265f048d676f340e85bbc00cbe9ee99641e261d72"
+    },
+    {
+      "path": "profile-composition-cpu-01/0.stderr",
+      "bytes": 2233,
+      "sha256": "ebd61c2f5a64e547570cf27cbad939a0fc8d658e431614b1f9221d4b71d529d3"
+    },
+    {
+      "path": "qualify_composed_profiles_01.py",
+      "bytes": 9822,
+      "sha256": "e9f6c84fa181bdb1bb5d9b07e8e9fe475628f4124cd46002eb60195def836aa9"
+    },
+    {
+      "path": "run_composed_profile_cpu_01.py",
+      "bytes": 2586,
+      "sha256": "a301fd10a03921d97e7b083fa8662a352088cd5bed6b1d86614dcd0053e88c12"
+    },
+    {
+      "path": "profile-composition-scope-01.json",
+      "bytes": 2225,
+      "sha256": "aff897b6179dd2cc9ecc35c7669f7661f76b633505769a8628710b32863b5a5a"
+    },
+    {
+      "path": "compose_profile_inputs_02.py",
+      "bytes": 4199,
+      "sha256": "dfd4f67c5e647a89421e8cf18c22d7d12b68d3842fa7efea903805a62dc2bdf2"
+    },
+    {
+      "path": "archive_composed_profiles_01.py",
+      "bytes": 5282,
+      "sha256": "998d635d19cd535e69bb149beefa2e733b00d86953cb3d0838b42a6e5e7434e0"
+    }
+  ],
+  "omitted": [],
+  "archive_sha256": "01f3e7b717f373e1c32f240e480a8bc8b32f1925b122eab4eef763a42f48c3fc"
+}

@@ -12461,7 +12461,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "cancel_usage_actual_pass_profile_composition_and_recovery_pending",
+      "state": "primary_light_source_qualified_native_recovery_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
@@ -13873,6 +13873,82 @@
             "additional_gpu_starts": 0
           },
           "master_active": true
+        }
+      },
+      "composed_profiles": {
+        "evidence": "docs/evidence/serve-realtime-duplex-composed-profiles-20261120/README.md",
+        "acceptance": {
+          "status": "ACCEPT_COMPOSED_DUPLEX_PRIMARY_LIGHT",
+          "registry_sha256": "3c1e823a6c5c847da6a072c3d593a5c164f6cee1985492020f8b099faeb737ab",
+          "source_composition_sha256": "a1f659eab3a44bea6d9eeae29131f690a9844d3439c7f46c33041ec737d1d1e8",
+          "environment": {
+            "status": "PASS",
+            "env_abort": false,
+            "all_queries_ok": true,
+            "nvml_queries": 526,
+            "lease_result_sha256": "34681f02da3b41f5f70f6362abcc5b6e0f0e6f754400e395a2f8a2b0123ac28e",
+            "cleanup_complete": true
+          },
+          "new_gpu_starts": 0,
+          "original_failures_preserved": true,
+          "original_model_quality_status": "FAIL",
+          "model_quality_repaired": false,
+          "default_unchanged": true,
+          "managed_recovery_accepted": false,
+          "full_matrix": false,
+          "master_active": true,
+          "profile_bytes": {
+            "primary": 5618996,
+            "light": 8325651
+          }
+        },
+        "cpu": {
+          "status": "PASS",
+          "test_counts": [
+            12,
+            6
+          ],
+          "commands": [
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_recovery.test_profile_duplex_composed"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_v23_seals_speech_dependencies_and_preserves_v22",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_v24_duplex_validator_closure_is_sealed",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v24_imports_actual_duplex_validators_without_repository",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable",
+                "tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v23_can_import_speech_evidence_without_repository"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "tools/serve_audit/check_inventory.py",
+                "--self-check"
+              ],
+              "exit_code": 0
+            }
+          ],
+          "seconds": 1.9993715691380203,
+          "gpu_starts": 0,
+          "default_unchanged": true
         }
       }
     }
