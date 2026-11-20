@@ -46,4 +46,16 @@ ObjectReply ExecuteRealtimeMcpCall(ObjectStore& objects,
                                    const std::string& response_id,
                                    const StateAccess& access,
                                    RealtimeMcpExecution* output);
+// Internal cleanup only AFTER this exact invocation's worker has joined.
+// Use a fresh finite cleanup deadline without the ended client's stop signal.
+// Original response/process ownership is checked before mutation; a resumed
+// approval belonging to another execution cannot be cancelled here. Pending
+// approval is denied, unsent work fails, dispatched work remains unknown, and
+// an already durable terminal result is preserved. Never sends tools/call.
+ObjectReply AbandonRealtimeMcpCall(ObjectStore& objects,
+                                   const ChatPlanConfig& config,
+                                   const ResponsesMcpDefinition& definition,
+                                   const io::Json& generated,
+                                   const std::string& response_id,
+                                   const StateAccess& access);
 }  // namespace q4t::server

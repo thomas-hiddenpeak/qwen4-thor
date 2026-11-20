@@ -63,7 +63,7 @@ ObjectReply Pending(const Json& item) {
 }
 ObjectReply Resolve(const ResponsesMcpDefinition& requested,
                     const ChatPlanConfig& config, const StateAccess& access,
-                    ResponsesMcpDefinition* resolved) {
+                    ResponsesMcpDefinition* resolved, bool dispatch = true) {
   ChatPlanError error;
   auto status =
       PlanResponsesMcpDefinition(requested.declaration, resolved, &error);
@@ -75,8 +75,11 @@ ObjectReply Resolve(const ResponsesMcpDefinition& requested,
           requested.credentials.authorization ||
       resolved->credentials.headers != requested.credentials.headers)
     return Invalid("MCP credentials differ from their declared target");
-  return ResolveMcpDeploymentTarget(config.mcp_policy.get(), access.scope,
-                                    resolved);
+  // Denial is local and must remain possible if an optional deployment route
+  // disappears. The sealed state's target identity checks still apply.
+  return dispatch ? ResolveMcpDeploymentTarget(config.mcp_policy.get(),
+                                               access.scope, resolved)
+                  : ObjectReply{};
 }
 }  // namespace
 
@@ -146,7 +149,8 @@ ObjectReply DecideRealtimeMcpCall(ObjectStore& objects,
       expected_call.GetString("approval_request_id") != id)
     return Invalid("Approval response differs from the pending call");
   ResponsesMcpDefinition definition;
-  reply = Resolve(requested, config, access, &definition);
+  reply = Resolve(requested, config, access, &definition,
+                  decision.GetBool("approve"));
   if (!Accepted(reply)) return reply;
   ResponsesMcpState state(objects, config, response_id);
   const auto owned = state.Inspect(expected_call.GetString("id"), access);
@@ -277,5 +281,48 @@ ObjectReply ExecuteRealtimeMcpCall(ObjectStore& objects,
   }
   *output = std::move(next);
   return completed;
+}
+
+ObjectReply AbandonRealtimeMcpCall(ObjectStore& objects,
+                                   const ChatPlanConfig& config,
+                                   const ResponsesMcpDefinition& requested,
+                                   const Json& generated,
+                                   const std::string& response_id,
+                                   const StateAccess& access) {
+  auto reply = Active(response_id, access);
+  if (!Accepted(reply)) return reply;
+  reply = Pending(generated);
+  if (!Accepted(reply)) return reply;
+  ResponsesMcpDefinition definition;
+  reply = Resolve(requested, config, access, &definition, false);
+  if (!Accepted(reply)) return reply;
+  ResponsesMcpState state(objects, config, response_id);
+  const auto id = generated.GetString("id");
+  const auto owned = state.Inspect(id, access);
+  if (!Accepted(owned)) return owned;
+  const auto* stored = owned.value.Find("call");
+  const auto* owner = owned.value.Find("execution_owner");
+  if (!stored || !owner || !Same(*owner, CurrentResponseOwner()) ||
+      owned.value.GetString("response_id") != response_id)
+    return Error(409, "realtime_mcp_owner_conflict",
+                 "Cleanup does not own this MCP execution");
+  // Propose may commit before its receipt reaches the session. Cleanup still
+  // owns that unpublished approval, proven by sealed process/response + call.
+  auto expected = generated;
+  if (!expected.Find("approval_request_id") ||
+      expected.Find("approval_request_id")->IsNull())
+    Set(&expected, "approval_request_id", *stored->Find("approval_request_id"));
+  if (!SameCall(expected, *stored))
+    return Invalid("Cleanup differs from its sealed MCP call");
+  if (owned.value.GetString("state") == "approval")
+    return state.Decide(stored->GetString("approval_request_id"), false,
+                        "Execution owner ended before dispatch", definition,
+                        access);
+  ResponseStatePlan ended;
+  ended.id = response_id;
+  ended.scope = access.scope;
+  ended.execution_owner = *owner;
+  ended.finished = true;
+  return state.Recover(id, access, &ended);
 }
 }  // namespace q4t::server
