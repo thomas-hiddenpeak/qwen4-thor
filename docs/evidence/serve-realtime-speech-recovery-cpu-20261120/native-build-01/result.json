@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "seconds": 1.765683975070715,
+  "warnings": [],
+  "binaries": {
+    "q4t-guardian": "35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0",
+    "q4t-cuda-probe": "c748d66936a03e0cee48892869897ee37d3971f5a32c5a73e3868fb5fdf84acc",
+    "q4t-ingress": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+    "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+  },
+  "sources_unchanged": true,
+  "engine_cache_protocol_default_unchanged": true,
+  "gpu_actions": 0
+}

@@ -242,6 +242,8 @@ jobs:
             tools.serve_realtime.test_prompt_followup \
             tools.serve_realtime.test_conversation_recovery_sdk \
             tools.serve_realtime.test_prompt_service \
+            tools.serve_realtime.test_speech_service \
+            tools.serve_realtime.test_speech_recovery_sdk \
             tools.serve_realtime.test_speech_acceptance \
             tools.serve_realtime.test_speech_followup \
             tools.native_asr.test_managed_sdk_binding.Binding \

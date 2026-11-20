@@ -3191,7 +3191,7 @@
     "tools/serve_recovery/access_store.py": "fe2b32d8c9127955c40693053e2576012d64b89b747702e56cd98e55b3fa2753",
     "tools/serve_recovery/binding.py": "c1eaa8b87838e55ea4b3e4489c39c7d93933891155c17f42b095864913796a6a",
     "tools/serve_recovery/build_tools.py": "86fb140de1b0873b962146f6822511fdbbdef22cf6ba3a8914efa516600cf218",
-    "tools/serve_recovery/bundle.py": "ac3fd74ce9bbdf6fe300aee76fb1a02b33dc901548d15595b9d99f54eb635161",
+    "tools/serve_recovery/bundle.py": "da437de71ce7cb016f03ee8214b139b12124022102a7592da166b2de9c2fe420",
     "tools/serve_recovery/child.py": "2d5ea46c5a3377ce1cf2c1fa6164c6cd0d89a41e266606b775878911228a6b30",
     "tools/serve_recovery/cold_acceptance.py": "1ff54a437fc8b757ee9559dbe1770419723dea5cb3ca810173a09ba340179c82",
     "tools/serve_recovery/cold_admission.py": "f5d449ee8b45963906de91a3cdee8c7c168243dbac8b8393185feb5d86b8ee72",
@@ -8555,5 +8555,10 @@
     "new_targeted_model_starts": 2,
     "new_targeted_generations": 6,
     "new_targeted_seconds": 360
+  },
+  "speech_recovery_review_20261120": {
+    "change": "v23 includes exact native speech qualification dependencies; v1-v22 inventories unchanged. Bounded actual audio actor checks gateway, controller and whole-payload recovery with no replay.",
+    "state": "source prepared, targeted CPU and actual recovery pending",
+    "default_changed": false
   }
 }

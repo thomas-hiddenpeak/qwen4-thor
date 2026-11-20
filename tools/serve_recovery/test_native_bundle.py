@@ -73,7 +73,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 22)
+        self.assertEqual(value['version'], 23)
         self.assertNotIn('bin/q4t-device-control', value['files'])
         self.assertIn('source/tools/serve_recovery/cold_admission.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
@@ -115,7 +115,7 @@ class BundleTests(unittest.TestCase):
             self.assertFalse((self.directory/'package').exists())
         self.save(self.build, original)
         receipt = self.prepare()
-        self.assertEqual(bundle.verify(receipt['package'], receipt['manifest_sha256'])['version'], 22)
+        self.assertEqual(bundle.verify(receipt['package'], receipt['manifest_sha256'])['version'], 23)
 
     def test_explicit_deployment_repository_keeps_actual_builder_sources(self):
         deployment = self.directory/'deployment';deployment.mkdir()
@@ -223,8 +223,31 @@ class BundleTests(unittest.TestCase):
              'publication_archive', 'publication_intent_archive', 'version_archive')})
 
     def test_v22_includes_refusal_review_without_changing_v21(self):
-        self.assertEqual(set(bundle.SOURCES)-set(bundle.V21_SOURCES),
+        self.assertEqual(set(bundle.V22_SOURCES)-set(bundle.V21_SOURCES),
                          {'tools/serve_recovery/profile_refusal_reuse.py'})
+
+    def test_v23_seals_speech_dependencies_and_preserves_v22(self):
+        self.assertEqual(set(bundle.SOURCES)-set(bundle.V22_SOURCES),
+            {'tools/serve_realtime/speech_checks.py',
+             *('tools/serve_recovery/'+name+'.py' for name in
+               ('profile_speech_evidence', 'profile_speech_reuse', 'profile_speech_source'))})
+
+    def test_relocated_v23_can_import_speech_evidence_without_repository(self):
+        receipt=self.prepare()
+        code='''import sys
+sys.path.insert(0, sys.argv[1])
+from tools.serve_recovery import profile_record, profile_speech_evidence
+from tools.serve_recovery import profile_speech_reuse, profile_speech_source
+from tools.serve_realtime import speech_checks
+assert profile_speech_evidence.PCM['builtin'][0] > 0
+assert profile_speech_reuse.FORMAT == 'q4t-speech-source-reuse-v1'
+print('sealed speech imports passed')
+'''
+        result=subprocess.run([sys.executable,'-I','-B','-c',code,
+            str(Path(receipt['package'])/'source')],cwd=self.directory,env={},
+            stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=5)
+        self.assertEqual(result.returncode,0,result.stderr.decode())
+        self.assertEqual(result.stdout,b'sealed speech imports passed\n')
 
     def test_v21_includes_prompt_readers_without_changing_v20(self):
         self.assertEqual(set(bundle.V21_SOURCES)-set(bundle.V20_SOURCES),
@@ -243,7 +266,7 @@ class BundleTests(unittest.TestCase):
                 (12, bundle.V12_SOURCES), (13, bundle.V13_SOURCES), (14, bundle.V14_SOURCES),
                 (15, bundle.V15_SOURCES), (16, bundle.V16_SOURCES),
                 (17, bundle.V17_SOURCES), (18, bundle.V18_SOURCES),
-                (19, bundle.V19_SOURCES), (20, bundle.V20_SOURCES), (21, bundle.V21_SOURCES)):
+                (19, bundle.V19_SOURCES), (20, bundle.V20_SOURCES), (21, bundle.V21_SOURCES), (22, bundle.V22_SOURCES)):
             with self.subTest(version=version):
                 value = dict(current, version=version,
                     profile='q4t-service-recovery-v'+str(version))
@@ -288,7 +311,7 @@ class BundleTests(unittest.TestCase):
         receipt = self.prepare()
         package = Path(receipt['package'])
         value = bundle.verify(package, receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 22)
+        self.assertEqual(value['version'], 23)
         self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
         # Re-signing a v10 label cannot grant capabilities its format lacks.
         value.update(version=10, profile='q4t-service-recovery-v10')
@@ -314,7 +337,7 @@ class BundleTests(unittest.TestCase):
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 22)
+        self.assertEqual(value['version'], 23)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],

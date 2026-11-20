@@ -1,0 +1,123 @@
+test_changed_waveform_voice_or_actual_session_cannot_pass (tools.serve_realtime.test_speech_service.Contract.test_changed_waveform_voice_or_actual_session_cannot_pass) ... ok
+test_complete_and_cancelled_accounting_requires_exact_request_ownership (tools.serve_realtime.test_speech_service.Contract.test_complete_and_cancelled_accounting_requires_exact_request_ownership) ... ok
+test_complete_and_interrupted_audio_keep_exact_bytes_and_positive_usage (tools.serve_realtime.test_speech_service.Contract.test_complete_and_interrupted_audio_keep_exact_bytes_and_positive_usage) ... ok
+test_completed_or_silent_request_cannot_be_claimed_interrupted (tools.serve_realtime.test_speech_service.Contract.test_completed_or_silent_request_cannot_be_claimed_interrupted) ... ok
+test_frozen_budget_counts_startup_selfcheck_and_every_speech_attempt (tools.serve_realtime.test_speech_service.Contract.test_frozen_budget_counts_startup_selfcheck_and_every_speech_attempt) ... ok
+test_gateway_stage_and_controller_stage_keep_explicit_connections (tools.serve_realtime.test_speech_service.Contract.test_gateway_stage_and_controller_stage_keep_explicit_connections) ... ok
+test_replay_dropped_terminal_and_transport_fallback_fail (tools.serve_realtime.test_speech_service.Contract.test_replay_dropped_terminal_and_transport_fallback_fail) ... ERROR
+test_actual_mismatched_retrieval_cannot_pass_offline_verification (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_actual_mismatched_retrieval_cannot_pass_offline_verification) ... ERROR
+test_complete_official_tls_keeps_audio_bytes_history_and_normal_close (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_complete_official_tls_keeps_audio_bytes_history_and_normal_close) ... ERROR
+test_explicit_plain_connection_recovers_after_whole_transport_loss (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_explicit_plain_connection_recovers_after_whole_transport_loss) ... ERROR
+test_gateway_loss_interrupts_actual_audio_without_reconnect (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_gateway_loss_interrupts_actual_audio_without_reconnect) ... ERROR
+test_wrong_certificate_cannot_fall_back_to_plaintext (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_wrong_certificate_cannot_fall_back_to_plaintext) ... ERROR
+test_default_package_has_native_binary_and_no_nginx_dependency (tools.serve_recovery.test_native_bundle.BundleTests.test_default_package_has_native_binary_and_no_nginx_dependency) ... ok
+test_realtime_native_sources_cannot_be_omitted_or_changed_in_build_receipt (tools.serve_recovery.test_native_bundle.BundleTests.test_realtime_native_sources_cannot_be_omitted_or_changed_in_build_receipt) ... ok
+test_explicit_deployment_repository_keeps_actual_builder_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_explicit_deployment_repository_keeps_actual_builder_sources) ... ok
+test_v22_includes_refusal_review_without_changing_v21 (tools.serve_recovery.test_native_bundle.BundleTests.test_v22_includes_refusal_review_without_changing_v21) ... ok
+test_v23_seals_speech_dependencies_and_preserves_v22 (tools.serve_recovery.test_native_bundle.BundleTests.test_v23_seals_speech_dependencies_and_preserves_v22) ... ok
+test_relocated_v23_can_import_speech_evidence_without_repository (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v23_can_import_speech_evidence_without_repository) ... ok
+test_historical_source_inventory_versions_remain_verifiable (tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable) ... ok
+test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources (tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources) ... ok
+test_native_tls_paths_are_sealed_but_credentials_are_reloadable (tools.serve_recovery.test_native_bundle.BundleTests.test_native_tls_paths_are_sealed_but_credentials_are_reloadable) ... ok
+
+======================================================================
+ERROR: test_replay_dropped_terminal_and_transport_fallback_fail (tools.serve_realtime.test_speech_service.Contract.test_replay_dropped_terminal_and_transport_fallback_fail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_speech_service.py", line 70, in test_replay_dropped_terminal_and_transport_fallback_fail
+    lambda v:v['events'].append(v['events'][0])]:self.reject(change)
+                                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_speech_service.py", line 53, in reject
+    m.check_session(value,mode,'official-openai-wss')
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_managed.py", line 55, in check_session
+    row=rows[0];_,audio=speech_checks.audio(events,row,value['retrievals'][0])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/speech_checks.py", line 67, in audio
+    end = next(i for i, v in enumerate(events) if v['type'] == 'response.done'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StopIteration
+
+======================================================================
+ERROR: test_actual_mismatched_retrieval_cannot_pass_offline_verification (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_actual_mismatched_retrieval_cannot_pass_offline_verification)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_speech_recovery_sdk.py", line 72, in setUp
+    self.front=NativeIngress(self.out/'ingress',Path(os.environ['Q4T_INGRESS']),free_port(),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 63, in __init__
+    self.process = subprocess.Popen([str(binary), '--config', str(self.path)],
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_ingress'
+
+======================================================================
+ERROR: test_complete_official_tls_keeps_audio_bytes_history_and_normal_close (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_complete_official_tls_keeps_audio_bytes_history_and_normal_close)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_speech_recovery_sdk.py", line 72, in setUp
+    self.front=NativeIngress(self.out/'ingress',Path(os.environ['Q4T_INGRESS']),free_port(),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 63, in __init__
+    self.process = subprocess.Popen([str(binary), '--config', str(self.path)],
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_ingress'
+
+======================================================================
+ERROR: test_explicit_plain_connection_recovers_after_whole_transport_loss (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_explicit_plain_connection_recovers_after_whole_transport_loss)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_speech_recovery_sdk.py", line 72, in setUp
+    self.front=NativeIngress(self.out/'ingress',Path(os.environ['Q4T_INGRESS']),free_port(),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 63, in __init__
+    self.process = subprocess.Popen([str(binary), '--config', str(self.path)],
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_ingress'
+
+======================================================================
+ERROR: test_gateway_loss_interrupts_actual_audio_without_reconnect (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_gateway_loss_interrupts_actual_audio_without_reconnect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_speech_recovery_sdk.py", line 72, in setUp
+    self.front=NativeIngress(self.out/'ingress',Path(os.environ['Q4T_INGRESS']),free_port(),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 63, in __init__
+    self.process = subprocess.Popen([str(binary), '--config', str(self.path)],
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_ingress'
+
+======================================================================
+ERROR: test_wrong_certificate_cannot_fall_back_to_plaintext (tools.serve_realtime.test_speech_recovery_sdk.SpeechSdk.test_wrong_certificate_cannot_fall_back_to_plaintext)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_speech_recovery_sdk.py", line 72, in setUp
+    self.front=NativeIngress(self.out/'ingress',Path(os.environ['Q4T_INGRESS']),free_port(),
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/ingress_fixture.py", line 63, in __init__
+    self.process = subprocess.Popen([str(binary), '--config', str(self.path)],
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_ingress'
+
+----------------------------------------------------------------------
+Ran 21 tests in 3.585s
+
+FAILED (errors=6)

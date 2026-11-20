@@ -1,0 +1,31 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+PASS_SERVICE_PYTHON
+-- Configuring done (0.7s)
+-- Generating done (0.4s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-custom-tools-20261108/engine-build
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_device_filter
+[  0%] Built target q4t_guardian_journal
+[  0%] Built target q4t_device_admission
+[  0%] Linking CXX executable q4t-guardian
+[100%] Built target q4t_guardian
+Linking CUDA executable q4t-cuda-probe
+Built target q4t_cuda_probe
+[  0%] Built target q4t_guardian_process
+[  0%] Built target q4t_guardian_journal
+[  0%] Built target q4t_ingress_access
+[100%] Linking CXX executable q4t-ingress
+[100%] Built target q4t_ingress
+Built target q4t_guardian_process
+Built target q4t_device_filter
+Built target q4t_guardian_journal
+Built target q4t_device_admission
+Linking CXX executable q4t-device-control
+Built target q4t_device_control
