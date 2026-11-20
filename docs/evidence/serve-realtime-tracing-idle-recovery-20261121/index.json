@@ -1,0 +1,445 @@
+{
+  "archive_sha256": "23b254096d9bb560ef52cb363c1b42b1d23a14a56ddb256f750ad53957fc84a8",
+  "files": [
+    {
+      "path": "archive_idle_01.py",
+      "bytes": 3649,
+      "sha256": "a513f7c4261516898c86892e9f6cfe787d11951b737b60681c5b17a96fd97c72"
+    },
+    {
+      "path": "idle-exporter-inventory.json",
+      "bytes": 223,
+      "sha256": "d8300498e094141b607d0e821409d4bb960b4e8a090145a4b3852acec6a8d7bd"
+    },
+    {
+      "path": "idle-recovery-cpu-01/build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-recovery-cpu-01/build.stdout",
+      "bytes": 3244,
+      "sha256": "c4d9fba39790ae95250d7b509e745615a10c6f147348b971c2e02d24c1aff5d3"
+    },
+    {
+      "path": "idle-recovery-cpu-01/plan.json",
+      "bytes": 2955,
+      "sha256": "a0bd5b368c08c4a386e1fc3e863bee315eb91091629b02e6d3a50ef9f7094494"
+    },
+    {
+      "path": "idle-recovery-cpu-01/required.txt",
+      "bytes": 1406,
+      "sha256": "095f2a8af14f03cff5b2fde687190e6caeae5df8bc963c9f8eb57276fef4d3be"
+    },
+    {
+      "path": "idle-recovery-cpu-01/result.json",
+      "bytes": 301,
+      "sha256": "19f762f37b3d1d836b8c0e36eaf01e55d219cbb8b89d7fe3ee311aa309db3a11"
+    },
+    {
+      "path": "idle-recovery-cpu-01/sources/include/q4t/server/realtime_trace_store.h",
+      "bytes": 3284,
+      "sha256": "6490a52f448b4bab36e9aeb8cb097aabfe9510a54c87f2b56827121ed087c65b"
+    },
+    {
+      "path": "idle-recovery-cpu-01/sources/src/server/realtime_trace_session.cpp",
+      "bytes": 3271,
+      "sha256": "739c2e2d340acb1865e238d94fa67c59783fae928cc7373655d4097bb85bf5ac"
+    },
+    {
+      "path": "idle-recovery-cpu-01/sources/src/server/realtime_trace_store.cpp",
+      "bytes": 20529,
+      "sha256": "c876e930c02669bf3d37f37315deacb883a50f2bb27b5b36ecccd5ad78790246"
+    },
+    {
+      "path": "idle-recovery-cpu-01/sources/tests/server_realtime_trace_store_test.cpp",
+      "bytes": 25319,
+      "sha256": "880f4d62e042697cda4aedea5f6b50cd5321727361839b044f1fce7c8472112c"
+    },
+    {
+      "path": "idle-recovery-cpu-01/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-recovery-cpu-01/stdout",
+      "bytes": 1799,
+      "sha256": "8c479d2a70797c815fa979e9995afb800ea538cf25fe974d03b18221cc0c371b"
+    },
+    {
+      "path": "idle-recovery-cpu-02/build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-recovery-cpu-02/build.stdout",
+      "bytes": 322,
+      "sha256": "2abd93d1a833d87f606d7abae2e5ba344963ac953315b514c83afe572eeeed37"
+    },
+    {
+      "path": "idle-recovery-cpu-02/plan.json",
+      "bytes": 1523,
+      "sha256": "6244694aed0c939c2ae0ca666a9f5e6d83418196d1cf5611366a0e3a7906403f"
+    },
+    {
+      "path": "idle-recovery-cpu-02/required.txt",
+      "bytes": 121,
+      "sha256": "348f6f9615865d734157f6f94f2e4b961d666d2ff8ec380d9dd6be306f2d2177"
+    },
+    {
+      "path": "idle-recovery-cpu-02/result.json",
+      "bytes": 303,
+      "sha256": "9fc2469bc16bf197c70dc00c329b50724c3e4b35399a124d4cda26565d256fe4"
+    },
+    {
+      "path": "idle-recovery-cpu-02/sources/include/q4t/server/realtime_trace_store.h",
+      "bytes": 3284,
+      "sha256": "6490a52f448b4bab36e9aeb8cb097aabfe9510a54c87f2b56827121ed087c65b"
+    },
+    {
+      "path": "idle-recovery-cpu-02/sources/src/server/realtime_trace_session.cpp",
+      "bytes": 3271,
+      "sha256": "739c2e2d340acb1865e238d94fa67c59783fae928cc7373655d4097bb85bf5ac"
+    },
+    {
+      "path": "idle-recovery-cpu-02/sources/src/server/realtime_trace_store.cpp",
+      "bytes": 20529,
+      "sha256": "c876e930c02669bf3d37f37315deacb883a50f2bb27b5b36ecccd5ad78790246"
+    },
+    {
+      "path": "idle-recovery-cpu-02/sources/tests/server_realtime_trace_store_test.cpp",
+      "bytes": 25377,
+      "sha256": "8709c67e40d1d12583f8ff68ba2c9466cb6e4c553e511b6d44672117059cc0f8"
+    },
+    {
+      "path": "idle-recovery-cpu-02/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-recovery-cpu-02/stdout",
+      "bytes": 174,
+      "sha256": "c86af275df234cba6e1c7cf11c26cac02dae711f9486caa57576477f316dba16"
+    },
+    {
+      "path": "idle-recovery-cpu-03/build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-recovery-cpu-03/build.stdout",
+      "bytes": 1912,
+      "sha256": "699c9e3373cdd095a8fa81351ecd27a0279d5e9b6d03052635bdf761233adbb9"
+    },
+    {
+      "path": "idle-recovery-cpu-03/plan.json",
+      "bytes": 1672,
+      "sha256": "86fc1cff033645c05cef13f10b6212083ebd0cb393ef1891c2ddca443e7cf2b7"
+    },
+    {
+      "path": "idle-recovery-cpu-03/required.txt",
+      "bytes": 256,
+      "sha256": "23d545517663487fd6d7a06529931f6da2959d7e228c052871d084177739c0d1"
+    },
+    {
+      "path": "idle-recovery-cpu-03/result.json",
+      "bytes": 304,
+      "sha256": "5e31ac4f40ea8faf4fe46522c39f77c4cce4757adf742212e706351a22bb559d"
+    },
+    {
+      "path": "idle-recovery-cpu-03/sources/include/q4t/server/realtime_trace_store.h",
+      "bytes": 3284,
+      "sha256": "6490a52f448b4bab36e9aeb8cb097aabfe9510a54c87f2b56827121ed087c65b"
+    },
+    {
+      "path": "idle-recovery-cpu-03/sources/src/server/realtime_trace_session.cpp",
+      "bytes": 3271,
+      "sha256": "739c2e2d340acb1865e238d94fa67c59783fae928cc7373655d4097bb85bf5ac"
+    },
+    {
+      "path": "idle-recovery-cpu-03/sources/src/server/realtime_trace_store.cpp",
+      "bytes": 20567,
+      "sha256": "e1b1ade794248bb7f58270f42839d9f80dd9f17805cbf7dcd68c3189dbc3dce1"
+    },
+    {
+      "path": "idle-recovery-cpu-03/sources/tests/server_realtime_trace_store_test.cpp",
+      "bytes": 26167,
+      "sha256": "38034721c12b5516ae4ac849ceaa04b1bea84f4bbe07ac29e8759f6e7a4a31fc"
+    },
+    {
+      "path": "idle-recovery-cpu-03/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "idle-recovery-cpu-03/stdout",
+      "bytes": 323,
+      "sha256": "9cc12db2b1af14662bf0a223a3fc02759c44ef5a0799114728e4143039e9e28f"
+    },
+    {
+      "path": "native-runtime-05/0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-runtime-05/0.stdout",
+      "bytes": 153,
+      "sha256": "fa222fa2e9020c318d573143721c433f3de879451ed4734d4ae4174f89c73e8e"
+    },
+    {
+      "path": "native-runtime-05/1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-runtime-05/1.stdout",
+      "bytes": 6031,
+      "sha256": "359c852345cc68927f5f0999391cb528835b492947ff807c79185cf214a903d5"
+    },
+    {
+      "path": "native-runtime-05/plan.json",
+      "bytes": 112759,
+      "sha256": "2f2bf3d3bc093a9865ba8ed26cb8ddf102d2b5dbc2b7a185b0de1d9f5f2d104d"
+    },
+    {
+      "path": "native-runtime-05/result.json",
+      "bytes": 457,
+      "sha256": "a4f39fc7b6b61535e18b18aba359b0565eda963fa5015c5cf663556c7dc2abc7"
+    },
+    {
+      "path": "native-runtime-05/sources/include/q4t/server/realtime_trace_store.h",
+      "bytes": 3284,
+      "sha256": "6490a52f448b4bab36e9aeb8cb097aabfe9510a54c87f2b56827121ed087c65b"
+    },
+    {
+      "path": "native-runtime-05/sources/src/server/realtime_trace_session.cpp",
+      "bytes": 3271,
+      "sha256": "739c2e2d340acb1865e238d94fa67c59783fae928cc7373655d4097bb85bf5ac"
+    },
+    {
+      "path": "native-runtime-05/sources/src/server/realtime_trace_store.cpp",
+      "bytes": 20529,
+      "sha256": "c876e930c02669bf3d37f37315deacb883a50f2bb27b5b36ecccd5ad78790246"
+    },
+    {
+      "path": "native-runtime-06/0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-runtime-06/0.stdout",
+      "bytes": 153,
+      "sha256": "fa222fa2e9020c318d573143721c433f3de879451ed4734d4ae4174f89c73e8e"
+    },
+    {
+      "path": "native-runtime-06/1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-runtime-06/1.stdout",
+      "bytes": 1728,
+      "sha256": "464158410379024c3b2440ead3cd2fc477864b82fe7b45e45656b4d2e6951b37"
+    },
+    {
+      "path": "native-runtime-06/plan.json",
+      "bytes": 112327,
+      "sha256": "df5d5761eb16b154d215f743ac0f4bb4efccd868c50e8161ac63f1d4ba862389"
+    },
+    {
+      "path": "native-runtime-06/result.json",
+      "bytes": 457,
+      "sha256": "e12c1f935fda0de4235f8d6a095bb5fa4a6ff7d46030fc0449020ad101358cb9"
+    },
+    {
+      "path": "native-runtime-06/sources/src/server/realtime_trace_store.cpp",
+      "bytes": 20567,
+      "sha256": "e1b1ade794248bb7f58270f42839d9f80dd9f17805cbf7dcd68c3189dbc3dce1"
+    },
+    {
+      "path": "recovery-prior-binaries-01/plan.json",
+      "bytes": 1114,
+      "sha256": "3bd3a4981f525d4b08b22543038dc36d607d9e243cfe43b3804b57b3a50eb30c"
+    },
+    {
+      "path": "recovery-prior-binaries-01/restore.py",
+      "bytes": 683,
+      "sha256": "1214a1566e98a0c9d7bccea84002a8d0cc1975302015abd6aae510ebbf2597b4"
+    },
+    {
+      "path": "retired-previous-06/plan.json",
+      "bytes": 2900,
+      "sha256": "502f2cdc587837a041ce8cc094cbe6c24f08280cbe8ff2df366a152c84231a9f"
+    },
+    {
+      "path": "retired-previous-06/restore.py",
+      "bytes": 683,
+      "sha256": "1214a1566e98a0c9d7bccea84002a8d0cc1975302015abd6aae510ebbf2597b4"
+    },
+    {
+      "path": "retired-previous-06/result.json",
+      "bytes": 152,
+      "sha256": "cc071fd4013ea3aa75fce4c34ce532d16311712936a3bad293a671fbe9cd0af3"
+    },
+    {
+      "path": "sdk-business-05/cleanup.json",
+      "bytes": 4549,
+      "sha256": "ce8fb38f702211dcdbe4afd635785412760bfc6650e3507b77581e6e49f278e0"
+    },
+    {
+      "path": "sdk-business-05/lease/exit.json",
+      "bytes": 717,
+      "sha256": "29cb8df56924b3b8691a6afd755cb71be5c6ba97b08efb66e1cd7039c9a6057e"
+    },
+    {
+      "path": "sdk-business-05/lease/nvml-queries.jsonl",
+      "bytes": 131036,
+      "sha256": "5afe8dde647118d329da85dcb9ca3d7f08ae87fbab2cc60214e47b9d180ac6ec"
+    },
+    {
+      "path": "sdk-business-05/primary-tracing-observed.json",
+      "bytes": 52784,
+      "sha256": "12fac527b50948b58a0e66bad6fa6e90696192cf254179697597a786d2cdafc5"
+    },
+    {
+      "path": "sdk-business-05/primary-tracing.events.jsonl",
+      "bytes": 31336,
+      "sha256": "845081553d64914b5cee43d84534c9ccc66bede030fc9520469906a7d6eb0782"
+    },
+    {
+      "path": "sdk-business-05/primary-tracing.sdk.json",
+      "bytes": 35533,
+      "sha256": "595dbeaa04d0aec79aa05e3fc78c9d9cdfd2ab1d820ba74ed194a39bec30590d"
+    },
+    {
+      "path": "sdk-business-05/primary-tracing.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-business-05/result.json",
+      "bytes": 1231,
+      "sha256": "1823009763a4e5ca8fab21c5c1d0c41e79ac73f5e7b360d80de8a6f5c31cb6c6"
+    },
+    {
+      "path": "sdk-cpu-05/node-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-cpu-05/node-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-cpu-05/plan.json",
+      "bytes": 1115,
+      "sha256": "e22030a2d9625c230b99b19b3c3787cc31ebf80876f106007bedca2f983d7e7b"
+    },
+    {
+      "path": "sdk-cpu-05/result.json",
+      "bytes": 982,
+      "sha256": "c31f3902cdc4b4f8cf0a4e45b3d6ae08c5276bcbfb493559e21de37d0ce763f5"
+    },
+    {
+      "path": "sdk-cpu-05/sources/tools/serve_realtime/test_tracing_acceptance.py",
+      "bytes": 5704,
+      "sha256": "f47d4e00be3e784c82b969dccf22c4fdf4b311f24861718f9055aa364e496ba1"
+    },
+    {
+      "path": "sdk-cpu-05/sources/tools/serve_realtime/test_tracing_checks.py",
+      "bytes": 9717,
+      "sha256": "7b98869af84004fe59efee0fe6679826fb9d41b86292772c5c24603d09a140d9"
+    },
+    {
+      "path": "sdk-cpu-05/sources/tools/serve_realtime/test_tracing_poll.mjs",
+      "bytes": 1661,
+      "sha256": "1a7ab8288bc9976701275068f1e8a5a082ca2a24c77e88e25caec0cb4e2ccc05"
+    },
+    {
+      "path": "sdk-cpu-05/sources/tools/serve_realtime/tracing_acceptance.py",
+      "bytes": 17355,
+      "sha256": "93006fcf8763896e7025bce6f0cfda9f11abdd60dda787cdcaef1b0dc761b40b"
+    },
+    {
+      "path": "sdk-cpu-05/sources/tools/serve_realtime/tracing_checks.py",
+      "bytes": 12395,
+      "sha256": "e27a26b41c34c93db0ba666a9ac0436cc33999ac94697de611ecc4fec4479f19"
+    },
+    {
+      "path": "sdk-cpu-05/sources/tools/serve_realtime/tracing_poll.mjs",
+      "bytes": 532,
+      "sha256": "44b634a7dabb961679aa4ed8cf9c4a11503807f7ada862dc296a77cea8755837"
+    },
+    {
+      "path": "sdk-cpu-05/sources/tools/serve_realtime/tracing_sdk.mjs",
+      "bytes": 12203,
+      "sha256": "323f0ddb15deab7bf0212191187ce4e2432c144a381241ccffc8f1f16d929dff"
+    },
+    {
+      "path": "sdk-cpu-05/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-cpu-05/stdout",
+      "bytes": 364,
+      "sha256": "4b544224125fc846027a8d228ba1349d736e2aef3fb6143ebcd43eb69827f925"
+    },
+    {
+      "path": "sdk-cpu-06/plan.json",
+      "bytes": 1319,
+      "sha256": "6f0e68598af98d0c3666e2e94292de932d6a3198b3fb6a100029e7fe7c8ae018"
+    },
+    {
+      "path": "sdk-cpu-06/result.json",
+      "bytes": 980,
+      "sha256": "13c419fe58149bbe7fa18ff58a964376346caeb28ec0c575d6585b73066fba64"
+    },
+    {
+      "path": "sdk-cpu-06/sources/tools/serve_realtime/test_tracing_acceptance.py",
+      "bytes": 5704,
+      "sha256": "f47d4e00be3e784c82b969dccf22c4fdf4b311f24861718f9055aa364e496ba1"
+    },
+    {
+      "path": "sdk-cpu-06/sources/tools/serve_realtime/test_tracing_checks.py",
+      "bytes": 9717,
+      "sha256": "7b98869af84004fe59efee0fe6679826fb9d41b86292772c5c24603d09a140d9"
+    },
+    {
+      "path": "sdk-cpu-06/sources/tools/serve_realtime/test_tracing_poll.mjs",
+      "bytes": 1661,
+      "sha256": "1a7ab8288bc9976701275068f1e8a5a082ca2a24c77e88e25caec0cb4e2ccc05"
+    },
+    {
+      "path": "sdk-cpu-06/sources/tools/serve_realtime/tracing_acceptance.py",
+      "bytes": 17428,
+      "sha256": "09fcbf12ad5333c60169b3d1a2bb3ec2108f912a37e6f500e8977168fdf6413c"
+    },
+    {
+      "path": "sdk-cpu-06/sources/tools/serve_realtime/tracing_checks.py",
+      "bytes": 12395,
+      "sha256": "e27a26b41c34c93db0ba666a9ac0436cc33999ac94697de611ecc4fec4479f19"
+    },
+    {
+      "path": "sdk-cpu-06/sources/tools/serve_realtime/tracing_poll.mjs",
+      "bytes": 532,
+      "sha256": "44b634a7dabb961679aa4ed8cf9c4a11503807f7ada862dc296a77cea8755837"
+    },
+    {
+      "path": "sdk-cpu-06/sources/tools/serve_realtime/tracing_sdk.mjs",
+      "bytes": 12203,
+      "sha256": "323f0ddb15deab7bf0212191187ce4e2432c144a381241ccffc8f1f16d929dff"
+    },
+    {
+      "path": "sdk-cpu-06/stderr",
+      "bytes": 412,
+      "sha256": "35a6d649bd16109d855c12fc829aaed3d51b8d0a11c9bb32a31c468f25f1a34e"
+    },
+    {
+      "path": "sdk-cpu-06/stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

@@ -396,7 +396,8 @@ constexpr RouteSpec kRoutes[] = {
 };
 
 bool Route(const std::string& method, const std::string& path, bool* control) {
-  if (server::VoiceMethodAllowed(method, path) ||
+  if (server::RealtimeTraceMethodAllowed(method, path) ||
+      server::VoiceMethodAllowed(method, path) ||
       server::ConversationMethodAllowed(method, path) ||
       server::PromptMethodAllowed(method, path) ||
       server::McpTunnelMethodAllowed(method, path) ||
@@ -406,7 +407,8 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::BatchMethodAllowed(method, path) ||
       server::VectorStoreMethodAllowed(method, path) ||
       server::StoredChatMethodAllowed(method, path)) {
-    *control = server::IsVoiceMetadata(method, path) ||
+    *control = server::RealtimeTraceMethodAllowed(method, path) ||
+               server::IsVoiceMetadata(method, path) ||
                server::IsMcpTunnelMetadata(method, path) ||
                server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||

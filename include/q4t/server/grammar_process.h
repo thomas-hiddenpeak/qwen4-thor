@@ -44,7 +44,8 @@ enum class IsolatedWorkerDomain {
   kModelAssets = kEmbeddingAssets,
   kToolResults,
   kPrograms,
-  kMcp
+  kMcp,
+  kTraces
 };
 
 // Independent lifetime: deferred cleanup never retains a server/request

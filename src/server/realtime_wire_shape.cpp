@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "q4t/server/input_contract.h"
 #include "q4t/server/realtime_conversation.h"
 
 namespace q4t::server {
@@ -16,9 +17,8 @@ io::Json* UniqueField(io::Json* object, std::string_view name) {
   }
   return found;
 }
-}  // namespace
-Status ValidateRealtimeWireShape(const io::Json& value, RealtimeShape shape,
-                                 ChatPlanError* error, std::string_view path) {
+Status ValidateWireShape(const io::Json& value, RealtimeShape shape,
+                         ChatPlanError* error, std::string_view path) {
   auto status = ValidateRealtimeShape(value, shape, error, path);
   if (status) return status;
   if (shape == RealtimeShape::kClientEvent &&
@@ -76,5 +76,43 @@ Status ValidateRealtimeWireShape(const io::Json& value, RealtimeShape shape,
   }
   return changed ? ValidateRealtimeShape(projected, shape, error, path)
                  : status;
+}
+}  // namespace
+Status ValidateRealtimeWireShape(const io::Json& value, RealtimeShape shape,
+                                 ChatPlanError* error, std::string_view path) {
+  const auto type = value.GetString("type");
+  if (shape != RealtimeShape::kServerEvent ||
+      (type != "session.created" && type != "session.updated"))
+    return ValidateWireShape(value, shape, error, path);
+  size_t storage = 0;
+  if (!MeasureRealtimeStorage(value, 16ULL << 20, &storage)) {
+    if (error)
+      *error = {"item_validation_limit_exceeded", std::string(path), 503};
+    return Status::Fail("Session event exceeds validation storage limit");
+  }
+  auto projected = value;
+  auto* session = UniqueField(&projected, "session");
+  const auto* id = UniqueField(session, "id");
+  const auto* object = UniqueField(session, "object");
+  const auto session_type = session ? session->GetString("type") : "";
+  const auto expected = session_type == "realtime"
+                            ? "realtime.session"
+                            : "realtime.transcription_session";
+  if (!id || !id->IsString() || !id->str.starts_with("sess_") ||
+      !ValidRequestId(id->str) || !object || !object->IsString() ||
+      object->str != expected ||
+      (session_type != "realtime" && session_type != "transcription")) {
+    if (error)
+      *error = {"invalid_request", std::string(path) + ".session", 400};
+    return Status::Fail("Session output requires its native id and object");
+  }
+  // The official GA server-event reference requires these response fields.
+  // SDK 7.47.0 instead types both events as the *request* configuration.
+  // Validate ownership fields above, then project only those two fields for
+  // its unchanged type oracle. Client settings never enter this projection.
+  std::erase_if(session->object, [](const auto& entry) {
+    return entry.first == "id" || entry.first == "object";
+  });
+  return ValidateWireShape(projected, shape, error, path);
 }
 }  // namespace q4t::server

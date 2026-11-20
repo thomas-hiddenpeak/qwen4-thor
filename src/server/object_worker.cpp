@@ -1422,6 +1422,26 @@ class DiskStore {
             Number(blob ? blob->GetInt("bytes", -1) : -1));
         Set(&record, "data", std::move(metadata_only));
       }
+      if (request.GetString("kind") == "trace") {
+        const auto* data = record.Find("data");
+        const auto* trace = data ? data->Find("trace") : nullptr;
+        if (!data || data->GetString("format") != "q4t.realtime_trace.v1" ||
+            !trace || !trace->IsObject())
+          return Error(503, "realtime_trace_record_invalid",
+                       "Invalid trace record");
+        auto summary = Object();
+        for (const auto* key : {"object", "id", "observation_boundary",
+                               "version", "session_id", "conversation_id",
+                               "workflow_name", "group_id", "status",
+                               "close_reason", "started_at_ms", "ended_at_ms",
+                               "duration_ms", "revision", "events_seen",
+                               "dropped_span_events", "collector_errors"})
+          if (const auto* value = trace->Find(key)) Set(&summary, key, *value);
+        const auto* spans = trace->GetArray("spans");
+        Set(&summary, "span_count", Number(spans ? spans->array.size() : 0));
+        Set(&summary, "summary", Boolean(true));
+        Set(&Field(record, "data"), "trace", std::move(summary));
+      }
       items.array.push_back(Public(record));
     }
     auto first = items.array.empty()

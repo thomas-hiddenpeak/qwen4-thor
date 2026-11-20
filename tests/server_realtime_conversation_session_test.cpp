@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <stdexcept>
 
 #include "../src/server/object_protocol.h"
@@ -16,6 +17,7 @@
 #include "q4t/test.h"
 #include "q4t/io/base64.h"
 #include "q4t/server/realtime_transcription_protocol.h"
+#include "q4t/server/realtime_trace_api.h"
 
 namespace {
 using namespace q4t::server;
@@ -419,6 +421,79 @@ Q4T_TEST(realtime_session_item_order_retrieve_delete_and_sdk_events) {
   return true;
 }
 
+Q4T_TEST(realtime_session_public_identity_is_stable_and_not_client_settings) {
+  Fixture f;
+  Q4T_CHECK(f.Start());
+  const auto created = *f.Last("session.created").Find("session");
+  Q4T_CHECK(created.GetString("id") == "sess_fixture" &&
+            created.GetString("object") == "realtime.session");
+  auto settings = Object({{"type", String("realtime")},
+                          {"instructions", String("updated")}});
+  Q4T_CHECK(f.Send(Object({{"type", String("session.update")},
+                           {"session", settings}})));
+  const auto updated = *f.Last("session.updated").Find("session");
+  Q4T_CHECK(updated.GetString("id") == created.GetString("id") &&
+            updated.GetString("object") == created.GetString("object") &&
+            updated.GetString("instructions") == "updated");
+  for (const auto* field : {"id", "object"}) {
+    auto forged = settings;
+    Set(&forged, field, *created.Find(field));
+    Q4T_CHECK(f.Send(Object({{"type", String("session.update")},
+                             {"session", forged}})));
+  }
+  Q4T_CHECK(f.Count("session.updated") == 1 && f.Count("error") == 2);
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(!f.Snapshot(0).settings.Has("id") &&
+            !f.Snapshot(0).settings.Has("object"));
+  return true;
+}
+
+Q4T_TEST(realtime_wire_session_identity_rejects_malformed_or_duplicated_fields) {
+  for (const auto* session_type : {"realtime", "transcription"}) {
+    auto session = Object(
+        {{"type", String(session_type)}, {"id", String("sess_fixture")},
+         {"object", String(std::string("realtime") == session_type
+                                ? "realtime.session"
+                                : "realtime.transcription_session")}});
+    for (const auto* event_type : {"session.created", "session.updated"}) {
+      auto event = Object({{"type", String(event_type)},
+                           {"event_id", String("event_fixture")},
+                           {"session", session}});
+      const auto original = OutputJson(event);
+      ChatPlanError error;
+      Q4T_CHECK(ValidateRealtimeWireShape(
+          event, RealtimeShape::kServerEvent, &error));
+      Q4T_CHECK(OutputJson(event) == original);
+      for (int mutation = 0; mutation < 8; ++mutation) {
+        auto bad = event;
+        auto& settings = Field(bad, "session");
+        if (mutation < 2) {
+          const auto key = mutation ? "object" : "id";
+          std::erase_if(settings.object,
+                        [&](const auto& e) { return e.first == key; });
+        } else if (mutation == 2) {
+          Set(&settings, "id", Number(1));
+        } else if (mutation == 3) {
+          Set(&settings, "id", String("sess_../foreign"));
+        } else if (mutation == 4) {
+          Set(&settings, "object", String("other.object"));
+        } else if (mutation == 5) {
+          settings.object.push_back({"id", String("sess_other")});
+        } else if (mutation == 6) {
+          settings.object.push_back({"object", *session.Find("object")});
+        } else {
+          Set(&settings, "unknown", Boolean(true));
+        }
+        const auto before = OutputJson(bad);
+        Q4T_CHECK(!ValidateRealtimeWireShape(
+            bad, RealtimeShape::kServerEvent, &error));
+        Q4T_CHECK(OutputJson(bad) == before);
+      }
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(realtime_session_function_result_returns_to_actual_history_snapshot) {
   Fixture f;
   f.mode = 1;
@@ -714,6 +789,10 @@ Q4T_TEST(realtime_wire_documented_null_clears_preserve_exact_sdk_discrepancy) {
     const auto shape = std::string_view(type) == "session.update"
                            ? RealtimeShape::kClientEvent
                            : RealtimeShape::kServerEvent;
+    if (shape == RealtimeShape::kServerEvent) {
+      Set(&Field(event, "session"), "id", String("sess_fixture"));
+      Set(&Field(event, "session"), "object", String("realtime.session"));
+    }
     const auto original = OutputJson(event);
     Q4T_CHECK(!ValidateRealtimeShape(event, shape, &error));
     Q4T_CHECK(ValidateRealtimeWireShape(event, shape, &error));
@@ -2355,5 +2434,117 @@ Q4T_TEST(realtime_session_mcp_forged_result_rejected_before_next_execution) {
   Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
                 "failed" &&
             f.dispatches == 0);
+  return true;
+}
+
+namespace {
+RealtimeTraceStoreOptions TraceOptions(bool broken = false) {
+  const auto* output = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  auto root = std::filesystem::absolute(
+      output ? output : ".q4t-work/realtime-session-tracing");
+  std::filesystem::create_directories(root);
+  auto name = (root / "session-tracing-XXXXXX").string();
+  if (!mkdtemp(name.data())) throw std::runtime_error("trace fixture directory");
+  auto options = ResolveRealtimeTraceStoreOptions(name + "/objects");
+  if (broken) std::ofstream(options.objects.directory) << "fixture IO failure";
+  return options;
+}
+ObjectReply SessionTraceRead(RealtimeTraceStore& store) {
+  StateAccess access{"client:trace-session", Clock::now() + 2s, {}};
+  return HandleRealtimeTraceRequest(
+      store, "GET", "/v1/realtime/traces/trace_" + Digest("sess_fixture"), {},
+      access);
+}
+}  // namespace
+
+Q4T_TEST(realtime_session_trace_observes_function_generation_without_payloads) {
+  RealtimeTraceStore traces(TraceOptions());
+  Fixture f;
+  f.cb.traces = [&] { return &traces; };
+  f.cb.trace_scope = "client:trace-session";
+  Set(&f.settings, "tracing", String("auto"));
+  f.mode = 1;
+  Q4T_CHECK(f.Start());
+  const auto public_session = *f.Last("session.created").Find("session");
+  Q4T_CHECK(public_session.GetString("id") == "sess_fixture" &&
+            public_session.GetString("object") == "realtime.session");
+  Q4T_CHECK(f.Add(User("user_one", "PRIVATE_REQUEST_CONTENT")));
+  Q4T_CHECK(f.Create() && f.Finish());
+  ObjectReply record;
+  Q4T_CHECK(f.Wait([&] {
+    record = SessionTraceRead(traces);
+    return record.ok() && record.value.GetArray("spans") &&
+           record.value.GetArray("spans")->array.size() == 2 &&
+           record.value.GetArray("spans")->array.front().GetString("status") ==
+               "completed";
+  }));
+  Q4T_CHECK(f.calls == 1 && f.Count("response.done") == 1);
+  Q4T_CHECK(record.value.GetString("session_id") ==
+            public_session.GetString("id"));
+  const auto* spans = record.value.GetArray("spans");
+  Q4T_CHECK(std::ranges::any_of(spans->array, [](const auto& span) {
+    return span.GetString("kind") == "function_arguments";
+  }));
+  Q4T_CHECK(std::ranges::none_of(spans->array, [](const auto& span) {
+    return span.GetString("kind") == "mcp_call";
+  }));
+  Q4T_CHECK(OutputJson(record.value).find("PRIVATE_REQUEST_CONTENT") ==
+            std::string::npos);
+  f.session->Cancel();
+  f.session->Join();
+  record = SessionTraceRead(traces);
+  Q4T_CHECK(record.ok() && record.value.GetString("status") == "closed");
+  return true;
+}
+
+Q4T_TEST(realtime_session_trace_storage_failure_preserves_response_terminal) {
+  RealtimeTraceStore traces(TraceOptions(true));
+  Fixture f;
+  f.cb.traces = [&] { return &traces; };
+  f.cb.trace_scope = "client:trace-session";
+  Set(&f.settings, "tracing", String("auto"));
+  Q4T_CHECK(f.Start() && f.Add(User("user_one", "healthy request")));
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(!SessionTraceRead(traces).ok());
+  Q4T_CHECK(f.Create() && f.Finish());
+  Q4T_CHECK(f.calls == 2 && f.released == 2 && f.Count("response.done") == 2);
+  Q4T_CHECK(f.Count("error") == 0);
+  Q4T_CHECK(f.Last("response.done").Find("response")->GetString("status") ==
+            "completed");
+  Q4T_CHECK(traces.Health().failures > 0);
+  return true;
+}
+
+Q4T_TEST(realtime_session_trace_delete_does_not_cancel_later_generation) {
+  RealtimeTraceStore traces(TraceOptions());
+  Fixture f;
+  f.cb.traces = [&] { return &traces; };
+  f.cb.trace_scope = "client:trace-session";
+  Set(&f.settings, "tracing", String("auto"));
+  Q4T_CHECK(f.Start() && f.Create() && f.Finish());
+  Q4T_CHECK(f.Wait([&] { return SessionTraceRead(traces).ok(); }));
+  StateAccess access{"client:trace-session", Clock::now() + 2s, {}};
+  const auto erased = HandleRealtimeTraceRequest(
+      traces, "DELETE", "/v1/realtime/traces/trace_" + Digest("sess_fixture"),
+      {}, access);
+  Q4T_CHECK(erased.ok());
+  Q4T_CHECK(f.Create() && f.Finish());
+  f.session->Cancel();
+  f.session->Join();
+  Q4T_CHECK(f.calls == 2 && f.Count("response.done") == 2);
+  Q4T_CHECK(SessionTraceRead(traces).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(realtime_session_trace_owner_exception_does_not_escape_protocol) {
+  Fixture f;
+  f.cb.traces = []() -> RealtimeTraceStore* {
+    throw std::bad_alloc();
+  };
+  f.cb.trace_scope = "client:trace-session";
+  Set(&f.settings, "tracing", String("auto"));
+  Q4T_CHECK(f.Start() && f.Create() && f.Finish());
+  Q4T_CHECK(f.calls == 1 && f.Count("response.done") == 1 &&
+            f.Count("error") == 0);
   return true;
 }

@@ -40,12 +40,22 @@ void TestControllerWait(std::string_view stage) {
 #endif
 // Process-lifetime ownership survives a destructor's bounded wait. A stuck
 // spawn cannot cause another ObjectStore to create replacement threads.
-std::atomic<bool>& ControllerOwned() {
-  static auto* owned = new std::atomic<bool>(false);
-  return *owned;
+std::atomic<bool>& ControllerOwned(ObjectStoreDomain domain) {
+  static auto* application = new std::atomic<bool>(false);
+  static auto* tracing = new std::atomic<bool>(false);
+  return domain == ObjectStoreDomain::kTracing ? *tracing : *application;
+}
+IsolatedWorkerDomain WorkerDomain(ObjectStoreDomain domain) {
+  return domain == ObjectStoreDomain::kTracing ? IsolatedWorkerDomain::kTraces
+                                              : IsolatedWorkerDomain::kObjects;
+}
+bool DomainKind(ObjectStoreDomain domain, ObjectKind kind) {
+  return (domain == ObjectStoreDomain::kTracing) == (kind == ObjectKind::kTrace);
 }
 bool ValidOptions(const ObjectStoreOptions& o) {
-  return !o.directory.empty() && o.directory.front() == '/' &&
+  return (o.domain == ObjectStoreDomain::kApplication ||
+          o.domain == ObjectStoreDomain::kTracing) &&
+         !o.directory.empty() && o.directory.front() == '/' &&
          o.directory.size() <= 4096 &&
          o.directory.find('\0') == std::string::npos &&
          o.max_object_bytes >= 1024 && o.max_object_bytes <= (kMaxFrame / 2) &&
@@ -242,7 +252,7 @@ struct ObjectStore::State {
     health = "stopped";
     controller_active = false;
     done = true;
-    ControllerOwned().store(false);
+    ControllerOwned(options.domain).store(false);
   }
   void Launch(const std::shared_ptr<State>& self) {
     // Called under mutex. Only a confirmed thread-construction failure may
@@ -351,7 +361,7 @@ struct ObjectStore::State {
                  now - starts.front() >=
                      std::chrono::milliseconds(options.restart_window_ms))
             starts.pop_front();
-          if (detail::IsolatedCleanupPending(IsolatedWorkerDomain::kObjects)) {
+          if (detail::IsolatedCleanupPending(WorkerDomain(options.domain))) {
             SetHealth("cleanup_pending");
             reply = Error(503, "object_cleanup_pending",
                           "Object worker cleanup remains unconfirmed");
@@ -365,7 +375,7 @@ struct ObjectStore::State {
             starts.push_back(now);
             SetHealth("starting");
             GrammarControl control;
-            control.domain = IsolatedWorkerDomain::kObjects;
+            control.domain = WorkerDomain(options.domain);
             control.counters = counters;
             sequence = 0;
             // No per-request callbacks survive in this persistent worker.
@@ -431,7 +441,7 @@ ObjectStore::ObjectStore(ObjectStoreOptions options)
     return;
   }
   bool expected = false;
-  if (!ControllerOwned().compare_exchange_strong(expected, true)) {
+  if (!ControllerOwned(state_->options.domain).compare_exchange_strong(expected, true)) {
     state_->health = "controller_owned";
     state_->done = true;
     return;
@@ -463,7 +473,8 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
   const auto& options = state_->options;
   const auto kind = Kind(request.kind),
              operation = Operation(request.operation);
-  if (request.scope.empty() || request.scope.size() > 256 || kind.empty() ||
+  if (!DomainKind(options.domain, request.kind) ||
+      request.scope.empty() || request.scope.size() > 256 || kind.empty() ||
       operation.empty() || request.expected_revision < 0 ||
       request.expected_revision >= (1LL << 53) - 1 || request.created_at < 0 ||
       request.created_at > (1LL << 53) - 1 || request.expires_at < -1 ||
@@ -527,6 +538,8 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
 ObjectReply ObjectStore::ScanResponses(std::string after,
                                        Clock::time_point deadline,
                                        const std::function<bool()>& cancelled) {
+  if (state_->options.domain != ObjectStoreDomain::kApplication)
+    return Error(400, "invalid_object_domain", "Application domain required");
   if (after.size() > 320)
     return Error(400, "invalid_object_cursor", "Invalid recovery cursor");
   return Dispatch(OutputJson(Object({{"operation", String("scan_responses")},
@@ -537,6 +550,8 @@ ObjectReply ObjectStore::ScanResponses(std::string after,
 ObjectReply ObjectStore::ScanBatches(std::string after,
                                     Clock::time_point deadline,
                                     const std::function<bool()>& cancelled) {
+  if (state_->options.domain != ObjectStoreDomain::kApplication)
+    return Error(400, "invalid_object_domain", "Application domain required");
   if (after.size() > 320)
     return Error(400, "invalid_object_cursor", "Invalid recovery cursor");
   return Dispatch(OutputJson(Object({{"operation", String("scan_batches")},
@@ -547,6 +562,8 @@ ObjectReply ObjectStore::ScanBatches(std::string after,
 ObjectReply ObjectStore::ScanVectorFiles(
     std::string after, Clock::time_point deadline,
     const std::function<bool()>& cancelled) {
+  if (state_->options.domain != ObjectStoreDomain::kApplication)
+    return Error(400, "invalid_object_domain", "Application domain required");
   if (after.size() > 320)
     return Error(400, "invalid_object_cursor", "Invalid recovery cursor");
   return Dispatch(OutputJson(Object({{"operation", String("scan_vector_files")},
@@ -558,6 +575,8 @@ ObjectReply ObjectStore::Retention(int64_t item_created_before, size_t limit,
                                    std::string expected_plan,
                                    Clock::time_point deadline,
                                    const std::function<bool()>& cancelled) {
+  if (state_->options.domain != ObjectStoreDomain::kApplication)
+    return Error(400, "invalid_object_domain", "Application domain required");
   if (item_created_before < 0 || limit == 0 || limit > 128 ||
       (!expected_plan.empty() &&
        (expected_plan.size() != 64 ||
@@ -584,7 +603,8 @@ ObjectReply ObjectStore::ExecuteBatch(std::span<const ObjectRequest> requests,
   uint64_t logical_remaining = ApplicationPayloadLimits{}.max_data_bytes;
   // Validate the entire group before staging any private content.
   for (const auto& request : requests) {
-    if ((request.operation != ObjectOperation::kPut &&
+    if (!DomainKind(state_->options.domain, request.kind) ||
+        (request.operation != ObjectOperation::kPut &&
          request.operation != ObjectOperation::kErase) ||
         request.scope.empty() || request.scope.size() > 256 ||
         request.scope != requests.front().scope || !ValidId(request.id) ||

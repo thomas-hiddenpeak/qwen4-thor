@@ -2,6 +2,7 @@
 #include "chat_server_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/chat_storage.h"
+#include "q4t/server/realtime_trace_api.h"
 #include "q4t/server/mcp_transport.h"
 
 #include <new>
@@ -77,6 +78,7 @@ void ChatServer::RequestStop() {
   static_assert(std::atomic<bool>::is_always_lock_free);
   stop_requested_.store(true);
   background_.PreventStart();
+  realtime_traces_.PreventStart();
   batches_.PreventStart();
   vector_jobs_.PreventStart();
   background_scanner_.PreventStart();
@@ -285,6 +287,8 @@ Status ChatServer::Run() {
   background_.Join();
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  realtime_traces_.RequestStop();
+  realtime_traces_.Join();
   close_listener.Run();
   std::fprintf(stderr, "[q4t] shutdown complete (0 in-flight remaining)\n");
   return serving_failed_.load() ? Status::Fail("serve failed") : Status();
@@ -592,6 +596,30 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
   };
+  if (IsRealtimeTraceTarget(path)) {
+    const auto* context = detail::HttpResponseContext::Current(fd);
+    if (!context || !context->Client().Allowed() || !realtime_traces_) {
+      SendError(fd, 503, "Authenticated tracing is unavailable", {},
+                "realtime_trace_unavailable");
+      return;
+    }
+    const auto& client = context->Client();
+    StateAccess access{
+        client.Scoped() ? "client:" + std::string(client.Id()) : "local:anonymous",
+        std::chrono::steady_clock::now() + std::chrono::seconds(5),
+        [this, fd] { return stop_requested_.load() ||
+                           detail::ClientConnectionFailed(fd); }};
+    const auto reply = HandleRealtimeTraceRequest(
+        *realtime_traces_, method, path, body, access);
+    if (reply.ok())
+      SendSimple(fd, 200, "OK", OutputJson(reply.value), "application/json",
+                 {access.deadline});
+    else
+      SendError(fd, reply.http_status, reply.ClientMessage(), {access.deadline},
+                reply.ClientCode(), reply.value.GetString("param"),
+                reply.value.GetString("allow"));
+    return;
+  }
   if (IsResponsesTokenCount(path)) {
     if (method != "POST") {
       rejected(HttpReceiveFailure::kMethod, 405);

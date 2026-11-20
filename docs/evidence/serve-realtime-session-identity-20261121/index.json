@@ -1,0 +1,270 @@
+{
+  "archive_sha256": "951d8132f07f9c4f91bbaae48dccdd559a3e5825bbbeb6f069f123b877ee925c",
+  "files": [
+    {
+      "path": "archive_identity_01.py",
+      "bytes": 3347,
+      "sha256": "e1c0a5eb44bb91ecb3b955bd7482dc7dd557f5bcdd420de985b79c25fa27cfb7"
+    },
+    {
+      "path": "identity-inventory.json",
+      "bytes": 223,
+      "sha256": "d8300498e094141b607d0e821409d4bb960b4e8a090145a4b3852acec6a8d7bd"
+    },
+    {
+      "path": "identity-prior-binaries-01/plan.json",
+      "bytes": 1239,
+      "sha256": "d7db22a17f28a93a189d0b68eee646400b5ec11ffba26505fecae6e47ddf59ff"
+    },
+    {
+      "path": "identity-prior-binaries-01/restore.py",
+      "bytes": 683,
+      "sha256": "1214a1566e98a0c9d7bccea84002a8d0cc1975302015abd6aae510ebbf2597b4"
+    },
+    {
+      "path": "native-runtime-04/0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-runtime-04/0.stdout",
+      "bytes": 153,
+      "sha256": "fa222fa2e9020c318d573143721c433f3de879451ed4734d4ae4174f89c73e8e"
+    },
+    {
+      "path": "native-runtime-04/1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native-runtime-04/1.stdout",
+      "bytes": 2922,
+      "sha256": "d3febe306f647ab0df2ddf3691c344b9fdf1c98d019ab811015877a83945b7b0"
+    },
+    {
+      "path": "native-runtime-04/plan.json",
+      "bytes": 112777,
+      "sha256": "478c6e5aefd58e50dad028653ea7a7107dfa8e20dc7b0c3e4bbeb11221f6576e"
+    },
+    {
+      "path": "native-runtime-04/result.json",
+      "bytes": 456,
+      "sha256": "c442f545ee574af47e839256d96e4efe8c25cf80b3f2118f39a70e64ad028897"
+    },
+    {
+      "path": "native-runtime-04/sources/include/q4t/server/realtime_shape.h",
+      "bytes": 1008,
+      "sha256": "5e8cd4b5b77c27fcd5808666f5517731078027ee4a753e45cd1f1904db2b0309"
+    },
+    {
+      "path": "native-runtime-04/sources/src/server/realtime_conversation_session.cpp",
+      "bytes": 51105,
+      "sha256": "0fc0b698fd1359947ac960c1a65f4f81ff7ab717add5594ce12511d8a12a424d"
+    },
+    {
+      "path": "native-runtime-04/sources/src/server/realtime_wire_shape.cpp",
+      "bytes": 5472,
+      "sha256": "badc3acee93b71e43c36d78400a882b32177de5cba27daead37655b7b8fd6ce0"
+    },
+    {
+      "path": "retired-previous-05/plan.json",
+      "bytes": 6254,
+      "sha256": "fe68bd75801355205a9e10d2d812c512fc6e5b4a76d7383907485646cc1a296d"
+    },
+    {
+      "path": "retired-previous-05/restore.py",
+      "bytes": 786,
+      "sha256": "53ee881fa46af169f901893f1ca534e4556ab09adf83bfa99314faad703fa1d1"
+    },
+    {
+      "path": "retired-previous-05/result.json",
+      "bytes": 178,
+      "sha256": "f05f768c4b1ee0cfd0a72561cc2e27cf9c5c27497b7ebfa7c20549bc98e66dc7"
+    },
+    {
+      "path": "sdk-business-04/cleanup.json",
+      "bytes": 4549,
+      "sha256": "55403c2eb827298f9a45d2be801ae3b6c7f86e5493bf8637e5a523242d56f448"
+    },
+    {
+      "path": "sdk-business-04/lease/exit.json",
+      "bytes": 717,
+      "sha256": "773668bda38487fe8861a00708d65aa4a7790ede8a96e91480a89e8a506f08da"
+    },
+    {
+      "path": "sdk-business-04/lease/nvml-queries.jsonl",
+      "bytes": 102054,
+      "sha256": "00eed076755b8959c78128d332c25815faa060982d50e7bcafda48e006a96a98"
+    },
+    {
+      "path": "sdk-business-04/primary-tracing-observed.json",
+      "bytes": 2559,
+      "sha256": "032d4ed549abe11e7d0258a0099e98a973677a63477af761f86862ec994ee83b"
+    },
+    {
+      "path": "sdk-business-04/primary-tracing.events.jsonl",
+      "bytes": 684,
+      "sha256": "8db9fcb4c8350dda037276d4faa56358cceec220ed2350f79a992132fb1818ef"
+    },
+    {
+      "path": "sdk-business-04/primary-tracing.sdk.json",
+      "bytes": 1024,
+      "sha256": "18c7c5dad4dafd62c1b5fb1fe7381697c9e61b690c3d0c0045f6fe0b7396402b"
+    },
+    {
+      "path": "sdk-business-04/primary-tracing.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sdk-business-04/result.json",
+      "bytes": 1230,
+      "sha256": "5b5b8b80757ff683ed25e015c64a06cc46c23a7cc3ff78e5b108a4d6c4fe2294"
+    },
+    {
+      "path": "sdk-cpu-04/plan.json",
+      "bytes": 922,
+      "sha256": "78ccb22347bd3f3fdb945111a669edf1d0dd25a69adb79984416863a7d913d1b"
+    },
+    {
+      "path": "sdk-cpu-04/result.json",
+      "bytes": 766,
+      "sha256": "247cc13d22bf228ce02da1874d91e605b2f0f69470486dcdad224abd4b1b6795"
+    },
+    {
+      "path": "sdk-cpu-04/sources/tools/serve_realtime/test_tracing_acceptance.py",
+      "bytes": 5704,
+      "sha256": "f47d4e00be3e784c82b969dccf22c4fdf4b311f24861718f9055aa364e496ba1"
+    },
+    {
+      "path": "sdk-cpu-04/sources/tools/serve_realtime/test_tracing_checks.py",
+      "bytes": 9717,
+      "sha256": "7b98869af84004fe59efee0fe6679826fb9d41b86292772c5c24603d09a140d9"
+    },
+    {
+      "path": "sdk-cpu-04/sources/tools/serve_realtime/tracing_acceptance.py",
+      "bytes": 17222,
+      "sha256": "6141a48bcea94ba41874d46fcca00a0e8b589b89be1e1712657fd1cbd4d99539"
+    },
+    {
+      "path": "sdk-cpu-04/sources/tools/serve_realtime/tracing_checks.py",
+      "bytes": 12395,
+      "sha256": "e27a26b41c34c93db0ba666a9ac0436cc33999ac94697de611ecc4fec4479f19"
+    },
+    {
+      "path": "sdk-cpu-04/sources/tools/serve_realtime/tracing_sdk.mjs",
+      "bytes": 12123,
+      "sha256": "ceaf881fb985cc9c35c582a574bdd83beeee548d44710290f20150d984b95c25"
+    },
+    {
+      "path": "sdk-cpu-04/stderr",
+      "bytes": 2085,
+      "sha256": "c99b475aa433029277412960abf8573f58026a73ab76578b1139a24e2c3dc082"
+    },
+    {
+      "path": "sdk-cpu-04/stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "session-identity-cpu-01/build.stderr",
+      "bytes": 885,
+      "sha256": "e6146191bbbe130c20c9b863aaaa95af7f490c662c727520f11849071d06c890"
+    },
+    {
+      "path": "session-identity-cpu-01/build.stdout",
+      "bytes": 2469,
+      "sha256": "0af96a52052155b8f5def92dfaec8856bbc628510eb049ce5c4b55476616b34e"
+    },
+    {
+      "path": "session-identity-cpu-01/plan.json",
+      "bytes": 2047,
+      "sha256": "d62f67d6b1ae7ac462b919fadb79ac6f8a0b75738cc1fda93c123a6e8060f922"
+    },
+    {
+      "path": "session-identity-cpu-01/required.txt",
+      "bytes": 607,
+      "sha256": "8eaddfd1fa52864c8323525c6a1e470d969ffbf07591ada652c20918007592e0"
+    },
+    {
+      "path": "session-identity-cpu-01/result.json",
+      "bytes": 132,
+      "sha256": "0d399e060b1c4af71768111d34200f06e3ce3b1d4639b354f27f7d7c86ffeb62"
+    },
+    {
+      "path": "session-identity-cpu-01/sources/include/q4t/server/realtime_shape.h",
+      "bytes": 1008,
+      "sha256": "5e8cd4b5b77c27fcd5808666f5517731078027ee4a753e45cd1f1904db2b0309"
+    },
+    {
+      "path": "session-identity-cpu-01/sources/src/server/realtime_conversation_session.cpp",
+      "bytes": 51105,
+      "sha256": "0fc0b698fd1359947ac960c1a65f4f81ff7ab717add5594ce12511d8a12a424d"
+    },
+    {
+      "path": "session-identity-cpu-01/sources/src/server/realtime_wire_shape.cpp",
+      "bytes": 5433,
+      "sha256": "5946da47d7e495a5f945218815de3aaae3d4842c46527cfefd474e38277f462f"
+    },
+    {
+      "path": "session-identity-cpu-01/sources/tests/server_realtime_conversation_session_test.cpp",
+      "bytes": 107412,
+      "sha256": "1cbe53dcfbf48380456a1209013409a974ff90a2399d6d2b25ce729dd5e7db79"
+    },
+    {
+      "path": "session-identity-cpu-02/build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "session-identity-cpu-02/build.stdout",
+      "bytes": 3381,
+      "sha256": "74f16d1cf5994025f460db9e8ee63c282e0f4e5c6c3e34f45191b41d9419ca31"
+    },
+    {
+      "path": "session-identity-cpu-02/plan.json",
+      "bytes": 2047,
+      "sha256": "70b7d82806fd94055933795b35429138e5f045790311cb7f989331765a2ea335"
+    },
+    {
+      "path": "session-identity-cpu-02/required.txt",
+      "bytes": 607,
+      "sha256": "8eaddfd1fa52864c8323525c6a1e470d969ffbf07591ada652c20918007592e0"
+    },
+    {
+      "path": "session-identity-cpu-02/result.json",
+      "bytes": 304,
+      "sha256": "bb09913e1d96b7a3eda4cb2bde56a8506415ff807acf77eea0a00ff741dfbd8a"
+    },
+    {
+      "path": "session-identity-cpu-02/sources/include/q4t/server/realtime_shape.h",
+      "bytes": 1008,
+      "sha256": "5e8cd4b5b77c27fcd5808666f5517731078027ee4a753e45cd1f1904db2b0309"
+    },
+    {
+      "path": "session-identity-cpu-02/sources/src/server/realtime_conversation_session.cpp",
+      "bytes": 51105,
+      "sha256": "0fc0b698fd1359947ac960c1a65f4f81ff7ab717add5594ce12511d8a12a424d"
+    },
+    {
+      "path": "session-identity-cpu-02/sources/src/server/realtime_wire_shape.cpp",
+      "bytes": 5472,
+      "sha256": "badc3acee93b71e43c36d78400a882b32177de5cba27daead37655b7b8fd6ce0"
+    },
+    {
+      "path": "session-identity-cpu-02/sources/tests/server_realtime_conversation_session_test.cpp",
+      "bytes": 107412,
+      "sha256": "1cbe53dcfbf48380456a1209013409a974ff90a2399d6d2b25ce729dd5e7db79"
+    },
+    {
+      "path": "session-identity-cpu-02/stderr",
+      "bytes": 628,
+      "sha256": "3159bc41a2519668f3f3945ff57c8a43757639a77c4e0f9760da0d81b623262b"
+    },
+    {
+      "path": "session-identity-cpu-02/stdout",
+      "bytes": 709,
+      "sha256": "2ca5ca07d663874f26685d7c66c04d5439bf9e5d7aeb0acfbca00e2a7f081a3f"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    "python3",
+    "-B",
+    "tools/serve_realtime/tracing_acceptance.py",
+    "run",
+    "--output",
+    ".q4t-work/serve-realtime-tracing-20261120/sdk-business-03"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "lease_inherited_by_child": true,
+  "explicit_inherited_fd_count": 0,
+  "finished": {
+    "utc": "2026-11-20T16:08:43.490737+00:00",
+    "monotonic": 3381006.007622697,
+    "pid": 1121607
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "files": [
+    {
+      "path": "qualification-cpu-01/plan.json",
+      "bytes": 39317,
+      "sha256": "53cef466a55219a6086cd23ad163c2d889ad3ebfb874b61d19c75097c055086f"
+    },
+    {
+      "path": "qualification-cpu-01/result.json",
+      "bytes": 208,
+      "sha256": "7cac3e7f415a533794e9779e5b9d357ecc98032eddc0ec2861c8126ce68a1537"
+    },
+    {
+      "path": "qualification-cpu-01/unittest.log",
+      "bytes": 3734,
+      "sha256": "b2becba8b99b914c595da80834dc7a4fcb65c9d6a13f62eefc86f93ccbf07a14"
+    },
+    {
+      "path": "qualification-cpu-02/plan.json",
+      "bytes": 38058,
+      "sha256": "44722e4ed0e0b9849950e316258c85865214e70f4d08296049e126745455d1ed"
+    },
+    {
+      "path": "qualification-cpu-02/result.json",
+      "bytes": 209,
+      "sha256": "4c79cf1091307ddde3cd6be39b1a57873c47fc6caf489c63ad3e9be9e077683d"
+    },
+    {
+      "path": "qualification-cpu-02/unittest.log",
+      "bytes": 1308,
+      "sha256": "f92165d4bb0a0f81b8c925c92bc98961d146f8ba3acf39e8d8e8432bbe3c5643"
+    },
+    {
+      "path": "qualification-cpu-03/plan.json",
+      "bytes": 38058,
+      "sha256": "dfd4c01d5b7d3129ed260b9241aab16e35f0e6c8b496eed29dc516f3bf26b2c6"
+    },
+    {
+      "path": "qualification-cpu-03/result.json",
+      "bytes": 209,
+      "sha256": "fc3af60c829d6dcc6342162d376975abbaed62bfe296eaa21f56d869aa1a8a65"
+    },
+    {
+      "path": "qualification-cpu-03/unittest.log",
+      "bytes": 248,
+      "sha256": "c76c06c5d202599cbf9fa2779c2f5d6c12d39e8747cd6aff3c03010bd55d011f"
+    },
+    {
+      "path": "qualification-proposal-01/result.json",
+      "bytes": 885,
+      "sha256": "862c83be026d09520b2604aca7bf1b3e7e5d676b7f8bdf5839c436a97487bd55"
+    },
+    {
+      "path": "retired-previous-07/plan.json",
+      "bytes": 9714,
+      "sha256": "b4bb539e1aaeccd99fc58f98783b2d1b455cfd832be766d2b27118537335b9de"
+    },
+    {
+      "path": "retired-previous-07/result.json",
+      "bytes": 154,
+      "sha256": "42158dce8104a63d043a75c5952502dc9a22d40c93e04b02f9e2da1d953c6620"
+    },
+    {
+      "path": "retired-previous-07/restore.py",
+      "bytes": 683,
+      "sha256": "1214a1566e98a0c9d7bccea84002a8d0cc1975302015abd6aae510ebbf2597b4"
+    }
+  ],
+  "archive_sha256": "b32a74fab9ea9e9eefcfacf781b314d8180cce6a1d12f90f4c428600fa77e4e8",
+  "scope": "Explicit CPU records and nonsecret snapshot metadata; no policies, private keys or profile bodies."
+}

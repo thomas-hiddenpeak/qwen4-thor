@@ -378,6 +378,11 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/native_chat_generation.cpp
   src/server/realtime_response_output.cpp
   src/server/realtime_conversation_session.cpp
+  src/server/realtime_trace.cpp
+  src/server/realtime_trace_events.cpp
+  src/server/realtime_trace_store.cpp
+  src/server/realtime_trace_session.cpp
+  src/server/realtime_trace_api.cpp
   src/server/realtime_wire_shape.cpp
   src/server/asr_statistics.cpp
   src/server/asr_alignment_output.cpp

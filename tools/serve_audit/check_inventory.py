@@ -95,6 +95,16 @@ def current_surface(root):
     native_routes.extend((method, "/v1/models/{model}", "true")
                          for method in ("GET", "DELETE"))
     application_routes = (root / "include/q4t/server/application_routes.h").read_text()
+    if 'HandleRealtimeTraceRequest(' not in dispatch or \
+            'IsRealtimeTraceTarget(path)' not in dispatch or \
+            'server::RealtimeTraceMethodAllowed(method, path)' not in native or \
+            'inline bool RealtimeTraceMethodAllowed' not in application_routes:
+        raise ValueError('review native trace transport and authenticated scope')
+    traces = [("GET", "/v1/realtime/traces"),
+              ("GET", "/v1/realtime/traces/{trace_id}"),
+              ("DELETE", "/v1/realtime/traces/{trace_id}")]
+    routes.extend((path, method) for method, path in traces)
+    native_routes.extend((method, path, "true") for method, path in traces)
     if 'HandleTranscription(fd, headers.content_type, body)' in dispatch:
         if 'path == "/v1/files" || IsTranscriptionTarget(target)' not in application_routes or \
                 'server::IsTranscriptionTarget(path)' not in native or \
@@ -426,6 +436,11 @@ def mutation_checks(inventory, actual):
             raise ValueError("Voice/Consent routes escaped extraction")
         cases.append(dict(actual, **{group: [route for route in actual[group]
                                             if route != omitted]}))
+        trace = "DELETE /v1/realtime/traces/{trace_id}"
+        if trace not in actual[group]:
+            raise ValueError("trace deletion escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group]
+                                            if route != trace]}))
     for case in cases:
         if not check(inventory, case):
             raise ValueError("inventory mutation escaped detection")

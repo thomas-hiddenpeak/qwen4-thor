@@ -1,4 +1,5 @@
 #include "q4t/server/realtime_chat_plan.h"
+#include "q4t/server/realtime_trace.h"
 
 #include <algorithm>
 #include <cmath>
@@ -162,8 +163,12 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
     return Invalid(error, "prompt", "Unexpected prompt snapshot",
                    "prompt_snapshot_mismatch", 500);
   }
-  if (const auto* trace = settings.Find("tracing"); trace && !trace->IsNull())
-    return Processor(error, "tracing");
+  RealtimeTraceConfiguration tracing;
+  const auto trace_plan =
+      ParseRealtimeTraceConfiguration(settings.Find("tracing"), &tracing);
+  if (!trace_plan.ok())
+    return Invalid(error, trace_plan.value.GetString("param"),
+                   trace_plan.message, trace_plan.code, trace_plan.http_status);
   if (const auto* include = settings.GetArray("include");
       include && !include->array.empty() && !native_input)
     return Processor(error, "include");

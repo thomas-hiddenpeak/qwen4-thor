@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "returncode": 0,
+  "seconds": 0.46444342378526926,
+  "sources": {
+    "tools/serve_realtime/tracing_sdk.mjs": "b1aafb91c4f027ab971cf1b65d02697be7d09caa39bb209fe5a65839ec4e80a2",
+    "tools/serve_realtime/tracing_checks.py": "1e5c51f456235bf7f9f5ca2d75178c07d21fcd056b52fde3d955f0986affae08",
+    "tools/serve_realtime/tracing_acceptance.py": "ec3ef456f2e6d293b799719bd0086faaf4118b80b0b9595c82b68f86c5e4754e",
+    "tools/serve_realtime/test_tracing_checks.py": "5b02a66b7c8975b02f97ddc613d4e8469e6fadc0274285032a82eef271bb01ba",
+    "tools/serve_realtime/test_tracing_acceptance.py": "f93964e923bfca25cf3938166ae27af1705814522ca8de037134433cd2642f6c"
+  },
+  "reused_cases": 19,
+  "new_cases": 1,
+  "new_gpu_starts": 0
+}

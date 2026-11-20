@@ -49,7 +49,8 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
     return HttpConnectionClass::kObservation;
   if (method == "DELETE" && IsModelDetailPath(path))
     return HttpConnectionClass::kControl;
-  if (IsResponsesObservation(method, path) ||
+  if (RealtimeTraceMethodAllowed(method, path) ||
+      IsResponsesObservation(method, path) ||
       IsVectorStoreObservation(method, path) ||
       IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
       IsVoiceMetadata(method, path) || IsPromptObservation(method, path) ||

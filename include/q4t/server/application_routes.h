@@ -23,6 +23,23 @@ inline bool ValidApplicationId(std::string_view id) {
   return true;
 }
 
+inline bool IsRealtimeTraceTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/realtime/traces" ||
+         path.starts_with("/v1/realtime/traces/");
+}
+inline bool RealtimeTraceMethodAllowed(std::string_view method,
+                                       std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  constexpr std::string_view root = "/v1/realtime/traces";
+  if (target.find('#') != target.npos) return false;
+  if (path == root) return method == "GET";
+  return path.starts_with(root) && path.size() > root.size() &&
+         path[root.size()] == '/' &&
+         ValidApplicationId(path.substr(root.size() + 1)) &&
+         (method == "GET" || method == "DELETE");
+}
+
 enum class McpTunnelRouteKind { kInvalid, kMetadata, kPoll, kResponse };
 struct McpTunnelApiRoute {
   McpTunnelRouteKind kind = McpTunnelRouteKind::kInvalid;

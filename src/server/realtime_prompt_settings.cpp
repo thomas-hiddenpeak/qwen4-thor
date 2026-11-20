@@ -5,6 +5,7 @@
 #include "object_protocol.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/realtime_shape.h"
+#include "q4t/server/realtime_trace.h"
 
 namespace q4t::server {
 namespace {
@@ -178,10 +179,14 @@ ObjectReply RealtimePromptSettings::Update(
   if (next.settings.GetString("model") != current_.settings.GetString("model"))
     return Invalid("realtime_model_immutable", "Session model cannot change",
                    "session.model");
-  const auto* tracing = current_.settings.Find("tracing");
-  if (tracing && !tracing->IsNull() &&
-      (!next.settings.Has("tracing") ||
-       OutputJson(*tracing) != OutputJson(*next.settings.Find("tracing"))))
+  RealtimeTraceConfiguration tracing, requested;
+  result = ParseRealtimeTraceConfiguration(current_.settings.Find("tracing"),
+                                            &tracing);
+  if (Accepted(result))
+    result = ParseRealtimeTraceConfiguration(next.settings.Find("tracing"),
+                                              &requested);
+  if (!Accepted(result)) return result;
+  if (tracing.enabled && !SameRealtimeTraceConfiguration(tracing, requested))
     return Invalid("realtime_tracing_immutable",
                    "Enabled tracing cannot change", "session.tracing");
   if (validate) result = validate(next);
@@ -210,6 +215,18 @@ ObjectReply RealtimePromptSettings::Response(
   if (next.settings.GetString("model") != current_.settings.GetString("model"))
     return Invalid("realtime_model_immutable", "Session model cannot change",
                    "response.prompt");
+  // Tracing belongs to the session. A per-response prompt cannot secretly
+  // enable or change global capture while session.updated reports otherwise.
+  RealtimeTraceConfiguration tracing, requested;
+  result = ParseRealtimeTraceConfiguration(current_.settings.Find("tracing"),
+                                            &tracing);
+  if (Accepted(result))
+    result = ParseRealtimeTraceConfiguration(next.settings.Find("tracing"),
+                                              &requested);
+  if (!Accepted(result)) return result;
+  if (!SameRealtimeTraceConfiguration(tracing, requested))
+    return Invalid("realtime_tracing_session_only",
+                   "Change tracing through session.update", "response.prompt");
   // Direct response options are still passed separately to the execution
   // planner, where they override these effective session defaults.
   if (validate) result = validate(next);

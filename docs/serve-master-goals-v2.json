@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-20",
+  "updated": "2026-11-21",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -2889,7 +2889,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Finish accepted rev406 Realtime MCP main integration, then implement native Realtime tracing/Live and all remaining required master tasks. Preserve original model quality failures and user-owned long-soak/listening.",
+      "next": "Implement native Realtime tracing, Live, and all remaining required inference/application and reliability tasks. PR56 MCP is merged and rev416 remains STOPPED; preserve original quality failures and user-owned long-soak/listening.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -5253,6 +5253,10 @@
       "native_realtime_mcp_recovery_20261120": {
         "evidence": "evidence/serve-realtime-mcp-recovery-cpu-20261120/README.md",
         "state": "targeted_cpu_pass_managed_business_pending"
+      },
+      "native_realtime_mcp_main_20261120": {
+        "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
+        "evidence": "evidence/serve-pr56-merged-20261120/README.md"
       }
     },
     {
@@ -5950,6 +5954,10 @@
           "/vaults/{vault_id}/credentials/{credential_id}"
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
+      },
+      "native_realtime_mcp_main_20261120": {
+        "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
+        "evidence": "evidence/serve-pr56-merged-20261120/README.md"
       }
     },
     {
@@ -6826,6 +6834,10 @@
           "/webhook_event_types"
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
+      },
+      "native_realtime_mcp_main_20261120": {
+        "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
+        "evidence": "evidence/serve-pr56-merged-20261120/README.md"
       }
     },
     {
@@ -10164,7 +10176,7 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
       },
-      "next": "Finish accepted rev406 Realtime MCP main integration, then implement native Realtime tracing/Live and all remaining required master tasks. Preserve original model quality failures and user-owned long-soak/listening.",
+      "next": "Implement native Realtime tracing, Live, and all remaining required inference/application and reliability tasks. PR56 MCP is merged and rev416 remains STOPPED; preserve original quality failures and user-owned long-soak/listening.",
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
@@ -10176,6 +10188,10 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
+      },
+      "native_realtime_mcp_main_20261120": {
+        "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
+        "evidence": "evidence/serve-pr56-merged-20261120/README.md"
       }
     },
     {
@@ -10435,8 +10451,8 @@
       }
     }
   ],
-  "next_task": "Finish accepted rev406 Realtime MCP main integration, then implement native Realtime tracing/Live and all remaining required master tasks. Preserve original model quality failures and user-owned long-soak/listening.",
-  "next": "PR #56最终CI与main收尾；rev416已可回退交付，随后原生Realtime追踪、Live及全部剩余任务。原质量失败保留。",
+  "next_task": "Confirm PR #57 checks and merge native Realtime tracing; rev426 STOPPED reversibly delivered. Then implement Live and every remaining inference/application, recovery and final delivery task. Platform management excluded by explicit user decision.",
+  "next": "rev426追踪可回退交付，PR #57检查/合入；Live来源与合同已作私有准备，随后连续实现全部剩余任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -15963,6 +15979,227 @@
       },
       "seconds": 0.9223068905994296,
       "new_gpu_starts": 0
+    }
+  },
+  "native_realtime_mcp_main_20261120": {
+    "status": "PASS_REALTIME_MCP_PR56_MERGED",
+    "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/56",
+    "accepted_head": "567b8ab990595895d00f8623469592ec66504df9",
+    "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
+    "main_tip": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
+    "merged_at": "2026-11-20T15:12:29Z",
+    "exact_head_checks": 2,
+    "source_ancestry_confirmed": true,
+    "default_revision": 416,
+    "service_state": "STOPPED",
+    "new_gpu_actions": 0,
+    "source_changes_during_merge": 0,
+    "branch": "codex/serve-resilience-cd",
+    "branch_retention": "same active branch continues privately prepared native tracing; evidence paths retained; no redundant branch created",
+    "original_quality_failures_preserved": true,
+    "remaining_master_active": true,
+    "evidence": "evidence/serve-pr56-merged-20261120/README.md"
+  },
+  "native_realtime_tracing_20261120": {
+    "status": "IDLE_TRACE_RECOVERY_NATIVE_BUILD_CPU_ACCEPTED_BUSINESS_PENDING",
+    "native_cpu_distinct": 40,
+    "cpu_executions": 58,
+    "integration_cpu_cases": 26,
+    "integration_cpu_seconds": 1.8698971131816506,
+    "host_binary_sha256": "132436eafb35543f862928620a5b06ac7e6c367f0b90cb7f551c34ff1c09806b",
+    "evidence": "evidence/serve-realtime-tracing-cpu-20261120/README.md",
+    "contract": "SERVE_REALTIME_TRACING_2026-11-20.md",
+    "auxiliary_failure_does_not_own_readiness": true,
+    "new_gpu_starts": 4,
+    "default_revision": 426,
+    "default_state": "STOPPED",
+    "remaining": [
+      "PR #57 checks/merge",
+      "Live and all remaining master tasks"
+    ],
+    "native_build": {
+      "status": "BUILD_PASS",
+      "commands": [
+        {
+          "index": 0,
+          "returncode": 0,
+          "warnings": 0
+        },
+        {
+          "index": 1,
+          "returncode": 0,
+          "warnings": 0
+        }
+      ],
+      "seconds": 458.0079359319061,
+      "default_unchanged": true,
+      "new_gpu_starts": 0,
+      "binary_sha256": "e482c5276c3f32988845e177a679a5084f754767346393b7c9e8fc84fdc7d93f",
+      "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935"
+    },
+    "driver_cpu_cases": 25,
+    "driver_cpu_seconds": 0.014,
+    "inventory_negative_checks": 22,
+    "business_limits": {
+      "starts": 2,
+      "chats": 6,
+      "websocket_sessions": 2,
+      "seconds": 900
+    },
+    "build_driver_evidence": "evidence/serve-realtime-tracing-build-driver-20261121/README.md",
+    "driver_preflight_failure": {
+      "evidence": "evidence/serve-realtime-tracing-driver-scope-20261121/README.md",
+      "model_starts": 0,
+      "model_jobs": 0,
+      "repaired": true
+    },
+    "preflight_attempts": 3,
+    "preflight_model_starts": 0,
+    "preflight_model_jobs": 0,
+    "capacity_unchanged": true,
+    "preflight_evidence": "evidence/serve-realtime-tracing-preflight-20261121/README.md",
+    "actual_generations": 3,
+    "session_identity_fix_20261121": {
+      "cpu_cases": 9,
+      "cpu_seconds": 0.31435676384717226,
+      "original_actual_failure": "sdk-business-04",
+      "original_starts": 1,
+      "original_actual_generations": 0,
+      "original_seconds": 44.08987349597737,
+      "prior_failure_preserved": true,
+      "supplemental_model_starts": 2,
+      "supplemental_generations": 6,
+      "supplemental_seconds": 900,
+      "cumulative_model_starts_limit": 3,
+      "default_unchanged": true,
+      "native_build": {
+        "status": "BUILD_PASS",
+        "commands": [
+          {
+            "index": 0,
+            "returncode": 0,
+            "warnings": 0
+          },
+          {
+            "index": 1,
+            "returncode": 0,
+            "warnings": 0
+          }
+        ],
+        "seconds": 45.23489358415827,
+        "default_unchanged": true,
+        "new_gpu_starts": 0,
+        "binary_sha256": "ae84a6be2ae838845993f9215315f49ade2c2b3a7f2eece203edb5d0844e89fd",
+        "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935"
+      },
+      "evidence": "evidence/serve-realtime-session-identity-20261121/README.md"
+    },
+    "idle_recovery_fix_20261121": {
+      "native_cpu_cases": 24,
+      "initial_pass": 21,
+      "initial_fixture_failures": 2,
+      "repaired_cpu_cases": 2,
+      "repaired_cpu_seconds": 1.4157685921527445,
+      "read_only_poll_cases": 3,
+      "original_actual_failure": "sdk-business-05",
+      "original_starts": 1,
+      "original_actual_generations": 3,
+      "original_model_quality": "PASS",
+      "original_settled_tokens": 1746,
+      "original_seconds": 56.453239758033305,
+      "prior_failure_preserved": true,
+      "supplemental_model_starts": 2,
+      "supplemental_generations": 6,
+      "supplemental_seconds": 900,
+      "cumulative_model_starts_limit": 4,
+      "cumulative_actual_generations_limit": 9,
+      "default_unchanged": true,
+      "idle_exporter_targeted_cases": 4,
+      "idle_exporter_cpu_seconds": 0.5144313001073897,
+      "native_build": {
+        "status": "BUILD_PASS",
+        "commands": [
+          {
+            "index": 0,
+            "returncode": 0,
+            "warnings": 0
+          },
+          {
+            "index": 1,
+            "returncode": 0,
+            "warnings": 0
+          }
+        ],
+        "seconds": 22.742849391885102,
+        "default_unchanged": true,
+        "new_gpu_starts": 0,
+        "binary_sha256": "94df51e5baa135d2fe61009d31212191269d9549068de1b78b19590c4e0a717c",
+        "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935"
+      },
+      "evidence": "evidence/serve-realtime-tracing-idle-recovery-20261121/README.md"
+    },
+    "state": "delivered_stopped_pr57_checks_pending",
+    "actual_business": {
+      "evidence": "evidence/serve-realtime-tracing-http-20261121/README.md",
+      "status": "PASS",
+      "starts": 2,
+      "actual_generations": 6,
+      "seconds": 159.60364232305437,
+      "nvml_queries": 149,
+      "cleanup_complete": true,
+      "healthy_model_restarts": 0,
+      "original_failures_preserved": true,
+      "total_starts": 4,
+      "total_actual_generations": 9,
+      "total_actual_seconds": 260.146755577065
+    },
+    "qualification_cpu": {
+      "evidence": "evidence/serve-realtime-tracing-qualification-cpu-20261121/README.md",
+      "distinct_cases": 15,
+      "status": "PASS",
+      "original_fixture_failures_preserved": true,
+      "new_gpu_starts": 0,
+      "profile_bytes": {
+        "primary": 5655026,
+        "light": 8362969
+      },
+      "limit_bytes": 8388608
+    },
+    "delivery": {
+      "evidence": "evidence/serve-realtime-tracing-delivery-20261121/README.md",
+      "status": "PASS_REALTIME_TRACING_DELIVERED",
+      "revision": 426,
+      "state": "STOPPED",
+      "seconds": 422.5800832589157,
+      "commands": 19,
+      "new_gpu_starts": 0,
+      "new_managed_fault_runs": 0,
+      "candidate_manifest_sha256": "41760222c76714a23e5753e53ef9e86b3b91e9c0a4f42373f04bf845d3b34afe",
+      "retained_manifest_sha256": "20871e8a81691446dda42b49429fffff44b12322088f290c5f92333f27870015",
+      "binary_sha256": "94df51e5baa135d2fe61009d31212191269d9549068de1b78b19590c4e0a717c",
+      "engine_release_sha256": "68d5005b3f1054f6ae785340de90aee86e6505e7722d28734a4f21ff13b9624e",
+      "protocol_sha256": "03b227b161b55f1ea4e310745226f47aaaca41853b3bb222e95a7b0718cd37ae",
+      "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935",
+      "registry_sha256": "2603a172a402f5a7eb8e2db5d7da897fa84ae3990a26a3afc502ed946951fb71",
+      "customers_quotas_usage_core_outer_preserved": true,
+      "profile_history_clock_and_budgets_preserved": true,
+      "actual_stopped_root_rollback_and_forward": true,
+      "old_recovery_receipts_preserve_original_identities": true,
+      "original_model_quality_failures_preserved": true,
+      "original_model_quality_status": "FAIL",
+      "targeted_model_quality_status": "PASS",
+      "performance_acceptance": false,
+      "full_model_quality_accepted": false,
+      "long_stability_accepted": false,
+      "master_goal_active": true,
+      "reversible_metadata_maintenance": {
+        "commands": 3,
+        "archived_intents": 4,
+        "deleted_files": 0,
+        "old_revision": 416,
+        "live_state_unchanged": true
+      },
+      "archive_sha256": "bbe1c0c66b84ebfa5d146f0209774876495613a79b3dfab49ef6a52ce412affa"
     }
   }
 }

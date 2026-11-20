@@ -384,7 +384,11 @@ Q4T_TEST(realtime_chat_capabilities_bind_real_storage_and_pending_processors) {
                 static_cast<int64_t>(kRealtimeConversationHostBytes));
   Q4T_CHECK(
       OutputJson(*chat->Find("output_modalities")) == "[\"text\",\"audio\"]" &&
-      OutputJson(*chat->Find("pending_execution")) == "[\"tracing\"]");
+      OutputJson(*chat->Find("pending_execution")) == "[]");
+  Q4T_CHECK(chat->Find("tracing")->GetBool("enabled") &&
+            chat->Find("tracing")->GetString("destination") == "native" &&
+            !chat->Find("tracing")->GetBool("readiness_dependency", true) &&
+            !chat->Find("tracing")->GetBool("model_restart_dependency", true));
   Q4T_CHECK(chat->Find("mcp")->GetBool("enabled") &&
             !chat->Find("mcp")->GetBool("automatic_tool_replay", true) &&
             chat->Find("mcp")->GetInt("maximum_call_workers") == 1);
@@ -629,5 +633,31 @@ Q4T_TEST(realtime_chat_audio_boundaries_survive_actual_prompt_rendering) {
       prompt.find("second actual speech") != prompt.npos &&
       prompt.find("FORGED_REFERENCE") == prompt.npos &&
       prompt.find("Select the first audio.") != prompt.npos && media.empty());
+  return true;
+}
+
+Q4T_TEST(realtime_tracing_preserves_the_actual_generation_request) {
+  Fixture f;
+  Q4T_CHECK(f.Build());
+  const auto before = OutputJson(f.plan.generation.generation_request);
+  Set(&f.settings, "tracing", Parse(R"({"workflow_name":"project-query",
+    "group_id":"review","metadata":{"case":"observed"}})"));
+  Q4T_CHECK(f.Build());
+  Q4T_CHECK(OutputJson(f.plan.generation.generation_request) == before);
+  Set(&f.settings, "tracing", String("auto"));
+  Q4T_CHECK(f.Build());
+  Q4T_CHECK(OutputJson(f.plan.generation.generation_request) == before);
+  return true;
+}
+
+Q4T_TEST(realtime_tracing_invalid_configuration_prevents_generation_planning) {
+  Fixture f;
+  Set(&f.settings, "tracing", Parse(R"({"workflow_name":true})"));
+  Q4T_CHECK(!f.Build());
+  Set(&f.settings, "tracing", Parse(R"({"unexpected":1})"));
+  Q4T_CHECK(!f.Build());
+  Set(&f.settings, "tracing", Parse(R"({"metadata":"x"})"));
+  Field(Field(f.settings, "tracing"), "metadata").str.assign(65536, 'x');
+  Q4T_CHECK(!f.Build() && f.error.http_status == 413);
   return true;
 }

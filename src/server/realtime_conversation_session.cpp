@@ -214,6 +214,7 @@ void RealtimeConversationSession::Release(Work& work) noexcept {
 }
 void RealtimeConversationSession::Cancel() noexcept {
   cancelled_ = true;
+  if (trace_) trace_->Close("session_ended", RealtimeTraceNow());
   if (input_) input_->Cancel();
   if (mcp_imports_) mcp_imports_->Cancel();
   if (mcp_calls_) mcp_calls_->Cancel();
@@ -232,12 +233,34 @@ void RealtimeConversationSession::Join() noexcept {
   if (input_) input_->Join();
   if (mcp_imports_) mcp_imports_->Join();
   if (mcp_calls_) mcp_calls_->Join();
+  if (trace_) {
+    trace_->Close("session_ended", RealtimeTraceNow());
+    trace_.reset();
+  }
+}
+void RealtimeConversationSession::ConfigureTracing() noexcept {
+  try {
+    const auto& settings = settings_.Current().settings;
+    const auto* tracing = settings.Find("tracing");
+    if (!tracing || tracing->IsNull()) return;
+    if (!trace_)
+      trace_.emplace(id_, conversation_id_, callbacks_.traces,
+                     callbacks_.trace_scope);
+    trace_->Configure(settings, RealtimeTraceNow());
+  } catch (...) {
+    try {
+      if (callbacks_.traces)
+        if (auto* store = callbacks_.traces()) store->RecordCollectionFailure();
+    } catch (...) {}
+
+  }
 }
 ObjectReply RealtimeConversationSession::Emit(Json event) {
   if (cancelled_ || output_.Closed() ||
       (callbacks_.interrupted && callbacks_.interrupted()))
     return object_detail::Error(409, "realtime_connection_closed",
                                 "Realtime connection closed");
+  if (trace_) trace_->Observe(event, RealtimeTraceNow());
   auto text = OutputJson(event);
   if (text.size() > output_.MessageLimit())
     return object_detail::Error(503, "realtime_event_too_large",
@@ -310,6 +333,7 @@ bool RealtimeConversationSession::Start() {
   ChatPlanError error;
   if (commit && !mcp_definitions_.Commit(&mcp_selection_, &error)) return false;
   started_ = true;
+  ConfigureTracing();
   return Event("session.created", Object({{"session", PublicSettings()}})) &&
          Event(
              "conversation.created",
@@ -362,6 +386,8 @@ ObjectReply RealtimeConversationSession::SelectMcp(
 }
 Json RealtimeConversationSession::PublicSettings() const {
   auto value = settings_.Current().settings;
+  Set(&value, "id", String(id_));
+  Set(&value, "object", String("realtime.session"));
   if (mcp_current_) Set(&value, "tools", mcp_current_->tools);
   return value;
 }
@@ -490,6 +516,7 @@ bool RealtimeConversationSession::Settings(const Json& update,
   if (commit && !mcp_definitions_.Commit(&mcp, &error)) return false;
   mcp_selection_ = std::move(mcp);
   mcp_current_ = std::move(context);
+  ConfigureTracing();
   return Event("session.updated", Object({{"session", PublicSettings()}})) &&
          ImportMcp(mcp_selection_);
 }
@@ -1022,6 +1049,7 @@ bool RealtimeConversationSession::Tick() {
   if (!started_ || cancelled_ || output_.Closed() ||
       (callbacks_.interrupted && callbacks_.interrupted()) || !Flush())
     return false;
+  if (trace_) trace_->Tick(RealtimeTraceNow());
   // Bound one iteration, and preserve control-command responsiveness under
   // slow output. Producers block on their own mailbox, not the socket reader.
   if (!events_.empty()) return true;

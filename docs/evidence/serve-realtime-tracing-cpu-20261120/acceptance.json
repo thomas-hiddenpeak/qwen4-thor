@@ -1,0 +1,34 @@
+{
+  "status": "PASS_TARGETED_NATIVE_TRACING_CPU",
+  "distinct_passing_cases": 40,
+  "case_executions": 58,
+  "preserved_failed_cases": [
+    "realtime_trace_full_capacity_produces_bounded_inspectable_snapshot",
+    "realtime_trace_maximum_session_id_fits_application_object_identity",
+    "trace_store_application_and_trace_domains_are_independent",
+    "trace_store_coalesces_latest_snapshot_without_growing_queue",
+    "trace_store_deletion_prevents_late_and_queued_resurrection",
+    "trace_store_exporter_exception_recovers_in_same_bounded_owner"
+  ],
+  "native_integration": {
+    "build_returncode": 0,
+    "build_seconds": 342.4810365540907,
+    "new_gpu_starts": 0,
+    "warnings": 0,
+    "binary_sha256": "132436eafb35543f862928620a5b06ac7e6c367f0b90cb7f551c34ff1c09806b",
+    "post_build_free_bytes": 69971968,
+    "returncode": 0,
+    "seconds": 1.8698971131816506,
+    "status": "PASS"
+  },
+  "build_failures_preserved": [
+    "store-cpu-01",
+    "store-cpu-03"
+  ],
+  "previous_storage_fixtures_corrected_without_runtime_changes": true,
+  "new_gpu_starts": 0,
+  "default_revision": 416,
+  "default_state": "STOPPED",
+  "runtime_business_pending": true,
+  "record_archive_sha256": "157176bedd9b7af54acfe267ca0c997af4d6c7eeb5ee67ee27c5bb73b7398cf7"
+}

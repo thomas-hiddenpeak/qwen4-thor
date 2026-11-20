@@ -3,6 +3,7 @@
 #include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/chat_audio_history.h"
 #include "q4t/server/cache_health.h"
+#include "q4t/server/realtime_trace_api.h"
 
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/chat_file_inputs.h"
@@ -80,6 +81,8 @@ void ChatServer::HandleConfig(int fd) {
                                           : "ready";
   const auto value =
       effective_config_.substr(0, effective_config_.size() - 1) +
+      R"(,"realtime_trace_health":)" +
+      OutputJson(RealtimeTraceDiagnostics(realtime_traces_.Get())) +
       R"(,"native_embedding_health":)" + NativeEmbeddingHealthJson() +
       R"(,"native_tts_health":)" + NativeTtsHealthJson() +
       R"(,"native_tts_base_health":)" +
@@ -99,7 +102,9 @@ void ChatServer::HandleConfig(int fd) {
       SeparatorServiceLimitsJson(separator_limits_) +
       R"(,"native_vad_health":)" + NativeVadHealthJson() +
       R"(,"native_vad_max_chunks":)" + std::to_string(vad_max_chunks_) +
-      R"(,"application_startup":{"responses":)" +
+      R"(,"application_startup":{"tracing":)" +
+      ApplicationStartupJson(realtime_traces_.StartupHealth()) +
+      R"(,"responses":)" +
       ApplicationStartupJson(background_.StartupHealth()) + R"(,"batches":)" +
       ApplicationStartupJson(batches_.StartupHealth()) +
       R"(,"vector_ingestion":)" +

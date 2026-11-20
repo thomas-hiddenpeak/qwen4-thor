@@ -90,6 +90,11 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
     return status ? ObjectReply{} : Failure(status, failure);
   };
   RealtimeConversationCallbacks callbacks;
+  callbacks.traces = [this] { return realtime_traces_.Get(); };
+  callbacks.trace_scope = client.Scoped()
+                              ? "client:" + std::string(client.Id())
+                              : "local:anonymous";
+
   if (native_input) {
     callbacks.input = PrepareRealtimeInput(client);
     callbacks.max_audio_seconds = asr_limits_.max_audio_seconds;
