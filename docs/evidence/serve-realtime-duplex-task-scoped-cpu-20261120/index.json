@@ -1,0 +1,145 @@
+{
+  "records": [
+    {
+      "path": "task-scoped-cpu-01/0.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-scoped-cpu-01/original-duplex_task_checks.py",
+      "bytes": 7514,
+      "sha256": "e353188bdad21501f8a98328e221f674d136f4a8ee3597a32d0a5b6cd9b9bbc2"
+    },
+    {
+      "path": "task-scoped-cpu-01/result.json",
+      "bytes": 392,
+      "sha256": "bb8eb9ccd3b659595f582f061c9ed2d98ad4cfc5a9375305b2ca7dc74ed48810"
+    },
+    {
+      "path": "task-scoped-cpu-01/plan.json",
+      "bytes": 2791,
+      "sha256": "0e63d7d29f7fcedfcd8989e4b464b7207022f9bb1bf8b66811f0ebb976d8b226"
+    },
+    {
+      "path": "task-scoped-cpu-01/0.stderr",
+      "bytes": 3805,
+      "sha256": "83d64a3ceb9580a995829e03b2bc21131c1b074b8cbe215a219e6d2f4cb4c35a"
+    },
+    {
+      "path": "task-scoped-cpu-02/1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-scoped-cpu-02/2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-scoped-cpu-02/1.stdout",
+      "bytes": 223,
+      "sha256": "35252903dc94d4240af5f5ac6bd8a3f5480fce707ee122cb94fc453695904da0"
+    },
+    {
+      "path": "task-scoped-cpu-02/0.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-scoped-cpu-02/result.json",
+      "bytes": 722,
+      "sha256": "b72d56be000ff4ed1a01ceed2f970626c79f29934b7a12986e40a042ed606620"
+    },
+    {
+      "path": "task-scoped-cpu-02/plan.json",
+      "bytes": 2751,
+      "sha256": "3693a6440baa2846d5f573be54d88be61dd24575627d552c7fcb73e0b9604741"
+    },
+    {
+      "path": "task-scoped-cpu-02/2.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "task-scoped-cpu-02/0.stderr",
+      "bytes": 888,
+      "sha256": "7f3e5ee763ad3b697352d8a665347140b827e9e6653cee0d9a44712b6e71709e"
+    },
+    {
+      "path": "run_task_scoped_cpu_01.py",
+      "bytes": 2305,
+      "sha256": "bcbb0f3cca0c4560f396f3c79894db0101bfede8c867b28f7c8cb454b61e8e06"
+    },
+    {
+      "path": "run_task_scoped_cpu_02.py",
+      "bytes": 2322,
+      "sha256": "5996539e32cc225c7f8ac5f0a639e4e884780e1a68c0861374d2ec953fdde7b7"
+    },
+    {
+      "path": "task_scoped_business_01.py",
+      "bytes": 6434,
+      "sha256": "18fe5da0c4f418e850b4628196fb29c87dd3adf6ee2ebde3ec35e4098d7ac60a"
+    },
+    {
+      "path": "source/tools/serve_realtime/duplex_sdk.mjs",
+      "bytes": 20345,
+      "sha256": "91792fc9c14cdd5e3f67695d685b8c5c6e0a412bfaecd37402ebe5b847db18d8"
+    },
+    {
+      "path": "source/tools/serve_realtime/duplex_checks.py",
+      "bytes": 9980,
+      "sha256": "8287c9cd19567d92528a0825726764bca2e4bc7c0c973c29a418ca6334e3ffcf"
+    },
+    {
+      "path": "source/tools/serve_realtime/duplex_task_checks.py",
+      "bytes": 7587,
+      "sha256": "d77af79f5aa7f02f734977bff3b1c5efbb7e2d2079e0b8cdbe51c38d659cda78"
+    },
+    {
+      "path": "source/tools/serve_realtime/test_duplex_task_checks.py",
+      "bytes": 4351,
+      "sha256": "703174b7c662c4fde25b6d23901b1c254594f64aaafc0803a600715ba48eae21"
+    },
+    {
+      "path": "source/tools/serve_realtime/test_duplex_acceptance.py",
+      "bytes": 9073,
+      "sha256": "e555d0b57aeef7db4b46957553e00248a6a671740fb3fa451e1498ef9c506a33"
+    },
+    {
+      "path": "source/tools/serve_realtime/speech_checks.py",
+      "bytes": 5552,
+      "sha256": "2474ad0a0c575c6ad61610bc9170292707dd4a00deede6b24a9b8c356a78a639"
+    },
+    {
+      "path": "source/tools/serve_realtime/conversation_checks.mjs",
+      "bytes": 2600,
+      "sha256": "343e01c809e3b4c911fa06ad710f21c2988ea09deb40c8d6f37b2dea415b61b5"
+    },
+    {
+      "path": "source/tools/serve_realtime/bounded_journal.mjs",
+      "bytes": 1205,
+      "sha256": "40f82277bd10de1c9aee2df2b40d7bd796ff9a9e0d10d0b24ec40b1997846129"
+    },
+    {
+      "path": "source/tools/serve_recovery/profile_duplex.py",
+      "bytes": 6234,
+      "sha256": "a39a3a3c6c28e5b4408cefbb2cea3fcd91242e5f0bd9c39a6132a16e8f5070ee"
+    },
+    {
+      "path": "source/tools/serve_audit/inventory.json",
+      "bytes": 595601,
+      "sha256": "ca21be8cadf19814222f24c3c89766b4030b7e00779644e344f6d41fd1efcbbf"
+    },
+    {
+      "path": "source/.github/workflows/host-checks.yml",
+      "bytes": 16140,
+      "sha256": "af0d1a24d0a7e249b776f0682a9a3ec9d771fdb67724aaa644a7ae24a161eb13"
+    },
+    {
+      "path": "source/.q4t-work/serve-realtime-duplex-20261120/task_scoped_business_01.py",
+      "bytes": 6434,
+      "sha256": "18fe5da0c4f418e850b4628196fb29c87dd3adf6ee2ebde3ec35e4098d7ac60a"
+    }
+  ],
+  "archive_sha256": "a1a89ea7496108d2805cff5fb5b8c2482c95dfa5fdf113065b54c25a5c6e48a9"
+}

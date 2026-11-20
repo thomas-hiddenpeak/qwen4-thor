@@ -21,7 +21,8 @@ const { OpenAIRealtimeWS } = await import(pathToFileURL(path.join(sdk, 'node_mod
 const url = new URL(args.base_url);
 check(url.protocol === 'https:' && url.hostname === '127.0.0.1' && url.pathname === '/v1'
   && !url.search && !url.hash && !url.username && !url.password && args.ca_file &&
-  ['manual', 'vad', 'idle', 'mixed', 'vad_once'].includes(args.mode), 'verified local TLS scope');
+  ['manual', 'vad', 'idle', 'mixed', 'vad_once', 'speech_tool', 'barge_in']
+    .includes(args.mode), 'verified local TLS scope');
 const clip = fs.readFileSync(args.clip);
 check(clip.length > 0 && clip.length <= (1 << 20) && clip.length % 2 === 0 &&
   crypto.createHash('sha256').update(clip).digest('hex') === args.clip_sha256, 'actual clip identity');
@@ -105,7 +106,8 @@ async function finish(label, id, expected = 'completed') {
   return response;
 }
 async function begin(label, response) {
-  check(++creates <= (args.mode === 'manual' ? 6 : 1), 'response attempt bound');
+  check(++creates <= (args.mode === 'manual' ? 6 : args.mode === 'speech_tool' ? 4 : 1),
+    'response attempt bound');
   const value = await action({ type: 'response.create', response: {
     ...response, metadata: { acceptance_case: label },
   } }, 'response.created');
@@ -125,9 +127,13 @@ function append(raw) {
 }
 const originalInstructions = 'Repeat only the first sentence from the latest user audio verbatim. '
   + 'Do not add explanations. If no speech was detected during the idle interval, reply exactly READY.';
-check(args.instruction_policy === undefined || args.instruction_policy === 'original_language_v1',
+const scoped = ['speech_tool', 'barge_in'].includes(args.mode);
+check(scoped ? args.instruction_policy === 'task_scoped_v2' :
+  args.instruction_policy === undefined || args.instruction_policy === 'original_language_v1',
   'unknown caller instruction policy');
-const instructions = args.instruction_policy === undefined ? originalInstructions :
+const instructions = scoped ?
+  '请逐字复述本轮用户提供的录音内容。保持原语言，完整输出一次，不翻译，不添加说明。' :
+  args.instruction_policy === undefined ? originalInstructions :
   '逐字抄写本条用户消息中第一段语音的原始转写，仅输出其中第一个完整句子一次。保持原语言，不翻译，不包含前后的文字说明或第二段语音，不增加任何解释。如果收到的是原生空闲未检测到语音的提示，只输出 READY。';
 const base = { conversation: 'none', output_modalities: ['text'], tools: [], tool_choice: 'none',
   max_output_tokens: 128, instructions };
@@ -138,7 +144,70 @@ try {
     audio: { input: { format: { type: 'audio/pcm', rate: 24000 }, turn_detection: null,
       noise_reduction: null, transcription: null },
     output: { voice: 'vivian', format: { type: 'audio/pcm', rate: 24000 } } } });
-  if (args.mode === 'mixed') {
+  if (args.mode === 'speech_tool') {
+    await update({ audio: { input: { transcription: { model: 'qwen3-asr-0.6b' } } } });
+    const spoken = await create('inline_audio', { ...base, output_modalities: ['audio'],
+      max_output_tokens: 3457,
+      input: [user('temporary_audio', [inputText('请复述随附录音。'), audio(clip)])] });
+    const item = spoken.output.find((v) => v.type === 'message');
+    check(item?.content[0].type === 'output_audio', 'actual native speech');
+    judge('inline_audio', item.content[0].transcript, args.expected);
+    const waveform = await retrieve(item.id, 'inline_audio');
+    await missing('temporary_audio');
+    const replay = Buffer.from(waveform.content[0].audio, 'base64');
+    check(replay.length > 0 && replay.length <= (2 << 20), 'actual generated speech bound');
+    const roundtrip = await create('roundtrip', { ...base,
+      input: [user('temporary_roundtrip', [audio(replay)])] });
+    judge('roundtrip', text(roundtrip), args.expected);
+    await missing('temporary_roundtrip');
+    const raw = fs.readFileSync(args.record_file);
+    check(raw.length <= (1 << 20) && crypto.createHash('sha256').update(raw).digest('hex') ===
+      args.record_sha256, 'actual project source');
+    const version = 'rev' + raw.toString().match(/默认\s*rev(\d+)/)?.[1];
+    check(version === args.expected_version, 'current release version');
+    await add(user('query_release', [inputText('请调用 lookup_project_record 查询 release 记录。')]));
+    const call = functionCall(await create('tool', { output_modalities: ['text'], max_output_tokens: 128,
+      instructions: '根据当前用户问题调用查询工具。',
+      tools: [{ type: 'function', name: 'lookup_project_record', parameters: { type: 'object',
+        properties: { record_key: { type: 'string', enum: ['release'] } },
+        required: ['record_key'], additionalProperties: false } }],
+      tool_choice: { type: 'function', name: 'lookup_project_record' } }));
+    toolRecord = { record_key: 'release', version, source: 'docs/STATUS.md', source_sha256: args.record_sha256 };
+    await add({ id: 'release_result', type: 'function_call_output', call_id: call.call_id,
+      output: JSON.stringify(toolRecord) });
+    await add(user('query_version', [inputText('请只输出刚才工具结果中的版本号。')]));
+    const answer = await create('tool_answer', { ...base,
+      instructions: '根据本轮工具返回的实际记录回答当前用户问题。',
+      input: ['query_release', call.id, 'release_result', 'query_version']
+        .map((id) => ({ type: 'item_reference', id })) });
+    judge('tool_answer', text(answer), version);
+  } else if (args.mode === 'barge_in') {
+    await update({ audio: { output: { speed: .25 }, input: {
+      transcription: { model: 'qwen3-asr-0.6b' },
+      turn_detection: { type: 'server_vad', threshold: .5, prefix_padding_ms: 300,
+        silence_duration_ms: 300, create_response: false, interrupt_response: true,
+        idle_timeout_ms: null } } } });
+    const start = events.length;
+    const id = await begin('interrupt', { ...base, output_modalities: ['audio'],
+      max_output_tokens: 3457,
+      instructions: '用几句话介绍本地语音助手如何识别录音、查询资料和回答问题。',
+      input: [user('speech_request', [inputText('请介绍一下这些功能。')])] });
+    const chunk = await waitEvent(start, 'response.output_audio.delta',
+      (e) => e.response_id === id && Buffer.from(e.delta, 'base64').length > 0);
+    // A completed response cannot be used as evidence of cancellation.
+    check(!events.some((e) => e.type === 'response.done' && e.response.id === id),
+      'speech completed before barge-in');
+    append(Buffer.concat([Buffer.alloc(28800), clip, Buffer.alloc(57600)]));
+    const speech = await waitEvent(start, 'input_audio_buffer.speech_started');
+    await finish('interrupt', id, 'cancelled');
+    const asr = await waitEvent(start, 'conversation.item.input_audio_transcription.completed',
+      (e) => e.item_id === speech.item_id);
+    judge('barge_in_asr', asr.transcript, args.expected);
+    checks.push({ type: 'interrupt_audio', response_id: id, item_id: speech.item_id,
+      output_item_id: chunk.item_id, event_id: speech.event_id });
+    check(events.filter((e) => e.type === 'response.created').length === 1,
+      'unexpected automatic answer');
+  } else if (args.mode === 'mixed') {
     await update({ audio: { input: { transcription: { model: 'qwen3-asr-0.6b' } } } });
     await add(user('mixed_input', [inputText('Repeat the first audio sentence only.'),
       audio(clip, 'REFERENCE_ONLY_NEVER_SPOKEN'), inputText('Second audio follows.'), audio(clip)]));

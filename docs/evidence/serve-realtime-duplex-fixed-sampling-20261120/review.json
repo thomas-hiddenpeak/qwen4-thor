@@ -1,0 +1,41 @@
+{
+  "status": "PASS_DIAGNOSTIC_COLLECTION",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 92,
+    "cleanup_complete": true
+  },
+  "after_unrelated_request_exact": {
+    "primary": true,
+    "light": true
+  },
+  "primary_light_exact": {
+    "inline41": true,
+    "tool41": true,
+    "inline41-after-tool": true,
+    "inline42": true
+  },
+  "all_original_answers_retained": true,
+  "model_quality_acceptance": false,
+  "ignored_transport_fields": [
+    "message.tool_calls[].id"
+  ],
+  "numerical_scope": "Observed token choices and returned top-logprob traces, not all hidden logits",
+  "run": {
+    "status": "PASS_DIAGNOSTIC_COLLECTION",
+    "counts": {
+      "starts": 2,
+      "chats": 8,
+      "controls": 69
+    },
+    "seconds": 97.68099325196818,
+    "binary_sha256": "485a38a3a998e03f86ac0897fe712631a2a23b56f18423c56e400d274faf2dbb"
+  },
+  "default_unchanged": true,
+  "model_quality_repaired": false,
+  "master_active": true,
+  "actual_seed41": "甚至出现",
+  "actual_seed42": "甚至出现交易几乎停滞的情况。"
+}

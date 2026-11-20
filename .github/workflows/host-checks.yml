@@ -251,6 +251,7 @@ jobs:
             tools.serve_realtime.test_speech_cancel_acceptance \
             tools.serve_realtime.test_speech_acceptance \
             tools.serve_realtime.test_duplex_acceptance \
+            tools.serve_realtime.test_duplex_task_checks \
             tools.serve_realtime.test_idle_acceptance \
             tools.serve_realtime.test_speech_followup \
             tools.native_asr.test_managed_sdk_binding.Binding \

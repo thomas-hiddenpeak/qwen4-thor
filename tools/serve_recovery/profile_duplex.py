@@ -55,7 +55,8 @@ def run(stage):
 
 
 def run_sessions(stage, modes):
-    require(modes in (('manual','vad'),('mixed','vad_once')), 'fixed duplex session scope')
+    require(modes in (('manual','vad'),('mixed','vad_once'),('speech_tool','barge_in')),
+            'fixed duplex session scope')
     plan=stage.plan['duplex'];label=stage.profile_name+'-duplex'
     for path,digest in plan['files'].items():require(sha(path)==digest,'duplex fixture drift')
     policy=read(stage.out/'client-policy.json')
@@ -71,7 +72,7 @@ def run_sessions(stage, modes):
     try:
         for mode in modes:
             case=label+'-'+mode
-            client=profile_realtime.encrypted.CLIENT if mode in ('manual','mixed') else 'audio'
+            client=profile_realtime.encrypted.CLIENT if mode in ('manual','mixed','speech_tool') else 'audio'
             def observe(suffix):
                 status,raw=stage.http('/metrics',label=case+'-'+suffix)
                 require(status==200,'duplex actual metrics unavailable')
@@ -79,7 +80,8 @@ def run_sessions(stage, modes):
                     profile_realtime.encrypted.foreground.base.lifecycle.parse_metrics(raw),client)
             before=observe('before')
             stage.budget('websocket_sessions')
-            for _ in range(dict(manual=11,vad=5,mixed=3,vad_once=2)[mode]):stage.budget('chats')
+            for _ in range(dict(manual=11,vad=5,mixed=3,vad_once=2,
+                                speech_tool=6,barge_in=2)[mode]):stage.budget('chats')
             clip=plan['clip'];record=plan['source']
             args=dict(mode=mode,base_url=f"https://127.0.0.1:{plan['public_port']}/v1",
                 api_key=clients[client],ca_file=plan['tls']['certificate'],clip=clip['path'],

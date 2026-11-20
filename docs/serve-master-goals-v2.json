@@ -12461,7 +12461,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "audio_boundary_primary_pass_light_quality_and_interrupt_prerequisite_failed",
+      "state": "task_scoped_client_cpu_pass_targeted_light_business_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
@@ -13434,6 +13434,99 @@
         "evidence": "docs/evidence/serve-realtime-duplex-audio-boundary-http-20261120/README.md",
         "status": "PRIMARY_DUPLEX_PASS_LIGHT_QUALITY_AND_INTERRUPTION_FAIL",
         "qualification_issued": false
+      },
+      "fixed_sampling": {
+        "evidence": "docs/evidence/serve-realtime-duplex-fixed-sampling-20261120/README.md",
+        "result": {
+          "status": "PASS_DIAGNOSTIC_COLLECTION",
+          "environment": {
+            "status": "PASS",
+            "env_abort": false,
+            "all_queries_ok": true,
+            "nvml_queries": 92,
+            "cleanup_complete": true
+          },
+          "after_unrelated_request_exact": {
+            "primary": true,
+            "light": true
+          },
+          "primary_light_exact": {
+            "inline41": true,
+            "tool41": true,
+            "inline41-after-tool": true,
+            "inline42": true
+          },
+          "all_original_answers_retained": true,
+          "model_quality_acceptance": false,
+          "ignored_transport_fields": [
+            "message.tool_calls[].id"
+          ],
+          "numerical_scope": "Observed token choices and returned top-logprob traces, not all hidden logits",
+          "run": {
+            "status": "PASS_DIAGNOSTIC_COLLECTION",
+            "counts": {
+              "starts": 2,
+              "chats": 8,
+              "controls": 69
+            },
+            "seconds": 97.68099325196818,
+            "binary_sha256": "485a38a3a998e03f86ac0897fe712631a2a23b56f18423c56e400d274faf2dbb"
+          },
+          "default_unchanged": true,
+          "model_quality_repaired": false,
+          "master_active": true,
+          "actual_seed41": "甚至出现",
+          "actual_seed42": "甚至出现交易几乎停滞的情况。"
+        }
+      },
+      "task_scoped_cpu": {
+        "evidence": "docs/evidence/serve-realtime-duplex-task-scoped-cpu-20261120/README.md",
+        "result": {
+          "status": "PASS",
+          "tests": 5,
+          "reused_unaffected_tests": 14,
+          "original_failed_tests": 1,
+          "commands": [
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_realtime.test_duplex_task_checks.AudioBoundary"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "tools/serve_audit/check_inventory.py",
+                "--self-check"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "node",
+                "--check",
+                "tools/serve_realtime/duplex_sdk.mjs"
+              ],
+              "exit_code": 0
+            }
+          ],
+          "seconds": 0.5647634598426521,
+          "gpu_starts": 0,
+          "default_unchanged": true
+        },
+        "gpu_limits": {
+          "starts": 1,
+          "chats": 8,
+          "websocket_sessions": 2,
+          "ingress_starts": 1,
+          "seconds": 600
+        }
       }
     }
   },
