@@ -606,6 +606,10 @@
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -952,6 +956,10 @@
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -2819,7 +2827,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement native Realtime MCP/tracing/Live, remaining multimodal backends and all master tasks. Same-conversation duplex is delivered rev386; model quality failures and listening remain separately recorded.",
+      "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -5153,6 +5161,10 @@
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -6624,6 +6636,10 @@
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -7442,6 +7458,10 @@
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -7623,6 +7643,10 @@
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -8769,12 +8793,16 @@
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev386_delivered_duplex_main_pending_remaining_master_active",
+      "state": "rev396_delivered_duplex_main_pending_remaining_master_active",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9536,7 +9564,7 @@
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
       "current_mainline_evidence": "evidence/serve-tts-mainline-20261118/README.md",
-      "current_candidate": "Qualified native duplex delivered rev386; phase PR/main pending",
+      "current_candidate": "Qualified native duplex delivered rev396 after credential-only reissue; phase PR/main pending",
       "tts_input_delivery_20261118": {
         "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
         "revision": 316,
@@ -9915,10 +9943,14 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
       },
-      "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. rev386 duplex is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
+      "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "native_realtime_duplex_credential_reissue_20261120": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
     {
@@ -10178,8 +10210,8 @@
       }
     }
   ],
-  "next_task": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. rev386 duplex is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
-  "next": "完成双向音频PR检查合入，继续Realtime MCP/追踪/Live及全部计划；模型质量失败独立保留。",
+  "next_task": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
+  "next": "完成rev396双向音频PR检查合入，继续Realtime MCP/追踪/Live及全部计划；旧凭据按披露处理、当前和回退包已更换，原失败保留。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -11150,7 +11182,7 @@
     }
   },
   "realtime_progress": {
-    "state": "native_duplex_delivered_rev386_remaining_master_active",
+    "state": "native_duplex_delivered_rev396_remaining_master_active",
     "plan": "SERVE_REALTIME_2026-11-19.md",
     "evidence": "evidence/serve-realtime-transport-cpu-20261119/README.md",
     "cpu_new": 14,
@@ -11158,7 +11190,7 @@
     "gpu_model_loads": 0,
     "api_qualified": false,
     "delivered": true,
-    "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. rev386 duplex is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
+    "next": "Duplex final-head PR checks and main merge; then native Realtime MCP/tracing/Live and all remaining A/N/R/Q tasks. Credential-only rev396 is delivered STOPPED; original model quality failures and owner-deferred listening remain.",
     "audio_queue": {
       "state": "implemented_cpu_verified_not_route_or_resampler_qualification",
       "evidence": "evidence/serve-realtime-audio-queue-cpu-20261119/README.md",
@@ -12452,7 +12484,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "delivered_rev386_main_integration_pending",
+      "state": "delivered_rev396_main_integration_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
@@ -12460,7 +12492,7 @@
       "source_counterexamples_per_group": 20,
       "gpu_actions": 3,
       "runtime_entry_qualified": true,
-      "default_revision": 386,
+      "default_revision": 396,
       "remaining": [
         "affected primary/light qualification and Guardian recovery with duplex capability preserved",
         "reversible delivery and main merge",
@@ -14302,10 +14334,18 @@
         "tests": 10,
         "original_ci_run": 44695775555,
         "runtime_unchanged": true,
-        "credential_reissue_pending": true
+        "credential_reissue_pending": false
+      },
+      "credential_reissue": {
+        "revision": 396,
+        "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
       }
     },
-    "duplex_input_delivered": true
+    "duplex_input_delivered": true,
+    "native_realtime_duplex_credential_reissue_20261120": {
+      "revision": 396,
+      "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
+    }
   },
   "semantic_vad_primary_light_20261119": {
     "state": "qualified_primary_light_managed_delivery_pending",
@@ -14969,5 +15009,57 @@
     "all_master_tasks_active": true,
     "secret_scan_matches": 0,
     "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+  },
+  "native_realtime_duplex_credential_reissue_20261120": {
+    "status": "PASS_CREDENTIAL_ONLY_REISSUE_DELIVERED",
+    "revision": 396,
+    "state": "STOPPED",
+    "current": {
+      "engine_binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+      "engine_release_sha256": "cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3",
+      "generation_sha256": "d0879bb84c1207b9d39712cb905a653dda014dbd58c8fe170f8c2be3006c045a",
+      "manifest_sha256": "a53986ce688a6ae3a9c62695cb01518854ad1ad1f2a39998af9fe366303364e9",
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/credential-remediation-01/candidate/bundle",
+      "service_acceptance_sha256": "1f7c5ac2f829f015c8b98e01a204ff59dd765b85aa87b67f14034ee2370d08a3",
+      "service_release_sha256": "3a9600e8f3d8480be94760bc8d39800acbc6d20b61ac7149bf9cbe30a7bd8ca7"
+    },
+    "roots": {
+      "candidate": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/credential-remediation-01/candidate/bundle",
+        "manifest_sha256": "a53986ce688a6ae3a9c62695cb01518854ad1ad1f2a39998af9fe366303364e9"
+      },
+      "retained": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/credential-remediation-01/retained/bundle",
+        "manifest_sha256": "d98f1fa0fa7dbfc9566846ad8760db77a1a78e0d3b174fcd88808b8a37f8521f"
+      }
+    },
+    "original_revision": 386,
+    "tests": 5,
+    "cpu_seconds": 0.14326225500553846,
+    "actual_managed_generations_checked": 6,
+    "original_seed_never_used_by_observed_managed_models": true,
+    "historical_git_disclosure_not_erased": true,
+    "public_private_configurations_removed": 2,
+    "candidate_and_retained_bootstrap_replaced": true,
+    "external_client_keys_unchanged": true,
+    "engine_binary_unchanged": true,
+    "protocol_source_unchanged": true,
+    "model_assets_and_settings_unchanged": true,
+    "actual_business_reused_by_explicit_source_identity": true,
+    "new_payload_gpu_runs": 0,
+    "new_model_starts": 0,
+    "successful_management_commands": 19,
+    "management_seconds": 402.7873247154057,
+    "profile_history_unchanged": true,
+    "client_usage_unchanged": true,
+    "outer_budget_unchanged": true,
+    "retired_intents": 8,
+    "deleted_files": 0,
+    "model_quality_status": "FAIL",
+    "original_failures_preserved": true,
+    "public_artifact_credential_matches": 0,
+    "all_master_tasks_active": true,
+    "main_integration_pending": true,
+    "evidence": "evidence/serve-realtime-duplex-credential-reissue-20261120/README.md"
   }
 }

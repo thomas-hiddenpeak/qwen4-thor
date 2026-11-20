@@ -702,3 +702,4 @@
 
 - [双向音频原生恢复](evidence/serve-realtime-duplex-managed-recovery-20261120/README.md)：入口/控制器/整包，错误回答独立保留。
 - [双向音频rev386交付](evidence/serve-realtime-duplex-delivery-20261120/README.md)：STOPPED升级、回退、预算保持与可逆归档。
+- [初始凭据重新签发与rev396交付](evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)：公共证据更正、候选/回退凭据替换和来源复用。

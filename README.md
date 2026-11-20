@@ -908,11 +908,13 @@ print(reply.choices[0].message.content)
 时长和转录输出预算，不静默截断。准备阶段与主回答共用deadline、
 RPM/TPM和取消；`usage.q4t_audio_preparation`报告真实准备量，
 多choice只计一次。此输入路径识别语音内容，非语言声学理解仍待补齐。
-语音输出及assistant音频历史已交付；当前rev386进一步接通同一
+语音输出及assistant音频历史已交付；当前rev396接通同一
 Realtime conversation的真实音频输入、手动commit、VAD自动回答/
 打断、混合输入及空闲。原生WebSocket/TLS、PCM/G.711、音色/语速、
 播放取回/截断、函数工具与持久Prompt沿用同一核心与客户配额；取消
 按实际文字/音频用量结算。已完成[真实恢复与可回退交付](docs/evidence/serve-realtime-duplex-delivery-20261120/README.md)。
+当前包与回退包已[重新签发初始凭据](docs/evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)，
+保持相同引擎、客户配额和用量，旧包保留作历史证据。
 原错误答案与模型质量FAIL独立保留，默认采样未改。MCP、追踪及Live
 继续按总计划实现，正常播放听感仍待用户安排。
 
