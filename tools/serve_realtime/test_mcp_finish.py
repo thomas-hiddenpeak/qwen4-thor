@@ -120,4 +120,39 @@ class RetainedSessions(unittest.TestCase):
         with self.assertRaises(Exception): self.check()
 
 
+class EnvironmentCount(unittest.TestCase):
+    def setUp(self):
+        from tools.serve_recovery.profile_acceptance import environment
+        self.environment = environment
+        self.exit = dict(status='COMPLETED', child_returncode=0, compute_backend='nvml',
+                         lease_inherited_by_child=True)
+        self.queries = [dict(status='OK', returncode=0)]
+        self.clean = dict(remaining=[], model_exit=0, ports_released=True,
+                          lease_continuously_held=True)
+
+    def test_one_and_two_owned_models_match_exact_frozen_count(self):
+        self.assertTrue(self.environment(self.exit, self.queries,
+            [self.clean], expected_starts=1)['cleanup_complete'])
+        self.assertTrue(self.environment(self.exit, self.queries,
+            [self.clean, self.clean])['cleanup_complete'])
+
+    def test_missing_extra_and_invalid_counts_rejected(self):
+        for count in (0, 2, 3, True):
+            with self.assertRaises(Exception):
+                self.environment(self.exit, self.queries, [self.clean], expected_starts=count)
+
+    def test_single_model_keeps_environment_and_cleanup_guards(self):
+        for field, value in [('remaining', [123]), ('model_exit', 1),
+                             ('ports_released', False), ('lease_continuously_held', False)]:
+            with self.assertRaises(Exception):
+                self.environment(self.exit, self.queries, [dict(self.clean, **{field: value})],
+                                 expected_starts=1)
+        with self.assertRaises(Exception):
+            self.environment(dict(self.exit, status='ENV_ABORT'), self.queries,
+                             [self.clean], expected_starts=1)
+        with self.assertRaises(Exception):
+            self.environment(self.exit, [dict(status='FAIL', returncode=1)],
+                             [self.clean], expected_starts=1)
+
+
 if __name__ == '__main__': unittest.main()

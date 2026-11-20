@@ -854,7 +854,7 @@ class Stage(encrypted.Stage):
                                          read(self.out/'light-capabilities.json'))
 
 
-def environment(exit_record, queries, cleanups):
+def environment(exit_record, queries, cleanups, *, expected_starts=2):
     require(exit_record.get('status') == 'COMPLETED' and
         exit_record.get('child_returncode') == 0 and
         exit_record.get('compute_backend') == 'nvml' and
@@ -862,7 +862,8 @@ def environment(exit_record, queries, cleanups):
         'strict GPU environment not accepted')
     require(queries and all(q.get('status') == 'OK' and q.get('returncode') == 0
                             for q in queries), 'missing or failed NVML observation')
-    require(len(cleanups) == 2 and all(c.get('remaining') == [] and
+    require(type(expected_starts) is int and expected_starts in (1, 2) and
+        len(cleanups) == expected_starts and all(c.get('remaining') == [] and
         c.get('model_exit') == 0 and c.get('ports_released') is True and
         c.get('lease_continuously_held') is True for c in cleanups),
         'model cleanup not accepted')

@@ -57,7 +57,11 @@ CPU模型夹具不作为GPU/SDK业务通过证据。首个业务入口遗漏租�
 源码确认远端会话由密封目录持有供恢复，原“全部应删除”断言过宽；
 改查所有权与固定期限，不破坏恢复。[5项原生CPU与21项验收器CPU通过](evidence/serve-realtime-mcp-lifecycle-cpu-20261120/README.md)，
 随后一次轻档启动/2生成只补未执行的回执丢失/普通问答。
-可回退发行仍待验，默认保持。
+剩余两项实际通过：1启动/2生成/48.636秒，真实读取后unknown不重放，
+普通问答42，1019 tokens结算、正常退出、48次NVML正常。离线收尾
+helper写死双启动而失败，3项CPU修复及[离线收尾已通过](evidence/serve-realtime-mcp-remaining-http-20261120/README.md)，
+原执行记录保持、未重跑GPU。累计4启动/10生成/210.102秒；资格/恢复
+及可回退发行继续，默认保持。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

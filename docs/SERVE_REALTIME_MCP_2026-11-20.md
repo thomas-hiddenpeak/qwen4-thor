@@ -227,3 +227,8 @@ CPU夹具；尚未构建执行，不能当成GPU模型/SDK/恢复或默认已交
 [生命周期5项与验收器21项CPU通过](evidence/serve-realtime-mcp-lifecycle-cpu-20261120/README.md)，
 实际原目录有限期/同scope对应检查通过；原业务失败保留，剩余两条
 业务在独立严格租约补验，运行时和默认保持。
+
+[剩余真实故障业务通过](evidence/serve-realtime-mcp-remaining-http-20261120/README.md)：
+1轻档启动/2生成/48.636秒，unknown不重放、普通问答42、结算/清理正常。
+离线finalizer双启动计数错误修复，3CPU通过、不重跑GPU。累计4模型/
+10生成/210.102秒；原失败保留，继续主轻资格、恢复及发行。

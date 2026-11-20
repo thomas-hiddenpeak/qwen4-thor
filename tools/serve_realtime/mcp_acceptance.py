@@ -277,7 +277,8 @@ def finalize(out):
     clean=[read(out/n) for n in (('cleanup.json',) if finish else
                                ('primary-cleanup.json','cleanup.json'))]
     environment=full.environment(read(lease/'exit.json'),
-        [json.loads(l) for l in (lease/'nvml-queries.jsonl').read_text().splitlines()],clean)
+        [json.loads(l) for l in (lease/'nvml-queries.jsonl').read_text().splitlines()],
+        clean, expected_starts=plan['limits']['starts'])
     lifecycle = {}
     for name in (('light',) if finish else ('primary','light')):
         require(read(out/(name+'-entry-cleanup.json'))['exit_code']==0, 'entry cleanup')
