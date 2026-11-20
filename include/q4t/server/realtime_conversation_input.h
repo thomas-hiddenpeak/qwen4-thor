@@ -54,6 +54,13 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   bool Owns(const RealtimeItemTicket& ticket) const;
   ObjectReply Retrieve(const RealtimeItemTicket& ticket, io::Json* item) const;
   ObjectReply Erase(const RealtimeItemTicket& ticket);
+  // One mixed item, with independently processed audio parts. False selects a
+  // request-owned temporary item, excluded from the default conversation.
+  ObjectReply CreateDirect(const io::Json& item, std::string_view generated_id,
+                           std::optional<std::string_view> previous,
+                           bool in_conversation, RealtimeItemTicket* output);
+  ObjectReply PublicItem(const RealtimeItemTicket& ticket,
+                         io::Json* item) const;
   void Cancel() noexcept;
   void Join() noexcept;
   bool Failed() const { return failed_; }
@@ -73,6 +80,9 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
     std::shared_ptr<RealtimeAudioRecord> audio;
     RealtimeDuplexInput settings;
     std::optional<RealtimeInputCommit> notice;
+    size_t content_index = 0;
+    bool finite = false;
+    std::optional<std::string> reference_transcript;
     bool captured = false;
     bool committed = false, settled = false, published = false;
   };
@@ -86,6 +96,7 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   bool Speech(bool started, std::string_view id, uint64_t ticks) override;
   bool Ready(const RealtimeTranscriptionJob& job) override;
   void ReleaseNotice(Binding& binding);
+  void ReleaseBinding(Binding& binding);
   bool Drain();
   bool Forward(io::Json event);
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
@@ -103,6 +114,9 @@ class RealtimeConversationInput final : private IRealtimeTranscriptionOwner {
   RealtimeDuplexInput settings_;
   RealtimeAudioFormat retrieval_format_;
   std::map<std::string, Binding> bindings_;
+  const RealtimeItemTicket* creating_direct_ = nullptr;
+  size_t reference_bytes_ = 0;
+  static constexpr size_t kReferenceBytes = 16ULL << 20;
   size_t captures_ = 0;
   std::chrono::steady_clock::time_point recovery_window_, retry_after_;
   unsigned recovery_attempts_ = 0;

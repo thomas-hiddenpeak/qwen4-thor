@@ -4,6 +4,7 @@
 #include "q4t/io/base64.h"
 #include "q4t/server/asr_response.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/lifetime.h"
 #include "q4t/server/realtime_audio_export.h"
 
 namespace q4t::server {
@@ -263,6 +264,120 @@ void RealtimeConversationInput::Cancel() noexcept {
 }
 void RealtimeConversationInput::Join() noexcept { processor_.Join(); }
 
+ObjectReply RealtimeConversationInput::CreateDirect(
+    const Json& item, std::string_view generated_id,
+    std::optional<std::string_view> previous, bool in_conversation,
+    RealtimeItemTicket* output) {
+  if (!output || !started_ || failed_ || cancelled_ || !settings_.enabled ||
+      creating_direct_)
+    return Error(503, "realtime_input_unavailable", "Native input unavailable");
+  const auto* content = item.GetArray("content");
+  if (!content || content->array.size() > 128)
+    return Error(400, "realtime_input_invalid", "Invalid mixed content");
+  size_t storage = 0;
+  if (!MeasureRealtimeStorage(item, RealtimeConversation::kMaximumBytes,
+                              &storage))
+    return Error(429, "conversation_capacity_exceeded", "Input is too large");
+  struct Part {
+    size_t index;
+    std::string bytes;
+    std::optional<std::string> reference;
+  };
+  std::vector<Part> parts;
+  size_t reference_bytes = 0;
+  for (size_t i = 0; i < content->array.size(); ++i) {
+    const auto& source = content->array[i];
+    if (source.GetString("type") != "input_audio") continue;
+    Part part{i, {}, {}};
+    const auto* audio = source.Find("audio");
+    if (audio && !audio->IsString())
+      return Error(400, "realtime_audio_invalid", "Audio requires base64 text");
+    auto reply =
+        DecodeRealtimeAudioBase64(audio ? audio->str : "", &part.bytes);
+    if (!Accepted(reply)) return reply;
+    if (const auto* reference = source.Find("transcript")) {
+      if (!reference->IsString())
+        return Error(400, "realtime_audio_invalid", "Transcript requires text");
+      part.reference = reference->str;
+      if (part.reference->capacity() >
+          kReferenceBytes - reference_bytes_ - reference_bytes)
+        return Error(429, "realtime_reference_capacity",
+                     "Audio reference metadata is full");
+      reference_bytes += part.reference->capacity();
+    }
+    parts.push_back(std::move(part));
+  }
+  if (parts.empty() || parts.size() > 128 - bindings_.size())
+    return Error(429, "realtime_input_capacity",
+                 "Audio part capacity exceeded");
+  // Waveform and public-only reference metadata have separate charged owners.
+  // Reserve only the actual ledger shape plus the possible ASR text here.
+  auto ledger = item;
+  for (auto& part : Field(ledger, "content").array) {
+    if (part.GetString("type") != "input_audio") continue;
+    std::erase_if(part.object, [](const auto& field) {
+      return field.first == "audio" || field.first == "transcript";
+    });
+  }
+  const auto measured = MeasureRealtimeStorage(
+      ledger, RealtimeConversation::kMaximumBytes, &storage);
+  if (!measured ||
+      parts.size() > (RealtimeConversation::kMaximumBytes - storage) /
+                         (kAsrTranscriptBytes + 8192))
+    return Error(429, "conversation_capacity_exceeded",
+                 "Mixed audio transcript reservation exceeds history capacity");
+  RealtimeItemTicket ticket;
+  const auto reserved = history_.ReserveAudioInput(
+      item, generated_id, settings_.transcript_events,
+      storage + parts.size() * (kAsrTranscriptBytes + 8192), &ticket);
+  if (!reserved)
+    return Error(400, "realtime_input_invalid", reserved.message());
+  bool accepted = false;
+  creating_direct_ = &ticket;
+  ScopeExit rollback([&] {
+    creating_direct_ = nullptr;
+    if (accepted) return;
+    for (auto it = bindings_.begin(); it != bindings_.end();) {
+      if (it->second.conversation != ticket) {
+        ++it;
+        continue;
+      }
+      processor_.EraseInput(it->second.input);
+      ReleaseBinding(it->second);
+      it = bindings_.erase(it);
+    }
+    history_.Erase(ticket);
+  });
+  for (auto& part : parts) {
+    RealtimeTranscriptTicket input;
+    auto reply = processor_.SubmitFinite(
+        {reinterpret_cast<const uint8_t*>(part.bytes.data()),
+         part.bytes.size()},
+        ticket.id, part.index, &input);
+    if (!Accepted(reply)) return reply;
+    const auto found = bindings_.find(input.id);
+    if (found == bindings_.end()) return Missing();
+    found->second.reference_transcript = std::move(part.reference);
+    if (found->second.reference_transcript)
+      reference_bytes_ += found->second.reference_transcript->capacity();
+  }
+  auto result = ticket;
+  const auto committed =
+      history_.CommitAudioInput(ticket, previous, in_conversation);
+  if (!committed)
+    return Error(400, "realtime_input_invalid", committed.message());
+  for (auto& [id, binding] : bindings_) {
+    (void)id;
+    if (binding.conversation != ticket) continue;
+    binding.committed = true;
+    binding.published = in_conversation;
+  }
+  if (in_conversation) CancelIdle();
+  *output = std::move(result);
+  accepted = true;
+  return {};
+}
+
 ObjectReply RealtimeConversationInput::Reserve(
     const RealtimeTranscriptionJob& job) {
   if (!settings_.enabled || failed_ || cancelled_ || !job.processed_audio ||
@@ -274,8 +389,16 @@ ObjectReply RealtimeConversationInput::Reserve(
   binding.input = job.transcript;
   binding.audio = job.processed_audio;
   binding.settings = settings_;
+  binding.finite = job.Finite();
+  binding.content_index = job.content_index;
+  if (job.Finite()) {
+    if (!creating_direct_ || creating_direct_->id != job.source_item_id)
+      return Missing();
+    binding.conversation = *creating_direct_;
+  }
   const auto [found, inserted] = bindings_.emplace(job.id, std::move(binding));
   if (!inserted) return Missing();
+  if (job.Finite()) return {};
   const auto status = history_.ReserveAudioInput(
       job.id, settings_.transcript_events, kAsrTranscriptBytes + 8192,
       &found->second.conversation);
@@ -293,6 +416,12 @@ ObjectReply RealtimeConversationInput::Commit(
       found->second.committed || !previous_id)
     return Missing();
   auto& binding = found->second;
+  if (binding.finite) {
+    if (!creating_direct_ || *creating_direct_ != binding.conversation)
+      return Missing();
+    *previous_id = history_.LastId();
+    return {};
+  }
   RealtimeInputCommit notice;
   notice.ticket = binding.conversation;
   notice.settings = binding.settings;
@@ -336,11 +465,17 @@ ObjectReply RealtimeConversationInput::Finish(
       found->second.settled)
     return Missing();
   auto& binding = found->second;
-  auto status = Accepted(result)
-                    ? history_.CompleteAudioInput(
-                          binding.conversation, result.value.GetString("text"),
-                          job.idle_timeout)
-                    : history_.FailAudioInput(binding.conversation);
+  auto status =
+      binding.finite
+          ? (Accepted(result) ? history_.CompleteAudioPart(
+                                    binding.conversation, binding.content_index,
+                                    result.value.GetString("text"))
+                              : history_.FailAudioPart(binding.conversation,
+                                                       binding.content_index))
+      : Accepted(result) ? history_.CompleteAudioInput(
+                               binding.conversation,
+                               result.value.GetString("text"), job.idle_timeout)
+                         : history_.FailAudioInput(binding.conversation);
   if (!status && Accepted(result))
     history_.FailAudioInput(binding.conversation);
   binding.settled = true;
@@ -356,10 +491,10 @@ void RealtimeConversationInput::Discard(
   // retrievable item/audio; it must not disappear after a delayed join.
   if (found->second.settled && found->second.committed) return;
   try {
-    history_.Erase(found->second.conversation);
+    if (!found->second.finite) history_.Erase(found->second.conversation);
   } catch (...) {
   }
-  ReleaseNotice(found->second);
+  ReleaseBinding(found->second);
   bindings_.erase(found);
 }
 bool RealtimeConversationInput::Speech(bool started, std::string_view id,
@@ -377,6 +512,13 @@ void RealtimeConversationInput::ReleaseNotice(Binding& binding) {
     binding.captured = false;
   }
   binding.notice.reset();
+}
+void RealtimeConversationInput::ReleaseBinding(Binding& binding) {
+  ReleaseNotice(binding);
+  if (binding.reference_transcript) {
+    reference_bytes_ -= binding.reference_transcript->capacity();
+    binding.reference_transcript.reset();
+  }
 }
 
 bool RealtimeConversationInput::Drain() {
@@ -430,6 +572,10 @@ bool RealtimeConversationInput::Forward(Json event) {
     const auto found = bindings_.find(event.GetString("item_id"));
     if (found == bindings_.end()) return true;  // Deleted/abandoned generation.
     const auto& binding = found->second;
+    if (binding.finite) {
+      Set(&event, "item_id", String(binding.conversation.id));
+      Set(&event, "content_index", Number(binding.content_index));
+    }
     const bool failed = type.ends_with(".failed");
     const bool terminal = failed || type.ends_with(".completed");
     bool sent = true;
@@ -441,7 +587,7 @@ bool RealtimeConversationInput::Forward(Json event) {
       sent = Accepted(callbacks_.emit(error));
     }
     if (terminal && !binding.committed) {
-      ReleaseNotice(found->second);
+      ReleaseBinding(found->second);
       bindings_.erase(found);
     }
     return sent;
@@ -449,39 +595,74 @@ bool RealtimeConversationInput::Forward(Json event) {
   return Accepted(callbacks_.emit(event));
 }
 bool RealtimeConversationInput::Owns(const RealtimeItemTicket& ticket) const {
-  const auto found = bindings_.find(ticket.id);
-  return found != bindings_.end() && found->second.conversation == ticket &&
-         found->second.committed;
+  return std::ranges::any_of(bindings_, [&](const auto& entry) {
+    return entry.second.conversation == ticket && entry.second.committed;
+  });
+}
+ObjectReply RealtimeConversationInput::PublicItem(
+    const RealtimeItemTicket& ticket, Json* item) const {
+  if (!item || !Owns(ticket)) return Missing();
+  Json copy;
+  if (!history_.Get(ticket, &copy)) return Missing();
+  auto& content = Field(copy, "content").array;
+  for (const auto& [id, binding] : bindings_) {
+    (void)id;
+    if (binding.conversation != ticket || !binding.reference_transcript)
+      continue;
+    if (binding.content_index >= content.size()) return Missing();
+    Set(&content[binding.content_index], "transcript",
+        String(*binding.reference_transcript));
+  }
+  *item = std::move(copy);
+  return {};
 }
 ObjectReply RealtimeConversationInput::Retrieve(
     const RealtimeItemTicket& ticket, Json* item) const {
-  if (!item || !Owns(ticket)) return Missing();
-  const auto& binding = bindings_.find(ticket.id)->second;
+  if (!item) return Missing();
   Json copy;
-  if (!history_.Get(ticket, &copy)) return Missing();
-  std::string encoded, base64;
-  Status status;
-  if (!binding.audio->Samples().empty())
-    status = EncodeRealtimeAudio(binding.audio->Samples(), retrieval_format_,
-                                 600ULL * 24000 * 2, &encoded, interrupted_);
-  if (status)
-    status = io::EncodeBase64(encoded, kWebSocketMaximumLimit, &base64);
-  if (!status)
-    return Error(503, "realtime_audio_retrieval_failed", status.message());
-  Set(&Field(copy, "content").array[0], "audio", String(std::move(base64)));
+  auto reply = PublicItem(ticket, &copy);
+  if (!Accepted(reply)) return reply;
+  size_t encoded_bytes = 0;
+  for (const auto& [id, binding] : bindings_) {
+    (void)id;
+    if (binding.conversation != ticket) continue;
+    std::string encoded, base64;
+    Status status;
+    if (!binding.audio->Samples().empty())
+      status = EncodeRealtimeAudio(binding.audio->Samples(), retrieval_format_,
+                                   message_bytes_ - encoded_bytes, &encoded,
+                                   interrupted_);
+    if (status)
+      status =
+          io::EncodeBase64(encoded, message_bytes_ - encoded_bytes, &base64);
+    if (!status)
+      return Error(503, "realtime_audio_retrieval_failed", status.message());
+    encoded_bytes += base64.size();
+    Set(&Field(copy, "content").array[binding.content_index], "audio",
+        String(std::move(base64)));
+  }
   *item = std::move(copy);
   return {};
 }
 ObjectReply RealtimeConversationInput::Erase(const RealtimeItemTicket& ticket) {
   if (!Owns(ticket)) return Missing();
-  const auto found = bindings_.find(ticket.id);
-  auto reply = processor_.EraseInput(found->second.input);
-  if (!Accepted(reply)) return reply;
+  for (const auto& [id, binding] : bindings_) {
+    (void)id;
+    if (binding.conversation != ticket) continue;
+    auto reply = processor_.EraseInput(binding.input);
+    if (!Accepted(reply)) return reply;
+  }
   const auto status = history_.Erase(ticket);
   if (!status)
     return Error(500, "realtime_input_history_invalid", status.message());
-  ReleaseNotice(found->second);
-  bindings_.erase(found);
+  for (auto it = bindings_.begin(); it != bindings_.end();) {
+    if (it->second.conversation != ticket) {
+      ++it;
+      continue;
+    }
+    ReleaseBinding(it->second);
+    it = bindings_.erase(it);
+  }
   return {};
 }
 }  // namespace q4t::server

@@ -87,7 +87,8 @@ class RealtimeConversation {
                            bool transcript_visible, size_t reserved_bytes,
                            RealtimeItemTicket* output);
   Status CommitAudioInput(const RealtimeItemTicket& ticket,
-                          std::optional<std::string_view> previous = {});
+                          std::optional<std::string_view> previous = {},
+                          bool in_conversation = true);
   Status CompleteAudioInput(const RealtimeItemTicket& ticket,
                             std::string_view transcript,
                             bool idle_timeout = false);

@@ -1713,3 +1713,226 @@ Q4T_TEST(realtime_session_idle_ignores_oob_failed_and_cancelled_output) {
   }
   return true;
 }
+
+namespace {
+Json DirectMessage(std::string id = "mixed", bool two = true) {
+  auto item = User(std::move(id), "before audio");
+  auto& parts = Field(item, "content").array;
+  parts.push_back(Object({{"type", String("input_audio")},
+                          {"audio", String("AQACAAMA")},
+                          {"transcript", String("client reference")}}));
+  if (two) {
+    parts.push_back(Object(
+        {{"type", String("input_text")}, {"text", String("between audio")}}));
+    parts.push_back(Object(
+        {{"type", String("input_audio")}, {"audio", String("BAAFAAYA")}}));
+  }
+  return item;
+}
+Json InlineAudio(std::string conversation = "none") {
+  return Object({{"conversation", String(std::move(conversation))},
+                 {"input", Array({DirectMessage()})}});
+}
+bool HasId(const RealtimeConversationJob& job, std::string_view id) {
+  return std::ranges::any_of(job.snapshot.items.array, [&](const auto& item) {
+    return item.GetString("id") == id;
+  });
+}
+}  // namespace
+
+Q4T_TEST(realtime_direct_session_mixed_item_reaches_actual_chat_planner) {
+  InputFixture f;
+  ChatPlanConfig config;
+  config.model = "q4t-test";
+  config.max_len = 8192;
+  config.structured = true;
+  size_t prepared = 0;
+  f.cb.prepare = [&](const auto& job) {
+    ++prepared;
+    RealtimeChatPlan plan;
+    ChatPlanError error;
+    auto status =
+        PlanRealtimeChat(job.settings, job.response, job.snapshot.items, config,
+                         &plan, &error, nullptr, job.native_input);
+    return status ? ObjectReply{}
+                  : object_detail::Error(error.http_status, error.code,
+                                         status.message());
+  };
+  Q4T_CHECK(f.Start() && f.Add(DirectMessage()));
+  Q4T_CHECK(f.Count("conversation.item.added") == 1 &&
+            f.Count("conversation.item.done") == 1 &&
+            f.Count("input_audio_buffer.committed") == 0 && f.asr_calls == 0);
+  const auto added = *f.Last("conversation.item.added").Find("item");
+  Q4T_CHECK(!added.GetArray("content")->array[1].Has("audio") &&
+            added.GetArray("content")->array[1].GetString("transcript") ==
+                "client reference");
+  Q4T_CHECK(f.Create() && f.AllFinished() && f.calls == 1 && f.asr_calls == 2 &&
+            f.overlap == 0 && prepared == 2 && f.Count("error") == 0);
+  const auto job = f.Snapshot(0);
+  const auto& parts = job.snapshot.items.array[0].GetArray("content")->array;
+  Q4T_CHECK(parts.size() == 4 && parts[0].GetString("text") == "before audio" &&
+            parts[1].GetString("text") == "native fixture transcript" &&
+            parts[2].GetString("text") == "between audio" &&
+            parts[3].GetString("text") == "native fixture transcript");
+  return true;
+}
+
+Q4T_TEST(realtime_direct_session_empty_reference_keeps_actual_text_only) {
+  InputFixture f;
+  auto item = DirectMessage("empty", false);
+  Field(item, "content").array[1] =
+      Object({{"type", String("input_audio")},
+              {"transcript", String("do not use reference")}});
+  Q4T_CHECK(f.Start() && f.Add(item) && f.Create() && f.AllFinished());
+  Q4T_CHECK(f.calls == 1 && f.asr_calls == 0 && f.asr_released == 0 &&
+            f.Count("error") == 0 &&
+            f.Count("conversation.item.input_audio_transcription.completed") ==
+                0);
+  const auto job = f.Snapshot(0);
+  Q4T_CHECK(job.snapshot.items.array[0]
+                .GetArray("content")
+                ->array[1]
+                .GetString("text", "missing")
+                .empty());
+  Q4T_CHECK(f.Send(Object({{"type", String("conversation.item.retrieve")},
+                           {"item_id", String("empty")}})));
+  const auto part = f.Last("conversation.item.retrieved")
+                        .Find("item")
+                        ->GetArray("content")
+                        ->array[1];
+  Q4T_CHECK(part.GetString("audio", "missing").empty() &&
+            part.GetString("transcript") == "do not use reference");
+  return true;
+}
+
+Q4T_TEST(realtime_direct_session_inline_cleanup_preserves_default_context) {
+  for (const auto* conversation : {"none", "auto"}) {
+    InputFixture f;
+    Q4T_CHECK(f.Start() && f.Add(User("prior", "default text")));
+    auto response = InlineAudio(conversation);
+    Field(response, "input")
+        .array.push_back(Object(
+            {{"type", String("item_reference")}, {"id", String("prior")}}));
+    Q4T_CHECK(f.Create(response) && f.AllFinished() && f.calls == 1 &&
+              f.asr_calls == 2 && f.session->InputAudioBytes() == 0 &&
+              f.Count("error") == 0);
+    const auto job = f.Snapshot(0);
+    Q4T_CHECK(job.snapshot.items.array.size() == 2 && HasId(job, "mixed") &&
+              HasId(job, "prior") && !job.snapshot.default_context &&
+              job.response.GetArray("input")->array[0].GetString("type") ==
+                  "item_reference");
+    Q4T_CHECK(f.Send(Object({{"type", String("conversation.item.retrieve")},
+                             {"item_id", String("mixed")}})));
+    Q4T_CHECK(f.Count("conversation.item.retrieved") == 0 &&
+              f.Count("error") == 1);
+    Q4T_CHECK(f.Create() && f.AllFinished() && f.calls == 2 &&
+              !HasId(f.Snapshot(1), "mixed") && HasId(f.Snapshot(1), "prior"));
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_direct_session_prepare_failure_releases_unpublished_input) {
+  for (bool unknown : {false, true}) {
+    InputFixture f;
+    f.cb.prepare = [&](const auto&) {
+      auto reply = unknown ? ObjectReply{}
+                           : object_detail::Error(400, "fixture_reject", "No");
+      reply.commit_unknown = unknown;
+      return reply;
+    };
+    Q4T_CHECK(f.Start() && f.Create(InlineAudio()) && f.AllFinished());
+    Q4T_CHECK(f.Count("error") == 1 && f.calls == 0 && f.asr_calls == 0 &&
+              f.released == 0 && f.session->HistoryBytes() == 0 &&
+              f.session->InputAudioBytes() == 0 &&
+              f.Count("response.created") == 0 &&
+              f.Count("conversation.item.added") == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_direct_session_inline_cancel_reaps_borrow_without_response) {
+  InputFixture f;
+  f.asr_hold = true;
+  Q4T_CHECK(f.Start() && f.Create(InlineAudio()) &&
+            f.Wait([&] { return f.asr_calls == 1; }));
+  const auto id = f.Last("response.created").Find("response")->GetString("id");
+  Q4T_CHECK(f.Send(Object({{"type", String("response.cancel")},
+                           {"response_id", String(id)}})) &&
+            f.AllFinished());
+  Q4T_CHECK(f.calls == 0 && f.asr_calls == 1 && f.released == 1 &&
+            f.asr_released == 1 && f.session->InputAudioBytes() == 0 &&
+            f.session->HistoryBytes() == 0 &&
+            f.Last("response.done").Find("response")->GetString("status") ==
+                "cancelled");
+  f.asr_hold = false;
+  Q4T_CHECK(f.Create(InlineAudio()) && f.AllFinished() && f.calls == 1 &&
+            f.asr_calls == 3 && f.session->InputAudioBytes() == 0);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_direct_session_inline_failed_asr_cleans_without_stale_answer) {
+  InputFixture f;
+  f.asr_fail = true;
+  Q4T_CHECK(f.Start() && f.Add(User("prior", "default text")) &&
+            f.Create(InlineAudio()) && f.AllFinished());
+  Q4T_CHECK(f.calls == 0 && f.asr_calls >= 1 && f.released == 1 &&
+            f.session->InputAudioBytes() == 0 &&
+            f.Last("response.done").Find("response")->GetString("status") ==
+                "failed");
+  Q4T_CHECK(f.Create() && f.AllFinished() && f.calls == 1 &&
+            f.Snapshot(0).snapshot.items.array.size() == 1 &&
+            HasId(f.Snapshot(0), "prior"));
+  return true;
+}
+
+Q4T_TEST(realtime_direct_session_inline_bad_later_item_is_atomic) {
+  InputFixture f;
+  Q4T_CHECK(f.Start());
+  auto response = InlineAudio();
+  auto bad = DirectMessage("bad", false);
+  Set(&Field(bad, "content").array[1], "audio", String("!"));
+  Field(response, "input").array.push_back(std::move(bad));
+  Q4T_CHECK(f.Create(response) && f.AllFinished());
+  Q4T_CHECK(f.Count("error") == 1 && f.calls == 0 && f.asr_calls == 0 &&
+            f.released == 0 && f.Count("response.created") == 0 &&
+            f.Count("conversation.item.added") == 0 &&
+            f.session->HistoryBytes() == 0 &&
+            f.session->InputAudioBytes() == 0);
+  Q4T_CHECK(f.Create(InlineAudio()) && f.AllFinished() && f.calls == 1 &&
+            f.asr_calls == 2 && f.session->InputAudioBytes() == 0);
+  return true;
+}
+
+Q4T_TEST(
+    realtime_direct_session_delete_pending_then_reuse_cannot_replace_turn) {
+  InputFixture f;
+  f.asr_hold = true;
+  Q4T_CHECK(f.Start() && f.Add(DirectMessage()) && f.Create() &&
+            f.Wait([&] { return f.asr_calls == 1; }));
+  Q4T_CHECK(f.Send(Object({{"type", String("conversation.item.delete")},
+                           {"item_id", String("mixed")}})) &&
+            f.Add(User("mixed", "new generation")) && f.AllFinished());
+  Q4T_CHECK(f.calls == 0 && f.asr_calls == 1 &&
+            f.session->InputAudioBytes() == 0 &&
+            f.Last("response.done").Find("response")->GetString("status") ==
+                "failed");
+  Q4T_CHECK(f.Create() && f.AllFinished() && f.calls == 1);
+  const auto job = f.Snapshot(0);
+  Q4T_CHECK(job.snapshot.items.array.size() == 1 &&
+            job.snapshot.items.array[0].GetArray("content")->array[0].GetString(
+                "text") == "new generation");
+  return true;
+}
+
+Q4T_TEST(realtime_direct_session_absent_backend_rejects_before_history) {
+  Fixture f;
+  Q4T_CHECK(f.Start() && f.Add(DirectMessage()) && f.Create(InlineAudio()));
+  Q4T_CHECK(f.Count("error") == 2 && f.calls == 0 &&
+            f.session->HistoryBytes() == 0 &&
+            f.Count("conversation.item.added") == 0 &&
+            f.Count("response.created") == 0);
+  Q4T_CHECK(f.Add(User("text", "healthy text")) && f.Create() && f.Finish() &&
+            f.calls == 1 && HasId(f.Snapshot(0), "text"));
+  return true;
+}

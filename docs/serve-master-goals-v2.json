@@ -12461,17 +12461,17 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "finite_audio_queue_cpu_accepted_direct_composition_pending",
+      "state": "direct_mixed_audio_entries_cpu_accepted_runtime_business_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
-      "unique_cpu_cases": 209,
-      "case_executions": 337,
+      "unique_cpu_cases": 227,
+      "case_executions": 373,
       "source_counterexamples_per_group": 20,
       "gpu_actions": 0,
       "runtime_entry_qualified": false,
       "default_revision": 376,
       "remaining": [
-        "direct mixed audio items",
+        "grouped native runtime build",
         "real WSS/native ASR/TTS and affected recovery/delivery",
         "all master tasks"
       ],
@@ -12791,6 +12791,35 @@
           "default_revision": 376,
           "default_unchanged": true,
           "actual_direct_audio_execution": "pending",
+          "actual_duplex_business": "pending",
+          "master_active": true
+        }
+      },
+      "direct_mixed_audio_entries": {
+        "evidence": "docs/evidence/serve-realtime-duplex-mixed-entry-cpu-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_TARGETED_MIXED_ITEM_AND_INLINE_AUDIO_CPU",
+          "unique_cases": 36,
+          "case_executions": 36,
+          "new_cases": 18,
+          "affected_cases": 18,
+          "seconds": 0.7477424456737936,
+          "source_counterexamples": 20,
+          "host_build": {
+            "status": "BUILD_PASS",
+            "exit_code": 0,
+            "seconds": 49.67960415314883,
+            "warnings": 0,
+            "gpu_actions": 0,
+            "default_unchanged": true,
+            "prior_unchanged": true,
+            "binary_sha256": "83f8fe997fc00f08ea319f178c5bc43a624c69b8249865d5b45dad4e389be3e6",
+            "free_bytes_after": 3668398080
+          },
+          "gpu_actions": 0,
+          "default_revision": 376,
+          "default_unchanged": true,
+          "actual_direct_audio_entry": "connected_cpu_accepted",
           "actual_duplex_business": "pending",
           "master_active": true
         }

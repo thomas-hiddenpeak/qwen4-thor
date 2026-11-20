@@ -35,6 +35,12 @@ ObjectReply Shape(const Json& event, RealtimeShape kind) {
   return status ? ObjectReply{}
                 : Invalid(error.code, status.message(), error.param);
 }
+bool HasInputAudio(const Json& item) {
+  const auto* content = item.GetArray("content");
+  return content && std::ranges::any_of(content->array, [](const auto& part) {
+           return part.GetString("type") == "input_audio";
+         });
+}
 }  // namespace
 
 struct RealtimeConversationSession::Work {
@@ -43,6 +49,7 @@ struct RealtimeConversationSession::Work {
   std::shared_ptr<RequestControl> control;
   std::unique_ptr<RealtimeResponseOutput> output;
   std::map<std::string, RealtimeItemTicket> tickets;
+  std::vector<RealtimeItemTicket> temporary_inputs;
   std::unordered_set<std::string> deleted;
   std::thread worker;
   std::atomic<bool> done{false};
@@ -160,6 +167,13 @@ RealtimeConversationSession::~RealtimeConversationSession() {
   Join();
 }
 void RealtimeConversationSession::Release(Work& work) noexcept {
+  for (const auto& ticket : work.temporary_inputs) {
+    try {
+      if (input_) input_->Erase(ticket);
+    } catch (...) {
+    }
+  }
+  work.temporary_inputs.clear();
   if (!work.control) return;
   try {
     callbacks_.release(work.control);
@@ -357,16 +371,29 @@ bool RealtimeConversationSession::CreateItem(const Json& event) {
   RealtimeItemTicket ticket;
   const auto* previous = event.Find("previous_item_id");
   const auto predecessor = previous ? previous->str : history_.LastId();
-  const auto status = history_.Create(
-      *event.Find("item"), detail::NewRequestId("item_"),
-      previous ? std::optional<std::string_view>(previous->str) : std::nullopt,
-      &ticket);
-  if (!status)
-    return ErrorEvent(
-        Invalid("realtime_item_invalid", status.message(), "item"),
-        event.GetString("event_id"));
+  const auto before =
+      previous ? std::optional<std::string_view>(previous->str) : std::nullopt;
+  const auto& source = *event.Find("item");
   Json item;
-  if (!history_.Get(ticket, &item)) return false;
+  if (HasInputAudio(source)) {
+    if (!input_)
+      return ErrorEvent(object_detail::Error(503, "realtime_input_unavailable",
+                                             "Native input is not connected"),
+                        event.GetString("event_id"));
+    auto reply = input_->CreateDirect(source, detail::NewRequestId("item_"),
+                                      before, true, &ticket);
+    if (Accepted(reply)) reply = input_->PublicItem(ticket, &item);
+    if (!Accepted(reply))
+      return ErrorEvent(std::move(reply), event.GetString("event_id"));
+  } else {
+    const auto status =
+        history_.Create(source, detail::NewRequestId("item_"), before, &ticket);
+    if (!status)
+      return ErrorEvent(
+          Invalid("realtime_item_invalid", status.message(), "item"),
+          event.GetString("event_id"));
+    if (!history_.Get(ticket, &item)) return false;
+  }
   auto fields = Object({{"item", std::move(item)}});
   if (!predecessor.empty() && predecessor != "root")
     Set(&fields, "previous_item_id", String(predecessor));
@@ -574,6 +601,27 @@ bool RealtimeConversationSession::CreateResponse(
         event_id);
   reply = ValidateSpeech(work->speech);
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+  if (!automatic && response.GetArray("input")) {
+    auto& items = Field(response, "input").array;
+    work->temporary_inputs.reserve(items.size());
+    for (auto& item : items) {
+      if (!HasInputAudio(item)) continue;
+      if (!input_)
+        return ErrorEvent(
+            object_detail::Error(503, "realtime_input_unavailable",
+                                 "Native input is not connected"),
+            event_id);
+      RealtimeItemTicket ticket;
+      reply = input_->CreateDirect(item, detail::NewRequestId("item_"), {},
+                                   false, &ticket);
+      if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+      // Register cleanup before allocating a replacement JSON reference.
+      work->temporary_inputs.push_back(std::move(ticket));
+      item = Object({{"type", String("item_reference")},
+                     {"id", String(work->temporary_inputs.back().id)}});
+    }
+    work->job.response = response;
+  }
   if (automatic) {
     work->job.snapshot = std::move(automatic->context);
   } else {

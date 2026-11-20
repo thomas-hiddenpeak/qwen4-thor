@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "q4t/io/base64.h"
+#include "q4t/server/realtime_audio_export.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/test.h"
 #include "../src/server/object_protocol.h"
@@ -724,5 +725,283 @@ Q4T_TEST(realtime_input_idle_drains_vad_backlog_before_timeout) {
   Q4T_CHECK(frames >= 10 && f.speech_start == 1 &&
             f.Count("input_audio_buffer.timeout_triggered") == 0 &&
             f.calls == 0);
+  return true;
+}
+
+namespace {
+Json DirectItem(std::string id = "direct", bool two = true) {
+  auto parts = Array(
+      {Object({{"type", String("input_text")}, {"text", String("before")}}),
+       Object({{"type", String("input_audio")}, {"audio", String("AQACAAMA")}}),
+       Object({{"type", String("input_text")}, {"text", String("after")}})});
+  if (two)
+    parts.array.push_back(Object(
+        {{"type", String("input_audio")}, {"audio", String("BAAFAAYA")}}));
+  return Object({{"id", String(std::move(id))},
+                 {"type", String("message")},
+                 {"role", String("user")},
+                 {"content", std::move(parts)}});
+}
+}  // namespace
+
+Q4T_TEST(realtime_direct_input_orders_real_parts_and_public_transcription) {
+  Fixture f;
+  std::vector<size_t> indices;
+  f.native.execute = [&](const auto& job, const auto&, const auto&,
+                         const auto&) {
+    ++f.calls;
+    indices.push_back(job.content_index);
+    return Complete("part " + std::to_string(job.content_index));
+  };
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  RealtimeItemTicket ticket;
+  Q4T_CHECK(input.Configure(Options()).ok() &&
+            input.CreateDirect(DirectItem(), "unused", {}, true, &ticket).ok());
+  Q4T_CHECK(f.events.empty() && f.commits.empty() && f.calls == 0);
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(f.history.Capture(nullptr, &snapshot) &&
+            snapshot.pending_inputs.size() == 1 && Finish(input));
+  bool ready = false;
+  Q4T_CHECK(f.history.Resolve(&snapshot, &ready) && ready &&
+            (indices == std::vector<size_t>{1, 3}));
+  const auto& parts = snapshot.items.array[0].GetArray("content")->array;
+  Q4T_CHECK(parts[0].GetString("text") == "before" &&
+            parts[1].GetString("text") == "part 1" &&
+            parts[2].GetString("text") == "after" &&
+            parts[3].GetString("text") == "part 3");
+  for (const auto& event : f.events) {
+    ChatPlanError error;
+    Q4T_CHECK(
+        ValidateRealtimeWireShape(event, RealtimeShape::kServerEvent, &error));
+    Q4T_CHECK(event.GetString("item_id") == "direct" &&
+              (event.GetInt("content_index") == 1 ||
+               event.GetInt("content_index") == 3));
+  }
+  Q4T_CHECK(f.events.size() == 2 && f.calls == 2 && f.released == 2 &&
+            f.commits.empty());
+  return true;
+}
+
+Q4T_TEST(realtime_direct_input_reference_is_public_metadata_not_model_text) {
+  for (bool visible : {false, true}) {
+    Fixture f;
+    RealtimeConversationInput input("sess_asr", f.history, f.native,
+                                    f.callbacks, 30);
+    auto source = DirectItem("direct", false);
+    Set(&Field(source, "content").array[1], "transcript", String("untrusted"));
+    RealtimeItemTicket ticket;
+    Q4T_CHECK(input.Configure(Options(visible)).ok() &&
+              input.CreateDirect(source, "unused", {}, true, &ticket).ok() &&
+              Finish(input));
+    Json item;
+    Q4T_CHECK(input.PublicItem(ticket, &item).ok() &&
+              item.GetArray("content")->array[1].GetString("transcript") ==
+                  "untrusted");
+    Q4T_CHECK(input.Retrieve(ticket, &item).ok() &&
+              item.GetArray("content")->array[1].Has("audio"));
+    RealtimeConversationSnapshot snapshot;
+    Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot));
+    Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[1].GetString(
+                  "text") == "actual CPU audio fixture");
+    Q4T_CHECK(
+        f.Count("conversation.item.input_audio_transcription.completed") ==
+        size_t(visible));
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_direct_input_empty_parts_do_not_invent_asr_or_idle_prompt) {
+  Fixture f;
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  auto source = DirectItem();
+  Field(source, "content").array[1] =
+      Object({{"type", String("input_audio")},
+              {"transcript", String("reference only")}});
+  Set(&Field(source, "content").array[3], "audio", String(""));
+  RealtimeItemTicket ticket;
+  Q4T_CHECK(input.Configure(Options()).ok() &&
+            input.CreateDirect(source, "unused", {}, true, &ticket).ok() &&
+            Finish(input));
+  RealtimeConversationSnapshot snapshot;
+  Json item;
+  Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot) &&
+            input.Retrieve(ticket, &item).ok());
+  for (size_t i : {1U, 3U}) {
+    Q4T_CHECK(snapshot.items.array[0]
+                  .GetArray("content")
+                  ->array[i]
+                  .GetString("text", "missing")
+                  .empty());
+    Q4T_CHECK(item.GetArray("content")
+                  ->array[i]
+                  .GetString("audio", "missing")
+                  .empty());
+  }
+  Q4T_CHECK(f.calls == 0 && f.released == 0 && f.events.empty());
+  return true;
+}
+
+Q4T_TEST(realtime_direct_input_rejected_second_part_rolls_back_all_owners) {
+  for (const auto* bad : {"not base64", "AQ=="}) {
+    Fixture f;
+    RealtimeConversationInput input("sess_asr", f.history, f.native,
+                                    f.callbacks, 30);
+    Q4T_CHECK(input.Configure(Options()).ok());
+    auto source = DirectItem();
+    Set(&Field(source, "content").array[3], "audio", String(bad));
+    RealtimeItemTicket ticket;
+    Q4T_CHECK(!input.CreateDirect(source, "unused", {}, true, &ticket).ok());
+    Q4T_CHECK(Finish(input) && f.calls == 0 && f.events.empty() &&
+              f.history.ChargedBytes() == 0 && input.RetainedAudioBytes() == 0);
+    Q4T_CHECK(
+        input.CreateDirect(DirectItem(), "unused", {}, true, &ticket).ok() &&
+        Finish(input) && f.calls == 2);
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_direct_input_missing_predecessor_is_atomic_and_reusable) {
+  Fixture f;
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  RealtimeItemTicket ticket;
+  Q4T_CHECK(input.Configure(Options()).ok());
+  Q4T_CHECK(!input.CreateDirect(DirectItem(), "unused", "absent", true, &ticket)
+                 .ok());
+  Q4T_CHECK(Finish(input) && f.calls == 0 && f.events.empty() &&
+            f.history.ChargedBytes() == 0 && input.RetainedAudioBytes() == 0);
+  Q4T_CHECK(
+      AddText(f.history, "prior") &&
+      input.CreateDirect(DirectItem(), "unused", "root", true, &ticket).ok() &&
+      Finish(input));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot) &&
+            snapshot.items.array.size() == 2 &&
+            snapshot.items.array[0].GetString("id") == ticket.id);
+  return true;
+}
+
+Q4T_TEST(realtime_direct_input_deleted_borrow_cannot_revive_reused_identity) {
+  Fixture f;
+  std::atomic<bool> entered{false};
+  f.native.execute = [&](const auto&, const auto&, const auto& control,
+                         const auto&) {
+    ++f.calls;
+    entered = true;
+    while (!control->Cancelled()) std::this_thread::sleep_for(1ms);
+    return Complete("late result");
+  };
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  RealtimeItemTicket ticket;
+  Q4T_CHECK(input.Configure(Options()).ok() &&
+            input.CreateDirect(DirectItem(), "unused", {}, true, &ticket).ok());
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(f.history.Capture(nullptr, &snapshot) && input.Tick());
+  const auto end = Clock::now() + 1s;
+  while (!entered && Clock::now() < end) std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(entered && input.Erase(ticket).ok() &&
+            input.RetainedAudioBytes() > 0 &&
+            AddText(f.history, ticket.id.c_str()));
+  Q4T_CHECK(Finish(input) && f.calls == 1 && f.released == 1 &&
+            input.RetainedAudioBytes() == 0 && f.events.empty());
+  bool ready = true;
+  Q4T_CHECK(!f.history.Resolve(&snapshot, &ready) && !ready);
+  Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot) &&
+            snapshot.items.array.size() == 1 &&
+            snapshot.items.array[0].GetArray("content")->array[0].GetString(
+                "text") == ticket.id);
+  return true;
+}
+
+Q4T_TEST(realtime_direct_input_reference_budget_is_shared_and_released) {
+  Fixture f;
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  Q4T_CHECK(input.Configure(Options()).ok());
+  std::vector<RealtimeItemTicket> tickets;
+  for (size_t i = 0; i < 16; ++i) {
+    auto source = DirectItem("part_" + std::to_string(i), false);
+    Set(&Field(source, "content").array[1], "audio", String(""));
+    Set(&Field(source, "content").array[1], "transcript",
+        String(std::string(1ULL << 20, 'r')));
+    RealtimeItemTicket ticket;
+    Q4T_CHECK(input.CreateDirect(source, "unused", {}, true, &ticket).ok() &&
+              Finish(input));
+    tickets.push_back(std::move(ticket));
+  }
+  auto source = DirectItem("overflow", false);
+  Set(&Field(source, "content").array[1], "transcript", String("extra"));
+  RealtimeItemTicket ticket;
+  Q4T_CHECK(input.CreateDirect(source, "unused", {}, true, &ticket).code ==
+            "realtime_reference_capacity");
+  Q4T_CHECK(input.Erase(tickets[0]).ok() &&
+            input.CreateDirect(source, "unused", {}, true, &ticket).ok() &&
+            Finish(input) && f.calls == 1);
+  return true;
+}
+
+Q4T_TEST(realtime_direct_input_preserves_append_and_retrieves_each_format) {
+  Fixture f;
+  std::map<size_t, std::vector<float>> samples;
+  f.native.execute = [&](const auto& job, const auto&, const auto&,
+                         const auto&) {
+    ++f.calls;
+    const auto audio = job.processed_audio->Samples();
+    samples[job.content_index] = {audio.begin(), audio.end()};
+    return Complete();
+  };
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  Q4T_CHECK(input.Configure(Options()).ok() && input.Message(kAppend));
+  const auto buffered = input.AudioBytes();
+  RealtimeItemTicket ticket;
+  Q4T_CHECK(
+      buffered > 0 &&
+      input.CreateDirect(DirectItem(), "unused", {}, true, &ticket).ok() &&
+      Finish(input) && input.AudioBytes() == buffered);
+  Json item;
+  Q4T_CHECK(input.Retrieve(ticket, &item).ok());
+  for (size_t i : {1U, 3U}) {
+    std::string bytes, encoded;
+    Q4T_CHECK(EncodeRealtimeAudio(samples[i], {}, 1024, &bytes) &&
+              q4t::io::EncodeBase64(bytes, 2048, &encoded));
+    Q4T_CHECK(item.GetArray("content")->array[i].GetString("audio") == encoded);
+  }
+  Q4T_CHECK(input.Message(kCommit) && Finish(input) && f.calls == 3);
+  auto next = Options();
+  next.processing.format = {RealtimeAudioEncoding::kMuLaw, 8000};
+  Q4T_CHECK(input.Configure(next).ok() && input.Retrieve(ticket, &item).ok());
+  Q4T_CHECK(!item.GetArray("content")->array[1].GetString("audio").empty() &&
+            input.AudioBytes() == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_direct_input_failed_part_never_becomes_successful_context) {
+  Fixture f;
+  f.native.execute = [&](const auto& job, const auto&, const auto&,
+                         const auto&) {
+    ++f.calls;
+    return job.content_index == 1 ? Error(503, "fixture_failed", "Failure")
+                                  : Complete("second part success");
+  };
+  RealtimeConversationInput input("sess_asr", f.history, f.native, f.callbacks,
+                                  30);
+  RealtimeItemTicket ticket;
+  Q4T_CHECK(input.Configure(Options()).ok() &&
+            input.CreateDirect(DirectItem(), "unused", {}, true, &ticket).ok());
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(f.history.Capture(nullptr, &snapshot) && Finish(input));
+  bool ready = true;
+  Q4T_CHECK(
+      !f.history.Resolve(&snapshot, &ready) && !ready && f.calls == 2 &&
+      f.Count("conversation.item.input_audio_transcription.failed") == 1 &&
+      f.Count("conversation.item.input_audio_transcription.completed") == 1);
+  Q4T_CHECK(f.history.Snapshot(nullptr, &snapshot) &&
+            snapshot.items.array.empty() && !input.Failed());
+  Json retrieved;
+  Q4T_CHECK(input.Retrieve(ticket, &retrieved).ok());
   return true;
 }

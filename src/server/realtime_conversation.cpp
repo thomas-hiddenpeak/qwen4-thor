@@ -282,12 +282,12 @@ Status RealtimeConversation::InsertAudioInput(
   return {};
 }
 Status RealtimeConversation::CommitAudioInput(
-    const RealtimeItemTicket& ticket,
-    std::optional<std::string_view> previous) {
+    const RealtimeItemTicket& ticket, std::optional<std::string_view> previous,
+    bool in_conversation) {
   const auto index = Position(ticket);
   if (index == entries_.size() || !entries_[index].native_input ||
       entries_[index].input_committed || !entries_[index].pending ||
-      revision_ == UINT64_MAX)
+      revision_ == UINT64_MAX || (!in_conversation && previous))
     return Invalid("native input reservation is stale or already committed");
   size_t position = entries_.size();
   if (previous) {
@@ -305,7 +305,7 @@ Status RealtimeConversation::CommitAudioInput(
   // All validation precedes non-allocating moves inside the reserved vector.
   auto& entry = entries_[index];
   entry.input_committed = true;
-  entry.in_conversation = true;
+  entry.in_conversation = in_conversation;
   if (position < index)
     std::rotate(entries_.begin() + position, entries_.begin() + index,
                 entries_.begin() + index + 1);

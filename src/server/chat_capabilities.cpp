@@ -117,6 +117,8 @@ std::string ChatCapabilitiesJson(
          R"("pipeline_recovery":{"cooldown_ms":5000,)"
          R"("attempts_per_fixed_minute":2,"model_restart":false},)"
          R"("delete":true,"retrieve":true,"automatic_replay":false,)"
+         R"("direct_audio_items":true,"mixed_content":true,)"
+         R"("response_input_audio":true,"transcript_reference_is_model_input":false,)"
          R"("admission":"serialized_native_workers_per_session",)"
          R"("additional_host_reservation_bytes":)" +
          std::to_string(kRealtimeConversationInputHostBytes) + R"(})" +
@@ -138,7 +140,7 @@ std::string ChatCapabilitiesJson(
          R"("speed_min":0.25,"speed_max":1.5,"rpm":"once_per_response",)"
          R"("voice_lock":"first_audio","retrieve":true,"truncate":true,)"
          R"("audio_history_bytes":134217728,"silent_eviction":false},)"
-         R"("pending_execution":["direct_audio_items","mcp","tracing"]},)"
+         R"("pending_execution":["mcp","tracing"]},)"
          R"("pending_execution":["conversation","live"]},)"
          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +

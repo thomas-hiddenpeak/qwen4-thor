@@ -349,10 +349,9 @@ Q4T_TEST(realtime_chat_capabilities_bind_real_storage_and_pending_processors) {
                 static_cast<int64_t>(RealtimeConversation::kMaximumBytes) &&
             chat->GetInt("session_host_reservation_bytes") ==
                 static_cast<int64_t>(kRealtimeConversationHostBytes));
-  Q4T_CHECK(OutputJson(*chat->Find("output_modalities")) ==
-                "[\"text\",\"audio\"]" &&
-            OutputJson(*chat->Find("pending_execution")) ==
-                "[\"direct_audio_items\",\"mcp\",\"tracing\"]");
+  Q4T_CHECK(
+      OutputJson(*chat->Find("output_modalities")) == "[\"text\",\"audio\"]" &&
+      OutputJson(*chat->Find("pending_execution")) == "[\"mcp\",\"tracing\"]");
   Q4T_CHECK(chat->Find("input_audio")->GetInt("idle_timeout_ms_min") == 5000 &&
             chat->Find("input_audio")->GetInt("idle_timeout_ms_max") == 30000 &&
             !chat->Find("input_audio")

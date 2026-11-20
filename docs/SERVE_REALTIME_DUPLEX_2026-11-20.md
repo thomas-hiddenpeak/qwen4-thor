@@ -145,3 +145,12 @@ WSS/ASR/TTS短验、受影响恢复与交付，全部master继续。
 原生有限音频和append ring分开存储但共用总预算、队列和累计时长，
 原借用/期限/删除与恢复边界保持。仍待实际item/response入口组合与
 统一WSS/ASR/TTS、恢复交付，全部master继续。0GPU、默认rev376不变。
+
+## 直接混合音频与单次回答入口CPU结果
+
+[入口CPU](evidence/serve-realtime-duplex-mixed-entry-cpu-20261120/README.md)
+36项和20来源反例通过，host零警告。实际item/response.create已接入
+原生有限队列和历史；逐段处理、公开身份映射、整项检索/删除和
+请求临时输入清理有针对证据，固定SDK参考transcript不进模型。
+0GPU、默认rev376保持。继续runtime构建、真实业务/恢复/交付及
+全部master，不能把组件验收扩大为最终可用声明。

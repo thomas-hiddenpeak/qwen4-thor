@@ -43,6 +43,8 @@ struct RealtimeTranscriptionCommand {
 ObjectReply ParseRealtimeTranscriptionCommand(
     std::string_view message, size_t message_bytes,
     RealtimeTranscriptionCommand* output);
+ObjectReply DecodeRealtimeAudioBase64(std::string_view text,
+                                      std::string* output);
 // Preserves omitted fields and distinguishes explicit null/empty updates.
 // Parsing does not claim that optional processing backends have been enabled;
 // the execution adapter must validate and execute every accepted setting.

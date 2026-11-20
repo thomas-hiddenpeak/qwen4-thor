@@ -176,7 +176,7 @@ ObjectReply RealtimeTranscriptionSession::SubmitFinite(
     return Error(409, "realtime_input_unavailable",
                  "Finite input owner stopped");
   if (!ValidRequestId(item_id) || item_id == "root" || content_index >= 128 ||
-      bytes.empty() || bytes.size() > kRealtimeAudioBytes)
+      bytes.size() > kRealtimeAudioBytes)
     return Error(400, "realtime_audio_item_invalid",
                  "Invalid finite audio part");
   const size_t width =
@@ -184,7 +184,7 @@ ObjectReply RealtimeTranscriptionSession::SubmitFinite(
   const auto samples = bytes.size() / width;
   const auto ticks =
       samples * (kRealtimeTicksPerSecond / settings_.format.rate);
-  if (bytes.size() % width || !samples || ticks > max_item_ticks_ ||
+  if (bytes.size() % width || ticks > max_item_ticks_ ||
       LifetimeTicks() > lifetime_ticks_ ||
       ticks > lifetime_ticks_ - LifetimeTicks())
     return Error(400, "audio_duration_limit", "Finite audio exceeds its limit");
@@ -217,9 +217,12 @@ ObjectReply RealtimeTranscriptionSession::SubmitFinite(
                      : settings_.noise == N::kNearField
                          ? audio::NoiseReduction::kNearField
                          : audio::NoiseReduction::kFarField;
-  auto status = audio_history_.DecodeFinite(
-      job.transcript, job.audio, bytes, noise, max_item_ticks_ / 3,
-      &job.processed_audio, callbacks_.interrupted);
+  auto status =
+      bytes.empty()
+          ? audio_history_.Empty(job.transcript, &job.processed_audio)
+          : audio_history_.DecodeFinite(
+                job.transcript, job.audio, bytes, noise, max_item_ticks_ / 3,
+                &job.processed_audio, callbacks_.interrupted);
   if (!status)
     return Error(400, "conversation_audio_unavailable", status.message());
   reply = ReserveJob(job);
@@ -1140,7 +1143,8 @@ bool RealtimeTranscriptionSession::Tick() {
     const auto* audio = queue_.Front();
     if (!audio || *audio != jobs_.front().audio) return false;
   }
-  if (jobs_.front().idle_timeout && !jobs_.front().audio.samples) {
+  if ((jobs_.front().idle_timeout || jobs_.front().Finite()) &&
+      !jobs_.front().audio.samples) {
     // Zero received samples are not an ASR call or a transcript success event.
     // Settle only the native empty-input fact, without admission/token usage.
     auto& job = jobs_.front();

@@ -47,14 +47,14 @@ conversation的音频输入、原生ASR/VAD、手动提交、打断和自动回�
   16个不同用例/18次执行，14项按精确源码复用，原2夹具失败保留。
   ChatServer接入共享原生ASR/VAD及组合内存预算；实际q4t构建零警告。
 
-十二组均完成相应来源反例检查，构建零警告，新增GPU为0。累计按原始
-测试名去重为209个不同用例/337次执行，保留20次原CPU失败与
+十三组均完成相应来源反例检查，构建零警告，新增GPU为0。累计按原始
+测试名去重为227个不同用例/373次执行，保留20次原CPU失败与
 1次来源门禁失败；之前前五组92的误计已纠正为91，原记录不改。
-host为`53501b78b0d4c68cd34c3ce14caffed1cb523869526b89741a49e7fdb9673f53`，
+host为`83f8fe997fc00f08ea319f178c5bc43a624c69b8249865d5b45dad4e389be3e6`，
 已构建q4t候选为`1f01ec621cd7a79ca037e3f5308325c0b3e10d9f00c66da04896ea03f6c5e577`，
 保存在`.q4t-work/serve-realtime-duplex-20261120/backend-runtime-01/q4t`。
 两者都不是当前默认。实际HTTP后端已接线，**尚未执行真实双向业务**。
-继续直接混合音频和必要runtime构建，然后统一WSS/
+继续必要runtime构建，然后统一WSS/
 ASR/TTS短验、受影响恢复与可回退交付。
 [同会话本地输入恢复CPU](evidence/serve-realtime-duplex-recovery-cpu-20261120/README.md)
 18项（6新+12相关）/0.637秒和20来源反例通过，host构建55.597秒零警告。
@@ -79,6 +79,13 @@ ASR/TTS短验、受影响恢复与可回退交付。
 独立波形复用既有降噪及共享预算，不混入append ring；32项队列、
 一小时总样本寿命由全部输入共用，恢复不退还。实际混合item/
 response.create入口仍待组合，不能把组件结论当作真实业务通过。
+
+[直接混合音频入口CPU](evidence/serve-realtime-duplex-mixed-entry-cpu-20261120/README.md)
+36项（18新+18相关）/0.748秒和20来源反例通过，构建49.680秒零警告。
+item.create逐段真实处理/检索/删除，response.create临时输入按请求
+清理、保留默认历史；用户transcript独立限额、仅公开参考，模型使用
+实际处理结果。空波形不伪造ASR或空闲提示。继续runtime构建与统一
+WSS/ASR/TTS、受影响恢复/交付，全部master继续；0GPU、默认rev376保持。
 
 ## 当前实际默认
 
