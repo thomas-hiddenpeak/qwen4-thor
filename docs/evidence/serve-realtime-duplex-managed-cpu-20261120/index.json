@@ -1,0 +1,150 @@
+{
+  "records": [
+    {
+      "path": "managed-duplex-cpu-01/1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "managed-duplex-cpu-01/2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "managed-duplex-cpu-01/1.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "managed-duplex-cpu-01/0.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "managed-duplex-cpu-01/result.json",
+      "bytes": 708,
+      "sha256": "02f6332f19dd41610d9eba138b216d215bd9a431b016f853ae5e7bedf69037e2"
+    },
+    {
+      "path": "managed-duplex-cpu-01/plan.json",
+      "bytes": 2799,
+      "sha256": "7d4f0b311c79f9f5fa2078662b506bf1962364c94c6547abe69cb7206fafffe6"
+    },
+    {
+      "path": "managed-duplex-cpu-01/2.stdout",
+      "bytes": 223,
+      "sha256": "40be35b1dc83ba5c6337f43265f048d676f340e85bbc00cbe9ee99641e261d72"
+    },
+    {
+      "path": "managed-duplex-cpu-01/0.stderr",
+      "bytes": 2328,
+      "sha256": "1727867e95e5b150182528fd16eed37e864c7ce9bce4454e362bfa52d0e482d6"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-fuqp3hpw/hold_stream-0.events.jsonl",
+      "bytes": 737691,
+      "sha256": "46bca0e08744795ca332d754e37836b8a0c2fcca667d389716aff5d8a628be56"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-fuqp3hpw/ready.json",
+      "bytes": 266,
+      "sha256": "6d74095aad8dd78d3b872d2598f053d46ede6411b67a817e645e86bd1650e842"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-fuqp3hpw/stderr-1005501.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-fuqp3hpw/stdout-1005501.json",
+      "bytes": 541271,
+      "sha256": "755f611c0a202c800c362a7b6ba772a5913b084ce1a6d35d16a4fd863d6bd1bd"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-s2ft1dud/stdout-1005532.json",
+      "bytes": 540597,
+      "sha256": "ec120854951816d370c5c734dda422c9db4c9b4c3cbb592c8fec6fb03f68af82"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-s2ft1dud/hold_complete-0.events.jsonl",
+      "bytes": 543383,
+      "sha256": "cc85f3ed2a18d6a185c29cff6c8b88c232dc86a5791f03fb5869149c45cb83c5"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-s2ft1dud/stderr-1005532.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-s2ft1dud/stderr-1005519.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-s2ft1dud/complete-21.events.jsonl",
+      "bytes": 543383,
+      "sha256": "2c556e17663136431986505f668c74798d308a05a7664fe8dcea20cb8fbd40a4"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-s2ft1dud/ready.json",
+      "bytes": 212,
+      "sha256": "4923f48b06d3e7729e42d1bc9b9d51b34a0e78c92813bed732643d2212f9c9e2"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-s2ft1dud/stdout-1005519.json",
+      "bytes": 540602,
+      "sha256": "2be91fc6273d2343d978f9233dc1769e4e3311fabce686d7429786fb876d2f03"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-txu07ndf/complete-0.events.jsonl",
+      "bytes": 543383,
+      "sha256": "d4f3260f881356b43128fa5d2e9f6d4bc8d409927bf9b0ed620600bf9ad432d0"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-txu07ndf/stderr-1005486.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "managed-duplex-cpu-01/duplex-sdk-7zhle6uf/case-txu07ndf/stdout-1005486.json",
+      "bytes": 540605,
+      "sha256": "af7889fbaed28787bd1a549fada11b438d325b09b8c4aec9b9486ed5f745c0ae"
+    },
+    {
+      "path": "native-build-01/plan.json",
+      "bytes": 9716,
+      "sha256": "683d66f0b36443f4d2df4fe99ec6a76157d022a0fb95eeb80de8e2d4d8a349f5"
+    },
+    {
+      "path": "native-build-01/result.json",
+      "bytes": 572,
+      "sha256": "d75875043ee2840deaf19976f8742c661263e072e97d36e3b475cb98f161fa79"
+    },
+    {
+      "path": "native-build-01/build.log",
+      "bytes": 1214,
+      "sha256": "5cb7321ee3cbdaab28e33bfd71b7e73db0207886f71ac433a5a326fc61322cf9"
+    },
+    {
+      "path": "run_managed_duplex_cpu_01.py",
+      "bytes": 2413,
+      "sha256": "8beb67a6b25adf0532d59b6f84cdc8b7419025c4610bd3a98a61e2757a49f17d"
+    },
+    {
+      "path": "build_native_helpers_01.py",
+      "bytes": 2642,
+      "sha256": "80cfaf4e9ddc7507be50b0120aec72e4ad1097b7841a8a633c937d814377c52a"
+    },
+    {
+      "path": "duplex-recovery-scope-01.json",
+      "bytes": 2273,
+      "sha256": "a1cac93904ce0b3f8bca8f13efde24570fc1be9a232e62a4fa5fd58e55e7c4fd"
+    },
+    {
+      "path": "archive_managed_duplex_cpu_01.py",
+      "bytes": 4473,
+      "sha256": "b9449a0b992cc642f9173b3832a7f93a8bccd9d4dfb47644ce53aaf09958bb9d"
+    }
+  ],
+  "archive_sha256": "6ca43c6c0eb95151f3ecb259a6b7ab0fc878c35ede547b96acf913292c937a0b"
+}

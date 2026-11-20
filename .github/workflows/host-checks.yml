@@ -249,6 +249,8 @@ jobs:
             tools.serve_realtime.test_prompt_service \
             tools.serve_realtime.test_speech_service \
             tools.serve_realtime.test_speech_recovery_sdk \
+            tools.serve_realtime.test_duplex_service \
+            tools.serve_realtime.test_duplex_recovery_sdk \
             tools.serve_realtime.test_speech_cancel_acceptance \
             tools.serve_realtime.test_speech_acceptance \
             tools.serve_realtime.test_duplex_acceptance \

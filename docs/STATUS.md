@@ -218,6 +218,12 @@ mixed重复内容、vad_auto译成英文两条原答案FAIL，轻量未跑。生
 主轻记录均在8MiB内，v24校验可离仓导入且保留v1—v23。候选ecd6cc23
 具备主轻资格，实际恢复/交付仍待完成，默认rev376 STOPPED保持。
 
+[双向原生恢复驱动CPU](evidence/serve-realtime-duplex-managed-cpu-20261120/README.md)：
+12项/3.133秒与20来源反例通过，含实际SDK/原生TLS的CPU故障对端。
+helper构建1.716秒零警告且身份未变，新增GPU0。冻结5模型/18工作/
+6WSS/1探针/1200秒实际恢复，接着执行保留包/TLS/整包回退再交付；
+候选ecd6cc23、默认rev376保持，全部master继续。
+
 ## 当前实际默认
 
 | 项目 | 当前值 |

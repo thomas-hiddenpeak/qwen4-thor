@@ -12461,7 +12461,7 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "primary_light_source_qualified_native_recovery_pending",
+      "state": "managed_cpu_pass_actual_recovery_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
@@ -13949,6 +13949,62 @@
           "seconds": 1.9993715691380203,
           "gpu_starts": 0,
           "default_unchanged": true
+        }
+      },
+      "managed_recovery_cpu": {
+        "evidence": "docs/evidence/serve-realtime-duplex-managed-cpu-20261120/README.md",
+        "result": {
+          "status": "PASS",
+          "tests": 12,
+          "commands": [
+            {
+              "command": [
+                "python3",
+                "-B",
+                "-m",
+                "unittest",
+                "-v",
+                "tools.serve_realtime.test_duplex_service",
+                "tools.serve_realtime.test_duplex_recovery_sdk"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "node",
+                "--check",
+                "tools/serve_realtime/duplex_recovery_sdk.mjs"
+              ],
+              "exit_code": 0
+            },
+            {
+              "command": [
+                "python3",
+                "-B",
+                "tools/serve_audit/check_inventory.py",
+                "--self-check"
+              ],
+              "exit_code": 0
+            }
+          ],
+          "seconds": 3.1329046469181776,
+          "gpu_starts": 0,
+          "default_unchanged": true
+        },
+        "native_build": {
+          "status": "PASS",
+          "returncode": 0,
+          "seconds": 1.7161946957930923,
+          "warnings": [],
+          "binaries": {
+            "q4t-guardian": "35e649620b6b0bf7cdb428b79fe972e2f8635ff0c2d68af83d0c46261b5f90c0",
+            "q4t-cuda-probe": "c748d66936a03e0cee48892869897ee37d3971f5a32c5a73e3868fb5fdf84acc",
+            "q4t-ingress": "4dff0f66eb25c570d6d89470aecfd8670768e3b1b149932f2b24d0e5a82de826",
+            "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+          },
+          "sources_unchanged": true,
+          "engine_cache_protocol_default_unchanged": true,
+          "gpu_actions": 0
         }
       }
     }
