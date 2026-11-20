@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "seconds": 1.4467714680358768,
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tools.serve_recovery.test_profile_speech.SpeechEvidence.test_all_three_sessions_require_exact_single_admission_and_settlement",
+        "-v"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py",
+        "--self-check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "tests": 1,
+  "gpu_starts": 0,
+  "original_failures_preserved": true
+}

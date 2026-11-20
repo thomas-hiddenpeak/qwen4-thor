@@ -28,6 +28,12 @@ FORMAT = 'q4t-speech-targeted-qualification-v1'
 SUCCESS = 'PASS_SPEECH_PRIMARY_LIGHT'
 LIMITS = dict(starts=2, chats=10, controls=2000, seconds=1200,
               websocket_sessions=6, ingress_starts=2)
+LIGHT_LIMITS = dict(LIMITS, starts=1, chats=5, websocket_sessions=3, ingress_starts=1,
+                   seconds=900)
+
+
+def limits(plan):
+    return LIGHT_LIMITS if 'retained_primary_business' in plan else LIMITS
 
 
 def requests():
@@ -46,11 +52,12 @@ def original(plan, name):
 
 
 def check_plan(plan):
-    require(plan['targeted_format'] == FORMAT and plan['limits'] == LIMITS and
+    bound = limits(plan)
+    require(plan['targeted_format'] == FORMAT and plan['limits'] == bound and
         plan['requests'] == requests() and plan['automatic_retries'] is False and
         plan['binary_sha256'] == reuse.REVIEW['candidate_binary'] and
         plan['identity']['protocol_sha256'] == reuse.REVIEW['candidate_protocol'] and
-        plan['planned'] == {k: v for k,v in LIMITS.items() if k not in ('controls','seconds')},
+        plan['planned'] == {k: v for k,v in bound.items() if k not in ('controls','seconds')},
         'speech scope, candidate or budget drift')
     path = Path(plan['source_review'])
     require(sha(path) == reuse.REVIEW['source_review'] and
@@ -72,6 +79,10 @@ def check_plan(plan):
         require(all(ledger.canonical(plan['voice_snapshot']['records']['voice']['data'][k]) ==
             ledger.canonical(record['business']['voice']['conditioning']['voice']['data'][k])
             for k in prior.reuse.CONDITION_FIELDS), 'saved voice condition drift')
+    if 'retained_primary_business' in plan:
+        from tools.serve_recovery import profile_speech_primary
+        profile_speech_primary.verify(plan['retained_primary_business']['source'], plan,
+                                     original(plan, 'primary')[1])
 
 
 def prepare(args):
@@ -83,7 +94,8 @@ def prepare(args):
     base = read(manifest)
     require(base['settings'] == previous['base']['settings'], 'retained settings drift')
     args.sdk_directory = Path(previous['sdk']['sdk_directory'])
-    encrypted.foreground.base.prepare(args, rows=requests(), limits=LIMITS, scope=__doc__)
+    bound = LIGHT_LIMITS if args.continue_primary else LIMITS
+    encrypted.foreground.base.prepare(args, rows=requests(), limits=bound, scope=__doc__)
     out = args.output.resolve(); plan = read(out / 'plan.json')
     base, candidate = full.candidate_build_base(base, args.binary, args.candidate_build)
     plan.update(targeted_format=FORMAT, base=base, candidate_identity=candidate,
@@ -93,7 +105,7 @@ def prepare(args):
                       protocol_sha256=base['protocol_sha256']),
         native_assets=copy.deepcopy(previous['native_assets']), chat_audio=True,
         tts_sampling_profile=previous['tts_sampling_profile'],
-        planned={k:v for k,v in LIMITS.items() if k not in ('controls','seconds')},
+        planned={k:v for k,v in bound.items() if k not in ('controls','seconds')},
         voice_snapshot=prior.voice_inputs(previous['voice_snapshot']['manifest']))
     plan['speech'] = profile_speech.prepare(args.speech_reference, out, plan['port']+2, plan['sdk'])
     sources = [manifest, path, path.parent.parent / 'plan.json',
@@ -107,8 +119,21 @@ def prepare(args):
     for p in [*sources, *(ROOT / n for n in names)]: plan['sources'][str(p)] = sha(p)
     plan['sources'].update(plan['speech']['files'])
     plan['protected'][str(manifest)] = sha(manifest)
+    if args.continue_primary:
+        from tools.serve_recovery import profile_speech_primary
+        source = args.continue_primary.resolve(strict=True)
+        plan['retained_primary_business'] = dict(
+            format='q4t-speech-reviewed-primary-v1', source=str(source))
+        fresh = profile_speech_primary.verify(source, plan, original(plan, 'primary')[1])
+        save(out/'primary-fresh.json',fresh)
+        for name in ('primary-config.json','primary-capabilities.json'):
+            save(out/name,read(source/name))
+        save(out/'primary-cleanup.json',read(source/'cleanup.json'))
+        save(out/'primary-speech-entry-cleanup.json',read(source/'primary-speech-entry-cleanup.json'))
+        plan['sources'].update({str(source/name):digest
+            for name,digest in profile_speech_primary.FILES.items()})
     check_plan(plan); save(out / 'plan.json', plan)
-    print(json.dumps(dict(plan=str(out/'plan.json'), limits=LIMITS)))
+    print(json.dumps(dict(plan=str(out/'plan.json'), limits=bound)))
 
 
 class Stage(prior.Stage):
@@ -118,6 +143,7 @@ class Stage(prior.Stage):
 
     def __init__(self, plan):
         check_plan(plan)
+        self.limits = limits(plan)
         encrypted.Stage.__init__(self, plan)
         self.counts.update(websocket_sessions=0, ingress_starts=0)
 
@@ -135,19 +161,28 @@ class Stage(prior.Stage):
         value = copy.deepcopy(old['business']); value.update(fresh)
         profile_evidence.business(value, self.plan['identity'], self.plan['profiles'][self.profile_name], caps)
 
+    def business(self):
+        if 'retained_primary_business' not in self.plan:
+            return full.Stage.business(self)
+        require(self.profile_name == 'light', 'only unexecuted light work may continue')
+        self.profile_business()
+        profile_contract.capability_pair(read(self.out/'primary-capabilities.json'),
+                                         read(self.out/'light-capabilities.json'))
 
-def check_result(result):
+
+def check_result(result, bound=LIMITS):
     require(result['status'] == SUCCESS and result['binary_sha256'] == reuse.REVIEW['candidate_binary'] and
-        type(result['seconds']) in (int,float) and 0 < result['seconds'] < LIMITS['seconds'] and
+        bound in (LIMITS,LIGHT_LIMITS) and
+        type(result['seconds']) in (int,float) and 0 < result['seconds'] < bound['seconds'] and
         all(type(result['counts'].get(k)) is int and result['counts'][k] == v
-            for k,v in LIMITS.items() if k not in ('controls','seconds')) and
-        type(result['counts'].get('controls')) is int and 0 <= result['counts']['controls'] <= LIMITS['controls'],
+            for k,v in bound.items() if k not in ('controls','seconds')) and
+        type(result['counts'].get('controls')) is int and 0 <= result['counts']['controls'] <= bound['controls'],
         'speech work or bounded result incomplete')
 
 
 def finalize(out):
     plan = read(out / 'plan.json'); check_plan(plan)
-    result = read(out / 'result.json'); check_result(result)
+    result = read(out / 'result.json'); check_result(result,limits(plan))
     for name,digest in {**plan['sources'],**plan['protected'],**plan['native_assets']}.items():
         require(sha(ROOT / name) == digest, 'postflight source drift: ' + name)
     require(sha(plan['binary']) == plan['binary_sha256'], 'candidate drift')
@@ -155,8 +190,17 @@ def finalize(out):
     lease = out / 'lease'
     queries = [json.loads(line) for line in (lease/'nvml-queries.jsonl').read_text().splitlines()]
     cleanups = [read(out / n) for n in ('primary-cleanup.json','cleanup.json')]
-    environment = full.environment(read(lease/'exit.json'), queries, cleanups)
-    environment['lease_result_sha256'] = sha(lease/'exit.json')
+    if 'retained_primary_business' in plan:
+        from tools.serve_recovery import profile_speech_primary
+        environment = profile_speech_primary.light_environment(read(lease/'exit.json'),queries,cleanups[-1])
+        environment['lease_result_sha256'] = sha(lease/'exit.json')
+        environment, proof = profile_speech_primary.environment(
+            plan['retained_primary_business']['source'],environment)
+        save(out/'environment-sources.json',proof)
+        environment['lease_result_sha256'] = sha(out/'environment-sources.json')
+    else:
+        environment = full.environment(read(lease/'exit.json'), queries, cleanups)
+        environment['lease_result_sha256'] = sha(lease/'exit.json')
     for name in profile_contract.NAMES:
         entry = read(out / (name + '-speech-entry-cleanup.json'))
         require(entry['exit_code'] == 0 and entry['port_released'] is True, 'entry not cleaned')
@@ -199,6 +243,7 @@ def main():
     for key in ('binary','package','candidate-build','previous-registry','source-review','speech-reference','output'):
         p.add_argument('--'+key,type=Path,required=True)
     p.add_argument('--port',type=int,default=18468)
+    p.add_argument('--continue-primary',type=Path)
     for mode in ('run','finalize'): sub.add_parser(mode).add_argument('--output',type=Path,required=True)
     args=parser.parse_args()
     if args.mode=='prepare': prepare(args)
@@ -206,8 +251,9 @@ def main():
     else:
         def interrupted(_signum,_frame): raise TimeoutError('speech stage deadline/interruption')
         signal.signal(signal.SIGTERM,interrupted); signal.signal(signal.SIGALRM,interrupted)
-        signal.alarm(LIMITS['seconds'])
-        try: Stage(read(args.output/'plan.json')).run()
+        plan=read(args.output/'plan.json')
+        signal.alarm(limits(plan)['seconds'])
+        try: Stage(plan).run()
         finally: signal.alarm(0)
 
 

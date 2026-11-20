@@ -7,6 +7,19 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[主配置实际语音离线复核通过](evidence/serve-realtime-speech-primary-review-20261120/README.md)：
+两音色完整PCM与旧独立ASR见证一致，越权零计费且随后文本42；
+31个不同CPU累计通过。原回显断言FAIL、结算夹具FAIL和原租约
+COMMAND_FAILED均保留，78次NVML正常并已清理。仅补未执行轻
+配置1模型/3WSS/5尝试/900秒；默认rev366及全部master保持。
+
+主配置实际完成共享Chat、内置/注册音色及越权后文本42，但驱动
+误把可选response.audio.output.voice当作必填回显而FAIL。实际音频
+完整字节与独立ASR旧见证相同；81.269秒、78次NVML正常并清理。
+原FAILED/COMMAND_FAILED保持；修正断言以有效session设置和声音
+为据，冻结10项CPU/20来源反例/120秒与原现场复核，随后仅补未执行
+轻配置1模型/3WSS/5响应尝试/900秒，不重跑主配置。默认rev366不变。
+
 [Realtime语音主轻CPU已闭合](evidence/serve-realtime-speech-profile-cpu-20261120/README.md)：
 28项/29次执行、20来源反例及两份旧主轻完整记录通过，累计2.486秒、
 0GPU。原异常类型夹具与来源清单拒绝均保留；仅补失败项。v19

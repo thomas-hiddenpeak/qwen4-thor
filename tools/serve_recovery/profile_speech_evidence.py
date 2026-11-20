@@ -57,8 +57,9 @@ def session(value, mode):
             failed['status_details']['error']['code'] == 'object_not_found' and
             not value['retrievals'] and not any(e['type'].startswith('response.output_audio.')
                 for e in events), 'foreign voice must fail without audio leakage')
-        # Preparation can fail before model tokens, but its response still owns
-        # the single admission. Zero actual token usage must remain zero.
+        # Same-owner voice resolution precedes the ordinary Chat rate lease.
+        # Invalid references consume no RPM/TPM; the following healthy response
+        # owns one admission. A conversation terminal is not a rate receipt.
         usage = failed['usage']
         ledger.require(all(type(usage[k]) is int and usage[k] == 0 for k in
             ('input_tokens', 'output_tokens', 'total_tokens')), 'foreign voice consumed hidden model tokens')
@@ -77,8 +78,12 @@ def session(value, mode):
         ledger.require(len(value['retrievals']) == 1 and
             value['retrievals'][0]['label'] == labels[0], 'speech retrieval ownership')
         _, audio = speech_checks.audio(events, response, value['retrievals'][0]['item'])
-        ledger.require(response['audio']['output']['voice'] == voice and
-            response['audio']['output']['speed'] == 1 and
+        # The response schema makes voice optional. This engine reports the
+        # effective settings in session.updated; complete PCM identity also
+        # binds the actual speaker. An optional echo must not contradict it.
+        output = response['audio']['output']
+        ledger.require(output.get('voice', voice) == voice and
+            output.get('speed', 1) == 1 and
             (audio['bytes'], audio['sha256']) == PCM[mode] and
             audio['format'] == 'audio/pcm' and audio['transcript'] == PHRASES[mode],
             'complete speech differs from independently recognized content')
@@ -112,7 +117,7 @@ def business(value):
                 all(state[k] == 0 for k in ('reserved', 'active', 'sessions', 'host_bytes')) and
                 state['free_slots'] == 1, 'owned resources not settled')
         before, after = witness['before'], witness['after']
-        ledger.require(after['admitted'] - before['admitted'] == (2 if mode == 'foreign' else 1) and
+        ledger.require(after['admitted'] - before['admitted'] == 1 and
             after['settled'] - before['settled'] == total,
             'speech must own exactly one RPM and actual TPM per response')
     return value

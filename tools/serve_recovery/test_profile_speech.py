@@ -28,7 +28,6 @@ def session(mode):
     value.update(mode='profile_'+mode, response_creates=1, checks=[], tool_record=None)
     value['responses'][0]['label'] = value['retrievals'][0]['label'] = 'profile_'+mode
     voice = 'ryan' if mode=='builtin' else dict(id=s.VOICE)
-    response['audio']['output'].update(voice=voice,speed=1)
     response['usage'].update(input_tokens=1000,output_tokens=101,total_tokens=1101)
     target = s.PHRASES.get(mode,s.PHRASES['custom'])
     response['output'][0]['content'][0]['transcript'] = target
@@ -82,7 +81,8 @@ class SpeechEvidence(unittest.TestCase):
     def test_content_receipt_cannot_hide_wrong_voice_or_waveform(self):
         for mutate in [lambda v:v['retrievals'][0]['item']['content'][0].update(audio='AAAA'),
                        lambda v:v['responses'][0]['response']['audio']['output'].update(voice='vivian'),
-                       lambda v:v['responses'][0]['response']['audio']['output'].update(speed=.75)]:
+                       lambda v:v['events'][0]['session']['audio']['output'].update(voice='vivian'),
+                       lambda v:v['events'][0]['session']['audio']['output'].update(speed=.75)]:
             self.reject('builtin',mutate)
 
     def test_old_or_missing_user_turn_cannot_qualify(self):
@@ -110,11 +110,13 @@ class SpeechEvidence(unittest.TestCase):
         for mode in s.CASES:
             item=session(mode);total=s.session(item,mode)
             value['sessions'][mode]=dict(session=item,before=dict(state),
-                after=dict(state,admitted=2 if mode=='foreign' else 1,settled=total))
+                after=dict(state,admitted=1,settled=total))
         s.business(value)
         for key,new in [('admitted',2),('settled',0),('reserved',1),('host_bytes',1024)]:
             wrong=copy.deepcopy(value);wrong['sessions']['builtin']['after'][key]=new
             with self.assertRaises(Exception):s.business(wrong)
+        wrong=copy.deepcopy(value);wrong['sessions']['foreign']['after']['admitted']=2
+        with self.assertRaises(Exception):s.business(wrong)
 
 
 class SpeechCapabilities(unittest.TestCase):
@@ -215,6 +217,48 @@ class DriverBudget(unittest.TestCase):
                        lambda v:v.update(binary_sha256='0'*64)]:
             wrong=copy.deepcopy(value);mutate(wrong)
             with self.assertRaises(RuntimeError):stage.check_result(wrong)
+
+
+class PrimaryContinuation(unittest.TestCase):
+    def values(self):
+        from tools.serve_recovery import profile_speech_primary as primary
+        return (dict(status='FAILED',error="KeyError: 'voice'\n",counts=dict(starts=1,chats=5,
+            controls=43,websocket_sessions=3,ingress_starts=1),seconds=81,
+            binary_sha256=primary.speech_source()['candidate_binary']),
+            dict(status='COMMAND_FAILED',child_returncode=1,compute_backend='nvml',
+                 lease_inherited_by_child=True),[dict(status='OK',returncode=0)]*78,
+            dict(remaining=[],model_exit=0,ports_released=True,lease_continuously_held=True),
+            dict(exit_code=0,port_released=True))
+
+    def test_only_exact_checker_failure_and_completed_work_is_reviewable(self):
+        from tools.serve_recovery import profile_speech_primary as primary
+        values=self.values();primary.validate_result(*values)
+        for mutate in [lambda v:v[0].update(error='TTS failed'),
+                       lambda v:v[0]['counts'].update(chats=4),
+                       lambda v:v[1].update(status='ENV_ABORT'),
+                       lambda v:v[2].pop(),lambda v:v[3].update(remaining=[123])]:
+            wrong=copy.deepcopy(values);mutate(wrong)
+            with self.assertRaises(RuntimeError):primary.validate_result(*wrong)
+
+    def test_new_light_lease_cannot_relabel_failed_environment(self):
+        from tools.serve_recovery import profile_speech_primary as primary
+        _,lease,queries,cleanup,_=self.values()
+        with self.assertRaises(RuntimeError):primary.light_environment(lease,queries,cleanup)
+        lease.update(status='COMPLETED',child_returncode=0)
+        current=primary.light_environment(lease,queries,cleanup)
+        current['lease_result_sha256']='c'*64
+        env,proof=primary.environment('.',current)
+        self.assertEqual(env['nvml_queries'],156)
+        self.assertEqual(proof['primary_exit_status'],'COMMAND_FAILED')
+        self.assertEqual(proof['light_exit_status'],'COMPLETED')
+
+    def test_continuation_budget_cannot_reload_primary_or_add_responses(self):
+        result=dict(status=stage.SUCCESS,binary_sha256=stage.reuse.REVIEW['candidate_binary'],
+                    seconds=60,counts={k:v for k,v in stage.LIGHT_LIMITS.items() if k!='seconds'})
+        stage.check_result(result,stage.LIGHT_LIMITS)
+        for key in ('starts','chats'):
+            wrong=copy.deepcopy(result);wrong['counts'][key]+=1
+            with self.assertRaises(RuntimeError):stage.check_result(wrong,stage.LIGHT_LIMITS)
 
 
 if __name__=='__main__':unittest.main()

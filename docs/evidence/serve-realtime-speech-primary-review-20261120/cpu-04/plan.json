@@ -1,0 +1,35 @@
+{
+  "commands": [
+    [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "tools.serve_recovery.test_profile_speech.SpeechEvidence",
+      "tools.serve_recovery.test_profile_speech.PrimaryContinuation",
+      "tools.serve_recovery.test_profile_speech.DriverBudget",
+      "-v"
+    ],
+    [
+      "python3",
+      "-B",
+      "tools/serve_audit/check_inventory.py",
+      "--self-check"
+    ]
+  ],
+  "limits": {
+    "tests": 10,
+    "seconds": 120,
+    "source_counterexamples": 20,
+    "gpu_starts": 0
+  },
+  "primary_failed_sha256": "af7a28b56a8037933e5957382ab4e1c5bb8db3a87443b0180b679057fe6c6a41",
+  "sources": {
+    "tools/serve_recovery/profile_speech_reuse.py": "8a2e42f141891689a13acbb2ea44ae672fbaf216282caa2ac956c29e1b94ba6d",
+    "tools/serve_recovery/profile_speech_targeted.py": "40c7cfc653bb0833d424aa04339d056b1aa0672472660e7b602f9ca1ed2b2d88",
+    "tools/serve_recovery/profile_speech_primary.py": "1f4459a22fa2a899a1d1481b74504dbbd598e8880fc9e17b7977b7620fd4cc12",
+    "tools/serve_recovery/profile_speech_evidence.py": "218957b7539bf7fa9d4540d54f3cf13837d16351a11480bcd3a4ec96431bc771",
+    "tools/serve_recovery/profile_speech_source.py": "c56453a5ae41ab1f5df12f0825900088009d1e2b449fc4ba193a83c1ec257e11",
+    "tools/serve_recovery/profile_speech.py": "a249ffd7d4099a75e91e9af2acff828634847cff010322cc5b6e7ca172fc85a3"
+  }
+}

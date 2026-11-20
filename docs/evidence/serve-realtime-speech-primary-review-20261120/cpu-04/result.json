@@ -1,0 +1,34 @@
+{
+  "status": "FAIL",
+  "seconds": 1.4659807230345905,
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tools.serve_recovery.test_profile_speech.SpeechEvidence",
+        "tools.serve_recovery.test_profile_speech.PrimaryContinuation",
+        "tools.serve_recovery.test_profile_speech.DriverBudget",
+        "-v"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "tools/serve_audit/check_inventory.py",
+        "--self-check"
+      ],
+      "exit_code": 0
+    },
+    {
+      "error": "LedgerError('speech must own exactly one RPM and actual TPM per response')"
+    }
+  ],
+  "tests": 10,
+  "gpu_starts": 0,
+  "original_failures_preserved": true
+}
