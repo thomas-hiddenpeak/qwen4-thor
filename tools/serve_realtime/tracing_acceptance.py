@@ -73,7 +73,7 @@ def check_plan(plan):
 def prepare(out):
     require(not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT),
             'commit reviewed implementation and verifier before GPU')
-    cpu = read(WORK/'sdk-cpu-01/result.json')
+    cpu = read(WORK/'sdk-cpu-02/result.json')
     require(cpu['status']=='PASS','targeted driver/checker CPU missing')
     for n,h in cpu['sources'].items():require(sha(ROOT/n)==h,'verified source drift')
     require(read(WORK/'native-integration-cpu-01/result.json')['status']=='PASS',
@@ -101,7 +101,7 @@ def prepare(out):
     for p in [REFERENCE,Path(plan['ingress']),Path(plan['tls']['certificate']),
         Path(plan['tls']['key']),WORK/'native-runtime-03/result.json',
         WORK/'native-runtime-03/plan.json',WORK/'native-integration-cpu-01/result.json',
-        WORK/'sdk-cpu-01/result.json']:
+        WORK/'sdk-cpu-02/result.json']:
         plan['sources'][str(p)]=sha(p)
     plan['protected']={str(ROOT/n):sha(ROOT/n) for n in ('build/q4t','build/q4t.release.json',
         'build/service/manifest.json','build/service.release.json','build/service-native-state/ledger.json')}
@@ -115,7 +115,12 @@ class Stage(previous.Stage):
     success_status=SUCCESS
 
     def __init__(self,plan):
-        check_plan(plan);super().__init__(plan)
+        check_plan(plan)
+        # Reuse ownership/cleanup, not the old MCP stage's frozen scope.
+        encrypted.Stage.__init__(self,plan)
+        self.counts.update(websocket_sessions=0,ingress_starts=0)
+        self.peer=self.edge=None
+        self.observed={}
         self.actor=None;self.faults=[]
         self.trace_directory=self.out/'application-objects-traces'
 

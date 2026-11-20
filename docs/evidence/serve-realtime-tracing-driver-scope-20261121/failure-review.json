@@ -1,0 +1,31 @@
+{
+  "status": "DRIVER_PREFLIGHT_FAIL",
+  "failure": "Inherited previous MCP initializer rejected tracing format before base lifecycle/model initialization",
+  "model_starts": 0,
+  "model_jobs": 0,
+  "original_exit": {
+    "status": "COMMAND_FAILED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/serve_realtime/tracing_acceptance.py",
+      "run",
+      "--output",
+      ".q4t-work/serve-realtime-tracing-20261120/sdk-business-01"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 1,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-11-20T16:05:57.013834+00:00",
+      "monotonic": 3380839.530716859,
+      "pid": 1121238
+    }
+  },
+  "repair": "Use tracing check_plan then generic encrypted Stage ownership initialization; new valid-format CPU counterexample",
+  "original_cpu_and_runtime_unchanged": true
+}

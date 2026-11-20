@@ -10,6 +10,20 @@ from tools.serve_realtime import tracing_acceptance as t
 
 
 class Driver(unittest.TestCase):
+    def test_valid_trace_constructor_uses_its_own_scope(self):
+        plan=dict(output='/owned/cpu-fixture',limits=t.LIMITS)
+        def initialize(owner,actual):
+            self.assertIs(actual,plan)
+            owner.out=Path(actual['output']);owner.counts=dict(starts=0,chats=0,controls=0)
+        with mock.patch.object(t,'check_plan') as own, mock.patch.object(
+                t.encrypted.Stage,'__init__',initialize),mock.patch.object(
+                t.previous,'check_plan',side_effect=AssertionError('old MCP format gate')):
+            stage=t.Stage(plan)
+            own.assert_called_once_with(plan)
+        self.assertEqual(stage.counts,dict(starts=0,chats=0,controls=0,websocket_sessions=0,ingress_starts=0))
+        self.assertIsNone(stage.peer);self.assertIsNone(stage.edge)
+        self.assertEqual(stage.observed,{})
+
     def test_frozen_work_and_no_full_matrix(self):
         self.assertEqual(t.LIMITS,dict(starts=2,chats=6,controls=1200,seconds=900,
             websocket_sessions=2,ingress_starts=2))

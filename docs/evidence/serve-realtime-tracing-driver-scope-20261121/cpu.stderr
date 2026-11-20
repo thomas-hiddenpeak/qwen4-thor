@@ -1,0 +1,6 @@
+test_valid_trace_constructor_uses_its_own_scope (tools.serve_realtime.test_tracing_acceptance.Driver.test_valid_trace_constructor_uses_its_own_scope) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

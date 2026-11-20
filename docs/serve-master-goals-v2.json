@@ -16040,7 +16040,7 @@
       "binary_sha256": "e482c5276c3f32988845e177a679a5084f754767346393b7c9e8fc84fdc7d93f",
       "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935"
     },
-    "driver_cpu_cases": 19,
+    "driver_cpu_cases": 20,
     "driver_cpu_seconds": 0.014,
     "inventory_negative_checks": 22,
     "business_limits": {
@@ -16049,6 +16049,12 @@
       "websocket_sessions": 2,
       "seconds": 900
     },
-    "build_driver_evidence": "evidence/serve-realtime-tracing-build-driver-20261121/README.md"
+    "build_driver_evidence": "evidence/serve-realtime-tracing-build-driver-20261121/README.md",
+    "driver_preflight_failure": {
+      "evidence": "evidence/serve-realtime-tracing-driver-scope-20261121/README.md",
+      "model_starts": 0,
+      "model_jobs": 0,
+      "repaired": true
+    }
   }
 }
