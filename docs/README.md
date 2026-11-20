@@ -685,3 +685,8 @@
 - [Realtime双向输入计划](SERVE_REALTIME_DUPLEX_2026-11-20.md)：同一conversation、实际ASR/VAD、手动与自动轮次及有界交付。
 - [双向输入设置CPU](evidence/serve-realtime-duplex-settings-cpu-20261120/README.md)：独立控制、公开转写开关、空闲边界与原重复字段失败。
 - [统一音频输入历史CPU](evidence/serve-realtime-duplex-history-cpu-20261120/README.md)：原生票据、失败隔离、隐私、删除与执行快照。
+
+- [转写处理器配置事务CPU](evidence/serve-realtime-duplex-configure-cpu-20261120/README.md)：唯一会话确认、借用保护和既有转写路径。
+- [PR #54实际合main](evidence/serve-pr54-merged-20261120/README.md)：精确head两份CI通过与主线祖先确认。
+
+- [2026-11-20状态历史原件](HISTORY_STATUS_2026-11-20.md)：整理前逐字保留；当前事实以STATUS为准。

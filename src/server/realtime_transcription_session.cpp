@@ -123,9 +123,71 @@ bool RealtimeTranscriptionSession::Start() {
       !callbacks_.validate || !callbacks_.acquire || !callbacks_.release ||
       !callbacks_.execute)
     return false;
-  if (!callbacks_.validate(settings_).ok()) return false;
+  const auto ready = callbacks_.validate(settings_);
+  if (!ready.ok() || ready.commit_unknown) return false;
   started_ = true;
   return SettingsEvent(false, true);
+}
+ObjectReply RealtimeTranscriptionSession::Configure(
+    RealtimeTranscriptionSettings next) {
+  if (cancelled_ || (callbacks_.interrupted && callbacks_.interrupted()))
+    return Error(409, "realtime_connection_closed", "Input owner stopped");
+  if (!callbacks_.validate)
+    return Error(503, "realtime_processor_unavailable",
+                 "Input processor validation unavailable");
+  auto reply = callbacks_.validate(next);
+  if (!reply.ok() || reply.commit_unknown) return reply;
+  if (!next.delay.empty() &&
+      (!RealtimeAsrDelayPolicy(next.delay).Valid() ||
+       next.turn != RealtimeTranscriptionSettings::Turn::kManual))
+    return Error(400, "realtime_delay_turn_conflict",
+                 "Continuous transcription uses explicit audio commits");
+  const auto& a = settings_.request.chunking;
+  const auto& b = next.request.chunking;
+  const bool semantic_changed =
+      (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad) !=
+      (settings_.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad);
+  const bool pipeline_changed =
+      semantic_changed || next.format != settings_.format ||
+      next.noise != settings_.noise || next.delay != settings_.delay;
+  const bool vad_changed = pipeline_changed || next.turn != settings_.turn ||
+                           next.eagerness != settings_.eagerness ||
+                           next.format != settings_.format ||
+                           a.threshold != b.threshold ||
+                           a.prefix_padding_ms != b.prefix_padding_ms ||
+                           a.silence_duration_ms != b.silence_duration_ms;
+  if (next.turn != RealtimeTranscriptionSettings::Turn::kManual &&
+      !callbacks_.vad_step)
+    return Error(400, "realtime_processor_unavailable",
+                 "VAD processor unavailable");
+  if (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
+      !callbacks_.semantic_ready)
+    return Error(400, "realtime_processor_unavailable",
+                 "Semantic turn model unavailable");
+  const bool pending = live_input_ || stream_fault_ || queue_.PendingBytes() ||
+                       (noise_input_ && (noise_input_->PartialSample() ||
+                                         noise_input_->AcceptedTicks() !=
+                                             queue_.PendingBeginTicks()));
+  if (vad_changed && pending)
+    return Error(400, "input_audio_buffer_not_empty",
+                 "Clear or commit pending audio before changing turn policy");
+  if (pipeline_changed) {
+    if (!jobs_.empty())
+      return Error(400, "input_audio_buffer_not_empty",
+                   "Finish prior items before changing the audio pipeline");
+    const auto format =
+        next.noise == RealtimeTranscriptionSettings::Noise::kNone &&
+                next.turn != RealtimeTranscriptionSettings::Turn::kSemanticVad
+            ? next.format
+            : RealtimeAudioFormat{RealtimeAudioEncoding::kFloat32, 16000};
+    const auto status = queue_.ChangeFormat(1, format);
+    if (!status)
+      return Error(400, "input_audio_buffer_not_empty", status.message());
+  }
+  settings_ = std::move(next);
+  if (pipeline_changed) ResetNoise(queue_.AcceptedTicks());
+  if (vad_changed) ResetVad();
+  return {};
 }
 bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
                                            std::string_view message) {
@@ -147,60 +209,9 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
     RealtimeTranscriptionSettings next;
     reply = UpdateRealtimeTranscriptionSettings(command.session, command.legacy,
                                                 settings_, &next);
-    if (reply.ok()) reply = callbacks_.validate(next);
-    if (!reply.ok()) return ErrorEvent(std::move(reply), command.event_id);
-    if (!next.delay.empty() &&
-        (!RealtimeAsrDelayPolicy(next.delay).Valid() ||
-         next.turn != RealtimeTranscriptionSettings::Turn::kManual))
-      return fail("realtime_delay_turn_conflict",
-                  "Continuous transcription uses explicit audio commits");
-    const auto& a = settings_.request.chunking;
-    const auto& b = next.request.chunking;
-    const bool semantic_changed =
-        (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad) !=
-        (settings_.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad);
-    const bool pipeline_changed = semantic_changed ||
-                                  next.format != settings_.format ||
-                                  next.noise != settings_.noise ||
-                                  next.delay != settings_.delay;
-    const bool vad_changed = pipeline_changed || next.turn != settings_.turn ||
-                             next.eagerness != settings_.eagerness ||
-                             next.format != settings_.format ||
-                             a.threshold != b.threshold ||
-                             a.prefix_padding_ms != b.prefix_padding_ms ||
-                             a.silence_duration_ms != b.silence_duration_ms;
-    if (next.turn != RealtimeTranscriptionSettings::Turn::kManual &&
-        !callbacks_.vad_step)
-      return fail("realtime_processor_unavailable",
-                  "VAD processor unavailable");
-    if (next.turn == RealtimeTranscriptionSettings::Turn::kSemanticVad &&
-        !callbacks_.semantic_ready)
-      return fail("realtime_processor_unavailable",
-                  "Semantic turn model unavailable");
-    const bool pending =
-        live_input_ || stream_fault_ || queue_.PendingBytes() ||
-        (noise_input_ &&
-         (noise_input_->PartialSample() ||
-          noise_input_->AcceptedTicks() != queue_.PendingBeginTicks()));
-    if (vad_changed && pending)
-      return fail("input_audio_buffer_not_empty",
-                  "Clear or commit pending audio before changing turn policy");
-    if (pipeline_changed) {
-      if (!jobs_.empty())
-        return fail("input_audio_buffer_not_empty",
-                    "Finish prior items before changing the audio pipeline");
-      const auto format =
-          next.noise == RealtimeTranscriptionSettings::Noise::kNone &&
-                  next.turn != RealtimeTranscriptionSettings::Turn::kSemanticVad
-              ? next.format
-              : RealtimeAudioFormat{RealtimeAudioEncoding::kFloat32, 16000};
-      const auto status = queue_.ChangeFormat(1, format);
-      if (!status)
-        return fail("input_audio_buffer_not_empty", status.message());
-    }
-    settings_ = std::move(next);
-    if (pipeline_changed) ResetNoise(queue_.AcceptedTicks());
-    if (vad_changed) ResetVad();
+    if (reply.ok() && !reply.commit_unknown) reply = Configure(std::move(next));
+    if (!reply.ok() || reply.commit_unknown)
+      return ErrorEvent(std::move(reply), command.event_id);
     return SettingsEvent(command.legacy);
   }
   if (command.kind == K::kDelete) return DeleteItem(command);
@@ -220,8 +231,7 @@ bool RealtimeTranscriptionSession::Message(WebSocketOpcode opcode,
           samples * (kRealtimeTicksPerSecond / settings_.format.rate);
       const auto begin = semantic_ ? jobs_.back().audio.begin_ticks
                                    : queue_.PendingBeginTicks();
-      if (noise_input_->AcceptedTicks() - begin + ticks >
-          max_item_ticks_)
+      if (noise_input_->AcceptedTicks() - begin + ticks > max_item_ticks_)
         return fail("audio_duration_limit",
                     "Uncommitted audio duration exceeded");
       const auto status = noise_input_->Append(
@@ -362,7 +372,7 @@ bool RealtimeTranscriptionSession::AdvanceVad() {
     // A classifier may return after more real silence was already borrowed
     // by ASR. Keep that exact waveform; never truncate an in-flight prefix.
     return FinishSemantic(std::max(decision.end_ticks, semantic_audio_end_),
-                           true);
+                          true);
   };
   if (!finish_semantic()) return false;
   RealtimeVadProgress progress;

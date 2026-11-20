@@ -2552,7 +2552,7 @@
     "include/q4t/server/realtime_transcript_history.h": "d97b1a2ccc916509fbbfb83bd4f55df22c037225011ba365a10c591da8c620fb",
     "include/q4t/server/realtime_transcription_protocol.h": "4f3b71b06eda567b69efb84b48877627dea9b459eeccbda1ac1136b72a5b8c56",
     "include/q4t/server/realtime_transcription_pump.h": "fb5466ca0e10ed20bb8d7e45dadd0ad01dac11287b93c49a1d795253cc0611ef",
-    "include/q4t/server/realtime_transcription_session.h": "8d22fa8f57fe4c2f4d96945ad4727454625f6f3cbe3a39378563919075c91281",
+    "include/q4t/server/realtime_transcription_session.h": "a29398a7260f516032ed25a82c255dbea7f80981d05f2ebd89620cbe7c1d7f1f",
     "include/q4t/server/realtime_vad.h": "1166b52d81cacf9fcaef8dc6241609e9e207e9a490ca26da56bea16c6e22256e",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/refusal_frame.h": "1bcc79ecbd0de47d341e0d81fc0ecf2649f0362560da5a9b625b27e283060123",
@@ -3016,7 +3016,7 @@
     "src/server/realtime_transcript_history.cpp": "82395bfcece8c08a9d62b7dbe30198f7bc49d2f136420bd28bdf86b2668492f6",
     "src/server/realtime_transcription_protocol.cpp": "8956463f9d5ef83e99cc68005aeafa3f6846b6e4cbff99a999f8a24fad613a08",
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
-    "src/server/realtime_transcription_session.cpp": "1abb2f065d68df0247e1e33940c2d46a6b7fc1090db9dc47097379a838fe44b0",
+    "src/server/realtime_transcription_session.cpp": "54dc5ffea011655af17b45ed9b017f51300c9e45e91a548b020906982af3ef87",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
     "src/server/realtime_wire_shape.cpp": "aa29b64a79f703cfde4a8fceef94d89c0a61b56e61aa00949636306132300da2",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
@@ -8593,5 +8593,13 @@
     "gpu_actions": 0,
     "actual_session_execution": "pending",
     "original_failure": "8 new tests rejected the initial null transcript shape, while all 22 original ledger tests passed. Omit absent transcript per fixed official SDK rather than widen schema; original failures retained, only 8 affected cases rerun."
+  },
+  "duplex_processing_configuration_20261120": {
+    "scope": "Extract existing processing update into a session-owned Configure transaction, no events or model starts. Preserve occupancy/format/VAD guards and unknown validation outcomes; the ordinary transcription endpoint uses the same implementation.",
+    "new_cases": 5,
+    "affected_existing_cases": 10,
+    "seconds": 120,
+    "gpu_actions": 0,
+    "actual_conversation_entry": "pending"
   }
 }

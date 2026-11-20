@@ -69,6 +69,11 @@ class RealtimeTranscriptionSession {
                                size_t message_bytes = kWebSocketMessageLimit);
   ~RealtimeTranscriptionSession();
   bool Start();
+  // Session-owner transaction for a composed conversation. Validates the
+  // actual processor and pending audio before committing; emits no separate
+  // session acknowledgement and never starts an ASR worker. The by-value
+  // snapshot is allocated before any live pipeline mutation.
+  ObjectReply Configure(RealtimeTranscriptionSettings settings);
   bool Message(WebSocketOpcode opcode, std::string_view message);
   bool Tick();
   // Session-owner only. The separate socket owner signals the pump to cancel.

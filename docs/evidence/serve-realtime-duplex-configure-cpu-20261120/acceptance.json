@@ -1,0 +1,24 @@
+{
+  "status": "ACCEPT_TARGETED_COMPOSABLE_TRANSCRIPTION_CONFIGURATION_CPU",
+  "new_cases": 5,
+  "affected_existing_cases": 10,
+  "seconds": 0.5974072138778865,
+  "source_counterexamples": 20,
+  "build": {
+    "status": "BUILD_PASS",
+    "exit_code": 0,
+    "seconds": 248.08070240914822,
+    "warnings": 0,
+    "gpu_actions": 0,
+    "default_unchanged": true,
+    "prior_unchanged": true,
+    "binary_sha256": "cdf072849cbf2d3f313fa253625061baf26be90364aaebe696233b93384dc111",
+    "free_bytes_after": 52621312
+  },
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "native_conversation_input_entry": "pending",
+  "actual_duplex_business": "pending",
+  "remaining_master_active": true
+}

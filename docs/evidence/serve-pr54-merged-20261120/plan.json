@@ -1,0 +1,6 @@
+{
+  "scope": "Merge the already accepted speech output PR54 only after both exact-head checks succeed. Local duplex work is outside this remote PR. No runtime/deployment/test action.",
+  "expected_head": "c4ed245743cb77a36b91389f8e0867f8cde5d14a",
+  "default_delivery_sha256": "f7d0ee1f1e38a6883435382eb813e6121ab69a7117667accf10f9d2b884dfd23",
+  "gpu_actions": 0
+}
