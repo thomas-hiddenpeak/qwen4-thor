@@ -648,6 +648,8 @@ set(protocol_inputs
   include/q4t/server/finite_response.h
   include/q4t/server/http_request.h
   include/q4t/server/websocket.h
+  include/q4t/server/realtime_duplex_input.h
+  src/server/realtime_duplex_input.cpp
   include/q4t/server/realtime_transcription_protocol.h
   include/q4t/server/object_diagnostics.h
   include/q4t/server/realtime_transcription_pump.h

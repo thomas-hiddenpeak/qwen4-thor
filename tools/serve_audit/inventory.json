@@ -2320,8 +2320,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "d75d4a0eeef62d3226791ff14d7ef0ed0014b0db975736c2bc33307285fa0b95",
-    "cmake/ChatProtocolIdentity.cmake": "7673f87540aa03f1eebd16a2f6e3a7f7fe83f9e09696dce855eecec7f5351da0",
+    "CMakeLists.txt": "26430afa05783048da05a8cd8ad8a0b09a03a9fe62e424da5b590313f3979a6c",
+    "cmake/ChatProtocolIdentity.cmake": "e3fffd94cd6984bbfa87cb9564ac8abf338d34c4cdd41eff6c88e60d03c64895",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2532,9 +2532,10 @@
     "include/q4t/server/realtime_audio_queue.h": "ac37b24170663e23ce04e57a861dcbd17048e3d6cf46bbf914f4fb247af03f16",
     "include/q4t/server/realtime_chat_execution.h": "badc3dde61d2f2dba6ac2bd039c2030f2c7dbbbdc27b5356965a42e71e436ad9",
     "include/q4t/server/realtime_chat_plan.h": "07d76483c0a7c11975a4f850b0dd92d048a0be36af85f73d34d521b54d3db144",
-    "include/q4t/server/realtime_conversation.h": "b2053fda5c6ec41e33f1459ef365e1d1570fc422258e677551ad2372992603bb",
+    "include/q4t/server/realtime_conversation.h": "b37607dd3f68d976b53374c5c26036b253251dfd6622772224fb7e394e37a78e",
     "include/q4t/server/realtime_conversation_pump.h": "c42ec7a485cbfa67f71e4f8848a36ca0c8e15a840055b2ff061c1c04b5e5f9ce",
     "include/q4t/server/realtime_conversation_session.h": "3d25784d9e8dfeeeaaa18e58ca33b7aa95d2a3062d72e888cd7ae8dfec03268b",
+    "include/q4t/server/realtime_duplex_input.h": "e1d7ae2a4c0a3f5ae411817d4932c24e33ce5a7fa89a05b37205de1a232cf494",
     "include/q4t/server/realtime_file_inputs.h": "847b0918693b37c2bc25b840a50e4a4b7c003d6d63109b80b13767f6c273e5c3",
     "include/q4t/server/realtime_noise_input.h": "b53079e7bb6441067ea0da9a6b48744fce42cfcad48cc4cf72270450eed0ad53",
     "include/q4t/server/realtime_pcm.h": "ad711d43176381aa6a0240a95b0486ee93ef200739207dec7e5dabe9924d4136",
@@ -2995,9 +2996,10 @@
     "src/server/realtime_audio_queue.cpp": "7137e87f3dd5bb3eaeec76ad6dbc70d5478362484301f0d86920d181067815d2",
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
     "src/server/realtime_chat_plan.cpp": "87d6e3382a04a001cf5646b46dc1fdf1df2634c9728fd1e659e5c13d9736763c",
-    "src/server/realtime_conversation.cpp": "afeaa504e3de021ec8854422f9f4cdfa04c5718080ce7b0576db3f71dca8e652",
+    "src/server/realtime_conversation.cpp": "f58c97164b543d453e496f9dd9f7bee0ceefa1c9854dfe4c7cba32b2c5148257",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
     "src/server/realtime_conversation_session.cpp": "fa9ede927b5c979bdb3fc2d65533216ec377ecf99e585667385d45cc30a26a1a",
+    "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
     "src/server/realtime_file_inputs.cpp": "5f4418fe3567b6e83fc4a94701d87714e01702cc0ad9be5451e7202e022dcc01",
     "src/server/realtime_noise_input.cpp": "1382ec96bb9f4fd6ce1fe7002eb9bb421f68246b177af6a8872409536868aeff",
     "src/server/realtime_pcm.cpp": "a7598fa3308b0e2bc124763c0341c771e09b403854384a32f6e067068235b27a",
@@ -8572,5 +8574,24 @@
     "fresh_evidence": "docs/evidence/serve-realtime-speech-cancel-http-20261120/README.md",
     "original_failures_preserved": true,
     "full_profile_rerun": false
+  },
+  "duplex_input_settings_review_20261120": {
+    "scope": "Pure effective conversation input settings: reuse strict transcription parser; separate public transcript, response and interruption controls; bounded server-VAD idle timeout. No processor claimed by this component.",
+    "source_state": "new component registered, targeted CPU pending",
+    "new_cases": 10,
+    "unchanged_transcription_protections": 5,
+    "gpu_actions": 0,
+    "default_revision": 376,
+    "remaining": "Connect owned input processing/history/turn scheduling, targeted native business and delivery; all master tasks remain active.",
+    "original_failure": "New duplicate create_response counterexample exposed a lower-level assumption of prior strict JSON parsing. Original 9/10 CPU outcome preserved; explicit duplicate input-field rejection added."
+  },
+  "duplex_input_history_review_20261120": {
+    "scope": "Native audio input is reserved in the actual conversation ledger, pending ASR blocks execution; only owned completion produces text snapshots. Optional public transcript remains private; failed ASR retains item but cannot masquerade as empty input. Client values cannot obtain native provenance.",
+    "cpu_cases": 30,
+    "seconds": 120,
+    "source_counterexamples": 20,
+    "gpu_actions": 0,
+    "actual_session_execution": "pending",
+    "original_failure": "8 new tests rejected the initial null transcript shape, while all 22 original ledger tests passed. Omit absent transcript per fixed official SDK rather than widen schema; original failures retained, only 8 affected cases rerun."
   }
 }

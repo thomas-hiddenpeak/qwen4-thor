@@ -591,6 +591,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp
   src/server/websocket.cpp
+  src/server/realtime_duplex_input.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_session_pump.cpp
@@ -851,6 +852,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_http_request_test.cpp
     tests/server_http_upgrade_test.cpp
     tests/server_websocket_test.cpp
+    tests/server_realtime_duplex_input_test.cpp
     tests/server_realtime_audio_export_test.cpp
     tests/server_realtime_speech_encoder_test.cpp
     tests/server_realtime_speech_history_test.cpp
@@ -1014,6 +1016,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
     src/server/websocket.cpp
+    src/server/realtime_duplex_input.cpp
     src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_session_pump.cpp

@@ -5115,6 +5115,24 @@
         "full_openai_compatibility": false,
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
+      },
+      "duplex_input_20261120": {
+        "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
+        "state": "settings_and_native_input_history_cpu_accepted_entry_pending",
+        "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
+        "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
+        "unique_cpu_cases": 45,
+        "case_executions": 55,
+        "source_counterexamples_per_group": 20,
+        "gpu_actions": 0,
+        "runtime_entry_qualified": false,
+        "default_revision": 376,
+        "remaining": [
+          "native processing composition and transactional settings",
+          "manual/VAD/idle response scheduling and input deletion ownership",
+          "targeted real WSS/ASR/TTS and affected recovery/publication",
+          "all remaining Serve master tasks"
+        ]
       }
     },
     {
@@ -12426,6 +12444,24 @@
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
       },
       "recovery_evidence": "evidence/serve-realtime-speech-recovery-20261120/README.md"
+    },
+    "duplex_input_20261120": {
+      "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
+      "state": "settings_and_native_input_history_cpu_accepted_entry_pending",
+      "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
+      "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
+      "unique_cpu_cases": 45,
+      "case_executions": 55,
+      "source_counterexamples_per_group": 20,
+      "gpu_actions": 0,
+      "runtime_entry_qualified": false,
+      "default_revision": 376,
+      "remaining": [
+        "native processing composition and transactional settings",
+        "manual/VAD/idle response scheduling and input deletion ownership",
+        "targeted real WSS/ASR/TTS and affected recovery/publication",
+        "all remaining Serve master tasks"
+      ]
     }
   },
   "semantic_vad_primary_light_20261119": {

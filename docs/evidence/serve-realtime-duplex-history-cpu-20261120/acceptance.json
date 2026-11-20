@@ -1,0 +1,36 @@
+{
+  "status": "ACCEPT_TARGETED_NATIVE_AUDIO_INPUT_HISTORY_CPU",
+  "unique_cases": 30,
+  "case_executions": 38,
+  "original_failed_cases": 8,
+  "original_failure_retained": true,
+  "seconds": 0.4946761722676456,
+  "source_counterexamples": 20,
+  "builds": [
+    {
+      "status": "BUILD_PASS",
+      "returncode": 0,
+      "seconds": 16.392809258773923,
+      "warnings": 0,
+      "binary_sha256": "848ead23e53a377076baddc31ef73d297115c9c05e9a6a4de9103327e785ba34",
+      "default_unchanged": true,
+      "gpu_actions": 0
+    },
+    {
+      "status": "BUILD_PASS",
+      "returncode": 0,
+      "seconds": 16.485041867010295,
+      "warnings": 0,
+      "binary_sha256": "a1013fe588f663f3f08defa378c19bc0b19ac13194777055d99aac6c9b2d5b9a",
+      "default_unchanged": true,
+      "gpu_actions": 0
+    }
+  ],
+  "candidate_binary_sha256": "a1013fe588f663f3f08defa378c19bc0b19ac13194777055d99aac6c9b2d5b9a",
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "native_input_entry": "pending",
+  "actual_duplex_business": "pending",
+  "all_master_tasks_active": true
+}

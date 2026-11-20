@@ -1,0 +1,195 @@
+{
+  "records": [
+    {
+      "path": "settings-plan-01.json",
+      "bytes": 1602,
+      "sha256": "07bc89f68298578b13d983145f5a91cedd4b9a56e29057b8f9df1c4162316b69"
+    },
+    {
+      "path": "legacy-source-review-01.json",
+      "bytes": 2000,
+      "sha256": "1bbb9d071989c459ab1fa501c5c4e20114f1dedacf1c89109f9fcc8d33c2ef5e"
+    },
+    {
+      "path": "cold-amtools-01.json",
+      "bytes": 608,
+      "sha256": "73e623b5dbba60c9b574c088526b048687c0d15aa395d84c67a466b8754e02a9"
+    },
+    {
+      "path": "archive_retired_amtools_01.py",
+      "bytes": 2602,
+      "sha256": "c2dff4af6b195af3d59f0a123aa46a875a6342c38250610755397dae84944f60"
+    },
+    {
+      "path": "build_settings_01.py",
+      "bytes": 2026,
+      "sha256": "aebf21ed7e408adeeb109785b35a865123c2e103d2719157d87e50c71b59752f"
+    },
+    {
+      "path": "build_settings_02.py",
+      "bytes": 2026,
+      "sha256": "7727687bf708c7c402836f4271afdc5d8ed7c4768998ee8e830580bda53ee10e"
+    },
+    {
+      "path": "run_settings_cpu_01.py",
+      "bytes": 2720,
+      "sha256": "070d73f74165aa00962530227d285c2a2ed8d008c67e4bef9f902931e63ff54d"
+    },
+    {
+      "path": "run_settings_cpu_02.py",
+      "bytes": 2788,
+      "sha256": "3110178a39bebbb7adc829c60444f321b9519427851ba2e3f38452fa32c21231"
+    },
+    {
+      "path": "settings-build-01/build.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "settings-build-01/result.json",
+      "bytes": 234,
+      "sha256": "aaae2cbf453349af0a6db0be332baefe26986f694038a8ed8d5790210fa6ee1e"
+    },
+    {
+      "path": "settings-build-01/build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "settings-build-01/plan.json",
+      "bytes": 2927,
+      "sha256": "8491e65aba407492f39bc8d7f830e74c16a9ec8a1410d409d8e22479c9c0a8fb"
+    },
+    {
+      "path": "settings-build-02/build.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "settings-build-02/result.json",
+      "bytes": 233,
+      "sha256": "8a3660f3e35bb1960869cb0dbc6f59c02f20ffcf0d3757b1b54f4f4621e1cbc3"
+    },
+    {
+      "path": "settings-build-02/build.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "settings-build-02/plan.json",
+      "bytes": 2927,
+      "sha256": "f5d245f54d8af17289efe4e319275b70a322afecb7cad8cc2eabdc0c10396e40"
+    },
+    {
+      "path": "settings-cpu-01/command-0.stdout",
+      "bytes": 814,
+      "sha256": "99c456d278b669fcdd798dab0facf95a79a7430440217955a1444e379a46b016"
+    },
+    {
+      "path": "settings-cpu-01/result.json",
+      "bytes": 466,
+      "sha256": "d6a624eff7a518b11a068b3aacb938e71cb8d6421ec0d6faae6461618f5f033f"
+    },
+    {
+      "path": "settings-cpu-01/plan.json",
+      "bytes": 3834,
+      "sha256": "80e9a5d00fc9be1a20b9464963d45e48e1f9efc4e79196b20bf6fc942113fcb9"
+    },
+    {
+      "path": "settings-cpu-01/new.txt",
+      "bytes": 609,
+      "sha256": "8a497a155796ac690449f10cfca4f491d09f091b896cb8dc1ad2162c40dd238c"
+    },
+    {
+      "path": "settings-cpu-01/old.txt",
+      "bytes": 301,
+      "sha256": "e9919ed418ae7a2b51542543e68d1643121b6cd186eadea50791996607e085f0"
+    },
+    {
+      "path": "settings-cpu-01/command-0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "settings-cpu-02/command-0.stdout",
+      "bytes": 184,
+      "sha256": "9a16c4f85d71953252b1fd2423a4a51ffc5cee24d6eae756b5cc95683c52ae9a"
+    },
+    {
+      "path": "settings-cpu-02/result.json",
+      "bytes": 926,
+      "sha256": "99f43684a4adef1dbaea695fd9ab80aa36a99aa33db927b196abfdef676268e3"
+    },
+    {
+      "path": "settings-cpu-02/command-1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "settings-cpu-02/command-2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "settings-cpu-02/plan.json",
+      "bytes": 3353,
+      "sha256": "c8f325be8b95435b81c6634eb2bd197cd3b6dbc5ef2f8cfb09868bbbd7234838"
+    },
+    {
+      "path": "settings-cpu-02/command-1.stdout",
+      "bytes": 375,
+      "sha256": "df82587b9f9fef9250d93a015e1d12321d9ffd13300b545a8314d30ba80482b3"
+    },
+    {
+      "path": "settings-cpu-02/new.txt",
+      "bytes": 131,
+      "sha256": "c9cbd951b4a3424507d0957139116fd6442d28a0b273f7923c2fcfb2d7d061c6"
+    },
+    {
+      "path": "settings-cpu-02/old.txt",
+      "bytes": 301,
+      "sha256": "e9919ed418ae7a2b51542543e68d1643121b6cd186eadea50791996607e085f0"
+    },
+    {
+      "path": "settings-cpu-02/command-2.stdout",
+      "bytes": 223,
+      "sha256": "944b5aa6826e5a6c2c56bd09743560dd53978893fdb49db7efc9d31a2baa5ca4"
+    },
+    {
+      "path": "settings-cpu-02/command-0.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "retired-amtools-01/restore.py",
+      "bytes": 927,
+      "sha256": "c389edfa507fb1051a6f1290eb02acd46dbfa6e109f2b94cc2ada1ce3a2a2318"
+    },
+    {
+      "path": "retired-amtools-01/result.json",
+      "bytes": 330,
+      "sha256": "8760c084fe2cc37cd53833322403ee82d0b79a408d97a0a827e2b2328633e630"
+    },
+    {
+      "path": "retired-amtools-01/plan.json",
+      "bytes": 5685,
+      "sha256": "6d82f3eb2d4f3a8ceaacde6aa45a3d662013952bbd2ac4da6a61f892d9b9301a"
+    },
+    {
+      "path": "source/include/q4t/server/realtime_duplex_input.h",
+      "bytes": 1477,
+      "sha256": "e1d7ae2a4c0a3f5ae411817d4932c24e33ce5a7fa89a05b37205de1a232cf494"
+    },
+    {
+      "path": "source/src/server/realtime_duplex_input.cpp",
+      "bytes": 5108,
+      "sha256": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af"
+    },
+    {
+      "path": "source/tests/server_realtime_duplex_input_test.cpp",
+      "bytes": 10328,
+      "sha256": "da3b112f78a4312f842d8e349b77c679f5064d6306ff13a671423c699668a9b1"
+    }
+  ],
+  "archive_sha256": "ce000338b932dcb7c0b64f9c9c65bf8e605a43292c6bb31b2aedd235a27be087"
+}

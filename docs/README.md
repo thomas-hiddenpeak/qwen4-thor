@@ -681,3 +681,7 @@
 - [Realtime连续语音编码CPU](evidence/serve-realtime-speech-encoder-cpu-20261120/README.md)：PCM全值、G.711相位/尾长与失败终态；实际音频接线继续。
 
 - [Realtime音频事件与历史CPU](evidence/serve-realtime-speech-output-cpu-20261120/README.md)：真实夹具字节、标准事件、截断与失败归属；会话/模型接线继续。
+
+- [Realtime双向输入计划](SERVE_REALTIME_DUPLEX_2026-11-20.md)：同一conversation、实际ASR/VAD、手动与自动轮次及有界交付。
+- [双向输入设置CPU](evidence/serve-realtime-duplex-settings-cpu-20261120/README.md)：独立控制、公开转写开关、空闲边界与原重复字段失败。
+- [统一音频输入历史CPU](evidence/serve-realtime-duplex-history-cpu-20261120/README.md)：原生票据、失败隔离、隐私、删除与执行快照。

@@ -13,7 +13,7 @@
 namespace q4t::server {
 // Actual allocated JSON capacities, with the same depth/node bound as history.
 Status MeasureRealtimeStorage(const io::Json& value, size_t maximum,
-                               size_t* bytes);
+                              size_t* bytes);
 struct RealtimeItemTicket {
   std::string owner, id;
   uint64_t generation = 0;
@@ -63,6 +63,17 @@ class RealtimeConversation {
   Status BeginOutput(const io::Json& item, std::string_view generated_id,
                      bool in_conversation, size_t reserved_bytes,
                      RealtimeItemTicket* output);
+  // The native input processor reserves a user item before publishing its
+  // audio commit. Public commit status is independent of pending ASR work.
+  // Only these owned completion methods can make its text executable. A
+  // client-created item/transcript never receives this provenance.
+  Status BeginAudioInput(std::string_view id,
+                         std::optional<std::string_view> previous,
+                         bool transcript_visible, size_t reserved_bytes,
+                         RealtimeItemTicket* output);
+  Status CompleteAudioInput(const RealtimeItemTicket& ticket,
+                            std::string_view transcript);
+  Status FailAudioInput(const RealtimeItemTicket& ticket);
   Status Update(const RealtimeItemTicket& ticket, const io::Json& item,
                 bool terminal, bool grow = false);
   // grow opts into atomic growth within this ledger's already bounded global
@@ -90,7 +101,12 @@ class RealtimeConversation {
     size_t charge = 0;
     bool in_conversation = true, pending = false, server_output = false;
     bool in_context = true;
+    bool native_input = false, transcript_visible = false, input_failed = false;
   };
+  Status FinishAudioInput(const RealtimeItemTicket& ticket,
+                          std::optional<std::string_view> transcript);
+  Status UpdateEntry(const RealtimeItemTicket& ticket, const io::Json& item,
+                     bool terminal, bool grow);
   size_t Position(const RealtimeItemTicket& ticket) const;
   Status Insert(const io::Json& item, std::string_view generated_id,
                 std::optional<std::string_view> previous, bool in_conversation,

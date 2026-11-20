@@ -1,0 +1,36 @@
+{
+  "status": "ACCEPT_TARGETED_DUPLEX_INPUT_SETTINGS_CPU",
+  "unique_cases": 15,
+  "case_executions": 17,
+  "original_failed_cases": 1,
+  "original_failure_retained": true,
+  "seconds": 0.533465479966253,
+  "source_counterexamples": 20,
+  "builds": [
+    {
+      "status": "BUILD_PASS",
+      "returncode": 0,
+      "seconds": 16.686323444824666,
+      "warnings": 0,
+      "binary_sha256": "9cea4ea0fc8fd497cac63ecb293538c6d0a703102e099f5f6d7842dfeae00164",
+      "default_unchanged": true,
+      "gpu_actions": 0
+    },
+    {
+      "status": "BUILD_PASS",
+      "returncode": 0,
+      "seconds": 16.57946792198345,
+      "warnings": 0,
+      "binary_sha256": "bcf1e93b63620f5bc07ee2152d8bda6959f7f28407ded9b35115a2d167a3d4db",
+      "default_unchanged": true,
+      "gpu_actions": 0
+    }
+  ],
+  "candidate_binary_sha256": "bcf1e93b63620f5bc07ee2152d8bda6959f7f28407ded9b35115a2d167a3d4db",
+  "gpu_actions": 0,
+  "default_revision": 376,
+  "default_unchanged": true,
+  "native_input_entry": "pending",
+  "actual_duplex_business": "pending",
+  "all_master_tasks_active": true
+}

@@ -21,6 +21,171 @@ Json Reference(std::string id) {
 }
 }  // namespace
 
+Q4T_TEST(realtime_audio_input_pending_commit_cannot_become_empty_prompt) {
+  RealtimeConversation history("sess_input");
+  Ticket ticket;
+  Q4T_CHECK(history.BeginAudioInput("input", {}, true, 8192, &ticket));
+  Json item;
+  Q4T_CHECK(history.Get(ticket, &item));
+  Q4T_CHECK(item.GetString("status") == "completed");
+  Q4T_CHECK(!item.GetArray("content")->array[0].Has("transcript"));
+  RealtimeConversationSnapshot snapshot{"keep", 9, String("unchanged")};
+  Q4T_CHECK(!history.Snapshot(nullptr, &snapshot));
+  auto input = Array({Reference("input")});
+  Q4T_CHECK(!history.Snapshot(&input, &snapshot));
+  Q4T_CHECK(snapshot.owner == "keep" && snapshot.revision == 9 &&
+            snapshot.items.str == "unchanged");
+  Q4T_CHECK(history.CompleteAudioInput(ticket, "Actual ASR words"));
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  const auto& part = snapshot.items.array[0].GetArray("content")->array[0];
+  Q4T_CHECK(part.GetString("type") == "input_text" &&
+            part.GetString("text") == "Actual ASR words");
+  Q4T_CHECK(history.Get(ticket, &item));
+  Q4T_CHECK(item.GetArray("content")->array[0].GetString("type") ==
+            "input_audio");
+  Q4T_CHECK(item.GetArray("content")->array[0].GetString("transcript") ==
+            "Actual ASR words");
+  return true;
+}
+
+Q4T_TEST(realtime_audio_input_private_transcript_still_drives_owned_context) {
+  RealtimeConversation history("sess_input");
+  Ticket ticket;
+  Q4T_CHECK(history.BeginAudioInput("input", {}, false, 8192, &ticket));
+  Q4T_CHECK(history.CompleteAudioInput(ticket, "private ASR text"));
+  Json item;
+  Q4T_CHECK(history.Get(ticket, &item));
+  Q4T_CHECK(!item.GetArray("content")->array[0].Has("transcript"));
+  RealtimeConversationSnapshot snapshot;
+  auto input = Array({Reference("input")});
+  Q4T_CHECK(history.Snapshot(&input, &snapshot));
+  Q4T_CHECK(snapshot.tickets[0] == ticket);
+  Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[0].GetString(
+                "text") == "private ASR text");
+  return true;
+}
+
+Q4T_TEST(realtime_audio_input_failed_asr_keeps_item_and_healthy_text_context) {
+  RealtimeConversation history("sess_input");
+  Ticket bad, text;
+  Q4T_CHECK(history.BeginAudioInput("bad", {}, true, 8192, &bad));
+  Q4T_CHECK(history.FailAudioInput(bad));
+  Q4T_CHECK(history.Create(Message("new healthy text"), "text", {}, &text));
+  Q4T_CHECK(history.Items() == 2);
+  Json item;
+  Q4T_CHECK(history.Get(bad, &item));
+  Q4T_CHECK(!item.GetArray("content")->array[0].Has("transcript"));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array.size() == 1 && snapshot.tickets[0] == text);
+  auto input = Array({Reference("bad")});
+  Q4T_CHECK(!history.Snapshot(&input, &snapshot));
+  Q4T_CHECK(snapshot.items.array.size() == 1 && snapshot.tickets[0] == text);
+  Q4T_CHECK(!history.CompleteAudioInput(bad, "late false success"));
+  return true;
+}
+
+Q4T_TEST(
+    realtime_audio_input_client_transcript_cannot_forge_native_provenance) {
+  RealtimeConversation history("sess_input");
+  Ticket native, client;
+  Q4T_CHECK(history.BeginAudioInput("native", {}, true, 8192, &native));
+  Json item;
+  Q4T_CHECK(history.Get(native, &item));
+  Set(&Field(item, "content").array[0], "transcript", String("forged"));
+  Q4T_CHECK(!history.Update(native, item, true, true));
+  Set(&item, "id", String("client"));
+  Q4T_CHECK(history.Create(item, "client", {}, &client));
+  Q4T_CHECK(!history.CompleteAudioInput(client, "forged native text"));
+  Q4T_CHECK(!history.FailAudioInput(client));
+  Q4T_CHECK(history.FailAudioInput(native));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.items.array.size() == 1);
+  const auto& part = snapshot.items.array[0].GetArray("content")->array[0];
+  Q4T_CHECK(part.GetString("type") == "input_audio" &&
+            part.GetString("transcript") == "forged");
+  return true;
+}
+
+Q4T_TEST(realtime_audio_input_late_completion_cannot_cross_deleted_generation) {
+  RealtimeConversation a("sess_a"), b("sess_b");
+  Ticket old, fresh, other;
+  Q4T_CHECK(a.BeginAudioInput("same", {}, true, 8192, &old));
+  Q4T_CHECK(b.BeginAudioInput("same", {}, true, 8192, &other));
+  Q4T_CHECK(a.Erase(old) && a.ChargedBytes() == 0);
+  Q4T_CHECK(a.BeginAudioInput("same", {}, true, 8192, &fresh));
+  Q4T_CHECK(!a.CompleteAudioInput(old, "late") && !a.FailAudioInput(old));
+  Q4T_CHECK(!a.CompleteAudioInput(other, "foreign"));
+  Q4T_CHECK(!b.FailAudioInput(fresh));
+  Q4T_CHECK(a.CompleteAudioInput(fresh, "actual") && b.FailAudioInput(other));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(a.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.tickets[0] == fresh);
+  Q4T_CHECK(snapshot.items.array[0].GetArray("content")->array[0].GetString(
+                "text") == "actual");
+  return true;
+}
+
+Q4T_TEST(realtime_audio_input_reservation_and_failed_growth_are_atomic) {
+  RealtimeConversation history("sess_input", 2, 16384);
+  Ticket input, untouched{"kept", "kept", 99};
+  Q4T_CHECK(history.BeginAudioInput("input", {}, true, 8192, &input));
+  const auto revision = history.Revision(), bytes = history.ChargedBytes();
+  Q4T_CHECK(!history.BeginAudioInput("bad", {}, true, 0, &untouched));
+  Q4T_CHECK(!history.BeginAudioInput("bad", "absent", true, 8192, &untouched));
+  Q4T_CHECK(!history.CompleteAudioInput(input, std::string(8192, 'x')));
+  Q4T_CHECK(history.Revision() == revision && history.ChargedBytes() == bytes &&
+            untouched.owner == "kept" && untouched.generation == 99);
+  Q4T_CHECK(history.CompleteAudioInput(input, ""));
+  Q4T_CHECK(history.ChargedBytes() < bytes);
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  const auto& part = snapshot.items.array[0].GetArray("content")->array[0];
+  Q4T_CHECK(part.Find("text")->IsString() && part.GetString("text").empty());
+  Q4T_CHECK(!history.FailAudioInput(input) &&
+            !history.CompleteAudioInput(input, "again"));
+  return true;
+}
+
+Q4T_TEST(realtime_audio_input_snapshot_survives_delete_and_context_cut) {
+  RealtimeConversation history("sess_input");
+  Ticket audio, text;
+  Q4T_CHECK(history.BeginAudioInput("audio", {}, true, 8192, &audio));
+  Q4T_CHECK(history.CompleteAudioInput(audio, "immutable spoken input"));
+  Q4T_CHECK(history.Create(Message("new text"), "text", {}, &text));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  const auto original = OutputJson(snapshot.items);
+  const size_t keep = 1;
+  Q4T_CHECK(history.TruncateDefault(snapshot, {&keep, 1}));
+  Json retained;
+  Q4T_CHECK(history.Get(audio, &retained));
+  Q4T_CHECK(retained.GetArray("content")->array[0].GetString("type") ==
+            "input_audio");
+  Q4T_CHECK(history.Erase(audio));
+  Q4T_CHECK(OutputJson(snapshot.items) == original);
+  RealtimeConversationSnapshot next;
+  Q4T_CHECK(history.Snapshot(nullptr, &next));
+  Q4T_CHECK(next.tickets.size() == 1 && next.tickets[0] == text);
+  return true;
+}
+
+Q4T_TEST(realtime_audio_input_preserves_mixed_conversation_predecessor) {
+  RealtimeConversation history("sess_input");
+  Ticket first, spoken, last;
+  Q4T_CHECK(history.Create(Message("first"), "first", {}, &first));
+  Q4T_CHECK(history.Create(Message("last"), "last", {}, &last));
+  Q4T_CHECK(history.BeginAudioInput("spoken", "first", true, 8192, &spoken));
+  Q4T_CHECK(history.CompleteAudioInput(spoken, "middle actual speech"));
+  RealtimeConversationSnapshot snapshot;
+  Q4T_CHECK(history.Snapshot(nullptr, &snapshot));
+  Q4T_CHECK(snapshot.tickets == std::vector<Ticket>({first, spoken, last}));
+  Q4T_CHECK(history.LastId() == "last");
+  Q4T_CHECK(!history.TruncateAudioTranscript(spoken));
+  return true;
+}
+
 Q4T_TEST(realtime_conversation_orders_root_middle_and_append) {
   RealtimeConversation history("sess_a");
   Ticket a, b, c;
@@ -160,7 +325,8 @@ Q4T_TEST(realtime_conversation_partial_model_output_does_not_enter_prompt) {
   return true;
 }
 
-Q4T_TEST(realtime_conversation_incomplete_server_tool_is_retained_not_reexecuted) {
+Q4T_TEST(
+    realtime_conversation_incomplete_server_tool_is_retained_not_reexecuted) {
   RealtimeConversation history("sess_a");
   Ticket user, tool;
   Q4T_CHECK(history.Create(Message(), "user", {}, &user));
@@ -184,7 +350,8 @@ Q4T_TEST(realtime_conversation_incomplete_server_tool_is_retained_not_reexecuted
   return true;
 }
 
-Q4T_TEST(realtime_conversation_client_status_cannot_hide_call_or_incomplete_text) {
+Q4T_TEST(
+    realtime_conversation_client_status_cannot_hide_call_or_incomplete_text) {
   RealtimeConversation history("sess_a");
   Ticket tool, text;
   const auto call = Object({{"type", String("function_call")},
@@ -206,7 +373,8 @@ Q4T_TEST(realtime_conversation_client_status_cannot_hide_call_or_incomplete_text
   return true;
 }
 
-Q4T_TEST(realtime_conversation_context_cut_persists_but_history_is_retrievable) {
+Q4T_TEST(
+    realtime_conversation_context_cut_persists_but_history_is_retrievable) {
   RealtimeConversation history("sess_a");
   Ticket old, current, next;
   Q4T_CHECK(history.Create(Message("old"), "old", {}, &old));
