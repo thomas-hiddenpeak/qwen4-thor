@@ -16,7 +16,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 [资格与封包15项CPU闭合](evidence/serve-realtime-tracing-qualification-cpu-20261121/README.md)，
 两档完整历史记录可逐字重构，新增追踪见证仍满足8 MiB上限。
 原会话身份、空闲重试修复及原夹具失败均保留；模型质量旧FAIL不改写。
-正在签发资格、可回退封包和main收尾，随后继续Live及全部总任务。
+主轻资格已签发；六个资格/封包来源经语义复核纳入审计清单。
+正在可回退封包和main收尾，随后继续Live及全部总任务。
 默认rev416保持STOPPED，尚未替换。本阶段不扩展性能/全模型质量矩阵。
 
 PR #56的CI容量回归及旧版封包清单已修复，
