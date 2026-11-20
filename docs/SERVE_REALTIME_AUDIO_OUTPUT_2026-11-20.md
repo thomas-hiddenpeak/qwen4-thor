@@ -1,7 +1,7 @@
 # Realtime原生音频输出与打断接线
 
 属于Serve master A01/A02/A10/A12/Q01—Q03，接续已交付rev366的持久
-Prompt。当前Realtime对话只执行文本/函数工具；HTTP Speech和Chat
+Prompt。阶段起点的Realtime对话只执行文本/函数工具；HTTP Speech和Chat
 音频已有真实TTS。下面各阶段是实现与提交边界，全部实现、业务短验、
 恢复和交付前不能宣称Realtime音频可用，更不能结束总目标。
 
@@ -135,3 +135,11 @@ Realtime音频候选cfae4d60已零警告构建（176.414秒），默认rev366保
 6连接、1 CUDA探测、1200秒，三个独立场景各持完整严格租约。
 网关失败保持健康模型；控制器死亡按原预算重建；中断不自动重放。
 默认rev366不变，主轻证据复用，双向音频和全部master继续。
+
+## 输出交付与后续双向输入
+
+原生输出已进入[rev376](evidence/serve-realtime-speech-delivery-20261120/README.md)：
+完整输出、历史/截断、音色/语速、单次准入和实际取消统计均有针对
+CPU及业务证据，候选/保留包与整包回退通过。原失败保留，未改旧主轻
+和独立后端按精确来源复用，未伪称重新执行。下一步衔接同一conversation
+的音频输入/VAD/打断与手动commit；总计划MCP/追踪/Live等仍继续。

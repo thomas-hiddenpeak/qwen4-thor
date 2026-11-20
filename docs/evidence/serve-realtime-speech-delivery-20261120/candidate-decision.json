@@ -1,0 +1,79 @@
+{
+  "status": "PASS_NATIVE_REALTIME_SPEECH_CANDIDATE_DELIVERY",
+  "acceptance": "ACCEPT_NATIVE_REALTIME_SPEECH_CANDIDATE_DELIVERY",
+  "manifest_sha256": "68345e1781eebda59d530bcad2d235e9fe08365f64929a0caa97f0cecd6a84dd",
+  "engine_binary_sha256": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+  "actual_business": {
+    "status": "ACCEPT_REALTIME_SPEECH_SERVICE_VERSION",
+    "strict_lease_seconds": 131.8421931359917,
+    "nvml_queries": 123,
+    "env_abort": false,
+    "counts": {
+      "starts": 2,
+      "chats": 4,
+      "probes": 1,
+      "controls": 354,
+      "websocket_sessions": 2
+    },
+    "source_commit": "abcea12c091fa198ed33df3381863d1f7f8723fd",
+    "plan_sha256": "ae1c3d157eb615e166596a96b63cff3294a5a7f0e15929dfa7a3c5664087a549",
+    "result_sha256": "3a672fc8e969aa0340e3e4af204f8a81314c08f1f63983eadf48c683809b67d5",
+    "lease_result_sha256": "c3f6880c37ed8d66479eb050b77a4a4cf3c33823a6070c328a582601f95598dd",
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true,
+      "default_unchanged": true
+    },
+    "profile_qualification": {
+      "status": "ACCEPT_SPEECH_CANCELLATION_PRIMARY_LIGHT",
+      "registry_sha256": "d28ba7ac49169a0a4bd411ecd7e4f99cebe217b18cf7fd9e1c920e7c531f8b4f",
+      "environment": {
+        "status": "PASS",
+        "env_abort": false,
+        "all_queries_ok": true,
+        "nvml_queries": 63,
+        "cleanup_complete": true,
+        "lease_result_sha256": "cf4ffeaf618a791d16c4a2ba5d79c8247daa55a9798963b7e7059428608aabdc"
+      },
+      "original_environment": {
+        "status": "PASS",
+        "env_abort": false,
+        "all_queries_ok": true,
+        "cleanup_complete": true,
+        "nvml_queries": 151,
+        "lease_result_sha256": "dda0d5ef909a05a3ec1a7778d8e51dd71e94850b4751bf3bfbfef154929c0310"
+      },
+      "actual_cancellation_acceptance_sha256": "3ad7e1d1d206624e31b5a40634e696d1bc295e24f27da06b8f9787b1c9ca0d29",
+      "original_registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+      "gpu_starts": 0,
+      "full_profile_rerun": false,
+      "managed_recovery_accepted": false,
+      "original_failures_preserved": true,
+      "default_unchanged": true,
+      "performance_claim": false,
+      "listening_deferred": true,
+      "seconds": 0.7395387678407133
+    },
+    "tls_composition": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/tls-components-review-02/review.json",
+      "sha256": "c681267273a5692ddb3efbf338fe53775e2e445ed18667dbb7e1af5ac90acd26",
+      "original_cancel_statistics_accepted": false,
+      "repair": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/cancel-business-02/acceptance.json",
+        "sha256": "3ad7e1d1d206624e31b5a40634e696d1bc295e24f27da06b8f9787b1c9ca0d29"
+      }
+    },
+    "candidate_whole_package_gpu_run": true
+  },
+  "original_decision": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/publication-composition.json",
+    "sha256": "572218630eb13a6c724aad63a913bc91d7d36a37d19da7d0e2c7db8518a3d9b8"
+  },
+  "control_review": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/review.json",
+  "new_gpu_starts": 0,
+  "performance_acceptance": false,
+  "long_stability_accepted": false,
+  "remaining_master_tasks_open": true
+}

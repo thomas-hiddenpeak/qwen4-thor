@@ -1,0 +1,55 @@
+{
+  "status": "PASS_REVERSIBLE_RETIRED_MAINTENANCE",
+  "commands": [
+    {
+      "label": "intents-plan",
+      "returncode": 0,
+      "seconds": 3.314549523871392
+    },
+    {
+      "label": "intents-apply",
+      "returncode": 0,
+      "seconds": 7.2860421147197485
+    },
+    {
+      "label": "generations-plan",
+      "returncode": 0,
+      "seconds": 12.362689020112157
+    },
+    {
+      "label": "generations-apply",
+      "returncode": 0,
+      "seconds": 19.672693768981844
+    },
+    {
+      "label": "versions-plan",
+      "returncode": 0,
+      "seconds": 61.791719417087734
+    },
+    {
+      "label": "versions-apply",
+      "returncode": 0,
+      "seconds": 111.09309763787314
+    },
+    {
+      "label": "status-after",
+      "returncode": 0,
+      "seconds": 140.41047054668888
+    }
+  ],
+  "seconds": 140.43661146983504,
+  "protected_unchanged": true,
+  "deleted_files": 0,
+  "gpu_starts": 0,
+  "before": {
+    "intents": 126,
+    "generations": 31,
+    "versions": 16
+  },
+  "after": {
+    "intents": 122,
+    "generations": 27,
+    "versions": 12
+  },
+  "restoration": "service maintenance-restore --state STATE --kind KIND --plan ARCHIVE/plan.json --plan-sha256 SHA from the original sealed plan"
+}

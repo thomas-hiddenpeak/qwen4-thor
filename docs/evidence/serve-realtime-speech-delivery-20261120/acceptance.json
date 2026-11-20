@@ -1,0 +1,105 @@
+{
+  "status": "PASS_NATIVE_REALTIME_SPEECH_DELIVERED",
+  "revision": 376,
+  "state": "STOPPED",
+  "current": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/service-package-02/bundle",
+    "manifest_sha256": "68345e1781eebda59d530bcad2d235e9fe08365f64929a0caa97f0cecd6a84dd"
+  },
+  "binary_sha256": "b156d976be1ee7009784ac6b98b84b9c3fa3adc76d0ba619c93555fca5c1530e",
+  "protocol_sha256": "c0571cd5ee593142b679e016862b492187cb5425132ec9bb6aa60d2b759aaea4",
+  "successful_commands": 19,
+  "seconds": 358.4579004631378,
+  "new_gpu_starts": 0,
+  "outer_enabled": true,
+  "outer_charged_total": 0,
+  "persistent_client_limits": "alpha RPM30/TPM6000/output3457; beta RPM1/TPM6000/output256",
+  "usage_reset": false,
+  "profile_history_and_cooldown_preserved": true,
+  "version_cycles_preserved": true,
+  "manual_root": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-02/bundle",
+    "manifest_sha256": "77b25732b6a04471a080fadb73fdc9be2de7f33be34ec3b844a6b151fe3a9d30"
+  },
+  "automatic_payload": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/retained-02/bundle",
+    "manifest_sha256": "77b25732b6a04471a080fadb73fdc9be2de7f33be34ec3b844a6b151fe3a9d30"
+  },
+  "candidate_to_retained_automatic_fault_actually_tested": true,
+  "reciprocal_automatic_fault_additionally_injected": false,
+  "reciprocal_registration_and_stopped_rollback_verified": true,
+  "original_tls_cancel_statistics_failed": true,
+  "original_model_quality_failures_preserved": true,
+  "listening_deferred_by_owner": true,
+  "previous_rev366_preserved": true,
+  "maintenance": {
+    "status": "PASS_REVERSIBLE_RETIRED_MAINTENANCE",
+    "commands": [
+      {
+        "label": "intents-plan",
+        "returncode": 0,
+        "seconds": 3.314549523871392
+      },
+      {
+        "label": "intents-apply",
+        "returncode": 0,
+        "seconds": 7.2860421147197485
+      },
+      {
+        "label": "generations-plan",
+        "returncode": 0,
+        "seconds": 12.362689020112157
+      },
+      {
+        "label": "generations-apply",
+        "returncode": 0,
+        "seconds": 19.672693768981844
+      },
+      {
+        "label": "versions-plan",
+        "returncode": 0,
+        "seconds": 61.791719417087734
+      },
+      {
+        "label": "versions-apply",
+        "returncode": 0,
+        "seconds": 111.09309763787314
+      },
+      {
+        "label": "status-after",
+        "returncode": 0,
+        "seconds": 140.41047054668888
+      }
+    ],
+    "seconds": 140.43661146983504,
+    "protected_unchanged": true,
+    "deleted_files": 0,
+    "gpu_starts": 0,
+    "before": {
+      "intents": 126,
+      "generations": 31,
+      "versions": 16
+    },
+    "after": {
+      "intents": 122,
+      "generations": 27,
+      "versions": 12
+    },
+    "restoration": "service maintenance-restore --state STATE --kind KIND --plan ARCHIVE/plan.json --plan-sha256 SHA from the original sealed plan"
+  },
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/result.json": "f7d0ee1f1e38a6883435382eb813e6121ab69a7117667accf10f9d2b884dfd23",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/review.json": "cad3ed8577708e91e19db443bb97faf7faddd2ad196758b09d0299f577517689",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/candidate-decision.json": "cb4ab0fa80dd5a77ee959063f2c5439c6fca1df1a8b0f7c25d9c6221ea5b2178",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/retained-decision.json": "ce823cb3fb9a43cccb096b4ec5c0fb67dd5b3b2842b641316c58601392515eec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/delivery-01/recovery-anchor.json": "b1a0fb4c9f325421584e1761f51662f41a919a25a2cfdecbbe708189fa3fe387",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-audio-20261120/publication-composition.json": "572218630eb13a6c724aad63a913bc91d7d36a37d19da7d0e2c7db8518a3d9b8"
+  },
+  "main_integration_pending": true,
+  "full_model_quality": false,
+  "performance_claim": false,
+  "long_stability_run": false,
+  "full_openai_compatibility": false,
+  "all_master_tasks_active": true,
+  "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
+}

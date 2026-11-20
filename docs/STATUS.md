@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[rev376原生语音已交付](evidence/serve-realtime-speech-delivery-20261120/README.md)：
+默认b156d976/c0571cd5，v23包68345e17、保留包77b25732，主轻d28ba7ac。
+19条原生CLI完成升级/回退/前进，0新增GPU，服务STOPPED；动态配额
+TPM6000、用量、profile历史和外层恢复预算保持。原FAIL及旧rev366
+快照保留。PR #54待最终检查合入；随后双向输入等全部master继续。
+
 [语音恢复与取消修复已验](evidence/serve-realtime-speech-recovery-20261120/README.md)：
 新保留包及自动整包回退通过，累计含原失败9模型/22生成/11连接/
 1探测/604.676秒，570次NVML正常并清理。原TLS错误统计FAILED保持，
