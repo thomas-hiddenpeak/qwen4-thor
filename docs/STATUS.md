@@ -7,10 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-[Live音频片段21项CPU](evidence/serve-live-fixture-cpu-20261121/README.md)
-通过，另5项专用驱动反例通过；实际引擎构建零警告。累计130项不同
-原生Live CPU，播放/输入丢弃/静音保持/实际排空已准备，正在推进
-1启动/1片段/4工作/600秒真实SDK短验。默认未改，不把CPU当业务通过。
+[Live音频播放与业务恢复短验通过](evidence/serve-live-fixture-http-20261121/README.md)：
+1启动/1片段/4工作/68.022秒，65次NVML正常且资源释放。实际播放逐字节
+一致，播放中/显式静音输入未引发额外工作；解除静音后完成正确ASR、
+资料读取/回填、语音rev426、正常关闭和Chat=42。原RPM3保持，1717 tokens
+结算且预留归零。已有21项CPU与5项驱动反例。累计4启动/14工作/323.305秒，
+旧失败保留；听感未验。默认未改，继续Responses/Decisions及全部master。
 
 [Live主WSS客户端真实闭环已验](evidence/serve-live-client-http-20261121/README.md)：
 正确ASR、真实资料委派/回填、语音rev426、正常closed/1000及后续Chat=42。

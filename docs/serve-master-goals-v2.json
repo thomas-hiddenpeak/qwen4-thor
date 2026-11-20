@@ -16221,7 +16221,7 @@
     "master_active": true,
     "default_revision": 426,
     "default_changed": false,
-    "gpu_starts": 3,
+    "gpu_starts": 4,
     "type_roots": 16,
     "type_nodes": 941,
     "live_sdk_vectors": 808,
@@ -16285,8 +16285,8 @@
     "context_tests": 13,
     "context_new_tests": 10,
     "context_evidence": "evidence/serve-live-context-cpu-20261121/README.md",
-    "actual_work": 10,
-    "gpu_seconds": 255.28212142223492,
+    "actual_work": 14,
+    "gpu_seconds": 323.3045244219226,
     "binding_tests": 12,
     "binding_new_tests": 9,
     "close_tail_tests": 18,
@@ -16298,6 +16298,7 @@
     "fixture_cpu_tests": 21,
     "fixture_cpu_new": 12,
     "fixture_cpu_evidence": "evidence/serve-live-fixture-cpu-20261121/README.md",
-    "fixture_state": "native_cpu_and_build_pass_actual_sdk_business_pending"
+    "fixture_state": "actual_sdk_fixture_playback_and_client_resume_pass",
+    "fixture_business_evidence": "evidence/serve-live-fixture-http-20261121/README.md"
   }
 }

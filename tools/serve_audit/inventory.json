@@ -1748,13 +1748,14 @@
     },
     "GET /v1/live/sessions": {
       "semantics": "原生Live主WebSocket，SDK合同、启动配置与客户端上下文，复用实际tokenizer及原生ASR/LLM/TTS执行入口。",
-      "boundary": "主WSS客户端委派真实资料闭环已验（原最终健康断言FAIL保留，独立离线复核通过）。录制、Responses/Decisions、fixture、旁路与媒体继续实现；主轻/恢复/发行待完成，不宣称完整Live兼容。",
+      "boundary": "主WSS客户端委派与原生音频片段播放/静音/恢复真实资料闭环已验。Responses/Decisions、录制、旁路与媒体继续实现；主轻/恢复/发行待完成，不宣称完整Live兼容。",
       "evidence": [
         "src/server/chat_live.cpp",
         "src/server/live_native_backend.cpp",
         "tests/server_live_frontend_test.cpp",
         "docs/evidence/serve-live-binding-cpu-20261121/README.md",
-        "docs/evidence/serve-live-client-http-20261121/README.md"
+        "docs/evidence/serve-live-client-http-20261121/README.md",
+        "docs/evidence/serve-live-fixture-http-20261121/README.md"
       ]
     }
   },
@@ -5528,14 +5529,15 @@
     },
     "GET /v1/live/sessions": {
       "semantics": "原生入口鉴权后WebSocket升级及双向转发；Origin、Key、独立会话连接容量和绑定复核。",
-      "boundary": "主WSS客户端委派真实资料闭环已验（原最终健康断言FAIL保留，独立离线复核通过）。录制、Responses/Decisions、fixture、旁路与媒体继续实现；主轻/恢复/发行待完成，不宣称完整Live兼容。",
+      "boundary": "主WSS客户端委派与原生音频片段播放/静音/恢复真实资料闭环已验。Responses/Decisions、录制、旁路与媒体继续实现；主轻/恢复/发行待完成，不宣称完整Live兼容。",
       "evidence": [
         "src/service/ingress_websocket.cpp",
         "src/service/ingress_main.cpp",
         "tools/serve_realtime/test_upgrade_ingress.py",
         "docs/evidence/serve-realtime-upgrade-cpu-20261119/README.md",
         "docs/evidence/serve-live-binding-cpu-20261121/README.md",
-        "docs/evidence/serve-live-client-http-20261121/README.md"
+        "docs/evidence/serve-live-client-http-20261121/README.md",
+        "docs/evidence/serve-live-fixture-http-20261121/README.md"
       ]
     },
     "OPTIONS /v1/live/sessions": {
