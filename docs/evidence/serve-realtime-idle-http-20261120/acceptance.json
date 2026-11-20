@@ -1,0 +1,84 @@
+{
+  "status": "ACCEPT_BOUNDED_IDLE_HTTP",
+  "source_commit": "5778dded52b3f28e1ba85efc3c0c36d14d7df13a",
+  "runtime_binary": "9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c",
+  "seconds": 53.63195409718901,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "responses": 2,
+    "audio_inputs": 1,
+    "chats": 6,
+    "controls": 33
+  },
+  "nvml": {
+    "OK": 52
+  },
+  "quality": [
+    {
+      "label": "vad_auto",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    },
+    {
+      "label": "idle",
+      "actual": "READY",
+      "expected": "READY",
+      "status": "PASS"
+    },
+    {
+      "label": "asr_item_e7f718447aad377d24b31c81e17c8f5d_0",
+      "actual": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "expected": "\u751a\u81f3\u51fa\u73b0\u4ea4\u6613\u51e0\u4e4e\u505c\u6ede\u7684\u60c5\u51b5\u3002",
+      "status": "PASS"
+    }
+  ],
+  "diagnostics": [
+    {
+      "label": "before-seed-41",
+      "actual": "READY",
+      "expected": "READY",
+      "status": "PASS",
+      "refusal": null
+    },
+    {
+      "label": "after-seed-41",
+      "actual": "READY",
+      "expected": "READY",
+      "status": "PASS",
+      "refusal": null
+    },
+    {
+      "label": "before-seed-42",
+      "actual": "READY",
+      "expected": "READY",
+      "status": "PASS",
+      "refusal": null
+    },
+    {
+      "label": "after-seed-42",
+      "actual": "READY",
+      "expected": "READY",
+      "status": "PASS",
+      "refusal": null
+    }
+  ],
+  "settlement": {
+    "actual_settled_tokens": 363.0,
+    "visible_tokens": 363,
+    "private_asr_counter_residual": 0.0,
+    "private_asr_exact_token_oracle": null,
+    "admitted": 3
+  },
+  "model_exit": 0,
+  "owned_processes_remaining": [],
+  "ports_released": true,
+  "default_unchanged": true,
+  "default_revision": 376,
+  "guardian_recovery": false,
+  "original_failures_preserved": true,
+  "quality_causation": "not established: before and after both passed seeds 41/42",
+  "master_active": true
+}

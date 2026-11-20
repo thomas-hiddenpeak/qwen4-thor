@@ -12461,17 +12461,18 @@
     },
     "duplex_input_20261120": {
       "plan": "docs/SERVE_REALTIME_DUPLEX_2026-11-20.md",
-      "state": "native_idle_fact_cpu_ready_bounded_followup_pending",
+      "state": "bounded_native_duplex_business_accepted_profiles_recovery_delivery_pending",
       "settings_evidence": "docs/evidence/serve-realtime-duplex-settings-cpu-20261120/README.md",
       "history_evidence": "docs/evidence/serve-realtime-duplex-history-cpu-20261120/README.md",
       "unique_cpu_cases": 229,
       "case_executions": 381,
       "source_counterexamples_per_group": 20,
-      "gpu_actions": 2,
-      "runtime_entry_qualified": false,
+      "gpu_actions": 3,
+      "runtime_entry_qualified": true,
       "default_revision": 376,
       "remaining": [
-        "real WSS/native ASR/TTS and affected recovery/delivery",
+        "affected primary/light qualification and Guardian recovery with duplex capability preserved",
+        "reversible delivery and main merge",
         "all master tasks"
       ],
       "processing_configuration": {
@@ -13141,6 +13142,93 @@
           "default_unchanged": true,
           "default_revision": 376,
           "original_failures_preserved": true,
+          "master_active": true
+        }
+      },
+      "idle_fact_http": {
+        "evidence": "docs/evidence/serve-realtime-idle-http-20261120/README.md",
+        "result": {
+          "status": "ACCEPT_BOUNDED_IDLE_HTTP",
+          "source_commit": "5778dded52b3f28e1ba85efc3c0c36d14d7df13a",
+          "runtime_binary": "9376abee878e9181bf9fdf31cf68f1efee7adbea8b3543369fe6aedab3a0182c",
+          "seconds": 53.63195409718901,
+          "counts": {
+            "starts": 1,
+            "ingress_starts": 1,
+            "websocket_sessions": 1,
+            "responses": 2,
+            "audio_inputs": 1,
+            "chats": 6,
+            "controls": 33
+          },
+          "nvml": {
+            "OK": 52
+          },
+          "quality": [
+            {
+              "label": "vad_auto",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            },
+            {
+              "label": "idle",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS"
+            },
+            {
+              "label": "asr_item_e7f718447aad377d24b31c81e17c8f5d_0",
+              "actual": "甚至出现交易几乎停滞的情况。",
+              "expected": "甚至出现交易几乎停滞的情况。",
+              "status": "PASS"
+            }
+          ],
+          "diagnostics": [
+            {
+              "label": "before-seed-41",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS",
+              "refusal": null
+            },
+            {
+              "label": "after-seed-41",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS",
+              "refusal": null
+            },
+            {
+              "label": "before-seed-42",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS",
+              "refusal": null
+            },
+            {
+              "label": "after-seed-42",
+              "actual": "READY",
+              "expected": "READY",
+              "status": "PASS",
+              "refusal": null
+            }
+          ],
+          "settlement": {
+            "actual_settled_tokens": 363.0,
+            "visible_tokens": 363,
+            "private_asr_counter_residual": 0.0,
+            "private_asr_exact_token_oracle": null,
+            "admitted": 3
+          },
+          "model_exit": 0,
+          "owned_processes_remaining": [],
+          "ports_released": true,
+          "default_unchanged": true,
+          "default_revision": 376,
+          "guardian_recovery": false,
+          "original_failures_preserved": true,
+          "quality_causation": "not established: before and after both passed seeds 41/42",
           "master_active": true
         }
       }
