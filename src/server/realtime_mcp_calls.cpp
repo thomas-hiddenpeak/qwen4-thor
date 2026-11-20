@@ -214,7 +214,8 @@ ObjectReply RealtimeMcpCalls::Decide(const Json& supplied,
         previous ? std::string(*previous) : history_.LastId();
     RealtimeItemTicket decision;
     auto status =
-        history_.Create(item, item.GetString("id"), previous, &decision);
+        history_.CreateMcpMetadata(item, item.GetString("id"), previous,
+                                    &decision);
     if (!status) {
       call.job.decision = std::move(old);
       UpdateCharge(call);
@@ -410,7 +411,8 @@ ObjectReply RealtimeMcpCalls::Finish(Call& call) {
     RealtimeItemTicket ticket;
     const auto previous = history_.LastId();
     auto status =
-        history_.Create(approval, approval.GetString("id"), {}, &ticket);
+        history_.CreateMcpMetadata(approval, approval.GetString("id"), {},
+                                    &ticket);
     if (status) {
       status = history_.BindMcpApproval(call.ticket, approval);
       if (!status) history_.Erase(ticket);

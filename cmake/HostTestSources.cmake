@@ -111,6 +111,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_mcp_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_mcp_item_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_mcp_calls_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_mcp_context_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_prompt_settings_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_file_inputs_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_chat_execution_test.cpp
@@ -477,6 +478,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_mcp_item.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_mcp_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_mcp_calls.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_mcp_context.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_mcp_history.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_prompt_settings.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_file_inputs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_chat_execution.cpp

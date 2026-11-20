@@ -38,7 +38,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 [异步调用所有者20项CPU](evidence/serve-realtime-mcp-calls-cpu-20261120/README.md)
 全部通过，含3项实际原生MCP HTTP组合。两次构建零警告；首构建
 未运行CPU，审查修复未发布审批的取消关联后首次20项通过。
-公开会话尚未连接，默认保持。
+[公开会话38项CPU](evidence/serve-realtime-mcp-session-cpu-20261120/README.md)
+完成，含5项真实本机MCP HTTP；累计45次执行，五次构建零警告。
+首轮35通过，审批ID修正后1项通过；强制工具夹具的XML/收据/schema
+方言修正后2项通过。运行时源码在各轮间相同，四轮失败完整保留。
+实际运行时正在构建，CPU模型夹具不作为GPU/SDK业务通过证据。
+客户端/GPU业务和可回退发行仍待验，默认保持。
 
 PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修复并完成
 [10项针对性CPU验证](evidence/serve-realtime-duplex-ci-boundaries-20261120/README.md)，

@@ -384,7 +384,10 @@ Q4T_TEST(realtime_chat_capabilities_bind_real_storage_and_pending_processors) {
                 static_cast<int64_t>(kRealtimeConversationHostBytes));
   Q4T_CHECK(
       OutputJson(*chat->Find("output_modalities")) == "[\"text\",\"audio\"]" &&
-      OutputJson(*chat->Find("pending_execution")) == "[\"mcp\",\"tracing\"]");
+      OutputJson(*chat->Find("pending_execution")) == "[\"tracing\"]");
+  Q4T_CHECK(chat->Find("mcp")->GetBool("enabled") &&
+            !chat->Find("mcp")->GetBool("automatic_tool_replay", true) &&
+            chat->Find("mcp")->GetInt("maximum_call_workers") == 1);
   Q4T_CHECK(chat->Find("input_audio")->GetInt("idle_timeout_ms_min") == 5000 &&
             chat->Find("input_audio")->GetInt("idle_timeout_ms_max") == 30000 &&
             !chat->Find("input_audio")

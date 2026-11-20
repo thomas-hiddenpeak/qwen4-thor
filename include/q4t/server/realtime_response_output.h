@@ -61,6 +61,9 @@ class RealtimeResponseOutput {
   RealtimeResponseOutput(RealtimeResponseOutputOptions options, EventSink emit,
                          ItemSink item, IdFactory ids, AudioSink audio = {});
   ObjectReply Begin();
+  // A response-only import may finish after response.created. Bind its exact
+  // frozen catalog before any output is accepted; no rebinding after deltas.
+  ObjectReply BindMcp(std::vector<RealtimeMcpOutputBinding> bindings);
   ObjectReply Append(const ResponseDelta& delta);
   ObjectReply AppendAudio(std::string_view bytes);
   ObjectReply CompleteAudio(const RealtimeSpeechReceipt& receipt,

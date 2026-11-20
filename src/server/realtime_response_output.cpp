@@ -168,11 +168,25 @@ ObjectReply RealtimeResponseOutput::Begin() {
                                          options_.maximum_audio_bytes)
                        .Valid()))
     return Fail("realtime_response_owner_invalid", "Invalid audio owner");
-  if (options_.mcp_bindings.size() > 128)
+  auto binding = BindMcp(options_.mcp_bindings);
+  if (!binding.ok()) return binding;
+  auto response = Response("in_progress");
+  ChatPlanError shape;
+  if (!ValidateRealtimeShape(response, RealtimeShape::kResponse, &shape))
+    return Fail("realtime_response_invalid", "Invalid response metadata");
+  begun_ = true;
+  return Emit("response.created", Object({{"response", std::move(response)}}));
+}
+ObjectReply RealtimeResponseOutput::BindMcp(
+    std::vector<RealtimeMcpOutputBinding> bindings) {
+  if (terminal_ || !items_.empty() || sink_failed_ || !error_.ok())
+    return object_detail::Error(409, "realtime_mcp_binding_locked",
+                                "Output bindings can no longer change");
+  if (bindings.size() > 128)
     return Fail("realtime_mcp_binding_invalid",
                 "MCP output bindings exceed capacity");
-  for (size_t i = 0; i < options_.mcp_bindings.size(); ++i) {
-    const auto& binding = options_.mcp_bindings[i];
+  for (size_t i = 0; i < bindings.size(); ++i) {
+    const auto& binding = bindings[i];
     if (!ValidInputName(binding.model_name) || binding.server_label.empty() ||
         binding.server_label.size() > 256 || binding.name.empty() ||
         binding.name.size() > 256 || binding.model_name.capacity() > 1024 ||
@@ -182,7 +196,7 @@ ObjectReply RealtimeResponseOutput::Begin() {
             ResponsesMcpModelName(binding.server_label, binding.name))
       return Fail("realtime_mcp_binding_invalid", "Invalid MCP output binding");
     for (size_t j = 0; j < i; ++j) {
-      const auto& previous = options_.mcp_bindings[j];
+      const auto& previous = bindings[j];
       if (binding.model_name == previous.model_name ||
           (binding.server_label == previous.server_label &&
            binding.name == previous.name))
@@ -190,12 +204,8 @@ ObjectReply RealtimeResponseOutput::Begin() {
                     "Duplicate MCP output binding");
     }
   }
-  auto response = Response("in_progress");
-  ChatPlanError shape;
-  if (!ValidateRealtimeShape(response, RealtimeShape::kResponse, &shape))
-    return Fail("realtime_response_invalid", "Invalid response metadata");
-  begun_ = true;
-  return Emit("response.created", Object({{"response", std::move(response)}}));
+  options_.mcp_bindings = std::move(bindings);
+  return {};
 }
 Json RealtimeResponseOutput::Position(size_t index, bool content) const {
   auto fields =

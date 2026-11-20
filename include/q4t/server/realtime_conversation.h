@@ -29,6 +29,9 @@ struct RealtimeConversationSnapshot {
   // must not execute until Resolve has cleared these positions.
   std::vector<size_t> pending_inputs = {};
   std::vector<size_t> pending_outputs = {};
+  // Private provenance from exact native entries, never parsed from JSON.
+  // Client copies (even with the same ID) must authenticate durable evidence.
+  std::vector<bool> owned_mcp = {};
 };
 
 // One session thread owns mutations. Workers receive independent snapshots
@@ -62,6 +65,11 @@ class RealtimeConversation {
   Status Create(const io::Json& item, std::string_view generated_id,
                 std::optional<std::string_view> previous,
                 RealtimeItemTicket* output);
+  // Only the connected MCP approval owner may use this after validating its
+  // native proposal or reserving the exact user decision. No dispatch grant.
+  Status CreateMcpMetadata(const io::Json& item, std::string_view generated_id,
+                           std::optional<std::string_view> previous,
+                           RealtimeItemTicket* output);
   // Reserve before publishing model output. Updates cannot grow beyond this
   // reservation or change identity; only a terminal update releases the slack.
   Status BeginOutput(const io::Json& item, std::string_view generated_id,
@@ -146,6 +154,7 @@ class RealtimeConversation {
     bool native_input = false, transcript_visible = false, input_failed = false;
     bool idle_timeout = false;
     bool input_committed = false;
+    bool native_mcp_metadata = false;
     std::vector<size_t> pending_input_parts;
   };
   Status InsertAudioInput(std::string_view id,

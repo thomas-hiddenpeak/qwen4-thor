@@ -41,7 +41,7 @@ class RealtimeMcpImports {
   // workers; queued jobs share the original finite deadline.
   ObjectReply Begin(const ResponsesMcpDefinition& definition, std::string id,
                     bool in_conversation, RealtimeItemTicket* ticket);
-  ObjectReply Tick();
+  ObjectReply Tick(bool start_workers = true);
   // Retire closes an unfinished import as failed, preserves its public
   // history and immediately revokes private authority. An old worker keeps
   // its slot until joined; a late result never changes the terminal item.
@@ -49,6 +49,7 @@ class RealtimeMcpImports {
   // Delete exact history generation and revoke authority before cancelling.
   ObjectReply Erase(const RealtimeItemTicket& ticket);
   bool Owns(const RealtimeItemTicket& ticket) const;
+  bool Pending(const RealtimeItemTicket& ticket) const;
   // Same complete request definition, including private credentials. An
   // earlier catalog with the same label but another target is not reusable.
   bool Find(const ResponsesMcpDefinition& definition,

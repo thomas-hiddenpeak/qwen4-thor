@@ -10,6 +10,7 @@
 #include "q4t/server/realtime_chat_plan.h"
 #include "q4t/server/realtime_conversation_pump.h"
 #include "q4t/server/realtime_file_inputs.h"
+#include "q4t/server/realtime_mcp_history.h"
 #include "q4t/server/request_diagnostics.h"
 
 namespace q4t::server {
@@ -62,7 +63,9 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
                                          client.Limits()->max_body_bytes)
                       : kWebSocketMessageLimit;
   const auto prepare = [&](const Json& current_settings, const Json& response,
-                           const Json& items, const PromptSnapshot* prompt) {
+                           const Json& items, const PromptSnapshot* prompt,
+                           const RealtimeMcpContext* mcp,
+                           bool definitions_only) {
     const auto current = clients_.RecoveryIdentity(client.Index());
     if (!clients_.OwnsIdentity(client) || !current.Allowed() ||
         current.Id() != client.Id())
@@ -77,9 +80,13 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
     planning.client_limits = current.Limits();
     RealtimeChatPlan plan;
     ChatPlanError failure;
+    Json history;
+    auto reply = PreviewRealtimeMcpHistory(items, &history);
+    if (!reply.ok() || reply.commit_unknown) return reply;
     const auto status =
         PlanRealtimeChat(current_settings, response, items, planning, &plan,
-                         &failure, prompt, native_input);
+                         &failure, prompt, native_input, mcp,
+                         definitions_only, &history);
     return status ? ObjectReply{} : Failure(status, failure);
   };
   RealtimeConversationCallbacks callbacks;
@@ -97,12 +104,81 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
   callbacks.interrupted = [&] { return stop_requested_.load(); };
   callbacks.validate_prompt = [&](const RealtimePromptSelection& selected) {
     return prepare(selected.settings, Object(), Array(),
-                   selected.prompt ? &*selected.prompt : nullptr);
+                   selected.prompt ? &*selected.prompt : nullptr,
+                   selected.mcp.get(), true);
   };
   callbacks.prepare = [&](const RealtimeConversationJob& job) {
     return prepare(job.settings, job.response, job.snapshot.items,
-                   job.prompt ? &*job.prompt : nullptr);
+                   job.prompt ? &*job.prompt : nullptr, job.mcp.get(),
+                   job.mcp_definitions_only);
   };
+  callbacks.mcp_import.emplace();
+  callbacks.mcp_import->import =
+      [&](const ResponsesMcpDefinition& definition, std::string id,
+          Clock::time_point deadline, const std::function<bool()>& cancelled,
+          RealtimeMcpCatalog* catalog) {
+        const auto current = clients_.RecoveryIdentity(client.Index());
+        if (!clients_.OwnsIdentity(client) || !current.Allowed() ||
+            current.Id() != client.Id())
+          return Error(401, "client_authentication_failed",
+                       "Client no longer authorized");
+        if (!objects_)
+          return Error(503, "mcp_state_unavailable", "MCP storage unavailable");
+        const StateAccess access{
+            current.Scoped() ? "client:" + std::string(current.Id())
+                             : "local:anonymous",
+            deadline,
+            [&] {
+              return cancelled() || stop_requested_.load() ||
+                     !clients_.OwnsIdentity(client);
+            }};
+        return ImportRealtimeMcpCatalog(*objects_, PlanningConfig(-1),
+                                         definition, access, std::move(id),
+                                         catalog);
+      };
+  callbacks.mcp_call.emplace();
+  callbacks.mcp_call->run =
+      [&](const RealtimeMcpCallJob& job, Clock::time_point deadline,
+          const std::function<bool()>& cancelled, RealtimeMcpExecution* result) {
+        const bool cleanup = job.action == RealtimeMcpAction::kAbandon;
+        const auto current = clients_.RecoveryIdentity(client.Index());
+        if (!cleanup && (!clients_.OwnsIdentity(client) || !current.Allowed() ||
+                         current.Id() != client.Id()))
+          return Error(401, "client_authentication_failed",
+                       "Client no longer authorized");
+        if (!objects_)
+          return Error(503, "mcp_state_unavailable", "MCP storage unavailable");
+        // Cleanup keeps the original scope after key revocation/disconnect.
+        // The native helper proves process/response ownership and cannot send
+        // a remote call. Ordinary operations always recheck current identity.
+        const StateAccess access{
+            client.Scoped() ? "client:" + std::string(client.Id())
+                            : "local:anonymous",
+            deadline,
+            [&] {
+              return !cleanup && (cancelled() || stop_requested_.load() ||
+                                   !clients_.OwnsIdentity(client));
+            }};
+        auto planning = PlanningConfig(-1);
+        switch (job.action) {
+          case RealtimeMcpAction::kPropose:
+            return ProposeRealtimeMcpCall(*objects_, planning, job.catalog,
+                                          job.generated, job.response_id, access);
+          case RealtimeMcpAction::kDecide:
+            return DecideRealtimeMcpCall(
+                *objects_, planning, job.catalog.definition, job.generated,
+                job.decision, job.response_id, access);
+          case RealtimeMcpAction::kExecute:
+            return ExecuteRealtimeMcpCall(
+                *objects_, planning, job.catalog.definition, job.native_call,
+                job.response_id, access, result);
+          case RealtimeMcpAction::kAbandon:
+            return AbandonRealtimeMcpCall(
+                *objects_, planning, job.catalog.definition, job.generated,
+                job.response_id, access);
+        }
+        return Error(500, "realtime_mcp_action_invalid", "Invalid MCP action");
+      };
   callbacks.resolve_prompt = [&](const Json& reference, size_t budget,
                                  const std::function<bool()>& cancelled,
                                  PromptSnapshot* snapshot) {
@@ -209,9 +285,7 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
   config.client_limits = client.Limits();
   RealtimeChatPlan plan;
   ChatPlanError error;
-  auto status = PlanRealtimeChat(
-      job.settings, job.response, job.snapshot.items, config, &plan, &error,
-      job.prompt ? &*job.prompt : nullptr, job.native_input);
+  Status status;
   RequestDiagnostics diagnostic(stderr, control->id());
   diagnostic.Bind(control->id());
   diagnostic.Stage("context_prepare");
@@ -239,6 +313,37 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
                 "Response execution unavailable");
       return result;
     }
+    if (job.mcp_definitions_only) {
+      result.reply = Error(500, "realtime_mcp_preview_invalid",
+                           "A validation preview cannot execute");
+      return result;
+    }
+    Json mcp_history;
+    const StateAccess access{scope, control->deadline(), cancelled};
+    result.reply = ResolveRealtimeMcpHistory(objects_.get(), config,
+                                              job.snapshot, access,
+                                              &mcp_history);
+    if (!result.reply.ok() || result.reply.commit_unknown) return result;
+    auto prompt = job.prompt;
+    if (prompt && prompt->request.GetArray("input")) {
+      auto& prefix = Field(prompt->request, "input");
+      for (auto& item : prefix.array) {
+        if (!item.GetString("type").starts_with("mcp_")) continue;
+        if (!objects_) {
+          result.reply = Error(503, "mcp_state_unavailable",
+                               "MCP prompt history storage unavailable");
+          return result;
+        }
+        result.reply = ResponsesMcpState(*objects_, config).Authenticate(item,
+                                                                        access);
+        if (!result.reply.ok() || result.reply.commit_unknown) return result;
+        item = std::move(result.reply.value);
+      }
+    }
+    status = PlanRealtimeChat(job.settings, job.response, job.snapshot.items,
+                              config, &plan, &error,
+                              prompt ? &*prompt : nullptr, job.native_input,
+                              job.mcp.get(), false, &mcp_history);
     if (status && !plan.input_ready) {
       diagnostic.Stage("input_prepare");
       RealtimeFileInputs files;

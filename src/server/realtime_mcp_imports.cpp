@@ -277,7 +277,7 @@ void RealtimeMcpImports::Drop(size_t index) {
   retained_bytes_ -= entries_[index]->charge;
   entries_.erase(entries_.begin() + index);
 }
-ObjectReply RealtimeMcpImports::Tick() {
+ObjectReply RealtimeMcpImports::Tick(bool start_workers) {
   if (!valid_ || cancelled_ || broken_)
     return Error(409, "realtime_mcp_import_closed", "MCP import unavailable");
   for (size_t index = 0; index < entries_.size();) {
@@ -302,6 +302,7 @@ ObjectReply RealtimeMcpImports::Tick() {
     }
     ++index;
   }
+  if (!start_workers) return {};
   size_t workers = Workers();
   for (auto& work : entries_) {
     if (work->started || work->retired || work->terminal) continue;
@@ -314,6 +315,11 @@ ObjectReply RealtimeMcpImports::Tick() {
 bool RealtimeMcpImports::Owns(const RealtimeItemTicket& ticket) const {
   return std::ranges::any_of(entries_, [&](const auto& work) {
     return !work->retired && work->ticket == ticket;
+  });
+}
+bool RealtimeMcpImports::Pending(const RealtimeItemTicket& ticket) const {
+  return std::ranges::any_of(entries_, [&](const auto& work) {
+    return !work->retired && !work->terminal && work->ticket == ticket;
   });
 }
 bool RealtimeMcpImports::Find(const ResponsesMcpDefinition& definition,

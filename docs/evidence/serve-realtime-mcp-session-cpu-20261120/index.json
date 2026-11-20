@@ -1,0 +1,729 @@
+{
+  "files": {
+    "archive_session_01.py": {
+      "bytes": 7035,
+      "sha256": "2045119a6acc75675d7271841d8655ebfaffd10dde6a0c73015a227ee8f86f42"
+    },
+    "session-plan.json": {
+      "bytes": 6075,
+      "sha256": "53c127760edc84b1898d1fc56c638a67485d9502515150e32c304c723dd82331"
+    },
+    "session-required.txt": {
+      "bytes": 2346,
+      "sha256": "6265edbc2ce51465c9ab38ccb30ae4826667da9b560df66f964295b76974121e"
+    },
+    "build_session_01.py": {
+      "bytes": 3042,
+      "sha256": "1c1dbc807977a6d39d0fe35dae18e6e753f4d01cf3177e055131a75f75e72eab"
+    },
+    "run_session_cpu_01.py": {
+      "bytes": 1660,
+      "sha256": "badcc3fbf0c5bbf3ba6836b35fe223d55d6282055f359e30956c36c3754a475d"
+    },
+    "session-build-01/plan.json": {
+      "bytes": 180291,
+      "sha256": "6ad7925005a383e82eb33ada3a7f5e24543b9a27aa86e8310ad73c082f5a5508"
+    },
+    "session-build-01/result.json": {
+      "bytes": 292,
+      "sha256": "44b40171e06cea0f263171fe3f23ce4a5f257b7e4b27ce442ee14e306c5da5d6"
+    },
+    "session-build-01/build.log": {
+      "bytes": 6675,
+      "sha256": "71999bfebd62317b0e7cbc7daa4b555fd2b5df6debfcd2abb100a740bfaa6d51"
+    },
+    "session-cpu-01/result.json": {
+      "bytes": 3496,
+      "sha256": "9cb2592111d11844a4972cddeaef59aa4fc7722513cc19b9f1e0d2babf1de7dc"
+    },
+    "session-cpu-01/stdout.txt": {
+      "bytes": 2826,
+      "sha256": "60f0320b9eee5c6ac2644ac2addd7edb2a97aa78023d07c3acc58fd612e3ee1b"
+    },
+    "session-cpu-01/stderr.txt": {
+      "bytes": 1719,
+      "sha256": "789d1ba4b1cebdda7ab88e5fc2b2282b2506f421b126f756072e8eb1a97e08cc"
+    },
+    "source-01/CMakeLists.txt": {
+      "bytes": 63668,
+      "sha256": "756b9d6c7c70ea8fbf832f927c75d722e7e53613084a8ed72f65f0d92c76f6a3"
+    },
+    "source-01/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 32039,
+      "sha256": "b18841c1865d8bed420ebe2b6fa5e545edca9d8d7a9a0111338fc2c41308f048"
+    },
+    "source-01/cmake/HostTestSources.cmake": {
+      "bytes": 40508,
+      "sha256": "c328e5d2723c6a1b585e32ab33607cf32ff2507893d36cdbfbd25cae9795c824"
+    },
+    "source-01/include/q4t/server/realtime_chat_plan.h": {
+      "bytes": 2705,
+      "sha256": "b71c0bd43b6b30d86e3513067013ac9b4f944b3932e287755b4d2824e79579aa"
+    },
+    "source-01/include/q4t/server/realtime_conversation.h": {
+      "bytes": 10325,
+      "sha256": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745"
+    },
+    "source-01/include/q4t/server/realtime_conversation_session.h": {
+      "bytes": 7538,
+      "sha256": "e0efcae480341007ef3d31a9b5d56ff731669be50dfc3b7383a4ce598d050465"
+    },
+    "source-01/include/q4t/server/realtime_mcp_context.h": {
+      "bytes": 1419,
+      "sha256": "ff0ec45632de3eb497b7244e20c1294b018183eeb5e1105b8a9c601675a5bcbc"
+    },
+    "source-01/include/q4t/server/realtime_mcp_history.h": {
+      "bytes": 1020,
+      "sha256": "423c22077aafde2d9a1e97ff3b68279bff45b32fcae47ac3f1c588abd14e2e45"
+    },
+    "source-01/include/q4t/server/realtime_mcp_imports.h": {
+      "bytes": 3679,
+      "sha256": "ac5ad773b3b8221740e07c2eb9db1c02812624d33b906fb378e77110dddcf172"
+    },
+    "source-01/include/q4t/server/realtime_prompt_settings.h": {
+      "bytes": 2749,
+      "sha256": "fbed82464875dbd6004faf0594463663d42805c63c93d19891c5069b54834922"
+    },
+    "source-01/include/q4t/server/realtime_response_output.h": {
+      "bytes": 5243,
+      "sha256": "6723964cbbe23db59440f8f84ab2f5b74c5aa8fa64f7b5abe4eeb8087a8f33df"
+    },
+    "source-01/src/server/chat_capabilities.cpp": {
+      "bytes": 61431,
+      "sha256": "8e4046a47b5bd2971b57f9c59b0e7c9f2b1f855daf56bc5b1f635639740bac34"
+    },
+    "source-01/src/server/chat_realtime_conversation.cpp": {
+      "bytes": 23981,
+      "sha256": "aeb2de1a7673918ebd8f747ad27180de070dfa48b71a57c2db64542afdbd4555"
+    },
+    "source-01/src/server/realtime_chat_plan.cpp": {
+      "bytes": 19507,
+      "sha256": "d52d4be4e224e137656714182a85628b125f30ac12a59e5b8988c26683db0ab4"
+    },
+    "source-01/src/server/realtime_conversation.cpp": {
+      "bytes": 33883,
+      "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8"
+    },
+    "source-01/src/server/realtime_conversation_input.cpp": {
+      "bytes": 26542,
+      "sha256": "b62d85ed3df13aae09cddfe54e0bc441d076b06fb406ca43e7f6624d31e2ab9d"
+    },
+    "source-01/src/server/realtime_conversation_session.cpp": {
+      "bytes": 50133,
+      "sha256": "10da01b11bfb5ae588c155bb48b185c77ce89d1e2dbc1d34c7f9ed2998b97c45"
+    },
+    "source-01/src/server/realtime_mcp_calls.cpp": {
+      "bytes": 23073,
+      "sha256": "9d1d68fe7cdf80a96a1fc5abe27f49c7198eb9f2e1bf01edd62021c52489fc39"
+    },
+    "source-01/src/server/realtime_mcp_context.cpp": {
+      "bytes": 8030,
+      "sha256": "81e777b20558160ed0d61fee5a84b0851a7e5136f502227e24455798f1dd78a3"
+    },
+    "source-01/src/server/realtime_mcp_history.cpp": {
+      "bytes": 5238,
+      "sha256": "ea32968850f68939313a84fc695e00a595dd7a10676523e1c5b297a3d02524b0"
+    },
+    "source-01/src/server/realtime_mcp_imports.cpp": {
+      "bytes": 15353,
+      "sha256": "53c76e0a9bbda56f44e9b9288d51e6f1213b8eb77424279cd46954d378ffa753"
+    },
+    "source-01/src/server/realtime_response_output.cpp": {
+      "bytes": 27808,
+      "sha256": "9b5fa928932a263ae319b8ce1e19ff30baf79b6eaec444391ee108cf90d8a056"
+    },
+    "source-01/tests/server_mcp_transport_test.cpp": {
+      "bytes": 271944,
+      "sha256": "46337f6428309d8bc7bb86c602d4b193913ce17c90f382935d70ecfdbd28c722"
+    },
+    "source-01/tests/server_realtime_chat_plan_test.cpp": {
+      "bytes": 28620,
+      "sha256": "310ffb456e0bb7e618f9fb8bdf4e7b3704207cb1e9c952eb23d4f759dc09a5d1"
+    },
+    "source-01/tests/server_realtime_conversation_session_test.cpp": {
+      "bytes": 97412,
+      "sha256": "c263817621b35e376f563147e680ea136c9653687708770a0c48bc8837c4719b"
+    },
+    "source-01/tests/server_realtime_mcp_context_test.cpp": {
+      "bytes": 10283,
+      "sha256": "130ebcc1ca4cc66638eebab0c28359622cda629369300cd3a4e3d36f801d294f"
+    },
+    "session-repair-plan.json": {
+      "bytes": 3789,
+      "sha256": "cc4cb41ae5f0e688fe88f9478d9260405c7ca59c4083c649bbb351a1346efd79"
+    },
+    "session-repair-required.txt": {
+      "bytes": 130,
+      "sha256": "69b11add7e2af94ccb98d36ef4eb0c7133ed58dea770f798d75dab78e2d0e35e"
+    },
+    "build_session_02.py": {
+      "bytes": 3042,
+      "sha256": "ed51686314b654de852f0ede4bb90b475fc4179f81ae6762691217b2648e2954"
+    },
+    "run_session_cpu_02.py": {
+      "bytes": 1671,
+      "sha256": "21f894d2a563faa4570362053080fa773c4009530b45cdb75ff5cfa187705890"
+    },
+    "session-build-02/plan.json": {
+      "bytes": 180291,
+      "sha256": "90e99a9cae7cdc15fbba1b433c0a7c9a99f120f9911bb35970f7b5ac2c36a03e"
+    },
+    "session-build-02/result.json": {
+      "bytes": 293,
+      "sha256": "fc0c135d2e53ae2341d75a150dafbeb94701e3c8541be4deb1bb766abceb39dd"
+    },
+    "session-build-02/build.log": {
+      "bytes": 331,
+      "sha256": "09a80fab11f9dffa2c0319e3386139998ae638c1d02ce3665cdd9332da8e02b3"
+    },
+    "session-cpu-02/result.json": {
+      "bytes": 3505,
+      "sha256": "684bb25d80689ff2db2ca45149ad2b4cee2e757481f95f0534f76cbfbe12798d"
+    },
+    "session-cpu-02/stdout.txt": {
+      "bytes": 281,
+      "sha256": "0994d6771796956315b8150e44e69e7e4eaf02b9ba2a4e8eac8628afdaf5f174"
+    },
+    "session-cpu-02/stderr.txt": {
+      "bytes": 2258,
+      "sha256": "99a7a6a83c0bb1dcf65130bac72ee7ae1303104cd7485bab8a98b614f679af65"
+    },
+    "source-02/CMakeLists.txt": {
+      "bytes": 63668,
+      "sha256": "756b9d6c7c70ea8fbf832f927c75d722e7e53613084a8ed72f65f0d92c76f6a3"
+    },
+    "source-02/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 32039,
+      "sha256": "b18841c1865d8bed420ebe2b6fa5e545edca9d8d7a9a0111338fc2c41308f048"
+    },
+    "source-02/cmake/HostTestSources.cmake": {
+      "bytes": 40508,
+      "sha256": "c328e5d2723c6a1b585e32ab33607cf32ff2507893d36cdbfbd25cae9795c824"
+    },
+    "source-02/include/q4t/server/realtime_chat_plan.h": {
+      "bytes": 2705,
+      "sha256": "b71c0bd43b6b30d86e3513067013ac9b4f944b3932e287755b4d2824e79579aa"
+    },
+    "source-02/include/q4t/server/realtime_conversation.h": {
+      "bytes": 10325,
+      "sha256": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745"
+    },
+    "source-02/include/q4t/server/realtime_conversation_session.h": {
+      "bytes": 7538,
+      "sha256": "e0efcae480341007ef3d31a9b5d56ff731669be50dfc3b7383a4ce598d050465"
+    },
+    "source-02/include/q4t/server/realtime_mcp_context.h": {
+      "bytes": 1419,
+      "sha256": "ff0ec45632de3eb497b7244e20c1294b018183eeb5e1105b8a9c601675a5bcbc"
+    },
+    "source-02/include/q4t/server/realtime_mcp_history.h": {
+      "bytes": 1020,
+      "sha256": "423c22077aafde2d9a1e97ff3b68279bff45b32fcae47ac3f1c588abd14e2e45"
+    },
+    "source-02/include/q4t/server/realtime_mcp_imports.h": {
+      "bytes": 3679,
+      "sha256": "ac5ad773b3b8221740e07c2eb9db1c02812624d33b906fb378e77110dddcf172"
+    },
+    "source-02/include/q4t/server/realtime_prompt_settings.h": {
+      "bytes": 2749,
+      "sha256": "fbed82464875dbd6004faf0594463663d42805c63c93d19891c5069b54834922"
+    },
+    "source-02/include/q4t/server/realtime_response_output.h": {
+      "bytes": 5243,
+      "sha256": "6723964cbbe23db59440f8f84ab2f5b74c5aa8fa64f7b5abe4eeb8087a8f33df"
+    },
+    "source-02/src/server/chat_capabilities.cpp": {
+      "bytes": 61431,
+      "sha256": "8e4046a47b5bd2971b57f9c59b0e7c9f2b1f855daf56bc5b1f635639740bac34"
+    },
+    "source-02/src/server/chat_realtime_conversation.cpp": {
+      "bytes": 23981,
+      "sha256": "aeb2de1a7673918ebd8f747ad27180de070dfa48b71a57c2db64542afdbd4555"
+    },
+    "source-02/src/server/realtime_chat_plan.cpp": {
+      "bytes": 19507,
+      "sha256": "d52d4be4e224e137656714182a85628b125f30ac12a59e5b8988c26683db0ab4"
+    },
+    "source-02/src/server/realtime_conversation.cpp": {
+      "bytes": 33883,
+      "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8"
+    },
+    "source-02/src/server/realtime_conversation_input.cpp": {
+      "bytes": 26542,
+      "sha256": "b62d85ed3df13aae09cddfe54e0bc441d076b06fb406ca43e7f6624d31e2ab9d"
+    },
+    "source-02/src/server/realtime_conversation_session.cpp": {
+      "bytes": 50133,
+      "sha256": "10da01b11bfb5ae588c155bb48b185c77ce89d1e2dbc1d34c7f9ed2998b97c45"
+    },
+    "source-02/src/server/realtime_mcp_calls.cpp": {
+      "bytes": 23073,
+      "sha256": "9d1d68fe7cdf80a96a1fc5abe27f49c7198eb9f2e1bf01edd62021c52489fc39"
+    },
+    "source-02/src/server/realtime_mcp_context.cpp": {
+      "bytes": 8030,
+      "sha256": "81e777b20558160ed0d61fee5a84b0851a7e5136f502227e24455798f1dd78a3"
+    },
+    "source-02/src/server/realtime_mcp_history.cpp": {
+      "bytes": 5238,
+      "sha256": "ea32968850f68939313a84fc695e00a595dd7a10676523e1c5b297a3d02524b0"
+    },
+    "source-02/src/server/realtime_mcp_imports.cpp": {
+      "bytes": 15353,
+      "sha256": "53c76e0a9bbda56f44e9b9288d51e6f1213b8eb77424279cd46954d378ffa753"
+    },
+    "source-02/src/server/realtime_response_output.cpp": {
+      "bytes": 27808,
+      "sha256": "9b5fa928932a263ae319b8ce1e19ff30baf79b6eaec444391ee108cf90d8a056"
+    },
+    "source-02/tests/server_mcp_transport_test.cpp": {
+      "bytes": 271944,
+      "sha256": "46337f6428309d8bc7bb86c602d4b193913ce17c90f382935d70ecfdbd28c722"
+    },
+    "source-02/tests/server_realtime_chat_plan_test.cpp": {
+      "bytes": 28620,
+      "sha256": "310ffb456e0bb7e618f9fb8bdf4e7b3704207cb1e9c952eb23d4f759dc09a5d1"
+    },
+    "source-02/tests/server_realtime_conversation_session_test.cpp": {
+      "bytes": 97864,
+      "sha256": "e8626951655b5917f73f0a3403531c472188923ce041210688292738303bc37a"
+    },
+    "source-02/tests/server_realtime_mcp_context_test.cpp": {
+      "bytes": 10283,
+      "sha256": "130ebcc1ca4cc66638eebab0c28359622cda629369300cd3a4e3d36f801d294f"
+    },
+    "session-forced-plan.json": {
+      "bytes": 3877,
+      "sha256": "10a22ee98bfc5cfa49a108fb1b42539f90081c477f8784c77cd63e27caa47179"
+    },
+    "session-forced-required.txt": {
+      "bytes": 135,
+      "sha256": "cf8ccb901f6fe7a13f2e8f959dd0b1f54ebd4579a261294de07c334d12f62d81"
+    },
+    "build_session_03.py": {
+      "bytes": 3042,
+      "sha256": "b5ad53dcaa82ab309aa61917a64bbe3ccd81e14bdf99e02c475c7c62ed2f8ac2"
+    },
+    "run_session_cpu_03.py": {
+      "bytes": 1671,
+      "sha256": "2d625ed2628a214f1c63b3c51b0cedbc1fe27ef02528b3b52a4f6f111524becd"
+    },
+    "session-build-03/plan.json": {
+      "bytes": 180291,
+      "sha256": "447565f321e7d082f7f808dcfc341d1a1ccecd5abf1e42738cbb7057c9cd4459"
+    },
+    "session-build-03/result.json": {
+      "bytes": 292,
+      "sha256": "6def9671fc83ed0915add97fb3dd64c9a12b6dcb3d6ae65e145a684032f7e00d"
+    },
+    "session-build-03/build.log": {
+      "bytes": 458,
+      "sha256": "ea4cf56ef523d6570f5776c819eba3513ca99db0ab43826eedca550563a6d02e"
+    },
+    "session-cpu-03/result.json": {
+      "bytes": 3505,
+      "sha256": "a1b837fd042a39b2bfceb3ef214001c09a269a2678cf05dfdfe7536beba38c09"
+    },
+    "session-cpu-03/stdout.txt": {
+      "bytes": 349,
+      "sha256": "76dc85f8464559bb6741ef54e2e7e0c4392886e473543dd0f2c177762ab3ede8"
+    },
+    "session-cpu-03/stderr.txt": {
+      "bytes": 2046,
+      "sha256": "39285483955f5d1760c85a243b78674306ea5fcd51fc56538d11d7909c22954f"
+    },
+    "source-03/CMakeLists.txt": {
+      "bytes": 63668,
+      "sha256": "756b9d6c7c70ea8fbf832f927c75d722e7e53613084a8ed72f65f0d92c76f6a3"
+    },
+    "source-03/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 32039,
+      "sha256": "b18841c1865d8bed420ebe2b6fa5e545edca9d8d7a9a0111338fc2c41308f048"
+    },
+    "source-03/cmake/HostTestSources.cmake": {
+      "bytes": 40508,
+      "sha256": "c328e5d2723c6a1b585e32ab33607cf32ff2507893d36cdbfbd25cae9795c824"
+    },
+    "source-03/include/q4t/server/realtime_chat_plan.h": {
+      "bytes": 2705,
+      "sha256": "b71c0bd43b6b30d86e3513067013ac9b4f944b3932e287755b4d2824e79579aa"
+    },
+    "source-03/include/q4t/server/realtime_conversation.h": {
+      "bytes": 10325,
+      "sha256": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745"
+    },
+    "source-03/include/q4t/server/realtime_conversation_session.h": {
+      "bytes": 7538,
+      "sha256": "e0efcae480341007ef3d31a9b5d56ff731669be50dfc3b7383a4ce598d050465"
+    },
+    "source-03/include/q4t/server/realtime_mcp_context.h": {
+      "bytes": 1419,
+      "sha256": "ff0ec45632de3eb497b7244e20c1294b018183eeb5e1105b8a9c601675a5bcbc"
+    },
+    "source-03/include/q4t/server/realtime_mcp_history.h": {
+      "bytes": 1020,
+      "sha256": "423c22077aafde2d9a1e97ff3b68279bff45b32fcae47ac3f1c588abd14e2e45"
+    },
+    "source-03/include/q4t/server/realtime_mcp_imports.h": {
+      "bytes": 3679,
+      "sha256": "ac5ad773b3b8221740e07c2eb9db1c02812624d33b906fb378e77110dddcf172"
+    },
+    "source-03/include/q4t/server/realtime_prompt_settings.h": {
+      "bytes": 2749,
+      "sha256": "fbed82464875dbd6004faf0594463663d42805c63c93d19891c5069b54834922"
+    },
+    "source-03/include/q4t/server/realtime_response_output.h": {
+      "bytes": 5243,
+      "sha256": "6723964cbbe23db59440f8f84ab2f5b74c5aa8fa64f7b5abe4eeb8087a8f33df"
+    },
+    "source-03/src/server/chat_capabilities.cpp": {
+      "bytes": 61431,
+      "sha256": "8e4046a47b5bd2971b57f9c59b0e7c9f2b1f855daf56bc5b1f635639740bac34"
+    },
+    "source-03/src/server/chat_realtime_conversation.cpp": {
+      "bytes": 23981,
+      "sha256": "aeb2de1a7673918ebd8f747ad27180de070dfa48b71a57c2db64542afdbd4555"
+    },
+    "source-03/src/server/realtime_chat_plan.cpp": {
+      "bytes": 19507,
+      "sha256": "d52d4be4e224e137656714182a85628b125f30ac12a59e5b8988c26683db0ab4"
+    },
+    "source-03/src/server/realtime_conversation.cpp": {
+      "bytes": 33883,
+      "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8"
+    },
+    "source-03/src/server/realtime_conversation_input.cpp": {
+      "bytes": 26542,
+      "sha256": "b62d85ed3df13aae09cddfe54e0bc441d076b06fb406ca43e7f6624d31e2ab9d"
+    },
+    "source-03/src/server/realtime_conversation_session.cpp": {
+      "bytes": 50133,
+      "sha256": "10da01b11bfb5ae588c155bb48b185c77ce89d1e2dbc1d34c7f9ed2998b97c45"
+    },
+    "source-03/src/server/realtime_mcp_calls.cpp": {
+      "bytes": 23073,
+      "sha256": "9d1d68fe7cdf80a96a1fc5abe27f49c7198eb9f2e1bf01edd62021c52489fc39"
+    },
+    "source-03/src/server/realtime_mcp_context.cpp": {
+      "bytes": 8030,
+      "sha256": "81e777b20558160ed0d61fee5a84b0851a7e5136f502227e24455798f1dd78a3"
+    },
+    "source-03/src/server/realtime_mcp_history.cpp": {
+      "bytes": 5238,
+      "sha256": "ea32968850f68939313a84fc695e00a595dd7a10676523e1c5b297a3d02524b0"
+    },
+    "source-03/src/server/realtime_mcp_imports.cpp": {
+      "bytes": 15353,
+      "sha256": "53c76e0a9bbda56f44e9b9288d51e6f1213b8eb77424279cd46954d378ffa753"
+    },
+    "source-03/src/server/realtime_response_output.cpp": {
+      "bytes": 27808,
+      "sha256": "9b5fa928932a263ae319b8ce1e19ff30baf79b6eaec444391ee108cf90d8a056"
+    },
+    "source-03/tests/server_mcp_transport_test.cpp": {
+      "bytes": 272611,
+      "sha256": "b0c46c78c74ac0a0f5669df45bace11ae5681afecf2ab047f74a14a091c64d5a"
+    },
+    "source-03/tests/server_realtime_chat_plan_test.cpp": {
+      "bytes": 28620,
+      "sha256": "310ffb456e0bb7e618f9fb8bdf4e7b3704207cb1e9c952eb23d4f759dc09a5d1"
+    },
+    "source-03/tests/server_realtime_conversation_session_test.cpp": {
+      "bytes": 98024,
+      "sha256": "c452e1ef377352b2a2168f63552b53391e55246de1ab8ab8215554dcf59fb74f"
+    },
+    "source-03/tests/server_realtime_mcp_context_test.cpp": {
+      "bytes": 10283,
+      "sha256": "130ebcc1ca4cc66638eebab0c28359622cda629369300cd3a4e3d36f801d294f"
+    },
+    "session-receipt-plan.json": {
+      "bytes": 3873,
+      "sha256": "381b07a0d6c38b44d27a67787aa1ea43cc30a88cd15a6d0432d2107521a0ba3c"
+    },
+    "session-receipt-required.txt": {
+      "bytes": 135,
+      "sha256": "cf8ccb901f6fe7a13f2e8f959dd0b1f54ebd4579a261294de07c334d12f62d81"
+    },
+    "build_session_04.py": {
+      "bytes": 3042,
+      "sha256": "5c392d36a9c684c5d0cc6004a9c9fbb22dfbd00442f904292e7d409d978e7a2b"
+    },
+    "run_session_cpu_04.py": {
+      "bytes": 1673,
+      "sha256": "b42c3ef664da8c9466b16de4fc76ce2299cbaf00ea2d5bad6d9794d8d97ef13e"
+    },
+    "session-build-04/plan.json": {
+      "bytes": 180291,
+      "sha256": "c2c13357ab9531971841e79cc0d774e685199a5516a36d9da03bedc4e7dcb180"
+    },
+    "session-build-04/result.json": {
+      "bytes": 292,
+      "sha256": "3ebf68bf7f9c9ee6520f39436515e54b0910396c64f3c474a2c6c4b942668803"
+    },
+    "session-build-04/build.log": {
+      "bytes": 458,
+      "sha256": "ea4cf56ef523d6570f5776c819eba3513ca99db0ab43826eedca550563a6d02e"
+    },
+    "session-cpu-04/result.json": {
+      "bytes": 3506,
+      "sha256": "725d5cba62ef3147d6462affd9aec0ac116faa55bc4c18b3c1a7d020587e24e0"
+    },
+    "session-cpu-04/stdout.txt": {
+      "bytes": 349,
+      "sha256": "1bf8e67c7577306120fb2d3ab0a9b2a4cd886f1a59babb814b671c4c7a7e56a2"
+    },
+    "session-cpu-04/stderr.txt": {
+      "bytes": 2025,
+      "sha256": "2dd3dbc9b84a7f5bf1a825046ce9fa3009cc6c74c16cb88ec79ffd265ee6f492"
+    },
+    "source-04/CMakeLists.txt": {
+      "bytes": 63668,
+      "sha256": "756b9d6c7c70ea8fbf832f927c75d722e7e53613084a8ed72f65f0d92c76f6a3"
+    },
+    "source-04/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 32039,
+      "sha256": "b18841c1865d8bed420ebe2b6fa5e545edca9d8d7a9a0111338fc2c41308f048"
+    },
+    "source-04/cmake/HostTestSources.cmake": {
+      "bytes": 40508,
+      "sha256": "c328e5d2723c6a1b585e32ab33607cf32ff2507893d36cdbfbd25cae9795c824"
+    },
+    "source-04/include/q4t/server/realtime_chat_plan.h": {
+      "bytes": 2705,
+      "sha256": "b71c0bd43b6b30d86e3513067013ac9b4f944b3932e287755b4d2824e79579aa"
+    },
+    "source-04/include/q4t/server/realtime_conversation.h": {
+      "bytes": 10325,
+      "sha256": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745"
+    },
+    "source-04/include/q4t/server/realtime_conversation_session.h": {
+      "bytes": 7538,
+      "sha256": "e0efcae480341007ef3d31a9b5d56ff731669be50dfc3b7383a4ce598d050465"
+    },
+    "source-04/include/q4t/server/realtime_mcp_context.h": {
+      "bytes": 1419,
+      "sha256": "ff0ec45632de3eb497b7244e20c1294b018183eeb5e1105b8a9c601675a5bcbc"
+    },
+    "source-04/include/q4t/server/realtime_mcp_history.h": {
+      "bytes": 1020,
+      "sha256": "423c22077aafde2d9a1e97ff3b68279bff45b32fcae47ac3f1c588abd14e2e45"
+    },
+    "source-04/include/q4t/server/realtime_mcp_imports.h": {
+      "bytes": 3679,
+      "sha256": "ac5ad773b3b8221740e07c2eb9db1c02812624d33b906fb378e77110dddcf172"
+    },
+    "source-04/include/q4t/server/realtime_prompt_settings.h": {
+      "bytes": 2749,
+      "sha256": "fbed82464875dbd6004faf0594463663d42805c63c93d19891c5069b54834922"
+    },
+    "source-04/include/q4t/server/realtime_response_output.h": {
+      "bytes": 5243,
+      "sha256": "6723964cbbe23db59440f8f84ab2f5b74c5aa8fa64f7b5abe4eeb8087a8f33df"
+    },
+    "source-04/src/server/chat_capabilities.cpp": {
+      "bytes": 61431,
+      "sha256": "8e4046a47b5bd2971b57f9c59b0e7c9f2b1f855daf56bc5b1f635639740bac34"
+    },
+    "source-04/src/server/chat_realtime_conversation.cpp": {
+      "bytes": 23981,
+      "sha256": "aeb2de1a7673918ebd8f747ad27180de070dfa48b71a57c2db64542afdbd4555"
+    },
+    "source-04/src/server/realtime_chat_plan.cpp": {
+      "bytes": 19507,
+      "sha256": "d52d4be4e224e137656714182a85628b125f30ac12a59e5b8988c26683db0ab4"
+    },
+    "source-04/src/server/realtime_conversation.cpp": {
+      "bytes": 33883,
+      "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8"
+    },
+    "source-04/src/server/realtime_conversation_input.cpp": {
+      "bytes": 26542,
+      "sha256": "b62d85ed3df13aae09cddfe54e0bc441d076b06fb406ca43e7f6624d31e2ab9d"
+    },
+    "source-04/src/server/realtime_conversation_session.cpp": {
+      "bytes": 50133,
+      "sha256": "10da01b11bfb5ae588c155bb48b185c77ce89d1e2dbc1d34c7f9ed2998b97c45"
+    },
+    "source-04/src/server/realtime_mcp_calls.cpp": {
+      "bytes": 23073,
+      "sha256": "9d1d68fe7cdf80a96a1fc5abe27f49c7198eb9f2e1bf01edd62021c52489fc39"
+    },
+    "source-04/src/server/realtime_mcp_context.cpp": {
+      "bytes": 8030,
+      "sha256": "81e777b20558160ed0d61fee5a84b0851a7e5136f502227e24455798f1dd78a3"
+    },
+    "source-04/src/server/realtime_mcp_history.cpp": {
+      "bytes": 5238,
+      "sha256": "ea32968850f68939313a84fc695e00a595dd7a10676523e1c5b297a3d02524b0"
+    },
+    "source-04/src/server/realtime_mcp_imports.cpp": {
+      "bytes": 15353,
+      "sha256": "53c76e0a9bbda56f44e9b9288d51e6f1213b8eb77424279cd46954d378ffa753"
+    },
+    "source-04/src/server/realtime_response_output.cpp": {
+      "bytes": 27808,
+      "sha256": "9b5fa928932a263ae319b8ce1e19ff30baf79b6eaec444391ee108cf90d8a056"
+    },
+    "source-04/tests/server_mcp_transport_test.cpp": {
+      "bytes": 273571,
+      "sha256": "c8d4931a8dbfdcbefcd5fa52ce75acb0c89959d5f6dab2a341b54a56a91018b3"
+    },
+    "source-04/tests/server_realtime_chat_plan_test.cpp": {
+      "bytes": 28620,
+      "sha256": "310ffb456e0bb7e618f9fb8bdf4e7b3704207cb1e9c952eb23d4f759dc09a5d1"
+    },
+    "source-04/tests/server_realtime_conversation_session_test.cpp": {
+      "bytes": 99052,
+      "sha256": "f9852add4b01008b4ef24e0a81c60b03ae99e5cc1a7e22df83100b921a14f5ec"
+    },
+    "source-04/tests/server_realtime_mcp_context_test.cpp": {
+      "bytes": 10283,
+      "sha256": "130ebcc1ca4cc66638eebab0c28359622cda629369300cd3a4e3d36f801d294f"
+    },
+    "session-schema-plan.json": {
+      "bytes": 3869,
+      "sha256": "8143684c97068597fc33bac061a74d7f15697f1855bbc2a679bd96c56a18964c"
+    },
+    "session-schema-required.txt": {
+      "bytes": 135,
+      "sha256": "cf8ccb901f6fe7a13f2e8f959dd0b1f54ebd4579a261294de07c334d12f62d81"
+    },
+    "build_session_05.py": {
+      "bytes": 3042,
+      "sha256": "2f2bc3908cef6e0f5ad20f359ee15bfa997db20e91d818e1be4718009d1fe996"
+    },
+    "run_session_cpu_05.py": {
+      "bytes": 1671,
+      "sha256": "453c22d13ff72a662b7d27847b7af815c65ec49f34b971189839bdb2bbfa594a"
+    },
+    "session-build-05/plan.json": {
+      "bytes": 180291,
+      "sha256": "6f2e8be93ac86bc9ef8c2e59f2802e1090dfb45d0e2f4bd7cf4fc2070ed688da"
+    },
+    "session-build-05/result.json": {
+      "bytes": 291,
+      "sha256": "33b26f7fe5cfc3fbcc46685ded2bcfa338668d29a381120a3bc69e5e9510622a"
+    },
+    "session-build-05/build.log": {
+      "bytes": 458,
+      "sha256": "ea4cf56ef523d6570f5776c819eba3513ca99db0ab43826eedca550563a6d02e"
+    },
+    "session-cpu-05/result.json": {
+      "bytes": 3504,
+      "sha256": "2a4bdcd55192890e95276e695fdc29abb98d280809edf8f8aaa14487e28671ea"
+    },
+    "session-cpu-05/stdout.txt": {
+      "bytes": 188,
+      "sha256": "c017383cb6b3e06acad14917961a6065dff88408454669fcf82efda1c3aadb06"
+    },
+    "session-cpu-05/stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "source-05/CMakeLists.txt": {
+      "bytes": 63668,
+      "sha256": "756b9d6c7c70ea8fbf832f927c75d722e7e53613084a8ed72f65f0d92c76f6a3"
+    },
+    "source-05/cmake/ChatProtocolIdentity.cmake": {
+      "bytes": 32039,
+      "sha256": "b18841c1865d8bed420ebe2b6fa5e545edca9d8d7a9a0111338fc2c41308f048"
+    },
+    "source-05/cmake/HostTestSources.cmake": {
+      "bytes": 40508,
+      "sha256": "c328e5d2723c6a1b585e32ab33607cf32ff2507893d36cdbfbd25cae9795c824"
+    },
+    "source-05/include/q4t/server/realtime_chat_plan.h": {
+      "bytes": 2705,
+      "sha256": "b71c0bd43b6b30d86e3513067013ac9b4f944b3932e287755b4d2824e79579aa"
+    },
+    "source-05/include/q4t/server/realtime_conversation.h": {
+      "bytes": 10325,
+      "sha256": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745"
+    },
+    "source-05/include/q4t/server/realtime_conversation_session.h": {
+      "bytes": 7538,
+      "sha256": "e0efcae480341007ef3d31a9b5d56ff731669be50dfc3b7383a4ce598d050465"
+    },
+    "source-05/include/q4t/server/realtime_mcp_context.h": {
+      "bytes": 1419,
+      "sha256": "ff0ec45632de3eb497b7244e20c1294b018183eeb5e1105b8a9c601675a5bcbc"
+    },
+    "source-05/include/q4t/server/realtime_mcp_history.h": {
+      "bytes": 1020,
+      "sha256": "423c22077aafde2d9a1e97ff3b68279bff45b32fcae47ac3f1c588abd14e2e45"
+    },
+    "source-05/include/q4t/server/realtime_mcp_imports.h": {
+      "bytes": 3679,
+      "sha256": "ac5ad773b3b8221740e07c2eb9db1c02812624d33b906fb378e77110dddcf172"
+    },
+    "source-05/include/q4t/server/realtime_prompt_settings.h": {
+      "bytes": 2749,
+      "sha256": "fbed82464875dbd6004faf0594463663d42805c63c93d19891c5069b54834922"
+    },
+    "source-05/include/q4t/server/realtime_response_output.h": {
+      "bytes": 5243,
+      "sha256": "6723964cbbe23db59440f8f84ab2f5b74c5aa8fa64f7b5abe4eeb8087a8f33df"
+    },
+    "source-05/src/server/chat_capabilities.cpp": {
+      "bytes": 61431,
+      "sha256": "8e4046a47b5bd2971b57f9c59b0e7c9f2b1f855daf56bc5b1f635639740bac34"
+    },
+    "source-05/src/server/chat_realtime_conversation.cpp": {
+      "bytes": 23981,
+      "sha256": "aeb2de1a7673918ebd8f747ad27180de070dfa48b71a57c2db64542afdbd4555"
+    },
+    "source-05/src/server/realtime_chat_plan.cpp": {
+      "bytes": 19507,
+      "sha256": "d52d4be4e224e137656714182a85628b125f30ac12a59e5b8988c26683db0ab4"
+    },
+    "source-05/src/server/realtime_conversation.cpp": {
+      "bytes": 33883,
+      "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8"
+    },
+    "source-05/src/server/realtime_conversation_input.cpp": {
+      "bytes": 26542,
+      "sha256": "b62d85ed3df13aae09cddfe54e0bc441d076b06fb406ca43e7f6624d31e2ab9d"
+    },
+    "source-05/src/server/realtime_conversation_session.cpp": {
+      "bytes": 50133,
+      "sha256": "10da01b11bfb5ae588c155bb48b185c77ce89d1e2dbc1d34c7f9ed2998b97c45"
+    },
+    "source-05/src/server/realtime_mcp_calls.cpp": {
+      "bytes": 23073,
+      "sha256": "9d1d68fe7cdf80a96a1fc5abe27f49c7198eb9f2e1bf01edd62021c52489fc39"
+    },
+    "source-05/src/server/realtime_mcp_context.cpp": {
+      "bytes": 8030,
+      "sha256": "81e777b20558160ed0d61fee5a84b0851a7e5136f502227e24455798f1dd78a3"
+    },
+    "source-05/src/server/realtime_mcp_history.cpp": {
+      "bytes": 5238,
+      "sha256": "ea32968850f68939313a84fc695e00a595dd7a10676523e1c5b297a3d02524b0"
+    },
+    "source-05/src/server/realtime_mcp_imports.cpp": {
+      "bytes": 15353,
+      "sha256": "53c76e0a9bbda56f44e9b9288d51e6f1213b8eb77424279cd46954d378ffa753"
+    },
+    "source-05/src/server/realtime_response_output.cpp": {
+      "bytes": 27808,
+      "sha256": "9b5fa928932a263ae319b8ce1e19ff30baf79b6eaec444391ee108cf90d8a056"
+    },
+    "source-05/tests/server_mcp_transport_test.cpp": {
+      "bytes": 273772,
+      "sha256": "ac6670e49d31b3f6f7a8cd9c09db0b607bc99d8b90b56121e6028164cdadc8c3"
+    },
+    "source-05/tests/server_realtime_chat_plan_test.cpp": {
+      "bytes": 28620,
+      "sha256": "310ffb456e0bb7e618f9fb8bdf4e7b3704207cb1e9c952eb23d4f759dc09a5d1"
+    },
+    "source-05/tests/server_realtime_conversation_session_test.cpp": {
+      "bytes": 99253,
+      "sha256": "97bbad31f5cea51ae487a7fa4d202597b563290de1d54241d9e0bb0d92008879"
+    },
+    "source-05/tests/server_realtime_mcp_context_test.cpp": {
+      "bytes": 10283,
+      "sha256": "130ebcc1ca4cc66638eebab0c28359622cda629369300cd3a4e3d36f801d294f"
+    }
+  },
+  "archive_sha256": "8ed354fdc1a12dd94396feaf48833fbdb53b0a0a28e98ec763d2eeba617a25d1"
+}

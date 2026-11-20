@@ -41,6 +41,14 @@ bool HasInputAudio(const Json& item) {
            return part.GetString("type") == "input_audio";
          });
 }
+std::vector<RealtimeMcpOutputBinding> OutputBindings(
+    const RealtimeMcpContext* context) {
+  std::vector<RealtimeMcpOutputBinding> output;
+  if (context)
+    for (const auto& binding : context->bindings)
+      output.push_back({binding.model_name, binding.server_label, binding.name});
+  return output;
+}
 }  // namespace
 
 struct RealtimeConversationSession::Work {
@@ -51,6 +59,8 @@ struct RealtimeConversationSession::Work {
   std::map<std::string, RealtimeItemTicket> tickets;
   std::vector<RealtimeItemTicket> temporary_inputs;
   std::unordered_set<std::string> deleted;
+  RealtimeMcpSelection mcp_selection;
+  std::vector<RealtimeItemTicket> mcp_import_tickets;
   std::thread worker;
   std::atomic<bool> done{false};
   bool prepared = false;
@@ -131,6 +141,25 @@ RealtimeConversationSession::RealtimeConversationSession(
       message_bytes_(message_bytes),
       history_(id_),
       speech_(id_) {
+  if (callbacks_.mcp_import && callbacks_.mcp_call) {
+    auto imports = *callbacks_.mcp_import;
+    imports.emit = [this](const Json& event) { return Emit(event); };
+    imports.new_id = [](std::string_view prefix) {
+      return detail::NewRequestId(std::string(prefix));
+    };
+    imports.interrupted = callbacks_.interrupted;
+    RealtimeMcpImportLimits limits;
+    limits.workers = 1;  // Matches the actual native transport's single slot.
+    mcp_imports_ = std::make_unique<RealtimeMcpImports>(
+        history_, std::move(imports), limits);
+    auto calls = *callbacks_.mcp_call;
+    calls.emit = [this](const Json& event) { return Emit(event); };
+    calls.new_id = [](std::string_view prefix) {
+      return detail::NewRequestId(std::string(prefix));
+    };
+    calls.interrupted = callbacks_.interrupted;
+    mcp_calls_ = std::make_unique<RealtimeMcpCalls>(history_, std::move(calls));
+  }
   if (callbacks_.input) {
     RealtimeConversationInputCallbacks input;
     input.now = callbacks_.now;
@@ -141,7 +170,9 @@ RealtimeConversationSession::RealtimeConversationSession(
     };
     input.capture_response = [this](RealtimePromptSelection* selected) {
       *selected = settings_.Current();
-      return ObjectReply{};
+      auto reply = CaptureMcp(mcp_selection_, &selected->mcp);
+      if (Accepted(reply)) Set(&selected->settings, "tools", selected->mcp->tools);
+      return reply;
     };
     input.committed = [this](RealtimeInputCommit notice) {
       if (!notice.settings.RespondOnCommit(notice.automatic))
@@ -184,6 +215,8 @@ void RealtimeConversationSession::Release(Work& work) noexcept {
 void RealtimeConversationSession::Cancel() noexcept {
   cancelled_ = true;
   if (input_) input_->Cancel();
+  if (mcp_imports_) mcp_imports_->Cancel();
+  if (mcp_calls_) mcp_calls_->Cancel();
   for (auto& work : work_) {
     if (work->control)
       work->control->Cancel(RequestControl::State::kDisconnect);
@@ -197,6 +230,8 @@ void RealtimeConversationSession::Join() noexcept {
   }
   work_.clear();
   if (input_) input_->Join();
+  if (mcp_imports_) mcp_imports_->Join();
+  if (mcp_calls_) mcp_calls_->Join();
 }
 ObjectReply RealtimeConversationSession::Emit(Json event) {
   if (cancelled_ || output_.Closed() ||
@@ -262,16 +297,92 @@ bool RealtimeConversationSession::Start() {
   auto event =
       Object({{"type", String("session.update")}, {"session", settings}});
   if (!Accepted(Shape(event, RealtimeShape::kClientEvent)) ||
-      settings.GetString("type") != "realtime" ||
-      !Accepted(ValidateSelection(settings_.Current())))
+      settings.GetString("type") != "realtime")
     return false;
+  auto selected = settings_.Current();
+  bool commit = false;
+  auto reply = SelectMcp(selected, Object(), true, &mcp_selection_,
+                          &mcp_current_, &commit);
+  if (!Accepted(reply)) return false;
+  selected.mcp = mcp_current_;
+  Set(&selected.settings, "tools", selected.mcp->tools);
+  if (!Accepted(ValidateSelection(selected))) return false;
+  ChatPlanError error;
+  if (commit && !mcp_definitions_.Commit(&mcp_selection_, &error)) return false;
   started_ = true;
-  return Event("session.created", Object({{"session", settings}})) &&
+  return Event("session.created", Object({{"session", PublicSettings()}})) &&
          Event(
              "conversation.created",
              Object({{"conversation",
                       Object({{"id", String(conversation_id_)},
-                              {"object", String("realtime.conversation")}})}}));
+                              {"object", String("realtime.conversation")}})}})) &&
+         ImportMcp(mcp_selection_);
+}
+ObjectReply RealtimeConversationSession::CaptureMcp(
+    const RealtimeMcpSelection& selection,
+    std::shared_ptr<const RealtimeMcpContext>* context) {
+  std::vector<RealtimeMcpCatalog> catalogs;
+  if (mcp_imports_)
+    for (const auto& definition : selection.Active()) {
+      RealtimeItemTicket ticket;
+      RealtimeMcpCatalog catalog;
+      if (mcp_imports_->Find(definition, &ticket) &&
+          Accepted(mcp_imports_->Get(ticket, &catalog)))
+        catalogs.push_back(std::move(catalog));
+    }
+  ChatPlanError error;
+  const auto status =
+      CaptureRealtimeMcpContext(selection, catalogs, context, &error);
+  return status ? ObjectReply{}
+                : object_detail::Error(error.http_status, error.code,
+                                       status.message());
+}
+ObjectReply RealtimeConversationSession::SelectMcp(
+    const RealtimePromptSelection& source, const Json& response, bool refresh,
+    RealtimeMcpSelection* selection,
+    std::shared_ptr<const RealtimeMcpContext>* context, bool* commit) {
+  const auto* tools = response.Find("tools");
+  if (!tools) tools = source.settings.Find("tools");
+  const auto requested = tools ? *tools : Array();
+  const auto* old = settings_.Current().settings.Find("tools");
+  *commit = refresh || !mcp_selection_.Tools().IsArray() ||
+            OutputJson(requested) != OutputJson(old ? *old : Array());
+  ChatPlanError error;
+  if (*commit) {
+    const auto status = mcp_definitions_.Prepare(requested, selection, &error);
+    if (!status)
+      return object_detail::Error(error.http_status, error.code, status.message());
+  } else {
+    *selection = mcp_selection_;
+  }
+  if (!selection->Active().empty() && (!mcp_imports_ || !mcp_calls_))
+    return object_detail::Error(503, "realtime_processor_unavailable",
+                                "Native MCP execution is not connected");
+  return CaptureMcp(*selection, context);
+}
+Json RealtimeConversationSession::PublicSettings() const {
+  auto value = settings_.Current().settings;
+  if (mcp_current_) Set(&value, "tools", mcp_current_->tools);
+  return value;
+}
+bool RealtimeConversationSession::ImportMcp(
+    const RealtimeMcpSelection& selection, Work* work) {
+  for (const auto& definition : selection.Active()) {
+    RealtimeItemTicket ticket;
+    ObjectReply reply;
+    if (!mcp_imports_->Find(definition, &ticket))
+      reply = mcp_imports_->Begin(definition, detail::NewRequestId("mcpl_"),
+                                 !work || work->job.in_conversation, &ticket);
+    if (!Accepted(reply)) {
+      if (work) {
+        work->local_error = reply;
+        work->done = true;
+      }
+      return ErrorEvent(std::move(reply));
+    }
+    if (work) work->mcp_import_tickets.push_back(std::move(ticket));
+  }
+  return true;
 }
 ObjectReply RealtimeConversationSession::ValidateSelection(
     const RealtimePromptSelection& selection) {
@@ -360,12 +471,27 @@ bool RealtimeConversationSession::Settings(const Json& update,
     return ErrorEvent(Invalid("realtime_session_type_invalid",
                               "Session type cannot change", "session.type"),
                       event_id);
+  RealtimeMcpSelection mcp;
+  std::shared_ptr<const RealtimeMcpContext> context;
+  bool commit = false;
   auto reply = settings_.Update(
       update, PromptResolver(),
-      [this](const auto& selection) { return ValidateSelection(selection); });
+      [&](const auto& selection) {
+        auto result = SelectMcp(selection, Object(), update.Has("tools"), &mcp,
+                                 &context, &commit);
+        if (!Accepted(result)) return result;
+        auto selected = selection;
+        selected.mcp = context;
+        Set(&selected.settings, "tools", context->tools);
+        return ValidateSelection(selected);
+      });
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
-  return Event("session.updated",
-               Object({{"session", settings_.Current().settings}}));
+  ChatPlanError error;
+  if (commit && !mcp_definitions_.Commit(&mcp, &error)) return false;
+  mcp_selection_ = std::move(mcp);
+  mcp_current_ = std::move(context);
+  return Event("session.updated", Object({{"session", PublicSettings()}})) &&
+         ImportMcp(mcp_selection_);
 }
 bool RealtimeConversationSession::CreateItem(const Json& event) {
   RealtimeItemTicket ticket;
@@ -374,6 +500,13 @@ bool RealtimeConversationSession::CreateItem(const Json& event) {
   const auto before =
       previous ? std::optional<std::string_view>(previous->str) : std::nullopt;
   const auto& source = *event.Find("item");
+  if (source.GetString("type") == "mcp_approval_response") {
+    const auto reply = mcp_calls_
+                           ? mcp_calls_->Decide(source, before)
+                           : object_detail::Error(503, "realtime_processor_unavailable",
+                                                  "Native MCP is not connected");
+    return Accepted(reply) || ErrorEvent(reply, event.GetString("event_id"));
+  }
   Json item;
   if (HasInputAudio(source)) {
     if (!input_)
@@ -406,7 +539,13 @@ bool RealtimeConversationSession::ItemCommand(const Json& event, bool erase) {
   auto status = history_.Find(id, &ticket);
   Json item;
   if (status) {
-    if (input_ && input_->Owns(ticket)) {
+    if (erase && mcp_calls_ && mcp_calls_->Owns(ticket)) {
+      const auto reply = mcp_calls_->Erase(ticket);
+      if (!Accepted(reply)) return ErrorEvent(reply, event.GetString("event_id"));
+    } else if (erase && mcp_imports_ && mcp_imports_->Owns(ticket)) {
+      const auto reply = mcp_imports_->Erase(ticket);
+      if (!Accepted(reply)) return ErrorEvent(reply, event.GetString("event_id"));
+    } else if (input_ && input_->Owns(ticket)) {
       const auto reply =
           erase ? input_->Erase(ticket) : input_->Retrieve(ticket, &item);
       if (!Accepted(reply))
@@ -581,6 +720,21 @@ bool RealtimeConversationSession::CreateResponse(
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
   if (response.Has("prompt") && selection.prompt)
     Set(&response, "prompt", selection.prompt->reference);
+  RealtimeMcpSelection mcp_selection;
+  bool mcp_commit = false;
+  if (!automatic) {
+    reply = SelectMcp(selection, response, response.Has("tools"),
+                       &mcp_selection, &selection.mcp, &mcp_commit);
+    if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+  }
+  if (!selection.mcp)
+    return ErrorEvent(object_detail::Error(500, "realtime_mcp_snapshot_missing",
+                                           "Native tool snapshot missing"), event_id);
+  Set(&selection.settings, "tools", selection.mcp->tools);
+  if (response.Has("tools")) Set(&response, "tools", selection.mcp->tools);
+  const bool wait_import =
+      !automatic && (response.Has("tools") || response.Has("prompt")) &&
+      selection.mcp->catalogs.size() < selection.mcp->definitions.size();
   auto work = std::make_unique<Work>();
   ScopeExit unpublished([&] {
     if (work) Release(*work);
@@ -592,6 +746,8 @@ bool RealtimeConversationSession::CreateResponse(
                in_conversation,
                std::move(selection.prompt)};
   work->job.native_input = bool(input_);
+  work->job.mcp = std::move(selection.mcp);
+  work->mcp_selection = std::move(mcp_selection);
   ChatPlanError speech_error;
   auto status = PlanRealtimeSpeech(work->job.settings, response, &work->speech,
                                    &speech_error);
@@ -625,7 +781,8 @@ bool RealtimeConversationSession::CreateResponse(
   if (automatic) {
     work->job.snapshot = std::move(automatic->context);
   } else {
-    status = history_.Capture(response.Find("input"), &work->job.snapshot);
+    status = history_.Capture(response.Find("input"), &work->job.snapshot,
+                               true);
   }
   if (!status)
     return ErrorEvent(
@@ -633,12 +790,15 @@ bool RealtimeConversationSession::CreateResponse(
         event_id);
   const bool pending = !work->job.snapshot.pending_inputs.empty() ||
                        !work->job.snapshot.pending_outputs.empty();
-  if (pending) {
+  if (pending || wait_import) {
     // Validate response options now without presenting pending audio as text.
     // The resolved immutable input is validated before starting actual work.
     auto preview = work->job;
-    preview.snapshot = {};
-    preview.snapshot.items = Array();
+    if (pending) {
+      preview.snapshot = {};
+      preview.snapshot.items = Array();
+    }
+    preview.mcp_definitions_only = wait_import;
     reply = callbacks_.prepare(preview);
   } else {
     reply = callbacks_.prepare(work->job);
@@ -665,6 +825,7 @@ bool RealtimeConversationSession::CreateResponse(
   options.response_id = work->job.response_id;
   options.conversation_id = conversation_id_;
   options.in_conversation = in_conversation;
+  options.mcp_bindings = OutputBindings(work->job.mcp.get());
   if (work->speech.enabled) options.audio_format = work->speech.format;
   if (const auto* metadata = response.Find("metadata"))
     options.metadata = *metadata;
@@ -682,8 +843,12 @@ bool RealtimeConversationSession::CreateResponse(
       });
   // Establish ownership before publishing or spawning, including exception
   // paths.
+  ChatPlanError mcp_error;
+  if (mcp_commit && !mcp_definitions_.Commit(&work->mcp_selection, &mcp_error))
+    return ErrorEvent(Invalid(mcp_error.code, "MCP selection changed"), event_id);
   work_.push_back(std::move(work));
   if (!Accepted(active->output->Begin())) return false;
+  if (wait_import && !ImportMcp(active->mcp_selection, active)) return false;
   if (input_ && active->job.in_conversation) input_->CancelIdle();
   AdvanceWork(*active);
   return true;
@@ -718,6 +883,34 @@ void RealtimeConversationSession::AdvanceWork(Work& work) {
   if (work.control->Cancelled()) {
     work.done = true;  // No executor or model admission to cancel/replay.
     return;
+  }
+  if (!work.mcp_import_tickets.empty()) {
+    std::vector<RealtimeMcpCatalog> catalogs;
+    for (const auto& ticket : work.mcp_import_tickets) {
+      if (mcp_imports_->Pending(ticket)) return;
+      RealtimeMcpCatalog catalog;
+      work.local_error = mcp_imports_->Get(ticket, &catalog);
+      if (!Accepted(work.local_error)) {
+        work.done = true;
+        return;
+      }
+      catalogs.push_back(std::move(catalog));
+    }
+    ChatPlanError error;
+    const auto status = CaptureRealtimeMcpContext(
+        work.mcp_selection, catalogs, &work.job.mcp, &error);
+    if (!status) {
+      work.local_error = object_detail::Error(error.http_status, error.code,
+                                              status.message());
+      work.done = true;
+      return;
+    }
+    work.local_error = work.output->BindMcp(OutputBindings(work.job.mcp.get()));
+    work.mcp_import_tickets.clear();
+    if (!Accepted(work.local_error)) {
+      work.done = true;
+      return;
+    }
   }
   bool ready = false;
   const auto status = history_.Resolve(&work.job.snapshot, &ready);
@@ -762,6 +955,7 @@ bool RealtimeConversationSession::InputReady() {
 }
 bool RealtimeConversationSession::InputSpeech(bool started, bool interrupt) {
   if (!started || !interrupt) return true;
+  if (mcp_calls_) mcp_calls_->CancelResponse({});
   for (auto& work : work_) {
     if (!work->job.in_conversation) continue;
     work->cancelled_after_generation |= !work->control->Cancel();
@@ -771,7 +965,7 @@ bool RealtimeConversationSession::InputSpeech(bool started, bool interrupt) {
 }
 bool RealtimeConversationSession::CancelResponse(const Json& event) {
   const auto id = event.GetString("response_id");
-  bool matched = false;
+  bool matched = mcp_calls_ && mcp_calls_->CancelResponse(id);
   for (auto& work : work_) {
     if (id.empty() ? !work->job.in_conversation : id != work->job.response_id)
       continue;
@@ -831,6 +1025,15 @@ bool RealtimeConversationSession::Tick() {
   // Bound one iteration, and preserve control-command responsiveness under
   // slow output. Producers block on their own mailbox, not the socket reader.
   if (!events_.empty()) return true;
+  // Drain completed imports before deciding which operation owns the native
+  // transport's single slot. Awaiting user approval does not hold that slot.
+  if (mcp_imports_ && !Accepted(mcp_imports_->Tick(false))) return false;
+  if (mcp_calls_ && (!mcp_imports_ || !mcp_imports_->Workers()) &&
+      !Accepted(mcp_calls_->Tick()))
+    return false;
+  if (mcp_imports_ && (!mcp_calls_ || !mcp_calls_->Workers()) &&
+      !Accepted(mcp_imports_->Tick()))
+    return false;
   for (auto it = work_.begin(); it != work_.end();) {
     auto& work = **it;
     AdvanceWork(work);
@@ -907,6 +1110,31 @@ bool RealtimeConversationSession::Tick() {
       // Local mismatch can still close honestly; a failed sink refuses this
       // call without replaying any already-published callback or event.
       terminal = work.output->Finish(end);
+    }
+    if (Accepted(terminal)) {
+      for (const auto& generated : work.output->TakeMcpCalls()) {
+        const auto found = work.tickets.find(generated.item.GetString("id"));
+        const auto* context = work.job.mcp.get();
+        const RealtimeMcpCatalog* catalog = nullptr;
+        if (context && generated.binding_index < context->bindings.size()) {
+          const auto& binding = context->bindings[generated.binding_index];
+          for (const auto& candidate : context->catalogs)
+            if (candidate.item.GetString("id") == binding.catalog_id)
+              catalog = &candidate;
+        }
+        if (!mcp_calls_ || !catalog || found == work.tickets.end()) {
+          terminal = object_detail::Error(500, "realtime_mcp_handoff_invalid",
+                                          "Native call lost its frozen catalog");
+        } else {
+          terminal = mcp_calls_->Begin(found->second, generated, *catalog,
+                                       work.job.response_id,
+                                       work.job.in_conversation);
+        }
+        if (!Accepted(terminal)) {
+          ErrorEvent(terminal);
+          break;
+        }
+      }
     }
     if (Accepted(terminal) &&
         end.state != RealtimeResponseEnd::State::kFailed &&

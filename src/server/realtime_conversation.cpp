@@ -463,6 +463,16 @@ Status RealtimeConversation::Update(const RealtimeItemTicket& ticket,
     return Invalid("native input requires its ASR completion owner");
   return UpdateEntry(ticket, item, terminal, grow);
 }
+Status RealtimeConversation::CreateMcpMetadata(
+    const Json& item, std::string_view generated_id,
+    std::optional<std::string_view> previous, RealtimeItemTicket* output) {
+  if (item.GetString("type") != "mcp_approval_request" &&
+      item.GetString("type") != "mcp_approval_response")
+    return Invalid("Expected native MCP approval metadata");
+  auto status = Create(item, generated_id, previous, output);
+  if (status) entries_[Position(*output)].native_mcp_metadata = true;
+  return status;
+}
 Status RealtimeConversation::BindMcpApproval(const RealtimeItemTicket& ticket,
                                              const Json& approval) {
   const auto index = Position(ticket);
@@ -565,7 +575,8 @@ Status RealtimeConversation::SnapshotImpl(
   };
   auto append = [&](const Json& item, bool pending, uint64_t generation = 0,
                     bool native_input = false,
-                    bool idle_timeout = false) -> Status {
+                    bool idle_timeout = false,
+                    bool owned_mcp = false) -> Status {
     if (pending && (!allow_pending || (!native_input && !wait_for_output)))
       return Invalid("input or output item is still pending");
     if (snapshot.items.array.size() == maximum_items_)
@@ -584,6 +595,8 @@ Status RealtimeConversation::SnapshotImpl(
           .push_back(snapshot.items.array.size());
     snapshot.items.array.push_back(std::move(copy));
     snapshot.tickets.push_back({owner_, item.GetString("id"), generation});
+    snapshot.owned_mcp.push_back(owned_mcp &&
+                                 item.GetString("type").starts_with("mcp_"));
     remaining -= bytes;
     return {};
   };
@@ -598,7 +611,8 @@ Status RealtimeConversation::SnapshotImpl(
           entry.item.GetString("type") == "mcp_list_tools")
         continue;
       auto status = append(entry.item, entry.pending, entry.generation,
-                           entry.native_input, entry.idle_timeout);
+                           entry.native_input, entry.idle_timeout,
+                           entry.server_output || entry.native_mcp_metadata);
       if (!status) return status;
     }
   } else {
@@ -615,7 +629,8 @@ Status RealtimeConversation::SnapshotImpl(
         if (unexecutable(entry))
           return Invalid("failed native input or incomplete tool context");
         status = append(entry.item, entry.pending, entry.generation,
-                        entry.native_input, entry.idle_timeout);
+                        entry.native_input, entry.idle_timeout,
+                        entry.server_output || entry.native_mcp_metadata);
       } else {
         status = append(item, false);
       }
@@ -634,7 +649,9 @@ Status RealtimeConversation::Resolve(RealtimeConversationSnapshot* snapshot,
       snapshot->items.array.size() > maximum_items_ ||
       snapshot->tickets.size() != snapshot->items.array.size() ||
       snapshot->pending_inputs.size() > snapshot->items.array.size() ||
-      snapshot->pending_outputs.size() > snapshot->items.array.size())
+      snapshot->pending_outputs.size() > snapshot->items.array.size() ||
+      (!snapshot->owned_mcp.empty() &&
+       snapshot->owned_mcp.size() != snapshot->items.array.size()))
     return Invalid("invalid pending input snapshot");
   std::array<bool, kMaximumItems> waiting{};
   std::array<bool, kMaximumItems> waiting_output{}, omit{};
@@ -697,6 +714,8 @@ Status RealtimeConversation::Resolve(RealtimeConversationSnapshot* snapshot,
       if (!omit[i]) continue;
       copy.items.array.erase(copy.items.array.begin() + i);
       copy.tickets.erase(copy.tickets.begin() + i);
+      if (!copy.owned_mcp.empty())
+        copy.owned_mcp.erase(copy.owned_mcp.begin() + i);
     }
     copy.pending_inputs.clear();
     copy.pending_outputs.clear();

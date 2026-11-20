@@ -26,12 +26,17 @@
 #include "q4t/server/files.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/output_schema.h"
+#include "q4t/server/schema_graph.h"
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_mcp_state.h"
 #include "q4t/server/realtime_mcp_catalog.h"
 #include "q4t/server/realtime_mcp_execution.h"
 #include "q4t/server/realtime_mcp_item.h"
 #include "q4t/server/realtime_mcp_calls.h"
+#include "q4t/server/realtime_mcp_history.h"
+#include "q4t/server/realtime_chat_plan.h"
+#include "q4t/server/realtime_conversation_session.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/server/responses_jobs.h"
@@ -4684,12 +4689,13 @@ Q4T_TEST(mcp_agent_config_strict_network_and_redacted_description) {
 
 namespace {
 Json SmallAgentConfig() {
-  return Object({{"version", Number(1)},
-                 {"api_base", String("https://control.example/v1")},
-                 {"api_key", String("control-token")},
-                 {"tunnel_id", String("tunnel_private")},
-                 {"target", Object({{"url", String("https://mcp.example")},
-                                    {"authorization", String("target-token")}})}});
+  return Object(
+      {{"version", Number(1)},
+       {"api_base", String("https://control.example/v1")},
+       {"api_key", String("control-token")},
+       {"tunnel_id", String("tunnel_private")},
+       {"target", Object({{"url", String("https://mcp.example")},
+                          {"authorization", String("target-token")}})}});
 }
 size_t AgentConfigStringBytes(const Json& value) {
   if (value.IsString()) return value.str.size();
@@ -4712,7 +4718,8 @@ Q4T_TEST(mcp_agent_config_redirect_authority_is_not_silently_discarded) {
       Set(&raw, field, Object({{"max_redirects", value}}));
       Q4T_CHECK(!ParseMcpTunnelAgentConfig(OutputJson(raw), &config));
     }
-    for (const auto& policy : {Object(), Object({{"max_redirects", Number(0)}})}) {
+    for (const auto& policy :
+         {Object(), Object({{"max_redirects", Number(0)}})}) {
       Set(&raw, field, policy);
       Q4T_CHECK(ParseMcpTunnelAgentConfig(OutputJson(raw), &config));
       Q4T_CHECK(config.control_fetch.max_redirects == 0 &&
@@ -4760,11 +4767,12 @@ Q4T_TEST(mcp_agent_config_exact_worker_budget_round_trips_original_authority) {
   McpTunnelAgentConfig checked;
   Q4T_CHECK(ParseMcpTunnelAgentConfig(bytes, &checked));
   Q4T_CHECK(SerializeMcpTunnelAgentConfig(checked) == bytes &&
-            checked.sha256 == Digest(bytes) && checked.api_key == config.api_key &&
+            checked.sha256 == Digest(bytes) &&
+            checked.api_key == config.api_key &&
             checked.target.authorization == config.target.authorization);
   checked.target.authorization.push_back('b');
   Q4T_CHECK(!ParseMcpTunnelAgentConfig(SerializeMcpTunnelAgentConfig(checked),
-                                      &config));
+                                       &config));
   return true;
 }
 
@@ -5942,10 +5950,9 @@ Q4T_TEST(realtime_mcp_native_session_save_conflict_preserves_durable_outcome) {
     if (ExecutionOk(current)) {
       auto changed = *current.value.Find("session");
       Set(&changed, "lost", Boolean(true));
-      const auto saved =
-          state.BindSession("mcpl_realtime", f.catalog.definition,
-                            current.value.GetInt("revision"),
-                            changed, ExecutionAccess());
+      const auto saved = state.BindSession(
+          "mcpl_realtime", f.catalog.definition,
+          current.value.GetInt("revision"), changed, ExecutionAccess());
       newer_session_saved =
           ExecutionOk(saved) && saved.value.GetInt("revision") ==
                                     current.value.GetInt("revision") + 1;
@@ -5974,7 +5981,7 @@ Q4T_TEST(realtime_mcp_native_session_save_conflict_preserves_durable_outcome) {
 
 namespace {
 bool RealtimeActualCalls(bool approval_required,
-                        bool cancel_unpublished = false) {
+                         bool cancel_unpublished = false) {
   RealtimeNativeFixture f;
   if (!f.Import(approval_required ? "always" : "never")) return false;
   RealtimeConversation history("sess_actual_calls");
@@ -5998,9 +6005,9 @@ bool RealtimeActualCalls(bool approval_required,
     access.cancelled = cancelled;
     switch (job.action) {
       case RealtimeMcpAction::kPropose: {
-        auto reply = ProposeRealtimeMcpCall(f.objects, f.config, job.catalog,
-                                           job.generated, job.response_id,
-                                           access);
+        auto reply =
+            ProposeRealtimeMcpCall(f.objects, f.config, job.catalog,
+                                   job.generated, job.response_id, access);
         if (cancel_unpublished) {
           original_approval = reply.value;
           proposal_ready = true;
@@ -6068,7 +6075,8 @@ bool RealtimeActualCalls(bool approval_required,
             original_approval.GetString("id") ||
         !actual.Find("error") ||
         OutputJson(*actual.Find("error")).find("Tool approval denied") ==
-            std::string::npos || f.server.calls != 0)
+            std::string::npos ||
+        f.server.calls != 0)
       return false;
     return std::ranges::none_of(events, [](const auto& event) {
       const auto* item = event.Find("item");
@@ -6094,5 +6102,319 @@ Q4T_TEST(realtime_mcp_calls_actual_native_approval_http_and_sdk_events) {
 }
 Q4T_TEST(realtime_mcp_calls_actual_native_unpublished_approval_cancel) {
   Q4T_CHECK(RealtimeActualCalls(true, true));
+  return true;
+}
+
+Q4T_TEST(realtime_mcp_history_authenticates_sdk_result_and_rejects_forgery) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import());
+  const auto proposed = f.Propose();
+  RealtimeMcpExecution result;
+  Q4T_CHECK(ExecutionOk(proposed) &&
+            ExecutionOk(f.Execute(proposed.value, &result)));
+  RealtimeMcpCallProjection view;
+  ChatPlanError error;
+  Q4T_CHECK(ProjectRealtimeMcpCall(result.item, &view, &error));
+  RealtimeConversationSnapshot snapshot;
+  snapshot.items = Array({view.item});
+  Json native;
+  Q4T_CHECK(ExecutionOk(ResolveRealtimeMcpHistory(
+      &f.objects, f.config, snapshot, ExecutionAccess(), &native)));
+  Q4T_CHECK(OutputJson(native.array[0]) == OutputJson(result.item));
+  Set(&snapshot.items.array[0], "output", String("forged output"));
+  const auto old = OutputJson(native);
+  Q4T_CHECK(!ResolveRealtimeMcpHistory(&f.objects, f.config, snapshot,
+                                       ExecutionAccess(), &native)
+                 .ok());
+  Q4T_CHECK(OutputJson(native) == old && f.server.calls == 1);
+  return true;
+}
+Q4T_TEST(realtime_mcp_history_denial_errors_and_scope_are_authenticated) {
+  RealtimeNativeFixture f;
+  Q4T_CHECK(f.Import("always"));
+  const auto proposed = f.Propose();
+  Q4T_CHECK(ExecutionOk(proposed));
+  const auto denied =
+      DecideRealtimeMcpCall(f.objects, f.config, f.catalog.definition,
+                            RealtimeAwaitingCall(proposed.value),
+                            RealtimeDecision(proposed.value, false),
+                            "resp_realtime", ExecutionAccess());
+  RealtimeMcpCallProjection view;
+  ChatPlanError error;
+  Q4T_CHECK(ExecutionOk(denied) &&
+            ProjectRealtimeMcpCall(denied.value, &view, &error));
+  RealtimeConversationSnapshot snapshot;
+  snapshot.items = Array(
+      {view.item, proposed.value, RealtimeDecision(proposed.value, false)});
+  Json native;
+  Q4T_CHECK(ExecutionOk(ResolveRealtimeMcpHistory(
+      &f.objects, f.config, snapshot, ExecutionAccess(), &native)));
+  Q4T_CHECK(OutputJson(native.array[0]) == OutputJson(denied.value));
+  auto other = ExecutionAccess();
+  other.scope = "client:other";
+  Q4T_CHECK(
+      !ResolveRealtimeMcpHistory(&f.objects, f.config, snapshot, other, &native)
+           .ok());
+  Set(&Field(snapshot.items.array[0], "error"), "message",
+      String("invented failure"));
+  Q4T_CHECK(!ResolveRealtimeMcpHistory(&f.objects, f.config, snapshot,
+                                       ExecutionAccess(), &native)
+                 .ok());
+  Q4T_CHECK(f.server.calls == 0);
+  return true;
+}
+
+namespace {
+bool RealtimeActualSession(bool approval, bool response_only = false) {
+  RealtimeNativeFixture f;
+  f.config.max_len = 8192;
+  WebSocketOutput output;
+  RequestRegistry requests;
+  std::vector<Json> events;
+  std::atomic<size_t> generations{0};
+  RealtimeConversationCallbacks callbacks;
+  const auto prepare = [&](const Json& settings, const Json& response,
+                           const Json& items, const RealtimeMcpContext* mcp,
+                           bool preview, RealtimeChatPlan* plan) {
+    Json native;
+    auto reply = PreviewRealtimeMcpHistory(items, &native);
+    if (!ExecutionOk(reply)) return reply;
+    ChatPlanError error;
+    const auto status =
+        PlanRealtimeChat(settings, response, items, f.config, plan, &error,
+                         nullptr, false, mcp, preview, &native);
+    return status ? ObjectReply{}
+                  : Error(error.http_status, error.code, status.message());
+  };
+  callbacks.validate_prompt = [&](const RealtimePromptSelection& selected) {
+    RealtimeChatPlan plan;
+    return prepare(selected.settings, Object(), Array(), selected.mcp.get(),
+                   true, &plan);
+  };
+  callbacks.prepare = [&](const RealtimeConversationJob& job) {
+    RealtimeChatPlan plan;
+    return prepare(job.settings, job.response, job.snapshot.items,
+                   job.mcp.get(), job.mcp_definitions_only, &plan);
+  };
+  callbacks.acquire = [&](const std::string& id) {
+    return requests.Register(id, "", Clock::now() + 5s);
+  };
+  callbacks.release = [&](const auto& control) { requests.Remove(control); };
+  callbacks.mcp_import.emplace();
+  callbacks.mcp_import->import = [&](const auto& definition, std::string id,
+                                     auto deadline, const auto& cancelled,
+                                     RealtimeMcpCatalog* catalog) {
+    auto access = ExecutionAccess();
+    access.deadline = deadline;
+    access.cancelled = cancelled;
+    return ImportRealtimeMcpCatalog(f.objects, f.config, definition, access,
+                                    std::move(id), catalog);
+  };
+  callbacks.mcp_call.emplace();
+  callbacks.mcp_call->run = [&](const RealtimeMcpCallJob& job, auto deadline,
+                                const auto& cancelled,
+                                RealtimeMcpExecution* result) {
+    auto access = ExecutionAccess();
+    access.deadline = deadline;
+    access.cancelled = cancelled;
+    switch (job.action) {
+      case RealtimeMcpAction::kPropose:
+        return ProposeRealtimeMcpCall(f.objects, f.config, job.catalog,
+                                      job.generated, job.response_id, access);
+      case RealtimeMcpAction::kDecide:
+        return DecideRealtimeMcpCall(f.objects, f.config,
+                                     job.catalog.definition, job.generated,
+                                     job.decision, job.response_id, access);
+      case RealtimeMcpAction::kExecute:
+        return ExecuteRealtimeMcpCall(f.objects, f.config,
+                                      job.catalog.definition, job.native_call,
+                                      job.response_id, access, result);
+      case RealtimeMcpAction::kAbandon:
+        return AbandonRealtimeMcpCall(f.objects, f.config,
+                                      job.catalog.definition, job.generated,
+                                      job.response_id, access);
+    }
+    return Error(500, "fixture_action", "Invalid fixture action");
+  };
+  callbacks.execute = [&](const RealtimeConversationJob& job,
+                          const auto& control, const RealtimeDeltaSink& emit,
+                          const RealtimeSpeechSink&) {
+    RealtimeGenerationResult result;
+    Json native;
+    result.reply = ResolveRealtimeMcpHistory(&f.objects, f.config, job.snapshot,
+                                             ExecutionAccess(), &native);
+    if (!ExecutionOk(result.reply)) return result;
+    RealtimeChatPlan plan;
+    ChatPlanError error;
+    auto status = PlanRealtimeChat(
+        job.settings, job.response, job.snapshot.items, f.config, &plan, &error,
+        nullptr, false, job.mcp.get(), false, &native);
+    if (!status) {
+      result.reply = Error(error.http_status, error.code, status.message());
+      return result;
+    }
+    const auto generation = generations++;
+    ChatResponseParser parser;
+    status = parser.Init(plan.generation.generation_request,
+                         "<|im_start|>assistant\n<think>\n\n</think>\n\n",
+                         control->id(), true);
+    std::vector<SchemaReceipt> receipts;
+    std::string text = "document result received";
+    if (!generation) {
+      if (!job.mcp || job.mcp->bindings.empty()) {
+        result.reply = Error(500, "fixture_catalog", "No actual catalog");
+        return result;
+      }
+      if (plan.generation.chat.constraints.schema_receipts) {
+        const auto& functions =
+            plan.generation.generation_request.GetArray("tools")->array;
+        for (const auto& tool : functions) {
+          const auto& function = *tool.Find("function");
+          if (function.GetString("name") != job.mcp->bindings[0].model_name)
+            continue;
+          const auto value = Object({{"path", String("docs/MODEL.md")}});
+          OutputSchemaGraph schema;
+          status = schema.Init(*function.Find("parameters"), false, nullptr,
+                               "schema", OutputSchemaPurpose::kToolResult);
+          if (status) status = schema.Check(value);
+          SchemaReceipt receipt;
+          if (status)
+            status = MakeSchemaReceipt(function.GetString("name"),
+                                       *function.Find("parameters"), value,
+                                       &receipt);
+          if (status) receipts.push_back(receipt);
+        }
+        parser.SetSchemaReceipts(&receipts);
+      }
+      const std::string arguments =
+          plan.generation.chat.constraints.active
+              ? "<parameter=arguments>{\"path\":\"docs/MODEL.md\"}</parameter>"
+              : "<parameter=path>docs/MODEL.md</parameter>";
+      text = "<tool_call><function=" + job.mcp->bindings[0].model_name + ">" +
+             arguments + "</function></tool_call>";
+    } else if (OutputJson(native).find("document result") ==
+               std::string::npos) {
+      result.reply = Error(500, "fixture_result", "Actual tool result missing");
+      return result;
+    }
+    std::vector<ResponseDelta> deltas;
+    if (status) status = parser.Append(text, &deltas);
+    if (status) status = parser.Finish(false, &deltas);
+    if (!status) {
+      result.reply = Error(500, "fixture_parser", status.message());
+      return result;
+    }
+    for (const auto& delta : deltas) {
+      result.reply = emit(delta);
+      if (!result.reply.ok()) return result;
+    }
+    q4t::io::ParseJson(parser.MessageJson(), &result.message);
+    return result;
+  };
+  auto settings = DefaultRealtimeChatSettings(f.config, "");
+  const auto tools =
+      *ExecutionRequest(f.server, approval ? "always" : "never").Find("tools");
+  if (!response_only) Set(&settings, "tools", tools);
+  RealtimeConversationSession session("sess_native_mcp", "conv_native_mcp",
+                                      settings, output, callbacks);
+  if (!session.Start()) return false;
+  const auto read = [&]() {
+    while (!output.Front().empty()) {
+      const auto frame = output.Front();
+      WebSocketDecoder decoder(false, kWebSocketMessageLimit);
+      size_t used = 0;
+      if (decoder.Consume(
+              {reinterpret_cast<const uint8_t*>(frame.data()), frame.size()},
+              &used) != WebSocketRead::kEvent ||
+          used != frame.size())
+        return false;
+      Json event;
+      ChatPlanError error;
+      if (!q4t::io::ParseJson(std::string(decoder.Event().payload), &event) ||
+          !ValidateRealtimeWireShape(event, RealtimeShape::kServerEvent,
+                                     &error))
+        return false;
+      if (event.GetString("type") == "error") return false;
+      const auto serialized = OutputJson(event);
+      if (serialized.find("mcp-request-secret") != std::string::npos ||
+          serialized.find("mcp-header-secret") != std::string::npos)
+        return false;
+      events.push_back(std::move(event));
+      output.Acknowledge();
+    }
+    return true;
+  };
+  const auto send = [&](const Json& event) {
+    return session.Message(WebSocketOpcode::kText, OutputJson(event)) && read();
+  };
+  const auto count = [&](std::string_view type) {
+    return std::ranges::count_if(
+        events, [&](const auto& e) { return e.GetString("type") == type; });
+  };
+  const auto wait = [&](const std::function<bool()>& done) {
+    const auto deadline = Clock::now() + 5s;
+    while (Clock::now() < deadline) {
+      if (!session.Tick() || !read()) return false;
+      if (done()) return true;
+      std::this_thread::sleep_for(1ms);
+    }
+    return false;
+  };
+  auto create = Object({{"type", String("response.create")}});
+  if (response_only) {
+    Set(&create, "response",
+        Object({{"tools", tools},
+                {"tool_choice", Object({{"type", String("mcp")},
+                                        {"server_label", String("project")},
+                                        {"name", String("read_project")}})}}));
+  } else if (!wait([&] { return count("mcp_list_tools.completed") == 1; })) {
+    return false;
+  }
+  if (!send(create)) return false;
+  if (approval) {
+    Json proposal;
+    if (!wait([&] {
+          for (const auto& e : events)
+            if (e.GetString("type") == "conversation.item.done") {
+              const auto* item = e.Find("item");
+              if (item && item->GetString("type") == "mcp_approval_request")
+                proposal = *item;
+            }
+          return !proposal.IsNull();
+        }) ||
+        f.server.calls != 0 || count("response.done") != 1)
+      return false;
+    if (!send(Object({{"type", String("conversation.item.create")},
+                      {"item", RealtimeDecision(proposal, true)}})))
+      return false;
+  }
+  if (!wait([&] {
+        return !session.ActiveResponses() && !session.PendingMcp();
+      }) ||
+      f.server.calls != 1)
+    return false;
+  if (!send(Object({{"type", String("response.create")},
+                    {"response", Object({{"tool_choice", String("none")}})}})))
+    return false;
+  if (!wait([&] { return count("response.done") == 2; })) return false;
+  for (const auto& event : events)
+    if (event.GetString("type") == "response.done" &&
+        event.Find("response")->GetString("status") != "completed")
+      return false;
+  session.Cancel();
+  session.Join();
+  return generations == 2 && f.server.calls == 1;
+}
+}  // namespace
+Q4T_TEST(realtime_session_actual_native_mcp_http_tool_roundtrip) {
+  Q4T_CHECK(RealtimeActualSession(false));
+  return true;
+}
+Q4T_TEST(realtime_session_actual_native_mcp_approval_http_roundtrip) {
+  Q4T_CHECK(RealtimeActualSession(true));
+  return true;
+}
+Q4T_TEST(realtime_session_actual_native_mcp_response_override_http_roundtrip) {
+  Q4T_CHECK(RealtimeActualSession(false, true));
   return true;
 }
