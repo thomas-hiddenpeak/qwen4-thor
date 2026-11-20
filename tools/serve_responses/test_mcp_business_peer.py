@@ -5,6 +5,8 @@ import json
 import os
 from pathlib import Path
 import ssl
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -51,6 +53,34 @@ class FixturePki(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=os.environ['Q4T_TEST_OUTPUT_DIR']) as directory:
             with self.assertRaisesRegex(RuntimeError,'exact private fixture PKI'):
                 peer.ProjectMcp(ROOT,Path(directory),0,tls=dict(certificate='missing'))
+
+    def test_frozen_peer_needs_no_certificate_issuer_in_sealed_gateway_namespace(self):
+        with tempfile.TemporaryDirectory(dir=os.environ['Q4T_TEST_OUTPUT_DIR']) as directory:
+            root=Path(directory);material=peer.prepare_tls(root)
+            script='''
+import json,sys,types
+from pathlib import Path
+sys.path.insert(0,sys.argv[1])
+import tools
+gateway=types.ModuleType('tools.serve_gateway')
+gateway.__path__=[]
+sys.modules['tools.serve_gateway']=gateway
+tools.serve_gateway=gateway
+from tools.serve_responses.mcp_business_peer import ProjectMcp
+assert 'tools.serve_gateway.tls_fixture' not in sys.modules
+args=json.load(sys.stdin)
+server=ProjectMcp(Path(sys.argv[1]),Path(args['output']),0,tls=args['tls'])
+try:
+ assert server.server.server_port>0
+ assert 'tools.serve_gateway.tls_fixture' not in sys.modules
+finally:server.close()
+print('FROZEN_PKI_WITHOUT_ISSUER_PASS')
+'''
+            result=subprocess.run([sys.executable,'-I','-B','-c',script,str(ROOT)],
+                input=json.dumps(dict(output=str(root),tls=material)),
+                capture_output=True,text=True,timeout=10)
+            self.assertEqual(result.returncode,0,result.stderr)
+            self.assertEqual(result.stdout.strip(),'FROZEN_PKI_WITHOUT_ISSUER_PASS')
 
 
 if __name__=='__main__':unittest.main()

@@ -270,3 +270,8 @@ registry 5a44b4a3，当前MCP引擎/协议/实际配置绑定；原失败继续�
 [恢复驱动24项CPU已完成](evidence/serve-realtime-mcp-recovery-cpu-20261120/README.md)，
 26次执行含1项原夹具失败与2项补验；8.753秒、0GPU。运行时未改，
 继续私有封包与真实恢复，不能以CPU模拟认证替代实际持久状态验收。
+
+[入口依赖边界已修复](evidence/serve-realtime-mcp-recovery-bootstrap-cpu-20261120/README.md)：
+首个入口在0模型/0请求时失败，冻结证书的测试服务器不再在import时
+要求开发证书签发模块。3项CPU通过，包/运行时不变，原失败保留，
+同一总预算按新来源重冻结未执行驱动。

@@ -9,7 +9,6 @@ import threading
 import time
 
 from tools.examples.project_records import ProjectRecords
-from tools.serve_gateway import tls_fixture
 from tools.serve_service.package import require
 
 DOCUMENT = 'docs/MODEL.md'
@@ -46,6 +45,7 @@ class DocumentSource:
 
 def prepare_tls(output):
     """Prepare private fixture PKI offline, before sealing a recovery policy."""
+    from tools.serve_gateway import tls_fixture
     issuer = tls_fixture.ca(output/'ca')
     now = time.time()
     certificate, key = tls_fixture.issue(output/'leaf', 'localhost', issuer,
