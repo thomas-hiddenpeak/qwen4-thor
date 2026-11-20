@@ -1,0 +1,58 @@
+{
+  "driver/archive_client_failure_01.py": {
+    "sha256": "a18d4fa71b5d2281f6459f70d820bb8a883795e519b9a83e24afb86a2acabc39",
+    "bytes": 2811
+  },
+  "original/before.json": {
+    "sha256": "02ae5a446f6290a39a554c1dcbae1e3766a90f7a8f19b530ffe25df9bfa72d85",
+    "bytes": 25055
+  },
+  "original/bounded-operator-stop.json": {
+    "sha256": "cd2ca88cb279c68ace9017b712c493cc2049046a323fe64d43b5fca21a7ab1bd",
+    "bytes": 334
+  },
+  "original/cleanup.json": {
+    "sha256": "1f8311f9299189c26672ba81e662a82dbde3e4d12f3240cc6ee4977afc356b14",
+    "bytes": 2563
+  },
+  "original/client.events.jsonl": {
+    "sha256": "d5e859935e7e8d08aa4331bf0397eaedad8e9ab8069e22b5058d64279aab3d47",
+    "bytes": 386777
+  },
+  "original/client.sdk.json": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "original/client.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "original/counts.json": {
+    "sha256": "cafa8f55633d730256d7b567d57e3f5f0ada920063dd262f1fc188a9cf517490",
+    "bytes": 139
+  },
+  "original/failed-driver-sources.tar.gz": {
+    "sha256": "d08732c67d907c26b4895ec611fd4196cff096e9ea1a855cd0fbad8159ee6571",
+    "bytes": 9946
+  },
+  "original/lease/exit.json": {
+    "sha256": "025fb278f7d5077390268312a1054202425f6460d86be4b91f91d275674e8887",
+    "bytes": 692
+  },
+  "original/lease/nvml-queries.jsonl": {
+    "sha256": "787e78847596e0c08a4eecc22d5668ef4b6b84a295657cdc978beb769f721b10",
+    "bytes": 257213
+  },
+  "original/live-drained.json": {
+    "sha256": "5f7f59896b20cdae8c744f1aee53fce9a2f8bfdd3bc4a7e327f7322bcd478c6b",
+    "bytes": 25101
+  },
+  "original/model.log": {
+    "sha256": "f48aacc50f7dcec4614ff257456b58c2511e84a12a8c6fe716cfa1bc74ed266e",
+    "bytes": 10466
+  },
+  "original/result.json": {
+    "sha256": "799f239ef7e6cbc26c3c38d53eadc11d291742664cafa0a35893ef1f999b3457",
+    "bytes": 1569
+  }
+}

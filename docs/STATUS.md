@@ -7,10 +7,15 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+[Live首轮真实短验未通过](evidence/serve-live-client-business-failed-20261121/README.md)：
+原生TLS/SDK、真实ASR和语音输出运行，模型只说“明白。”，未委派。
+原回答保留；113.321秒/1启动/实际2项工作，107次NVML正常，资源清理
+完成、默认rev426保持。继续修正业务场景与有界失败收据，不追认原失败。
+
 [Live实际客户端驱动10项CPU](evidence/serve-live-client-driver-cpu-20261121/README.md)
 通过，官方SDK actor语法/驱动解析通过。接着冻结1模型/1连接/
 1ASR+2前台生成+1普通Chat、600秒的严格租约短验；原始语音、
-项目资料读取、原答案、结算与释放分别记录。尚未运行GPU。
+项目资料读取、原答案、结算与释放分别记录。首轮实际结果见上文。
 
 [Live原生主WSS绑定12项CPU](evidence/serve-live-binding-cpu-20261121/README.md)
 全部通过（9新增/3直接保护），宿主构建零警告。已接实际tokenizer、
