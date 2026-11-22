@@ -1,4 +1,4 @@
-# 当前状态（2026-11-21）
+# 当前状态（2026-11-23）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)完成全部33项任务；阶段验证、
@@ -6,6 +6,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 验证与必要业务短验，长稳实跑与已延期听感由用户负责。
 
 ## 正在推进
+
+原生 Responses 执行器事件通道通过14项针对性CPU检查，覆盖文本、工具、
+用量、背压与错误终态。服务端委派继续接入配置和工具结果续接。
+[原始记录](evidence/serve-live-responses-stream-cpu-20261123/README.md)。
 
 [Live音频播放与业务恢复短验通过](evidence/serve-live-fixture-http-20261121/README.md)：
 1启动/1片段/4工作/68.022秒，65次NVML正常且资源释放。实际播放逐字节

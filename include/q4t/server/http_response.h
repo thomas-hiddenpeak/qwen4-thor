@@ -19,6 +19,9 @@
 #include "q4t/server/http_observation.h"
 #include "q4t/server/finite_response.h"
 
+namespace q4t::server {
+class IResponsesStreamCapture;
+}
 namespace q4t::server::detail {
 
 enum class ResponseState {
@@ -80,6 +83,7 @@ class HttpResponseContext {
     // checks. All response writes remain detached, including error paths.
     int borrowed_fd = -1;
     FiniteResponse* output = nullptr;
+    IResponsesStreamCapture* responses = nullptr;
   };
   // Native background execution observes errors/admission without a socket,
   // transport worker, heartbeat or loopback request.
@@ -89,13 +93,11 @@ class HttpResponseContext {
   HttpResponseContext& operator=(const HttpResponseContext&) = delete;
   static HttpResponseContext* Current(int fd);
   bool CapturesJson() const { return captured_ != nullptr; }
+  bool CapturesResponses() const { return responses_capture_ != nullptr; }
+  bool BeginCapturedResponses();
   bool CaptureJson(int status, std::string_view content_type,
-                   std::string_view body) {
-    return captured_ && captured_->Record(status, content_type, body);
-  }
-  void RejectCapturedJson() noexcept {
-    if (captured_) captured_->Reject();
-  }
+                   std::string_view body);
+  void RejectCapturedJson() noexcept;
   const std::string& TraceId() const { return trace_id_; }
   bool SetTraceId(std::string_view id);
   struct PreparationUsage {
@@ -239,6 +241,7 @@ class HttpResponseContext {
   bool detached_ = false;
   bool websocket_ = false;
   FiniteResponse* captured_ = nullptr;
+  IResponsesStreamCapture* responses_capture_ = nullptr;
   bool keep_alive_ = false;
   bool http11_ = true;
   bool chunked_ = false;

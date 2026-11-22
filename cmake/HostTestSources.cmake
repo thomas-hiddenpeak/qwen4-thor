@@ -457,6 +457,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_finite_response_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_response.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/finite_response.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_responses_stream.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_native_responses_stream_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_contract_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_message_profile_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_tool_history.cpp

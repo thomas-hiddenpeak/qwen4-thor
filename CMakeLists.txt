@@ -554,6 +554,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_http.cpp
   src/server/http_response.cpp
   src/server/finite_response.cpp
+  src/server/native_responses_stream.cpp
   src/server/chat_response_parser.cpp
   src/server/thinking_budget.cpp
   src/server/text_stop.cpp
@@ -1047,6 +1048,7 @@ if(Q4T_BUILD_TESTS)
     src/server/object_store_options.cpp
     src/server/http_response.cpp
   src/server/finite_response.cpp
+  src/server/native_responses_stream.cpp
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
     src/server/websocket.cpp

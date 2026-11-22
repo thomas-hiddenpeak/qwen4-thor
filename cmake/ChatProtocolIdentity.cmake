@@ -680,6 +680,8 @@ set(protocol_inputs
   include/q4t/server/chat_tool_history.h
   include/q4t/server/http_response.h
   include/q4t/server/finite_response.h
+  include/q4t/server/native_responses_stream.h
+  src/server/native_responses_stream.cpp
   include/q4t/server/http_request.h
   include/q4t/server/websocket.h
   include/q4t/server/realtime_duplex_input.h

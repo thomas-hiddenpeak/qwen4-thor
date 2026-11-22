@@ -1,4 +1,6 @@
 #include "q4t/server/http_response.h"
+
+#include "q4t/server/native_responses_stream.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/serve_fault.h"
 
@@ -63,7 +65,9 @@ void SendExceptionResponse(int fd, ResponseState state,
         type, code);
     if (body_size <= 0 || static_cast<size_t>(body_size) >= sizeof(body))
       return;
-    if (context && context->CapturesJson()) {
+    if (context && (context->CapturesJson() ||
+                    (context->CapturesResponses() &&
+                     state == ResponseState::kUnsent))) {
       context->BeforeTerminal();
       *context->State() = ResponseState::kTerminal;
       if (context->CaptureJson(memory ? 503 : 500, "application/json",
@@ -377,6 +381,31 @@ HttpResponseContext::HttpResponseContext(Detached detached)
     : HttpResponseContext(detached.borrowed_fd) {
   detached_ = true;
   captured_ = detached.output;
+  responses_capture_ = detached.responses;
+  if (captured_ && responses_capture_) {
+    captured_->Reject();
+    responses_capture_->Reject();
+  }
+}
+
+bool HttpResponseContext::BeginCapturedResponses() {
+  if (!responses_capture_ || captured_ || state_ != ResponseState::kUnsent)
+    return false;
+  if (!responses_capture_->Begin()) return false;
+  state_ = ResponseState::kStreaming;
+  return true;
+}
+
+bool HttpResponseContext::CaptureJson(int status, std::string_view content_type,
+                                      std::string_view body) {
+  return captured_ ? captured_->Record(status, content_type, body)
+                  : responses_capture_ && responses_capture_->RecordError(
+                                              status, content_type, body);
+}
+
+void HttpResponseContext::RejectCapturedJson() noexcept {
+  if (captured_) captured_->Reject();
+  if (responses_capture_) responses_capture_->Reject();
 }
 
 void HttpResponseContext::RecordReceiveFailure(HttpReceiveFailure reason,
@@ -489,6 +518,17 @@ bool HttpResponseContext::Write(const char* data, size_t size,
   const std::lock_guard<std::mutex> lock(write_mu_);
   if (websocket_) return false;
   if (detached_) {
+    if (responses_capture_) {
+      if (captured_ ||
+          (state_ != ResponseState::kStreaming &&
+           state_ != ResponseState::kTerminal) ||
+          std::chrono::steady_clock::now() >= options.deadline ||
+          (options.control && options.control->Cancelled())) {
+        responses_capture_->Reject();
+        return false;
+      }
+      return responses_capture_->Append(std::string_view(data, size));
+    }
     // Captured executions must use a typed finite response. Raw/SSE/binary
     // writes cannot silently succeed and manufacture an incomplete result.
     if (captured_) {
@@ -588,6 +628,15 @@ bool WriteAll(int fd, const char* data, size_t len,
 bool BeginStreamingResponse(int fd, ResponseState* state,
                             const WriteOptions& options) {
   auto* context = HttpResponseContext::Current(fd);
+  if (context && context->CapturesResponses()) {
+    if (state != context->State() ||
+        std::chrono::steady_clock::now() >= options.deadline ||
+        (options.control && options.control->Cancelled())) {
+      context->RejectCapturedJson();
+      return false;
+    }
+    return context->BeginCapturedResponses();
+  }
   if (context && context->CapturesJson()) {
     context->RejectCapturedJson();
     return false;
@@ -646,7 +695,7 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 std::string_view allow) {
   auto* context = HttpResponseContext::Current(fd);
   if (context && context->Upgraded()) return false;
-  if (context && context->CapturesJson()) {
+  if (context && (context->CapturesJson() || context->CapturesResponses())) {
     context->LengthResponse();
     context->BeforeTerminal();
     *context->State() = ResponseState::kTerminal;
