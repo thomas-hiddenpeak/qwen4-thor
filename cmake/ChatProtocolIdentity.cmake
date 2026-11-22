@@ -632,6 +632,8 @@ set(protocol_inputs
   include/q4t/server/live_shape.h
   include/q4t/server/live_configuration.h
   include/q4t/server/live_media_policy.h
+  include/q4t/server/live_media_call.h
+  include/q4t/server/live_media_process.h
   include/q4t/server/live_responses_settings.h
   include/q4t/server/live_responses_validation.h
   include/q4t/server/live_responses_turn.h
@@ -644,6 +646,8 @@ set(protocol_inputs
   include/q4t/server/live_recording_store.h
   src/server/live_configuration.cpp
   src/server/live_media_policy.cpp
+  src/server/live_media_call.cpp
+  src/server/live_media_process.cpp
   src/server/live_responses_settings.cpp
   src/server/live_responses_validation.cpp
   src/server/live_responses_turn.cpp
@@ -826,6 +830,7 @@ set(protocol_inputs
   src/server/realtime_chat_execution.cpp
   src/server/chat_realtime_conversation.cpp
   src/server/chat_live.cpp
+  src/server/chat_live_media.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
   src/server/realtime_semantic_vad.cpp

@@ -66,6 +66,7 @@ struct ServerOptions {
   // Durable application state, independent of model assets and KV caches.
   // Empty resolves to XDG_STATE_HOME or HOME in the startup owner, without I/O.
   bool live_recordings = false;
+  std::string live_webrtc_address = "127.0.0.1";
   std::string object_store_dir;
   int object_max_object_mib = 16;
   int object_max_client_mib = 64;

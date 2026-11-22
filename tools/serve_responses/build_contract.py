@@ -25,11 +25,21 @@ def nullable(value):
     return dict(anyOf=[value, dict(type='null')])
 
 
-def graph_definitions(graph, prefix=''):
-    def node_ref(index):
-        return ref(prefix+str(index))
+def graph_definitions(graph, prefix='', roots=None):
+    selected = graph['roots'] if roots is None else {name: graph['roots'][name] for name in roots}
+    pending = list(reversed(range(len(graph['nodes'])))) if roots is None else list(selected.values())
     definitions = {}
-    for index, node in enumerate(graph['nodes']):
+
+    def node_ref(index):
+        if roots is not None and prefix+str(index) not in definitions:
+            pending.append(index)
+        return ref(prefix+str(index))
+
+    while pending:
+        index = pending.pop()
+        if prefix+str(index) in definitions:
+            continue
+        node = graph['nodes'][index]
         kind = node['kind']
         if kind in ('string', 'number', 'boolean', 'null'):
             value = dict(type=kind)
@@ -54,14 +64,17 @@ def graph_definitions(graph, prefix=''):
         else:
             raise ValueError('unhandled SDK type: '+kind)
         definitions[prefix+str(index)] = value
-    for name, index in graph['roots'].items():
-        definitions[prefix+name] = node_ref(index)
+    for name, index in selected.items():
+        definitions[prefix+name] = ref(prefix+str(index))
     return definitions
 
 
 def schema(graph):
     assert graph['profile'] == 'q4t-openai-application-types-v1'
     definitions = graph_definitions(graph)
+    live = json.loads((ROOT/'src/server/contracts/openai_live_types_v1.json').read_text())
+    assert live['profile'] == 'q4t-openai-live-types-v1'
+    definitions.update(graph_definitions(live, 'live_', ('media_create', 'media_created')))
     decisions = json.loads((ROOT/'src/server/contracts/openai_decision_types_v1.json').read_text())
     assert decisions['profile'] == 'q4t-openai-decision-types-v1'
     definitions.update(graph_definitions(decisions, 'decisions_'))

@@ -87,6 +87,9 @@ def add_voice_routes(paths, response, error):
     operation('get','/v1/realtime',upgrade,parameters=[
         param('intent','query',dict(enum=['realtime','transcription'])),
         param('model','query',text,description='Conversation only; transcription uses the exact intent=transcription query.')])
+    live = 'serve-application-v1.schema.json#/$defs/live_'
+    operation('post','/v1/live/sessions',json_result({'$ref':live+'media_created'}),
+              body=content('application/json', {'$ref':live+'media_create'}))
     operation('get','/v1/live/sessions',upgrade,
               description='Start a native primary Live WebSocket with session.start.')
     operation('get','/v1/live/sessions/{session_id}/content',{'200':dict(

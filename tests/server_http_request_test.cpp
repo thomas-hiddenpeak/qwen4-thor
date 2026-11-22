@@ -228,6 +228,10 @@ Q4T_TEST(http_connection_classification_exact_route_and_method) {
               HttpConnectionClass::kControl);
   Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/requests/cancel") ==
             HttpConnectionClass::kControl);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/live/sessions") ==
+            HttpConnectionClass::kRealtime);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/live/sessions?unknown=1") ==
+            HttpConnectionClass::kBusiness);
   Q4T_CHECK(ClassifyHttpConnection("GET", "/v1/requests/cancel") ==
             HttpConnectionClass::kBusiness);
   Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/completions") ==

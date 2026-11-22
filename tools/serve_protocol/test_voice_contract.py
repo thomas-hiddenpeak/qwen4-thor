@@ -16,6 +16,24 @@ class VoiceContract(unittest.TestCase):
         cls.paths = cls.spec['paths']
         cls.defs = json.loads((ROOT/'docs/serve-application-v1.schema.json').read_text())['$defs']
 
+    def test_live_http_offer_and_answer_are_independent_of_socket_upgrade(self):
+        ops = self.paths['/v1/live/sessions']
+        self.assertEqual(set(ops), {'get','post'})
+        self.assertEqual(set(ops['post']['responses']), {'200','default'})
+        body = ops['post']['requestBody']['content']['application/json']['schema']
+        reply = ops['post']['responses']['200']['content']['application/json']['schema']
+
+        def valid(schema, value):
+            return Draft202012Validator({'$defs':self.defs, '$ref':'#'+schema['$ref'].split('#',1)[1]}).is_valid(value)
+
+        transport = dict(type='webrtc', sdp='v=0')
+        self.assertTrue(valid(body, dict(session=dict(model='native'),transport=transport)))
+        self.assertTrue(valid(reply, dict(session=dict(id='live_id'),transport=transport)))
+        for session, media in [(dict(id='live_id'), transport),
+                               (dict(model='native'), dict(type='sip',sdp='v=0')),
+                               (dict(model='native',audio=dict(format=dict(type='audio/pcm',rate=24000))), transport)]:
+            self.assertFalse(valid(body, dict(session=session,transport=media)))
+
     def test_decision_question_bounds_and_wire_results(self):
         def valid(value, name):
             return Draft202012Validator({'$ref':'#/$defs/decisions_'+name,

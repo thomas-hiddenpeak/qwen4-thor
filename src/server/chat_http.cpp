@@ -288,6 +288,7 @@ Status ChatServer::Run() {
   background_.Join();
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  JoinLiveMedia();
   realtime_traces_.RequestStop();
   realtime_traces_.Join();
   close_listener.Run();
@@ -336,7 +337,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                               &identity, &failure_status))
         return false;
       context.SetClient(identity, &client_lease);
-      if (IsRealtimeTarget(path)) {
+      if (IsRealtimeTarget(path) && !IsLiveMediaCreate(method, path)) {
         if (!headers.origin.empty()) {
           // The optional ingress validates browser origins before forwarding.
           // Direct backend access has no configured browser-origin policy.
@@ -487,7 +488,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                     headers.error_param);
       return false;
     }
-    if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
+    if (IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
@@ -524,7 +525,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     context.SetKeepAlive(headers.keep_alive && allow_keep_alive &&
                             !stop_requested_.load(), headers.http11);
     dispatch_started = true;
-    if (IsRealtimeTarget(path))
+    if (path == "/v1/live/sessions" && method == "POST")
+      HandleLiveMediaCreate(fd, body, admission);
+    else if (IsRealtimeTarget(path))
       HandleRealtime(fd, path, headers, state->pending, websocket_accept);
     else if (file_request)
       file_request->Serve(fd);

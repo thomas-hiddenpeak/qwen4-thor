@@ -14,6 +14,10 @@ inline bool IsRealtimeUpgrade(std::string_view method,
   return method == "GET" && IsRealtimeTarget(target);
 }
 
+inline bool IsLiveMediaCreate(std::string_view method, std::string_view target) {
+  return method == "POST" && target == "/v1/live/sessions";
+}
+
 inline bool ValidApplicationId(std::string_view id) {
   if (id.empty() || id.size() > 128) return false;
   for (const char c : id)

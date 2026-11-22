@@ -474,6 +474,10 @@ def mutation_checks(inventory, actual):
         if content not in actual[group]:
             raise ValueError("Live download escaped extraction")
         cases.append(dict(actual, **{group: [route for route in actual[group] if route != content]}))
+        media = "POST /v1/live/sessions"
+        if media not in actual[group]:
+            raise ValueError("Live HTTP creation escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group] if route != media]}))
         live = "GET /v1/live/sessions"
         if live not in actual[group]:
             raise ValueError("Live primary route escaped extraction")

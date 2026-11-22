@@ -6691,6 +6691,60 @@
       }
     },
     "/v1/live/sessions": {
+      "post": {
+        "operationId": "post_v1_live_sessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_media_created"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_media_create"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "operationId": "get_v1_live_sessions",
         "parameters": [],
@@ -31736,6 +31790,1513 @@
           },
           "input_tokens_response": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1168"
+          },
+          "live_890": {
+            "type": "object",
+            "properties": {
+              "session": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_891"
+              },
+              "transport": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_892"
+              }
+            },
+            "required": [
+              "session",
+              "transport"
+            ],
+            "additionalProperties": false
+          },
+          "live_892": {
+            "type": "object",
+            "properties": {
+              "sdp": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_889"
+              }
+            },
+            "required": [
+              "sdp",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_889": {
+            "const": "webrtc"
+          },
+          "live_4": {
+            "type": "string"
+          },
+          "live_891": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "live_879": {
+            "type": "object",
+            "properties": {
+              "session": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_880"
+              },
+              "transport": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_888"
+              }
+            },
+            "required": [
+              "session",
+              "transport"
+            ],
+            "additionalProperties": false
+          },
+          "live_888": {
+            "type": "object",
+            "properties": {
+              "sdp": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_889"
+              }
+            },
+            "required": [
+              "sdp",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_880": {
+            "type": "object",
+            "properties": {
+              "audio": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_881"
+              },
+              "client": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_23"
+              },
+              "delegation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_885"
+              },
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_121"
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_2"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_147"
+              },
+              "store": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_150"
+              },
+              "triggers": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_151"
+              }
+            },
+            "required": [
+              "model"
+            ],
+            "additionalProperties": false
+          },
+          "live_151": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_152"
+              }
+            ]
+          },
+          "live_152": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_153"
+            }
+          },
+          "live_153": {
+            "type": "object",
+            "properties": {
+              "decisions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_154"
+              },
+              "event_type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_155"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_120"
+              }
+            },
+            "required": [
+              "decisions",
+              "event_type",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_120": {
+            "const": "decisions"
+          },
+          "live_155": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_156"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_157"
+              }
+            ]
+          },
+          "live_157": {
+            "const": "session.output_transcript.delta"
+          },
+          "live_156": {
+            "const": "session.input_transcript.delta"
+          },
+          "live_154": {
+            "type": "object",
+            "properties": {
+              "questions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_83"
+              }
+            },
+            "required": [
+              "questions"
+            ],
+            "additionalProperties": false
+          },
+          "live_83": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_84"
+            }
+          },
+          "live_84": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_85"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_104"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_111"
+              }
+            ]
+          },
+          "live_111": {
+            "type": "object",
+            "properties": {
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_112"
+              },
+              "levels": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_117"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_32"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_119"
+              }
+            },
+            "required": [
+              "instructions",
+              "levels",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_119": {
+            "const": "score"
+          },
+          "live_32": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              }
+            ]
+          },
+          "live_117": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_118"
+            }
+          },
+          "live_118": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_32"
+              },
+              "label": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          "live_112": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_113"
+              }
+            ]
+          },
+          "live_113": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_114"
+            }
+          },
+          "live_114": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_92"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_115"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_116"
+              }
+            ]
+          },
+          "live_116": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_99"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_102"
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_102": {
+            "const": "input_json"
+          },
+          "live_99": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_100"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_101"
+              }
+            ]
+          },
+          "live_101": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_100"
+            }
+          },
+          "live_100": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_77"
+            }
+          },
+          "live_77": {},
+          "live_115": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_95"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_97"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_97": {
+            "const": "input_image"
+          },
+          "live_95": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_48"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_50"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_55"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_96"
+              }
+            ]
+          },
+          "live_96": {
+            "const": "original"
+          },
+          "live_55": {
+            "const": "auto"
+          },
+          "live_50": {
+            "const": "high"
+          },
+          "live_48": {
+            "const": "low"
+          },
+          "live_3": {
+            "type": "null"
+          },
+          "live_92": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_93"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_93": {
+            "const": "input_text"
+          },
+          "live_104": {
+            "type": "object",
+            "properties": {
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_105"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_32"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_110"
+              }
+            },
+            "required": [
+              "instructions",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_110": {
+            "const": "predicate"
+          },
+          "live_105": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_106"
+              }
+            ]
+          },
+          "live_106": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_107"
+            }
+          },
+          "live_107": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_92"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_108"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_109"
+              }
+            ]
+          },
+          "live_109": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_99"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_102"
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_108": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_95"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_97"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_85": {
+            "type": "object",
+            "properties": {
+              "choices": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_86"
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_89"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_32"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_103"
+              }
+            },
+            "required": [
+              "choices",
+              "instructions",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_103": {
+            "const": "choice"
+          },
+          "live_89": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_90"
+              }
+            ]
+          },
+          "live_90": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_91"
+            }
+          },
+          "live_91": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_92"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_94"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_98"
+              }
+            ]
+          },
+          "live_98": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_99"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_102"
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_94": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_95"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_97"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_86": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_87"
+            }
+          },
+          "live_87": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_32"
+              },
+              "value": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_88"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "live_88": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_42"
+              }
+            ]
+          },
+          "live_42": {
+            "const": true
+          },
+          "live_41": {
+            "const": false
+          },
+          "live_150": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_42"
+              }
+            ]
+          },
+          "live_147": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_148"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_149"
+              }
+            ]
+          },
+          "live_149": {
+            "const": "gpt-live-1"
+          },
+          "live_148": {
+            "type": "string"
+          },
+          "live_2": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              }
+            ]
+          },
+          "live_121": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_122"
+              }
+            ]
+          },
+          "live_122": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_123"
+            }
+          },
+          "live_123": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_124"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_134"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_138"
+              }
+            ]
+          },
+          "live_138": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_139"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_2"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_146"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_129"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_132"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "live_132": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_133"
+              }
+            ]
+          },
+          "live_133": {
+            "const": "message"
+          },
+          "live_129": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_130"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_131"
+              }
+            ]
+          },
+          "live_131": {
+            "const": "completed"
+          },
+          "live_130": {
+            "const": "incomplete"
+          },
+          "live_146": {
+            "const": "assistant"
+          },
+          "live_139": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_140"
+            }
+          },
+          "live_140": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_141"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_144"
+              }
+            ]
+          },
+          "live_144": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_145"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_145": {
+            "const": "output_text"
+          },
+          "live_141": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_142"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "live_142": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_143"
+              }
+            ]
+          },
+          "live_143": {
+            "const": "text"
+          },
+          "live_134": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_135"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_2"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_137"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_129"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_132"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "live_137": {
+            "const": "user"
+          },
+          "live_135": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_136"
+            }
+          },
+          "live_136": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_127"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "live_127": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_93"
+              }
+            ]
+          },
+          "live_124": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_125"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_2"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_128"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_129"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_132"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "live_128": {
+            "const": "developer"
+          },
+          "live_125": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_126"
+            }
+          },
+          "live_126": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_127"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "live_885": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_34"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_886"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_887"
+              }
+            ]
+          },
+          "live_887": {
+            "type": "object",
+            "properties": {
+              "acknowledgement_delay_ms": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_35"
+              },
+              "decisions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_82"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_120"
+              }
+            },
+            "required": [
+              "decisions",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_82": {
+            "type": "object",
+            "properties": {
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "questions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_83"
+              }
+            },
+            "required": [
+              "model",
+              "questions"
+            ],
+            "additionalProperties": false
+          },
+          "live_35": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_15"
+              }
+            ]
+          },
+          "live_15": {
+            "type": "number"
+          },
+          "live_886": {
+            "type": "object",
+            "properties": {
+              "acknowledgement_delay_ms": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_35"
+              },
+              "responses": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_38"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_80"
+              }
+            },
+            "required": [
+              "responses",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_80": {
+            "const": "responses"
+          },
+          "live_38": {
+            "type": "object",
+            "properties": {
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_2"
+              },
+              "max_output_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_39"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "parallel_tool_calls": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_40"
+              },
+              "reasoning": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_43"
+              },
+              "service_tier": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_56"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_62"
+              },
+              "tool_choice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_65"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_71"
+              }
+            },
+            "required": [
+              "model"
+            ],
+            "additionalProperties": false
+          },
+          "live_71": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_72"
+              }
+            ]
+          },
+          "live_72": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_73"
+            }
+          },
+          "live_73": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_74"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_78"
+              }
+            ]
+          },
+          "live_78": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_79"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_79": {
+            "const": "web_search"
+          },
+          "live_74": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_2"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "parameters": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_75"
+              },
+              "strict": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_40"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_68"
+              }
+            },
+            "required": [
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_68": {
+            "const": "function"
+          },
+          "live_40": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_42"
+              }
+            ]
+          },
+          "live_75": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_76"
+              }
+            ]
+          },
+          "live_76": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_77"
+            }
+          },
+          "live_65": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_46"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_55"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_66"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_67"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_69"
+              }
+            ]
+          },
+          "live_69": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "server_label": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_70"
+              }
+            },
+            "required": [
+              "name",
+              "server_label",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_70": {
+            "const": "mcp"
+          },
+          "live_67": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_68"
+              }
+            },
+            "required": [
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_66": {
+            "const": "required"
+          },
+          "live_46": {
+            "const": "none"
+          },
+          "live_62": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_63"
+              }
+            ]
+          },
+          "live_63": {
+            "type": "object",
+            "properties": {
+              "verbosity": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_64"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_64": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_48"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_49"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_50"
+              }
+            ]
+          },
+          "live_49": {
+            "const": "medium"
+          },
+          "live_56": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_55"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_57"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_58"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_59"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_60"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_61"
+              }
+            ]
+          },
+          "live_61": {
+            "const": "ultrafast"
+          },
+          "live_60": {
+            "const": "priority"
+          },
+          "live_59": {
+            "const": "flex"
+          },
+          "live_58": {
+            "const": "fast_tier_temp_pilot"
+          },
+          "live_57": {
+            "const": "default"
+          },
+          "live_43": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_44"
+              }
+            ]
+          },
+          "live_44": {
+            "type": "object",
+            "properties": {
+              "effort": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_45"
+              },
+              "summary": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_52"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_52": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_53"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_54"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_55"
+              }
+            ]
+          },
+          "live_54": {
+            "const": "detailed"
+          },
+          "live_53": {
+            "const": "concise"
+          },
+          "live_45": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_46"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_47"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_48"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_49"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_50"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_51"
+              }
+            ]
+          },
+          "live_51": {
+            "const": "xhigh"
+          },
+          "live_47": {
+            "const": "minimal"
+          },
+          "live_39": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_15"
+              }
+            ]
+          },
+          "live_34": {
+            "type": "object",
+            "properties": {
+              "acknowledgement_delay_ms": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_35"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_36"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_36": {
+            "const": "client"
+          },
+          "live_23": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_24"
+              }
+            ]
+          },
+          "live_24": {
+            "type": "object",
+            "properties": {
+              "data_channel": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_25"
+              }
+            },
+            "required": [
+              "data_channel"
+            ],
+            "additionalProperties": false
+          },
+          "live_25": {
+            "type": "object",
+            "properties": {
+              "allowed_client_events": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_26"
+              },
+              "allowed_server_events": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_29"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_29": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_27"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_30"
+              }
+            ]
+          },
+          "live_30": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_31"
+            }
+          },
+          "live_31": {
+            "type": "object",
+            "properties": {
+              "response_event": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_32"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_27": {
+            "const": "all"
+          },
+          "live_26": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_27"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_28"
+              }
+            ]
+          },
+          "live_28": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+            }
+          },
+          "live_881": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_882"
+              }
+            ]
+          },
+          "live_882": {
+            "type": "object",
+            "properties": {
+              "output": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_883"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_883": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_884"
+              }
+            ]
+          },
+          "live_884": {
+            "type": "object",
+            "properties": {
+              "voice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_21"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_21": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_22"
+              }
+            ]
+          },
+          "live_22": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "live_media_create": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_879"
+          },
+          "live_media_created": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_890"
           },
           "decisions_0": {
             "type": "object",

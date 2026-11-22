@@ -186,15 +186,18 @@ struct Media {
       if (!CheckCertificate(dtls) || !Send(fd, 'R')) return false;
       open = true;
     }
+    if (channel_failed.exchange(false)) CloseChannel();
     std::lock_guard lock(mutex);
     while (!pending.empty()) {
       const auto& [type, bytes] = pending.front();
-      if (type == 'D' && !open) break;
-      if (!Send(fd, type, bytes.data(), bytes.size())) return false;
+      if (type != 'D' || !channel_closed) {
+        if (type == 'D' && !open) break;
+        if (!Send(fd, type, bytes.data(), bytes.size())) return false;
+      }
       pending_bytes -= bytes.size();
       pending.pop_front();
     }
-    if (channel_closed && open) {
+    if (channel_closed && !published_close) {
       if (!Send(fd, 'C')) return false;
       open = false;
       published_close = true;
@@ -227,7 +230,12 @@ struct Media {
   }
 
   bool Input(char type, std::string_view value) {
-    if (!answered || value.empty() || !verified) return false;
+    if (!answered || !verified) return false;
+    if (type == 'C' && value.empty()) {
+      CloseChannel();
+      return true;
+    }
+    if (value.empty()) return false;
     if (type == 'P') {
       if (value.size() % 2 || gst_app_src_get_current_level_bytes(
                                   GST_APP_SRC(src)) > 192000 - value.size())
@@ -242,7 +250,8 @@ struct Media {
     if (type != 'D' || value.find('\0') != value.npos ||
         !g_utf8_validate(value.data(), value.size(), nullptr))
       return false;
-    if (!open || channel_closed) return false;
+    if (channel_closed) return true;  // A queued IPC write crossed SCTP close.
+    if (!open) return false;
     // The channel reference stays owned until the pipeline has stopped.
     // Never hold the queue mutex across a GStreamer send or signal.
     GstWebRTCDataChannel* active;
@@ -253,9 +262,21 @@ struct Media {
     if (!active) return false;
     guint64 pending = 0;
     g_object_get(active, "buffered-amount", &pending, nullptr);
-    return pending <= 256 * 1024 - value.size() &&
-           gst_webrtc_data_channel_send_string_full(
-               active, std::string(value).c_str(), nullptr);
+    if (pending > 256 * 1024 - value.size() ||
+        !gst_webrtc_data_channel_send_string_full(
+            active, std::string(value).c_str(), nullptr))
+      CloseChannel();
+    return true;
+  }
+
+  void CloseChannel() {
+    GstWebRTCDataChannel* active;
+    {
+      std::lock_guard lock(mutex);
+      active = channel;
+    }
+    if (active && !channel_closed.exchange(true))
+      gst_webrtc_data_channel_close(active);
   }
 
   static void Pad(GstElement*, GstPad* pad, Media* self) {
@@ -296,14 +317,14 @@ struct Media {
     self->channel_closed = true;
   }
   static void Error(GstWebRTCDataChannel*, GError*, Media* self) {
-    self->ended = true;
+    self->channel_failed = true;
   }
   static void Binary(GstWebRTCDataChannel*, GBytes*, Media* self) {
-    self->ended = true;
+    self->channel_failed = true;
   }
   static void Data(GstWebRTCDataChannel*, gchar* value, Media* self) {
     const size_t size = value ? strnlen(value, kPacket + 1) : 0;
-    if (!size || !self->Enqueue('D', value, size)) self->ended = true;
+    if (!size || !self->Enqueue('D', value, size)) self->channel_failed = true;
   }
 
   const int fd;
@@ -315,7 +336,8 @@ struct Media {
   std::mutex mutex;
   std::deque<std::pair<char, std::string>> pending;
   size_t pending_bytes = 0;
-  std::atomic<bool> ended{false}, channel_open{false}, channel_closed{false};
+  std::atomic<bool> ended{false}, channel_open{false}, channel_closed{false},
+      channel_failed{false};
   bool open = false, published_close = false;
   bool answered = false, connected = false, verified = false;
 };
@@ -364,7 +386,11 @@ bool Run(int fd, const char* address) {
       LiveRtpCodec codec;
       g_autoptr(GstWebRTCSessionDescription) offer =
           ParseLiveOffer(value, &codec, &media.fingerprint);
-      if (!offer || !media.Prepare(codec, address) ||
+      if (!offer) {
+        Send(fd, 'I');
+        return false;
+      }
+      if (!media.Prepare(codec, address) ||
           !media.Answer(offer, started + kStartup))
         return false;
     } else if (!media.Input(type, value)) {

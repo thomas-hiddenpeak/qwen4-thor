@@ -10,6 +10,7 @@
 #include "q4t/server/websocket_session.h"
 
 namespace q4t::server {
+class LiveMediaPolicy;
 using LiveEventSink = std::function<ObjectReply(io::Json)>;
 
 class ILiveSessionBackend {
@@ -46,6 +47,14 @@ struct LiveSessionCallbacks {
   std::function<std::chrono::steady_clock::time_point()> now;
 };
 
+// Output accepts complete, ordered JSON events. A full transport returns false
+// and the session retains its front event until space or its write deadline.
+struct LiveSessionOutput {
+  size_t message_bytes = 0;
+  std::function<bool()> closed;
+  std::function<bool(std::string_view)> try_push;
+};
+
 struct LiveSessionLimits {
   size_t message_bytes = kWebSocketMessageLimit;
   size_t deferred_bytes = 8ULL << 20;
@@ -58,11 +67,17 @@ class LiveSession {
  public:
   LiveSession(std::string id, uint64_t expires_at, WebSocketOutput& output,
               LiveSessionCallbacks callbacks, LiveSessionLimits limits = {});
+  LiveSession(std::string id, uint64_t expires_at, LiveSessionOutput output,
+              LiveSessionCallbacks callbacks, LiveSessionLimits limits = {});
   ~LiveSession();
   // Prepares only the protocol owner. A primary WebSocket sends session.start
   // before the backend is created; no synthetic session.started at handshake.
   bool Start();
-  bool Message(WebSocketOpcode opcode, std::string_view message);
+  // The authenticated HTTP owner supplies startup once for a negotiated
+  // media transport. On failure the HTTP handler gets the native status.
+  ObjectReply StartMedia(const io::Json& configuration);
+  bool Message(WebSocketOpcode opcode, std::string_view message,
+               const LiveMediaPolicy* frontend = nullptr);
   bool Tick();
   void Cancel() noexcept;
   void Join() noexcept;
@@ -94,7 +109,7 @@ class LiveSession {
             std::string* receipt = nullptr);
   ObjectReply BackendEvent(io::Json event);
   bool Error(ObjectReply error, std::string_view client_event = {});
-  bool StartSession(const io::Json& event);
+  bool StartSession(const io::Json& event, ObjectReply* failure = nullptr);
   bool UpdateSession(const io::Json& event);
   bool PublishConfiguration(io::Json response, const io::Json* settings,
                             const std::string& event, size_t charge);
@@ -105,7 +120,7 @@ class LiveSession {
   double Seconds() const;
   const std::string id_;
   const uint64_t expires_at_;
-  WebSocketOutput& output_;
+  LiveSessionOutput output_;
   const LiveSessionCallbacks callbacks_;
   const LiveSessionLimits limits_;
   std::unique_ptr<ILiveSessionBackend> backend_;

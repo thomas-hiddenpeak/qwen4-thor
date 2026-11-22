@@ -109,3 +109,5 @@ L04—L06及全部master任务仍未完成，不以本组验收作为总目标�
 [Decisions HTTP 业务](evidence/serve-decisions-http-20261123/README.md)已通过。SDK 多题、实际缓存及计量通过；Live 的显式/语音委派、转录触发仍需独立接入和验收。
 
 [L03 Decisions 主连接真实验收](evidence/serve-live-decisions-20261123/README.md)已覆盖手动和语音请求、同会话回填、两种转录触发与资源释放。L04 继续可选录制、下载、旁路和 fork。
+
+L05 的 WebRTC HTTP 创建、受限数据通道和双向 Opus 已通过真实资料查询，详见[验收记录](evidence/serve-live-media-create-20261123/README.md)。L04 的同身份旁路与完整 fork、L05 的 SIP 信令、L06 的发行继续推进。

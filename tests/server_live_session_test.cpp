@@ -1,4 +1,6 @@
 #include "q4t/server/live_session.h"
+#include "q4t/server/live_media_call.h"
+#include "q4t/io/base64.h"
 
 #include <algorithm>
 #include <stdexcept>
@@ -489,5 +491,64 @@ Q4T_TEST(live_responses_backpressure_before_commit_and_close_drains_checker) {
                 ->Find("delegation")
                 ->Find("responses")
                 ->GetString("model") == "num7");
+  return true;
+}
+
+Q4T_TEST(live_media_http_start_returns_errors_and_one_owned_backend) {
+  Fixture f;
+  f.callbacks.configuration.transport = LiveTransport::kWebRtc;
+  const auto sink = [](char, auto) { return true; };
+  LiveMediaCall invalid("live_bad", 1000, false, f.callbacks, f.limits, sink);
+  auto reply = invalid.Start(Parse(R"({"model":"native","audio":{"format":{
+    "type":"audio/pcm","rate":24000}}})"));
+  Q4T_CHECK(reply.http_status == 400 && f.backend.created == 0);
+  LiveMediaCall call("live_once", 1000, false, f.callbacks, f.limits, sink);
+  Q4T_CHECK(call.Start(Parse(R"({"model":"native"})")).ok());
+  Q4T_CHECK(!call.Start(Parse(R"({"model":"native"})")).ok());
+  Q4T_CHECK(f.backend.created == 1);
+  Q4T_CHECK(!call.Receive('P', "aa") && !call.Receive('D', "{}"));
+  Q4T_CHECK(call.Receive('V', {}) && !call.Receive('R', {}));
+  Q4T_CHECK(call.Receive('P', "aa") && f.backend.commands.size() == 1);
+  return true;
+}
+
+Q4T_TEST(live_media_frontend_authority_and_bidirectional_audio_after_close) {
+  Fixture f;
+  f.callbacks.configuration.transport = LiveTransport::kWebRtc;
+  std::vector<std::pair<char, std::string>> packets;
+  LiveMediaCall call("live_media", 1000, true, f.callbacks, f.limits,
+                     [&](char type, auto data) {
+                       packets.emplace_back(type, data);
+                       return true;
+                     });
+  auto config = Parse(R"({"model":"native","client":{"data_channel":{
+    "allowed_client_events":["session.input_audio.unmute"],
+    "allowed_server_events":[{"type":"session.started"},{"type":"error"}]}}})");
+  Q4T_CHECK(call.Start(config).ok() && call.Tick(f.now) && packets.empty());
+  Q4T_CHECK(call.Receive('V', {}) && call.Tick(f.now) && packets.empty());
+  Q4T_CHECK(call.Receive('R', {}) && call.Tick(f.now) && packets.size() == 1);
+  Q4T_CHECK(Parse(packets[0].second).Find("session")->GetString("id") == "live_media");
+  for (auto message : {R"({"type":"session.input_audio.mute","event_id":"deny"})",
+                       R"({"type":"session.input_audio.append","audio":"YWE=","event_id":"deny"})"}) {
+    Q4T_CHECK(call.Receive('D', message) && call.Tick(f.now));
+    const auto event = Parse(packets.back().second);
+    Q4T_CHECK(event.GetString("type") == "error" &&
+              event.Find("error")->GetString("code") == "live_client_event_forbidden" &&
+              event.GetString("client_event_id") == "deny");
+  }
+  Q4T_CHECK(f.backend.commands.empty());
+  Q4T_CHECK(call.Receive('D', R"({"type":"session.input_audio.unmute"})"));
+  Q4T_CHECK(call.Tick(f.now) && packets.size() == 3 && f.backend.commands.size() == 1);
+  Q4T_CHECK(call.Receive('C', {}) && call.Receive('P', "aa"));
+  Q4T_CHECK(f.backend.commands.back().GetString("audio") == "YWE=");
+  std::string encoded, pcm(1920, 'z');
+  Q4T_CHECK(q4t::io::EncodeBase64(pcm, 4096, &encoded));
+  f.backend.outgoing.push_back(Object({{"type", String("session.output_audio.delta")},
+                                      {"delta", String(std::move(encoded))}}));
+  Q4T_CHECK(call.Tick(f.now) && packets.size() == 4);
+  Q4T_CHECK(call.Tick(f.now + 19ms) && packets.size() == 4);
+  Q4T_CHECK(call.Tick(f.now + 20ms) && packets.size() == 5);
+  Q4T_CHECK(packets[3].first == 'P' && packets[4].first == 'P' &&
+            packets[3].second + packets[4].second == pcm);
   return true;
 }

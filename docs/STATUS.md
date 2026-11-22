@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Live WebRTC HTTP 创建已通过真实 SDK、受限前端与项目资料语音闭环。一次 GPU 启动 66.40 秒，原生 TLS 接收 SDP，通话中同客户端再次创建收到 429，模型转录正确、回填后播报 rev426，关闭后普通 Chat=42。已释放客户端名额、主机预算和 GPU 租约。继续同身份旁路、fork 和 SIP 控制。[验收与边界](evidence/serve-live-media-create-20261123/README.md)。
+
 Live 增加 WebRTC 前端事件权限校验及原生 PCM 规划。验证了空名单、精确嵌套 Responses 选择、256 项边界，以及协商格式和公开会话字段的区别。13 项针对性 CPU 检查通过；服务端 HTTP 创建、实际通话的权限执行和旁路仍在接入。[权限与格式验收](evidence/serve-live-media-policy-20261123/README.md)。
 
 修复原生网关与模型对 Live 显式 WebSocket 子协议选择不一致的问题。两个进程使用共同函数选择 `live` 或 `realtime`。8 项 HTTP 检查、9 项实际入口进程检查和 1 项打包来源检查通过。真实模型和原生 TLS 验证了三种 101 握手，Live 正常启动和关闭，Chat=42。单次启动 36.60 秒，已释放 GPU。[握手与验收](evidence/serve-live-subprotocol-20261123/README.md)。

@@ -112,6 +112,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_shape_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_configuration.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_media_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_media_call.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_media_process.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_settings.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_validation.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_turn.cpp

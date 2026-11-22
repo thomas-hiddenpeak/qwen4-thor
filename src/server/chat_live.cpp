@@ -22,40 +22,8 @@ ObjectReply Failure(const Status& status, const ChatPlanError& error) {
 }
 }  // namespace
 
-void ChatServer::HandleLive(int fd, std::string_view path,
-                            const HttpRequestHeaders& headers,
-                            std::string_view initial, std::string_view accept) {
-  auto* http = detail::HttpResponseContext::Current(fd);
-  if (!http || !http->Client().Allowed()) return;
-  // Primary Live startup parameters are in session.start. Sideband/fork
-  // connections require their independent ownership adapter, never this path.
-  if (path != "/v1/live/sessions") {
-    detail::SendError(fd, 400, "Primary Live startup uses session.start", {},
-                      "invalid_request", "path");
-    return;
-  }
-  if (asr_model_dir_.empty() || tts_model_dir_.empty()) {
-    detail::SendError(fd, 503, "Native Live requires ASR and speech assets", {},
-                      "live_processor_unavailable");
-    return;
-  }
-  if (RejectUnhealthy(fd) ||
-      !CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare))
-    return;
-  const auto client = http->Client();
-  const size_t host_bytes =
-      kRealtimeConversationHostBytes + kRealtimeConversationInputHostBytes;
-  HttpBodyLease memory(realtime_host_budget_);
-  if (!memory.Acquire(host_bytes) ||
-      !runtime::ReadSystemMemory().CanAllocate(host_bytes + (512ULL << 20))) {
-    detail::SendError(fd, 503, "Live host memory unavailable", {},
-                      "memory_pressure");
-    return;
-  }
-  const size_t message_bytes =
-      client.Scoped() ? std::min<size_t>(kWebSocketMessageLimit,
-                                         client.Limits()->max_body_bytes)
-                      : kWebSocketMessageLimit;
+LiveSessionCallbacks ChatServer::MakeLiveCallbacks(const ClientIdentity& client,
+    const std::string& id, size_t message_bytes, LiveTransport transport) {
   // Keep CPU asset preparation outside both socket and session event loops.
   const auto input = PrepareRealtimeInput(client);
   const auto current_planning = [this, client](ChatPlanConfig* planning,
@@ -101,6 +69,7 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     return Status{};
   };
   LiveSessionCallbacks callbacks;
+  callbacks.configuration.transport = transport;
   callbacks.configuration.default_instructions =
       "You are a helpful voice assistant.";
   callbacks.configuration.default_voice = String("vivian");
@@ -145,7 +114,7 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     }
     return count(prompt, false, tokens, error);
   };
-  callbacks.configuration.validate = [this, current_planning](
+  callbacks.configuration.validate = [this, current_planning, transport](
                                          const Json& configuration,
                                          ChatPlanError* error) {
     ChatPlanConfig planning;
@@ -157,7 +126,7 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     }
     NativeLivePlan plan;
     return PlanNativeLiveClient(configuration, planning, &plan, error, true,
-                                true, live_recordings_ && identity.Scoped());
+                                true, live_recordings_ && identity.Scoped(), transport);
   };
   callbacks.validate_responses = [this, current_planning, client](
                                      const Json& settings,
@@ -186,9 +155,8 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     return status ? ObjectReply{} : Failure(status, error);
   };
   const auto counter = callbacks.configuration.count_text;
-  const auto id = detail::NewRequestId("live_");
   callbacks.create = [this, client, input, current_planning, counter, id,
-                      message_bytes](
+                      message_bytes, transport](
                          const Json& configuration, const LiveEventSink& emit,
                          std::unique_ptr<ILiveSessionBackend>* backend) {
     ChatPlanConfig planning;
@@ -199,7 +167,7 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     ChatPlanError error;
     const auto status =
         PlanNativeLiveClient(configuration, planning, &plan, &error, true, true,
-                             live_recordings_ && identity.Scoped());
+                             live_recordings_ && identity.Scoped(), transport);
     if (!status) return Failure(status, error);
     LiveFrontendNative native;
     native.input = input;
@@ -303,6 +271,45 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     return owner->Prepare(configuration, std::move(plan));
   };
   callbacks.interrupted = [this] { return stop_requested_.load(); };
+  return callbacks;
+}
+
+void ChatServer::HandleLive(int fd, std::string_view path,
+                            const HttpRequestHeaders& headers,
+                            std::string_view initial, std::string_view accept) {
+  auto* http = detail::HttpResponseContext::Current(fd);
+  if (!http || !http->Client().Allowed()) return;
+  // Primary Live startup parameters are in session.start. Sideband/fork
+  // connections require their independent ownership adapter, never this path.
+  if (path != "/v1/live/sessions") {
+    detail::SendError(fd, 400, "Primary Live startup uses session.start", {},
+                      "invalid_request", "path");
+    return;
+  }
+  if (asr_model_dir_.empty() || tts_model_dir_.empty()) {
+    detail::SendError(fd, 503, "Native Live requires ASR and speech assets", {},
+                      "live_processor_unavailable");
+    return;
+  }
+  if (RejectUnhealthy(fd) ||
+      !CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare))
+    return;
+  const auto client = http->Client();
+  const size_t host_bytes =
+      kRealtimeConversationHostBytes + kRealtimeConversationInputHostBytes;
+  HttpBodyLease memory(realtime_host_budget_);
+  if (!memory.Acquire(host_bytes) ||
+      !runtime::ReadSystemMemory().CanAllocate(host_bytes + (512ULL << 20))) {
+    detail::SendError(fd, 503, "Live host memory unavailable", {},
+                      "memory_pressure");
+    return;
+  }
+  const size_t message_bytes =
+      client.Scoped() ? std::min<size_t>(kWebSocketMessageLimit,
+                                         client.Limits()->max_body_bytes)
+                      : kWebSocketMessageLimit;
+  const auto id = detail::NewRequestId("live_");
+  auto callbacks = MakeLiveCallbacks(client, id, message_bytes, LiveTransport::kWebSocket);
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
   LiveSessionLimits session_limits;

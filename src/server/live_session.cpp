@@ -1,4 +1,5 @@
 #include "q4t/server/live_session.h"
+#include "q4t/server/live_media_policy.h"
 #include "q4t/server/live_responses_settings.h"
 #include "q4t/server/realtime_conversation.h"
 
@@ -35,9 +36,20 @@ LiveSession::LiveSession(std::string id, uint64_t expires_at,
                          WebSocketOutput& output,
                          LiveSessionCallbacks callbacks,
                          LiveSessionLimits limits)
+    : LiveSession(std::move(id), expires_at,
+                  {output.Valid() ? output.MessageLimit() : 0,
+                   [&output] { return output.Closed(); },
+                   [&output](std::string_view text) {
+                     return output.TryPush(WebSocketOpcode::kText, text);
+                   }},
+                  std::move(callbacks), limits) {}
+
+LiveSession::LiveSession(std::string id, uint64_t expires_at,
+                         LiveSessionOutput output, LiveSessionCallbacks callbacks,
+                         LiveSessionLimits limits)
     : id_(std::move(id)),
       expires_at_(expires_at),
-      output_(output),
+      output_(std::move(output)),
       callbacks_(std::move(callbacks)),
       limits_(limits),
       validation_(callbacks_.validate_responses) {}
@@ -58,8 +70,8 @@ bool LiveSession::AdvanceClock() {
 }
 bool LiveSession::Start() {
   if (state_ != State::kCreated || !ValidApplicationId(id_) || !expires_at_ ||
-      expires_at_ > 9007199254740991ULL || !output_.Valid() ||
-      output_.Closed() || !callbacks_.create ||
+      expires_at_ > 9007199254740991ULL || !output_.message_bytes || !output_.closed || !output_.try_push ||
+      output_.closed() || !callbacks_.create ||
       !callbacks_.configuration.count_text ||
       !callbacks_.configuration.count_history ||
       !callbacks_.configuration.validate ||
@@ -102,11 +114,11 @@ bool LiveSession::Fail() noexcept {
   return false;
 }
 bool LiveSession::Flush() {
-  if (output_.Closed()) return Fail();
+  if (output_.closed()) return Fail();
   while (!pending_.empty()) {
     const auto& front = pending_.front();
     if (now_ >= front.deadline) return Fail();
-    if (!output_.TryPush(WebSocketOpcode::kText, front.text)) return true;
+    if (!output_.try_push(front.text)) return true;
     if (front.terminal) finalized_.store(true);
     deferred_bytes_ -= front.charge;
     pending_.pop_front();
@@ -126,7 +138,7 @@ bool LiveSession::Emit(Json event, bool terminal, std::string* receipt) {
     return Fail();
   if (receipt) *receipt = event.GetString("event_id");
   auto text = OutputJson(event);
-  if (text.size() > output_.MessageLimit() ||
+  if (text.size() > output_.message_bytes ||
       pending_.size() >= limits_.deferred_events ||
       sizeof(Pending) > limits_.deferred_bytes - deferred_bytes_ ||
       text.capacity() >
@@ -172,7 +184,23 @@ bool LiveSession::Error(ObjectReply reply, std::string_view client_event) {
   Set(&event, "error", std::move(details));
   return Emit(std::move(event));
 }
-bool LiveSession::StartSession(const Json& event) {
+ObjectReply LiveSession::StartMedia(const Json& configuration) {
+  if (callbacks_.configuration.transport == LiveTransport::kWebSocket ||
+      state_ != State::kWaiting || !AdvanceClock())
+    return Invalid("live_startup_unavailable", "Media session cannot start", {}, 503);
+  ObjectReply failure;
+  if (StartSession(Object({{"session", configuration}}), &failure)) return {};
+  return !Accepted(failure) ? failure : Invalid(
+      "live_startup_unavailable", "Media session initialization failed", {}, 503);
+}
+
+bool LiveSession::StartSession(const Json& event, ObjectReply* failure) {
+  const auto client_event = event.GetString("event_id");
+  const auto reject = [&](ObjectReply reply) {
+    if (!failure) return Error(std::move(reply), client_event);
+    *failure = std::move(reply);
+    return false;
+  };
   Json configuration, resource;
   ChatPlanError error;
   auto status = ResolveLiveConfiguration(
@@ -180,12 +208,11 @@ bool LiveSession::StartSession(const Json& event) {
   if (status)
     status =
         LiveSessionResource(configuration, id_, expires_at_, &resource, &error);
-  const auto client_event = event.GetString("event_id");
-  if (!status) return Error(ShapeFailure(status, error), client_event);
+  if (!status) return reject(ShapeFailure(status, error));
   size_t charge = 0;
   if (const auto* settings = ResponseSettings(configuration)) {
     auto available = validation_.CheckCapacity(*settings, &charge);
-    if (!Accepted(available)) return Error(std::move(available), client_event);
+    if (!Accepted(available)) return reject(std::move(available));
   }
   std::unique_ptr<ILiveSessionBackend> backend;
   ObjectReply reply;
@@ -207,7 +234,7 @@ bool LiveSession::StartSession(const Json& event) {
     if (Accepted(reply))
       reply = Invalid("live_backend_missing", "Native Live owner unavailable",
                       {}, 503);
-    return Error(std::move(reply), client_event);
+    return reject(std::move(reply));
   }
   backend_ = std::move(backend);
   configuration_ = std::move(configuration);
@@ -274,7 +301,8 @@ bool LiveSession::BeginClose(std::string reason, std::string client_event) {
   if (!Accepted(reply) || backend_fault_) return Fail();
   return true;
 }
-bool LiveSession::Message(WebSocketOpcode opcode, std::string_view message) {
+bool LiveSession::Message(WebSocketOpcode opcode, std::string_view message,
+                          const LiveMediaPolicy* frontend) {
   if (state_ == State::kCreated || state_ == State::kCancelled ||
       !AdvanceClock() || !Flush())
     return false;
@@ -302,6 +330,9 @@ bool LiveSession::Message(WebSocketOpcode opcode, std::string_view message) {
       ValidateLiveWireShape(event, LiveShape::kClientEvent, &error);
   if (!status) return Error(ShapeFailure(status, error), client_event);
   const auto type = event.GetString("type");
+  if (frontend && !frontend->AllowsClient(type))
+    return Error(Invalid("live_client_event_forbidden", "Frontend event is not permitted",
+                         "type", 403), client_event);
   try {
     if (state_ == State::kWaiting) {
       if (now_ - born_ >= limits_.startup) return Fail();

@@ -38,6 +38,7 @@ APPLICATION_ROUTES = [
       for method in ('GET','POST','DELETE')),
     ('GET', '/v1/realtime', 'realtime'),
     ('GET', '/v1/live/sessions', 'realtime'),
+    ('POST', '/v1/live/sessions', 'data'),
     ('GET', '/v1/live/sessions/{session_id}/content', 'data'),
     ('GET', '/v1/realtime/traces', 'control'),
     *((method, '/v1/realtime/traces/{trace_id}', 'control') for method in ('GET','DELETE')),

@@ -106,6 +106,10 @@ Status ValidateServerOptions(const ServerOptions& options) {
   in_addr address{};
   if (inet_pton(AF_INET, options.host.c_str(), &address) != 1)
     return Status::Fail("host must be a numeric IPv4 address");
+  if (inet_pton(AF_INET, options.live_webrtc_address.c_str(), &address) != 1 ||
+      address.s_addr == INADDR_ANY || address.s_addr == INADDR_BROADCAST ||
+      IN_MULTICAST(ntohl(address.s_addr)))
+    return Status::Fail("live-webrtc-address must be a local unicast IPv4 address");
   if (!options.client_policy_file.empty() && options.host != "127.0.0.1")
     return Status::Fail("client-policy-file requires loopback serving");
   if (options.port < 1 || options.port > 65535)
@@ -385,7 +389,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--object-max-total-objects")
       integer = &parsed.object_max_total_objects;
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
-    if (!integer && !wide && key != "--host" && key != "--model-dir" &&
+    if (!integer && !wide && key != "--host" && key != "--live-webrtc-address" && key != "--model-dir" &&
         key != "--embedding-model-dir" && key != "--asr-model-dir" &&
         key != "--tts-model-dir" && key != "--tts-base-model-dir" &&
         key != "--aligner-model-dir" &&
@@ -457,6 +461,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.file_input_policy_file = value;
     } else if (key == "--client-policy-file") {
       parsed.client_policy_file = value;
+    } else if (key == "--live-webrtc-address") {
+      parsed.live_webrtc_address = value;
     } else if (key == "--host") {
       parsed.host = value;
     } else if (key == "--moe-trace-dir") {

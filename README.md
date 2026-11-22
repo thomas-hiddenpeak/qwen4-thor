@@ -929,6 +929,14 @@ Realtime conversation的真实音频输入、手动commit、VAD自动回答/
 [Live及剩余兼容](docs/SERVE_LIVE_2026-11-21.md)继续按总计划实现，
 正常播放听感仍待用户安排。
 
+Live 工作分支支持 `client.live.create({session, transport: {type: "webrtc", sdp: offer}})`。
+将返回的 `transport.sdp` 设置为对端描述，保留 `session.id`。浏览器音轨协商
+Opus、PCMU 或 PCMA，前端数据通道的权限在 `session.client.data_channel` 指定。
+部署时将可选媒体程序 `q4t-live-webrtc` 放在 `q4t` 同目录，提供 GStreamer
+WebRTC、NICE 与对应编解码插件。ICE 默认绑定回环，受控内网可用
+`q4t serve --live-webrtc-address IPv4` 指定客户端可达的本机接口。
+此入口需要已配置的原生 ASR 与语音模型。[通话验收及边界](docs/evidence/serve-live-media-create-20261123/README.md)。
+
 Live 工作分支提供按会话录制。启动 `q4t serve` 或托管 `prepare` 时使用
 `--live-recordings` 开放权限，具名客户端在 `session.start` 中传入
 `store: true` 启用本次录制。收到 `session.closed` 后，同一 API Key 对应的客户端可调用

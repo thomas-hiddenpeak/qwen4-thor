@@ -33,7 +33,7 @@ inline constexpr std::array<std::string_view, 7> kHttpConnectionClasses = {
 
 inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
                                                   std::string_view path) {
-  if (IsRealtimeUpgrade(method, path)) return HttpConnectionClass::kRealtime;
+  if (IsRealtimeUpgrade(method, path) || IsLiveMediaCreate(method, path)) return HttpConnectionClass::kRealtime;
   if (IsMcpTunnelPoll(method, path)) return HttpConnectionClass::kTunnelPoll;
   if (IsMcpTunnelResponse(method, path))
     return HttpConnectionClass::kTunnelResponse;

@@ -75,12 +75,15 @@ Status ValidateLiveWireShape(const Json& value, LiveShape shape,
                       {"session.start", "session.update", "session.started",
                        "session.updated", "session.closed"}))
     return status;
-  if (!event && shape != LiveShape::kSessionStart &&
+  if (!event && shape != LiveShape::kMediaCreate &&
+      shape != LiveShape::kSessionStart &&
       shape != LiveShape::kSessionUpdate && shape != LiveShape::kSession)
     return status;
   auto projection = value;
   auto* settings =
-      Settings(event ? Member(&projection, "session") : &projection);
+      Settings(event || shape == LiveShape::kMediaCreate
+                   ? Member(&projection, "session")
+                   : &projection);
   if (!settings) return status;
   bool changed = false;
   if (auto* tools = Member(settings, "tools"); tools && tools->IsArray()) {

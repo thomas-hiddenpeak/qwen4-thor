@@ -381,6 +381,7 @@ struct RouteSpec {
 constexpr RouteSpec kRoutes[] = {
     {"GET", "/v1/realtime", false},
     {"GET", "/v1/live/sessions", false},
+    {"POST", "/v1/live/sessions", false},
     {"POST", "/v1/audio/speech", false},
     {"POST", "/v1/audio/transcriptions", false},
     {"POST", "/v1/moderations", false},
@@ -433,7 +434,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
                            route.path == "/v1/live/sessions";
     if (method == route.method &&
         (path == route.path ||
-         (realtime && std::string_view(path).substr(0, path.find('?')) ==
+         (realtime && method == "GET" && std::string_view(path).substr(0, path.find('?')) ==
                           route.path))) {
       *control = route.control;
       return true;

@@ -88,6 +88,8 @@
 
 namespace q4t {
 namespace server {
+struct LiveSessionCallbacks;
+enum class LiveTransport;
 struct EmbeddingStepResult;
 class RequestDiagnostics;
 class AsrStreamPass;
@@ -336,6 +338,11 @@ class ChatServer {
                                    const HttpRequestHeaders& headers,
                                    std::string_view initial,
                                    std::string_view accept);
+  LiveSessionCallbacks MakeLiveCallbacks(const ClientIdentity& client,
+      const std::string& id, size_t message_bytes, LiveTransport transport);
+  void HandleLiveMediaCreate(int fd, const std::string& body,
+                             std::atomic<int>*& admission);
+  void JoinLiveMedia();
   void HandleLive(int fd, std::string_view path,
                     const HttpRequestHeaders& headers,
                     std::string_view initial, std::string_view accept);
@@ -430,6 +437,13 @@ class ChatServer {
   std::shared_ptr<const AccessProgramPolicy> access_program_policy_;
   std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;
+  struct LiveMediaThread {
+    std::atomic<bool> finished{true};
+    std::jthread worker;
+  };
+  std::mutex live_media_mu_;
+  std::array<LiveMediaThread, 4> live_media_threads_;
+  std::string live_webrtc_address_;
   bool live_recordings_ = false;
   ApplicationOwner<RealtimeTraceStore> realtime_traces_;
   RealtimeTraceStoreOptions realtime_trace_options_;
