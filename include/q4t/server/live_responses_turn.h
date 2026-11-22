@@ -24,6 +24,8 @@ class LiveResponsesTurn {
   bool HasCalls() const { return !calls_.empty(); }
   bool Finished() const { return finished_; }
   std::optional<std::string> TakeContinuation();
+  // Only before creating a worker, on a known local refusal of admission.
+  void RefusedContinuation() { consumed_ = false; }
   // Returns actual terminal output, followed by matching client results in
   // output-index order. No credentials or frontend-only instructions enter it.
   ObjectReply AppendHistory(io::Json* input) const;

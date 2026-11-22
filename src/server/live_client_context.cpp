@@ -126,7 +126,8 @@ ObjectReply LiveClientContext::Append(const Json& event) {
     return Invalid("Invalid Live context event", error.param);
   const auto* delegation = event.Find("delegation_id");
   if (!delegation || (!delegation->IsNull() &&
-                      (!delegation->IsString() || !Known(delegation->str))))
+                      (callbacks_.delegate || !delegation->IsString() ||
+                       !Known(delegation->str))))
     return Invalid("Unknown client delegation", "delegation_id");
   const auto text = event.GetString("content");
   if (text.size() > kInstructionsBytes)
@@ -242,15 +243,41 @@ ObjectReply LiveClientContext::Complete(const RealtimeConversationJob& job,
       const auto due = Now() + std::chrono::milliseconds(delay_ms_);
       entries_.emplace(id, Entry{call_id, {}, due, due, due + 15s});
       calls_.insert(call_id);
-      const auto receipt = Object({{"delegation_id", String(id)},
-                                   {"target", String("client")},
-                                   {"status", String("created")},
-                                   {"task_completed", Boolean(false)}});
+      ObjectReply delegated;
+      if (callbacks_.delegate) {
+        Json args;
+        if (!io::ParseJson(item.GetString("arguments"), &args, true,
+                           {8, 16, 32768, true}))
+          return Fail(Invalid("Invalid verified delegation arguments"));
+        delegated =
+            callbacks_.delegate(id, ContextItem(args.GetString("task")));
+        if (delegated.commit_unknown) return Fail(std::move(delegated));
+        if (!Accepted(delegated)) entries_.at(id).pending = false;
+      }
+      const auto receipt = Object(
+          {{"delegation_id", String(id)},
+           {"target", String(callbacks_.delegate ? "responses" : "client")},
+           {"status", String(!callbacks_.delegate  ? "created"
+                             : Accepted(delegated) ? "submitted"
+                                                   : "failed")},
+           {"task_completed", Boolean(false)}});
       reply =
           frontend_.Create(Object({{"type", String("function_call_output")},
                                    {"call_id", String(call_id)},
                                    {"output", String(OutputJson(receipt))}}));
       if (!Accepted(reply)) return Fail(std::move(reply));
+      if (callbacks_.delegate) {
+        // The first actual response.created carries the backend response ID.
+        if (!Accepted(delegated)) {
+          reply = Emit(Object(
+              {{"type", String("error")},
+               {"error", Object({{"type", String("server_error")},
+                                 {"code", String(delegated.code)},
+                                 {"message", String(delegated.message)}})}}));
+          if (!Accepted(reply)) return reply;
+        }
+        continue;
+      }
       auto event =
           Object({{"type", String("session.delegation.created")},
                   {"delegation", Object({{"type", String("delegation")},
@@ -267,6 +294,14 @@ ObjectReply LiveClientContext::Complete(const RealtimeConversationJob& job,
     return Fail(
         Error(503, "live_delegation_failed", "Delegation handoff failed"));
   }
+}
+ObjectReply LiveClientContext::SpeakBackend(std::string text) {
+  if (!valid_ || closed_ || failed_ || !callbacks_.delegate)
+    return Unavailable();
+  CancelAcknowledgements();
+  return frontend_.Create(
+      ContextItem("Backend result to communicate to the caller: " + text), true,
+      {}, NoDelegation());
 }
 ObjectReply LiveClientContext::Tick() {
   if (!valid_ || failed_) return Unavailable();

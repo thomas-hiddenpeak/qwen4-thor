@@ -610,6 +610,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/live_responses_settings.cpp
   src/server/live_responses_validation.cpp
   src/server/live_responses_turn.cpp
+  src/server/live_responses_execution.cpp
+  src/server/live_responses_delegate.cpp
   src/server/live_session.cpp
   src/server/live_session_pump.cpp
   src/server/live_audio_input.cpp
@@ -1066,6 +1068,8 @@ if(Q4T_BUILD_TESTS)
   src/server/live_responses_settings.cpp
   src/server/live_responses_validation.cpp
   src/server/live_responses_turn.cpp
+  src/server/live_responses_execution.cpp
+  src/server/live_responses_delegate.cpp
   src/server/live_session.cpp
   src/server/live_session_pump.cpp
   src/server/live_audio_input.cpp

@@ -1,5 +1,6 @@
 #include "q4t/server/native_responses_stream.h"
 #include "q4t/server/live_responses_turn.h"
+#include "q4t/server/live_responses_execution.h"
 #include "../src/server/responses_json.h"
 
 #include <sys/socket.h>
@@ -542,5 +543,119 @@ Q4T_TEST(live_responses_turn_distinguishes_hosted_tools_and_matching_checks) {
   Set(&screen, "acknowledged_safety_checks",
       Parse(R"([{"id":"chk_b"},{"id":"chk_a"}])"));
   Q4T_CHECK(turn.Result(screen).ok() && !turn.WaitingForResults());
+  return true;
+}
+
+namespace {
+struct Execution {
+  ClientAdmission clients;
+  ClientIdentity client = clients.Authenticate("", "");
+  ClientLease permit;
+  HttpBodyBudget input{1024};
+  std::shared_ptr<RequestControl> control = std::make_shared<RequestControl>(
+      "live_owned", "", Clock::now() + 5s, client.Id());
+  Json settings = Parse(R"({"model":"native","instructions":"Backend only"})");
+  Execution() {
+    if (!permit.Acquire(clients, client, ClientLane::kData))
+      throw std::runtime_error("Live test client capacity");
+  }
+  auto Run(const std::function<void(const std::string&)>& run,
+           NativeResponsesStream::Sink sink = Ok) {
+    return ExecuteLiveResponses(
+        settings,
+        Array({Object(
+            {{"role", String("user")}, {"content", String("version?")}})}),
+        client, permit, control, input, std::move(sink), run);
+  }
+};
+}  // namespace
+Q4T_TEST(live_responses_execution_uses_online_admission_and_real_stream_once) {
+  Execution f;
+  Fixture fixture;
+  size_t calls = 0, events = 0;
+  bool owner = false;
+  auto result = f.Run(
+      [&](const auto& body) {
+        ++calls;
+        const auto request = Parse(body);
+        auto* http = HttpResponseContext::Current(-1);
+        owner = http && http->CapturesResponses() &&
+                http->RateDomain() == ClientRateDomain::kOnline &&
+                http->TraceId() == f.control->id() &&
+                f.input.Used() == body.size() && request.GetBool("stream") &&
+                !request.GetBool("store", true) &&
+                request.GetString("instructions") == "Backend only" &&
+                request.GetArray("input")->array.size() == 1;
+        http->Usage().Enable();
+        http->Usage().BeginStep();
+        http->Usage().Observe({12, 7});
+        http->Usage().EndStep();
+        if (!BeginStreamingResponse(-1, http->State()) ||
+            !WriteAll(-1, fixture.begin) || !WriteAll(-1, fixture.delta) ||
+            !WriteAll(-1, fixture.end))
+          throw std::runtime_error("Live native fixture write");
+      },
+      [&](const Json&) {
+        ++events;
+        return ObjectReply{};
+      });
+  Q4T_CHECK(owner && calls == 1 && events > 5 && result.reply.ok() &&
+            result.terminal.GetString("id") == "resp_native_fixture" &&
+            result.usage && result.usage->input == 12 &&
+            result.usage->output == 7 && f.input.Used() == 0);
+  Q4T_CHECK(f.Run([&](const auto&) { ++calls; }).reply.code ==
+                "response_already_invoked" &&
+            calls == 1);
+  return true;
+}
+Q4T_TEST(live_responses_execution_protects_owner_body_quota_and_known_errors) {
+  Execution f;
+  size_t calls = 0;
+  const auto quota = [&](const auto&) {
+    ++calls;
+    SendError(-1, 429, "Current limit", {}, "rate_limit_exceeded", "tools");
+  };
+  f.control = std::make_shared<RequestControl>("foreign", "", Clock::now() + 5s,
+                                               "another");
+  Q4T_CHECK(f.Run(quota).reply.code == "live_response_owner_invalid");
+  f.control = std::make_shared<RequestControl>(
+      "cancelled", "", Clock::now() - 1s, f.client.Id());
+  Q4T_CHECK(f.Run(quota).reply.code == "deadline_exceeded");
+  f.control = std::make_shared<RequestControl>("mine", "", Clock::now() + 5s,
+                                               f.client.Id());
+  Set(&f.settings, "instructions", String(std::string(2000, 'x')));
+  Q4T_CHECK(f.Run(quota).reply.code == "body_capacity_exhausted" && calls == 0);
+  Set(&f.settings, "instructions", String("valid"));
+  auto error = f.Run(quota);
+  Q4T_CHECK(
+      calls == 1 && f.input.Used() == 0 && error.reply.http_status == 429 &&
+      error.reply.code == "rate_limit_exceeded" && error.terminal.IsNull());
+  return true;
+}
+Q4T_TEST(live_responses_execution_partial_drain_and_output_loss_never_replay) {
+  Fixture fixture;
+  Execution f;
+  auto partial = f.Run([&](const auto&) {
+    auto* http = HttpResponseContext::Current(-1);
+    BeginStreamingResponse(-1, http->State());
+    WriteAll(-1, fixture.begin);
+  });
+  Q4T_CHECK(!partial.reply.ok() && partial.terminal.IsNull() && !partial.usage);
+  Execution second;
+  auto lost = second.Run(
+      [&](const auto&) {
+        auto* http = HttpResponseContext::Current(-1);
+        BeginStreamingResponse(-1, http->State());
+        WriteAll(-1, fixture.begin);
+      },
+      [](const Json&) {
+        ObjectReply reply;
+        reply.code = "lost_receipt";
+        reply.http_status = 503;
+        reply.commit_unknown = true;
+        return reply;
+      });
+  Q4T_CHECK(lost.reply.code == "lost_receipt" && lost.reply.commit_unknown &&
+            second.input.Used() == 0);
   return true;
 }

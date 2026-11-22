@@ -16,6 +16,7 @@ struct LiveClientContextCallbacks {
   decltype(LiveConfigurationContext::count_text) count_text;
   LiveEventSink emit;
   std::function<std::chrono::steady_clock::time_point()> now;
+  std::function<ObjectReply(std::string, io::Json)> delegate = {};
 };
 class LiveClientContext {
  public:
@@ -30,6 +31,7 @@ class LiveClientContext {
                        const io::Json& output,
                        std::string_view client_event = {});
   ObjectReply Tick();
+  ObjectReply SpeakBackend(std::string text);
   // Apply only to subsequent delegations; existing deadlines stay frozen.
   ObjectReply AcknowledgementDelay(uint32_t milliseconds);
   void Close() noexcept;

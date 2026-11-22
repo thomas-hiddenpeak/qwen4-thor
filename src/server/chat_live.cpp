@@ -144,18 +144,19 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     }
     return count(prompt, false, tokens, error);
   };
-  callbacks.configuration.validate =
-      [current_planning](const Json& configuration, ChatPlanError* error) {
-        ChatPlanConfig planning;
-        ClientIdentity identity;
-        auto reply = current_planning(&planning, &identity);
-        if (!reply.ok()) {
-          *error = {reply.code, "session", reply.http_status};
-          return Status::Fail(reply.message);
-        }
-        NativeLivePlan plan;
-        return PlanNativeLiveClient(configuration, planning, &plan, error);
-      };
+  callbacks.configuration.validate = [current_planning](
+                                         const Json& configuration,
+                                         ChatPlanError* error) {
+    ChatPlanConfig planning;
+    ClientIdentity identity;
+    auto reply = current_planning(&planning, &identity);
+    if (!reply.ok()) {
+      *error = {reply.code, "session", reply.http_status};
+      return Status::Fail(reply.message);
+    }
+    NativeLivePlan plan;
+    return PlanNativeLiveClient(configuration, planning, &plan, error, true);
+  };
   callbacks.validate_responses = [this, current_planning, client](
                                      const Json& settings,
                                      std::stop_token stop) {
@@ -195,7 +196,7 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     NativeLivePlan plan;
     ChatPlanError error;
     const auto status =
-        PlanNativeLiveClient(configuration, planning, &plan, &error);
+        PlanNativeLiveClient(configuration, planning, &plan, &error, true);
     if (!status) return Failure(status, error);
     LiveFrontendNative native;
     native.input = input;
@@ -223,9 +224,36 @@ void ChatServer::HandleLive(int fd, std::string_view path,
                                     const auto& delta, const auto& speech) {
       return RunRealtimeConversation(client, job, control, delta, speech);
     };
+    LiveResponsesNative responses;
+    responses.acquire = native.acquire;
+    responses.release = native.release;
+    responses.execute = [this, client](
+                            const Json& settings, Json history,
+                            const std::shared_ptr<RequestControl>& control,
+                            NativeResponsesStream::Sink sink) {
+      const auto current = clients_.RecoveryIdentity(client.Index());
+      LiveResponsesResult failure;
+      if (!clients_.OwnsIdentity(client) || !current.Allowed() ||
+          current.Id() != client.Id()) {
+        failure.reply = Error(401, "client_authentication_failed",
+                              "Client no longer authorized");
+        return failure;
+      }
+      ClientLease permit;
+      if (!permit.Acquire(clients_, current, ClientLane::kData)) {
+        failure.reply = Error(429, "client_capacity_exhausted",
+                              "Client request capacity exhausted");
+        return failure;
+      }
+      return ExecuteLiveResponses(
+          settings, std::move(history), current, permit, control, body_budget_,
+          std::move(sink), [&](const std::string& body) {
+            HandleChat(-1, body, GenerationApi::kResponse, control);
+          });
+    };
     auto selected = std::make_unique<NativeLiveClientBackend>(
         id, std::move(native), LiveClientContextCallbacks{counter, emit, {}},
-        asr_limits_.max_audio_seconds, message_bytes);
+        asr_limits_.max_audio_seconds, message_bytes, std::move(responses));
     auto* owner = selected.get();
     *backend =
         std::move(selected);  // Cleanup is owned even if preparation fails.

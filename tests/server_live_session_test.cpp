@@ -397,8 +397,7 @@ Q4T_TEST(live_responses_validation_ack_error_and_corrected_same_session) {
     {"type":"skill_reference","skill_id":"sk_1","version":1}]}}]}}}})"));
   Q4T_CHECK(f.events.size() == 1 && f.Count("session.started") == 1);
   Q4T_CHECK(f.Send(R"({"type":"response.create","event_id":"early"})"));
-  Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
-            "responses_settings_unavailable");
+  Q4T_CHECK(f.Count("error") == 0);
   Q4T_CHECK(f.backend.commands.empty());
   Q4T_CHECK(f.Until([&] {
     return f.Last("error").GetString("client_event_id") == "bad_skills";

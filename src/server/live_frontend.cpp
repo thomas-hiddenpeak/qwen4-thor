@@ -278,7 +278,9 @@ ObjectReply LiveFrontend::PlayFixture(std::string_view audio,
   return Accepted(reply) ? ObjectReply{} : Fail(reply);
 }
 ObjectReply LiveFrontend::AdvanceFixture() {
-  if (!fixture_ || work_ || input_.Executing()) return {};
+  if (!fixture_ || work_ || input_.Executing() ||
+      (native_.fixture_ready && !native_.fixture_ready()))
+    return {};
   const auto reply = fixture_->Tick(Timeline());
   if (!Accepted(reply)) return reply;
   if (fixture_->Completed()) {

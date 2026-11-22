@@ -97,6 +97,8 @@ class LiveSession {
   bool UpdateSession(const io::Json& event);
   bool PublishConfiguration(io::Json response, const io::Json* settings,
                             const std::string& event, size_t charge);
+  bool Dispatch(const io::Json& event);
+  bool FlushResponsesCommands(bool valid);
   bool BeginClose(std::string reason, std::string client_event);
   bool Usage(bool terminal);
   double Seconds() const;
@@ -109,6 +111,8 @@ class LiveSession {
   LiveResponsesValidation validation_;
   io::Json configuration_;
   std::deque<Pending> pending_;
+  std::deque<io::Json> responses_commands_;
+  size_t responses_command_bytes_ = 0;
   size_t deferred_bytes_ = 0;
   uint64_t sequence_ = 0;
   Clock::time_point now_, born_, started_, closing_, last_usage_;

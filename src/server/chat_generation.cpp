@@ -367,12 +367,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       const auto preparation_ms = requested_ms >= 1 && requested_ms <= 10800000
                                       ? requested_ms
                                       : request_deadline_ms_;
-      StateAccess access{
-          identity.Scoped() ? "client:" + std::string(identity.Id())
-                            : "local:anonymous",
-          t_arrive + std::chrono::milliseconds(preparation_ms), [this, fd] {
-            return stop_requested_.load() || detail::ClientConnectionFailed(fd);
-          }};
+      auto preparation_deadline =
+          t_arrive + std::chrono::milliseconds(preparation_ms);
+      if (background)
+        preparation_deadline =
+            std::min(preparation_deadline, background->deadline());
+      StateAccess access{identity.Scoped()
+                             ? "client:" + std::string(identity.Id())
+                             : "local:anonymous",
+                         preparation_deadline, [this, fd, background] {
+                           return stop_requested_.load() ||
+                                  (background && background->Cancelled()) ||
+                                  detail::ClientConnectionFailed(fd);
+                         }};
       auto reply = responses->Prepare(original_request, planning_config,
                                       std::move(access), std::time(nullptr));
       if (!reply.ok()) {

@@ -1,5 +1,6 @@
 #include "q4t/server/live_session.h"
 #include "q4t/server/live_responses_settings.h"
+#include "q4t/server/realtime_conversation.h"
 
 #include <algorithm>
 #include <limits>
@@ -78,6 +79,8 @@ bool LiveSession::Start() {
   return true;
 }
 void LiveSession::Cancel() noexcept {
+  responses_commands_.clear();
+  responses_command_bytes_ = 0;
   validation_.Close();
   if (state_ != State::kClosed) state_ = State::kCancelled;
   if (backend_ && !backend_cancelled_ && !joined_) {
@@ -219,6 +222,7 @@ bool LiveSession::PublishConfiguration(Json response, const Json* settings,
   if (!event.empty()) Set(&response, "client_event_id", String(event));
   if (!Emit(std::move(response))) return false;
   if (charge) {
+    if (!FlushResponsesCommands(false)) return false;
     backend_->ResponsesReady(false);
     validation_.Publish(*settings, event, charge);
   }
@@ -253,6 +257,8 @@ bool LiveSession::UpdateSession(const Json& event) {
                               charge);
 }
 bool LiveSession::BeginClose(std::string reason, std::string client_event) {
+  responses_commands_.clear();
+  responses_command_bytes_ = 0;
   validation_.Close();
   state_ = State::kDraining;
   closing_ = now_;
@@ -314,19 +320,53 @@ bool LiveSession::Message(WebSocketOpcode opcode, std::string_view message) {
     if (type == "session.update") return UpdateSession(event);
     if (type == "session.close")
       return BeginClose("close_requested", client_event);
-    if (type == "response.create" && ResponseSettings(configuration_) &&
-        !validation_.Ready())
-      return Error(
-          Invalid("responses_settings_unavailable",
-                  "Responses settings must pass validation before generation",
-                  "session.delegation.responses", 409),
-          client_event);
-    const auto reply = backend_->Command(event);
-    if (backend_fault_ || reply.commit_unknown) return Fail();
-    return Accepted(reply) ? true : Error(reply, client_event);
+    if (ResponseSettings(configuration_) && !validation_.Ready() &&
+        (type == "response.create" ||
+         (type == "response.item.create" && !responses_commands_.empty()))) {
+      if (validation_.Drained())
+        return Error(
+            Invalid("responses_settings_unavailable",
+                    "Correct the backend settings before requesting generation",
+                    "session.delegation.responses", 409),
+            client_event);
+      size_t bytes = 0;
+      if (responses_commands_.size() >= 8 ||
+          !MeasureRealtimeStorage(
+              event, (8ULL << 20) - responses_command_bytes_, &bytes))
+        return Error(
+            Invalid("live_validation_capacity",
+                    "Too many commands waiting for backend settings", {}, 429),
+            client_event);
+      responses_commands_.push_back(std::move(event));
+      responses_command_bytes_ += bytes;
+      return true;
+    }
+    return Dispatch(event);
   } catch (...) {
     return Fail();
   }
+}
+bool LiveSession::Dispatch(const Json& event) {
+  auto reply = backend_->Command(event);
+  if (backend_fault_ || reply.commit_unknown) return Fail();
+  return Accepted(reply) ||
+         Error(std::move(reply), event.GetString("event_id"));
+}
+bool LiveSession::FlushResponsesCommands(bool valid) {
+  auto waiting = std::move(responses_commands_);
+  responses_commands_.clear();
+  responses_command_bytes_ = 0;
+  for (const auto& event : waiting) {
+    if (valid) {
+      if (!Dispatch(event)) return false;
+    } else if (!Error(Invalid("responses_settings_unavailable",
+                              "The requested Responses settings failed "
+                              "validation or were replaced",
+                              "session.delegation.responses", 409),
+                      event.GetString("event_id")))
+      return false;
+  }
+  return true;
 }
 double LiveSession::Seconds() const {
   return std::chrono::duration<double>(now_ - started_).count();
@@ -364,7 +404,10 @@ bool LiveSession::Tick() {
         !BeginClose("expired", {}))
       return false;
     if (auto result = validation_.Poll(); result && state_ == State::kActive) {
-      if (result->current) backend_->ResponsesReady(validation_.Ready());
+      if (result->current) {
+        backend_->ResponsesReady(validation_.Ready());
+        if (!FlushResponsesCommands(validation_.Ready())) return false;
+      }
       if (!Accepted(result->reply) &&
           !Error(std::move(result->reply), result->client_event))
         return false;

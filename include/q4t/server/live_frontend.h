@@ -21,6 +21,7 @@ struct LiveFrontendNative {
                             const RealtimeGenerationResult&, const io::Json&)>
       completed;
   std::function<std::chrono::steady_clock::time_point()> now;
+  std::function<bool()> fixture_ready = {};
 };
 
 class LiveFrontend {
