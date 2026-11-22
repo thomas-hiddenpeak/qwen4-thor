@@ -66,6 +66,7 @@ add_compile_options(-Wall -Wextra)
 # The service Guardian's process control remains independently CPU-buildable.
 include(cmake/GuardianProcess.cmake)
 include(cmake/NativeIngress.cmake)
+include(cmake/NativeWebRTC.cmake)
 
 # CUDA toolkit headers/libraries for C++ sources that include CUDA runtime.
 find_package(CUDAToolkit REQUIRED)

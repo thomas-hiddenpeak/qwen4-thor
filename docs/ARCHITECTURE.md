@@ -138,6 +138,8 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 
 ## 外部依赖与可选前置接入
 
+WebRTC 媒体进程单独链接系统 GStreamer WebRTC、SDP 和 App 库，使用 ICE、DTLS/SRTP、SCTP 与音频编解码插件。它只服务已选择该传输的会话；核心可执行文件未链接这些库。当前独立进程已实测，Live HTTP 创建、服务端会话归属和随包交付仍在接入。[依赖与媒体验证](evidence/serve-live-webrtc-media-20261123/README.md)。
+
 2026-11-08用户明确：项目设计应尽量减少外部依赖，兼容nginx前置，
 但不能强制绑定。原生入口及后续TLS已完成CPU和真实模型短验，
 本机默认包保持停止与原本机策略，当前身份见 STATUS；旧包与证据

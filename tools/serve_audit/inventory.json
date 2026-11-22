@@ -2387,7 +2387,7 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "b184e05b3b54506f470f3dccb1c92a8a53750e7e9b96f8dc04f26194bc251b0d",
+    "CMakeLists.txt": "6773c4431ba8b3f279c497c24ae9d5b0f8e6360934bad7ba5d527730a9dcbbce",
     "cmake/ChatProtocolIdentity.cmake": "bc82ffbe45e2aff687ae4573c93cea3208d4cb8a8e378ec6739db4a7939b0bfb",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
@@ -3320,6 +3320,8 @@
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
     "src/service/ingress_transport.cpp": "334a80728440d22f2c44da68233ae1c77f33a8dacf764ea59f108906076f224a",
     "src/service/ingress_websocket.cpp": "2005b50b847a14f763825d8912bf5c7c8c56a07bd8355c47728297aca79b53d0",
+    "src/service/live_webrtc_main.cpp": "f8d7822d63edadea05952cd6e94657f44e442be94ffc39032481064f4eeee5cf",
+    "src/service/live_webrtc_offer.cpp": "c2c9504f715540334d8fe56e689ad97bd8755e291b3f6cd4581636fb1b63cf0e",
     "src/service/service_cli.cpp": "8050277163189b926b27b9b4ca88282c65ce7593fc26309c8e415febd01c987e",
     "src/text/tokenizer.cpp": "15159b888fa4d593c1bdce4e402c3c1f88bb0acacfa089a92c25057b1d5dc541",
     "src/text/voice_consent.cpp": "16e6ea3650d09666ce6df7386f8b4a601854d4d9aad434fc62054d322cfbedd6",
