@@ -4,6 +4,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/realtime_conversation.h"
 #include "q4t/server/http_response.h"
 
 namespace q4t::server {
@@ -57,11 +58,34 @@ void LiveRecordingCapture::Audio(LiveAudioChannel channel, uint64_t ticks,
   stopped_ = true;
   ready_.notify_one();
 }
-void LiveRecordingCapture::Finish(uint64_t ticks) {
+void LiveRecordingCapture::Finish(uint64_t ticks, const CaptureState& capture) {
   std::lock_guard lock(mutex_);
   if (finishing_ || done_ || stopped_) return;
   finishing_ = true;
   end_ticks_ = ticks;
+  if (capture) {
+    try {
+      // The worker serializes and transacts the capture while the immutable
+      // copy is resident. The dedicated lease follows it through publication.
+      size_t bytes = 0;
+      if (!memory_ ||
+          memory_->GrowTo(kLiveRecordingHostBytes + 3 * kLiveForkStateBytes)) {
+        fork_error_ = capture(&fork_state_);
+        if (fork_error_.ok() &&
+            MeasureRealtimeStorage(fork_state_, kLiveForkStateBytes, &bytes)) {
+          ready_.notify_one();
+          return;
+        }
+      }
+      if (fork_error_.ok())
+        fork_error_ = Error(503, "live_fork_storage_capacity",
+                            "Insufficient space for conversation state");
+    } catch (...) {
+      fork_error_ = Error(503, "live_fork_history_unavailable",
+                          "Could not capture conversation state");
+    }
+    fork_state_ = {};
+  }
   ready_.notify_one();
 }
 void LiveRecordingCapture::Cancel() {
@@ -120,6 +144,27 @@ ObjectReply LiveRecordingCapture::Store(BinaryStage* stage) {
   root.scope = scope_;
   root.id = id_;
   root.data = LiveRecordingMetadata(layout);
+  if (!fork_state_.IsNull() && fork_error_.ok()) {
+    // Publish audio and private continuation state in one scoped transaction.
+    // WAV reads never have to hydrate model context or its string payloads.
+    ObjectRequest checkpoint;
+    checkpoint.operation = ObjectOperation::kPut;
+    checkpoint.kind = ObjectKind::kLiveForkState;
+    checkpoint.scope = scope_;
+    checkpoint.id = "fork_" + Digest(id_);
+    checkpoint.data = std::move(fork_state_);
+    Set(&checkpoint.data, "source_id", String(id_));
+    auto with_state = root;
+    Set(&with_state.data, "fork_state_id", String(checkpoint.id));
+    auto publication = binary_.Publish(Access(), stage, std::move(with_state),
+                                       {&checkpoint, 1});
+    if (publication.ok() || publication.commit_unknown ||
+        (publication.http_status != 413 && publication.http_status != 429))
+      return publication;
+    fork_error_ =
+        Error(503, "live_fork_storage_capacity",
+              "Recording retained without fork history: capacity exhausted");
+  }
   return binary_.Publish(Access(), stage, std::move(root));
 }
 void LiveRecordingCapture::Run() noexcept {
@@ -141,8 +186,47 @@ void LiveRecordingCapture::Run() noexcept {
   std::lock_guard lock(mutex_);
   queue_.clear();
   bytes_ = 0;
-  if (!stopped_ && error_.ok()) error_ = std::move(result);
+  if (!stopped_ && error_.ok())
+    error_ = result.ok() ? std::move(fork_error_) : std::move(result);
   done_ = true;
+}
+
+ObjectReply ReadLiveForkState(ObjectStore& objects, const BinaryAccess& access,
+                              const std::string& source) {
+  ObjectRequest request;
+  request.kind = ObjectKind::kLiveRecording;
+  request.id = source;
+  request.scope = access.scope;
+  auto recording = objects.Execute(request, access.deadline, access.cancelled);
+  if (!recording.ok()) return recording;
+  const auto* data = recording.value.Find("data");
+  if (!data || data->GetString("format") != "q4t.live_recording.v1")
+    return Error(503, "invalid_recording", "Invalid recording metadata");
+  const auto id = data->GetString("fork_state_id");
+  if (id.empty())
+    return Error(409, "live_fork_history_unavailable",
+                 "Recording has no saved conversation state");
+  if (id != "fork_" + Digest(source))
+    return Error(503, "invalid_recording", "Invalid recording history link");
+  request.kind = ObjectKind::kLiveForkState;
+  request.id = id;
+  auto stored = objects.Execute(request, access.deadline, access.cancelled);
+  if (stored.http_status == 404)
+    return Error(503, "invalid_recording",
+                 "Saved conversation state is missing");
+  if (!stored.ok()) return stored;
+  auto* state =
+      stored.value.Has("data") ? &Field(stored.value, "data") : nullptr;
+  if (!state || state->GetString("format") != "q4t.live_fork.v1" ||
+      state->GetString("source_id") != source ||
+      !state->GetArray("frontend_history") ||
+      !state->GetArray("decision_items") || !state->Find("configuration") ||
+      !state->Find("configuration")->IsObject() ||
+      !state->Find("configuration")->GetBool("store"))
+    return Error(503, "invalid_recording", "Invalid stored conversation state");
+  ObjectReply result;
+  result.value = std::move(*state);
+  return result;
 }
 
 void SendLiveRecording(int fd, ObjectStore& objects, const BinaryAccess& access,

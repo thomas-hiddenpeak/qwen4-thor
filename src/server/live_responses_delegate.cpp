@@ -265,6 +265,11 @@ void LiveResponsesDelegate::Interrupt() noexcept {
   if (turn_) turn_->Abort();
   changed_.notify_all();
 }
+Json LiveResponsesDelegate::ForkHistory() const {
+  return Object({{"history", history_},
+                 {"added", added_},
+                 {"turn", turn_ ? turn_->ForkHistory() : Json{}}});
+}
 void LiveResponsesDelegate::Close() noexcept { closing_ = true; }
 void LiveResponsesDelegate::Join() noexcept {
   if (Running()) {

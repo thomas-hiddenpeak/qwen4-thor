@@ -29,6 +29,7 @@ class LiveResponsesDelegate {
   // instructions and internal tool/acknowledgement history are never copied.
   ObjectReply Delegate(std::string id, io::Json task);
   ObjectReply Tick(uint64_t offset_ms);
+  io::Json ForkHistory() const;
   bool Running() const { return worker_.valid(); }
   void Close() noexcept;
   void Interrupt() noexcept;

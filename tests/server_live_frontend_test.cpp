@@ -6,6 +6,8 @@
 #include "q4t/server/chat_prompt.h"
 
 #include <algorithm>
+#include <cstdlib>
+#include <filesystem>
 
 #include "../src/server/object_protocol.h"
 #include "q4t/io/base64.h"
@@ -1424,6 +1426,50 @@ Q4T_TEST(live_bound_responses_immediate_create_tool_result_and_spoken_return) {
   Q4T_CHECK(d.f.Close() && d.f.Count("session.delegation.created") == 2);
   return true;
 }
+Q4T_TEST(live_fork_normal_close_captures_separate_tool_and_frontend_history) {
+  const auto* root = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  auto directory =
+      std::filesystem::absolute(root ? root : ".q4t-work/fork-cpu");
+  std::filesystem::create_directories(directory);
+  ObjectStoreOptions options;
+  options.directory =
+      (directory / NewObjectId(ObjectKind::kLiveForkState)).string();
+  ObjectStore objects(options);
+  DelegateFixture d;
+  d.f.recording_objects = &objects;
+  auto config = WorkerConfig();
+  Set(&config, "store", Boolean(true));
+  Q4T_CHECK(d.f.Start(config) && d.f.Count("session.started") == 1);
+  Q4T_CHECK(d.f.Append("thinking", "private frontend only"));
+  Q4T_CHECK(d.Item(User("look up project")) && d.f.Command("response.create"));
+  Q4T_CHECK(d.f.Wait([&] { return d.releases.load() == 1; }));
+  Q4T_CHECK(d.Item(Object({{"type", String("function_call_output")},
+                           {"call_id", String("call_read")},
+                           {"output", String("rev426")}})));
+  // A submitted tool result belongs to history even when no continuation ran.
+  Q4T_CHECK(d.f.Close() && d.runs == 1 && !d.f.Count("error"));
+  auto state = ReadLiveForkState(
+      objects, {"client:test", Clock::now() + 3s, {}}, "live_bound");
+  Q4T_CHECK(state.ok());
+  const auto* response = state.value.Find("responses");
+  Q4T_CHECK(
+      response && response->GetArray("history") &&
+      OutputJson(*response->GetArray("history")).find("look up project") !=
+          std::string::npos);
+  const auto* turn = response->Find("turn");
+  Q4T_CHECK(turn && turn->GetBool("completed") &&
+            turn->GetArray("output")->array.front().GetString("call_id") ==
+                "call_read" &&
+            turn->GetArray("results")->array.front().GetString("output") ==
+                "rev426");
+  Q4T_CHECK(OutputJson(*response).find("private frontend only") ==
+                std::string::npos &&
+            OutputJson(*state.value.GetArray("frontend_history"))
+                    .find("private frontend only") != std::string::npos);
+  Q4T_CHECK(!state.value.Has("worker") && d.runs == 1 && d.releases == 1);
+  return true;
+}
+
 Q4T_TEST(live_bound_spoken_task_uses_responses_target_and_separate_context) {
   DelegateFixture d;
   d.lookup = false;

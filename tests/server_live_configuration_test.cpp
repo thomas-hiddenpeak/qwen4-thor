@@ -307,6 +307,13 @@ Q4T_TEST(live_responses_private_mcp_survives_sparse_update_and_replacement) {
             wire.find("X-Fixture") == wire.npos &&
             wire.find("test-header") == wire.npos &&
             wire.find("headers") != wire.npos);
+  auto checkpoint = f.output;
+  Q4T_CHECK(RedactLiveResponseCredentials(&checkpoint));
+  Q4T_CHECK(!RedactLiveResponseCredentials(&checkpoint));
+  const auto archived = OutputJson(checkpoint);
+  Q4T_CHECK(archived.find("test-bearer") == archived.npos &&
+            archived.find("test-header") == archived.npos &&
+            archived.find("headers") != archived.npos);
   const auto settings = *f.output.Find("delegation")->Find("responses");
   Q4T_CHECK(MakeLiveResponsesRequest(settings, Array(), &request, &f.error));
   Q4T_CHECK(request.GetArray("tools")->array[0].GetString("authorization") ==

@@ -1,0 +1,39 @@
+{
+  "engine_sha256": "ffb1d435f4a538e42805144cb8b5449b2033d5bc94c05c004c3c1d36dc771c3d",
+  "ingress_sha256": "56112a066a8bad3dc105fa30a1002f6ba1b7d0c7329c5005a9a57a379f919049",
+  "matched_protocol_sources": 888,
+  "tests": [
+    "live_bound_responses_immediate_create_tool_result_and_spoken_return",
+    "live_decision_items_keep_owner_and_do_not_start_model_work",
+    "live_decision_items_preserve_typed_input_order_and_snapshot",
+    "live_decision_items_recover_capacity_and_reject_uncertain_writes",
+    "live_decision_items_validate_tool_identifiers_and_image_sources",
+    "live_fork_checkpoint_failure_preserves_downloadable_legacy_wave",
+    "live_fork_normal_close_captures_separate_tool_and_frontend_history",
+    "live_fork_quota_refuses_only_history_and_retires_staging",
+    "live_fork_state_is_atomic_scoped_durable_and_independent_of_wav",
+    "live_recording_abort_revocation_and_backpressure_preserve_privacy",
+    "live_recording_corrupt_chunk_map_or_stream_fails_before_false_completion",
+    "live_recording_decodes_g711_exactly_and_allows_empty_or_silent_sessions",
+    "live_recording_download_exact_route_and_opt_in_cli",
+    "live_recording_interleaves_overlaps_and_silence_on_the_sample_clock",
+    "live_recording_permission_without_session_opt_in_never_opens_storage",
+    "live_recording_rejects_partial_overlapping_or_unconfirmed_writes",
+    "live_recording_storage_failure_keeps_voice_and_normal_close",
+    "live_recording_store_publishes_atomically_and_scopes_download_after_restart",
+    "live_recording_streams_large_spans_and_reads_each_chunk_once",
+    "live_responses_private_mcp_survives_sparse_update_and_replacement"
+  ],
+  "schema_tests": 5,
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 93,
+    "native_routes": 154,
+    "reviewed_source_anchors": 1164,
+    "mutation_checks": 32,
+    "errors": []
+  }
+}

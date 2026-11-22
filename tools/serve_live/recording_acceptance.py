@@ -33,7 +33,7 @@ def prepare(out, qualification):
     require(version and sha(ROOT/record['path']) == record['sha256'], 'current version record')
     record['version'] = 'rev' + version[1]
     plan.update(schema=SCHEMA, limits=LIMITS, port=18701, operations_port=18702,
-                public_port=18703, retained_query=voice.retained_query())
+                public_port=18703, verify_fork_state=True, retained_query=voice.retained_query())
     save(out/'plan.json', plan)
 
 
@@ -51,6 +51,80 @@ def track(samples, source):
         cursor = offset + len(segment)
     require(not any(samples[cursor:]), 'unexpected audio after final observed segment')
     return spans
+
+
+def inspect_fork_state(out, receipt):
+    session = receipt['recording']['id']
+    require(re.fullmatch(r'live_[0-9a-f]{32}', session), 'recorded source identity')
+    owner = hashlib.sha256(b'client:alpha').hexdigest()
+    objects = out/'objects'
+
+    def record(kind, identity):
+        path = objects/f'{owner}.{kind}.{identity}.json'
+        require(0 < path.stat().st_size <= 8 << 20, 'bounded fixture record')
+        raw = path.read_bytes()
+        envelope = json.loads(raw)
+        prefix = b'{"record":'
+        suffix = b',"sha256":"' + envelope['sha256'].encode('ascii') + b'"}'
+        require(raw.startswith(prefix) and raw.endswith(suffix) and
+                hashlib.sha256(raw[len(prefix):-len(suffix)]).hexdigest() == envelope['sha256'],
+                'object store content digest')
+        row = envelope['record']
+        require((row['owner'],row['kind'],row['id'])==(owner,kind,identity),
+                'scope and identity of durable record')
+        return row
+
+    wave = record('live_recording',session)
+    key = 'fork_'+hashlib.sha256(session.encode()).hexdigest()
+    require(wave['data']['fork_state_id']==key and 'fork_state' not in wave['data'],
+            'recording links independent state')
+    saved = record('live_fork_state',key)
+    state = saved['data']
+    require(saved['expires_at']==wave['expires_at'] and state['source_id']==session
+            and state['format']=='q4t.live_fork.v1', 'joint source and retention')
+    return verify_conversation(state, receipt)
+
+
+def verify_conversation(state, receipt):
+    start = receipt['events'][0]['session']
+    config = state['configuration']
+    require(all(config[k] == start[k] for k in ('instructions','input','model','audio','store'))
+            and not state['requires_tool_credentials'], 'source configuration')
+    history = state['frontend_history']
+    frames, background, answers = [], [], []
+    heading = '\n\n[Audio input transcript: recognized speech from the supplied recording]\n'
+    end = '\n[End audio input transcript]\n\n'
+    prefix = 'Application background context, not a new user request: '
+    for item in history:
+        for index, part in enumerate(item.get('content', [])):
+            text = part.get('text', '')
+            if item.get('role') == 'user' and part.get('type') == 'input_text':
+                if text.startswith(heading):
+                    require(text.endswith(end), 'complete native ASR frame')
+                    value = json.loads(text[len(heading):-len(end)])
+                    expected = dict(source=f"conversation.item[{item['id']}].content[{index}]",
+                                    transcript=receipt['expected_input'])
+                    require(value == expected, 'source-bound ASR frame')
+                    frames.append(value)
+                if text.startswith(prefix):
+                    background.append(json.loads(text[len(prefix):]))
+            if item.get('role') == 'assistant' and part.get('type') == 'output_audio':
+                answers.append(part['transcript'])
+    require(len(frames) == 1 and background == [receipt['record']],
+            'one real audio input and exact project record')
+    require(answers == [receipt['record']['version']], 'spoken answer in history')
+    calls = [v['call_id'] for v in history if v.get('type') == 'function_call']
+    results = [v['call_id'] for v in history if v.get('type') == 'function_call_output']
+    require(len(calls) == 1 and calls == results and state['responses'] is None,
+            'one correlated frontend handoff and independent delegate mode')
+    decisions = state['decision_history']
+    require(state['frontend_instructions'].startswith(config['instructions'])
+            and decisions[-2:] == [dict(role='user',content=frames[0]['transcript']),
+                                    dict(role='assistant',content=answers[0])],
+            'inherited instructions and independent transcript ledger')
+    return dict(frontend_items=len(history),handoff_pairs=len(calls),scoped=True,
+                input=frames[0]['transcript'],answer=answers[0],
+                source_and_fork_expire_together=True)
 
 
 def observe(out):
@@ -88,7 +162,8 @@ def observe(out):
     require(not buffer and len(parts) >= 2 and parts[0] == input_audio, 'fixture and real speech')
     right = track(stereo[1::2].tobytes(), parts)
     return dict(wave=envelope, frames=frames, sample_rate=24000, left=left, right=right,
-                before_publication=receipt['before_download'], business=observed)
+                before_publication=receipt['before_download'], business=observed,
+                **({'fork_state':inspect_fork_state(out,receipt)} if plan.get('verify_fork_state') else {}))
 
 
 class Stage(base.Stage):

@@ -54,6 +54,8 @@ class NativeLiveClientBackend final : public ILiveSessionBackend {
   LiveDecisionNative decisions_native_;
   std::unique_ptr<LiveRecordingCapture> recording_;
   bool MediaDrained() const;
+  ObjectReply ForkState(io::Json* state) const;
+  bool recording_finalized_ = false;
   const size_t message_bytes_;
   LiveFrontend frontend_;
   LiveDecisionItems decision_items_;

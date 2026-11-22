@@ -16319,6 +16319,7 @@
     "webrtc_media_policy_evidence": "evidence/serve-live-media-policy-20261123/README.md",
     "webrtc_creation_business_evidence": "evidence/serve-live-media-create-20261123/README.md",
     "webrtc_sideband_business_evidence": "evidence/serve-live-sideband-20261123/README.md",
-    "webrtc_creation_status_evidence": "evidence/serve-live-sideband-20261123/create-status.json"
+    "webrtc_creation_status_evidence": "evidence/serve-live-sideband-20261123/create-status.json",
+    "stored_fork_state_evidence": "evidence/serve-live-fork-state-20261123/README.md"
   }
 }

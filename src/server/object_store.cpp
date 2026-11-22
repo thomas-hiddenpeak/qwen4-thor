@@ -112,7 +112,8 @@ bool ApplicationObject(ObjectKind kind) {
          kind == ObjectKind::kConversationItem || kind == ObjectKind::kPrompt ||
          kind == ObjectKind::kBatch || kind == ObjectKind::kVectorStore ||
          kind == ObjectKind::kVectorStoreFile ||
-         kind == ObjectKind::kVectorStoreBatch;
+         kind == ObjectKind::kVectorStoreBatch ||
+         kind == ObjectKind::kLiveForkState;
 }
 bool PreparePayload(const ObjectRequest& request) {
   return request.operation == ObjectOperation::kPut &&

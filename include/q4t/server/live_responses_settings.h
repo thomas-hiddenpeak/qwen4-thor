@@ -11,7 +11,7 @@ Status ValidateLiveWireShape(const io::Json& value, LiveShape shape,
                              ChatPlanError* error,
                              std::string_view path = "event");
 // Called only on public copies. The session's private settings remain intact.
-void RedactLiveResponseCredentials(io::Json* session);
+bool RedactLiveResponseCredentials(io::Json* session);
 // Build an execution request using only the backend settings and supplied
 // history. Accepts no caller-controlled store, stream or Responses identity.
 Status MakeLiveResponsesRequest(const io::Json& settings, io::Json input,

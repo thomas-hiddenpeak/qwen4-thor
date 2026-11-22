@@ -280,6 +280,20 @@ std::optional<std::string> LiveResponsesTurn::TakeContinuation() {
   consumed_ = true;
   return std::exchange(continuation_, std::nullopt);
 }
+Json LiveResponsesTurn::ForkHistory() const {
+  auto output = Array(), results = Array();
+  for (const auto& [index, item] : items_) {
+    output.array.push_back(item);
+    const auto call = calls_.find(Owner(item, false));
+    if (call != calls_.end() && call->second.index == index &&
+        !call->second.result.IsNull())
+      results.array.push_back(call->second.result);
+  }
+  return Object({{"output", std::move(output)},
+                 {"results", std::move(results)},
+                 {"completed", Boolean(finished_ && !failed_)}});
+}
+
 ObjectReply LiveResponsesTurn::AppendHistory(Json* input) const {
   if (!input || !input->IsArray() || failed_ || !finished_ ||
       WaitingForResults())

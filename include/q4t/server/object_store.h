@@ -32,7 +32,8 @@ enum class ObjectKind {
   kVoiceConsent,
   kVoice,
   kTrace,
-  kLiveRecording
+  kLiveRecording,
+  kLiveForkState
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

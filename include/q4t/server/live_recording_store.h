@@ -12,6 +12,8 @@
 
 namespace q4t::server {
 inline constexpr size_t kLiveRecordingHostBytes = 64U << 20;
+// Includes the native frontend, delegated histories, instructions and config.
+inline constexpr size_t kLiveForkStateBytes = 64ULL << 20;
 class LiveRecordingCapture {
  public:
   LiveRecordingCapture(ObjectStore& objects, std::string scope, std::string id,
@@ -20,7 +22,8 @@ class LiveRecordingCapture {
                        std::unique_ptr<HttpBodyLease> memory = {});
   ~LiveRecordingCapture();
   void Audio(LiveAudioChannel channel, uint64_t ticks, std::string_view bytes);
-  void Finish(uint64_t end_ticks);
+  using CaptureState = std::function<ObjectReply(io::Json*)>;
+  void Finish(uint64_t end_ticks, const CaptureState& capture = {});
   void Cancel();
   void Join();
   bool Drained() const;
@@ -47,11 +50,15 @@ class LiveRecordingCapture {
   size_t bytes_ = 0;
   uint64_t end_ticks_ = 0;
   bool finishing_ = false, done_ = false;
-  ObjectReply error_;
+  io::Json fork_state_;
+  ObjectReply error_, fork_error_;
   std::atomic<bool> stopped_{false};
   std::thread worker_;
 };
 
+// Scopes both reads and verifies the completed recording's exact source link.
+ObjectReply ReadLiveForkState(ObjectStore& objects, const BinaryAccess& access,
+                              const std::string& source);
 void SendLiveRecording(int fd, ObjectStore& objects, const BinaryAccess& access,
                        const std::string& id);
 }  // namespace q4t::server

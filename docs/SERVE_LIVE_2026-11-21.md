@@ -113,3 +113,5 @@ L04—L06及全部master任务仍未完成，不以本组验收作为总目标�
 L05 的 WebRTC HTTP 创建、受限数据通道和双向 Opus 已通过真实资料查询，详见[验收记录](evidence/serve-live-media-create-20261123/README.md)。L04 的同身份旁路与完整 fork、L05 的 SIP 信令、L06 的发行继续推进。
 
 L04 的可信 WebRTC 旁路已通过同身份实际接入、授权隔离、断开后主通话继续、重连回放与双端正常关闭。L04 继续存储会话 fork，L05 继续 SIP。[CPU 与真实业务记录](evidence/serve-live-sideband-20261123/README.md)。
+
+L04 录制收尾已保存可供子会话读取的私有状态；历史工具与结果保留关联，不保存活动 worker。真实录音及跨身份、容量、重启读取已验证。[保存状态证据](evidence/serve-live-fork-state-20261123/README.md)。后续验收需新会话在真实入口使用这份历史继续业务。

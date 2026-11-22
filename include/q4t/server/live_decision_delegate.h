@@ -36,6 +36,7 @@ class LiveDecisionDelegate {
   ObjectReply Transcript(std::string type, std::string delta,
                          std::string event_id, int64_t begin_ms);
   ObjectReply Tick(bool allow_start);
+  ObjectReply ForkHistory(io::Json* history) const;
   bool Executing() const { return worker_.valid(); }
   bool Known(std::string_view delegation) const;
   bool Running() const { return !jobs_.empty(); }

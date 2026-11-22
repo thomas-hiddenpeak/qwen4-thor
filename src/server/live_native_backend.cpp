@@ -337,6 +337,29 @@ ObjectReply NativeLiveClientBackend::Command(const Json& event) {
   return Missing(
       "type", "The requested native Live command processor is not connected");
 }
+ObjectReply NativeLiveClientBackend::ForkState(Json* state) const {
+  Json items, decisions;
+  if (!frontend_.ForkHistory(&items))
+    return Error(503, "live_fork_history_unavailable",
+                 "Live conversation could not be captured");
+  if (decisions_) {
+    auto result = decisions_->ForkHistory(&decisions);
+    if (!result.ok()) return result;
+  }
+  auto config = configuration_;
+  const bool rebind = RedactLiveResponseCredentials(&config);
+  *state = Object({
+      {"format", String("q4t.live_fork.v1")},
+      {"configuration", std::move(config)},
+      {"requires_tool_credentials", Boolean(rebind)},
+      {"frontend_history", std::move(items)},
+      {"frontend_instructions", *context_->Settings().Find("instructions")},
+      {"decision_items", decision_items_.Snapshot()},
+      {"decision_history", std::move(decisions)},
+      {"responses", responses_ ? responses_->ForkHistory() : Json{}},
+  });
+  return {};
+}
 ObjectReply NativeLiveClientBackend::Tick() {
   if (!prepared_ || cancelled_ || failed_) return Unavailable();
   auto reply =
@@ -350,7 +373,11 @@ ObjectReply NativeLiveClientBackend::Tick() {
   if (Accepted(reply) && !closing_ && !frontend_.FixtureActive())
     reply = context_->Tick();
   if (Accepted(reply) && recording_) {
-    if (MediaDrained()) recording_->Finish(frontend_.RecordingEndTicks());
+    if (!recording_finalized_ && MediaDrained()) {
+      recording_finalized_ = true;
+      recording_->Finish(frontend_.RecordingEndTicks(),
+                         [this](Json* state) { return ForkState(state); });
+    }
     const auto error = recording_->TakeError();
     if (!error.ok()) {
       auto details = Object({{"type", String("server_error")},

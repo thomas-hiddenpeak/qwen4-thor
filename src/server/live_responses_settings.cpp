@@ -37,10 +37,10 @@ Status Invalid(ChatPlanError* error, std::string path, std::string message) {
   if (error) *error = {"invalid_request", std::move(path), 400};
   return Status::Fail(std::move(message));
 }
-void Strip(Json* value, std::string_view name) {
-  if (value)
-    std::erase_if(value->object,
-                  [&](const auto& field) { return field.first == name; });
+bool Strip(Json* value, std::string_view name) {
+  return value && std::erase_if(value->object, [&](const auto& field) {
+                    return field.first == name;
+                  }) != 0;
 }
 // ValidateLiveShape has already bounded depth, nodes and storage before the
 // compatibility projection inspects a tool or format.
@@ -50,19 +50,21 @@ bool UniqueKeys(const Json& value) {
     if (!seen.insert(name).second || !UniqueKeys(child)) return false;
   return std::ranges::all_of(value.array, UniqueKeys);
 }
-void RedactTools(Json* tools) {
-  if (!tools || !tools->IsArray()) return;
+bool RedactTools(Json* tools) {
+  if (!tools || !tools->IsArray()) return false;
+  bool redacted = false;
   for (auto& tool : tools->array) {
     if (tool.GetString("type") == "mcp") {
-      Strip(&tool, "authorization");
-      Strip(&tool, "headers");
+      redacted |= Strip(&tool, "authorization");
+      redacted |= Strip(&tool, "headers");
     } else if (tool.GetString("type") == "shell") {
-      Strip(Member(Member(&tool, "environment"), "network_policy"),
-            "domain_secrets");
+      redacted |= Strip(Member(Member(&tool, "environment"), "network_policy"),
+                        "domain_secrets");
     } else if (tool.GetString("type") == "namespace") {
-      RedactTools(Member(&tool, "tools"));
+      redacted |= RedactTools(Member(&tool, "tools"));
     }
   }
+  return redacted;
 }
 }  // namespace
 Status ValidateLiveWireShape(const Json& value, LiveShape shape,
@@ -104,8 +106,8 @@ Status ValidateLiveWireShape(const Json& value, LiveShape shape,
   if (!changed) return status;
   return ValidateLiveShape(projection, shape, error, path);
 }
-void RedactLiveResponseCredentials(Json* session) {
-  RedactTools(Member(Settings(session), "tools"));
+bool RedactLiveResponseCredentials(Json* session) {
+  return RedactTools(Member(Settings(session), "tools"));
 }
 Status MakeLiveResponsesRequest(const Json& settings, Json input, Json* request,
                                 ChatPlanError* error) {

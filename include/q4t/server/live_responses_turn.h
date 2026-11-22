@@ -29,6 +29,9 @@ class LiveResponsesTurn {
   // Returns actual terminal output, followed by matching client results in
   // output-index order. No credentials or frontend-only instructions enter it.
   ObjectReply AppendHistory(io::Json* input) const;
+  // Inert, observed output and results only. Outstanding calls carry no
+  // continuation, callback, authorization or executing worker into a fork.
+  io::Json ForkHistory() const;
   const std::string& ResponseId() const { return response_id_; }
 
  private:

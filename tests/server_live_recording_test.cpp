@@ -261,6 +261,103 @@ Q4T_TEST(
   return true;
 }
 
+Q4T_TEST(live_fork_state_is_atomic_scoped_durable_and_independent_of_wav) {
+  const auto options = RecordingDirectory();
+  const std::string id = "live_fork_durable";
+  const std::string transcript(2ULL << 20, 't');
+  const auto history = Array({Object({{"text", String(transcript)}})});
+  {
+    ObjectStore objects(options);
+    LiveRecordingCapture capture(objects, "client:owner", id, {}, {});
+    capture.Audio(left, 0, Samples({17}));
+    Q4T_CHECK(
+        ReadLiveForkState(objects, Access("client:owner"), id).http_status ==
+        404);
+    auto state = Object({{"format", String("q4t.live_fork.v1")},
+                         {"configuration", Object({{"store", Boolean(true)}})},
+                         {"decision_items", Array()},
+                         {"frontend_history", history}});
+    capture.Finish(2, [&](Json* output) {
+      *output = std::move(state);
+      return ObjectReply{};
+    });
+    capture.Join();
+    Q4T_CHECK(capture.TakeError().ok());
+  }
+  ObjectStore objects(options);
+  Q4T_CHECK(
+      ReadLiveForkState(objects, Access("client:other"), id).http_status ==
+      404);
+  auto state = ReadLiveForkState(objects, Access("client:owner"), id);
+  Q4T_CHECK(state.ok() && state.value.GetString("source_id") == id &&
+            OutputJson(*state.value.GetArray("frontend_history")) ==
+                OutputJson(history));
+  auto wire = Download(objects, "client:owner", id);
+  Q4T_CHECK(wire.starts_with("HTTP/1.1 200") &&
+            wire.ends_with(Samples({17, 0})) && wire.size() < 4096);
+  ObjectRequest recording;
+  recording.kind = ObjectKind::kLiveRecording;
+  recording.scope = "client:owner";
+  recording.id = id;
+  auto root = objects.Execute(recording, Clock::now() + 3s);
+  Q4T_CHECK(root.ok());
+  const auto& data = *root.value.Find("data");
+  const auto references = InspectObjectRetention("live_recording", data);
+  Q4T_CHECK(!references.uncertain &&
+            std::ranges::find(references.references,
+                              data.GetString("fork_state_id")) !=
+                references.references.end());
+  return true;
+}
+
+Q4T_TEST(live_fork_checkpoint_failure_preserves_downloadable_legacy_wave) {
+  ObjectStore objects(RecordingDirectory());
+  const std::string id = "live_fork_limited";
+  LiveRecordingCapture capture(objects, "client:owner", id, {}, {});
+  capture.Audio(right, 0, Samples({-12}));
+  capture.Finish(2, [](Json*) {
+    return Error(503, "live_fork_history_unavailable", "Fixture unavailable");
+  });
+  capture.Join();
+  Q4T_CHECK(capture.TakeError().code == "live_fork_history_unavailable" &&
+            capture.Drained() && capture.TakeError().ok());
+  Q4T_CHECK(Download(objects, "client:owner", id).ends_with(Samples({0, -12})));
+  const auto missing = ReadLiveForkState(objects, Access("client:owner"), id);
+  Q4T_CHECK(missing.http_status == 409 &&
+            missing.code == "live_fork_history_unavailable");
+  return true;
+}
+
+Q4T_TEST(live_fork_quota_refuses_only_history_and_retires_staging) {
+  auto options = RecordingDirectory();
+  const std::string id = "live_fork_quota";
+  {
+    options.max_client_objects = 2;
+    ObjectStore objects(options);
+    LiveRecordingCapture capture(objects, "client:owner", id, {}, {});
+    capture.Audio(left, 0, Samples({73}));
+    capture.Finish(2, [](Json* state) {
+      *state = Object({{"format", String("q4t.live_fork.v1")}});
+      return ObjectReply{};
+    });
+    capture.Join();
+    Q4T_CHECK(capture.TakeError().code == "live_fork_storage_capacity" &&
+              capture.Drained());
+    ObjectRequest checkpoint;
+    checkpoint.kind = ObjectKind::kLiveForkState;
+    checkpoint.scope = "client:owner";
+    checkpoint.id = "fork_" + Digest(id);
+    Q4T_CHECK(objects.Execute(checkpoint, Clock::now() + 3s).http_status ==
+              404);
+  }
+  options.max_client_objects = 128;
+  ObjectStore reopened(options);
+  Q4T_CHECK(Download(reopened, "client:owner", id).ends_with(Samples({73, 0})));
+  Q4T_CHECK(ReadLiveForkState(reopened, Access("client:owner"), id).code ==
+            "live_fork_history_unavailable");
+  return true;
+}
+
 Q4T_TEST(live_recording_abort_revocation_and_backpressure_preserve_privacy) {
   ObjectStore objects(RecordingDirectory());
   for (const std::string id : {"live_aborted", "live_revoked", "live_full"}) {

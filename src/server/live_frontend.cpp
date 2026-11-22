@@ -96,6 +96,14 @@ LiveAudioInputCallbacks LiveFrontend::InputCallbacks() {
   };
   return callbacks;
 }
+Status LiveFrontend::ForkHistory(Json* items) const {
+  if (!items || !Drained()) return Status::Fail("Live frontend not drained");
+  RealtimeConversationSnapshot snapshot;
+  auto status = history_.Snapshot(nullptr, &snapshot);
+  if (status) *items = std::move(snapshot.items);
+  return status;
+}
+
 ObjectReply LiveFrontend::Prepare(Json settings, const Json& initial,
                                   RealtimeAudioFormat format) {
   if (attempted_ || cancelled_ || !history_.Valid() || !native_.emit ||

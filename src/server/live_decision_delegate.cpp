@@ -92,6 +92,11 @@ void LiveDecisionDelegate::Settings(const Json& configuration) {
                     : Json{};
   triggers_ = *configuration.Find("triggers");
 }
+ObjectReply LiveDecisionDelegate::ForkHistory(Json* history) const {
+  if (!history || history_full_) return Capacity();
+  *history = conversation_;
+  return {};
+}
 bool LiveDecisionDelegate::Known(std::string_view id) const {
   return delegations_.contains(id);
 }

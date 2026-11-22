@@ -61,6 +61,7 @@ class LiveFrontend {
   }
   size_t QueuedTurns() const { return queue_.size(); }
   size_t QueuedBytes() const { return queued_bytes_; }
+  Status ForkHistory(io::Json* items) const;
   size_t HistoryItems() const { return history_.Items(); }
   bool Generating() const { return work_ != nullptr; }
   bool InputExecuting() const { return input_.Executing(); }
