@@ -943,6 +943,8 @@ WebRTC、NICE 与对应编解码插件。ICE 默认绑定回环，受控内网�
 应将这项凭据保存在服务端。每个客户端最多两个旁路连接，实例最多四个。旁路断开后浏览器仍可通话。
 [接入、回放及资源实测](docs/evidence/serve-live-sideband-20261123/README.md)。
 
+工作分支的 SIP 来电信令进程使用可选的 Sofia-SIP（LGPL-2.1-or-later）。构建环境提供开发包时生成 `q4t-live-sip`，仅该进程需要运行库。当前已验证中继证书、来电、拒接和取消；公开电话控制及媒体接入见[阶段记录](docs/evidence/serve-live-sip-trunk-20261123/README.md)。
+
 Live 工作分支提供按会话录制。启动 `q4t serve` 或托管 `prepare` 时使用
 `--live-recordings` 开放权限，具名客户端在 `session.start` 中传入
 `store: true` 启用本次录制。收到 `session.closed` 后，同一 API Key 对应的客户端可调用

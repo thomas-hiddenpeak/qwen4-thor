@@ -67,6 +67,7 @@ add_compile_options(-Wall -Wextra)
 include(cmake/GuardianProcess.cmake)
 include(cmake/NativeIngress.cmake)
 include(cmake/NativeWebRTC.cmake)
+include(cmake/NativeSip.cmake)
 
 # CUDA toolkit headers/libraries for C++ sources that include CUDA runtime.
 find_package(CUDAToolkit REQUIRED)

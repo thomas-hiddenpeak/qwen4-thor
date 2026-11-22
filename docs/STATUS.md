@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+独立 SIP 中继已能在双向 TLS 上接收多路来电、校验客户身份、处理取消和拒接，并用远端 ACK 确认最终答复。Thor 上 6 项真实回环检查通过，含同 CA 错误中继和 30 秒超时。后续需将来电通知、HTTP 接听和 SRTP 媒体连到 Live 会话。[信令实测](evidence/serve-live-sip-trunk-20261123/README.md)。
+
 SIP 接听配置已经接入原生会话所有者，HTTP 包装中的 `session.type=live` 校验后才进入通用启动配置。拒接码、转接 URI 和旁路 DTMF 按电话合同校验。15 项针对性 CPU 用例通过，公开电话入口仍待接入真实 SIP 对话与 SRTP 媒体。[验收与待办](evidence/serve-live-sip-contract-20261123/README.md)。
 
 Live 已能从已完成的录制会话创建独立 WebSocket 或 WebRTC 子会话。官方 SDK 通过原生 TLS 实测两种入口，其他客户端均收到 404。子会话逐项继承 9 条前端历史和有效指令，没有重跑原查询，收到新请求后用语音回答 rev426。先前一次只播报 rev，保留质量失败。WebRTC 权限、后续 Chat=42 和资源回收通过；工作分支尚待组合发行。下一项是 SIP 电话接入。[测试记录](evidence/serve-live-fork-http-20261123/README.md)。
