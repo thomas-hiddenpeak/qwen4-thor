@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-21",
+  "updated": "2026-11-23",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -16303,6 +16303,7 @@
     "responses_stream_cpu_evidence": "evidence/serve-live-responses-stream-cpu-20261123/README.md",
     "responses_settings_cpu_evidence": "evidence/serve-live-responses-settings-cpu-20261123/README.md",
     "responses_continuation_cpu_evidence": "evidence/serve-live-responses-continuation-cpu-20261123/README.md",
+    "responses_business_evidence": "evidence/serve-live-responses-http-20261123/README.md",
     "responses_execution_cpu_evidence": "evidence/serve-live-responses-execution-cpu-20261123/README.md"
   }
 }

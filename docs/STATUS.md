@@ -7,10 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-Live 服务端 Responses 已接入原生 WSS。模型执行沿用在线身份、请求体预算与配额，
-工具回填和后台回答使用独立上下文；回答再送回语音前台。70 项针对性 CPU 检查
-通过，实际引擎和入口构建零警告。真实资料短验进行中。
-[源码与验证记录](evidence/serve-live-responses-execution-cpu-20261123/README.md)。
+Live 服务端 Responses 已通过真实原生 TLS/WSS 工具闭环。客户端实际读取项目资料并回填，后台文本和前台语音转录均为 rev426，收到 107,520 字节 PCM，正常关闭后普通 Chat=42。三次查询客户端准入，结算 1,279 tokens。一次独占短验 61.930 秒，63 次 NVML 正常并释放资源。前一轮 NVML 中止的原始记录保留。此前 70 项 CPU 验证仍有效；听感待验，默认发行保持 rev426。继续 Decisions 和其他计划项。
+[真实业务验收](evidence/serve-live-responses-http-20261123/README.md) · [CPU 检查](evidence/serve-live-responses-execution-cpu-20261123/README.md)。
 
 Live 委派的事件包装与工具回填通过 13 项 CPU 检查。真实 Responses 输出器的逐项
 完成事件决定可回填的调用；程序父调用、MCP 审批 ID 和客户端工具结果分别核对。

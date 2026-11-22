@@ -15,6 +15,7 @@ from tools.serve_live import fixture_acceptance as fixture
 from tools.serve_realtime import transcription_acceptance as base
 from tools.serve_realtime.ingress_fixture import certificate
 from tools.serve_recovery import profile_acceptance as qualify
+from tools.serve_recovery.bundle import assets
 from tools.serve_service.package import read, require, save, sha
 
 LIMITS = dict(starts=1, ingress_starts=1, websocket_sessions=1, responses=2,
@@ -22,10 +23,24 @@ LIMITS = dict(starts=1, ingress_starts=1, websocket_sessions=1, responses=2,
 SCHEMA = 'q4t-live-responses-business-v1'
 
 
+def current_model_assets(model, previous):
+    current = assets(model)
+    require(current.keys() == previous.keys(), 'model asset inventory changed')
+    for name, identity in current.items():
+        for key in ('dev', 'ino', 'size', 'mtime_ns'):
+            require(identity[key] == previous[name][key],
+                    f'model asset {key} changed since prior qualification: {name}')
+    return current
+
+
 def prepare(out):
     previous = fixture.WORK / 'fixture-business-01'
     require(read(previous / 'acceptance.json')['observation']['fixture']['source_equal'], 'prior native WSS qualification')
     plan = read(previous / 'plan.json')
+    plan['model_assets'] = current_model_assets(plan['model'], plan['model_assets'])
+    verified = read(ROOT / 'docs/evidence/serve-live-responses-execution-cpu-20261123/result.json')
+    require(sha(plan['binary']) == verified['engine_sha256'] and
+            sha(plan['ingress']) == verified['ingress_sha256'], 'qualified native binaries required')
     out.mkdir(parents=True, mode=0o700)
     policy = read(previous / 'client-policy.json')
     policy['gateway_token'] = os.urandom(32).hex()
