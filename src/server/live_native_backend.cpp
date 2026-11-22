@@ -229,6 +229,8 @@ ObjectReply NativeLiveClientBackend::Update(const Json& configuration) {
 ObjectReply NativeLiveClientBackend::Command(const Json& event) {
   if (!prepared_ || closing_ || cancelled_ || failed_) return Unavailable();
   const auto type = event.GetString("type");
+  if (type == "decision.item.create" || type == "decision.item.delete")
+    return decision_items_.Apply(event, context_callbacks_.emit);
   if (type == "session.input_audio.append")
     return frontend_.AppendAudio(event.GetString("audio"),
                                  event.GetString("event_id"));

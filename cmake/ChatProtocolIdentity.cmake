@@ -635,12 +635,14 @@ set(protocol_inputs
   include/q4t/server/live_responses_turn.h
   include/q4t/server/live_responses_execution.h
   include/q4t/server/live_responses_delegate.h
+  include/q4t/server/live_decision_items.h
   src/server/live_configuration.cpp
   src/server/live_responses_settings.cpp
   src/server/live_responses_validation.cpp
   src/server/live_responses_turn.cpp
   src/server/live_responses_execution.cpp
   src/server/live_responses_delegate.cpp
+  src/server/live_decision_items.cpp
   include/q4t/server/live_session.h
   src/server/live_session.cpp
   include/q4t/server/live_session_pump.h

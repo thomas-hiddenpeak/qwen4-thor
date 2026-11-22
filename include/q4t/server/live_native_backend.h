@@ -2,6 +2,7 @@
 #pragma once
 
 #include "q4t/server/live_client_context.h"
+#include "q4t/server/live_decision_items.h"
 #include "q4t/server/live_responses_delegate.h"
 #include "q4t/server/realtime_chat_plan.h"
 
@@ -44,6 +45,7 @@ class NativeLiveClientBackend final : public ILiveSessionBackend {
   const LiveClientContextCallbacks context_callbacks_;
   LiveResponsesNative responses_native_;
   LiveFrontend frontend_;
+  LiveDecisionItems decision_items_;
   std::unique_ptr<LiveResponsesDelegate> responses_;
   std::unique_ptr<LiveClientContext> context_;
   io::Json configuration_;

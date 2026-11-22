@@ -1451,3 +1451,139 @@ Q4T_TEST(live_bound_fixture_interrupts_owned_backend_before_playing) {
   Q4T_CHECK(d.f.Close());
   return true;
 }
+
+namespace {
+Json DecisionAdd(Json item, std::string event = "add") {
+  return Object({{"type", String("decision.item.create")},
+                 {"event_id", String(std::move(event))},
+                 {"item", std::move(item)}});
+}
+Json DecisionDelete(std::string id) {
+  return Object({{"type", String("decision.item.delete")},
+                 {"item_id", String(std::move(id))},
+                 {"event_id", String("del")}});
+}
+}  // namespace
+
+Q4T_TEST(live_decision_items_preserve_typed_input_order_and_snapshot) {
+  LiveDecisionItems items;
+  std::vector<Json> published;
+  const LiveEventSink emit = [&](Json event) {
+    published.push_back(std::move(event));
+    return ObjectReply{};
+  };
+  auto first = User("项目版本");
+  Set(&first, "id", Json{});
+  Q4T_CHECK(items.Apply(DecisionAdd(first), emit).ok());
+  const auto generated = published.back().Find("item")->GetString("id");
+  Q4T_CHECK(!generated.empty() &&
+            published.back().GetString("client_event_id") == "add");
+  auto second = Object(
+      {{"role", String("user")},
+       {"id", String("input-2")},
+       {"content",
+        Array({Object({{"type", String("input_json")},
+                       {"data", Object({{"verified", Boolean(true)}})}})})}});
+  Q4T_CHECK(items.Apply(DecisionAdd(second), emit).ok());
+  const auto before = items.Snapshot();
+  Q4T_CHECK(before.array.size() == 2);
+  Q4T_CHECK(before.array[0].GetString("id") == generated &&
+            OutputJson(before.array[1]) == OutputJson(second));
+  Q4T_CHECK(items.Apply(DecisionDelete(generated), emit).ok());
+  Q4T_CHECK(published.back().GetString("type") == "decision.item.deleted" &&
+            published.back().GetString("client_event_id") == "del");
+  const auto after = items.Snapshot();
+  Q4T_CHECK(after.array.size() == 1 && before.array.size() == 2 &&
+            OutputJson(after.array[0]) == OutputJson(second));
+  return true;
+}
+
+Q4T_TEST(live_decision_items_keep_owner_and_do_not_start_model_work) {
+  NativeFixture a, b;
+  Q4T_CHECK(a.Start() && b.Start());
+  auto call = Object({{"id", String("my-call")},
+                      {"type", String("function_call")},
+                      {"call_id", String("call_1")},
+                      {"name", String("lookup")},
+                      {"arguments", String("{}")}});
+  Q4T_CHECK(a.Send(DecisionAdd(call)));
+  Q4T_CHECK(a.Count("decision.item.created") == 1 &&
+            OutputJson(*a.Last("decision.item.created").Find("item")) ==
+                OutputJson(call));
+  Q4T_CHECK(a.Send(DecisionAdd(call, "duplicate")) &&
+            a.Last("error").GetString("client_event_id") == "duplicate");
+  Q4T_CHECK(b.Send(DecisionDelete("my-call")) &&
+            b.Last("error").Find("error")->GetString("code") ==
+                "item_not_found");
+  Q4T_CHECK(a.Send(DecisionDelete("my-call")) &&
+            a.Count("decision.item.deleted") == 1);
+  Q4T_CHECK(a.f.models == 0 && b.f.models == 0 && a.f.asr == 0 &&
+            b.f.asr == 0 && a.Close() && b.Close());
+  return true;
+}
+
+Q4T_TEST(live_decision_items_recover_capacity_and_reject_uncertain_writes) {
+  LiveDecisionItems items;
+  size_t events = 0;
+  const LiveEventSink emit = [&](Json) {
+    ++events;
+    return ObjectReply{};
+  };
+  auto add = [&](std::string id, std::string content) {
+    auto item = User(std::move(content));
+    Set(&item, "id", String(std::move(id)));
+    return items.Apply(DecisionAdd(std::move(item)), emit);
+  };
+  Q4T_CHECK(add("oversize", std::string(8ULL << 20, 'a')).http_status == 429);
+  for (size_t i = 0; i < 128; ++i) Q4T_CHECK(add(std::to_string(i), "短").ok());
+  Q4T_CHECK(add("over", "full").http_status == 429 && events == 128);
+  Q4T_CHECK(items.Apply(DecisionDelete("0"), emit).ok() &&
+            add("over", "ok").ok());
+  const auto failed = items.Apply(DecisionDelete("over"), [](Json) {
+    return Error(503, "sink_failed", "Wire delivery failed");
+  });
+  Q4T_CHECK(failed.commit_unknown && items.Snapshot().array.size() == 127);
+  Q4T_CHECK(items.Apply(DecisionDelete("over"), emit).code == "item_not_found");
+  return true;
+}
+
+Q4T_TEST(live_decision_items_validate_tool_identifiers_and_image_sources) {
+  NativeFixture f;
+  Q4T_CHECK(f.Start());
+  auto call = Object({{"type", String("function_call")}, {"name", String("a.b")},
+                      {"call_id", String("call")}, {"arguments", String("{}")}});
+  Q4T_CHECK(f.Send(DecisionAdd(call)));
+  const std::string unicode(62, 'x');
+  Set(&call, "call_id", String(unicode + "中文"));
+  Q4T_CHECK(f.Send(DecisionAdd(call)));
+  Set(&call, "call_id", String(unicode + "中文字"));
+  Q4T_CHECK(f.Send(DecisionAdd(call)) &&
+            f.Last("error").Find("error")->GetString("param") ==
+                "item.call_id");
+  Set(&call, "call_id", String("id"));
+  Set(&call, "namespace", String("a.b"));
+  Q4T_CHECK(f.Send(DecisionAdd(call)) &&
+            f.Last("error").Find("error")->GetString("param") ==
+                "item.namespace");
+  auto custom = Object({{"type", String("custom_tool_call")},
+                        {"name", String("a.b")},
+                        {"call_id", String("id")},
+                        {"input", String("input")}});
+  Q4T_CHECK(f.Send(DecisionAdd(custom)) &&
+            f.Last("error").Find("error")->GetString("param") == "item.name");
+  auto result =
+      Object({{"type", String("function_call_output")},
+              {"call_id", String("id")},
+              {"output",
+               Array({Object({{"type", String("input_image")},
+                              {"image_url", String("file:///invalid")}})})}});
+  Q4T_CHECK(f.Send(DecisionAdd(result)) &&
+            f.Last("error").Find("error")->GetString("param") ==
+                "item.output[0].image_url");
+  Set(&Field(result, "output").array[0], "image_url",
+      String("https://example.org/image"));
+  Q4T_CHECK(f.Send(DecisionAdd(result)) &&
+            f.Count("decision.item.created") == 3);
+  Q4T_CHECK(f.f.models == 0 && f.Close());
+  return true;
+}

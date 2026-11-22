@@ -116,6 +116,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_turn.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_delegate.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_decision_items.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_configuration_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_session.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_session_pump.cpp

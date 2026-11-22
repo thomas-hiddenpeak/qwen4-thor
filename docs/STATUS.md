@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Live Decisions 已接入会话条目的追加、删除和快照。7 项针对性 CPU 检查通过，实际引擎零警告构建，新增 GPU 启动 0。模型评估和转录触发器待接通。[条目合同与证据](evidence/serve-live-decision-items-cpu-20261123/README.md)。
+
 Live 服务端 Responses 已通过真实原生 TLS/WSS 工具闭环。客户端实际读取项目资料并回填，后台文本和前台语音转录均为 rev426，收到 107,520 字节 PCM，正常关闭后普通 Chat=42。三次查询客户端准入，结算 1,279 tokens。一次独占短验 61.930 秒，63 次 NVML 正常并释放资源。前一轮 NVML 中止的原始记录保留。此前 70 项 CPU 验证仍有效；听感待验，默认发行保持 rev426。继续 Decisions 和其他计划项。
 [真实业务验收](evidence/serve-live-responses-http-20261123/README.md) · [CPU 检查](evidence/serve-live-responses-execution-cpu-20261123/README.md)。
 
