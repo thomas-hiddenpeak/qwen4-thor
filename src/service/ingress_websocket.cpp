@@ -71,16 +71,6 @@ bool WebSocketCredentials(server::HttpRequestHeaders* headers) {
   return true;
 }
 
-std::string WebSocketProtocol(const server::HttpRequestHeaders& headers,
-                              std::string_view path) {
-  const std::string name = path.substr(0, path.find('?')) == "/v1/live/sessions"
-                               ? "live" : "realtime";
-  return std::find(headers.websocket_protocols.begin(),
-                    headers.websocket_protocols.end(), name) !=
-                 headers.websocket_protocols.end()
-             ? name : "";
-}
-
 void RelayWebSocket(int upstream, Connection& client,
                      std::string_view expected_accept,
                      std::string_view selected_protocol,

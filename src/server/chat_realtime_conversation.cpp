@@ -1,4 +1,5 @@
 #include "chat_server_internal.h"
+#include "q4t/server/websocket_protocol.h"
 
 #include <algorithm>
 
@@ -232,10 +233,8 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
                       "realtime_session_unavailable");
     return;
   }
-  std::string protocol;
-  if (std::ranges::find(headers.websocket_protocols, "realtime") !=
-      headers.websocket_protocols.end())
-    protocol = "realtime";
+  const auto protocol =
+      SelectWebSocketProtocol(path, headers.websocket_protocols);
   if (!http->BeginWebSocket(accept, protocol)) return;
   WebSocketSessionCallbacks connection;
   connection.message = [&](auto opcode, auto message) {

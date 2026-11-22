@@ -711,6 +711,7 @@ set(protocol_inputs
   src/server/native_responses_stream.cpp
   include/q4t/server/http_request.h
   include/q4t/server/websocket.h
+  include/q4t/server/websocket_protocol.h
   include/q4t/server/realtime_duplex_input.h
   src/server/realtime_duplex_input.cpp
   include/q4t/server/realtime_conversation_input.h

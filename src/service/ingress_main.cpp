@@ -35,6 +35,7 @@
 #include "q4t/service/ingress_credentials.h"
 #include "q4t/service/ingress_transport.h"
 #include "q4t/service/ingress_websocket.h"
+#include "q4t/server/websocket_protocol.h"
 #include "q4t/service/ingress_proxy.h"
 
 namespace q4t::service::ingress {
@@ -599,7 +600,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
                        crypto ? "websocket_handshake_unavailable"
                               : "websocket_upgrade_invalid");
       }
-      websocket_protocol = WebSocketProtocol(headers, path);
+      websocket_protocol =
+          server::SelectWebSocketProtocol(path, headers.websocket_protocols);
     }
     streaming = server::IsBinaryUpload(method, path);
     headers.body_limit = streaming ? config.file_body_bytes : config.body_bytes;

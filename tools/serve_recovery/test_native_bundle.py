@@ -97,7 +97,8 @@ class BundleTests(unittest.TestCase):
         names = ('cmake/NativeCrypto.cmake', 'include/q4t/io/base64.h',
             'include/q4t/server/chat_plan_error.h', 'include/q4t/server/voice_request.h',
             'include/q4t/server/native_crypto.h', 'src/server/native_crypto.cpp',
-            'include/q4t/server/websocket.h', 'src/server/websocket.cpp',
+            'include/q4t/server/websocket.h', 'include/q4t/server/websocket_protocol.h',
+            'src/server/websocket.cpp',
             'include/q4t/service/ingress_duplex.h', 'src/service/ingress_duplex.cpp',
             'include/q4t/service/ingress_websocket.h', 'src/service/ingress_websocket.cpp')
         for name in names:

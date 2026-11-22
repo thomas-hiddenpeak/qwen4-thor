@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+修复原生网关与模型对 Live 显式 WebSocket 子协议选择不一致的问题。两个进程使用共同函数选择 `live` 或 `realtime`。8 项 HTTP 检查、9 项实际入口进程检查、1 项打包来源检查通过，正在进行真实 TLS 握手短验。[构建与 CPU 记录](evidence/serve-live-subprotocol-20261123/cpu.json)。
+
 WebRTC 独立媒体进程已在 Thor 上完成回环 ICE、DTLS 证书绑定、SRTP 双向音频和 SCTP 命令验证。Opus、PCMU、PCMA 均在关闭数据通道后继续传音；无插件、错误证书和启动超时均已验证。此阶段还未接入 Live HTTP 创建及模型。[传输实测](evidence/serve-live-webrtc-media-20261123/README.md)。
 
 已补齐语音、追踪、Decisions 和录音的公开协议。90 个 OpenAPI 操作覆盖运行时 91 项路由，转录由同一路径的查询参数选择。原生及可选 nginx 入口均已核对 73 个 HTTP 模板，三种 WebSocket 握手通过可选前置。修复了已存储 Chat 音频与缓存标记的悬空引用。[协议与入口验证](evidence/serve-voice-public-contract-20261123/README.md)。
