@@ -11,6 +11,7 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest import mock
 
 from tools.serve_recovery import test_gateway_nginx as fixture
 
@@ -295,6 +296,47 @@ class NativeUpgrade(unittest.TestCase):
         self.assertEqual(read_frame(client.read),(2,b'\x00\xff\x01'))
         client.sock.sendall(frame(b'\x03\xe8',opcode=8,masked=True))
         self.assertEqual(read_frame(client.read),(8,b'\x03\xe8'))
+
+
+class OptionalNginxUpgrade(unittest.TestCase):
+    setUpClass = classmethod(fixture.NginxTests.setUpClass.__func__)
+    tearDownClass = classmethod(fixture.NginxTests.tearDownClass.__func__)
+    ready = fixture.NginxTests.ready
+    tearDown = fixture.NginxTests.tearDown
+    connect = NativeUpgrade.connect
+    install_peer = NativeUpgrade.install_peer
+
+    def setUp(self):
+        self.rows, self.bad, self.eof = [], '', threading.Event()
+        from tools.serve_gateway.test_gateway import VENDOR
+        self.patch = mock.patch.object(fixture, 'NGINX', Path(json.loads(VENDOR.read_text())['binary']))
+        self.patch.start()
+        self.addCleanup(self.patch.stop)
+        self.stack = fixture.Stack(self.output)
+        self.install_peer()
+
+    def test_scoped_primary_upgrades_relay_commands_events_and_normal_close(self):
+        self.ready()
+        for path in ('/v1/realtime?intent=transcription','/v1/realtime','/v1/live/sessions'):
+            protocol = 'live' if path == '/v1/live/sessions' else 'realtime'
+            fields = ('Sec-WebSocket-Protocol: live, realtime, '
+                      'openai-insecure-api-key.test-only\r\n')
+            client, status, head = self.connect(path=path, fields=fields)
+            self.assertEqual(status,101)
+            self.assertEqual(head['sec-websocket-accept'],'s3pPLMBiTxaQ9kYGzzhZRbK+xOo=')
+            self.assertEqual(head['sec-websocket-protocol'], protocol)
+            self.assertEqual(read_frame(client.read),(1,b'cpu-ready'))
+            client.sock.sendall(frame(b'session control',masked=True))
+            self.assertEqual(read_frame(client.read),(1,b'session control'))
+            client.sock.sendall(frame(bytes([3,232]),opcode=8,masked=True))
+            self.assertEqual(read_frame(client.read),(8,bytes([3,232])))
+            client.sock.close()
+            headers = {k.lower():v for k,v in self.rows[-1]['headers'].items()}
+            self.assertEqual(headers['x-q4t-client-id'],'alpha')
+            self.assertEqual(headers['x-q4t-gateway-token'],self.stack.token)
+            self.assertEqual(headers['sec-websocket-protocol'], protocol)
+            self.assertTrue(all('test-only' not in value for value in headers.values()))
+            self.assertNotIn('authorization', headers)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,31 @@
+{
+  "runtime_inventory": 91,
+  "openapi_paths": 65,
+  "openapi_operations": 90,
+  "previous_operations": 75,
+  "query_variant": "GET /v1/realtime?intent=transcription",
+  "checked_references": 3443,
+  "unique_references": 1411,
+  "gateway_contract_sha256": "8a77c2bb2c1997581e01855cb5f1b363eb24403953cb42e39b0cc34fdc3a193c",
+  "application_schema_sha256": "c5151c7dc65dbd62395d604703d19ff5a5b01c2114efcfc6faf6fdd110ed53b1",
+  "bundle_sha256": "a94092cd6d14638c6498985ad85b61670b88d435ef41a3099fa54d71a30a7117",
+  "native_and_nginx_http_templates": 73,
+  "nginx_websocket_targets": [
+    "/v1/realtime",
+    "/v1/realtime?intent=transcription",
+    "/v1/live/sessions"
+  ],
+  "native_initial_fixture_rate_limit_rejections": 8,
+  "decision_sdk_responses_validated": [
+    "project",
+    "write",
+    "read"
+  ],
+  "recording": {
+    "channels": 2,
+    "rate": 24000,
+    "frames": 655107,
+    "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6"
+  },
+  "new_gpu_starts": 0
+}

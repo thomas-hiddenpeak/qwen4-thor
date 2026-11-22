@@ -25,8 +25,9 @@ def nullable(value):
     return dict(anyOf=[value, dict(type='null')])
 
 
-def schema(graph):
-    assert graph['profile'] == 'q4t-openai-application-types-v1'
+def graph_definitions(graph, prefix=''):
+    def node_ref(index):
+        return ref(prefix+str(index))
     definitions = {}
     for index, node in enumerate(graph['nodes']):
         kind = node['kind']
@@ -39,22 +40,36 @@ def schema(graph):
         elif kind == 'literal':
             value = dict(const=node['value'])
         elif kind == 'union':
-            value = dict(anyOf=[ref(i) for i in node['variants']])
+            value = dict(anyOf=[node_ref(i) for i in node['variants']])
         elif kind == 'array':
-            value = dict(type='array', items=ref(node['element']))
+            value = dict(type='array', items=node_ref(node['element']))
         elif kind == 'tuple':
-            value = dict(type='array', prefixItems=[ref(i) for i in node['elements']],
+            value = dict(type='array', prefixItems=[node_ref(i) for i in node['elements']],
                          minItems=node['required'], maxItems=len(node['elements']))
         elif kind == 'object':
-            value = obj({f['name']: ref(f['type']) for f in node['fields']},
+            value = obj({f['name']: node_ref(f['type']) for f in node['fields']},
                         [f['name'] for f in node['fields'] if not f['optional']])
             if node['additional'] is not None:
-                value['additionalProperties'] = ref(node['additional'])
+                value['additionalProperties'] = node_ref(node['additional'])
         else:
             raise ValueError('unhandled SDK type: '+kind)
-        definitions[str(index)] = value
+        definitions[prefix+str(index)] = value
     for name, index in graph['roots'].items():
-        definitions[name] = ref(index)
+        definitions[prefix+name] = node_ref(index)
+    return definitions
+
+
+def schema(graph):
+    assert graph['profile'] == 'q4t-openai-application-types-v1'
+    definitions = graph_definitions(graph)
+    decisions = json.loads((ROOT/'src/server/contracts/openai_decision_types_v1.json').read_text())
+    assert decisions['profile'] == 'q4t-openai-decision-types-v1'
+    definitions.update(graph_definitions(decisions, 'decisions_'))
+    for index, node in enumerate(decisions['nodes']):
+        fields = definitions['decisions_'+str(index)].get('properties', {})
+        for name, upper in [('questions', 400), ('choices', 255), ('levels', 10)]:
+            if name in fields:
+                fields[name].update(minItems=1 if name == 'questions' else 2, maxItems=upper)
     from tools.serve_responses.files_contract import definitions as file_definitions
     definitions.update(file_definitions())
     from tools.serve_responses.uploads_contract import definitions as upload_definitions
@@ -349,6 +364,7 @@ def add_openapi(paths, response, error):
 def standalone_openapi(spec):
     """Make the shipped OpenAPI self-contained, without fetching schemas."""
     components = {}
+    references = set()
 
     def rewrite(value, owner=None):
         if isinstance(value, dict):
@@ -370,6 +386,7 @@ def standalone_openapi(spec):
                     if not target or (sep and fragment and not fragment.startswith('/')):
                         raise ValueError('unresolved reference '+child)
                     result[key] = '#/components/schemas/'+target+fragment
+                    references.add(result[key])
                 else:
                     result[key] = rewrite(child, owner)
             return result
@@ -379,6 +396,14 @@ def standalone_openapi(spec):
 
     bundled = rewrite(spec)
     bundled['components'] = dict(schemas=components)
+    for pointer in sorted(references):
+        node = bundled
+        try:
+            for part in pointer[2:].split('/'):
+                key = part.replace('~1', '/').replace('~0', '~')
+                node = node[int(key)] if isinstance(node, list) else node[key]
+        except (KeyError, IndexError, ValueError, TypeError) as error:
+            raise ValueError('unresolved bundled reference '+pointer) from error
     return bundled
 
 

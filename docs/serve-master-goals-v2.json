@@ -16312,6 +16312,7 @@
     "decision_session_business_evidence": "evidence/serve-live-decisions-20261123/README.md",
     "recording_wave_cpu_evidence": "evidence/serve-live-recording-wave-20261123/README.md",
     "recording_store_cpu_evidence": "evidence/serve-live-recording-store-20261123/README.md",
-    "recording_http_evidence": "evidence/serve-live-recording-http-20261123/README.md"
+    "recording_http_evidence": "evidence/serve-live-recording-http-20261123/README.md",
+    "public_contract_evidence": "evidence/serve-voice-public-contract-20261123/README.md"
   }
 }

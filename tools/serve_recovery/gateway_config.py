@@ -181,6 +181,7 @@ http {{
   limit_conn_zone $q4t_all_control zone=all_control:1m;
   limit_req_zone $q4t_data zone=data_rate:1m rate={p['per_client_rps']}r/s;
   limit_req_zone $q4t_control zone=control_rate:1m rate=10r/s;
+{g.websocket_maps()}
 {g.tunnel_maps()}
   server {{
     listen {p['listen_host']}:{p['listen_port']}{ssl} default_server;
@@ -213,6 +214,8 @@ http {{
       proxy_next_upstream off;
     }}
     location / {{
+      limit_conn ws_client 1;
+      limit_conn ws_all 4;
       limit_conn data {p['per_client_inflight']};
       limit_conn all_data {p['global_inflight']};
       limit_conn control 4;
@@ -230,7 +233,7 @@ http {{
       proxy_http_version 1.1;
       proxy_pass_request_headers off;
       proxy_set_header Host 127.0.0.1;
-      proxy_set_header Connection close;
+{g.websocket_proxy_headers()}
       proxy_set_header Content-Type $http_content_type;
       proxy_set_header X-Request-Id $http_x_request_id;
 {g.tunnel_headers()}

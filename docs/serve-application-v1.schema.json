@@ -16186,6 +16186,1197 @@
     "input_tokens_response": {
       "$ref": "#/$defs/1168"
     },
+    "decisions_0": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/decisions_1"
+        },
+        "model": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "prompt_cache_key": {
+          "$ref": "#/$defs/decisions_51"
+        },
+        "prompt_cache_options": {
+          "$ref": "#/$defs/decisions_66"
+        },
+        "questions": {
+          "$ref": "#/$defs/decisions_72",
+          "minItems": 1,
+          "maxItems": 400
+        },
+        "safety_identifier": {
+          "$ref": "#/$defs/decisions_51"
+        }
+      },
+      "required": [
+        "input",
+        "model",
+        "questions"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_2"
+        },
+        {
+          "$ref": "#/$defs/decisions_3"
+        }
+      ]
+    },
+    "decisions_2": {
+      "type": "string"
+    },
+    "decisions_3": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_4"
+      }
+    },
+    "decisions_4": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_5"
+        },
+        {
+          "$ref": "#/$defs/decisions_32"
+        },
+        {
+          "$ref": "#/$defs/decisions_36"
+        },
+        {
+          "$ref": "#/$defs/decisions_38"
+        },
+        {
+          "$ref": "#/$defs/decisions_50"
+        },
+        {
+          "$ref": "#/$defs/decisions_57"
+        },
+        {
+          "$ref": "#/$defs/decisions_62"
+        },
+        {
+          "$ref": "#/$defs/decisions_64"
+        }
+      ]
+    },
+    "decisions_5": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/decisions_6"
+        },
+        "role": {
+          "$ref": "#/$defs/decisions_29"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_30"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_6": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_2"
+        },
+        {
+          "$ref": "#/$defs/decisions_7"
+        }
+      ]
+    },
+    "decisions_7": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_8"
+      }
+    },
+    "decisions_8": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_9"
+        },
+        {
+          "$ref": "#/$defs/decisions_15"
+        },
+        {
+          "$ref": "#/$defs/decisions_22"
+        }
+      ]
+    },
+    "decisions_9": {
+      "type": "object",
+      "properties": {
+        "prompt_cache_breakpoint": {
+          "$ref": "#/$defs/decisions_10"
+        },
+        "text": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_14"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_10": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_11"
+        },
+        {
+          "$ref": "#/$defs/decisions_12"
+        }
+      ]
+    },
+    "decisions_11": {
+      "type": "null"
+    },
+    "decisions_12": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/decisions_13"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_13": {
+      "const": "explicit"
+    },
+    "decisions_14": {
+      "const": "input_text"
+    },
+    "decisions_15": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/decisions_16"
+        },
+        "image_url": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "prompt_cache_breakpoint": {
+          "$ref": "#/$defs/decisions_10"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_21"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_16": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_11"
+        },
+        {
+          "$ref": "#/$defs/decisions_17"
+        },
+        {
+          "$ref": "#/$defs/decisions_18"
+        },
+        {
+          "$ref": "#/$defs/decisions_19"
+        },
+        {
+          "$ref": "#/$defs/decisions_20"
+        }
+      ]
+    },
+    "decisions_17": {
+      "const": "low"
+    },
+    "decisions_18": {
+      "const": "high"
+    },
+    "decisions_19": {
+      "const": "auto"
+    },
+    "decisions_20": {
+      "const": "original"
+    },
+    "decisions_21": {
+      "const": "input_image"
+    },
+    "decisions_22": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/decisions_23"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_28"
+        }
+      },
+      "required": [
+        "data",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_23": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_24"
+        },
+        {
+          "$ref": "#/$defs/decisions_26"
+        }
+      ]
+    },
+    "decisions_24": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/decisions_25"
+      }
+    },
+    "decisions_25": {},
+    "decisions_26": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_27"
+      }
+    },
+    "decisions_27": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/decisions_25"
+      }
+    },
+    "decisions_28": {
+      "const": "input_json"
+    },
+    "decisions_29": {
+      "const": "user"
+    },
+    "decisions_30": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_31"
+        }
+      ]
+    },
+    "decisions_31": {
+      "const": "message"
+    },
+    "decisions_32": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/decisions_33"
+        },
+        "role": {
+          "$ref": "#/$defs/decisions_35"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_30"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_33": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_2"
+        },
+        {
+          "$ref": "#/$defs/decisions_34"
+        }
+      ]
+    },
+    "decisions_34": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_9"
+      }
+    },
+    "decisions_35": {
+      "const": "developer"
+    },
+    "decisions_36": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/decisions_33"
+        },
+        "role": {
+          "$ref": "#/$defs/decisions_37"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_30"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_37": {
+      "const": "system"
+    },
+    "decisions_38": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/decisions_39"
+        },
+        "phase": {
+          "$ref": "#/$defs/decisions_46"
+        },
+        "role": {
+          "$ref": "#/$defs/decisions_49"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_30"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_39": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_2"
+        },
+        {
+          "$ref": "#/$defs/decisions_40"
+        }
+      ]
+    },
+    "decisions_40": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_41"
+      }
+    },
+    "decisions_41": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_42"
+        },
+        {
+          "$ref": "#/$defs/decisions_44"
+        }
+      ]
+    },
+    "decisions_42": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_43"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_43": {
+      "const": "output_text"
+    },
+    "decisions_44": {
+      "type": "object",
+      "properties": {
+        "refusal": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_45"
+        }
+      },
+      "required": [
+        "refusal",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_45": {
+      "const": "refusal"
+    },
+    "decisions_46": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_11"
+        },
+        {
+          "$ref": "#/$defs/decisions_47"
+        },
+        {
+          "$ref": "#/$defs/decisions_48"
+        }
+      ]
+    },
+    "decisions_47": {
+      "const": "commentary"
+    },
+    "decisions_48": {
+      "const": "final_answer"
+    },
+    "decisions_49": {
+      "const": "assistant"
+    },
+    "decisions_50": {
+      "type": "object",
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "call_id": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "id": {
+          "$ref": "#/$defs/decisions_51"
+        },
+        "name": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "namespace": {
+          "$ref": "#/$defs/decisions_51"
+        },
+        "status": {
+          "$ref": "#/$defs/decisions_52"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_56"
+        }
+      },
+      "required": [
+        "arguments",
+        "call_id",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_51": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_11"
+        },
+        {
+          "$ref": "#/$defs/decisions_2"
+        }
+      ]
+    },
+    "decisions_52": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_11"
+        },
+        {
+          "$ref": "#/$defs/decisions_53"
+        },
+        {
+          "$ref": "#/$defs/decisions_54"
+        },
+        {
+          "$ref": "#/$defs/decisions_55"
+        }
+      ]
+    },
+    "decisions_53": {
+      "const": "in_progress"
+    },
+    "decisions_54": {
+      "const": "completed"
+    },
+    "decisions_55": {
+      "const": "incomplete"
+    },
+    "decisions_56": {
+      "const": "function_call"
+    },
+    "decisions_57": {
+      "type": "object",
+      "properties": {
+        "call_id": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "id": {
+          "$ref": "#/$defs/decisions_51"
+        },
+        "output": {
+          "$ref": "#/$defs/decisions_58"
+        },
+        "status": {
+          "$ref": "#/$defs/decisions_52"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_61"
+        }
+      },
+      "required": [
+        "call_id",
+        "output",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_58": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_2"
+        },
+        {
+          "$ref": "#/$defs/decisions_59"
+        }
+      ]
+    },
+    "decisions_59": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_60"
+      }
+    },
+    "decisions_60": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_9"
+        },
+        {
+          "$ref": "#/$defs/decisions_15"
+        }
+      ]
+    },
+    "decisions_61": {
+      "const": "function_call_output"
+    },
+    "decisions_62": {
+      "type": "object",
+      "properties": {
+        "call_id": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "id": {
+          "$ref": "#/$defs/decisions_51"
+        },
+        "input": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "name": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "namespace": {
+          "$ref": "#/$defs/decisions_51"
+        },
+        "status": {
+          "$ref": "#/$defs/decisions_52"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_63"
+        }
+      },
+      "required": [
+        "call_id",
+        "input",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_63": {
+      "const": "custom_tool_call"
+    },
+    "decisions_64": {
+      "type": "object",
+      "properties": {
+        "call_id": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "id": {
+          "$ref": "#/$defs/decisions_51"
+        },
+        "output": {
+          "$ref": "#/$defs/decisions_58"
+        },
+        "status": {
+          "$ref": "#/$defs/decisions_52"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_65"
+        }
+      },
+      "required": [
+        "call_id",
+        "output",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_65": {
+      "const": "custom_tool_call_output"
+    },
+    "decisions_66": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_11"
+        },
+        {
+          "$ref": "#/$defs/decisions_67"
+        }
+      ]
+    },
+    "decisions_67": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/decisions_68"
+        },
+        "ttl": {
+          "$ref": "#/$defs/decisions_70"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "decisions_68": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_11"
+        },
+        {
+          "$ref": "#/$defs/decisions_13"
+        },
+        {
+          "$ref": "#/$defs/decisions_69"
+        }
+      ]
+    },
+    "decisions_69": {
+      "const": "implicit"
+    },
+    "decisions_70": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_71"
+        }
+      ]
+    },
+    "decisions_71": {
+      "const": "30m"
+    },
+    "decisions_72": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_73"
+      }
+    },
+    "decisions_73": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_74"
+        },
+        {
+          "$ref": "#/$defs/decisions_82"
+        },
+        {
+          "$ref": "#/$defs/decisions_89"
+        }
+      ]
+    },
+    "decisions_74": {
+      "type": "object",
+      "properties": {
+        "instructions": {
+          "$ref": "#/$defs/decisions_75"
+        },
+        "name": {
+          "$ref": "#/$defs/decisions_80"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_81"
+        }
+      },
+      "required": [
+        "instructions",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_75": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_2"
+        },
+        {
+          "$ref": "#/$defs/decisions_76"
+        }
+      ]
+    },
+    "decisions_76": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_77"
+      }
+    },
+    "decisions_77": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_22"
+        },
+        {
+          "$ref": "#/$defs/decisions_78"
+        },
+        {
+          "$ref": "#/$defs/decisions_79"
+        }
+      ]
+    },
+    "decisions_78": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_14"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_79": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/decisions_16"
+        },
+        "image_url": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_21"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_80": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_2"
+        }
+      ]
+    },
+    "decisions_81": {
+      "const": "predicate"
+    },
+    "decisions_82": {
+      "type": "object",
+      "properties": {
+        "choices": {
+          "$ref": "#/$defs/decisions_83",
+          "minItems": 2,
+          "maxItems": 255
+        },
+        "instructions": {
+          "$ref": "#/$defs/decisions_75"
+        },
+        "name": {
+          "$ref": "#/$defs/decisions_80"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_88"
+        }
+      },
+      "required": [
+        "choices",
+        "instructions",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_83": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_84"
+      }
+    },
+    "decisions_84": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/decisions_80"
+        },
+        "value": {
+          "$ref": "#/$defs/decisions_85"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_85": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_2"
+        },
+        {
+          "$ref": "#/$defs/decisions_86"
+        },
+        {
+          "$ref": "#/$defs/decisions_87"
+        }
+      ]
+    },
+    "decisions_86": {
+      "const": false
+    },
+    "decisions_87": {
+      "const": true
+    },
+    "decisions_88": {
+      "const": "choice"
+    },
+    "decisions_89": {
+      "type": "object",
+      "properties": {
+        "instructions": {
+          "$ref": "#/$defs/decisions_75"
+        },
+        "levels": {
+          "$ref": "#/$defs/decisions_90",
+          "minItems": 2,
+          "maxItems": 10
+        },
+        "name": {
+          "$ref": "#/$defs/decisions_80"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_92"
+        }
+      },
+      "required": [
+        "instructions",
+        "levels",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_90": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_91"
+      }
+    },
+    "decisions_91": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/decisions_80"
+        },
+        "label": {
+          "$ref": "#/$defs/decisions_2"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_92": {
+      "const": "score"
+    },
+    "decisions_93": {
+      "type": "object",
+      "properties": {
+        "answers": {
+          "$ref": "#/$defs/decisions_94"
+        },
+        "model": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "usage": {
+          "$ref": "#/$defs/decisions_106"
+        }
+      },
+      "required": [
+        "answers",
+        "model",
+        "usage"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_94": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_95"
+      }
+    },
+    "decisions_95": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_96"
+        },
+        {
+          "$ref": "#/$defs/decisions_99"
+        },
+        {
+          "$ref": "#/$defs/decisions_102"
+        },
+        {
+          "$ref": "#/$defs/decisions_105"
+        }
+      ]
+    },
+    "decisions_96": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/decisions_97"
+        },
+        "probability": {
+          "$ref": "#/$defs/decisions_98"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_81"
+        }
+      },
+      "required": [
+        "name",
+        "probability",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_97": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/decisions_11"
+        },
+        {
+          "$ref": "#/$defs/decisions_2"
+        }
+      ]
+    },
+    "decisions_98": {
+      "type": "number"
+    },
+    "decisions_99": {
+      "type": "object",
+      "properties": {
+        "choice": {
+          "$ref": "#/$defs/decisions_85"
+        },
+        "confidence": {
+          "$ref": "#/$defs/decisions_98"
+        },
+        "name": {
+          "$ref": "#/$defs/decisions_97"
+        },
+        "probabilities": {
+          "$ref": "#/$defs/decisions_100"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_88"
+        }
+      },
+      "required": [
+        "choice",
+        "confidence",
+        "name",
+        "probabilities",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_100": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_101"
+      }
+    },
+    "decisions_101": {
+      "type": "object",
+      "properties": {
+        "probability": {
+          "$ref": "#/$defs/decisions_98"
+        },
+        "value": {
+          "$ref": "#/$defs/decisions_85"
+        }
+      },
+      "required": [
+        "probability",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_102": {
+      "type": "object",
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/decisions_98"
+        },
+        "name": {
+          "$ref": "#/$defs/decisions_97"
+        },
+        "probabilities": {
+          "$ref": "#/$defs/decisions_103"
+        },
+        "score": {
+          "$ref": "#/$defs/decisions_98"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_92"
+        }
+      },
+      "required": [
+        "confidence",
+        "name",
+        "probabilities",
+        "score",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_103": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decisions_104"
+      }
+    },
+    "decisions_104": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/decisions_2"
+        },
+        "probability": {
+          "$ref": "#/$defs/decisions_98"
+        },
+        "value": {
+          "$ref": "#/$defs/decisions_98"
+        }
+      },
+      "required": [
+        "label",
+        "probability",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_105": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/decisions_97"
+        },
+        "type": {
+          "$ref": "#/$defs/decisions_45"
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_106": {
+      "type": "object",
+      "properties": {
+        "input_tokens": {
+          "$ref": "#/$defs/decisions_98"
+        },
+        "input_tokens_details": {
+          "$ref": "#/$defs/decisions_107"
+        },
+        "output_tokens": {
+          "$ref": "#/$defs/decisions_98"
+        },
+        "output_tokens_details": {
+          "$ref": "#/$defs/decisions_108"
+        },
+        "total_tokens": {
+          "$ref": "#/$defs/decisions_98"
+        }
+      },
+      "required": [
+        "input_tokens",
+        "input_tokens_details",
+        "output_tokens",
+        "output_tokens_details",
+        "total_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_107": {
+      "type": "object",
+      "properties": {
+        "cache_write_tokens": {
+          "$ref": "#/$defs/decisions_98"
+        },
+        "cached_tokens": {
+          "$ref": "#/$defs/decisions_98"
+        }
+      },
+      "required": [
+        "cache_write_tokens",
+        "cached_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_108": {
+      "type": "object",
+      "properties": {
+        "reasoning_tokens": {
+          "$ref": "#/$defs/decisions_98"
+        }
+      },
+      "required": [
+        "reasoning_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "decisions_request": {
+      "$ref": "#/$defs/decisions_0"
+    },
+    "decisions_decision": {
+      "$ref": "#/$defs/decisions_93"
+    },
     "file_resource": {
       "type": "object",
       "properties": {
@@ -20587,6 +21778,9 @@
                   },
                   {
                     "$ref": "#/$defs/chat_input_filePart"
+                  },
+                  {
+                    "$ref": "#/$defs/chat_input_audioPart"
                   }
                 ]
               }
@@ -20725,6 +21919,49 @@
       ],
       "additionalProperties": false,
       "allOf": [
+        {
+          "if": {
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "not": {
+                  "const": "user"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "content": {
+                "anyOf": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "not": {
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "const": "input_audio"
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
         {
           "if": {
             "required": [
@@ -21469,6 +22706,75 @@
       ],
       "additionalProperties": false
     },
+    "chat_input_audioPart": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "input_audio"
+        },
+        "input_audio": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "string",
+              "minLength": 1
+            },
+            "format": {
+              "enum": [
+                "wav",
+                "mp3"
+              ]
+            }
+          },
+          "required": [
+            "data",
+            "format"
+          ],
+          "additionalProperties": false
+        },
+        "prompt_cache_breakpoint": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "explicit"
+            },
+            "ttl": {
+              "enum": [
+                "30m",
+                "12h"
+              ]
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "input_audio"
+      ],
+      "additionalProperties": false
+    },
+    "chat_input_cacheBreakpoint": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "const": "explicit"
+        },
+        "ttl": {
+          "enum": [
+            "30m",
+            "12h"
+          ]
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "additionalProperties": false
+    },
     "stored_chat_message": {
       "type": "object",
       "properties": {
@@ -21642,6 +22948,9 @@
                   },
                   {
                     "$ref": "#/$defs/chat_input_filePart"
+                  },
+                  {
+                    "$ref": "#/$defs/chat_input_audioPart"
                   }
                 ]
               }

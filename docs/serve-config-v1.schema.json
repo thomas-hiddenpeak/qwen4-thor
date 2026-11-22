@@ -2177,6 +2177,10 @@
         },
         "core_readiness_dependency": {
           "const": false
+        },
+        "live_recordings": {
+          "type": "boolean",
+          "description": "Deployment permission for opt-in, client-owned Live recording."
         }
       },
       "required": [

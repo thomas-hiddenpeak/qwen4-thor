@@ -28,6 +28,19 @@ DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
 # These route declarations are shared by standalone and supervised nginx modes.
 APPLICATION_ROUTES = [
     ('POST', '/v1/audio/transcriptions', 'data'),
+    ('POST', '/v1/audio/speech', 'data'),
+    ('POST', '/v1/decisions', 'data'),
+    ('POST', '/v1/audio/voices', 'data'),
+    ('DELETE', '/v1/audio/voices/{voice_id}', 'control'),
+    ('GET', '/v1/audio/voice_consents', 'control'),
+    ('POST', '/v1/audio/voice_consents', 'data'),
+    *((method, '/v1/audio/voice_consents/{consent_id}', 'control')
+      for method in ('GET','POST','DELETE')),
+    ('GET', '/v1/realtime', 'realtime'),
+    ('GET', '/v1/live/sessions', 'realtime'),
+    ('GET', '/v1/live/sessions/{session_id}/content', 'data'),
+    ('GET', '/v1/realtime/traces', 'control'),
+    *((method, '/v1/realtime/traces/{trace_id}', 'control') for method in ('GET','DELETE')),
     ('GET', '/v1/tunnels/{tunnel_id}', 'control'),
     ('GET', '/v1/tunnels/{tunnel_id}/poll', 'tunnel_poll'),
     ('POST', '/v1/tunnels/{tunnel_id}/response', 'tunnel_response'),
@@ -178,6 +191,46 @@ def route_map():
                            else re.escape(part) for part in path.split('/'))
         rows.append('    "~^'+method+':'+pattern+'(?:[?][^#]*)?$" '+lane+';')
     return '\n'.join(rows)
+
+
+def websocket_maps():
+    # Only the two authenticated upgrade routes can carry WebSocket headers.
+    # Validate the client's upgrade tokens before creating an upstream tunnel.
+    return r'''  map $q4t_lane $q4t_ws_client { default ""; realtime $q4t_client; }
+  map $q4t_lane $q4t_ws_all { default ""; realtime all; }
+  limit_conn_zone $q4t_ws_client zone=ws_client:1m;
+  limit_conn_zone $q4t_ws_all zone=ws_all:1m;
+  map $http_connection $q4t_ws_token {
+    default 0;
+    "~*(^|,)[ \t]*upgrade[ \t]*(,|$)" 1;
+  }
+  map "$q4t_lane:$q4t_ws_token:$http_upgrade" $q4t_ws_upgrade {
+    default ""; "realtime:1:websocket" websocket;
+  }
+  map $q4t_ws_upgrade $q4t_ws_connection { default close; websocket upgrade; }
+  map $q4t_ws_upgrade $q4t_ws_key { default ""; websocket $http_sec_websocket_key; }
+  map $q4t_ws_upgrade $q4t_ws_version { default ""; websocket $http_sec_websocket_version; }
+  map $http_sec_websocket_protocol $q4t_ws_realtime {
+    default ""; "~(^|,)[ \t]*realtime[ \t]*(,|$)" realtime;
+  }
+  map $http_sec_websocket_protocol $q4t_ws_live {
+    default ""; "~(^|,)[ \t]*live[ \t]*(,|$)" live;
+  }
+  map "$q4t_ws_upgrade:$uri" $q4t_ws_protocol {
+    default "";
+    "websocket:/v1/realtime" $q4t_ws_realtime;
+    "websocket:/v1/live/sessions" $q4t_ws_live;
+  }
+  map $q4t_ws_upgrade $q4t_ws_origin { default ""; websocket $http_origin; }'''
+
+
+def websocket_proxy_headers():
+    return '''      proxy_set_header Connection $q4t_ws_connection;
+      proxy_set_header Upgrade $q4t_ws_upgrade;
+      proxy_set_header Sec-WebSocket-Key $q4t_ws_key;
+      proxy_set_header Sec-WebSocket-Version $q4t_ws_version;
+      proxy_set_header Sec-WebSocket-Protocol $q4t_ws_protocol;
+      proxy_set_header Origin $q4t_ws_origin;'''
 
 
 def tunnel_maps():
@@ -515,6 +568,7 @@ http {{
   limit_conn_zone $q4t_all_control zone=all_control:1m;
   limit_req_zone $q4t_data zone=data_rate:1m rate={p['per_client_rps']}r/s;
   limit_req_zone $q4t_control zone=control_rate:1m rate=10r/s;
+{websocket_maps()}
 {tunnel_maps()}
   server {{
     listen {p['listen_host']}:{p['listen_port']} ssl default_server;
@@ -534,6 +588,8 @@ http {{
 {tunnel_checks()}
 {chr(10).join(locations)}
     location / {{
+      limit_conn ws_client 1;
+      limit_conn ws_all 4;
       limit_conn data {p['per_client_inflight']};
       limit_conn all_data {p['global_inflight']};
       limit_conn control 4;
@@ -547,7 +603,7 @@ http {{
       proxy_http_version 1.1;
       proxy_pass_request_headers off;
       proxy_set_header Host 127.0.0.1;
-      proxy_set_header Connection close;
+{websocket_proxy_headers()}
       proxy_set_header Content-Type $http_content_type;
       proxy_set_header X-Request-Id $http_x_request_id;
 {tunnel_headers()}

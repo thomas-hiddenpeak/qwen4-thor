@@ -110,11 +110,12 @@ class Stack:
                 path = self.path.split('?', 1)[0]
                 roots = ('/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
-                         '/v1/vector_stores', '/v1/tunnels')
+                         '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
+                         '/v1/audio/voices', '/v1/realtime/traces', '/v1/live/sessions')
                 return (any(path == root or path.startswith(root+'/')
                             for root in roots) or
                         (method == 'POST' and
-                         path == '/v1/audio/transcriptions') or
+                         path in ('/v1/audio/transcriptions', '/v1/audio/speech', '/v1/decisions')) or
                         path.startswith('/v1/chat/completions/') or
                         (method != 'POST' and path == '/v1/chat/completions'))
             def do_GET(self):
@@ -411,19 +412,22 @@ class NginxTests(unittest.TestCase):
         from tools.serve_gateway.gateway import APPLICATION_ROUTES
         self.ready()
         for method, template, lane in APPLICATION_ROUTES:
-            if not self.stack.native_ingress and lane == 'control':
-                # The optional frontend's real 10 r/s control budget remains
-                # enabled. Route coverage must not exceed that separate gate.
+            if lane == 'realtime':
+                # RFC 6455 switching and duplex frames have their own wire test.
+                continue
+            if lane == 'control':
+                # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
             identities = dict(response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
-                              vector_store_id='vs_1', tunnel_id='tunnel_local')
+                              vector_store_id='vs_1', tunnel_id='tunnel_local', consent_id='cons_1',
+                              voice_id='voice_1', trace_id='trace_1', session_id='live_1')
             self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
                                  identities.keys())
             path = template.format(**identities)
-            if method == 'GET':
+            if method == 'GET' and template != '/v1/live/sessions/{session_id}/content':
                 path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'
             body = '{"cpu_fixture":true}' if method == 'POST' else ''
             content_type = 'application/json'

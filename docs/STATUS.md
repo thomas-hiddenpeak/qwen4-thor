@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已补齐语音、追踪、Decisions 和录音的公开协议。90 个 OpenAPI 操作覆盖运行时 91 项路由，转录由同一路径的查询参数选择。原生及可选 nginx 入口均已核对 73 个 HTTP 模板，三种 WebSocket 握手通过可选前置。修复了已存储 Chat 音频与缓存标记的悬空引用。[协议与入口验证](evidence/serve-voice-public-contract-20261123/README.md)。
+
 Live 录制已通过真实 SDK 和项目资料语音闭环。下载 655,107 帧 WAV，双声道逐样本与原始输入和线上输出吻合。发布前及跨客户端均为 404，正常关闭后 Chat=42，GPU、端口和锁已释放。接下来是媒体会话旁路、fork 和原生传输。[真实录音验收](evidence/serve-live-recording-http-20261123/README.md)。
 
 Live 会话的显式录制、隔离存储和同身份 WAV 下载已接到原生入口。16 项原生 CPU 检查、4 项部署配置检查通过，存储写入失败后已有会话继续完成语音。[存储与故障边界](evidence/serve-live-recording-store-20261123/README.md)。

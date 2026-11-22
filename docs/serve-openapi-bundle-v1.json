@@ -5670,6 +5670,1424 @@
         "x-q4t-query-contract": "stored_chat_messages_query",
         "x-q4t-body-contract": "empty body only"
       }
+    },
+    "/v1/decisions": {
+      "post": {
+        "operationId": "post_v1_decisions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_decision"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_request"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/audio/speech": {
+      "post": {
+        "operationId": "post_v1_audio_speech",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Audio or server-sent speech events",
+            "content": {
+              "audio/mpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/ogg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/aac": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/flac": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/wav": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "audio/pcm": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "input": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "voice": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                          "id"
+                        ]
+                      }
+                    ]
+                  },
+                  "instructions": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "speed": {
+                    "type": "number",
+                    "minimum": 0.25,
+                    "maximum": 4,
+                    "default": 1
+                  },
+                  "response_format": {
+                    "enum": [
+                      "mp3",
+                      "opus",
+                      "aac",
+                      "flac",
+                      "wav",
+                      "pcm"
+                    ],
+                    "default": "mp3"
+                  },
+                  "stream_format": {
+                    "enum": [
+                      "audio",
+                      "sse"
+                    ],
+                    "default": "audio"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "model",
+                  "input",
+                  "voice"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/audio/voice_consents": {
+      "get": {
+        "operationId": "get_v1_audio_voice_consents",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "object",
+                    "data",
+                    "has_more"
+                  ],
+                  "properties": {
+                    "object": {
+                      "const": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                          },
+                          "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          },
+                          "created_at": {
+                            "type": "integer"
+                          },
+                          "object": {
+                            "const": "audio.voice_consent"
+                          },
+                          "language": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                          "id",
+                          "name",
+                          "created_at",
+                          "object",
+                          "language"
+                        ]
+                      }
+                    },
+                    "has_more": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_v1_audio_voice_consents",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "created_at": {
+                      "type": "integer"
+                    },
+                    "object": {
+                      "const": "audio.voice_consent"
+                    },
+                    "language": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "name",
+                    "created_at",
+                    "object",
+                    "language"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "recording": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "language",
+                  "recording"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/audio/voice_consents/{consent_id}": {
+      "post": {
+        "operationId": "post_v1_audio_voice_consents_consent_id",
+        "parameters": [
+          {
+            "name": "consent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "created_at": {
+                      "type": "integer"
+                    },
+                    "object": {
+                      "const": "audio.voice_consent"
+                    },
+                    "language": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "name",
+                    "created_at",
+                    "object",
+                    "language"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_audio_voice_consents_consent_id",
+        "parameters": [
+          {
+            "name": "consent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "created_at": {
+                      "type": "integer"
+                    },
+                    "object": {
+                      "const": "audio.voice_consent"
+                    },
+                    "language": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "name",
+                    "created_at",
+                    "object",
+                    "language"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_audio_voice_consents_consent_id",
+        "parameters": [
+          {
+            "name": "consent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "object": {
+                      "const": "audio.voice_consent"
+                    },
+                    "deleted": {
+                      "const": true
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "object",
+                    "deleted"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/audio/voices": {
+      "post": {
+        "operationId": "post_v1_audio_voices",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "created_at": {
+                      "type": "integer"
+                    },
+                    "object": {
+                      "const": "audio.voice"
+                    },
+                    "type": {
+                      "const": "audio_sample"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "name",
+                    "created_at",
+                    "object",
+                    "type"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Sample voices require verified consent and audio. Prompt voice requests currently return 503 voice_design_not_configured.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "const": "audio_sample"
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "consent": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                      },
+                      "audio_sample": {
+                        "type": "string",
+                        "format": "binary"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "name",
+                      "consent",
+                      "audio_sample"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "const": "prompt"
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "model": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 4096
+                      },
+                      "script_hint": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "name",
+                      "type",
+                      "prompt"
+                    ]
+                  }
+                ]
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "prompt"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "model": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 256
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "script_hint": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "type",
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/audio/voices/{voice_id}": {
+      "delete": {
+        "operationId": "delete_v1_audio_voices_voice_id",
+        "parameters": [
+          {
+            "name": "voice_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "object": {
+                      "const": "audio.voice"
+                    },
+                    "deleted": {
+                      "const": true
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "object",
+                    "deleted"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtime": {
+      "get": {
+        "operationId": "get_v1_realtime",
+        "parameters": [
+          {
+            "name": "intent",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "realtime",
+                "transcription"
+              ]
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Conversation only; transcription uses the exact intent=transcription query."
+          }
+        ],
+        "responses": {
+          "101": {
+            "description": "Authenticated WebSocket upgrade",
+            "headers": {
+              "Upgrade": {
+                "schema": {
+                  "const": "websocket"
+                }
+              },
+              "Sec-WebSocket-Accept": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/live/sessions": {
+      "get": {
+        "operationId": "get_v1_live_sessions",
+        "parameters": [],
+        "responses": {
+          "101": {
+            "description": "Authenticated WebSocket upgrade",
+            "headers": {
+              "Upgrade": {
+                "schema": {
+                  "const": "websocket"
+                }
+              },
+              "Sec-WebSocket-Accept": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Start a native primary Live WebSocket with session.start."
+      }
+    },
+    "/v1/live/sessions/{session_id}/content": {
+      "get": {
+        "operationId": "get_v1_live_sessions_session_id_content",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Completed owner-scoped stereo PCM WAV, input left and output right",
+            "headers": {
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 44
+                }
+              }
+            },
+            "content": {
+              "audio/wav": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtime/traces": {
+      "get": {
+        "operationId": "get_v1_realtime_traces",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "session_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "description": "Used alone."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "object",
+                    "data",
+                    "has_more"
+                  ],
+                  "properties": {
+                    "object": {
+                      "const": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                          },
+                          "object": {
+                            "const": "realtime.trace"
+                          },
+                          "session_id": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "spans": {
+                            "type": "array",
+                            "items": {
+                              "type": "object"
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "object",
+                          "session_id",
+                          "status",
+                          "spans"
+                        ]
+                      }
+                    },
+                    "has_more": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtime/traces/{trace_id}": {
+      "get": {
+        "operationId": "get_v1_realtime_traces_trace_id",
+        "parameters": [
+          {
+            "name": "trace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "object": {
+                      "const": "realtime.trace"
+                    },
+                    "session_id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "spans": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "object",
+                    "session_id",
+                    "status",
+                    "spans"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_realtime_traces_trace_id",
+        "parameters": [
+          {
+            "name": "trace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "object": {
+                      "const": "realtime.trace.deleted"
+                    },
+                    "deleted": {
+                      "const": true
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "object",
+                    "deleted"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "x-q4t": {
@@ -30319,6 +31737,1197 @@
           "input_tokens_response": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1168"
           },
+          "decisions_0": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_1"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "prompt_cache_key": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_51"
+              },
+              "prompt_cache_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_66"
+              },
+              "questions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_72",
+                "minItems": 1,
+                "maxItems": 400
+              },
+              "safety_identifier": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_51"
+              }
+            },
+            "required": [
+              "input",
+              "model",
+              "questions"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_1": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_3"
+              }
+            ]
+          },
+          "decisions_2": {
+            "type": "string"
+          },
+          "decisions_3": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_4"
+            }
+          },
+          "decisions_4": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_5"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_32"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_36"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_38"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_50"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_57"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_62"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_64"
+              }
+            ]
+          },
+          "decisions_5": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_6"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_29"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_30"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_6": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_7"
+              }
+            ]
+          },
+          "decisions_7": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_8"
+            }
+          },
+          "decisions_8": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_9"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_15"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_22"
+              }
+            ]
+          },
+          "decisions_9": {
+            "type": "object",
+            "properties": {
+              "prompt_cache_breakpoint": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_10"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_14"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_10": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_12"
+              }
+            ]
+          },
+          "decisions_11": {
+            "type": "null"
+          },
+          "decisions_12": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_13"
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_13": {
+            "const": "explicit"
+          },
+          "decisions_14": {
+            "const": "input_text"
+          },
+          "decisions_15": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_16"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "prompt_cache_breakpoint": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_10"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_21"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_16": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_17"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_18"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_19"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_20"
+              }
+            ]
+          },
+          "decisions_17": {
+            "const": "low"
+          },
+          "decisions_18": {
+            "const": "high"
+          },
+          "decisions_19": {
+            "const": "auto"
+          },
+          "decisions_20": {
+            "const": "original"
+          },
+          "decisions_21": {
+            "const": "input_image"
+          },
+          "decisions_22": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_23"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_28"
+              }
+            },
+            "required": [
+              "data",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_23": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_24"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_26"
+              }
+            ]
+          },
+          "decisions_24": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_25"
+            }
+          },
+          "decisions_25": {},
+          "decisions_26": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_27"
+            }
+          },
+          "decisions_27": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_25"
+            }
+          },
+          "decisions_28": {
+            "const": "input_json"
+          },
+          "decisions_29": {
+            "const": "user"
+          },
+          "decisions_30": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_31"
+              }
+            ]
+          },
+          "decisions_31": {
+            "const": "message"
+          },
+          "decisions_32": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_33"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_35"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_30"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_33": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_34"
+              }
+            ]
+          },
+          "decisions_34": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_9"
+            }
+          },
+          "decisions_35": {
+            "const": "developer"
+          },
+          "decisions_36": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_33"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_37"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_30"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_37": {
+            "const": "system"
+          },
+          "decisions_38": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_39"
+              },
+              "phase": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_46"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_49"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_30"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_39": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_40"
+              }
+            ]
+          },
+          "decisions_40": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_41"
+            }
+          },
+          "decisions_41": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_42"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_44"
+              }
+            ]
+          },
+          "decisions_42": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_43"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_43": {
+            "const": "output_text"
+          },
+          "decisions_44": {
+            "type": "object",
+            "properties": {
+              "refusal": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_45"
+              }
+            },
+            "required": [
+              "refusal",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_45": {
+            "const": "refusal"
+          },
+          "decisions_46": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_47"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_48"
+              }
+            ]
+          },
+          "decisions_47": {
+            "const": "commentary"
+          },
+          "decisions_48": {
+            "const": "final_answer"
+          },
+          "decisions_49": {
+            "const": "assistant"
+          },
+          "decisions_50": {
+            "type": "object",
+            "properties": {
+              "arguments": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "call_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_51"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "namespace": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_51"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_52"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_56"
+              }
+            },
+            "required": [
+              "arguments",
+              "call_id",
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_51": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              }
+            ]
+          },
+          "decisions_52": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_53"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_54"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_55"
+              }
+            ]
+          },
+          "decisions_53": {
+            "const": "in_progress"
+          },
+          "decisions_54": {
+            "const": "completed"
+          },
+          "decisions_55": {
+            "const": "incomplete"
+          },
+          "decisions_56": {
+            "const": "function_call"
+          },
+          "decisions_57": {
+            "type": "object",
+            "properties": {
+              "call_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_51"
+              },
+              "output": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_58"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_52"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_61"
+              }
+            },
+            "required": [
+              "call_id",
+              "output",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_58": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_59"
+              }
+            ]
+          },
+          "decisions_59": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_60"
+            }
+          },
+          "decisions_60": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_9"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_15"
+              }
+            ]
+          },
+          "decisions_61": {
+            "const": "function_call_output"
+          },
+          "decisions_62": {
+            "type": "object",
+            "properties": {
+              "call_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_51"
+              },
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "namespace": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_51"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_52"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_63"
+              }
+            },
+            "required": [
+              "call_id",
+              "input",
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_63": {
+            "const": "custom_tool_call"
+          },
+          "decisions_64": {
+            "type": "object",
+            "properties": {
+              "call_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_51"
+              },
+              "output": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_58"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_52"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_65"
+              }
+            },
+            "required": [
+              "call_id",
+              "output",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_65": {
+            "const": "custom_tool_call_output"
+          },
+          "decisions_66": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_67"
+              }
+            ]
+          },
+          "decisions_67": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_68"
+              },
+              "ttl": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_70"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "decisions_68": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_13"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_69"
+              }
+            ]
+          },
+          "decisions_69": {
+            "const": "implicit"
+          },
+          "decisions_70": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_71"
+              }
+            ]
+          },
+          "decisions_71": {
+            "const": "30m"
+          },
+          "decisions_72": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_73"
+            }
+          },
+          "decisions_73": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_74"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_82"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_89"
+              }
+            ]
+          },
+          "decisions_74": {
+            "type": "object",
+            "properties": {
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_75"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_80"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_81"
+              }
+            },
+            "required": [
+              "instructions",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_75": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_76"
+              }
+            ]
+          },
+          "decisions_76": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_77"
+            }
+          },
+          "decisions_77": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_22"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_78"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_79"
+              }
+            ]
+          },
+          "decisions_78": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_14"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_79": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_16"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_21"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_80": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              }
+            ]
+          },
+          "decisions_81": {
+            "const": "predicate"
+          },
+          "decisions_82": {
+            "type": "object",
+            "properties": {
+              "choices": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_83",
+                "minItems": 2,
+                "maxItems": 255
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_75"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_80"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_88"
+              }
+            },
+            "required": [
+              "choices",
+              "instructions",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_83": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_84"
+            }
+          },
+          "decisions_84": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_80"
+              },
+              "value": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_85"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_85": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_86"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_87"
+              }
+            ]
+          },
+          "decisions_86": {
+            "const": false
+          },
+          "decisions_87": {
+            "const": true
+          },
+          "decisions_88": {
+            "const": "choice"
+          },
+          "decisions_89": {
+            "type": "object",
+            "properties": {
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_75"
+              },
+              "levels": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_90",
+                "minItems": 2,
+                "maxItems": 10
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_80"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_92"
+              }
+            },
+            "required": [
+              "instructions",
+              "levels",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_90": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_91"
+            }
+          },
+          "decisions_91": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_80"
+              },
+              "label": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              }
+            },
+            "required": [
+              "label"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_92": {
+            "const": "score"
+          },
+          "decisions_93": {
+            "type": "object",
+            "properties": {
+              "answers": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_94"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "usage": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_106"
+              }
+            },
+            "required": [
+              "answers",
+              "model",
+              "usage"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_94": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_95"
+            }
+          },
+          "decisions_95": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_96"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_99"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_102"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_105"
+              }
+            ]
+          },
+          "decisions_96": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_97"
+              },
+              "probability": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_81"
+              }
+            },
+            "required": [
+              "name",
+              "probability",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_97": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              }
+            ]
+          },
+          "decisions_98": {
+            "type": "number"
+          },
+          "decisions_99": {
+            "type": "object",
+            "properties": {
+              "choice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_85"
+              },
+              "confidence": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_97"
+              },
+              "probabilities": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_100"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_88"
+              }
+            },
+            "required": [
+              "choice",
+              "confidence",
+              "name",
+              "probabilities",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_100": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_101"
+            }
+          },
+          "decisions_101": {
+            "type": "object",
+            "properties": {
+              "probability": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              },
+              "value": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_85"
+              }
+            },
+            "required": [
+              "probability",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_102": {
+            "type": "object",
+            "properties": {
+              "confidence": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_97"
+              },
+              "probabilities": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_103"
+              },
+              "score": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_92"
+              }
+            },
+            "required": [
+              "confidence",
+              "name",
+              "probabilities",
+              "score",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_103": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_104"
+            }
+          },
+          "decisions_104": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_2"
+              },
+              "probability": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              },
+              "value": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              }
+            },
+            "required": [
+              "label",
+              "probability",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_105": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_97"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_45"
+              }
+            },
+            "required": [
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_106": {
+            "type": "object",
+            "properties": {
+              "input_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              },
+              "input_tokens_details": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_107"
+              },
+              "output_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              },
+              "output_tokens_details": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_108"
+              },
+              "total_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              }
+            },
+            "required": [
+              "input_tokens",
+              "input_tokens_details",
+              "output_tokens",
+              "output_tokens_details",
+              "total_tokens"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_107": {
+            "type": "object",
+            "properties": {
+              "cache_write_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              },
+              "cached_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              }
+            },
+            "required": [
+              "cache_write_tokens",
+              "cached_tokens"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_108": {
+            "type": "object",
+            "properties": {
+              "reasoning_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_98"
+              }
+            },
+            "required": [
+              "reasoning_tokens"
+            ],
+            "additionalProperties": false
+          },
+          "decisions_request": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_0"
+          },
+          "decisions_decision": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/decisions_93"
+          },
           "file_resource": {
             "type": "object",
             "properties": {
@@ -34720,6 +37329,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_filePart"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_audioPart"
                         }
                       ]
                     }
@@ -34858,6 +37470,49 @@
             ],
             "additionalProperties": false,
             "allOf": [
+              {
+                "if": {
+                  "required": [
+                    "role"
+                  ],
+                  "properties": {
+                    "role": {
+                      "not": {
+                        "const": "user"
+                      }
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "content": {
+                      "anyOf": [
+                        {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "not": {
+                              "required": [
+                                "type"
+                              ],
+                              "properties": {
+                                "type": {
+                                  "const": "input_audio"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
               {
                 "if": {
                   "required": [
@@ -35602,6 +38257,75 @@
             ],
             "additionalProperties": false
           },
+          "chat_input_audioPart": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "input_audio"
+              },
+              "input_audio": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "format": {
+                    "enum": [
+                      "wav",
+                      "mp3"
+                    ]
+                  }
+                },
+                "required": [
+                  "data",
+                  "format"
+                ],
+                "additionalProperties": false
+              },
+              "prompt_cache_breakpoint": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "const": "explicit"
+                  },
+                  "ttl": {
+                    "enum": [
+                      "30m",
+                      "12h"
+                    ]
+                  }
+                },
+                "required": [
+                  "mode"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "type",
+              "input_audio"
+            ],
+            "additionalProperties": false
+          },
+          "chat_input_cacheBreakpoint": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "const": "explicit"
+              },
+              "ttl": {
+                "enum": [
+                  "30m",
+                  "12h"
+                ]
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "additionalProperties": false
+          },
           "stored_chat_message": {
             "type": "object",
             "properties": {
@@ -35775,6 +38499,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_filePart"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_audioPart"
                         }
                       ]
                     }
@@ -39047,6 +41774,10 @@
               },
               "core_readiness_dependency": {
                 "const": false
+              },
+              "live_recordings": {
+                "type": "boolean",
+                "description": "Deployment permission for opt-in, client-owned Live recording."
               }
             },
             "required": [
