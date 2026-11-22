@@ -399,7 +399,9 @@ constexpr RouteSpec kRoutes[] = {
 };
 
 bool Route(const std::string& method, const std::string& path, bool* control) {
-  if (method == "GET" && !server::LiveSidebandId(path).empty()) {
+  if ((method == "GET" && !server::LiveSidebandId(path).empty()) ||
+      ((method == "GET" || method == "POST") &&
+       !server::LiveForkId(path).empty())) {
     *control = false;
     return true;
   }
@@ -571,10 +573,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     }
     if (!headers.cors_method.empty() || !headers.cors_headers.empty())
       return reject(400, "cors_invalid_preflight");
-    const auto base = std::string_view(path).substr(0, path.find('?'));
     lease.sideband = method == "GET" && !server::LiveSidebandId(path).empty();
-    lease.websocket = lease.sideband || (method == "GET" &&
-        (base == "/v1/realtime" || base == "/v1/live/sessions"));
+    lease.websocket = server::IsRealtimeUpgrade(method, path);
     // WebSocket browsers do not enforce CORS response headers. An Origin
     // therefore needs explicit server-side permission even with CORS off.
     if (lease.websocket && !headers.origin.empty() && !config.cors.Enabled())

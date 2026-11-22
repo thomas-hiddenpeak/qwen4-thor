@@ -9,9 +9,55 @@
 
 namespace q4t::server {
 using namespace object_detail;
+ObjectReply LiveDecisionItems::Insert(const Json& input,
+                                      const std::string& id) {
+  constexpr size_t kItems = 128, kBytes = 8ULL << 20;
+  ChatPlanError error;
+  size_t breakpoints = 0;
+  const auto checked =
+      CheckDecisionInputItem(input, "item", &breakpoints, &error);
+  if (!checked) {
+    auto failure = Error(error.http_status, error.code, checked.message());
+    failure.value = Object({{"param", String(error.param)}});
+    return failure;
+  }
+  if (std::ranges::any_of(items_, [&](const Entry& entry) {
+        return entry.item.GetString("id") == id;
+      }))
+    return Error(400, "duplicate_item_id", "Decision item ID already exists");
+  auto item = input;
+  Set(&item, "id", String(id));
+  size_t bytes = 0;
+  if (items_.size() >= kItems ||
+      !MeasureRealtimeStorage(item, kBytes - bytes_, &bytes))
+    return Error(429, "decision_item_capacity", "Decision context is full");
+  items_.push_back({std::move(item), bytes});
+  bytes_ += bytes;
+  return {};
+}
+
+ObjectReply LiveDecisionItems::Restore(const Json& items) {
+  if (!items.IsArray() || items.array.size() > 128 || !items_.empty())
+    return Error(503, "invalid_recording", "Invalid saved Decision items");
+  LiveDecisionItems next;
+  for (const auto& item : items.array) {
+    ChatPlanError error;
+    const auto* id = item.Find("id");
+    const auto event =
+        Object({{"type", String("decision.item.create")}, {"item", item}});
+    if (!id || !id->IsString() ||
+        !ValidateLiveShape(event, LiveShape::kClientEvent, &error))
+      return Error(503, "invalid_recording", "Invalid saved Decision item");
+    auto inserted = next.Insert(item, id->str);
+    if (!inserted.ok())
+      return Error(503, "invalid_recording", "Invalid saved Decision context");
+  }
+  *this = std::move(next);
+  return {};
+}
+
 ObjectReply LiveDecisionItems::Apply(const Json& event,
                                      const LiveEventSink& emit) {
-  constexpr size_t kItems = 128, kBytes = 8ULL << 20;
   const bool create = event.GetString("type") == "decision.item.create";
   if (!create && event.GetString("type") != "decision.item.delete")
     return Error(400, "invalid_request", "Expected a Decision item command");
@@ -22,32 +68,16 @@ ObjectReply LiveDecisionItems::Apply(const Json& event,
   const auto* supplied = create ? input->Find("id") : event.Find("item_id");
   auto id = supplied && !supplied->IsNull() ? supplied->str
                                             : detail::NewRequestId("item_");
-  const auto existing = std::ranges::find_if(items_, [&](const Entry& entry) {
-    return entry.item.Find("id")->str == id;
-  });
   auto reply = Object();
   if (create) {
-    ChatPlanError error;
-    size_t breakpoints = 0;
-    const auto checked =
-        CheckDecisionInputItem(*input, "item", &breakpoints, &error);
-    if (!checked) {
-      auto failure = Error(error.http_status, error.code, checked.message());
-      failure.value = Object({{"param", String(error.param)}});
-      return failure;
-    }
-    if (existing != items_.end())
-      return Error(400, "duplicate_item_id", "Decision item ID already exists");
-    auto item = *input;
-    Set(&item, "id", String(id));
-    size_t bytes = 0;
-    if (items_.size() >= kItems ||
-        !MeasureRealtimeStorage(item, kBytes - bytes_, &bytes))
-      return Error(429, "decision_item_capacity", "Decision context is full");
-    reply = Object({{"type", String("decision.item.created")}, {"item", item}});
-    items_.push_back({std::move(item), bytes});
-    bytes_ += bytes;
+    auto inserted = Insert(*input, id);
+    if (!inserted.ok()) return inserted;
+    reply = Object({{"type", String("decision.item.created")},
+                    {"item", items_.back().item}});
   } else {
+    const auto existing = std::ranges::find_if(items_, [&](const Entry& entry) {
+      return entry.item.Find("id")->str == id;
+    });
     if (existing == items_.end())
       return Error(400, "item_not_found", "Decision item ID was not found");
     reply = Object(

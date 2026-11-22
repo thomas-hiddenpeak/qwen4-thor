@@ -19,7 +19,8 @@ check(endpoint.protocol === 'https:' && endpoint.hostname === '127.0.0.1' &&
 const { default: OpenAI } = await import(pathToFileURL(path.join(sdk, 'index.mjs')));
 const client = new OpenAI({ baseURL: endpoint.toString(), apiKey: args.key, maxRetries: 0, timeout: 20000 });
 try {
-  const { response, data } = await client.live.create(args.request).withResponse();
+  const pending = args.source ? client.live.sessions.fork(args.source, args.request) : client.live.create(args.request);
+  const { response, data } = await pending.withResponse();
   console.log(JSON.stringify({status: response.status, data}));
 } catch (error) {
   if (!Number.isInteger(error.status)) throw error;

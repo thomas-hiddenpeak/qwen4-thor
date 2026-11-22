@@ -37,7 +37,8 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
     HandleLiveSideband(fd, path, headers, initial, accept);
     return;
   }
-  if (path.substr(0, path.find('?')) == "/v1/live/sessions") {
+  if (path.substr(0, path.find('?')) == "/v1/live/sessions" ||
+      !LiveForkId(path).empty()) {
     HandleLive(fd, path, headers, initial, accept);
     return;
   }

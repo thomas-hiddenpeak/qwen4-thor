@@ -26,19 +26,10 @@ LiveMediaCall::LiveMediaCall(std::string id, uint64_t expires_at,
                std::move(callbacks), limits) {}
 
 ObjectReply LiveMediaCall::Start(const Json& configuration) {
-  ChatPlanError error;
-  LiveMediaPolicy permitted;
-  const auto status = permitted.Configure(configuration.Find("client"), &error);
-  if (!status) {
-    auto reply = Error(error.http_status, error.code, status.message());
-    reply.value = Object({{"param", String(error.param)}});
-    return reply;
-  }
   if (!send_ || !session_.Start())
     return Error(503, "live_session_unavailable",
                  "Media session could not start");
-  frontend_ = std::move(permitted);
-  return session_.StartMedia(configuration);
+  return session_.StartMedia(configuration, &frontend_);
 }
 
 bool LiveMediaCall::Publish(std::string_view wire) {

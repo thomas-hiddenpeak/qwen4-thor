@@ -17687,6 +17687,309 @@
       ],
       "additionalProperties": false
     },
+    "live_936": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "$ref": "#/$defs/live_937"
+        },
+        "transport": {
+          "$ref": "#/$defs/live_938"
+        }
+      },
+      "required": [
+        "session",
+        "transport"
+      ],
+      "additionalProperties": false
+    },
+    "live_938": {
+      "type": "object",
+      "properties": {
+        "sdp": {
+          "$ref": "#/$defs/live_4"
+        },
+        "type": {
+          "$ref": "#/$defs/live_889"
+        }
+      },
+      "required": [
+        "sdp",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "live_937": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/live_4"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "live_930": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "$ref": "#/$defs/live_931"
+        },
+        "transport": {
+          "$ref": "#/$defs/live_935"
+        }
+      },
+      "required": [
+        "transport"
+      ],
+      "additionalProperties": false
+    },
+    "live_935": {
+      "type": "object",
+      "properties": {
+        "sdp": {
+          "$ref": "#/$defs/live_4"
+        },
+        "type": {
+          "$ref": "#/$defs/live_889"
+        }
+      },
+      "required": [
+        "sdp",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "live_931": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_932"
+        }
+      ]
+    },
+    "live_932": {
+      "type": "object",
+      "properties": {
+        "client": {
+          "$ref": "#/$defs/live_23"
+        },
+        "delegation": {
+          "$ref": "#/$defs/live_933"
+        },
+        "store": {
+          "$ref": "#/$defs/live_150"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "live_933": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_934"
+        }
+      ]
+    },
+    "live_934": {
+      "type": "object",
+      "properties": {
+        "acknowledgement_delay_ms": {
+          "$ref": "#/$defs/live_35"
+        },
+        "responses": {
+          "$ref": "#/$defs/live_163"
+        },
+        "type": {
+          "$ref": "#/$defs/live_80"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "live_163": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_164"
+        }
+      ]
+    },
+    "live_164": {
+      "type": "object",
+      "properties": {
+        "instructions": {
+          "$ref": "#/$defs/live_2"
+        },
+        "max_output_tokens": {
+          "$ref": "#/$defs/live_39"
+        },
+        "model": {
+          "$ref": "#/$defs/live_32"
+        },
+        "parallel_tool_calls": {
+          "$ref": "#/$defs/live_40"
+        },
+        "reasoning": {
+          "$ref": "#/$defs/live_165"
+        },
+        "service_tier": {
+          "$ref": "#/$defs/live_56"
+        },
+        "text": {
+          "$ref": "#/$defs/live_167"
+        },
+        "tool_choice": {
+          "$ref": "#/$defs/live_169"
+        },
+        "tools": {
+          "$ref": "#/$defs/live_172"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "live_172": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_173"
+        }
+      ]
+    },
+    "live_173": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/live_174"
+      }
+    },
+    "live_174": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_74"
+        },
+        {
+          "$ref": "#/$defs/live_175"
+        }
+      ]
+    },
+    "live_175": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/live_79"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "live_169": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_46"
+        },
+        {
+          "$ref": "#/$defs/live_55"
+        },
+        {
+          "$ref": "#/$defs/live_66"
+        },
+        {
+          "$ref": "#/$defs/live_170"
+        },
+        {
+          "$ref": "#/$defs/live_171"
+        }
+      ]
+    },
+    "live_171": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/live_4"
+        },
+        "server_label": {
+          "$ref": "#/$defs/live_4"
+        },
+        "type": {
+          "$ref": "#/$defs/live_70"
+        }
+      },
+      "required": [
+        "name",
+        "server_label",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "live_170": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/live_4"
+        },
+        "type": {
+          "$ref": "#/$defs/live_68"
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "live_167": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_3"
+        },
+        {
+          "$ref": "#/$defs/live_168"
+        }
+      ]
+    },
+    "live_168": {
+      "type": "object",
+      "properties": {
+        "verbosity": {
+          "$ref": "#/$defs/live_64"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "live_165": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_3"
+        },
+        {
+          "$ref": "#/$defs/live_166"
+        }
+      ]
+    },
+    "live_166": {
+      "type": "object",
+      "properties": {
+        "effort": {
+          "$ref": "#/$defs/live_45"
+        },
+        "summary": {
+          "$ref": "#/$defs/live_52"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "live_session_fork": {
+      "$ref": "#/$defs/live_930"
+    },
+    "live_session_forked": {
+      "$ref": "#/$defs/live_936"
+    },
     "live_media_create": {
       "$ref": "#/$defs/live_879"
     },

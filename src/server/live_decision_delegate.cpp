@@ -92,6 +92,24 @@ void LiveDecisionDelegate::Settings(const Json& configuration) {
                     : Json{};
   triggers_ = *configuration.Find("triggers");
 }
+ObjectReply LiveDecisionDelegate::RestoreHistory(const Json& history) {
+  size_t charge = 0;
+  if (!history.IsArray() || history.array.size() > kTracking ||
+      !MeasureRealtimeStorage(history, kHistory, &charge))
+    return Capacity();
+  for (const auto& item : history.array) {
+    const auto role = item.GetString("role");
+    const auto* text = item.Find("content");
+    if ((role != "user" && role != "developer" && role != "assistant") ||
+        !text || !text->IsString())
+      return Error(503, "invalid_recording", "Invalid saved Decision history");
+  }
+  conversation_ = history;
+  history_bytes_ = charge;
+  history_full_ = false;
+  last_start_ms_ = -1;
+  return {};
+}
 ObjectReply LiveDecisionDelegate::ForkHistory(Json* history) const {
   if (!history || history_full_) return Capacity();
   *history = conversation_;

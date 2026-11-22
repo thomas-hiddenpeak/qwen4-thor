@@ -92,6 +92,11 @@ def add_voice_routes(paths, response, error):
               body=content('application/json', {'$ref':live+'media_create'}))
     operation('get','/v1/live/sessions',upgrade,
               description='Start a native primary Live WebSocket with session.start.')
+    fork = '/v1/live/sessions/{session_id}/fork'
+    operation('get', fork, upgrade,
+              description='Open a new Live WebSocket from a completed recording owned by this client. Send session.start with fork overrides.')
+    operation('post', fork, {'201':response({'$ref':live+'session_forked'}, 'Forked media session created')},
+              body=content('application/json', {'$ref':live+'session_fork'}))
     operation('get','/v1/live/sessions/{session_id}/attach',upgrade,
               parameters=[param('graceful_close','query',dict(type='boolean'))],
               description='Authenticated sideband for a running media session. Replays three seconds of events and audio before live delivery.')

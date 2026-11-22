@@ -40,6 +40,8 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/live/sessions', 'realtime'),
     ('GET', '/v1/live/sessions/{session_id}/attach', 'sideband'),
     ('POST', '/v1/live/sessions', 'data'),
+    ('GET', '/v1/live/sessions/{session_id}/fork', 'realtime'),
+    ('POST', '/v1/live/sessions/{session_id}/fork', 'data'),
     ('GET', '/v1/live/sessions/{session_id}/content', 'data'),
     ('GET', '/v1/realtime/traces', 'control'),
     *((method, '/v1/realtime/traces/{trace_id}', 'control') for method in ('GET','DELETE')),
@@ -226,7 +228,7 @@ def websocket_maps():
     default "";
     "websocket:/v1/realtime" $q4t_ws_realtime;
     "websocket:/v1/live/sessions" $q4t_ws_live;
-    "~^websocket:/v1/live/sessions/live_[A-Za-z0-9_-]+/attach$" $q4t_ws_live;
+    "~^websocket:/v1/live/sessions/live_[A-Za-z0-9_-]+/(attach|fork)$" $q4t_ws_live;
   }
   map $q4t_ws_upgrade $q4t_ws_origin { default ""; websocket $http_origin; }'''
 

@@ -296,6 +296,7 @@ ChatPlanConfig NativeConfig() {
   return config;
 }
 struct NativeFixture {
+  std::string id = "live_bound";
   Fixture f;
   ChatPlanConfig planning = NativeConfig();
   WebSocketOutput output{1ULL << 20, 64};
@@ -374,14 +375,15 @@ struct NativeFixture {
       std::unique_ptr<LiveRecordingCapture> capture;
       if (configuration.GetBool("store"))
         capture = std::make_unique<LiveRecordingCapture>(
-            *recording_objects, "client:test", "live_bound", plan.format,
+            *recording_objects, "client:test", id, plan.format,
             [] { return false; });
       auto selected = std::make_unique<NativeLiveClientBackend>(
-          "live_bound", std::move(native), std::move(context), 30,
-          kWebSocketMessageLimit, responses, decisions, std::move(capture));
+          id, std::move(native), std::move(context), 30, kWebSocketMessageLimit,
+          responses, decisions, std::move(capture));
       auto* owner = selected.get();
       *out = std::move(selected);
-      return owner->Prepare(configuration, std::move(plan));
+      return owner->Prepare(configuration, std::move(plan),
+                            callbacks.fork_state.get());
     };
   }
   bool Read() {
@@ -405,8 +407,8 @@ struct NativeFixture {
   }
   bool Start(Json configuration = Object({{"model", String("q4t-test")}})) {
     if (!session) {
-      session = std::make_unique<LiveSession>("live_bound", 1795200000, output,
-                                              callbacks);
+      session =
+          std::make_unique<LiveSession>(id, 1795200000, output, callbacks);
       Q4T_CHECK(session->Start());
     }
     return Send(Object({{"type", String("session.start")},
@@ -1467,6 +1469,29 @@ Q4T_TEST(live_fork_normal_close_captures_separate_tool_and_frontend_history) {
             OutputJson(*state.value.GetArray("frontend_history"))
                     .find("private frontend only") != std::string::npos);
   Q4T_CHECK(!state.value.Has("worker") && d.runs == 1 && d.releases == 1);
+  DelegateFixture child;
+  child.f.id = "live_child";
+  child.lookup = false;
+  child.f.callbacks.fork_state = std::make_shared<const Json>(state.value);
+  Q4T_CHECK(child.f.Start(Object({{"store", Boolean(false)}})));
+  Q4T_CHECK(child.f.Count("session.started") == 1 &&
+            child.f.Last("session.started").Find("session")->GetString("id") ==
+                child.f.id);
+  for (int i = 0; i < 8; ++i)
+    Q4T_CHECK(child.f.session->Tick() && child.f.Read());
+  Q4T_CHECK(child.runs == 0 && child.f.f.models == 0 &&
+            child.f.Count("session.delegation.created") == 0);
+  Q4T_CHECK(child.f.Command("response.create") &&
+            child.f.Wait([&] { return child.f.f.model_released.load() == 1; }));
+  Q4T_CHECK(child.runs == 1 && child.requests.size() == 1);
+  const auto& history = child.requests.front().array;
+  Q4T_CHECK(history.size() == 3 &&
+            history[1].GetString("call_id") == "call_read" &&
+            history[2].GetString("call_id") == "call_read" &&
+            history[2].GetString("output") == "rev426");
+  Q4T_CHECK(OutputJson(child.requests.front()).find("private frontend only") ==
+            std::string::npos);
+  Q4T_CHECK(child.f.Close() && !child.f.Count("error") && d.runs == 1);
   return true;
 }
 
@@ -1519,6 +1544,29 @@ Json DecisionDelete(std::string id) {
                  {"event_id", String("del")}});
 }
 }  // namespace
+
+Q4T_TEST(
+    live_fork_decision_restore_keeps_client_ids_and_rejects_corrupt_items) {
+  LiveDecisionItems original, restored, corrupt;
+  auto item = User("项目版本");
+  Set(&item, "id", String("project:查询"));
+  ChatPlanError error;
+  Q4T_CHECK(
+      ValidateLiveShape(DecisionAdd(item), LiveShape::kClientEvent, &error));
+  Q4T_CHECK(
+      original.Apply(DecisionAdd(item), [](Json) { return ObjectReply{}; })
+          .ok());
+  auto snapshot = original.Snapshot();
+  Q4T_CHECK(restored.Restore(snapshot).ok() &&
+            OutputJson(restored.Snapshot()) == OutputJson(snapshot));
+  snapshot.array.push_back(snapshot.array.front());
+  Q4T_CHECK(corrupt.Restore(snapshot).code == "invalid_recording" &&
+            corrupt.Snapshot().array.empty());
+  Set(&snapshot.array.back(), "type", String("unknown"));
+  Q4T_CHECK(corrupt.Restore(snapshot).code == "invalid_recording" &&
+            corrupt.Snapshot().array.empty());
+  return true;
+}
 
 Q4T_TEST(live_decision_items_preserve_typed_input_order_and_snapshot) {
   LiveDecisionItems items;

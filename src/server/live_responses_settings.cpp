@@ -73,20 +73,22 @@ Status ValidateLiveWireShape(const Json& value, LiveShape shape,
   if (status || !error || error->http_status != 400) return status;
   const bool event =
       shape == LiveShape::kClientEvent || shape == LiveShape::kServerEvent ||
-      shape == LiveShape::kSidebandClient || shape == LiveShape::kSidebandServer;
+      shape == LiveShape::kSidebandClient ||
+      shape == LiveShape::kSidebandServer || shape == LiveShape::kForkClient ||
+      shape == LiveShape::kForkServer;
   if (event && !OneOf(value.GetString("type"),
                       {"session.start", "session.update", "session.started",
                        "session.updated", "session.closed"}))
     return status;
   if (!event && shape != LiveShape::kMediaCreate &&
-      shape != LiveShape::kSessionStart &&
+      shape != LiveShape::kSessionFork && shape != LiveShape::kSessionStart &&
       shape != LiveShape::kSessionUpdate && shape != LiveShape::kSession)
     return status;
   auto projection = value;
-  auto* settings =
-      Settings(event || shape == LiveShape::kMediaCreate
-                   ? Member(&projection, "session")
-                   : &projection);
+  auto* settings = Settings(event || shape == LiveShape::kMediaCreate ||
+                                    shape == LiveShape::kSessionFork
+                                ? Member(&projection, "session")
+                                : &projection);
   if (!settings) return status;
   bool changed = false;
   if (auto* tools = Member(settings, "tools"); tools && tools->IsArray()) {

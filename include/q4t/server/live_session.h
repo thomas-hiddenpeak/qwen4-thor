@@ -45,6 +45,8 @@ struct LiveSessionCallbacks {
   LiveResponsesCheck validate_responses;
   std::function<bool()> interrupted;
   std::function<std::chrono::steady_clock::time_point()> now;
+  // Private scoped checkpoint loaded by the transport before accepting a fork.
+  std::shared_ptr<const io::Json> fork_state;
 };
 
 // Output accepts complete, ordered JSON events. A full transport returns false
@@ -75,7 +77,8 @@ class LiveSession {
   bool Start();
   // The authenticated HTTP owner supplies startup once for a negotiated
   // media transport. On failure the HTTP handler gets the native status.
-  ObjectReply StartMedia(const io::Json& configuration);
+  ObjectReply StartMedia(const io::Json& configuration,
+                         LiveMediaPolicy* frontend = nullptr);
   bool Message(WebSocketOpcode opcode, std::string_view message,
                const LiveMediaPolicy* frontend = nullptr);
   bool SidebandMessage(WebSocketOpcode opcode, std::string_view message);
@@ -112,7 +115,8 @@ class LiveSession {
             std::string* receipt = nullptr);
   ObjectReply BackendEvent(io::Json event);
   bool Error(ObjectReply error, std::string_view client_event = {});
-  bool StartSession(const io::Json& event, ObjectReply* failure = nullptr);
+  bool StartSession(const io::Json& event, ObjectReply* failure = nullptr,
+                    LiveMediaPolicy* frontend = nullptr);
   bool UpdateSession(const io::Json& event);
   bool PublishConfiguration(io::Json response, const io::Json* settings,
                             const std::string& event, size_t charge);

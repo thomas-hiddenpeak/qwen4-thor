@@ -184,17 +184,20 @@ bool LiveSession::Error(ObjectReply reply, std::string_view client_event) {
   Set(&event, "error", std::move(details));
   return Emit(std::move(event));
 }
-ObjectReply LiveSession::StartMedia(const Json& configuration) {
+ObjectReply LiveSession::StartMedia(const Json& configuration,
+                                    LiveMediaPolicy* frontend) {
   if (callbacks_.configuration.transport == LiveTransport::kWebSocket ||
       state_ != State::kWaiting || !AdvanceClock())
     return Invalid("live_startup_unavailable", "Media session cannot start", {}, 503);
   ObjectReply failure;
-  if (StartSession(Object({{"session", configuration}}), &failure)) return {};
+  if (StartSession(Object({{"session", configuration}}), &failure, frontend))
+    return {};
   return !Accepted(failure) ? failure : Invalid(
       "live_startup_unavailable", "Media session initialization failed", {}, 503);
 }
 
-bool LiveSession::StartSession(const Json& event, ObjectReply* failure) {
+bool LiveSession::StartSession(const Json& event, ObjectReply* failure,
+                               LiveMediaPolicy* frontend) {
   const auto client_event = event.GetString("event_id");
   const auto reject = [&](ObjectReply reply) {
     if (!failure) return Error(std::move(reply), client_event);
@@ -203,8 +206,16 @@ bool LiveSession::StartSession(const Json& event, ObjectReply* failure) {
   };
   Json configuration, resource;
   ChatPlanError error;
-  auto status = ResolveLiveConfiguration(
-      *event.Find("session"), callbacks_.configuration, &configuration, &error);
+  const auto& startup = *event.Find("session");
+  auto status =
+      callbacks_.fork_state
+          ? ResolveLiveForkConfiguration(*callbacks_.fork_state, startup,
+                                         callbacks_.configuration,
+                                         &configuration, &error)
+          : ResolveLiveConfiguration(startup, callbacks_.configuration,
+                                     &configuration, &error);
+  if (status && frontend)
+    status = frontend->Configure(configuration.Find("client"), &error);
   if (status)
     status =
         LiveSessionResource(configuration, id_, expires_at_, &resource, &error);
@@ -334,8 +345,11 @@ bool LiveSession::HandleMessage(WebSocketOpcode opcode, std::string_view message
         Invalid("invalid_request", "Event ID exceeds 256 bytes", "event_id"));
   ChatPlanError error;
   const auto status =
-      ValidateLiveWireShape(event, sideband ? LiveShape::kSidebandClient
-                                           : LiveShape::kClientEvent, &error);
+      ValidateLiveWireShape(event,
+                            sideband                ? LiveShape::kSidebandClient
+                            : callbacks_.fork_state ? LiveShape::kForkClient
+                                                    : LiveShape::kClientEvent,
+                            &error);
   if (!status) return Error(ShapeFailure(status, error), client_event);
   const auto type = event.GetString("type");
   if (sideband && type == "transport.dtmf.send" &&

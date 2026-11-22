@@ -115,3 +115,7 @@ L05 的 WebRTC HTTP 创建、受限数据通道和双向 Opus 已通过真实资
 L04 的可信 WebRTC 旁路已通过同身份实际接入、授权隔离、断开后主通话继续、重连回放与双端正常关闭。L04 继续存储会话 fork，L05 继续 SIP。[CPU 与真实业务记录](evidence/serve-live-sideband-20261123/README.md)。
 
 L04 录制收尾已保存可供子会话读取的私有状态；历史工具与结果保留关联，不保存活动 worker。真实录音及跨身份、容量、重启读取已验证。[保存状态证据](evidence/serve-live-fork-state-20261123/README.md)。后续验收需新会话在真实入口使用这份历史继续业务。
+
+L04 的同身份 fork 已经通过两个真实 SDK 入口。对已完成且存有上下文的源会话，WebSocket 客户端连接 `GET /v1/live/sessions/{session_id}/fork` 后发送 `{"type":"session.start","session":{}}`。WebRTC 客户端向同一路径 POST 新的 SDP offer，成功返回 201。两种方式都获得新的会话 ID。源会话的原始指令、有效指令、资料回填及对话历史随子会话恢复；未设置 store 时继承源配置。WebSocket 默认使用 24 kHz PCM，WebRTC 重新协商媒体并继承或逐项覆盖数据通道权限。曾使用私有工具凭据的 Responses 配置需要在 fork 时提交当前工具配置。旧 WAV 缺少会话状态时仍可下载，fork 返回 409。[实测与边界](evidence/serve-live-fork-http-20261123/README.md)。
+
+L05 待接入 SIP 原生信令、SRTP 媒体、同身份电话控制、DTMF 及对应的真实本机对端。电话协议需要独立于核心服务部署。L06 仍需组合恢复、打包和主线交付。

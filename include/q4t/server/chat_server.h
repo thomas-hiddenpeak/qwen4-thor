@@ -339,12 +339,17 @@ class ChatServer {
                                    const HttpRequestHeaders& headers,
                                    std::string_view initial,
                                    std::string_view accept);
-  LiveSessionCallbacks MakeLiveCallbacks(const ClientIdentity& client,
-      const std::string& id, size_t message_bytes, LiveTransport transport,
-      std::shared_ptr<LiveSideband> sideband = {});
+  LiveSessionCallbacks MakeLiveCallbacks(
+      const ClientIdentity& client, const std::string& id, size_t message_bytes,
+      LiveTransport transport, std::shared_ptr<LiveSideband> sideband = {},
+      std::shared_ptr<const io::Json> fork_state = {});
+  ObjectReply LoadLiveFork(int fd, const ClientIdentity& client,
+                           std::string_view source,
+                           std::shared_ptr<const io::Json>* state);
   void HandleLiveSideband(int fd, std::string_view path,
       const HttpRequestHeaders& headers, std::string_view initial, std::string_view accept);
-  void HandleLiveMediaCreate(int fd, const std::string& body,
+  void HandleLiveMediaCreate(int fd, std::string_view source,
+                             const std::string& body,
                              std::atomic<int>*& admission);
   void JoinLiveMedia();
   void HandleLive(int fd, std::string_view path,

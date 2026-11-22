@@ -280,6 +280,25 @@ std::optional<std::string> LiveResponsesTurn::TakeContinuation() {
   consumed_ = true;
   return std::exchange(continuation_, std::nullopt);
 }
+ObjectReply LiveResponsesTurn::RestoreCompleted(const Json& state) {
+  const auto* output = state.GetArray("output");
+  const auto* results = state.GetArray("results");
+  if (!state.GetBool("completed") || !output || !results ||
+      output->array.size() > kItems || results->array.size() > kItems ||
+      finished_ || failed_ || !items_.empty())
+    return Broken();
+  for (size_t i = 0; i < output->array.size(); ++i) {
+    auto reply = Register(output->array[i], i);
+    if (!reply.ok()) return reply;
+  }
+  for (const auto& result : results->array) {
+    auto reply = Result(result);
+    if (!reply.ok()) return reply;
+  }
+  finished_ = true;
+  return {};
+}
+
 Json LiveResponsesTurn::ForkHistory() const {
   auto output = Array(), results = Array();
   for (const auto& [index, item] : items_) {

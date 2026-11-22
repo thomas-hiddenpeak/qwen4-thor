@@ -10,8 +10,10 @@ class LiveDecisionItems {
   ObjectReply Apply(const io::Json& event, const LiveEventSink& emit);
   // Each evaluation owns its snapshot, including items deleted subsequently.
   io::Json Snapshot() const;
+  ObjectReply Restore(const io::Json& items);
 
  private:
+  ObjectReply Insert(const io::Json& item, const std::string& id);
   struct Entry {
     io::Json item;
     size_t bytes;

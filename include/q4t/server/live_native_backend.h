@@ -36,7 +36,8 @@ class NativeLiveClientBackend final : public ILiveSessionBackend {
                           LiveDecisionNative decisions = {},
                           std::unique_ptr<LiveRecordingCapture> recording = {});
   ~NativeLiveClientBackend() override;
-  ObjectReply Prepare(io::Json configuration, NativeLivePlan plan);
+  ObjectReply Prepare(io::Json configuration, NativeLivePlan plan,
+                      const io::Json* fork_state = nullptr);
   void ResponsesReady(bool ready) noexcept override;
   ObjectReply Update(const io::Json& configuration) override;
   ObjectReply Command(const io::Json& event) override;

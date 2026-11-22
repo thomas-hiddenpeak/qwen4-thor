@@ -139,6 +139,17 @@ def current_surface(root):
         raise ValueError('review Live attach authorization, replay and command ownership')
     routes.append((attachment, 'GET'))
     native_routes.append(('GET', attachment, 'false'))
+    media = (root / 'src/server/chat_live_media.cpp').read_text()
+    if ('HandleLiveMediaCreate(fd, LiveForkId(path), body, admission)' not in dispatch or
+            '!server::LiveForkId(path).empty()' not in native or
+            'ReadLiveForkState(*objects_, access, std::string(source))' not in live or
+            not all('LoadLiveFork(fd, client, source, &state)' in unit for unit in (live, media))):
+        raise ValueError('review owner-scoped fork dispatch and checkpoint loading')
+    routes.append(('/v1/live/sessions', 'POST'))
+    fork = '/v1/live/sessions/{session_id}/fork'
+    for method in ('GET', 'POST'):
+        routes.append((fork, method))
+        native_routes.append((method, fork, 'false'))
     traces = [("GET", "/v1/realtime/traces"),
               ("GET", "/v1/realtime/traces/{trace_id}"),
               ("DELETE", "/v1/realtime/traces/{trace_id}")]
@@ -484,6 +495,11 @@ def mutation_checks(inventory, actual):
         if content not in actual[group]:
             raise ValueError("Live download escaped extraction")
         cases.append(dict(actual, **{group: [route for route in actual[group] if route != content]}))
+        for method in ("GET", "POST"):
+            fork = method + " /v1/live/sessions/{session_id}/fork"
+            if fork not in actual[group]:
+                raise ValueError("Live fork routing escaped extraction")
+            cases.append(dict(actual, **{group: [r for r in actual[group] if r != fork]}))
         media = "POST /v1/live/sessions"
         if media not in actual[group]:
             raise ValueError("Live HTTP creation escaped extraction")

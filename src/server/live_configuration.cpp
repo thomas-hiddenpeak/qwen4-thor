@@ -179,6 +179,67 @@ Status ResolveLiveConfiguration(const Json& input,
   return {};
 }
 
+Status ResolveLiveForkConfiguration(const Json& state, const Json& overrides,
+                                    const LiveConfigurationContext& context,
+                                    Json* output, ChatPlanError* error) {
+  if (!error || !output)
+    return Status::Fail("Missing fork configuration destination");
+  const auto* source = state.Find("configuration");
+  if (!source || !source->IsObject() || !source->GetBool("store") ||
+      state.GetString("format") != "q4t.live_fork.v1" ||
+      !source->Find("audio") || !source->Find("audio")->IsObject() ||
+      !ValidateLiveWireShape(*source, LiveShape::kSessionStart, error,
+                             "session"))
+    return Invalid(error, "session", "Invalid saved Live configuration",
+                   "invalid_recording", 503);
+  auto status = ValidateLiveWireShape(
+      Object({{"type", String("session.start")}, {"session", overrides}}),
+      LiveShape::kForkClient, error);
+  if (!status) return status;
+  Json next = *source;
+  std::erase_if(Field(next, "audio").object,
+                [](auto& field) { return field.first == "format"; });
+  if (context.transport == LiveTransport::kWebSocket) {
+    if (overrides.Has("client"))
+      return Invalid(error, "session.client",
+                     "Client permissions require WebRTC");
+    std::erase_if(next.object,
+                  [](auto& field) { return field.first == "client"; });
+    if (const auto* selected = overrides.Find("audio"))
+      if (const auto* format = selected->Find("format"))
+        Set(&Field(next, "audio"), "format", *format);
+  } else {
+    if (overrides.Has("audio"))
+      return Invalid(error, "session.audio",
+                     "Media forks negotiate audio on the transport");
+    if (const auto* client = overrides.Find("client")) {
+      const auto* channel = client->Find("data_channel");
+      if (!channel || !channel->IsObject())
+        return Invalid(error, "session.client", "Invalid data channel");
+      if (!next.Has("client"))
+        Set(&next, "client", *client);
+      else {
+        auto& effective = Field(Field(next, "client"), "data_channel");
+        for (const auto& [name, v] : channel->object) Set(&effective, name, v);
+      }
+    }
+  }
+  if (const auto* store = overrides.Find("store")) Set(&next, "store", *store);
+  const auto* delegation = overrides.Find("delegation");
+  const auto* responses = delegation ? delegation->Find("responses") : nullptr;
+  if (state.GetBool("requires_tool_credentials") &&
+      (!responses || !responses->Has("tools")))
+    return Invalid(
+        error, "session.delegation.responses.tools",
+        "Supply current tool settings to replace private source credentials");
+  if (delegation) {
+    // Reuse sparse backend updates and immutable owner checks.
+    return UpdateLiveConfiguration(next, Object({{"delegation", *delegation}}),
+                                   context, output, error);
+  }
+  return ResolveLiveConfiguration(next, context, output, error);
+}
+
 Status UpdateLiveConfiguration(const Json& current, const Json& update,
                                const LiveConfigurationContext& context,
                                Json* output, ChatPlanError* error) {

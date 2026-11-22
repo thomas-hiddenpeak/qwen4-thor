@@ -31,10 +31,14 @@ inline std::string_view LiveRecordingId(std::string_view path) {
 inline std::string_view LiveSidebandId(std::string_view target) {
   return LiveResourceId(target.substr(0, target.find('?')), "/attach");
 }
+inline std::string_view LiveForkId(std::string_view path) {
+  return LiveResourceId(path, "/fork");
+}
 // Exact WebSocket targets; adapters validate their own query semantics.
 inline bool IsRealtimeTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
-  return path == "/v1/realtime" || path == "/v1/live/sessions" || !LiveSidebandId(target).empty();
+  return path == "/v1/realtime" || path == "/v1/live/sessions" ||
+         !LiveSidebandId(target).empty() || !LiveForkId(target).empty();
 }
 inline bool IsRealtimeUpgrade(std::string_view method,
                               std::string_view target) {
@@ -42,7 +46,8 @@ inline bool IsRealtimeUpgrade(std::string_view method,
 }
 
 inline bool IsLiveMediaCreate(std::string_view method, std::string_view target) {
-  return method == "POST" && target == "/v1/live/sessions";
+  return method == "POST" &&
+         (target == "/v1/live/sessions" || !LiveForkId(target).empty());
 }
 
 inline bool IsRealtimeTraceTarget(std::string_view target) {

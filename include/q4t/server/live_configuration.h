@@ -27,6 +27,10 @@ struct LiveConfigurationContext {
 Status ResolveLiveConfiguration(const io::Json& input,
                                 const LiveConfigurationContext& context,
                                 io::Json* output, ChatPlanError* error);
+Status ResolveLiveForkConfiguration(const io::Json& state,
+                                    const io::Json& overrides,
+                                    const LiveConfigurationContext& context,
+                                    io::Json* output, ChatPlanError* error);
 Status UpdateLiveConfiguration(const io::Json& current, const io::Json& update,
                                const LiveConfigurationContext& context,
                                io::Json* output, ChatPlanError* error);

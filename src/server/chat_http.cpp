@@ -527,8 +527,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     context.SetKeepAlive(headers.keep_alive && allow_keep_alive &&
                             !stop_requested_.load(), headers.http11);
     dispatch_started = true;
-    if (path == "/v1/live/sessions" && method == "POST")
-      HandleLiveMediaCreate(fd, body, admission);
+    if (IsLiveMediaCreate(method, path))
+      HandleLiveMediaCreate(fd, LiveForkId(path), body, admission);
     else if (IsRealtimeTarget(path))
       HandleRealtime(fd, path, headers, state->pending, websocket_accept);
     else if (file_request)

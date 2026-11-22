@@ -265,6 +265,45 @@ void LiveResponsesDelegate::Interrupt() noexcept {
   if (turn_) turn_->Abort();
   changed_.notify_all();
 }
+ObjectReply LiveResponsesDelegate::Restore(const Json& state) {
+  const auto* history = state.GetArray("history");
+  const auto* added = state.GetArray("added");
+  const auto* turn = state.Find("turn");
+  if (!history || !added || !Fits(*history) || !Fits(*added) || !turn ||
+      Running() || turn_ || !history_.array.empty() || !added_.array.empty())
+    return Error(503, "invalid_recording", "Invalid saved Responses context");
+  auto prior = *history;
+  std::unique_ptr<LiveResponsesTurn> restored;
+  if (!turn->IsNull()) {
+    if (!turn->GetArray("output") || !turn->GetArray("results") ||
+        !turn->Find("completed") || !turn->Find("completed")->IsBool())
+      return Error(503, "invalid_recording", "Invalid saved Responses turn");
+    if (turn->GetBool("completed")) {
+      restored = std::make_unique<LiveResponsesTurn>(
+          detail::NewRequestId("delegation_"), "", emit_);
+      auto result = restored->RestoreCompleted(*turn);
+      if (!result.ok()) return result;
+      // A fully answered historical turn has no remaining call authority.
+      if (!restored->WaitingForResults()) {
+        result = restored->AppendHistory(&prior);
+        if (!result.ok()) return result;
+        restored.reset();
+      }
+    } else {
+      // Observations from an interrupted response are context for subsequent
+      // requests. They cannot register a completable call in the new owner.
+      auto text =
+          "Interrupted source response (historical data): " + OutputJson(*turn);
+      prior.array.push_back(Object(
+          {{"role", String("user")}, {"content", String(std::move(text))}}));
+      if (!Fits(prior)) return Capacity();
+    }
+  }
+  history_ = std::move(prior);
+  added_ = *added;
+  turn_ = std::move(restored);
+  return {};
+}
 Json LiveResponsesDelegate::ForkHistory() const {
   return Object({{"history", history_},
                  {"added", added_},

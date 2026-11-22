@@ -85,6 +85,44 @@ Q4T_TEST(live_configuration_native_defaults_and_counter_binding) {
   return true;
 }
 
+Q4T_TEST(live_fork_transport_defaults_and_media_permissions) {
+  Fixture f;
+  f.context.transport = LiveTransport::kWebRtc;
+  Q4T_CHECK(f.Resolve(
+      Parse(R"({"model":"native","store":true,"instructions":"Keep me",
+    "client":{"data_channel":{"allowed_client_events":[],"allowed_server_events":[]}},
+    "audio":{"output":{"voice":"vivian"}}})")));
+  auto saved = Object(
+      {{"format", String("q4t.live_fork.v1")}, {"configuration", f.output}});
+  auto fork = [&](const char* patch) {
+    return ResolveLiveForkConfiguration(saved, Parse(patch), f.context,
+                                        &f.output, &f.error)
+        .ok();
+  };
+  Q4T_CHECK(fork(
+      R"({"client":{"data_channel":{"allowed_client_events":["session.close"]}}})"));
+  const auto* channel = f.output.Find("client")->Find("data_channel");
+  Q4T_CHECK(channel->GetArray("allowed_client_events")->array.size() == 1 &&
+            channel->GetArray("allowed_server_events")->array.empty());
+  Q4T_CHECK(!f.output.Find("audio")->Has("format") &&
+            f.output.GetBool("store"));
+  Q4T_CHECK(!fork(R"({"audio":{"format":{"type":"audio/pcm","rate":24000}}})"));
+  f.context.transport = LiveTransport::kWebSocket;
+  Q4T_CHECK(fork(R"({"store":false})") && !f.output.Has("client") &&
+            !f.output.GetBool("store") &&
+            f.output.GetString("instructions") == "Keep me");
+  Q4T_CHECK(f.output.Find("audio")->Find("format")->GetInt("rate") == 24000);
+  Q4T_CHECK(fork(R"({"audio":{"format":{"type":"audio/pcmu","rate":8000}}})"));
+  Q4T_CHECK(f.output.Find("audio")->Find("format")->GetInt("rate") == 8000);
+  Q4T_CHECK(!fork(R"({"model":"replace"})") &&
+            !fork(R"({"client":{"data_channel":{}}})") &&
+            !fork(R"({"instructions":"replace"})"));
+  Set(&saved, "requires_tool_credentials", Boolean(true));
+  Q4T_CHECK(!fork("{}") &&
+            f.error.param == "session.delegation.responses.tools");
+  return true;
+}
+
 Q4T_TEST(live_configuration_token_limits_use_rendered_counts) {
   Fixture f;
   auto input = Parse(R"({"model":"native","instructions":"short text"})");

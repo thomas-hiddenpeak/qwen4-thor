@@ -26,9 +26,9 @@ SCHEMA = 'q4t-live-media-create-business-v1'
 class Stage(live.Stage):
     limits = LIMITS
 
-    def create(self, sdp, session):
+    def create(self, sdp, session, *, source=None, client="alpha"):
         self.budget('sdk_posts')
-        args = dict(key=self.keys['alpha'], base_url=f'https://127.0.0.1:{self.plan["public_port"]}/v1',
+        args = dict(key=self.keys[client], source=source, base_url=f'https://127.0.0.1:{self.plan["public_port"]}/v1',
                     request=dict(transport=dict(type='webrtc', sdp=sdp), session=session))
         env = dict(os.environ, Q4T_NODE_SDK_DIR=self.plan['sdk_directory'],
                    NODE_EXTRA_CA_CERTS=self.plan['tls']['certificate'])

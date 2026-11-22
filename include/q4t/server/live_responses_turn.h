@@ -32,6 +32,7 @@ class LiveResponsesTurn {
   // Inert, observed output and results only. Outstanding calls carry no
   // continuation, callback, authorization or executing worker into a fork.
   io::Json ForkHistory() const;
+  ObjectReply RestoreCompleted(const io::Json& state);
   const std::string& ResponseId() const { return response_id_; }
 
  private:

@@ -94,7 +94,7 @@ class NativeUpgrade(unittest.TestCase):
         original = handler.do_GET
         def get(peer):
             if peer.path.split('?', 1)[0] not in ('/v1/realtime', '/v1/live/sessions',
-                                                  '/v1/live/sessions/live_cpu/attach'):
+                                                  '/v1/live/sessions/live_cpu/attach', '/v1/live/sessions/live_cpu/fork'):
                 return original(peer)
             owner.rows.append(dict(path=peer.path, headers=dict(peer.headers)))
             peer.close_connection = True
@@ -335,7 +335,7 @@ class OptionalNginxUpgrade(unittest.TestCase):
     def test_scoped_primary_upgrades_relay_commands_events_and_normal_close(self):
         self.ready()
         for path in ('/v1/realtime?intent=transcription','/v1/realtime','/v1/live/sessions',
-                     '/v1/live/sessions/live_cpu/attach?graceful_close=true'):
+                     '/v1/live/sessions/live_cpu/attach?graceful_close=true', '/v1/live/sessions/live_cpu/fork'):
             protocol = 'live' if path.startswith('/v1/live/') else 'realtime'
             fields = ('Sec-WebSocket-Protocol: live, realtime, '
                       'openai-insecure-api-key.test-only\r\n')

@@ -216,7 +216,8 @@ LiveFrontendNative NativeLiveClientBackend::Bind(LiveFrontendNative native) {
   return native;
 }
 ObjectReply NativeLiveClientBackend::Prepare(Json configuration,
-                                             NativeLivePlan plan) {
+                                             NativeLivePlan plan,
+                                             const Json* fork_state) {
   if (attempted_ || cancelled_) return Unavailable();
   attempted_ = true;
   const bool bound = responses_native_.execute && responses_native_.acquire &&
@@ -251,6 +252,26 @@ ObjectReply NativeLiveClientBackend::Prepare(Json configuration,
     callbacks.delegate = [this](std::string id, Json task) {
       return responses_->Delegate(std::move(id), std::move(task));
     };
+  }
+  if (fork_state) {
+    const auto* items = fork_state->GetArray("frontend_history");
+    const auto* instructions = fork_state->Find("frontend_instructions");
+    const auto* decision_items = fork_state->GetArray("decision_items");
+    const auto* decisions = fork_state->Find("decision_history");
+    const auto* responses = fork_state->Find("responses");
+    if (fork_state->GetString("format") != "q4t.live_fork.v1" || !items ||
+        !instructions || !instructions->IsString() || !decision_items ||
+        !decisions || !responses || (!responses->IsNull() != bool(responses_)))
+      return Error(503, "invalid_recording", "Incomplete Live fork state");
+    reply = decision_items_.Restore(*decision_items);
+    if (Accepted(reply) && !decisions->IsNull()) {
+      if (!decisions_) return Unavailable();
+      reply = decisions_->RestoreHistory(*decisions);
+    }
+    if (Accepted(reply) && responses_) reply = responses_->Restore(*responses);
+    if (!Accepted(reply)) return reply;
+    plan.input = *items;
+    Set(&plan.settings, "instructions", *instructions);
   }
   context_ = std::make_unique<LiveClientContext>(id_, frontend_, plan.settings,
                                                  std::move(callbacks));

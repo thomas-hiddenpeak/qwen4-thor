@@ -10451,8 +10451,8 @@
       }
     }
   ],
-  "next_task": "Implement stored Live session forks with inherited conversation and configuration, WebSocket and WebRTC entry points, then SIP signaling and qualified delivery. Continue the remaining Serve master tasks.",
-  "next": "Live 主连接已验证客户端、Responses、Decisions 委派及转录触发。继续 L04/L05、组合交付及全部剩余总目标。默认 rev426。",
+  "next_task": "Implement scoped SIP call signaling, secure media, webhook and call control for Live and Realtime, followed by composition, recoverable delivery and remaining Serve master tasks.",
+  "next": "Live 已通过两种传输的已存储会话 fork。接入 SIP 信令与 SRTP、电话控制和组合交付，继续全部总目标。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16241,17 +16241,17 @@
       },
       {
         "id": "L03",
-        "state": "client_delegation_business_accepted_fixture_server_backends_and_retention_in_progress",
+        "state": "client_responses_decisions_voice_business_accepted",
         "title": "委派与上下文"
       },
       {
         "id": "L04",
-        "state": "planned",
+        "state": "scoped_recording_download_sideband_and_ws_webrtc_forks_business_accepted",
         "title": "存储/sideband/fork"
       },
       {
         "id": "L05",
-        "state": "planned",
+        "state": "webrtc_business_accepted_sip_in_progress",
         "title": "WebRTC/SIP媒体接入"
       },
       {
@@ -16320,6 +16320,7 @@
     "webrtc_creation_business_evidence": "evidence/serve-live-media-create-20261123/README.md",
     "webrtc_sideband_business_evidence": "evidence/serve-live-sideband-20261123/README.md",
     "webrtc_creation_status_evidence": "evidence/serve-live-sideband-20261123/create-status.json",
-    "stored_fork_state_evidence": "evidence/serve-live-fork-state-20261123/README.md"
+    "stored_fork_state_evidence": "evidence/serve-live-fork-state-20261123/README.md",
+    "stored_fork_business_evidence": "evidence/serve-live-fork-http-20261123/README.md"
   }
 }

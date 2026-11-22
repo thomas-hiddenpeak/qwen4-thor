@@ -30,6 +30,13 @@ class VoiceContract(unittest.TestCase):
             return Draft202012Validator({'$defs':self.defs, '$ref':'#'+schema['$ref'].split('#',1)[1]}).is_valid(value)
 
         transport = dict(type='webrtc', sdp='v=0')
+        fork = self.paths['/v1/live/sessions/{session_id}/fork']
+        self.assertEqual(set(fork['get']['responses']), {'101','default'})
+        self.assertEqual(set(fork['post']['responses']), {'201','default'})
+        fork_body = fork['post']['requestBody']['content']['application/json']['schema']
+        self.assertTrue(valid(fork_body, dict(transport=transport)))
+        self.assertTrue(valid(fork_body, dict(transport=transport,session={'store':False})))
+        self.assertFalse(valid(fork_body, dict(transport=transport,session={'model':'other'})))
         self.assertTrue(valid(body, dict(session=dict(model='native'),transport=transport)))
         self.assertTrue(valid(reply, dict(session=dict(id='live_id'),transport=transport)))
         for session, media in [(dict(id='live_id'), transport),

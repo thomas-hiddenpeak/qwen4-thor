@@ -6787,6 +6787,123 @@
         "description": "Start a native primary Live WebSocket with session.start."
       }
     },
+    "/v1/live/sessions/{session_id}/fork": {
+      "get": {
+        "operationId": "get_v1_live_sessions_session_id_fork",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "101": {
+            "description": "Authenticated WebSocket upgrade",
+            "headers": {
+              "Upgrade": {
+                "schema": {
+                  "const": "websocket"
+                }
+              },
+              "Sec-WebSocket-Accept": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Open a new Live WebSocket from a completed recording owned by this client. Send session.start with fork overrides."
+      },
+      "post": {
+        "operationId": "post_v1_live_sessions_session_id_fork",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Forked media session created",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_session_forked"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_session_fork"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/live/sessions/{session_id}/attach": {
       "get": {
         "operationId": "get_v1_live_sessions_session_id_attach",
@@ -33352,6 +33469,309 @@
               "id"
             ],
             "additionalProperties": false
+          },
+          "live_936": {
+            "type": "object",
+            "properties": {
+              "session": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_937"
+              },
+              "transport": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_938"
+              }
+            },
+            "required": [
+              "session",
+              "transport"
+            ],
+            "additionalProperties": false
+          },
+          "live_938": {
+            "type": "object",
+            "properties": {
+              "sdp": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_889"
+              }
+            },
+            "required": [
+              "sdp",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_937": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "live_930": {
+            "type": "object",
+            "properties": {
+              "session": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_931"
+              },
+              "transport": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_935"
+              }
+            },
+            "required": [
+              "transport"
+            ],
+            "additionalProperties": false
+          },
+          "live_935": {
+            "type": "object",
+            "properties": {
+              "sdp": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_889"
+              }
+            },
+            "required": [
+              "sdp",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_931": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_932"
+              }
+            ]
+          },
+          "live_932": {
+            "type": "object",
+            "properties": {
+              "client": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_23"
+              },
+              "delegation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_933"
+              },
+              "store": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_150"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_933": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_934"
+              }
+            ]
+          },
+          "live_934": {
+            "type": "object",
+            "properties": {
+              "acknowledgement_delay_ms": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_35"
+              },
+              "responses": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_163"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_80"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_163": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_164"
+              }
+            ]
+          },
+          "live_164": {
+            "type": "object",
+            "properties": {
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_2"
+              },
+              "max_output_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_39"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_32"
+              },
+              "parallel_tool_calls": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_40"
+              },
+              "reasoning": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_165"
+              },
+              "service_tier": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_56"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_167"
+              },
+              "tool_choice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_169"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_172"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_172": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_173"
+              }
+            ]
+          },
+          "live_173": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_174"
+            }
+          },
+          "live_174": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_74"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_175"
+              }
+            ]
+          },
+          "live_175": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_79"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_169": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_46"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_55"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_66"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_170"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_171"
+              }
+            ]
+          },
+          "live_171": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "server_label": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_70"
+              }
+            },
+            "required": [
+              "name",
+              "server_label",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_170": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_68"
+              }
+            },
+            "required": [
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_167": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_168"
+              }
+            ]
+          },
+          "live_168": {
+            "type": "object",
+            "properties": {
+              "verbosity": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_64"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_165": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_166"
+              }
+            ]
+          },
+          "live_166": {
+            "type": "object",
+            "properties": {
+              "effort": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_45"
+              },
+              "summary": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_52"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_session_fork": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_930"
+          },
+          "live_session_forked": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_936"
           },
           "live_media_create": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_879"

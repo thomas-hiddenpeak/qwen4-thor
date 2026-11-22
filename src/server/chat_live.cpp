@@ -23,8 +23,32 @@ ObjectReply Failure(const Status& status, const ChatPlanError& error) {
 }
 }  // namespace
 
-LiveSessionCallbacks ChatServer::MakeLiveCallbacks(const ClientIdentity& client,
-    const std::string& id, size_t message_bytes, LiveTransport transport, std::shared_ptr<LiveSideband> sideband) {
+ObjectReply ChatServer::LoadLiveFork(int fd, const ClientIdentity& client,
+                                     std::string_view source,
+                                     std::shared_ptr<const Json>* state) {
+  if (source.empty()) return {};
+  if (!live_recordings_ || !objects_)
+    return Error(404, "object_not_found", "Recording not found");
+  if (!client.Scoped())
+    return Error(401, "client_authentication_failed",
+                 "Authentication required");
+  const BinaryAccess access{
+      "client:" + std::string(client.Id()),
+      Clock::now() + std::chrono::milliseconds(request_deadline_ms_),
+      [this, fd, client] {
+        return stop_requested_.load() || !clients_.OwnsIdentity(client) ||
+               detail::ClientConnectionFailed(fd);
+      }};
+  auto reply = ReadLiveForkState(*objects_, access, std::string(source));
+  if (!reply.ok()) return reply;
+  *state = std::make_shared<const Json>(std::move(reply.value));
+  return {};
+}
+
+LiveSessionCallbacks ChatServer::MakeLiveCallbacks(
+    const ClientIdentity& client, const std::string& id, size_t message_bytes,
+    LiveTransport transport, std::shared_ptr<LiveSideband> sideband,
+    std::shared_ptr<const Json> fork_state) {
   // Keep CPU asset preparation outside both socket and session event loops.
   const auto input = PrepareRealtimeInput(client);
   const auto current_planning = [this, client](ChatPlanConfig* planning,
@@ -70,6 +94,7 @@ LiveSessionCallbacks ChatServer::MakeLiveCallbacks(const ClientIdentity& client,
     return Status{};
   };
   LiveSessionCallbacks callbacks;
+  callbacks.fork_state = fork_state;
   callbacks.configuration.transport = transport;
   callbacks.configuration.default_instructions =
       "You are a helpful voice assistant.";
@@ -157,7 +182,9 @@ LiveSessionCallbacks ChatServer::MakeLiveCallbacks(const ClientIdentity& client,
   };
   const auto counter = callbacks.configuration.count_text;
   callbacks.create = [this, client, input, current_planning, counter, id,
-                      message_bytes, transport, sideband = std::move(sideband)](
+                      message_bytes, transport,
+                      fork_state = std::move(fork_state),
+                      sideband = std::move(sideband)](
                          const Json& configuration, const LiveEventSink& emit,
                          std::unique_ptr<ILiveSessionBackend>* backend) {
     ChatPlanConfig planning;
@@ -274,7 +301,7 @@ LiveSessionCallbacks ChatServer::MakeLiveCallbacks(const ClientIdentity& client,
     auto* owner = selected.get();
     *backend =
         std::move(selected);  // Cleanup is owned even if preparation fails.
-    return owner->Prepare(configuration, std::move(plan));
+    return owner->Prepare(configuration, std::move(plan), fork_state.get());
   };
   callbacks.interrupted = [this] { return stop_requested_.load(); };
   return callbacks;
@@ -285,9 +312,8 @@ void ChatServer::HandleLive(int fd, std::string_view path,
                             std::string_view initial, std::string_view accept) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
-  // Primary Live startup parameters are in session.start. Sideband/fork
-  // connections require their independent ownership adapter, never this path.
-  if (path != "/v1/live/sessions") {
+  const auto source = LiveForkId(path);
+  if (path != "/v1/live/sessions" && source.empty()) {
     detail::SendError(fd, 400, "Primary Live startup uses session.start", {},
                       "invalid_request", "path");
     return;
@@ -301,8 +327,9 @@ void ChatServer::HandleLive(int fd, std::string_view path,
       !CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare))
     return;
   const auto client = http->Client();
-  const size_t host_bytes =
-      kRealtimeConversationHostBytes + kRealtimeConversationInputHostBytes;
+  const size_t host_bytes = kRealtimeConversationHostBytes +
+                            kRealtimeConversationInputHostBytes +
+                            (source.empty() ? 0 : 3 * kLiveForkStateBytes);
   HttpBodyLease memory(realtime_host_budget_);
   if (!memory.Acquire(host_bytes) ||
       !runtime::ReadSystemMemory().CanAllocate(host_bytes + (512ULL << 20))) {
@@ -315,7 +342,15 @@ void ChatServer::HandleLive(int fd, std::string_view path,
                                          client.Limits()->max_body_bytes)
                       : kWebSocketMessageLimit;
   const auto id = detail::NewRequestId("live_");
-  auto callbacks = MakeLiveCallbacks(client, id, message_bytes, LiveTransport::kWebSocket);
+  std::shared_ptr<const Json> state;
+  if (auto reply = LoadLiveFork(fd, client, source, &state); !reply.ok()) {
+    detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                      reply.ClientCode());
+    return;
+  }
+  auto callbacks =
+      MakeLiveCallbacks(client, id, message_bytes, LiveTransport::kWebSocket,
+                        {}, std::move(state));
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
   LiveSessionLimits session_limits;

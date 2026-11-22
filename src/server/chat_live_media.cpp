@@ -11,6 +11,7 @@
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/live_media_call.h"
 #include "q4t/server/live_media_process.h"
+#include "q4t/server/live_recording_store.h"
 #include "q4t/server/live_responses_settings.h"
 
 namespace q4t::server {
@@ -67,7 +68,8 @@ struct MediaOwner {
 };
 }  // namespace
 
-void ChatServer::HandleLiveMediaCreate(int fd, const std::string& body,
+void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
+                                       const std::string& body,
                                        std::atomic<int>*& admission) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
@@ -92,8 +94,10 @@ void ChatServer::HandleLiveMediaCreate(int fd, const std::string& body,
     return;
   }
   ChatPlanError error;
-  if (auto status =
-          ValidateLiveWireShape(request, LiveShape::kMediaCreate, &error);
+  if (auto status = ValidateLiveWireShape(
+          request,
+          source.empty() ? LiveShape::kMediaCreate : LiveShape::kSessionFork,
+          &error);
       !status) {
     detail::SendError(fd, error.http_status, status.message(), {}, error.code,
                       error.param);
@@ -108,9 +112,9 @@ void ChatServer::HandleLiveMediaCreate(int fd, const std::string& body,
       !CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare))
     return;
   auto owner = std::make_shared<MediaOwner>(realtime_host_budget_);
-  constexpr size_t host_bytes = kRealtimeConversationHostBytes +
-                                kRealtimeConversationInputHostBytes +
-                                (16ULL << 20);
+  const size_t host_bytes =
+      kRealtimeConversationHostBytes + kRealtimeConversationInputHostBytes +
+      (16ULL << 20) + (source.empty() ? 0 : 3 * kLiveForkStateBytes);
   if (!owner->memory.Acquire(host_bytes) ||
       !runtime::ReadSystemMemory().CanAllocate(host_bytes + (512ULL << 20))) {
     detail::SendError(fd, 503, "Live host memory unavailable", {},
@@ -126,6 +130,11 @@ void ChatServer::HandleLiveMediaCreate(int fd, const std::string& body,
     detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
                       reply.ClientCode(), reply.value.GetString("param"));
   };
+  std::shared_ptr<const Json> state;
+  if (auto reply = LoadLiveFork(fd, client, source, &state); !reply.ok()) {
+    failed(reply);
+    return;
+  }
   std::string answer;
   if (const auto reply =
           owner->process.Negotiate(request.Find("transport")->GetString("sdp"),
@@ -156,13 +165,14 @@ void ChatServer::HandleLiveMediaCreate(int fd, const std::string& body,
   owner->call = std::make_unique<LiveMediaCall>(
       id, expires, answer.find("\nm=application ") != answer.npos,
       MakeLiveCallbacks(client, id, message_bytes, LiveTransport::kWebRtc,
-                        owner->sideband),
+                        owner->sideband, std::move(state)),
       limits,
       [process = &owner->process](char type, auto data) {
         return process->Send(type, data);
       },
       owner->sideband);
-  if (const auto reply = owner->call->Start(*request.Find("session"));
+  const auto* startup = request.Find("session");
+  if (const auto reply = owner->call->Start(startup ? *startup : Object());
       !reply.ok()) {
     failed(reply);
     return;

@@ -30,6 +30,7 @@ class LiveResponsesDelegate {
   ObjectReply Delegate(std::string id, io::Json task);
   ObjectReply Tick(uint64_t offset_ms);
   io::Json ForkHistory() const;
+  ObjectReply Restore(const io::Json& state);
   bool Running() const { return worker_.valid(); }
   void Close() noexcept;
   void Interrupt() noexcept;

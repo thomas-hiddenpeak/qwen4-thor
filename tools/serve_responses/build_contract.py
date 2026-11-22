@@ -74,7 +74,7 @@ def schema(graph):
     definitions = graph_definitions(graph)
     live = json.loads((ROOT/'src/server/contracts/openai_live_types_v1.json').read_text())
     assert live['profile'] == 'q4t-openai-live-types-v1'
-    definitions.update(graph_definitions(live, 'live_', ('media_create', 'media_created')))
+    definitions.update(graph_definitions(live, 'live_', ('session_fork', 'session_forked', 'media_create', 'media_created')))
     decisions = json.loads((ROOT/'src/server/contracts/openai_decision_types_v1.json').read_text())
     assert decisions['profile'] == 'q4t-openai-decision-types-v1'
     definitions.update(graph_definitions(decisions, 'decisions_'))
