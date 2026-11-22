@@ -23,7 +23,8 @@ Status PlanNativeLiveClient(const io::Json& configuration,
                             NativeLivePlan* output, ChatPlanError* error,
                             bool responses_connected = false,
                             bool decisions_connected = false,
-                            bool recording_connected = false);
+                            bool recording_connected = false,
+                            LiveTransport transport = LiveTransport::kWebSocket);
 
 class NativeLiveClientBackend final : public ILiveSessionBackend {
  public:

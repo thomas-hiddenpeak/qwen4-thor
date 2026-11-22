@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Live 增加 WebRTC 前端事件权限校验及原生 PCM 规划。验证了空名单、精确嵌套 Responses 选择、256 项边界，以及协商格式和公开会话字段的区别。13 项针对性 CPU 检查通过；服务端 HTTP 创建、实际通话的权限执行和旁路仍在接入。[权限与格式验收](evidence/serve-live-media-policy-20261123/README.md)。
+
 修复原生网关与模型对 Live 显式 WebSocket 子协议选择不一致的问题。两个进程使用共同函数选择 `live` 或 `realtime`。8 项 HTTP 检查、9 项实际入口进程检查和 1 项打包来源检查通过。真实模型和原生 TLS 验证了三种 101 握手，Live 正常启动和关闭，Chat=42。单次启动 36.60 秒，已释放 GPU。[握手与验收](evidence/serve-live-subprotocol-20261123/README.md)。
 
 WebRTC 独立媒体进程已在 Thor 上完成回环 ICE、DTLS 证书绑定、SRTP 双向音频和 SCTP 命令验证。Opus、PCMU、PCMA 均在关闭数据通道后继续传音；无插件、错误证书和启动超时均已验证。此阶段还未接入 Live HTTP 创建及模型。[传输实测](evidence/serve-live-webrtc-media-20261123/README.md)。

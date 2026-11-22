@@ -631,6 +631,7 @@ set(protocol_inputs
   cmake/realtime_types.h.in
   include/q4t/server/live_shape.h
   include/q4t/server/live_configuration.h
+  include/q4t/server/live_media_policy.h
   include/q4t/server/live_responses_settings.h
   include/q4t/server/live_responses_validation.h
   include/q4t/server/live_responses_turn.h
@@ -642,6 +643,7 @@ set(protocol_inputs
   include/q4t/server/live_recording.h
   include/q4t/server/live_recording_store.h
   src/server/live_configuration.cpp
+  src/server/live_media_policy.cpp
   src/server/live_responses_settings.cpp
   src/server/live_responses_validation.cpp
   src/server/live_responses_turn.cpp

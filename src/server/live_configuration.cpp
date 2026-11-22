@@ -1,4 +1,5 @@
 #include "q4t/server/live_configuration.h"
+#include "q4t/server/live_media_policy.h"
 #include "q4t/server/live_responses_settings.h"
 
 #include <algorithm>
@@ -132,6 +133,11 @@ Status ResolveLiveConfiguration(const Json& input,
   auto status =
       ValidateLiveWireShape(input, LiveShape::kSessionStart, error, "session");
   if (!status) return status;
+  if (const auto* client = input.Find("client")) {
+    LiveMediaPolicy permissions;
+    status = permissions.Configure(client, error);
+    if (!status) return status;
+  }
   Json next = input;
   if (!next.Has("input")) Set(&next, "input", Array());
   if (!next.Has("store")) Set(&next, "store", Boolean(false));

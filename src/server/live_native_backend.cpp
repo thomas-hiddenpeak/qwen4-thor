@@ -94,7 +94,7 @@ Status PlanNativeLiveClient(const Json& configuration,
                             const ChatPlanConfig& planning,
                             NativeLivePlan* output, ChatPlanError* error,
                             bool responses_connected, bool decisions_connected,
-                            bool recording_connected) {
+                            bool recording_connected, LiveTransport transport) {
   if (!output || !error) return Status::Fail("Missing native Live plan owner");
   *error = {};
   auto status = ValidateLiveWireShape(configuration, LiveShape::kSessionStart,
@@ -123,27 +123,37 @@ Status PlanNativeLiveClient(const Json& configuration,
   const auto* format = audio ? audio->Find("format") : nullptr;
   const auto* speech = audio ? audio->Find("output") : nullptr;
   const auto* voice = speech ? speech->Find("voice") : nullptr;
-  if (!instructions || !instructions->IsString() || !input || !format ||
-      !voice) {
+  if (!instructions || !instructions->IsString() || !input || !voice ||
+      (transport == LiveTransport::kWebSocket && !format)) {
     *error = {"invalid_request", "session", 400};
     return Status::Fail("Native Live requires resolved startup configuration");
   }
-  const auto* rate = format->Find("rate");
-  if (!rate || !IsInputInteger(*rate)) {
-    *error = {"invalid_request", "session.audio.format.rate", 400};
-    return Status::Fail("Invalid Live sample rate");
-  }
-  const auto type = format->GetString("type");
-  if (type == "audio/pcm" && (rate->number == 16000 || rate->number == 24000))
-    next.format = {RealtimeAudioEncoding::kPcm16, uint32_t(rate->number)};
-  else if ((type == "audio/pcmu" || type == "audio/pcma") &&
-           rate->number == 8000)
-    next.format = {type == "audio/pcmu" ? RealtimeAudioEncoding::kMuLaw
-                                        : RealtimeAudioEncoding::kALaw,
-                   8000};
-  else {
-    *error = {"invalid_request", "session.audio.format", 400};
-    return Status::Fail("Invalid Live audio format");
+  if (transport != LiveTransport::kWebSocket) {
+    if (format) {
+      *error = {"invalid_request", "session.audio.format", 400};
+      return Status::Fail("This transport negotiates its media format");
+    }
+    // The media worker exchanges mono 24 kHz PCM for every negotiated RTP
+    // codec.
+    next.format = {RealtimeAudioEncoding::kPcm16, 24000};
+  } else {
+    const auto* rate = format->Find("rate");
+    if (!rate || !IsInputInteger(*rate)) {
+      *error = {"invalid_request", "session.audio.format.rate", 400};
+      return Status::Fail("Invalid Live sample rate");
+    }
+    const auto type = format->GetString("type");
+    if (type == "audio/pcm" && (rate->number == 16000 || rate->number == 24000))
+      next.format = {RealtimeAudioEncoding::kPcm16, uint32_t(rate->number)};
+    else if ((type == "audio/pcmu" || type == "audio/pcma") &&
+             rate->number == 8000)
+      next.format = {type == "audio/pcmu" ? RealtimeAudioEncoding::kMuLaw
+                                          : RealtimeAudioEncoding::kALaw,
+                     8000};
+    else {
+      *error = {"invalid_request", "session.audio.format", 400};
+      return Status::Fail("Invalid Live audio format");
+    }
   }
   Set(&next.settings, "instructions", *instructions);
   Set(&next.settings, "output_modalities", Array({String("audio")}));

@@ -1844,3 +1844,28 @@ Q4T_TEST(live_recording_permission_without_session_opt_in_never_opens_storage) {
             objects.Health().workers_started == 0);
   return true;
 }
+
+Q4T_TEST(live_media_native_plan_uses_private_pcm_without_exposing_wire_format) {
+  NativeFixture f;
+  ChatPlanError error;
+  Json resolved;
+  NativeLivePlan plan;
+  auto context = f.callbacks.configuration;
+  context.transport = LiveTransport::kWebRtc;
+  context.validate = [&](const Json& config, ChatPlanError* failure) {
+    return PlanNativeLiveClient(config, f.planning, &plan, failure, true, true,
+                                false, context.transport);
+  };
+  auto request = Object({{"model", String("q4t-test")}});
+  Q4T_CHECK(ResolveLiveConfiguration(request, context, &resolved, &error));
+  Q4T_CHECK(!resolved.Find("audio")->Has("format") &&
+            plan.format.encoding == RealtimeAudioEncoding::kPcm16 &&
+            plan.format.rate == 24000);
+  Q4T_CHECK(!PlanNativeLiveClient(resolved, f.planning, &plan, &error));
+  Set(&Field(resolved, "audio"), "format",
+      Object({{"type", String("audio/pcm")}, {"rate", Number(24000)}}));
+  Q4T_CHECK(!PlanNativeLiveClient(resolved, f.planning, &plan, &error, true,
+                                  true, false, context.transport) &&
+            error.param == "session.audio.format");
+  return true;
+}

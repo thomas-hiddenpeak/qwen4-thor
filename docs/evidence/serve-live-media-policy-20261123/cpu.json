@@ -1,0 +1,15 @@
+{
+  "new_cases": "3 tests, 3 passed, 0 failed, 0 skipped",
+  "existing_configuration": "9 tests, 9 passed, 0 failed, 0 skipped",
+  "existing_socket_audio": "1 tests, 1 passed, 0 failed, 0 skipped",
+  "engine_sha256": "9c22b33840a124bb18d571e6a70a5cdc724eb9acb99aa314b837cb740b912bc4",
+  "native_http_create": false,
+  "model_starts": 0,
+  "logs": {
+    "policy-qualified.log": "d4636b35b7277d95bb94afde1c213f710a98bf1beb2d240748763a28e07caa65",
+    "config-final.log": "1b029856c5d9d952aef6ffe179f7d7f2fdfd22aae12168be32b1d36e9f79e7a1",
+    "format-qualified.log": "8ec5cd63a04f61625cfc3710ebdd401454f25f31bca1d82d28e4ceabd2adfa32",
+    "engine-qualified.log": "364a0ba6faf4894671ea6db2cf4111fcd164517174100de0be4cad972c781de1",
+    "host-qualified.log": "1d0396e7c44272c634f2dca55e79bfc357ffac67d65aab002415739af8f97472"
+  }
+}

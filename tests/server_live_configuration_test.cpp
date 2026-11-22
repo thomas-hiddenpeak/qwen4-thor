@@ -1,4 +1,5 @@
 #include "q4t/server/live_configuration.h"
+#include "q4t/server/live_media_policy.h"
 #include "q4t/server/live_responses_settings.h"
 #include "q4t/server/mcp_policy.h"
 
@@ -416,5 +417,82 @@ Q4T_TEST(live_responses_validation_scope_resources_and_credential_errors) {
             error.http_status == 404);
   Q4T_CHECK(error.param == "tools[0].vector_store_ids[1]" &&
             bad.message().find("private-marker") == std::string::npos);
+  return true;
+}
+
+Q4T_TEST(live_media_policy_separates_frontend_controls_from_rtp_and_sideband) {
+  LiveMediaPolicy policy;
+  ChatPlanError error;
+  const auto delta = Parse(R"({"type":"response.event","event":{
+    "type":"response.output_text.delta"}})");
+  const auto usage = Parse(R"({"type":"session.usage.updated"})");
+  const auto rtp =
+      Parse(R"({"type":"session.output_audio.delta","delta":"AA=="})");
+  const auto restricted = Parse(R"({"data_channel":{
+    "allowed_client_events":["session.close"],
+    "allowed_server_events":[{"type":"response.event",
+    "response_event":"response.output_text.delta"}]}})");
+  Q4T_CHECK(policy.Configure(nullptr, &error) && policy.AllowsServer(usage));
+  Q4T_CHECK(!policy.AllowsClient("session.start") &&
+            !policy.AllowsClient("session.input_audio.append") &&
+            !policy.AllowsServer(rtp));
+  Q4T_CHECK(policy.Configure(&restricted, &error));
+  Q4T_CHECK(policy.AllowsClient("session.close") &&
+            !policy.AllowsClient("session.update"));
+  Q4T_CHECK(policy.AllowsServer(delta) && !policy.AllowsServer(usage));
+  Q4T_CHECK(!policy.AllowsServer(Parse(R"({"type":"response.event","event":{
+    "type":"response.function_call_arguments.delta"}})")));
+  for (
+      const auto* input :
+      {R"({"data_channel":{"allowed_server_events":[{"type":"response.event"}]}})",
+       R"({"data_channel":{"allowed_server_events":[{"type":"error","response_event":"x"}]}})",
+       R"({"data_channel":{"allowed_client_events":"none"}})"}) {
+    const auto invalid = Parse(input);
+    Q4T_CHECK(!policy.Configure(&invalid, &error) && error.http_status == 400);
+    Q4T_CHECK(policy.AllowsServer(delta) && !policy.AllowsServer(usage));
+  }
+  std::string unicode;
+  for (int i = 0; i < 256; ++i) unicode += "界";
+  auto selector = [&](const std::string& type) {
+    return Object({{"data_channel",
+                    Object({{"allowed_server_events",
+                             Array({Object({{"type", String(type)}})})}})}});
+  };
+  auto boundary = selector(unicode);
+  Q4T_CHECK(policy.Configure(&boundary, &error));
+  boundary = selector(unicode + "界");
+  Q4T_CHECK(!policy.Configure(&boundary, &error));
+  const auto empty = Parse(R"({"data_channel":{"allowed_client_events":[],
+    "allowed_server_events":[]}})");
+  Q4T_CHECK(policy.Configure(&empty, &error) &&
+            !policy.AllowsClient("session.close") &&
+            !policy.AllowsServer(delta));
+  const auto all = Parse(R"({"data_channel":{"allowed_client_events":"all",
+    "allowed_server_events":"all"}})");
+  Q4T_CHECK(policy.Configure(&all, &error) && policy.AllowsServer(delta) &&
+            policy.AllowsClient("session.close") && !policy.AllowsServer(rtp));
+  return true;
+}
+
+Q4T_TEST(live_media_permissions_reject_257_before_startup) {
+  Fixture f;
+  f.context.transport = LiveTransport::kWebRtc;
+  for (const auto* name : {"allowed_server_events", "allowed_client_events"}) {
+    auto rows = Array();
+    auto row = std::string_view(name) == "allowed_client_events"
+                   ? String("session.close")
+                   : Object({{"type", String("error")}});
+    rows.array.resize(256, row);
+    auto request = [&](const Json& permissions) {
+      return Object({{"model", String("native")},
+                     {"client", Object({{"data_channel",
+                                         Object({{name, permissions}})}})}});
+    };
+    Q4T_CHECK(f.Resolve(request(rows)));
+    rows.array.push_back(row);
+    Q4T_CHECK(!f.Resolve(request(rows)) &&
+              f.error.param ==
+                  std::string("session.client.data_channel.") + name);
+  }
   return true;
 }
