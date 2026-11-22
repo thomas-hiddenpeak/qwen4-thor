@@ -17,6 +17,8 @@ struct LiveClientContextCallbacks {
   LiveEventSink emit;
   std::function<std::chrono::steady_clock::time_point()> now;
   std::function<ObjectReply(std::string, io::Json)> delegate = {};
+  // A linked application append is valid for known Decisions delegations.
+  std::function<bool(std::string_view)> decision_owner = {};
 };
 class LiveClientContext {
  public:

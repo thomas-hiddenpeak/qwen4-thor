@@ -125,9 +125,12 @@ ObjectReply LiveClientContext::Append(const Json& event) {
       !ValidateLiveShape(event, LiveShape::kClientEvent, &error))
     return Invalid("Invalid Live context event", error.param);
   const auto* delegation = event.Find("delegation_id");
-  if (!delegation || (!delegation->IsNull() &&
-                      (callbacks_.delegate || !delegation->IsString() ||
-                       !Known(delegation->str))))
+  if (!delegation ||
+      (!delegation->IsNull() &&
+       (!delegation->IsString() ||
+        (callbacks_.delegate ? !callbacks_.decision_owner ||
+                                   !callbacks_.decision_owner(delegation->str)
+                             : !Known(delegation->str)))))
     return Invalid("Unknown client delegation", "delegation_id");
   const auto text = event.GetString("content");
   if (text.size() > kInstructionsBytes)
@@ -254,13 +257,15 @@ ObjectReply LiveClientContext::Complete(const RealtimeConversationJob& job,
         if (delegated.commit_unknown) return Fail(std::move(delegated));
         if (!Accepted(delegated)) entries_.at(id).pending = false;
       }
-      const auto receipt = Object(
-          {{"delegation_id", String(id)},
-           {"target", String(callbacks_.delegate ? "responses" : "client")},
-           {"status", String(!callbacks_.delegate  ? "created"
-                             : Accepted(delegated) ? "submitted"
-                                                   : "failed")},
-           {"task_completed", Boolean(false)}});
+      const auto receipt =
+          Object({{"delegation_id", String(id)},
+                  {"target", String(callbacks_.decision_owner ? "decisions"
+                                    : callbacks_.delegate     ? "responses"
+                                                              : "client")},
+                  {"status", String(!callbacks_.delegate  ? "created"
+                                    : Accepted(delegated) ? "submitted"
+                                                          : "failed")},
+                  {"task_completed", Boolean(false)}});
       reply =
           frontend_.Create(Object({{"type", String("function_call_output")},
                                    {"call_id", String(call_id)},

@@ -107,3 +107,5 @@ L04—L06及全部master任务仍未完成，不以本组验收作为总目标�
 [Decisions 原生取分](evidence/serve-decision-inference-cpu-20261123/README.md)已接入 HTTP，真实模型和 Live 委派仍须业务验证。
 
 [Decisions HTTP 业务](evidence/serve-decisions-http-20261123/README.md)已通过。SDK 多题、实际缓存及计量通过；Live 的显式/语音委派、转录触发仍需独立接入和验收。
+
+[L03 Decisions 主连接真实验收](evidence/serve-live-decisions-20261123/README.md)已覆盖手动和语音请求、同会话回填、两种转录触发与资源释放。L04 继续可选录制、下载、旁路和 fork。

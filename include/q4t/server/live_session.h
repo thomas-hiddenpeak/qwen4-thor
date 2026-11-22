@@ -90,7 +90,8 @@ class LiveSession {
   bool AdvanceClock();
   bool Fail() noexcept;
   bool Flush();
-  bool Emit(io::Json event, bool terminal = false);
+  bool Emit(io::Json event, bool terminal = false,
+            std::string* receipt = nullptr);
   ObjectReply BackendEvent(io::Json event);
   bool Error(ObjectReply error, std::string_view client_event = {});
   bool StartSession(const io::Json& event);

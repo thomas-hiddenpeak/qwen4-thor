@@ -113,7 +113,7 @@ bool LiveSession::Flush() {
   }
   return true;
 }
-bool LiveSession::Emit(Json event, bool terminal) {
+bool LiveSession::Emit(Json event, bool terminal, std::string* receipt) {
   if (state_ == State::kCancelled || state_ == State::kClosed) return false;
   const auto type = event.GetString("type");
   if (type != "session.output_audio.delta") {
@@ -124,6 +124,7 @@ bool LiveSession::Emit(Json event, bool terminal) {
   ChatPlanError error;
   if (!ValidateLiveWireShape(event, LiveShape::kServerEvent, &error))
     return Fail();
+  if (receipt) *receipt = event.GetString("event_id");
   auto text = OutputJson(event);
   if (text.size() > output_.MessageLimit() ||
       pending_.size() >= limits_.deferred_events ||
@@ -139,15 +140,20 @@ bool LiveSession::Emit(Json event, bool terminal) {
 }
 ObjectReply LiveSession::BackendEvent(Json event) {
   const auto type = event.GetString("type");
+  std::string receipt;
+  const bool transcript = type == "session.input_transcript.delta" ||
+                          type == "session.output_transcript.delta";
   if ((state_ != State::kActive && state_ != State::kDraining) ||
       type == "session.started" || type == "session.updated" ||
       type == "session.closed" || type == "session.usage.updated" ||
-      !Emit(std::move(event))) {
+      !Emit(std::move(event), false, transcript ? &receipt : nullptr)) {
     backend_fault_ = true;
     return Invalid("live_backend_event_invalid", "Invalid native Live event",
                    {}, 503);
   }
-  return {};
+  ObjectReply reply;
+  if (transcript) reply.value = String(std::move(receipt));
+  return reply;
 }
 bool LiveSession::Error(ObjectReply reply, std::string_view client_event) {
   auto details = Object(

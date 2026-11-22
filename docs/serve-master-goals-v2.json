@@ -10451,8 +10451,8 @@
       }
     }
   ],
-  "next_task": "Compose native Live frontend LLM/TTS and delegation backends with original admission/accounting, then native route/real bounded business, L03-L06 and all Serve master tasks. Input/lifecycle/transport CPU preparations are not real model acceptance; rev426 unchanged STOPPED.",
-  "next": "PR #57已合main；Live合同/配置/16k PCM 27项CPU，继续实际会话、模型和全部总任务。",
+  "next_task": "Implement opt-in Live storage, authenticated stereo recording downloads, sideband and forks, then media transports and remaining Serve master tasks.",
+  "next": "Live 主连接已验证客户端、Responses、Decisions 委派及转录触发。继续 L04/L05、组合交付及全部剩余总目标。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16308,6 +16308,7 @@
     "decision_items_cpu_evidence": "evidence/serve-live-decision-items-cpu-20261123/README.md",
     "responses_business_evidence": "evidence/serve-live-responses-http-20261123/README.md",
     "responses_execution_cpu_evidence": "evidence/serve-live-responses-execution-cpu-20261123/README.md",
-    "decision_http_business_evidence": "evidence/serve-decisions-http-20261123/README.md"
+    "decision_http_business_evidence": "evidence/serve-decisions-http-20261123/README.md",
+    "decision_session_business_evidence": "evidence/serve-live-decisions-20261123/README.md"
   }
 }

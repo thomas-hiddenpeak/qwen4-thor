@@ -2,13 +2,14 @@
 #pragma once
 
 #include "q4t/server/live_client_context.h"
-#include "q4t/server/live_decision_items.h"
+#include "q4t/server/live_decision_delegate.h"
 #include "q4t/server/live_responses_delegate.h"
 #include "q4t/server/realtime_chat_plan.h"
 
 namespace q4t::server {
 struct NativeLivePlan {
   io::Json settings, input;
+  ChatPlanConfig decision_catalog;
   RealtimeAudioFormat format;
 };
 Status MapLiveStartupHistory(const io::Json& input, io::Json* output,
@@ -19,7 +20,8 @@ Status MapLiveStartupHistory(const io::Json& input, io::Json* output,
 Status PlanNativeLiveClient(const io::Json& configuration,
                             const ChatPlanConfig& planning,
                             NativeLivePlan* output, ChatPlanError* error,
-                            bool responses_connected = false);
+                            bool responses_connected = false,
+                            bool decisions_connected = false);
 
 class NativeLiveClientBackend final : public ILiveSessionBackend {
  public:
@@ -27,7 +29,8 @@ class NativeLiveClientBackend final : public ILiveSessionBackend {
                           LiveClientContextCallbacks context,
                           uint32_t max_audio_seconds,
                           size_t message_bytes = kWebSocketMessageLimit,
-                          LiveResponsesNative responses = {});
+                          LiveResponsesNative responses = {},
+                          LiveDecisionNative decisions = {});
   ~NativeLiveClientBackend() override;
   ObjectReply Prepare(io::Json configuration, NativeLivePlan plan);
   void ResponsesReady(bool ready) noexcept override;
@@ -44,9 +47,12 @@ class NativeLiveClientBackend final : public ILiveSessionBackend {
   const std::string id_;
   const LiveClientContextCallbacks context_callbacks_;
   LiveResponsesNative responses_native_;
+  LiveDecisionNative decisions_native_;
+  const size_t message_bytes_;
   LiveFrontend frontend_;
   LiveDecisionItems decision_items_;
   std::unique_ptr<LiveResponsesDelegate> responses_;
+  std::unique_ptr<LiveDecisionDelegate> decisions_;
   std::unique_ptr<LiveClientContext> context_;
   io::Json configuration_;
   bool attempted_ = false, prepared_ = false, closing_ = false;

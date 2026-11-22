@@ -49,7 +49,7 @@ class LiveFrontend {
   ObjectReply PlayFixture(std::string_view audio,
                           std::string client_event = {});
   bool FixtureActive() const { return fixture_ != nullptr; }
-  ObjectReply Tick();
+  ObjectReply Tick(bool allow_start = true);
   ObjectReply Close();
   bool Drained() const;
   void Cancel() noexcept;

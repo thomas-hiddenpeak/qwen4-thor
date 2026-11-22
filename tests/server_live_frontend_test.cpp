@@ -303,6 +303,7 @@ struct NativeFixture {
   size_t creations = 0, publications = 0;
   bool fail_publish = false;
   LiveResponsesNative responses;
+  LiveDecisionNative decisions;
   ~NativeFixture() {
     if (session) {
       session->Cancel();
@@ -332,7 +333,8 @@ struct NativeFixture {
     callbacks.configuration.validate = [this](const auto& value, auto* error) {
       NativeLivePlan plan;
       return PlanNativeLiveClient(value, planning, &plan, error,
-                                  bool(responses.execute));
+                                  bool(responses.execute),
+                                  bool(decisions.execute));
     };
     callbacks.create = [this](const Json& configuration,
                               const LiveEventSink& emit,
@@ -341,7 +343,8 @@ struct NativeFixture {
       NativeLivePlan plan;
       ChatPlanError error;
       const auto status = PlanNativeLiveClient(configuration, planning, &plan,
-                                               &error, bool(responses.execute));
+                                               &error, bool(responses.execute),
+                                               bool(decisions.execute));
       if (!status)
         return Error(error.http_status, error.code, status.message());
       auto native = f.native;
@@ -367,7 +370,7 @@ struct NativeFixture {
       };
       auto selected = std::make_unique<NativeLiveClientBackend>(
           "live_bound", std::move(native), std::move(context), 30,
-          kWebSocketMessageLimit, responses);
+          kWebSocketMessageLimit, responses, decisions);
       auto* owner = selected.get();
       *out = std::move(selected);
       return owner->Prepare(configuration, std::move(plan));
@@ -1550,8 +1553,10 @@ Q4T_TEST(live_decision_items_recover_capacity_and_reject_uncertain_writes) {
 Q4T_TEST(live_decision_items_validate_tool_identifiers_and_image_sources) {
   NativeFixture f;
   Q4T_CHECK(f.Start());
-  auto call = Object({{"type", String("function_call")}, {"name", String("a.b")},
-                      {"call_id", String("call")}, {"arguments", String("{}")}});
+  auto call = Object({{"type", String("function_call")},
+                      {"name", String("a.b")},
+                      {"call_id", String("call")},
+                      {"arguments", String("{}")}});
   Q4T_CHECK(f.Send(DecisionAdd(call)));
   const std::string unicode(62, 'x');
   Set(&call, "call_id", String(unicode + "中文"));
@@ -1585,5 +1590,218 @@ Q4T_TEST(live_decision_items_validate_tool_identifiers_and_image_sources) {
   Q4T_CHECK(f.Send(DecisionAdd(result)) &&
             f.Count("decision.item.created") == 3);
   Q4T_CHECK(f.f.models == 0 && f.Close());
+  return true;
+}
+
+namespace {
+struct DecisionFixture {
+  std::atomic<size_t> starts{0}, releases{0};
+  std::atomic<bool> hold{false}, fail{false};
+  std::vector<Json> requests;
+  NativeFixture f;
+  DecisionFixture() {
+    f.decisions.acquire = f.f.native.acquire;
+    f.decisions.release = [this](const auto& control) {
+      f.f.requests.Remove(control);
+      ++releases;
+    };
+    f.decisions.execute = [this](const Json& request, const auto& control) {
+      requests.push_back(request);
+      ++starts;
+      while (hold && !control->Cancelled()) std::this_thread::sleep_for(1ms);
+      if (control->Cancelled())
+        return Error(409, control->Reason(), "cancelled");
+      if (fail) return Error(429, "client_rpm_exhausted", "Rate limit");
+      ObjectReply reply;
+      auto answers = Array();
+      for (const auto& q : request.Find("questions")->array)
+        answers.array.push_back(Object({{"type", String("predicate")},
+                                        {"name", *q.Find("name")},
+                                        {"probability", Number(1)}}));
+      if (!BuildDecisionResult(request, answers, {17, answers.array.size()},
+                               &reply.value))
+        return Error(500, "fixture_failed", "Decision fixture failed");
+      return reply;
+    };
+  }
+  Json Questions(std::string name) {
+    return Array({Object({{"name", String(std::move(name))},
+                          {"type", String("predicate")},
+                          {"instructions", String("Check project data")}})});
+  }
+  Json Config(bool delegate, bool triggers = false) {
+    auto result = Object(
+        {{"model", String("q4t-test")},
+         {"input",
+          Array({Object(
+              {{"role", String("user")},
+               {"content",
+                Array({Object({{"text", String("startup record")}})})}})})}});
+    if (delegate)
+      Set(&result, "delegation",
+          Object(
+              {{"type", String("decisions")},
+               {"acknowledgement_delay_ms", Number(600000)},
+               {"decisions", Object({{"model", String("q4t-test")},
+                                     {"questions", Questions("manual")}})}}));
+    if (triggers) {
+      auto list = Array();
+      for (const auto* name : {"input", "output"})
+        list.array.push_back(Object(
+            {{"type", String("decisions")},
+             {"event_type",
+              String(std::string("session.") + name + "_transcript.delta")},
+             {"decisions", Object({{"questions", Questions(name)}})}}));
+      Set(&result, "triggers", std::move(list));
+    }
+    return result;
+  }
+  bool Create(std::string id) {
+    return f.Send(Object({{"type", String("decision.create")},
+                          {"event_id", String(std::move(id))}}));
+  }
+};
+}  // namespace
+
+Q4T_TEST(
+    live_decision_manual_snapshots_match_client_id_and_support_linked_context) {
+  DecisionFixture d;
+  Q4T_CHECK(d.f.Start(d.Config(true)) && d.f.Count("session.started") == 1);
+  Q4T_CHECK(
+      d.f.Send(Object({{"type", String("decision.item.create")},
+                       {"item", Object({{"id", String("version")},
+                                        {"role", String("user")},
+                                        {"content", String("rev426")}})}})));
+  Q4T_CHECK(d.Create("review") && d.f.Count("session.delegation.created") == 1);
+  const auto event = d.f.Last("session.delegation.created");
+  const auto id = event.Find("delegation")->GetString("id");
+  Q4T_CHECK(event.GetString("client_event_id") == "review" &&
+            event.Find("delegation")->GetString("target") == "decisions" &&
+            !event.Find("delegation")->Has("response_id"));
+  Q4T_CHECK(d.f.Send(Object({{"type", String("decision.item.delete")},
+                             {"item_id", String("version")}})));
+  Q4T_CHECK(d.Create("review") && d.f.Last("error").Find("error")->GetString(
+                                      "code") == "duplicate_event_id");
+  Q4T_CHECK(d.f.Wait([&] { return d.releases == 1; }));
+  const auto decision = d.f.Last("decision.event");
+  Q4T_CHECK(decision.GetString("delegation_id") == id &&
+            decision.Find("trigger_id")->IsNull() &&
+            decision.Find("source_event_id")->IsNull() &&
+            !decision.Has("client_event_id") &&
+            decision.Find("event")
+                    ->Find("decision")
+                    ->Find("usage")
+                    ->GetInt("total_tokens") == 18);
+  Q4T_CHECK(d.requests[0].Find("input")->array.size() == 2 &&
+            d.requests[0].Find("input")->array.back().GetString("content") ==
+                "rev426" &&
+            d.f.f.models == 0);
+  Q4T_CHECK(d.f.Append("thinking", "reviewed", id) &&
+            d.f.Count("session.thinking.appended") == 1);
+  Q4T_CHECK(d.f.Append("thinking", "wrong", "foreign") &&
+            d.f.Count("error") == 2);
+  Q4T_CHECK(d.Create("next") && d.f.Close() && d.releases == 2 &&
+            d.requests[1].Find("input")->array.size() == 1);
+  return true;
+}
+
+Q4T_TEST(live_decision_triggers_link_to_actual_transcripts_in_client_mode) {
+  DecisionFixture d;
+  Q4T_CHECK(d.f.Start(d.Config(false, true)) && d.Create("wrong-mode") &&
+            d.f.Last("error").Find("error")->GetString("code") ==
+                "invalid_delegation_mode");
+  Q4T_CHECK(d.f.Tone() && d.f.Wait([&] { return d.releases == 2; }));
+  Q4T_CHECK(d.f.Count("session.delegation.created") == 0 &&
+            d.f.Count("decision.event") == 2);
+  std::set<std::string> ids;
+  for (const auto& event : d.f.events) {
+    if (event.GetString("type") != "decision.event") continue;
+    const auto source = d.f.Last(event.GetString("source_event_type"));
+    Q4T_CHECK(!source.IsNull() &&
+              event.GetString("source_event_id") ==
+                  source.GetString("event_id") &&
+              !event.GetString("trigger_id").empty() &&
+              ids.insert(event.GetString("trigger_id")).second &&
+              event.Find("delegation_id")->IsNull());
+  }
+  Q4T_CHECK(d.requests[0].Find("input")->array.back().GetString("content") ==
+                "read project" &&
+            d.requests[1].Find("input")->array.back().GetString("content") ==
+                "answer" &&
+            d.f.f.models == 1);
+  Q4T_CHECK(d.f.Close());
+  return true;
+}
+
+Q4T_TEST(live_decision_voice_handoff_never_reports_unconfirmed_results) {
+  DecisionFixture d;
+  d.f.f.delegate_next = true;
+  Q4T_CHECK(d.f.Start(d.Config(true)) && d.f.Tone() &&
+            d.f.Wait([&] { return d.releases == 1; }));
+  const auto created = d.f.Last("session.delegation.created");
+  Q4T_CHECK(created.Find("delegation")->GetString("target") == "decisions" &&
+            d.f.Last("decision.event").GetString("delegation_id") ==
+                created.Find("delegation")->GetString("id"));
+  Q4T_CHECK(d.f.f.models == 1 &&
+            d.f.Count("session.output_transcript.delta") == 0 &&
+            OutputJson(d.requests[0]).find("Read project resources") !=
+                std::string::npos);
+  Q4T_CHECK(d.f.Append("commentary", "The version is confirmed",
+                       created.Find("delegation")->GetString("id")) &&
+            d.f.Wait([&] { return d.f.f.model_released == 2; }) &&
+            d.f.Count("session.output_transcript.delta") == 1);
+  Q4T_CHECK(d.f.Close());
+  return true;
+}
+
+Q4T_TEST(live_decision_bad_update_or_failed_worker_preserves_healthy_session) {
+  DecisionFixture d;
+  Q4T_CHECK(d.f.Start(d.Config(true)));
+  auto patch = Object({{"type", String("decisions")},
+                       {"decisions", Object({{"questions", Array()}})}});
+  Q4T_CHECK(d.f.Send(Object({{"type", String("session.update")},
+                             {"session", Object({{"delegation", patch}})}})));
+  Q4T_CHECK(d.f.Count("error") == 1 && d.f.Count("session.updated") == 0);
+  d.fail = true;
+  Q4T_CHECK(d.Create("limited") && d.f.Wait([&] { return d.releases == 1; }));
+  Q4T_CHECK(d.f.Last("error").GetString("client_event_id") == "limited" &&
+            d.f.Last("error").Find("error")->GetString("code") ==
+                "client_rpm_exhausted" &&
+            d.f.Count("decision.event") == 0);
+  d.fail = false;
+  Q4T_CHECK(d.Create("retry_new") &&
+            d.f.Wait([&] { return d.releases == 2; }) &&
+            d.f.Count("decision.event") == 1 && d.f.Close());
+  return true;
+}
+
+Q4T_TEST(
+    live_decision_disconnect_releases_running_work_and_discards_pending_jobs) {
+  DecisionFixture d;
+  d.hold = true;
+  Q4T_CHECK(d.f.Start(d.Config(true)) && d.Create("first") &&
+            d.f.Wait([&] { return d.starts == 1; }));
+  for (auto id : {"two", "three", "four", "overflow"}) Q4T_CHECK(d.Create(id));
+  Q4T_CHECK(d.f.Last("error").Find("error")->GetString("code") ==
+            "live_decision_capacity");
+  d.f.session->Cancel();
+  d.f.session->Join();
+  Q4T_CHECK(d.starts == 1 && d.releases == 1 &&
+            d.f.Count("decision.event") == 0 && !d.f.session->Finalized());
+  return true;
+}
+
+Q4T_TEST(live_decision_serializes_same_session_voice_and_classification_work) {
+  DecisionFixture d;
+  d.hold = true;
+  Q4T_CHECK(d.f.Start(d.Config(true)) && d.Create("first") &&
+            d.f.Wait([&] { return d.starts == 1; }));
+  Q4T_CHECK(d.f.Append("commentary", "Speak after evaluation") &&
+            d.f.f.models == 0);
+  for (int i = 0; i < 5; ++i) Q4T_CHECK(d.f.session->Tick() && d.f.Read());
+  Q4T_CHECK(d.f.f.models == 0);
+  d.hold = false;
+  Q4T_CHECK(d.f.Wait([&] { return d.f.f.model_released == 1; }) &&
+            d.releases == 1 && d.f.Count("error") == 0 && d.f.Close());
   return true;
 }

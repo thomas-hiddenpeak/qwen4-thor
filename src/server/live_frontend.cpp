@@ -404,13 +404,13 @@ ObjectReply LiveFrontend::Fail(const ObjectReply& reply) {
   DropQueued();
   return reply;
 }
-ObjectReply LiveFrontend::Tick() {
+ObjectReply LiveFrontend::Tick(bool allow_start) {
   if (!prepared_ || cancelled_ || failed_) return Unavailable();
   try {
     auto reply = AdvanceWork();
-    if (Accepted(reply)) reply = input_.Tick(!fixture_);
+    if (Accepted(reply)) reply = input_.Tick(allow_start && !fixture_);
     if (Accepted(reply)) reply = AdvanceFixture();
-    if (Accepted(reply)) reply = StartWork();
+    if (Accepted(reply) && allow_start) reply = StartWork();
     return Accepted(reply) ? ObjectReply{} : Fail(reply);
   } catch (...) {
     return Fail(Error(503, "live_frontend_failed", "Frontend callback failed"));

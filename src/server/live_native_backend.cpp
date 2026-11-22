@@ -19,15 +19,17 @@ ObjectReply Missing(std::string param, std::string message) {
 ObjectReply Unavailable() {
   return Missing("session", "Native Live backend is not active");
 }
-ObjectReply Connected(const Json& configuration, bool responses) {
+ObjectReply Connected(const Json& configuration, bool responses,
+                      bool decisions) {
   const auto* delegation = configuration.Find("delegation");
   const auto* triggers = configuration.GetArray("triggers");
   if (!delegation ||
       (delegation->GetString("type") != "client" &&
-       (!responses || delegation->GetString("type") != "responses")))
+       (!responses || delegation->GetString("type") != "responses") &&
+       (!decisions || delegation->GetString("type") != "decisions")))
     return Missing("session.delegation",
                    "Requested native delegation processor is not connected");
-  if (!triggers || !triggers->array.empty())
+  if (!triggers || (!triggers->array.empty() && !decisions))
     return Missing("session.triggers",
                    "Native Decisions trigger processor is not connected");
   if (configuration.GetBool("store"))
@@ -87,19 +89,28 @@ Status MapLiveStartupHistory(const Json& input, Json* output,
 Status PlanNativeLiveClient(const Json& configuration,
                             const ChatPlanConfig& planning,
                             NativeLivePlan* output, ChatPlanError* error,
-                            bool responses_connected) {
+                            bool responses_connected,
+                            bool decisions_connected) {
   if (!output || !error) return Status::Fail("Missing native Live plan owner");
   *error = {};
   auto status = ValidateLiveWireShape(configuration, LiveShape::kSessionStart,
                                       error, "session");
   if (!status) return status;
-  const auto connected = Connected(configuration, responses_connected);
+  const auto connected =
+      Connected(configuration, responses_connected, decisions_connected);
   if (!Accepted(connected)) {
     *error = {connected.code, connected.value.GetString("param"),
               connected.http_status};
     return Status::Fail(connected.message);
   }
   NativeLivePlan next;
+  if (decisions_connected) {
+    status = CheckLiveDecisionSettings(configuration, planning, error);
+    if (!status) return status;
+    next.decision_catalog.request_deadline_ms = planning.request_deadline_ms;
+    next.decision_catalog.model = planning.model;
+    next.decision_catalog.model_aliases = planning.model_aliases;
+  }
   next.settings =
       DefaultRealtimeChatSettings(planning, configuration.GetString("model"));
   const auto* instructions = configuration.Find("instructions");
@@ -146,10 +157,13 @@ Status PlanNativeLiveClient(const Json& configuration,
 NativeLiveClientBackend::NativeLiveClientBackend(
     std::string id, LiveFrontendNative native,
     LiveClientContextCallbacks context, uint32_t max_audio_seconds,
-    size_t message_bytes, LiveResponsesNative responses)
+    size_t message_bytes, LiveResponsesNative responses,
+    LiveDecisionNative decisions)
     : id_(std::move(id)),
       context_callbacks_(std::move(context)),
       responses_native_(std::move(responses)),
+      decisions_native_(std::move(decisions)),
+      message_bytes_(message_bytes),
       frontend_(id_, Bind(std::move(native)), max_audio_seconds,
                 message_bytes) {}
 NativeLiveClientBackend::~NativeLiveClientBackend() {
@@ -157,6 +171,20 @@ NativeLiveClientBackend::~NativeLiveClientBackend() {
   Join();
 }
 LiveFrontendNative NativeLiveClientBackend::Bind(LiveFrontendNative native) {
+  if (decisions_native_.Bound() && native.emit) {
+    native.emit = [this, emit = std::move(native.emit)](Json event) {
+      const auto type = event.GetString("type");
+      if (!decisions_ || (type != "session.input_transcript.delta" &&
+                          type != "session.output_transcript.delta"))
+        return emit(std::move(event));
+      auto delta = event.GetString("delta");
+      const auto begin = event.GetInt("start_ms");
+      auto reply = emit(std::move(event));
+      return Accepted(reply) ? decisions_->Transcript(type, std::move(delta),
+                                                      reply.value.str, begin)
+                             : reply;
+    };
+  }
   native.fixture_ready = [this] {
     return !responses_ || !responses_->Running();
   };
@@ -172,10 +200,27 @@ ObjectReply NativeLiveClientBackend::Prepare(Json configuration,
   attempted_ = true;
   const bool bound = responses_native_.execute && responses_native_.acquire &&
                      responses_native_.release;
-  auto reply = Connected(configuration, bound);
+  auto reply = Connected(configuration, bound, decisions_native_.Bound());
   if (!Accepted(reply)) return reply;
   auto callbacks = context_callbacks_;
-  if (configuration.Find("delegation")->GetString("type") == "responses") {
+  const auto mode = configuration.Find("delegation")->GetString("type");
+  if (decisions_native_.Bound()) {
+    decisions_ = std::make_unique<LiveDecisionDelegate>(
+        std::move(decisions_native_), callbacks.emit,
+        std::move(plan.decision_catalog), decision_items_,
+        *configuration.Find("input"), message_bytes_);
+    decisions_->Settings(configuration);
+    if (mode == "decisions") {
+      callbacks.decision_owner = [this](std::string_view id) {
+        return decisions_->Known(id);
+      };
+      callbacks.delegate = [this](std::string id, Json task) {
+        return decisions_->Delegate(std::move(id), std::move(task),
+                                    frontend_.Timeline() / 48);
+      };
+    }
+  }
+  if (mode == "responses") {
     responses_ = std::make_unique<LiveResponsesDelegate>(
         std::move(responses_native_), callbacks.emit, [this](std::string text) {
           return context_->SpeakBackend(std::move(text));
@@ -205,7 +250,7 @@ void NativeLiveClientBackend::ResponsesReady(bool ready) noexcept {
 ObjectReply NativeLiveClientBackend::Update(const Json& configuration) {
   if (!prepared_ || closing_ || cancelled_ || failed_) return Unavailable();
   auto next = configuration;
-  auto reply = Connected(next, bool(responses_));
+  auto reply = Connected(next, bool(responses_), bool(decisions_));
   if (!Accepted(reply)) return reply;
   // The public Live configuration transaction already protects immutable
   // startup fields. Preserve appended private instructions across updates.
@@ -222,6 +267,7 @@ ObjectReply NativeLiveClientBackend::Update(const Json& configuration) {
   if (Accepted(reply)) {
     if (responses_)
       responses_->Settings(*next.Find("delegation")->Find("responses"));
+    if (decisions_) decisions_->Settings(next);
     configuration_ = std::move(next);
   }
   return reply;
@@ -229,8 +275,14 @@ ObjectReply NativeLiveClientBackend::Update(const Json& configuration) {
 ObjectReply NativeLiveClientBackend::Command(const Json& event) {
   if (!prepared_ || closing_ || cancelled_ || failed_) return Unavailable();
   const auto type = event.GetString("type");
-  if (type == "decision.item.create" || type == "decision.item.delete")
-    return decision_items_.Apply(event, context_callbacks_.emit);
+  if (type == "decision.item.create" || type == "decision.item.delete") {
+    auto reply = decision_items_.Apply(event, context_callbacks_.emit);
+    if (Accepted(reply) && decisions_) decisions_->InputsChanged();
+    return reply;
+  }
+  if (type == "decision.create" && decisions_)
+    return decisions_->Create(event.GetString("event_id"),
+                              frontend_.Timeline() / 48);
   if (type == "session.input_audio.append")
     return frontend_.AppendAudio(event.GetString("audio"),
                                  event.GetString("event_id"));
@@ -259,7 +311,6 @@ ObjectReply NativeLiveClientBackend::Command(const Json& event) {
   if (type == "response.create" || type == "response.item.create")
     return Error(400, "invalid_delegation_mode",
                  "Response commands require Responses delegation");
-  // Decisions execution remains a required implementation group.
   return Missing(
       "type", "The requested native Live command processor is not connected");
 }
@@ -267,7 +318,12 @@ ObjectReply NativeLiveClientBackend::Tick() {
   if (!prepared_ || cancelled_ || failed_) return Unavailable();
   auto reply =
       responses_ ? responses_->Tick(frontend_.Timeline() / 48) : ObjectReply{};
-  if (Accepted(reply)) reply = frontend_.Tick();
+  if (Accepted(reply))
+    reply = frontend_.Tick(!decisions_ || !decisions_->Executing());
+  if (Accepted(reply) && decisions_)
+    reply = decisions_->Tick(
+        !frontend_.Generating() && !frontend_.InputExecuting() &&
+        !frontend_.QueuedTurns() && (!responses_ || !responses_->Running()));
   if (Accepted(reply) && !closing_ && !frontend_.FixtureActive())
     reply = context_->Tick();
   if (!Accepted(reply)) {
@@ -283,22 +339,26 @@ ObjectReply NativeLiveClientBackend::Close() {
   if (Accepted(reply)) {
     closing_ = true;
     if (responses_) responses_->Close();
+    if (decisions_) decisions_->Close();
     context_->Close();
   }
   return reply;
 }
 bool NativeLiveClientBackend::Drained() const {
   return prepared_ && closing_ && !cancelled_ && !failed_ &&
-         (!responses_ || !responses_->Running()) && frontend_.Drained();
+         (!responses_ || !responses_->Running()) &&
+         (!decisions_ || !decisions_->Running()) && frontend_.Drained();
 }
 void NativeLiveClientBackend::Cancel() noexcept {
   cancelled_ = true;
   if (responses_) responses_->Interrupt();
+  if (decisions_) decisions_->Cancel();
   if (context_) context_->Close();
   frontend_.Cancel();
 }
 void NativeLiveClientBackend::Join() noexcept {
   if (responses_) responses_->Join();
+  if (decisions_) decisions_->Join();
   frontend_.Join();
 }
 }  // namespace q4t::server

@@ -7,7 +7,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-原生 `POST /v1/decisions` 已通过真实 OpenAI SDK 多题、正反判断、缓存与计量短验。第二次请求命中 1,454 个共享 tokens，三个请求结算 3,660 tokens，后续 Chat 回答 42。27 项 CPU 检查通过，默认仍为 rev426。正在接入 Live 的 Decisions 委派及转录触发。[业务证据与原失败](evidence/serve-decisions-http-20261123/README.md)。
+Live 显式与语音委派、双向转录触发已通过真实 SDK 短验，四次分类和两次语音模型执行共用同一客户端的单个数据名额。项目查询、语音 rev426、正常关闭及后续 Chat=42 均通过。继续可选录制、内容下载、旁路与 fork。[主连接验收](evidence/serve-live-decisions-20261123/README.md)。
+
+原生 `POST /v1/decisions` 已通过真实 OpenAI SDK 多题、正反判断、缓存与计量短验。第二次请求命中 1,454 个共享 tokens，三个请求结算 3,660 tokens，后续 Chat 回答 42。27 项 CPU 检查通过，默认仍为 rev426。[业务证据与原失败](evidence/serve-decisions-http-20261123/README.md)。
 
 Decisions 标准请求与答案合同通过 14 项 CPU 检查，包含工具输入归属、强类型选择、有序评分、单题拒答和真实用量字段。模型取分、HTTP 执行及 Live 自动触发继续。[合同与验证](evidence/serve-decision-plan-cpu-20261123/README.md)。
 
