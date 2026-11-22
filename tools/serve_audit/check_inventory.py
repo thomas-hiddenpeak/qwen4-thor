@@ -369,6 +369,8 @@ def current_surface(root):
                    set(root.glob("src/text/**/*.cpp")) |
                    set(root.glob("include/q4t/text/**/*.h")) |
                    set(root.glob("src/service/**/*.cpp")) |
+                   set(root.glob("src/service/**/*.h")) |
+                   {root / "cmake/NativeSip.cmake", root / "cmake/NativeWebRTC.cmake"} |
                    set(root.glob("include/q4t/service/**/*.h")) |
                    set(root.glob("src/audio/**/*.cpp")) |
                    set(root.glob("src/audio/**/*.cu")) |

@@ -16327,6 +16327,7 @@
     "sip_invite_evidence": "evidence/serve-live-sip-invite-20261123/README.md",
     "sip_incoming_webhook_evidence": "evidence/serve-live-sip-webhook-20261123/README.md",
     "sip_reject_business_evidence": "evidence/serve-live-sip-reject-20261123/README.md",
-    "realtime_sip_reject_business_evidence": "evidence/serve-realtime-sip-reject-20261123/README.md"
+    "realtime_sip_reject_business_evidence": "evidence/serve-realtime-sip-reject-20261123/README.md",
+    "sip_secure_media_evidence": "evidence/serve-sip-secure-media-20261123/README.md"
   }
 }

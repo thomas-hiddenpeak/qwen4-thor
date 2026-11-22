@@ -1,0 +1,16 @@
+test_absent_codec_plugins_are_local_media_failure (tools.serve_live.test_sip_media.MediaTest.test_absent_codec_plugins_are_local_media_failure) ... ok
+test_declines_cleartext_bad_key_and_unapproved_media_address (tools.serve_live.test_sip_media.MediaTest.test_declines_cleartext_bad_key_and_unapproved_media_address) ... ok
+test_early_audio_wrong_source_key_and_replayed_packets_remain_silent (tools.serve_live.test_sip_media.MediaTest.test_early_audio_wrong_source_key_and_replayed_packets_remain_silent) ... /home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_media.py:65: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  import audioop
+ok
+test_final_audio_burst_drains_before_ack (tools.serve_live.test_sip_media.MediaTest.test_final_audio_burst_drains_before_ack) ... ok
+test_ipv6_static_mapping_and_declined_video_line (tools.serve_live.test_sip_media.MediaTest.test_ipv6_static_mapping_and_declined_video_line) ... ok
+test_opus_with_separate_rtcp (tools.serve_live.test_sip_media.MediaTest.test_opus_with_separate_rtcp) ... ok
+test_pcma_with_multiplexed_rtcp (tools.serve_live.test_sip_media.MediaTest.test_pcma_with_multiplexed_rtcp) ... ok
+test_pcmu_with_separate_rtcp (tools.serve_live.test_sip_media.MediaTest.test_pcmu_with_separate_rtcp) ... ok
+test_remote_sendonly_offer_has_recvonly_answer (tools.serve_live.test_sip_media.MediaTest.test_remote_sendonly_offer_has_recvonly_answer) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 3.488s
+
+OK

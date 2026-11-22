@@ -2,21 +2,12 @@
 
 #include <gst/webrtc/webrtc.h>
 
+#include "live_rtp_codec.h"
+
 #include <string>
 #include <string_view>
 
 namespace q4t::service {
-// Negotiated RTP mapping, never interpolated from untrusted SDP text.
-struct LiveRtpCodec {
-  int payload = -1;
-  const char* name = nullptr;
-  const char* encoder = nullptr;
-  const char* decoder = nullptr;
-  const char* pay = nullptr;
-  const char* depay = nullptr;
-  int rate = 0;
-};
-
 GstWebRTCSessionDescription* ParseLiveOffer(std::string_view text,
                                             LiveRtpCodec* codec,
                                             std::string* fingerprint);

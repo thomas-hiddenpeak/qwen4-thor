@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+独立电话媒体进程已在 Thor 上完成 Opus、PCMU、PCMA 双向加密语音和加密 RTCP 回执。9 项回环检查通过，修复关闭竞态后三种编码器共 24 次排空通过。接下来把安全媒体连接到中继接听、远端 ACK、挂断和应用会话。[验收与原失败](evidence/serve-sip-secure-media-20261123/README.md)。
+
 同一入站电话现可按部署订阅 Live、Realtime 或两种签名通知。两个独立操作 ID 共用最终回执；官方 Realtime SDK 省略拒接参数时，SIP 对端实收 603、ACK 后 HTTP 200，随后使用原 Live ID 得到 404。36.08 秒短验、后续 Chat=42 及资源回收通过。下一项接听、双向安全媒体和已接通电话控制。[真实 SDK 和 CPU 竞争验收](evidence/serve-realtime-sip-reject-20261123/README.md)。
 
 原生 serve 已接入按客户绑定的电话中继。签名回调通过官方 SDK 发出拒接，另一客户得到 404，所属客户在电话对端确认 486 后得到空正文 200。首轮暴露通知进程随启动线程退出的问题，CPU 复现修复后，第二轮 GPU 短验 37.54 秒通过，随后 Chat 返回 42。默认 rev426，后续继续 Realtime 电话控制、接听与安全媒体及组合发行。[实测与原失败](evidence/serve-live-sip-reject-20261123/README.md)。

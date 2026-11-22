@@ -162,3 +162,5 @@ L05 已从真实来电投递 `live.transport.incoming` 签名 HTTPS 通知。接
 同一中继也可接收 Realtime 来电通知。给上例的 `webhook` 增加 `"event_types": ["live.transport.incoming", "realtime.call.incoming"]` 即可订阅两种事件；仅列其中一种则只投递该事件。旧配置省略此字段时沿用 Live 通知。两种事件带有独立的签名事件 ID、相同的来电头字段和原始创建时间。Live 事件给出 `data.session_id`，Realtime 事件给出 `data.call_id`。接收端将对应字段原样传回各自的接口。
 
 在 Realtime 客户端调用 `client.realtime.calls.reject(event.data.call_id)` 时，中继默认发送 603 Decline；也可显式提交 `{status_code: 486}`。Live 与 Realtime 共享同一 SIP 事务的最终处置和远端 ACK。已经从任一入口发出最终答复时，另一入口的处置返回 409；事务确认、注销后两个 ID 都返回 404。
+
+电话媒体已支持 RTP/SAVP、SDES 的 AES_CM_128_HMAC_SHA1_80、Opus 和两种 G.711 编码，分别协商收发密钥和 RTCP 端口。已用独立电话对端验证双向音频、远端回执和挂断排空。HTTP 接听与模型会话仍需连通验收。[媒体结果](evidence/serve-sip-secure-media-20261123/README.md)、[SDP 协商](https://www.rfc-editor.org/rfc/rfc3264)、[SDES](https://www.rfc-editor.org/rfc/rfc4568)。

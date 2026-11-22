@@ -32,35 +32,6 @@ std::string Fingerprint(Attribute attribute) {
   return result;
 }
 
-bool SelectAudio(const GstSDPMedia* media, LiveRtpCodec* selected) {
-  constexpr LiveRtpCodec codecs[] = {
-      {-1, "OPUS", "opusenc", "opusdec", "rtpopuspay", "rtpopusdepay", 48000},
-      {-1, "PCMU", "mulawenc", "mulawdec", "rtppcmupay", "rtppcmudepay", 8000},
-      {-1, "PCMA", "alawenc", "alawdec", "rtppcmapay", "rtppcmadepay", 8000}};
-  for (const auto& codec : codecs) {
-    for (guint i = 0; i < gst_sdp_media_formats_len(media); ++i) {
-      const char* format = gst_sdp_media_get_format(media, i);
-      int pt = -1;
-      const char* end = format + std::strlen(format);
-      auto parsed = std::from_chars(format, end, pt);
-      if (parsed.ec != std::errc{} || parsed.ptr != end || pt < 0 || pt > 127)
-        return false;
-      g_autoptr(GstCaps) caps = gst_sdp_media_get_caps_from_media(media, pt);
-      if (!caps || gst_caps_is_empty(caps)) continue;
-      const auto* shape = gst_caps_get_structure(caps, 0);
-      const auto* name = gst_structure_get_string(shape, "encoding-name");
-      int rate = 0;
-      if (name && g_ascii_strcasecmp(name, codec.name) == 0 &&
-          gst_structure_get_int(shape, "clock-rate", &rate) &&
-          rate == codec.rate) {
-        *selected = codec;
-        selected->payload = pt;
-        return true;
-      }
-    }
-  }
-  return false;
-}
 }  // namespace
 
 bool KeepLocalIceCandidates(GstSDPMessage* sdp, std::string_view address) {
@@ -131,7 +102,7 @@ GstWebRTCSessionDescription* ParseLiveOffer(std::string_view text,
     expected = std::move(pin);
     const auto* protocol = gst_sdp_media_get_proto(media);
     if (Match(gst_sdp_media_get_media(media), "audio") && !audio &&
-        Match(protocol, "UDP/TLS/RTP/SAVPF") && SelectAudio(media, &selected)) {
+        Match(protocol, "UDP/TLS/RTP/SAVPF") && SelectLiveRtpAudio(media, &selected)) {
       audio = true;
     } else if (Match(gst_sdp_media_get_media(media), "application") && !data &&
                Match(protocol, "UDP/DTLS/SCTP") &&
