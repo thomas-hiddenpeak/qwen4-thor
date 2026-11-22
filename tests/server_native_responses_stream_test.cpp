@@ -1,4 +1,6 @@
 #include "q4t/server/native_responses_stream.h"
+#include "q4t/server/live_responses_turn.h"
+#include "../src/server/responses_json.h"
 
 #include <sys/socket.h>
 #include <unistd.h>
@@ -326,5 +328,219 @@ Q4T_TEST(native_responses_raw_binary_and_duplicate_owners_are_rejected) {
             !SendSimple(-1, 200, "OK", "{}", "application/json"));
   capture.Seal();
   Q4T_CHECK(capture.Failed() && finite.Failed() && !capture.Complete());
+  return true;
+}
+
+Q4T_TEST(
+    live_responses_turn_wraps_actual_stream_and_continues_once_after_join) {
+  Fixture fixture;
+  std::vector<Json> events;
+  LiveResponsesTurn turn("delegation_real", "start", [&](Json value) {
+    events.push_back(std::move(value));
+    return ObjectReply{};
+  });
+  const auto result = Parse(
+      R"({"type":"function_call_output","call_id":"call_lookup","output":"rev426"})");
+  Q4T_CHECK(!turn.Result(result).ok());
+  NativeResponsesStream stream(
+      [&](const Json& native) { return turn.Event(native, 150); });
+  Q4T_CHECK(stream.Begin() && stream.Append(fixture.begin) &&
+            stream.Append(fixture.delta));
+  Q4T_CHECK(!turn.Result(result).ok());
+  Q4T_CHECK(stream.Append(fixture.end));
+  Q4T_CHECK(turn.RequestContinuation("early").code ==
+            "function_call_outputs_required");
+  Q4T_CHECK(
+      !turn
+           .Result(Parse(
+               R"({"type":"function_call_output","call_id":"another","output":"x"})"))
+           .ok());
+  Q4T_CHECK(
+      !turn
+           .Result(Parse(
+               R"({"type":"custom_tool_call_output","call_id":"call_lookup","output":"x"})"))
+           .ok());
+  Q4T_CHECK(turn.Result(result).ok() && !turn.Result(result).ok());
+  Q4T_CHECK(turn.RequestContinuation("resume").ok() &&
+            !turn.RequestContinuation("duplicate").ok());
+  Q4T_CHECK(!turn.TakeContinuation());
+  const auto& created = events.at(0);
+  Q4T_CHECK(created.GetString("type") == "session.delegation.created" &&
+            created.GetInt("offset_ms") == 150 &&
+            created.Find("delegation")->GetString("response_id") ==
+                "resp_native_fixture" &&
+            created.Find("delegation")->GetString("target") == "responses");
+  for (size_t i = 1; i < events.size(); ++i) {
+    const auto& wrapped = events[i];
+    Q4T_CHECK(wrapped.GetString("type") == "response.event" &&
+              wrapped.GetString("client_event_id") == "start" &&
+              wrapped.GetString("delegation_id") == "delegation_real");
+    if (const auto* response = wrapped.Find("event")->Find("response")) {
+      Q4T_CHECK(response->Find("instructions")->IsNull() &&
+                response->GetArray("tools")->array.empty() &&
+                response->GetArray("output")->array.empty() &&
+                !response->Has("input"));
+    }
+  }
+  stream.Seal();
+  Q4T_CHECK(stream.Complete() && turn.Finish(stream.Response()).ok());
+  Q4T_CHECK(turn.TakeContinuation() == std::optional<std::string>("resume") &&
+            !turn.TakeContinuation());
+  auto history = Parse("[]");
+  Q4T_CHECK(turn.AppendHistory(&history).ok() && history.array.size() == 3 &&
+            history.array[1].GetString("call_id") == "call_lookup" &&
+            history.array[2].GetString("output") == "rev426");
+  return true;
+}
+
+namespace {
+using namespace q4t::server::responses_detail;
+Json Created() {
+  return Parse(
+      R"({"type":"response.created","response":{"id":"resp_cpu","status":"in_progress",
+    "object":"response","input":"private","output":[],"tools":[]}})");
+}
+Json Done(size_t index, Json item) {
+  return Object({{"type", String("response.output_item.done")},
+                 {"output_index", Number(index)},
+                 {"item", std::move(item)}});
+}
+Json Function(const char* id) {
+  return Object({{"type", String("function_call")},
+                 {"id", String(std::string("fc_") + id)},
+                 {"name", String("lookup")},
+                 {"call_id", String(id)},
+                 {"arguments", String("{}")},
+                 {"status", String("completed")}});
+}
+Json Answer(const char* id) {
+  return Object({{"type", String("function_call_output")},
+                 {"call_id", String(id)},
+                 {"output", String("value")}});
+}
+}  // namespace
+Q4T_TEST(live_responses_turn_later_calls_invalidate_only_queued_continuation) {
+  std::vector<Json> events;
+  LiveResponsesTurn turn("delegation_1", "primary", [&](Json value) {
+    events.push_back(std::move(value));
+    return ObjectReply{};
+  });
+  Q4T_CHECK(turn.Event(Created(), 1).ok() &&
+            !events.back().Find("event")->Find("response")->Has("input"));
+  Q4T_CHECK(turn.Event(Done(0, Function("a")), 2).ok() &&
+            turn.Result(Answer("a")).ok());
+  Q4T_CHECK(turn.RequestContinuation("early").ok());
+  Q4T_CHECK(turn.Event(Done(1, Function("b")), 2).ok());
+  const auto error = events[events.size() - 2];
+  Q4T_CHECK(error.GetString("type") == "error" &&
+            error.GetString("client_event_id") == "early" &&
+            error.Find("error")->GetString("client_event_id") == "early" &&
+            error.Find("error")->GetString("code") ==
+                "function_call_outputs_required");
+  Q4T_CHECK(turn.Result(Answer("b")).ok());
+  auto response = Object({{"id", String("resp_cpu")},
+                          {"status", String("completed")},
+                          {"output", Array({Function("a"), Function("b")})}});
+  Q4T_CHECK(turn.Event(Object({{"type", String("response.completed")},
+                               {"response", response}}),
+                       2)
+                .ok());
+  Q4T_CHECK(turn.Finish(response).ok() && !turn.TakeContinuation());
+  Q4T_CHECK(turn.RequestContinuation("later").ok() &&
+            turn.TakeContinuation() == std::optional<std::string>("later"));
+  return true;
+}
+
+Q4T_TEST(live_responses_turn_binds_program_parent_and_mcp_approval_separately) {
+  LiveResponsesTurn turn("delegation_2", "",
+                         [](Json) { return ObjectReply{}; });
+  Q4T_CHECK(turn.Event(Created(), 0).ok());
+  auto call = Function("a");
+  Set(&call, "caller", Parse(R"({"type":"program","caller_id":"prog_a"})"));
+  Q4T_CHECK(turn.Event(Done(0, call), 0).ok());
+  auto answer = Answer("a");
+  Q4T_CHECK(!turn.Result(answer).ok());
+  Set(&answer, "caller", Parse(R"({"type":"program","caller_id":"prog_b"})"));
+  Q4T_CHECK(!turn.Result(answer).ok());
+  Set(&answer, "caller", *call.Find("caller"));
+  Q4T_CHECK(turn.Result(answer).ok());
+  Q4T_CHECK(
+      turn.Event(
+              Done(
+                  1,
+                  Parse(
+                      R"({"type":"mcp_approval_request","id":"mcpr_1","name":"read","server_label":"docs","arguments":"{}"})")),
+              0)
+          .ok());
+  Q4T_CHECK(turn.RequestContinuation("early").code == "tool_outputs_required");
+  Q4T_CHECK(!turn.Result(Answer("mcpr_1")).ok());
+  Q4T_CHECK(
+      turn
+          .Result(Parse(
+              R"({"type":"mcp_approval_response","approval_request_id":"mcpr_1","approve":false})"))
+          .ok());
+  Q4T_CHECK(!turn.WaitingForResults());
+  return true;
+}
+
+Q4T_TEST(live_responses_turn_rejects_unconfirmed_terminal_or_delivery) {
+  LiveResponsesTurn turn("delegation_3", "",
+                         [](Json) { return ObjectReply{}; });
+  Q4T_CHECK(turn.Event(Created(), 0).ok() &&
+            turn.Event(Done(0, Function("a")), 0).ok());
+  Q4T_CHECK(turn.Result(Answer("a")).ok() &&
+            turn.RequestContinuation("queued").ok());
+  auto response = Object({{"id", String("resp_cpu")},
+                          {"status", String("completed")},
+                          {"output", Array({Function("b")})}});
+  Q4T_CHECK(turn.Event(Object({{"type", String("response.completed")},
+                               {"response", response}}),
+                       2)
+                .ok());
+  Q4T_CHECK(!turn.Finish(response).ok() && !turn.TakeContinuation());
+  auto original = Parse("[]");
+  Q4T_CHECK(!turn.AppendHistory(&original).ok() && original.array.empty());
+  size_t count = 0;
+  LiveResponsesTurn other("delegation_x", "", [&](Json) {
+    ++count;
+    ObjectReply uncertain;
+    uncertain.commit_unknown = true;
+    return uncertain;
+  });
+  Q4T_CHECK(other.Event(Created(), 0).commit_unknown);
+  Q4T_CHECK(!other.Event(Created(), 0).ok() && count == 1);
+  return true;
+}
+
+Q4T_TEST(live_responses_turn_distinguishes_hosted_tools_and_matching_checks) {
+  LiveResponsesTurn turn("delegation_4", "",
+                         [](Json) { return ObjectReply{}; });
+  Q4T_CHECK(turn.Event(Created(), 0).ok());
+  auto search =
+      Parse(R"({"type":"tool_search_call","id":"ts_1","call_id":"search",
+     "execution":"server","arguments":{},"status":"completed"})");
+  Q4T_CHECK(turn.Event(Done(0, search), 0).ok() && !turn.HasCalls());
+  Set(&search, "id", String("ts_2"));
+  Set(&search, "execution", String("client"));
+  Set(&search, "call_id", String("search2"));
+  Q4T_CHECK(turn.Event(Done(1, search), 0).ok() && turn.WaitingForResults());
+  auto output = Parse(
+      R"({"type":"tool_search_output","execution":"server","call_id":"search2","tools":[]})");
+  Q4T_CHECK(!turn.Result(output).ok());
+  Set(&output, "execution", String("client"));
+  Q4T_CHECK(turn.Result(output).ok() && !turn.WaitingForResults());
+  auto computer = Parse(R"({"type":"computer_call","id":"cu_1","call_id":"ui",
+     "pending_safety_checks":[{"id":"chk_a"},{"id":"chk_b"}],
+     "action":{"type":"screenshot"},"status":"completed"})");
+  Q4T_CHECK(turn.Event(Done(2, computer), 0).ok());
+  auto screen = Parse(R"({"type":"computer_call_output","call_id":"ui",
+     "output":{"type":"computer_screenshot","file_id":"file_fixture"}})");
+  Q4T_CHECK(!turn.Result(screen).ok());
+  Set(&screen, "acknowledged_safety_checks",
+      Parse(R"([{"id":"chk_a"},{"id":"chk_a"}])"));
+  Q4T_CHECK(!turn.Result(screen).ok());
+  Set(&screen, "acknowledged_safety_checks",
+      Parse(R"([{"id":"chk_b"},{"id":"chk_a"}])"));
+  Q4T_CHECK(turn.Result(screen).ok() && !turn.WaitingForResults());
   return true;
 }

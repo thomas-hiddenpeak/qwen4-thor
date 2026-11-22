@@ -2370,8 +2370,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "080664bfe6e2b12975d801b0f24f89e3b5e2df14b7653476012423a5cdeaa694",
-    "cmake/ChatProtocolIdentity.cmake": "1d6c254f22783a7fe536c4ecb2b691ca2ab3233fb9709dbb93fbfc4047e6a824",
+    "CMakeLists.txt": "023775d8c73b2ac742df549d660f296c6a081aa5a6047b7fa265ae0d7c1ce6b6",
+    "cmake/ChatProtocolIdentity.cmake": "244b8a2f031c1fdc3d8a48791f334485228ef3ea652f5143714f59a25ed8b4bf",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3498,7 +3498,9 @@
     "include/q4t/server/live_responses_settings.h": "28e5d995bb82cf8479045631a312b8ec1f57a26e0703859e46400ecb4a3a9132",
     "include/q4t/server/live_responses_validation.h": "5e06554a1b348ad7deb21e8d11d236d2603a485c2b0733caffb23d9266eb8634",
     "src/server/live_responses_settings.cpp": "4d7a927278806578c4659744a74d955e2f4c496a01c9a402616bf27676da214c",
-    "src/server/live_responses_validation.cpp": "9a6f4be3ced057a3cdce2498fee335716c3c1de91ac130d41ad0962830484904"
+    "src/server/live_responses_validation.cpp": "9a6f4be3ced057a3cdce2498fee335716c3c1de91ac130d41ad0962830484904",
+    "include/q4t/server/live_responses_turn.h": "f02a6b980b348d355ba0e91b1dc8e76c74b77c2ebf1fa66e522b02228421e874",
+    "src/server/live_responses_turn.cpp": "0edb0a0c86913f527fe03b1aa9321cd49dd098a5ddd8bf4319ad4295153ddda8"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

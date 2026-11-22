@@ -632,9 +632,11 @@ set(protocol_inputs
   include/q4t/server/live_configuration.h
   include/q4t/server/live_responses_settings.h
   include/q4t/server/live_responses_validation.h
+  include/q4t/server/live_responses_turn.h
   src/server/live_configuration.cpp
   src/server/live_responses_settings.cpp
   src/server/live_responses_validation.cpp
+  src/server/live_responses_turn.cpp
   include/q4t/server/live_session.h
   src/server/live_session.cpp
   include/q4t/server/live_session_pump.h
