@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Live 来电签名 webhook 已通过实际 SIP 和 HTTPS 两个对端。官方 SDK 对真实 POST 验签，307、503、错误 CA、发送进程退出及慢接收端均已覆盖。正式候选的专用进程通过 14 项回环，拒接/ACK 可在通知挂起期间完成。下一步接入 serve 部署与客户 HTTP 操作。[真实验收](evidence/serve-live-sip-webhook-20261123/README.md)。
+
 SIP 私有来电通知已保留原始有序头字段，过滤鉴权字段；SDP 仅可由同身份所有者读取。模拟通知接收端积压时，新来电收到 503，积压前的通话仍能完成拒接和 ACK。9 项回环通过。下一步接入签名业务通知、公开操作及 SRTP。[元数据与背压验收](evidence/serve-live-sip-invite-20261123/README.md)。
 
 独立 SIP 中继已能在双向 TLS 上接收多路来电、校验客户身份、处理取消和拒接，并用远端 ACK 确认最终答复。Thor 上 6 项真实回环检查通过，含同 CA 错误中继和 30 秒超时。后续需将来电通知、HTTP 接听和 SRTP 媒体连到 Live 会话。[信令实测](evidence/serve-live-sip-trunk-20261123/README.md)。

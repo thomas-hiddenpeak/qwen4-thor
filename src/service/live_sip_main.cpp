@@ -33,6 +33,7 @@ class SipTrunk;
 #include <cstdio>
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <string_view>
 
@@ -107,17 +108,29 @@ bool DisableConnect() {
                  SECCOMP_FILTER_FLAG_TSYNC, &program) == 0;
 }
 
+bool LocalPackets(int fd) {
+  int type = 0, family = 0;
+  socklen_t length = sizeof(int);
+  return fd >= 0 && !getsockopt(fd, SOL_SOCKET, SO_TYPE, &type, &length) &&
+         type == SOCK_SEQPACKET &&
+         !getsockopt(fd, SOL_SOCKET, SO_DOMAIN, &family, &length) &&
+         family == AF_UNIX;
+}
+
 struct Call {
   std::string id;
   Clock::time_point deadline;
   std::string offer;
+  std::string webhook;
+  bool delivered = false;
   int final_status = 0;
 };
 }  // namespace
 
 class SipTrunk {
  public:
-  SipTrunk(int fd, std::string scope) : fd_(fd), scope_(std::move(scope)) {}
+  SipTrunk(int fd, std::string scope, int webhook_fd)
+      : fd_(fd), scope_(std::move(scope)), webhook_fd_(webhook_fd) {}
   ~SipTrunk() {
     for (auto& [request, call] : calls_) {
       if (!call.final_status)
@@ -125,6 +138,7 @@ class SipTrunk {
       nta_incoming_destroy(request);
     }
     if (control_ >= 0) su_root_deregister(root_, control_);
+    if (webhook_watch_ >= 0) su_root_deregister(root_, webhook_watch_);
     if (leg_) nta_leg_destroy(leg_);
     if (agent_) nta_agent_destroy(agent_);
     std::free(parser_);
@@ -155,11 +169,12 @@ class SipTrunk {
     leg_ =
         nta_leg_tcreate(agent_, Incoming, this, NTATAG_NO_DIALOG(1), TAG_END());
     if (!leg_) return false;
-    su_wait_t wait;
-    if (su_wait_create(&wait, fd_, SU_WAIT_IN | SU_WAIT_HUP) < 0) return false;
-    control_ = su_root_register(root_, &wait, Command, nullptr, 0);
-    su_wait_destroy(&wait);
+    control_ = Watch(fd_, Command);
     if (control_ < 0) return false;
+    if (webhook_fd_ >= 0) {
+      webhook_watch_ = Watch(webhook_fd_, WebhookReceipt);
+      if (webhook_watch_ < 0) DisableWebhook();
+    }
     auto* contact = nta_agent_contact(agent_);
     if (!contact || !contact->m_url->url_port) return false;
     Notify(std::string("READY ") + contact->m_url->url_port);
@@ -171,6 +186,82 @@ class SipTrunk {
   }
 
  private:
+  int Watch(int fd, su_wakeup_f handler) {
+    su_wait_t wait;
+    if (su_wait_create(&wait, fd, SU_WAIT_IN | SU_WAIT_HUP) < 0) return -1;
+    const int index = su_root_register(root_, &wait, handler, nullptr, 0);
+    su_wait_destroy(&wait);
+    return index;
+  }
+
+  void DisableWebhook() {
+    if (webhook_watch_ >= 0) su_root_deregister(root_, webhook_watch_);
+    webhook_watch_ = -1;
+    if (webhook_fd_ >= 0) close(webhook_fd_);
+    webhook_fd_ = -1;
+    for (const auto& id : publishing_)
+      Notify("WEBHOOK " + scope_ + " " + id + " unknown");
+    publishing_.clear();
+  }
+
+  std::string Publish(const Call& call) {
+    if (call.delivered) return "delivered";
+    if (publishing_.contains(call.id)) return "in_flight";
+    if (webhook_fd_ < 0) return "unavailable";
+    if (publishing_.size() >= kMaxCalls) return "busy";
+    ssize_t n;
+    do {
+      n = send(webhook_fd_, call.webhook.data(), call.webhook.size(),
+               MSG_NOSIGNAL | MSG_DONTWAIT);
+    } while (n < 0 && errno == EINTR);
+    if (n < 0 && (errno == EAGAIN || errno == ENOBUFS)) return "busy";
+    if (n != static_cast<ssize_t>(call.webhook.size())) {
+      DisableWebhook();
+      return "unavailable";
+    }
+    publishing_.insert(call.id);
+    return "submitted";
+  }
+
+  static int WebhookReceipt(SipTrunk* self, su_wait_t*, su_wakeup_arg_t*) {
+    std::array<char, 256> bytes;
+    auto n = recv(self->webhook_fd_, bytes.data(), bytes.size(),
+                  MSG_DONTWAIT | MSG_TRUNC);
+    if (n < 0 && (errno == EAGAIN || errno == EINTR)) return 0;
+    const std::string prefix = "WEBHOOK " + self->scope_ + " ";
+    if (n <= 0 || size_t(n) > bytes.size() ||
+        !std::string_view(bytes.data(), n).starts_with(prefix)) {
+      self->DisableWebhook();
+      return 0;
+    }
+    std::string packet(bytes.data(), n);
+    const auto end = packet.find(' ', prefix.size());
+    const auto id = packet.substr(prefix.size(), end - prefix.size());
+    if (end == packet.npos || !self->publishing_.contains(id)) {
+      self->DisableWebhook();
+      return 0;
+    }
+    const auto state = std::string_view(packet).substr(end + 1);
+    const bool delivered = state.starts_with("delivered ") &&
+                           state.size() == 13 &&
+                           Decimal(state.substr(10)) / 100 == 2;
+    const bool rejected =
+        state.starts_with("rejected ") && state.size() == 12 &&
+        Decimal(state.substr(9)) >= 300 && Decimal(state.substr(9)) <= 599;
+    if (!delivered && !rejected && state != "unknown" &&
+        state != "unavailable" && state != "invalid") {
+      self->DisableWebhook();
+      return 0;
+    }
+    self->publishing_.erase(id);
+    if (delivered) {
+      for (auto& entry : self->calls_)
+        if (entry.second.id == id) entry.second.delivered = true;
+    }
+    self->Notify(packet);
+    return 0;
+  }
+
   // Keep room for the final dispositions of already admitted calls even if
   // the owner is busy delivering incoming events. The listener never waits
   // on a local socket write.
@@ -237,8 +328,17 @@ class SipTrunk {
     if (nta_incoming_treply(request, 180, nullptr, TAG_END()) < 0 ||
         nta_incoming_status(request) != 180)
       return 503;
-    self->calls_.emplace(
-        request, Call{id, Clock::now() + kAnswerTime, std::move(*offer)});
+    std::string webhook;
+    if (self->webhook_fd_ >= 0) {
+      const auto created =
+          std::chrono::duration_cast<std::chrono::seconds>(
+              std::chrono::system_clock::now().time_since_epoch())
+              .count();
+      webhook = "EVENT " + self->scope_ + " " + id + " " +
+                std::to_string(created) + "\n" + std::string(*headers);
+    }
+    self->calls_.emplace(request, Call{id, Clock::now() + kAnswerTime,
+                                       std::move(*offer), std::move(webhook)});
     nta_incoming_bind(request, Followup, self);
     self->Notify("INCOMING " + self->scope_ + " " + id + "\n" +
                  std::string(*headers));
@@ -307,8 +407,10 @@ class SipTrunk {
       packet = end == packet.npos ? std::string_view{} : packet.substr(end + 1);
     }
     const bool offer = args[0] == "OFFER";
+    const bool publish = args[0] == "PUBLISH";
     if (!packet.empty() || !Token(args[1]) ||
-        !(offer ? count == 4 : (args[0] == "REJECT" && count == 5))) {
+        !((offer || publish) ? count == 4
+                             : (args[0] == "REJECT" && count == 5))) {
       Notify("ERROR invalid_command");
       return;
     }
@@ -318,6 +420,11 @@ class SipTrunk {
     });
     if (scope_ != args[2] || it == calls_.end()) {
       Notify(result + "not_found");
+      return;
+    }
+    if (publish) {
+      Notify(result +
+             (it->second.final_status ? "conflict" : Publish(it->second)));
       return;
     }
     if (offer) {
@@ -361,6 +468,9 @@ class SipTrunk {
 
   int fd_;
   std::string scope_;
+  int webhook_fd_ = -1;
+  int webhook_watch_ = -1;
+  std::set<std::string> publishing_;
   su_root_t* root_ = nullptr;
   msg_mclass_t* parser_ = nullptr;
   nta_agent_t* agent_ = nullptr;
@@ -374,21 +484,18 @@ class SipTrunk {
 };
 
 int main(int argc, char** argv) {
-  if (argc != 7) {
+  if (argc != 7 && argc != 8) {
     std::fputs(
         "usage: q4t-live-sip CONTROL_FD LISTEN_IP PORT TLS_DIRECTORY "
-        "TRUNK_SUBJECT CLIENT_SCOPE\n",
+        "TRUNK_SUBJECT CLIENT_SCOPE [WEBHOOK_FD]\n",
         stderr);
     return 2;
   }
   const int fd = Decimal(argv[1]), port = Decimal(argv[3]);
-  int type = 0, family = 0;
-  socklen_t length = sizeof(int);
-  if (fd < 0 || port < 0 || port > 65535 || !Token(argv[5]) ||
-      !Token(argv[6]) || getsockopt(fd, SOL_SOCKET, SO_TYPE, &type, &length) ||
-      type != SOCK_SEQPACKET ||
-      getsockopt(fd, SOL_SOCKET, SO_DOMAIN, &family, &length) ||
-      family != AF_UNIX)
+  const int webhook = argc == 8 ? Decimal(argv[7]) : -1;
+  if (!LocalPackets(fd) || port < 0 || port > 65535 || !Token(argv[5]) ||
+      !Token(argv[6]) ||
+      (argc == 8 && (fd == webhook || !LocalPackets(webhook))))
     return 2;
   in6_addr addr{};
   std::string ip = argv[2];
@@ -402,7 +509,7 @@ int main(int argc, char** argv) {
   signal(SIGPIPE, SIG_IGN);
   bool ok;
   {
-    SipTrunk trunk(fd, argv[6]);
+    SipTrunk trunk(fd, argv[6], webhook);
     ok = trunk.Run(url, argv[4], argv[5]);
   }
   su_deinit();

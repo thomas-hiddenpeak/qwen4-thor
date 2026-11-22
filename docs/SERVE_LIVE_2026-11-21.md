@@ -125,3 +125,5 @@ SIP 接听在构造模型所有者前校验专用 `session.type=live`、启动�
 L05 独立的入站 SIP 进程已通过双向 TLS 中继身份、并行事务、拒接、CANCEL/ACK 与超时验收。所有者通过私有套接字使用客户身份和 Live ID 处理来电。公开来电通知、接听、SRTP、转接和挂断仍在开发。[回环对端证据](evidence/serve-live-sip-trunk-20261123/README.md)。
 
 L05 来电通知已在事务改写前保存有序字段，过滤 SIP 鉴权，私有 SDP 按同身份读取。慢所有者的积压触发新来电 503，已接纳通话可继续。[本机对端验证](evidence/serve-live-sip-invite-20261123/README.md)。
+
+L05 已从真实来电投递 `live.transport.incoming` 签名 HTTPS 通知。接收端验签、显式重试以及回调与正在进行的电话事务相互独立均已实测。后续需将部署和实际 API 客户接到这条链路。[验收](evidence/serve-live-sip-webhook-20261123/README.md)。

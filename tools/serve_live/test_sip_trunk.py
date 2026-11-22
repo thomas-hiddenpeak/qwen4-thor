@@ -76,8 +76,7 @@ class Peer:
             return fields['to'].split(';tag=', 1)[-1]
 
 
-@unittest.skipUnless(BINARY, 'set Q4T_SIP_WORKER to the built telephone worker')
-class TrunkTest(unittest.TestCase):
+class TrunkFixture:
     @classmethod
     def setUpClass(cls):
         cls.tmp = tempfile.TemporaryDirectory(dir=ROOT / '.q4t-work')
@@ -99,6 +98,10 @@ class TrunkTest(unittest.TestCase):
         cls.wrong = issue('wrong', cls.ca, 'clientAuth', 'someone-else.test')
         cls.alien = issue('alien', other_ca, 'clientAuth', PEER)
 
+    @contextlib.contextmanager
+    def publisher(self):
+        yield None
+
     def setUp(self):
         self.stack = contextlib.ExitStack()
         self.addCleanup(self.stack.close)
@@ -106,10 +109,12 @@ class TrunkTest(unittest.TestCase):
         self.control = self.stack.enter_context(control)
         self.control.settimeout(3)
         self.log = self.stack.enter_context(tempfile.TemporaryFile())
-        with child:
+        with child, self.publisher() as publisher:
+            optional = [] if publisher is None else [publisher.fileno()]
             self.proc = subprocess.Popen(
                 [BINARY, str(child.fileno()), '127.0.0.1', '0',
-                 str(self.pki), PEER, SCOPE], pass_fds=(child.fileno(),),
+                 str(self.pki), PEER, SCOPE, *map(str, optional)],
+                pass_fds=(child.fileno(), *optional),
                 stderr=self.log, stdout=subprocess.DEVNULL)
         self.stack.callback(self.stop)
         ready = self.event()
@@ -165,6 +170,8 @@ class TrunkTest(unittest.TestCase):
             self.assertEqual(self.event(), ['FINAL', SCOPE, live, str(code)])
         self.assertEqual(self.event(), ['RESULT', 'op', expected])
 
+@unittest.skipUnless(BINARY, 'set Q4T_SIP_WORKER to the built telephone worker')
+class TrunkTest(TrunkFixture, unittest.TestCase):
     def test_authenticated_reject_duplicate_ack_and_scope(self):
         peer = self.peer(self.good)
         token, tag, live = self.invite(peer)
