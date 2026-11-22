@@ -164,3 +164,5 @@ L05 已从真实来电投递 `live.transport.incoming` 签名 HTTPS 通知。接
 在 Realtime 客户端调用 `client.realtime.calls.reject(event.data.call_id)` 时，中继默认发送 603 Decline；也可显式提交 `{status_code: 486}`。Live 与 Realtime 共享同一 SIP 事务的最终处置和远端 ACK。已经从任一入口发出最终答复时，另一入口的处置返回 409；事务确认、注销后两个 ID 都返回 404。
 
 电话媒体已支持 RTP/SAVP、SDES 的 AES_CM_128_HMAC_SHA1_80、Opus 和两种 G.711 编码，分别协商收发密钥和 RTCP 端口。已用独立电话对端验证双向音频、远端回执和挂断排空。HTTP 接听与模型会话仍需连通验收。[媒体结果](evidence/serve-sip-secure-media-20261123/README.md)、[SDP 协商](https://www.rfc-editor.org/rfc/rfc3264)、[SDES](https://www.rfc-editor.org/rfc/rfc4568)。
+
+电话中继可在同一 mTLS 对话中发送接听应答、关联远端 ACK，按 Call-ID、双方标签和 CSeq 处理挂断。主动挂断使用原 TLS 连接，记录最终 SIP 状态；对端未给最终答复时单独报告失联。已通过实际信令与媒体组合回环，公开接听、转接及真实模型电话业务继续实施。[对话验收](evidence/serve-sip-dialog-20261123/README.md)。

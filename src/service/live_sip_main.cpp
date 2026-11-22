@@ -2,10 +2,13 @@
 // socket is inherited, never a listener. SIP addressing is caller metadata.
 class SipTrunk;
 #define NTA_LEG_MAGIC_T SipTrunk
+#define NTA_OUTGOING_MAGIC_T SipTrunk
 #define NTA_INCOMING_MAGIC_T SipTrunk
 #define SU_ROOT_MAGIC_T SipTrunk
+#include <sofia-sip/msg.h>
 #include <sofia-sip/nta.h>
 #include <sofia-sip/nta_tport.h>
+#include <sofia-sip/sip_protos.h>
 #include <sofia-sip/sip_status.h>
 #include <sofia-sip/su_strlst.h>
 #include <sofia-sip/tport.h>
@@ -126,6 +129,16 @@ struct Call {
   int final_status = 0;
   std::string realtime_id{};
   bool realtime_delivered = false;
+  nta_leg_t* dialog = nullptr;
+};
+
+struct Dialog {
+  std::string id;
+  nta_incoming_t* invite;  // Released after ACK, BYE or timeout.
+  uint32_t remote_cseq;
+  Clock::time_point deadline;
+  std::unique_ptr<tport_t, decltype(&tport_unref)> carrier;
+  nta_outgoing_t* bye = nullptr;
 };
 }  // namespace
 
@@ -139,6 +152,7 @@ class SipTrunk {
         nta_incoming_treply(request, 503, nullptr, TAG_END());
       nta_incoming_destroy(request);
     }
+    while (!dialogs_.empty()) RemoveDialog(dialogs_.begin()->first);
     if (control_ >= 0) su_root_deregister(root_, control_);
     if (webhook_watch_ >= 0) su_root_deregister(root_, webhook_watch_);
     if (leg_) nta_leg_destroy(leg_);
@@ -323,17 +337,24 @@ class SipTrunk {
     if (outbox_.empty()) WatchControl();
   }
 
-  static int Incoming(SipTrunk* self, nta_leg_t*, nta_incoming_t* request,
-                      const sip_t* sip) {
-    auto* transport = nta_incoming_transport(self->agent_, request, nullptr);
+  bool Verified(nta_incoming_t* request) const {
+    auto* transport = nta_incoming_transport(agent_, request, nullptr);
     bool verified =
         transport && tport_has_tls(transport) && tport_is_verified(transport);
     if (transport) tport_unref(transport);
-    if (!verified) return 403;
+    return verified;
+  }
+
+  static int Incoming(SipTrunk* self, nta_leg_t*, nta_incoming_t* request,
+                      const sip_t* sip) {
+    if (!self->Verified(request)) return 403;
     if (sip->sip_request->rq_method != sip_method_invite)
       return sip->sip_request->rq_method == sip_method_options ? 200 : 481;
     if (sip->sip_to->a_tag) return 481;
-    if (self->calls_.size() >= kMaxCalls ||
+    const auto established =
+        std::count_if(self->dialogs_.begin(), self->dialogs_.end(),
+                      [](const auto& entry) { return !entry.second.invite; });
+    if (self->calls_.size() + established >= kMaxCalls ||
         self->queued_bytes_ >= kQueueBytes / 2 ||
         self->outbox_.size() >= kQueuePackets / 2)
       return 503;
@@ -364,10 +385,16 @@ class SipTrunk {
 
   // The transaction owns Call-ID, branch, CSeq, To tag, duplicate matching
   // and CANCEL/ACK correlation. Applications address only the scoped Live ID.
-  bool Final(nta_incoming_t* request, Call& call, int status) {
+  bool Final(nta_incoming_t* request, Call& call, int status,
+             const char* answer = nullptr) {
     call.deadline = Clock::now() + kAckTime;
-    if (nta_incoming_treply(request, status, nullptr, TAG_END()) < 0 ||
-        nta_incoming_status(request) != status) {
+    const int sent =
+        answer ? nta_incoming_treply(request, status, nullptr,
+                                     SIPTAG_CONTACT(nta_agent_contact(agent_)),
+                                     SIPTAG_CONTENT_TYPE_STR("application/sdp"),
+                                     SIPTAG_PAYLOAD_STR(answer), TAG_END())
+               : nta_incoming_treply(request, status, nullptr, TAG_END());
+    if (sent < 0 || nta_incoming_status(request) != status) {
       call.final_status = -1;
       Notify("FAILED " + scope_ + " " + call.id);
       return false;
@@ -375,6 +402,119 @@ class SipTrunk {
     call.final_status = status;
     Notify("FINAL " + scope_ + " " + call.id + " " + std::to_string(status));
     return true;
+  }
+
+  void RemoveDialog(nta_leg_t* leg) {
+    const auto it = dialogs_.find(leg);
+    if (it == dialogs_.end()) return;
+    if (it->second.bye) nta_outgoing_destroy(it->second.bye);
+    nta_leg_destroy(leg);
+    dialogs_.erase(it);
+  }
+
+  std::string Accept(nta_incoming_t* request, Call& call,
+                     std::string_view answer) {
+    if (call.final_status) return "conflict";
+    if (call.offer.empty() || answer.size() > 65534 ||
+        !answer.starts_with("v=0\r\n") || !answer.ends_with("\r\n") ||
+        answer.find('\0') != answer.npos)
+      return "invalid_answer";
+    std::unique_ptr<msg_t, decltype(&msg_destroy)> original(
+        nta_incoming_getrequest(request), msg_destroy);
+    const auto* sip = original ? sip_object(original.get()) : nullptr;
+    if (!sip || !sip->sip_contact || !sip->sip_from->a_tag)
+      return "invalid_dialog";
+    std::unique_ptr<tport_t, decltype(&tport_unref)> carrier(
+        nta_incoming_transport(agent_, request, nullptr), tport_unref);
+    if (!carrier || !tport_is_secondary(carrier.get()) ||
+        !tport_has_tls(carrier.get()) || !tport_is_verified(carrier.get()))
+      return "failed";
+    auto* leg = nta_leg_tcreate(
+        agent_, InDialog, this, SIPTAG_CALL_ID(sip->sip_call_id),
+        SIPTAG_FROM(sip->sip_to), SIPTAG_TO(sip->sip_from),
+        NTATAG_REMOTE_CSEQ(sip->sip_cseq->cs_seq), TAG_END());
+    if (!leg) return "failed";
+    if (!nta_leg_tag(leg, nta_incoming_gettag(request)) ||
+        !nta_leg_get_rtag(leg) ||
+        nta_leg_server_route(leg, sip->sip_record_route, sip->sip_contact) <
+            0) {
+      nta_leg_destroy(leg);
+      return "failed";
+    }
+    std::string body(answer);
+    const bool submitted = Final(request, call, 200, body.c_str());
+    explicit_bzero(body.data(), body.size());
+    if (!submitted) {
+      nta_leg_destroy(leg);
+      return "failed";
+    }
+    call.dialog = leg;
+    dialogs_.emplace(
+        leg, Dialog{call.id, request, sip->sip_cseq->cs_seq,
+                    Clock::now() + std::chrono::hours(1), std::move(carrier)});
+    return "submitted";
+  }
+
+  static int ByeResponse(SipTrunk* self, nta_outgoing_t* bye,
+                         const sip_t* sip) {
+    const int status = nta_outgoing_status(bye);
+    if (status < 200) return 0;
+    const auto it = std::find_if(
+        self->dialogs_.begin(), self->dialogs_.end(),
+        [bye](const auto& entry) { return entry.second.bye == bye; });
+    if (it == self->dialogs_.end()) return 0;
+    if (sip && !nta_sip_is_internal(sip)) {
+      self->Notify("BYE_RESPONSE " + self->scope_ + " " + it->second.id + " " +
+                   std::to_string(status));
+      self->Notify("ENDED " + self->scope_ + " " + it->second.id);
+    } else {
+      self->Notify("LOST " + self->scope_ + " " + it->second.id);
+    }
+    self->RemoveDialog(it->first);
+    return 0;
+  }
+
+  bool BeginHangup(nta_leg_t* leg, Dialog& dialog) {
+    // Route and target come from the dialog. Only the original authenticated
+    // transport can be used, even if Contact names a different host.
+    if (!tport_is_clear_to_send(dialog.carrier.get())) return false;
+    dialog.bye = nta_outgoing_tcreate(
+        leg, ByeResponse, this, nullptr, SIP_METHOD_BYE, nullptr,
+        NTATAG_TPORT(dialog.carrier.get()), TAG_END());
+    if (!dialog.bye) return false;
+    dialog.deadline = Clock::now() + kAckTime;
+    Notify("ENDING " + scope_ + " " + dialog.id);
+    return true;
+  }
+
+  static int InDialog(SipTrunk* self, nta_leg_t* leg, nta_incoming_t* request,
+                      const sip_t* sip) {
+    if (!self->Verified(request)) return 403;
+    auto it = self->dialogs_.find(leg);
+    if (it == self->dialogs_.end()) return 481;
+    const auto method = sip->sip_request->rq_method;
+    // The initial 2xx ACK goes to Followup. A retransmitted ACK never
+    // confirms a second time and has no response of its own.
+    if (method == sip_method_ack) {
+      nta_incoming_destroy(request);
+      return 0;
+    }
+    if (sip->sip_cseq->cs_seq <= it->second.remote_cseq) return 500;
+    it->second.remote_cseq = sip->sip_cseq->cs_seq;
+    if (method == sip_method_options) return 200;
+    if (method != sip_method_bye) return 488;
+    const bool replied =
+        nta_incoming_treply(request, 200, nullptr, TAG_END()) >= 0 &&
+        nta_incoming_status(request) == 200;
+    nta_incoming_destroy(request);
+    self->Notify(std::string(replied ? "ENDED " : "LOST ") + self->scope_ +
+                 " " + it->second.id);
+    if (auto* invite = it->second.invite) {
+      self->calls_.erase(invite);
+      nta_incoming_destroy(invite);
+    }
+    self->RemoveDialog(leg);
+    return 0;
   }
 
   static int Followup(SipTrunk* self, nta_incoming_t* request,
@@ -387,10 +527,15 @@ class SipTrunk {
       return 0;
     }
     if (sip && sip->sip_request->rq_method == sip_method_ack &&
-        call.final_status > 0) {
+        call.final_status > 0 &&
+        (!call.dialog ||
+         (sip->sip_to->a_tag && std::string_view(sip->sip_to->a_tag) ==
+                                    nta_leg_get_tag(call.dialog)))) {
+      if (call.dialog) self->dialogs_.at(call.dialog).invite = nullptr;
       self->Notify("ACK " + self->scope_ + " " + call.id + " " +
                    std::to_string(call.final_status));
     } else {
+      self->RemoveDialog(call.dialog);
       self->Notify("LOST " + self->scope_ + " " + call.id);
     }
     self->calls_.erase(it);
@@ -408,15 +553,32 @@ class SipTrunk {
         Final(request, call, 480);
       } else {
         Notify("LOST " + scope_ + " " + call.id);
+        RemoveDialog(call.dialog);
         nta_incoming_destroy(request);
         calls_.erase(current);
       }
     }
+    for (auto it = dialogs_.begin(); it != dialogs_.end();) {
+      auto current = it++;
+      if (current->second.invite || now < current->second.deadline) continue;
+      if (!current->second.bye && BeginHangup(current->first, current->second))
+        continue;
+      Notify("LOST " + scope_ + " " + current->second.id);
+      RemoveDialog(current->first);
+    }
   }
 
   void ControlRequest(std::string_view packet) {
-    // OFFER <request-id> <scope> <session-id>, or REJECT with a SIP status.
-    std::array<std::string_view, 5> args;
+    // ACCEPT carries the media worker's SDP after the command header.
+    const auto newline = packet.find('\n');
+    const auto answer = newline == packet.npos ? std::string_view{}
+                                               : packet.substr(newline + 1);
+    packet = packet.substr(0, newline);
+    if (packet.size() > 512) {
+      Notify("ERROR invalid_command");
+      return;
+    }
+    std::array<std::string_view, 5> args{};
     size_t count = 0;
     while (!packet.empty() && count < args.size()) {
       const auto end = packet.find(' ');
@@ -425,8 +587,12 @@ class SipTrunk {
     }
     const bool offer = args[0] == "OFFER";
     const bool publish = args[0] == "PUBLISH";
+    const bool accept = args[0] == "ACCEPT";
+    const bool hangup = args[0] == "HANGUP";
     if (!packet.empty() || !Token(args[1]) ||
-        !((offer && count == 4) || (publish && (count == 4 || count == 5)) ||
+        ((newline != std::string_view::npos) != accept) ||
+        !(((offer || accept || hangup) && count == 4) ||
+          (publish && (count == 4 || count == 5)) ||
           (args[0] == "REJECT" && count == 5))) {
       Notify("ERROR invalid_command");
       return;
@@ -435,8 +601,25 @@ class SipTrunk {
     auto it = std::find_if(calls_.begin(), calls_.end(), [&](const auto& call) {
       return call.second.id == args[3];
     });
+    if (scope_ == args[2] && hangup) {
+      const auto d = std::find_if(
+          dialogs_.begin(), dialogs_.end(),
+          [&](const auto& entry) { return entry.second.id == args[3]; });
+      if (d == dialogs_.end())
+        Notify(result + (it == calls_.end() ? "not_found" : "conflict"));
+      else if (d->second.invite || d->second.bye)
+        Notify(result + "conflict");
+      else
+        Notify(result +
+               (BeginHangup(d->first, d->second) ? "submitted" : "failed"));
+      return;
+    }
     if (scope_ != args[2] || it == calls_.end()) {
       Notify(result + "not_found");
+      return;
+    }
+    if (accept) {
+      Notify(result + Accept(it->first, it->second, answer));
       return;
     }
     if (publish) {
@@ -466,7 +649,7 @@ class SipTrunk {
     const int events = su_wait_events(wait, self->fd_);
     if (events & SU_WAIT_OUT) self->Drain();
     if (!(events & (SU_WAIT_IN | SU_WAIT_HUP | SU_WAIT_ERR))) return 0;
-    std::array<char, 512> bytes;
+    std::array<char, 66560> bytes;
     ssize_t size =
         recv(self->fd_, bytes.data(), bytes.size(), MSG_DONTWAIT | MSG_TRUNC);
     if (size < 0 && (errno == EAGAIN || errno == EINTR)) return 0;
@@ -479,6 +662,7 @@ class SipTrunk {
       self->orderly_ = true;
     } else {
       self->ControlRequest({bytes.data(), size_t(size)});
+      explicit_bzero(bytes.data(), size);
     }
     return 0;
   }
@@ -494,6 +678,7 @@ class SipTrunk {
   nta_leg_t* leg_ = nullptr;
   int control_ = -1;
   std::map<nta_incoming_t*, Call> calls_;
+  std::map<nta_leg_t*, Dialog> dialogs_;
   std::deque<std::string> outbox_;
   size_t queued_bytes_ = 0;
   bool running_ = true;
@@ -522,7 +707,7 @@ int main(int argc, char** argv) {
     return 2;
   std::string url = "sips:" + ip + ":" + (port ? std::to_string(port) : "*") +
                     ";transport=tls";
-  if (su_init() < 0) return 1;
+  if (prctl(PR_SET_DUMPABLE, 0) < 0 || su_init() < 0) return 1;
   signal(SIGPIPE, SIG_IGN);
   bool ok;
   {

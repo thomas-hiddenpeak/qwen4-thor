@@ -25,15 +25,16 @@ class Peer:
         self.reader = sock.makefile('rb')
         self.target = target
 
-    def send(self, method, token, *, to_tag='', extra=b'', body=b'', fragmented=False):
+    def send(self, method, token, *, to_tag='', extra=b'', body=b'',
+             fragmented=False, branch=None, seq=1, target=None):
         to = f'<sips:other-customer@{self.target}>'
         if to_tag:
             to += ';tag=' + to_tag
         fields = [
-            f'{method} sips:untrusted@{self.target} SIP/2.0',
-            f'Via: SIP/2.0/TLS 127.0.0.1:9;branch=z9hG4bK{token};rport',
+            f'{method} {target or ("sips:untrusted@" + self.target)} SIP/2.0',
+            f'Via: SIP/2.0/TLS 127.0.0.1:9;branch=z9hG4bK{branch or token};rport',
             f'From: <sip:other-customer@forged.test>;tag={token}',
-            f'To: {to}', f'Call-ID: {token}@peer.test', f'CSeq: 1 {method}',
+            f'To: {to}', f'Call-ID: {token}@peer.test', f'CSeq: {seq} {method}',
             'Max-Forwards: 70', 'Contact: <sips:phone@127.0.0.1:9>',
         ]
         wire_headers = (('\r\n'.join(fields) + '\r\n').encode() + extra +
@@ -47,7 +48,7 @@ class Peer:
             self.sock.sendall(wire_headers + b'\r\n' + body)
         return wire_headers
 
-    def response(self, status, method, token):
+    def response(self, status, method, token, *, branch=None, seq=1):
         while True:
             line = self.reader.readline(4096)
             if not line:
@@ -62,15 +63,15 @@ class Peer:
                 key, value = value.decode().strip().split(':', 1)
                 fields[key.lower()] = value.strip()
             size = int(fields.get('content-length', '0'))
-            if size:
-                self.reader.read(size)
+            self.body = self.reader.read(size) if size else b''
+            self.headers = fields
             received = int(line.split()[1])
             if received == 100:
                 continue
             if (received not in (status if isinstance(status, tuple) else (status,)) or
-                    fields['cseq'] != '1 ' + method or fields['call-id'] != token + '@peer.test'):
+                    fields['cseq'] != f'{seq} {method}' or fields['call-id'] != token + '@peer.test'):
                 raise AssertionError((line, fields, status, method, token))
-            if ('branch=z9hG4bK' + token) not in fields['via']:
+            if ('branch=z9hG4bK' + (branch or token)) not in fields['via']:
                 raise AssertionError('transaction branch changed')
             self.status = received
             return fields['to'].split(';tag=', 1)[-1]

@@ -1,0 +1,31 @@
+test_bye_after_answer_before_ack_does_not_activate_media (tools.serve_live.test_sip_dialog.DialogTest.test_bye_after_answer_before_ack_does_not_activate_media) ... ok
+test_call_answer_ack_secure_audio_and_carrier_hangup (tools.serve_live.test_sip_dialog.DialogTest.test_call_answer_ack_secure_audio_and_carrier_hangup) ... /home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_media.py:65: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  import audioop
+ok
+test_cancel_before_answer_keeps_cancel_disposition (tools.serve_live.test_sip_dialog.DialogTest.test_cancel_before_answer_keeps_cancel_disposition) ... ok
+test_carrier_disconnect_during_hangup_has_no_success_receipt (tools.serve_live.test_sip_dialog.DialogTest.test_carrier_disconnect_during_hangup_has_no_success_receipt) ... ok
+test_local_hangup_waits_for_final_carrier_response (tools.serve_live.test_sip_dialog.DialogTest.test_local_hangup_waits_for_final_carrier_response) ... ok
+test_remote_failure_is_preserved_on_local_hangup (tools.serve_live.test_sip_dialog.DialogTest.test_remote_failure_is_preserved_on_local_hangup) ... ok
+test_answer_deadline_and_slot_release (tools.serve_live.test_sip_trunk.TrunkTest.test_answer_deadline_and_slot_release) ... ok
+test_authenticated_reject_duplicate_ack_and_scope (tools.serve_live.test_sip_trunk.TrunkTest.test_authenticated_reject_duplicate_ack_and_scope) ... ok
+test_bad_credentials_fail_before_ready (tools.serve_live.test_sip_trunk.TrunkTest.test_bad_credentials_fail_before_ready) ... ok
+test_cancel_one_of_two_calls (tools.serve_live.test_sip_trunk.TrunkTest.test_cancel_one_of_two_calls) ... ok
+test_offerless_and_wrong_content_type (tools.serve_live.test_sip_trunk.TrunkTest.test_offerless_and_wrong_content_type) ... ok
+test_original_invite_headers_and_private_offer (tools.serve_live.test_sip_trunk.TrunkTest.test_original_invite_headers_and_private_offer) ... ok
+test_owner_loss_ends_pending_invitation (tools.serve_live.test_sip_trunk.TrunkTest.test_owner_loss_ends_pending_invitation) ... ok
+test_slow_control_reader_preserves_previous_calls (tools.serve_live.test_sip_trunk.TrunkTest.test_slow_control_reader_preserves_previous_calls) ... ok
+test_untrusted_trunks_cannot_publish (tools.serve_live.test_sip_trunk.TrunkTest.test_untrusted_trunks_cannot_publish) ... ok
+test_absent_codec_plugins_are_local_media_failure (tools.serve_live.test_sip_media.MediaTest.test_absent_codec_plugins_are_local_media_failure) ... ok
+test_declines_cleartext_bad_key_and_unapproved_media_address (tools.serve_live.test_sip_media.MediaTest.test_declines_cleartext_bad_key_and_unapproved_media_address) ... ok
+test_early_audio_wrong_source_key_and_replayed_packets_remain_silent (tools.serve_live.test_sip_media.MediaTest.test_early_audio_wrong_source_key_and_replayed_packets_remain_silent) ... ok
+test_final_audio_burst_drains_before_ack (tools.serve_live.test_sip_media.MediaTest.test_final_audio_burst_drains_before_ack) ... ok
+test_ipv6_static_mapping_and_declined_video_line (tools.serve_live.test_sip_media.MediaTest.test_ipv6_static_mapping_and_declined_video_line) ... ok
+test_opus_with_separate_rtcp (tools.serve_live.test_sip_media.MediaTest.test_opus_with_separate_rtcp) ... ok
+test_pcma_with_multiplexed_rtcp (tools.serve_live.test_sip_media.MediaTest.test_pcma_with_multiplexed_rtcp) ... ok
+test_pcmu_with_separate_rtcp (tools.serve_live.test_sip_media.MediaTest.test_pcmu_with_separate_rtcp) ... ok
+test_remote_sendonly_offer_has_recvonly_answer (tools.serve_live.test_sip_media.MediaTest.test_remote_sendonly_offer_has_recvonly_answer) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 36.771s
+
+OK

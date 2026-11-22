@@ -81,8 +81,7 @@ class Codec:
         return buf.raw[:2*n]
 
 
-@unittest.skipUnless(WORKER, 'set Q4T_SIP_MEDIA_WORKER')
-class MediaTest(unittest.TestCase):
+class MediaFixture:
     def setUp(self):
         self.stack=contextlib.ExitStack()
         self.addCleanup(self.stack.close)
@@ -116,7 +115,10 @@ class MediaTest(unittest.TestCase):
         self.owner.send(b'O'+wire.encode())
         reply=self.owner.recv(65536)
         self.assertEqual(reply[:1], b'A')
-        s=reply[1:].decode()
+        return self.read_answer(reply[1:], mux)
+
+    def read_answer(self, wire, mux=False):
+        s=wire.decode()
         port=int(re.search(r'm=audio (\d+) RTP/SAVP',s)[1])
         control=port if mux else int(re.search(r'a=rtcp:(\d+)',s)[1])
         self.assertTrue(('a=rtcp-mux' if mux else 'a=rtcp:') in s, 'RTCP endpoint missing')
@@ -134,9 +136,13 @@ class MediaTest(unittest.TestCase):
 
     def exchange(self,name,mux):
         self.start()
-        codec=Codec(name,self.stack.callback)
         self.negotiate(self.offer(name,mux),mux)
         self.activate()
+        self.verify_audio(name, mux)
+        self.drain()
+
+    def verify_audio(self, name, mux):
+        codec=Codec(name,self.stack.callback)
         decoded, captured=bytearray(),bytearray()
         source=0x11223344
         lsr=0x12345678
@@ -191,6 +197,8 @@ class MediaTest(unittest.TestCase):
             body=pcm[rate//4:rate]
             self.assertGreater(energy(body,rate,hz),5500)
             self.assertLess(energy(body,rate,other),1500)
+
+    def drain(self):
         self.owner.send(b'X')
         for _ in range(128):
             packet=self.owner.recv(65536)
@@ -202,6 +210,9 @@ class MediaTest(unittest.TestCase):
             with socket.socket(socket.AF_INET,socket.SOCK_DGRAM) as unused:
                 unused.bind(('127.0.0.1',port))
 
+
+@unittest.skipUnless(WORKER, 'set Q4T_SIP_MEDIA_WORKER')
+class MediaTest(MediaFixture, unittest.TestCase):
     def test_pcmu_with_separate_rtcp(self):
         self.exchange('PCMU',False)
     def test_pcma_with_multiplexed_rtcp(self):

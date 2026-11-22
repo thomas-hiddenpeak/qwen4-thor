@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+原生电话中继在一通真实本机电话中完成接听应答、远端 ACK、G.711 加密传音和双方挂断。组合回环 24 项通过。主动挂断能区分远端 200、481 和连接丢失。下一步将接听、媒体所有权与 HTTP 客户绑定，验证语音业务。[电话对话记录](evidence/serve-sip-dialog-20261123/README.md)。
+
 独立电话媒体进程已在 Thor 上完成 Opus、PCMU、PCMA 双向加密语音和加密 RTCP 回执。9 项回环检查通过，修复关闭竞态后三种编码器共 24 次排空通过。接下来把安全媒体连接到中继接听、远端 ACK、挂断和应用会话。[验收与原失败](evidence/serve-sip-secure-media-20261123/README.md)。
 
 同一入站电话现可按部署订阅 Live、Realtime 或两种签名通知。两个独立操作 ID 共用最终回执；官方 Realtime SDK 省略拒接参数时，SIP 对端实收 603、ACK 后 HTTP 200，随后使用原 Live ID 得到 404。36.08 秒短验、后续 Chat=42 及资源回收通过。下一项接听、双向安全媒体和已接通电话控制。[真实 SDK 和 CPU 竞争验收](evidence/serve-realtime-sip-reject-20261123/README.md)。

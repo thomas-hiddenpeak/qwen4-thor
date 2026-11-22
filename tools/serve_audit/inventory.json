@@ -3403,7 +3403,7 @@
     "src/service/live_rtp_codec.h": "7b5b405fc757950c0cf023bda2df6ac0d7d103c69f8cea119c06cb70baa9a429",
     "src/service/live_sip_invite.cpp": "a191a1dc6f0cdf923e0cb1bbe9d3a6b750b16a0932dfc70bb2292729ada44076",
     "src/service/live_sip_invite.h": "66908c6c930801146bc48f8b2e2588e854958bb28b0e50851c7f746a9f3cff3e",
-    "src/service/live_sip_main.cpp": "663cb1783e8033d93714ca84c1129ca6b44869aa1994c848b8830c1c082cf2a6",
+    "src/service/live_sip_main.cpp": "7fb243eae372277447079ab216fb8da967fc42ec9d6e684c0882cc63759457eb",
     "src/service/live_webrtc_main.cpp": "6351c59a8fdfcd13c3c8191b91c9cbe4422298808ee42d8e6934152607401bf2",
     "src/service/live_webrtc_offer.cpp": "8835be926e2e4e9131c1a20dcf7968c595d6ebb1d7da3baf1dd0b7021eab2ce7",
     "src/service/live_webrtc_offer.h": "f6c39fc4e7e3a8573ad2155deddcd34209dde9774effde1df72c0c80d0cca60a",
