@@ -95,6 +95,12 @@ def add_voice_routes(paths, response, error):
     operation('post', '/v1/live/sessions/{session_id}/reject',
               {'200': {'description': 'Carrier acknowledged the SIP rejection; empty body'}},
               body=content('application/json', {'$ref':live+'session_reject'}))
+    realtime_reject = '/v1/realtime/calls/{call_id}/reject'
+    status = dict(type='integer', minimum=300, maximum=699, default=603)
+    operation('post', realtime_reject,
+              {'200': {'description': 'Carrier acknowledged the SIP rejection; empty body'}},
+              body=content('application/json', {'anyOf':[obj({'status_code':status}, []), {'type':'null'}]}))
+    paths[realtime_reject]['post']['requestBody']['required'] = False
     fork = '/v1/live/sessions/{session_id}/fork'
     operation('get', fork, upgrade,
               description='Open a new Live WebSocket from a completed recording owned by this client. Send session.start with fork overrides.')

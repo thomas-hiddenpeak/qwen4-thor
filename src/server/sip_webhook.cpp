@@ -114,10 +114,12 @@ std::string Publish(const Subscription& sub, std::string_view packet) {
   if (!command.starts_with(prefix)) return "ERROR invalid_event";
   command.remove_prefix(prefix.size());
   auto space = command.find(' ');
-  if (space != 37 || !command.starts_with("live_"))
+  const bool realtime = command.starts_with("rtc_");
+  const size_t prefix_size = realtime ? 4 : 5;
+  if ((!realtime && !command.starts_with("live_")) || space != prefix_size + 32)
     return "ERROR invalid_event";
   const auto id = command.substr(0, space);
-  if (id.substr(5).find_first_not_of("0123456789abcdef") != id.npos)
+  if (id.substr(prefix_size).find_first_not_of("0123456789abcdef") != id.npos)
     return "ERROR invalid_event";
   const std::string receipt =
       "WEBHOOK " + sub.scope + " " + std::string(id) + " ";
@@ -130,14 +132,15 @@ std::string Publish(const Subscription& sub, std::string_view packet) {
       created <= 0 || detail::NormalizeUtf8(wire) != wire ||
       !Headers(wire, &headers))
     return receipt + "invalid";
-  const std::string event_id = "evt_" + std::string(id.substr(5));
-  const auto data = Object({{"type", String("sip")},
-                            {"session_id", String(std::string(id))},
-                            {"sip_headers", std::move(headers)}});
+  const std::string event_id = "evt_" + std::string(id.substr(prefix_size));
+  auto data = Object({{"sip_headers", std::move(headers)}});
+  Set(&data, realtime ? "call_id" : "session_id", String(std::string(id)));
+  if (!realtime) Set(&data, "type", String("sip"));
   const auto body =
       OutputJson(Object({{"id", String(event_id)},
                          {"object", String("event")},
-                         {"type", String("live.transport.incoming")},
+                         {"type", String(realtime ? "realtime.call.incoming"
+                                                  : "live.transport.incoming")},
                          {"created_at", Number(created)},
                          {"data", data}}));
   const auto timestamp = std::to_string(Seconds());

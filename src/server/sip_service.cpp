@@ -18,6 +18,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/http_framing.h"
+#include "q4t/server/http_response.h"
 #include "q4t/server/mcp_policy.h"
 #include "q4t/server/native_crypto.h"
 #include "sip_child.h"
@@ -28,6 +29,7 @@ using namespace object_detail;
 using Clock = std::chrono::steady_clock;
 struct Config {
   std::string scope, ip, certs, subject, port, webhook;
+  bool live = false, realtime = false;
 };
 bool Name(std::string_view text) {
   return !text.empty() && text.size() <= 128 &&
@@ -68,6 +70,23 @@ bool Load(const std::string& file, std::vector<Config>* configs) {
     if (webhook) {
       if (!webhook->IsObject() || webhook->Has("scope")) return false;
       auto subscription = *webhook;
+      if (const auto* events = webhook->Find("event_types")) {
+        if (!events->IsArray() || events->array.empty() ||
+            events->array.size() > 2)
+          return false;
+        for (const auto& type : events->array) {
+          if (type.str == "live.transport.incoming" && !c.live)
+            c.live = true;
+          else if (type.str == "realtime.call.incoming" && !c.realtime)
+            c.realtime = true;
+          else
+            return false;
+        }
+        std::erase_if(subscription.object,
+                      [](const auto& p) { return p.first == "event_types"; });
+      } else {
+        c.live = true;
+      }
       Set(&subscription, "scope", String(c.scope));
       c.webhook = OutputJson(subscription);
       if (c.webhook.size() > 32768) return false;
@@ -103,7 +122,8 @@ class SipService::Trunk {
           !publisher_.Send(c->webhook) || !publisher_.Ready("READY " + scope_))
         return false;
       args.push_back("4");
-      publish_ = true;
+      live_ = c->live;
+      realtime_ = c->realtime;
     }
     CryptoWipe(&c->webhook);
     if (!signal_.Start(engine.parent_path() / "q4t-live-sip", std::move(args),
@@ -125,13 +145,17 @@ class SipService::Trunk {
     if (!online_.load() || scope != scope_) return {};
     std::unique_lock lock(mutex_);
     auto it = calls_.find(id);
+    if (id.starts_with("rtc_"))
+      it = std::find_if(calls_.begin(), calls_.end(), [&](const auto& entry) {
+        return entry.second->realtime_id == id;
+      });
     if (it == calls_.end()) return {};
     auto call = it->second;
     if (call->requested || call->final)
       return Error(409, "sip_call_conflict", "Call has a final disposition");
     call->requested = status;
-    if (!signal_.Send("REJECT " + std::string(id) + " " + scope_ + " " +
-                      std::string(id) + " " + std::to_string(status))) {
+    if (!signal_.Send("REJECT " + it->first + " " + scope_ + " " + it->first +
+                      " " + std::to_string(status))) {
       call->requested = 0;  // No packet committed to the local channel.
       return Error(503, "sip_control_unavailable", "Call control unavailable");
     }
@@ -146,6 +170,7 @@ class SipService::Trunk {
 
  private:
   struct Call {
+    std::string realtime_id;
     int requested = 0, final = 0, ack = 0;
     bool submitted = false, conflict = false, done = false;
   };
@@ -176,10 +201,7 @@ class SipService::Trunk {
       }
       return;
     }
-    if (word[1] != scope_ || !word[2].starts_with("live_") ||
-        word[2].size() != 37)
-      return;
-    std::string id(word[2]);
+    if (word[1] != scope_) return;
     if (word[0] == "WEBHOOK") {
       if (word[3] == "delivered")
         ++delivered_;
@@ -187,13 +209,19 @@ class SipService::Trunk {
         ++webhook_failures_;
       return;
     }
+    if (!word[2].starts_with("live_") || word[2].size() != 37) return;
+    std::string id(word[2]);
     if (word[0] == "INCOMING") {
       if (lf == packet.npos || calls_.size() >= 64 || !current_scope_(scope_)) {
         signal_.Send("REJECT denied " + scope_ + " " + id + " 480");
         return;
       }
-      if (calls_.emplace(id, std::make_shared<Call>()).second && publish_ &&
-          !signal_.Send("PUBLISH hook " + scope_ + " " + id))
+      auto call = std::make_shared<Call>();
+      if (realtime_) call->realtime_id = detail::NewRequestId("rtc_");
+      if (!calls_.emplace(id, call).second) return;
+      const auto publish = "PUBLISH hook " + scope_ + " " + id;
+      if (live_ && !signal_.Send(publish)) ++webhook_failures_;
+      if (realtime_ && !signal_.Send(publish + " " + call->realtime_id))
         ++webhook_failures_;
       return;
     }
@@ -229,7 +257,13 @@ class SipService::Trunk {
       if (size < 0 && (errno == EINTR || errno == EAGAIN)) continue;
       if (size <= 0 || size_t(size) > buffer.size()) break;
       std::lock_guard lock(mutex_);
-      Event({buffer.data(), size_t(size)});
+      try {
+        Event({buffer.data(), size_t(size)});
+      } catch (...) {
+        // Allocation or identity generation failure belongs to this trunk.
+        signal_.Send("STOP");
+        break;
+      }
     }
     std::lock_guard lock(mutex_);
     online_ = false;
@@ -246,7 +280,7 @@ class SipService::Trunk {
   std::map<std::string, std::shared_ptr<Call>, std::less<>> calls_;
   std::atomic<bool> online_{false};
   std::atomic<uint64_t> webhook_failures_{0}, delivered_{0};
-  bool publish_ = false;
+  bool live_ = false, realtime_ = false;
   std::jthread reader_;
 };
 

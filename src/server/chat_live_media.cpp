@@ -68,7 +68,7 @@ struct MediaOwner {
 };
 }  // namespace
 
-void ChatServer::HandleLiveSipReject(int fd, std::string_view id,
+void ChatServer::HandleSipReject(int fd, std::string_view id,
                                      const std::string& body) {
   const auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Scoped() || !clients_.OwnsIdentity(http->Client())) {
@@ -76,9 +76,16 @@ void ChatServer::HandleLiveSipReject(int fd, std::string_view id,
     return;
   }
   Json request;
-  if (!io::ParseJson(body, &request, true, {8, 32, 4096, true})) {
+  const bool realtime = id.starts_with("rtc_");
+  if (!(realtime && body.empty()) &&
+      !io::ParseJson(body, &request, true, {8, 32, 4096, true})) {
     detail::SendError(fd, 400, "Invalid SIP rejection JSON", {}, "invalid_request");
     return;
+  }
+  if (realtime) {
+    if (request.IsNull()) request = Object({});
+    if (request.IsObject() && !request.Has("status_code"))
+      Set(&request, "status_code", Number(603));
   }
   ChatPlanError error;
   if (auto status = ValidateLiveWireShape(request, LiveShape::kSessionReject, &error);

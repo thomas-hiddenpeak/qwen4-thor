@@ -151,12 +151,13 @@ def current_surface(root):
         routes.append((fork, method))
         native_routes.append((method, fork, 'false'))
     reject = '/v1/live/sessions/{session_id}/reject'
-    if ('HandleLiveSipReject(fd, LiveResourceId(path, "/reject"), body)' not in dispatch or
-            'server::IsLiveSipReject(method, path)' not in native or
+    if ('HandleSipReject(fd, SipRejectId(path), body)' not in dispatch or
+            'server::IsSipReject(method, path)' not in native or
             'sip_service_.Reject(http->Client().Id()' not in media):
         raise ValueError('review scoped SIP rejection and native routing')
-    routes.append((reject, 'POST'))
-    native_routes.append(('POST', reject, 'true'))
+    for path in (reject, '/v1/realtime/calls/{call_id}/reject'):
+        routes.append((path, 'POST'))
+        native_routes.append(('POST', path, 'true'))
     traces = [("GET", "/v1/realtime/traces"),
               ("GET", "/v1/realtime/traces/{trace_id}"),
               ("DELETE", "/v1/realtime/traces/{trace_id}")]

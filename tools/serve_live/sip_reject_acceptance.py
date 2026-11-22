@@ -65,13 +65,17 @@ class Stage(base.Stage):
         with (self.out/'subscriber.log').open('xb') as log:
             self.subscriber = subprocess.Popen(
                 ['node', str(ROOT/'tools/serve_live/sip_webhook_peer.mjs'), str(sdk)],
-                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=log, text=True,
+                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=log, bufsize=0,
                 env={**os.environ, 'NODE_EXTRA_CA_CERTS':self.plan['tls']['certificate']})
         self.history[self.subscriber.pid] = base.lifecycle.guard.processes()[self.subscriber.pid]
+        self.dual = self.plan.get('dual', False)
+        event_types = ['live.transport.incoming']
+        if self.dual:
+            event_types.append('realtime.call.incoming')
         api = dict(baseURL=f"https://127.0.0.1:{self.plan['public_port']}/v1",
-                   ownerKey=self.keys['alpha'], otherKey=self.keys['beta'])
-        self.subscriber.stdin.write(json.dumps(dict(cert=str(hook_cert), key=str(hook_key),
-            secret=secret, api=api, responses=[204]))+'\n')
+                   ownerKey=self.keys['alpha'], otherKey=self.keys['beta'], eventType=event_types[-1])
+        self.subscriber.stdin.write((json.dumps(dict(cert=str(hook_cert), key=str(hook_key),
+            secret=secret, api=api, responses=[204]*len(event_types)))+'\n').encode())
         self.subscriber.stdin.flush()
         port = self.receive()['port']
         network = dict(allow_http=False, public_networks=False, allowed_hosts=['localhost'],
@@ -81,6 +85,8 @@ class Stage(base.Stage):
                       certificate_dir=str(listener), peer_subject=PEER,
                       webhook=dict(url=f'https://localhost:{port}/calls', secret=secret,
                                    network=network))
+        if self.dual:
+            config['webhook']['event_types'] = event_types
         save(self.out/'trunks.json', dict(trunks=[config]))
         require(sha(self.plan['sip_binary']) == self.plan['sip_sha256'], 'SIP binary drift')
         with socket.socket() as sock:
@@ -125,24 +131,35 @@ class Stage(base.Stage):
                     and event['data']['session_id'].startswith('live_'), 'authenticated incoming event')
             require(any(h['name'].lower() == 'call-id' and h['value'] == token+'@peer.test'
                         for h in event['data']['sip_headers']), 'webhook refers to this transaction')
+            notices = [dict(type=event['type'], id=event['id'], sha256=notice['digest'])]
+            if self.dual:
+                second = self.receive()
+                rtc = second['event']
+                require(rtc['type'] == 'realtime.call.incoming' and rtc['id'] != event['id'] and
+                        set(rtc['data']) == {'sip_headers','call_id'} and
+                        rtc['data']['call_id'].startswith('rtc_') and
+                        rtc['data']['sip_headers'] == event['data']['sip_headers'],
+                        'independent Realtime handle for same incoming call')
+                notices.append(dict(type=rtc['type'], id=rtc['id'], sha256=second['digest']))
+            disposition = 603 if self.dual else 486
             if not sock.pending():
                 ready, _, _ = select.select([sock, self.subscriber.stdout], [], [], 9)
                 if self.subscriber.stdout in ready:
                     self.receive()
                     raise AssertionError('SDK completed before carrier rejection')
-            require(peer.response(486, 'INVITE', token) == tag, 'rejection transaction')
+            require(peer.response(disposition, 'INVITE', token) == tag, 'rejection transaction')
             require(not select.select([self.subscriber.stdout], [], [], .20)[0],
                     'SDK completed before carrier ACK')
             peer.send('ACK', token, to_tag=tag)
             controls = self.receive()['control']
             require(controls == dict(foreign=404, invalid=400, owner=200, empty=True, retired=404),
                     'public SDK disposition')
-        after = self.health(1)
+        after = self.health(len(notices))
         self.same_model()
         self.core('core-after')
         self.snapshot('final-drained')
-        save(self.out/'carrier.json', dict(sip=[180,486,'ACK'], controls=controls,
-            webhook=dict(id=event['id'], sha256=notice['digest']), core='42',
+        save(self.out/'carrier.json', dict(sip=[180,disposition,'ACK'], controls=controls,
+            webhooks=notices, core='42',
             before=before, after=after))
 
     def cleanup(self):
@@ -169,6 +186,7 @@ def main():
     parser.add_argument('action', choices=['prepare','run','finalize'])
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--qualification', type=Path)
+    parser.add_argument('--dual', action='store_true', help='prepare both event types and reject via Realtime')
     args = parser.parse_args()
     out = args.output.resolve()
     require(out.is_relative_to(ROOT/'.q4t-work'), 'private evidence path')
@@ -176,7 +194,7 @@ def main():
         live.prepare(out, args.qualification)
         plan = read(out/'plan.json')
         sip = Path(plan['binary']).with_name('q4t-live-sip')
-        plan.update(schema=SCHEMA, limits=LIMITS, port=18811, operations_port=18812,
+        plan.update(schema=SCHEMA, limits=LIMITS, dual=args.dual, port=18811, operations_port=18812,
                     public_port=18813, sip_port=18814, sip_binary=str(sip), sip_sha256=sha(sip))
         for path in sorted((ROOT/'src/service').glob('live_sip*')):
             plan['sources'][str(path.relative_to(ROOT))] = sha(path)

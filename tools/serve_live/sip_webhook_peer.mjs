@@ -18,7 +18,8 @@ input.on('line', line => {
 const config = await configuration;
 const sdk = new OpenAI({ apiKey: 'unused-local-verifier', webhookSecret: config.secret });
 const emit = value => console.log(JSON.stringify(value));
-async function rejectCall(id) {
+let liveId;
+async function rejectCall(id, realtime) {
   const client = apiKey => new OpenAI({ apiKey, baseURL: config.api.baseURL,
     maxRetries: 0, timeout: 8000 });
   const owner = client(config.api.ownerKey);
@@ -30,12 +31,14 @@ async function rejectCall(id) {
     }
     throw new Error('unexpected success');
   }
-  const foreign = await refused(other.live.sessions.reject(id, {status_code: 486}), 404);
-  const invalid = await refused(owner.live.sessions.reject(id, {status_code: 299}), 400);
-  const {data, response} = await owner.live.sessions.reject(id, {status_code: 486}).withResponse();
+  const calls = client => realtime ? client.realtime.calls : client.live.sessions;
+  const foreign = await refused(calls(other).reject(id, {status_code: 486}), 404);
+  const invalid = await refused(calls(owner).reject(id, {status_code: 299}), 400);
+  const operation = realtime ? calls(owner).reject(id) : calls(owner).reject(id, {status_code: 486});
+  const {data, response} = await operation.withResponse();
   assert.equal(response.status, 200);
   assert.equal(data, undefined);
-  const retired = await refused(owner.live.sessions.reject(id, {status_code: 486}), 404);
+  const retired = await refused(owner.live.sessions.reject(liveId, {status_code: 486}), 404);
   emit({control: {foreign, invalid, owner: response.status, empty: true, retired}});
 }
 const server = https.createServer({
@@ -62,7 +65,9 @@ const server = https.createServer({
     let waiting;
     if (action === 'hold') waiting = new Promise(resolve => { release = resolve; });
     emit({ event, digest: createHash('sha256').update(body).digest('hex') });
-    if (config.api) await rejectCall(event.data.session_id);
+    if (event.type === 'live.transport.incoming') liveId = event.data.session_id;
+    if (config.api && event.type === (config.api.eventType ?? 'live.transport.incoming'))
+      await rejectCall(event.data.call_id ?? event.data.session_id, !!event.data.call_id);
     if (waiting) await waiting;
     if (action === 307) res.setHeader('Location', '/other');
     res.writeHead(action === 'hold' ? 204 : action, { 'Content-Length': '0' });

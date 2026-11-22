@@ -158,3 +158,7 @@ L05 已从真实来电投递 `live.transport.incoming` 签名 HTTPS 通知。接
 每个监听端口绑定一个已配置的客户。TLS 目录中的 `agent.pem` 包含监听证书和私钥，`cafile.pem` 保存受信中继 CA。`peer_subject` 约束来电中继的证书身份。通知接收端先用签名密钥核验原始 HTTP 正文与请求头，再用该客户的 API Key 调用 `client.live.sessions.reject(event.data.session_id, {status_code: 486})`。接收端可在拒接完成后返回 204。
 
 拒接码范围为 300–699。收到同一 SIP 事务的 ACK 后 HTTP 返回空正文 200。其他客户或已结束的来电返回 404；已经提交、尚待确认的拒接返回 409；五秒内缺少最终回执返回 504，此时电话对端可能已收到拒接。本机运维端点 `GET /v1/config` 的 `sip` 字段列出已配置与就绪中继数量、启动失败数、成功通知数与通知失败数。SIP 接听、通话媒体、转接及托管发行另有待验收项。
+
+同一中继也可接收 Realtime 来电通知。给上例的 `webhook` 增加 `"event_types": ["live.transport.incoming", "realtime.call.incoming"]` 即可订阅两种事件；仅列其中一种则只投递该事件。旧配置省略此字段时沿用 Live 通知。两种事件带有独立的签名事件 ID、相同的来电头字段和原始创建时间。Live 事件给出 `data.session_id`，Realtime 事件给出 `data.call_id`。接收端将对应字段原样传回各自的接口。
+
+在 Realtime 客户端调用 `client.realtime.calls.reject(event.data.call_id)` 时，中继默认发送 603 Decline；也可显式提交 `{status_code: 486}`。Live 与 Realtime 共享同一 SIP 事务的最终处置和远端 ACK。已经从任一入口发出最终答复时，另一入口的处置返回 409；事务确认、注销后两个 ID 都返回 404。

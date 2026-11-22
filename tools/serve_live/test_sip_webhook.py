@@ -32,12 +32,12 @@ class SubscriberFixture:
         self.secret = 'whsec_' + base64.b64encode(secrets.token_bytes(32)).decode()
         self.peer_server = subprocess.Popen(
             ['node', str(ROOT/'tools/serve_live/sip_webhook_peer.mjs'), SDK],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=0,
             stderr=self.log)
         self.stack.callback(self.stop_process, self.peer_server)
-        self.peer_server.stdin.write(json.dumps(dict(
+        self.peer_server.stdin.write((json.dumps(dict(
             secret=self.secret, cert=str(self.hook_cert), key=str(self.hook_key),
-            responses=responses))+'\n')
+            responses=responses))+'\n').encode())
         self.peer_server.stdin.flush()
         return self.subscriber()['port']
 
@@ -72,6 +72,7 @@ class WebhookTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
             'test_explicit_retry_preserves_event': [307, 503, 204],
             'test_callback_independent_of_final_ack': ['hold'],
             'test_worker_exit_leaves_trunk_running': ['hold'],
+            'test_realtime_delivery_does_not_consume_live_retry': [503, 204, 204],
         }.get(self._testMethodName, [204])
         port = self.start_subscriber(responses)
         local, child = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
@@ -97,8 +98,9 @@ class WebhookTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
             self.assertEqual(local.recv(256).decode(), 'READY ' + SCOPE)
             yield local
 
-    def publish(self, live, state='submitted', scope=SCOPE):
-        self.control.send(f'PUBLISH req {scope} {live}'.encode())
+    def publish(self, live, state='submitted', scope=SCOPE, rtc=''):
+        suffix = ' ' + rtc if rtc else ''
+        self.control.send(f'PUBLISH req {scope} {live}{suffix}'.encode())
         self.assertEqual(self.event(), ['RESULT', 'req', state])
 
     def receipt(self, live, *state):
@@ -151,6 +153,23 @@ class WebhookTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
             self.receipt(live, 'delivered' if code == 204 else 'rejected', str(code))
         self.assertEqual(receipts, [receipts[0]]*3)
 
+    def test_realtime_delivery_does_not_consume_live_retry(self):
+        _, _, live = self.invite(self.peer(self.good))
+        rtc = 'rtc_' + secrets.token_hex(16)
+        self.publish(live)
+        first = self.subscriber()
+        self.receipt(live, 'rejected', '503')
+        self.publish(live, rtc=rtc)
+        event = self.subscriber()['event']
+        self.assertEqual(event['data']['call_id'], rtc)
+        self.receipt(rtc, 'delivered', '204')
+        self.publish(live, 'conflict', rtc='rtc_'+secrets.token_hex(16))
+        self.publish(live, 'delivered', rtc=rtc)
+        self.publish(live)
+        self.assertEqual(self.subscriber(), first)
+        self.receipt(live, 'delivered', '204')
+        self.assertFalse(select.select([self.peer_server.stdout], [], [], .12)[0])
+
     def test_callback_independent_of_final_ack(self):
         peer = self.peer(self.good)
         token, tag, live = self.invite(peer)
@@ -161,7 +180,7 @@ class WebhookTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
         peer.response(486, 'INVITE', token)
         peer.send('ACK', token, to_tag=tag)
         self.assertEqual(self.event(), ['ACK', SCOPE, live, '486'])
-        self.peer_server.stdin.write('release\n')
+        self.peer_server.stdin.write(b'release\n')
         self.peer_server.stdin.flush()
         self.receipt(live, 'delivered', '204')
 

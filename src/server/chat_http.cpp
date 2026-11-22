@@ -368,7 +368,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       }
       if (IsTranscriptionTarget(path))
         headers.body_limit = std::min(headers.body_limit, kAsrFormBytes);
-      if (IsLiveSipReject(method, path))
+      if (IsSipReject(method, path))
         headers.body_limit = std::min<uint64_t>(headers.body_limit, 4096);
       if (IsCancellationRequest(method, path))
         lease.SelectBudget(cancel_body_budget_);
@@ -499,7 +499,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                     headers.error_param);
       return false;
     }
-    if (IsLiveSipReject(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
+    if (IsSipReject(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
@@ -509,7 +509,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       if (method == "POST" && !((IsResponseCancellation(method, path) ||
                                  IsResponsesTokenCount(path) ||
                                  IsBatchCancellation(method, path) ||
-                                 IsVectorStoreCancellation(method, path)) &&
+                                 IsVectorStoreCancellation(method, path) ||
+                                 (IsSipReject(method, path) &&
+                                  SipRejectId(path).starts_with("rtc_"))) &&
                                 body.empty() && headers.content_type.empty())) {
         std::string type = headers.content_type;
         for (char& c : type)
@@ -536,8 +538,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     context.SetKeepAlive(headers.keep_alive && allow_keep_alive &&
                             !stop_requested_.load(), headers.http11);
     dispatch_started = true;
-    if (IsLiveSipReject(method, path))
-      HandleLiveSipReject(fd, LiveResourceId(path, "/reject"), body);
+    if (IsSipReject(method, path))
+      HandleSipReject(fd, SipRejectId(path), body);
     else if (IsLiveMediaCreate(method, path))
       HandleLiveMediaCreate(fd, LiveForkId(path), body, admission);
     else if (IsRealtimeTarget(path))

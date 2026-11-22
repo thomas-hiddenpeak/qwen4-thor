@@ -39,6 +39,13 @@ class VoiceContract(unittest.TestCase):
         for value in ({}, {'status_code':299}, {'status_code':700}, {'status_code':486.5},
                       {'status_code':'486'}, {'status_code':486,'extra':True}):
             self.assertFalse(valid(rejection, value))
+        rtc = self.paths['/v1/realtime/calls/{call_id}/reject']['post']
+        self.assertFalse(rtc['requestBody']['required'])
+        valid_rtc = Draft202012Validator(rtc['requestBody']['content']['application/json']['schema']).is_valid
+        for value in (None, {}, {'status_code':603}, {'status_code':300}):
+            self.assertTrue(valid_rtc(value))
+        for value in ([], {'status_code':299}, {'status_code':700}, {'extra':True}):
+            self.assertFalse(valid_rtc(value))
         fork = self.paths['/v1/live/sessions/{session_id}/fork']
         self.assertEqual(set(fork['get']['responses']), {'101','default'})
         self.assertEqual(set(fork['post']['responses']), {'201','default'})

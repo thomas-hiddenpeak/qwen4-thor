@@ -405,7 +405,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
     *control = false;
     return true;
   }
-  if (server::IsLiveSipReject(method, path)) {
+  if (server::IsSipReject(method, path)) {
     *control = true;
     return true;
   }

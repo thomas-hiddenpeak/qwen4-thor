@@ -22,7 +22,12 @@ class OwnerTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
         self.stack = contextlib.ExitStack()
         self.addCleanup(self.stack.close)
         self.log = self.stack.enter_context((self.root/(self._testMethodName+'.log')).open('wb'))
-        port = self.start_subscriber([204])
+        events = {
+            'test_two_signed_events_share_one_carrier_disposition':
+                ['live.transport.incoming','realtime.call.incoming'],
+            'test_realtime_only_subscription': ['realtime.call.incoming'],
+        }.get(self._testMethodName)
+        port = self.start_subscriber([204]*(len(events) if events else 1))
         with socket.socket() as unused:
             unused.bind(('127.0.0.1',0))
             self.port = unused.getsockname()[1]
@@ -30,9 +35,11 @@ class OwnerTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
                        allowed_networks=['127.0.0.1/32','::1/128'], ports=[port],
                        timeout_ms=3000, max_redirects=0, ca_file=str(self.ca[0]))
         file = self.root/'fixture.json'
+        hook = dict(url=f'https://localhost:{port}/calls', secret=self.secret, network=network)
+        if events:
+            hook['event_types'] = events
         save(file, dict(trunks=[dict(client_id=SCOPE, listen_ip='127.0.0.1', port=self.port,
-            certificate_dir=str(self.pki), peer_subject=PEER, webhook=dict(
-                url=f'https://localhost:{port}/calls', secret=self.secret, network=network))]))
+            certificate_dir=str(self.pki), peer_subject=PEER, webhook=hook)]))
         self.owner = subprocess.Popen([OWNER, '--sip-owner-fixture', str(file), SCOPE],
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=self.log, text=True)
         self.stack.callback(self.stop_owner)
@@ -98,3 +105,49 @@ class OwnerTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
             self.assertEqual(status, 409)
             time.sleep(.01)
         self.fail('acknowledged call was not retired')
+
+    def test_two_signed_events_share_one_carrier_disposition(self):
+        peer = self.peer(self.good)
+        token = secrets.token_hex(8)
+        peer.send('INVITE', token)
+        tag = peer.response(180, 'INVITE', token)
+        first, second = self.subscriber()['event'], self.subscriber()['event']
+        self.assertEqual(first['type'], 'live.transport.incoming')
+        self.assertEqual(second['type'], 'realtime.call.incoming')
+        self.assertNotEqual(first['id'], second['id'])
+        self.assertEqual(first['created_at'], second['created_at'])
+        self.assertEqual(first['data']['sip_headers'], second['data']['sip_headers'])
+        self.assertEqual(set(second['data']), {'call_id','sip_headers'})
+        live, rtc = first['data']['session_id'], second['data']['call_id']
+        self.assertRegex(rtc, r'^rtc_[0-9a-f]{32}$')
+        self.assertNotEqual(live[5:], rtc[4:])
+        self.command(f'reject foreign {rtc} 603 100')
+        self.assertEqual(self.read_owner(), 404)
+        self.command(f'reject {SCOPE} {rtc} 603 125')
+        peer.response(603, 'INVITE', token)
+        self.assertEqual(self.read_owner(), 504)
+        self.command(f'reject {SCOPE} {live} 486 100')
+        self.assertEqual(self.read_owner(), 409)
+        peer.send('ACK', token, to_tag=tag)
+        end = time.monotonic()+2
+        while time.monotonic() < end:
+            self.command(f'reject {SCOPE} {live} 486 100')
+            if self.read_owner() == 404:
+                self.command(f'reject {SCOPE} {rtc} 486 100')
+                self.assertEqual(self.read_owner(), 404)
+                return
+            time.sleep(.01)
+        self.fail('two handles must retire together')
+
+    def test_realtime_only_subscription(self):
+        peer = self.peer(self.good)
+        token = secrets.token_hex(8)
+        peer.send('INVITE', token)
+        tag = peer.response(180, 'INVITE', token)
+        event = self.subscriber()['event']
+        self.assertEqual(event['type'], 'realtime.call.incoming')
+        self.command(f"reject {SCOPE} {event['data']['call_id']} 486 2000")
+        peer.response(486, 'INVITE', token)
+        peer.send('ACK', token, to_tag=tag)
+        self.assertEqual(self.read_owner(), 200)
+        self.assertFalse(select.select([self.peer_server.stdout], [], [], .15)[0])

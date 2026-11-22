@@ -124,6 +124,8 @@ struct Call {
   std::string webhook;
   bool delivered = false;
   int final_status = 0;
+  std::string realtime_id{};
+  bool realtime_delivered = false;
 };
 }  // namespace
 
@@ -204,22 +206,35 @@ class SipTrunk {
     publishing_.clear();
   }
 
-  std::string Publish(const Call& call) {
-    if (call.delivered) return "delivered";
-    if (publishing_.contains(call.id)) return "in_flight";
+  std::string Publish(Call& call, std::string_view realtime_id) {
+    if (!realtime_id.empty()) {
+      if (realtime_id.size() != 36 || !realtime_id.starts_with("rtc_") ||
+          realtime_id.substr(4).find_first_not_of("0123456789abcdef") !=
+              realtime_id.npos)
+        return "invalid_id";
+      if (!call.realtime_id.empty() && call.realtime_id != realtime_id)
+        return "conflict";
+      call.realtime_id = realtime_id;
+    }
+    const bool realtime = !realtime_id.empty();
+    const auto& id = realtime ? call.realtime_id : call.id;
+    if (realtime ? call.realtime_delivered : call.delivered) return "delivered";
+    if (publishing_.contains(id)) return "in_flight";
     if (webhook_fd_ < 0) return "unavailable";
-    if (publishing_.size() >= kMaxCalls) return "busy";
+    if (publishing_.size() >= kMaxCalls * 2) return "busy";
+    const std::string packet =
+        "EVENT " + scope_ + " " + id + " " + call.webhook;
     ssize_t n;
     do {
-      n = send(webhook_fd_, call.webhook.data(), call.webhook.size(),
+      n = send(webhook_fd_, packet.data(), packet.size(),
                MSG_NOSIGNAL | MSG_DONTWAIT);
     } while (n < 0 && errno == EINTR);
     if (n < 0 && (errno == EAGAIN || errno == ENOBUFS)) return "busy";
-    if (n != static_cast<ssize_t>(call.webhook.size())) {
+    if (n != static_cast<ssize_t>(packet.size())) {
       DisableWebhook();
       return "unavailable";
     }
-    publishing_.insert(call.id);
+    publishing_.insert(id);
     return "submitted";
   }
 
@@ -255,8 +270,11 @@ class SipTrunk {
     }
     self->publishing_.erase(id);
     if (delivered) {
-      for (auto& entry : self->calls_)
+      for (auto& entry : self->calls_) {
         if (entry.second.id == id) entry.second.delivered = true;
+        if (entry.second.realtime_id == id)
+          entry.second.realtime_delivered = true;
+      }
     }
     self->Notify(packet);
     return 0;
@@ -334,8 +352,7 @@ class SipTrunk {
           std::chrono::duration_cast<std::chrono::seconds>(
               std::chrono::system_clock::now().time_since_epoch())
               .count();
-      webhook = "EVENT " + self->scope_ + " " + id + " " +
-                std::to_string(created) + "\n" + std::string(*headers);
+      webhook = std::to_string(created) + "\n" + std::string(*headers);
     }
     self->calls_.emplace(request, Call{id, Clock::now() + kAnswerTime,
                                        std::move(*offer), std::move(webhook)});
@@ -409,8 +426,8 @@ class SipTrunk {
     const bool offer = args[0] == "OFFER";
     const bool publish = args[0] == "PUBLISH";
     if (!packet.empty() || !Token(args[1]) ||
-        !((offer || publish) ? count == 4
-                             : (args[0] == "REJECT" && count == 5))) {
+        !((offer && count == 4) || (publish && (count == 4 || count == 5)) ||
+          (args[0] == "REJECT" && count == 5))) {
       Notify("ERROR invalid_command");
       return;
     }
@@ -423,8 +440,8 @@ class SipTrunk {
       return;
     }
     if (publish) {
-      Notify(result +
-             (it->second.final_status ? "conflict" : Publish(it->second)));
+      Notify(result + (it->second.final_status ? "conflict"
+                                               : Publish(it->second, args[4])));
       return;
     }
     if (offer) {

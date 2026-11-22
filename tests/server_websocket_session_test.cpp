@@ -572,7 +572,12 @@ Q4T_TEST(live_sip_reject_preserves_control_admission) {
             HttpConnectionClass::kControl);
   Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
             HttpConnectionClass::kBusiness);
-  for (const auto bad : {"/v1/live/sessions/live_/reject",
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/realtime/calls/rtc_abc/reject") ==
+            HttpConnectionClass::kControl);
+  for (const auto bad : {"/v1/realtime/calls/live_a/reject",
+                         "/v1/live/sessions/rtc_a/reject",
+                         "/v1/realtime/calls/rtc_/reject",
+                         "/v1/live/sessions/live_/reject",
                          "/v1/live/sessions/live_a/b/reject",
                          "/v1/live/sessions/live_a/reject/"})
     Q4T_CHECK(ClassifyHttpConnection("POST", bad) ==

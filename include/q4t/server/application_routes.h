@@ -25,8 +25,18 @@ inline std::string_view LiveResourceId(std::string_view path, std::string_view s
              : std::string_view{};
 }
 
-inline bool IsLiveSipReject(std::string_view method, std::string_view path) {
-  return method == "POST" && !LiveResourceId(path, "/reject").empty();
+inline std::string_view SipRejectId(std::string_view path) {
+  constexpr std::string_view prefix = "/v1/realtime/calls/";
+  constexpr std::string_view suffix = "/reject";
+  if (!path.starts_with(prefix)) return LiveResourceId(path, suffix);
+  path.remove_prefix(prefix.size());
+  if (!path.ends_with(suffix)) return {};
+  path.remove_suffix(suffix.size());
+  return path.starts_with("rtc_") && path.size() > 4 && ValidApplicationId(path)
+             ? path : std::string_view{};
+}
+inline bool IsSipReject(std::string_view method, std::string_view path) {
+  return method == "POST" && !SipRejectId(path).empty();
 }
 
 inline std::string_view LiveRecordingId(std::string_view path) {

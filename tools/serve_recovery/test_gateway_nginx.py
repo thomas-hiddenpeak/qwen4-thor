@@ -111,7 +111,7 @@ class Stack:
                 roots = ('/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
-                         '/v1/audio/voices', '/v1/realtime/traces', '/v1/live/sessions')
+                         '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/calls', '/v1/live/sessions')
                 return (any(path == root or path.startswith(root+'/')
                             for root in roots) or
                         (method == 'POST' and
@@ -423,7 +423,7 @@ class NginxTests(unittest.TestCase):
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
                               vector_store_id='vs_1', tunnel_id='tunnel_local', consent_id='cons_1',
-                              voice_id='voice_1', trace_id='trace_1', session_id='live_1')
+                              voice_id='voice_1', trace_id='trace_1', session_id='live_1', call_id='rtc_1')
             self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
                                  identities.keys())
             path = template.format(**identities)
