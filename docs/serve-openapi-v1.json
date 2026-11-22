@@ -6787,6 +6787,67 @@
         "description": "Start a native primary Live WebSocket with session.start."
       }
     },
+    "/v1/live/sessions/{session_id}/attach": {
+      "get": {
+        "operationId": "get_v1_live_sessions_session_id_attach",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          },
+          {
+            "name": "graceful_close",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "101": {
+            "description": "Authenticated WebSocket upgrade",
+            "headers": {
+              "Upgrade": {
+                "schema": {
+                  "const": "websocket"
+                }
+              },
+              "Sec-WebSocket-Accept": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated sideband for a running media session. Replays three seconds of events and audio before live delivery."
+      }
+    },
     "/v1/live/sessions/{session_id}/content": {
       "get": {
         "operationId": "get_v1_live_sessions_session_id_content",

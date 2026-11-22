@@ -78,6 +78,7 @@ class LiveSession {
   ObjectReply StartMedia(const io::Json& configuration);
   bool Message(WebSocketOpcode opcode, std::string_view message,
                const LiveMediaPolicy* frontend = nullptr);
+  bool SidebandMessage(WebSocketOpcode opcode, std::string_view message);
   bool Tick();
   void Cancel() noexcept;
   void Join() noexcept;
@@ -102,6 +103,8 @@ class LiveSession {
     Clock::time_point deadline;
     bool terminal;
   };
+  bool HandleMessage(WebSocketOpcode opcode, std::string_view message,
+                     const LiveMediaPolicy* frontend, bool sideband);
   bool AdvanceClock();
   bool Fail() noexcept;
   bool Flush();

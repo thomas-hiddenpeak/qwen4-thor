@@ -92,6 +92,9 @@ def add_voice_routes(paths, response, error):
               body=content('application/json', {'$ref':live+'media_create'}))
     operation('get','/v1/live/sessions',upgrade,
               description='Start a native primary Live WebSocket with session.start.')
+    operation('get','/v1/live/sessions/{session_id}/attach',upgrade,
+              parameters=[param('graceful_close','query',dict(type='boolean'))],
+              description='Authenticated sideband for a running media session. Replays three seconds of events and audio before live delivery.')
     operation('get','/v1/live/sessions/{session_id}/content',{'200':dict(
         description='Completed owner-scoped stereo PCM WAV, input left and output right',
         headers={'Content-Length':dict(schema=dict(type='integer',minimum=44))},

@@ -16,8 +16,9 @@ constexpr size_t kDataBytes = 4ULL << 20, kPcmBytes = 4ULL << 20;
 LiveMediaCall::LiveMediaCall(std::string id, uint64_t expires_at,
                              bool expect_channel,
                              LiveSessionCallbacks callbacks,
-                             LiveSessionLimits limits, Send send)
+                             LiveSessionLimits limits, Send send, std::shared_ptr<LiveSideband> sideband)
     : send_(std::move(send)),
+      sideband_(std::move(sideband)),
       expect_channel_(expect_channel),
       session_(std::move(id), expires_at,
                {kWebSocketMaximumLimit, [this] { return failed_; },
@@ -59,7 +60,9 @@ bool LiveMediaCall::Publish(std::string_view wire) {
       return false;
     queued_pcm_ += pcm.size();
     media_.push_back(std::move(pcm));
-  } else if (expect_channel_ && !closed_ && frontend_.AllowsServer(event)) {
+  } else {
+    if (sideband_) sideband_->Publish(wire, Clock::now());
+    if (!expect_channel_ || closed_ || !frontend_.AllowsServer(event)) return true;
     if (wire.size() > kPacketBytes || wire.size() > kDataBytes - queued_data_ ||
         data_.size() >= 512) {
       DropData();
@@ -101,6 +104,7 @@ bool LiveMediaCall::Receive(char type, std::string_view payload) {
   std::string encoded;
   if (!io::EncodeBase64(payload, kWebSocketMessageLimit, &encoded))
     return false;
+  if (sideband_) sideband_->InputAudio(encoded);
   return session_.Message(
       WebSocketOpcode::kText,
       OutputJson(Object({{"type", String("session.input_audio.append")},
@@ -108,7 +112,13 @@ bool LiveMediaCall::Receive(char type, std::string_view payload) {
 }
 
 bool LiveMediaCall::Tick(Clock::time_point now) {
-  if (failed_ || !session_.Tick()) return false;
+  if (failed_) return false;
+  if (sideband_) {
+    if (auto command = sideband_->Pop();
+        command && !session_.SidebandMessage(command->opcode, command->text))
+      return false;
+  }
+  if (!session_.Tick()) return false;
   bool blocked = false;
   if (verified_ && !opened_ && !closed_ && !data_.empty()) {
     if (waiting_data_ == Clock::time_point{}) waiting_data_ = now;

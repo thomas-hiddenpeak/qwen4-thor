@@ -552,3 +552,94 @@ Q4T_TEST(live_media_frontend_authority_and_bidirectional_audio_after_close) {
             packets[3].second + packets[4].second == pcm);
   return true;
 }
+
+Q4T_TEST(live_sideband_three_second_replay_and_independent_readers) {
+  using Read = LiveSideband::Read;
+  const auto origin = Clock::time_point(100s);
+  LiveSideband stream;
+  stream.Publish("expired", origin);
+  stream.Publish("boundary", origin + 1s);
+  stream.Publish("recent", origin + 3s);
+  uint64_t first = 0, second = 0;
+  Q4T_CHECK(stream.Attach(&first, origin + 4s).ok() && first == 1);
+  std::shared_ptr<const std::string> bytes;
+  Q4T_CHECK(stream.Next(first++, &bytes) == Read::kEvent && *bytes == "boundary");
+  Q4T_CHECK(stream.Attach(&second, origin + 4s + 1ns).ok() && second == 2);
+  stream.Publish("new", origin + 5s);
+  Q4T_CHECK(stream.Next(first++, &bytes) == Read::kEvent && *bytes == "recent");
+  Q4T_CHECK(stream.Next(second++, &bytes) == Read::kEvent && *bytes == "recent");
+  stream.Finish(true);
+  Q4T_CHECK(stream.Next(second++, &bytes) == Read::kEvent && *bytes == "new");
+  Q4T_CHECK(stream.Next(second, &bytes) == Read::kCompleted);
+  Q4T_CHECK(stream.Attach(&first, origin + 6s).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(live_sideband_pressure_never_publishes_an_incomplete_replay) {
+  using Read = LiveSideband::Read;
+  LiveSideband stream;
+  const auto now = Clock::now();
+  uint64_t slow = 0, current = 0;
+  std::shared_ptr<const std::string> bytes;
+  Q4T_CHECK(stream.Attach(&slow, now).ok());
+  for (int i = 0; i < 2049; ++i) stream.Publish("event", now);
+  Q4T_CHECK(stream.Next(slow, &bytes) == Read::kLost);
+  Q4T_CHECK(stream.Attach(&current, now + 3s).http_status == 503);
+  stream.Publish("recovered", now + 3s + 1ns);
+  Q4T_CHECK(stream.Attach(&current, now + 3s + 1ns).ok());
+  Q4T_CHECK(stream.Next(current++, &bytes) == Read::kEvent && *bytes == "recovered");
+  for (int i = 0; i < 8; ++i)
+    Q4T_CHECK(stream.Enqueue(WebSocketOpcode::kText, std::to_string(i)));
+  Q4T_CHECK(!stream.HasSpace(1) && !stream.Enqueue(WebSocketOpcode::kText, "extra"));
+  for (int i = 0; i < 8; ++i) {
+    const auto command = stream.Pop();
+    Q4T_CHECK(command && command->text == std::to_string(i));
+  }
+  Q4T_CHECK(!stream.Pop() && stream.HasSpace(1));
+  stream.Finish(false);
+  Q4T_CHECK(stream.Next(current, &bytes) == Read::kLost);
+  return true;
+}
+
+Q4T_TEST(live_sideband_commands_share_the_owner_and_reflect_raw_muted_input) {
+  Fixture f;
+  auto sideband = std::make_shared<LiveSideband>();
+  f.callbacks.configuration.transport = LiveTransport::kWebRtc;
+  std::vector<std::string> frontend;
+  LiveMediaCall call("live_media", 1000, true, f.callbacks, f.limits,
+                     [&](char, auto text) { frontend.emplace_back(text); return true; }, sideband);
+  Q4T_CHECK(call.Start(Parse(R"({"model":"native","client":{"data_channel":{
+    "allowed_client_events":[],"allowed_server_events":[]}}})")).ok());
+  Q4T_CHECK(call.Receive('V', {}) && call.Receive('R', {}));
+  uint64_t next;
+  Q4T_CHECK(sideband->Attach(&next, Clock::now()).ok());
+  for (auto event : {R"({"type":"session.input_audio.mute","event_id":"trusted"})",
+                      R"({"type":"session.input_audio.append","audio":"AAE=","event_id":"bad_audio"})",
+                      R"({"type":"session.start","session":{"model":"native"},"event_id":"bad_start"})",
+                      R"({"type":"transport.dtmf.send","event":"1","event_id":"not_sip"})"}) {
+    Q4T_CHECK(sideband->Enqueue(WebSocketOpcode::kText, event) && call.Tick(f.now));
+  }
+  Q4T_CHECK(call.Receive('P', "ab") && f.backend.commands.size() == 2);
+  Q4T_CHECK(f.backend.commands[0].GetString("event_id") == "trusted");
+  Q4T_CHECK(f.backend.commands[1].GetString("audio") == "YWI=");
+  sideband->OutputAudio(48001, "abcd");
+  std::shared_ptr<const std::string> text;
+  std::vector<Json> events;
+  while (sideband->Next(next, &text) == LiveSideband::Read::kEvent) {
+    auto event = Parse(*text);
+    ChatPlanError error;
+    Q4T_CHECK(ValidateLiveWireShape(event, LiveShape::kSidebandServer, &error));
+    events.push_back(std::move(event));
+    ++next;
+  }
+  Q4T_CHECK(frontend.empty() && events.size() == 7);
+  Q4T_CHECK(events[0].GetString("type") == "session.started");
+  Q4T_CHECK(events[1].GetString("type") == "session.input_audio.muted");
+  for (int i = 2; i < 5; ++i) Q4T_CHECK(events[i].GetString("type") == "error");
+  Q4T_CHECK(events[5].GetString("type") == "session.input_audio.append" &&
+            events[5].GetString("audio") == "YWI=" && events[5].object.size() == 2);
+  Q4T_CHECK(events[6].GetString("delta") == "YWJjZA==" && !events[6].Has("event_id"));
+  Q4T_CHECK(events[6].Find("start_ms")->number > 1000 &&
+            events[6].Find("end_ms")->number > events[6].Find("start_ms")->number);
+  return true;
+}

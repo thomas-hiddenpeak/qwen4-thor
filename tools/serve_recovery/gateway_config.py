@@ -214,6 +214,8 @@ http {{
       proxy_next_upstream off;
     }}
     location / {{
+      limit_conn side_client 2;
+      limit_conn side_all 4;
       limit_conn ws_client 1;
       limit_conn ws_all 4;
       limit_conn data {p['per_client_inflight']};

@@ -188,7 +188,8 @@ NativeLiveClientBackend::~NativeLiveClientBackend() {
 }
 LiveFrontendNative NativeLiveClientBackend::Bind(LiveFrontendNative native) {
   if (recording_)
-    native.record = [this](auto channel, auto ticks, auto bytes) {
+    native.record = [this, observer = std::move(native.record)](auto channel, auto ticks, auto bytes) {
+      if (observer) observer(channel, ticks, bytes);
       recording_->Audio(channel, ticks, bytes);
     };
   if (decisions_native_.Bound() && native.emit) {

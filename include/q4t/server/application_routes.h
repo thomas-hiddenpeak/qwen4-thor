@@ -4,20 +4,6 @@
 
 namespace q4t::server {
 
-// Exact WebSocket targets; adapters validate their own query semantics.
-inline bool IsRealtimeTarget(std::string_view target) {
-  const auto path = target.substr(0, target.find('?'));
-  return path == "/v1/realtime" || path == "/v1/live/sessions";
-}
-inline bool IsRealtimeUpgrade(std::string_view method,
-                              std::string_view target) {
-  return method == "GET" && IsRealtimeTarget(target);
-}
-
-inline bool IsLiveMediaCreate(std::string_view method, std::string_view target) {
-  return method == "POST" && target == "/v1/live/sessions";
-}
-
 inline bool ValidApplicationId(std::string_view id) {
   if (id.empty() || id.size() > 128) return false;
   for (const char c : id)
@@ -27,8 +13,8 @@ inline bool ValidApplicationId(std::string_view id) {
   return true;
 }
 
-inline std::string_view LiveRecordingId(std::string_view path) {
-  constexpr std::string_view prefix = "/v1/live/sessions/", suffix = "/content";
+inline std::string_view LiveResourceId(std::string_view path, std::string_view suffix) {
+  constexpr std::string_view prefix = "/v1/live/sessions/";
   if (!path.starts_with(prefix) || !path.ends_with(suffix) ||
       path.size() <= prefix.size() + suffix.size())
     return {};
@@ -37,6 +23,26 @@ inline std::string_view LiveRecordingId(std::string_view path) {
   return id.starts_with("live_") && id.size() > 5 && ValidApplicationId(id)
              ? id
              : std::string_view{};
+}
+
+inline std::string_view LiveRecordingId(std::string_view path) {
+  return LiveResourceId(path, "/content");
+}
+inline std::string_view LiveSidebandId(std::string_view target) {
+  return LiveResourceId(target.substr(0, target.find('?')), "/attach");
+}
+// Exact WebSocket targets; adapters validate their own query semantics.
+inline bool IsRealtimeTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/realtime" || path == "/v1/live/sessions" || !LiveSidebandId(target).empty();
+}
+inline bool IsRealtimeUpgrade(std::string_view method,
+                              std::string_view target) {
+  return method == "GET" && IsRealtimeTarget(target);
+}
+
+inline bool IsLiveMediaCreate(std::string_view method, std::string_view target) {
+  return method == "POST" && target == "/v1/live/sessions";
 }
 
 inline bool IsRealtimeTraceTarget(std::string_view target) {

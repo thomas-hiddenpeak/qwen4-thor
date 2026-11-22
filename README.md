@@ -937,6 +937,12 @@ WebRTC、NICE 与对应编解码插件。ICE 默认绑定回环，受控内网�
 `q4t serve --live-webrtc-address IPv4` 指定客户端可达的本机接口。
 此入口需要已配置的原生 ASR 与语音模型。[通话验收及边界](docs/evidence/serve-live-media-create-20261123/README.md)。
 
+后端用创建通话的具名客户端凭据，在官方 JS SDK 的 `openai/resources/live/sideband/ws` 模块中通过
+`new SidebandWS(client, {session_id: id, graceful_close: true})` 接入进行中的 WebRTC 会话。
+旁路先回放最近三秒，再接收实时事件。后端可读取静音前的输入 PCM 和带会话时间戳的输出 PCM，
+应将这项凭据保存在服务端。每个客户端最多两个旁路连接，实例最多四个。旁路断开后浏览器仍可通话。
+[接入、回放及资源实测](docs/evidence/serve-live-sideband-20261123/README.md)。
+
 Live 工作分支提供按会话录制。启动 `q4t serve` 或托管 `prepare` 时使用
 `--live-recordings` 开放权限，具名客户端在 `session.start` 中传入
 `store: true` 启用本次录制。收到 `session.closed` 后，同一 API Key 对应的客户端可调用

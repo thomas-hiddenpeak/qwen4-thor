@@ -70,7 +70,8 @@ Status ValidateLiveWireShape(const Json& value, LiveShape shape,
   auto status = ValidateLiveShape(value, shape, error, path);
   if (status || !error || error->http_status != 400) return status;
   const bool event =
-      shape == LiveShape::kClientEvent || shape == LiveShape::kServerEvent;
+      shape == LiveShape::kClientEvent || shape == LiveShape::kServerEvent ||
+      shape == LiveShape::kSidebandClient || shape == LiveShape::kSidebandServer;
   if (event && !OneOf(value.GetString("type"),
                       {"session.start", "session.update", "session.started",
                        "session.updated", "session.closed"}))

@@ -38,6 +38,7 @@ APPLICATION_ROUTES = [
       for method in ('GET','POST','DELETE')),
     ('GET', '/v1/realtime', 'realtime'),
     ('GET', '/v1/live/sessions', 'realtime'),
+    ('GET', '/v1/live/sessions/{session_id}/attach', 'sideband'),
     ('POST', '/v1/live/sessions', 'data'),
     ('GET', '/v1/live/sessions/{session_id}/content', 'data'),
     ('GET', '/v1/realtime/traces', 'control'),
@@ -199,6 +200,10 @@ def websocket_maps():
     # Validate the client's upgrade tokens before creating an upstream tunnel.
     return r'''  map $q4t_lane $q4t_ws_client { default ""; realtime $q4t_client; }
   map $q4t_lane $q4t_ws_all { default ""; realtime all; }
+  map $q4t_lane $q4t_side_client { default ""; sideband $q4t_client; }
+  map $q4t_lane $q4t_side_all { default ""; sideband all; }
+  limit_conn_zone $q4t_side_client zone=side_client:1m;
+  limit_conn_zone $q4t_side_all zone=side_all:1m;
   limit_conn_zone $q4t_ws_client zone=ws_client:1m;
   limit_conn_zone $q4t_ws_all zone=ws_all:1m;
   map $http_connection $q4t_ws_token {
@@ -206,7 +211,7 @@ def websocket_maps():
     "~*(^|,)[ \t]*upgrade[ \t]*(,|$)" 1;
   }
   map "$q4t_lane:$q4t_ws_token:$http_upgrade" $q4t_ws_upgrade {
-    default ""; "realtime:1:websocket" websocket;
+    default ""; "realtime:1:websocket" websocket; "sideband:1:websocket" websocket;
   }
   map $q4t_ws_upgrade $q4t_ws_connection { default close; websocket upgrade; }
   map $q4t_ws_upgrade $q4t_ws_key { default ""; websocket $http_sec_websocket_key; }
@@ -221,6 +226,7 @@ def websocket_maps():
     default "";
     "websocket:/v1/realtime" $q4t_ws_realtime;
     "websocket:/v1/live/sessions" $q4t_ws_live;
+    "~^websocket:/v1/live/sessions/live_[A-Za-z0-9_-]+/attach$" $q4t_ws_live;
   }
   map $q4t_ws_upgrade $q4t_ws_origin { default ""; websocket $http_origin; }'''
 
@@ -589,6 +595,8 @@ http {{
 {tunnel_checks()}
 {chr(10).join(locations)}
     location / {{
+      limit_conn side_client 2;
+      limit_conn side_all 4;
       limit_conn ws_client 1;
       limit_conn ws_all 4;
       limit_conn data {p['per_client_inflight']};

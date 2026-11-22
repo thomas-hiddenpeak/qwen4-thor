@@ -89,6 +89,7 @@
 namespace q4t {
 namespace server {
 struct LiveSessionCallbacks;
+class LiveSideband;
 enum class LiveTransport;
 struct EmbeddingStepResult;
 class RequestDiagnostics;
@@ -339,7 +340,10 @@ class ChatServer {
                                    std::string_view initial,
                                    std::string_view accept);
   LiveSessionCallbacks MakeLiveCallbacks(const ClientIdentity& client,
-      const std::string& id, size_t message_bytes, LiveTransport transport);
+      const std::string& id, size_t message_bytes, LiveTransport transport,
+      std::shared_ptr<LiveSideband> sideband = {});
+  void HandleLiveSideband(int fd, std::string_view path,
+      const HttpRequestHeaders& headers, std::string_view initial, std::string_view accept);
   void HandleLiveMediaCreate(int fd, const std::string& body,
                              std::atomic<int>*& admission);
   void JoinLiveMedia();
@@ -438,6 +442,8 @@ class ChatServer {
   std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;
   struct LiveMediaThread {
+    std::string client, session;
+    std::weak_ptr<LiveSideband> sideband;
     std::atomic<bool> finished{true};
     std::jthread worker;
   };
@@ -609,7 +615,7 @@ class ChatServer {
   std::atomic<int> operations_observation_conns_{0};
   std::atomic<int> operations_control_conns_{0};
   std::atomic<int> business_conns_{0};
-  std::atomic<int> realtime_conns_{0};
+  std::atomic<int> realtime_conns_{0}, sideband_conns_{0};
   std::atomic<int> tunnel_poll_conns_{0}, tunnel_response_conns_{0};
   std::atomic<int> observation_conns_{0};
   std::atomic<int> control_conns_{0};

@@ -412,7 +412,7 @@ class NginxTests(unittest.TestCase):
         from tools.serve_gateway.gateway import APPLICATION_ROUTES
         self.ready()
         for method, template, lane in APPLICATION_ROUTES:
-            if lane == 'realtime':
+            if lane in ('realtime','sideband'):
                 # RFC 6455 switching and duplex frames have their own wire test.
                 continue
             if lane == 'control':

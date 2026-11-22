@@ -9,6 +9,7 @@
 #include "q4t/server/live_native_backend.h"
 #include "q4t/server/live_responses_settings.h"
 #include "q4t/server/live_session_pump.h"
+#include "q4t/server/live_sideband.h"
 #include "q4t/server/vector_stores.h"
 
 namespace q4t::server {
@@ -23,7 +24,7 @@ ObjectReply Failure(const Status& status, const ChatPlanError& error) {
 }  // namespace
 
 LiveSessionCallbacks ChatServer::MakeLiveCallbacks(const ClientIdentity& client,
-    const std::string& id, size_t message_bytes, LiveTransport transport) {
+    const std::string& id, size_t message_bytes, LiveTransport transport, std::shared_ptr<LiveSideband> sideband) {
   // Keep CPU asset preparation outside both socket and session event loops.
   const auto input = PrepareRealtimeInput(client);
   const auto current_planning = [this, client](ChatPlanConfig* planning,
@@ -156,7 +157,7 @@ LiveSessionCallbacks ChatServer::MakeLiveCallbacks(const ClientIdentity& client,
   };
   const auto counter = callbacks.configuration.count_text;
   callbacks.create = [this, client, input, current_planning, counter, id,
-                      message_bytes, transport](
+                      message_bytes, transport, sideband = std::move(sideband)](
                          const Json& configuration, const LiveEventSink& emit,
                          std::unique_ptr<ILiveSessionBackend>* backend) {
     ChatPlanConfig planning;
@@ -172,6 +173,11 @@ LiveSessionCallbacks ChatServer::MakeLiveCallbacks(const ClientIdentity& client,
     LiveFrontendNative native;
     native.input = input;
     native.emit = emit;
+    if (sideband)
+      native.record = [sideband](LiveAudioChannel channel, uint64_t ticks,
+                                 std::string_view bytes) {
+        if (channel == LiveAudioChannel::kOutput) sideband->OutputAudio(ticks, bytes);
+      };
     native.prepare = [current_planning](const RealtimeConversationJob& job) {
       ChatPlanConfig current;
       ClientIdentity identity;

@@ -279,6 +279,27 @@ struct Media {
       gst_webrtc_data_channel_close(active);
   }
 
+  bool Drain() {
+    if (!open || channel_closed) return true;
+    const auto deadline = Clock::now() + std::chrono::seconds(2);
+    // SCTP stream reset follows reliable ordered delivery. Keep DTLS and
+    // the pipeline alive through reset so a queued terminal event can arrive.
+    bool closing = false;
+    while (!ended && !channel_failed && Clock::now() < deadline) {
+      for (int i = 0; i < 16 && g_main_context_iteration(nullptr, FALSE); ++i) {
+      }
+      if (channel_closed) return true;
+      guint64 buffered = 0;
+      g_object_get(channel, "buffered-amount", &buffered, nullptr);
+      if (!closing && buffered == 0) {
+        closing = true;
+        gst_webrtc_data_channel_close(channel);
+      }
+      g_usleep(2000);
+    }
+    return false;
+  }
+
   static void Pad(GstElement*, GstPad* pad, Media* self) {
     if (GST_PAD_DIRECTION(pad) != GST_PAD_SRC) return;
     g_autoptr(GstPad) other = gst_element_get_static_pad(self->receive, "sink");
@@ -381,7 +402,7 @@ bool Run(int fd, const char* address) {
     if (n < 0 || static_cast<size_t>(n) > packet.size()) return false;
     const auto type = packet[0];
     const std::string_view value(packet.data() + 1, n - 1);
-    if (type == 'X' && value.empty()) return true;
+    if (type == 'X' && value.empty()) return media.Drain();
     if (!media.pipe && type == 'O') {
       LiveRtpCodec codec;
       g_autoptr(GstWebRTCSessionDescription) offer =

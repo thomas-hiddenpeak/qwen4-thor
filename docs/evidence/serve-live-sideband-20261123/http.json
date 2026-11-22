@@ -1,0 +1,109 @@
+{
+  "initial_run": {
+    "status": "FAIL",
+    "failure": "WebRTC primary terminal event timed out after successful sideband close",
+    "sdk": {
+      "opens": 2,
+      "codes": [
+        1000,
+        1000
+      ],
+      "replayed_event_id": "live_a615b80c7538c9fed389e2acf0f6a91a_event_2",
+      "replay_occurrences": 1,
+      "input_bytes": 22976,
+      "output_bytes": 9600,
+      "output_frames": 10,
+      "output_begin_ms": 1061.875,
+      "output_end_ms": 1261.875,
+      "ended_session": "live_a615b80c7538c9fed389e2acf0f6a91a"
+    },
+    "seconds": 40.15106254583225,
+    "counts": {
+      "starts": 1,
+      "ingress_starts": 1,
+      "sdk_posts": 1,
+      "observer_handshakes": 4,
+      "fixture_plays": 1,
+      "chats": 0,
+      "controls": 31
+    },
+    "cleanup": {
+      "remaining": [],
+      "ports_released": true,
+      "lease_continuously_held": true,
+      "model_exit": 0
+    },
+    "raw_sha256": {
+      "result.json": "593c7a214f806596fe0cacf76aeafb02bf038a3145508640e61e2e653e15aa9d",
+      "sdk.json": "bcdd8c8fe11d82e43ecba917bcd585d1db73dfb93387432678b875c746412a80",
+      "cleanup.json": "f492844662aef6da363204c87435eaddcb65448d465566430609f442628926d4",
+      "lease/exit.json": "55e84d35b71c6acd3aa9118ba58d376eae02adfb40b78851e019d4210766dbfd"
+    }
+  },
+  "after_fix": {
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 39,
+      "cleanup_complete": true
+    },
+    "observation": {
+      "sdk": {
+        "opens": 2,
+        "codes": [
+          1000,
+          1000
+        ],
+        "replayed_event_id": "live_a251f7dbce758722e119d735fb81dbb1_event_2",
+        "replay_occurrences": 1,
+        "input_bytes": 22976,
+        "output_bytes": 9600,
+        "output_frames": 10,
+        "output_begin_ms": 1041.25,
+        "output_end_ms": 1241.25,
+        "ended_session": "live_a251f7dbce758722e119d735fb81dbb1"
+      },
+      "foreign_status": 404,
+      "unknown_status": 404,
+      "primary_during_detach": true,
+      "reflected_input_400hz_amplitude": 9000,
+      "decoded_opus_samples": 4288
+    },
+    "seconds": 38.88706446206197,
+    "default_unchanged": true,
+    "core": "42",
+    "counts": {
+      "starts": 1,
+      "ingress_starts": 1,
+      "sdk_posts": 1,
+      "observer_handshakes": 4,
+      "fixture_plays": 1,
+      "chats": 1,
+      "controls": 34
+    },
+    "cleanup": {
+      "remaining": [],
+      "ports_released": true,
+      "lease_continuously_held": true,
+      "model_exit": 0
+    },
+    "drained": {
+      "q4t_live_sideband_connections": 0.0,
+      "q4t_client_requests_active{client=\"alpha\",lane=\"live_sideband\"}": 0.0,
+      "q4t_realtime_host_reserved_bytes": 0.0,
+      "q4t_realtime_sessions": 0.0,
+      "q4t_seq_slots_free": 1.0,
+      "q4t_client_rate_admitted_total{client=\"alpha\"}": 0.0
+    },
+    "raw_sha256": {
+      "result.json": "5875159d074c6607103eb545d415a878e989c32ec175b15981f42a939a5e6904",
+      "sdk.json": "d58d78526bee4e206dc52670487f4c90ba78cf2c195145149ae38d5bded3a8e8",
+      "cleanup.json": "cfde619d1b69cb1085c7897ad5710e6deb5406049cd75de0f81363af2da2da17",
+      "lease/exit.json": "16d66ee0f0f1ca6e3ae354320c6cfc83d739156c205a4200ce2df4ef6b70f9b2",
+      "lease/nvml-queries.jsonl": "2a2c2bd9b087465c10940dc1c0f12df2f395de170f1efdf1a106dbbfb0a9836f",
+      "core-after.wire": "513535464e39206c919976ca2dbaf7c8e26de0fa5e34229adf3ce41bccb69501",
+      "acceptance.json": "8475e1368015203c66cb16ea359e9bddcbcea69964e6a167863c141ccecfe797"
+    }
+  }
+}

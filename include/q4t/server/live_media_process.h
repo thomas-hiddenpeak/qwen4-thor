@@ -3,6 +3,7 @@
 
 #include <array>
 #include <functional>
+#include <stop_token>
 #include <string_view>
 
 #include "q4t/server/object_store.h"
@@ -18,6 +19,7 @@ class LiveMediaProcess {
                         const std::function<bool()>& cancelled,
                         std::string* answer);
   bool Send(char type, std::string_view payload);
+  bool Drain(std::stop_token stop);
   enum class Read { kPacket, kPending, kClosed };
   Read Receive(char* type, std::string_view* payload);
   int Fd() const { return fd_; }

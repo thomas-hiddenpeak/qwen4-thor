@@ -6,12 +6,14 @@
 #include <string>
 #include <string_view>
 
+#include "q4t/server/application_routes.h"
+
 namespace q4t::server {
 inline std::string_view SelectWebSocketProtocol(
     std::string_view target, std::span<const std::string> offered) {
   const auto path = target.substr(0, target.find('?'));
   std::string_view name;
-  if (path == "/v1/live/sessions") {
+  if (path == "/v1/live/sessions" || !LiveSidebandId(target).empty()) {
     name = "live";
   } else if (path == "/v1/realtime") {
     name = "realtime";

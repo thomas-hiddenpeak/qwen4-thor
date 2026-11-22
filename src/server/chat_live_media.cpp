@@ -32,7 +32,11 @@ struct MediaOwner {
   ClientLease permit;
   HttpBodyLease memory;
   LiveMediaProcess process;
+  std::shared_ptr<LiveSideband> sideband;
   std::unique_ptr<LiveMediaCall> call;
+  ~MediaOwner() {
+    if (sideband) sideband->Finish(false);
+  }
 
   void Run(std::stop_token stop,
            const std::function<ClientIdentity()>& current) {
@@ -52,7 +56,8 @@ struct MediaOwner {
       }
       if (!call->Tick(Clock::now())) return;
       if (call->Finished()) {
-        process.Send('X', {});
+        const bool drained = process.Drain(stop);
+        if (sideband) sideband->Finish(drained);
         return;
       }
       pollfd event{process.Fd(), POLLIN, 0};
@@ -137,12 +142,26 @@ void ChatServer::HandleLiveMediaCreate(int fd, const std::string& body,
                            (std::chrono::system_clock::now() + limits.lifetime)
                                .time_since_epoch())
                            .count();
+  constexpr auto journal_budget =
+      LiveSideband::kReplayBytes + LiveSideband::kCommandBytes + (8ULL << 20);
+  if (client.Scoped()) {
+    try {
+      auto memory = std::make_unique<HttpBodyLease>(realtime_host_budget_);
+      if (memory->Acquire(journal_budget))
+        owner->sideband = std::make_shared<LiveSideband>(std::move(memory));
+    } catch (const std::bad_alloc&) {
+      // Only attaching a sideband requires a replay owner.
+    }
+  }
   owner->call = std::make_unique<LiveMediaCall>(
       id, expires, answer.find("\nm=application ") != answer.npos,
-      MakeLiveCallbacks(client, id, message_bytes, LiveTransport::kWebRtc),
-      limits, [process = &owner->process](char type, auto data) {
+      MakeLiveCallbacks(client, id, message_bytes, LiveTransport::kWebRtc,
+                        owner->sideband),
+      limits,
+      [process = &owner->process](char type, auto data) {
         return process->Send(type, data);
-      });
+      },
+      owner->sideband);
   if (const auto reply = owner->call->Start(*request.Find("session"));
       !reply.ok()) {
     failed(reply);
@@ -166,6 +185,9 @@ void ChatServer::HandleLiveMediaCreate(int fd, const std::string& body,
     }
     owner->slot.counter = std::exchange(admission, nullptr);
     if (slot->worker.joinable()) slot->worker.join();
+    slot->client = client.Id();
+    slot->session = id;
+    slot->sideband = owner->sideband;
     slot->finished.store(false);
     try {
       slot->worker = std::jthread([this, slot, owner = std::move(owner),

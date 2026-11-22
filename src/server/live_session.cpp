@@ -303,6 +303,13 @@ bool LiveSession::BeginClose(std::string reason, std::string client_event) {
 }
 bool LiveSession::Message(WebSocketOpcode opcode, std::string_view message,
                           const LiveMediaPolicy* frontend) {
+  return HandleMessage(opcode, message, frontend, false);
+}
+bool LiveSession::SidebandMessage(WebSocketOpcode opcode, std::string_view message) {
+  return HandleMessage(opcode, message, nullptr, true);
+}
+bool LiveSession::HandleMessage(WebSocketOpcode opcode, std::string_view message,
+                                const LiveMediaPolicy* frontend, bool sideband) {
   if (state_ == State::kCreated || state_ == State::kCancelled ||
       !AdvanceClock() || !Flush())
     return false;
@@ -327,9 +334,13 @@ bool LiveSession::Message(WebSocketOpcode opcode, std::string_view message,
         Invalid("invalid_request", "Event ID exceeds 256 bytes", "event_id"));
   ChatPlanError error;
   const auto status =
-      ValidateLiveWireShape(event, LiveShape::kClientEvent, &error);
+      ValidateLiveWireShape(event, sideband ? LiveShape::kSidebandClient
+                                           : LiveShape::kClientEvent, &error);
   if (!status) return Error(ShapeFailure(status, error), client_event);
   const auto type = event.GetString("type");
+  if (sideband && type == "transport.dtmf.send" &&
+      callbacks_.configuration.transport != LiveTransport::kSip)
+    return Error(Invalid("invalid_request", "DTMF requires a SIP transport", "type"), client_event);
   if (frontend && !frontend->AllowsClient(type))
     return Error(Invalid("live_client_event_forbidden", "Frontend event is not permitted",
                          "type", 403), client_event);

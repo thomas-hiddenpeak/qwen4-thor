@@ -82,6 +82,31 @@ bool LiveMediaProcess::Send(char type, std::string_view payload) {
          static_cast<ssize_t>(payload.size() + 1);
 }
 
+bool LiveMediaProcess::Drain(std::stop_token stop) {
+  const auto deadline = Clock::now() + std::chrono::seconds(3);
+  bool requested = false;
+  while (!stop.stop_requested() && Clock::now() < deadline) {
+    if (!requested) requested = Send('X', {});
+    // Keep the duplex socket open: in-flight PCM or SCTP callbacks may still
+    // write to us before the worker acknowledges the final transport drain.
+    char type;
+    std::string_view payload;
+    switch (Receive(&type, &payload)) {
+      case Read::kClosed:
+        return false;
+      case Read::kPacket:
+        if (type == 'X') return requested && payload.empty();
+        if (type == 'E') return false;
+        continue;
+      case Read::kPending:
+        break;
+    }
+    pollfd event{fd_, POLLIN, 0};
+    if (poll(&event, 1, 5) < 0 && errno != EINTR) return false;
+  }
+  return false;
+}
+
 LiveMediaProcess::Read LiveMediaProcess::Receive(char* type,
                                                  std::string_view* payload) {
   const auto n =

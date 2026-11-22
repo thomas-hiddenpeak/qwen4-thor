@@ -15,6 +15,7 @@ inline constexpr int kReservedObservationConnections = 4;
 inline constexpr int kTunnelPollConnections = 4;
 inline constexpr int kTunnelResponseConnections = 4;
 inline constexpr int kRealtimeConnections = 4;
+inline constexpr int kSidebandConnections = 4;
 inline constexpr int kOperationsConnections =
     kReservedControlConnections + kReservedObservationConnections;
 
@@ -25,14 +26,16 @@ enum class HttpConnectionClass {
   kControl,
   kTunnelPoll,
   kTunnelResponse,
-  kRealtime
+  kRealtime,
+  kSideband
 };
-inline constexpr std::array<std::string_view, 7> kHttpConnectionClasses = {
+inline constexpr std::array<std::string_view, 8> kHttpConnectionClasses = {
     "unclassified", "business",        "observation", "control",
-    "tunnel_poll",  "tunnel_response", "realtime"};
+    "tunnel_poll",  "tunnel_response", "realtime", "live_sideband"};
 
 inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
                                                   std::string_view path) {
+  if (method == "GET" && !LiveSidebandId(path).empty()) return HttpConnectionClass::kSideband;
   if (IsRealtimeUpgrade(method, path) || IsLiveMediaCreate(method, path)) return HttpConnectionClass::kRealtime;
   if (IsMcpTunnelPoll(method, path)) return HttpConnectionClass::kTunnelPoll;
   if (IsMcpTunnelResponse(method, path))

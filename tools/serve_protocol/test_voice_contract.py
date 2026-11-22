@@ -19,6 +19,9 @@ class VoiceContract(unittest.TestCase):
     def test_live_http_offer_and_answer_are_independent_of_socket_upgrade(self):
         ops = self.paths['/v1/live/sessions']
         self.assertEqual(set(ops), {'get','post'})
+        side = self.paths['/v1/live/sessions/{session_id}/attach']['get']
+        self.assertIn('101',side['responses'])
+        self.assertEqual([p['name'] for p in side['parameters']],['session_id','graceful_close'])
         self.assertEqual(set(ops['post']['responses']), {'200','default'})
         body = ops['post']['requestBody']['content']['application/json']['schema']
         reply = ops['post']['responses']['200']['content']['application/json']['schema']

@@ -292,6 +292,7 @@ void ChatServer::HandleMetrics(int fd) {
   gauge("q4t_realtime_host_reserved_bytes",
         "Reserved session protocol/audio/features/output host bytes.",
         realtime_host_budget_.Used());
+  gauge("q4t_live_sideband_connections", "Active Live observer sockets.", sideband_conns_.load());
   gauge("q4t_realtime_sessions", "Active realtime connections and retained Live media sessions.",
         realtime_conns_.load());
   gauge("q4t_cancel_body_bytes", "Reserved cancellation bytes (32 MiB cap).",

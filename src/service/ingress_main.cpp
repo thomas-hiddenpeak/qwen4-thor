@@ -286,10 +286,10 @@ bool HostMatches(std::string_view host, const std::string& expected) {
 }
 
 struct Usage {
-  int active[6] = {};
-  double tokens[6] = {};
-  Clock::time_point updated[6] = {Clock::now(), Clock::now(), Clock::now(),
-                                  Clock::now(), Clock::now(), Clock::now()};
+  int active[7] = {};
+  double tokens[7] = {};
+  Clock::time_point updated[7] = {Clock::now(), Clock::now(), Clock::now(),
+                                  Clock::now(), Clock::now(), Clock::now(), Clock::now()};
 };
 
 class Capacity {
@@ -299,13 +299,13 @@ class Capacity {
     for (auto& used : usage_) {
       used.tokens[0] = config.burst + 1;
       used.tokens[1] = 21;
-      used.tokens[2] = used.tokens[3] = used.tokens[4] = used.tokens[5] = 21;
+      used.tokens[2] = used.tokens[3] = used.tokens[4] = used.tokens[5] = used.tokens[6] = 21;
     }
   }
   bool Acquire(size_t client, bool control, bool cancel, bool tunnel_poll,
-               bool tunnel_response, bool websocket) {
+               bool tunnel_response, bool websocket, bool sideband) {
     std::lock_guard guard(mutex_);
-    const size_t lane = websocket       ? 5
+    const size_t lane = sideband ? 6 : websocket       ? 5
                         : tunnel_response ? 4
                         : tunnel_poll   ? 3
                         : cancel        ? 2
@@ -321,7 +321,7 @@ class Capacity {
         control || auxiliary ? 21 : config_.burst + 1,
         used.tokens[lane] +
             elapsed * (control || auxiliary ? 10 : config_.rps));
-    if (used.active[lane] >= (websocket         ? 1
+    if (used.active[lane] >= (sideband ? 2 : websocket         ? 1
                               : tunnel_poll      ? 1
                               : tunnel_response ? 2
                               : cancel          ? 1
@@ -339,9 +339,9 @@ class Capacity {
     return true;
   }
   void Release(size_t client, bool control, bool cancel, bool tunnel_poll,
-               bool tunnel_response, bool websocket) {
+               bool tunnel_response, bool websocket, bool sideband) {
     std::lock_guard guard(mutex_);
-    const auto lane = websocket       ? 5
+    const auto lane = sideband ? 6 : websocket       ? 5
                       : tunnel_response ? 4
                       : tunnel_poll   ? 3
                       : cancel        ? 2
@@ -355,7 +355,7 @@ class Capacity {
   const Config& config_;
   std::mutex mutex_;
   std::vector<Usage> usage_;
-  int active_[6] = {};
+  int active_[7] = {};
 };
 
 struct Lease {
@@ -365,11 +365,11 @@ struct Lease {
   bool cancel = false;
   bool acquired = false;
   bool tunnel_poll = false, tunnel_response = false;
-  bool websocket = false;
+  bool websocket = false, sideband = false;
   ~Lease() {
     if (acquired)
       capacity.Release(client, control, cancel, tunnel_poll, tunnel_response,
-                         websocket);
+                         websocket, sideband);
   }
 };
 
@@ -399,6 +399,10 @@ constexpr RouteSpec kRoutes[] = {
 };
 
 bool Route(const std::string& method, const std::string& path, bool* control) {
+  if (method == "GET" && !server::LiveSidebandId(path).empty()) {
+    *control = false;
+    return true;
+  }
   if ((method == "GET" && !server::LiveRecordingId(path).empty()) ||
       server::RealtimeTraceMethodAllowed(method, path) ||
       server::VoiceMethodAllowed(method, path) ||
@@ -568,8 +572,9 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     if (!headers.cors_method.empty() || !headers.cors_headers.empty())
       return reject(400, "cors_invalid_preflight");
     const auto base = std::string_view(path).substr(0, path.find('?'));
-    lease.websocket = method == "GET" &&
-        (base == "/v1/realtime" || base == "/v1/live/sessions");
+    lease.sideband = method == "GET" && !server::LiveSidebandId(path).empty();
+    lease.websocket = lease.sideband || (method == "GET" &&
+        (base == "/v1/realtime" || base == "/v1/live/sessions"));
     // WebSocket browsers do not enforce CORS response headers. An Origin
     // therefore needs explicit server-side permission even with CORS off.
     if (lease.websocket && !headers.origin.empty() && !config.cors.Enabled())
@@ -624,7 +629,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       body_lease.SelectBudget(tunnel_budget);
     lease.acquired = capacity.Acquire(lease.client, lease.control, lease.cancel,
                                       lease.tunnel_poll, lease.tunnel_response,
-                                      lease.websocket);
+                                      lease.websocket, lease.sideband);
     if (!lease.acquired) return reject(429, "gateway_rate_limit");
     if (path == "/livez") return true;
     binding = authorize();

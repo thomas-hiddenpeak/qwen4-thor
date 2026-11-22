@@ -116,7 +116,7 @@ void ChatServer::StartConnection(int fd, bool operations) {
       operations
           ? kOperationsConnections
           : conn_cap_ + kControlConnections + kObservationConnections +
-                kRealtimeConnections +
+                kRealtimeConnections + kSidebandConnections +
                 (mcp_tunnels_enabled_
                      ? kTunnelPollConnections + kTunnelResponseConnections
                      : 0);
@@ -366,7 +366,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       if (IsMcpTunnelPoll(method, path) || IsMcpTunnelResponse(method, path))
         lease.SelectBudget(tunnel_body_budget_);
       if ((kind == HttpConnectionClass::kBusiness ||
-           kind == HttpConnectionClass::kRealtime ||
+           kind == HttpConnectionClass::kRealtime || kind == HttpConnectionClass::kSideband ||
            kind == HttpConnectionClass::kTunnelPoll ||
            kind == HttpConnectionClass::kTunnelResponse) &&
           stop_requested_.load()) {
@@ -379,7 +379,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       auto& observation =
           operations ? operations_observation_conns_ : observation_conns_;
       auto& counter =
-          kind == HttpConnectionClass::kRealtime     ? realtime_conns_
+          kind == HttpConnectionClass::kSideband ? sideband_conns_
+          : kind == HttpConnectionClass::kRealtime     ? realtime_conns_
           : kind == HttpConnectionClass::kTunnelPoll ? tunnel_poll_conns_
           : kind == HttpConnectionClass::kTunnelResponse
               ? tunnel_response_conns_
@@ -387,7 +388,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           : kind == HttpConnectionClass::kObservation ? observation
                                                       : business_conns_;
       const int cap =
-          kind == HttpConnectionClass::kRealtime ? kRealtimeConnections
+          kind == HttpConnectionClass::kSideband ? kSidebandConnections
+          : kind == HttpConnectionClass::kRealtime ? kRealtimeConnections
           : kind == HttpConnectionClass::kTunnelPoll
               ? (mcp_tunnels_enabled_ ? kTunnelPollConnections : 0)
           : kind == HttpConnectionClass::kTunnelResponse

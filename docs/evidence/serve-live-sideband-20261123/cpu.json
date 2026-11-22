@@ -1,0 +1,76 @@
+{
+  "engine_sha256": "66f0070b03a1112de86d262668a0c33aefaba4e8561e50fa10c6954915ebef92",
+  "ingress_sha256": "56112a066a8bad3dc105fa30a1002f6ba1b7d0c7329c5005a9a57a379f919049",
+  "worker_sha256": "8b1b7c7f2ee08c54f34826e0db9c25065472b3ff964c47c928b16ab3204a84d4",
+  "matched_protocol_sources": 888,
+  "native_tests": [
+    "live_sideband_three_second_replay_and_independent_readers",
+    "live_sideband_pressure_never_publishes_an_incomplete_replay",
+    "live_sideband_commands_share_the_owner_and_reflect_raw_muted_input",
+    "live_media_policy_separates_frontend_controls_from_rtp_and_sideband",
+    "live_media_permissions_reject_257_before_startup",
+    "live_media_native_plan_uses_private_pcm_without_exposing_wire_format",
+    "live_media_http_start_returns_errors_and_one_owned_backend",
+    "live_media_frontend_authority_and_bidirectional_audio_after_close",
+    "live_session_start_order_and_stable_native_identity",
+    "live_session_failed_partial_start_cleans_before_known_retry",
+    "live_session_updates_publish_only_after_atomic_backend_acceptance",
+    "live_session_commands_reach_owner_and_bad_events_do_not",
+    "live_session_usage_is_monotonic_active_duration_not_sample_sum",
+    "live_session_close_waits_for_actual_drain_and_final_usage",
+    "live_session_disconnect_joins_without_inventing_closed",
+    "live_session_expiry_and_drain_timeout_keep_distinct_outcomes",
+    "live_session_backend_cannot_forge_lifecycle_or_ignore_bad_output",
+    "live_session_output_backpressure_is_bounded_and_no_backend_is_not_success",
+    "live_session_pump_finalization_drains_wire_and_discards_queued_tail",
+    "http_connection_classification_exact_route_and_method"
+  ],
+  "wire_route_tests": [
+    "native TLS with independent observer capacity",
+    "optional nginx upgrade"
+  ],
+  "schema_tests": 5,
+  "openapi_operations": 92,
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 93,
+    "native_routes": 154,
+    "reviewed_source_anchors": 1164,
+    "mutation_checks": 32,
+    "errors": []
+  },
+  "transport_drain": [
+    {
+      "ordered_messages": 17,
+      "terminal": "{\"type\":\"session.closed\"}",
+      "remote_closed": true
+    },
+    {
+      "ordered_messages": 17,
+      "terminal": "{\"type\":\"session.closed\"}",
+      "remote_closed": true
+    },
+    {
+      "ordered_messages": 17,
+      "terminal": "{\"type\":\"session.closed\"}",
+      "remote_closed": true
+    }
+  ],
+  "worker_sources": {
+    "cmake/NativeWebRTC.cmake": "262433edbf25ad2c56c496193f16b9eedc1f2be204eee6288b2e088b7b7311a9",
+    "src/service/live_webrtc_main.cpp": "6351c59a8fdfcd13c3c8191b91c9cbe4422298808ee42d8e6934152607401bf2",
+    "src/service/live_webrtc_offer.cpp": "c2c9504f715540334d8fe56e689ad97bd8755e291b3f6cd4581636fb1b63cf0e",
+    "src/service/live_webrtc_offer.h": "4227c677848662891d8ad56530bf93b76291cab9fb2f08eb3a2993bbf13cb252"
+  },
+  "old_worker_control": {
+    "sha256": "78ad95202395655147e6fe71d799f3eb9549a238fa79a875dcf0834d279c8cf6",
+    "results": [
+      "TimeoutError ordered final SCTP message",
+      "TimeoutError remote channel closed",
+      "TimeoutError ordered final SCTP message"
+    ]
+  }
+}

@@ -146,7 +146,7 @@ def accept_answer(peer, secure):
         GstWebRTC.WebRTCSDPType.ANSWER,desc))
 
 
-def exchange(binary, codec, wrong_pin=False, missing_plugins=False):
+def exchange(binary, codec, wrong_pin=False, missing_plugins=False, terminal_burst=False):
     env = None
     if missing_plugins:
         env = dict(os.environ, GST_PLUGIN_PATH_1_0='', GST_PLUGIN_SYSTEM_PATH_1_0='',
@@ -155,7 +155,7 @@ def exchange(binary, codec, wrong_pin=False, missing_plugins=False):
     try:
         with peer_offer(codec) as (peer, source, sink, channel, messages, sdp, pt):
             return exchange_offer(proc, sock, codec, wrong_pin, missing_plugins,
-                                  peer, source, sink, channel, messages, sdp, pt)
+                                  peer, source, sink, channel, messages, sdp, pt, terminal_burst)
     finally:
         if proc.poll() is None:
             proc.kill()
@@ -164,7 +164,7 @@ def exchange(binary, codec, wrong_pin=False, missing_plugins=False):
 
 
 def exchange_offer(proc, sock, codec, wrong_pin, missing_plugins,
-                   peer, source, sink, channel, messages, sdp, pt):
+                   peer, source, sink, channel, messages, sdp, pt, terminal_burst):
     if wrong_pin:
         sdp, count = re.subn(r'(a=fingerprint:sha-256 )([0-9A-Fa-f])',
             lambda m: m[1]+('1' if m[2]=='0' else '0'),sdp)
@@ -195,6 +195,19 @@ def exchange_offer(proc, sock, codec, wrong_pin, missing_plugins,
              GstWebRTC.WebRTCDataChannelState.OPEN, 'peer open')
     channel.send_string('{"type":"session.usage.get"}')
     control(sock,b'D{"type":"session.usage.get"}')
+    if terminal_burst:
+        end = [json.dumps(dict(type='session.usage.updated', seq=i)) for i in range(16)]
+        end.append('{"type":"session.closed"}')
+        for wire in end:
+            sock.sendall(b'D'+wire.encode())
+        sock.sendall(b'X')
+        while (packet := sock.recv(65536))[:1] == b'P':
+            pass
+        require(packet == b'X' and proc.wait(timeout=3)==0,'worker drain acknowledgement')
+        wait_for(lambda: messages == end, 'ordered final SCTP message',3)
+        wait_for(lambda: channel.get_property('ready-state') ==
+                 GstWebRTC.WebRTCDataChannelState.CLOSED,'remote channel closed',3)
+        return dict(ordered_messages=len(end),terminal=messages[-1],remote_closed=True)
     sock.sendall(b'D{"type":"session.usage.updated"}')
     wait_for(lambda: messages == ['{"type":"session.usage.updated"}'],'wire response')
     channel.close()

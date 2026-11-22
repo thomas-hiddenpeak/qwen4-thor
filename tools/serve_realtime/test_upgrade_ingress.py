@@ -93,7 +93,8 @@ class NativeUpgrade(unittest.TestCase):
         handler = self.stack.servers[0].RequestHandlerClass
         original = handler.do_GET
         def get(peer):
-            if peer.path.split('?', 1)[0] not in ('/v1/realtime', '/v1/live/sessions'):
+            if peer.path.split('?', 1)[0] not in ('/v1/realtime', '/v1/live/sessions',
+                                                  '/v1/live/sessions/live_cpu/attach'):
                 return original(peer)
             owner.rows.append(dict(path=peer.path, headers=dict(peer.headers)))
             peer.close_connection = True
@@ -259,6 +260,22 @@ class NativeUpgrade(unittest.TestCase):
         self.close_session(first)
         self.close_session(second)
 
+    def test_live_attachment_has_independent_capacity_and_selected_protocol(self):
+        self.ready()
+        primary, status, _ = self.connect(path='/v1/live/sessions')
+        self.assertEqual(status, 101)
+        peers = []
+        for expected in (101, 101, 429):
+            observer, status, headers = self.connect(path='/v1/live/sessions/live_cpu/attach',
+                fields='Sec-WebSocket-Protocol: live\r\n')
+            self.assertEqual(status, expected)
+            if status == 101:
+                self.assertEqual(headers['sec-websocket-protocol'], 'live')
+                peers.append(observer)
+        for observer in peers:
+            self.close_session(observer)
+        self.close_session(primary)
+
     def test_binding_rotation_closes_existing_session_without_reconnect(self):
         self.ready()
         client, status, _ = self.connect()
@@ -317,8 +334,9 @@ class OptionalNginxUpgrade(unittest.TestCase):
 
     def test_scoped_primary_upgrades_relay_commands_events_and_normal_close(self):
         self.ready()
-        for path in ('/v1/realtime?intent=transcription','/v1/realtime','/v1/live/sessions'):
-            protocol = 'live' if path == '/v1/live/sessions' else 'realtime'
+        for path in ('/v1/realtime?intent=transcription','/v1/realtime','/v1/live/sessions',
+                     '/v1/live/sessions/live_cpu/attach?graceful_close=true'):
+            protocol = 'live' if path.startswith('/v1/live/') else 'realtime'
             fields = ('Sec-WebSocket-Protocol: live, realtime, '
                       'openai-insecure-api-key.test-only\r\n')
             client, status, head = self.connect(path=path, fields=fields)
