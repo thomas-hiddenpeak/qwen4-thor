@@ -208,6 +208,9 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (options.mcp_policy_file.size() > 4096 ||
       options.mcp_policy_file.find('\0') != std::string::npos)
     return Status::Fail("invalid mcp-policy-file path");
+  if (options.sip_trunks_file.size() > 4096 ||
+      options.sip_trunks_file.find('\0') != std::string::npos)
+    return Status::Fail("Invalid SIP trunks configuration path");
   if (options.web_policy_file.size() > 4096 ||
       options.web_policy_file.find('\0') != std::string::npos)
     return Status::Fail("invalid web-policy-file path");
@@ -402,7 +405,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--prefix-cache-checkpoints" && key != "--client-policy-file" &&
         key != "--access-program-policy-file" &&
         key != "--file-input-policy-file" && key != "--mcp-policy-file" &&
-        key != "--web-policy-file" && key != "--served-model-name" &&
+        key != "--sip-trunks-file" && key != "--web-policy-file" && key != "--served-model-name" &&
         key != "--model-alias" && key != "--object-store-dir")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
@@ -453,6 +456,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.mtp_subset_head = value;
     } else if (key == "--access-program-policy-file") {
       parsed.access_program_policy_file = value;
+    } else if (key == "--sip-trunks-file") {
+      parsed.sip_trunks_file = value;
     } else if (key == "--web-policy-file") {
       parsed.web_policy_file = value;
     } else if (key == "--mcp-policy-file") {

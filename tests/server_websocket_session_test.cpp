@@ -562,6 +562,33 @@ Q4T_TEST(websocket_session_client_lane_is_separate_and_exactly_classified) {
   return true;
 }
 
+Q4T_TEST(live_sip_reject_preserves_control_admission) {
+  constexpr auto path = "/v1/live/sessions/live_abc/reject";
+  ClientAdmission admission;
+  const auto identity = Configure(admission);
+  ClientLease data, request;
+  Q4T_CHECK(data.Acquire(admission, identity, ClientLane::kData));
+  Q4T_CHECK(ClassifyHttpConnection("POST", path) ==
+            HttpConnectionClass::kControl);
+  Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
+            HttpConnectionClass::kBusiness);
+  for (const auto bad : {"/v1/live/sessions/live_/reject",
+                         "/v1/live/sessions/live_a/b/reject",
+                         "/v1/live/sessions/live_a/reject/"})
+    Q4T_CHECK(ClassifyHttpConnection("POST", bad) ==
+              HttpConnectionClass::kBusiness);
+  HttpRequestHeaders headers;
+  headers.client_id = "alpha";
+  headers.gateway_token = std::string(64, 'a');
+  ClientIdentity owner;
+  int status = 0;
+  Q4T_CHECK(AdmitClientRequest("POST", path, &headers, admission, &request,
+                               &owner, &status));
+  const auto usage = admission.Usage(0);
+  Q4T_CHECK(usage.control_active == 1 && usage.data_active == 1);
+  return true;
+}
+
 Q4T_TEST(websocket_session_each_turn_keeps_online_rate_and_data_admission) {
   ClientAdmission admission;
   const auto identity = Configure(admission);

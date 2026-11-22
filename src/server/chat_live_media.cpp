@@ -68,6 +68,33 @@ struct MediaOwner {
 };
 }  // namespace
 
+void ChatServer::HandleLiveSipReject(int fd, std::string_view id,
+                                     const std::string& body) {
+  const auto* http = detail::HttpResponseContext::Current(fd);
+  if (!http || !http->Client().Scoped() || !clients_.OwnsIdentity(http->Client())) {
+    detail::SendError(fd, 404, "Call not found", {}, "not_found");
+    return;
+  }
+  Json request;
+  if (!io::ParseJson(body, &request, true, {8, 32, 4096, true})) {
+    detail::SendError(fd, 400, "Invalid SIP rejection JSON", {}, "invalid_request");
+    return;
+  }
+  ChatPlanError error;
+  if (auto status = ValidateLiveWireShape(request, LiveShape::kSessionReject, &error);
+      !status) {
+    detail::SendError(fd, error.http_status, status.message(), {}, error.code, error.param);
+    return;
+  }
+  const auto reply = sip_service_.Reject(http->Client().Id(), id,
+      request.GetInt("status_code"), std::chrono::steady_clock::now() + std::chrono::seconds(5));
+  if (!reply.ok()) {
+    detail::SendError(fd, reply.http_status, reply.ClientMessage(), {}, reply.ClientCode());
+    return;
+  }
+  detail::SendSimple(fd, 200, "OK", "", "application/json");
+}
+
 void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
                                        const std::string& body,
                                        std::atomic<int>*& admission) {

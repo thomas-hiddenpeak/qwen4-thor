@@ -188,6 +188,12 @@ Status ChatServer::Run() {
   if (!model_ready_.load() || listen_fd < 0 ||
       (operations_port_ != 0 && operations_fd < 0))
     return Status::Fail("server startup not complete");
+  sip_service_.Start(sip_trunks_file_, [this](std::string_view scope) {
+    const auto policy = clients_.Snapshot();
+    return !stop_requested_.load() && policy &&
+           std::any_of(policy->clients.begin(), policy->clients.end(),
+                       [&](const auto& client) { return client.id == scope; });
+  });
   detail::ServeFaultPoint("connection.before_publish");
   operations_listen_fd_.store(operations_fd);
   listen_fd_.store(listen_fd);
@@ -289,6 +295,7 @@ Status ChatServer::Run() {
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   JoinLiveMedia();
+  sip_service_.Stop();
   realtime_traces_.RequestStop();
   realtime_traces_.Join();
   close_listener.Run();
@@ -361,6 +368,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       }
       if (IsTranscriptionTarget(path))
         headers.body_limit = std::min(headers.body_limit, kAsrFormBytes);
+      if (IsLiveSipReject(method, path))
+        headers.body_limit = std::min<uint64_t>(headers.body_limit, 4096);
       if (IsCancellationRequest(method, path))
         lease.SelectBudget(cancel_body_budget_);
       if (IsMcpTunnelPoll(method, path) || IsMcpTunnelResponse(method, path))
@@ -490,7 +499,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                     headers.error_param);
       return false;
     }
-    if (IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
+    if (IsLiveSipReject(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
@@ -527,7 +536,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     context.SetKeepAlive(headers.keep_alive && allow_keep_alive &&
                             !stop_requested_.load(), headers.http11);
     dispatch_started = true;
-    if (IsLiveMediaCreate(method, path))
+    if (IsLiveSipReject(method, path))
+      HandleLiveSipReject(fd, LiveResourceId(path, "/reject"), body);
+    else if (IsLiveMediaCreate(method, path))
       HandleLiveMediaCreate(fd, LiveForkId(path), body, admission);
     else if (IsRealtimeTarget(path))
       HandleRealtime(fd, path, headers, state->pending, websocket_accept);

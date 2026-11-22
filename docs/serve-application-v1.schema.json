@@ -17984,6 +17984,34 @@
       "required": [],
       "additionalProperties": false
     },
+    "live_940": {
+      "type": "object",
+      "properties": {
+        "status_code": {
+          "$ref": "#/$defs/live_15"
+        }
+      },
+      "required": [
+        "status_code"
+      ],
+      "additionalProperties": false
+    },
+    "live_session_reject": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/live_940"
+        },
+        {
+          "properties": {
+            "status_code": {
+              "type": "integer",
+              "minimum": 300,
+              "maximum": 699
+            }
+          }
+        }
+      ]
+    },
     "live_session_fork": {
       "$ref": "#/$defs/live_930"
     },

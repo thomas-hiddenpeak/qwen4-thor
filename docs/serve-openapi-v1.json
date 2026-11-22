@@ -6787,6 +6787,56 @@
         "description": "Start a native primary Live WebSocket with session.start."
       }
     },
+    "/v1/live/sessions/{session_id}/reject": {
+      "post": {
+        "operationId": "post_v1_live_sessions_session_id_reject",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrier acknowledged the SIP rejection; empty body"
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/live_session_reject"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/live/sessions/{session_id}/fork": {
       "get": {
         "operationId": "get_v1_live_sessions_session_id_fork",

@@ -30,6 +30,15 @@ class VoiceContract(unittest.TestCase):
             return Draft202012Validator({'$defs':self.defs, '$ref':'#'+schema['$ref'].split('#',1)[1]}).is_valid(value)
 
         transport = dict(type='webrtc', sdp='v=0')
+        reject = self.paths['/v1/live/sessions/{session_id}/reject']['post']
+        self.assertNotIn('content', reject['responses']['200'])
+        rejection = reject['requestBody']['content']['application/json']['schema']
+        self.assertEqual(rejection['$ref'], 'serve-application-v1.schema.json#/$defs/live_session_reject')
+        for code in (300, 486, 699):
+            self.assertTrue(valid(rejection, {'status_code':code}))
+        for value in ({}, {'status_code':299}, {'status_code':700}, {'status_code':486.5},
+                      {'status_code':'486'}, {'status_code':486,'extra':True}):
+            self.assertFalse(valid(rejection, value))
         fork = self.paths['/v1/live/sessions/{session_id}/fork']
         self.assertEqual(set(fork['get']['responses']), {'101','default'})
         self.assertEqual(set(fork['post']['responses']), {'201','default'})

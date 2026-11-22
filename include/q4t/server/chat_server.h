@@ -32,6 +32,7 @@
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/server_options.h"
+#include "q4t/server/sip_service.h"
 #include "q4t/server/sequence_admission.h"
 #include "q4t/server/chat_plan.h"
 #include "q4t/server/model_catalog.h"
@@ -348,6 +349,7 @@ class ChatServer {
                            std::shared_ptr<const io::Json>* state);
   void HandleLiveSideband(int fd, std::string_view path,
       const HttpRequestHeaders& headers, std::string_view initial, std::string_view accept);
+  void HandleLiveSipReject(int fd, std::string_view id, const std::string& body);
   void HandleLiveMediaCreate(int fd, std::string_view source,
                              const std::string& body,
                              std::atomic<int>*& admission);
@@ -456,6 +458,8 @@ class ChatServer {
   std::array<LiveMediaThread, 4> live_media_threads_;
   std::string live_webrtc_address_;
   bool live_recordings_ = false;
+  std::string sip_trunks_file_;
+  SipService sip_service_;
   ApplicationOwner<RealtimeTraceStore> realtime_traces_;
   RealtimeTraceStoreOptions realtime_trace_options_;
   std::shared_ptr<const FileExpansionOptions> file_inputs_;

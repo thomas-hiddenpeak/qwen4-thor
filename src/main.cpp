@@ -120,7 +120,7 @@ void PrintUsage(const char* prog) {
       "[--web-policy-file FILE] "
       "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
       "[--session-cache-dir DIR] [--prefix-cache-dir DIR] "
-      "[--live-webrtc-address IPv4] [--live-recordings] [--object-store-dir DIR] [--object-max-object-mib "
+      "[--sip-trunks-file PATH] [--live-webrtc-address IPv4] [--live-recordings] [--object-store-dir DIR] [--object-max-object-mib "
       "N] "
       "[--object-max-client-mib N] [--object-max-total-mib N] "
       "[--object-max-client-objects N] [--object-max-total-objects N] "

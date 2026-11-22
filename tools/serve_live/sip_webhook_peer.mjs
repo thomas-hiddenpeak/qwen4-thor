@@ -18,6 +18,26 @@ input.on('line', line => {
 const config = await configuration;
 const sdk = new OpenAI({ apiKey: 'unused-local-verifier', webhookSecret: config.secret });
 const emit = value => console.log(JSON.stringify(value));
+async function rejectCall(id) {
+  const client = apiKey => new OpenAI({ apiKey, baseURL: config.api.baseURL,
+    maxRetries: 0, timeout: 8000 });
+  const owner = client(config.api.ownerKey);
+  const other = client(config.api.otherKey);
+  async function refused(request, expected) {
+    try { await request; } catch (error) {
+      assert.equal(error.status, expected);
+      return error.status;
+    }
+    throw new Error('unexpected success');
+  }
+  const foreign = await refused(other.live.sessions.reject(id, {status_code: 486}), 404);
+  const invalid = await refused(owner.live.sessions.reject(id, {status_code: 299}), 400);
+  const {data, response} = await owner.live.sessions.reject(id, {status_code: 486}).withResponse();
+  assert.equal(response.status, 200);
+  assert.equal(data, undefined);
+  const retired = await refused(owner.live.sessions.reject(id, {status_code: 486}), 404);
+  emit({control: {foreign, invalid, owner: response.status, empty: true, retired}});
+}
 const server = https.createServer({
   cert: fs.readFileSync(config.cert), key: fs.readFileSync(config.key),
 }, async (req, res) => {
@@ -42,12 +62,14 @@ const server = https.createServer({
     let waiting;
     if (action === 'hold') waiting = new Promise(resolve => { release = resolve; });
     emit({ event, digest: createHash('sha256').update(body).digest('hex') });
+    if (config.api) await rejectCall(event.data.session_id);
     if (waiting) await waiting;
     if (action === 307) res.setHeader('Location', '/other');
     res.writeHead(action === 'hold' ? 204 : action, { 'Content-Length': '0' });
     res.end();
   } catch (error) {
-    emit({error: error.name});
+    emit({error: error.name, status: error.status, actual: error.actual,
+      expected: error.expected});
     res.writeHead(400, {'Content-Length': '0'}).end();
   }
 });

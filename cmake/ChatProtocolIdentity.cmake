@@ -489,6 +489,10 @@ set(protocol_inputs
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
   src/server/sip_webhook.cpp
+  src/server/sip_service.cpp
+  src/server/sip_child.cpp
+  src/server/sip_child.h
+  include/q4t/server/sip_service.h
   include/q4t/server/sip_webhook.h
   include/q4t/server/mcp_transport.h
   include/q4t/server/mcp_policy.h

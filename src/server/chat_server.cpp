@@ -202,6 +202,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   file_inputs_ = std::move(file_inputs);
   file_input_policy_sha256_ = std::move(file_policy.sha256);
   objects_ = std::make_unique<ObjectStore>(object_options);
+  sip_trunks_file_ = opts.sip_trunks_file;
   live_recordings_ = opts.live_recordings;
   live_webrtc_address_ = opts.live_webrtc_address;
   realtime_trace_options_ =

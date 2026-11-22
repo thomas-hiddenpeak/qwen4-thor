@@ -1,0 +1,55 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 37,
+    "cleanup_complete": true
+  },
+  "business": {
+    "sip": [
+      180,
+      486,
+      "ACK"
+    ],
+    "controls": {
+      "foreign": 404,
+      "invalid": 400,
+      "owner": 200,
+      "empty": true,
+      "retired": 404
+    },
+    "webhook": {
+      "id": "evt_e014014479404fec97cd67e58524d23c",
+      "sha256": "514e858a9cbfc337f1bb97db7b34b87d285c73f0606ed8e557a2ca0cbe45f8bf"
+    },
+    "core": "42",
+    "before": {
+      "configured": 1,
+      "ready": 1,
+      "activation_failures": 0,
+      "webhooks_delivered": 0,
+      "webhook_failures": 0
+    },
+    "after": {
+      "configured": 1,
+      "ready": 1,
+      "activation_failures": 0,
+      "webhooks_delivered": 1,
+      "webhook_failures": 0
+    }
+  },
+  "seconds": 37.53821074729785,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "calls": 1,
+    "sdk_requests": 4,
+    "chats": 1,
+    "controls": 35
+  },
+  "default_unchanged": true,
+  "engine_sha256": "a6507540394e73ae774dd6cdea88f66a76fa42744c6dae4771f88862e238794a",
+  "ingress_sha256": "7b8e486189959d3b47402bdc01e4757c02f8e5d3cf2ba299110c14641b2249ad",
+  "sip_sha256": "cede2d2b9bdefc9cd193438ab446239a7c3a6dfd7fab23cf03962c29ba97e119"
+}

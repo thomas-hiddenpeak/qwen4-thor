@@ -405,6 +405,10 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
     *control = false;
     return true;
   }
+  if (server::IsLiveSipReject(method, path)) {
+    *control = true;
+    return true;
+  }
   if ((method == "GET" && !server::LiveRecordingId(path).empty()) ||
       server::RealtimeTraceMethodAllowed(method, path) ||
       server::VoiceMethodAllowed(method, path) ||

@@ -92,6 +92,9 @@ def add_voice_routes(paths, response, error):
               body=content('application/json', {'$ref':live+'media_create'}))
     operation('get','/v1/live/sessions',upgrade,
               description='Start a native primary Live WebSocket with session.start.')
+    operation('post', '/v1/live/sessions/{session_id}/reject',
+              {'200': {'description': 'Carrier acknowledged the SIP rejection; empty body'}},
+              body=content('application/json', {'$ref':live+'session_reject'}))
     fork = '/v1/live/sessions/{session_id}/fork'
     operation('get', fork, upgrade,
               description='Open a new Live WebSocket from a completed recording owned by this client. Send session.start with fork overrides.')

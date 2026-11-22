@@ -463,6 +463,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
   src/server/sip_webhook.cpp
+  src/server/sip_service.cpp
+  src/server/sip_child.cpp
   src/server/mcp_http.cpp
   src/server/mcp_policy.cpp
   src/server/mcp_provider.cpp

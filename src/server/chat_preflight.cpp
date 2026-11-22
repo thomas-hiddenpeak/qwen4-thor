@@ -89,6 +89,7 @@ void ChatServer::HandleConfig(int fd) {
       NativeTtsHealthJson(audio::TtsVariant::kBase17B) +
       R"(,"native_voice_health":)" + NativeVoiceHealthJson() +
       R"(,"native_tts_limits":)" + TtsServiceLimitsJson(tts_limits_) +
+      R"(,"sip":)" + sip_service_.HealthJson() +
       R"(,"native_asr_health":)" + NativeAsrHealthJson() +
       R"(,"native_asr_limits":)" + AsrServiceLimitsJson(asr_limits_) +
       R"(,"native_alignment_health":)" + NativeAlignerHealthJson() +

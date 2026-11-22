@@ -138,7 +138,9 @@ prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输�
 
 ## 外部依赖与可选前置接入
 
-WebRTC 媒体进程单独链接系统 GStreamer WebRTC、SDP 和 App 库，使用 ICE、DTLS/SRTP、SCTP 与音频编解码插件。它只服务已选择该传输的会话；核心可执行文件未链接这些库。当前独立进程已实测，Live HTTP 创建、服务端会话归属和随包交付仍在接入。[依赖与媒体验证](evidence/serve-live-webrtc-media-20261123/README.md)。
+WebRTC 媒体进程单独链接系统 GStreamer WebRTC、SDP 和 App 库，使用 ICE、DTLS/SRTP、SCTP 与音频编解码插件。它只服务已选择该传输的会话；核心可执行文件未链接这些库。Live HTTP 创建、双向 Opus、会话归属及同身份旁路已通过实际客户端短验，组合发行待完成。[创建与媒体](evidence/serve-live-media-create-20261123/README.md)、[旁路验收](evidence/serve-live-sideband-20261123/README.md)。
+
+入站电话按部署启用。独立的 SIP 中继进程链接 Sofia-SIP 与系统 OpenSSL，原生 serve 管理客户与来电的归属。通知通过独立进程投递，签名密钥和网络访问策略来自服务账号的私有文件。[电话配置与回执](SERVE_LIVE_2026-11-21.md#在原生-serve-中启用入站电话)。
 
 2026-11-08用户明确：项目设计应尽量减少外部依赖，兼容nginx前置，
 但不能强制绑定。原生入口及后续TLS已完成CPU和真实模型短验，

@@ -127,3 +127,34 @@ L05 独立的入站 SIP 进程已通过双向 TLS 中继身份、并行事务、
 L05 来电通知已在事务改写前保存有序字段，过滤 SIP 鉴权，私有 SDP 按同身份读取。慢所有者的积压触发新来电 503，已接纳通话可继续。[本机对端验证](evidence/serve-live-sip-invite-20261123/README.md)。
 
 L05 已从真实来电投递 `live.transport.incoming` 签名 HTTPS 通知。接收端验签、显式重试以及回调与正在进行的电话事务相互独立均已实测。后续需将部署和实际 API 客户接到这条链路。[验收](evidence/serve-live-sip-webhook-20261123/README.md)。
+
+### 在原生 serve 中启用入站电话
+
+为需要电话接入的候选部署构建 `q4t-live-sip`，把它放在 `q4t` 同目录，并让该辅助进程能够加载 Sofia-SIP。启动 `q4t serve` 时传入已有的 `--client-policy-file` 和 `--sip-trunks-file /etc/q4t/sip-trunks.json`。省略电话配置时不会打开电话端口。配置文件须为服务账号所有的私有普通文件（例如 0600）。下例中的地址、证书和密钥为占位值。
+
+```json
+{
+  "trunks": [{
+    "client_id": "alpha",
+    "listen_ip": "127.0.0.1",
+    "port": 5061,
+    "certificate_dir": "/etc/q4t/sip/listener",
+    "peer_subject": "carrier.example",
+    "webhook": {
+      "url": "https://subscriber.example/calls",
+      "secret": "whsec_<base64-signing-key>",
+      "network": {
+        "allow_http": false, "public_networks": false,
+        "allowed_hosts": ["subscriber.example"],
+        "allowed_networks": ["192.0.2.10/32"], "ports": [443],
+        "ca_file": "/etc/q4t/sip/subscriber-ca.pem",
+        "timeout_ms": 8000, "max_redirects": 0
+      }
+    }
+  }]
+}
+```
+
+每个监听端口绑定一个已配置的客户。TLS 目录中的 `agent.pem` 包含监听证书和私钥，`cafile.pem` 保存受信中继 CA。`peer_subject` 约束来电中继的证书身份。通知接收端先用签名密钥核验原始 HTTP 正文与请求头，再用该客户的 API Key 调用 `client.live.sessions.reject(event.data.session_id, {status_code: 486})`。接收端可在拒接完成后返回 204。
+
+拒接码范围为 300–699。收到同一 SIP 事务的 ACK 后 HTTP 返回空正文 200。其他客户或已结束的来电返回 404；已经提交、尚待确认的拒接返回 409；五秒内缺少最终回执返回 504，此时电话对端可能已收到拒接。本机运维端点 `GET /v1/config` 的 `sip` 字段列出已配置与就绪中继数量、启动失败数、成功通知数与通知失败数。SIP 接听、通话媒体、转接及托管发行另有待验收项。

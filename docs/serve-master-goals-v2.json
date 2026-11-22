@@ -10452,7 +10452,7 @@
     }
   ],
   "next_task": "Implement scoped SIP call signaling, secure media, webhook and call control for Live and Realtime, followed by composition, recoverable delivery and remaining Serve master tasks.",
-  "next": "Live 已通过两种传输的已存储会话 fork。接入 SIP 信令与 SRTP、电话控制和组合交付，继续全部总目标。默认 rev426。",
+  "next": "原生 serve 已验收 Live 签名通知和 HTTP 拒接。继续 Realtime 来电控制、SIP 接听与 SRTP、通话操作及组合发行。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16325,6 +16325,7 @@
     "sip_input_evidence": "evidence/serve-live-sip-contract-20261123/README.md",
     "sip_trunk_evidence": "evidence/serve-live-sip-trunk-20261123/README.md",
     "sip_invite_evidence": "evidence/serve-live-sip-invite-20261123/README.md",
-    "sip_incoming_webhook_evidence": "evidence/serve-live-sip-webhook-20261123/README.md"
+    "sip_incoming_webhook_evidence": "evidence/serve-live-sip-webhook-20261123/README.md",
+    "sip_reject_business_evidence": "evidence/serve-live-sip-reject-20261123/README.md"
   }
 }

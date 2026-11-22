@@ -305,6 +305,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_webhook.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_service.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_child.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sip_owner_fixture.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider.cpp

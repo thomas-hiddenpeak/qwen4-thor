@@ -50,7 +50,7 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
          IsResponsesObservation(method, path) ||
          IsVectorStoreObservation(method, path) ||
          IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
-         IsVoiceMetadata(method, path) || IsPromptObservation(method, path) ||
+         IsLiveSipReject(method, path) || IsVoiceMetadata(method, path) || IsPromptObservation(method, path) ||
          IsStoredChatManagement(method, path) ||
          RealtimeTraceMethodAllowed(method, path))
           ? ClientLane::kControl

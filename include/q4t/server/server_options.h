@@ -65,6 +65,7 @@ struct ServerOptions {
   std::vector<std::string> model_aliases;
   // Durable application state, independent of model assets and KV caches.
   // Empty resolves to XDG_STATE_HOME or HOME in the startup owner, without I/O.
+  std::string sip_trunks_file;
   bool live_recordings = false;
   std::string live_webrtc_address = "127.0.0.1";
   std::string object_store_dir;

@@ -25,6 +25,10 @@ inline std::string_view LiveResourceId(std::string_view path, std::string_view s
              : std::string_view{};
 }
 
+inline bool IsLiveSipReject(std::string_view method, std::string_view path) {
+  return method == "POST" && !LiveResourceId(path, "/reject").empty();
+}
+
 inline std::string_view LiveRecordingId(std::string_view path) {
   return LiveResourceId(path, "/content");
 }

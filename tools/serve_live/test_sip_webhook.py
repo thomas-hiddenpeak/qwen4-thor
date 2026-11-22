@@ -19,9 +19,7 @@ WORKER = os.environ.get('Q4T_SIP_WEBHOOK_WORKER')
 SDK = os.environ.get('Q4T_OPENAI_SDK_ROOT')
 
 
-@unittest.skipUnless(BINARY and WORKER and SDK,
-                     'set Q4T_SIP_WORKER, Q4T_SIP_WEBHOOK_WORKER and Q4T_OPENAI_SDK_ROOT')
-class WebhookTest(TrunkFixture, unittest.TestCase):
+class SubscriberFixture:
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -63,6 +61,10 @@ class WebhookTest(TrunkFixture, unittest.TestCase):
         self.assertNotIn('error', item)
         return item
 
+
+@unittest.skipUnless(BINARY and WORKER and SDK,
+                     'set Q4T_SIP_WORKER, Q4T_SIP_WEBHOOK_WORKER and Q4T_OPENAI_SDK_ROOT')
+class WebhookTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
     @contextlib.contextmanager
     def publisher(self):
         responses = {
