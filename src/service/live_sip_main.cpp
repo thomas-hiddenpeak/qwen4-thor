@@ -10,6 +10,8 @@ class SipTrunk;
 #include <sofia-sip/su_strlst.h>
 #include <sofia-sip/tport.h>
 
+#include "live_sip_invite.h"
+
 #include <arpa/inet.h>
 #include <linux/filter.h>
 #include <linux/seccomp.h>
@@ -26,6 +28,8 @@ class SipTrunk;
 #include <charconv>
 #include <chrono>
 #include <cstddef>
+#include <cstdlib>
+#include <deque>
 #include <cstdio>
 #include <map>
 #include <memory>
@@ -106,6 +110,7 @@ bool DisableConnect() {
 struct Call {
   std::string id;
   Clock::time_point deadline;
+  std::string offer;
   int final_status = 0;
 };
 }  // namespace
@@ -122,6 +127,7 @@ class SipTrunk {
     if (control_ >= 0) su_root_deregister(root_, control_);
     if (leg_) nta_leg_destroy(leg_);
     if (agent_) nta_agent_destroy(agent_);
+    std::free(parser_);
     if (root_) su_root_destroy(root_);
   }
 
@@ -129,11 +135,14 @@ class SipTrunk {
            const char* peer) {
     if (!ValidCredentials(certificate_dir)) return false;
     root_ = su_root_create(this);
-    if (!root_) return false;
+    parser_ = q4t::service::CreateSipInviteParser();
+    if (!root_ || !parser_) return false;
     auto* subjects = su_strlst_create_with(nullptr, peer, nullptr);
     if (!subjects) return false;
     agent_ = nta_agent_create(
         root_, URL_STRING_MAKE(url.c_str()), nullptr, nullptr, NTATAG_UA(1),
+        NTATAG_MCLASS(parser_),
+        NTATAG_SIPFLAGS(MSG_FLG_CANONIC | MSG_FLG_EXTRACT_COPY),
         NTATAG_MAXSIZE(65535), NTATAG_MAX_PROCEEDING(kMaxCalls),
         NTATAG_MERGE_482(1), NTATAG_CANCEL_487(0), NTATAG_USE_NAPTR(0),
         NTATAG_USE_SRV(0), TPTAG_TIMEOUT(10000), TPTAG_IDLE(90000),
@@ -162,12 +171,47 @@ class SipTrunk {
   }
 
  private:
-  bool Notify(const std::string& packet) {
-    if (send(fd_, packet.data(), packet.size(), MSG_NOSIGNAL | MSG_DONTWAIT) ==
-        static_cast<ssize_t>(packet.size()))
-      return true;
-    running_ = false;
+  // Keep room for the final dispositions of already admitted calls even if
+  // the owner is busy delivering incoming events. The listener never waits
+  // on a local socket write.
+  static constexpr size_t kQueueBytes = 512 * 1024;
+  static constexpr size_t kQueuePackets = 512;
+  void WatchControl() {
+    const int events =
+        SU_WAIT_IN | SU_WAIT_HUP | (outbox_.empty() ? 0 : SU_WAIT_OUT);
+    if (su_root_eventmask(root_, control_, fd_, events) < 0) running_ = false;
+  }
+
+  bool SendPacket(const std::string& packet) {
+    ssize_t sent;
+    do {
+      sent =
+          send(fd_, packet.data(), packet.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+    } while (sent < 0 && errno == EINTR);
+    if (sent == static_cast<ssize_t>(packet.size())) return true;
+    if (sent >= 0 || errno != EAGAIN) running_ = false;
     return false;
+  }
+
+  bool Notify(std::string packet) {
+    if (outbox_.empty() && SendPacket(packet)) return true;
+    if (!running_ || packet.size() > kQueueBytes - queued_bytes_ ||
+        outbox_.size() >= kQueuePackets) {
+      running_ = false;
+      return false;
+    }
+    queued_bytes_ += packet.size();
+    outbox_.push_back(std::move(packet));
+    if (outbox_.size() == 1) WatchControl();
+    return running_;
+  }
+
+  void Drain() {
+    while (!outbox_.empty() && SendPacket(outbox_.front())) {
+      queued_bytes_ -= outbox_.front().size();
+      outbox_.pop_front();
+    }
+    if (outbox_.empty()) WatchControl();
   }
 
   static int Incoming(SipTrunk* self, nta_leg_t*, nta_incoming_t* request,
@@ -180,15 +224,24 @@ class SipTrunk {
     if (sip->sip_request->rq_method != sip_method_invite)
       return sip->sip_request->rq_method == sip_method_options ? 200 : 481;
     if (sip->sip_to->a_tag) return 481;
-    if (self->calls_.size() >= kMaxCalls) return 503;
+    if (self->calls_.size() >= kMaxCalls ||
+        self->queued_bytes_ >= kQueueBytes / 2 ||
+        self->outbox_.size() >= kQueuePackets / 2)
+      return 503;
+    const auto headers = q4t::service::SipInviteHeaders(sip);
+    auto offer = q4t::service::SipInviteOffer(sip);
+    if (!headers) return 400;
+    if (!offer) return 415;
     auto id = SessionId();
     if (id.empty() || !nta_incoming_tag(request, nullptr)) return 500;
     if (nta_incoming_treply(request, 180, nullptr, TAG_END()) < 0 ||
         nta_incoming_status(request) != 180)
       return 503;
-    self->calls_.emplace(request, Call{id, Clock::now() + kAnswerTime});
+    self->calls_.emplace(
+        request, Call{id, Clock::now() + kAnswerTime, std::move(*offer)});
     nta_incoming_bind(request, Followup, self);
-    self->Notify("INCOMING " + self->scope_ + " " + id);
+    self->Notify("INCOMING " + self->scope_ + " " + id + "\n" +
+                 std::string(*headers));
     return 0;
   }
 
@@ -244,20 +297,18 @@ class SipTrunk {
     }
   }
 
-  void Reject(std::string_view packet) {
-    // REJECT <request-id> <scope> <session-id> <SIP status>.
-    // FINAL means submitted; ACK independently proves the peer received it.
+  void ControlRequest(std::string_view packet) {
+    // OFFER <request-id> <scope> <session-id>, or REJECT with a SIP status.
     std::array<std::string_view, 5> args;
-    for (size_t i = 0; i < args.size(); ++i) {
-      auto end = packet.find(' ');
-      if ((end == packet.npos) != (i == args.size() - 1)) {
-        Notify("ERROR invalid_command");
-        return;
-      }
-      args[i] = packet.substr(0, end);
-      if (end != packet.npos) packet.remove_prefix(end + 1);
+    size_t count = 0;
+    while (!packet.empty() && count < args.size()) {
+      const auto end = packet.find(' ');
+      args[count++] = packet.substr(0, end);
+      packet = end == packet.npos ? std::string_view{} : packet.substr(end + 1);
     }
-    if (args[0] != "REJECT" || !Token(args[1])) {
+    const bool offer = args[0] == "OFFER";
+    if (!packet.empty() || !Token(args[1]) ||
+        !(offer ? count == 4 : (args[0] == "REJECT" && count == 5))) {
       Notify("ERROR invalid_command");
       return;
     }
@@ -267,6 +318,13 @@ class SipTrunk {
     });
     if (scope_ != args[2] || it == calls_.end()) {
       Notify(result + "not_found");
+      return;
+    }
+    if (offer) {
+      if (it->second.final_status)
+        Notify(result + "conflict");
+      else
+        Notify("OFFER " + std::string(args[1]) + "\n" + it->second.offer);
       return;
     }
     const int status = Decimal(args[4]);
@@ -280,7 +338,10 @@ class SipTrunk {
     }
   }
 
-  static int Command(SipTrunk* self, su_wait_t*, su_wakeup_arg_t*) {
+  static int Command(SipTrunk* self, su_wait_t* wait, su_wakeup_arg_t*) {
+    const int events = su_wait_events(wait, self->fd_);
+    if (events & SU_WAIT_OUT) self->Drain();
+    if (!(events & (SU_WAIT_IN | SU_WAIT_HUP | SU_WAIT_ERR))) return 0;
     std::array<char, 512> bytes;
     ssize_t size =
         recv(self->fd_, bytes.data(), bytes.size(), MSG_DONTWAIT | MSG_TRUNC);
@@ -293,7 +354,7 @@ class SipTrunk {
       self->running_ = false;
       self->orderly_ = true;
     } else {
-      self->Reject({bytes.data(), size_t(size)});
+      self->ControlRequest({bytes.data(), size_t(size)});
     }
     return 0;
   }
@@ -301,10 +362,13 @@ class SipTrunk {
   int fd_;
   std::string scope_;
   su_root_t* root_ = nullptr;
+  msg_mclass_t* parser_ = nullptr;
   nta_agent_t* agent_ = nullptr;
   nta_leg_t* leg_ = nullptr;
   int control_ = -1;
   std::map<nta_incoming_t*, Call> calls_;
+  std::deque<std::string> outbox_;
+  size_t queued_bytes_ = 0;
   bool running_ = true;
   bool orderly_ = false;
 };

@@ -25,7 +25,7 @@ class Peer:
         self.reader = sock.makefile('rb')
         self.target = target
 
-    def send(self, method, token, *, to_tag='', extra=b''):
+    def send(self, method, token, *, to_tag='', extra=b'', body=b'', fragmented=False):
         to = f'<sips:other-customer@{self.target}>'
         if to_tag:
             to += ';tag=' + to_tag
@@ -36,8 +36,16 @@ class Peer:
             f'To: {to}', f'Call-ID: {token}@peer.test', f'CSeq: 1 {method}',
             'Max-Forwards: 70', 'Contact: <sips:phone@127.0.0.1:9>',
         ]
-        self.sock.sendall(('\r\n'.join(fields) + '\r\n').encode() +
-                          extra + b'Content-Length: 0\r\n\r\n')
+        wire_headers = (('\r\n'.join(fields) + '\r\n').encode() + extra +
+                        f'Content-Length: {len(body)}\r\n'.encode())
+        if fragmented:
+            split = len(wire_headers) // 2
+            self.sock.sendall(wire_headers[:split])
+            self.sock.sendall(wire_headers[split:] + b'\r\n')
+            self.sock.sendall(body)
+        else:
+            self.sock.sendall(wire_headers + b'\r\n' + body)
+        return wire_headers
 
     def response(self, status, method, token):
         while True:
@@ -59,11 +67,12 @@ class Peer:
             received = int(line.split()[1])
             if received == 100:
                 continue
-            if (received, fields['cseq'], fields['call-id']) != (
-                    status, '1 ' + method, token + '@peer.test'):
+            if (received not in (status if isinstance(status, tuple) else (status,)) or
+                    fields['cseq'] != '1 ' + method or fields['call-id'] != token + '@peer.test'):
                 raise AssertionError((line, fields, status, method, token))
             if ('branch=z9hG4bK' + token) not in fields['via']:
                 raise AssertionError('transaction branch changed')
+            self.status = received
             return fields['to'].split(';tag=', 1)[-1]
 
 
@@ -119,11 +128,12 @@ class TrunkTest(unittest.TestCase):
             self.assertEqual(self.proc.returncode, 0)
 
     def event(self):
-        packet = self.control.recv(1024)
+        packet = self.control.recv(70000)
         if not packet:
             self.log.seek(0)
             self.fail('worker stopped: ' + self.log.read(2048).decode())
-        return packet.decode().split()
+        line, _, self.payload = packet.partition(b'\n')
+        return line.decode().split()
 
     def quiet(self):
         self.assertFalse(select.select([self.control], [], [], .12)[0])
@@ -191,6 +201,67 @@ class TrunkTest(unittest.TestCase):
         peer.response(603, 'INVITE', b)
         peer.send('ACK', b, to_tag=tag_b)
         self.assertEqual(self.event(), ['ACK', SCOPE, second, '603'])
+
+    def test_original_invite_headers_and_private_offer(self):
+        peer = self.peer(self.good)
+        token = secrets.token_hex(8)
+        body = b'v=0\r\ns=sip-media-private\r\nt=0 0\r\n'
+        auth = b'aUtHoRiZaTiOn: Digest username="first",\r\n realm="private"\r\n'
+        proxy = b'pRoXy-AuThOrIzAtIoN : Digest username="second"\r\n'
+        extra = (b'X-Route: one\r\n' + auth + b'x-route: two\r\n' + proxy +
+                 b'X-Long: keep\r\n folded\r\nContent-Type: application/sdp\r\n')
+        original = peer.send('INVITE', token, extra=extra, body=body, fragmented=True)
+        peer.response(180, 'INVITE', token)
+        event = self.event()
+        self.assertEqual(event[:2], ['INCOMING', SCOPE])
+        live = event[2]
+        expected = original.split(b'\r\n', 1)[1].replace(auth, b'').replace(proxy, b'')
+        self.assertEqual(self.payload, expected)
+        self.control.send(f'OFFER a other-customer {live}'.encode())
+        self.assertEqual(self.event(), ['RESULT', 'a', 'not_found'])
+        self.control.send(f'OFFER b {SCOPE} {live}'.encode())
+        self.assertEqual(self.event(), ['OFFER', 'b'])
+        self.assertEqual(self.payload, body)
+        self.reject(SCOPE, live, 486, 'submitted')
+        self.control.send(f'OFFER c {SCOPE} {live}'.encode())
+        self.assertEqual(self.event(), ['RESULT', 'c', 'conflict'])
+
+    def test_slow_control_reader_preserves_previous_calls(self):
+        peer = self.peer(self.good)
+        padding = (b'X-Padding: ' + b'x'*1024 + b'\r\n') * 32
+        calls = []
+        for _ in range(64):
+            token = secrets.token_hex(8)
+            peer.send('INVITE', token, extra=padding)
+            tag = peer.response((180, 503), 'INVITE', token)
+            if peer.status == 503:
+                break
+            calls.append((token, tag))
+        self.assertGreater(len(calls), 1)
+        self.assertLess(len(calls), 64)
+        identities = []
+        for token, _ in calls:
+            event = self.event()
+            self.assertEqual(event[:2], ['INCOMING', SCOPE])
+            self.assertIn(f'Call-ID: {token}@peer.test'.encode(), self.payload)
+            identities.append(event[2])
+        self.reject(SCOPE, identities[0], 603, 'submitted')
+        token, tag = calls[0]
+        self.assertEqual(peer.response(603, 'INVITE', token), tag)
+        peer.send('ACK', token, to_tag=tag)
+        self.assertEqual(self.event(), ['ACK', SCOPE, identities[0], '603'])
+        self.invite(peer)
+
+    def test_offerless_and_wrong_content_type(self):
+        peer = self.peer(self.good)
+        _, _, live = self.invite(peer)
+        self.control.send(f'OFFER a {SCOPE} {live}'.encode())
+        self.assertEqual(self.event(), ['OFFER', 'a'])
+        self.assertEqual(self.payload, b'')
+        token = secrets.token_hex(8)
+        peer.send('INVITE', token, extra=b'Content-Type: text/plain\r\n', body=b'other')
+        peer.response(415, 'INVITE', token)
+        self.quiet()
 
     def test_answer_deadline_and_slot_release(self):
         peer = self.peer(self.good)

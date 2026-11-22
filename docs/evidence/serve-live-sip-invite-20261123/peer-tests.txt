@@ -1,0 +1,14 @@
+test_answer_deadline_and_slot_release (tools.serve_live.test_sip_trunk.TrunkTest.test_answer_deadline_and_slot_release) ... ok
+test_authenticated_reject_duplicate_ack_and_scope (tools.serve_live.test_sip_trunk.TrunkTest.test_authenticated_reject_duplicate_ack_and_scope) ... ok
+test_bad_credentials_fail_before_ready (tools.serve_live.test_sip_trunk.TrunkTest.test_bad_credentials_fail_before_ready) ... ok
+test_cancel_one_of_two_calls (tools.serve_live.test_sip_trunk.TrunkTest.test_cancel_one_of_two_calls) ... ok
+test_offerless_and_wrong_content_type (tools.serve_live.test_sip_trunk.TrunkTest.test_offerless_and_wrong_content_type) ... ok
+test_original_invite_headers_and_private_offer (tools.serve_live.test_sip_trunk.TrunkTest.test_original_invite_headers_and_private_offer) ... ok
+test_owner_loss_ends_pending_invitation (tools.serve_live.test_sip_trunk.TrunkTest.test_owner_loss_ends_pending_invitation) ... ok
+test_slow_control_reader_preserves_previous_calls (tools.serve_live.test_sip_trunk.TrunkTest.test_slow_control_reader_preserves_previous_calls) ... ok
+test_untrusted_trunks_cannot_publish (tools.serve_live.test_sip_trunk.TrunkTest.test_untrusted_trunks_cannot_publish) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 31.596s
+
+OK

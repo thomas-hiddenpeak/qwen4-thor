@@ -123,3 +123,5 @@ L05 待接入 SIP 原生信令、SRTP 媒体、同身份电话控制、DTMF 及�
 SIP 接听在构造模型所有者前校验专用 `session.type=live`、启动字段及语音协商边界。拒接、转接与 DTMF 的运行时输入校验已通过 [15 项 CPU 检查](evidence/serve-live-sip-contract-20261123/README.md)。HTTP 回执还需要绑定到真实的来电身份、信令提交与媒体所有者。
 
 L05 独立的入站 SIP 进程已通过双向 TLS 中继身份、并行事务、拒接、CANCEL/ACK 与超时验收。所有者通过私有套接字使用客户身份和 Live ID 处理来电。公开来电通知、接听、SRTP、转接和挂断仍在开发。[回环对端证据](evidence/serve-live-sip-trunk-20261123/README.md)。
+
+L05 来电通知已在事务改写前保存有序字段，过滤 SIP 鉴权，私有 SDP 按同身份读取。慢所有者的积压触发新来电 503，已接纳通话可继续。[本机对端验证](evidence/serve-live-sip-invite-20261123/README.md)。

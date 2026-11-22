@@ -3590,7 +3590,8 @@
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
     "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
-    "src/service/live_sip_main.cpp": "22b8c0b48010afbf82d871255b62f490fae0f70e8681044d867fb4953d4c10b9"
+    "src/service/live_sip_main.cpp": "a0217358759c133da6a84959530e81d84b09a7c0425064fa62f9dad885533dc7",
+    "src/service/live_sip_invite.cpp": "a191a1dc6f0cdf923e0cb1bbe9d3a6b750b16a0932dfc70bb2292729ada44076"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

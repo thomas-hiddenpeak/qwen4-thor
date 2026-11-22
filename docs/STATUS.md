@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+SIP 私有来电通知已保留原始有序头字段，过滤鉴权字段；SDP 仅可由同身份所有者读取。模拟通知接收端积压时，新来电收到 503，积压前的通话仍能完成拒接和 ACK。9 项回环通过。下一步接入签名业务通知、公开操作及 SRTP。[元数据与背压验收](evidence/serve-live-sip-invite-20261123/README.md)。
+
 独立 SIP 中继已能在双向 TLS 上接收多路来电、校验客户身份、处理取消和拒接，并用远端 ACK 确认最终答复。Thor 上 6 项真实回环检查通过，含同 CA 错误中继和 30 秒超时。后续需将来电通知、HTTP 接听和 SRTP 媒体连到 Live 会话。[信令实测](evidence/serve-live-sip-trunk-20261123/README.md)。
 
 SIP 接听配置已经接入原生会话所有者，HTTP 包装中的 `session.type=live` 校验后才进入通用启动配置。拒接码、转接 URI 和旁路 DTMF 按电话合同校验。15 项针对性 CPU 用例通过，公开电话入口仍待接入真实 SIP 对话与 SRTP 媒体。[验收与待办](evidence/serve-live-sip-contract-20261123/README.md)。
