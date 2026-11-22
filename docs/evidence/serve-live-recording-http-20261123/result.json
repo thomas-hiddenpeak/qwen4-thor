@@ -1,0 +1,113 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 65,
+    "cleanup_complete": true
+  },
+  "observation": {
+    "wave": {
+      "bytes": 2620472,
+      "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+      "id": "live_da232a4193b53ca8d669b91b8e187c82",
+      "status": 200,
+      "other_client": 404
+    },
+    "frames": 655107,
+    "sample_rate": 24000,
+    "left": [
+      {
+        "start_frame": 93120,
+        "frames": 69120,
+        "sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483"
+      }
+    ],
+    "right": [
+      {
+        "start_frame": 1769,
+        "frames": 69120,
+        "sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483"
+      },
+      {
+        "start_frame": 601346,
+        "frames": 53760,
+        "sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c"
+      }
+    ],
+    "before_publication": 404,
+    "business": {
+      "protocol": "PASS",
+      "quality": [
+        {
+          "label": "input_transcription",
+          "actual": "请查询当前项目版本号。",
+          "expected": "请查询当前项目版本号。",
+          "status": "PASS"
+        },
+        {
+          "label": "project_version",
+          "actual": "rev426",
+          "expected": "rev426",
+          "status": "PASS"
+        }
+      ],
+      "admitted": 3.0,
+      "settled_tokens": 1725.0,
+      "private_token_breakdown_not_exposed": true,
+      "activity_seconds": 26.256631931,
+      "speech_segments": [
+        {
+          "transcript": "rev426",
+          "bytes": 107520,
+          "sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c",
+          "client_event_id": "project_answer"
+        }
+      ],
+      "waveform_bytes": 107520,
+      "waveform_sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c",
+      "listener_heard_audio": false,
+      "session_id": "live_da232a4193b53ca8d669b91b8e187c82",
+      "fixture": {
+        "bytes": 138240,
+        "sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483",
+        "source_equal": true,
+        "new_model_work": 0,
+        "listener_heard": false,
+        "receive_interval_ns": 2886257670
+      }
+    }
+  },
+  "seconds": 67.35981997102499,
+  "default_unchanged": true,
+  "core": "42",
+  "source_commit": "23954bf1a9effa81fa06d9c91ec47e5ba29201c3",
+  "engine_sha256": "1bf7fea3ec11d543a6d4a7af68063553350992bb4c363a0a6213d0a9ce29ba96",
+  "ingress_sha256": "9c3ad2183f46912709bb458e15a843b350870a52fee19abf13a6c2882a642817",
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "fixture_plays": 1,
+    "audio_inputs": 1,
+    "responses": 2,
+    "chats": 1,
+    "downloads": 3,
+    "controls": 33
+  },
+  "driver_mutations_on_original": 5,
+  "source_evidence": {
+    "plan.json": "7487eca97946dddecbbab56536fe2cfa5cec198012c711e67a6d91a87b11ee86",
+    "result.json": "230c7f22fc546fb02b801c5cb9bace54efd9aaa4a6f53babe6084068613b9c8f",
+    "sdk.json": "f02e68562058b5b37200fc39eeaaa2a101e20ae05a8e70c47101e389e113aec0",
+    "events.jsonl": "cb4ca17f7fdf8c9bec02d9c51b67293142a112a40a435ada7c03afd16a220a27",
+    "recording.wav": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+    "lease/exit.json": "e75831e9ee9a97c82821cbb4ed1d1a95725a6462057b17e4599fa33a66eab400",
+    "lease/nvml-queries.jsonl": "4e5853373908ff2c0299e07732bffd841d17109f9f3043c22309e2608a63f269",
+    "cleanup.json": "cb302a46096efc5b2722aad0723b4c256df8e5451d22d11da1f74611eaa7b322",
+    "core-after.wire": "4f3aa3a9dfe4b111b2f6468ac05838645dc7e9e05383c613d603f62af04c6e6a",
+    "observation.json": "04a7c183057cdd4e4d4344278bb312fdcbae76c4bb24d82db3bb57743108047b",
+    "acceptance.json": "23d928c5c11bda4fedab370938a78c1afc6128fd55e291f042a66f4c7ca6a723"
+  },
+  "public_audio_included": false
+}

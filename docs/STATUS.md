@@ -7,7 +7,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-Live 会话的显式录制、隔离存储和同身份 WAV 下载已接到原生入口。16 项原生 CPU 检查、4 项部署配置检查通过，存储写入失败后已有会话继续完成语音。正在进行真实 SDK 短验。[存储与故障边界](evidence/serve-live-recording-store-20261123/README.md)。
+Live 录制已通过真实 SDK 和项目资料语音闭环。下载 655,107 帧 WAV，双声道逐样本与原始输入和线上输出吻合。发布前及跨客户端均为 404，正常关闭后 Chat=42，GPU、端口和锁已释放。接下来是媒体会话旁路、fork 和原生传输。[真实录音验收](evidence/serve-live-recording-http-20261123/README.md)。
+
+Live 会话的显式录制、隔离存储和同身份 WAV 下载已接到原生入口。16 项原生 CPU 检查、4 项部署配置检查通过，存储写入失败后已有会话继续完成语音。[存储与故障边界](evidence/serve-live-recording-store-20261123/README.md)。
 
 录制链路的双声道 WAV 编排已通过 6 项 CPU 检查，支持 PCM 与 G.711。正在接入持久化和下载。[波形验证](evidence/serve-live-recording-wave-20261123/README.md)。
 
