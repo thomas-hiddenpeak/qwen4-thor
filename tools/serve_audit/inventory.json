@@ -2377,8 +2377,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "0865042c4ef9ef472834f2028e2ca76893d4906b95f30b50f8aa8c2e2658e141",
-    "cmake/ChatProtocolIdentity.cmake": "5964e9a6372ca674e1484de54a0fc01af93262308544f5b5c1d24ffadd9bfc1d",
+    "CMakeLists.txt": "1d43fa1c9a8a98da9c266c97cc6bbaca37faf262008020e1fe7f8a56e3a3b2ac",
+    "cmake/ChatProtocolIdentity.cmake": "3b3ed445545b433f6dbcee69e833cacece5d7abd68dc41939cb505be14bd80da",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2399,7 +2399,7 @@
     "include/q4t/audio/diarization.h": "154b107107f098f76070a5ae556da4b3cecd194d71c72889da3451da3a0f86cb",
     "include/q4t/audio/features.h": "36b981978ad7750b8f4ede9712abbc8ccebdf12d99aadc503a36e348b68a88c5",
     "include/q4t/audio/noise_reduction.h": "51bd6454339c33d11195f96c01dbb11f84596d3e51cf5ba9ecd4d9711963b725",
-    "include/q4t/audio/pcm_output.h": "2e2328ebc982b52b9cca166cf45bf620315ec3949288e9f781032fda4d1d7da8",
+    "include/q4t/audio/pcm_output.h": "69b5a37f9c7adc536bd3d4a1c2a5b47aebf49e476c6f55a1df55ff2ca39ffc45",
     "include/q4t/audio/separator_config.h": "7375b95971dfb57d315f1d0bb0cdad1e099cf25ca0c8b81edf4604ea96cdae7e",
     "include/q4t/audio/separator_layout.h": "7548353ef57a7a6418a3719c51ea50bf2a1a92c493891f3b0e8b6373de8992d4",
     "include/q4t/audio/separator_model.h": "5891902a361ac7f244902b4534318099f243eab424549aea9edd1f2b7ffb0c84",
@@ -2755,7 +2755,7 @@
     "src/audio/noise_fft.cpp": "55b8e0731aea4d7700503ae23d6f6d57ddebb955e17cac2c38cd12137b9f3f68",
     "src/audio/noise_fft.h": "a2c8729852de2d3ad53fb7cf8562eef09e68a98e8292f2f78ac99a7c578dc10c",
     "src/audio/noise_reduction.cpp": "fb411aa1f6ce80f6072b0595976f99b036767f29160632fe993fe4b17b23c981",
-    "src/audio/pcm_output.cpp": "d533dd81f9e3ee0e8bffbe8bd49a4a0e29476369a47c4ee8e4d6837eec2c81cd",
+    "src/audio/pcm_output.cpp": "8726202cef09be2d838f6d2f917a7b7344a949355fe6f545bcddec138754479b",
     "src/audio/separator_config.cpp": "02b894aad525b38991e65e06aaa8e21af29319a0ba437b863fbf5d6881d47545",
     "src/audio/separator_layout.cpp": "8e2a9dfdd15dbe3fa4fbba5fa6b284ee3aef4e2ae597a5515370534bd46cbaaf",
     "src/audio/separator_model.cu": "da4c8b1a021f3af5b85eed0bc7eee12f33acd7decb5d04f73ffa73777f17cdb4",
@@ -3523,7 +3523,9 @@
     "include/q4t/server/live_decision_delegate.h": "7d46a2f116e9bc7dfb7114c476f44e1ff1ed0840e474e9ccc9e74adb56f33ed7",
     "include/q4t/server/live_decision_execution.h": "3c4f33a20f0a413bd0b7167bc5923ee42607eab2d317210720e5bebfef53ece8",
     "src/server/live_decision_delegate.cpp": "bc9a25fab4680c64670155d0cbf9dd7b01863970875f582ab17769e24226926a",
-    "src/server/live_decision_execution.cpp": "e138871ef1017ccf071a0707d12f6ad4fd744df4680381bf11f1a8d12ae347c7"
+    "src/server/live_decision_execution.cpp": "e138871ef1017ccf071a0707d12f6ad4fd744df4680381bf11f1a8d12ae347c7",
+    "include/q4t/server/live_recording.h": "e97745ad90d37d6a72620ace15302302385965df9f0f8a7061d4304cc380de6d",
+    "src/server/live_recording.cpp": "d571a55c45ccd0da84207055194f8a4baa6a3192a05209931103bd0194905505"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

@@ -16309,6 +16309,7 @@
     "responses_business_evidence": "evidence/serve-live-responses-http-20261123/README.md",
     "responses_execution_cpu_evidence": "evidence/serve-live-responses-execution-cpu-20261123/README.md",
     "decision_http_business_evidence": "evidence/serve-decisions-http-20261123/README.md",
-    "decision_session_business_evidence": "evidence/serve-live-decisions-20261123/README.md"
+    "decision_session_business_evidence": "evidence/serve-live-decisions-20261123/README.md",
+    "recording_wave_cpu_evidence": "evidence/serve-live-recording-wave-20261123/README.md"
   }
 }

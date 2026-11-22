@@ -17,27 +17,35 @@ void U32(uint32_t value, std::string* out) {
 }
 }  // namespace
 
-Status SpeechWaveHeader(size_t samples, size_t max_output_bytes,
-                        std::string* out) {
-  if (!out || !samples || max_output_bytes < 44 ||
-      samples > (max_output_bytes - 44) / 2 ||
-      samples > (std::numeric_limits<uint32_t>::max() - 36) / 2)
+Status PcmWaveHeader(uint32_t rate, uint16_t channels, size_t frames,
+                     size_t max_output_bytes, std::string* out) {
+  const uint32_t width = channels * 2u;
+  if (!out || !rate || !width || width > UINT16_MAX ||
+      rate > UINT32_MAX / width || max_output_bytes < 44 ||
+      frames > (max_output_bytes - 44) / width ||
+      frames > (std::numeric_limits<uint32_t>::max() - 36) / width)
     return Status::Fail("Speech WAVE length exceeds its byte budget");
-  const auto bytes = static_cast<uint32_t>(samples * 2);
+  const auto bytes = static_cast<uint32_t>(frames * width);
   std::string result = "RIFF";
   U32(bytes + 36, &result);
   result += "WAVEfmt ";
   U32(16, &result);
   U16(1, &result);
-  U16(1, &result);
-  U32(24000, &result);
-  U32(48000, &result);
-  U16(2, &result);
+  U16(channels, &result);
+  U32(rate, &result);
+  U32(rate * width, &result);
+  U16(static_cast<uint16_t>(width), &result);
   U16(16, &result);
   result += "data";
   U32(bytes, &result);
   *out = std::move(result);
   return {};
+}
+
+Status SpeechWaveHeader(size_t samples, size_t max_output_bytes,
+                        std::string* out) {
+  if (!samples) return Status::Fail("Empty speech waveform");
+  return PcmWaveHeader(24000, 1, samples, max_output_bytes, out);
 }
 
 Status EncodeSpeechPcm(std::span<const float> pcm, bool wave,

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+录制链路的双声道 WAV 编排已通过 6 项 CPU 检查，支持 PCM 与 G.711。正在接入持久化和下载。[波形验证](evidence/serve-live-recording-wave-20261123/README.md)。
+
 Live 显式与语音委派、双向转录触发已通过真实 SDK 短验，四次分类和两次语音模型执行共用同一客户端的单个数据名额。项目查询、语音 rev426、正常关闭及后续 Chat=42 均通过。继续可选录制、内容下载、旁路与 fork。[主连接验收](evidence/serve-live-decisions-20261123/README.md)。
 
 原生 `POST /v1/decisions` 已通过真实 OpenAI SDK 多题、正反判断、缓存与计量短验。第二次请求命中 1,454 个共享 tokens，三个请求结算 3,660 tokens，后续 Chat 回答 42。27 项 CPU 检查通过，默认仍为 rev426。[业务证据与原失败](evidence/serve-decisions-http-20261123/README.md)。

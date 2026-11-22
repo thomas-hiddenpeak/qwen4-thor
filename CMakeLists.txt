@@ -616,6 +616,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/live_decision_items.cpp
   src/server/live_decision_execution.cpp
   src/server/live_decision_delegate.cpp
+  src/server/live_recording.cpp
   src/server/decision_plan.cpp
   src/server/decision_scoring.cpp
   src/server/live_session.cpp
@@ -1079,6 +1080,7 @@ if(Q4T_BUILD_TESTS)
   src/server/live_decision_items.cpp
   src/server/live_decision_execution.cpp
   src/server/live_decision_delegate.cpp
+  src/server/live_recording.cpp
   src/server/decision_plan.cpp
   src/server/decision_scoring.cpp
   src/server/live_session.cpp

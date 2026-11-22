@@ -1,0 +1,29 @@
+{
+  "tests": [
+    "live_recording_interleaves_overlaps_and_silence_on_the_sample_clock",
+    "live_recording_decodes_g711_exactly_and_allows_empty_or_silent_sessions",
+    "live_recording_streams_large_spans_and_reads_each_chunk_once",
+    "live_recording_rejects_partial_overlapping_or_unconfirmed_writes",
+    "live_recording_corrupt_chunk_map_or_stream_fails_before_false_completion",
+    "speech_output_wave_requires_natural_length_and_checks_actual_count"
+  ],
+  "passed": 6,
+  "engine_sha256": "4700121002e44b13028a38382c889f19dad4a48437218e66c6b1114b36e29064",
+  "test_sha256": "7ad1ecab3c241aefea01eede874d634dc26aefba4036abbffcb9404997b6d6e4",
+  "sources": {
+    "CMakeLists.txt": "1d43fa1c9a8a98da9c266c97cc6bbaca37faf262008020e1fe7f8a56e3a3b2ac",
+    "cmake/ChatProtocolIdentity.cmake": "3b3ed445545b433f6dbcee69e833cacece5d7abd68dc41939cb505be14bd80da",
+    "cmake/HostTestSources.cmake": "6117de716c4d7977d08d9d936da73c0ee912715930361ddcce5a7b85e7d0d2c3",
+    "include/q4t/audio/pcm_output.h": "69b5a37f9c7adc536bd3d4a1c2a5b47aebf49e476c6f55a1df55ff2ca39ffc45",
+    "include/q4t/server/live_recording.h": "e97745ad90d37d6a72620ace15302302385965df9f0f8a7061d4304cc380de6d",
+    "src/audio/pcm_output.cpp": "8726202cef09be2d838f6d2f917a7b7344a949355fe6f545bcddec138754479b",
+    "src/server/live_recording.cpp": "d571a55c45ccd0da84207055194f8a4baa6a3192a05209931103bd0194905505",
+    "tests/server_live_recording_test.cpp": "aae1e96e0b6ae3980c5db9f1f8f0f94e1ee55a22eb39fd75f1f9513f20ac2e94"
+  },
+  "logs": {
+    "host.log": "bfc2f79529afd6996b55777df300102b5b5bbdf0ab1f7133025474d1d4ecedda",
+    "engine.log": "ef5534e14f1f58b621cfbb20294e92e90b027d2318c3233acabc8e881e6ac509",
+    "cpu.log": "018134f430b256bcb11df5d211f53cc8f9f85690e017b73d1bac186bf32c50fb"
+  },
+  "gpu_starts": 0
+}
