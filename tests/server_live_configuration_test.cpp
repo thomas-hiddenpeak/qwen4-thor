@@ -123,6 +123,37 @@ Q4T_TEST(live_fork_transport_defaults_and_media_permissions) {
   return true;
 }
 
+Q4T_TEST(live_sip_wire_control_semantics) {
+  ChatPlanError error;
+  for (int code : {300, 486, 603, 699})
+    Q4T_CHECK(ValidateLiveWireShape(Object({{"status_code", Number(code)}}),
+                                    LiveShape::kSessionReject, &error));
+  for (const auto raw :
+       {"299", "700", "486.5", "486.00000000000000001", "null", "\"486\""})
+    Q4T_CHECK(!ValidateLiveWireShape(Object({{"status_code", Parse(raw)}}),
+                                     LiveShape::kSessionReject, &error));
+  for (const auto uri :
+       {"tel:+14155550123", "sip:agent@example.com;transport=tls",
+        "sips:agent@[::1]:5061", "sip:help%20desk@example.com"})
+    Q4T_CHECK(ValidateLiveWireShape(Object({{"target_uri", String(uri)}}),
+                                    LiveShape::kSessionRefer, &error));
+  for (const auto uri : {"", "  ", "123", "sip:", "sip:agent%XY@domain",
+                         "tel:+10> <sip:b@host", "sip:a@host\r\nBad: x"})
+    Q4T_CHECK(!ValidateLiveWireShape(Object({{"target_uri", String(uri)}}),
+                                     LiveShape::kSessionRefer, &error));
+  auto tone = Parse(R"({"type":"transport.dtmf.send","event":"0"})");
+  for (const char digit : std::string("0123456789ABCD*#")) {
+    Set(&tone, "event", String(std::string(1, digit)));
+    Q4T_CHECK(ValidateLiveWireShape(tone, LiveShape::kSidebandClient, &error));
+  }
+  for (const auto invalid : {"", "00", "a", "E", "１", " "}) {
+    Set(&tone, "event", String(invalid));
+    Q4T_CHECK(!ValidateLiveWireShape(tone, LiveShape::kSidebandClient, &error));
+    Q4T_CHECK(error.param == "event");
+  }
+  return true;
+}
+
 Q4T_TEST(live_configuration_token_limits_use_rendered_counts) {
   Fixture f;
   auto input = Parse(R"({"model":"native","instructions":"short text"})");
@@ -333,6 +364,11 @@ Q4T_TEST(live_responses_private_mcp_survives_sparse_update_and_replacement) {
     "headers":{"X-Fixture":"test-header"}},{"type":"function","name":"note",
     "parameters":{"type":"object","properties":{"headers":{"type":"string"}}},
     "strict":false}]}}})");
+  auto sip = raw;
+  Set(&sip, "type", String("live"));
+  const auto accept = Object({{"session", sip}});
+  Q4T_CHECK(!ValidateLiveShape(accept, LiveShape::kSessionAccept, &f.error));
+  Q4T_CHECK(ValidateLiveWireShape(accept, LiveShape::kSessionAccept, &f.error));
   Q4T_CHECK(!ValidateLiveShape(raw, LiveShape::kSessionStart, &f.error));
   Q4T_CHECK(f.Resolve(raw));
   Q4T_CHECK(f.Update(Parse(

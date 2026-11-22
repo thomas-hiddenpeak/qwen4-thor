@@ -1,0 +1,34 @@
+{
+  "tests": [
+    "live_media_frontend_authority_and_bidirectional_audio_after_close",
+    "live_media_http_start_returns_errors_and_one_owned_backend",
+    "live_media_native_plan_uses_private_pcm_without_exposing_wire_format",
+    "live_media_permissions_reject_257_before_startup",
+    "live_media_policy_separates_frontend_controls_from_rtp_and_sideband",
+    "live_responses_private_mcp_survives_sparse_update_and_replacement",
+    "live_shape_duplicate_keys_and_bounded_error_path",
+    "live_shape_invalid_root_does_not_accept_an_empty_object",
+    "live_shape_large_owned_string_rejected_before_schema_walk",
+    "live_shape_matches_actual_sdk_type_oracle",
+    "live_sideband_commands_share_the_owner_and_reflect_raw_muted_input",
+    "live_sideband_pressure_never_publishes_an_incomplete_replay",
+    "live_sideband_three_second_replay_and_independent_readers",
+    "live_sip_accept_uses_dedicated_startup_contract_before_owner_creation",
+    "live_sip_wire_control_semantics"
+  ],
+  "engine_sha256": "257195ea17750ee57c90bc1cf6ae6ee3cbda6044835036da6070297415d20b4e",
+  "matched_protocol_sources": 888,
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 95,
+    "native_routes": 157,
+    "reviewed_source_anchors": 1164,
+    "mutation_checks": 36,
+    "errors": []
+  },
+  "original_failure": "The first SIP accept fixture omitted the official required session.type=live. The shared startup shape also needed its own projection.",
+  "gpu_starts": 0
+}

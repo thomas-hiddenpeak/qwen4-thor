@@ -494,6 +494,36 @@ Q4T_TEST(live_responses_backpressure_before_commit_and_close_drains_checker) {
   return true;
 }
 
+Q4T_TEST(
+    live_sip_accept_uses_dedicated_startup_contract_before_owner_creation) {
+  Fixture f;
+  f.callbacks.configuration.transport = LiveTransport::kSip;
+  Q4T_CHECK(f.Start());
+  for (auto extra :
+       {R"("client":{"data_channel":{}})",
+        R"("audio":{"format":{"type":"audio/pcm","rate":24000}})"}) {
+    auto invalid =
+        Parse(std::string(R"({"type":"live","model":"native",)") + extra + "}");
+    auto reply = f.session->StartMedia(invalid);
+    Q4T_CHECK(reply.http_status == 400 && f.backend.created == 0);
+  }
+  for (const auto invalid :
+       {R"({"model":"native"})", R"({"type":"realtime","model":"native"})"}) {
+    Q4T_CHECK(f.session->StartMedia(Parse(invalid)).http_status == 400 &&
+              f.backend.created == 0);
+  }
+  Q4T_CHECK(
+      f.session
+          ->StartMedia(Parse(
+              R"({"type":"live","model":"native","audio":{"output":{"voice":"vivian"}}})"))
+          .ok());
+  Q4T_CHECK(f.backend.created == 1 && !f.backend.configuration.Has("type") &&
+            f.Read());
+  Q4T_CHECK(!f.session->StartMedia(Parse(R"({"model":"native"})")).ok() &&
+            f.backend.created == 1);
+  return true;
+}
+
 Q4T_TEST(live_media_http_start_returns_errors_and_one_owned_backend) {
   Fixture f;
   f.callbacks.configuration.transport = LiveTransport::kWebRtc;

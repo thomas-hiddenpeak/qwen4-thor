@@ -119,3 +119,5 @@ L04 录制收尾已保存可供子会话读取的私有状态；历史工具与�
 L04 的同身份 fork 已经通过两个真实 SDK 入口。对已完成且存有上下文的源会话，WebSocket 客户端连接 `GET /v1/live/sessions/{session_id}/fork` 后发送 `{"type":"session.start","session":{}}`。WebRTC 客户端向同一路径 POST 新的 SDP offer，成功返回 201。两种方式都获得新的会话 ID。源会话的原始指令、有效指令、资料回填及对话历史随子会话恢复；未设置 store 时继承源配置。WebSocket 默认使用 24 kHz PCM，WebRTC 重新协商媒体并继承或逐项覆盖数据通道权限。曾使用私有工具凭据的 Responses 配置需要在 fork 时提交当前工具配置。旧 WAV 缺少会话状态时仍可下载，fork 返回 409。[实测与边界](evidence/serve-live-fork-http-20261123/README.md)。
 
 L05 待接入 SIP 原生信令、SRTP 媒体、同身份电话控制、DTMF 及对应的真实本机对端。电话协议需要独立于核心服务部署。L06 仍需组合恢复、打包和主线交付。
+
+SIP 接听在构造模型所有者前校验专用 `session.type=live`、启动字段及语音协商边界。拒接、转接与 DTMF 的运行时输入校验已通过 [15 项 CPU 检查](evidence/serve-live-sip-contract-20261123/README.md)。HTTP 回执还需要绑定到真实的来电身份、信令提交与媒体所有者。

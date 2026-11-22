@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+SIP 接听配置已经接入原生会话所有者，HTTP 包装中的 `session.type=live` 校验后才进入通用启动配置。拒接码、转接 URI 和旁路 DTMF 按电话合同校验。15 项针对性 CPU 用例通过，公开电话入口仍待接入真实 SIP 对话与 SRTP 媒体。[验收与待办](evidence/serve-live-sip-contract-20261123/README.md)。
+
 Live 已能从已完成的录制会话创建独立 WebSocket 或 WebRTC 子会话。官方 SDK 通过原生 TLS 实测两种入口，其他客户端均收到 404。子会话逐项继承 9 条前端历史和有效指令，没有重跑原查询，收到新请求后用语音回答 rev426。先前一次只播报 rev，保留质量失败。WebRTC 权限、后续 Chat=42 和资源回收通过；工作分支尚待组合发行。下一项是 SIP 电话接入。[测试记录](evidence/serve-live-fork-http-20261123/README.md)。
 
 显式录制的 Live 会话已在正常关闭时原子保存录音与私有对话状态。一次真实资料查询留下 9 条前端历史、1 对委派调用与结果、关联音频消息的识别文本及最终回答 rev426。首轮驱动误按裸字符串比较转录，保留 FAIL；原件复核及 6 个反例通过。下一步将这些状态接到 WebSocket 和 WebRTC fork 启动路径。[存储与验收](evidence/serve-live-fork-state-20261123/README.md)。

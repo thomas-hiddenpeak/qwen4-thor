@@ -189,9 +189,19 @@ ObjectReply LiveSession::StartMedia(const Json& configuration,
   if (callbacks_.configuration.transport == LiveTransport::kWebSocket ||
       state_ != State::kWaiting || !AdvanceClock())
     return Invalid("live_startup_unavailable", "Media session cannot start", {}, 503);
+  auto request = Object({{"session", configuration}});
+  if (callbacks_.configuration.transport == LiveTransport::kSip) {
+    ChatPlanError error;
+    const auto valid =
+        ValidateLiveWireShape(request, LiveShape::kSessionAccept, &error);
+    if (!valid) return ShapeFailure(valid, error);
+    // The accept envelope identifies Live vs Realtime. Its type is consumed
+    // here; the common session.start configuration has no such property.
+    std::erase_if(Field(request, "session").object,
+                  [](const auto& field) { return field.first == "type"; });
+  }
   ObjectReply failure;
-  if (StartSession(Object({{"session", configuration}}), &failure, frontend))
-    return {};
+  if (StartSession(request, &failure, frontend)) return {};
   return !Accepted(failure) ? failure : Invalid(
       "live_startup_unavailable", "Media session initialization failed", {}, 503);
 }
