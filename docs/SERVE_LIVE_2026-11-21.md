@@ -105,3 +105,5 @@ L04—L06及全部master任务仍未完成，不以本组验收作为总目标�
 [Decisions 共享请求与答案合同](evidence/serve-decision-plan-cpu-20261123/README.md)已完成针对性 CPU 验证，模型执行和传输验收继续。
 
 [Decisions 原生取分](evidence/serve-decision-inference-cpu-20261123/README.md)已接入 HTTP，真实模型和 Live 委派仍须业务验证。
+
+[Decisions HTTP 业务](evidence/serve-decisions-http-20261123/README.md)已通过。SDK 多题、实际缓存及计量通过；Live 的显式/语音委派、转录触发仍需独立接入和验收。

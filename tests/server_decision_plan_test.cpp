@@ -220,12 +220,12 @@ Q4T_TEST(decision_labels_use_only_real_single_tokens_and_exclude_aliases) {
                              : std::vector<uint32_t>{it->second};
     return q4t::Status{};
   };
-  Q4T_CHECK(MakeDecisionLabels(2, encode, &labels));
+  Q4T_CHECK(MakeDecisionLabels(DecisionLabels::kCodes, 2, encode, &labels));
   Q4T_CHECK(labels.size() == 3 && labels[0].tokens.size() == 2 &&
             labels[1].text == "C" && labels[1].tokens.size() == 1 &&
             labels.back().text == "?");
   vocab.erase("?");
-  Q4T_CHECK(!MakeDecisionLabels(2, encode, &labels) &&
+  Q4T_CHECK(!MakeDecisionLabels(DecisionLabels::kCodes, 2, encode, &labels) &&
             labels.back().tokens[0] == 3);
   return true;
 }
@@ -283,5 +283,38 @@ Q4T_TEST(decision_step_preserves_typed_rubric_media_and_shared_input) {
             rubric.find(R"("value":"true")") != rubric.npos &&
             step.GetInt("max_tokens") == 1 &&
             !step.GetBool("enable_thinking", true));
+  return true;
+}
+
+Q4T_TEST(decision_predicate_scores_natural_answer_spellings_only) {
+  std::unordered_map<std::string, uint32_t> vocab = {
+      {"No", 0},   {" No", 1}, {"no", 2},   {" no", 3}, {"Yes", 4},
+      {" Yes", 5}, {"yes", 6}, {" yes", 7}, {"?", 8},   {" ?", 8}};
+  auto encode = [&](std::string_view text, std::vector<uint32_t>* ids) {
+    const auto it = vocab.find(std::string(text));
+    *ids = it == vocab.end() ? std::vector<uint32_t>{0, 1}
+                             : std::vector<uint32_t>{it->second};
+    return q4t::Status{};
+  };
+  std::vector<DecisionLabel> labels;
+  Q4T_CHECK(MakeDecisionLabels(DecisionLabels::kPredicate, 2, encode, &labels));
+  Q4T_CHECK(labels[0].tokens.size() == 4 && labels[1].tokens.size() == 4 &&
+            labels[2].tokens.size() == 1);
+  auto question = Question("predicate");
+  auto request = Request(question);
+  Json shared, step;
+  Q4T_CHECK(DecisionSharedMessages(request, &shared));
+  Q4T_CHECK(DecisionStepRequest(request, shared, question, labels, &step));
+  Q4T_CHECK(OutputJson(step).find("Answer Yes") != std::string::npos);
+  std::array<uint16_t, 9> row{};
+  row[3] = uint16_t(std::bit_cast<uint32_t>(5.f) >> 16);
+  DecisionScore score{question, labels, {}};
+  Q4T_CHECK(score.Read(row) && score.token == 3 &&
+            score.answer.GetNumber("probability") < .1);
+  std::swap(labels[0], labels[1]);
+  Q4T_CHECK(!DecisionStepRequest(request, shared, question, labels, &step));
+  vocab["Yes"] = 1;
+  Q4T_CHECK(
+      !MakeDecisionLabels(DecisionLabels::kPredicate, 2, encode, &labels));
   return true;
 }

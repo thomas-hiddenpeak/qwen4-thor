@@ -1,0 +1,298 @@
+{
+  "sdk": "OpenAI JS 7.47.0",
+  "source_revision_before_fix": "21d2cb0ea",
+  "cpu": {
+    "engine_sha256": "21d808bb63b445db9cc3c673c9fef08d299ea0f34456074b1d99e2db7a7140a9",
+    "ingress_sha256": "134109824bedd28db7da31d4fef3f61b498d8d3a9ebcac0123f039b25f6f4012",
+    "test_sha256": "4a8237b1da96b2593d921c7c551e350e263873be9e72d90fdc30bf12bc28c147",
+    "tests": 27,
+    "passed": 27,
+    "logs": {
+      "host.log": "49ad3b2d5175430d28a5a3f19d4ece0c4461d7cdc85735b922d4c654dee90472",
+      "engine.log": "f58dba8fb203a93df5e582dd3a27272efe1f0361b6906fd79481efcb78673514",
+      "cpu.log": "bede033d53c3e375e705d84f39e45a0f760d676b0fa23bec3bd1c3c455f3dc85",
+      "required.txt": "f750598195affdcfadede5636eca947c2b046754a89b2c03bb746f13fd61db0f"
+    },
+    "previous": "b7e92c53877755d6a589e4724bc729094c30119ea9b7c62dd69127e1cfc303a6"
+  },
+  "sdk_actor_sha256": "f27a8151c3b646d74ff4503eb860a282574ff6a2c98d2bb4611b65ef82ed8873",
+  "input_records": {
+    "status": "0bef84e59f235edf79048bc40863f174578f277c0a9daead5e4453e7e6a66672",
+    "evidence": "df52bf0e2e52e931bbcf391d431798edaa1b5e8df98bae9667e5c9d3b1ce8fd7"
+  },
+  "run": {
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 40,
+      "cleanup_complete": true
+    },
+    "observation": {
+      "protocol": "PASS",
+      "actual_questions": 5,
+      "settled_tokens": 3660,
+      "cache_written": 1454,
+      "cache_read": 1454,
+      "cache_verified": true,
+      "version": "rev426",
+      "choice": "rev426",
+      "positive": 0.9196612958615207,
+      "negative": 0.008282149343184355,
+      "agreement": 1.9610093824350496,
+      "matches": 0.998187112020902,
+      "quality": true
+    },
+    "seconds": 40.003430385142565,
+    "default_unchanged": true,
+    "core": "42"
+  },
+  "sdk_results": {
+    "status": "PASS",
+    "attempted": [
+      "invalid",
+      "project",
+      "write",
+      "read"
+    ],
+    "responses": {
+      "project": {
+        "model": "qwen3.8-flash-next",
+        "answers": [
+          {
+            "type": "predicate",
+            "name": "matches_record",
+            "probability": 0.998187112020902
+          },
+          {
+            "type": "choice",
+            "name": "version",
+            "choice": "rev426",
+            "confidence": 0.6023685092405171,
+            "probabilities": [
+              {
+                "probability": 0.007121501284474875,
+                "value": "rev000"
+              },
+              {
+                "probability": 0.9924507095252577,
+                "value": "rev426"
+              },
+              {
+                "probability": 0.00042778919026744756,
+                "value": "unknown"
+              }
+            ]
+          },
+          {
+            "type": "score",
+            "name": "agreement",
+            "score": 1.9610093824350496,
+            "confidence": 0.8217088335186586,
+            "probabilities": [
+              {
+                "probability": 0.01793658147642986,
+                "value": 0,
+                "label": "different"
+              },
+              {
+                "probability": 0.0031174546120908537,
+                "value": 1,
+                "label": "unclear"
+              },
+              {
+                "probability": 0.9789459639114794,
+                "value": 2,
+                "label": "match"
+              }
+            ]
+          }
+        ],
+        "usage": {
+          "input_tokens": 619,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 3,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 622
+        }
+      },
+      "write": {
+        "model": "qwen3.8-flash-next",
+        "answers": [
+          {
+            "type": "predicate",
+            "name": null,
+            "probability": 0.9196612958615207
+          }
+        ],
+        "usage": {
+          "input_tokens": 1519,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 1454
+          },
+          "output_tokens": 1,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1520
+        }
+      },
+      "read": {
+        "model": "qwen3.8-flash-next",
+        "answers": [
+          {
+            "type": "predicate",
+            "name": null,
+            "probability": 0.008282149343184355
+          }
+        ],
+        "usage": {
+          "input_tokens": 1517,
+          "input_tokens_details": {
+            "cached_tokens": 1454,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 1,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1518
+        }
+      }
+    },
+    "invalid": {
+      "http": 400,
+      "code": "invalid_request"
+    }
+  },
+  "attempts": [
+    {
+      "run": "decision-business-01",
+      "engine_sha256": "b7e92c53877755d6a589e4724bc729094c30119ea9b7c62dd69127e1cfc303a6",
+      "status": "FAIL",
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 0,
+        "decisions": 0,
+        "model_questions": 0,
+        "chats": 0,
+        "controls": 1
+      },
+      "seconds": 1.9309026328846812,
+      "guard": "COMMAND_FAILED",
+      "nvml_queries": 5,
+      "observation": null,
+      "artifacts": {
+        "plan.json": "5d3b77f2d1593b56a148938c6bdaebab4ab93ee43daf1d3d03e710a635e03eb6",
+        "model.log": "2c1056f8235885fcca2279d69e5deef8634e50a847df4cbaa33bb755acf305a8",
+        "result.json": "825576c209bc1f13cac3a54715362c956cfd7d004032ee052116f75f6ba90b6e",
+        "cleanup.json": "bbc36abb5038cb37979ac711c541ff7c003abd7b7277f62e38fa121c3fbc70d3",
+        "lease/exit.json": "19f9db901aadb2fcbd51b35803a162e2a40f96f529a92306fe5012133d021191",
+        "lease/nvml-queries.jsonl": "8c337dc3492ab702d3d9e62b883aaacbb7a980e5754305f6276b96168f7733c2"
+      }
+    },
+    {
+      "run": "decision-business-02",
+      "engine_sha256": "b7e92c53877755d6a589e4724bc729094c30119ea9b7c62dd69127e1cfc303a6",
+      "status": "FAIL",
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "decisions": 4,
+        "model_questions": 5,
+        "chats": 1,
+        "controls": 34
+      },
+      "seconds": 41.73793881293386,
+      "guard": "COMMAND_FAILED",
+      "nvml_queries": 41,
+      "observation": {
+        "protocol": "PASS",
+        "actual_questions": 5,
+        "settled_tokens": 3611,
+        "cache_written": 1455,
+        "cache_read": 0,
+        "cache_verified": false,
+        "version": "rev426",
+        "choice": "rev426",
+        "positive": 0.9148805260513098,
+        "negative": 0.8519561233792536,
+        "agreement": 1.9633516038618595,
+        "matches": 0.7058784713039756,
+        "quality": false
+      },
+      "artifacts": {
+        "plan.json": "0a9221cc3f3d0e81b6a5791bb337ab36885fac25fe57e8d75488da117ca22d46",
+        "sdk.json": "f8729b151f9ceae0ffa40a954606c753a1422a7b02ec637f079347824d7967ef",
+        "model.log": "8704e681643b922d6dac365da36abb8092a409ca471abc7cb94b1b17a6748166",
+        "core-after.wire": "71faab28894b4368a66f02dfea6e0765444d7d6eec28a76ee9d490c6873bad9a",
+        "observation.json": "6b39424f2f003917c0f6dbf972b13e4e451c04310f8af854a3675f60c16e6d77",
+        "result.json": "8e5b3c37d1dc33ea6a70eb17de99f27e5b04c0f41154ef78f899de2f6791ef92",
+        "before.json": "7ff31751ad70b9c63c8bf610f6881f5f88494cf5e18394b5176b577986578a8a",
+        "decisions-drained.json": "b071780a8031f6eee105cd98377609e718b48bb1ba276d3c7dade76132fe5770",
+        "cleanup.json": "74063cea6faef571d10ce3c107377dd0fc0de6e8e8b719cf16138f8c2029c2f5",
+        "lease/exit.json": "5b26fedff10c7da5d71252ef5d39d1df7959b159e97b34866b21cc6c00c9549c",
+        "lease/nvml-queries.jsonl": "adc2b981d1692542fa9d87eacd03e22426e48ac1624bb844a0bc9097eaa8fdf2"
+      }
+    },
+    {
+      "run": "decision-business-03",
+      "engine_sha256": "21d808bb63b445db9cc3c673c9fef08d299ea0f34456074b1d99e2db7a7140a9",
+      "status": "PASS",
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "decisions": 4,
+        "model_questions": 5,
+        "chats": 1,
+        "controls": 34
+      },
+      "seconds": 40.003430385142565,
+      "guard": "COMPLETED",
+      "nvml_queries": 40,
+      "observation": {
+        "protocol": "PASS",
+        "actual_questions": 5,
+        "settled_tokens": 3660,
+        "cache_written": 1454,
+        "cache_read": 1454,
+        "cache_verified": true,
+        "version": "rev426",
+        "choice": "rev426",
+        "positive": 0.9196612958615207,
+        "negative": 0.008282149343184355,
+        "agreement": 1.9610093824350496,
+        "matches": 0.998187112020902,
+        "quality": true
+      },
+      "artifacts": {
+        "plan.json": "5c85a73a63b0fbd134a68970ecbdb30b628053e15485f4705186b4e4adc74df1",
+        "sdk.json": "bf19b2a62d27ef24faa39d33df53deb5d1fbc6cde4c9834c15fa4f77548b79ef",
+        "model.log": "e866384873b749609da75485b865901c0107b5d7fd652292125a191a62856db3",
+        "core-after.wire": "0ccb8be9f7bf6015f76560ebc05d9a2f5c50cc44c5fbec801782b4b8f54182be",
+        "observation.json": "f09cf971114a9ac414aea684696f88bfcb901954ef8d5e182c91d7ef4e5c0f52",
+        "result.json": "d2060be954316c54e76a942f4bc5eac9a7ae8af8fcda7fab15a130fc2851a027",
+        "before.json": "ed1d4a38b59d23938899fbf1c0c50c7d05c9154908a131089844e19fc8e417c2",
+        "decisions-drained.json": "30066b28bd516c8bb9b2a2707c0b95388d53c5751e42edb2f3ee12918402d3bc",
+        "cleanup.json": "f3450c543c7b54c3999ea01acf19a9c9ded0b14393322acfa1ff249208b98b4f",
+        "lease/exit.json": "fcbc70ea74745e88ce1c8de0f30b763388b99a1431bb1ba5e93ca984b8442bfb",
+        "lease/nvml-queries.jsonl": "a5cc2a012e8ed66dc9472d9ae8383dda2313fb0ce256f13cd5d41db2cd2ca339",
+        "acceptance.json": "7a7e05bb8fea2be418eedf10aeffae298adccc075325af2f7ece6f1066a983e6"
+      }
+    }
+  ],
+  "changed_source_sha256": {
+    "include/q4t/server/decision_scoring.h": "e26cd2dff7c39233a9710b1f90199c2710b03872b934994c53b44777551835ad",
+    "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
+    "src/server/chat_generation.cpp": "6f2d7b1aacaf1ef0420012bc525d724059ddf8a69b08045c9356e96da98ff183",
+    "src/server/decision_scoring.cpp": "a7e1d7e7d9be481625f30b162ed988a40bc0dd37f0433f08df7817f2a8b877b3",
+    "tests/server_decision_plan_test.cpp": "3a8e1837c93e9bd3f536b13bf4f2594a4f531448c985605ef77d4aa9528cde36",
+    "tools/serve_live/decisions_acceptance.py": "edfd0a7073d9fec7d0bb47bc3557f015eb8fdb2d77ddc9a1bc975c26267ef9c4"
+  }
+}

@@ -4772,6 +4772,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       cleanup();
       if (control->Cancelled() || RejectUnhealthy(fd)) return;
       internal->completed = true;
+      if (internal->decision && internal->decision->token >= 0) {
+        for (auto& lease : shared_writes) lease->success = true;
+      }
       err_guard.ok = true;
       diagnostic.Outcome("success", "input_prepared");
       return;

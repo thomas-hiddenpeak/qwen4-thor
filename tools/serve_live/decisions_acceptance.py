@@ -72,7 +72,7 @@ class Stage(base.Stage):
     limits = LIMITS
 
     def extra_model_args(self):
-        return ['--object-store-dir',str(self.out/'objects'),'--prefix-cache-dir',str(self.out/'prefix')]
+        return ['--object-store-dir',str(self.out/'objects')]
 
     def business(self):
         self.snapshot('before')

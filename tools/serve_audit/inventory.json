@@ -2865,7 +2865,7 @@
     "src/server/chat_embedding_backend.cpp": "4b2eb26755abee7b46fb4e49d37749e54bc5889f76560a00e14b1fcc30b849d9",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "8f44fe36bb1caf0a7d4053b56d5a301bf7529c4f691dbc3957406ccba24022da",
+    "src/server/chat_generation.cpp": "6f2d7b1aacaf1ef0420012bc525d724059ddf8a69b08045c9356e96da98ff183",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "447139100427fb9bc266accb9e17c6139048dc7bc681a7ad7512a64cc0dd3dc7",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
@@ -3517,9 +3517,9 @@
     "include/q4t/server/decision_plan.h": "4716840cd1d1162ba14aa80d5484540b52b5ec6552c8914c5293d31fd57971fb",
     "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
     "src/server/decision_plan.cpp": "78d84e70f3af471d6a251ea72f99fb62669b883090edf41e7665e7d2aca81439",
-    "include/q4t/server/decision_scoring.h": "43f2c72da05d078b5c53d1cb8f464704e3086020c440e0bce449b3db87c63ef2",
-    "src/server/chat_decisions.cpp": "b880ff8e65e858814d55093f1df12db2ee047c72ad291eb85c351a6a08a7f967",
-    "src/server/decision_scoring.cpp": "f09db7e76f24d7728c27ee57dec946bb8bdccacf98f328cd41901262b27f8be7"
+    "include/q4t/server/decision_scoring.h": "e26cd2dff7c39233a9710b1f90199c2710b03872b934994c53b44777551835ad",
+    "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
+    "src/server/decision_scoring.cpp": "a7e1d7e7d9be481625f30b162ed988a40bc0dd37f0433f08df7817f2a8b877b3"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

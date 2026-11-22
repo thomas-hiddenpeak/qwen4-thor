@@ -6,14 +6,16 @@
 #include "q4t/server/decision_plan.h"
 
 namespace q4t::server {
-// Bare and space-prefixed spellings must each be one actual tokenizer token.
+// Each accepted spelling represents one distinct native tokenizer token.
 struct DecisionLabel {
   std::string text;
   std::vector<uint32_t> tokens;
 };
 using DecisionEncoder =
     std::function<Status(std::string_view, std::vector<uint32_t>*)>;
-Status MakeDecisionLabels(size_t options, const DecisionEncoder& encode,
+enum class DecisionLabels { kCodes, kPredicate };
+Status MakeDecisionLabels(DecisionLabels kind, size_t options,
+                          const DecisionEncoder& encode,
                           std::vector<DecisionLabel>* labels);
 // Construct shared evidence once, then append one question per native prefill.
 Status DecisionSharedMessages(const io::Json& request, io::Json* messages);

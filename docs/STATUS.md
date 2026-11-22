@@ -7,7 +7,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-原生 /v1/decisions 已接入普通数据准入与真实目标模型取分，25 项 CPU 检查通过。开始标准 SDK 的多题项目资料、共享缓存、用量与核心业务短验。[模型入口与 CPU 证据](evidence/serve-decision-inference-cpu-20261123/README.md)。
+原生 `POST /v1/decisions` 已通过真实 OpenAI SDK 多题、正反判断、缓存与计量短验。第二次请求命中 1,454 个共享 tokens，三个请求结算 3,660 tokens，后续 Chat 回答 42。27 项 CPU 检查通过，默认仍为 rev426。正在接入 Live 的 Decisions 委派及转录触发。[业务证据与原失败](evidence/serve-decisions-http-20261123/README.md)。
 
 Decisions 标准请求与答案合同通过 14 项 CPU 检查，包含工具输入归属、强类型选择、有序评分、单题拒答和真实用量字段。模型取分、HTTP 执行及 Live 自动触发继续。[合同与验证](evidence/serve-decision-plan-cpu-20261123/README.md)。
 

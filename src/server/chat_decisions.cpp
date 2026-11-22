@@ -26,21 +26,31 @@ ObjectReply ChatServer::RunDecisionRequest(
                  "Authenticated Decision owner unavailable");
   const auto& questions = request.Find("questions")->array;
   size_t count = 0;
-  for (const auto& q : questions) count = std::max(count, OptionCount(q));
-  std::vector<DecisionLabel> alphabet;
+  bool needs_predicate = false;
+  for (const auto& q : questions) {
+    if (q.GetString("type") == "predicate")
+      needs_predicate = true;
+    else
+      count = std::max(count, OptionCount(q));
+  }
+  std::vector<DecisionLabel> codes, predicates;
   {
     auto lock = LockUnlessCancelled(tok_mu_, cancelled);
     if (!lock.owns_lock() || !tok_)
       return Error(503, "decision_tokenizer_unavailable",
                    "Tokenizer unavailable");
-    const auto status = MakeDecisionLabels(
-        count,
-        [&](std::string_view text, std::vector<uint32_t>* ids) {
-          return tok_->Encode(
-              text, ids,
-              {.cancelled = cancelled, .recognize_special_tokens = false});
-        },
-        &alphabet);
+    const auto encode = [&](std::string_view text, std::vector<uint32_t>* ids) {
+      return tok_->Encode(
+          text, ids,
+          {.cancelled = cancelled, .recognize_special_tokens = false});
+    };
+    Status status;
+    if (count)
+      status =
+          MakeDecisionLabels(DecisionLabels::kCodes, count, encode, &codes);
+    if (status && needs_predicate)
+      status = MakeDecisionLabels(DecisionLabels::kPredicate, 2, encode,
+                                  &predicates);
     if (!status)
       return Error(503, "decision_codebook_unavailable", status.message());
   }
@@ -53,6 +63,8 @@ ObjectReply ChatServer::RunDecisionRequest(
   for (const auto& question : questions) {
     if (cancelled())
       return Error(409, control->Reason(), "Decision request was cancelled");
+    const auto& alphabet =
+        question.GetString("type") == "predicate" ? predicates : codes;
     std::vector<DecisionLabel> labels(alphabet.begin(),
                                       alphabet.begin() + OptionCount(question));
     labels.push_back(alphabet.back());
