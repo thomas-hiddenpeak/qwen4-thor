@@ -101,3 +101,5 @@ L04—L06及全部master任务仍未完成，不以本组验收作为总目标�
 [服务端 Responses 真实闭环](evidence/serve-live-responses-http-20261123/README.md)通过。客户端文档查询、两轮后台委派、语音结果、配额结算、正常排空和后续 Chat 已核实。语音听感待验，Decisions、录制与媒体继续。
 
 [Decisions 会话条目](evidence/serve-live-decision-items-cpu-20261123/README.md)的原生增删和快照已通过 7 项 CPU 检查。模型评估与触发器继续。
+
+[Decisions 共享请求与答案合同](evidence/serve-decision-plan-cpu-20261123/README.md)已完成针对性 CPU 验证，模型执行和传输验收继续。

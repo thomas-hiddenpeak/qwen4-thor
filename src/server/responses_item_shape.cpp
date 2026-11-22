@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <unordered_set>
 
+#include "q4t/server/decision_plan.h"
+#include "q4t/server/decision_types_data.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/live_shape.h"
 #include "q4t/server/live_types_data.h"
@@ -201,6 +203,13 @@ Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
                          ? "conversation_item"
                          : "";
   return Validate(Types(), item, root, error, path);
+}
+Status ValidateDecisionShape(const Json& value, DecisionShape shape,
+                             ChatPlanError* error) {
+  static const Graph graph(decision_types::kData,
+                           "q4t-openai-decision-types-v1");
+  return Validate(graph, value, shape == DecisionShape::kRequest ? "request" : "decision",
+                  error, shape == DecisionShape::kRequest ? "body" : "decision");
 }
 Status ValidateRealtimeShape(const Json& value, RealtimeShape shape,
                              ChatPlanError* error, std::string_view path) {

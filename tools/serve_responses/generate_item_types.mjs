@@ -7,9 +7,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime', '--live'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -27,12 +27,14 @@ const inputItems = resolve(sdk, 'src/resources/responses/input-items.ts');
 const inputTokens = resolve(sdk, 'src/resources/responses/input-tokens.ts');
 const realtime = resolve(sdk, 'src/resources/realtime/realtime.ts');
 const live = resolve(sdk, 'src/resources/live/live.ts');
+const decisions = resolve(sdk, 'src/resources/decisions.ts');
 const liveSessions = resolve(sdk, 'src/resources/live/sessions.ts');
 const liveSideband = resolve(sdk, 'src/resources/live/sideband/sideband.ts');
 const liveForks = resolve(sdk, 'src/resources/live/forks/forks.ts');
 const program = ts.createProgram([source, conversation,
   ...(mode === '--api' ? [conversations, inputItems, inputTokens] : []),
   ...(mode === '--realtime' ? [realtime] : []),
+  ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--live' ? [live, liveSessions, liveSideband, liveForks] : [])], {
   target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext,
@@ -131,7 +133,10 @@ function exported(file, name) {
   track(symbol);
   return encode(checker.getDeclaredTypeOfSymbol(symbol));
 }
-const roots = mode === '--live' ? {
+const roots = mode === '--decisions' ? {
+  request: exported(decisions, 'DecisionCreateParams'),
+  decision: exported(decisions, 'Decision'),
+} : mode === '--live' ? {
   client_event: exported(live, 'ClientEvent'),
   server_event: exported(live, 'ServerEvent'),
   session_start: exported(live, 'SessionConfig'),
@@ -181,7 +186,8 @@ if (mode === '--api') Object.assign(roots, {
   input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
 });
 const result = {
-  profile: mode === '--live' ? 'q4t-openai-live-types-v1' : mode === '--realtime' ? 'q4t-openai-realtime-types-v1' :
+  profile: mode === '--decisions' ? 'q4t-openai-decision-types-v1' :
+    mode === '--live' ? 'q4t-openai-live-types-v1' : mode === '--realtime' ? 'q4t-openai-realtime-types-v1' :
     mode === '--api' ? 'q4t-openai-application-types-v1' :
       'q4t-openai-item-types-v1',
   sdk_version: '7.47.0',

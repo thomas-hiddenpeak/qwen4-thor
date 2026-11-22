@@ -2370,8 +2370,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "aab9a6939a2d3deb40bf2ebf3f6ba1439330dec00ec668ba3077e25131875c2f",
-    "cmake/ChatProtocolIdentity.cmake": "960e8bd67998edc87aa8af9a943896dc7d5845a5e7be1e87ebd103fd76fc1331",
+    "CMakeLists.txt": "e3fdfbd3f00ca0cacd9384e96e3d1a69c7093d55b6913504448e192b0af321c7",
+    "cmake/ChatProtocolIdentity.cmake": "8f09146954c375f277ba57c797810a3cce164ceaf6b7a5a144f79e19cc941325",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3117,7 +3117,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "8e38d0648c4808719fece1f9836a8141e63762d1d9465375949ed16338ae8c48",
-    "src/server/responses_item_shape.cpp": "2b823dcb5c0043073444926674ed54d49ee6dc885a9543ff5c84914343fb82af",
+    "src/server/responses_item_shape.cpp": "4955b54d91452bf0bc212cf43df2555bec7233378e9ab6ef4eda4fc7fca7ef75",
     "src/server/responses_jobs.cpp": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -3506,7 +3506,10 @@
     "src/server/live_responses_delegate.cpp": "146bd08a3f5f847cc03676d77348de3a94eb601504bd13a82a8af9285675ceee",
     "src/server/live_responses_execution.cpp": "438c86d749a5c9d1e0da120aedceee244781246c58770968379eb64d1b9ce88b",
     "include/q4t/server/live_decision_items.h": "814c4a7cff0b99f4515cd6b22531add4dbe8d05dbc8d4faf6f48a1eef81837e0",
-    "src/server/live_decision_items.cpp": "a409a68e46e66f738941f4eeecabc57647d989c1e23cf528890a1046f1833b5d"
+    "src/server/live_decision_items.cpp": "d4ade6d7973dd89b62c700c18edb3ab260b90eb6e80f89846e827334dce7f27b",
+    "include/q4t/server/decision_plan.h": "4716840cd1d1162ba14aa80d5484540b52b5ec6552c8914c5293d31fd57971fb",
+    "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
+    "src/server/decision_plan.cpp": "78d84e70f3af471d6a251ea72f99fb62669b883090edf41e7665e7d2aca81439"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
