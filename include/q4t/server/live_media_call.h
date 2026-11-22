@@ -19,11 +19,12 @@ class LiveMediaCall {
   bool Receive(char type, std::string_view payload);
   bool Tick(Clock::time_point now);
   bool Finished() const;
+  bool EndTransport();
 
  private:
   bool Publish(std::string_view wire);
   void DropData();
-  bool close_pending_ = false;
+  bool close_pending_ = false, transport_ended_ = false;
   LiveMediaPolicy frontend_;
   const Send send_;
   std::shared_ptr<LiveSideband> sideband_;

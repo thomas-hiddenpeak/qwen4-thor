@@ -368,7 +368,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       }
       if (IsTranscriptionTarget(path))
         headers.body_limit = std::min(headers.body_limit, kAsrFormBytes);
-      if (IsSipReject(method, path))
+      if (IsSipReject(method, path) || IsSipHangup(method, path))
         headers.body_limit = std::min<uint64_t>(headers.body_limit, 4096);
       if (IsCancellationRequest(method, path))
         lease.SelectBudget(cancel_body_budget_);
@@ -499,7 +499,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                     headers.error_param);
       return false;
     }
-    if (IsSipReject(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
+    if (IsSipReject(method, path) || IsSipHangup(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
@@ -507,6 +507,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
       if (method == "POST" && !((IsResponseCancellation(method, path) ||
+                                 IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
                                  IsBatchCancellation(method, path) ||
                                  IsVectorStoreCancellation(method, path) ||
@@ -540,6 +541,10 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     dispatch_started = true;
     if (IsSipReject(method, path))
       HandleSipReject(fd, SipRejectId(path), body);
+    else if (IsSipHangup(method, path))
+      HandleSipHangup(fd, SipControlId(path, "/hangup"), body);
+    else if (method == "POST" && !LiveResourceId(path, "/accept").empty())
+      HandleLiveMediaCreate(fd, {}, body, admission, LiveResourceId(path, "/accept"));
     else if (IsLiveMediaCreate(method, path))
       HandleLiveMediaCreate(fd, LiveForkId(path), body, admission);
     else if (IsRealtimeTarget(path))

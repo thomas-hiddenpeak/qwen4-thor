@@ -349,10 +349,11 @@ class ChatServer {
                            std::shared_ptr<const io::Json>* state);
   void HandleLiveSideband(int fd, std::string_view path,
       const HttpRequestHeaders& headers, std::string_view initial, std::string_view accept);
+  void HandleSipHangup(int fd, std::string_view id, const std::string& body);
   void HandleSipReject(int fd, std::string_view id, const std::string& body);
   void HandleLiveMediaCreate(int fd, std::string_view source,
                              const std::string& body,
-                             std::atomic<int>*& admission);
+                             std::atomic<int>*& admission, std::string_view sip_id = {});
   void JoinLiveMedia();
   void HandleLive(int fd, std::string_view path,
                     const HttpRequestHeaders& headers,
@@ -451,7 +452,7 @@ class ChatServer {
   struct LiveMediaThread {
     std::string client, session;
     std::weak_ptr<LiveSideband> sideband;
-    std::atomic<bool> finished{true};
+    std::atomic<bool> attachable{false}, finished{true};
     std::jthread worker;
   };
   std::mutex live_media_mu_;

@@ -74,7 +74,7 @@ def schema(graph):
     definitions = graph_definitions(graph)
     live = json.loads((ROOT/'src/server/contracts/openai_live_types_v1.json').read_text())
     assert live['profile'] == 'q4t-openai-live-types-v1'
-    definitions.update(graph_definitions(live, 'live_', ('session_reject', 'session_fork', 'session_forked', 'media_create', 'media_created')))
+    definitions.update(graph_definitions(live, 'live_', ('session_accept', 'session_reject', 'session_fork', 'session_forked', 'media_create', 'media_created')))
     definitions['live_session_reject'] = {
         'allOf': [definitions['live_session_reject'],
                   {'properties': {'status_code': {'type':'integer','minimum':300,'maximum':699}}}]}

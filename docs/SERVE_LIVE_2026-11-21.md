@@ -157,7 +157,7 @@ L05 已从真实来电投递 `live.transport.incoming` 签名 HTTPS 通知。接
 
 每个监听端口绑定一个已配置的客户。TLS 目录中的 `agent.pem` 包含监听证书和私钥，`cafile.pem` 保存受信中继 CA。`peer_subject` 约束来电中继的证书身份。通知接收端先用签名密钥核验原始 HTTP 正文与请求头，再用该客户的 API Key 调用 `client.live.sessions.reject(event.data.session_id, {status_code: 486})`。接收端可在拒接完成后返回 204。
 
-拒接码范围为 300–699。收到同一 SIP 事务的 ACK 后 HTTP 返回空正文 200。其他客户或已结束的来电返回 404；已经提交、尚待确认的拒接返回 409；五秒内缺少最终回执返回 504，此时电话对端可能已收到拒接。本机运维端点 `GET /v1/config` 的 `sip` 字段列出已配置与就绪中继数量、启动失败数、成功通知数与通知失败数。SIP 接听、通话媒体、转接及托管发行另有待验收项。
+拒接码范围为 300–699。收到同一 SIP 事务的 ACK 后 HTTP 返回空正文 200。其他客户或已结束的来电返回 404；已经提交、尚待确认的拒接返回 409；五秒内缺少最终回执返回 504，此时电话对端可能已收到拒接。本机运维端点 `GET /v1/config` 的 `sip` 字段列出已配置与就绪中继数量、启动失败数、成功通知数与通知失败数。接听与挂断见下文；转接与托管发行另有待验收项。
 
 同一中继也可接收 Realtime 来电通知。给上例的 `webhook` 增加 `"event_types": ["live.transport.incoming", "realtime.call.incoming"]` 即可订阅两种事件；仅列其中一种则只投递该事件。旧配置省略此字段时沿用 Live 通知。两种事件带有独立的签名事件 ID、相同的来电头字段和原始创建时间。Live 事件给出 `data.session_id`，Realtime 事件给出 `data.call_id`。接收端将对应字段原样传回各自的接口。
 
@@ -166,3 +166,31 @@ L05 已从真实来电投递 `live.transport.incoming` 签名 HTTPS 通知。接
 电话媒体已支持 RTP/SAVP、SDES 的 AES_CM_128_HMAC_SHA1_80、Opus 和两种 G.711 编码，分别协商收发密钥和 RTCP 端口。已用独立电话对端验证双向音频、远端回执和挂断排空。HTTP 接听与模型会话仍需连通验收。[媒体结果](evidence/serve-sip-secure-media-20261123/README.md)、[SDP 协商](https://www.rfc-editor.org/rfc/rfc3264)、[SDES](https://www.rfc-editor.org/rfc/rfc4568)。
 
 电话中继可在同一 mTLS 对话中发送接听应答、关联远端 ACK，按 Call-ID、双方标签和 CSeq 处理挂断。主动挂断使用原 TLS 连接，记录最终 SIP 状态；对端未给最终答复时单独报告失联。已通过实际信令与媒体组合回环，公开接听、转接及真实模型电话业务继续实施。[对话验收](evidence/serve-sip-dialog-20261123/README.md)。
+
+
+### 用 Live API 接听并结束电话
+
+签名通知中的 `data.session_id` 对应一笔等待接听的来电。使用同一客户的 API Key，在收到来电后调用固定 SDK 的接听操作。下例选择 vivian 声线并将工具工作委派给客户端。
+
+```js
+await client.live.sessions.accept(event.data.session_id, {
+  session: {
+    type: "live",
+    model: "qwen3.8-flash-next",
+    audio: {output: {voice: "vivian"}},
+    delegation: {type: "client"},
+  },
+});
+```
+
+中继发出 SDP 应答并等待对端 ACK，此后激活媒体，HTTP 返回空正文 200。通过同一 session ID 连接 Live 旁路，可读取语音转录和委派事件，并把查询结果回填。接听占用一个持续到通话结束的实时名额。使用 `client.live.sessions.hangup(id)` 在独立控制名额上挂断；如果中继也发布 Realtime 来电通知，同一客户可用 `client.realtime.calls.hangup(call_id)` 结束该通话。远端 BYE 也会结束会话。
+
+| 调用结果 | 处理 |
+|---|---|
+| 404 | 该客户没有这笔来电或通话已注销。 |
+| 409 | 已有处置占用来电，或通话还未进入可挂断状态。 |
+| 接听等待 ACK 超时，504 | 媒体不激活。迟到 ACK 到达后，中继主动发出 BYE。 |
+| 主动挂断获得最终 SIP 2xx | HTTP 200，空正文。 |
+| 主动挂断获得远端失败状态 | HTTP 502，错误消息保留 SIP 状态码。缺少最终回执返回 504。 |
+
+信令进程和 `q4t-sip-media` 放在模型可执行文件同目录。媒体默认绑定中继的具体监听 IP，仅向本次已认证 TLS 连接的对端 IP 传音。如果媒体中继与信令对端地址不同，或信令监听通配地址，在对应 trunk 增加 `"media": {"local_ip": "192.0.2.10", "peer_ip": "192.0.2.20"}`，两者使用同一地址族的实际单播地址。SDP 必须匹配批准的对端。实际电话对端验证过 Opus 和 G.711；SDK 至真实项目查询的通话使用 Opus。[客户边界与验收](evidence/serve-live-sip-accept-20261123/README.md)。

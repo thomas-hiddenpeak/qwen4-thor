@@ -405,7 +405,11 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
     *control = false;
     return true;
   }
-  if (server::IsSipReject(method, path)) {
+  if (method == "POST" && !server::LiveResourceId(path, "/accept").empty()) {
+    *control = false;
+    return true;
+  }
+  if (server::IsSipReject(method, path) || server::IsSipHangup(method, path)) {
     *control = true;
     return true;
   }

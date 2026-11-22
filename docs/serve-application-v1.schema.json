@@ -17996,6 +17996,146 @@
       ],
       "additionalProperties": false
     },
+    "live_920": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "$ref": "#/$defs/live_921"
+        }
+      },
+      "required": [
+        "session"
+      ],
+      "additionalProperties": false
+    },
+    "live_921": {
+      "type": "object",
+      "properties": {
+        "audio": {
+          "$ref": "#/$defs/live_922"
+        },
+        "delegation": {
+          "$ref": "#/$defs/live_926"
+        },
+        "input": {
+          "$ref": "#/$defs/live_121"
+        },
+        "instructions": {
+          "$ref": "#/$defs/live_2"
+        },
+        "model": {
+          "$ref": "#/$defs/live_147"
+        },
+        "store": {
+          "$ref": "#/$defs/live_150"
+        },
+        "triggers": {
+          "$ref": "#/$defs/live_151"
+        },
+        "type": {
+          "$ref": "#/$defs/live_929"
+        }
+      },
+      "required": [
+        "model",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "live_929": {
+      "const": "live"
+    },
+    "live_926": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_3"
+        },
+        {
+          "$ref": "#/$defs/live_34"
+        },
+        {
+          "$ref": "#/$defs/live_927"
+        },
+        {
+          "$ref": "#/$defs/live_928"
+        }
+      ]
+    },
+    "live_928": {
+      "type": "object",
+      "properties": {
+        "acknowledgement_delay_ms": {
+          "$ref": "#/$defs/live_35"
+        },
+        "decisions": {
+          "$ref": "#/$defs/live_82"
+        },
+        "type": {
+          "$ref": "#/$defs/live_120"
+        }
+      },
+      "required": [
+        "decisions",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "live_927": {
+      "type": "object",
+      "properties": {
+        "acknowledgement_delay_ms": {
+          "$ref": "#/$defs/live_35"
+        },
+        "responses": {
+          "$ref": "#/$defs/live_38"
+        },
+        "type": {
+          "$ref": "#/$defs/live_80"
+        }
+      },
+      "required": [
+        "responses",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "live_922": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_923"
+        }
+      ]
+    },
+    "live_923": {
+      "type": "object",
+      "properties": {
+        "output": {
+          "$ref": "#/$defs/live_924"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "live_924": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/live_925"
+        }
+      ]
+    },
+    "live_925": {
+      "type": "object",
+      "properties": {
+        "voice": {
+          "$ref": "#/$defs/live_21"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "live_session_accept": {
+      "$ref": "#/$defs/live_920"
+    },
     "live_session_reject": {
       "allOf": [
         {

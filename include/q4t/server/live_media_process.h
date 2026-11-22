@@ -1,4 +1,5 @@
-// Parent of one isolated native WebRTC worker, independent of model libraries.
+// Parent of one isolated native RTP media worker, independent of model
+// libraries.
 #pragma once
 
 #include <array>
@@ -17,9 +18,11 @@ class LiveMediaProcess {
   LiveMediaProcess& operator=(const LiveMediaProcess&) = delete;
   ObjectReply Negotiate(std::string_view offer, const std::string& address,
                         const std::function<bool()>& cancelled,
-                        std::string* answer);
+                        std::string* answer,
+                        const std::string* sip_peer = nullptr);
   bool Send(char type, std::string_view payload);
   bool Drain(std::stop_token stop);
+  bool ActivateSip(const std::function<bool()>& cancelled);
   enum class Read { kPacket, kPending, kClosed };
   Read Receive(char* type, std::string_view* payload);
   int Fd() const { return fd_; }

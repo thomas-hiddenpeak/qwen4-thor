@@ -30,6 +30,8 @@ SCHEMA = 'q4t-live-sip-reject-v1'
 class Stage(base.Stage):
     limits = LIMITS
     subscriber = None
+    subscriber_handles_reject = True
+    carrier_calls = 1
 
     def receive(self, timeout=8):
         line = self.subscriber.stdout
@@ -75,7 +77,7 @@ class Stage(base.Stage):
         api = dict(baseURL=f"https://127.0.0.1:{self.plan['public_port']}/v1",
                    ownerKey=self.keys['alpha'], otherKey=self.keys['beta'], eventType=event_types[-1])
         self.subscriber.stdin.write((json.dumps(dict(cert=str(hook_cert), key=str(hook_key),
-            secret=secret, api=api, responses=[204]*len(event_types)))+'\n').encode())
+            secret=secret, api=api if self.subscriber_handles_reject else None, responses=[204]*(len(event_types)*self.carrier_calls)))+'\n').encode())
         self.subscriber.stdin.flush()
         port = self.receive()['port']
         network = dict(allow_http=False, public_networks=False, allowed_hosts=['localhost'],

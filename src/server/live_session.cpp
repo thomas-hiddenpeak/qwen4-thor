@@ -310,6 +310,11 @@ bool LiveSession::UpdateSession(const Json& event) {
                               ResponseSettings(configuration_), client_event,
                               charge);
 }
+bool LiveSession::CloseMedia() {
+  return state_ == State::kDraining || state_ == State::kClosed ||
+         (state_ == State::kActive && BeginClose("close_requested", {}));
+}
+
 bool LiveSession::BeginClose(std::string reason, std::string client_event) {
   responses_commands_.clear();
   responses_command_bytes_ = 0;

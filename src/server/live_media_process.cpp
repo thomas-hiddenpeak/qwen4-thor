@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <spawn.h>
 #include <sys/socket.h>
+#include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -50,8 +51,7 @@ bool Reaped(pid_t pid, Clock::time_point deadline) {
   return false;
 }
 ObjectReply Unavailable() {
-  return Error(503, "live_media_unavailable",
-               "WebRTC media worker unavailable");
+  return Error(503, "live_media_unavailable", "Media worker unavailable");
 }
 }  // namespace
 
@@ -80,6 +80,21 @@ bool LiveMediaProcess::Send(char type, std::string_view payload) {
   msg.msg_iovlen = payload.empty() ? 1 : 2;
   return sendmsg(fd_, &msg, MSG_NOSIGNAL | MSG_DONTWAIT) ==
          static_cast<ssize_t>(payload.size() + 1);
+}
+
+bool LiveMediaProcess::ActivateSip(const std::function<bool()>& cancelled) {
+  if (!Send('G', {})) return false;
+  const auto deadline = Clock::now() + std::chrono::seconds(2);
+  while (Clock::now() < deadline && !cancelled()) {
+    char type;
+    std::string_view payload;
+    const auto read = Receive(&type, &payload);
+    if (read == Read::kClosed) return false;
+    if (read == Read::kPacket) return type == 'V' && payload.empty();
+    pollfd event{fd_, POLLIN, 0};
+    if (poll(&event, 1, 25) < 0 && errno != EINTR) return false;
+  }
+  return false;
 }
 
 bool LiveMediaProcess::Drain(std::stop_token stop) {
@@ -122,10 +137,11 @@ LiveMediaProcess::Read LiveMediaProcess::Receive(char* type,
 ObjectReply LiveMediaProcess::Negotiate(std::string_view offer,
                                         const std::string& address,
                                         const std::function<bool()>& cancelled,
-                                        std::string* answer) {
+                                        std::string* answer,
+                                        const std::string* sip_peer) {
   if (offer.empty() || offer.size() >= buffer_.size() ||
       offer.find('\0') != offer.npos)
-    return Error(400, "live_invalid_sdp", "Invalid WebRTC session description");
+    return Error(400, "live_invalid_sdp", "Invalid media session description");
   if (!answer || !cancelled || slot_ >= 0) return Unavailable();
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) ||
@@ -138,7 +154,8 @@ ObjectReply LiveMediaProcess::Negotiate(std::string_view offer,
   std::error_code ec;
   const auto engine = std::filesystem::read_symlink("/proc/self/exe", ec);
   if (ec || !engine.is_absolute()) return Unavailable();
-  const auto path = engine.parent_path() / "q4t-live-webrtc";
+  std::string name = sip_peer ? "q4t-sip-media" : "q4t-live-webrtc";
+  const auto path = engine.parent_path() / name;
   int pair[2];
   if (socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, pair))
     return Unavailable();
@@ -153,8 +170,10 @@ ObjectReply LiveMediaProcess::Negotiate(std::string_view offer,
   }
   int error = posix_spawn_file_actions_adddup2(&actions, child, 3);
   if (!error) error = posix_spawn_file_actions_addclosefrom_np(&actions, 4);
-  char name[] = "q4t-live-webrtc", socket[] = "3";
-  char* argv[] = {name, socket, const_cast<char*>(address.c_str()), nullptr};
+  char socket[] = "3";
+  char* argv[] = {name.data(), socket, const_cast<char*>(address.c_str()),
+                  sip_peer ? const_cast<char*>(sip_peer->c_str()) : nullptr,
+                  nullptr};
   // Only media-specific deployment settings reach this child; service keys,
   // TLS credentials and model-library loader settings are never inherited.
   std::vector<std::string> options{"LC_ALL=C", "MALLOC_ARENA_MAX=2"};
@@ -182,9 +201,10 @@ ObjectReply LiveMediaProcess::Negotiate(std::string_view offer,
         return Unavailable();
       case Read::kPacket:
         if (type == 'I')
-          return Error(400, "live_invalid_sdp", "Unusable WebRTC offer");
+          return Error(400, "live_invalid_sdp", "Unusable media offer");
         if (type != 'A' || payload.empty()) return Unavailable();
         answer->assign(payload);
+        if (sip_peer) explicit_bzero(buffer_.data(), payload.size() + 1);
         return {};
       case Read::kPending:
         break;

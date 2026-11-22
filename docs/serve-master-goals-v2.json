@@ -16251,7 +16251,7 @@
       },
       {
         "id": "L05",
-        "state": "webrtc_business_accepted_sip_in_progress",
+        "state": "webrtc_and_live_sip_accept_hangup_business_accepted_refer_dtmf_realtime_remaining",
         "title": "WebRTC/SIP媒体接入"
       },
       {
@@ -16329,6 +16329,7 @@
     "sip_reject_business_evidence": "evidence/serve-live-sip-reject-20261123/README.md",
     "realtime_sip_reject_business_evidence": "evidence/serve-realtime-sip-reject-20261123/README.md",
     "sip_secure_media_evidence": "evidence/serve-sip-secure-media-20261123/README.md",
-    "sip_dialog_evidence": "evidence/serve-sip-dialog-20261123/README.md"
+    "sip_dialog_evidence": "evidence/serve-sip-dialog-20261123/README.md",
+    "sip_accept_business_evidence": "evidence/serve-live-sip-accept-20261123/README.md"
   }
 }

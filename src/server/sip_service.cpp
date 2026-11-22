@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 #include <poll.h>
 #include <sys/socket.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <algorithm>
@@ -29,6 +30,7 @@ using namespace object_detail;
 using Clock = std::chrono::steady_clock;
 struct Config {
   std::string scope, ip, certs, subject, port, webhook;
+  std::string media_local, media_peer;
   bool live = false, realtime = false;
 };
 bool Name(std::string_view text) {
@@ -37,6 +39,21 @@ bool Name(std::string_view text) {
              "0123456789abcdefghijklmnopqrstuvwxyz"
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ-_.") == text.npos;
 }
+bool MediaAddress(const std::string& ip, int* family) {
+  in_addr v4{};
+  in6_addr v6{};
+  if (ip.find('\0') != ip.npos) return false;
+  if (inet_pton(AF_INET, ip.c_str(), &v4) == 1) {
+    const auto value = ntohl(v4.s_addr);
+    *family = AF_INET;
+    return value && value != INADDR_BROADCAST && !IN_MULTICAST(value);
+  }
+  *family = AF_INET6;
+  return inet_pton(AF_INET6, ip.c_str(), &v6) == 1 &&
+         !IN6_IS_ADDR_UNSPECIFIED(&v6) && !IN6_IS_ADDR_MULTICAST(&v6) &&
+         !IN6_IS_ADDR_V4MAPPED(&v6);
+}
+
 bool Load(const std::string& file, std::vector<Config>* configs) {
   std::string raw;
   if (!ReadMcpPrivateConfig(file, &raw)) return false;
@@ -56,16 +73,28 @@ bool Load(const std::string& file, std::vector<Config>* configs) {
     c.ip = row.GetString("listen_ip");
     const auto port = row.GetInt("port", -1);
     auto* webhook = row.Find("webhook");
-    if (row.object.size() != (webhook ? 6u : 5u) || !Name(c.scope) ||
-        !Name(c.subject) || c.certs.empty() || c.certs.front() != '/' ||
-        c.certs.size() > 4096 || c.certs.find('\0') != c.certs.npos ||
-        c.ip.find('\0') != c.ip.npos || port < 1 || port > 65535 ||
-        !listeners.emplace(c.ip, port).second)
+    const auto* media = row.Find("media");
+    if (row.object.size() != 5u + bool(webhook) + bool(media) ||
+        !Name(c.scope) || !Name(c.subject) || c.certs.empty() ||
+        c.certs.front() != '/' || c.certs.size() > 4096 ||
+        c.certs.find('\0') != c.certs.npos || c.ip.find('\0') != c.ip.npos ||
+        port < 1 || port > 65535 || !listeners.emplace(c.ip, port).second)
       return false;
     in6_addr address{};
     if (inet_pton(AF_INET, c.ip.c_str(), &address) != 1 &&
         inet_pton(AF_INET6, c.ip.c_str(), &address) != 1)
       return false;
+    c.media_local = c.ip;
+    if (media) {
+      if (!media->IsObject() || media->object.size() != 2) return false;
+      c.media_local = media->GetString("local_ip");
+      c.media_peer = media->GetString("peer_ip");
+      int local_family, peer_family;
+      if (!MediaAddress(c.media_local, &local_family) ||
+          !MediaAddress(c.media_peer, &peer_family) ||
+          local_family != peer_family)
+        return false;
+    }
     c.port = std::to_string(port);
     if (webhook) {
       if (!webhook->IsObject() || webhook->Has("scope")) return false;
@@ -101,7 +130,37 @@ ObjectReply Unknown() {
 }
 }  // namespace
 
-class SipService::Trunk {
+SipInvitation::~SipInvitation() { CryptoWipe(&offer); }
+
+class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
+  struct Call {
+    ~Call() { CryptoWipe(&offer); }
+    std::string id, realtime_id, offer, peer;
+    int requested = 0, final = 0, ack = 0, bye_status = 0;
+    bool invalid_answer = false;
+    bool submitted = false, conflict = false, done = false;
+    bool reserved = false, media_pending = false, media_ready = false;
+    bool abandoned = false, hanging_up = false, retired = false;
+    std::atomic<bool> ended{false}, lost{false};
+  };
+
+  class Invitation final : public SipInvitation {
+   public:
+    Invitation(std::shared_ptr<Trunk> trunk, std::shared_ptr<Call> call)
+        : trunk_(std::move(trunk)), call_(std::move(call)) {}
+    ~Invitation() override { trunk_->Release(*call_); }
+    bool Lost() const override { return call_->lost.load(); }
+    bool Ended() const override { return call_->ended.load(); }
+    ObjectReply Answer(std::string_view sdp,
+                       Clock::time_point deadline) override {
+      return trunk_->Answer(*call_, sdp, deadline);
+    }
+
+   private:
+    std::shared_ptr<Trunk> trunk_;
+    std::shared_ptr<Call> call_;
+  };
+
  public:
   ~Trunk() {
     reader_.request_stop();
@@ -112,6 +171,8 @@ class SipService::Trunk {
   bool Start(Config* c, const std::filesystem::path& engine,
              const std::function<bool(std::string_view)>& current_scope) {
     scope_ = c->scope;
+    media_local_ = c->media_local;
+    media_peer_ = c->media_peer;
     current_scope_ = current_scope;
     if (!current_scope_(scope_)) return false;
     std::vector<std::string> args{"3",      c->ip,      c->port,
@@ -140,19 +201,90 @@ class SipService::Trunk {
   uint64_t WebhookFailures() const { return webhook_failures_.load(); }
   uint64_t Delivered() const { return delivered_.load(); }
 
+  std::optional<ObjectReply> Reserve(std::string_view scope,
+                                     std::string_view id,
+                                     std::unique_ptr<SipInvitation>* out) {
+    if (!online_ || scope != scope_) return {};
+    // Allocate and fill a ticket before arming its release callback.
+    std::unique_lock lock(mutex_);
+    const auto it = FindCall(id);
+    if (it == calls_.end()) return {};
+    const auto call = it->second;
+    if (call->reserved || call->requested || call->final)
+      return Error(409, "sip_call_conflict",
+                   "Call has a disposition in progress");
+    int family;
+    if (!MediaAddress(media_local_, &family))
+      return Error(503, "sip_media_address_required",
+                   "Configure an advertised unicast address for this trunk");
+    call->reserved = true;
+    if (!call->media_ready && !call->media_pending) {
+      call->media_pending =
+          signal_.Send("MEDIA m-" + call->id + " " + scope_ + " " + call->id);
+    }
+    updated_.wait_for(lock, std::chrono::seconds(2), [&] {
+      return !call->media_pending || call->final || call->ended.load();
+    });
+    if (!call->media_ready || call->final || call->ended) {
+      call->reserved = false;
+      if (call->final || call->ended)
+        return Error(409, "sip_call_conflict", "Call ended during negotiation");
+      return Error(503, "sip_control_unavailable", "Carrier offer unavailable");
+    }
+    const auto& peer = media_peer_.empty() ? call->peer : media_peer_;
+    int peer_family;
+    if (!MediaAddress(peer, &peer_family) || family != peer_family) {
+      call->reserved = false;
+      return Error(503, "sip_media_address_required",
+                   "Configure the trunk media address pair");
+    }
+    try {
+      auto offer = call->offer, local = media_local_, remote = peer;
+      auto ticket = std::make_unique<Invitation>(shared_from_this(), call);
+      ticket->offer.swap(offer);
+      ticket->local_address.swap(local);
+      ticket->peer_address.swap(remote);
+      *out = std::move(ticket);
+    } catch (...) {
+      call->reserved = false;
+      throw;
+    }
+    return ObjectReply{};
+  }
+
+  std::optional<ObjectReply> Hangup(std::string_view scope, std::string_view id,
+                                    Clock::time_point deadline) {
+    if (!online_ || scope != scope_) return {};
+    std::unique_lock lock(mutex_);
+    const auto it = FindCall(id);
+    if (it == calls_.end()) return {};
+    const auto call = it->second;
+    if (call->ack != 200 || call->hanging_up)
+      return Error(409, "sip_call_conflict",
+                   "Call is not available for hangup");
+    if (!SendHangup(*call))
+      return Error(503, "sip_control_unavailable", "Call control unavailable");
+    if (!updated_.wait_until(lock, deadline, [&] {
+          return call->bye_status || !call->hanging_up || call->retired;
+        }))
+      return Unknown();
+    if (call->bye_status >= 200 && call->bye_status < 300) return ObjectReply{};
+    if (call->bye_status >= 300)
+      return Error(502, "sip_hangup_rejected",
+                   "Carrier returned SIP " + std::to_string(call->bye_status));
+    return Unknown();
+  }
+
   std::optional<ObjectReply> Reject(std::string_view scope, std::string_view id,
                                     int status, Clock::time_point deadline) {
     if (!online_.load() || scope != scope_) return {};
     std::unique_lock lock(mutex_);
-    auto it = calls_.find(id);
-    if (id.starts_with("rtc_"))
-      it = std::find_if(calls_.begin(), calls_.end(), [&](const auto& entry) {
-        return entry.second->realtime_id == id;
-      });
+    auto it = FindCall(id);
     if (it == calls_.end()) return {};
     auto call = it->second;
-    if (call->requested || call->final)
+    if (call->reserved || call->requested || call->final)
       return Error(409, "sip_call_conflict", "Call has a final disposition");
+    call->done = call->conflict = call->submitted = false;
     call->requested = status;
     if (!signal_.Send("REJECT " + it->first + " " + scope_ + " " + it->first +
                       " " + std::to_string(status))) {
@@ -169,11 +301,58 @@ class SipService::Trunk {
   }
 
  private:
-  struct Call {
-    std::string realtime_id;
-    int requested = 0, final = 0, ack = 0;
-    bool submitted = false, conflict = false, done = false;
-  };
+  using Calls = std::map<std::string, std::shared_ptr<Call>, std::less<>>;
+  Calls::iterator FindCall(std::string_view id) {
+    auto it = calls_.find(id);
+    if (id.starts_with("rtc_"))
+      it = std::find_if(calls_.begin(), calls_.end(), [&](const auto& entry) {
+        return entry.second->realtime_id == id;
+      });
+    return it;
+  }
+
+  bool SendHangup(Call& call) {
+    call.hanging_up =
+        signal_.Send("HANGUP h-" + call.id + " " + scope_ + " " + call.id);
+    return call.hanging_up;
+  }
+
+  void Release(Call& call) {
+    std::lock_guard lock(mutex_);
+    call.reserved = false;
+    if (call.requested != 200 || call.ended) return;
+    call.abandoned = true;
+    if (call.ack == 200 && !call.hanging_up) SendHangup(call);
+  }
+
+  ObjectReply Answer(Call& call, std::string_view sdp,
+                     Clock::time_point deadline) {
+    std::unique_lock lock(mutex_);
+    if (!online_ || !current_scope_(scope_) || !call.reserved || call.final ||
+        call.requested || call.ended)
+      return Error(409, "sip_call_conflict", "Call is no longer available");
+    std::string message =
+        "ACCEPT " + call.id + " " + scope_ + " " + call.id + "\n";
+    message.append(sdp);
+    const bool sent = signal_.Send(message);
+    CryptoWipe(&message);
+    if (!sent)
+      return Error(503, "sip_control_unavailable", "Call control unavailable");
+    call.invalid_answer = false;
+    call.requested = 200;
+    call.done = false;
+    call.conflict = false;
+    if (!updated_.wait_until(lock, deadline, [&] { return call.done; }))
+      return Unknown();
+    if (call.invalid_answer)
+      return Error(400, "sip_invalid_dialog",
+                   "The incoming dialog cannot receive this answer");
+    if (call.conflict)
+      return Error(409, "sip_call_conflict",
+                   "Another disposition won the call");
+    if (!call.submitted || call.ack != 200 || call.ended) return Unknown();
+    return {};
+  }
   void Event(std::string_view packet) {
     const auto lf = packet.find('\n');
     auto head = packet.substr(0, lf);
@@ -183,6 +362,28 @@ class SipService::Trunk {
       part = head.substr(0, space);
       if (space == head.npos) break;
       head.remove_prefix(space + 1);
+    }
+    if ((word[0] == "MEDIA" || word[0] == "RESULT") &&
+        word[1].starts_with("m-")) {
+      const auto it = calls_.find(word[1].substr(2));
+      if (it == calls_.end() || !it->second->media_pending) return;
+      auto& call = *it->second;
+      call.media_pending = false;
+      if (word[0] == "MEDIA" && lf != packet.npos) {
+        call.offer = packet.substr(lf + 1);
+        call.peer = word[2];
+        call.media_ready = true;
+      }
+      updated_.notify_all();
+      return;
+    }
+    if (word[0] == "RESULT" && word[1].starts_with("h-")) {
+      const auto it = calls_.find(word[1].substr(2));
+      if (it != calls_.end() && word[2] != "submitted") {
+        it->second->hanging_up = false;
+        updated_.notify_all();
+      }
+      return;
     }
     if (word[0] == "RESULT" && word[1] == "hook") {
       if (word[2] != "submitted") ++webhook_failures_;
@@ -196,6 +397,11 @@ class SipService::Trunk {
         call.submitted = true;
       else {
         call.conflict = word[2] == "conflict" || word[2] == "not_found";
+        if (call.requested == 200 && !call.final) {
+          call.invalid_answer =
+              word[2] == "invalid_answer" || word[2] == "invalid_dialog";
+          call.requested = 0;
+        }
         call.done = true;
         updated_.notify_all();
       }
@@ -217,6 +423,7 @@ class SipService::Trunk {
         return;
       }
       auto call = std::make_shared<Call>();
+      call->id = id;
       if (realtime_) call->realtime_id = detail::NewRequestId("rtc_");
       if (!calls_.emplace(id, call).second) return;
       const auto publish = "PUBLISH hook " + scope_ + " " + id;
@@ -228,9 +435,24 @@ class SipService::Trunk {
     auto it = calls_.find(id);
     if (it == calls_.end()) return;
     auto& call = *it->second;
+    if (word[0] == "BYE_RESPONSE") {
+      int code;
+      auto [last, error] =
+          std::from_chars(word[3].begin(), word[3].end(), code);
+      if (error == std::errc{} && last == word[3].end()) call.bye_status = code;
+      updated_.notify_all();
+      return;
+    }
+    if (word[0] == "ENDING") {
+      call.ended = true;
+      return;
+    }
     if (word[0] == "FINAL") {
       call.final = 1;
-    } else if (word[0] == "ACK" || word[0] == "LOST" || word[0] == "FAILED") {
+      CryptoWipe(&call.offer);
+      updated_.notify_all();
+    } else if (word[0] == "ENDED" || word[0] == "ACK" || word[0] == "LOST" ||
+               word[0] == "FAILED") {
       if (word[0] == "ACK") {
         const auto [end, ec] = std::from_chars(
             word[3].data(), word[3].data() + word[3].size(), call.ack);
@@ -240,17 +462,33 @@ class SipService::Trunk {
       if (word[0] == "ACK" && call.requested && !call.submitted)
         call.conflict = true;
       call.done = true;
-      calls_.erase(it);
+      if (call.ack == 200 && word[0] == "ACK" && call.requested == 200) {
+        if (call.abandoned && !call.hanging_up) SendHangup(call);
+      } else {
+        call.lost = word[0] == "LOST" || word[0] == "FAILED";
+        call.retired = true;
+        call.ended = true;
+        calls_.erase(it);
+      }
       updated_.notify_all();
     }
   }
   void Run(std::stop_token stop) {
     std::array<char, 66560> buffer;
+    auto next_retry = Clock::now();
     while (!stop.stop_requested()) {
       pollfd event{signal_.Fd(), POLLIN, 0};
       const int result = poll(&event, 1, 100);
       if (result < 0 && errno == EINTR) continue;
       if (result < 0) break;
+      if (Clock::now() >= next_retry) {
+        std::lock_guard lock(mutex_);
+        for (const auto& [id, call] : calls_)
+          if (call->abandoned && call->ack == 200 && !call->ended &&
+              !call->hanging_up)
+            SendHangup(*call);
+        next_retry = Clock::now() + std::chrono::milliseconds(100);
+      }
       if (!result) continue;
       const auto size = recv(signal_.Fd(), buffer.data(), buffer.size(),
                              MSG_TRUNC | MSG_DONTWAIT);
@@ -259,6 +497,7 @@ class SipService::Trunk {
       std::lock_guard lock(mutex_);
       try {
         Event({buffer.data(), size_t(size)});
+        explicit_bzero(buffer.data(), size);
       } catch (...) {
         // Allocation or identity generation failure belongs to this trunk.
         signal_.Send("STOP");
@@ -267,17 +506,22 @@ class SipService::Trunk {
     }
     std::lock_guard lock(mutex_);
     online_ = false;
-    for (const auto& [_, call] : calls_) call->done = true;
+    for (const auto& [_, call] : calls_) {
+      call->done = true;
+      call->lost = true;
+      call->ended = true;
+      call->retired = true;
+    }
     calls_.clear();
     updated_.notify_all();
   }
 
-  std::string scope_;
+  std::string scope_, media_local_, media_peer_;
   std::function<bool(std::string_view)> current_scope_;
   SipChild publisher_, signal_;
   std::mutex mutex_;
   std::condition_variable updated_;
-  std::map<std::string, std::shared_ptr<Call>, std::less<>> calls_;
+  Calls calls_;
   std::atomic<bool> online_{false};
   std::atomic<uint64_t> webhook_failures_{0}, delivered_{0};
   bool live_ = false, realtime_ = false;
@@ -360,6 +604,32 @@ std::string SipService::HealthJson() const {
               {"activation_failures", Number(activation_failures_)},
               {"webhooks_delivered", Number(delivered)},
               {"webhook_failures", Number(failures)}}));
+}
+
+ObjectReply SipService::Reserve(std::string_view scope, std::string_view id,
+                                std::unique_ptr<SipInvitation>* invitation) {
+  if (!invitation || *invitation)
+    return Error(500, "sip_control_unavailable", "Missing media owner");
+  std::vector<std::shared_ptr<Trunk>> trunks;
+  {
+    std::lock_guard lock(mutex_);
+    trunks = trunks_;
+  }
+  for (const auto& trunk : trunks)
+    if (auto reply = trunk->Reserve(scope, id, invitation)) return *reply;
+  return Error(404, "not_found", "Call not found");
+}
+
+ObjectReply SipService::Hangup(std::string_view scope, std::string_view id,
+                               Clock::time_point deadline) {
+  std::vector<std::shared_ptr<Trunk>> trunks;
+  {
+    std::lock_guard lock(mutex_);
+    trunks = trunks_;
+  }
+  for (const auto& trunk : trunks)
+    if (auto reply = trunk->Hangup(scope, id, deadline)) return *reply;
+  return Error(404, "not_found", "Call not found");
 }
 
 ObjectReply SipService::Reject(std::string_view scope, std::string_view id,

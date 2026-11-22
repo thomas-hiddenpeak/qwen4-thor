@@ -1,4 +1,5 @@
 """Exercise the production trunk registry, its worker lifetimes and carrier receipts."""
+import base64
 import contextlib
 import json
 import os
@@ -70,10 +71,11 @@ class OwnerTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
         finally:
             self.stop_process(self.owner)
 
-    def incoming(self):
+    def incoming(self, offer=None):
         peer = self.peer(self.good)
         token = secrets.token_hex(8)
-        peer.send('INVITE', token)
+        peer.send('INVITE', token, body=offer or b'',
+                  extra=b'Content-Type: application/sdp\r\n' if offer else b'')
         tag = peer.response(180, 'INVITE', token)
         live = self.subscriber()['event']['data']['session_id']
         return peer, token, tag, live
@@ -105,6 +107,63 @@ class OwnerTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
             self.assertEqual(status, 409)
             time.sleep(.01)
         self.fail('acknowledged call was not retired')
+
+    def offer(self, ip='127.0.0.1'):
+        udp = self.stack.enter_context(socket.socket(socket.AF_INET,socket.SOCK_DGRAM))
+        udp.bind(('127.0.0.1', 0))
+        key = base64.b64encode(secrets.token_bytes(30)).decode()
+        return (f'v=0\r\no=- 1 1 IN IP4 {ip}\r\ns=test\r\nc=IN IP4 {ip}\r\nt=0 0\r\n'
+                f'm=audio {udp.getsockname()[1]} RTP/SAVP 0\r\na=rtcp-mux\r\n'
+                f'a=crypto:1 AES_CM_128_HMAC_SHA1_80 inline:{key}\r\n').encode()
+
+    def test_scoped_answer_waits_for_ack_and_cleans_up_on_remote_bye(self):
+        peer, token, tag, live = self.incoming(self.offer())
+        self.command(f'accept other {live} 2000')
+        self.assertEqual(self.read_owner(), 404)
+        self.command(f'accept {SCOPE} {live} 2000')
+        self.assertEqual(peer.response(200, 'INVITE', token), tag)
+        self.assertTrue(b'inline:' in peer.body)
+        self.assertFalse(select.select([self.owner.stdout], [], [], .12)[0])
+        peer.send('ACK', token, to_tag=tag, branch=token+'ack')
+        self.assertEqual(self.read_owner(), 200)
+        self.command(f'reject {SCOPE} {live} 486 500')
+        self.assertEqual(self.read_owner(), 409)
+        peer.send('BYE', token, to_tag=tag, branch=token+'bye', seq=2)
+        peer.response(200, 'BYE', token, branch=token+'bye', seq=2)
+        self.command('release')
+        self.assertEqual(self.read_owner(), 200)
+        self.command(f'accept {SCOPE} {live} 500')
+        self.assertEqual(self.read_owner(), 404)
+
+    def test_invalid_media_address_releases_reservation_for_reject(self):
+        peer, token, tag, live = self.incoming(self.offer('127.0.0.2'))
+        self.command(f'accept {SCOPE} {live} 2000')
+        self.assertEqual(self.read_owner(), 400)
+        self.command(f'reject {SCOPE} {live} 488 2000')
+        self.assertEqual(peer.response(488, 'INVITE', token), tag)
+        peer.send('ACK', token, to_tag=tag)
+        self.assertEqual(self.read_owner(), 200)
+
+    def test_late_accept_ack_hangs_up_abandoned_media(self):
+        peer, token, tag, live = self.incoming(self.offer())
+        self.command(f'accept {SCOPE} {live} 150')
+        peer.response(200, 'INVITE', token)
+        self.assertEqual(self.read_owner(), 504)
+        self.command(f'accept {SCOPE} {live} 500')
+        self.assertEqual(self.read_owner(), 409)
+        peer.send('ACK', token, to_tag=tag, branch=token+'ack')
+        self.assertEqual(peer.reader.readline(256).split()[0], b'BYE')
+        headers = {}
+        while True:
+            line = peer.reader.readline(8192)
+            if line == b'\r\n': break
+            self.assertTrue(line)
+            key, val = line.rstrip().split(b':', 1)
+            headers[key.lower()] = val.strip()
+        self.assertEqual(headers[b'call-id'], (token+'@peer.test').encode())
+        response = [b'SIP/2.0 200 OK'] + [k + b': ' + headers[k] for k in
+            (b'via', b'from', b'to', b'call-id', b'cseq')]
+        peer.sock.sendall(b'\r\n'.join(response + [b'Content-Length: 0',b'',b'']))
 
     def test_two_signed_events_share_one_carrier_disposition(self):
         peer = self.peer(self.good)

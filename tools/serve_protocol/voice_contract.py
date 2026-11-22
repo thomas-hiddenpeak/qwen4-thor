@@ -95,6 +95,11 @@ def add_voice_routes(paths, response, error):
     operation('post', '/v1/live/sessions/{session_id}/reject',
               {'200': {'description': 'Carrier acknowledged the SIP rejection; empty body'}},
               body=content('application/json', {'$ref':live+'session_reject'}))
+    operation('post', '/v1/live/sessions/{session_id}/accept',
+              {'200': {'description': 'Carrier confirmed the answer; empty body'}},
+              body=content('application/json', {'$ref':live+'session_accept'}))
+    for path in ('/v1/live/sessions/{session_id}/hangup', '/v1/realtime/calls/{call_id}/hangup'):
+        operation('post', path, {'200': {'description': 'Carrier acknowledged hangup; empty body'}})
     realtime_reject = '/v1/realtime/calls/{call_id}/reject'
     status = dict(type='integer', minimum=300, maximum=699, default=603)
     operation('post', realtime_reject,

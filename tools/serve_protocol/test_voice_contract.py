@@ -39,6 +39,14 @@ class VoiceContract(unittest.TestCase):
         for value in ({}, {'status_code':299}, {'status_code':700}, {'status_code':486.5},
                       {'status_code':'486'}, {'status_code':486,'extra':True}):
             self.assertFalse(valid(rejection, value))
+        accepted = self.paths['/v1/live/sessions/{session_id}/accept']['post']
+        schema = accepted['requestBody']['content']['application/json']['schema']
+        self.assertTrue(valid(schema, {'session':{'model':'native','type':'live'}}))
+        self.assertFalse(valid(schema, {'session':{'model':'native','type':'realtime'}}))
+        self.assertNotIn('content', accepted['responses']['200'])
+        for target in ('/v1/live/sessions/{session_id}/hangup', '/v1/realtime/calls/{call_id}/hangup'):
+            self.assertNotIn('requestBody', self.paths[target]['post'])
+            self.assertNotIn('content', self.paths[target]['post']['responses']['200'])
         rtc = self.paths['/v1/realtime/calls/{call_id}/reject']['post']
         self.assertFalse(rtc['requestBody']['required'])
         valid_rtc = Draft202012Validator(rtc['requestBody']['content']['application/json']['schema']).is_valid

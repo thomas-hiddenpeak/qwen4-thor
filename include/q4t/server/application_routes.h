@@ -25,15 +25,20 @@ inline std::string_view LiveResourceId(std::string_view path, std::string_view s
              : std::string_view{};
 }
 
-inline std::string_view SipRejectId(std::string_view path) {
+inline std::string_view SipControlId(std::string_view path, std::string_view suffix) {
   constexpr std::string_view prefix = "/v1/realtime/calls/";
-  constexpr std::string_view suffix = "/reject";
   if (!path.starts_with(prefix)) return LiveResourceId(path, suffix);
   path.remove_prefix(prefix.size());
   if (!path.ends_with(suffix)) return {};
   path.remove_suffix(suffix.size());
   return path.starts_with("rtc_") && path.size() > 4 && ValidApplicationId(path)
              ? path : std::string_view{};
+}
+inline std::string_view SipRejectId(std::string_view path) {
+  return SipControlId(path, "/reject");
+}
+inline bool IsSipHangup(std::string_view method, std::string_view path) {
+  return method == "POST" && !SipControlId(path, "/hangup").empty();
 }
 inline bool IsSipReject(std::string_view method, std::string_view path) {
   return method == "POST" && !SipRejectId(path).empty();
@@ -61,7 +66,8 @@ inline bool IsRealtimeUpgrade(std::string_view method,
 
 inline bool IsLiveMediaCreate(std::string_view method, std::string_view target) {
   return method == "POST" &&
-         (target == "/v1/live/sessions" || !LiveForkId(target).empty());
+         (target == "/v1/live/sessions" || !LiveForkId(target).empty() ||
+          !LiveResourceId(target, "/accept").empty());
 }
 
 inline bool IsRealtimeTraceTarget(std::string_view target) {

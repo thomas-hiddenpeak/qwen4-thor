@@ -29,7 +29,7 @@ void ChatServer::HandleLiveSideband(int fd, std::string_view path,
   {
     std::lock_guard lock(live_media_mu_);
     for (const auto& slot : live_media_threads_) {
-      if (client.Scoped() && !slot.finished.load() &&
+      if (client.Scoped() && !slot.finished.load() && slot.attachable.load() &&
           slot.client == client.Id() && slot.session == id) {
         stream = slot.sideband.lock();
         owned = true;

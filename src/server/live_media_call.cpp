@@ -39,6 +39,7 @@ bool LiveMediaCall::Publish(std::string_view wire) {
     return false;
   }
   if (event.GetString("type") == "session.output_audio.delta") {
+    if (transport_ended_) return true;
     const auto* delta = event.Find("delta");
     std::string pcm;
     if (!delta || !delta->IsString() ||
@@ -152,6 +153,13 @@ bool LiveMediaCall::Tick(Clock::time_point now) {
   else if (blocked_since_ == Clock::time_point{})
     blocked_since_ = now;
   return !blocked || now - blocked_since_ < std::chrono::seconds(15);
+}
+
+bool LiveMediaCall::EndTransport() {
+  transport_ended_ = true;
+  media_.clear();
+  pcm_offset_ = queued_pcm_ = 0;
+  return session_.CloseMedia();
 }
 
 bool LiveMediaCall::Finished() const {

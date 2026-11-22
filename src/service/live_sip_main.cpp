@@ -16,6 +16,7 @@ class SipTrunk;
 #include "live_sip_invite.h"
 
 #include <arpa/inet.h>
+#include <netdb.h>
 #include <linux/filter.h>
 #include <linux/seccomp.h>
 #include <openssl/ssl.h>
@@ -585,7 +586,8 @@ class SipTrunk {
       args[count++] = packet.substr(0, end);
       packet = end == packet.npos ? std::string_view{} : packet.substr(end + 1);
     }
-    const bool offer = args[0] == "OFFER";
+    const bool media = args[0] == "MEDIA";
+    const bool offer = args[0] == "OFFER" || media;
     const bool publish = args[0] == "PUBLISH";
     const bool accept = args[0] == "ACCEPT";
     const bool hangup = args[0] == "HANGUP";
@@ -609,9 +611,13 @@ class SipTrunk {
         Notify(result + (it == calls_.end() ? "not_found" : "conflict"));
       else if (d->second.invite || d->second.bye)
         Notify(result + "conflict");
-      else
-        Notify(result +
-               (BeginHangup(d->first, d->second) ? "submitted" : "failed"));
+      else if (BeginHangup(d->first, d->second))
+        Notify(result + "submitted");
+      else {
+        Notify(result + "failed");
+        Notify("LOST " + scope_ + " " + d->second.id);
+        RemoveDialog(d->first);
+      }
       return;
     }
     if (scope_ != args[2] || it == calls_.end()) {
@@ -630,7 +636,20 @@ class SipTrunk {
     if (offer) {
       if (it->second.final_status)
         Notify(result + "conflict");
-      else
+      else if (media) {
+        std::unique_ptr<tport_t, decltype(&tport_unref)> transport(
+            nta_incoming_transport(agent_, it->first, nullptr), tport_unref);
+        const auto* addr =
+            transport ? tport_get_address(transport.get()) : nullptr;
+        char host[NI_MAXHOST]{};
+        if (!addr || !addr->ai_addr ||
+            getnameinfo(addr->ai_addr, addr->ai_addrlen, host, sizeof(host),
+                        nullptr, 0, NI_NUMERICHOST) != 0)
+          Notify(result + "unavailable");
+        else
+          Notify("MEDIA " + std::string(args[1]) + " " + host + "\n" +
+                 it->second.offer);
+      } else
         Notify("OFFER " + std::string(args[1]) + "\n" + it->second.offer);
       return;
     }

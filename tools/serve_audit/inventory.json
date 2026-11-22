@@ -1834,6 +1834,38 @@
         "tools/serve_live/test_sip_owner.py",
         "docs/evidence/serve-realtime-sip-reject-20261123/README.md"
       ]
+    },
+    "POST /v1/live/sessions/{session_id}/accept": {
+      "semantics": "Accept an incoming call and activate scoped Live media after the carrier ACK.",
+      "boundary": "Scoped trunk; independent control admission for hangup and a held realtime lease for accepted media. Lost receipts have unknown outcomes.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/sip_service.cpp",
+        "src/service/live_sip_main.cpp",
+        "tools/serve_live/test_sip_dialog.py",
+        "docs/evidence/serve-live-sip-accept-20261123/README.md"
+      ]
+    },
+    "POST /v1/live/sessions/{session_id}/hangup": {
+      "semantics": "Send BYE on the authenticated carrier dialog and await its final response.",
+      "boundary": "Scoped trunk; independent control admission for hangup and a held realtime lease for accepted media. Lost receipts have unknown outcomes.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/sip_service.cpp",
+        "src/service/live_sip_main.cpp",
+        "tools/serve_live/test_sip_dialog.py",
+        "docs/evidence/serve-live-sip-accept-20261123/README.md"
+      ]
+    },
+    "POST /v1/realtime/calls/{call_id}/hangup": {
+      "semantics": "Send BYE on the authenticated carrier dialog and await its final response.",
+      "boundary": "Scoped trunk; independent control admission for hangup and a held realtime lease for accepted media. Lost receipts have unknown outcomes.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/sip_service.cpp",
+        "src/service/live_sip_main.cpp",
+        "tools/serve_live/test_sip_dialog.py"
+      ]
     }
   },
   "whitelists": {
@@ -2525,7 +2557,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "aef6efc999434b16a20651558f5570b565515ec2d36595b7394479872497e1cf",
+    "include/q4t/server/application_routes.h": "68beb0f4de7bcee055cd1ddf4eec91b48580fd67deb330e715bceaa25e5bd005",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -2566,7 +2598,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "c49866c932ec7166be39f41a232f50d9c3cd80dc925ad8df13cb1a0e7bc48bd6",
+    "include/q4t/server/chat_server.h": "6265b95690bfe0ecdfc24a9be5e998fdc5d30fb7d21e4e253e6f53beafb64ffa",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -2613,7 +2645,7 @@
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
     "include/q4t/server/grammar_process.h": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447",
-    "include/q4t/server/http_connection.h": "17f29c4fe886c985ef1f5e6ed4b4cdf61d0f138380b6b68cdfc81ef01034bf47",
+    "include/q4t/server/http_connection.h": "b83485ec93c7836c9a28e4b08437c026814d0d2d3e5b3018ac1cc01953e2f99e",
     "include/q4t/server/http_framing.h": "689fd32f9bf2b042c8f8b59cebd92d70d55f7b950c1f475babfe736420765524",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
@@ -2634,9 +2666,9 @@
     "include/q4t/server/live_decision_items.h": "871b053f7639318de9ff7afb9dcfe46654658107ed2718913a707573056652c2",
     "include/q4t/server/live_frontend.h": "267d1d350e51d5a1165bb31bb5f7f89a2ef14a6bee525c7042020ba638b78009",
     "include/q4t/server/live_frontend_work.h": "d85c5478f446764f2c154dc658fcfc1ba4aa243894877284a8752abc0f8131a8",
-    "include/q4t/server/live_media_call.h": "514d243cdc343f85d7b616fe86f2743c01618a7f6f04ad83632275d2de441e09",
+    "include/q4t/server/live_media_call.h": "b0dfa18a4e9cace8f298035e9365d83642399d767b78c2c98b4f7b5c9b101cf4",
     "include/q4t/server/live_media_policy.h": "2ae9d55363c03229824295622c0636871f3a946ce2b48aec85005e4640c3986b",
-    "include/q4t/server/live_media_process.h": "76b5d3464b7686f6909c70809b25bce59db72fedf5d3e18c488d00bf6e0016a1",
+    "include/q4t/server/live_media_process.h": "ee273680e4f8e534249ab7eb7913fa897958891558831950fb8e54f1013e6b4e",
     "include/q4t/server/live_native_backend.h": "5d45c9620e7442ab70eb42fe43c50ffd8014e6e614172d9ef5d6ce857c53165a",
     "include/q4t/server/live_recording.h": "81a5a6c83a83349f9bf5f4df28349a5d280cc627589315b1c901333f0b793b08",
     "include/q4t/server/live_recording_store.h": "b044a0c5f776149b92b23b1863b1d635719ac649bd97c9259acf92c7f3f70780",
@@ -2645,7 +2677,7 @@
     "include/q4t/server/live_responses_settings.h": "d20dc3ed4176b5a06648f41cb7e87ce93ebf3798140faeafdab99415b802d132",
     "include/q4t/server/live_responses_turn.h": "47e733580b91f66ef9d97d1c210aa38bce6b49ed03795cc4fe97f1d528abdcbb",
     "include/q4t/server/live_responses_validation.h": "5e06554a1b348ad7deb21e8d11d236d2603a485c2b0733caffb23d9266eb8634",
-    "include/q4t/server/live_session.h": "3a559790b2cdef4c0905b1d99f5d4543219c2b5a5075a963a6ea2a912565031a",
+    "include/q4t/server/live_session.h": "7279292ccbecad87facdd86f202aa82f16df969cb2b7375dcc448a30dfece900",
     "include/q4t/server/live_session_pump.h": "d7a7659f11a22e7d98f55ab89e35ae986d7403cf520252d3bd590a4c0b6f9852",
     "include/q4t/server/live_shape.h": "cc95c6a8a0dc4bb3ed5545c0f5aa336ad61c20fd281d3b5943d2093d1b37dd71",
     "include/q4t/server/live_sideband.h": "1427a0bc107b3e1f3e5337da15b1234b2138070de4ac8915e6f57f2cad68eeeb",
@@ -2770,7 +2802,7 @@
     "include/q4t/server/session_media.h": "7973093f19264f1860def6b2dc3259b451c242d721cc30ff0eca353f8b46a379",
     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
     "include/q4t/server/session_state.h": "0eabb5c168e1ffb993f890f7f146908f39d097531930f529de99d29b683c49ba",
-    "include/q4t/server/sip_service.h": "dd8f4a012c1dfa3d0c969328310e01aba1fbf84e67e5a984483aae46c5801093",
+    "include/q4t/server/sip_service.h": "1e2eac82fe6054295a4bf86bbf6077499d6a6a4f8ddcfa85006d87403539d63e",
     "include/q4t/server/sip_webhook.h": "12a903f3fb0c8659b22ae7a320ecbf8b43c4896071a3396111bc473b5d7d87f1",
     "include/q4t/server/speaker_assets.h": "b4c66b4b6fe5ded56d155717cfe481664fa2ae856e375410c71a192c9557162b",
     "include/q4t/server/speaker_reference.h": "d0640a3f84dd671923f74ae62fede74f4b28f08c844e0b6232e1b0868287203b",
@@ -2971,12 +3003,12 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "6f2d7b1aacaf1ef0420012bc525d724059ddf8a69b08045c9356e96da98ff183",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "b73fb716bbfa5ff2f7da717a02aeb59e173bff414b5e62549d516130f7ca59a7",
+    "src/server/chat_http.cpp": "f3d0762f702e21f028bfe677895330026c1518905f5024da58361ae5e8f1f23f",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
-    "src/server/chat_live_media.cpp": "36fb3241d493e39edc72611cb1003cd0f81b5f3f5d85a075a3396a7932942ff0",
-    "src/server/chat_live_sideband.cpp": "6d3ed181b054fe9e506e9a36b9621655e5ec00a44fa5bda4ac36f09a208b5e9a",
+    "src/server/chat_live_media.cpp": "df83faeedb2530125b32524963896cd50340f324c3dbc314dc0f146cfaebccc3",
+    "src/server/chat_live_sideband.cpp": "e7b5dd9e621f7b9bad41c8f1f5d4f407828344a2a8e0eefd3dd521499bc35bfe",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "0623a6552ba0ea9538fedb2222563b0cf545dda071f78353186049df2f9010e7",
     "src/server/chat_model_step.cpp": "9c35822451f375b2ab440749eddbb345616e74153c7958f48fa3afcd7b7807ea",
@@ -3018,7 +3050,7 @@
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "1dbca26216471d9919e29bdd528d517b5a9b78a2a13ac02f9fa3ce0748b4b99d",
+    "src/server/client_request.cpp": "be636227fab2409ad57c048d1deed0ab5a5988705f81a5112dc9b8bd7b2dd81b",
     "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
@@ -3116,9 +3148,9 @@
     "src/server/live_decision_items.cpp": "621869b943f1a4fdf866b289c78d7ea8230d1fb98f557596b318308fd88e174b",
     "src/server/live_frontend.cpp": "a924f3b8b2ea4fd007ba5ff914d42c9838a5696c02acc00224a317fbfbcf4626",
     "src/server/live_frontend_work.cpp": "f3a064778687481c0ec49c4af9310ab6ccb4d51a6dbc127b62347606cf83a1c8",
-    "src/server/live_media_call.cpp": "68b42fb7c32801dfeebe22b533ea176d4f2526d158553c58aa9d8bb431c828cb",
+    "src/server/live_media_call.cpp": "75b66d1795c50d65d12b936bdd550e31f73c09b46fdb86336477b1e3a5f60895",
     "src/server/live_media_policy.cpp": "c2e2f356ff605d3c3d03b70b212dcebd944b599d6062b41b745e96a389eeb1a9",
-    "src/server/live_media_process.cpp": "f5969d0659d0e268386c84d5489de6ecb4c2028ec09a8c4a60212d629c946685",
+    "src/server/live_media_process.cpp": "cb5597537b0e61c3aea90cb4c9a627959d674ed99528e35e60cef356fb1c4c7e",
     "src/server/live_native_backend.cpp": "14e9ec2541eb094f5dacb084679fa4411b70ba9282ac689d4d9c1450d0fabb3b",
     "src/server/live_recording.cpp": "d571a55c45ccd0da84207055194f8a4baa6a3192a05209931103bd0194905505",
     "src/server/live_recording_store.cpp": "41b64b93c4fa4276a4ed9d8e93a6f359af5ac9976534d837a80c7648cd3fe5df",
@@ -3127,7 +3159,7 @@
     "src/server/live_responses_settings.cpp": "8c4376cc69e420c4c9d7589a0ccd141e6f326202bf648788c2b929411a631f97",
     "src/server/live_responses_turn.cpp": "3455f3b4ee588c43c6e61aa03c7f9e749a1dc9d433ccd66cdd4e654f370596ea",
     "src/server/live_responses_validation.cpp": "9a6f4be3ced057a3cdce2498fee335716c3c1de91ac130d41ad0962830484904",
-    "src/server/live_session.cpp": "f4f21c0d4df7849a48fec6d4bea84fdf70777fdc021978e1fdfa22646b453214",
+    "src/server/live_session.cpp": "c9d4160399d3fab9fe7d3c2ca184ddd9d7aa7f76316378545b5b06e023a9ebba",
     "src/server/live_session_pump.cpp": "05237a65bd191f950ff094e6ec77dfe03d2898d9ed67db46b7fca63398938d71",
     "src/server/live_sideband.cpp": "78fd84fddbfe4bc49d21618ab01a8d0c31bd51e630cd2ca6b9eecebaad4e868f",
     "src/server/mcp_content.cpp": "421599723f7af3d2c805e407803e44926777c666c77b372f9920343f211d3965",
@@ -3313,7 +3345,7 @@
     "src/server/session_state.cpp": "bc91ec91bb0f27e48ad45f7893f11c52b7b12b404bc6c90af7be22668ce01430",
     "src/server/sip_child.cpp": "6d7c84bc7b164e7a4483d16ee85bd1207fb7613ee4da08626845e6b0133baeb7",
     "src/server/sip_child.h": "c312a62da20171d54110e698df8abb39d8c55558d552520e72321ccf2274b2e5",
-    "src/server/sip_service.cpp": "fae5f5b147107f5bbd4a163afaf8a1f673029017fc01ec2ab4d706db4732d12e",
+    "src/server/sip_service.cpp": "bbe43c7bb522e307201e827859e31a132733a32584b3195e104886f4b34959b3",
     "src/server/sip_webhook.cpp": "0647e469953099bb545b4a2b6377b8c8dc02fada699f1863a89dd1dbfe7f7f8e",
     "src/server/speaker_assets.cpp": "9048808d7bfe756a6ed27760d9ae4d7390c49f79d7e2dab3f07e7455d790d42c",
     "src/server/speaker_reference.cpp": "60ed09ac7c0f4ebfb8d6a1b7ce69900967c6392a008ccbcf21a682b2539040dd",
@@ -3394,7 +3426,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "0a2721d1db7018d001f7300b64d1ffe4989b3e63edb2c6ffd672a906dbb14306",
+    "src/service/ingress_main.cpp": "f7c569e648a6102a992357b76bb3759d8cad2c6a936492dbad479aba8c6fe2ff",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
     "src/service/ingress_transport.cpp": "334a80728440d22f2c44da68233ae1c77f33a8dacf764ea59f108906076f224a",
@@ -3403,7 +3435,7 @@
     "src/service/live_rtp_codec.h": "7b5b405fc757950c0cf023bda2df6ac0d7d103c69f8cea119c06cb70baa9a429",
     "src/service/live_sip_invite.cpp": "a191a1dc6f0cdf923e0cb1bbe9d3a6b750b16a0932dfc70bb2292729ada44076",
     "src/service/live_sip_invite.h": "66908c6c930801146bc48f8b2e2588e854958bb28b0e50851c7f746a9f3cff3e",
-    "src/service/live_sip_main.cpp": "7fb243eae372277447079ab216fb8da967fc42ec9d6e684c0882cc63759457eb",
+    "src/service/live_sip_main.cpp": "70cd57f659ac1aa8571650f55c8b0d9be713d330642ecc3fe103e6fd6e91e357",
     "src/service/live_webrtc_main.cpp": "6351c59a8fdfcd13c3c8191b91c9cbe4422298808ee42d8e6934152607401bf2",
     "src/service/live_webrtc_offer.cpp": "8835be926e2e4e9131c1a20dcf7968c595d6ebb1d7da3baf1dd0b7021eab2ce7",
     "src/service/live_webrtc_offer.h": "f6c39fc4e7e3a8573ad2155deddcd34209dde9774effde1df72c0c80d0cca60a",
@@ -3420,7 +3452,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "ee4ca0907b6678057c24d9371f2a346fa660084128b2c71f5ed605658f004b16",
+    "tools/serve_gateway/gateway.py": "de34b92abdba1f0b451ee2ec693ee6bfff28ea69f9c5f7834f31545afc260eef",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -5867,6 +5899,65 @@
       "evidence": [
         "src/service/ingress_cors.cpp",
         "src/service/ingress_main.cpp"
+      ]
+    },
+    "OPTIONS /v1/live/sessions/{session_id}/accept": {
+      "semantics": "Configured CORS preflight for the SIP call control route.",
+      "boundary": "Matches the deployed origin and POST/header policy before forwarding any business request.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_gateway/gateway.py"
+      ]
+    },
+    "OPTIONS /v1/live/sessions/{session_id}/hangup": {
+      "semantics": "Configured CORS preflight for the SIP call control route.",
+      "boundary": "Matches the deployed origin and POST/header policy before forwarding any business request.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_gateway/gateway.py"
+      ]
+    },
+    "OPTIONS /v1/realtime/calls/{call_id}/hangup": {
+      "semantics": "Configured CORS preflight for the SIP call control route.",
+      "boundary": "Matches the deployed origin and POST/header policy before forwarding any business request.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp",
+        "tools/serve_gateway/gateway.py"
+      ]
+    },
+    "POST /v1/live/sessions/{session_id}/accept": {
+      "semantics": "Accept an incoming call and activate scoped Live media after the carrier ACK.",
+      "boundary": "Scoped trunk; independent control admission for hangup and a held realtime lease for accepted media. Lost receipts have unknown outcomes.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/sip_service.cpp",
+        "src/service/live_sip_main.cpp",
+        "tools/serve_live/test_sip_dialog.py",
+        "docs/evidence/serve-live-sip-accept-20261123/README.md"
+      ]
+    },
+    "POST /v1/live/sessions/{session_id}/hangup": {
+      "semantics": "Send BYE on the authenticated carrier dialog and await its final response.",
+      "boundary": "Scoped trunk; independent control admission for hangup and a held realtime lease for accepted media. Lost receipts have unknown outcomes.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/sip_service.cpp",
+        "src/service/live_sip_main.cpp",
+        "tools/serve_live/test_sip_dialog.py",
+        "docs/evidence/serve-live-sip-accept-20261123/README.md"
+      ]
+    },
+    "POST /v1/realtime/calls/{call_id}/hangup": {
+      "semantics": "Send BYE on the authenticated carrier dialog and await its final response.",
+      "boundary": "Scoped trunk; independent control admission for hangup and a held realtime lease for accepted media. Lost receipts have unknown outcomes.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/sip_service.cpp",
+        "src/service/live_sip_main.cpp",
+        "tools/serve_live/test_sip_dialog.py"
       ]
     }
   },

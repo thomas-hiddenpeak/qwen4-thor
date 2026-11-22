@@ -1,0 +1,117 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 63,
+    "cleanup_complete": true
+  },
+  "seconds": 65.95925589185208,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "calls": 2,
+    "sdk_requests": 7,
+    "sidebands": 1,
+    "voice_inputs": 1,
+    "client_results": 1,
+    "chats": 1,
+    "controls": 36
+  },
+  "blocked_media": {
+    "http_status": 503,
+    "code": "live_media_unavailable"
+  },
+  "sdk": {
+    "foreign_accept": 404,
+    "invalid": 400,
+    "accepted": 200,
+    "foreign_hangup": 404,
+    "hangup": 200,
+    "retired": 404,
+    "sideband_close": 1000
+  },
+  "voice": {
+    "version": "rev426",
+    "input": "请查询当前项目版本号。",
+    "output": "rev426",
+    "kinds": [
+      "session.started",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.delegation.created",
+      "session.thinking.appended",
+      "session.commentary.appended",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.output_transcript.delta",
+      "session.closed"
+    ]
+  },
+  "playout": {
+    "codec": "Opus",
+    "frames_sent": 239,
+    "decoded_samples": 24000,
+    "peak": 14023,
+    "source_sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483"
+  },
+  "core": "42",
+  "default_unchanged": true,
+  "binary_sha256": "dacf580d0bf2cdfee474507fc6246560cc81255819d24c6920cfb3ca1996b7df",
+  "ingress_sha256": "8989d2e1d0d79516e38613d7d9c51eab32e6181aa4e4cbc819b90460bc3e93bc",
+  "sip_sha256": "83ab637d185827a3921e2c71bfe29c4674c0672cceef193893a655640298512f",
+  "audio_sha256": "8733022910a465c3fb70643ba6a62c751d6aae1dfad62f8124ea8f99a1118a69",
+  "hangup_tail": {
+    "codec": "Opus",
+    "frames": 31,
+    "sdk_hangup_during_input": true
+  },
+  "resource_receipts": {
+    "unready-drained": {
+      "q4t_active_chats": 0.0,
+      "q4t_realtime_sessions": 0.0,
+      "q4t_realtime_host_reserved_bytes": 0.0,
+      "q4t_seq_slots_free": 1.0
+    },
+    "live-drained": {
+      "q4t_active_chats": 0.0,
+      "q4t_realtime_sessions": 0.0,
+      "q4t_realtime_host_reserved_bytes": 0.0,
+      "q4t_seq_slots_free": 1.0
+    },
+    "final-drained": {
+      "q4t_active_chats": 0.0,
+      "q4t_realtime_sessions": 0.0,
+      "q4t_realtime_host_reserved_bytes": 0.0,
+      "q4t_seq_slots_free": 1.0
+    }
+  }
+}

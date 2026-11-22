@@ -87,6 +87,7 @@ class LiveSession {
   void Join() noexcept;
   // The sole cross-thread observation. True means actual backend drain plus
   // session.closed queued into the output mailbox, not received by the peer.
+  bool CloseMedia();
   bool Finalized() const { return finalized_.load(); }
   size_t DeferredBytes() const { return deferred_bytes_; }
 

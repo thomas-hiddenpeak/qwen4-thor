@@ -6837,6 +6837,136 @@
         }
       }
     },
+    "/v1/live/sessions/{session_id}/accept": {
+      "post": {
+        "operationId": "post_v1_live_sessions_session_id_accept",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrier confirmed the answer; empty body"
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_session_accept"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/live/sessions/{session_id}/hangup": {
+      "post": {
+        "operationId": "post_v1_live_sessions_session_id_hangup",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrier acknowledged hangup; empty body"
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtime/calls/{call_id}/hangup": {
+      "post": {
+        "operationId": "post_v1_realtime_calls_call_id_hangup",
+        "parameters": [
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrier acknowledged hangup; empty body"
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/realtime/calls/{call_id}/reject": {
       "post": {
         "operationId": "post_v1_realtime_calls_call_id_reject",
@@ -33895,6 +34025,146 @@
               "status_code"
             ],
             "additionalProperties": false
+          },
+          "live_920": {
+            "type": "object",
+            "properties": {
+              "session": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_921"
+              }
+            },
+            "required": [
+              "session"
+            ],
+            "additionalProperties": false
+          },
+          "live_921": {
+            "type": "object",
+            "properties": {
+              "audio": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_922"
+              },
+              "delegation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_926"
+              },
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_121"
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_2"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_147"
+              },
+              "store": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_150"
+              },
+              "triggers": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_151"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_929"
+              }
+            },
+            "required": [
+              "model",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_929": {
+            "const": "live"
+          },
+          "live_926": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_34"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_927"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_928"
+              }
+            ]
+          },
+          "live_928": {
+            "type": "object",
+            "properties": {
+              "acknowledgement_delay_ms": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_35"
+              },
+              "decisions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_82"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_120"
+              }
+            },
+            "required": [
+              "decisions",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_927": {
+            "type": "object",
+            "properties": {
+              "acknowledgement_delay_ms": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_35"
+              },
+              "responses": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_38"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_80"
+              }
+            },
+            "required": [
+              "responses",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "live_922": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_923"
+              }
+            ]
+          },
+          "live_923": {
+            "type": "object",
+            "properties": {
+              "output": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_924"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_924": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_925"
+              }
+            ]
+          },
+          "live_925": {
+            "type": "object",
+            "properties": {
+              "voice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_21"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "live_session_accept": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_920"
           },
           "live_session_reject": {
             "allOf": [

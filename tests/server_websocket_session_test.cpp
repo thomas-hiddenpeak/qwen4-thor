@@ -594,6 +594,39 @@ Q4T_TEST(live_sip_reject_preserves_control_admission) {
   return true;
 }
 
+Q4T_TEST(live_sip_accept_holds_realtime_lane_while_hangup_uses_control) {
+  constexpr auto accept = "/v1/live/sessions/live_abc/accept";
+  constexpr auto hangup = "/v1/live/sessions/live_abc/hangup";
+  ClientAdmission admission;
+  Configure(admission);
+  HttpRequestHeaders headers;
+  headers.client_id = "alpha";
+  headers.gateway_token = std::string(64, 'a');
+  ClientIdentity owner;
+  int status = 0;
+  ClientLease media, control;
+  Q4T_CHECK(ClassifyHttpConnection("POST", accept) ==
+            HttpConnectionClass::kRealtime);
+  Q4T_CHECK(AdmitClientRequest("POST", accept, &headers, admission, &media,
+                               &owner, &status));
+  Q4T_CHECK(ClassifyHttpConnection("POST", hangup) ==
+            HttpConnectionClass::kControl);
+  Q4T_CHECK(AdmitClientRequest("POST", hangup, &headers, admission, &control,
+                               &owner, &status));
+  Q4T_CHECK(admission.Usage(0).realtime_active == 1 &&
+            admission.Usage(0).control_active == 1);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/realtime/calls/rtc_abc/hangup") ==
+            HttpConnectionClass::kControl);
+  for (auto bad : {"/v1/live/sessions/live_/accept",
+                   "/v1/live/sessions/rtc_other/accept",
+                   "/v1/realtime/calls/live_other/hangup",
+                   "/v1/live/sessions/live_id/accept?x=1"}) {
+    Q4T_CHECK(ClassifyHttpConnection("POST", bad) ==
+              HttpConnectionClass::kBusiness);
+  }
+  return true;
+}
+
 Q4T_TEST(websocket_session_each_turn_keeps_online_rate_and_data_admission) {
   ClientAdmission admission;
   const auto identity = Configure(admission);
