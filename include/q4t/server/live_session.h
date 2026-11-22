@@ -47,6 +47,7 @@ struct LiveSessionCallbacks {
   std::function<std::chrono::steady_clock::time_point()> now;
   // Private scoped checkpoint loaded by the transport before accepting a fork.
   std::shared_ptr<const io::Json> fork_state;
+  std::function<bool(char)> send_dtmf{};
 };
 
 // Output accepts complete, ordered JSON events. A full transport returns false
@@ -88,6 +89,7 @@ class LiveSession {
   // The sole cross-thread observation. True means actual backend drain plus
   // session.closed queued into the output mailbox, not received by the peer.
   bool CloseMedia();
+  bool MediaDtmf(char receipt, char key);
   bool Finalized() const { return finalized_.load(); }
   size_t DeferredBytes() const { return deferred_bytes_; }
 
@@ -123,6 +125,8 @@ class LiveSession {
                             const std::string& event, size_t charge);
   bool Dispatch(const io::Json& event);
   bool FlushResponsesCommands(bool valid);
+  bool PumpDtmf();
+  bool EndDtmf(std::string_view reason);
   bool BeginClose(std::string reason, std::string client_event);
   bool Usage(bool terminal);
   double Seconds() const;
@@ -136,6 +140,13 @@ class LiveSession {
   io::Json configuration_;
   std::deque<Pending> pending_;
   std::deque<io::Json> responses_commands_;
+  struct DtmfCommand {
+    char key;
+    std::string client_event;
+  };
+  std::deque<DtmfCommand> dtmf_;
+  Clock::time_point dtmf_deadline_{};
+  bool dtmf_unavailable_ = false;
   size_t responses_command_bytes_ = 0;
   size_t deferred_bytes_ = 0;
   uint64_t sequence_ = 0;

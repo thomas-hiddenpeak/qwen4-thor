@@ -260,11 +260,18 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
       // Only attaching a sideband requires a replay owner.
     }
   }
+  auto callbacks =
+      MakeLiveCallbacks(client, id, message_bytes,
+                        sip ? LiveTransport::kSip : LiveTransport::kWebRtc,
+                        owner->sideband, std::move(state));
+  if (sip) {
+    callbacks.send_dtmf = [process = &owner->process](char key) {
+      return process->Send('K', {&key, 1});
+    };
+  }
   owner->call = std::make_unique<LiveMediaCall>(
       id, expires, !sip && answer.find("\nm=application ") != answer.npos,
-      MakeLiveCallbacks(client, id, message_bytes, sip ? LiveTransport::kSip : LiveTransport::kWebRtc,
-                        owner->sideband, std::move(state)),
-      limits,
+      std::move(callbacks), limits,
       [process = &owner->process](char type, auto data) {
         return process->Send(type, data);
       },

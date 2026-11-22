@@ -6,12 +6,13 @@
 #include <string_view>
 #include <vector>
 
-#include "live_rtp_codec.h"
+#include "sip_media_dtmf.h"
 
 namespace q4t::service {
 using SipMediaKey = std::array<unsigned char, 30>;
 struct SipMediaOffer {
   LiveRtpCodec codec;
+  SipDtmfFormat dtmf;
   SipMediaKey receive_key{};
   int tag = 0, rtp = 0, rtcp = 0;
   bool mux = false, transmit = false, receive = false;

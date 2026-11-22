@@ -23,6 +23,7 @@ from tools.serve_live import responses_acceptance as live
 from tools.serve_live import sip_reject_acceptance as signal
 from tools.serve_live.client_acceptance import retained_query
 from tools.serve_live.test_sip_dialog import CarrierAudio
+from tools.serve_live.test_sip_dtmf import read_key, send_key, with_events
 from tools.serve_live.test_sip_media import Codec
 from tools.serve_live.test_sip_trunk import Peer
 from tools.serve_realtime import transcription_acceptance as base
@@ -57,7 +58,7 @@ class Stage(signal.Stage):
                 proc.kill()
             proc.wait(3)
         stack.callback(finish)
-        args = dict(id=live_id, realtime_id=realtime_id, blocked_media=blocked_media, port=self.plan['public_port'], key=self.keys['alpha'],
+        args = dict(id=live_id, dtmf=self.plan.get('dtmf',False), realtime_id=realtime_id, blocked_media=blocked_media, port=self.plan['public_port'], key=self.keys['alpha'],
                     other=self.keys['beta'], out=str(self.out), record=self.plan['record'],
                     sdk=self.plan['sdk_directory'], ca=self.plan['tls']['certificate'])
         with proc.stdin:
@@ -132,6 +133,21 @@ class Stage(signal.Stage):
         save(self.out/'transfer-carrier.json', dict(request_status=[486,202,200],
              onward_status=[486,200], same_authenticated_dialog=True))
 
+    def keypresses(self, audio, sdk):
+        # Opus uses a 48 kHz RTP clock, while this carrier offers keys at 8 kHz.
+        # The caller's two end retransmissions have distinct sequence numbers.
+        for seq in range(4):
+            send_key(audio, seq, 32000, 11, end=seq>0, duration=960,
+                     source=0x09173344)
+        traces = [read_key(audio, 101, 10) for _ in range(2)]
+        require(traces[0][0][1] != traces[1][0][1] and
+                traces[0][0][2] == traces[1][0][2], 'two distinct press intervals')
+        self.wait_file(self.out/'dtmf-sdk.json', sdk, 5)
+        save(self.out/'dtmf-carrier.json', dict(clock_hz=8000, codec='Opus',
+             incoming='#', outgoing='**', packets=[len(t) for t in traces],
+             final_copies=[sum(p[4] for p in t) for t in traces],
+             duration=[t[-1][5] for t in traces]))
+
     def business(self):
         self.snapshot('before')
         self.health(0)
@@ -151,7 +167,10 @@ class Stage(signal.Stage):
             stack.callback(peer.reader.close)
             token = secrets.token_hex(8)
             self.budget('calls')
-            peer.send('INVITE', token, body=audio.offer('OPUS').encode(),
+            offer = audio.offer('OPUS')
+            if self.plan.get('dtmf'):
+                offer = with_events(offer, 8000, '0-11')
+            peer.send('INVITE', token, body=offer.encode(),
                       extra=b'Content-Type: application/sdp\r\n')
             tag = peer.response(180, 'INVITE', token)
             notice = self.receive()['event']
@@ -169,13 +188,18 @@ class Stage(signal.Stage):
             self.budget('sdk_requests',6)
             sdk = self.client(notice['data']['session_id'], stack, realtime_id=rtc_id)
             require(peer.response(200, 'INVITE', token) == tag, 'accepted invitation')
-            audio.read_answer(peer.body)
+            answer = audio.read_answer(peer.body)
+            if self.plan.get('dtmf'):
+                require('a=rtpmap:101 telephone-event/8000\r\n' in answer and
+                        'a=fmtp:101 0-11\r\n' in answer, 'DTMF answer on the carrier')
             contact = re.search(r'(sips:[^> ]+)',peer.headers['contact'])[1]
             time.sleep(.15)
             require(not (self.out/'sdk-accepted').exists(), 'SDK completed before dialog ACK')
             peer.send('ACK', token, to_tag=tag, branch=token+'ack', target=contact)
             self.budget('sidebands')
             self.wait_file(self.out/'sdk-attached', sdk, 10)
+            if self.plan.get('dtmf'):
+                self.keypresses(audio, sdk)
             if self.dual:
                 self.transfers(peer, token, tag, contact, sdk)
             self.budget('voice_inputs')
@@ -296,6 +320,7 @@ def main():
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument('--unready-media', action='store_true')
     mode.add_argument('--transfer', action='store_true')
+    mode.add_argument('--dtmf', action='store_true')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     out = args.output.resolve()
@@ -305,7 +330,7 @@ def main():
         plan = read(out/'plan.json')
         signal_worker = Path(plan['binary']).with_name('q4t-live-sip')
         audio_worker = signal_worker.with_name('q4t-sip-media')
-        plan.update(unready_media=args.unready_media, dual=args.transfer)
+        plan.update(unready_media=args.unready_media, dual=args.transfer, dtmf=args.dtmf)
         plan.update(schema=SCHEMA,limits=stage_for(plan).limits,
                     hangup_tail=args.hangup_tail,port=18821,operations_port=18822,
                     public_port=18823,sip_port=18824,sip_binary=str(signal_worker),
@@ -333,6 +358,8 @@ def main():
         require(all(sha(ROOT/n)==h for n,h in plan['sources'].items()), 'source drift')
         save(out/'acceptance.json', dict(environment=env,seconds=result['seconds'],
             counts=result['counts'],
+            dtmf=read(out/'dtmf-carrier.json') if plan.get('dtmf') else None,
+            dtmf_sdk=read(out/'dtmf-sdk.json') if plan.get('dtmf') else None,
             transfers=read(out/'transfer-carrier.json') if plan.get('dual') else None,
             transfer_sdk=read(out/'transfer-sdk.json') if plan.get('dual') else None,
             blocked_media=read(out/'unready-media.json') if plan.get('unready_media') else None, sdk=read(out/'sdk-receipts.json'), voice=read(out/'voice.json'),

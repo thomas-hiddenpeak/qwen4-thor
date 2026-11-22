@@ -200,3 +200,9 @@ await client.live.sessions.accept(event.data.session_id, {
 所属客户可调用 `client.live.sessions.refer(session_id, {target_uri})` 或 `client.realtime.calls.refer(call_id, {target_uri})`。原生控制通道将目标原样放入 Refer-To，通过来电中继的已认证 TLS 连接发送。两个 ID 共享同一笔转接。最终 SIP 2xx 得到空正文 HTTP 200，远端拒绝得到携带 SIP 状态码的 502，五秒截止仍缺答复得到 504。超时后中继可能继续处理，待前一请求或订阅结束才允许重试。
 
 中继通过 NOTIFY 报告 转接目标的结果。`/v1/config` 的 `sip.transfers_answered`、`transfers_failed` 和 `transfers_unknown` 分别累计目标接通、目标拒绝和缺少明确终态。参与方仍可通过 BYE 结束原通话。已验证本机电话对端对两种 SDK 的拒绝、受理、忙线及接通回报。[实测](evidence/serve-live-sip-transfer-20261123/README.md)。
+
+### 在已接听的 Live 电话上收发按键
+
+同客户的 SDK 旁路收到 `transport.dtmf.received` 时，从 `event` 字段读取单个按键。发送示例为 `ws.send({type:'transport.dtmf.send', event:'#', event_id:'ivr-menu'})`。多个按键逐个发送。媒体进程将结束报告写入加密 UDP 套接字后，旁路收到 `transport.dtmf.sent`，其 `client_event_id` 与请求对应。接收端的重传会被去重。
+
+可用按键由电话 SDP 中的 `telephone-event`、事件集合及收发方向决定。未协商的按键会单独返回 `sip_dtmf_not_negotiated`。可选 GStreamer 生成器 `rtpdtmfsrc` 缺失时仍可接听语音；只接收按键的方向可独立工作。密钥、键音数据和按键命令均由电话媒体与控制路径处理。验收覆盖按键后继续真实语音查询。[客户与电话对端回执](evidence/serve-live-sip-dtmf-20261123/README.md)。

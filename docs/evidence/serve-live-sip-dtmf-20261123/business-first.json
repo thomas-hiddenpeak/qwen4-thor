@@ -1,0 +1,28 @@
+{
+  "status": "FAIL",
+  "error": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/transcription_acceptance.py\", line 304, in run\n    self.start(); self.business(); result['status'] = 'PASS'\n                  ^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_live/sip_accept_acceptance.py\", line 202, in business\n    self.keypresses(audio, sdk)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_live/sip_accept_acceptance.py\", line 145, in keypresses\n    self.wait_file(self.out/'dtmf-sdk.json', sdk, 5)\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_live/sip_accept_acceptance.py\", line 49, in wait_file\n    require(file.is_file(), f'SDK step {file.name} unavailable, exit {sdk.poll()}')\n  File \"/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py\", line 72, in require\n    raise RuntimeError(message)\nRuntimeError: SDK step dtmf-sdk.json unavailable, exit 1\n",
+  "default_unchanged": true,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "calls": 1,
+    "sdk_requests": 6,
+    "sidebands": 1,
+    "voice_inputs": 0,
+    "client_results": 0,
+    "chats": 0,
+    "controls": 33
+  },
+  "seconds": 37.70233710017055,
+  "binary_sha256": "706799748787cd79737fec43f523b51b2c2c41b813f661f44cb50d0a3a691d1e",
+  "remaining": [],
+  "ports_released": true,
+  "lease_continuously_held": true,
+  "gpu_guard_status": "COMMAND_FAILED",
+  "observed_events": [
+    "session.started",
+    "transport.dtmf.received",
+    "error"
+  ],
+  "sdk_failure": "Key not negotiated for sending"
+}

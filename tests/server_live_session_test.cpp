@@ -673,3 +673,66 @@ Q4T_TEST(live_sideband_commands_share_the_owner_and_reflect_raw_muted_input) {
             events[6].Find("end_ms")->number > events[6].Find("start_ms")->number);
   return true;
 }
+
+Q4T_TEST(live_sip_dtmf_waits_for_media_and_preserves_client_ids) {
+  Fixture f;
+  std::string wire;
+  f.callbacks.configuration.transport = LiveTransport::kSip;
+  f.callbacks.send_dtmf = [&](char key) {
+    wire += key;
+    return true;
+  };
+  Q4T_CHECK(
+      f.Start() &&
+      f.session->StartMedia(Parse(R"({"type":"live","model":"native"})")).ok());
+  const auto key = [&](char digit, const char* id) {
+    return f.session->SidebandMessage(
+               WebSocketOpcode::kText,
+               OutputJson(Object({{"type", String("transport.dtmf.send")},
+                                  {"event", String(std::string(1, digit))},
+                                  {"event_id", String(id)}}))) &&
+           f.Read();
+  };
+  Q4T_CHECK(key('1', "a") && key('#', "b") && key('#', "c"));
+  Q4T_CHECK(wire == "1" && f.Count("transport.dtmf.sent") == 0);
+  Q4T_CHECK(f.session->MediaDtmf('K', 'D') && f.Read());
+  Q4T_CHECK(f.Last("transport.dtmf.received").GetString("event") == "D");
+  Q4T_CHECK(f.session->MediaDtmf('U', '1') && f.Tick());
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("client_event_id") == "a");
+  Q4T_CHECK(wire == "1#" && f.session->MediaDtmf('T', '#') && f.Tick());
+  Q4T_CHECK(f.Last("transport.dtmf.sent").GetString("client_event_id") == "b");
+  Q4T_CHECK(wire == "1##" && f.session->CloseMedia() && f.Read());
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("client_event_id") == "c");
+  Q4T_CHECK(f.session->MediaDtmf('T', '#') && f.Read());
+  Q4T_CHECK(f.Count("transport.dtmf.sent") == 1 && f.backend.commands.empty());
+  return true;
+}
+
+Q4T_TEST(live_sip_dtmf_timeout_and_queue_pressure_preserve_conversation) {
+  Fixture f;
+  int sends = 0;
+  f.callbacks.configuration.transport = LiveTransport::kSip;
+  f.callbacks.send_dtmf = [&](char) {
+    ++sends;
+    return true;
+  };
+  Q4T_CHECK(
+      f.Start() &&
+      f.session->StartMedia(Parse(R"({"type":"live","model":"native"})")).ok());
+  const auto send = [&] {
+    return f.session->SidebandMessage(
+        WebSocketOpcode::kText,
+        R"({"type":"transport.dtmf.send","event":"*","event_id":"pending"})");
+  };
+  for (int i = 0; i < 17; ++i) Q4T_CHECK(send());
+  Q4T_CHECK(f.Read() && sends == 1 && f.Count("error") == 1);
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
+            "sip_dtmf_capacity");
+  f.now += 5s;
+  Q4T_CHECK(f.Tick() && f.Count("error") == 17);
+  Q4T_CHECK(f.session->MediaDtmf('T', '*') && send() && f.Read());
+  Q4T_CHECK(f.Count("transport.dtmf.sent") == 0 && sends == 1);
+  Q4T_CHECK(f.Send(R"({"type":"session.input_audio.mute"})") &&
+            f.Count("session.input_audio.muted") == 1);
+  return true;
+}

@@ -1,6 +1,7 @@
 // One SIP dialog's media, negotiated on an authenticated signaling connection.
 // Private packets: O SDP offer, A SDP answer, G confirmed dialog, V active,
-// P mono S16LE at 24 kHz, X drain/closed, I unusable offer, E media failure.
+// P mono S16LE at 24 kHz, K send/receive one negotiated DTMF key, T sent,
+// F key unavailable, X drain/closed, I unusable offer, E media failure.
 #include "sip_media_audio.h"
 #include "sip_media_offer.h"
 
@@ -13,6 +14,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <array>
 #include <charconv>
 #include <chrono>
@@ -154,6 +156,18 @@ class Carrier {
       remote.Port(offer_.rtcp);
       if (connect(rtcp_.fd, remote.Ptr(), remote.size)) return false;
     }
+    audio_.emplace();
+    if (!audio_->Prepare(offer_.codec, offer_.dtmf, offer_.transmit,
+                         wake_.fd)) {
+      if (offer_.dtmf.payload < 0) return false;
+      // An absent DTMF plugin may remove the optional format from the answer.
+      // Ordinary speech must still negotiate using its own installed codecs.
+      offer_.dtmf = {};
+      audio_.emplace();
+      if (!audio_->Prepare(offer_.codec, offer_.dtmf, offer_.transmit,
+                           wake_.fd))
+        return false;
+    }
     uint64_t session_id = 0;
     SipMediaKey key{};
     if (!Random(key.data(), key.size()) ||
@@ -162,24 +176,27 @@ class Carrier {
     const bool crypto =
         out_.Open(false, key) && in_.Open(true, offer_.receive_key);
     explicit_bzero(offer_.receive_key.data(), offer_.receive_key.size());
-    auto answer = crypto ? SipMediaAnswer(offer_, local_ip, port, rtcp, key,
-                                          session_id >> 1)
-                         : "";
+    if (!crypto) {
+      explicit_bzero(key.data(), key.size());
+      return false;
+    }
+    auto answer =
+        SipMediaAnswer(offer_, local_ip, port, rtcp, key, session_id >> 1);
     explicit_bzero(key.data(), key.size());
     const bool ready =
-        !answer.empty() && audio_.Prepare(offer_.codec, wake_.fd) &&
+        !answer.empty() &&
         Send(owner_, 'A',
              {reinterpret_cast<const unsigned char*>(answer.data()),
               answer.size()});
     explicit_bzero(answer.data(), answer.size());
     if (!ready) return false;
     const auto start = Clock::now();
-    while (Clock::now() - start < std::chrono::hours(1) && audio_.Healthy()) {
+    while (Clock::now() - start < std::chrono::hours(1) && audio_->Healthy()) {
       pollfd fds[] = {{owner_, POLLIN, 0},
                       {rtp_.fd, POLLIN, 0},
                       {rtcp_.fd, POLLIN, 0},
                       {wake_.fd, POLLIN, 0}};
-      const int count = poll(fds, 4, draining_ ? 10 : 250);
+      const int count = poll(fds, 4, draining_ || outgoing_key_ ? 10 : 250);
       if (count < 0 && errno == EINTR) continue;
       if (count < 0 || fds[0].revents & (POLLHUP | POLLERR | POLLNVAL))
         return false;
@@ -193,18 +210,33 @@ class Carrier {
           if (!active_ || !offer_.transmit) return true;
           draining_ = true;
           end_ = Clock::now() + std::chrono::seconds(2);
-          audio_.EndAudio();
+          audio_->EndAudio();
         } else if (kind == 'G' && n == 1 && !active_) {
           if (!DiscardEarly(rtp_.fd) ||
-              (rtcp_.fd >= 0 && !DiscardEarly(rtcp_.fd)) || !audio_.Start() ||
+              (rtcp_.fd >= 0 && !DiscardEarly(rtcp_.fd)) || !audio_->Start() ||
               !Send(owner_, 'V'))
             return false;
           active_ = true;
+        } else if (kind == 'K' && active_ && !draining_ && n == 2) {
+          const char keypress = static_cast<char>(control_[1]);
+          auto number = kDtmfKeys.find(keypress);
+          if (number == kDtmfKeys.npos || !offer_.dtmf.Allows(number) ||
+              !offer_.transmit) {
+            if (!Send(owner_, 'U', {control_.data() + 1, 1})) return false;
+          } else if (outgoing_key_ || tones_failed_ ||
+                     !audio_->Tone(number, true)) {
+            if (!Send(owner_, 'F', {control_.data() + 1, 1})) return false;
+          } else {
+            outgoing_key_ = control_[1];
+            tone_stop_ = Clock::now() + std::chrono::milliseconds(120);
+            tone_deadline_ = Clock::now() + std::chrono::seconds(2);
+            stop_sent_ = false;
+          }
         } else if (kind == 'P' && active_ && !draining_ && n > 1 &&
                    (n - 1) % 2 == 0) {
           if (offer_.transmit &&
-              !audio_.Push(SipMediaAudio::kPcm,
-                           {control_.data() + 1, size_t(n - 1)}))
+              !audio_->Push(SipMediaAudio::kPcm,
+                            {control_.data() + 1, size_t(n - 1)}))
             return false;
         } else
           return false;
@@ -218,8 +250,19 @@ class Carrier {
         eventfd_t v;
         eventfd_read(wake_.fd, &v);
       }
+      if (outgoing_key_ && !draining_) {
+        if (!stop_sent_ && Clock::now() >= tone_stop_) {
+          stop_sent_ = true;
+          audio_->Tone(kDtmfKeys.find(outgoing_key_), false);
+        }
+        if (Clock::now() >= tone_deadline_) {
+          if (!Send(owner_, 'F', {&outgoing_key_, 1})) return false;
+          outgoing_key_ = 0;
+          tones_failed_ = true;
+        }
+      }
       if (active_ && !Output()) return false;
-      if (draining_ && audio_.OutputEnded()) return true;
+      if (draining_ && audio_->OutputEnded()) return true;
       if (draining_ && Clock::now() > end_) return false;
     }
     return false;
@@ -242,25 +285,45 @@ class Carrier {
         wire_[0] >> 6 != 2)
       return true;
     if (offer_.mux) rtcp = wire_[1] >= 192 && wire_[1] <= 223;
-    if (!rtcp &&
-        (!offer_.receive || n < 12 || (wire_[1] & 127) != offer_.codec.payload))
+    const bool dtmf = !rtcp && (wire_[1] & 127) == offer_.dtmf.payload;
+    if (!rtcp && (!offer_.receive || n < 12 ||
+                  (!dtmf && (wire_[1] & 127) != offer_.codec.payload)))
       return true;
     uint32_t source;
     memcpy(&source, wire_.data() + (rtcp ? 4 : 8), sizeof(source));
-    if (source_ && source != *source_) return true;
+    auto& stream =
+        dtmf && offer_.dtmf.rate != offer_.codec.rate ? event_source_ : source_;
+    if (!rtcp && stream && source != *stream) return true;
+    const size_t limit =
+        offer_.dtmf.payload >= 0 && offer_.dtmf.rate != offer_.codec.rate ? 2
+                                                                          : 1;
+    auto peers = std::span(authorized_sources_).first(limit);
+    auto slot = std::ranges::find(peers, std::optional<uint32_t>(source));
+    if (slot == peers.end())
+      slot = std::ranges::find(peers, std::optional<uint32_t>{});
+    if (slot == peers.end()) return true;
     int size = n;
     const auto status =
         rtcp ? srtp_unprotect_rtcp(in_.session, wire_.data(), &size)
              : srtp_unprotect(in_.session, wire_.data(), &size);
     if (status != srtp_err_status_ok) return true;
-    source_ = source;
-    return audio_.Push(rtcp ? SipMediaAudio::kRtcp : SipMediaAudio::kRtp,
-                       {wire_.data(), size_t(size)});
+    *slot = source;
+    if (!rtcp) stream = source;
+    if (dtmf) {
+      const auto keys =
+          inbound_dtmf_.Receive({wire_.data(), size_t(size)}, offer_.dtmf);
+      for (unsigned char key : keys) {
+        if (!Send(owner_, 'K', {&key, 1})) return false;
+      }
+      return audio_->Push(SipMediaAudio::kEvent, {wire_.data(), size_t(size)});
+    }
+    return audio_->Push(rtcp ? SipMediaAudio::kRtcp : SipMediaAudio::kRtp,
+                        {wire_.data(), size_t(size)});
   }
   bool Output() {
     for (int lane = 0; lane < 3; ++lane) {
       for (int i = 0; i < 32; ++i) {
-        g_autoptr(GstSample) sample = audio_.Pull(lane);
+        g_autoptr(GstSample) sample = audio_->Pull(lane);
         if (!sample) break;
         auto* buf = gst_sample_get_buffer(sample);
         const auto bytes = gst_buffer_get_size(buf);
@@ -276,6 +339,16 @@ class Carrier {
               gst_buffer_extract(buf, 0, wire_.data(), bytes) != bytes)
             return false;
           int n = bytes;
+          // The sent receipt belongs to the first end packet actually written
+          // to the SRTP socket. Further copies have the same event timestamp.
+          std::optional<uint32_t> completed;
+          if (!rtcp && bytes == 16 && outgoing_key_ &&
+              (wire_[1] & 127) == offer_.dtmf.payload &&
+              wire_[12] == kDtmfKeys.find(outgoing_key_) && (wire_[13] & 128)) {
+            uint32_t stamp;
+            memcpy(&stamp, wire_.data() + 4, sizeof(stamp));
+            if (last_sent_ != stamp) completed = stamp;
+          }
           const auto status =
               rtcp ? srtp_protect_rtcp(out_.session, wire_.data(), &n)
                    : srtp_protect(out_.session, wire_.data(), &n);
@@ -283,6 +356,11 @@ class Carrier {
           const auto sent = send(rtcp && !offer_.mux ? rtcp_.fd : rtp_.fd,
                                  wire_.data(), n, MSG_NOSIGNAL | MSG_DONTWAIT);
           if (sent != n) return false;
+          if (completed) {
+            last_sent_ = completed;
+            if (!Send(owner_, 'T', {&outgoing_key_, 1})) return false;
+            outgoing_key_ = 0;
+          }
         }
       }
     }
@@ -292,8 +370,13 @@ class Carrier {
   Fd rtp_, rtcp_, wake_;
   SipMediaOffer offer_;
   Crypto in_, out_;
-  SipMediaAudio audio_;
-  std::optional<uint32_t> source_;
+  std::optional<SipMediaAudio> audio_;
+  SipDtmfReceiver inbound_dtmf_;
+  std::optional<uint32_t> source_, event_source_, last_sent_;
+  std::array<std::optional<uint32_t>, 2> authorized_sources_{};
+  unsigned char outgoing_key_ = 0;
+  bool stop_sent_ = false, tones_failed_ = false;
+  Clock::time_point tone_stop_{}, tone_deadline_{};
   bool active_ = false, draining_ = false;
   Clock::time_point end_{};
   alignas(4)

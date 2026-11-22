@@ -310,6 +310,70 @@ bool LiveSession::UpdateSession(const Json& event) {
                               ResponseSettings(configuration_), client_event,
                               charge);
 }
+bool LiveSession::EndDtmf(std::string_view reason) {
+  while (!dtmf_.empty()) {
+    if (!Error(Invalid("sip_dtmf_unconfirmed", std::string(reason), {}, 503),
+               dtmf_.front().client_event))
+      return false;
+    dtmf_.pop_front();
+  }
+  dtmf_deadline_ = {};
+  return true;
+}
+
+bool LiveSession::PumpDtmf() {
+  if (dtmf_.empty()) return true;
+  if (dtmf_deadline_ != Clock::time_point{}) {
+    if (now_ < dtmf_deadline_) return true;
+    dtmf_unavailable_ = true;
+    return EndDtmf("Media worker did not confirm the keypress");
+  }
+  const auto& op = dtmf_.front();
+  if (!dtmf_unavailable_ && callbacks_.send_dtmf &&
+      callbacks_.send_dtmf(op.key)) {
+    dtmf_deadline_ = now_ + std::chrono::seconds(4);
+    return true;
+  }
+  if (!Error(Invalid("sip_dtmf_unavailable", "Keypress could not be sent", {},
+                     503),
+             op.client_event))
+    return false;
+  dtmf_.pop_front();
+  return true;
+}
+
+bool LiveSession::MediaDtmf(char receipt, char key) {
+  if (callbacks_.configuration.transport != LiveTransport::kSip ||
+      std::string_view("0123456789ABCD*#").find(key) == std::string_view::npos)
+    return false;
+  if (state_ == State::kDraining || state_ == State::kClosed) return true;
+  if (state_ != State::kActive) return false;
+  if (receipt == 'K')
+    return Emit(Object({{"type", String("transport.dtmf.received")},
+                        {"event", String(std::string(1, key))}}));
+  if (dtmf_unavailable_) return true;  // A timed-out operation can reply late.
+  if (dtmf_.empty() || dtmf_deadline_ == Clock::time_point{} ||
+      dtmf_.front().key != key)
+    return false;
+  auto op = std::move(dtmf_.front());
+  dtmf_.pop_front();
+  dtmf_deadline_ = {};
+  if (receipt == 'U')
+    return Error(Invalid("sip_dtmf_not_negotiated",
+                         "Key not negotiated for sending", "event", 409),
+                 op.client_event);
+  if (receipt == 'F')
+    return Error(Invalid("sip_dtmf_unconfirmed",
+                         "Media worker could not send the key", {}, 503),
+                 op.client_event);
+  if (receipt != 'T') return false;
+  auto event = Object({{"type", String("transport.dtmf.sent")},
+                       {"event", String(std::string(1, key))}});
+  if (!op.client_event.empty())
+    Set(&event, "client_event_id", String(std::move(op.client_event)));
+  return Emit(std::move(event));
+}
+
 bool LiveSession::CloseMedia() {
   return state_ == State::kDraining || state_ == State::kClosed ||
          (state_ == State::kActive && BeginClose("close_requested", {}));
@@ -319,6 +383,7 @@ bool LiveSession::BeginClose(std::string reason, std::string client_event) {
   responses_commands_.clear();
   responses_command_bytes_ = 0;
   validation_.Close();
+  if (!EndDtmf("Call closed before keypress confirmation")) return false;
   state_ = State::kDraining;
   closing_ = now_;
   close_reason_ = std::move(reason);
@@ -394,6 +459,14 @@ bool LiveSession::HandleMessage(WebSocketOpcode opcode, std::string_view message
       return Error(
           Invalid("session_already_started", "Live session already started"),
           client_event);
+    if (sideband && type == "transport.dtmf.send") {
+      if (dtmf_.size() >= 16)
+        return Error(Invalid("sip_dtmf_capacity", "Too many pending keypresses",
+                             {}, 429),
+                     client_event);
+      dtmf_.push_back({event.GetString("event").front(), client_event});
+      return PumpDtmf();
+    }
     if (type == "session.update") return UpdateSession(event);
     if (type == "session.close")
       return BeginClose("close_requested", client_event);
@@ -477,6 +550,7 @@ bool LiveSession::Tick() {
   if (state_ == State::kWaiting)
     return now_ - born_ < limits_.startup || Fail();
   try {
+    if (state_ == State::kActive && !PumpDtmf()) return false;
     if (state_ == State::kActive && now_ - born_ >= limits_.lifetime &&
         !BeginClose("expired", {}))
       return false;

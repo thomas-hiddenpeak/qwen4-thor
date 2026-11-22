@@ -23,6 +23,7 @@ find_library(Q4T_SRTP_LIBRARY NAMES srtp2 libsrtp2.so.1)
 if(Q4T_RTC_BASE_FOUND AND Q4T_SRTP_INCLUDE_DIR AND Q4T_SRTP_LIBRARY)
   add_executable(q4t_sip_media
     ${CMAKE_CURRENT_LIST_DIR}/../src/service/sip_media_main.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/service/sip_media_dtmf.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/service/sip_media_audio.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/service/sip_media_offer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/service/live_rtp_codec.cpp)

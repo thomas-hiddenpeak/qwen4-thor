@@ -80,6 +80,8 @@ bool LiveMediaCall::Receive(char type, std::string_view payload) {
     return true;
   }
   if (!verified_) return false;
+  if (type == 'K' || type == 'T' || type == 'U' || type == 'F')
+    return payload.size() == 1 && session_.MediaDtmf(type, payload.front());
   if (type == 'R' && expect_channel_ && !opened_ && payload.empty()) {
     opened_ = true;
     return true;

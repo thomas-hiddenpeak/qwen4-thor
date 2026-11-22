@@ -1,0 +1,73 @@
+test_g711_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_g711_shared_clock) ... FAIL
+test_missing_optional_generator_preserves_voice (tools.serve_live.test_sip_dtmf.DtmfMedia.test_missing_optional_generator_preserves_voice) ... /home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_media.py:65: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  import audioop
+ok
+test_opus_and_8khz_events (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_and_8khz_events) ... FAIL
+test_opus_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_shared_clock) ... FAIL
+test_partial_keyset_and_voice_only (tools.serve_live.test_sip_dtmf.DtmfMedia.test_partial_keyset_and_voice_only) ...
+  test_partial_keyset_and_voice_only (tools.serve_live.test_sip_dtmf.DtmfMedia.test_partial_keyset_and_voice_only) (events='1-3,11') ... FAIL
+test_receive_authentication_timestamp_and_repeated_ends (tools.serve_live.test_sip_dtmf.DtmfMedia.test_receive_authentication_timestamp_and_repeated_ends) ... FAIL
+
+======================================================================
+FAIL: test_g711_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_g711_shared_clock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 110, in test_g711_shared_clock
+    self.exercise_sender('PCMU',8000)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 87, in exercise_sender
+    sent = read_key(self,101,10)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 53, in read_key
+    raise AssertionError(('missing start or repeated end reports', packets))
+AssertionError: ('missing start or repeated end reports', [])
+
+======================================================================
+FAIL: test_opus_and_8khz_events (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_and_8khz_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 116, in test_opus_and_8khz_events
+    self.exercise_sender('OPUS',8000)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 87, in exercise_sender
+    sent = read_key(self,101,10)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 53, in read_key
+    raise AssertionError(('missing start or repeated end reports', packets))
+AssertionError: ('missing start or repeated end reports', [])
+
+======================================================================
+FAIL: test_opus_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_shared_clock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 113, in test_opus_shared_clock
+    self.exercise_sender('OPUS',48000)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 87, in exercise_sender
+    sent = read_key(self,101,10)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 53, in read_key
+    raise AssertionError(('missing start or repeated end reports', packets))
+AssertionError: ('missing start or repeated end reports', [])
+
+======================================================================
+FAIL: test_partial_keyset_and_voice_only (tools.serve_live.test_sip_dtmf.DtmfMedia.test_partial_keyset_and_voice_only) (events='1-3,11')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 127, in test_partial_keyset_and_voice_only
+    self.drain()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_media.py", line 206, in drain
+    self.assertEqual(packet[:1],b'P')
+AssertionError: b'E' != b'P'
+
+======================================================================
+FAIL: test_receive_authentication_timestamp_and_repeated_ends (tools.serve_live.test_sip_dtmf.DtmfMedia.test_receive_authentication_timestamp_and_repeated_ends)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 79, in test_receive_authentication_timestamp_and_repeated_ends
+    self.drain()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_media.py", line 206, in drain
+    self.assertEqual(packet[:1],b'P')
+AssertionError: b'E' != b'P'
+
+----------------------------------------------------------------------
+Ran 6 tests in 16.302s
+
+FAILED (failures=5)

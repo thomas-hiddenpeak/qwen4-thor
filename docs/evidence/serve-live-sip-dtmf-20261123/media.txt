@@ -1,0 +1,33 @@
+test_direction_limits_apply_to_keys (tools.serve_live.test_sip_dtmf.DtmfMedia.test_direction_limits_apply_to_keys) ... ok
+test_g711_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_g711_shared_clock) ... ok
+test_missing_optional_generator_preserves_voice (tools.serve_live.test_sip_dtmf.DtmfMedia.test_missing_optional_generator_preserves_voice) ... /home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_media.py:65: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  import audioop
+ok
+test_opus_and_8khz_events (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_and_8khz_events) ... ok
+test_opus_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_shared_clock) ... ok
+test_packed_reports_and_long_event_continuation (tools.serve_live.test_sip_dtmf.DtmfMedia.test_packed_reports_and_long_event_continuation) ... ok
+test_partial_keyset_and_voice_only (tools.serve_live.test_sip_dtmf.DtmfMedia.test_partial_keyset_and_voice_only) ... ok
+test_prefer_common_clock_and_default_dtmf_set (tools.serve_live.test_sip_dtmf.DtmfMedia.test_prefer_common_clock_and_default_dtmf_set) ... ok
+test_receive_authentication_timestamp_and_repeated_ends (tools.serve_live.test_sip_dtmf.DtmfMedia.test_receive_authentication_timestamp_and_repeated_ends) ... ok
+test_absent_codec_plugins_are_local_media_failure (tools.serve_live.test_sip_media.MediaTest.test_absent_codec_plugins_are_local_media_failure) ... ok
+test_declines_cleartext_bad_key_and_unapproved_media_address (tools.serve_live.test_sip_media.MediaTest.test_declines_cleartext_bad_key_and_unapproved_media_address) ... ok
+test_early_audio_wrong_source_key_and_replayed_packets_remain_silent (tools.serve_live.test_sip_media.MediaTest.test_early_audio_wrong_source_key_and_replayed_packets_remain_silent) ... ok
+test_final_audio_burst_drains_before_ack (tools.serve_live.test_sip_media.MediaTest.test_final_audio_burst_drains_before_ack) ... ok
+test_ipv6_static_mapping_and_declined_video_line (tools.serve_live.test_sip_media.MediaTest.test_ipv6_static_mapping_and_declined_video_line) ... ok
+test_opus_with_separate_rtcp (tools.serve_live.test_sip_media.MediaTest.test_opus_with_separate_rtcp) ... ok
+test_pcma_with_multiplexed_rtcp (tools.serve_live.test_sip_media.MediaTest.test_pcma_with_multiplexed_rtcp) ... ok
+test_pcmu_with_separate_rtcp (tools.serve_live.test_sip_media.MediaTest.test_pcmu_with_separate_rtcp) ... ok
+test_remote_sendonly_offer_has_recvonly_answer (tools.serve_live.test_sip_media.MediaTest.test_remote_sendonly_offer_has_recvonly_answer) ... ok
+test_bye_after_answer_before_ack_does_not_activate_media (tools.serve_live.test_sip_dialog.DialogTest.test_bye_after_answer_before_ack_does_not_activate_media) ... ok
+test_call_answer_ack_secure_audio_and_carrier_hangup (tools.serve_live.test_sip_dialog.DialogTest.test_call_answer_ack_secure_audio_and_carrier_hangup) ... ok
+test_cancel_before_answer_keeps_cancel_disposition (tools.serve_live.test_sip_dialog.DialogTest.test_cancel_before_answer_keeps_cancel_disposition) ... ok
+test_carrier_disconnect_during_hangup_has_no_success_receipt (tools.serve_live.test_sip_dialog.DialogTest.test_carrier_disconnect_during_hangup_has_no_success_receipt) ... ok
+test_expired_transfer_receipt_leaves_original_dialog_usable (tools.serve_live.test_sip_dialog.DialogTest.test_expired_transfer_receipt_leaves_original_dialog_usable) ... ok
+test_local_hangup_waits_for_final_carrier_response (tools.serve_live.test_sip_dialog.DialogTest.test_local_hangup_waits_for_final_carrier_response) ... ok
+test_remote_failure_is_preserved_on_local_hangup (tools.serve_live.test_sip_dialog.DialogTest.test_remote_failure_is_preserved_on_local_hangup) ... ok
+test_transfer_receipt_and_subscription_are_independent (tools.serve_live.test_sip_dialog.DialogTest.test_transfer_receipt_and_subscription_are_independent) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 11.764s
+
+OK

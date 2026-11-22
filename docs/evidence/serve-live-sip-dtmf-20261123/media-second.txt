@@ -1,0 +1,43 @@
+test_g711_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_g711_shared_clock) ... FAIL
+test_missing_optional_generator_preserves_voice (tools.serve_live.test_sip_dtmf.DtmfMedia.test_missing_optional_generator_preserves_voice) ... /home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_media.py:65: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  import audioop
+ok
+test_opus_and_8khz_events (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_and_8khz_events) ... FAIL
+test_opus_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_shared_clock) ... FAIL
+test_partial_keyset_and_voice_only (tools.serve_live.test_sip_dtmf.DtmfMedia.test_partial_keyset_and_voice_only) ... ok
+test_receive_authentication_timestamp_and_repeated_ends (tools.serve_live.test_sip_dtmf.DtmfMedia.test_receive_authentication_timestamp_and_repeated_ends) ... ok
+
+======================================================================
+FAIL: test_g711_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_g711_shared_clock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 110, in test_g711_shared_clock
+    self.exercise_sender('PCMU',8000)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 98, in exercise_sender
+    self.assertTrue(select.select([self.rtp],[],[],1)[0])
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_opus_and_8khz_events (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_and_8khz_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 116, in test_opus_and_8khz_events
+    self.exercise_sender('OPUS',8000)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 106, in exercise_sender
+    self.assertNotEqual(source,again[0][2])
+AssertionError: 318186036 == 318186036
+
+======================================================================
+FAIL: test_opus_shared_clock (tools.serve_live.test_sip_dtmf.DtmfMedia.test_opus_shared_clock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 113, in test_opus_shared_clock
+    self.exercise_sender('OPUS',48000)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_dtmf.py", line 98, in exercise_sender
+    self.assertTrue(select.select([self.rtp],[],[],1)[0])
+AssertionError: [] is not true
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.335s
+
+FAILED (failures=3)

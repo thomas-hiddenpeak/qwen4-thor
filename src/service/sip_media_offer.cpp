@@ -106,6 +106,8 @@ bool Audio(const GstSDPMessage* msg, const GstSDPMedia* media,
     return false;
   out->transmit = direction == "recvonly" || direction == "sendrecv";
   out->receive = direction == "sendonly" || direction == "sendrecv";
+  if (out->transmit || out->receive)
+    out->dtmf = SelectSipDtmf(media, out->codec);
   out->rtp = port;
   out->mux = gst_sdp_media_get_attribute_val(media, "rtcp-mux") != nullptr;
   if (gst_sdp_media_get_attribute_val(media, "rtcp-mux-only") && !out->mux)
@@ -178,10 +180,17 @@ std::string SipMediaAnswer(const SipMediaOffer& offer, const std::string& local,
       continue;
     }
     const auto payload = std::to_string(offer.codec.payload);
-    s += "m=audio " + std::to_string(rtp) + " RTP/SAVP " + payload +
-         "\r\na=rtpmap:" + payload + " " + offer.codec.name + "/" +
+    s += "m=audio " + std::to_string(rtp) + " RTP/SAVP " + payload;
+    if (offer.dtmf.payload >= 0) s += " " + std::to_string(offer.dtmf.payload);
+    s += "\r\na=rtpmap:" + payload + " " + offer.codec.name + "/" +
          std::to_string(offer.codec.rate);
     if (!strcmp(offer.codec.name, "OPUS")) s += "/2";
+    if (offer.dtmf.payload >= 0) {
+      const auto pt = std::to_string(offer.dtmf.payload);
+      s += "\r\na=rtpmap:" + pt + " telephone-event/" +
+           std::to_string(offer.dtmf.rate) + "\r\na=fmtp:" + pt + " " +
+           offer.dtmf.Parameters();
+    }
     s += "\r\na=crypto:" + std::to_string(offer.tag) +
          " AES_CM_128_HMAC_SHA1_80 inline:" + encoded + "\r\n";
     s += offer.mux ? "a=rtcp-mux\r\n"

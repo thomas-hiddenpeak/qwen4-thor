@@ -49,7 +49,7 @@ if (args.blocked_media) {
   save('unready-media.json', {http_status:503, code:'live_media_unavailable'});
   process.exit(0);
 }
-let failure, ws, closed, version;
+let failure, ws, closed, version, expectedKeyError;
 const events = [];
 try {
   await denied(other.live.sessions.accept(args.id, {session}), 404);
@@ -66,14 +66,37 @@ try {
     if (e.type === 'session.input_audio.append' || e.type === 'session.output_audio.delta') return;
     if (events.length >= 2000) { failure = 'event limit'; return; }
     events.push(e);
-    if (e.type === 'error') failure = e.error?.code ?? 'protocol error';
+    if (e.type === 'error') {
+      if (args.dtmf && !expectedKeyError && e.error?.client_event_id === 'unsupported-key' &&
+          e.error.code === 'sip_dtmf_not_negotiated') expectedKeyError = e;
+      else failure = e.error?.code ?? 'protocol error';
+    }
   });
-  ws.on('error', e => { failure = e.message; });
+  ws.on('error', e => {
+    // SidebandWS wraps the very same protocol event after dispatching it.
+    if (!expectedKeyError || e.error !== expectedKeyError) failure = e.message || 'sideband error';
+  });
   ws.on('close', code => { closed = code; });
   const event = (type, seconds) => wait(() => events.find(e => e.type === type), type, seconds);
   const started = await event('session.started');
   assert.equal(started.session.id, args.id);
   save('sdk-attached', true);
+  if (args.dtmf) {
+    assert.equal((await event('transport.dtmf.received')).event, '#');
+    ws.send({type:'transport.dtmf.send',event:'A',event_id:'unsupported-key'});
+    ws.send({type:'transport.dtmf.send',event:'*',event_id:'first-key'});
+    ws.send({type:'transport.dtmf.send',event:'*',event_id:'second-key'});
+    await event('error');
+    await wait(() => events.filter(e => e.type === 'transport.dtmf.sent').length === 2,
+               'two keypress receipts');
+    const sent = events.filter(e => e.type === 'transport.dtmf.sent');
+    assert.deepEqual(sent.map(e=>[e.client_event_id,e.event]),
+                     [['first-key','*'],['second-key','*']]);
+    assert.notEqual(sent[0].event_id, sent[1].event_id);
+    assert.equal(events.filter(e=>e.type === 'transport.dtmf.received').length, 1);
+    save('dtmf-sdk.json', {received:'#',sent:'**',distinct_receipts:2,
+      unsupported_key:'sip_dtmf_not_negotiated',correlated_error:true});
+  }
   if (args.realtime_id) {
     const phone = {target_uri:'tel:+12025550100'};
     const rtc = args.realtime_id;
