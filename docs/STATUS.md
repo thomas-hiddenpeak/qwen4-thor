@@ -7,6 +7,11 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Live 服务端 Responses 委派配置通过 27 项针对性 CPU 用例。客户端收到的会话
+快照移除 MCP 凭据；无效配置在确认后报告并关联原命令，修正后同会话可继续。
+旧校验无法放行新设置。实际模型委派、工具回填与语音回传仍待接入和短验。
+[配置与验证记录](evidence/serve-live-responses-settings-cpu-20261123/README.md)。
+
 原生 Responses 执行器事件通道通过14项针对性CPU检查，覆盖文本、工具、
 用量、背压与错误终态。服务端委派继续接入配置和工具结果续接。
 [原始记录](evidence/serve-live-responses-stream-cpu-20261123/README.md)。

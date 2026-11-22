@@ -1,4 +1,5 @@
 #include "q4t/server/live_session.h"
+#include "q4t/server/live_responses_settings.h"
 
 #include <algorithm>
 #include <limits>
@@ -11,6 +12,12 @@ using namespace object_detail;
 bool Accepted(const ObjectReply& reply) {
   return reply.ok() && !reply.commit_unknown && reply.http_status >= 200 &&
          reply.http_status < 300;
+}
+const Json* ResponseSettings(const Json& session) {
+  const auto* owner = session.Find("delegation");
+  return owner && owner->GetString("type") == "responses"
+             ? owner->Find("responses")
+             : nullptr;
 }
 ObjectReply Invalid(std::string code, std::string message,
                     std::string param = {}, int http = 400) {
@@ -31,7 +38,8 @@ LiveSession::LiveSession(std::string id, uint64_t expires_at,
       expires_at_(expires_at),
       output_(output),
       callbacks_(std::move(callbacks)),
-      limits_(limits) {}
+      limits_(limits),
+      validation_(callbacks_.validate_responses) {}
 LiveSession::~LiveSession() {
   Cancel();
   Join();
@@ -70,6 +78,7 @@ bool LiveSession::Start() {
   return true;
 }
 void LiveSession::Cancel() noexcept {
+  validation_.Close();
   if (state_ != State::kClosed) state_ = State::kCancelled;
   if (backend_ && !backend_cancelled_ && !joined_) {
     backend_cancelled_ = true;
@@ -79,6 +88,7 @@ void LiveSession::Cancel() noexcept {
   deferred_bytes_ = 0;
 }
 void LiveSession::Join() noexcept {
+  validation_.Join();
   if (backend_ && !joined_) {
     backend_->Join();
     joined_ = true;
@@ -109,7 +119,8 @@ bool LiveSession::Emit(Json event, bool terminal) {
         String(id_ + "_event_" + std::to_string(++sequence_)));
   }
   ChatPlanError error;
-  if (!ValidateLiveShape(event, LiveShape::kServerEvent, &error)) return Fail();
+  if (!ValidateLiveWireShape(event, LiveShape::kServerEvent, &error))
+    return Fail();
   auto text = OutputJson(event);
   if (text.size() > output_.MessageLimit() ||
       pending_.size() >= limits_.deferred_events ||
@@ -162,6 +173,11 @@ bool LiveSession::StartSession(const Json& event) {
         LiveSessionResource(configuration, id_, expires_at_, &resource, &error);
   const auto client_event = event.GetString("event_id");
   if (!status) return Error(ShapeFailure(status, error), client_event);
+  size_t charge = 0;
+  if (const auto* settings = ResponseSettings(configuration)) {
+    auto available = validation_.CheckCapacity(*settings, &charge);
+    if (!Accepted(available)) return Error(std::move(available), client_event);
+  }
   std::unique_ptr<ILiveSessionBackend> backend;
   ObjectReply reply;
   try {
@@ -193,9 +209,20 @@ bool LiveSession::StartSession(const Json& event) {
   state_ = State::kActive;
   auto response = Object(
       {{"type", String("session.started")}, {"session", std::move(resource)}});
-  if (!client_event.empty())
-    Set(&response, "client_event_id", String(client_event));
-  return Emit(std::move(response));
+  return PublishConfiguration(std::move(response),
+                              ResponseSettings(configuration_), client_event,
+                              charge);
+}
+bool LiveSession::PublishConfiguration(Json response, const Json* settings,
+                                       const std::string& event,
+                                       size_t charge) {
+  if (!event.empty()) Set(&response, "client_event_id", String(event));
+  if (!Emit(std::move(response))) return false;
+  if (charge) {
+    backend_->ResponsesReady(false);
+    validation_.Publish(*settings, event, charge);
+  }
+  return true;
 }
 bool LiveSession::UpdateSession(const Json& event) {
   Json next, resource;
@@ -207,17 +234,26 @@ bool LiveSession::UpdateSession(const Json& event) {
     status = LiveSessionResource(next, id_, expires_at_, &resource, &error);
   const auto client_event = event.GetString("event_id");
   if (!status) return Error(ShapeFailure(status, error), client_event);
+  size_t charge = 0;
+  const auto* settings = ResponseSettings(next);
+  const auto* previous = ResponseSettings(configuration_);
+  if (settings &&
+      (!previous || OutputJson(*previous) != OutputJson(*settings))) {
+    auto available = validation_.CheckCapacity(*settings, &charge);
+    if (!Accepted(available)) return Error(std::move(available), client_event);
+  }
   const auto reply = backend_->Update(next);
   if (backend_fault_ || reply.commit_unknown) return Fail();
   if (!Accepted(reply)) return Error(reply, client_event);
   configuration_ = std::move(next);
   auto response = Object(
       {{"type", String("session.updated")}, {"session", std::move(resource)}});
-  if (!client_event.empty())
-    Set(&response, "client_event_id", String(client_event));
-  return Emit(std::move(response));
+  return PublishConfiguration(std::move(response),
+                              ResponseSettings(configuration_), client_event,
+                              charge);
 }
 bool LiveSession::BeginClose(std::string reason, std::string client_event) {
+  validation_.Close();
   state_ = State::kDraining;
   closing_ = now_;
   close_reason_ = std::move(reason);
@@ -250,7 +286,8 @@ bool LiveSession::Message(WebSocketOpcode opcode, std::string_view message) {
     return Error(
         Invalid("invalid_request", "Event ID exceeds 256 bytes", "event_id"));
   ChatPlanError error;
-  const auto status = ValidateLiveShape(event, LiveShape::kClientEvent, &error);
+  const auto status =
+      ValidateLiveWireShape(event, LiveShape::kClientEvent, &error);
   if (!status) return Error(ShapeFailure(status, error), client_event);
   const auto type = event.GetString("type");
   try {
@@ -277,6 +314,13 @@ bool LiveSession::Message(WebSocketOpcode opcode, std::string_view message) {
     if (type == "session.update") return UpdateSession(event);
     if (type == "session.close")
       return BeginClose("close_requested", client_event);
+    if (type == "response.create" && ResponseSettings(configuration_) &&
+        !validation_.Ready())
+      return Error(
+          Invalid("responses_settings_unavailable",
+                  "Responses settings must pass validation before generation",
+                  "session.delegation.responses", 409),
+          client_event);
     const auto reply = backend_->Command(event);
     if (backend_fault_ || reply.commit_unknown) return Fail();
     return Accepted(reply) ? true : Error(reply, client_event);
@@ -319,9 +363,15 @@ bool LiveSession::Tick() {
     if (state_ == State::kActive && now_ - born_ >= limits_.lifetime &&
         !BeginClose("expired", {}))
       return false;
+    if (auto result = validation_.Poll(); result && state_ == State::kActive) {
+      if (result->current) backend_->ResponsesReady(validation_.Ready());
+      if (!Accepted(result->reply) &&
+          !Error(std::move(result->reply), result->client_event))
+        return false;
+    }
     if (!Accepted(backend_->Tick()) || backend_fault_) return Fail();
     if (state_ == State::kDraining) {
-      if (backend_->Drained()) {
+      if (backend_->Drained() && validation_.Drained()) {
         Join();
         if (!AdvanceClock() || !Usage(true)) return false;
         state_ = State::kClosed;

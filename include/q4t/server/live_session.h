@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "q4t/server/live_configuration.h"
-#include "q4t/server/object_store.h"
+#include "q4t/server/live_responses_validation.h"
 #include "q4t/server/websocket_session.h"
 
 namespace q4t::server {
@@ -18,6 +18,9 @@ class ILiveSessionBackend {
   // Same session owner only, bounded, no blocking model execution. Failure
   // must preserve the previous configuration. Immutable jobs keep snapshots.
   virtual ObjectReply Update(const io::Json& configuration) = 0;
+  // A backend that schedules automatic Responses work must use this gate for
+  // every new admission. Previously admitted jobs keep their own snapshots.
+  virtual void ResponsesReady(bool) noexcept {}
   virtual ObjectReply Command(const io::Json& event) = 0;
   virtual ObjectReply Tick() = 0;
   // Stop new/queued work and unresolved continuations; active work may drain.
@@ -38,6 +41,7 @@ struct LiveSessionCallbacks {
   std::function<ObjectReply(const io::Json&, const LiveEventSink&,
                             std::unique_ptr<ILiveSessionBackend>*)>
       create;
+  LiveResponsesCheck validate_responses;
   std::function<bool()> interrupted;
   std::function<std::chrono::steady_clock::time_point()> now;
 };
@@ -91,6 +95,8 @@ class LiveSession {
   bool Error(ObjectReply error, std::string_view client_event = {});
   bool StartSession(const io::Json& event);
   bool UpdateSession(const io::Json& event);
+  bool PublishConfiguration(io::Json response, const io::Json* settings,
+                            const std::string& event, size_t charge);
   bool BeginClose(std::string reason, std::string client_event);
   bool Usage(bool terminal);
   double Seconds() const;
@@ -100,6 +106,7 @@ class LiveSession {
   const LiveSessionCallbacks callbacks_;
   const LiveSessionLimits limits_;
   std::unique_ptr<ILiveSessionBackend> backend_;
+  LiveResponsesValidation validation_;
   io::Json configuration_;
   std::deque<Pending> pending_;
   size_t deferred_bytes_ = 0;

@@ -1,4 +1,5 @@
 #include "q4t/server/live_configuration.h"
+#include "q4t/server/live_responses_settings.h"
 
 #include <algorithm>
 
@@ -70,7 +71,7 @@ Status History(const Json& next, ChatPlanError* error) {
     const auto type = part.GetString("type");
     const bool assistant = item.GetString("role") == "assistant";
     if (!type.empty() && (assistant ? type != "text" && type != "output_text"
-                                   : type != "input_text"))
+                                    : type != "input_text"))
       return Invalid(error, path + ".content[0].type",
                      "Text part does not match its message role");
   }
@@ -129,7 +130,7 @@ Status ResolveLiveConfiguration(const Json& input,
     return BackendFailure(error);
   *error = {};
   auto status =
-      ValidateLiveShape(input, LiveShape::kSessionStart, error, "session");
+      ValidateLiveWireShape(input, LiveShape::kSessionStart, error, "session");
   if (!status) return status;
   Json next = input;
   if (!next.Has("input")) Set(&next, "input", Array());
@@ -144,7 +145,8 @@ Status ResolveLiveConfiguration(const Json& input,
       !instructions || instructions->IsNull() || Blank(instructions->str);
   if (defaults)
     Set(&next, "instructions", String(context.default_instructions));
-  status = ValidateLiveShape(next, LiveShape::kSessionStart, error, "session");
+  status =
+      ValidateLiveWireShape(next, LiveShape::kSessionStart, error, "session");
   if (!status) return status;
   try {
     size_t count = 0;
@@ -176,11 +178,11 @@ Status UpdateLiveConfiguration(const Json& current, const Json& update,
                                Json* output, ChatPlanError* error) {
   if (!output || !error) return BackendFailure(error);
   *error = {};
-  auto status =
-      ValidateLiveShape(current, LiveShape::kSessionStart, error, "session");
+  auto status = ValidateLiveWireShape(current, LiveShape::kSessionStart, error,
+                                      "session");
   if (status)
-    status =
-        ValidateLiveShape(update, LiveShape::kSessionUpdate, error, "session");
+    status = ValidateLiveWireShape(update, LiveShape::kSessionUpdate, error,
+                                   "session");
   if (!status) return status;
   auto next = current;
   if (!next.Has("delegation") || next.Find("delegation")->IsNull())
@@ -219,14 +221,15 @@ Status LiveSessionResource(const Json& configuration, std::string_view id,
       expires_at > 9007199254740991ULL)
     return Invalid(error, "session", "Invalid native Live session identity",
                    "live_session_identity_invalid", 503);
-  auto status = ValidateLiveShape(configuration, LiveShape::kSessionStart,
-                                  error, "session");
+  auto status = ValidateLiveWireShape(configuration, LiveShape::kSessionStart,
+                                      error, "session");
   if (!status) return status;
   auto next = configuration;
+  RedactLiveResponseCredentials(&next);
   Set(&next, "id", String(std::string(id)));
   Set(&next, "expires_at", Number(static_cast<int64_t>(expires_at)));
   Set(&next, "status", String("active"));
-  status = ValidateLiveShape(next, LiveShape::kSession, error, "session");
+  status = ValidateLiveWireShape(next, LiveShape::kSession, error, "session");
   if (!status) return status;
   *output = std::move(next);
   *error = {};

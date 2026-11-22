@@ -1,4 +1,6 @@
 #include "q4t/server/live_configuration.h"
+#include "q4t/server/live_responses_settings.h"
+#include "q4t/server/mcp_policy.h"
 
 #include <stdexcept>
 
@@ -281,5 +283,138 @@ Q4T_TEST(live_configuration_storage_and_session_identity) {
   Q4T_CHECK(resource.GetString("status") == "active");
   Q4T_CHECK(resource.GetInt("expires_at") == 1795195000);
   Q4T_CHECK(!f.output.Has("id") && !f.output.Has("status"));
+  return true;
+}
+
+Q4T_TEST(live_responses_private_mcp_survives_sparse_update_and_replacement) {
+  Fixture f;
+  const auto raw = Parse(R"({"model":"native","delegation":{"type":"responses",
+    "responses":{"model":"worker","tools":[{"type":"mcp","server_label":"docs",
+    "server_url":"https://docs.example/mcp","authorization":"test-bearer",
+    "headers":{"X-Fixture":"test-header"}},{"type":"function","name":"note",
+    "parameters":{"type":"object","properties":{"headers":{"type":"string"}}},
+    "strict":false}]}}})");
+  Q4T_CHECK(!ValidateLiveShape(raw, LiveShape::kSessionStart, &f.error));
+  Q4T_CHECK(f.Resolve(raw));
+  Q4T_CHECK(f.Update(Parse(
+      R"({"delegation":{"type":"responses","responses":{"instructions":"read documentation"}}})")));
+  Json public_view, request;
+  Q4T_CHECK(LiveSessionResource(f.output, "live_private", 1795200000,
+                                &public_view, &f.error));
+  const auto wire = OutputJson(public_view);
+  Q4T_CHECK(wire.find("test-bearer") == wire.npos &&
+            wire.find("X-Fixture") == wire.npos &&
+            wire.find("test-header") == wire.npos &&
+            wire.find("headers") != wire.npos);
+  const auto settings = *f.output.Find("delegation")->Find("responses");
+  Q4T_CHECK(MakeLiveResponsesRequest(settings, Array(), &request, &f.error));
+  Q4T_CHECK(request.GetArray("tools")->array[0].GetString("authorization") ==
+            "test-bearer");
+  Q4T_CHECK(request.GetString("instructions") == "read documentation" &&
+            !request.GetBool("store", true) && request.GetBool("stream") &&
+            request.GetString("truncation") == "auto" &&
+            request.GetString("model") == "worker");
+  Q4T_CHECK(
+      f.Update(Parse(R"({"delegation":{"type":"responses","responses":{"tools":[
+    {"type":"mcp","server_label":"docs","server_url":"https://docs.example/mcp"}]}}})")));
+  Q4T_CHECK(OutputJson(f.output).find("test-bearer") == wire.npos);
+  Q4T_CHECK(!f.output.Find("delegation")
+                 ->Find("responses")
+                 ->GetArray("tools")
+                 ->array[0]
+                 .Has("headers"));
+  return true;
+}
+
+Q4T_TEST(
+    live_responses_projection_preserves_outer_shape_and_checks_duplicates) {
+  Fixture f;
+  auto start = Parse(R"({"model":"native","delegation":{"type":"responses",
+    "responses":{"model":"worker","tools":[{"type":"mcp"}],
+    "text":{"format":{"type":"json_object"},"verbosity":"low"}}}})");
+  Q4T_CHECK(f.Resolve(start));
+  auto& settings = Field(Field(start, "delegation"), "responses");
+  Field(settings, "tools").array[0].object.emplace_back("type", String("mcp"));
+  Q4T_CHECK(!f.Resolve(start));
+  Field(settings, "tools").array = {Parse(R"({"type":"mcp"})"),
+                                    Parse(R"({"type":"function","name":5})")};
+  Q4T_CHECK(!f.Resolve(start));
+  Field(settings, "tools").array.pop_back();
+  Set(&Field(settings, "text"), "unknown", Number(1));
+  Q4T_CHECK(!f.Resolve(start));
+  return true;
+}
+
+Q4T_TEST(live_responses_request_rejects_override_limits_and_protected_fields) {
+  ChatPlanError error;
+  auto settings =
+      Parse(R"({"model":"worker","instructions":null,"max_output_tokens":16})");
+  Json request = String("unchanged");
+  for (const auto* key : {"store", "stream", "input", "previous_response_id",
+                          "background", "request_id"}) {
+    auto bad = settings;
+    Set(&bad, key, Json());
+    Q4T_CHECK(!MakeLiveResponsesRequest(bad, Array(), &request, &error));
+    Q4T_CHECK(request.str == "unchanged");
+  }
+  for (auto cap : {"15", "16.25"}) {
+    auto bad = settings;
+    Set(&bad, "max_output_tokens", Parse(cap));
+    Q4T_CHECK(!MakeLiveResponsesRequest(bad, Array(), &request, &error));
+  }
+  Q4T_CHECK(MakeLiveResponsesRequest(settings, Array({String("sentinel")}),
+                                     &request, &error));
+  Q4T_CHECK(!request.Has("instructions") &&
+            request.GetArray("input")->array[0].str == "sentinel");
+  auto bad = Parse(R"({"model":"worker","tools":[{"type":"shell","environment":{
+    "network_policy":{"domain_secrets":[{"domain":"test","value":"private-marker"}]}}}]})");
+  Q4T_CHECK(!MakeLiveResponsesRequest(bad, Array(), &request, &error));
+  Q4T_CHECK(error.param.ends_with(".network_policy.domain_secrets"));
+  return true;
+}
+
+Q4T_TEST(live_responses_validation_scope_resources_and_credential_errors) {
+  ChatPlanConfig config;
+  config.model = "worker";
+  ChatPlanError error;
+  auto settings = Parse(R"({"model":"worker","tools":[{"type":"mcp",
+    "server_label":"private","connector_id":"connector_googledrive"}]})");
+  Q4T_CHECK(!CheckLiveResponsesSettings(settings, config, "client:a", &error));
+  Q4T_CHECK(error.code == "mcp_target_mapping_required");
+  auto policy = std::make_shared<McpDeploymentPolicy>();
+  McpDeploymentTarget target;
+  target.kind = "connector_id";
+  target.id = "connector_googledrive";
+  target.scopes = {"client:a"};
+  target.generation = "r1";
+  target.transport = "provider";
+  policy->targets.push_back(target);
+  config.mcp_policy = policy;
+  Q4T_CHECK(CheckLiveResponsesSettings(settings, config, "client:a", &error));
+  Q4T_CHECK(!CheckLiveResponsesSettings(settings, config, "client:b", &error) &&
+            error.http_status == 403);
+  auto& tool = Field(settings, "tools").array[0];
+  Set(&tool, "headers", Parse(R"({"X-Private-Fixture":234})"));
+  auto bad = CheckLiveResponsesSettings(settings, config, "client:a", &error);
+  Q4T_CHECK(!bad && error.param == "tools[0].headers" &&
+            bad.message().find("Fixture") == std::string::npos);
+  settings = Parse(
+      R"({"model":"worker","tools":[{"type":"file_search","vector_store_ids":["vs_a","vs_b"]}]})");
+  std::vector<std::string> checked;
+  bad = CheckLiveResponsesSettings(settings, config, "client:a", &error,
+                                   [&](const auto& id) {
+                                     checked.push_back(id);
+                                     ObjectReply reply;
+                                     if (id == "vs_b") {
+                                       reply.http_status = 404;
+                                       reply.code = "not_found";
+                                       reply.message = "private-marker";
+                                     }
+                                     return reply;
+                                   });
+  Q4T_CHECK(!bad && checked == std::vector<std::string>({"vs_a", "vs_b"}) &&
+            error.http_status == 404);
+  Q4T_CHECK(error.param == "tools[0].vector_store_ids[1]" &&
+            bad.message().find("private-marker") == std::string::npos);
   return true;
 }

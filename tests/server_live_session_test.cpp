@@ -2,6 +2,9 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <thread>
+
+#include "q4t/server/live_responses_settings.h"
 
 #include "../src/server/object_protocol.h"
 #include "q4t/test.h"
@@ -24,6 +27,7 @@ struct BackendState {
   bool drained = false, ignore_output_failure = false;
   Json configuration;
   std::vector<Json> commands, outgoing;
+  std::vector<bool> ready;
   LiveEventSink emit;
 };
 class Backend final : public ILiveSessionBackend {
@@ -35,6 +39,9 @@ class Backend final : public ILiveSessionBackend {
       return Error(503, "fixture_backend_unavailable", "Backend unavailable");
     state_.configuration = next;
     return {};
+  }
+  void ResponsesReady(bool ready) noexcept override {
+    state_.ready.push_back(ready);
   }
   ObjectReply Command(const Json& event) override {
     state_.commands.push_back(event);
@@ -115,7 +122,7 @@ struct Fixture {
       Q4T_CHECK(consumed == frame.size());
       auto event = Parse(std::string(decoder.Event().payload));
       ChatPlanError error;
-      Q4T_CHECK(ValidateLiveShape(event, LiveShape::kServerEvent, &error));
+      Q4T_CHECK(ValidateLiveWireShape(event, LiveShape::kServerEvent, &error));
       events.push_back(std::move(event));
       output.Acknowledge();
     }
@@ -135,6 +142,14 @@ struct Fixture {
                            read);
   }
   bool Tick() { return session->Tick() && Read(); }
+  bool Until(const std::function<bool()>& predicate) {
+    const auto deadline = Clock::now() + 3s;
+    while (!predicate() && Clock::now() < deadline) {
+      if (!Tick()) return false;
+      std::this_thread::sleep_for(1ms);
+    }
+    return predicate();
+  }
   size_t Count(std::string_view type) const {
     return std::ranges::count_if(events, [&](const auto& event) {
       return event.GetString("type") == type;
@@ -358,5 +373,122 @@ Q4T_TEST(
   Q4T_CHECK(absent.Begin() && absent.Count("session.started") == 0);
   Q4T_CHECK(absent.Last("error").Find("error")->GetString("code") ==
             "live_backend_missing");
+  return true;
+}
+
+Q4T_TEST(live_responses_validation_ack_error_and_corrected_same_session) {
+  Fixture f;
+  f.callbacks.validate_responses = [](const Json& settings, std::stop_token) {
+    ChatPlanConfig config;
+    config.model = "native";
+    ChatPlanError error;
+    const auto status =
+        CheckLiveResponsesSettings(settings, config, "client:a", &error);
+    if (status) return ObjectReply{};
+    auto reply = Error(error.http_status, error.code, status.message());
+    reply.value = Object({{"param", String(error.param)}});
+    return reply;
+  };
+  Q4T_CHECK(f.Start());
+  Q4T_CHECK(
+      f.Send(R"({"type":"session.start","event_id":"bad_skills","session":{
+    "model":"native","delegation":{"type":"responses","responses":{"model":"native",
+    "tools":[{"type":"shell","environment":{"type":"container_auto","skills":[
+    {"type":"skill_reference","skill_id":"sk_1","version":1}]}}]}}}})"));
+  Q4T_CHECK(f.events.size() == 1 && f.Count("session.started") == 1);
+  Q4T_CHECK(f.Send(R"({"type":"response.create","event_id":"early"})"));
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
+            "responses_settings_unavailable");
+  Q4T_CHECK(f.backend.commands.empty());
+  Q4T_CHECK(f.Until([&] {
+    return f.Last("error").GetString("client_event_id") == "bad_skills";
+  }));
+  const auto report = *f.Last("error").Find("error");
+  Q4T_CHECK(report.GetString("code") == "responses_validation_failed");
+  Q4T_CHECK(report.GetString("client_event_id") == "bad_skills");
+  Q4T_CHECK(report.GetString("param") ==
+            "tools[0].environment.skills[0].version");
+  Q4T_CHECK(report.GetString("message").find("string") != std::string::npos);
+  Q4T_CHECK(f.backend.configuration.Find("delegation")
+                ->Find("responses")
+                ->GetArray("tools")
+                ->array.size() == 1);
+  Q4T_CHECK(f.Send(R"({"type":"session.update","event_id":"fix","session":{
+    "delegation":{"type":"responses","responses":{"tools":[]}}}})"));
+  Q4T_CHECK(f.Last("session.updated").GetString("client_event_id") == "fix");
+  Q4T_CHECK(f.Until([&] { return f.backend.ready.back(); }));
+  Q4T_CHECK(f.Send(R"({"type":"response.create","event_id":"good"})"));
+  Q4T_CHECK(f.backend.commands.size() == 1 &&
+            f.backend.commands[0].GetString("event_id") == "good");
+  return true;
+}
+
+Q4T_TEST(live_responses_old_validation_cannot_authorize_new_configuration) {
+  std::atomic<bool> entered{false}, release{false};
+  Fixture f;
+  f.callbacks.validate_responses = [&](const Json& settings,
+                                       std::stop_token stop) {
+    if (settings.GetString("model") == "old") {
+      entered.store(true);
+      while (!release.load() && !stop.stop_requested())
+        std::this_thread::sleep_for(1ms);
+      return ObjectReply{};
+    }
+    throw std::runtime_error("fixture-only-private-marker");
+  };
+  Q4T_CHECK(f.Start() &&
+            f.Send(R"({"type":"session.start","session":{"model":"native",
+    "delegation":{"type":"responses","responses":{"model":"old"}}}})"));
+  Q4T_CHECK(f.Until([&] { return entered.load(); }));
+  Q4T_CHECK(f.Send(R"({"type":"session.update","event_id":"bad","session":{
+    "delegation":{"type":"responses","responses":{"model":"new"}}}})"));
+  Q4T_CHECK(f.Send(
+      R"({"type":"session.input_audio.mute","event_id":"independent"})"));
+  Q4T_CHECK(f.Count("session.input_audio.muted") == 1);
+  release.store(true);
+  Q4T_CHECK(f.Until([&] { return f.Count("error") == 1; }));
+  Q4T_CHECK(
+      std::ranges::none_of(f.backend.ready, [](bool value) { return value; }));
+  Q4T_CHECK(f.Last("error").GetString("client_event_id") == "bad");
+  Q4T_CHECK(OutputJson(f.Last("error")).find("private-marker") ==
+            std::string::npos);
+  return true;
+}
+
+Q4T_TEST(live_responses_backpressure_before_commit_and_close_drains_checker) {
+  std::atomic<unsigned> calls{0};
+  std::atomic<bool> done{false};
+  Fixture f;
+  f.callbacks.validate_responses = [&](const Json&, std::stop_token stop) {
+    ++calls;
+    while (!stop.stop_requested()) std::this_thread::sleep_for(1ms);
+    done.store(true);
+    return ObjectReply{};
+  };
+  Q4T_CHECK(f.Start() &&
+            f.Send(R"({"type":"session.start","session":{"model":"native",
+    "delegation":{"type":"responses","responses":{"model":"num0"}}}})"));
+  Q4T_CHECK(f.Until([&] { return calls.load() == 1; }));
+  for (unsigned i = 1; i <= 8; ++i) {
+    const auto event =
+        std::string(R"({"type":"session.update","event_id":"update_)") +
+        std::to_string(i) +
+        R"(","session":{"delegation":{"type":"responses","responses":{"model":"num)" +
+        std::to_string(i) + R"("}}}})";
+    Q4T_CHECK(f.Send(event));
+  }
+  Q4T_CHECK(f.Count("session.updated") == 7 && f.backend.updates == 7);
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
+            "live_validation_capacity");
+  Q4T_CHECK(f.Last("error").GetString("client_event_id") == "update_8");
+  Q4T_CHECK(f.Send(R"({"type":"session.close","event_id":"finish"})"));
+  f.backend.drained = true;
+  Q4T_CHECK(f.Until([&] { return f.session->Finalized(); }));
+  Q4T_CHECK(done.load() && calls.load() == 1 && f.Count("session.closed") == 1);
+  Q4T_CHECK(f.Last("session.closed")
+                .Find("session")
+                ->Find("delegation")
+                ->Find("responses")
+                ->GetString("model") == "num7");
   return true;
 }

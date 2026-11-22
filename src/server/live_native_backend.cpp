@@ -1,4 +1,5 @@
 #include "q4t/server/live_native_backend.h"
+#include "q4t/server/live_responses_settings.h"
 
 #include "object_protocol.h"
 #include "q4t/server/input_contract.h"
@@ -86,8 +87,8 @@ Status PlanNativeLiveClient(const Json& configuration,
                             NativeLivePlan* output, ChatPlanError* error) {
   if (!output || !error) return Status::Fail("Missing native Live plan owner");
   *error = {};
-  auto status = ValidateLiveShape(configuration, LiveShape::kSessionStart,
-                                  error, "session");
+  auto status = ValidateLiveWireShape(configuration, LiveShape::kSessionStart,
+                                      error, "session");
   if (!status) return status;
   const auto connected = Connected(configuration);
   if (!Accepted(connected)) {

@@ -16300,6 +16300,7 @@
     "fixture_cpu_evidence": "evidence/serve-live-fixture-cpu-20261121/README.md",
     "fixture_state": "actual_sdk_fixture_playback_and_client_resume_pass",
     "fixture_business_evidence": "evidence/serve-live-fixture-http-20261121/README.md",
-    "responses_stream_cpu_evidence": "evidence/serve-live-responses-stream-cpu-20261123/README.md"
+    "responses_stream_cpu_evidence": "evidence/serve-live-responses-stream-cpu-20261123/README.md",
+    "responses_settings_cpu_evidence": "evidence/serve-live-responses-settings-cpu-20261123/README.md"
   }
 }

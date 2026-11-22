@@ -1,0 +1,28 @@
+{
+  "tests": 27,
+  "new_tests": 7,
+  "passed": 27,
+  "source_sha256": {
+    "include/q4t/server/live_responses_settings.h": "28e5d995bb82cf8479045631a312b8ec1f57a26e0703859e46400ecb4a3a9132",
+    "include/q4t/server/live_responses_validation.h": "5e06554a1b348ad7deb21e8d11d236d2603a485c2b0733caffb23d9266eb8634",
+    "src/server/live_responses_settings.cpp": "4d7a927278806578c4659744a74d955e2f4c496a01c9a402616bf27676da214c",
+    "src/server/live_responses_validation.cpp": "9a6f4be3ced057a3cdce2498fee335716c3c1de91ac130d41ad0962830484904",
+    "CMakeLists.txt": "080664bfe6e2b12975d801b0f24f89e3b5e2df14b7653476012423a5cdeaa694",
+    "cmake/ChatProtocolIdentity.cmake": "1d6c254f22783a7fe536c4ecb2b691ca2ab3233fb9709dbb93fbfc4047e6a824",
+    "cmake/HostTestSources.cmake": "c6a4c16484ab40fa0f762697378a0e55679172b0c975dc28b95b738aa5493db7",
+    "include/q4t/server/live_session.h": "e351e5bd089f61a572454cdef4b87b57f6cdf4ce4e853a85ca6748c7d7566aca",
+    "src/server/chat_live.cpp": "b3ecc730b6e2d89978818c6c6c0a34be77db22010006a1237087cdf1ea6dbc5e",
+    "src/server/live_configuration.cpp": "4fca0ab5b35d741ecf38e9f6f25983532d09103105e2f08a380f72b5e9fb4168",
+    "src/server/live_native_backend.cpp": "67322e1a768533ab1f1c490da366a387b72467a87b3ca697168e2dbaf035833b",
+    "src/server/live_session.cpp": "6bc90f60a153ddae75b95ef864aa0e3606f1c5bd2f06bda8acbbd99e5f6436fb",
+    "tests/server_live_configuration_test.cpp": "38c9b4f707d9ec2133d1e8608919df796a64293138928fe75eb6cb601e2d4061",
+    "tests/server_live_session_test.cpp": "16f22f8e8f9e8a013579d4fded0a4e8bcae96128d1975115ae237d03566fcae0"
+  },
+  "cpu_log_sha256": "af92d6fad39b40bb31e395fb1721eea4aa5f916602c7a0918a2f10a829e4f8bf",
+  "host_build_log_sha256": "0281449b602b058bc5f709db162aa19751930a550d0210310658ec7e41903ac8",
+  "native_route_build_log_sha256": "ea660d6dd65a597fcd5a6a099e2fde5a00922a5a373ddff20887eb98d5249878",
+  "test_binary_sha256": "1af3a08dc50fa374465173a5440f4925f05cd42d44a042bafd6ff062d8e80156",
+  "warnings": 0,
+  "gpu_starts": 0,
+  "real_responses_delegation_accepted": false
+}

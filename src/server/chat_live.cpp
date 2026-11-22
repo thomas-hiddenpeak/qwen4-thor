@@ -6,7 +6,9 @@
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/live_native_backend.h"
+#include "q4t/server/live_responses_settings.h"
 #include "q4t/server/live_session_pump.h"
+#include "q4t/server/vector_stores.h"
 
 namespace q4t::server {
 namespace {
@@ -154,6 +156,32 @@ void ChatServer::HandleLive(int fd, std::string_view path,
         NativeLivePlan plan;
         return PlanNativeLiveClient(configuration, planning, &plan, error);
       };
+  callbacks.validate_responses = [this, current_planning, client](
+                                     const Json& settings,
+                                     std::stop_token stop) {
+    if (stop.stop_requested())
+      return Error(409, "cancelled", "Live settings validation cancelled");
+    ChatPlanConfig planning;
+    ClientIdentity identity;
+    auto reply = current_planning(&planning, &identity);
+    if (!reply.ok()) return reply;
+    ChatPlanError error;
+    const auto scope = identity.Scoped()
+                           ? "client:" + std::string(identity.Id())
+                           : "local:anonymous";
+    const BinaryAccess access{
+        scope, Clock::now() + std::chrono::seconds(3), [&] {
+          return stop.stop_requested() || stop_requested_.load() ||
+                 !clients_.OwnsIdentity(client);
+        }};
+    const auto status = CheckLiveResponsesSettings(
+        settings, planning, scope, &error, [&](const std::string& id) {
+          if (!objects_)
+            return Error(503, "state_unavailable", "Vector store unavailable");
+          return VectorStores(*objects_).Retrieve(access, id);
+        });
+    return status ? ObjectReply{} : Failure(status, error);
+  };
   const auto counter = callbacks.configuration.count_text;
   const auto id = detail::NewRequestId("live_");
   callbacks.create = [this, client, input, current_planning, counter, id,
