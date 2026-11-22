@@ -33,12 +33,15 @@ def current_model_assets(model, previous):
     return current
 
 
-def prepare(out):
+DEFAULT_QUALIFICATION = ROOT / 'docs/evidence/serve-live-responses-execution-cpu-20261123/result.json'
+
+
+def prepare(out, qualification=DEFAULT_QUALIFICATION):
     previous = fixture.WORK / 'fixture-business-01'
     require(read(previous / 'acceptance.json')['observation']['fixture']['source_equal'], 'prior native WSS qualification')
     plan = read(previous / 'plan.json')
     plan['model_assets'] = current_model_assets(plan['model'], plan['model_assets'])
-    verified = read(ROOT / 'docs/evidence/serve-live-responses-execution-cpu-20261123/result.json')
+    verified = read(qualification)
     require(sha(plan['binary']) == verified['engine_sha256'] and
             sha(plan['ingress']) == verified['ingress_sha256'], 'qualified native binaries required')
     out.mkdir(parents=True, mode=0o700)
@@ -155,10 +158,11 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action',choices=['prepare','run','finalize'])
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--qualification', type=Path, default=DEFAULT_QUALIFICATION)
     args=parser.parse_args()
     out=args.output.resolve()
     require(out.is_relative_to(ROOT/'.q4t-work'),'private work directory required')
-    if args.action=='prepare':prepare(out)
+    if args.action=='prepare':prepare(out,args.qualification)
     elif args.action=='run':
         plan=read(out/'plan.json')
         require(plan['schema']==SCHEMA and sha(plan['ingress'])==plan['ingress_sha256'],'native build identity')

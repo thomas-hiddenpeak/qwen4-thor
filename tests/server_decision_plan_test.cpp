@@ -1,6 +1,9 @@
 #include "q4t/server/decision_plan.h"
+#include "q4t/server/decision_scoring.h"
 
 #include <array>
+#include <bit>
+#include <unordered_map>
 #include <cmath>
 #include <limits>
 
@@ -204,5 +207,81 @@ Q4T_TEST(decision_result_keeps_actual_token_subtotals_and_question_order) {
   Q4T_CHECK(
       !BuildDecisionResult(request, Array({first, second}), usage, &result));
   Q4T_CHECK(OutputJson(result) == before);
+  return true;
+}
+
+Q4T_TEST(decision_labels_use_only_real_single_tokens_and_exclude_aliases) {
+  std::vector<DecisionLabel> labels;
+  std::unordered_map<std::string, uint32_t> vocab = {
+      {"A", 0}, {" A", 1}, {"B", 0}, {"C", 2}, {" C", 1}, {"?", 3}};
+  auto encode = [&](std::string_view s, std::vector<uint32_t>* ids) {
+    const auto it = vocab.find(std::string(s));
+    *ids = it == vocab.end() ? std::vector<uint32_t>{7, 8}
+                             : std::vector<uint32_t>{it->second};
+    return q4t::Status{};
+  };
+  Q4T_CHECK(MakeDecisionLabels(2, encode, &labels));
+  Q4T_CHECK(labels.size() == 3 && labels[0].tokens.size() == 2 &&
+            labels[1].text == "C" && labels[1].tokens.size() == 1 &&
+            labels.back().text == "?");
+  vocab.erase("?");
+  Q4T_CHECK(!MakeDecisionLabels(2, encode, &labels) &&
+            labels.back().tokens[0] == 3);
+  return true;
+}
+Q4T_TEST(
+    decision_real_bf16_row_groups_spellings_and_keeps_full_vocab_confidence) {
+  auto q = Question("choice");
+  std::vector<DecisionLabel> labels = {{"A", {0, 1}}, {"B", {2}}, {"?", {3}}};
+  // The two A spellings together outweigh B. An unrelated token changes
+  // the unconditioned confidence but not the probabilities among choices.
+  auto bits = [](float x) {
+    return uint16_t(std::bit_cast<uint32_t>(x) >> 16);
+  };
+  std::array<uint16_t, 5> row = {bits(0), bits(0), bits(.5), bits(-5), bits(4)};
+  DecisionScore score{q, labels, {}};
+  Q4T_CHECK(score.Read(row) && score.token == 0);
+  Q4T_CHECK(score.answer.Find("choice")->IsBool() &&
+            score.answer.GetNumber("confidence") < .05);
+  const auto mass =
+      score.answer.Find("probabilities")->array[0].GetNumber("probability");
+  Q4T_CHECK(std::abs(mass - 2. / (2. + std::exp(.5))) < 1e-10);
+  Q4T_CHECK(!score.Read(row));
+  row[3] = bits(6);
+  DecisionScore refusal{q, labels, {}};
+  Q4T_CHECK(refusal.Read(row) && refusal.token == 3 &&
+            refusal.answer.GetString("type") == "refusal");
+  row[4] = bits(std::numeric_limits<float>::quiet_NaN());
+  DecisionScore broken{q, labels, {}};
+  Q4T_CHECK(!broken.Read(row) && broken.token < 0 && broken.answer.IsNull());
+  return true;
+}
+Q4T_TEST(decision_step_preserves_typed_rubric_media_and_shared_input) {
+  auto q = Question("choice");
+  auto request = Request(q);
+  auto part = Object(
+      {{"type", String("input_image")},
+       {"image_url", String("https://example.org/scan")},
+       {"detail", String("high")},
+       {"prompt_cache_breakpoint", Object({{"mode", String("explicit")}})}});
+  Set(&request, "input",
+      Array({Object({{"role", String("user")}, {"content", Array({part})}})}));
+  Json shared, step;
+  Q4T_CHECK(DecisionSharedMessages(request, &shared));
+  auto frozen = OutputJson(shared);
+  std::vector<DecisionLabel> labels = {{"A", {0}}, {"B", {1}}, {"?", {2}}};
+  Q4T_CHECK(DecisionStepRequest(request, shared, q, labels, &step) &&
+            OutputJson(shared) == frozen);
+  auto& messages = step.Find("messages")->array;
+  Q4T_CHECK(messages.size() == 3 && messages[1].Find("content")->array[0].Has(
+                                        "prompt_cache_breakpoint"));
+  const auto* image = messages[1].Find("content")->array[0].Find("image_url");
+  Q4T_CHECK(image && image->GetString("detail") == "high");
+  const auto rubric =
+      messages.back().Find("content")->array.back().GetString("text");
+  Q4T_CHECK(rubric.find(R"("value":true)") != rubric.npos &&
+            rubric.find(R"("value":"true")") != rubric.npos &&
+            step.GetInt("max_tokens") == 1 &&
+            !step.GetBool("enable_thinking", true));
   return true;
 }

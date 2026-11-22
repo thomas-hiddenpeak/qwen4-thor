@@ -275,7 +275,7 @@ Status PlanPromptCacheLayout(
     const ChatPromptLayout& layout,
     std::span<const PromptCacheInputBoundary> explicit_boundaries,
     std::span<const size_t> token_starts, size_t prompt_bytes,
-    PromptCachePlan* plan) {
+    PromptCachePlan* plan, std::optional<size_t> shared_messages) {
   *plan = {};
   if (!messages.IsArray() || messages.array.size() != layout.messages.size() ||
       messages.array.size() != layout.part_ends.size() ||
@@ -283,6 +283,9 @@ Status PlanPromptCacheLayout(
       !std::is_sorted(token_starts.begin(), token_starts.end()) ||
       (!token_starts.empty() && token_starts.back() >= prompt_bytes))
     return Status::Fail("Invalid prompt cache layout");
+  const size_t end_messages = shared_messages.value_or(messages.array.size());
+  if (end_messages > messages.array.size())
+    return Status::Fail("Decision cache boundary outside shared input");
   std::vector<PromptCacheBoundary> points;
   using Kind = PromptCacheBoundary::Kind;
   const auto append = [&](size_t byte, int ttl, Kind kind) -> Status {
@@ -297,7 +300,7 @@ Status PlanPromptCacheLayout(
     return {};
   };
   for (const auto& point : explicit_boundaries) {
-    if (point.message_index >= layout.messages.size() ||
+    if (point.message_index >= end_messages ||
         point.part_index >= layout.part_ends[point.message_index].size())
       return Status::Fail("Cache content boundary outside actual layout");
     const auto& span = layout.messages[point.message_index];
@@ -315,7 +318,7 @@ Status PlanPromptCacheLayout(
     if (!status) return status;
   }
   size_t initial_end = 0;
-  for (size_t i = 0; i < messages.array.size() &&
+  for (size_t i = 0; i < end_messages &&
                      IsChatInstructionRole(messages.array[i].GetString("role"));
        ++i)
     initial_end = std::max(initial_end, layout.messages[i].prompt_end);
@@ -323,13 +326,14 @@ Status PlanPromptCacheLayout(
     auto status = append(initial_end, 0, Kind::kInitialInstructions);
     if (!status) return status;
   }
-  for (size_t i = 0; i < messages.array.size(); ++i) {
+  for (size_t i = 0; i < end_messages; ++i) {
     const auto role = messages.array[i].GetString("role");
-    if (role != "user" && role != "tool") continue;
+    if (role != "user" && role != "tool" && !(shared_messages && i + 1 == end_messages))
+      continue;
     size_t end = layout.messages[i].prompt_end;
     if (role == "tool") {
       // Tool replies may be rendered in call order instead of input order.
-      while (i + 1 < messages.array.size() &&
+      while (i + 1 < end_messages &&
              messages.array[i + 1].GetString("role") == "tool") {
         ++i;
         end = std::max(end, layout.messages[i].prompt_end);

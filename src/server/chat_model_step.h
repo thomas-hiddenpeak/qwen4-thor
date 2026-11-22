@@ -9,6 +9,7 @@
 
 namespace q4t::server {
 class StructuredRequestLease;
+struct DecisionScore;
 // Server-created typed work, never an HTTP route or serialized loopback call.
 // Borrowed owners outlive the call; no independent client/request/RPM lease.
 struct InternalModelStep {
@@ -23,6 +24,8 @@ struct InternalModelStep {
   // A serial classifier may reuse its parent's grammar admission after that
   // parent's decoder is destroyed. This never permits overlapping decoders.
   StructuredRequestLease* structured_owner = nullptr;
+  // Optional request-owned readback of the first target logit row.
+  DecisionScore* decision = nullptr;
 };
 using InternalModelExecutor = std::function<void(
     detail::ResponseState*, std::shared_ptr<RequestControl>)>;

@@ -103,3 +103,5 @@ L04—L06及全部master任务仍未完成，不以本组验收作为总目标�
 [Decisions 会话条目](evidence/serve-live-decision-items-cpu-20261123/README.md)的原生增删和快照已通过 7 项 CPU 检查。模型评估与触发器继续。
 
 [Decisions 共享请求与答案合同](evidence/serve-decision-plan-cpu-20261123/README.md)已完成针对性 CPU 验证，模型执行和传输验收继续。
+
+[Decisions 原生取分](evidence/serve-decision-inference-cpu-20261123/README.md)已接入 HTTP，真实模型和 Live 委派仍须业务验证。

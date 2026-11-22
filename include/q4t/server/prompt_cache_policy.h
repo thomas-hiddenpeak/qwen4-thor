@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <span>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -74,7 +75,8 @@ Status PlanPromptCacheLayout(
     const ChatPromptLayout& layout,
     std::span<const PromptCacheInputBoundary> explicit_boundaries,
     std::span<const size_t> token_starts, size_t prompt_bytes,
-    PromptCachePlan* plan);
+    PromptCachePlan* plan,
+    std::optional<size_t> shared_messages = std::nullopt);
 
 // Input boundaries refer to the final rendered/tokenized context, after any
 // truncation/compaction. No guessed character counts or partial-token states.

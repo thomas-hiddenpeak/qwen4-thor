@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+原生 /v1/decisions 已接入普通数据准入与真实目标模型取分，25 项 CPU 检查通过。开始标准 SDK 的多题项目资料、共享缓存、用量与核心业务短验。[模型入口与 CPU 证据](evidence/serve-decision-inference-cpu-20261123/README.md)。
+
 Decisions 标准请求与答案合同通过 14 项 CPU 检查，包含工具输入归属、强类型选择、有序评分、单题拒答和真实用量字段。模型取分、HTTP 执行及 Live 自动触发继续。[合同与验证](evidence/serve-decision-plan-cpu-20261123/README.md)。
 
 Live Decisions 已接入会话条目的追加、删除和快照。7 项针对性 CPU 检查通过，实际引擎零警告构建，新增 GPU 启动 0。模型评估和转录触发器待接通。[条目合同与证据](evidence/serve-live-decision-items-cpu-20261123/README.md)。

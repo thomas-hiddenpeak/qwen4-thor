@@ -203,8 +203,13 @@ class ChatServer {
   void HandleMetrics(int fd);
   void HandlePreflight(int fd, const std::string& body);
   void HandleResponsesTokenCount(int fd, const std::string& body);
-  void HandleModerations(int fd, const std::string& body,
-                         std::shared_ptr<RequestControl> owner = {});
+  enum class ClassificationApi { kModerations, kDecisions };
+  void HandleClassification(int fd, const std::string& body, ClassificationApi api,
+                            std::shared_ptr<RequestControl> owner = {});
+  ObjectReply RunDecisionRequest(int fd, const io::Json& request,
+                                 const ChatPlanConfig& config, ClientRateLease& rate,
+                                 const std::shared_ptr<RequestControl>& control,
+                                 const std::function<bool()>& cancelled);
   void HandleVectorSearch(int fd, const std::string& method,
                            const std::string& path, const std::string& body);
   void HandleEmbeddings(int fd, const std::string& body,

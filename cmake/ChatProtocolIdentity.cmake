@@ -212,6 +212,7 @@ set(protocol_inputs
   src/server/moderations_plan.cpp
   src/server/moderations_execution.cpp
   src/server/chat_moderations.cpp
+  src/server/chat_decisions.cpp
   include/q4t/server/embeddings_plan.h
   include/q4t/server/vector_search.h
   include/q4t/server/vector_search_execution.h
@@ -666,7 +667,9 @@ set(protocol_inputs
   cmake/decision_types.h.in
   src/server/contracts/openai_decision_types_v1.json
   include/q4t/server/decision_plan.h
+  include/q4t/server/decision_scoring.h
   src/server/decision_plan.cpp
+  src/server/decision_scoring.cpp
   src/server/grammar_worker.cpp
   src/server/grammar_worker_internal.h
   include/q4t/server/abort_reason.h

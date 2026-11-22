@@ -407,7 +407,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       admission = &counter;
       if ((method == "POST" && !IsCancellationRequest(method, path) &&
            (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-            path == "/v1/completions" || path == "/v1/moderations" ||
+            path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
             path == "/v1/embeddings" || path == "/v1/audio/speech" ||
             path == "/v1/audio/transcriptions" ||
             IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
@@ -486,7 +486,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       return false;
     }
     if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
-        path == "/v1/completions" || path == "/v1/moderations" ||
+        path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
         IsConversationTarget(path) || IsPromptTarget(path) ||
@@ -732,7 +732,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     expected = "GET";
   else if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
            path == "/v1/completions" || path == "/v1/responses" ||
-           path == "/v1/moderations" || path == "/v1/embeddings" ||
+           path == "/v1/moderations" || path == "/v1/decisions" || path == "/v1/embeddings" ||
            path == "/v1/audio/speech" || path == "/v1/requests/cancel")
     expected = "POST";
   if (!expected.empty() && method != expected) {
@@ -817,8 +817,12 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     HandleEmbeddings(fd, body);
     return;
   }
+  if (path == "/v1/decisions" && method == "POST") {
+    HandleClassification(fd, body, ClassificationApi::kDecisions);
+    return;
+  }
   if (path == "/v1/moderations" && method == "POST") {
-    HandleModerations(fd, body);
+    HandleClassification(fd, body, ClassificationApi::kModerations);
     return;
   }
   if (path == "/v1/responses" && method == "POST") {

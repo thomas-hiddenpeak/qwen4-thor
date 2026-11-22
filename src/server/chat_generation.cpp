@@ -4,6 +4,7 @@
 #include "q4t/server/chat_audio_inputs.h"
 #include "q4t/server/chat_audio_history.h"
 #include "chat_model_step.h"
+#include "q4t/server/decision_scoring.h"
 #include "q4t/server/native_chat_generation.h"
 #include "responses_json.h"
 #include "object_protocol.h"
@@ -1900,7 +1901,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                            : moderation_step ? kMaxModerationStepTokens
                            : responses ? ChatOutputLimit(req, planning_config)
                                        : request_output_limit;
-    std::string prefix_scope = internal_step ? "" : request_prefix_scope;
+    const bool cacheable_step = !internal_step || (internal && internal->decision);
+    std::string prefix_scope = cacheable_step ? request_prefix_scope : "";
     SessionLease summary_session;
     auto& session = internal_step ? summary_session : request_session;
     if (responses && choice_index > 0) {
@@ -2347,7 +2349,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     bool cache_available =
         prefix_cache_.Health().available && cache_identity_valid;
-    if (api_cache && !internal_step) {
+    if (api_cache && cacheable_step) {
       bool mapped = cache_identity_valid;
       if (mapped && prompt_u32.size() >= 1024) {
         std::vector<size_t> offsets;
@@ -2374,7 +2376,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           if (const auto* messages = req.GetArray("messages")) {
             planned = PlanPromptCacheLayout(cache_options, *messages,
                                             prompt_layout, boundaries, offsets,
-                                            prompt.size(), &cache_plan);
+                                            prompt.size(), &cache_plan,
+                                            internal && internal->decision
+                                                ? std::optional(messages->array.size() - 1)
+                                                : std::nullopt);
           } else {
             const PromptCacheBoundary raw{
                 static_cast<int>(prompt_u32.size()) - 1, 0,
@@ -2737,7 +2742,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                     : 0;
     // The text draft has no visual features/positions. A loaded draft may
     // serve the next text request, but cannot speculate on this visual prompt.
-    const bool request_mtp = mtp_loaded_ && vfeats.num_tokens == 0 &&
+    const bool request_mtp = !(internal && internal->decision) &&
+                             mtp_loaded_ && vfeats.num_tokens == 0 &&
                              plain_greedy && !structured &&
                              !prediction_enabled && (max_tokens > 0 || prewarm);
     const bool stream_mtp =
@@ -3755,7 +3761,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
     // Every prefill path reads its selected final row under model_mu_ and
     // checks stream completion before publishing h_logits to this thread.
-    if (max_tokens > 0) next_token = select_token(h_logits.data());
+    if (internal && internal->decision) {
+      response_status = internal->decision->Read(h_logits);
+      if (response_status) next_token = internal->decision->token;
+    } else if (max_tokens > 0) {
+      next_token = select_token(h_logits.data());
+    }
     if (choice_index == 0)
       metrics_.target_ready_seconds.Observe(
           std::chrono::duration<double>(std::chrono::steady_clock::now() -
