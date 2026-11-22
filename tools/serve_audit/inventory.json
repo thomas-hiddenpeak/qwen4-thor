@@ -2930,7 +2930,7 @@
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "4278c4ce75b753c4309510979491a55d3c68484b61074bfc8c7e53b780680bfc",
-    "src/server/chat_live_media.cpp": "25287fd69c8ce034184f57306970b72bafda9a0e944eada861abfe38167417c9",
+    "src/server/chat_live_media.cpp": "fadd896accb7947f3b4db922ebe9f9a26aa1bc07eec988729592e3b46c6572d9",
     "src/server/chat_live_sideband.cpp": "6d3ed181b054fe9e506e9a36b9621655e5ec00a44fa5bda4ac36f09a208b5e9a",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "0623a6552ba0ea9538fedb2222563b0cf545dda071f78353186049df2f9010e7",

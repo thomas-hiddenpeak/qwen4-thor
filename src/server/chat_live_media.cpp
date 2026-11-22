@@ -212,7 +212,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, const std::string& body,
     }
   }
   published.set_value(detail::SendSimple(
-      fd, 200, "OK", result, "application/json", {Clock::now() + 5s}));
+      fd, 201, "Created", result, "application/json", {Clock::now() + 5s}));
 }
 
 void ChatServer::JoinLiveMedia() {

@@ -6695,8 +6695,8 @@
         "operationId": "post_v1_live_sessions",
         "parameters": [],
         "responses": {
-          "200": {
-            "description": "JSON response",
+          "201": {
+            "description": "Live session created",
             "headers": {
               "X-Request-Id": {
                 "schema": {

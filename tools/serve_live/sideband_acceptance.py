@@ -48,7 +48,7 @@ class Stage(media.Stage):
                 allowed_client_events=['session.input_audio.unmute'],
                 allowed_server_events=[dict(type=kind) for kind in
                     ['session.started','error','session.input_audio.unmuted','session.closed']]))))
-            require(created['status']==200,'media creation')
+            require(created['status']==201,'media creation')
             session=created['data']['session']['id']
             rtc.accept_answer(peer,created['data']['transport']['sdp'])
             def received(kind):
@@ -114,7 +114,7 @@ class Stage(media.Stage):
             require(not received('session.input_audio.muted') and not received('session.output_audio.delta')
                     and not received('session.input_transcript.delta'),
                     'separate frontend permissions and graceful end')
-            save(self.out/'observation.json',dict(sdk=sdk,foreign_status=404,unknown_status=404,
+            save(self.out/'observation.json',dict(sdk=sdk,create_http_status=created['status'],foreign_status=404,unknown_status=404,
                  primary_during_detach=True,reflected_input_400hz_amplitude=round(strength),
                  decoded_opus_samples=len(decoded)//2))
         self.same_model()

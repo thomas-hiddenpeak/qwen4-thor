@@ -55,7 +55,7 @@ class Stage(live.Stage):
         require(bad == dict(status=400, code='live_invalid_sdp'), 'invalid SDP: '+repr(bad))
         with rtc.peer_offer('OPUS') as (peer, source, sink, channel, messages, offer, _):
             response = self.create(offer, config)
-            require(response['status'] == 200, 'SDK create: '+repr(response.get('code')))
+            require(response['status'] == 201, 'SDK create: '+repr(response.get('code')))
             session_id = response['data']['session']['id']
             answer = response['data']['transport']
             require(answer['type'] == 'webrtc' and session_id.startswith('live_'), 'media identity')
@@ -114,7 +114,7 @@ class Stage(live.Stage):
                 transcript = lambda kind: ''.join(e['delta'] for e in events if e['type'] == kind)
                 heard = transcript('session.input_transcript.delta')
                 spoken = transcript('session.output_transcript.delta')
-                save(self.out/'observation.json',dict(sdk_status=200,invalid=bad,capacity=busy,
+                save(self.out/'observation.json',dict(sdk_status=response['status'],invalid=bad,capacity=busy,
                      denied=denied['error']['code'], session=session_id, codec='opus', input=heard,
                      output=spoken, version=version, decoded_samples=len(pcm),peak=max(map(abs,pcm)),
                      audio_base64_events=sum(e['type']=='session.output_audio.delta' for e in events)))

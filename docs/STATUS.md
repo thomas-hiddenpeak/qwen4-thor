@@ -7,7 +7,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-同身份的官方 SDK 已能旁路接入进行中的 Live WebRTC 通话，断开期间主端可继续控制，重连按原 ID 回放最近三秒的事件。修复了旁路关闭时主端可能丢失终态的问题。修复后的短验为 38.89 秒，主端收到终态，旁路正常关闭，随后 Chat 返回 42，资源已回收。下一项是已存储会话的 fork，其后继续 SIP 和可回退发行。[两轮实测](evidence/serve-live-sideband-20261123/README.md)。
+同身份的官方 SDK 已能旁路接入进行中的 Live WebRTC 通话，断开期间主端可继续控制，重连按原 ID 回放最近三秒的事件。修复了旁路关闭时主端可能丢失终态的问题。修复后的短验为 38.89 秒，主端收到终态，旁路正常关闭，随后 Chat 返回 42，资源已回收。另行校正媒体创建成功状态码，官方 SDK 通过原生 TLS 实收 201 Created，46.38 秒。下一项是已存储会话的 fork，其后继续 SIP 和可回退发行。[两轮实测](evidence/serve-live-sideband-20261123/README.md)。
 
 Live WebRTC HTTP 创建已通过真实 SDK、受限前端与项目资料语音闭环。一次 GPU 启动 66.40 秒，原生 TLS 接收 SDP，通话中同客户端再次创建收到 429，模型转录正确、回填后播报 rev426，关闭后普通 Chat=42。已释放客户端名额、主机预算和 GPU 租约。继续同身份旁路、fork 和 SIP 控制。[验收与边界](evidence/serve-live-media-create-20261123/README.md)。
 

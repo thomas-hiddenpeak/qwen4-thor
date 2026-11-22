@@ -22,9 +22,9 @@ class VoiceContract(unittest.TestCase):
         side = self.paths['/v1/live/sessions/{session_id}/attach']['get']
         self.assertIn('101',side['responses'])
         self.assertEqual([p['name'] for p in side['parameters']],['session_id','graceful_close'])
-        self.assertEqual(set(ops['post']['responses']), {'200','default'})
+        self.assertEqual(set(ops['post']['responses']), {'201','default'})
         body = ops['post']['requestBody']['content']['application/json']['schema']
-        reply = ops['post']['responses']['200']['content']['application/json']['schema']
+        reply = ops['post']['responses']['201']['content']['application/json']['schema']
 
         def valid(schema, value):
             return Draft202012Validator({'$defs':self.defs, '$ref':'#'+schema['$ref'].split('#',1)[1]}).is_valid(value)

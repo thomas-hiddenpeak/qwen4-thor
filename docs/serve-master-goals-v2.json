@@ -16318,6 +16318,7 @@
     "native_live_subprotocol_http_evidence": "evidence/serve-live-subprotocol-20261123/README.md",
     "webrtc_media_policy_evidence": "evidence/serve-live-media-policy-20261123/README.md",
     "webrtc_creation_business_evidence": "evidence/serve-live-media-create-20261123/README.md",
-    "webrtc_sideband_business_evidence": "evidence/serve-live-sideband-20261123/README.md"
+    "webrtc_sideband_business_evidence": "evidence/serve-live-sideband-20261123/README.md",
+    "webrtc_creation_status_evidence": "evidence/serve-live-sideband-20261123/create-status.json"
   }
 }
