@@ -397,7 +397,8 @@ constexpr RouteSpec kRoutes[] = {
 };
 
 bool Route(const std::string& method, const std::string& path, bool* control) {
-  if (server::RealtimeTraceMethodAllowed(method, path) ||
+  if ((method == "GET" && !server::LiveRecordingId(path).empty()) ||
+      server::RealtimeTraceMethodAllowed(method, path) ||
       server::VoiceMethodAllowed(method, path) ||
       server::ConversationMethodAllowed(method, path) ||
       server::PromptMethodAllowed(method, path) ||

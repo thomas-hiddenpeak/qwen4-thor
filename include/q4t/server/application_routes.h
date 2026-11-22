@@ -23,6 +23,18 @@ inline bool ValidApplicationId(std::string_view id) {
   return true;
 }
 
+inline std::string_view LiveRecordingId(std::string_view path) {
+  constexpr std::string_view prefix = "/v1/live/sessions/", suffix = "/content";
+  if (!path.starts_with(prefix) || !path.ends_with(suffix) ||
+      path.size() <= prefix.size() + suffix.size())
+    return {};
+  const auto id =
+      path.substr(prefix.size(), path.size() - prefix.size() - suffix.size());
+  return id.starts_with("live_") && id.size() > 5 && ValidApplicationId(id)
+             ? id
+             : std::string_view{};
+}
+
 inline bool IsRealtimeTraceTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/realtime/traces" ||

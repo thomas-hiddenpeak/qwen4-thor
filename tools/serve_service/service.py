@@ -234,6 +234,7 @@ def main():
     p.add_argument('--served-model-name')
     p.add_argument('--model-alias', action='append', default=[])
     p.add_argument('--object-store-dir')
+    p.add_argument('--live-recordings', action='store_true')
     p.add_argument('--capacity-config', type=Path)
     for option in pkg.APPLICATION_LIMITS:
         p.add_argument('--object-'+option.replace('_', '-'), type=int)
@@ -280,6 +281,7 @@ def main():
                                  if args.capacity_config is not None else None,
                              application_state=({**({'directory': args.object_store_dir}
                                  if args.object_store_dir is not None else {}),
+                                 **({'live_recordings': True} if args.live_recordings else {}),
                                  **{k: getattr(args, 'object_'+k) for k in pkg.APPLICATION_LIMITS
                                     if getattr(args, 'object_'+k) is not None}} or None))
     elif args.action == 'run':

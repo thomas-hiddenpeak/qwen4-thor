@@ -19,8 +19,8 @@ ObjectReply Missing(std::string param, std::string message) {
 ObjectReply Unavailable() {
   return Missing("session", "Native Live backend is not active");
 }
-ObjectReply Connected(const Json& configuration, bool responses,
-                      bool decisions) {
+ObjectReply Connected(const Json& configuration, bool responses, bool decisions,
+                      bool recording) {
   const auto* delegation = configuration.Find("delegation");
   const auto* triggers = configuration.GetArray("triggers");
   if (!delegation ||
@@ -32,9 +32,13 @@ ObjectReply Connected(const Json& configuration, bool responses,
   if (!triggers || (!triggers->array.empty() && !decisions))
     return Missing("session.triggers",
                    "Native Decisions trigger processor is not connected");
-  if (configuration.GetBool("store"))
-    return Missing("session.store",
-                   "Native Live recording owner is not connected");
+  if (configuration.GetBool("store") && !recording) {
+    auto reply = Error(403, "live_recording_disabled",
+                       "Live recording requires deployment permission and an "
+                       "authenticated client");
+    reply.value = Object({{"param", String("session.store")}});
+    return reply;
+  }
   const auto* delay = delegation->Find("acknowledgement_delay_ms");
   if (!delay || !IsInputInteger(*delay) || delay->number < 0 ||
       delay->number > INT32_MAX)
@@ -89,15 +93,15 @@ Status MapLiveStartupHistory(const Json& input, Json* output,
 Status PlanNativeLiveClient(const Json& configuration,
                             const ChatPlanConfig& planning,
                             NativeLivePlan* output, ChatPlanError* error,
-                            bool responses_connected,
-                            bool decisions_connected) {
+                            bool responses_connected, bool decisions_connected,
+                            bool recording_connected) {
   if (!output || !error) return Status::Fail("Missing native Live plan owner");
   *error = {};
   auto status = ValidateLiveWireShape(configuration, LiveShape::kSessionStart,
                                       error, "session");
   if (!status) return status;
-  const auto connected =
-      Connected(configuration, responses_connected, decisions_connected);
+  const auto connected = Connected(configuration, responses_connected,
+                                   decisions_connected, recording_connected);
   if (!Accepted(connected)) {
     *error = {connected.code, connected.value.GetString("param"),
               connected.http_status};
@@ -158,11 +162,13 @@ NativeLiveClientBackend::NativeLiveClientBackend(
     std::string id, LiveFrontendNative native,
     LiveClientContextCallbacks context, uint32_t max_audio_seconds,
     size_t message_bytes, LiveResponsesNative responses,
-    LiveDecisionNative decisions)
+    LiveDecisionNative decisions,
+    std::unique_ptr<LiveRecordingCapture> recording)
     : id_(std::move(id)),
       context_callbacks_(std::move(context)),
       responses_native_(std::move(responses)),
       decisions_native_(std::move(decisions)),
+      recording_(std::move(recording)),
       message_bytes_(message_bytes),
       frontend_(id_, Bind(std::move(native)), max_audio_seconds,
                 message_bytes) {}
@@ -171,6 +177,10 @@ NativeLiveClientBackend::~NativeLiveClientBackend() {
   Join();
 }
 LiveFrontendNative NativeLiveClientBackend::Bind(LiveFrontendNative native) {
+  if (recording_)
+    native.record = [this](auto channel, auto ticks, auto bytes) {
+      recording_->Audio(channel, ticks, bytes);
+    };
   if (decisions_native_.Bound() && native.emit) {
     native.emit = [this, emit = std::move(native.emit)](Json event) {
       const auto type = event.GetString("type");
@@ -200,7 +210,8 @@ ObjectReply NativeLiveClientBackend::Prepare(Json configuration,
   attempted_ = true;
   const bool bound = responses_native_.execute && responses_native_.acquire &&
                      responses_native_.release;
-  auto reply = Connected(configuration, bound, decisions_native_.Bound());
+  auto reply = Connected(configuration, bound, decisions_native_.Bound(),
+                         bool(recording_));
   if (!Accepted(reply)) return reply;
   auto callbacks = context_callbacks_;
   const auto mode = configuration.Find("delegation")->GetString("type");
@@ -250,7 +261,8 @@ void NativeLiveClientBackend::ResponsesReady(bool ready) noexcept {
 ObjectReply NativeLiveClientBackend::Update(const Json& configuration) {
   if (!prepared_ || closing_ || cancelled_ || failed_) return Unavailable();
   auto next = configuration;
-  auto reply = Connected(next, bool(responses_), bool(decisions_));
+  auto reply =
+      Connected(next, bool(responses_), bool(decisions_), bool(recording_));
   if (!Accepted(reply)) return reply;
   // The public Live configuration transaction already protects immutable
   // startup fields. Preserve appended private instructions across updates.
@@ -326,6 +338,18 @@ ObjectReply NativeLiveClientBackend::Tick() {
         !frontend_.QueuedTurns() && (!responses_ || !responses_->Running()));
   if (Accepted(reply) && !closing_ && !frontend_.FixtureActive())
     reply = context_->Tick();
+  if (Accepted(reply) && recording_) {
+    if (MediaDrained()) recording_->Finish(frontend_.RecordingEndTicks());
+    const auto error = recording_->TakeError();
+    if (!error.ok()) {
+      auto details = Object({{"type", String("server_error")},
+                             {"param", String("session.store")},
+                             {"code", String(std::string(error.ClientCode()))},
+                             {"message", String(error.ClientMessage())}});
+      reply = context_callbacks_.emit(
+          Object({{"type", String("error")}, {"error", std::move(details)}}));
+    }
+  }
   if (!Accepted(reply)) {
     failed_ = true;
     Cancel();
@@ -345,12 +369,16 @@ ObjectReply NativeLiveClientBackend::Close() {
   return reply;
 }
 bool NativeLiveClientBackend::Drained() const {
+  return MediaDrained() && (!recording_ || recording_->Drained());
+}
+bool NativeLiveClientBackend::MediaDrained() const {
   return prepared_ && closing_ && !cancelled_ && !failed_ &&
          (!responses_ || !responses_->Running()) &&
          (!decisions_ || !decisions_->Running()) && frontend_.Drained();
 }
 void NativeLiveClientBackend::Cancel() noexcept {
   cancelled_ = true;
+  if (recording_) recording_->Cancel();
   if (responses_) responses_->Interrupt();
   if (decisions_) decisions_->Cancel();
   if (context_) context_->Close();
@@ -360,5 +388,6 @@ void NativeLiveClientBackend::Join() noexcept {
   if (responses_) responses_->Join();
   if (decisions_) decisions_->Join();
   frontend_.Join();
+  if (recording_) recording_->Join();
 }
 }  // namespace q4t::server

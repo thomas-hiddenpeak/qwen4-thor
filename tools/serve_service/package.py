@@ -136,9 +136,10 @@ def private_directory(path, repository=ROOT):
 
 
 def application_settings(value):
-    require(type(value) is dict and value.keys() ==
+    require(type(value) is dict and set(value) - {'live_recordings'} ==
         {'profile', 'directory', *APPLICATION_LIMITS}, 'invalid application state settings')
     require(value['profile'] == 'q4t-objects-v1', 'unknown application state profile')
+    require(type(value.get('live_recordings', False)) is bool, 'live_recordings must be boolean')
     directory = value['directory']
     require(type(directory) is str and (not directory or
         directory.startswith('/') and len(directory.encode()) <= 4096 and
@@ -722,8 +723,11 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             observed_state.get('profile') == 'q4t-objects-v1',
             'unknown observed application state profile')
         require(application_state is None or type(application_state) is dict and
-            set(application_state) <= {'directory', *APPLICATION_LIMITS},
+            set(application_state) <= {'directory', 'live_recordings', *APPLICATION_LIMITS},
             'unknown application state option')
+        if (application_state or {}).get('live_recordings'):
+            require(type(observed_state.get('live_recordings')) is bool,
+                    'accepted engine does not declare Live recording support')
         config['application_state'] = application_settings(dict(
             profile='q4t-objects-v1', directory='',
             **{k: observed_state.get(k) for k in APPLICATION_LIMITS},
@@ -962,6 +966,9 @@ def verify(package, digest):
     if 'application_state' in config:
         require(metadata.get('observed_configuration', {}).get('application_state', {})
             .get('profile') == 'q4t-objects-v1', 'application state engine declaration absent')
+        if config['application_state'].get('live_recordings'):
+            require(type(metadata['observed_configuration']['application_state'].get('live_recordings')) is bool,
+                    'accepted engine does not declare Live recording support')
     if 'native_embedding' in config:
         check_embedding_declaration(metadata)
     if 'native_asr' in config:
@@ -1174,6 +1181,8 @@ def command(package, manifest, *, state_directory=None):
             directory = str(Path(state_directory)/'application-objects')
         application_settings(dict(objects, directory=directory))
         args += ['--object-store-dir', directory]
+        if objects.get('live_recordings'):
+            args.append('--live-recordings')
         for key in APPLICATION_LIMITS:
             args += ['--object-'+key.replace('_', '-'), str(objects[key])]
     return args

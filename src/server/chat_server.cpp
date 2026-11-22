@@ -201,6 +201,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   file_inputs_ = std::move(file_inputs);
   file_input_policy_sha256_ = std::move(file_policy.sha256);
   objects_ = std::make_unique<ObjectStore>(object_options);
+  live_recordings_ = opts.live_recordings;
   realtime_trace_options_ =
       ResolveRealtimeTraceStoreOptions(object_options.directory);
   state_key_admin_ = StateKeyAdmin::Start(*objects_, object_options.directory);

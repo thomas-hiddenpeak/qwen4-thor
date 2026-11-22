@@ -304,6 +304,7 @@ struct NativeFixture {
   bool fail_publish = false;
   LiveResponsesNative responses;
   LiveDecisionNative decisions;
+  ObjectStore* recording_objects = nullptr;
   ~NativeFixture() {
     if (session) {
       session->Cancel();
@@ -332,9 +333,9 @@ struct NativeFixture {
     };
     callbacks.configuration.validate = [this](const auto& value, auto* error) {
       NativeLivePlan plan;
-      return PlanNativeLiveClient(value, planning, &plan, error,
-                                  bool(responses.execute),
-                                  bool(decisions.execute));
+      return PlanNativeLiveClient(
+          value, planning, &plan, error, bool(responses.execute),
+          bool(decisions.execute), recording_objects != nullptr);
     };
     callbacks.create = [this](const Json& configuration,
                               const LiveEventSink& emit,
@@ -342,9 +343,9 @@ struct NativeFixture {
       ++creations;
       NativeLivePlan plan;
       ChatPlanError error;
-      const auto status = PlanNativeLiveClient(configuration, planning, &plan,
-                                               &error, bool(responses.execute),
-                                               bool(decisions.execute));
+      const auto status = PlanNativeLiveClient(
+          configuration, planning, &plan, &error, bool(responses.execute),
+          bool(decisions.execute), recording_objects != nullptr);
       if (!status)
         return Error(error.http_status, error.code, status.message());
       auto native = f.native;
@@ -368,9 +369,14 @@ struct NativeFixture {
                    ? Error(503, "fixture_sink", "Publication uncertain", true)
                    : emit(std::move(event));
       };
+      std::unique_ptr<LiveRecordingCapture> capture;
+      if (configuration.GetBool("store"))
+        capture = std::make_unique<LiveRecordingCapture>(
+            *recording_objects, "client:test", "live_bound", plan.format,
+            [] { return false; });
       auto selected = std::make_unique<NativeLiveClientBackend>(
           "live_bound", std::move(native), std::move(context), 30,
-          kWebSocketMessageLimit, responses, decisions);
+          kWebSocketMessageLimit, responses, decisions, std::move(capture));
       auto* owner = selected.get();
       *out = std::move(selected);
       return owner->Prepare(configuration, std::move(plan));
@@ -537,7 +543,7 @@ Q4T_TEST(live_native_unconnected_selection_never_starts_or_publishes) {
       Object({{"model", String("q4t-test")}, {"store", Boolean(true)}})));
   Q4T_CHECK(f.creations == 0 && f.Count("session.started") == 0);
   Q4T_CHECK(f.Last("error").Find("error")->GetString("code") ==
-            "live_processor_unavailable");
+            "live_recording_disabled");
   Q4T_CHECK(f.Start(Object({{"model", String("unknown-native-model")}})));
   Q4T_CHECK(f.creations == 0 && f.Count("session.started") == 0);
   Q4T_CHECK(f.Start() && f.Count("session.started") == 1 && f.creations == 1);
@@ -1803,5 +1809,38 @@ Q4T_TEST(live_decision_serializes_same_session_voice_and_classification_work) {
   d.hold = false;
   Q4T_CHECK(d.f.Wait([&] { return d.f.f.model_released == 1; }) &&
             d.releases == 1 && d.f.Count("error") == 0 && d.f.Close());
+  return true;
+}
+
+Q4T_TEST(live_recording_storage_failure_keeps_voice_and_normal_close) {
+  ObjectStoreOptions options;
+  // A real unusable storage path produces a worker error, independent of ASR.
+  options.directory = "/dev/null/q4t-recordings";
+  ObjectStore objects(options);
+  NativeFixture f;
+  f.recording_objects = &objects;
+  Q4T_CHECK(f.Start(
+      Object({{"model", String("q4t-test")}, {"store", Boolean(true)}})));
+  Q4T_CHECK(f.Count("session.started") == 1);
+  Q4T_CHECK(f.Wait([&] { return f.Count("error") == 1; }));
+  Q4T_CHECK(f.Last("error").Find("error")->GetString("param") ==
+            "session.store");
+  Q4T_CHECK(f.Tone() && f.Wait([&] { return f.f.model_released == 1; }));
+  Q4T_CHECK(f.Count("session.output_audio.delta") && f.f.asr_released == 1);
+  Q4T_CHECK(f.Close() && f.Count("error") == 1 &&
+            f.Count("session.closed") == 1);
+  return true;
+}
+
+Q4T_TEST(live_recording_permission_without_session_opt_in_never_opens_storage) {
+  ObjectStoreOptions options;
+  options.directory = "/dev/null/q4t-recordings";
+  ObjectStore objects(options);
+  NativeFixture f;
+  f.recording_objects = &objects;
+  Q4T_CHECK(f.Start() && f.Count("session.started") == 1 &&
+            !f.Last("session.started").Find("session")->GetBool("store"));
+  Q4T_CHECK(f.Close() && !f.Count("error") &&
+            objects.Health().workers_started == 0);
   return true;
 }

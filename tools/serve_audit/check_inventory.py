@@ -123,6 +123,12 @@ def current_surface(root):
             'server::RealtimeTraceMethodAllowed(method, path)' not in native or \
             'inline bool RealtimeTraceMethodAllowed' not in application_routes:
         raise ValueError('review native trace transport and authenticated scope')
+    if 'SendLiveRecording(fd, *objects_, access, std::string(id))' not in dispatch or \
+            'server::LiveRecordingId(path)' not in native or 'inline std::string_view LiveRecordingId' not in application_routes:
+        raise ValueError('review authenticated binary Live content routing')
+    content = '/v1/live/sessions/{session_id}/content'
+    routes.append((content, 'GET'))
+    native_routes.append(('GET', content, 'false'))
     traces = [("GET", "/v1/realtime/traces"),
               ("GET", "/v1/realtime/traces/{trace_id}"),
               ("DELETE", "/v1/realtime/traces/{trace_id}")]
@@ -464,6 +470,10 @@ def mutation_checks(inventory, actual):
             raise ValueError("trace deletion escaped extraction")
         cases.append(dict(actual, **{group: [route for route in actual[group]
                                             if route != trace]}))
+        content = "GET /v1/live/sessions/{session_id}/content"
+        if content not in actual[group]:
+            raise ValueError("Live download escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group] if route != content]}))
         live = "GET /v1/live/sessions"
         if live not in actual[group]:
             raise ValueError("Live primary route escaped extraction")

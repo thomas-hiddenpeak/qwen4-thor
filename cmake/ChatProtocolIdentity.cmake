@@ -640,6 +640,7 @@ set(protocol_inputs
   include/q4t/server/live_decision_execution.h
   include/q4t/server/live_decision_delegate.h
   include/q4t/server/live_recording.h
+  include/q4t/server/live_recording_store.h
   src/server/live_configuration.cpp
   src/server/live_responses_settings.cpp
   src/server/live_responses_validation.cpp
@@ -650,6 +651,7 @@ set(protocol_inputs
   src/server/live_decision_execution.cpp
   src/server/live_decision_delegate.cpp
   src/server/live_recording.cpp
+  src/server/live_recording_store.cpp
   include/q4t/server/live_session.h
   src/server/live_session.cpp
   include/q4t/server/live_session_pump.h

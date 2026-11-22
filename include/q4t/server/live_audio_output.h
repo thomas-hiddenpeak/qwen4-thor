@@ -1,6 +1,8 @@
 // Live audio events from verified native 24k PCM; no model or rate owner.
 #pragma once
 
+#include "q4t/server/live_recording.h"
+
 #include "q4t/server/live_session.h"
 #include "q4t/server/realtime_speech_execution.h"
 
@@ -9,7 +11,7 @@ class LiveAudioOutput {
  public:
   LiveAudioOutput(RealtimeAudioFormat format, uint64_t begin_ticks,
                   LiveEventSink emit, std::function<bool()> cancelled = {},
-                  std::string client_event = {});
+                  std::string client_event = {}, LiveRecordSink record = {});
   bool Valid() const { return valid_; }
   ObjectReply Append(const RealtimeSpeechEvent& event);
   void Cancel() noexcept { cancelled_ = true; }
@@ -25,6 +27,7 @@ class LiveAudioOutput {
   const RealtimeAudioFormat format_;
   const uint64_t begin_ticks_;
   const LiveEventSink emit_;
+  const LiveRecordSink record_;
   const std::function<bool()> interrupted_;
   const std::string client_event_;
   RealtimeSpeechEncoder encoder_;

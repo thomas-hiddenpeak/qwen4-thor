@@ -64,11 +64,13 @@ inline std::string Kind(ObjectKind kind) {
       return "voice";
     case ObjectKind::kTrace:
       return "trace";
+    case ObjectKind::kLiveRecording:
+      return "live_recording";
   }
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kTrace); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kLiveRecording); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

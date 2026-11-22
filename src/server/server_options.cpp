@@ -290,6 +290,10 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.allow_media = true;
       continue;
     }
+    if (key == "--live-recordings") {
+      parsed.live_recordings = true;
+      continue;
+    }
     if (key == "--no-budget") {
       parsed.no_budget = true;
       continue;

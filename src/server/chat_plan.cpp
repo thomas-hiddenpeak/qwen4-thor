@@ -465,7 +465,9 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"(,"completions":{"profile":"q4t-completions-v1",)"
          R"("default_output_tokens":16,"max_batch_candidates":128})"
          R"(,"application_state":{"profile":"q4t-objects-v1",)"
-         R"("directory_source":)" +
+         R"("live_recordings":)" +
+         std::string(requested.live_recordings ? "true" : "false") +
+         R"(,"directory_source":)" +
          Quote(requested.object_store_dir.empty() ? "environment"
                                                   : "explicit") +
          R"(,"directory_redacted":true,"isolated_io":true,)"

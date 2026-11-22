@@ -120,6 +120,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_decision_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_decision_delegate.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_recording.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_recording_store.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/decision_plan.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/decision_scoring.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_configuration_test.cpp

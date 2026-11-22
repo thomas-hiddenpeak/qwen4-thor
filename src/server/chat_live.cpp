@@ -144,19 +144,20 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     }
     return count(prompt, false, tokens, error);
   };
-  callbacks.configuration.validate =
-      [current_planning](const Json& configuration, ChatPlanError* error) {
-        ChatPlanConfig planning;
-        ClientIdentity identity;
-        auto reply = current_planning(&planning, &identity);
-        if (!reply.ok()) {
-          *error = {reply.code, "session", reply.http_status};
-          return Status::Fail(reply.message);
-        }
-        NativeLivePlan plan;
-        return PlanNativeLiveClient(configuration, planning, &plan, error, true,
-                                    true);
-      };
+  callbacks.configuration.validate = [this, current_planning](
+                                         const Json& configuration,
+                                         ChatPlanError* error) {
+    ChatPlanConfig planning;
+    ClientIdentity identity;
+    auto reply = current_planning(&planning, &identity);
+    if (!reply.ok()) {
+      *error = {reply.code, "session", reply.http_status};
+      return Status::Fail(reply.message);
+    }
+    NativeLivePlan plan;
+    return PlanNativeLiveClient(configuration, planning, &plan, error, true,
+                                true, live_recordings_ && identity.Scoped());
+  };
   callbacks.validate_responses = [this, current_planning, client](
                                      const Json& settings,
                                      std::stop_token stop) {
@@ -195,8 +196,9 @@ void ChatServer::HandleLive(int fd, std::string_view path,
     if (!reply.ok()) return reply;
     NativeLivePlan plan;
     ChatPlanError error;
-    const auto status = PlanNativeLiveClient(configuration, planning, &plan,
-                                             &error, true, true);
+    const auto status =
+        PlanNativeLiveClient(configuration, planning, &plan, &error, true, true,
+                             live_recordings_ && identity.Scoped());
     if (!status) return Failure(status, error);
     LiveFrontendNative native;
     native.input = input;
@@ -273,10 +275,27 @@ void ChatServer::HandleLive(int fd, std::string_view path,
                                        control);
                                  });
     };
+    std::unique_ptr<LiveRecordingCapture> recording;
+    if (configuration.GetBool("store")) {
+      auto recording_memory =
+          std::make_unique<HttpBodyLease>(realtime_host_budget_);
+      if (!recording_memory->Acquire(kLiveRecordingHostBytes) ||
+          !runtime::ReadSystemMemory().CanAllocate(kLiveRecordingHostBytes +
+                                                   (512ULL << 20)))
+        return Error(503, "memory_pressure",
+                     "Live recording memory unavailable");
+      const auto scope = "client:" + std::string(identity.Id());
+      recording = std::make_unique<LiveRecordingCapture>(
+          *objects_, scope, id, plan.format,
+          [this, client] {
+            return stop_requested_.load() || !clients_.OwnsIdentity(client);
+          },
+          std::move(recording_memory));
+    }
     auto selected = std::make_unique<NativeLiveClientBackend>(
         id, std::move(native), LiveClientContextCallbacks{counter, emit, {}},
         asr_limits_.max_audio_seconds, message_bytes, std::move(responses),
-        std::move(decisions));
+        std::move(decisions), std::move(recording));
     auto* owner = selected.get();
     *backend =
         std::move(selected);  // Cleanup is owned even if preparation fails.

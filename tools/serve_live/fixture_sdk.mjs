@@ -24,7 +24,14 @@ const clip = fs.readFileSync(args.clip);
 check(clip.length > 0 && clip.length <= (1 << 20) && clip.length % 2 === 0 &&
   digest(clip) === args.clip_sha256, 'actual authorized PCM identity');
 const journal = openJournal(args.journal_file, 8 << 20);
-const rt = new LiveWS(new OpenAI({baseURL: url.toString(), apiKey: args.api_key, maxRetries: 0}), {
+const clientFor = apiKey => new OpenAI({baseURL:url.toString(), apiKey, maxRetries:0, timeout:15000});
+const client = clientFor(args.api_key);
+async function missing(owner,id) {
+  try { await owner.live.sessions.downloadRecording(id); }
+  catch (error) { check(error.status === 404,'expected missing private recording'); return error.status; }
+  throw new Error('private recording was visible');
+}
+const rt = new LiveWS(client, {
   ca: fs.readFileSync(args.ca_file), maxPayload: 4 << 20, perMessageDeflate: false,
   followRedirects: false, handshakeTimeout: 10000, reconnect: null,
 });
@@ -60,14 +67,18 @@ async function action(event,type) {const at=events.length;send(event);return eve
 const result = {status:'FAIL',events,automatic_replay:false,expected_input:args.expected_input};
 try {
   await until(()=>connections===1);
-  await action({type:'session.start',event_id:'start',session:{model:'qwen3.8-flash-next',
+  const start = await action({type:'session.start',event_id:'start',session:{model:'qwen3.8-flash-next',
     instructions:'这是项目资料查询服务。用户询问项目资料时，先使用 q4t_live_delegate 委派客户端读取真实项目记录。收到客户端结果前不要回答或编造版本号。收到应用提供的真实结果后，只说版本号一次，不要解释，不要再次委派。',
     input:[{role:'developer',content:[{text:'保持项目查询任务和真实结果的关联。'}]},
       {role:'user',content:[{text:'接下来的录音包含我的问题，请先使用客户端查询。'}]},
       {role:'assistant',content:[{text:'明白。'}]}],
     audio:{format:{type:'audio/pcm',rate:24000},output:{voice:'vivian'}},
-    delegation:{type:'client',acknowledgement_delay_ms:600000},store:false,
+    delegation:{type:'client',acknowledgement_delay_ms:600000},store:!!args.recording,
   }},'session.started');
+  if (args.recording) {
+    check(start.session.store === true, 'recording opt-in reflected by server');
+    result.before_download = await missing(client,start.session.id);
+  }
   const fixtureAt = events.length;
   await action({type:'session.output_audio.fixture.play',event_id:'fixture_audio',
     audio:clip.toString('base64')},'session.output_audio.fixture.playing');
@@ -112,6 +123,17 @@ try {
   await eventSince(speechAt,'session.output_transcript.delta');
   await action({type:'session.close',event_id:'finish'},'session.closed');
   await until(()=>closed,true);check(closeCode===1000,'normal drained close');
+  if (args.recording) {
+    const response = await client.live.sessions.downloadRecording(start.session.id);
+    const size = Number(response.headers.get('content-length'));
+    check(response.status===200 && response.headers.get('content-type')==='audio/wav' &&
+          Number.isSafeInteger(size) && size>=44 && size<=32<<20,'bounded recording HTTP envelope');
+    const raw = Buffer.from(await response.arrayBuffer());
+    check(raw.length===size,'complete recording body');
+    fs.writeFileSync(args.recording,raw,{flag:'wx',mode:0o600});
+    result.recording = {bytes:size,sha256:digest(raw),id:start.session.id,status:response.status,
+      other_client:await missing(clientFor(args.other_key),start.session.id)};
+  }
   result.status='PASS';
 } catch (error) {result.error=String(error.message);process.exitCode=2;}
 finally {

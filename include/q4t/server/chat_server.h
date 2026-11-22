@@ -430,6 +430,7 @@ class ChatServer {
   std::shared_ptr<const AccessProgramPolicy> access_program_policy_;
   std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;
+  bool live_recordings_ = false;
   ApplicationOwner<RealtimeTraceStore> realtime_traces_;
   RealtimeTraceStoreOptions realtime_trace_options_;
   std::shared_ptr<const FileExpansionOptions> file_inputs_;

@@ -1,6 +1,16 @@
 #include "q4t/server/live_recording.h"
 
 #include <algorithm>
+#include <cstdlib>
+#include <filesystem>
+#include <sys/socket.h>
+#include <unistd.h>
+
+#include "q4t/server/application_routes.h"
+#include "q4t/server/lifetime.h"
+#include "q4t/server/live_recording_store.h"
+#include "q4t/server/object_retention.h"
+#include "q4t/server/server_options.h"
 #include <stdexcept>
 
 #include "../src/server/object_protocol.h"
@@ -169,5 +179,126 @@ Q4T_TEST(
   Q4T_CHECK(reader.Next(&block).ok() && block.size() == 44);
   Q4T_CHECK(!reader.Next(&block).ok() && block.size() == 44 &&
             !reader.Next(&block).ok());
+  return true;
+}
+
+namespace {
+using namespace std::chrono_literals;
+using Clock = std::chrono::steady_clock;
+ObjectStoreOptions RecordingDirectory() {
+  const auto* dir = std::getenv("Q4T_TEST_OUTPUT_DIR");
+  const auto root =
+      std::filesystem::absolute(dir ? dir : ".q4t-work/recording-cpu");
+  std::filesystem::create_directories(root);
+  auto path = (root / "recording-XXXXXX").string();
+  if (!mkdtemp(path.data())) throw std::runtime_error("recording fixture");
+  ObjectStoreOptions options;
+  options.directory = path + "/objects";
+  return options;
+}
+BinaryAccess Access(std::string scope) {
+  return {std::move(scope), Clock::now() + 3s, {}};
+}
+std::string Download(ObjectStore& objects, std::string scope, std::string id) {
+  int fds[2];
+  if (socketpair(AF_UNIX, SOCK_STREAM, 0, fds))
+    throw std::runtime_error("socketpair");
+  ScopeExit close_fds([&] {
+    close(fds[0]);
+    close(fds[1]);
+  });
+  SendLiveRecording(fds[0], objects, Access(std::move(scope)), id);
+  shutdown(fds[0], SHUT_WR);
+  std::string response;
+  char buffer[4096];
+  for (;;) {
+    const auto n = read(fds[1], buffer, sizeof(buffer));
+    if (n < 0 || response.size() > 65536)
+      throw std::runtime_error("local HTTP read");
+    if (!n) return response;
+    response.append(buffer, n);
+  }
+}
+}  // namespace
+
+Q4T_TEST(
+    live_recording_store_publishes_atomically_and_scopes_download_after_restart) {
+  const auto options = RecordingDirectory();
+  const std::string id = "live_recorded";
+  {
+    ObjectStore objects(options);
+    LiveRecordingCapture capture(objects, "client:owner", id, {}, {});
+    capture.Audio(left, 0, Samples({21, 22}));
+    capture.Audio(right, 2, Samples({-1, -2}));
+    Q4T_CHECK(
+        Download(objects, "client:owner", id).starts_with("HTTP/1.1 404"));
+    capture.Finish(8);
+    capture.Join();
+    Q4T_CHECK(capture.TakeError().ok() && capture.Drained());
+  }
+  ObjectStore reopened(options);
+  const auto response = Download(reopened, "client:owner", id);
+  const auto begin = response.find("\r\n\r\n");
+  Q4T_CHECK(response.starts_with("HTTP/1.1 200") && begin != response.npos);
+  Q4T_CHECK(response.find("Content-Type: audio/wav\r\n") < begin &&
+            response.find("Cache-Control: no-store\r\n") < begin &&
+            response.find("Content-Length: 60\r\n") < begin);
+  Q4T_CHECK(response.substr(begin + 4, 4) == "RIFF" &&
+            response.substr(begin + 48) ==
+                Samples({21, 0, 22, -1, 0, -2, 0, 0}));
+  Q4T_CHECK(Download(reopened, "client:other", id).starts_with("HTTP/1.1 404"));
+  ObjectRequest root;
+  root.kind = ObjectKind::kLiveRecording;
+  root.scope = "client:owner";
+  root.id = id;
+  const auto record = reopened.Execute(root, Clock::now() + 3s);
+  Q4T_CHECK(record.ok() && record.value.GetInt("expires_at") -
+                                   record.value.GetInt("created_at") ==
+                               30 * 24 * 3600);
+  const auto retention =
+      InspectObjectRetention("live_recording", *record.value.Find("data"));
+  Q4T_CHECK(!retention.uncertain && retention.references.size() == 2);
+  return true;
+}
+
+Q4T_TEST(live_recording_abort_revocation_and_backpressure_preserve_privacy) {
+  ObjectStore objects(RecordingDirectory());
+  for (const std::string id : {"live_aborted", "live_revoked", "live_full"}) {
+    std::atomic<bool> revoked{false};
+    LiveRecordingCapture capture(objects, "client:owner", id, {},
+                                 [&] { return revoked.load(); });
+    capture.Audio(right, 0, Samples({7, 8}));
+    if (id == "live_aborted") capture.Cancel();
+    if (id == "live_revoked") revoked = true;
+    if (id == "live_full")
+      capture.Audio(left, 0, std::string((16U << 20) + 2, 'x'));
+    capture.Finish(4);
+    capture.Join();
+    const auto error = capture.TakeError();
+    Q4T_CHECK((id == "live_aborted" ? error.ok() : !error.ok()) &&
+              capture.Drained());
+    Q4T_CHECK(id != "live_full" || error.code == "live_recording_capacity");
+    Q4T_CHECK(
+        capture.TakeError().ok() &&
+        Download(objects, "client:owner", id).starts_with("HTTP/1.1 404"));
+  }
+  return true;
+}
+
+Q4T_TEST(live_recording_download_exact_route_and_opt_in_cli) {
+  Q4T_CHECK(LiveRecordingId("/v1/live/sessions/live_123/content") ==
+            "live_123");
+  for (auto id : {"", "live_", "live_a/x", "../live_a", "live_a%2fb",
+                  "live_b?bad", "resp_a"})
+    Q4T_CHECK(
+        LiveRecordingId("/v1/live/sessions/" + std::string(id) + "/content")
+            .empty());
+  Q4T_CHECK(
+      LiveRecordingId("/v1/live/sessions/live_123/content?scope=x").empty());
+  ServerOptions options;
+  options.model_dir = "/read-only-model";
+  std::string_view flags[] = {"--live-recordings"};
+  Q4T_CHECK(!options.live_recordings && ParseServerOptions(flags, &options) &&
+            options.live_recordings);
   return true;
 }

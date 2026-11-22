@@ -25,9 +25,11 @@ ObjectReply Inactive() {
 
 LiveAudioFixture::LiveAudioFixture(RealtimeAudioFormat format,
                                    LiveEventSink emit,
-                                   std::function<Clock::time_point()> now)
+                                   std::function<Clock::time_point()> now,
+                                   LiveRecordSink record)
     : format_(format),
       emit_(std::move(emit)),
+      record_(std::move(record)),
       now_(std::move(now)),
       encoder_(format, kMaximumBytes / 2, kMaximumBytes,
                [this] { return cancelled_; }) {}
@@ -91,7 +93,13 @@ ObjectReply LiveAudioFixture::Write(std::string_view bytes) {
     return Fail(Invalid("Could not encode fixture audio"));
   auto reply = Emit(Object({{"type", String("session.output_audio.delta")},
                             {"delta", String(std::move(encoded))}}));
-  if (Accepted(reply)) output_bytes_ += bytes.size();
+  if (Accepted(reply)) {
+    if (record_)
+      record_(LiveAudioChannel::kOutput,
+              begin_ticks_ + output_bytes_ / width * (48000 / format_.rate),
+              bytes);
+    output_bytes_ += bytes.size();
+  }
   return reply;
 }
 ObjectReply LiveAudioFixture::Tick(uint64_t timeline) {

@@ -19,6 +19,8 @@ struct LiveRecordingLayout {
   std::array<std::vector<LiveRecordingSpan>, 2> tracks;
 };
 enum class LiveAudioChannel { kInput, kOutput };
+using LiveRecordSink =
+    std::function<void(LiveAudioChannel, uint64_t, std::string_view)>;
 io::Json LiveRecordingMetadata(const LiveRecordingLayout& layout);
 Status ReadLiveRecordingLayout(const io::Json& data, const BinaryManifest& blob,
                                LiveRecordingLayout* out);

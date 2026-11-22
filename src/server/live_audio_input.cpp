@@ -209,8 +209,11 @@ ObjectReply LiveAudioInput::Append(std::string_view base64,
                          {"audio", String(std::move(encoded))}});
     if (!event_id.empty())
       Set(&event, "event_id", String(std::string(event_id)));
+    const auto begin = input_.AcceptedTicks();
     reply = Command(std::move(event));
     if (!Accepted(reply)) return reply;
+    if (callbacks_.record)
+      callbacks_.record(LiveAudioChannel::kInput, begin, samples);
   }
   partial_ = partial;
   partial_muted_ = muted_;

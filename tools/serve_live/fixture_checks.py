@@ -5,7 +5,7 @@ from tools.serve_service.package import require
 from tools.serve_live.checks import observe as conversation, speech_health
 
 
-def observe(receipt, journal, before, after, record, clip):
+def observe(receipt, journal, before, after, record, clip, *, store=False):
     rows = [r for r in journal if r['direction'] == 'server']
     events = [r['event'] for r in rows]
     require(events == receipt['events'], 'complete original fixture journal')
@@ -68,7 +68,7 @@ def observe(receipt, journal, before, after, record, clip):
             if not keep:continue
         view.append(row)
     filtered = dict(receipt,events=[e for i,e in enumerate(events) if i not in removed])
-    result = conversation(filtered,view,before,after,record)
+    result = conversation(filtered,view,before,after,record,store=store)
     result['fixture'] = dict(bytes=len(raw),sha256=clip['sha256'],source_equal=True,
         new_model_work=0,listener_heard=False,
         receive_interval_ns=int(rows[end]['monotonic_ns'])-int(rows[begin]['monotonic_ns']))

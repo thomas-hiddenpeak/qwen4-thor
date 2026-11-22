@@ -737,13 +737,15 @@ bool SendBinaryResponse(int fd, uint64_t length,
     return false;
   }
   if (content_type != "application/octet-stream" &&
-      content_type != "application/json") return false;
+      content_type != "application/json" && content_type != "audio/wav")
+    return false;
   auto* context = HttpResponseContext::Current(fd);
   if (context && *context->State() != ResponseState::kUnsent) return false;
   const bool persistent = context && context->KeepAlive();
   const std::string header =
       "HTTP/1.1 200 OK\r\nContent-Type: " + std::string(content_type) +
       "\r\nContent-Length: " + std::to_string(length) + "\r\n" +
+      (content_type == "audio/wav" ? "Cache-Control: no-store\r\n" : "") +
       RequestIdHeader(fd) +
       (persistent ? "Connection: keep-alive\r\n\r\n"
                   : "Connection: close\r\n\r\n");

@@ -308,6 +308,9 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       // Result Files have their own declared expiry. A historical Batch
       // receipt must not pin their content beyond output_expires_after.
     }
+  } else if (kind == "live_recording" &&
+             data.GetString("format") == "q4t.live_recording.v1") {
+    inspector.Blob(data);
   } else if (kind == "file" && data.GetString("format") == "q4t.file.v1") {
     inspector.Blob(data);
   } else if (kind == "input_snapshot" &&

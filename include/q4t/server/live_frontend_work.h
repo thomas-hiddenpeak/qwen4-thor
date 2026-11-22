@@ -21,6 +21,7 @@ struct LiveFrontendCallbacks {
   RealtimeResponseOutput::ItemSink item;
   RealtimeResponseOutput::AudioSink audio;
   LiveEventSink emit;
+  LiveRecordSink record = {};
   std::function<uint64_t()> timeline;
 };
 

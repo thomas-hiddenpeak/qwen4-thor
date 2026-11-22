@@ -1,6 +1,8 @@
 // One validated finite PCM fixture, paced on the native session owner.
 #pragma once
 
+#include "q4t/server/live_recording.h"
+
 #include "q4t/server/live_session.h"
 #include "q4t/server/realtime_speech_encoder.h"
 
@@ -10,7 +12,8 @@ class LiveAudioFixture {
   using Clock = std::chrono::steady_clock;
   static constexpr size_t kMaximumBytes = 30 * 24000 * 2;
   LiveAudioFixture(RealtimeAudioFormat format, LiveEventSink emit,
-                   std::function<Clock::time_point()> now = {});
+                   std::function<Clock::time_point()> now = {},
+                   LiveRecordSink record = {});
   // Entire validation precedes owner interruption, mutation and acceptance.
   ObjectReply Prepare(std::string_view audio, std::string client_event);
   ObjectReply Accept();
@@ -28,6 +31,7 @@ class LiveAudioFixture {
   ObjectReply Fail(ObjectReply reply);
   const RealtimeAudioFormat format_;
   const LiveEventSink emit_;
+  const LiveRecordSink record_;
   const std::function<Clock::time_point()> now_;
   RealtimeSpeechEncoder encoder_;
   std::string pcm_, client_event_;

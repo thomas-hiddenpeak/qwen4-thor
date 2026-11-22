@@ -15,6 +15,7 @@ struct LiveFrontendNative {
   decltype(LiveFrontendCallbacks::release) release;
   decltype(LiveFrontendCallbacks::execute) execute;
   LiveEventSink emit;
+  LiveRecordSink record = {};
   // Same-owner receipt, after actual worker join and request release. Tools
   // may only be dispatched from a verified complete result, never deltas.
   std::function<ObjectReply(const RealtimeConversationJob&,
@@ -55,6 +56,9 @@ class LiveFrontend {
   void Cancel() noexcept;
   void Join() noexcept;
   uint64_t Timeline() const;
+  uint64_t RecordingEndTicks() const {
+    return std::max(Timeline(), recorded_input_end_);
+  }
   size_t QueuedTurns() const { return queue_.size(); }
   size_t QueuedBytes() const { return queued_bytes_; }
   size_t HistoryItems() const { return history_.Items(); }
@@ -97,7 +101,8 @@ class LiveFrontend {
   std::unique_ptr<LiveFrontendWork> work_;
   std::unique_ptr<LiveAudioFixture> fixture_;
   std::map<std::string, RealtimeItemTicket> outputs_;
-  uint64_t output_ticks_ = 0;
+  uint64_t WallTicks() const;
+  uint64_t output_ticks_ = 0, recorded_input_end_ = 0;
   bool attempted_ = false, prepared_ = false, closing_ = false;
   bool cancelled_ = false, failed_ = false, joined_ = false;
 };

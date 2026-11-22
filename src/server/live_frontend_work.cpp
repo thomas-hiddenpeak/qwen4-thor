@@ -178,7 +178,8 @@ ObjectReply LiveFrontendWork::Deliver(Queued& queued) {
   if (!audio_) {
     audio_ = std::make_unique<LiveAudioOutput>(
         format_, callbacks_.timeline(), callbacks_.emit,
-        [this] { return control_->Cancelled(); }, client_event_);
+        [this] { return control_->Cancelled(); }, client_event_,
+        callbacks_.record);
     if (!audio_->Valid())
       return Failure("live_frontend_audio_invalid", "Invalid output timeline");
   }

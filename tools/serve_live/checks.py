@@ -36,7 +36,7 @@ def speech_health(config):
     return result
 
 
-def observe(receipt, journal, before, after, record):
+def observe(receipt, journal, before, after, record, *, store=False):
     events = [row['event'] for row in journal if row['direction'] == 'server']
     require(events == receipt['events'] and receipt['status'] == 'PASS' and
             receipt['connections'] == 1 and receipt['close_code'] == 1000 and
@@ -59,7 +59,7 @@ def observe(receipt, journal, before, after, record):
             closed['reason'] == 'close_requested' and
             closed['client_event_id'] == 'finish', 'same session actual close')
     require(started['session']['audio']['format'] == {'type': 'audio/pcm', 'rate': 24000}
-            and started['session']['store'] is False, 'selected actual media')
+            and started['session']['store'] is store, 'selected actual media')
     require(one('session.input_audio.muted')['client_event_id'] == 'mute' and
             one('session.input_audio.unmuted')['client_event_id'] == 'unmute',
             'mute/unmute confirmation correlation')

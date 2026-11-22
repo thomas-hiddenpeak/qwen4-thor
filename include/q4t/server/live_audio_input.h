@@ -1,12 +1,15 @@
 // Continuous Live input shares native ASR/VAD and the actual history owner.
 #pragma once
 
+#include "q4t/server/live_recording.h"
+
 #include "q4t/server/live_session.h"
 #include "q4t/server/realtime_conversation_input.h"
 
 namespace q4t::server {
 struct LiveAudioInputCallbacks {
   LiveEventSink emit;
+  LiveRecordSink record = {};
   std::function<bool()> ready;
   std::function<bool(bool, std::string_view, uint64_t, bool)> speech;
   std::function<ObjectReply(RealtimeInputCommit)> committed;

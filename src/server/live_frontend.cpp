@@ -44,21 +44,40 @@ std::chrono::steady_clock::time_point LiveFrontend::Now() const {
 bool LiveFrontend::Active() const {
   return prepared_ && !closing_ && !cancelled_ && !failed_;
 }
-uint64_t LiveFrontend::Timeline() const {
+uint64_t LiveFrontend::WallTicks() const {
   if (!prepared_) return 0;
   const auto elapsed =
       std::chrono::duration_cast<std::chrono::microseconds>(Now() - started_)
           .count();
-  const auto ticks =
-      elapsed <= 0 ? 0 : std::min<uint64_t>(elapsed, 3600000000ULL) * 48 / 1000;
-  return std::min(kRealtimeSessionTicks,
-                  std::max({ticks, input_.AcceptedTicks(), output_ticks_}));
+  return elapsed <= 0 ? 0
+                      : std::min<uint64_t>(elapsed, 3600000000ULL) * 48 / 1000;
+}
+uint64_t LiveFrontend::Timeline() const {
+  return std::min(
+      kRealtimeSessionTicks,
+      std::max({WallTicks(), input_.AcceptedTicks(), output_ticks_}));
 }
 LiveAudioInputCallbacks LiveFrontend::InputCallbacks() {
   LiveAudioInputCallbacks callbacks;
   callbacks.emit = [this](Json event) {
     return native_.emit(std::move(event));
   };
+  if (native_.record) {
+    callbacks.record = [this](LiveAudioChannel channel, uint64_t,
+                              std::string_view bytes) {
+      const size_t width =
+          format_.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+      const auto duration = bytes.size() / width * (48000 / format_.rate);
+      const auto now = WallTicks();
+      const auto observed = now > duration ? now - duration : 0;
+      // Estimate the first sample from packet arrival. Absorb up to one
+      // 20-ms packet of jitter; preserve longer idle intervals as silence.
+      const auto begin =
+          observed > recorded_input_end_ + 960 ? observed : recorded_input_end_;
+      native_.record(channel, begin, bytes);
+      recorded_input_end_ = std::min(kRealtimeSessionTicks, begin + duration);
+    };
+  }
   callbacks.ready = [this] { return !work_; };
   callbacks.speech = [this](bool started, auto, auto, bool interrupt) {
     if (started && interrupt) {
@@ -263,8 +282,8 @@ ObjectReply LiveFrontend::PlayFixture(std::string_view audio,
                                       std::string client_event) {
   if (!Active()) return Unavailable();
   if (fixture_) return FixtureBusy();
-  auto next =
-      std::make_unique<LiveAudioFixture>(format_, native_.emit, native_.now);
+  auto next = std::make_unique<LiveAudioFixture>(format_, native_.emit,
+                                                 native_.now, native_.record);
   auto reply = next->Prepare(audio, std::move(client_event));
   if (!Accepted(reply)) return reply;
   // The whole payload is valid. Clear partial old input before dropping new
@@ -347,6 +366,7 @@ ObjectReply LiveFrontend::StartWork() {
     return Audio(id, bytes, commit);
   };
   callbacks.emit = native_.emit;
+  callbacks.record = native_.record;
   callbacks.timeline = [this] { return Timeline(); };
   work_ = std::make_unique<LiveFrontendWork>(
       active_->job, id_, format_, std::move(callbacks), active_->client_event);

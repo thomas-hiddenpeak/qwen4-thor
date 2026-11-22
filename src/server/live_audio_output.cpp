@@ -15,10 +15,12 @@ bool Accepted(const ObjectReply& reply) {
 LiveAudioOutput::LiveAudioOutput(RealtimeAudioFormat format,
                                  uint64_t begin_ticks, LiveEventSink emit,
                                  std::function<bool()> cancelled,
-                                 std::string client_event)
+                                 std::string client_event,
+                                 LiveRecordSink record)
     : format_(format),
       begin_ticks_(begin_ticks),
       emit_(std::move(emit)),
+      record_(std::move(record)),
       interrupted_(std::move(cancelled)),
       client_event_(std::move(client_event)),
       encoder_(format, kSourceBytes / 2, kRealtimeAudioBytes, [this] {
@@ -60,6 +62,7 @@ ObjectReply LiveAudioOutput::Write(std::string_view bytes) {
   auto reply = Emit(Object({{"type", String("session.output_audio.delta")},
                             {"delta", String(std::move(encoded))}}));
   if (!Accepted(reply)) return reply;
+  if (record_) record_(LiveAudioChannel::kOutput, EndTicks(), bytes);
   output_bytes_ += bytes.size();
   output_ticks_ += ticks;
   return {};

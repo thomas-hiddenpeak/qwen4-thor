@@ -929,6 +929,14 @@ Realtime conversation的真实音频输入、手动commit、VAD自动回答/
 [Live及剩余兼容](docs/SERVE_LIVE_2026-11-21.md)继续按总计划实现，
 正常播放听感仍待用户安排。
 
+Live 工作分支提供按会话录制。启动 `q4t serve` 或托管 `prepare` 时使用
+`--live-recordings` 开放权限，具名客户端在 `session.start` 中传入
+`store: true` 启用本次录制。收到 `session.closed` 后，同一 API Key 对应的客户端可调用
+`client.live.sessions.downloadRecording(session.id)`。下载为双声道 16 位 PCM WAV，
+左声道是接受的输入，右声道是发出的音频，采样率沿用会话协商值。
+录音保留 30 天，占用应用对象存储配额。存储出错会在会话内报告
+`param=session.store`，语音仍可继续。默认发行版本见 [当前状态](docs/STATUS.md)。
+
 真实时间戳由独立Qwen3-ForcedAligner-0.6B提供，通过
 `--aligner-model-dir DIR`启用；默认30秒、4096上下文token、512词、
 1024MiB workspace，分别用`--aligner-max-audio-seconds`、

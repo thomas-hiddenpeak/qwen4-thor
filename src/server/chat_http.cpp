@@ -30,6 +30,7 @@
 #include "q4t/server/client_request.h"
 #include "q4t/server/conversation_api.h"
 #include "q4t/server/files_http.h"
+#include "q4t/server/live_recording_store.h"
 #include "q4t/server/batch_api.h"
 #include "q4t/server/vector_store_api.h"
 #include "q4t/server/prompt_registry.h"
@@ -407,13 +408,14 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       admission = &counter;
       if ((method == "POST" && !IsCancellationRequest(method, path) &&
            (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
-            path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
-            path == "/v1/embeddings" || path == "/v1/audio/speech" ||
-            path == "/v1/audio/transcriptions" ||
+            path == "/v1/completions" || path == "/v1/moderations" ||
+            path == "/v1/decisions" || path == "/v1/embeddings" ||
+            path == "/v1/audio/speech" || path == "/v1/audio/transcriptions" ||
             IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
             IsFileTarget(path) || IsUploadTarget(path))) ||
+          (method == "GET" && !LiveRecordingId(path).empty()) ||
           (method == "GET" && IsVectorStoreTarget(path) &&
            !IsVectorStoreObservation(method, path)) ||
           (method == "GET" && IsFileTarget(path) &&
@@ -596,6 +598,46 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
   };
+  if (const auto id = LiveRecordingId(path); !id.empty()) {
+    if (method != "GET") {
+      SendError(fd, 405, "Recording downloads require GET", {},
+                "method_not_allowed", {}, "GET");
+      return;
+    }
+    if (!body.empty()) {
+      SendError(fd, 400, "Recording download takes no body", {},
+                "invalid_request");
+      return;
+    }
+    if (!live_recordings_ || !objects_) {
+      SendError(fd, 404, "Recording not found", {}, "object_not_found");
+      return;
+    }
+    const auto* context = detail::HttpResponseContext::Current(fd);
+    if (!context || !context->Client().Allowed() ||
+        !context->Client().Scoped()) {
+      SendError(fd, 401, "Authentication required", {},
+                "client_authentication_failed");
+      return;
+    }
+    HttpBodyLease working(body_budget_);
+    if (!working.Acquire(kLiveRecordingHostBytes)) {
+      SendError(fd, 503, "Recording download capacity exhausted", {},
+                "capacity_exhausted");
+      return;
+    }
+    const auto client = context->Client();
+    BinaryAccess access{"client:" + std::string(client.Id()),
+                        std::chrono::steady_clock::now() +
+                            std::chrono::milliseconds(request_deadline_ms_),
+                        [this, fd, client] {
+                          return stop_requested_.load() ||
+                                 !clients_.OwnsIdentity(client) ||
+                                 detail::ClientConnectionFailed(fd);
+                        }};
+    SendLiveRecording(fd, *objects_, access, std::string(id));
+    return;
+  }
   if (IsRealtimeTraceTarget(path)) {
     const auto* context = detail::HttpResponseContext::Current(fd);
     if (!context || !context->Client().Allowed() || !realtime_traces_) {
