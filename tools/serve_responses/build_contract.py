@@ -75,13 +75,18 @@ def schema(graph):
     live = json.loads((ROOT/'src/server/contracts/openai_live_types_v1.json').read_text())
     assert live['profile'] == 'q4t-openai-live-types-v1'
     definitions.update(graph_definitions(live, 'live_', ('session_accept', 'session_refer', 'session_reject', 'session_fork', 'session_forked', 'media_create', 'media_created')))
-    definitions['live_session_reject'] = {
-        'allOf': [definitions['live_session_reject'],
-                  {'properties': {'status_code': {'type':'integer','minimum':300,'maximum':699}}}]}
-    definitions['live_session_refer'] = {
-        'allOf': [definitions['live_session_refer'], {'properties': {'target_uri': {
-            'maxLength':8192,
-            'pattern':r"^[A-Za-z][A-Za-z0-9+.\-]*:(?:[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=\-]|%[0-9A-Fa-f]{2})+(?![\s\S])"}}}]}
+    realtime = json.loads((ROOT/'src/server/contracts/openai_realtime_types_v1.json').read_text())
+    assert realtime['profile'] == 'q4t-openai-realtime-types-v1'
+    definitions.update(graph_definitions(realtime, 'realtime_', ('call_refer', 'call_reject')))
+    status_code = dict(type='integer', minimum=300, maximum=699)
+    target_uri = {'maxLength':8192,
+                  'pattern':r"^[A-Za-z][A-Za-z0-9+.\-]*:(?:[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=\-]|%[0-9A-Fa-f]{2})+(?![\s\S])"}
+    for family in ('live_session_', 'realtime_call_'):
+        status = dict(status_code, default=603) if family == 'realtime_call_' else status_code
+        for operation, fields in [('refer', {'target_uri':target_uri}), ('reject', {'status_code':status})]:
+            name = family + operation
+            definitions[name] = {'allOf':[definitions[name], {'properties':fields}]}
+    definitions['realtime_call_reject'] = nullable(definitions['realtime_call_reject'])
     decisions = json.loads((ROOT/'src/server/contracts/openai_decision_types_v1.json').read_text())
     assert decisions['profile'] == 'q4t-openai-decision-types-v1'
     definitions.update(graph_definitions(decisions, 'decisions_'))

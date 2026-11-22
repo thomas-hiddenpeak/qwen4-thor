@@ -36,7 +36,10 @@ Q4T_TEST(realtime_shape_matches_actual_sdk_type_oracle) {
                       : shape == "response_create"
                           ? RealtimeShape::kResponseCreate
                       : shape == "session" ? RealtimeShape::kSession
-                                           : RealtimeShape::kResponse;
+                      : shape == "call_accept" ? RealtimeShape::kCallAccept
+                      : shape == "call_refer"  ? RealtimeShape::kCallRefer
+                      : shape == "call_reject" ? RealtimeShape::kCallReject
+                                               : RealtimeShape::kResponse;
     const auto* value = vector.Find("input");
     Q4T_CHECK(value);
     ChatPlanError error;
@@ -50,6 +53,36 @@ Q4T_TEST(realtime_shape_matches_actual_sdk_type_oracle) {
   std::printf("Realtime SDK vectors: %zu, differences: %zu\n",
               vectors->array.size(), differences);
   Q4T_CHECK(differences == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_shape_sip_call_controls_preserve_their_own_contract) {
+  using namespace q4t::server;
+  const auto valid = [](RealtimeShape shape, const char* body) {
+    q4t::io::Json value;
+    ChatPlanError error;
+    return q4t::io::ParseJson(body, &value, true) &&
+           ValidateRealtimeWireShape(value, shape, &error, "body").ok();
+  };
+  const auto accept = RealtimeShape::kCallAccept;
+  Q4T_CHECK(valid(accept, R"({"type":"realtime","instructions":"help"})"));
+  Q4T_CHECK(valid(accept, R"({"type":"realtime","audio":{"input":{"transcription":null,"noise_reduction":null}}})"));
+  Q4T_CHECK(!valid(accept, R"({"type":"realtime","id":"sess_forged"})"));
+  Q4T_CHECK(!valid(accept, R"({"session":{"type":"live"}})"));
+  Q4T_CHECK(!valid(accept, R"({"type":"transcription"})"));
+  Q4T_CHECK(!valid(accept, R"({"type":"realtime","audio":{"input":{"transcription":null,"extra":true}}})"));
+  const auto reject = RealtimeShape::kCallReject;
+  for (const auto* body : {"null", "{}", R"({"status_code":300})",
+                           R"({"status_code":699})"})
+    Q4T_CHECK(valid(reject, body));
+  for (const auto* body : {"[]", R"({"status_code":null})",
+                           R"({"status_code":299})", R"({"status_code":700})",
+                           R"({"status_code":486.5})", R"({"extra":true})"})
+    Q4T_CHECK(!valid(reject, body));
+  const auto refer = RealtimeShape::kCallRefer;
+  Q4T_CHECK(valid(refer, R"({"target_uri":"tel:+12025550101"})"));
+  Q4T_CHECK(!valid(refer, R"({"target_uri":"sips:user%0@desk"})"));
+  Q4T_CHECK(!valid(refer, R"({"target_uri":"tel:+1","session":{}})"));
   return true;
 }
 

@@ -34,12 +34,21 @@ async function rejectCall(id, realtime) {
   const calls = client => realtime ? client.realtime.calls : client.live.sessions;
   const foreign = await refused(calls(other).reject(id, {status_code: 486}), 404);
   const invalid = await refused(calls(owner).reject(id, {status_code: 299}), 400);
-  const operation = realtime ? calls(owner).reject(id) : calls(owner).reject(id, {status_code: 486});
+  const controls = {};
+  if (config.api.controlContract) {
+    assert.ok(realtime);
+    controls.null_status = await refused(calls(owner).reject(id, {status_code:null}), 400);
+    controls.invalid_refer = await refused(calls(owner).refer(id, {target_uri:'sips:a%0@desk'}), 400);
+    controls.pending_refer = await refused(calls(owner).refer(id, {target_uri:'tel:+12025550101'}), 409);
+  }
+  const operation = realtime
+    ? (config.api.controlContract ? calls(owner).reject(id, null) : calls(owner).reject(id))
+    : calls(owner).reject(id, {status_code: 486});
   const {data, response} = await operation.withResponse();
   assert.equal(response.status, 200);
   assert.equal(data, undefined);
   const retired = await refused(owner.live.sessions.reject(liveId, {status_code: 486}), 404);
-  emit({control: {foreign, invalid, owner: response.status, empty: true, retired}});
+  emit({control: {foreign, invalid, owner: response.status, empty: true, retired, ...controls}});
 }
 const server = https.createServer({
   cert: fs.readFileSync(config.cert), key: fs.readFileSync(config.key),

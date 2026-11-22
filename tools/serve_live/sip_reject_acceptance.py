@@ -75,7 +75,8 @@ class Stage(base.Stage):
         if self.dual:
             event_types.append('realtime.call.incoming')
         api = dict(baseURL=f"https://127.0.0.1:{self.plan['public_port']}/v1",
-                   ownerKey=self.keys['alpha'], otherKey=self.keys['beta'], eventType=event_types[-1])
+                   ownerKey=self.keys['alpha'], otherKey=self.keys['beta'], eventType=event_types[-1],
+                   controlContract=self.plan.get('control_contract', False))
         self.subscriber.stdin.write((json.dumps(dict(cert=str(hook_cert), key=str(hook_key),
             secret=secret, api=api if self.subscriber_handles_reject else None, responses=[204]*(len(event_types)*self.carrier_calls)))+'\n').encode())
         self.subscriber.stdin.flush()
@@ -124,7 +125,7 @@ class Stage(base.Stage):
             peer = Peer(sock, f'127.0.0.1:{port}')
             stack.callback(peer.reader.close)
             self.budget('calls')
-            self.budget('sdk_requests', 4)
+            self.budget('sdk_requests', self.limits['sdk_requests'])
             peer.send('INVITE', token)
             tag = peer.response(180, 'INVITE', token)
             notice = self.receive()
@@ -154,8 +155,10 @@ class Stage(base.Stage):
                     'SDK completed before carrier ACK')
             peer.send('ACK', token, to_tag=tag)
             controls = self.receive()['control']
-            require(controls == dict(foreign=404, invalid=400, owner=200, empty=True, retired=404),
-                    'public SDK disposition')
+            expected = dict(foreign=404, invalid=400, owner=200, empty=True, retired=404)
+            if self.plan.get('control_contract'):
+                expected.update(null_status=400, invalid_refer=400, pending_refer=409)
+            require(controls == expected, 'public SDK disposition')
         after = self.health(len(notices))
         self.same_model()
         self.core('core-after')
@@ -183,6 +186,10 @@ class Stage(base.Stage):
             sock.bind(('127.0.0.1', self.plan['sip_port']))
 
 
+class RealtimeControls(Stage):
+    limits = dict(LIMITS, sdk_requests=7)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=['prepare','run','finalize'])
@@ -196,7 +203,8 @@ def main():
         live.prepare(out, args.qualification)
         plan = read(out/'plan.json')
         sip = Path(plan['binary']).with_name('q4t-live-sip')
-        plan.update(schema=SCHEMA, limits=LIMITS, dual=args.dual, port=18811, operations_port=18812,
+        limits = RealtimeControls.limits if args.dual else LIMITS
+        plan.update(schema=SCHEMA, limits=limits, control_contract=args.dual, dual=args.dual, port=18811, operations_port=18812,
                     public_port=18813, sip_port=18814, sip_binary=str(sip), sip_sha256=sha(sip))
         for path in sorted((ROOT/'src/service').glob('live_sip*')):
             plan['sources'][str(path.relative_to(ROOT))] = sha(path)
@@ -205,12 +213,14 @@ def main():
         plan = read(out/'plan.json')
         require(plan['schema'] == SCHEMA, 'plan identity')
         with base.lifecycle.child_subreaper():
-            Stage(plan).run()
+            stage = RealtimeControls if plan.get('control_contract') else Stage
+            stage(plan).run()
     else:
         result, plan = read(out/'result.json'), read(out/'plan.json')
+        limits = RealtimeControls.limits if plan.get('control_contract') else LIMITS
         require(result['status'] == 'PASS' and result['default_unchanged'] and
-                result['seconds'] <= LIMITS['seconds'] and
-                all(result['counts'][k] == v for k,v in LIMITS.items()
+                result['seconds'] <= limits['seconds'] and
+                all(result['counts'][k] == v for k,v in limits.items()
                     if k not in ('seconds','controls')), 'bounded business run')
         env = qualify.environment(read(out/'lease/exit.json'), [
             json.loads(s) for s in (out/'lease/nvml-queries.jsonl').read_text().splitlines()],

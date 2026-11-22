@@ -100,14 +100,15 @@ def add_voice_routes(paths, response, error):
               body=content('application/json', {'$ref':live+'session_accept'}))
     for path in ('/v1/live/sessions/{session_id}/hangup', '/v1/realtime/calls/{call_id}/hangup'):
         operation('post', path, {'200': {'description': 'Carrier acknowledged hangup; empty body'}})
-    for path in ('/v1/live/sessions/{session_id}/refer', '/v1/realtime/calls/{call_id}/refer'):
+    realtime = 'serve-application-v1.schema.json#/$defs/realtime_'
+    for path, schema in [('/v1/live/sessions/{session_id}/refer', live+'session_refer'),
+                         ('/v1/realtime/calls/{call_id}/refer', realtime+'call_refer')]:
         operation('post', path, {'200': {'description': 'Carrier accepted the SIP REFER; empty body'}},
-                  body=content('application/json', {'$ref':live+'session_refer'}))
+                  body=content('application/json', {'$ref':schema}))
     realtime_reject = '/v1/realtime/calls/{call_id}/reject'
-    status = dict(type='integer', minimum=300, maximum=699, default=603)
     operation('post', realtime_reject,
               {'200': {'description': 'Carrier acknowledged the SIP rejection; empty body'}},
-              body=content('application/json', {'anyOf':[obj({'status_code':status}, []), {'type':'null'}]}))
+              body=content('application/json', {'$ref':realtime+'call_reject'}))
     paths[realtime_reject]['post']['requestBody']['required'] = False
     fork = '/v1/live/sessions/{session_id}/fork'
     operation('get', fork, upgrade,

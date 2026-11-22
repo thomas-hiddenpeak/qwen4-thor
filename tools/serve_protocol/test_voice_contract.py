@@ -56,11 +56,12 @@ class VoiceContract(unittest.TestCase):
                 self.assertFalse(valid(transfer_body, {'target_uri':uri}))
         rtc = self.paths['/v1/realtime/calls/{call_id}/reject']['post']
         self.assertFalse(rtc['requestBody']['required'])
-        valid_rtc = Draft202012Validator(rtc['requestBody']['content']['application/json']['schema']).is_valid
+        rejection = rtc['requestBody']['content']['application/json']['schema']
+        self.assertEqual(rejection['$ref'], 'serve-application-v1.schema.json#/$defs/realtime_call_reject')
         for value in (None, {}, {'status_code':603}, {'status_code':300}):
-            self.assertTrue(valid_rtc(value))
-        for value in ([], {'status_code':299}, {'status_code':700}, {'extra':True}):
-            self.assertFalse(valid_rtc(value))
+            self.assertTrue(valid(rejection, value))
+        for value in ([], {'status_code':None}, {'status_code':299}, {'status_code':700}, {'extra':True}):
+            self.assertFalse(valid(rejection, value))
         fork = self.paths['/v1/live/sessions/{session_id}/fork']
         self.assertEqual(set(fork['get']['responses']), {'101','default'})
         self.assertEqual(set(fork['post']['responses']), {'201','default'})

@@ -658,6 +658,7 @@ set(protocol_inputs
   src/server/live_sideband.cpp
   src/server/live_media_process.cpp
   src/server/live_responses_settings.cpp
+  src/server/sip_control_contract.h
   src/server/live_responses_validation.cpp
   src/server/live_responses_turn.cpp
   src/server/live_responses_execution.cpp

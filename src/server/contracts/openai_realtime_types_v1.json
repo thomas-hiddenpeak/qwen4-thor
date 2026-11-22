@@ -8,7 +8,10 @@
     "server_event": 280,
     "response_create": 438,
     "session": 187,
-    "response": 350
+    "response": 350,
+    "call_accept": 464,
+    "call_refer": 465,
+    "call_reject": 466
   },
   "nodes": [
     {
@@ -5600,10 +5603,109 @@
         }
       ],
       "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "audio",
+          "optional": true,
+          "type": 188
+        },
+        {
+          "name": "include",
+          "optional": true,
+          "type": 221
+        },
+        {
+          "name": "instructions",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "max_output_tokens",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 224
+        },
+        {
+          "name": "output_modalities",
+          "optional": true,
+          "type": 109
+        },
+        {
+          "name": "parallel_tool_calls",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "prompt",
+          "optional": true,
+          "type": 117
+        },
+        {
+          "name": "reasoning",
+          "optional": true,
+          "type": 138
+        },
+        {
+          "name": "tool_choice",
+          "optional": true,
+          "type": 244
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 245
+        },
+        {
+          "name": "tracing",
+          "optional": true,
+          "type": 259
+        },
+        {
+          "name": "truncation",
+          "optional": true,
+          "type": 261
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 267
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "target_uri",
+          "optional": false,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "status_code",
+          "optional": true,
+          "type": 212
+        }
+      ],
+      "additional": null
     }
   ],
   "sources_sha256": {
     "src/resources/audio/transcriptions.ts": "8a81d4cb4c975cf027f78b8d86feb2fb39e7860b265433a91ebf13bef9f61d80",
+    "src/resources/realtime/calls.ts": "84b09f99bf6f894788cc251e12e613a47a180447ae443a1c6132ed1db0ac9c26",
     "src/resources/realtime/realtime.ts": "487b535d66091309e6b071c40ea4479becba83b93043fb03035d97d78591b9f3",
     "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
     "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"

@@ -14,6 +14,7 @@
 #include "q4t/server/live_media_process.h"
 #include "q4t/server/live_recording_store.h"
 #include "q4t/server/live_responses_settings.h"
+#include "q4t/server/realtime_shape.h"
 
 namespace q4t::server {
 namespace {
@@ -92,19 +93,16 @@ void ChatServer::HandleSipReject(int fd, std::string_view id,
     detail::SendError(fd, 400, "Invalid SIP rejection JSON", {}, "invalid_request");
     return;
   }
-  if (realtime) {
-    if (request.IsNull()) request = Object({});
-    if (request.IsObject() && !request.Has("status_code"))
-      Set(&request, "status_code", Number(603));
-  }
   ChatPlanError error;
-  if (auto status = ValidateLiveWireShape(request, LiveShape::kSessionReject, &error);
-      !status) {
+  const auto status = realtime
+      ? ValidateRealtimeWireShape(request, RealtimeShape::kCallReject, &error, "body")
+      : ValidateLiveWireShape(request, LiveShape::kSessionReject, &error);
+  if (!status) {
     detail::SendError(fd, error.http_status, status.message(), {}, error.code, error.param);
     return;
   }
   const auto reply = sip_service_.Reject(http->Client().Id(), id,
-      request.GetInt("status_code"), std::chrono::steady_clock::now() + std::chrono::seconds(5));
+      request.GetInt("status_code", 603), Clock::now() + 5s);
   if (!reply.ok()) {
     detail::SendError(fd, reply.http_status, reply.ClientMessage(), {}, reply.ClientCode());
     return;
@@ -127,8 +125,10 @@ void ChatServer::HandleSipControl(int fd, std::string_view id,
   }
   if (transfer) {
     ChatPlanError error;
-    if (auto status = ValidateLiveWireShape(request, LiveShape::kSessionRefer, &error);
-        !status) {
+    const auto status = id.starts_with("rtc_")
+        ? ValidateRealtimeWireShape(request, RealtimeShape::kCallRefer, &error, "body")
+        : ValidateLiveWireShape(request, LiveShape::kSessionRefer, &error);
+    if (!status) {
       detail::SendError(fd, error.http_status, status.message(), {}, error.code, error.param);
       return;
     }

@@ -7060,7 +7060,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "serve-application-v1.schema.json#/$defs/live_session_refer"
+                "$ref": "serve-application-v1.schema.json#/$defs/realtime_call_refer"
               }
             }
           }
@@ -7110,24 +7110,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "anyOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "status_code": {
-                        "type": "integer",
-                        "minimum": 300,
-                        "maximum": 699,
-                        "default": 603
-                      }
-                    },
-                    "additionalProperties": false,
-                    "required": []
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "$ref": "serve-application-v1.schema.json#/$defs/realtime_call_reject"
               }
             }
           }

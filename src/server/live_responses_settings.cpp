@@ -4,7 +4,7 @@
 #include <unordered_set>
 
 #include "q4t/server/input_contract.h"
-#include "q4t/server/sip_refer_target.h"
+#include "sip_control_contract.h"
 #include "q4t/server/mcp_policy.h"
 #include "q4t/server/responses_input.h"
 #include "q4t/server/responses_file_search.h"
@@ -72,15 +72,10 @@ Status ValidateLiveWireShape(const Json& value, LiveShape shape,
                              ChatPlanError* error, std::string_view path) {
   auto status = ValidateLiveShape(value, shape, error, path);
   if (status) {
-    if (shape == LiveShape::kSessionReject) {
-      const auto& code = *value.Find("status_code");
-      if (!IsInputInteger(code) || code.number < 300 || code.number > 699)
-        return Invalid(error, "status_code",
-                       "Expected a SIP rejection code from 300 to 699");
-    }
-    if (shape == LiveShape::kSessionRefer &&
-        !ValidReferTarget(value.GetString("target_uri")))
-      return Invalid(error, "target_uri", "Expected an absolute transfer URI");
+    if (shape == LiveShape::kSessionReject)
+      return CheckSipRejectCode(value, error);
+    if (shape == LiveShape::kSessionRefer)
+      return CheckSipReferTarget(value, error);
     if (shape == LiveShape::kSidebandClient &&
         value.GetString("type") == "transport.dtmf.send") {
       const auto key = value.GetString("event");

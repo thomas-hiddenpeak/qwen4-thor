@@ -3,9 +3,9 @@
   "sdk_version": "7.47.0",
   "compiler_version": "5.9.3",
   "validation_mode": "concrete-sdk-union-members",
-  "graph_sha256": "802bd77ff3c9650052a8239c3ef530b50710909b12bf822f7632de92dbbf0aac",
-  "fixture_sha256": "d1ccab31de5e6d8f3312d3b4f147eadaf2f29b3645d6cd86a6456e010802f74b",
-  "concrete_fixture_sha256": "5f54e5c481caa35209c0d3af79aa06483d260253b3ec75a165689d23d5cb31d0",
+  "graph_sha256": "90654ce5a77094d472223bdf5fe44cdb43362ef08e8054f61ad8d3780cd07898",
+  "fixture_sha256": "829efd389766c0a6694539480a09fcb60cb5c522f43b06ad65c9f19ab723fdbe",
+  "concrete_fixture_sha256": "9c77b67d8e04acdf7cb4d19eb2f7436177caa3e36c0470dc84d3902994b5c832",
   "member_names": {
     "conversation_item": [
       {
@@ -294,9 +294,27 @@
         "name": "RealtimeResponse",
         "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeResponse"
       }
+    ],
+    "call_accept": [
+      {
+        "name": "CallAcceptParams",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/calls.ts\").CallAcceptParams"
+      }
+    ],
+    "call_refer": [
+      {
+        "name": "CallReferParams",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/calls.ts\").CallReferParams"
+      }
+    ],
+    "call_reject": [
+      {
+        "name": "CallRejectParams",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/calls.ts\").CallRejectParams"
+      }
     ]
   },
-  "concrete_checks": 2416,
+  "concrete_checks": 2422,
   "vectors": [
     {
       "name": "conversation_item_0_valid",
@@ -8878,6 +8896,244 @@
       ],
       "concrete_members": [],
       "accepted": false
+    },
+    {
+      "name": "call_accept_0_valid",
+      "shape": "call_accept",
+      "input": {
+        "type": "realtime"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallAcceptParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_accept_0_extra",
+      "shape": "call_accept",
+      "input": {
+        "type": "realtime",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'CallAcceptParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_accept_0_wrong_root",
+      "shape": "call_accept",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'CallAcceptParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_accept_0_missing_type",
+      "shape": "call_accept",
+      "input": {},
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'type' is missing in type '{}' but required in type 'CallAcceptParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_refer_0_valid",
+      "shape": "call_refer",
+      "input": {
+        "target_uri": "fixture"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallReferParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_refer_0_extra",
+      "shape": "call_refer",
+      "input": {
+        "target_uri": "fixture",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'CallReferParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_refer_0_wrong_root",
+      "shape": "call_refer",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'CallReferParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_refer_0_missing_target_uri",
+      "shape": "call_refer",
+      "input": {},
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'target_uri' is missing in type '{}' but required in type 'CallReferParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_reject_0_valid",
+      "shape": "call_reject",
+      "input": {},
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallRejectParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_reject_0_extra",
+      "shape": "call_reject",
+      "input": {
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'CallRejectParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_reject_0_wrong_root",
+      "shape": "call_reject",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2559,
+          "message": "Type '\"not-an-item\"' has no properties in common with type 'CallRejectParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_accept_flat",
+      "shape": "call_accept",
+      "input": {
+        "type": "realtime",
+        "output_modalities": [
+          "audio"
+        ],
+        "instructions": "Answer the caller"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallAcceptParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_accept_live_wrapper",
+      "shape": "call_accept",
+      "input": {
+        "session": {
+          "type": "live"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"session\"' does not exist in type 'CallAcceptParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_reject_without_status",
+      "shape": "call_reject",
+      "input": {},
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallRejectParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_reject_status_null",
+      "shape": "call_reject",
+      "input": {
+        "status_code": null
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'null' is not assignable to type 'number | undefined'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_refer_sips",
+      "shape": "call_refer",
+      "input": {
+        "target_uri": "sips:help@desk.invalid"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallReferParams"
+      ],
+      "accepted": true
     },
     {
       "name": "manual_empty_tool_output",

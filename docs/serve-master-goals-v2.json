@@ -16332,6 +16332,7 @@
     "sip_dialog_evidence": "evidence/serve-sip-dialog-20261123/README.md",
     "sip_accept_business_evidence": "evidence/serve-live-sip-accept-20261123/README.md",
     "sip_transfer_business_evidence": "evidence/serve-live-sip-transfer-20261123/README.md",
-    "sip_dtmf_business_evidence": "evidence/serve-live-sip-dtmf-20261123/README.md"
+    "sip_dtmf_business_evidence": "evidence/serve-live-sip-dtmf-20261123/README.md",
+    "realtime_sip_control_contract_evidence": "evidence/serve-realtime-sip-control-contract-20261123/README.md"
   }
 }

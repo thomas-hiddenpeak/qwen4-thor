@@ -10,7 +10,10 @@ enum class RealtimeShape {
   kServerEvent,
   kResponseCreate,
   kSession,
-  kResponse
+  kResponse,
+  kCallAccept,
+  kCallRefer,
+  kCallReject
 };
 Status ValidateRealtimeShape(const io::Json& value, RealtimeShape shape,
                              ChatPlanError* error,

@@ -4,6 +4,7 @@
 
 #include "q4t/server/input_contract.h"
 #include "q4t/server/realtime_conversation.h"
+#include "sip_control_contract.h"
 
 namespace q4t::server {
 namespace {
@@ -39,11 +40,13 @@ Status ValidateWireShape(const io::Json& value, RealtimeShape shape,
     response->type = io::Json::Type::kObject;
     return ValidateRealtimeShape(envelope, shape, error, path);
   }
-  if (shape != RealtimeShape::kSession &&
+  const bool flat_session = shape == RealtimeShape::kSession ||
+                            shape == RealtimeShape::kCallAccept;
+  if (!flat_session &&
       shape != RealtimeShape::kClientEvent &&
       shape != RealtimeShape::kServerEvent)
     return status;
-  if (shape != RealtimeShape::kSession) {
+  if (!flat_session) {
     const auto type = value.GetString("type");
     if (type != "session.update" && type != "session.created" &&
         type != "session.updated")
@@ -52,9 +55,7 @@ Status ValidateWireShape(const io::Json& value, RealtimeShape shape,
   size_t storage = 0;
   if (!MeasureRealtimeStorage(value, 16ULL << 20, &storage)) return status;
   auto projected = value;
-  auto* session = shape == RealtimeShape::kSession
-                      ? &projected
-                      : UniqueField(&projected, "session");
+  auto* session = flat_session ? &projected : UniqueField(&projected, "session");
   if (!session || (session->GetString("type") != "realtime" &&
                    session->GetString("type") != "transcription"))
     return status;
@@ -80,6 +81,15 @@ Status ValidateWireShape(const io::Json& value, RealtimeShape shape,
 }  // namespace
 Status ValidateRealtimeWireShape(const io::Json& value, RealtimeShape shape,
                                  ChatPlanError* error, std::string_view path) {
+  if (shape == RealtimeShape::kCallReject || shape == RealtimeShape::kCallRefer) {
+    // calls.reject accepts CallRejectParams | null | undefined.
+    if (shape == RealtimeShape::kCallReject && value.IsNull()) return {};
+    auto status = ValidateRealtimeShape(value, shape, error, path);
+    if (!status) return status;
+    return shape == RealtimeShape::kCallReject
+               ? CheckSipRejectCode(value, error)
+               : CheckSipReferTarget(value, error);
+  }
   const auto type = value.GetString("type");
   if (shape != RealtimeShape::kServerEvent ||
       (type != "session.created" && type != "session.updated"))

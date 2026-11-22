@@ -7060,7 +7060,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_session_refer"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_call_refer"
               }
             }
           }
@@ -7110,24 +7110,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "anyOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "status_code": {
-                        "type": "integer",
-                        "minimum": 300,
-                        "maximum": 699,
-                        "default": 603
-                      }
-                    },
-                    "additionalProperties": false,
-                    "required": []
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_call_reject"
               }
             }
           }
@@ -34320,6 +34303,80 @@
           },
           "live_media_created": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_890"
+          },
+          "realtime_466": {
+            "type": "object",
+            "properties": {
+              "status_code": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_212"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_212": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_51"
+              }
+            ]
+          },
+          "realtime_51": {
+            "type": "number"
+          },
+          "realtime_465": {
+            "type": "object",
+            "properties": {
+              "target_uri": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              }
+            },
+            "required": [
+              "target_uri"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_5": {
+            "type": "string"
+          },
+          "realtime_call_refer": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_465"
+              },
+              {
+                "properties": {
+                  "target_uri": {
+                    "maxLength": 8192,
+                    "pattern": "^[A-Za-z][A-Za-z0-9+.\\-]*:(?:[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=\\-]|%[0-9A-Fa-f]{2})+(?![\\s\\S])"
+                  }
+                }
+              }
+            ]
+          },
+          "realtime_call_reject": {
+            "anyOf": [
+              {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_466"
+                  },
+                  {
+                    "properties": {
+                      "status_code": {
+                        "type": "integer",
+                        "minimum": 300,
+                        "maximum": 699,
+                        "default": 603
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "decisions_0": {
             "type": "object",

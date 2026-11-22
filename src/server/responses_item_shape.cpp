@@ -221,6 +221,9 @@ Status ValidateRealtimeShape(const Json& value, RealtimeShape shape,
     case RealtimeShape::kResponseCreate: root = "response_create"; break;
     case RealtimeShape::kSession: root = "session"; break;
     case RealtimeShape::kResponse: root = "response"; break;
+    case RealtimeShape::kCallAccept: root = "call_accept"; break;
+    case RealtimeShape::kCallRefer: root = "call_refer"; break;
+    case RealtimeShape::kCallReject: root = "call_reject"; break;
   }
   return Validate(RealtimeTypes(), value, root, error, path);
 }

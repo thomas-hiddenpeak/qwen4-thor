@@ -76,6 +76,11 @@ if (!realtime && !live) vectors.push(
   { name: 'manual_open_map', shape: 'input_item', input: { type: 'tool_search_output', call_id: 'call_1', tools: [{ type: 'function', name: 'lookup', parameters: { arbitrary: [1, { keep: true }] }, strict: false }] } },
 );
 if (realtime) vectors.push(
+  { name: 'call_accept_flat', shape: 'call_accept', input: {type:'realtime', output_modalities:['audio'], instructions:'Answer the caller'}, positive:true },
+  { name: 'call_accept_live_wrapper', shape: 'call_accept', input: {session:{type:'live'}} },
+  { name: 'call_reject_without_status', shape:'call_reject', input:{}, positive:true },
+  { name: 'call_reject_status_null', shape:'call_reject', input:{status_code:null} },
+  { name: 'call_refer_sips', shape:'call_refer', input:{target_uri:'sips:help@desk.invalid'}, positive:true },
   { name: 'manual_empty_tool_output', shape: 'conversation_item', input: { type: 'function_call_output', call_id: 'call_1', output: '' }, positive: true },
   { name: 'manual_partial_call_history', shape: 'conversation_item', input: { type: 'function_call', name: 'lookup', arguments: '{', status: 'incomplete' }, positive: true },
   { name: 'manual_user_mixed_media', shape: 'conversation_item', input: { type: 'message', role: 'user', content: [{ type: 'input_text', text: 'describe' }, { type: 'input_audio', audio: 'AA==', transcript: 'reference only' }, { type: 'input_image', image_url: 'data:image/png;base64,AA==', detail: 'high' }] }, positive: true },
@@ -106,6 +111,7 @@ const types = live ? Object.fromEntries(Object.entries(liveTypes).map(([k,v])=>[
   conversation_item: 'ConversationItem', client_event: 'RealtimeClientEvent',
   server_event: 'RealtimeServerEvent', response_create: 'RealtimeResponseCreateParamsWithReferencesParam',
   session: 'RealtimeSessionCreateRequest', response: 'RealtimeResponse',
+  call_accept: 'CallAcceptParams', call_refer: 'CallReferParams', call_reject: 'CallRejectParams',
 } : {input_item:'ResponseInputItem',output_item:'ResponseOutputItem',conversation_item:'ConversationItem'};
 if(live) vectors.push(
  {name:'manual_start_native_model_pcm',shape:'client_event',positive:true,input:{type:'session.start',event_id:'s1',session:{model:'q4t',audio:{format:{type:'audio/pcm',rate:16000}},store:false}}},
@@ -123,7 +129,8 @@ if(live) vectors.push(
 );
 const directory = resolve(outputDir); mkdirSync(directory, { recursive: true });
 const fixture = resolve(directory, 'sdk-shape-cases.mts');
-let source = live ? Object.entries(liveTypes).map(([shape,[file,name]])=>`import type { ${name} } from ${JSON.stringify(resolve(sdk,'src/resources/live/'+file+'.ts'))};`).filter((x,i,a)=>a.indexOf(x)===i).join('\n')+'\n' : realtime ? `import type { ${Object.values(types).join(', ')} } from ${JSON.stringify(resolve(sdk, 'src/resources/realtime/realtime.ts'))};\n` :
+const realtimeFile = shape => resolve(sdk, 'src/resources/realtime', shape.startsWith('call_') ? 'calls.ts' : 'realtime.ts');
+let source = live ? Object.entries(liveTypes).map(([shape,[file,name]])=>`import type { ${name} } from ${JSON.stringify(resolve(sdk,'src/resources/live/'+file+'.ts'))};`).filter((x,i,a)=>a.indexOf(x)===i).join('\n')+'\n' : realtime ? Object.entries(types).map(([shape,name]) => `import type { ${name} } from ${JSON.stringify(realtimeFile(shape))};\n`).join('') :
   `import type { ResponseInputItem, ResponseOutputItem } from ${JSON.stringify(resolve(sdk, 'src/resources/responses/responses.ts'))};\n` +
   `import type { ConversationItem } from ${JSON.stringify(resolve(sdk, 'src/resources/conversations/items.ts'))};\n`;
 const ranges = [];
@@ -150,7 +157,7 @@ for (let i = 0; i < vectors.length; ++i) {
 const checker = program.getTypeChecker();
 const memberNames = {};
 for (const [shape, name] of Object.entries(types)) {
-  const file = resolve(sdk, live ? 'src/resources/live/'+liveTypes[shape][0]+'.ts' : realtime ? 'src/resources/realtime/realtime.ts' : shape === 'conversation_item'
+  const file = resolve(sdk, live ? 'src/resources/live/'+liveTypes[shape][0]+'.ts' : realtime ? realtimeFile(shape) : shape === 'conversation_item'
     ? 'src/resources/conversations/items.ts' : 'src/resources/responses/responses.ts');
   const module = checker.getSymbolAtLocation(program.getSourceFile(file));
   const symbol = checker.getExportsOfModule(module).find(x => x.name === name);

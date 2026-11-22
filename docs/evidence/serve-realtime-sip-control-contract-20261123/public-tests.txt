@@ -1,0 +1,10 @@
+test_audio_bytes_multipart_and_upgrade_are_distinct (tools.serve_protocol.test_voice_contract.VoiceContract.test_audio_bytes_multipart_and_upgrade_are_distinct) ... ok
+test_decision_question_bounds_and_wire_results (tools.serve_protocol.test_voice_contract.VoiceContract.test_decision_question_bounds_and_wire_results) ... ok
+test_live_http_offer_and_answer_are_independent_of_socket_upgrade (tools.serve_protocol.test_voice_contract.VoiceContract.test_live_http_offer_and_answer_are_independent_of_socket_upgrade) ... ok
+test_shipped_contract_pair_and_option_are_current (tools.serve_protocol.test_voice_contract.VoiceContract.test_shipped_contract_pair_and_option_are_current) ... ok
+test_stored_audio_projection_and_dangling_component (tools.serve_protocol.test_voice_contract.VoiceContract.test_stored_audio_projection_and_dangling_component) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.086s
+
+OK
