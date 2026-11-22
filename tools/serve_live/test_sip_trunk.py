@@ -48,6 +48,43 @@ class Peer:
             self.sock.sendall(wire_headers + b'\r\n' + body)
         return wire_headers
 
+    def dialog_request(self, method, token, tag):
+        start = self.reader.readline(4096).split()
+        if start != [method.encode(), b'sips:phone@127.0.0.1:9', b'SIP/2.0']:
+            raise AssertionError(('unexpected in-dialog request', start))
+        fields = {}
+        while True:
+            line = self.reader.readline(16384)
+            if line == b'\r\n':
+                break
+            if not line.endswith(b'\r\n') or len(fields) >= 64:
+                raise AssertionError('incomplete or oversized in-dialog request')
+            name, value = line.rstrip().split(b':', 1)
+            fields[name.lower()] = value.strip()
+        number, verb = fields[b'cseq'].split()
+        if (fields[b'call-id'] != (token + '@peer.test').encode() or
+                (';tag=' + tag).encode() not in fields[b'from'] or
+                (';tag=' + token).encode() not in fields[b'to'] or
+                verb != method.encode() or int(number) < 1 or
+                fields.get(b'content-length', b'0') != b'0'):
+            raise AssertionError('unexpected dialog identifiers or body')
+        return fields
+
+    def reply_dialog(self, fields, status):
+        lines = [f'SIP/2.0 {status} Carrier response'.encode()] + [
+            name + b': ' + fields[name] for name in
+            (b'via', b'from', b'to', b'call-id', b'cseq')]
+        self.sock.sendall(b'\r\n'.join(lines + [b'Content-Length: 0', b'', b'']))
+
+    def transfer_notify(self, token, tag, target, seq, event, state, fragment,
+                        expected=200, content_type='message/sipfrag'):
+        branch = secrets.token_hex(12)
+        headers = (f'Event: {event}\r\nSubscription-State: {state}\r\n'
+                   f'Content-Type: {content_type}\r\n').encode()
+        self.send('NOTIFY', token, to_tag=tag, target=target, branch=branch, seq=seq,
+                  extra=headers, body=fragment.encode())
+        self.response(expected, 'NOTIFY', token, branch=branch, seq=seq)
+
     def response(self, status, method, token, *, branch=None, seq=1):
         while True:
             line = self.reader.readline(4096)

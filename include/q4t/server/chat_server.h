@@ -349,7 +349,8 @@ class ChatServer {
                            std::shared_ptr<const io::Json>* state);
   void HandleLiveSideband(int fd, std::string_view path,
       const HttpRequestHeaders& headers, std::string_view initial, std::string_view accept);
-  void HandleSipHangup(int fd, std::string_view id, const std::string& body);
+  void HandleSipControl(int fd, std::string_view id, const std::string& body,
+                        bool transfer);
   void HandleSipReject(int fd, std::string_view id, const std::string& body);
   void HandleLiveMediaCreate(int fd, std::string_view source,
                              const std::string& body,

@@ -100,23 +100,69 @@ class DialogTest(sip.TrunkFixture, unittest.TestCase):
         self.assertEqual(self.event(), ['RESULT', 'hang', expect])
 
     def receive_bye(self):
-        reader = self.carrier.reader
-        self.assertEqual(reader.readline(4096).split(),
-                         [b'BYE', b'sips:phone@127.0.0.1:9', b'SIP/2.0'])
-        fields = {}
-        while True:
-            line = reader.readline(8192)
-            if line == b'\r\n':
-                break
-            self.assertTrue(line, 'incomplete BYE')
-            key, value = line.rstrip().split(b':', 1)
-            fields[key.lower()] = value.strip()
-        self.assertEqual(fields[b'call-id'], (self.token + '@peer.test').encode())
-        self.assertIn(('tag=' + self.tag).encode(), fields[b'from'])
-        self.assertIn(('tag=' + self.token).encode(), fields[b'to'])
-        self.assertRegex(fields[b'cseq'], rb'^[1-9][0-9]* BYE$')
-        self.assertEqual(fields.get(b'content-length', b'0'), b'0')
-        return fields
+        return self.carrier.dialog_request('BYE', self.token, self.tag)
+
+    def refer(self, target, result, scope=sip.SCOPE, op='r-first'):
+        self.control.send(f'REFER {op} {scope} {self.live}\n{target}'.encode())
+        self.assertEqual(self.event(), ['RESULT', op, result])
+
+    def test_transfer_receipt_and_subscription_are_independent(self):
+        target = 'sips:help@desk.invalid;transport=tls?Subject=A%20B'
+        self.answer_invite()
+        self.refer(target, 'conflict')
+        self.send_in_dialog('ACK', 1)
+        self.assertEqual(self.event(), ['ACK', sip.SCOPE, self.live, '200'])
+        self.refer(target, 'not_found', 'other-customer')
+        self.refer('tel:+12025550100\r\nExtra: bad', 'invalid_target')
+        self.refer(target, 'submitted')
+        fields = self.carrier.dialog_request('REFER', self.token, self.tag)
+        self.assertEqual(fields[b'refer-to'], f'<{target}>'.encode())
+        seq = fields[b'cseq'].split()[0].decode()
+        notify = lambda n, event, state, body, **kw: self.carrier.transfer_notify(
+            self.token, self.tag, self.target, n, event, state, body, **kw)
+        self.carrier.reply_dialog(fields, 100)
+        self.quiet()
+        notify(2, 'refer;id=0', 'active', 'SIP/2.0 100 Trying\r\n', expected=481)
+        notify(3, 'refer', 'active;expires=30', 'SIP/2.0 180 Ringing\r\n')
+        self.refer(target, 'conflict')
+        self.carrier.reply_dialog(fields, 202)
+        self.assertEqual(self.event(), ['REFER_RESPONSE', 'r-first', '202'])
+        self.refer(target, 'conflict')
+        notify(4, 'refer;id='+seq, 'terminated', 'garbage', expected=400)
+        notify(5, 'refer;id='+seq, 'terminated', 'SIP/2.0 486 Busy Here\r\n')
+        self.assertEqual(self.event(), ['TRANSFER', sip.SCOPE, self.live, '486'])
+        self.refer('tel:+12025550100', 'submitted', op='r-next')
+        retry = self.carrier.dialog_request('REFER', self.token, self.tag)
+        self.assertEqual(retry[b'refer-to'], b'<tel:+12025550100>')
+        new = retry[b'cseq'].split()[0].decode()
+        self.assertGreater(int(new), int(seq))
+        notify(6, 'refer;id='+seq, 'terminated', 'SIP/2.0 200 OK\r\n', expected=481)
+        notify(7, 'refer', 'terminated', 'SIP/2.0 200 OK\r\n', expected=481)
+        notify(8, 'refer;id='+new, 'terminated', 'SIP/2.0 200 OK\r\n')
+        self.assertEqual(self.event(), ['TRANSFER', sip.SCOPE, self.live, '200'])
+        self.refer(target, 'conflict')
+        self.carrier.reply_dialog(retry, 200)
+        self.assertEqual(self.event(), ['REFER_RESPONSE', 'r-next', '200'])
+        self.bye(seq=9)
+
+    def test_expired_transfer_receipt_leaves_original_dialog_usable(self):
+        self.answer_invite()
+        self.send_in_dialog('ACK', 1)
+        self.assertEqual(self.event(), ['ACK', sip.SCOPE, self.live, '200'])
+        self.refer('tel:+12025550100', 'submitted')
+        fields = self.carrier.dialog_request('REFER', self.token, self.tag)
+        self.carrier.reply_dialog(fields, 202)
+        self.assertEqual(self.event(), ['REFER_RESPONSE', 'r-first', '202'])
+        event = 'refer;id=' + fields[b'cseq'].split()[0].decode()
+        notify = self.carrier.transfer_notify
+        notify(self.token, self.tag, self.target, 2, event, 'terminated',
+               'SIP/2.0 200 OK\ninvalid', expected=400)
+        notify(self.token, self.tag, self.target, 3, event, 'active;expires=0',
+               'SIP/2.0 100 Trying\r\n')
+        self.assertEqual(self.event(), ['TRANSFER', sip.SCOPE, self.live, '0'])
+        notify(self.token, self.tag, self.target, 4, event, 'terminated',
+               'SIP/2.0 200 OK\r\n', expected=481)
+        self.bye(seq=5)
 
     def finish_local_hangup(self, status):
         self.answer_invite()

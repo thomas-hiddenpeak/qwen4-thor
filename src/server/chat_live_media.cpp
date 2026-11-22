@@ -112,20 +112,34 @@ void ChatServer::HandleSipReject(int fd, std::string_view id,
   detail::SendSimple(fd, 200, "OK", "", "application/json");
 }
 
-void ChatServer::HandleSipHangup(int fd, std::string_view id,
-                                  const std::string& body) {
+void ChatServer::HandleSipControl(int fd, std::string_view id,
+                                  const std::string& body, bool transfer) {
   const auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Scoped() || !clients_.OwnsIdentity(http->Client())) {
     detail::SendError(fd, 404, "Call not found", {}, "not_found");
     return;
   }
-  Json empty;
-  if (!body.empty() && (!io::ParseJson(body, &empty, true) ||
-                        !empty.IsObject() || !empty.object.empty())) {
+  Json request;
+  if ((!body.empty() || transfer) &&
+      !io::ParseJson(body, &request, true, {8, 32, 65536, true})) {
+    detail::SendError(fd, 400, "Invalid call control JSON", {}, "invalid_request");
+    return;
+  }
+  if (transfer) {
+    ChatPlanError error;
+    if (auto status = ValidateLiveWireShape(request, LiveShape::kSessionRefer, &error);
+        !status) {
+      detail::SendError(fd, error.http_status, status.message(), {}, error.code, error.param);
+      return;
+    }
+  } else if (!body.empty() && (!request.IsObject() || !request.object.empty())) {
     detail::SendError(fd, 400, "Hangup accepts no parameters", {}, "invalid_request");
     return;
   }
-  const auto reply = sip_service_.Hangup(http->Client().Id(), id, Clock::now() + 5s);
+  const auto deadline = Clock::now() + 5s;
+  const auto reply = transfer
+      ? sip_service_.Refer(http->Client().Id(), id, request.GetString("target_uri"), deadline)
+      : sip_service_.Hangup(http->Client().Id(), id, deadline);
   if (!reply.ok()) {
     detail::SendError(fd, reply.http_status, reply.ClientMessage(), {}, reply.ClientCode());
     return;

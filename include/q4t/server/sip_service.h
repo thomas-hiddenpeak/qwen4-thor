@@ -42,6 +42,9 @@ class SipService {
                       std::unique_ptr<SipInvitation>* invitation);
   ObjectReply Hangup(std::string_view scope, std::string_view id,
                      std::chrono::steady_clock::time_point deadline);
+  ObjectReply Refer(std::string_view scope, std::string_view id,
+                    std::string_view target,
+                    std::chrono::steady_clock::time_point deadline);
   ObjectReply Reject(std::string_view scope, std::string_view id, int status,
                      std::chrono::steady_clock::time_point deadline);
 

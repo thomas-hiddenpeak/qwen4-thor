@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 Live 和 Realtime SDK 的电话转接已在 Thor 原生 TLS 上通过。一次模型启动、同一通电话的三次转接分别验证了中继拒绝、受理后目标忙线、受理后目标接通。随后原通话仍完成真实项目资料查询并播报 rev426，挂断和普通 Chat 均正常。63.14 秒，GPU 租约已释放。电话部分继续 DTMF 和 Realtime 独立接听。[转接验收](evidence/serve-live-sip-transfer-20261123/README.md)。
+
 官方 Live SDK 已通过原生 TLS 接听电话。最终候选一次启动完成两通电话：第一通的媒体进程在 ACK 前被暂停，HTTP 返回 503，中继主动挂断并释放资源；第二通由同一模型从加密 Opus 语音识别“请查询当前项目版本号。”，客户端回填真实记录后播报 rev426。主动挂断、旁路终态和普通 Chat=42 均通过，65.96 秒。之前一次与本项目 CPU 夹具重叠的 ENV_ABORT 单独保留。下一步是转接、DTMF 与 Realtime 独立接听。默认 rev426。[验收与回执](evidence/serve-live-sip-accept-20261123/README.md)。
 
 原生电话中继在一通真实本机电话中完成接听应答、远端 ACK、G.711 加密传音和双方挂断。组合回环 24 项通过。主动挂断能区分远端 200、481 和连接丢失。下一步将接听、媒体所有权与 HTTP 客户绑定，验证语音业务。[电话对话记录](evidence/serve-sip-dialog-20261123/README.md)。

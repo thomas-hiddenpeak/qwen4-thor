@@ -17996,6 +17996,18 @@
       ],
       "additionalProperties": false
     },
+    "live_939": {
+      "type": "object",
+      "properties": {
+        "target_uri": {
+          "$ref": "#/$defs/live_4"
+        }
+      },
+      "required": [
+        "target_uri"
+      ],
+      "additionalProperties": false
+    },
     "live_920": {
       "type": "object",
       "properties": {
@@ -18135,6 +18147,21 @@
     },
     "live_session_accept": {
       "$ref": "#/$defs/live_920"
+    },
+    "live_session_refer": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/live_939"
+        },
+        {
+          "properties": {
+            "target_uri": {
+              "maxLength": 8192,
+              "pattern": "^[A-Za-z][A-Za-z0-9+.\\-]*:(?:[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=\\-]|%[0-9A-Fa-f]{2})+(?![\\s\\S])"
+            }
+          }
+        }
+      ]
     },
     "live_session_reject": {
       "allOf": [

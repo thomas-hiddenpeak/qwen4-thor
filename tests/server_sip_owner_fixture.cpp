@@ -28,6 +28,17 @@ int SipOwnerFixture(int argc, char** argv) {
       continue;
     }
     std::string scope, session;
+    if (command == "refer") {
+      std::string target;
+      int timeout;
+      if (!(std::cin >> scope >> session >> target >> timeout) || timeout < 1 ||
+          timeout > 5000)
+        return 2;
+      auto reply = service.Refer(scope, session, target,
+          std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout));
+      std::cout << reply.http_status << std::endl;
+      continue;
+    }
     if (command == "accept") {
       int timeout;
       if (!(std::cin >> scope >> session >> timeout) || timeout < 1 ||

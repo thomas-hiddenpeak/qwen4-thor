@@ -74,6 +74,27 @@ try {
   const started = await event('session.started');
   assert.equal(started.session.id, args.id);
   save('sdk-attached', true);
+  if (args.realtime_id) {
+    const phone = {target_uri:'tel:+12025550100'};
+    const rtc = args.realtime_id;
+    await denied(other.live.sessions.refer(args.id, phone), 404);
+    await denied(other.realtime.calls.refer(rtc, phone), 404);
+    await denied(calls.refer(args.id, {target_uri:'sip:bad\r\nHeader: value'}), 400);
+    await assert.rejects(calls.refer(args.id, phone),
+      e => e.status === 502 && e.code === 'sip_refer_rejected' && e.message.includes('486'));
+    const sent = await owner.realtime.calls.refer(rtc,
+      {target_uri:'sips:help@desk.invalid;transport=tls?Subject=A%20B'}).withResponse();
+    assert.equal(sent.response.status, 200);
+    assert.equal(sent.data, undefined);
+    await denied(calls.refer(args.id, phone), 409);
+    save('transfer-overlap', true);
+    await wait(() => fs.existsSync(marker('retry-allowed')), 'first subscription final');
+    const next = await calls.refer(args.id, {target_uri:'tel:+12025550101'}).withResponse();
+    assert.equal(next.response.status, 200);
+    assert.equal(next.data, undefined);
+    save('transfer-sdk.json', {foreign_live:404, foreign_realtime:404, invalid:400,
+      carrier_refusal:502, realtime:200, overlap:409, live:200});
+  }
   const {delegation} = await event('session.delegation.created', 55);
   assert.equal(delegation.target, 'client');
   const record = fs.readFileSync(args.record.path);

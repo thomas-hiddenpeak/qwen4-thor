@@ -14,6 +14,7 @@ class SipTrunk;
 #include <sofia-sip/tport.h>
 
 #include "live_sip_invite.h"
+#include "q4t/server/sip_refer_target.h"
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -140,6 +141,11 @@ struct Dialog {
   Clock::time_point deadline;
   std::unique_ptr<tport_t, decltype(&tport_unref)> carrier;
   nta_outgoing_t* bye = nullptr;
+  nta_outgoing_t* refer = nullptr;
+  std::string operation{};
+  uint32_t subscription = 0;
+  bool had_refer = false, require_event_id = false;
+  Clock::time_point notify_deadline{};
 };
 }  // namespace
 
@@ -409,6 +415,9 @@ class SipTrunk {
     const auto it = dialogs_.find(leg);
     if (it == dialogs_.end()) return;
     if (it->second.bye) nta_outgoing_destroy(it->second.bye);
+    if (it->second.refer) nta_outgoing_destroy(it->second.refer);
+    if (it->second.subscription)
+      Notify("TRANSFER " + scope_ + " " + it->second.id + " 0");
     nta_leg_destroy(leg);
     dialogs_.erase(it);
   }
@@ -488,6 +497,87 @@ class SipTrunk {
     return true;
   }
 
+  static int ReferResponse(SipTrunk* self, nta_outgoing_t* refer,
+                           const sip_t* sip) {
+    const int status = nta_outgoing_status(refer);
+    if (status < 200) return 0;
+    for (auto& [_, dialog] : self->dialogs_) {
+      if (dialog.refer != refer) continue;
+      const int wire = sip && !nta_sip_is_internal(sip) ? status : 0;
+      self->Notify("REFER_RESPONSE " + dialog.operation + " " +
+                   std::to_string(wire));
+      dialog.refer = nullptr;
+      nta_outgoing_destroy(refer);
+      if (!wire || wire >= 300) dialog.subscription = 0;
+      break;
+    }
+    return 0;
+  }
+
+  std::string BeginRefer(nta_leg_t* leg, Dialog& dialog, std::string_view op,
+                         std::string_view target) {
+    if (!q4t::server::ValidReferTarget(target)) return "invalid_target";
+    if (dialog.refer || dialog.subscription) return "conflict";
+    if (!tport_is_clear_to_send(dialog.carrier.get())) return "failed";
+    const std::string address = "<" + std::string(target) + ">";
+    dialog.refer = nta_outgoing_tcreate(
+        leg, ReferResponse, this, nullptr, SIP_METHOD_REFER, nullptr,
+        NTATAG_TPORT(dialog.carrier.get()),
+        SIPTAG_REFER_TO_STR(address.c_str()),
+        SIPTAG_CONTACT(nta_agent_contact(agent_)), TAG_END());
+    if (!dialog.refer) return "failed";
+    dialog.operation = op;
+    dialog.subscription = nta_outgoing_cseq(dialog.refer);
+    // RFC 3515 allows omission of id only on the first REFER in a dialog.
+    dialog.require_event_id = dialog.had_refer;
+    dialog.had_refer = true;
+    dialog.notify_deadline = Clock::now() + kAckTime;
+    return "submitted";
+  }
+
+  int TransferNotify(Dialog& dialog, const sip_t* sip) {
+    const auto* event = sip->sip_event;
+    if (!event || strcasecmp(event->o_type, "refer")) return 489;
+    if (!dialog.subscription ||
+        (event->o_id ? std::to_string(dialog.subscription) != event->o_id
+                     : dialog.require_event_id))
+      return 481;
+    const auto* state = sip->sip_subscription_state;
+    if (!state || !state->ss_substate) return 400;
+    const bool terminal = !strcasecmp(state->ss_substate, "terminated");
+    if (!terminal && strcasecmp(state->ss_substate, "active") &&
+        strcasecmp(state->ss_substate, "pending"))
+      return 400;
+    if (!sip->sip_content_type ||
+        strcasecmp(sip->sip_content_type->c_type, "message/sipfrag"))
+      return 415;
+    std::string fragment;
+    for (auto* p = sip->sip_payload; p; p = p->pl_next) {
+      if (p->pl_len > 8192 - fragment.size()) return 413;
+      fragment.append(p->pl_data, p->pl_len);
+    }
+    const auto line =
+        std::string_view(fragment).substr(0, fragment.find("\r\n"));
+    if (!line.starts_with("SIP/2.0 ") || line.size() < 12 || line[11] != ' ' ||
+        std::ranges::any_of(line.substr(12), [](unsigned char c) {
+          return (c < 32 && c != '\t') || c == 127;
+        }))
+      return 400;
+    const int code = Decimal(line.substr(8, 3));
+    if (code < 100 || code > 699) return 400;
+    if (terminal) {
+      Notify("TRANSFER " + scope_ + " " + dialog.id + " " +
+             std::to_string(code));
+      dialog.subscription = 0;
+    } else {
+      const int expires = state->ss_expires ? Decimal(state->ss_expires) : 60;
+      if (expires < 0) return 400;
+      dialog.notify_deadline =
+          Clock::now() + std::chrono::seconds(std::min(expires, 3600));
+    }
+    return 200;
+  }
+
   static int InDialog(SipTrunk* self, nta_leg_t* leg, nta_incoming_t* request,
                       const sip_t* sip) {
     if (!self->Verified(request)) return 403;
@@ -503,6 +593,8 @@ class SipTrunk {
     if (sip->sip_cseq->cs_seq <= it->second.remote_cseq) return 500;
     it->second.remote_cseq = sip->sip_cseq->cs_seq;
     if (method == sip_method_options) return 200;
+    if (method == sip_method_notify)
+      return self->TransferNotify(it->second, sip);
     if (method != sip_method_bye) return 488;
     const bool replied =
         nta_incoming_treply(request, 200, nullptr, TAG_END()) >= 0 &&
@@ -561,6 +653,12 @@ class SipTrunk {
     }
     for (auto it = dialogs_.begin(); it != dialogs_.end();) {
       auto current = it++;
+      auto& dialog = current->second;
+      if (dialog.subscription && !dialog.refer &&
+          now >= dialog.notify_deadline) {
+        Notify("TRANSFER " + scope_ + " " + dialog.id + " 0");
+        dialog.subscription = 0;
+      }
       if (current->second.invite || now < current->second.deadline) continue;
       if (!current->second.bye && BeginHangup(current->first, current->second))
         continue;
@@ -591,9 +689,10 @@ class SipTrunk {
     const bool publish = args[0] == "PUBLISH";
     const bool accept = args[0] == "ACCEPT";
     const bool hangup = args[0] == "HANGUP";
+    const bool refer = args[0] == "REFER";
     if (!packet.empty() || !Token(args[1]) ||
-        ((newline != std::string_view::npos) != accept) ||
-        !(((offer || accept || hangup) && count == 4) ||
+        ((newline != std::string_view::npos) != (accept || refer)) ||
+        !(((offer || accept || hangup || refer) && count == 4) ||
           (publish && (count == 4 || count == 5)) ||
           (args[0] == "REJECT" && count == 5))) {
       Notify("ERROR invalid_command");
@@ -603,7 +702,7 @@ class SipTrunk {
     auto it = std::find_if(calls_.begin(), calls_.end(), [&](const auto& call) {
       return call.second.id == args[3];
     });
-    if (scope_ == args[2] && hangup) {
+    if (scope_ == args[2] && (hangup || refer)) {
       const auto d = std::find_if(
           dialogs_.begin(), dialogs_.end(),
           [&](const auto& entry) { return entry.second.id == args[3]; });
@@ -611,6 +710,8 @@ class SipTrunk {
         Notify(result + (it == calls_.end() ? "not_found" : "conflict"));
       else if (d->second.invite || d->second.bye)
         Notify(result + "conflict");
+      else if (refer)
+        Notify(result + BeginRefer(d->first, d->second, args[1], answer));
       else if (BeginHangup(d->first, d->second))
         Notify(result + "submitted");
       else {

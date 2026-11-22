@@ -6967,6 +6967,106 @@
         }
       }
     },
+    "/v1/live/sessions/{session_id}/refer": {
+      "post": {
+        "operationId": "post_v1_live_sessions_session_id_refer",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrier accepted the SIP REFER; empty body"
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_session_refer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtime/calls/{call_id}/refer": {
+      "post": {
+        "operationId": "post_v1_realtime_calls_call_id_refer",
+        "parameters": [
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carrier accepted the SIP REFER; empty body"
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_session_refer"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/realtime/calls/{call_id}/reject": {
       "post": {
         "operationId": "post_v1_realtime_calls_call_id_reject",
@@ -34026,6 +34126,18 @@
             ],
             "additionalProperties": false
           },
+          "live_939": {
+            "type": "object",
+            "properties": {
+              "target_uri": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_4"
+              }
+            },
+            "required": [
+              "target_uri"
+            ],
+            "additionalProperties": false
+          },
           "live_920": {
             "type": "object",
             "properties": {
@@ -34165,6 +34277,21 @@
           },
           "live_session_accept": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_920"
+          },
+          "live_session_refer": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/live_939"
+              },
+              {
+                "properties": {
+                  "target_uri": {
+                    "maxLength": 8192,
+                    "pattern": "^[A-Za-z][A-Za-z0-9+.\\-]*:(?:[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=\\-]|%[0-9A-Fa-f]{2})+(?![\\s\\S])"
+                  }
+                }
+              }
+            ]
           },
           "live_session_reject": {
             "allOf": [

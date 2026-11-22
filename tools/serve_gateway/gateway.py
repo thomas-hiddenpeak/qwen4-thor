@@ -43,6 +43,8 @@ APPLICATION_ROUTES = [
     ('POST', '/v1/live/sessions/{session_id}/accept', 'data'),
     ('POST', '/v1/live/sessions/{session_id}/hangup', 'control'),
     ('POST', '/v1/realtime/calls/{call_id}/hangup', 'control'),
+    ('POST', '/v1/live/sessions/{session_id}/refer', 'control'),
+    ('POST', '/v1/realtime/calls/{call_id}/refer', 'control'),
     ('POST', '/v1/live/sessions/{session_id}/reject', 'control'),
     ('POST', '/v1/realtime/calls/{call_id}/reject', 'control'),
     ('GET', '/v1/live/sessions/{session_id}/fork', 'realtime'),

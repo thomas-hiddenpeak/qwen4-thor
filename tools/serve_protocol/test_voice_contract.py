@@ -47,6 +47,13 @@ class VoiceContract(unittest.TestCase):
         for target in ('/v1/live/sessions/{session_id}/hangup', '/v1/realtime/calls/{call_id}/hangup'):
             self.assertNotIn('requestBody', self.paths[target]['post'])
             self.assertNotIn('content', self.paths[target]['post']['responses']['200'])
+        for target in ('/v1/live/sessions/{session_id}/refer', '/v1/realtime/calls/{call_id}/refer'):
+            op = self.paths[target]['post']
+            self.assertNotIn('content', op['responses']['200'])
+            transfer_body = op['requestBody']['content']['application/json']['schema']
+            self.assertTrue(valid(transfer_body, {'target_uri':'tel:+12025550100'}))
+            for uri in ('', '123', 'sip:', 'sip:a b', 'sips:a%0', 'tel:1\n', 'x:'+'a'*8191):
+                self.assertFalse(valid(transfer_body, {'target_uri':uri}))
         rtc = self.paths['/v1/realtime/calls/{call_id}/reject']['post']
         self.assertFalse(rtc['requestBody']['required'])
         valid_rtc = Draft202012Validator(rtc['requestBody']['content']['application/json']['schema']).is_valid

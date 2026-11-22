@@ -135,6 +135,38 @@ class OwnerTest(SubscriberFixture, TrunkFixture, unittest.TestCase):
         self.command(f'accept {SCOPE} {live} 500')
         self.assertEqual(self.read_owner(), 404)
 
+    def test_transfer_timeout_late_receipt_and_retry(self):
+        peer, token, tag, live = self.incoming(self.offer())
+        refer = f'refer {SCOPE} {live} tel:+12025550100'
+        self.command(refer+' 200')
+        self.assertEqual(self.read_owner(), 409)
+        self.command(f'accept {SCOPE} {live} 2000')
+        peer.response(200, 'INVITE', token)
+        peer.send('ACK', token, to_tag=tag, branch=token+'ack')
+        self.assertEqual(self.read_owner(), 200)
+        self.command(refer+' 200')
+        original = peer.dialog_request('REFER', token, tag)
+        self.assertEqual(self.read_owner(), 504)
+        self.command(refer+' 200')
+        self.assertEqual(self.read_owner(), 409)
+        peer.reply_dialog(original, 486)
+        # A later request has its own receipt, even if the old 486 is repeated.
+        end = time.monotonic() + 3
+        while time.monotonic() < end:
+            self.command(refer+' 2000')
+            if not select.select([self.owner.stdout], [], [], .08)[0]:
+                break
+            self.assertEqual(self.read_owner(), 409)
+        else:
+            self.fail('late refusal never released the timed-out operation')
+        retry = peer.dialog_request('REFER', token, tag)
+        peer.reply_dialog(original, 486)
+        self.assertFalse(select.select([self.owner.stdout], [], [], .08)[0])
+        peer.reply_dialog(retry, 403)
+        self.assertEqual(self.read_owner(), 502)
+        peer.send('BYE', token, to_tag=tag, branch=token+'bye', seq=2)
+        peer.response(200, 'BYE', token, branch=token+'bye', seq=2)
+
     def test_invalid_media_address_releases_reservation_for_reject(self):
         peer, token, tag, live = self.incoming(self.offer('127.0.0.2'))
         self.command(f'accept {SCOPE} {live} 2000')

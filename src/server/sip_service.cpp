@@ -133,6 +133,11 @@ ObjectReply Unknown() {
 SipInvitation::~SipInvitation() { CryptoWipe(&offer); }
 
 class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
+  struct ReferRequest {
+    std::string id;
+    int wire = -1;
+    std::string failure;
+  };
   struct Call {
     ~Call() { CryptoWipe(&offer); }
     std::string id, realtime_id, offer, peer;
@@ -142,6 +147,7 @@ class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
     bool reserved = false, media_pending = false, media_ready = false;
     bool abandoned = false, hanging_up = false, retired = false;
     std::atomic<bool> ended{false}, lost{false};
+    std::shared_ptr<ReferRequest> refer;
   };
 
   class Invitation final : public SipInvitation {
@@ -200,6 +206,9 @@ class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
   bool Online() const { return online_.load(); }
   uint64_t WebhookFailures() const { return webhook_failures_.load(); }
   uint64_t Delivered() const { return delivered_.load(); }
+  uint64_t TransfersAnswered() const { return transfers_answered_.load(); }
+  uint64_t TransfersFailed() const { return transfers_failed_.load(); }
+  uint64_t TransfersUnknown() const { return transfers_unknown_.load(); }
 
   std::optional<ObjectReply> Reserve(std::string_view scope,
                                      std::string_view id,
@@ -272,6 +281,37 @@ class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
     if (call->bye_status >= 300)
       return Error(502, "sip_hangup_rejected",
                    "Carrier returned SIP " + std::to_string(call->bye_status));
+    return Unknown();
+  }
+
+  std::optional<ObjectReply> Refer(std::string_view scope, std::string_view id,
+                                   std::string_view target,
+                                   Clock::time_point deadline) {
+    if (!online_ || scope != scope_) return {};
+    std::unique_lock lock(mutex_);
+    const auto it = FindCall(id);
+    if (it == calls_.end()) return {};
+    const auto call = it->second;
+    if (call->ack != 200 || call->hanging_up || call->ended || call->refer)
+      return Error(409, "sip_call_conflict", "Call unavailable for transfer");
+    auto op = std::make_shared<ReferRequest>();
+    op->id = detail::NewRequestId("r-");
+    if (!signal_.Send("REFER " + op->id + " " + scope_ + " " + call->id + "\n" +
+                      std::string(target)))
+      return Error(503, "sip_control_unavailable", "Call control unavailable");
+    call->refer = op;
+    // A late receipt releases its own operation, even after HTTP timed out.
+    updated_.wait_until(lock, deadline, [&] {
+      return op->wire >= 0 || !op->failure.empty() || call->retired;
+    });
+    if (op->failure == "conflict" || op->failure == "not_found")
+      return Error(409, "sip_call_conflict", "Call unavailable for transfer");
+    if (!op->failure.empty())
+      return Error(503, "sip_control_unavailable", "Carrier unavailable");
+    if (op->wire >= 300)
+      return Error(502, "sip_refer_rejected",
+                   "Carrier returned SIP " + std::to_string(op->wire));
+    if (op->wire >= 200) return ObjectReply{};
     return Unknown();
   }
 
@@ -389,6 +429,26 @@ class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
       if (word[2] != "submitted") ++webhook_failures_;
       return;
     }
+    if (word[1].starts_with("r-") &&
+        (word[0] == "RESULT" || word[0] == "REFER_RESPONSE")) {
+      if (word[2] == "submitted") return;
+      for (auto& [_, call] : calls_) {
+        if (!call->refer || call->refer->id != word[1]) continue;
+        if (word[0] == "RESULT") {
+          call->refer->failure = word[2];
+        } else {
+          int code = 0;
+          auto [end, ec] =
+              std::from_chars(word[2].begin(), word[2].end(), code);
+          call->refer->wire =
+              ec == std::errc{} && end == word[2].end() ? code : 0;
+        }
+        call->refer.reset();
+        updated_.notify_all();
+        break;
+      }
+      return;
+    }
     if (word[0] == "RESULT") {
       auto it = calls_.find(word[1]);
       if (it == calls_.end() || !it->second->requested) return;
@@ -430,6 +490,17 @@ class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
       if (live_ && !signal_.Send(publish)) ++webhook_failures_;
       if (realtime_ && !signal_.Send(publish + " " + call->realtime_id))
         ++webhook_failures_;
+      return;
+    }
+    if (word[0] == "TRANSFER") {
+      int code = 0;
+      auto [end, ec] = std::from_chars(word[3].begin(), word[3].end(), code);
+      if (ec != std::errc{} || end != word[3].end() || code < 200)
+        ++transfers_unknown_;
+      else if (code < 300)
+        ++transfers_answered_;
+      else
+        ++transfers_failed_;
       return;
     }
     auto it = calls_.find(id);
@@ -524,6 +595,8 @@ class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
   Calls calls_;
   std::atomic<bool> online_{false};
   std::atomic<uint64_t> webhook_failures_{0}, delivered_{0};
+  std::atomic<uint64_t> transfers_answered_{0}, transfers_failed_{0},
+      transfers_unknown_{0};
   bool live_ = false, realtime_ = false;
   std::jthread reader_;
 };
@@ -593,16 +666,23 @@ std::string SipService::HealthJson() const {
   std::lock_guard lock(mutex_);
   int ready = 0;
   uint64_t failures = 0, delivered = 0;
+  uint64_t answered = 0, failed = 0, unknown = 0;
   for (const auto& trunk : trunks_) {
     ready += trunk->Online();
     failures += trunk->WebhookFailures();
     delivered += trunk->Delivered();
+    answered += trunk->TransfersAnswered();
+    failed += trunk->TransfersFailed();
+    unknown += trunk->TransfersUnknown();
   }
   return OutputJson(
       Object({{"configured", Number(configured_)},
               {"ready", Number(ready)},
               {"activation_failures", Number(activation_failures_)},
               {"webhooks_delivered", Number(delivered)},
+              {"transfers_answered", Number(answered)},
+              {"transfers_failed", Number(failed)},
+              {"transfers_unknown", Number(unknown)},
               {"webhook_failures", Number(failures)}}));
 }
 
@@ -629,6 +709,19 @@ ObjectReply SipService::Hangup(std::string_view scope, std::string_view id,
   }
   for (const auto& trunk : trunks)
     if (auto reply = trunk->Hangup(scope, id, deadline)) return *reply;
+  return Error(404, "not_found", "Call not found");
+}
+
+ObjectReply SipService::Refer(std::string_view scope, std::string_view id,
+                              std::string_view target,
+                              Clock::time_point deadline) {
+  std::vector<std::shared_ptr<Trunk>> trunks;
+  {
+    std::lock_guard lock(mutex_);
+    trunks = trunks_;
+  }
+  for (const auto& trunk : trunks)
+    if (auto reply = trunk->Refer(scope, id, target, deadline)) return *reply;
   return Error(404, "not_found", "Call not found");
 }
 

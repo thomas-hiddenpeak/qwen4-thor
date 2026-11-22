@@ -194,3 +194,9 @@ await client.live.sessions.accept(event.data.session_id, {
 | 主动挂断获得远端失败状态 | HTTP 502，错误消息保留 SIP 状态码。缺少最终回执返回 504。 |
 
 信令进程和 `q4t-sip-media` 放在模型可执行文件同目录。媒体默认绑定中继的具体监听 IP，仅向本次已认证 TLS 连接的对端 IP 传音。如果媒体中继与信令对端地址不同，或信令监听通配地址，在对应 trunk 增加 `"media": {"local_ip": "192.0.2.10", "peer_ip": "192.0.2.20"}`，两者使用同一地址族的实际单播地址。SDP 必须匹配批准的对端。实际电话对端验证过 Opus 和 G.711；SDK 至真实项目查询的通话使用 Opus。[客户边界与验收](evidence/serve-live-sip-accept-20261123/README.md)。
+
+### 在已接听通话上转接
+
+所属客户可调用 `client.live.sessions.refer(session_id, {target_uri})` 或 `client.realtime.calls.refer(call_id, {target_uri})`。原生控制通道将目标原样放入 Refer-To，通过来电中继的已认证 TLS 连接发送。两个 ID 共享同一笔转接。最终 SIP 2xx 得到空正文 HTTP 200，远端拒绝得到携带 SIP 状态码的 502，五秒截止仍缺答复得到 504。超时后中继可能继续处理，待前一请求或订阅结束才允许重试。
+
+中继通过 NOTIFY 报告 转接目标的结果。`/v1/config` 的 `sip.transfers_answered`、`transfers_failed` 和 `transfers_unknown` 分别累计目标接通、目标拒绝和缺少明确终态。参与方仍可通过 BYE 结束原通话。已验证本机电话对端对两种 SDK 的拒绝、受理、忙线及接通回报。[实测](evidence/serve-live-sip-transfer-20261123/README.md)。

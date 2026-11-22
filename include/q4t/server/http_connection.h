@@ -44,7 +44,7 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
     return HttpConnectionClass::kObservation;
   if ((method == "GET" &&
        (path == "/healthz" || path == "/livez" || path == "/readyz")) ||
-      IsCancellationRequest(method, path) || (IsSipReject(method, path) || IsSipHangup(method, path)))
+      IsCancellationRequest(method, path) || (IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path)))
     return HttpConnectionClass::kControl;
   if (method == "GET" && (path == "/metrics" || path == "/v1/config" ||
                           path == "/v1/capabilities" || path == "/v1/models" ||

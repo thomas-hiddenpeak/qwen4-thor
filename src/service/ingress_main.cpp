@@ -409,7 +409,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
     *control = false;
     return true;
   }
-  if (server::IsSipReject(method, path) || server::IsSipHangup(method, path)) {
+  if (server::IsSipReject(method, path) || server::IsSipHangup(method, path) || server::IsSipRefer(method, path)) {
     *control = true;
     return true;
   }

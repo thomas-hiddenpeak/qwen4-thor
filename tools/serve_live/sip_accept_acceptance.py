@@ -47,7 +47,7 @@ class Stage(signal.Stage):
             time.sleep(.01)
         require(file.is_file(), f'SDK step {file.name} unavailable, exit {sdk.poll()}')
 
-    def client(self, live_id, stack, blocked_media=False):
+    def client(self, live_id, stack, blocked_media=False, realtime_id=None):
         log = stack.enter_context((self.out/('unready-sdk.log' if blocked_media else 'sdk.log')).open('xb'))
         proc = subprocess.Popen(['node', ROOT/'tools/serve_live/sip_accept_sdk.mjs'],
             stdin=subprocess.PIPE, stdout=log, stderr=log,
@@ -57,7 +57,7 @@ class Stage(signal.Stage):
                 proc.kill()
             proc.wait(3)
         stack.callback(finish)
-        args = dict(id=live_id, blocked_media=blocked_media, port=self.plan['public_port'], key=self.keys['alpha'],
+        args = dict(id=live_id, realtime_id=realtime_id, blocked_media=blocked_media, port=self.plan['public_port'], key=self.keys['alpha'],
                     other=self.keys['beta'], out=str(self.out), record=self.plan['record'],
                     sdk=self.plan['sdk_directory'], ca=self.plan['tls']['certificate'])
         with proc.stdin:
@@ -100,24 +100,37 @@ class Stage(signal.Stage):
         return seq
 
     def confirm_bye(self, peer, token, tag, sdk=None):
-        require(peer.reader.readline(8192).split() == [b'BYE', b'sips:phone@127.0.0.1:9', b'SIP/2.0'],
-                'hangup received on original authenticated carrier connection')
-        headers = {}
-        while True:
-            line = peer.reader.readline(8192)
-            if line == b'\r\n':
-                break
-            require(bool(line) and len(headers) < 64, 'bounded BYE headers')
-            key, value = line.split(b':', 1)
-            headers[key.lower()] = value.strip()
-        require(headers[b'call-id'] == (token+'@peer.test').encode() and
-                ('tag='+tag).encode() in headers[b'from'] and
-                ('tag='+token).encode() in headers[b'to'], 'same dialog')
+        headers = peer.dialog_request('BYE', token, tag)
         if sdk is not None:
             require(sdk.poll() is None, 'SDK completed before hangup receipt')
-        fields = [b'SIP/2.0 200 OK'] + [key+b': '+headers[key] for key in
-            (b'via',b'from',b'to',b'call-id',b'cseq')]
-        peer.sock.sendall(b'\r\n'.join(fields+[b'Content-Length: 0', b'', b'']))
+        peer.reply_dialog(headers, 200)
+
+    def transfers(self, peer, token, tag, contact, sdk):
+        first = peer.dialog_request('REFER', token, tag)
+        require(first[b'refer-to'] == b'<tel:+12025550100>', 'Live transfer target')
+        peer.reply_dialog(first, 486)
+        retry = peer.dialog_request('REFER', token, tag)
+        require(retry[b'refer-to'] == b'<sips:help@desk.invalid;transport=tls?Subject=A%20B>',
+                'Realtime transfer target')
+        event = 'refer;id=' + retry[b'cseq'].split()[0].decode()
+        peer.transfer_notify(token, tag, contact, 2, event, 'active;expires=30',
+                             'SIP/2.0 180 Ringing\r\n')
+        peer.reply_dialog(retry, 202)
+        self.wait_file(self.out/'transfer-overlap', sdk, 8)
+        peer.transfer_notify(token, tag, contact, 3, event, 'terminated',
+                             'SIP/2.0 486 Busy Here\r\n')
+        save(self.out/'retry-allowed', True)
+        last = peer.dialog_request('REFER', token, tag)
+        require(last[b'refer-to'] == b'<tel:+12025550101>', 'new Live transfer target')
+        peer.reply_dialog(last, 200)
+        event = 'refer;id=' + last[b'cseq'].split()[0].decode()
+        peer.transfer_notify(token, tag, contact, 4, event, 'terminated',
+                             'SIP/2.0 200 OK\r\n')
+        health = self.health(2)
+        require((health['transfers_failed'], health['transfers_answered'],
+                 health['transfers_unknown']) == (1, 1, 0), 'onward outcomes')
+        save(self.out/'transfer-carrier.json', dict(request_status=[486,202,200],
+             onward_status=[486,200], same_authenticated_dialog=True))
 
     def business(self):
         self.snapshot('before')
@@ -145,8 +158,16 @@ class Stage(signal.Stage):
             require(notice['type']=='live.transport.incoming' and any(
                 h['name'].lower() == 'call-id' and h['value'] == token+'@peer.test'
                 for h in notice['data']['sip_headers']), 'signed event for the same dialog')
+            rtc_id = None
+            if self.dual:
+                rtc = self.receive()['event']
+                require(rtc['type'] == 'realtime.call.incoming' and
+                        rtc['data']['sip_headers'] == notice['data']['sip_headers'] and
+                        rtc['id'] != notice['id'], 'signed Realtime ID for this call')
+                rtc_id = rtc['data']['call_id']
+                self.budget('sdk_requests', 7)
             self.budget('sdk_requests',6)
-            sdk = self.client(notice['data']['session_id'], stack)
+            sdk = self.client(notice['data']['session_id'], stack, realtime_id=rtc_id)
             require(peer.response(200, 'INVITE', token) == tag, 'accepted invitation')
             audio.read_answer(peer.body)
             contact = re.search(r'(sips:[^> ]+)',peer.headers['contact'])[1]
@@ -155,6 +176,8 @@ class Stage(signal.Stage):
             peer.send('ACK', token, to_tag=tag, branch=token+'ack', target=contact)
             self.budget('sidebands')
             self.wait_file(self.out/'sdk-attached', sdk, 10)
+            if self.dual:
+                self.transfers(peer, token, tag, contact, sdk)
             self.budget('voice_inputs')
             seq = self.speech(audio, codec, sdk)
             if self.plan.get('hangup_tail'):
@@ -188,7 +211,7 @@ class Stage(signal.Stage):
                 observed['kinds'].count('session.delegation.created') == 1 and
                 observed['kinds'].count('session.closed') == 1,
                 'model transcription and project lookup quality')
-        self.health(self.carrier_calls)
+        self.health(self.carrier_calls * (2 if self.dual else 1))
         self.same_model()
         self.snapshot('live-drained')
         self.core('core-after')
@@ -255,12 +278,24 @@ class ActivationStage(Stage):
     limits = dict(LIMITS, calls=2, sdk_requests=7)
 
 
+class TransferStage(Stage):
+    limits = dict(LIMITS, sdk_requests=13)
+
+
+def stage_for(plan):
+    if plan.get('dual'):
+        return TransferStage
+    return ActivationStage if plan.get('unready_media') else Stage
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=['prepare','run','finalize'])
     parser.add_argument('--qualification', type=Path)
     parser.add_argument('--hangup-tail', action='store_true')
-    parser.add_argument('--unready-media', action='store_true')
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument('--unready-media', action='store_true')
+    mode.add_argument('--transfer', action='store_true')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     out = args.output.resolve()
@@ -270,8 +305,8 @@ def main():
         plan = read(out/'plan.json')
         signal_worker = Path(plan['binary']).with_name('q4t-live-sip')
         audio_worker = signal_worker.with_name('q4t-sip-media')
-        limits = ActivationStage.limits if args.unready_media else LIMITS
-        plan.update(schema=SCHEMA,limits=limits,unready_media=args.unready_media,
+        plan.update(unready_media=args.unready_media, dual=args.transfer)
+        plan.update(schema=SCHEMA,limits=stage_for(plan).limits,
                     hangup_tail=args.hangup_tail,port=18821,operations_port=18822,
                     public_port=18823,sip_port=18824,sip_binary=str(signal_worker),
                     sip_sha256=sha(signal_worker),audio_worker=str(audio_worker),
@@ -285,11 +320,10 @@ def main():
         require(plan['schema']==SCHEMA and sha(plan['audio_worker'])==plan['audio_sha256'],
                 'stage identity')
         with base.lifecycle.child_subreaper():
-            stage = ActivationStage if plan.get('unready_media') else Stage
-            stage(plan).run()
+            stage_for(plan)(plan).run()
     else:
         plan, result = read(out/'plan.json'), read(out/'result.json')
-        limits = ActivationStage.limits if plan.get('unready_media') else LIMITS
+        limits = stage_for(plan).limits
         require(result['status']=='PASS' and result['default_unchanged'] and
                 result['seconds'] <= limits['seconds'] and all(
                     result['counts'][k]==v for k,v in limits.items() if k not in ('seconds','controls')),
@@ -299,6 +333,8 @@ def main():
         require(all(sha(ROOT/n)==h for n,h in plan['sources'].items()), 'source drift')
         save(out/'acceptance.json', dict(environment=env,seconds=result['seconds'],
             counts=result['counts'],
+            transfers=read(out/'transfer-carrier.json') if plan.get('dual') else None,
+            transfer_sdk=read(out/'transfer-sdk.json') if plan.get('dual') else None,
             blocked_media=read(out/'unready-media.json') if plan.get('unready_media') else None, sdk=read(out/'sdk-receipts.json'), voice=read(out/'voice.json'),
             playout=read(out/'playout.json'), core='42', default_unchanged=True,
             **{k:plan[k] for k in ('binary_sha256','ingress_sha256','sip_sha256','audio_sha256')}))

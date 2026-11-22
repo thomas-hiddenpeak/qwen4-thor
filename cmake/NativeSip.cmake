@@ -8,6 +8,7 @@ if(Q4T_SOFIA_INCLUDE_DIR AND Q4T_SOFIA_LIBRARY)
     ${CMAKE_CURRENT_LIST_DIR}/../src/service/live_sip_invite.cpp)
   set_target_properties(q4t_live_sip PROPERTIES OUTPUT_NAME q4t-live-sip)
   target_compile_features(q4t_live_sip PRIVATE cxx_std_23)
+  target_include_directories(q4t_live_sip PRIVATE ${CMAKE_CURRENT_LIST_DIR}/../include)
   target_include_directories(q4t_live_sip SYSTEM PRIVATE ${Q4T_SOFIA_INCLUDE_DIR}
     ${Q4T_OPENSSL_INCLUDE_DIR} ${Q4T_OPENSSL_ARCH_INCLUDE_DIR})
   target_compile_options(q4t_live_sip PRIVATE -Wall -Wextra -Werror)

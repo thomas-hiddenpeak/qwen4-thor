@@ -617,9 +617,15 @@ Q4T_TEST(live_sip_accept_holds_realtime_lane_while_hangup_uses_control) {
             admission.Usage(0).control_active == 1);
   Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/realtime/calls/rtc_abc/hangup") ==
             HttpConnectionClass::kControl);
+  for (auto path : {"/v1/live/sessions/live_abc/refer",
+                    "/v1/realtime/calls/rtc_abc/refer"}) {
+    Q4T_CHECK(ClassifyHttpConnection("POST", path) ==
+              HttpConnectionClass::kControl);
+  }
   for (auto bad : {"/v1/live/sessions/live_/accept",
                    "/v1/live/sessions/rtc_other/accept",
                    "/v1/realtime/calls/live_other/hangup",
+                   "/v1/realtime/calls/live_other/refer",
                    "/v1/live/sessions/live_id/accept?x=1"}) {
     Q4T_CHECK(ClassifyHttpConnection("POST", bad) ==
               HttpConnectionClass::kBusiness);

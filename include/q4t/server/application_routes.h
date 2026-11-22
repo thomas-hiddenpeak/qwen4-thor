@@ -40,6 +40,9 @@ inline std::string_view SipRejectId(std::string_view path) {
 inline bool IsSipHangup(std::string_view method, std::string_view path) {
   return method == "POST" && !SipControlId(path, "/hangup").empty();
 }
+inline bool IsSipRefer(std::string_view method, std::string_view path) {
+  return method == "POST" && !SipControlId(path, "/refer").empty();
+}
 inline bool IsSipReject(std::string_view method, std::string_view path) {
   return method == "POST" && !SipRejectId(path).empty();
 }
