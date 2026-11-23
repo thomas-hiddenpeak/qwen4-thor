@@ -1,6 +1,7 @@
 # OpenAI SDK type-derived contract
 
-The item, Realtime, Live, Decisions, Responses multi-agent and Managed Agents configuration and session type graphs in
+The item, Realtime, Live, Decisions, Responses multi-agent, Managed Agents,
+Vault credential, and hosted environment type graphs in
 `src/server/contracts/` are generated from the official OpenAI Node SDK
 **7.47.0** declarations. Each graph records its source paths and SHA-256
 digests. The SDK uses the Apache-2.0 license. [Original license](LICENSE)
