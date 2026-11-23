@@ -3966,7 +3966,7 @@
     "tools/serve_recovery/profile_duplex_targeted.py": "5e50d2fbd64f411d8e7f80c706ad72dcf6a342b94bd3fbfb4c68f36ed75e091a",
     "tools/serve_recovery/profile_evidence.py": "e7bbd7ead4ae801ab525af9bc45ada2e61b758bb899a868c2a9ce385fdcb7e79",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
-    "tools/serve_recovery/profile_live_reuse.py": "9f5179e7d6d283b5c9c21b64ee2d3a8604a075dbe93e8558378734f5e209944d",
+    "tools/serve_recovery/profile_live_reuse.py": "16599db4f6ddd50509d883f0db42e76b5a0cf23a3d6c1c4a6ec364f3cc58d137",
     "tools/serve_recovery/profile_managed_acceptance.py": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7",
     "tools/serve_recovery/profile_manager.py": "e25ff91dcfca63dcd1a8afaf211813a14e0684ebccbd9d9f65546480fefdff92",
     "tools/serve_recovery/profile_mcp_codec.py": "7e15a4c46f22822e1b22f85d49756f4f486e42b701c2b7ff90ec7a84674ea722",

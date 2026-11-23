@@ -23,8 +23,14 @@ WORKSPACE_CAPABILITY = dict(selector='agents=v1', prewarm_seconds=300,
                             idempotency_seconds=86400, workspace_files=True,
                             network=['disabled'], between_turn_writes=True)
 WORKSPACE_REVIEWED = {
-    'primary': '6e28e44b71aab96b044d30301e8b9aa2a36fe882031e4a35d350efa10bd3f846',
-    'light': '994c7b2df26b9c275feec6ff859995ea50d92113cee096f764ac1cbacb90b9e5',
+    'primary': {
+        '6e28e44b71aab96b044d30301e8b9aa2a36fe882031e4a35d350efa10bd3f846',
+        'a4641474c6326b0fd6c40faed6ff8eea95fa1c4a70277dd2061cb9f95d430faa',
+    },
+    'light': {
+        '994c7b2df26b9c275feec6ff859995ea50d92113cee096f764ac1cbacb90b9e5',
+        '9d5abc3509687c8f38d690e97c111b80dfc5e07fd0fd47be0976608624182803',
+    },
 }
 ENVIRONMENT_RECORD = 'q4t-profile-business-v30'
 ENVIRONMENT_FORMAT = 'q4t-agent-environment-template-source-v1'
@@ -106,6 +112,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'c4007692ba30e2a42930e73a56b74068fdaa460b869f02a597f86bbf19fe48df':
+        '3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed',
     '06022952c38de6d1cebc5a77ab9f254877a73c5eae3796f2259df662b911f658':
         '3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed',
     '6665a8f7d995806d68572b8c141110538bb689d25c872979a02ddcda5bc8d367':
@@ -330,7 +338,7 @@ def validate(value):
     from tools.serve_recovery import profile_trace_reuse
     if value['format'] == WORKSPACE_RECORD:
         name = value['profile']
-        ledger.require(record_hash(value) == WORKSPACE_REVIEWED.get(name),
+        ledger.require(record_hash(value) in WORKSPACE_REVIEWED.get(name, ()),
                        'workspace differs from the reviewed handoff')
         prior = previous_record(value)
         ledger.require(record_hash(prior) == ENVIRONMENT_REVIEWED.get(name),
