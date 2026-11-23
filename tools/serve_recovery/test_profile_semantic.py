@@ -308,6 +308,13 @@ class SemanticMigration(unittest.TestCase):
         result = copy.deepcopy(value)
         migration.realtime_pending_capabilities(result)
         self.assertEqual(result, value)
+        old = copy.deepcopy(value)
+        del old['live'], old['realtime']['calls'], old['realtime']['client_secrets']
+        old['realtime']['pending_execution'] = ['conversation', 'live']
+        self.assertTrue(migration.explicit_extension(old, value))
+        self.assertFalse(migration.explicit_extension(value, old))
+        old['preserved_route'] = True
+        self.assertFalse(migration.explicit_extension(old, value))
         for mutate in (lambda v:v.pop('live'), lambda v:v['realtime'].pop('calls'),
                        lambda v:v['realtime'].pop('client_secrets'),
                        lambda v:v['realtime'].update(pending_execution=['live']),

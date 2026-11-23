@@ -92,13 +92,14 @@ V26_SOURCES = tuple(sorted(set(V25_SOURCES) | {
     'tools/serve_realtime/tracing_checks.py',
     *('tools/serve_recovery/'+name+'.py' for name in
       ('profile_trace_evidence', 'profile_trace_reuse', 'profile_trace_source'))}))
-SOURCES = tuple(sorted((*V26_SOURCES, 'tools/serve_recovery/model_content.py')))
+V27_SOURCES = tuple(sorted((*V26_SOURCES, 'tools/serve_recovery/model_content.py')))
+SOURCES = tuple(sorted((*V27_SOURCES, 'tools/serve_recovery/profile_live_reuse.py')))
 SOURCES_BY_VERSION = (
     (), LEGACY_SOURCES, V2_SOURCES, V3_SOURCES, V4_SOURCES, V5_SOURCES,
     V6_SOURCES, V7_SOURCES, V8_SOURCES, V9_SOURCES, V10_SOURCES, V11_SOURCES,
     V12_SOURCES, V13_SOURCES, V14_SOURCES, V15_SOURCES, V16_SOURCES,
     V17_SOURCES, V18_SOURCES, V19_SOURCES, V20_SOURCES, V21_SOURCES,
-    V22_SOURCES, V23_SOURCES, V24_SOURCES, V25_SOURCES, V26_SOURCES, SOURCES)
+    V22_SOURCES, V23_SOURCES, V24_SOURCES, V25_SOURCES, V26_SOURCES, V27_SOURCES, SOURCES)
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
@@ -367,7 +368,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=repository, text=True).strip())
-    value = dict(version=27, profile='q4t-service-recovery-v27', repository=str(repository),
+    value = dict(version=28, profile='q4t-service-recovery-v28', repository=str(repository),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
@@ -400,10 +401,10 @@ def _verify(package, digest, *, reviewed_binding=None):
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
         *(('model_ctime_binding',) if 'model_ctime_binding' in value else ()),
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
-        *(('ingress_mode',) if version in range(2, 28) else ()),
-        *(('tls_configuration',) if version in range(4, 28) else ()),
-        *(('recovery_profiles', 'recovery_profile_policy') if version in range(12, 28) else ())))
-    ledger.require(type(version) is int and version in range(1, 28) and
+        *(('ingress_mode',) if version in range(2, len(SOURCES_BY_VERSION)) else ()),
+        *(('tls_configuration',) if version in range(4, len(SOURCES_BY_VERSION)) else ()),
+        *(('recovery_profiles', 'recovery_profile_policy') if version in range(12, len(SOURCES_BY_VERSION)) else ())))
+    ledger.require(type(version) is int and version in range(1, len(SOURCES_BY_VERSION)) and
         value['profile'] == 'q4t-service-recovery-v'+str(version) and
         value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
         value['resource_mode'] == 'process' and
@@ -419,10 +420,10 @@ def _verify(package, digest, *, reviewed_binding=None):
              'gateway-policy.json', 'native-build.json'}
     if value.get('recovery_profiles') is not None:
         names |= {'profile-primary.json', 'profile-light.json'}
-    if version in range(4, 28):
+    if version in range(4, len(SOURCES_BY_VERSION)):
         ledger.require((value['tls_configuration'] is not None) == (native and value['tls']),
                        'TLS configuration and native mode differ')
-    if value['tls'] and not (version in range(4, 28) and native):
+    if value['tls'] and not (version in range(4, len(SOURCES_BY_VERSION)) and native):
         names |= {'certificate.pem', 'private-key.pem'}
     ledger.require(type(value['files']) is dict and value['files'].keys() == names,
                    'recovery source inventory changed')

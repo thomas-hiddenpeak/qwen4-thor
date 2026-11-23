@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Live 正式主轻资格已封存。两份新记录均可还原旧版完整业务，显式正向迁移通过，跨能力自动回退被拒绝。恢复包 v28 核对实装媒体程序。默认 rev428；继续真实托管候选。[正式资格与兼容边界](evidence/serve-live-registry-20261123/README.md)
+
 Live 最新引擎的两套实际 HTTP 容量、内存准入、工作程序与业务回执已绑定到封包输入，旧验收文件可独立重放。两组正例和九个反例通过，继续封入正式托管资格。[主轻输入](evidence/serve-live-profile-observations-20261123/README.md)
 
 已用 rev428 同一组真实主包、回退包在私有部署触发主网关 SIGABRT。一次设备探测后，第 2 代模型接管并答 42，可读取第 1 代已存回答；正式部署保持停止。[自动版本回退验收](evidence/serve-control-fallback-20261123/README.md)

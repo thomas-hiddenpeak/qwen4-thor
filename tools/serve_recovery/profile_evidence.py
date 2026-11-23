@@ -589,6 +589,9 @@ def tracing_enabled(capabilities):
 
 
 def format_for(profile, identity=None, capabilities=None, business_value=None):
+    if 'live' in (capabilities or {}):
+        from tools.serve_recovery import profile_live_reuse
+        return profile_live_reuse.RECORD_FORMAT
     if tracing_enabled(capabilities):
         return TRACING_FORMAT
     if mcp_enabled(capabilities):
@@ -1532,7 +1535,8 @@ def business(value, identity, selected=None, capabilities=None):
                        (('realtime_speech',) if speech_enabled(capabilities) else ()) +
                        (('realtime_duplex',) if duplex_enabled(capabilities) else ()) +
                        (('realtime_mcp',) if mcp_enabled(capabilities) else ()) +
-                       (('realtime_tracing',) if tracing_enabled(capabilities) else ()))
+                       (('realtime_tracing',) if tracing_enabled(capabilities) else ()) +
+                       (('live',) if 'live' in (capabilities or {}) else ()))
     if tracing_enabled(capabilities):
         from tools.serve_recovery import profile_trace_evidence as tracing
         tracing.business(value['realtime_tracing'])
@@ -1635,7 +1639,11 @@ def validate(value, registry, name, digest):
     ledger.require(actual == registry['qualifications'][name],
                    'profile receipt does not match retained observations')
     business(value['business'], value['identity'], value['capacity'], value['capabilities'])
-    if 'reused_business' in value:
+    if 'live' in value['capabilities']:
+        from tools.serve_recovery import profile_live_reuse
+        ledger.require('reused_business' in value, 'Live business source missing')
+        profile_live_reuse.validate(value)
+    elif 'reused_business' in value:
         if value['reused_business'].get('format') == 'q4t-tracing-profile-source-reuse-v1':
             from tools.serve_recovery import profile_trace_reuse as verifier
         elif value['reused_business'].get('format') == 'q4t-mcp-profile-source-reuse-v1':

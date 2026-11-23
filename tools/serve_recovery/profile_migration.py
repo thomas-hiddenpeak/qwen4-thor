@@ -524,6 +524,20 @@ def extends(previous, target):
     return previous == target
 
 
+def explicit_extension(previous, target):
+    """Compare qualified semantics when a declared pending capability ships."""
+    old, new = previous.get('realtime', {}), target.get('realtime', {})
+    if ('live' not in previous and 'live' in target and
+            type(old) is dict and type(new) is dict and
+            old.get('pending_execution') == ['conversation', 'live'] and
+            new.get('pending_execution') == []):
+        # semantic_capabilities verified the actual Live/calls/secret declarations.
+        # Preserve both raw observations for permit hashes and compare every
+        # unrelated field with the usual additive-only rule.
+        previous = dict(previous, realtime=dict(old, pending_execution=[]))
+    return extends(previous, target)
+
+
 def observations(registry, evidence):
     profile_contract.validate(registry)
     ledger.keys(evidence, profile_contract.NAMES)
@@ -548,7 +562,7 @@ def permit(previous, target, previous_evidence, target_evidence,
     extension = old_contract != new_contract
     ledger.require(type(allow_capability_extension) is bool and
         (not extension or (allow_capability_extension and not automatic and
-                           extends(old_contract, new_contract))),
+                           explicit_extension(old_contract, new_contract))),
         'migration would change application capabilities without an explicit '
         'qualified extension; automatic recovery cannot lose or add features')
     old_base, new_base = (registry['identity'].get('native_tts_base')

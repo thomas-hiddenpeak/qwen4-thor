@@ -18,6 +18,17 @@ def compatible(base, assets, registry):
         'qualified profiles do not belong to this engine/assets/capacity')
 
 
+def verify_record(path, registry, name, base, *, require_live=True):
+    value = profile_record.read(path)
+    digest = engine.sha(path)
+    profile_evidence.validate(value, registry, name, digest)
+    live = value['business'].get('live')
+    if live is not None or (require_live and base.get('live_workers') is not None):
+        ledger.require(live is not None and base.get('live_workers') == live['workers'],
+                       'installed Live workers differ from the qualified profile')
+    return digest
+
+
 def prepare(target, base, assets, path, configuration):
     if path is None:
         ledger.require(configuration is None, 'profile policy needs qualified profiles')
@@ -30,8 +41,7 @@ def prepare(target, base, assets, path, configuration):
     names = []
     for name in profile_contract.NAMES:
         source = path.parent/(name+'.json')
-        digest = engine.sha(source)
-        profile_evidence.validate(profile_record.read(source), registry, name, digest)
+        digest = verify_record(source, registry, name, base)
         filename = 'profile-'+name+'.json'
         destination = Path(target)/filename
         shutil.copyfile(source, destination)
@@ -53,4 +63,4 @@ def verify(package, manifest, base):
     profile_policy.configuration(configuration)
     for name in profile_contract.NAMES:
         path = Path(package)/('profile-'+name+'.json')
-        profile_evidence.validate(profile_record.read(path), registry, name, engine.sha(path))
+        verify_record(path, registry, name, base, require_live=manifest['version'] >= 28)
