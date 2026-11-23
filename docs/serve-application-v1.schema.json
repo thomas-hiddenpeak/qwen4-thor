@@ -28149,6 +28149,146 @@
       "required": [],
       "additionalProperties": false
     },
+    "agent_0": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/agent_1"
+        },
+        "max_concurrent_subagents": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "agent_1": {
+      "type": "boolean"
+    },
+    "agent_2": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_3"
+        }
+      ]
+    },
+    "agent_3": {
+      "type": "number"
+    },
+    "agent_4": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/agent_5"
+        },
+        "agent": {
+          "$ref": "#/$defs/agent_12"
+        },
+        "arguments": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "call_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "id": {
+          "$ref": "#/$defs/agent_16"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_17"
+        }
+      },
+      "required": [
+        "action",
+        "arguments",
+        "call_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_5": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_6"
+        },
+        {
+          "$ref": "#/$defs/agent_7"
+        },
+        {
+          "$ref": "#/$defs/agent_8"
+        },
+        {
+          "$ref": "#/$defs/agent_9"
+        },
+        {
+          "$ref": "#/$defs/agent_10"
+        },
+        {
+          "$ref": "#/$defs/agent_11"
+        }
+      ]
+    },
+    "agent_6": {
+      "const": "spawn_agent"
+    },
+    "agent_7": {
+      "const": "interrupt_agent"
+    },
+    "agent_8": {
+      "const": "list_agents"
+    },
+    "agent_9": {
+      "const": "send_message"
+    },
+    "agent_10": {
+      "const": "followup_task"
+    },
+    "agent_11": {
+      "const": "wait_agent"
+    },
+    "agent_12": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_13"
+        },
+        {
+          "$ref": "#/$defs/agent_14"
+        }
+      ]
+    },
+    "agent_13": {
+      "type": "null"
+    },
+    "agent_14": {
+      "type": "object",
+      "properties": {
+        "agent_name": {
+          "$ref": "#/$defs/agent_15"
+        }
+      },
+      "required": [
+        "agent_name"
+      ],
+      "additionalProperties": false
+    },
+    "agent_15": {
+      "type": "string"
+    },
+    "agent_16": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_13"
+        },
+        {
+          "$ref": "#/$defs/agent_15"
+        }
+      ]
+    },
+    "agent_17": {
+      "const": "multi_agent_call"
+    },
     "agent_18": {
       "type": "object",
       "properties": {
@@ -28179,8 +28319,27 @@
       ],
       "additionalProperties": false
     },
-    "agent_33": {
-      "const": "multi_agent_call_output"
+    "agent_19": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_13"
+        },
+        {
+          "$ref": "#/$defs/agent_20"
+        }
+      ]
+    },
+    "agent_20": {
+      "type": "object",
+      "properties": {
+        "agent_name": {
+          "$ref": "#/$defs/agent_15"
+        }
+      },
+      "required": [
+        "agent_name"
+      ],
+      "additionalProperties": false
     },
     "agent_21": {
       "type": "array",
@@ -28207,12 +28366,6 @@
       ],
       "additionalProperties": false
     },
-    "agent_32": {
-      "const": "output_text"
-    },
-    "agent_15": {
-      "type": "string"
-    },
     "agent_23": {
       "anyOf": [
         {
@@ -28238,6 +28391,64 @@
           "$ref": "#/$defs/agent_30"
         }
       ]
+    },
+    "agent_26": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "filename": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_27"
+        }
+      },
+      "required": [
+        "file_id",
+        "filename",
+        "index",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_27": {
+      "const": "file_citation"
+    },
+    "agent_28": {
+      "type": "object",
+      "properties": {
+        "end_index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "start_index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "title": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_29"
+        },
+        "url": {
+          "$ref": "#/$defs/agent_15"
+        }
+      },
+      "required": [
+        "end_index",
+        "start_index",
+        "title",
+        "type",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "agent_29": {
+      "const": "url_citation"
     },
     "agent_30": {
       "type": "object",
@@ -28274,10 +28485,188 @@
     "agent_31": {
       "const": "container_file_citation"
     },
-    "agent_3": {
-      "type": "number"
+    "agent_32": {
+      "const": "output_text"
     },
-    "agent_28": {
+    "agent_33": {
+      "const": "multi_agent_call_output"
+    },
+    "agent_34": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/agent_5"
+        },
+        "agent": {
+          "$ref": "#/$defs/agent_35"
+        },
+        "arguments": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "call_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_17"
+        }
+      },
+      "required": [
+        "action",
+        "arguments",
+        "call_id",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_35": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_36"
+        }
+      ]
+    },
+    "agent_36": {
+      "type": "object",
+      "properties": {
+        "agent_name": {
+          "$ref": "#/$defs/agent_15"
+        }
+      },
+      "required": [
+        "agent_name"
+      ],
+      "additionalProperties": false
+    },
+    "agent_37": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/agent_5"
+        },
+        "agent": {
+          "$ref": "#/$defs/agent_38"
+        },
+        "call_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "output": {
+          "$ref": "#/$defs/agent_40"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_33"
+        }
+      },
+      "required": [
+        "action",
+        "call_id",
+        "id",
+        "output",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_38": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_39"
+        }
+      ]
+    },
+    "agent_39": {
+      "type": "object",
+      "properties": {
+        "agent_name": {
+          "$ref": "#/$defs/agent_15"
+        }
+      },
+      "required": [
+        "agent_name"
+      ],
+      "additionalProperties": false
+    },
+    "agent_40": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent_41"
+      }
+    },
+    "agent_41": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/agent_42"
+        },
+        "logprobs": {
+          "$ref": "#/$defs/agent_49"
+        },
+        "text": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_32"
+        }
+      },
+      "required": [
+        "annotations",
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_42": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent_43"
+      }
+    },
+    "agent_43": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_44"
+        },
+        {
+          "$ref": "#/$defs/agent_45"
+        },
+        {
+          "$ref": "#/$defs/agent_46"
+        },
+        {
+          "$ref": "#/$defs/agent_47"
+        }
+      ]
+    },
+    "agent_44": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "filename": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_27"
+        }
+      },
+      "required": [
+        "file_id",
+        "filename",
+        "index",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_45": {
       "type": "object",
       "properties": {
         "end_index": {
@@ -28305,155 +28694,175 @@
       ],
       "additionalProperties": false
     },
-    "agent_29": {
-      "const": "url_citation"
-    },
-    "agent_26": {
+    "agent_46": {
       "type": "object",
       "properties": {
+        "container_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "end_index": {
+          "$ref": "#/$defs/agent_3"
+        },
         "file_id": {
           "$ref": "#/$defs/agent_15"
         },
         "filename": {
           "$ref": "#/$defs/agent_15"
         },
+        "start_index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_31"
+        }
+      },
+      "required": [
+        "container_id",
+        "end_index",
+        "file_id",
+        "filename",
+        "start_index",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_47": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/agent_15"
+        },
         "index": {
           "$ref": "#/$defs/agent_3"
         },
         "type": {
-          "$ref": "#/$defs/agent_27"
+          "$ref": "#/$defs/agent_48"
         }
       },
       "required": [
         "file_id",
-        "filename",
         "index",
         "type"
       ],
       "additionalProperties": false
     },
-    "agent_27": {
-      "const": "file_citation"
+    "agent_48": {
+      "const": "file_path"
     },
-    "agent_16": {
+    "agent_49": {
       "anyOf": [
         {
-          "$ref": "#/$defs/agent_13"
-        },
-        {
-          "$ref": "#/$defs/agent_15"
+          "$ref": "#/$defs/agent_50"
         }
       ]
     },
-    "agent_13": {
-      "type": "null"
+    "agent_50": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent_51"
+      }
     },
-    "agent_19": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/agent_13"
-        },
-        {
-          "$ref": "#/$defs/agent_20"
-        }
-      ]
-    },
-    "agent_20": {
+    "agent_51": {
       "type": "object",
       "properties": {
-        "agent_name": {
+        "bytes": {
+          "$ref": "#/$defs/agent_52"
+        },
+        "logprob": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "token": {
           "$ref": "#/$defs/agent_15"
+        },
+        "top_logprobs": {
+          "$ref": "#/$defs/agent_53"
         }
       },
       "required": [
-        "agent_name"
+        "bytes",
+        "logprob",
+        "token",
+        "top_logprobs"
       ],
       "additionalProperties": false
     },
-    "agent_5": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/agent_6"
-        },
-        {
-          "$ref": "#/$defs/agent_7"
-        },
-        {
-          "$ref": "#/$defs/agent_8"
-        },
-        {
-          "$ref": "#/$defs/agent_9"
-        },
-        {
-          "$ref": "#/$defs/agent_10"
-        },
-        {
-          "$ref": "#/$defs/agent_11"
-        }
-      ]
+    "agent_52": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent_3"
+      }
     },
-    "agent_11": {
-      "const": "wait_agent"
+    "agent_53": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent_54"
+      }
     },
-    "agent_10": {
-      "const": "followup_task"
-    },
-    "agent_9": {
-      "const": "send_message"
-    },
-    "agent_8": {
-      "const": "list_agents"
-    },
-    "agent_7": {
-      "const": "interrupt_agent"
-    },
-    "agent_6": {
-      "const": "spawn_agent"
-    },
-    "agent_4": {
+    "agent_54": {
       "type": "object",
       "properties": {
-        "action": {
-          "$ref": "#/$defs/agent_5"
+        "bytes": {
+          "$ref": "#/$defs/agent_52"
         },
-        "agent": {
-          "$ref": "#/$defs/agent_12"
+        "logprob": {
+          "$ref": "#/$defs/agent_3"
         },
-        "arguments": {
+        "token": {
           "$ref": "#/$defs/agent_15"
-        },
-        "call_id": {
-          "$ref": "#/$defs/agent_15"
-        },
-        "id": {
-          "$ref": "#/$defs/agent_16"
-        },
-        "type": {
-          "$ref": "#/$defs/agent_17"
         }
       },
       "required": [
-        "action",
-        "arguments",
-        "call_id",
+        "bytes",
+        "logprob",
+        "token"
+      ],
+      "additionalProperties": false
+    },
+    "agent_55": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "$ref": "#/$defs/agent_56"
+        },
+        "content": {
+          "$ref": "#/$defs/agent_58"
+        },
+        "id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "phase": {
+          "$ref": "#/$defs/agent_62"
+        },
+        "role": {
+          "$ref": "#/$defs/agent_65"
+        },
+        "status": {
+          "$ref": "#/$defs/agent_66"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_70"
+        }
+      },
+      "required": [
+        "content",
+        "id",
+        "role",
+        "status",
         "type"
       ],
       "additionalProperties": false
     },
-    "agent_17": {
-      "const": "multi_agent_call"
-    },
-    "agent_12": {
+    "agent_56": {
       "anyOf": [
         {
           "$ref": "#/$defs/agent_13"
         },
         {
-          "$ref": "#/$defs/agent_14"
+          "$ref": "#/$defs/agent_57"
         }
       ]
     },
-    "agent_14": {
+    "agent_57": {
       "type": "object",
       "properties": {
         "agent_name": {
@@ -28464,12 +28873,106 @@
         "agent_name"
       ],
       "additionalProperties": false
+    },
+    "agent_58": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent_59"
+      }
+    },
+    "agent_59": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_41"
+        },
+        {
+          "$ref": "#/$defs/agent_60"
+        }
+      ]
+    },
+    "agent_60": {
+      "type": "object",
+      "properties": {
+        "refusal": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_61"
+        }
+      },
+      "required": [
+        "refusal",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_61": {
+      "const": "refusal"
+    },
+    "agent_62": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_13"
+        },
+        {
+          "$ref": "#/$defs/agent_63"
+        },
+        {
+          "$ref": "#/$defs/agent_64"
+        }
+      ]
+    },
+    "agent_63": {
+      "const": "commentary"
+    },
+    "agent_64": {
+      "const": "final_answer"
+    },
+    "agent_65": {
+      "const": "assistant"
+    },
+    "agent_66": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_67"
+        },
+        {
+          "$ref": "#/$defs/agent_68"
+        },
+        {
+          "$ref": "#/$defs/agent_69"
+        }
+      ]
+    },
+    "agent_67": {
+      "const": "in_progress"
+    },
+    "agent_68": {
+      "const": "completed"
+    },
+    "agent_69": {
+      "const": "incomplete"
+    },
+    "agent_70": {
+      "const": "message"
+    },
+    "agent_configuration": {
+      "$ref": "#/$defs/agent_0"
     },
     "agent_input_call": {
       "$ref": "#/$defs/agent_4"
     },
     "agent_input_result": {
       "$ref": "#/$defs/agent_18"
+    },
+    "agent_output_call": {
+      "$ref": "#/$defs/agent_34"
+    },
+    "agent_output_result": {
+      "$ref": "#/$defs/agent_37"
+    },
+    "agent_output_message": {
+      "$ref": "#/$defs/agent_55"
     },
     "agent_history_response_create": {
       "type": "object",
@@ -28506,6 +29009,9 @@
                   },
                   {
                     "$ref": "#/$defs/agent_input_result"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_output_message"
                   }
                 ]
               }
@@ -28725,6 +29231,16 @@
               "type": "null"
             }
           ]
+        },
+        "multi_agent": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/agent_configuration"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [],
@@ -28807,6 +29323,9 @@
                   },
                   {
                     "$ref": "#/$defs/agent_input_result"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_output_message"
                   }
                 ]
               }
@@ -28866,6 +29385,9 @@
                   },
                   {
                     "$ref": "#/$defs/agent_input_result"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_output_message"
                   }
                 ]
               }
@@ -28950,6 +29472,9 @@
                   },
                   {
                     "$ref": "#/$defs/agent_input_result"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_output_message"
                   }
                 ]
               }
@@ -28977,6 +29502,996 @@
         "object"
       ],
       "additionalProperties": false
+    },
+    "agent_response": {
+      "type": "object",
+      "properties": {
+        "access_programs": {
+          "$ref": "#/$defs/862"
+        },
+        "background": {
+          "$ref": "#/$defs/368"
+        },
+        "completed_at": {
+          "$ref": "#/$defs/470"
+        },
+        "conversation": {
+          "$ref": "#/$defs/865"
+        },
+        "created_at": {
+          "$ref": "#/$defs/54"
+        },
+        "error": {
+          "$ref": "#/$defs/867"
+        },
+        "id": {
+          "$ref": "#/$defs/3"
+        },
+        "incomplete_details": {
+          "$ref": "#/$defs/900"
+        },
+        "instructions": {
+          "$ref": "#/$defs/907"
+        },
+        "max_output_tokens": {
+          "$ref": "#/$defs/470"
+        },
+        "max_tool_calls": {
+          "$ref": "#/$defs/470"
+        },
+        "metadata": {
+          "$ref": "#/$defs/909"
+        },
+        "model": {
+          "$ref": "#/$defs/910"
+        },
+        "moderation": {
+          "$ref": "#/$defs/911"
+        },
+        "object": {
+          "$ref": "#/$defs/921"
+        },
+        "output": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/output_item"
+              },
+              {
+                "$ref": "#/$defs/agent_output_call"
+              },
+              {
+                "$ref": "#/$defs/agent_output_result"
+              },
+              {
+                "$ref": "#/$defs/agent_output_message"
+              }
+            ]
+          }
+        },
+        "output_text": {
+          "$ref": "#/$defs/3"
+        },
+        "parallel_tool_calls": {
+          "$ref": "#/$defs/520"
+        },
+        "previous_response_id": {
+          "$ref": "#/$defs/20"
+        },
+        "prompt": {
+          "$ref": "#/$defs/805"
+        },
+        "prompt_cache_diagnostics": {
+          "$ref": "#/$defs/923"
+        },
+        "prompt_cache_key": {
+          "$ref": "#/$defs/20"
+        },
+        "prompt_cache_options": {
+          "$ref": "#/$defs/942"
+        },
+        "prompt_cache_retention": {
+          "$ref": "#/$defs/815"
+        },
+        "reasoning": {
+          "$ref": "#/$defs/818"
+        },
+        "safety_identifier": {
+          "$ref": "#/$defs/20"
+        },
+        "service_tier": {
+          "$ref": "#/$defs/828"
+        },
+        "status": {
+          "$ref": "#/$defs/945"
+        },
+        "temperature": {
+          "$ref": "#/$defs/587"
+        },
+        "text": {
+          "$ref": "#/$defs/837"
+        },
+        "tool_choice": {
+          "$ref": "#/$defs/948"
+        },
+        "tool_usage": {
+          "$ref": "#/$defs/950"
+        },
+        "tools": {
+          "$ref": "#/$defs/386"
+        },
+        "top_logprobs": {
+          "$ref": "#/$defs/470"
+        },
+        "top_p": {
+          "$ref": "#/$defs/587"
+        },
+        "truncation": {
+          "$ref": "#/$defs/860"
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/959"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "user": {
+          "$ref": "#/$defs/27"
+        },
+        "store": {
+          "type": "boolean"
+        },
+        "q4t_moderation_usage": {
+          "type": "object",
+          "properties": {
+            "input_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output_tokens": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1024
+            },
+            "total_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "model_steps": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2
+            }
+          },
+          "required": [
+            "input_tokens",
+            "output_tokens",
+            "total_tokens",
+            "model_steps"
+          ],
+          "additionalProperties": false
+        },
+        "q4t_access_program": {
+          "type": "object",
+          "properties": {
+            "authority": {
+              "const": "q4t-local"
+            },
+            "policy_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "backend_model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "treatment": {
+              "enum": [
+                "standard",
+                "operator_system_instructions"
+              ]
+            }
+          },
+          "required": [
+            "authority",
+            "policy_sha256",
+            "backend_model",
+            "treatment"
+          ],
+          "additionalProperties": false
+        },
+        "personality": {
+          "type": "string",
+          "enum": [
+            "friendly",
+            "pragmatic"
+          ],
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "access_programs",
+        "created_at",
+        "error",
+        "id",
+        "incomplete_details",
+        "instructions",
+        "metadata",
+        "model",
+        "object",
+        "output",
+        "parallel_tool_calls",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "enum": [
+                  "completed",
+                  "incomplete"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "usage"
+            ],
+            "properties": {
+              "usage": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "agent_event_984": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "$ref": "#/$defs/agent_response"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/985"
+        }
+      },
+      "required": [
+        "response",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_986": {
+      "type": "object",
+      "properties": {
+        "content_index": {
+          "$ref": "#/$defs/54"
+        },
+        "item_id": {
+          "$ref": "#/$defs/3"
+        },
+        "output_index": {
+          "$ref": "#/$defs/54"
+        },
+        "part": {
+          "$ref": "#/$defs/987"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/989"
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "agent_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "agent_name"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "content_index",
+        "item_id",
+        "output_index",
+        "part",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_990": {
+      "type": "object",
+      "properties": {
+        "content_index": {
+          "$ref": "#/$defs/54"
+        },
+        "item_id": {
+          "$ref": "#/$defs/3"
+        },
+        "output_index": {
+          "$ref": "#/$defs/54"
+        },
+        "part": {
+          "$ref": "#/$defs/991"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/993"
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "agent_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "agent_name"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "content_index",
+        "item_id",
+        "output_index",
+        "part",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_994": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "$ref": "#/$defs/agent_response"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/995"
+        }
+      },
+      "required": [
+        "response",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1023": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "$ref": "#/$defs/agent_response"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/1024"
+        }
+      },
+      "required": [
+        "response",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1025": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "$ref": "#/$defs/agent_response"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/1026"
+        }
+      },
+      "required": [
+        "response",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1027": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "$ref": "#/$defs/agent_response"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/1028"
+        }
+      },
+      "required": [
+        "response",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1029": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/output_item"
+            },
+            {
+              "$ref": "#/$defs/agent_output_call"
+            },
+            {
+              "$ref": "#/$defs/agent_output_result"
+            },
+            {
+              "$ref": "#/$defs/agent_output_message"
+            }
+          ]
+        },
+        "output_index": {
+          "$ref": "#/$defs/54"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/1030"
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "agent_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "agent_name"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "item",
+        "output_index",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1031": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/output_item"
+            },
+            {
+              "$ref": "#/$defs/agent_output_call"
+            },
+            {
+              "$ref": "#/$defs/agent_output_result"
+            },
+            {
+              "$ref": "#/$defs/agent_output_message"
+            }
+          ]
+        },
+        "output_index": {
+          "$ref": "#/$defs/54"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/1032"
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "agent_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "agent_name"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "item",
+        "output_index",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1048": {
+      "type": "object",
+      "properties": {
+        "content_index": {
+          "$ref": "#/$defs/54"
+        },
+        "delta": {
+          "$ref": "#/$defs/3"
+        },
+        "item_id": {
+          "$ref": "#/$defs/3"
+        },
+        "output_index": {
+          "$ref": "#/$defs/54"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/1049"
+        },
+        "obfuscation": {
+          "type": "string"
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "agent_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "agent_name"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "content_index",
+        "delta",
+        "item_id",
+        "output_index",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1050": {
+      "type": "object",
+      "properties": {
+        "content_index": {
+          "$ref": "#/$defs/54"
+        },
+        "item_id": {
+          "$ref": "#/$defs/3"
+        },
+        "output_index": {
+          "$ref": "#/$defs/54"
+        },
+        "refusal": {
+          "$ref": "#/$defs/3"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/1051"
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "agent_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "agent_name"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "content_index",
+        "item_id",
+        "output_index",
+        "refusal",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1052": {
+      "type": "object",
+      "properties": {
+        "content_index": {
+          "$ref": "#/$defs/54"
+        },
+        "delta": {
+          "$ref": "#/$defs/3"
+        },
+        "item_id": {
+          "$ref": "#/$defs/3"
+        },
+        "logprobs": {
+          "$ref": "#/$defs/1053"
+        },
+        "output_index": {
+          "$ref": "#/$defs/54"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/1058"
+        },
+        "obfuscation": {
+          "type": "string"
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "agent_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "agent_name"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "content_index",
+        "delta",
+        "item_id",
+        "logprobs",
+        "output_index",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1059": {
+      "type": "object",
+      "properties": {
+        "content_index": {
+          "$ref": "#/$defs/54"
+        },
+        "item_id": {
+          "$ref": "#/$defs/3"
+        },
+        "logprobs": {
+          "$ref": "#/$defs/1060"
+        },
+        "output_index": {
+          "$ref": "#/$defs/54"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "text": {
+          "$ref": "#/$defs/3"
+        },
+        "type": {
+          "$ref": "#/$defs/1065"
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "agent_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "agent_name"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "content_index",
+        "item_id",
+        "logprobs",
+        "output_index",
+        "sequence_number",
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_event_1103": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "$ref": "#/$defs/agent_response"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/54"
+        },
+        "type": {
+          "$ref": "#/$defs/1104"
+        }
+      },
+      "required": [
+        "response",
+        "sequence_number",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_response_event": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/964"
+        },
+        {
+          "$ref": "#/$defs/966"
+        },
+        {
+          "$ref": "#/$defs/968"
+        },
+        {
+          "$ref": "#/$defs/970"
+        },
+        {
+          "$ref": "#/$defs/972"
+        },
+        {
+          "$ref": "#/$defs/974"
+        },
+        {
+          "$ref": "#/$defs/976"
+        },
+        {
+          "$ref": "#/$defs/978"
+        },
+        {
+          "$ref": "#/$defs/980"
+        },
+        {
+          "$ref": "#/$defs/982"
+        },
+        {
+          "$ref": "#/$defs/agent_event_984"
+        },
+        {
+          "$ref": "#/$defs/agent_event_986"
+        },
+        {
+          "$ref": "#/$defs/agent_event_990"
+        },
+        {
+          "$ref": "#/$defs/agent_event_994"
+        },
+        {
+          "$ref": "#/$defs/996"
+        },
+        {
+          "$ref": "#/$defs/997"
+        },
+        {
+          "$ref": "#/$defs/999"
+        },
+        {
+          "$ref": "#/$defs/1001"
+        },
+        {
+          "$ref": "#/$defs/1003"
+        },
+        {
+          "$ref": "#/$defs/1005"
+        },
+        {
+          "$ref": "#/$defs/1007"
+        },
+        {
+          "$ref": "#/$defs/1009"
+        },
+        {
+          "$ref": "#/$defs/1011"
+        },
+        {
+          "$ref": "#/$defs/1013"
+        },
+        {
+          "$ref": "#/$defs/1016"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1023"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1025"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1027"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1029"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1031"
+        },
+        {
+          "$ref": "#/$defs/1033"
+        },
+        {
+          "$ref": "#/$defs/1036"
+        },
+        {
+          "$ref": "#/$defs/1040"
+        },
+        {
+          "$ref": "#/$defs/1042"
+        },
+        {
+          "$ref": "#/$defs/1044"
+        },
+        {
+          "$ref": "#/$defs/1046"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1048"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1050"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1052"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1059"
+        },
+        {
+          "$ref": "#/$defs/1066"
+        },
+        {
+          "$ref": "#/$defs/1068"
+        },
+        {
+          "$ref": "#/$defs/1070"
+        },
+        {
+          "$ref": "#/$defs/1072"
+        },
+        {
+          "$ref": "#/$defs/1074"
+        },
+        {
+          "$ref": "#/$defs/1076"
+        },
+        {
+          "$ref": "#/$defs/1078"
+        },
+        {
+          "$ref": "#/$defs/1080"
+        },
+        {
+          "$ref": "#/$defs/1082"
+        },
+        {
+          "$ref": "#/$defs/1084"
+        },
+        {
+          "$ref": "#/$defs/1086"
+        },
+        {
+          "$ref": "#/$defs/1088"
+        },
+        {
+          "$ref": "#/$defs/1090"
+        },
+        {
+          "$ref": "#/$defs/1092"
+        },
+        {
+          "$ref": "#/$defs/1094"
+        },
+        {
+          "$ref": "#/$defs/1096"
+        },
+        {
+          "$ref": "#/$defs/agent_event_1103"
+        },
+        {
+          "$ref": "#/$defs/1105"
+        },
+        {
+          "$ref": "#/$defs/1107"
+        }
+      ]
     }
   },
   "x-q4t": {

@@ -71,6 +71,10 @@ def observations(directory, accepted):
             from tools.serve_responses import beta_profile_acceptance
             proofs = beta_profile_acceptance.verify(phase, plan, declared)
             profiles[name]['evidence_sha256'].update(proofs)
+        if 'multi_agent' in declared.get('responses', {}) or 'agent_change' in plan:
+            from tools.serve_responses import agent_profile_acceptance
+            profiles[name]['evidence_sha256'].update(
+                agent_profile_acceptance.verify(phase, plan, declared))
     profile_contract.capability_pair(*capabilities)
     package.require(profiles['primary']['workers'] == profiles['light']['workers'] and
                     profiles['primary']['protocol_sha256'] == profiles['light']['protocol_sha256'],

@@ -111,13 +111,13 @@ ObjectReply ResponsesExecution::RestoreInputs(
   if (std::chrono::steady_clock::now() >= access_.deadline)
     return Error(408, "request_deadline_exceeded", "Queued inputs expired");
   ChatPlanError error;
-  auto status = ParseResponsesEnvelope(*request, config, &envelope_, &error);
+  auto selected_config = config;
+  selected_config.responses_multi_agent = false;
   if (const auto* selected = inputs.Find("multi_agent_beta")) {
     if (!selected->IsBool()) return Invalid();
-    envelope_.multi_agent_beta = selected->boolean;
-  } else {
-    envelope_.multi_agent_beta = false;
+    selected_config.responses_multi_agent = selected->boolean;
   }
+  auto status = ParseResponsesEnvelope(*request, selected_config, &envelope_, &error);
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());
     reply.value = Object({{"param", String(error.param)}});

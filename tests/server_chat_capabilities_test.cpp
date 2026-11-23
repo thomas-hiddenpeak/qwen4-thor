@@ -485,6 +485,11 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
             responses->GetBool("store_default") &&
             !responses->GetBool("chat_done_sentinel", true));
   Q4T_CHECK(responses->GetString("beta_query_selector") == "beta=true");
+  const auto* agents = responses->Find("multi_agent");
+  Q4T_CHECK(agents && agents->GetString("selector") == "responses_multi_agent=v1" &&
+            agents->GetInt("default_max_concurrent_subagents") == 3 &&
+            agents->GetBool("shared_output_budget") && agents->GetBool("agent_events") &&
+            agents->GetArray("actions") && agents->GetArray("actions")->array.size() == 6);
   Q4T_CHECK(responses->GetBool("previous_response_id") &&
             responses->GetBool("conversation"));
   const auto* identity = responses->Find("tool_identity");

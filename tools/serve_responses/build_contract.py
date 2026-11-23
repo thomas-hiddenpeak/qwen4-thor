@@ -258,7 +258,9 @@ def schema(graph):
     from tools.serve_responses.embeddings_contract import SDK_SOURCES as EMBEDDING_SOURCES
     from tools.serve_responses.transcriptions_contract import SDK_SOURCES as ASR_SOURCES
     agents = json.loads((ROOT/'src/server/contracts/openai_multi_agent_types_v1.json').read_text())
-    definitions.update(graph_definitions(agents, 'agent_', ('input_call', 'input_result')))
+    definitions.update(graph_definitions(agents, 'agent_'))
+    configuration = definitions['agent_'+str(agents['roots']['configuration'])]
+    configuration['properties']['max_concurrent_subagents'] = dict(type='integer', minimum=0)
     # The SDK selects these extra history variants with an HTTP header.
     # Copy just the selected request and keep each original array item union.
     for name in ('response_create', 'response_compact', 'input_tokens_request',
@@ -273,12 +275,44 @@ def schema(graph):
             value = definitions[variant['$ref'].split('/')[-1]]
             if value.get('type') == 'array':
                 value = dict(value, items={'anyOf': [value['items'],
-                    ref('agent_input_call'), ref('agent_input_result')]})
+                    ref('agent_input_call'), ref('agent_input_result'), ref('agent_output_message')]})
             else:
                 value = variant
             selected.append(value)
         body['properties'][field] = {'anyOf': selected}
+        if name == 'response_create':
+            body['properties']['multi_agent'] = nullable(ref('agent_configuration'))
         definitions['agent_history_'+name] = body
+    selected_response = copy.deepcopy(root('response'))
+    selected_items = dict(anyOf=[ref('output_item'), ref('agent_output_call'),
+                                 ref('agent_output_result'), ref('agent_output_message')])
+    selected_response['properties']['output'] = dict(type='array', items=selected_items)
+    definitions['agent_response'] = selected_response
+    events = []
+    owned_events = {'response.output_item.added', 'response.output_item.done',
+                    'response.content_part.added', 'response.content_part.done',
+                    'response.output_text.delta', 'response.output_text.done',
+                    'response.refusal.delta', 'response.refusal.done'}
+    for index in graph['nodes'][graph['roots']['response_event']]['variants']:
+        entry = definitions[str(index)]
+        fields = entry.get('properties', {})
+        tag = next((graph['nodes'][f['type']].get('value')
+                    for f in graph['nodes'][index].get('fields', []) if f['name'] == 'type'), None)
+        if 'response' not in fields and tag not in owned_events:
+            events.append(ref(index))
+            continue
+        selected = copy.deepcopy(entry)
+        fields = selected['properties']
+        if 'response' in fields:
+            fields['response'] = ref('agent_response')
+        if tag in owned_events:
+            fields['agent'] = nullable(obj({'agent_name': dict(type='string')}, ['agent_name']))
+            if 'item' in fields:
+                fields['item'] = selected_items
+        key = 'agent_event_'+str(index)
+        definitions[key] = selected
+        events.append(ref(key))
+    definitions['agent_response_event'] = dict(anyOf=events)
     return {'$schema': DRAFT, 'title': 'Q4T Chat, Responses, Conversations, Files, Uploads and Batches wire contract',
         '$defs': definitions, 'x-q4t': dict(profile='q4t-application-wire-v1',
             sdk_version=graph['sdk_version'], compiler_version=graph['compiler_version'],
@@ -409,7 +443,7 @@ def add_openapi(paths, response, error):
                 required=False, schema=dict(type='string'),
                 example='responses_multi_agent=v1',
                 description='Comma-separated feature selectors. '
-                            'responses_multi_agent=v1 enables typed agent call/result history.'))
+                            'responses_multi_agent=v1 selects hosted multi-agent execution and typed history.'))
             query_contract = query + ' with optional beta' if query else 'optional beta'
         success = response(external(result))
         operation = dict(operationId=method+'_'+path.strip('/').replace('/', '_').replace('{', '').replace('}', ''),
@@ -429,9 +463,11 @@ def add_openapi(paths, response, error):
                 'default': external(body), 'responses_multi_agent=v1': external('agent_history_'+body)}
         if result == 'input_items_list':
             success['content']['application/json']['schema'] = external('agent_history_'+result)
+        if result == 'response':
+            success['content']['application/json']['schema'] = external('agent_response')
         if result == 'response' and not path.endswith('/cancel'):
             success['content']['text/event-stream'] = dict(schema=dict(type='string'),
-                **{'x-q4t-event-schema': external('response_event'),
+                **{'x-q4t-event-schema': external('agent_response_event'),
                    'x-q4t-stream-contract': 'Native sequenced Responses events. No Chat DONE. Persisted original replay with starting_after; background requires original stream=true. Disconnect does not cancel a background job. Cancelled resource retains partial items and ends original events without a fabricated completed/cancelled event.'})
         if path.endswith('/cancel'):
             operation['description'] = 'Idempotent native background cancellation, empty body, 200 real resource. Independent bounded cancellation admission.'

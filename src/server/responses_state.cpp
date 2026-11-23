@@ -704,7 +704,7 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
     return StateError("Invalid terminal response state");
   for (const auto& item : snapshot.GetArray("output")->array)
     if (!Shape(ResponsesPublicValue(item), ResponsesItemShape::kOutput,
-               "output")
+               "output", plan->multi_agent_beta)
              .ok())
       return StateError("Generated response item violates the output contract");
   auto bindings =

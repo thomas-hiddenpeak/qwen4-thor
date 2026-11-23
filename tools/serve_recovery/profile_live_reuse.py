@@ -8,6 +8,14 @@ FORMAT = 'q4t-live-profile-source-reuse-v1'
 RECORD_FORMAT = 'q4t-profile-business-v23'
 BETA_FORMAT = 'q4t-live-beta-profile-source-reuse-v1'
 BETA_RECORD_FORMAT = 'q4t-profile-business-v24'
+AGENT_RECORD_FORMAT = 'q4t-profile-business-v25'
+AGENT_FORMAT = 'q4t-agent-profile-source-reuse-v1'
+AGENT_REVIEWED = {
+    'primary': 'fa7353fa12ef7aef3514e25cb97ecff0bffa49e260267296ceb4ff6ee179cbad',
+    'light': 'de3a519c4411138d02a6d863704d1c8142a5bb0334257ad35b0a99e81f692f06',
+}
+REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
+                AGENT_RECORD_FORMAT: AGENT_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -29,6 +37,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '0c2bb7554043ff66e2d59113a666b5233ac7a2a52d1042f5c0f2f1d48417ba0b':
+        '72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3',
     '29c31bf9ef841fe729d2fc3085888153489d398e40c7508a64a726c5a431d019':
         'b7a1967ba8540dc51ae7187577052bb1273d789d85ed8ab5a2d1cf5b02f21caf',
     '1e744c78e3c8fc9600add6ac99c800ff58c69bb4a6acf1218104fc7bd85205d6':
@@ -50,6 +60,13 @@ def format_for(capabilities):
     if 'beta_query_selector' in capabilities.get('responses', {}):
         ledger.require(capabilities['responses']['beta_query_selector'] == 'beta=true',
                        'unknown qualified Responses Beta selector')
+        if 'multi_agent' in capabilities['responses']:
+            ledger.require(capabilities['responses']['multi_agent'] == dict(
+                selector='responses_multi_agent=v1', default_max_concurrent_subagents=3,
+                shared_output_budget=True, agent_events=True, actions=['spawn_agent',
+                'interrupt_agent', 'list_agents', 'send_message', 'followup_task', 'wait_agent']),
+                'unknown qualified hosted Responses agent capabilities')
+            return AGENT_RECORD_FORMAT
         return BETA_RECORD_FORMAT
     return RECORD_FORMAT
 
@@ -66,11 +83,18 @@ def attach(value, prior):
     previous['capabilities'] = {k: v for k, v in before.items()
                                 if k not in after or ledger.canonical(v) != ledger.canonical(after[k])}
     previous['added'] = sorted(after.keys() - before.keys())
-    revision = value['format'] == BETA_RECORD_FORMAT
+    agent = value['format'] == AGENT_RECORD_FORMAT
+    revision = agent or value['format'] == BETA_RECORD_FORMAT
     if revision:
-        ledger.require(prior['format'] == RECORD_FORMAT, 'Beta requires the accepted Live profile')
+        ledger.require(prior['format'] == (BETA_RECORD_FORMAT if agent else RECORD_FORMAT),
+                       'new Responses qualification requires its accepted predecessor')
         previous['live'] = prior['business']['live']
-    value['reused_business'] = dict(format=BETA_FORMAT if revision else FORMAT,
+    if agent:
+        original = dict(after['responses'])
+        original.pop('multi_agent')
+        ledger.require(original == before['responses'], 'unreviewed Responses capability difference')
+        del previous['capabilities']['responses']
+    value['reused_business'] = dict(format=REUSE_FORMAT[value['format']],
                                     previous=codec.pack(previous))
     ledger.require(record_hash(previous_record(value)) == record_hash(prior),
                    'Live qualification cannot reconstruct its accepted source')
@@ -79,8 +103,9 @@ def attach(value, prior):
 def previous_record(value):
     reuse = value['reused_business']
     ledger.keys(reuse, ('format', 'previous'))
-    revision = value['format'] == BETA_RECORD_FORMAT
-    ledger.require(reuse['format'] == (BETA_FORMAT if revision else FORMAT),
+    agent = value['format'] == AGENT_RECORD_FORMAT
+    revision = agent or value['format'] == BETA_RECORD_FORMAT
+    ledger.require(reuse['format'] == REUSE_FORMAT.get(value['format']),
                    'incorrect Live qualification source')
     previous = codec.unpack(reuse['previous'])
     fields = (*METADATA, 'engine', 'ctimes', 'capabilities', 'added')
@@ -93,6 +118,8 @@ def previous_record(value):
     for name in previous['added']:
         del original['capabilities'][name]
     original['capabilities'].update(previous['capabilities'])
+    if agent:
+        del original['capabilities']['responses']['multi_agent']
     if revision:
         original['business']['live'] = previous['live']
     else:
@@ -102,6 +129,16 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == AGENT_RECORD_FORMAT:
+        name = value['profile']
+        ledger.require(record_hash(value) == AGENT_REVIEWED.get(name),
+                       'hosted agent qualification differs from the reviewed run')
+        prior = previous_record(value)
+        ledger.require(prior['format'] == BETA_RECORD_FORMAT and
+                       record_hash(prior) == BETA_REVIEWED[name],
+                       'hosted agent qualification lost the registered Beta source')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == BETA_RECORD_FORMAT:
         name = value['profile']
         ledger.require(record_hash(value) == BETA_REVIEWED.get(name),

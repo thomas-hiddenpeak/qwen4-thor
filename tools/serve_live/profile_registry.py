@@ -74,7 +74,10 @@ def prepare(source, manifest_sha256, stage, observations, output):
             manifest_sha256=manifest_sha256), observations_sha256=package.sha(observations),
             acceptance_sha256=actual['acceptance_sha256'], engine_sha256=actual['engine_sha256'],
             ingress_sha256=actual['ingress_sha256']))
-        package.save(work/'acceptance.json', dict(status='ACCEPT_LIVE_PRIMARY_LIGHT',
+        status = {profile_live_reuse.RECORD_FORMAT: 'ACCEPT_LIVE_PRIMARY_LIGHT',
+                  profile_live_reuse.BETA_RECORD_FORMAT: 'ACCEPT_RESPONSES_BETA_PRIMARY_LIGHT',
+                  profile_live_reuse.AGENT_RECORD_FORMAT: 'ACCEPT_HOSTED_AGENTS_PRIMARY_LIGHT'}
+        package.save(work/'acceptance.json', dict(status=status[evidence['primary']['record']['format']],
             registry_sha256=package.sha(qualified/'registry.json'), environment=environment,
             migration_permit_sha256=ledger.digest(permit), actual_model_starts=2,
             additional_model_starts=0, historical_business_preserved=True))

@@ -1,0 +1,156 @@
+{
+  "qualification": "q4t.hosted_agents.cross_round.v1",
+  "original": {
+    "result": {
+      "status": "FAIL",
+      "seconds": 35.95491504529491,
+      "model_starts": 1,
+      "model_rc": 0,
+      "ports_free": true,
+      "unchanged_default": true
+    },
+    "sdk_error": {
+      "message": "400 requested output exceeds client token limit",
+      "status": 400,
+      "code": "client_output_limit_exceeded",
+      "param": "max_output_tokens"
+    },
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/v1/capabilities",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "selector": "responses_multi_agent=v1",
+        "status": 400
+      }
+    ],
+    "original_request_output": 640,
+    "tenant_output_cap": 512,
+    "lease": "COMMAND_FAILED"
+  },
+  "selected": {
+    "run": {
+      "status": "PASS",
+      "seconds": 59.17451516771689,
+      "model_starts": 1,
+      "model_rc": 0,
+      "ports_free": true,
+      "unchanged_default": true
+    },
+    "sdk": {
+      "status": "PASS",
+      "answer": "47",
+      "actions": [
+        "spawn_agent",
+        "interrupt_agent",
+        "followup_task",
+        "send_message",
+        "list_agents",
+        "wait_agent"
+      ],
+      "events": 40,
+      "usage": {
+        "input_tokens": 9352,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 6668
+        },
+        "output_tokens": 248,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 9600
+      },
+      "requests": 4
+    },
+    "lease": "COMPLETED",
+    "engine": "642b2619c866021b3a9cee21cc208379fc873e64d0c39c2c1699055300df1629",
+    "ingress": "72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3",
+    "capabilities": {
+      "selector": "responses_multi_agent=v1",
+      "actions": [
+        "spawn_agent",
+        "interrupt_agent",
+        "list_agents",
+        "send_message",
+        "followup_task",
+        "wait_agent"
+      ],
+      "default_max_concurrent_subagents": 3,
+      "shared_output_budget": true,
+      "agent_events": true
+    },
+    "policy": {
+      "max_prompt_tokens": 24576,
+      "max_output_tokens": 512,
+      "tokens_per_minute": 32768
+    },
+    "actions": [
+      {
+        "agent_name": "root/reader",
+        "parent": "root",
+        "status": "queued"
+      },
+      {
+        "agent_name": "root/reader",
+        "parent": "root",
+        "status": "interrupted"
+      },
+      {
+        "agent_name": "root/reader",
+        "parent": "root",
+        "status": "queued"
+      },
+      {
+        "agent_name": "root/reader",
+        "parent": "root",
+        "status": "queued"
+      },
+      {
+        "agents": [
+          {
+            "agent_name": "root/reader",
+            "parent": "root",
+            "status": "completed",
+            "output": "47"
+          }
+        ]
+      },
+      {
+        "agent_name": "root/reader",
+        "parent": "root",
+        "status": "completed",
+        "output": "47"
+      }
+    ],
+    "requests": [
+      {
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "status": 404
+      }
+    ],
+    "wire_sha256": {
+      "events.json": "c524528468e143213b586c6d00dbcffcbf2e1da8c287870886a6b29451f1742a",
+      "created.json": "22711981bb9b587f025f39c5d64484fbcbc0667ae275a5eb52e60c1be9693367",
+      "requests.json": "f63a33bd32e27b1cf8e1f4d0b51ac091b8be20e8237bda945961d4f98b7385c9",
+      "sdk-result.json": "fc1044f0038cf22a880bab41b8ac0f9708ecfed6bfa0d1bb72daa7bf6a08821e"
+    },
+    "tenant_request_output": 480
+  }
+}

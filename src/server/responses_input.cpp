@@ -762,7 +762,11 @@ Status NormalizeResponsesInput(const io::Json& request,
     } else if (type == "message") {
       status = flush();
       if (!status) return status;
-      status = InputFields(item,
+      const auto* source = multi_agent ? item.Find("agent") : nullptr;
+      status = source
+          ? ValidateMultiAgentShape(item, MultiAgentShape::kOutputMessage,
+                                    error, path)
+          : InputFields(item,
                            {"id", "type", "role", "content", "status", "phase"},
                            &error->param, path);
       if (!status) return status;
@@ -776,6 +780,12 @@ Status NormalizeResponsesInput(const io::Json& request,
       status = Parts(*value, role, path + ".content", &content, error,
                      preparing_files, prepared_file_media);
       if (!status) return status;
+      if (source && source->IsObject() && source->GetString("agent_name") != "root") {
+        auto record = Object({{"agent", *source}, {"content", std::move(content)}});
+        append(Object({{"role", String("user")},
+                       {"content", String("[Agent message]\n" + OutputJson(record))}}), path);
+        continue;
+      }
       if (const auto* phase = item.Find("phase"); phase && !phase->IsNull()) {
         if (role != "assistant" || !phase->IsString() ||
             (phase->str != "commentary" && phase->str != "final_answer"))

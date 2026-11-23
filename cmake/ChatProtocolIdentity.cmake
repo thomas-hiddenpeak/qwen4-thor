@@ -217,6 +217,7 @@ set(protocol_inputs
   include/q4t/server/vector_search.h
   include/q4t/server/vector_search_execution.h
   include/q4t/server/responses_file_search.h
+  include/q4t/server/responses_agent_tree.h
   include/q4t/server/responses_web_search.h
   include/q4t/server/vector_search_api.h
   src/server/vector_search_plan.cpp
@@ -225,6 +226,8 @@ set(protocol_inputs
   src/server/vector_search_execution.cpp
   src/server/vector_query_rewrite.cpp
   src/server/responses_file_search.cpp
+  src/server/responses_agent_tree.cpp
+  src/server/responses_agent_execution.cpp
   src/server/responses_web_search.cpp
   src/server/responses_web_context.cpp
   src/server/responses_web_output.cpp

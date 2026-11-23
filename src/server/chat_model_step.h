@@ -26,6 +26,10 @@ struct InternalModelStep {
   StructuredRequestLease* structured_owner = nullptr;
   // Optional request-owned readback of the first target logit row.
   DecisionScore* decision = nullptr;
+  // A hosted agent returns its model-authored assistant message, including
+  // validated child calls or a refusal, to the same request's dispatcher.
+  io::Json* agent_message = nullptr;
+  uint64_t remaining_input = UINT64_MAX;
 };
 using InternalModelExecutor = std::function<void(
     detail::ResponseState*, std::shared_ptr<RequestControl>)>;

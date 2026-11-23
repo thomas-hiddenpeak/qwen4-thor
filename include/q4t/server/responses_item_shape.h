@@ -7,7 +7,7 @@
 namespace q4t::server {
 enum class ResponsesItemShape { kInput, kOutput, kConversation };
 enum class MultiAgentShape {
-  kConfiguration, kInputCall, kInputResult, kOutputCall, kOutputResult
+  kConfiguration, kInputCall, kInputResult, kOutputCall, kOutputResult, kOutputMessage
 };
 Status ValidateMultiAgentShape(const io::Json& value, MultiAgentShape shape,
                                ChatPlanError* error, std::string_view path);

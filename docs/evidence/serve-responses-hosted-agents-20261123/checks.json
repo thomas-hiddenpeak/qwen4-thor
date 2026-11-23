@@ -1,0 +1,296 @@
+{
+  "profile": "q4t.responses.hosted-agents.acceptance.v1",
+  "sdk": "openai-node@7.47.0",
+  "sdk_type_graph_sha256": "2c07ee92deacfb8c247d6fdd48f6eed1b073c75235065eb6ded5ca23f82f19e6",
+  "default_revision": 434,
+  "packaged": false,
+  "history_pr": {
+    "number": 61,
+    "head": "e12e74ce3",
+    "merge": "cda3ecaf5ea6524e0249459d44c6d62214f5b47d",
+    "ci": [
+      45132812213,
+      45132881027
+    ]
+  },
+  "runs": [
+    {
+      "engine": "f5853da33e4e17aca7c86e7c17414f171e49f3f284ba8a706b046c8150d849fe",
+      "ingress": "72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3",
+      "limits": {
+        "starts": 1,
+        "sdk_requests": 8,
+        "seconds": 300
+      },
+      "business": {
+        "status": "FAIL",
+        "seconds": 38.622915448155254,
+        "model_starts": 1,
+        "model_rc": 0,
+        "ports_free": true,
+        "unchanged_default": true
+      },
+      "lease": "COMMAND_FAILED",
+      "http_statuses": [
+        400,
+        400,
+        200
+      ],
+      "wire_terminal": "response.failed",
+      "terminal_error": {
+        "code": "invalid_request",
+        "message": "Duplicate multi-agent call"
+      },
+      "usage": {
+        "input_tokens": 2415,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 92,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2507
+      },
+      "calls": [
+        {
+          "action": "spawn_agent",
+          "call_id": "call_resp_0e7f905536d6a6b75313eb722017d93d_0",
+          "owner": "root"
+        },
+        {
+          "action": "wait_agent",
+          "call_id": "call_resp_0e7f905536d6a6b75313eb722017d93d_0",
+          "owner": "root"
+        }
+      ],
+      "messages": [
+        {
+          "owner": "root/reader",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "37",
+              "annotations": [],
+              "logprobs": []
+            }
+          ],
+          "status": "completed"
+        }
+      ],
+      "event_count": 17,
+      "validation": {
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'response.failed'\n- 'response.completed'\n            ^\n",
+        "code": "ERR_ASSERTION"
+      },
+      "wire_sha256": {
+        "events.json": "6152298094e15f6edb4752ea0d5b7aa29359f6afdda25a7bdb0d9f28ac35d49c",
+        "failure.json": "bd5d7458daed67166a8d3dc14d8226b527214a33f74e70f70f3a0c06b10f8e50",
+        "requests.json": "ac7997e08bf5a65dbbc9a1639fc62e528093ad8f7f9ff02be87ad22a8ae90e64"
+      }
+    },
+    {
+      "engine": "af518535c7f163af2687add96ee1bb1ec2f3f7283e015fc0adc07aec56ae7b20",
+      "ingress": "72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3",
+      "limits": {
+        "starts": 1,
+        "sdk_requests": 8,
+        "seconds": 300
+      },
+      "business": {
+        "status": "FAIL",
+        "seconds": 47.79013765929267,
+        "model_starts": 1,
+        "model_rc": 0,
+        "ports_free": true,
+        "unchanged_default": true
+      },
+      "lease": "COMMAND_FAILED",
+      "http_statuses": [
+        400,
+        400,
+        200,
+        200
+      ],
+      "wire_terminal": "response.completed",
+      "terminal_error": null,
+      "usage": {
+        "input_tokens": 3426,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 95,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 3521
+      },
+      "calls": [
+        {
+          "action": "spawn_agent",
+          "call_id": "call_resp_1a16e956322576c8a234ec2d61e8afd2_0",
+          "owner": "root"
+        },
+        {
+          "action": "wait_agent",
+          "call_id": "call_resp_1a16e956322576c8a234ec2d61e8afd2_round_146567da2962faaae840a84314b2ac49_0",
+          "owner": "root"
+        }
+      ],
+      "messages": [
+        {
+          "owner": "root/reader",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "37",
+              "annotations": [],
+              "logprobs": []
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "owner": "root",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "37",
+              "annotations": [],
+              "logprobs": []
+            }
+          ],
+          "status": "completed"
+        }
+      ],
+      "event_count": 24,
+      "validation": {
+        "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      action: 'spawn_agent',\n      agent: {\n        agent_name: 'root'\n...\n          annotations: [],\n-         logprobs: [],\n          text: '37',\n          type: 'output_text'\n        }\n      ],\n      id: 'msg_32945f3c754f99963dbe3629270e0421',\n...\n          annotations: [],\n-         logprobs: [],\n          text: '37',\n          type: 'output_text'\n        }\n      ],\n      id: 'msg_ea92664938e163c365f2d531209a84d9',\n",
+        "code": "ERR_ASSERTION"
+      },
+      "wire_sha256": {
+        "created.json": "b3f9dac77ca401ba8217b61a86e4949a914178f2bd2c9a7b10992919ff3f6a28",
+        "events.json": "bcdc81f3b71b3b36bae2618dfd4927bfccfc97c224fe28ec0217f14ac5ccae37",
+        "failure.json": "8e4546d6846ec753c767d903f3b51248e4d430915685573c6379e821485b48c6",
+        "requests.json": "2329d71c9bf9149c3b0f27ee858a7969868c5c653f266772976ce3b05973cc4b"
+      }
+    },
+    {
+      "engine": "b323c4e75896712915f282094d69064cc13e997a41b9f9e517c95e014073f77a",
+      "ingress": "72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3",
+      "limits": {
+        "starts": 1,
+        "sdk_requests": 8,
+        "seconds": 300
+      },
+      "business": {
+        "status": "PASS",
+        "seconds": 41.101475555915385,
+        "model_starts": 1,
+        "model_rc": 0,
+        "ports_free": true,
+        "unchanged_default": true
+      },
+      "lease": "COMPLETED",
+      "http_statuses": [
+        400,
+        400,
+        200,
+        200,
+        200,
+        404
+      ],
+      "wire_terminal": "response.completed",
+      "terminal_error": null,
+      "usage": {
+        "input_tokens": 3426,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 95,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 3521
+      },
+      "calls": [
+        {
+          "action": "spawn_agent",
+          "call_id": "call_resp_bc89c90d92ae92cd8c93dac031ae34b8_0",
+          "owner": "root"
+        },
+        {
+          "action": "wait_agent",
+          "call_id": "call_resp_bc89c90d92ae92cd8c93dac031ae34b8_round_1c996b1d49d1a0cd7a1fa65dea0af75a_0",
+          "owner": "root"
+        }
+      ],
+      "messages": [
+        {
+          "owner": "root/reader",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "37",
+              "annotations": [],
+              "logprobs": []
+            }
+          ],
+          "status": "completed"
+        },
+        {
+          "owner": "root",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "37",
+              "annotations": [],
+              "logprobs": []
+            }
+          ],
+          "status": "completed"
+        }
+      ],
+      "event_count": 24,
+      "validation": {
+        "status": "PASS",
+        "answer": "37",
+        "child": "37",
+        "usage": {
+          "input_tokens": 3426,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 95,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 3521
+        },
+        "events": 24,
+        "requests": 6
+      },
+      "wire_sha256": {
+        "created.json": "b150fbc382c59cc8db0228a6e8188c917e135da257aa0ea1668f16e74e64c841",
+        "events.json": "cb8b76e44fb01896f66adc32291c0fca22407218a6506d9cefa3ef53183ac6fe",
+        "requests.json": "312f5b0f2fce42184548434132a49020548f68d8a3a5b1dfcf0e95ea9a1c05c8",
+        "sdk-result.json": "04b88c3c86c4e4cdb74900f20d2fc5fe720eb2bca9731ccfe0a3efe33375a022"
+      }
+    }
+  ],
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 105,
+    "native_routes": 177,
+    "reviewed_source_anchors": 1207,
+    "mutation_checks": 36,
+    "errors": []
+  }
+}

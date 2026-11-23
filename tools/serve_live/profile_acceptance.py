@@ -68,7 +68,8 @@ def prepare(out, selection, *, discovery_build=None, previous_profiles=None):
 
 
 def prepare_profiles(out, envelope, selected, expected, ingress_sha256, *,
-                     discovery_change=None, beta_change=None, protected=None):
+                     discovery_change=None, beta_change=None, agent_change=None,
+                     protected=None):
     pkg.require(not out.exists(), 'fresh stage required')
     out.mkdir(mode=0o700, parents=True)
     state = out/'state'
@@ -111,6 +112,10 @@ def prepare_profiles(out, envelope, selected, expected, ingress_sha256, *,
             plan['beta_change'] = beta_change
             helper = 'tools/serve_responses/beta_profile_acceptance.py'
             plan['sources'][helper] = pkg.sha(ROOT/helper)
+        if agent_change is not None:
+            plan['agent_change'] = agent_change
+            helper = 'tools/serve_responses/agent_profile_acceptance.py'
+            plan['sources'][helper] = pkg.sha(ROOT/helper)
         pkg.save(phase/'plan.json', plan)
 
 
@@ -124,13 +129,16 @@ class Stage(workers.ice.Stage):
                     'client policy drift')
         return self.plan['command']
 
-    def api(self, method, path, *, client='alpha', body=None):
+    def api(self, method, path, *, client='alpha', body=None, agent_beta=False):
         ctx = ssl.create_default_context(cafile=self.plan['tls']['certificate'])
         conn = http.client.HTTPSConnection('127.0.0.1', self.plan['public_port'],
-                                           context=ctx, timeout=10)
+                                           context=ctx, timeout=45 if agent_beta else 10)
         try:
+            headers = {'Authorization':'Bearer '+self.keys[client], 'Content-Type':'application/json'}
+            if agent_beta:
+                headers['OpenAI-Beta'] = 'responses_multi_agent=v1'
             conn.request(method, path, None if body is None else json.dumps(body),
-                         {'Authorization':'Bearer '+self.keys[client], 'Content-Type':'application/json'})
+                         headers)
             response = conn.getresponse()
             raw = response.read(65537)
             pkg.require(len(raw) <= 65536, 'conversation response bound')
@@ -161,6 +169,9 @@ class Stage(workers.ice.Stage):
         if 'beta_change' in self.plan:
             from tools.serve_responses import beta_profile_acceptance
             beta_profile_acceptance.business(self, capabilities)
+        if 'agent_change' in self.plan:
+            from tools.serve_responses import agent_profile_acceptance
+            agent_profile_acceptance.business(self, capabilities)
         shared = self.out.parent/'conversation.json'
         if name == 'primary':
             status, value = self.api('POST', '/v1/conversations',
