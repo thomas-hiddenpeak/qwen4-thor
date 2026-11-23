@@ -79,13 +79,19 @@ def load_intent(state, desc, request_id):
     return value
 
 
+def check_intent_capacity(path):
+    if os.path.lexists(path.parent):
+        files.directory(path.parent)
+        ledger.require(path.exists() or path.with_name(path.name+'.new').exists() or
+                       len(list(path.parent.iterdir())) < MAX_INTENTS,
+                       'publication intent capacity reached')
+
+
 def save_intent(state, desc, value):
     validate_intent(value, state, desc)
     path = intent_path(state, value['request_id'])
     files.directory(path.parent, create=True);files.sync(state)
-    names = list(path.parent.iterdir())
-    ledger.require(path.exists() or path.with_name(path.name+'.new').exists() or
-                   len(names) < MAX_INTENTS, 'publication intent capacity reached')
+    check_intent_capacity(path)
     files.immutable_json(path, value)
 
 
@@ -283,6 +289,9 @@ def execute(state, *, request_id, root=None, package=None, digest=None, release=
                                         'publication rollback idempotency conflict')
             else:
                 ledger.require(not resume, 'publication request intent unavailable')
+                # A new intent needs space before prepare_intent copies a
+                # generation. The publication lock also covers the final save.
+                check_intent_capacity(intent_path(state, request_id))
                 intent = prepare_intent(state,desc,package,digest,release,root,expected,
                                         revision,request_id,generation, history=history,
                                         model_history=model_history)

@@ -21,6 +21,28 @@ from tools.serve_recovery import test_version_archive as versions
 from tools.serve_recovery import test_native_bundle
 
 
+class PublishedRootMaintenance(unittest.TestCase):
+    def test_only_stable_immediate_predecessor_can_supply_the_offline_cycle(self):
+        desc = dict(service_id='example', package='/new', manifest_sha256='b'*64)
+        prior = dict(package='/old', manifest_sha256='a'*64)
+        target = dict(package=desc['package'], manifest_sha256=desc['manifest_sha256'])
+        publication = dict(phase='stable', current=target,
+                           history=[dict(previous=prior, selected=target)])
+        selected = dict(registry=dict(root_manifest_sha256=prior['manifest_sha256']))
+        verify = maintenance.versions.verify_selected
+        with mock.patch.object(maintenance.versions.registration, 'for_state') as check:
+            verify('state', desc, publication, selected)
+            check.assert_called_once_with('state', dict(desc, **prior), selected,
+                                          read_bundle=maintenance.bundle.verify)
+            check.reset_mock()
+            for invalid in [dict(publication, phase='prepared'), dict(publication, history=[]),
+                            dict(publication, current=dict(target, package='/other')),
+                            dict(publication, history=[dict(previous=target, selected=target)])]:
+                with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                    verify('state', desc, invalid, selected)
+            check.assert_not_called()
+
+
 class MaintenanceTests(unittest.TestCase):
     def setUp(self):
         output = os.environ.get('Q4T_TEST_OUTPUT_DIR', str(
@@ -94,6 +116,27 @@ class MaintenanceTests(unittest.TestCase):
 
     def test_cli_intent_status_plan_archive_restore_preserves_state(self):
         self.round_trip('intents')
+
+    def test_cli_reports_full_retention_pool_without_echoing_other_errors(self):
+        from tools.serve_recovery import ledger, publication, version_launch
+        self.fixture()
+        publish = ('publish-resume', '--request-id', str(uuid.uuid4()))
+        register = ('version-register', '--registration', str(self.output))
+        cases = [
+            (publication, 'execute', publish, 'publication intent capacity reached', 'intents'),
+            (publication, 'execute', publish, 'publication generation capacity reached', 'generations'),
+            (version_launch, 'register_file', register, 'version registration storage is full', 'versions'),
+            (publication, 'execute', publish, 'private error detail', None),
+        ]
+        for module, method, command, reason, pool in cases:
+            with self.subTest(pool=pool), mock.patch.object(module, method,
+                    side_effect=ledger.LedgerError(reason)):
+                failure = self.call(*command, success=False)
+                expected = dict(status='FAILED', category='LedgerError')
+                if pool is not None:
+                    expected.update(code='maintenance_capacity_reached', pool=pool,
+                                    next_operation='maintenance-status')
+                self.assertEqual(failure, expected)
 
     def test_cli_generation_status_plan_archive_restore_preserves_state(self):
         self.round_trip('generations')

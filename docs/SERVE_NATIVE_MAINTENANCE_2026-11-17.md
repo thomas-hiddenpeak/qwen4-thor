@@ -1,5 +1,7 @@
 # 正式服务包中的原生保留管理
 
+2026-11-23，源码中的发布和注册入口在记录池满时返回 `maintenance_capacity_reached`、池名和 `maintenance-status`。已发布新包但尚未注册时，可在 STOPPED 状态按最后一次稳定发布的直接前序核实旧周期并释放槽位。旧包可用项目中已验证的维护入口处理这次交接。[rev436 实际记录](evidence/serve-responses-agents-delivery-20261123/README.md)
+
 N07重新打开的缺口是：rev260有安全归档源码，但密封发行和原生
 service入口没有这项能力。本组补齐正式入口，不改模型/协议/推理
 程序、容量或恢复策略，不新增外部服务依赖。

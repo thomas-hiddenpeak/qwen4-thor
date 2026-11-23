@@ -22,6 +22,8 @@
 
 ## 当前阶段更新（2026-11-23）
 
+默认服务已发布至 **rev436，STOPPED**。主网关致命退出后，注册回退包再次完成父子推理，能按身份回读故障前的完整输出。归档已满的发布意图与版本注册时修复了新旧根交接的维护死角，修复后的工具已在实际部署使用。[发行回执](evidence/serve-responses-agents-delivery-20261123/README.md)
+
 主轻两套正式配置都已完成父子代理推理、Chat 和 WebRTC。轻量配置按身份读回主配置的代理输出。已修复 rev434 旧资格标签导致的恢复来源拒绝，保留原始失败。继续托管恢复和可回退发行。[主轻证据](evidence/serve-responses-agents-profiles-20261123/README.md)
 
 六项托管代理操作已通过同一真实多轮请求，含执行前中断、跟进及收信后的唯一一次子模型生成。候选的认证能力声明已可供部署核对。继续两套容量和恢复、回退及主线交付。[跨轮回执](evidence/serve-responses-hosted-agents-20261123/cross-round.json)

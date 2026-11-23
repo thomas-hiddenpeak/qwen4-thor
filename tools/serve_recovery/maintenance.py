@@ -62,7 +62,7 @@ def status(state, package, digest, *, read_bundle=None):
             binding = access_store.binding(state, desc['service_id'])
             with versions.version_store.open_bound(binding) as writer:
                 selected = writer.head['state']['policy']
-                registration.for_state(state, desc, selected, read_bundle=read_bundle or bundle.verify)
+                versions.verify_selected(state, desc, current, selected, read_bundle=read_bundle)
                 entries = versions.entries(state, binding, selected, read_bundle=read_bundle)
                 registered = pool(entries, versions.protected(
                     state, desc, current, selected, entries), registration.MAX_CYCLES)
