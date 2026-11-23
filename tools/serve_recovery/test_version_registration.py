@@ -78,6 +78,57 @@ class RegistrationTests(unittest.TestCase):
         self.assertEqual(actual['state'],spent)
         self.assertEqual((self.state/'ledger.json').read_bytes(),self.core_before)
 
+    def test_recorded_content_adapter_is_bound_on_registration_and_replay(self):
+        from tools.serve_recovery import model_content
+        engine = bundle.engine
+        fixture = self.base.fixture
+        path = fixture.model/'weights.safetensors'
+        original = engine.read(self.base.old/'manifest.json')['model_assets']
+        (self.base.old/'engine/q4t').write_bytes(b'cpu engine')
+        path.chmod(path.stat().st_mode ^ 0o100)
+        current = bundle.file_identity(path)
+        revision = 'e'*40
+        index, audit = (fixture.directory/n for n in ('index.json', 'audit.json'))
+        digest = engine.sha(path)
+        engine.save(index, dict(id='test/cpu', sha=revision, siblings=[
+            dict(rfilename=path.name, size=current['size'],
+                 lfs=dict(size=current['size'], sha256=digest))]))
+        engine.save(audit, dict(status='PASS', revision=revision,
+            retained_manifest_sha256=self.base.old_sha,
+            previous_engine_sha256=engine.sha(self.base.old/'engine/q4t'),
+            upstream_receipt_sha256=engine.sha(index), assets={path.name:dict(
+                matched=True, sha256=digest, expected_sha256=digest,
+                sealed=original[path.name], current=current)}))
+        adapted = model_content.prepare(self.base.old, self.base.old_sha,
+            audit, engine.sha(audit), engine.sha(index),
+            model_content.source_index(index, engine.sha(index), 'test/cpu', revision),
+            fixture.directory/'detached')
+        self.fallback = {k:adapted[k] for k in ('package', 'manifest_sha256')}
+        package, digest = self.base.prepare('fresh-primary')
+        root = dict(package=str(package), manifest_sha256=digest)
+        with self.assertRaisesRegex(ValueError, 'requires its audit report'):
+            self.prepare(root)
+        for key, file in (('upstream_index', index), ('content_report', audit)):
+            self.receipt[key] = dict(path=str(file), sha256=engine.sha(file))
+        registration = self.prepare(root)
+        contract.verify(registration)
+        primary, fallback = map(contract.payload, (root, self.fallback))
+        with self.assertRaisesRegex(ValueError, 'fixed model identity'):
+            contract.compatible(primary, fallback)
+        grant = contract.registered_compatibility(primary, fallback, registration)
+        self.assertEqual(ledger.digest(grant), registration['registry']['compatibility_sha256'])
+
+        altered = copy.deepcopy(fallback)
+        altered['manifest']['files']['source/tools/serve_recovery/controller.py'] = '7'*64
+        with self.assertRaisesRegex(ValueError, 'another package contract'):
+            contract.accepted_fallback(self.receipt, altered)
+        self.receipt['upstream_index']['sha256'] = 'f'*64
+        with self.assertRaisesRegex(ValueError, 'model evidence differ'):
+            self.prepare(root)
+        audit.write_text('{}')
+        with self.assertRaisesRegex(ValueError, 'content report identity differs'):
+            contract.verify(registration)
+
     def test_resigned_failed_service_business_does_not_qualify_old_payload(self):
         decision = bundle.engine.read(self.decision)
         decision['actual_business']['env_abort'] = True

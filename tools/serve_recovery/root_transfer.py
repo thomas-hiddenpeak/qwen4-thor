@@ -174,7 +174,7 @@ def profile_context(value, rows):
         sources.append((fallback['descriptor']['package'], fallback['manifest']))
         request = str(uuid.uuid5(uuid.UUID(state['switch']['request_id']),
                                 'version-profile-migration'))
-        grants[request] = [version_contract.compatible(primary, fallback)]
+        grants[request] = [version_contract.registered_compatibility(primary, fallback, source)]
     target = rows[transfer['candidate']['registry']['cycle_id']]['value']['registration']
     name = version_policy.launch_payload(transfer['candidate'])
     payload = version_contract.payload(target['payloads'][name]['descriptor'])

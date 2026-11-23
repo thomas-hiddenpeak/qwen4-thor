@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+版本选择器可使用发布决定、实际业务验收、模型内容报告和上游索引四份固定凭据识别 rev426 的独立回退包。主机安装选择器现按 v18 至 v27 各自的源码清单校验。65 项 CPU 检查及真实封包来源复核通过。默认部署仍为停用的原包，下一步处理该状态的事务修复及 Live 正式候选。[注册与主机选择验收](evidence/serve-model-rollback-registration-20261123/README.md)
+
 发行配置 schema 已补齐实际 HTTP 返回的七个顶层字段及追踪启动状态，包括 SIP、TTS、语音注册和追踪健康。两代候选的四份原始主轻响应均通过独立与内嵌 schema。[验证记录](evidence/serve-live-config-schema-20261123/README.md)
 
 rev426 的独立回退包已由真实守护器启动到 READY，经原生网关完成 Chat=42。原包记录中 ctime 变化的 196 个文件已逐个匹配两个固定发布者版本，读取 83,995,035,950 字节。默认入口仍指向停用的原包；继续正式版本注册与切换验收。[模型审计与回退业务](evidence/serve-model-ctime-rollback-20261123/README.md)

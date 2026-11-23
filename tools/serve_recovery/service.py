@@ -436,6 +436,8 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
             command.add_argument('--fallback-manifest-sha256',required=True)
             command.add_argument('--fallback-release',type=Path,required=True)
             command.add_argument('--fallback-decision',type=Path,required=True)
+            command.add_argument('--fallback-content-report', type=Path)
+            command.add_argument('--fallback-upstream-index', type=Path)
             command.add_argument('--cycle-id',required=True)
         if name == 'version-adapt':
             command.add_argument('--output', type=Path, required=True)
@@ -574,6 +576,10 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                             receipt = {name:dict(path=str(path.absolute()),sha256=engine.sha(path))
                                 for name,path in [('release',args.fallback_release),
                                                   ('decision',args.fallback_decision)]}
+                            for name, path in (('content_report', args.fallback_content_report),
+                                               ('upstream_index', args.fallback_upstream_index)):
+                                if path is not None:
+                                    receipt[name] = dict(path=str(path.absolute()), sha256=engine.sha(path))
                             result = version_launch.prepare_file(root,
                                 dict(package=str(args.fallback_package.absolute()),
                                     manifest_sha256=args.fallback_manifest_sha256),

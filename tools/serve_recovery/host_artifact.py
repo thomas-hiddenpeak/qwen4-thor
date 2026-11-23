@@ -13,6 +13,8 @@ from tools.serve_recovery import bundle, device_domain, ledger, store
 MANIFEST_LIMIT = 1024**2
 SOURCE_LIMIT = 4*1024**2
 TOTAL_LIMIT = 64*1024**2
+HOST_INVENTORIES = {version: frozenset(bundle.SOURCES_BY_VERSION[version])
+                    for version in range(18, len(bundle.SOURCES_BY_VERSION))}
 
 
 def read(path, maximum, expected=None):
@@ -49,11 +51,13 @@ def selection(package, digest):
     ledger.require(type(digest) is str and ledger.HASH.fullmatch(digest), 'host manifest digest required')
     package = Path(package).resolve(strict=True)
     raw = read(package/'manifest.json', MANIFEST_LIMIT, digest); value = store.decode(raw)
-    ledger.require(value.get('version') == 18 and value.get('profile') == 'q4t-service-recovery-v18'
+    version = value.get('version')
+    ledger.require(type(version) is int and version in HOST_INVENTORIES and
+        value.get('profile') == 'q4t-service-recovery-v'+str(version)
         and value.get('ingress_mode') == 'native' and type(value.get('files')) is dict,
         'host entry requires the selected native outer-runtime package')
     files = {key[7:]: val for key, val in value['files'].items() if key.startswith('source/')}
-    ledger.require(files.keys() == set(bundle.SOURCES) and all(type(x) is str and
+    ledger.require(files.keys() == HOST_INVENTORIES[version] and all(type(x) is str and
         ledger.HASH.fullmatch(x) for x in files.values()), 'host source inventory differs')
     python = value['python']; ledger.keys(python, ('path', 'sha256'))
     ledger.require(type(python['path']) is str and os.path.isabs(python['path']) and

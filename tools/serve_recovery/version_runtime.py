@@ -46,7 +46,7 @@ def repair_sources(binding, root, core, original):
         sources.append((second['descriptor']['package'], second['manifest']))
         request = str(uuid.uuid5(uuid.UUID(state['switch']['request_id']),
                                 'version-profile-migration'))
-        grants[request] = [version_contract.compatible(first, second)]
+        grants[request] = [version_contract.registered_compatibility(first, second, registration)]
     return sources, grants
 
 
@@ -68,7 +68,7 @@ def prepare(binding, selected, args):
     first,second = [version_contract.payload(registration['payloads'][name]['descriptor'])
                     for name in version_policy.PAYLOADS]
     target = first if args['payload'] == 'primary' else second
-    authorization = version_contract.compatible(first,second)
+    authorization = version_contract.registered_compatibility(first, second, registration)
     # This deterministic ID belongs to the durable switch, not the worker
     # session or its receipt. Retry cannot replenish profile clocks/budgets.
     request = (None if selected['switch'] is None else str(uuid.uuid5(

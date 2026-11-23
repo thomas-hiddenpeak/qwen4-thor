@@ -73,7 +73,7 @@ class BundleTests(unittest.TestCase):
     def test_default_package_has_native_binary_and_no_nginx_dependency(self):
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 26)
+        self.assertEqual(value['version'], 27)
         self.assertNotIn('bin/q4t-device-control', value['files'])
         self.assertIn('source/tools/serve_recovery/cold_admission.py', value['files'])
         self.assertIn('source/tools/serve_recovery/quota_manager.py', value['files'])
@@ -116,7 +116,7 @@ class BundleTests(unittest.TestCase):
             self.assertFalse((self.directory/'package').exists())
         self.save(self.build, original)
         receipt = self.prepare()
-        self.assertEqual(bundle.verify(receipt['package'], receipt['manifest_sha256'])['version'], 26)
+        self.assertEqual(bundle.verify(receipt['package'], receipt['manifest_sha256'])['version'], 27)
 
     def test_explicit_deployment_repository_keeps_actual_builder_sources(self):
         deployment = self.directory/'deployment';deployment.mkdir()
@@ -276,7 +276,7 @@ class BundleTests(unittest.TestCase):
                 bundle.verify(directory, bundle.engine.sha(directory/'manifest.json'))
 
     def test_v26_trace_closure_and_v25_compatibility(self):
-        added = set(bundle.SOURCES) - set(bundle.V25_SOURCES)
+        added = set(bundle.V26_SOURCES) - set(bundle.V25_SOURCES)
         self.assertEqual(added, {
             'tools/serve_realtime/tracing_checks.py',
             *('tools/serve_recovery/'+n+'.py' for n in
@@ -292,7 +292,7 @@ class BundleTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'source inventory'):
                 bundle.verify(directory, bundle.engine.sha(directory/'manifest.json'))
         original.update(version=25, profile='q4t-service-recovery-v25')
-        for name in added:
+        for name in set(bundle.SOURCES) - set(bundle.V25_SOURCES):
             original['files'].pop('source/'+name)
         bundle.engine.save(directory/'manifest.json', original)
         digest = bundle.engine.sha(directory/'manifest.json')
@@ -301,6 +301,33 @@ class BundleTests(unittest.TestCase):
         launcher.write_bytes(bundle.launcher(digest, original['python']['path']))
         launcher.chmod(0o500)
         self.assertEqual(bundle.verify(directory, digest)['version'], 25)
+
+    def test_native_host_selects_only_the_exact_source_set_for_each_version(self):
+        from tools.serve_recovery import host_artifact
+        python = Path('/usr/bin/python3').resolve()
+        binding = dict(path=str(python), sha256=bundle.engine.sha(python))
+        path = self.directory/'manifest.json'
+
+        def select(version, sources, profile=None):
+            bundle.engine.save(path, dict(version=version,
+                profile=profile or 'q4t-service-recovery-v'+str(version),
+                ingress_mode='native', python=binding,
+                files={'source/'+name:'b'*64 for name in sources}))
+            return host_artifact.selection(self.directory, bundle.engine.sha(path))
+
+        for version, sources in host_artifact.HOST_INVENTORIES.items():
+            with self.subTest(version=version):
+                self.assertEqual(set(select(version, sources)['sources']), sources)
+        self.assertEqual(set(bundle.SOURCES) - set(bundle.V26_SOURCES),
+                         {'tools/serve_recovery/model_content.py'})
+        for version, sources in ((18, bundle.SOURCES), (27, bundle.V26_SOURCES),
+                                 (26, bundle.SOURCES), (27, (*bundle.SOURCES, 'extra.py'))):
+            with self.assertRaisesRegex(ValueError, 'source inventory'):
+                select(version, sources)
+        with self.assertRaisesRegex(ValueError, 'outer-runtime'):
+            select(27, bundle.SOURCES, profile='q4t-service-recovery-v18')
+        with self.assertRaisesRegex(ValueError, 'outer-runtime'):
+            select(28, bundle.SOURCES)
 
     def test_v26_relocated_trace_verifiers_have_no_repository_dependency(self):
         receipt = self.prepare()
@@ -434,7 +461,7 @@ print('sealed speech imports passed')
         receipt = self.prepare()
         package = Path(receipt['package'])
         value = bundle.verify(package, receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 26)
+        self.assertEqual(value['version'], 27)
         self.assertIn('include/q4t/server/file_limits.h', bundle.NATIVE_SOURCES)
         # Re-signing a v10 label cannot grant capabilities its format lacks.
         value.update(version=10, profile='q4t-service-recovery-v10')
@@ -460,7 +487,7 @@ print('sealed speech imports passed')
         policy = self.http_policy()
         receipt = self.prepare()
         value = bundle.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(value['version'], 26)
+        self.assertEqual(value['version'], 27)
         self.assertEqual(bundle.engine.read(Path(receipt['package'])/'gateway-policy.json'), policy)
         cfg = bundle.gateway_config_for(receipt['package'], value, self.directory,
             access=dict(state_directory=str(self.directory/'state'), state_identity=[1, 2],

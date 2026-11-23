@@ -5,6 +5,7 @@ identity and real primary/light business qualification. Registration grants no
 launch permission and never changes live keys, quotas or application objects.
 """
 import copy
+import hashlib
 from pathlib import Path
 
 from tools.serve_recovery import bundle, ledger, profile_contract, profile_manager
@@ -45,7 +46,7 @@ def payload(value):
         binding=bound, evidence=profile_manager.evidence(package, manifest))
 
 
-def compatible(first, second):
+def compatible(first, second, *, fallback_acceptance=None):
     old, new = first['manifest'], second['manifest']
     ledger.require(all(old[k] == new[k] for k in
         ('repository', 'lock_path', 'python', 'resource_mode', 'quota_enforced',
@@ -74,22 +75,39 @@ def compatible(first, second):
         left = engine.read(Path(first['descriptor']['package'])/name)
         right = engine.read(Path(second['descriptor']['package'])/name)
         ledger.require(left == right, 'recovery would change configured client/transport contract')
+    reviewed_content = None
+    if fallback_acceptance is not None:
+        accepted_fallback(fallback_acceptance, second)
+        if 'content_report' in fallback_acceptance:
+            reviewed_content = new['model_ctime_binding']
     return profile_migration.permit(old['recovery_profiles'], new['recovery_profiles'],
         first['evidence'], second['evidence'], old['recovery_profile_policy'],
-        new['recovery_profile_policy'], automatic=True)
+        new['recovery_profile_policy'], automatic=True, reviewed_content=reviewed_content)
+
+
+def registered_compatibility(first, second, registration):
+    receipt = registration['fallback_acceptance']
+    return compatible(first, second,
+        fallback_acceptance=receipt if 'content_report' in receipt else None)
 
 
 def accepted_fallback(receipt, selected):
     """Bind an actual accepted service origin, including a narrow state shim."""
-    ledger.keys(receipt, ('release', 'decision'))
+    content_keys = ('content_report', 'upstream_index')
+    needs_content = 'model_ctime_binding' in selected['manifest']
+    supplemental = needs_content and any(key in receipt for key in content_keys)
+    ledger.keys(receipt, ('release', 'decision', *(content_keys if supplemental else ())))
     values = {}
     for name, item in receipt.items():
         ledger.keys(item, ('path', 'sha256'))
         version_policy.hash_value(item['sha256'])
         path = Path(item['path'])
-        ledger.require(path.is_absolute() and str(path.resolve(strict=True)) == item['path'] and
-            engine.sha(path) == item['sha256'], 'retained service acceptance identity changed')
-        values[name] = engine.read(path)
+        ledger.require(path.is_absolute() and str(path.resolve(strict=True)) == item['path'] , 'retained service acceptance path changed')
+        if name not in content_keys:
+            raw = bundle.ingress.read_file(path, maximum=2*1024**2)
+            ledger.require(hashlib.sha256(raw).hexdigest() == item['sha256'],
+                           'retained service acceptance identity changed')
+            values[name] = engine.decode_metadata(raw)
     metadata, decision = values['release'], values['decision']
     engine.accepted_release(metadata, decision)
     ledger.require(metadata.get('recovery_accepted') is True and
@@ -99,7 +117,17 @@ def accepted_fallback(receipt, selected):
         'fallback service was not accepted with its exact package')
     original = descriptor(dict(package=metadata['package'],
                                manifest_sha256=metadata['manifest_sha256']))
-    origin = payload(original)
+    adapted_content = needs_content and original != selected['descriptor']
+    ledger.require(adapted_content == supplemental,
+                   'content-qualified rollback requires its audit report and upstream index')
+    if adapted_content:
+        from tools.serve_recovery import model_content
+        model_content.verify_copy(Path(original['package']), original['manifest_sha256'],
+            selected, receipt['content_report'], receipt['upstream_index'])
+        # Exact adaptation above preserves the accepted, verified inner engine.
+        origin = selected
+    else:
+        origin = payload(original)
     ledger.require(metadata.get('engine_binary_sha256') == origin['binding']['binary_sha256'] and
         decision.get('engine_binary_sha256') == origin['binding']['binary_sha256'],
         'accepted fallback engine identity differs')
@@ -110,7 +138,7 @@ def accepted_fallback(receipt, selected):
         all(business['postflight'].get(k) is True for k in
             ('sources_unchanged', 'owned_processes_gone', 'ports_free', 'lock_released')),
         'fallback needs retained real service business and cleanup evidence')
-    if original != selected['descriptor']:
+    if original != selected['descriptor'] and not adapted_content:
         try:
             profile_compat.verify(original['package'], original['manifest_sha256'],
                 selected['descriptor']['package'], selected['descriptor']['manifest_sha256'])
@@ -152,8 +180,8 @@ def prepare(root, primary, fallback, cycle_id, *, fallback_acceptance,
                        'device-domain recovery requires a cold-aware retained controller')
     ledger.require(all(manifest[k] == first['manifest'][k] for k in
         ('repository', 'lock_path', 'python')), 'version recovery root authority differs')
-    permit = compatible(first, second)
-    acceptance = accepted_fallback(fallback_acceptance, second)
+    permit = compatible(first, second, fallback_acceptance=fallback_acceptance)
+    acceptance = copy.deepcopy(fallback_acceptance)
     policy = version_policy.registry(dict(format=version_policy.REGISTRY_FORMAT,
         cycle_id=cycle_id, root_manifest_sha256=root['manifest_sha256'],
         payloads={name:dict(manifest_sha256=item['descriptor']['manifest_sha256'],

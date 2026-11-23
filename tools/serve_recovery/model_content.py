@@ -33,10 +33,20 @@ def drift(expected, current):
     return changed
 
 
+def read_bound(path, digest, name):
+    raw = bundle.ingress.read_file(path, maximum=2*1024**2)
+    ledger.require(hashlib.sha256(raw).hexdigest() == digest, name+' identity differs')
+    return engine.decode_metadata(raw)
+
+
 def source_index(path, digest, repository, revision):
-    ledger.require(engine.sha(path) == digest, 'upstream index identity differs')
-    index = engine.read(path)
-    ledger.require(index['id'] == repository and index['sha'] == revision and
+    index = read_bound(path, digest, 'upstream index')
+    ledger.require(index['id'] == repository, 'upstream model repository differs')
+    return index_rows(index, revision)
+
+
+def index_rows(index, revision):
+    ledger.require(index['sha'] == revision and type(revision) is str and
                    len(revision) == 40 and all(c in '0123456789abcdef' for c in revision),
                    'upstream immutable model revision differs')
     rows = {row['rfilename']:row for row in index['siblings']}
@@ -75,8 +85,7 @@ def validated_binding(package, digest, report, report_sha, index_sha, rows):
     manifest, model, current = statement(package, digest)
     expected = manifest['model_assets']
     changed = drift(expected, current)
-    ledger.require(engine.sha(report) == report_sha, 'content report identity differs')
-    observed = engine.read(report)
+    observed = read_bound(report, report_sha, 'content report')
     ledger.require(observed['status'] == 'PASS' and observed['retained_manifest_sha256'] == digest
         and observed['previous_engine_sha256'] == engine.sha(package/'engine/q4t')
         and observed['upstream_receipt_sha256'] == index_sha and
@@ -120,6 +129,26 @@ def adapter_sources(package, manifest):
         old = "            bundle.check_assets(Path(self.base['model_dir']), self.manifest['model_assets'], read_edges=True)"
         controller = replace_once(controller, old, "            model = Path(self.base['model_dir'])\n            bundle.check_assets(model, bundle.observed_assets(model, self.manifest), read_edges=True)")
     return {BUNDLE:original, CONTROLLER:controller}
+
+
+def verify_copy(original, digest, selected, report, upstream):
+    """Accept only the reproducible metadata adapter for the sealed origin."""
+    binding = selected['manifest']['model_ctime_binding']
+    ledger.require(binding['original_manifest'] == digest and
+                   binding['content_report'] == report['sha256'] and
+                   binding['upstream_index'] == upstream['sha256'],
+                   'selected rollback and model evidence differ')
+    audit = read_bound(report['path'], report['sha256'], 'content report')
+    index = read_bound(upstream['path'], upstream['sha256'], 'upstream index')
+    rows = index_rows(index, audit['revision'])
+    manifest, expected_binding = validated_binding(
+        original, digest, report['path'], report['sha256'], upstream['sha256'], rows)
+    expected = copy.deepcopy(manifest)
+    expected['model_ctime_binding'] = expected_binding
+    for name, text in adapter_sources(original, manifest).items():
+        expected['files'][name] = hashlib.sha256(text.encode()).hexdigest()
+    ledger.require(engine.same_json(expected, selected['manifest']),
+                   'content-qualified rollback changed another package contract')
 
 
 def prepare(package, digest, report, report_sha, index_sha, rows, output):

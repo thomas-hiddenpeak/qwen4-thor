@@ -540,7 +540,8 @@ def observations(registry, evidence):
 
 def permit(previous, target, previous_evidence, target_evidence,
            previous_config, target_config, *, automatic=False,
-           allow_capacity_change=False, allow_capability_extension=False):
+           allow_capacity_change=False, allow_capability_extension=False,
+           reviewed_content=None):
     first = observations(previous, previous_evidence)
     second = observations(target, target_evidence)
     old_contract, new_contract = map(semantic_capabilities, (first, second))
@@ -575,7 +576,16 @@ def permit(previous, target, previous_evidence, target_evidence,
         (not (changed or asr_capacity or tts_capacity or base_capacity) or
          (allow_capacity_change and not automatic)),
         'capacity change requires explicit historical-qualification migration')
-    for key in ('model_files', 'model_assets', 'native_embedding'):
+    before_assets = previous['identity']['model_assets']
+    after_assets = target['identity']['model_assets']
+    if before_assets != after_assets:
+        # This binding is supplied only after exact accepted-origin, audit,
+        # upstream index, changed file and management adapter verification.
+        ledger.require(automatic and reviewed_content is not None and
+            reviewed_content['observed_inventory'] == ledger.digest(before_assets) and
+            reviewed_content['sealed_inventory'] == ledger.digest(after_assets),
+            'migration would change fixed model identity')
+    for key in ('model_files', 'native_embedding'):
         ledger.require(previous['identity'][key] == target['identity'][key],
                        'migration would change fixed model identity')
     ledger.require(old_asr == new_asr or (asr_capacity and not audio_extension) or

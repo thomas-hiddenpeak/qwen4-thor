@@ -1,0 +1,32 @@
+{
+  "status": "PASS_RETAINED_SELECTION_FROM_SEALED_V27",
+  "source_kit": "c1601c810f77adacd9416560b96d0ae807eba35d71e1c30f142f006b97ed44dd",
+  "manifest": "47aa555a39c06a04e4858324f2d3d92db8bbc436376b1dd07539ccb8efd33dfa",
+  "origin": "41760222c76714a23e5753e53ef9e86b3b91e9c0a4f42373f04bf845d3b34afe",
+  "engine": "94df51e5baa135d2fe61009d31212191269d9549068de1b78b19590c4e0a717c",
+  "verified_receipts": {
+    "release": "728f3846c02aea28a72700917d89408f90c5dd2c10671eac7ea1ea46bc80ca38",
+    "decision": "0d406f1ad12d6b38783b239512288af42fdb948ce41ad793c9923a50cc08bed5",
+    "content_report": "a7daad7be53d4f8e51dc532b312ae288cd1f6e6b41524016fe61f86662b64b43",
+    "upstream_index": "be4b15c37cad5b4bc28f3e3c17deacf36dc79734593570bffc7740bb86bb83c2"
+  },
+  "original_host_sources": 168,
+  "detached_host_sources": 168,
+  "host_writes": false,
+  "model_starts": 0,
+  "registration_installed": false,
+  "cpu": {
+    "registration-cpu": {
+      "tests": 20,
+      "sha256": "4d5f2b022387dcc251b3b22a1521931819cc64f15e33b9fa7f80e03c2e276513"
+    },
+    "packaging-cpu": {
+      "tests": 43,
+      "sha256": "b7a7071818965a3acaf3e8dc73bbe49767c13400feed53d86133d2083a03bf0d"
+    },
+    "cli-cpu": {
+      "tests": 2,
+      "sha256": "cb28c7d2ba8924b3b5368ff58229305fd177e22860533f89e303a658af74db1b"
+    }
+  }
+}
