@@ -1,0 +1,70 @@
+{
+  "qualification": {
+    "status": "ACCEPT_ENVIRONMENT_TEMPLATES_PRIMARY_LIGHT",
+    "registry_sha256": "2fec62fa99db01f536a4cc4b7a223e72a8ff8cb6c1e95a3819cf44528e5611ce",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 155,
+      "cleanup_complete": true,
+      "lease_result_sha256": "2e75dc450be18338d0d108a40d1dffeea68510021400fe888a4a64b9c0260437"
+    },
+    "migration_permit_sha256": "a44b5545e93850bdfe23872ab8d7d86e35a71001c4340a5a50c1d459a6643943",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "profiles": {
+    "primary": {
+      "seconds": 46.60982895363122,
+      "starts": 1,
+      "mtp": true,
+      "handoff": {
+        "template_id": "environment_template_3f320c47822615ee82adb388465640d6",
+        "template_hash": "a69efd21a85e78a3721b38e6277b012fa56a8fbbc10c4adfa0862c9ae18ec089",
+        "waiting_step": "2003c668e5d7af74cfbdf83819a1f921bf61d3168d4b8ebe8d4a1006a026e6b9",
+        "trace_id": "4fc7b491f3a20d265472d9894ea29751"
+      },
+      "record_sha256": "2dfe88998e517324a5cb71f02a3cc6d3135157caca3ae49d076755aa196a453f",
+      "previous_rev448_sha256": "1fb036ff722a21719546d1b042298cc91e489ecd9dc30ddcfb8602e546c683ef",
+      "originals": {
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/primary/session-handoff.json": "c53addd0c4afb812afc0db3e1bd9b1e727926aca0c5eb4f92a908136a7132697",
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/primary/result.json": "0606c2edba39f497cd410d8425bb9509bd7d6e86a3f5bb8a9c82dd12503c9ed8",
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/primary/cleanup.json": "97272b08fca8a7e025341d299ffe50ac4fa9c6aa26350fa0892ef40f82c099f8",
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/primary/capabilities.json": "27f5481146fb8f071efc3693389f0b14c1c4feb6698ef3ec609da229983245c9",
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/primary/oauth-handoff.json": "5202f78615351399aed1b961efd085703f73ffa7843c17cbe6f1e4917f40de1e"
+      }
+    },
+    "light": {
+      "seconds": 119.10619076201692,
+      "starts": 1,
+      "mtp": false,
+      "handoff": {
+        "template_id": "environment_template_3f320c47822615ee82adb388465640d6",
+        "template_hash": "a69efd21a85e78a3721b38e6277b012fa56a8fbbc10c4adfa0862c9ae18ec089",
+        "waiting_step": "2003c668e5d7af74cfbdf83819a1f921bf61d3168d4b8ebe8d4a1006a026e6b9",
+        "trace_id": "4fc7b491f3a20d265472d9894ea29751",
+        "closed_spans": 3,
+        "foreign": 404,
+        "template_deleted": true
+      },
+      "record_sha256": "608e130e4026322b69666b27572caee1c53d7558bf279771ee700c19f95f5125",
+      "previous_rev448_sha256": "cc67e878110002a8be19fa7fbf61fe32d82b098731e570bf2008e8d0dfa54517",
+      "originals": {
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/light/session-handoff.json": "e9c73d1056256e3bac03deb402e9c79fabe512adffb1975503d27a0af83c2077",
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/light/result.json": "af1804f18b0549c33d43cdc4dab2fe10a5d4b9bb7e00b7edd624e6713f9db3cd",
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/light/cleanup.json": "97df187e6df0afe01a7ad522374848b27627936520e38202c2aecbad50fadb8c",
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/light/capabilities.json": "a61a69839cd6f732a5a58c24964487a344887b06990e0062e1de0857712476b7",
+        ".q4t-work/serve-responses-agents-20261123/environment-profiles-01/light/oauth-handoff.json": "b551a13e77d1e736fe9c0e3a88b9a273f6e875cd097f19f8599b4bf622b84212"
+      }
+    }
+  },
+  "lease_sha256": "2e75dc450be18338d0d108a40d1dffeea68510021400fe888a4a64b9c0260437",
+  "acceptance_sha256": "6665a8f7d995806d68572b8c141110538bb689d25c872979a02ddcda5bc8d367",
+  "migration_cpu": "26 passed",
+  "prior_failures": [
+    "The initial negative test used general additive migration instead of the specific v30 evidence format; moved rejection checks to the format validator.",
+    "The new ingress digest was not yet registered against the accepted runtime witness; verified the identical binary for both capacities and registered the pair."
+  ]
+}

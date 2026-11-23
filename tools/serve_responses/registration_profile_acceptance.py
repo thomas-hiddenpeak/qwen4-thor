@@ -13,6 +13,7 @@ from tools.serve_live import profile_acceptance
 from tools.serve_recovery import bundle
 from tools.serve_responses import agent_profile_acceptance as agents
 from tools.serve_responses import session_profile_acceptance as sessions
+from tools.serve_responses import environment_profile_acceptance as environments
 from tools.serve_responses import vault_profile_acceptance as vaults
 from tools.serve_responses import interruption_profile_acceptance as recovery
 from tools.serve_responses.beta_profile_acceptance import protocol
@@ -25,7 +26,9 @@ CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents',
     storage='authenticated_client', retention='until_deleted', tool_list_max_bytes=3145728)
 
 
-def prepare(out, build, original, session_witness=None, qualify_vaults=False, vault_oauth=False):
+def prepare(out, build, original, session_witness=None, qualify_vaults=False, vault_oauth=False,
+            environment_templates=False):
+    vault_oauth = vault_oauth or environment_templates
     receipt = pkg.read(EVIDENCE)
     deployed = ROOT/'build/service'
     delivery = pkg.read(recovery.EVIDENCE.parent/'delivery.json')['publication']
@@ -34,6 +37,8 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
     if qualify_vaults or vault_oauth:
         pkg.require(session_witness is None, 'select a single candidate source')
         publication = vaults.OAUTH_PUBLICATION if vault_oauth else vaults.PUBLICATION
+        if environment_templates:
+            publication = environments.PUBLICATION
         delivery = pkg.read(publication)['publication']
     previous = delivery['primary']
     manifest = bundle.verify(deployed, previous)
@@ -46,7 +51,11 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
     change = dict(source_manifest_sha256=previous, previous_protocol=engine['protocol_sha256'],
         sdk_binary=pkg.sha(build/'q4t'), sdk_protocol=protocol(current), protocol=protocol(current))
     session = sessions.candidate(build, session_witness, current) if session_witness else None
-    vault = vaults.candidate(build, current, vault_oauth) if qualify_vaults or vault_oauth else None
+    vault = None
+    if environment_templates:
+        vault = environments.candidate(build, current)
+    elif qualify_vaults or vault_oauth:
+        vault = vaults.candidate(build, current, vault_oauth)
     selection = vault or session
     ingress = selection['ingress'] if selection else receipt['ingress_sha256']
     if session:
@@ -86,6 +95,8 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
             sources = [vaults.SDK, vaults.HELPER, vaults.PEER, str(publication.relative_to(ROOT))]
             if vault_oauth:
                 sources.append(vaults.OAUTH_ISSUER)
+            if environment_templates:
+                sources.extend(environments.SOURCES)
             for source in sources:
                 plan['sources'][source] = pkg.sha(ROOT/source)
         if selection:
@@ -146,9 +157,10 @@ if __name__ == '__main__':
     source = cli.add_mutually_exclusive_group()
     source.add_argument('--vaults', action='store_true')
     source.add_argument('--vault-oauth', action='store_true')
+    source.add_argument('--environment-templates', action='store_true')
     args = cli.parse_args()
     out = args.output.resolve()
     pkg.require(out.is_relative_to(ROOT/'.q4t-work'), 'private stage required')
     prepare(out,args.build.resolve(strict=True),args.original.resolve(strict=True),
             args.session_witness.resolve(strict=True) if args.session_witness else None,
-            args.vaults, args.vault_oauth)
+            args.vaults, args.vault_oauth, args.environment_templates)

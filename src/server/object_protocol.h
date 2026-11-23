@@ -68,6 +68,8 @@ inline std::string Kind(ObjectKind kind) {
       return "live_recording";
     case ObjectKind::kAgentSession:
       return "agent_session";
+    case ObjectKind::kEnvironmentTemplate:
+      return "environment_template";
     case ObjectKind::kVault:
       return "vault";
     case ObjectKind::kAgent:
@@ -78,7 +80,7 @@ inline std::string Kind(ObjectKind kind) {
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kVault); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kEnvironmentTemplate); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

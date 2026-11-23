@@ -1,0 +1,6 @@
+// Generated from the pinned OpenAI SDK types. See openai-node/LICENSE.
+#pragma once
+#include <string_view>
+namespace q4t::server::environment_types {
+inline constexpr std::string_view kData = R"q4t_types(@Q4T_ENVIRONMENT_TYPES@)q4t_types";
+}

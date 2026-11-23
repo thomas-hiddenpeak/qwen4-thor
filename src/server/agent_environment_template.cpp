@@ -1,0 +1,283 @@
+#include "q4t/server/agent_environment.h"
+
+#include <ctime>
+#include <unordered_set>
+
+#include "file_fetch_internal.h"
+#include "object_protocol.h"
+#include "q4t/io/base64.h"
+#include "q4t/server/application_query.h"
+#include "q4t/server/application_routes.h"
+#include "q4t/server/conversation_state.h"
+#include "q4t/server/files.h"
+#include "q4t/server/http_framing.h"
+#include "q4t/server/request_json.h"
+#include "q4t/server/state_cipher.h"
+
+namespace q4t::server {
+namespace {
+using namespace object_detail;
+
+ObjectReply Invalid(std::string message, std::string key) {
+  auto out = Error(400, "invalid_request", std::move(message));
+  out.value = Object({{"param", String(std::move(key))}});
+  return out;
+}
+
+ObjectReply InvalidRecord() {
+  return Error(503, "environment_template_invalid",
+               "Invalid stored environment template");
+}
+
+Json Or(const Json& source, const char* key, Json fallback) {
+  const auto* value = source.Find(key);
+  return value && !value->IsNull() ? *value : std::move(fallback);
+}
+
+// The API reports inline download size without returning or decoding the bytes.
+bool Base64Size(std::string_view text, size_t* bytes) {
+  if (text.size() % 4) return false;
+  const auto first = text.find('=');
+  const auto count = first == text.npos ? text.size() : first;
+  const auto tail = text.substr(count);
+  if (!tail.empty() && tail != "=" && tail != "==") return false;
+  if (text.substr(0, count).find_first_not_of(io::kBase64Alphabet) != text.npos)
+    return false;
+  if (!tail.empty()) {
+    const auto last = io::kBase64Alphabet.find(text[count - 1]);
+    if (last % (tail.size() == 2 ? 16 : 4)) return false;
+  }
+  *bytes = text.size() / 4 * 3 - tail.size();
+  return true;
+}
+
+bool WorkspaceFile(std::string_view path) {
+  if (!path.starts_with("/workspace/") || path.ends_with('/') ||
+      path.find('\0') != path.npos)
+    return false;
+  path.remove_prefix(11);
+  while (!path.empty()) {
+    const auto cut = path.find('/');
+    const auto part = path.substr(0, cut);
+    if (part.empty() || part == "." || part == "..") return false;
+    if (cut == path.npos) break;
+    path.remove_prefix(cut + 1);
+  }
+  return true;
+}
+
+ObjectReply Project(const Json& config, const std::string& id, int64_t created,
+                    int64_t updated) {
+  auto files = Or(config, "files", Array());
+  std::unordered_set<std::string> paths;
+  for (auto& file : files.array) {
+    const auto path = file.GetString("path");
+    if (!WorkspaceFile(path) || !paths.insert(path).second)
+      return Invalid("Expected a unique file path inside /workspace", "files");
+    if (file.GetString("type") == "inline") {
+      size_t size;
+      if (!Base64Size(file.Find("data")->str, &size))
+        return Invalid("Invalid inline file data", "files");
+      file = Object({{"type", String("inline")},
+                     {"path", String(path)},
+                     {"size_bytes", Number(size)}});
+    }
+  }
+  auto plugins = Or(config, "plugins", Array());
+  auto skills = Or(config, "skills", Array());
+  for (auto* entries : {&plugins, &skills}) {
+    for (auto& entry : entries->array) {
+      if (entry.GetString("type") == "skill_reference") {
+        if (!entry.Has("version")) Set(&entry, "version", {});
+      } else {
+        size_t size;
+        if (!Base64Size(entry.Find("source")->Find("data")->str, &size) ||
+            !size)
+          return Invalid("Invalid inline capability data",
+                         entries == &plugins ? "plugins" : "skills");
+        std::erase_if(entry.object,
+                      [](const auto& pair) { return pair.first == "source"; });
+      }
+    }
+  }
+  auto packages = Or(config, "packages", Object());
+  for (const auto* key : {"npm", "python", "system"})
+    if (!Nonnull(packages, key)) Set(&packages, key, Array());
+  const auto network = Or(config, "network", Object());
+  const auto* blocked = network.GetArray("blocked_domains");
+  if (blocked && !blocked->array.empty()) {
+    const auto* allowed = network.GetArray("allowed_domains");
+    if (network.GetString("access") != "restricted" ||
+        (allowed && !allowed->array.empty()))
+      return Invalid(
+          "Blocked domains require restricted access and an empty "
+          "allowlist",
+          "network.blocked_domains");
+    for (const auto& domain : blocked->array) {
+      FileFetchDomainPolicy policy;
+      policy.blocked.push_back(http::Lower(domain.str));
+      if (!file_detail::ValidDomains(policy))
+        return Invalid("Expected an exact domain", "network.blocked_domains");
+    }
+  }
+  ObjectReply result;
+  result.value = Object(
+      {{"id", String(id)},
+       {"object", String("agent.environment.template")},
+       {"created_at", Number(created)},
+       {"updated_at", Number(updated)},
+       {"name", Or(config, "name", {})},
+       {"files", std::move(files)},
+       {"network",
+        Object({{"access", Or(network, "access", String("disabled"))},
+                {"allowed_domains", Or(network, "allowed_domains", Array())}})},
+       {"packages", std::move(packages)},
+       {"skills", std::move(skills)},
+       {"plugins", std::move(plugins)},
+       {"capability_directories",
+        Or(config, "capability_directories", Array())},
+       {"desktop",
+        Or(config, "desktop", Object({{"enabled", Boolean(false)}}))}});
+  ChatPlanError error;
+  if (!ValidateEnvironmentTemplate(result.value,
+                                   EnvironmentTemplateShape::kResource, &error))
+    return InvalidRecord();
+  return result;
+}
+
+ObjectReply Public(const Json& data, const std::string& id) {
+  const auto* row = data.Find("resource");
+  ChatPlanError error;
+  if (!row || row->GetString("id") != id ||
+      !ValidateEnvironmentTemplate(*row, EnvironmentTemplateShape::kResource,
+                                   &error))
+    return InvalidRecord();
+  ObjectReply out;
+  out.value = *row;
+  return out;
+}
+}  // namespace
+
+ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
+                                      std::string_view method,
+                                      std::string_view target,
+                                      const std::string& body,
+                                      const StateAccess& access) {
+  using namespace object_detail;
+  if (!EnvironmentTemplateMethodAllowed(method, target))
+    return Error(404, "route_not_found", "No environment template route");
+  const auto split = target.find('?');
+  const auto path = target.substr(0, split);
+  const bool collection = path == kEnvironmentTemplatesPath;
+  if (method != "POST" && !body.empty())
+    return Invalid("Unexpected body", "body");
+  ObjectRequest req;
+  req.kind = ObjectKind::kEnvironmentTemplate;
+  req.scope = access.scope;
+  const auto execute = [&] {
+    return objects.Execute(req, access.deadline, access.cancelled);
+  };
+  if (collection && method == "GET") {
+    auto query = ParseApplicationQuery(
+        split == target.npos ? "" : target.substr(split + 1));
+    if (!query.ok()) return query;
+    if (query.value.Has("include"))
+      return Invalid("Unknown list option", "include");
+    ItemViewOptions page;
+    ChatPlanError error;
+    auto parsed = ParseItemViewOptions(query.value, &page, &error, true);
+    if (!parsed) return Invalid(parsed.message(), error.param);
+    req.operation = ObjectOperation::kList;
+    req.after = page.after;
+    req.limit = page.limit;
+    req.descending = page.descending;
+    auto list = execute();
+    if (!list.ok()) return list;
+    for (auto& row : Field(list.value, "data").array) {
+      auto projected = Public(Field(row, "data"), row.GetString("id"));
+      if (!projected.ok()) return projected;
+      row = std::move(projected.value);
+    }
+    return list;
+  }
+  if (split != target.npos) return Invalid("Unexpected query", "query");
+  Json changes = Object();
+  if (method == "POST") {
+    if (!(collection && body.empty()) &&
+        !io::ParseJson(body, &changes, true, kSchemaJsonLimits))
+      return Invalid("Expected a JSON template object", "body");
+    if (collection && changes.IsNull()) changes = Object();
+    ChatPlanError error;
+    auto valid = ValidateEnvironmentTemplate(
+        changes,
+        collection ? EnvironmentTemplateShape::kCreate
+                   : EnvironmentTemplateShape::kUpdate,
+        &error);
+    if (!valid) return Invalid(valid.message(), error.param);
+  }
+  req.id = collection
+               ? NewObjectId(req.kind)
+               : std::string(path.substr(kEnvironmentTemplatesPath.size() + 1));
+  if (req.id.empty())
+    return Error(503, "environment_id_unavailable", "No template ID");
+  const StateCipherBinding binding{"q4t.agents", "environment",
+                                   "template_definition", req.id};
+  const auto now = std::time(nullptr);
+  int64_t created = now;
+  Json config = Object();
+  req.expected_revision = 0;
+  if (!collection) {
+    auto old = execute();
+    if (!old.ok()) return old;
+    const auto& data = Field(old.value, "data");
+    auto resource = Public(data, req.id);
+    if (!resource.ok() || method == "GET") return resource;
+    req.expected_revision = old.value.GetInt("revision");
+    if (method == "DELETE") {
+      req.operation = ObjectOperation::kErase;
+      auto erased = execute();
+      if (erased.ok())
+        erased.value =
+            Object({{"id", String(req.id)},
+                    {"deleted", Boolean(true)},
+                    {"object", String("agent.environment.template.deleted")}});
+      return erased;
+    }
+    created = resource.value.GetInt("created_at");
+    std::string raw;
+    auto opened = StateCipher(objects).Open(data.GetString("sealed_definition"),
+                                            binding, access, &raw);
+    if (!opened.ok()) return opened;
+    ChatPlanError error;
+    if (!io::ParseJson(raw, &config, true, kSchemaJsonLimits) ||
+        !ValidateEnvironmentTemplate(config, EnvironmentTemplateShape::kCreate,
+                                     &error))
+      return InvalidRecord();
+  }
+  if (const auto* files = changes.GetArray("files")) {
+    Files owned(objects);
+    for (const auto& file : files->array) {
+      if (file.GetString("type") != "file_id") continue;
+      auto found =
+          owned.Retrieve({access.scope, access.deadline, access.cancelled},
+                         file.GetString("file_id"));
+      if (!found.ok()) return found;
+    }
+  }
+  for (auto& [key, value] : changes.object) Set(&config, key, std::move(value));
+  auto projected = Project(config, req.id, created, now);
+  if (!projected.ok()) return projected;
+  std::string sealed;
+  auto saved =
+      StateCipher(objects).Seal(OutputJson(config), binding, access, &sealed);
+  if (!saved.ok()) return saved;
+  req.data = Object({{"resource", projected.value},
+                     {"sealed_definition", String(std::move(sealed))}});
+  req.ttl_seconds = 0;
+  req.operation = ObjectOperation::kPut;
+  auto committed = execute();
+  if (committed.commit_unknown)
+    committed.value = Object({{"id", String(req.id)}});
+  return committed.ok() ? projected : committed;
+}
+}  // namespace q4t::server

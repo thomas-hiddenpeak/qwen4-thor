@@ -10,6 +10,8 @@
 #include "q4t/server/live_types_data.h"
 #include "q4t/server/multi_agent_types_data.h"
 #include "q4t/server/agent_session.h"
+#include "q4t/server/agent_environment.h"
+#include "q4t/server/environment_types_data.h"
 #include "q4t/server/agent_session_types_data.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/vault_credential_types_data.h"
@@ -212,6 +214,19 @@ Status vault_detail::ValidateCredential(const Json& value, CredentialShape shape
     case CredentialShape::kAuthCreate: root = "auth_create"; break;
     case CredentialShape::kAuthRotate: root = "auth_rotate"; break;
     case CredentialShape::kResource: root = "resource"; break;
+  }
+  return Validate(graph, value, root, error, "");
+}
+
+Status ValidateEnvironmentTemplate(const Json& value, EnvironmentTemplateShape shape,
+                                   ChatPlanError* error) {
+  static const Graph graph(environment_types::kData,
+                           "q4t-openai-environment-types-v1");
+  const char* root = "";
+  switch (shape) {
+    case EnvironmentTemplateShape::kCreate: root = "template_create"; break;
+    case EnvironmentTemplateShape::kUpdate: root = "template_update"; break;
+    case EnvironmentTemplateShape::kResource: root = "template_resource"; break;
   }
   return Validate(graph, value, root, error, "");
 }

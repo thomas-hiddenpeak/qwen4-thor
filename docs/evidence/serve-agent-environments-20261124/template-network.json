@@ -1,0 +1,56 @@
+{
+  "engine": "0c67bdc7754900a76fde14d278ab41cee56edd7b41c4bc3b5d64983ff713b8a6",
+  "ingress": "8afa45887db80173df1841d48f11c50a507b6828e861e555018648744a07acb5",
+  "protocol": "0525adad7dc3b1210612cac8934e8914ec3023dc3706c06e2d1c8a45ed45644c",
+  "driver": "04ef5d8644f82c38e0e5b218f6d1b0041dee2b62bf9b190d0fca97c8c49b5c7c",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 34.925,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "operations": 5,
+    "templates": 2,
+    "pages": 2,
+    "inline_bytes": 57,
+    "owned_file": true,
+    "foreign_file": 404,
+    "private_fields_omitted": true,
+    "foreign_read": 404,
+    "foreign_delete": 404,
+    "deleted_get": 404,
+    "invalid_update": 400,
+    "rejected_network_policies": 3,
+    "exact_blocked_domain": true,
+    "chat": "42"
+  },
+  "coverage": {
+    "scope_snapshot_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+    "issued_openapi_sha256": "cc02f7be8ab120dff7bdfb29681509998719b01372d083534bea10e9ea14cdb8",
+    "scope_path_selectors": 157,
+    "with_declared_operations": 80,
+    "without_declared_operations": 77,
+    "measurement": "Path templates ignore parameter names. A query selector must be explicitly declared with a matching enum or constant on the listed operation. This measures declarations only; the frozen scope inventory does not list all required methods or their acceptance."
+  },
+  "cpu": {
+    "cpp": "1 passed",
+    "schema_examples": 12
+  },
+  "prior_evidence": "templates.json",
+  "prior_failure": "A template with simultaneous nonempty allow and block lists was accepted in the original CPU fixture. The pinned SDK forbids this combination.",
+  "type_graph_sha256": "f7de8eb40560027d9b144e0dea8598d814c1ea971b45b213b476ae6d426779ae",
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/environment-policy-business-01/result.json": "f23a42b9ce93e92079486542fdf15bbd6226bcfbcadea5f2eb51d5dfeb2c785f",
+    ".q4t-work/serve-responses-agents-20261123/environment-policy-business-01/plan.json": "15eb3124660b9a60411e6d54e99e9d49c94bb10ee308419b8539d15d537bf4ef",
+    ".q4t-work/serve-responses-agents-20261123/environment-policy-business-01/create/sdk-result.json": "d4e9312af966276ce41f3e00c9ffa2baabb00c36ed87292a3b0bbf4f9ac7432f",
+    ".q4t-work/serve-responses-agents-20261123/environment-policy-cpu.log": "c14360e780a580adf34ae6d28b5fb73a41c8c1e381aa4d6bafc396de52bc47e9",
+    ".q4t-work/serve-responses-agents-20261123/environment-policy-schemas.log": "02335bd40349714bc3c0365e9e75fe8593f71064026d5e336d8623d23227f1a0",
+    ".q4t-work/serve-responses-agents-20261123/environment-policy-audit.json": "f3f0d583c29bfa15ec6fe478a8e29cf241d7c3515c60de749bd3db412a7ff9c7",
+    ".q4t-work/serve-responses-agents-20261123/environment-policy-lease-01/exit.json": "83c30af7bef5df6805e93c455f13bc5ac5fad53c647579c959767553504409bf"
+  }
+}

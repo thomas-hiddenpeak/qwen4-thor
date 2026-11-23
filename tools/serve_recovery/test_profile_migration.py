@@ -29,6 +29,30 @@ def bind_records(registry, records):
 
 
 class MigrationTests(unittest.TestCase):
+    def test_environment_templates_and_traces_require_a_complete_owned_handoff(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        agents = dict(selector='responses_multi_agent=v1', default_max_concurrent_subagents=3,
+                      shared_output_budget=True, agent_events=True,
+                      actions=['spawn_agent','interrupt_agent','list_agents','send_message',
+                               'followup_task','wait_agent'])
+        old = dict(responses=dict(beta_query_selector='beta=true', multi_agent=agents),
+                   agent_registration=live.REGISTRATION_CAPABILITY,
+                   agent_sessions=live.OAUTH_SESSION, agent_vaults=live.VAULT_CAPABILITY)
+        new = dict(old, agent_environment_templates=live.TEMPLATE_CAPABILITY,
+                   agent_session_traces=live.SESSION_TRACE_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        self.assertEqual(live.format_for(new), live.ENVIRONMENT_RECORD)
+        for field in ('agent_environment_templates', 'agent_session_traces'):
+            missing = dict(new)
+            del missing[field]
+            with self.assertRaisesRegex(ValueError, "incomplete environment"):
+                live.format_for(missing)
+        for key, field, value in [('agent_environment_templates','default_network','enabled'),
+                                  ('agent_session_traces','published_only',1)]:
+            with self.assertRaisesRegex(ValueError, "incomplete environment"):
+                live.format_for(dict(new, **{key:dict(new[key], **{field:value})}))
+
     def test_vault_oauth_adds_only_renewal_to_qualified_mcp_authority(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(agent_sessions=live.VAULT_SESSION, agent_vaults=live.VAULT_CAPABILITY, storage='owned')

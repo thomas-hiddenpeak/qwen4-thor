@@ -36,7 +36,8 @@ enum class ObjectKind {
   kLiveForkState,
   kAgent,
   kAgentSession,
-  kVault
+  kVault,
+  kEnvironmentTemplate
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 
