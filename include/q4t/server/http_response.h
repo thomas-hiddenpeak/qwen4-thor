@@ -298,7 +298,8 @@ bool WriteAll(int fd, const char* data, size_t len,
 bool WriteAll(int fd, const std::string& s, const WriteOptions& options = {});
 bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type,
-                const WriteOptions& options = {}, std::string_view allow = {});
+                const WriteOptions& options = {}, std::string_view allow = {},
+                std::string_view location = {});
 // Fixed-length response from bounded chunks (<=1 MiB). A failed or
 // short source closes the frame; never append JSON/SSE or reuse the connection.
 bool SendBinaryResponse(int fd, uint64_t length,

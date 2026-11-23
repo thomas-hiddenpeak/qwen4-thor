@@ -22,7 +22,7 @@
 
 ## 当前阶段更新（2026-11-23）
 
-工作分支已完成 Realtime SIP 独立接听、按 call ID 接入、工具回填和播报，以及手动停播和真实来电插话后的会话历史截断。默认发行 rev426。继续 Realtime WebRTC 创建、临时凭据、组合恢复与可回退交付。另有一次命名工具生成返回 502，已登记到 A10，保留实际失败终态与后续排查入口。[接听](evidence/serve-realtime-sip-accept-20261123/README.md)、[播放与历史](evidence/serve-realtime-call-playout-20261123/README.md)。
+工作分支已完成 Realtime SIP 独立接听、按 call ID 接入、工具回填和播报，以及手动停播和真实来电插话后的会话历史截断。Realtime WebRTC 两种建连方式、HTTP 挂断和真实语音工具回填已通过[原生 TLS 实测](evidence/serve-realtime-webrtc-create-20261123/README.md)。默认发行 rev426。继续临时凭据、组合恢复与可回退交付。另有一次命名工具生成返回 502，已登记到 A10，保留实际失败终态与后续排查入口。[接听](evidence/serve-realtime-sip-accept-20261123/README.md)、[播放与历史](evidence/serve-realtime-call-playout-20261123/README.md)。
 
 ## 当前阶段更新（2026-11-21）
 

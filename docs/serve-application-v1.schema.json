@@ -19702,6 +19702,60 @@
     "realtime_195": {
       "const": "near_field"
     },
+    "realtime_187": {
+      "type": "object",
+      "properties": {
+        "audio": {
+          "$ref": "#/$defs/realtime_188"
+        },
+        "include": {
+          "$ref": "#/$defs/realtime_221"
+        },
+        "instructions": {
+          "$ref": "#/$defs/realtime_4"
+        },
+        "max_output_tokens": {
+          "$ref": "#/$defs/realtime_105"
+        },
+        "model": {
+          "$ref": "#/$defs/realtime_224"
+        },
+        "output_modalities": {
+          "$ref": "#/$defs/realtime_109"
+        },
+        "parallel_tool_calls": {
+          "$ref": "#/$defs/realtime_114"
+        },
+        "prompt": {
+          "$ref": "#/$defs/realtime_117"
+        },
+        "reasoning": {
+          "$ref": "#/$defs/realtime_138"
+        },
+        "tool_choice": {
+          "$ref": "#/$defs/realtime_244"
+        },
+        "tools": {
+          "$ref": "#/$defs/realtime_245"
+        },
+        "tracing": {
+          "$ref": "#/$defs/realtime_259"
+        },
+        "truncation": {
+          "$ref": "#/$defs/realtime_261"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_267"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_session": {
+      "$ref": "#/$defs/realtime_187"
+    },
     "realtime_call_accept": {
       "$ref": "#/$defs/realtime_464"
     },

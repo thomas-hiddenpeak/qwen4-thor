@@ -27,9 +27,13 @@ class Stage(live.Stage):
     limits = LIMITS
 
     def create(self, sdp, session, *, source=None, client="alpha"):
-        self.budget('sdk_posts')
-        args = dict(key=self.keys[client], source=source, base_url=f'https://127.0.0.1:{self.plan["public_port"]}/v1',
-                    request=dict(transport=dict(type='webrtc', sdp=sdp), session=session))
+        return self.sdk_request(client, source=source,
+            request=dict(transport=dict(type='webrtc', sdp=sdp), session=session))
+
+    def sdk_request(self, client, **operation):
+        self.budget('sidebands' if operation.get('action') == 'attach' else 'sdk_posts')
+        args = dict(key=self.keys[client], base_url=f'https://127.0.0.1:{self.plan["public_port"]}/v1',
+                    **operation)
         env = dict(os.environ, Q4T_NODE_SDK_DIR=self.plan['sdk_directory'],
                    NODE_EXTRA_CA_CERTS=self.plan['tls']['certificate'])
         child = subprocess.run(['node', ROOT/'tools/serve_live/media_create_sdk.mjs'],
@@ -131,7 +135,8 @@ class Stage(live.Stage):
         self.snapshot('final-drained')
 
 
-def main():
+def main(stage=Stage, schema=SCHEMA):
+    limits = stage.limits
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action',choices=['prepare','run','finalize'])
     parser.add_argument('--output',type=Path,required=True)
@@ -144,19 +149,19 @@ def main():
         plan=read(out/'plan.json')
         worker=Path(plan['binary']).with_name('q4t-live-webrtc')
         require(sha(worker)==read(args.qualification)['worker_sha256'], 'qualified media worker')
-        plan.update(schema=SCHEMA,limits=LIMITS,worker=str(worker),worker_sha256=sha(worker),
+        plan.update(schema=schema,limits=limits,worker=str(worker),worker_sha256=sha(worker),
                     port=18721,operations_port=18722,public_port=18723)
         save(out/'plan.json',plan)
     elif args.action=='run':
         plan=read(out/'plan.json')
-        require(plan['schema']==SCHEMA and sha(plan['worker'])==plan['worker_sha256'],'stage identity')
+        require(plan['schema']==schema and sha(plan['worker'])==plan['worker_sha256'],'stage identity')
         with base.lifecycle.child_subreaper():
-            Stage(plan).run()
+            stage(plan).run()
     else:
         result,plan=read(out/'result.json'),read(out/'plan.json')
         require(result['status']=='PASS' and result['default_unchanged'] and
-                result['seconds'] <= LIMITS['seconds'] and
-                all(result['counts'][k]==v for k,v in LIMITS.items() if k not in ('seconds','controls')),
+                result['seconds'] <= limits['seconds'] and
+                all(result['counts'][k]==v for k,v in limits.items() if k not in ('seconds','controls')),
                 'complete bounded run')
         env=qualify.environment(read(out/'lease/exit.json'),
             [json.loads(line) for line in (out/'lease/nvml-queries.jsonl').read_text().splitlines()],

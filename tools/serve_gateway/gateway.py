@@ -40,6 +40,7 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/live/sessions', 'realtime'),
     ('GET', '/v1/live/sessions/{session_id}/attach', 'sideband'),
     ('POST', '/v1/live/sessions', 'data'),
+    ('POST', '/v1/realtime/calls', 'data'),
     ('POST', '/v1/live/sessions/{session_id}/accept', 'data'),
     ('POST', '/v1/realtime/calls/{call_id}/accept', 'data'),
     ('POST', '/v1/live/sessions/{session_id}/hangup', 'control'),

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Realtime WebRTC 创建与挂断已通过 Thor 本机原生 TLS 和官方 JS SDK 短验。裸 SDP 及带配置的 multipart 均返回 201，所属客户端的旁路与音轨操作同一会话，其他客户得到 404。一通 Opus 语音查询完成工具回填并播报 rev426，挂断后 Chat=42。67.30 秒，GPU 已释放。接下来补临时客户端凭据及组合恢复、发行，默认 rev426。[真实通话和入口回归](evidence/serve-realtime-webrtc-create-20261123/README.md)。
+
 Realtime 电话打断已通过默认对话的真实业务短验。应用手动停播及来电方实际插话后，同一语音项分别保留 985 和 1,702 毫秒，取回字节均为原 PCM 的精确前缀，转录清空。两次挂断后 Chat 正常、GPU 释放。一次 NVML 环境中断和一次命名工具返回 502 均保留；工具调用失败的根因仍需定位。下一步是 Realtime WebRTC 建连、临时凭据和剩余组合交付，默认 rev426。[打断验收](evidence/serve-realtime-call-playout-20261123/README.md)。
 
 Realtime 独立接听和按 `call_id` 接入的官方 SDK 旁路已通过 Thor 原生 TLS 验收。一通加密 Opus 来电完成按键、语音查询、真实工具回填及播报 rev426。迟到的同客户旁路拿到当前会话，其他客户接听、挂断与旁路均得到 404。通过轮 68.48 秒，普通 Chat 回答 42，GPU 已释放。前两轮分别因简繁写法和客户端语音输出预算不足失败。本轮默认发行仍为 rev426。[业务证据](evidence/serve-realtime-sip-accept-20261123/README.md)。

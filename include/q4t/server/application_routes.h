@@ -80,7 +80,8 @@ inline bool IsRealtimeUpgrade(std::string_view method,
 
 inline bool IsLiveMediaCreate(std::string_view method, std::string_view target) {
   return method == "POST" &&
-         (target == "/v1/live/sessions" || !LiveForkId(target).empty() ||
+         (target == "/v1/realtime/calls" || target == "/v1/live/sessions" ||
+          !LiveForkId(target).empty() ||
           !SipControlId(target, "/accept").empty());
 }
 

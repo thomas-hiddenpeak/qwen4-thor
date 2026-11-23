@@ -382,6 +382,7 @@ constexpr RouteSpec kRoutes[] = {
     {"GET", "/v1/realtime", false},
     {"GET", "/v1/live/sessions", false},
     {"POST", "/v1/live/sessions", false},
+    {"POST", "/v1/realtime/calls", false},
     {"POST", "/v1/audio/speech", false},
     {"POST", "/v1/audio/transcriptions", false},
     {"POST", "/v1/moderations", false},

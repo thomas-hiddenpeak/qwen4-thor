@@ -508,7 +508,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         IsConversationTarget(path) || IsPromptTarget(path) ||
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && !((IsResponseCancellation(method, path) ||
+      if (method == "POST" && path != "/v1/realtime/calls" && !((IsResponseCancellation(method, path) ||
                                  IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
                                  IsBatchCancellation(method, path) ||
@@ -549,7 +549,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       HandleSipControl(fd, SipControlId(path, "/refer"), body, true);
     else if (method == "POST" && !SipControlId(path, "/accept").empty())
       HandleLiveMediaCreate(fd, {}, body, admission, SipControlId(path, "/accept"));
-    else if (IsLiveMediaCreate(method, path))
+    else if (method == "POST" && path == "/v1/realtime/calls") {
+      HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type);
+    } else if (IsLiveMediaCreate(method, path))
       HandleLiveMediaCreate(fd, LiveForkId(path), body, admission);
     else if (IsRealtimeTarget(path))
       HandleRealtime(fd, path, headers, state->pending, websocket_accept);

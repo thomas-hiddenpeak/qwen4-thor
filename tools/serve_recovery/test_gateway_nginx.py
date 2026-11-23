@@ -177,6 +177,17 @@ class Stack:
                 if row['token'] != stack.token:
                     self.response(403, dict(error=dict(code='invalid_gateway_credentials')))
                     return
+                if self.path == '/v1/realtime/calls' and method == 'POST':
+                    if self.headers.get('Content-Type') != 'application/sdp':
+                        self.response(415, dict(error='invalid content type'))
+                        return
+                    self.send_response(201)
+                    self.send_header('Content-Type', 'application/sdp')
+                    self.send_header('Location', '/v1/realtime/calls/rtc_fixture')
+                    self.send_header('Content-Length', str(len(raw)))
+                    self.end_headers()
+                    self.wfile.write(raw)
+                    return
                 # Transport oracle only. Native endpoint/SDK semantics are
                 # exercised separately by the Conversations/Responses SDK fixtures.
                 if self.path in stack.held_application_paths:
@@ -439,6 +450,9 @@ class NginxTests(unittest.TestCase):
                         'name="file"; filename="fixture.txt"\r\n'
                         'Content-Type: text/plain\r\n\r\nactual CPU bytes'
                         '\r\n--cpu-route--\r\n')
+            create_call = method == 'POST' and template == '/v1/realtime/calls'
+            if create_call:
+                content_type, body = 'application/sdp', 'v=0\r\ns=fixture\r\n'
             with self.subTest(method=method, path=path):
                 connection = http.client.HTTPConnection('127.0.0.1',
                     self.stack.value['policy']['listen_port'], timeout=4)
@@ -447,7 +461,12 @@ class NginxTests(unittest.TestCase):
                         'Authorization': 'Bearer '+'A'*40,
                         'Content-Type': content_type})
                     response = connection.getresponse()
-                    self.assertEqual(response.status, 200, response.read())
+                    wire = response.read()
+                    self.assertEqual(response.status, 201 if create_call else 200, wire)
+                    if create_call:
+                        self.assertEqual(response.getheader('Content-Type'), 'application/sdp')
+                        self.assertEqual(response.getheader('Location'), '/v1/realtime/calls/rtc_fixture')
+                        self.assertEqual(wire, body.encode())
                     row = self.stack.application_requests[-1]
                     self.assertEqual((row['method'], row['path'], row['body']),
                                      (method, path, body))

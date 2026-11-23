@@ -8,7 +8,8 @@
 #include <future>
 
 #include "object_protocol.h"
-#include "realtime_sip_call.h"
+#include "realtime_media_call.h"
+#include "realtime_webrtc_request.h"
 #include "q4t/server/realtime_chat_plan.h"
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/live_media_call.h"
@@ -44,15 +45,15 @@ struct MediaOwner {
     if (sideband) sideband->Finish(false);
   }
 
-  void Run(std::stop_token stop,
+  bool Run(std::stop_token stop, const std::atomic<bool>& hangup,
            const std::function<ClientIdentity()>& current) {
     bool closing = false;
     while (!stop.stop_requested()) {
       const auto client = current();
-      if (!client.Allowed()) return;
-      if (invitation && invitation->Ended() && !closing) {
-        if (invitation->Lost() || !call->EndTransport() || !process.Drain(stop))
-          return;
+      if (!client.Allowed()) return false;
+      if (!closing && (hangup.load() || (invitation && invitation->Ended()))) {
+        if ((invitation && invitation->Lost()) || !call->EndTransport() || !process.Drain(stop))
+          return false;
         closing = true;
       }
       for (int i = 0; !closing && i < 16; ++i) {
@@ -60,23 +61,26 @@ struct MediaOwner {
         std::string_view payload;
         const auto read = process.Receive(&type, &payload);
         if (read == LiveMediaProcess::Read::kPending) break;
-        if (read == LiveMediaProcess::Read::kClosed ||
-            (type == 'D' && client.Scoped() &&
-             payload.size() > client.Limits()->max_body_bytes) ||
-            !call->Receive(type, payload))
-          return;
+        if (read == LiveMediaProcess::Read::kClosed) return false;
+        if (type == 'D' && client.Scoped() &&
+            payload.size() > client.Limits()->max_body_bytes) {
+          call->CloseDataChannel();
+          continue;
+        }
+        if (!call->Receive(type, payload)) return false;
       }
-      if (!call->Tick(Clock::now())) return;
+      if (!call->Tick(Clock::now())) return false;
       if (call->Finished()) {
         const bool drained = closing || process.Drain(stop);
         if (sideband) sideband->Finish(drained);
-        return;
+        return drained;
       }
       pollfd event{process.Fd(), POLLIN, 0};
       // After BYE the media child has drained. Only the backend terminal and
       // sideband remain; a closed child socket would wake immediately.
-      if (poll(&event, closing ? 0 : 1, 5) < 0 && errno != EINTR) return;
+      if (poll(&event, closing ? 0 : 1, 5) < 0 && errno != EINTR) return false;
     }
+    return false;
   }
 };
 }  // namespace
@@ -115,6 +119,38 @@ void ChatServer::HandleSipReject(int fd, std::string_view id,
 void ChatServer::HandleSipControl(int fd, std::string_view id,
                                   const std::string& body, bool transfer) {
   const auto* http = detail::HttpResponseContext::Current(fd);
+  if (http && !transfer && id.starts_with("rtc_") &&
+      clients_.OwnsIdentity(http->Client())) {
+    Json empty;
+    const bool valid = body.empty() ||
+        (io::ParseJson(body, &empty, true, {8, 32, 4096, true}) &&
+         empty.IsObject() && empty.object.empty());
+    bool closing = false;
+    std::shared_future<bool> completion;
+    {
+      std::lock_guard lock(live_media_mu_);
+      for (auto& slot : live_media_threads_) {
+        if (!slot.webrtc_call || slot.finished.load() ||
+            slot.session != id || slot.client != http->Client().Id()) continue;
+        if (valid) closing = slot.hangup.exchange(true);
+        completion = slot.completion;
+        break;
+      }
+    }
+    if (completion.valid()) {
+      if (!valid)
+        detail::SendError(fd, 400, "Hangup accepts no parameters", {}, "invalid_request");
+      else if (closing)
+        detail::SendError(fd, 409, "Call is already closing", {}, "call_closing");
+      else if (completion.wait_for(5s) != std::future_status::ready)
+        detail::SendError(fd, 504, "Call close timed out", {}, "call_close_timeout");
+      else if (!completion.get())
+        detail::SendError(fd, 502, "Media drain was not confirmed", {}, "call_close_failed");
+      else
+        detail::SendSimple(fd, 200, "OK", "", "application/json");
+      return;
+    }
+  }
   if (!http || !http->Client().Scoped() || !clients_.OwnsIdentity(http->Client())) {
     detail::SendError(fd, 404, "Call not found", {}, "not_found");
     return;
@@ -152,12 +188,13 @@ void ChatServer::HandleSipControl(int fd, std::string_view id,
 void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
                                        const std::string& body,
                                        std::atomic<int>*& admission,
-                                       std::string_view sip_id) {
+                                       std::string_view sip_id,
+                                       std::optional<std::string_view> offer_type) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
   const auto client = http->Client();
   const bool sip = !sip_id.empty();
-  const bool realtime = sip_id.starts_with("rtc_");
+  const bool realtime = offer_type || sip_id.starts_with("rtc_");
   if (sip && (!client.Scoped() || !clients_.OwnsIdentity(client))) {
     detail::SendError(fd, 404, "Call not found", {}, "not_found");
     return;
@@ -172,7 +209,16 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
                       "client_body_limit_exceeded");
     return;
   }
-  if (!io::ParseJson(body, &request, true,
+  RealtimeWebRtcOffer offer;
+  if (offer_type) {
+    const auto reply = ParseRealtimeWebRtcOffer(*offer_type, body, &offer);
+    if (!reply.ok()) {
+      detail::SendError(fd, reply.http_status, reply.ClientMessage(), {}, reply.ClientCode(),
+                        reply.value.GetString("param"));
+      return;
+    }
+    request = std::move(offer.session);
+  } else if (!io::ParseJson(body, &request, true,
                      {.max_depth = 64,
                       .max_values = 65536,
                       .max_string_bytes = message_bytes,
@@ -182,7 +228,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     return;
   }
   ChatPlanError error;
-  if (auto status = realtime
+  if (auto status = offer_type ? Status{} : realtime
           ? ValidateRealtimeWireShape(request, RealtimeShape::kCallAccept, &error,
                                       "body")
           : ValidateLiveWireShape(request,
@@ -222,7 +268,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     return;
   }
   owner->invitation = std::move(invitation);
-  const auto id = sip ? std::string(sip_id) : detail::NewRequestId("live_");
+  const auto id = sip ? std::string(sip_id) : detail::NewRequestId(realtime ? "rtc_" : "live_");
   const auto cancelled = [&] {
     return stop_requested_.load() || !clients_.OwnsIdentity(client) ||
            detail::ClientConnectionFailed(fd) ||
@@ -238,7 +284,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
   const auto negotiated = telephone
       ? owner->process.Negotiate(telephone->offer, telephone->local_address,
                                  cancelled, &answer, &telephone->peer_address)
-      : owner->process.Negotiate(request.Find("transport")->GetString("sdp"),
+      : owner->process.Negotiate(offer_type ? offer.sdp : request.Find("transport")->GetString("sdp"),
                                  live_webrtc_address_, cancelled, &answer);
   struct WipeAnswer {
     std::string& value;
@@ -265,10 +311,15 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
       // Only attaching a sideband requires a replay owner.
     }
   }
+  if (client.Scoped() && realtime && !owner->sideband) {
+    detail::SendError(fd, 503, "Call control memory unavailable", {}, "memory_pressure");
+    return;
+  }
   const auto output = [process = &owner->process](char type, auto data) {
     return process->Send(type, data);
   };
   const auto* startup = realtime ? &request : request.Find("session");
+  const bool data_channel = !sip && answer.find("\nm=application ") != answer.npos;
   if (realtime) {
     auto defaults = DefaultRealtimeChatSettings(PlanningConfig(fd),
                                                 request.GetString("model"));
@@ -278,9 +329,9 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
                                    {"rate", Number(24000)}})},
                 {"transcription", Json()},
                 {"turn_detection", Object({{"type", String("server_vad")}})}}));
-    owner->call = std::make_unique<RealtimeSipCall>(
+    owner->call = std::make_unique<RealtimeMediaCall>(
         std::move(defaults), MakeRealtimeCallbacks(client), message_bytes,
-        output, owner->sideband);
+        output, owner->sideband, sip ? RealtimeCarrier::kSip : data_channel ? RealtimeCarrier::kWebRtcData : RealtimeCarrier::kWebRtcAudio);
   } else {
     auto callbacks =
         MakeLiveCallbacks(client, id, message_bytes,
@@ -292,7 +343,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
       };
     }
     owner->call = std::make_unique<LiveMediaCall>(
-        id, expires, !sip && answer.find("\nm=application ") != answer.npos,
+        id, expires, data_channel,
         std::move(callbacks), limits,
         output,
         owner->sideband);
@@ -302,7 +353,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     failed(reply);
     return;
   }
-  const auto result = sip ? std::string{} : OutputJson(
+  const auto result = (sip || offer_type) ? std::string{} : OutputJson(
       Object({{"session", Object({{"id", String(id)}})},
               {"transport", Object({{"type", String("webrtc")},
                                     {"sdp", String(std::move(answer))}})}}));
@@ -324,16 +375,21 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     if (slot->worker.joinable()) slot->worker.join();
     slot->client = client.Id();
     slot->session = id;
+    slot->webrtc_call = offer_type.has_value();
+    slot->hangup.store(false);
+    std::promise<bool> completion;
+    slot->completion = completion.get_future().share();
     slot->attachable.store(!sip);
     slot->sideband = owner->sideband;
     slot->finished.store(false);
     try {
       slot->worker = std::jthread([this, slot, owner,
                                    gate = published.get_future(),
-                                   client](std::stop_token stop) mutable {
+                                   client, completion = std::move(completion)](std::stop_token stop) mutable {
+        bool drained = false;
         try {
           if (gate.get())
-            owner->Run(stop, [this, &client] {
+            drained = owner->Run(stop, slot->hangup, [this, &client] {
               if (stop_requested_.load() || !clients_.OwnsIdentity(client))
                 return ClientIdentity{};
               return clients_.RecoveryIdentity(client.Index());
@@ -343,6 +399,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
         }
         owner.reset();
         slot->finished.store(true);
+        completion.set_value(drained);
       });
     } catch (...) {
       slot->finished.store(true);
@@ -363,6 +420,12 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     reserved_slot->attachable.store(true);
     published.set_value(true);
     detail::SendSimple(fd, 200, "OK", "", "application/json");
+    return;
+  }
+  if (offer_type) {
+    published.set_value(detail::SendSimple(
+        fd, 201, "Created", answer, "application/sdp", {Clock::now() + 5s},
+        {}, "/v1/realtime/calls/" + id));
     return;
   }
   published.set_value(detail::SendSimple(

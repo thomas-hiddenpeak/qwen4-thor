@@ -82,6 +82,21 @@ class VoiceContract(unittest.TestCase):
                                (dict(model='native',audio=dict(format=dict(type='audio/pcm',rate=24000))), transport)]:
             self.assertFalse(valid(body, dict(session=session,transport=media)))
 
+    def test_realtime_webrtc_raw_and_configured_offers(self):
+        op = self.paths['/v1/realtime/calls']['post']
+        body = op['requestBody']['content']
+        self.assertEqual(set(body), {'application/sdp','multipart/form-data'})
+        reply = op['responses']['201']
+        self.assertTrue(reply['headers']['Location']['required'])
+        self.assertEqual(reply['content']['application/sdp'], body['application/sdp'])
+        form = body['multipart/form-data']
+        self.assertEqual(form['schema']['required'], ['sdp'])
+        self.assertEqual(form['encoding']['session']['contentType'], 'application/json')
+        validator = Draft202012Validator({'$defs':self.defs, '$ref':'#/$defs/realtime_session'})
+        self.assertTrue(validator.is_valid({'type':'realtime','audio':{'input':{'transcription':None}}}))
+        for invalid in ({'session':{'type':'realtime'}},{'type':'live'},None):
+            self.assertFalse(validator.is_valid(invalid))
+
     def test_decision_question_bounds_and_wire_results(self):
         def valid(value, name):
             return Draft202012Validator({'$ref':'#/$defs/decisions_'+name,

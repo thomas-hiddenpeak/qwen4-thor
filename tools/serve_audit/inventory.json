@@ -1890,8 +1890,17 @@
       "boundary": "Wait for carrier ACK and media activation; only the owning client may attach via call_id.",
       "evidence": [
         "src/server/chat_live_media.cpp",
-        "src/server/realtime_sip_call.cpp",
+        "src/server/realtime_media_call.cpp",
         "tools/serve_live/realtime_sip_accept_sdk.mjs"
+      ]
+    },
+    "POST /v1/realtime/calls": {
+      "semantics": "Create an owned native Realtime WebRTC call and return the SDP answer and call Location.",
+      "boundary": "Raw SDP or multipart SDP and a Realtime session. Admission transfers to the media owner through hangup.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/realtime_webrtc_request.cpp",
+        "tests/server_realtime_conversation_session_test.cpp"
       ]
     }
   },
@@ -2506,8 +2515,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "06e4fcbf145feb26e73717b23d51d6117acedbbf75a1f2d781256c0ec9053e23",
-    "cmake/ChatProtocolIdentity.cmake": "5282c6f6fe2094957c8c536c7a80c4da80f2ce69056290ca6a26059fe28cf0de",
+    "CMakeLists.txt": "5489fc5921c597575797a7042b7d9900570ae4aab7894e2bfdd10b58a83d60c9",
+    "cmake/ChatProtocolIdentity.cmake": "fc654991dd2e42ec9e70f64959cf9c3cfcd72edb4fab64f8a0746ef656707595",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2584,7 +2593,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "f1a2529f827109f9033de479ed3ae1dcb3532d440fc61708ddcc8cd4ad771f41",
+    "include/q4t/server/application_routes.h": "e2dba7099a60e163ef4f037ecfc728f015977fd8a19b992d7e82f0fba056fb6b",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -2625,7 +2634,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "9bf563309edad8adafc911e56d67c44c5cac8b18fda02e609afa3c1e4a535b40",
+    "include/q4t/server/chat_server.h": "2dce73db027e283b2e47b78e107168b661c44ecda702cd112cf3713cd20557f0",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -2677,7 +2686,7 @@
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
     "include/q4t/server/http_request.h": "39cf2d22a9958d669ab45a863bf859dcc58225887efd95f3b0786b954f4c76c9",
-    "include/q4t/server/http_response.h": "dc52bc32ca4989203fb6aeafe563d13a0c5c867d61205360b84d9a1fea5c352c",
+    "include/q4t/server/http_response.h": "dacfb0efb0b41b6473d2f18f0a60c7277ca7c1fd0c65da756c826f7ba486fb64",
     "include/q4t/server/input_contract.h": "af0929dfa050a137da35156e2fa4398f3710eee05cc3db0c5538ffa7825c6209",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
     "include/q4t/server/input_snapshot_bindings.h": "d856b9d2be400c9ed24a31a6689ae935c1bbdecb8647d303a6a809db13d96f37",
@@ -2693,7 +2702,7 @@
     "include/q4t/server/live_decision_items.h": "871b053f7639318de9ff7afb9dcfe46654658107ed2718913a707573056652c2",
     "include/q4t/server/live_frontend.h": "267d1d350e51d5a1165bb31bb5f7f89a2ef14a6bee525c7042020ba638b78009",
     "include/q4t/server/live_frontend_work.h": "d85c5478f446764f2c154dc658fcfc1ba4aa243894877284a8752abc0f8131a8",
-    "include/q4t/server/live_media_call.h": "d94baba7034853b01bffed1f5701015cab20f3e251bf842b1396e38e58022162",
+    "include/q4t/server/live_media_call.h": "1b64dc343229ff187b8d9fc5ff3cc13be01151a8f592bb304aeb032d29b3c9a4",
     "include/q4t/server/live_media_policy.h": "2ae9d55363c03229824295622c0636871f3a946ce2b48aec85005e4640c3986b",
     "include/q4t/server/live_media_process.h": "ee273680e4f8e534249ab7eb7913fa897958891558831950fb8e54f1013e6b4e",
     "include/q4t/server/live_native_backend.h": "5d45c9620e7442ab70eb42fe43c50ffd8014e6e614172d9ef5d6ce857c53165a",
@@ -2752,7 +2761,7 @@
     "include/q4t/server/realtime_conversation.h": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745",
     "include/q4t/server/realtime_conversation_input.h": "8e7b5cd2ab77caf2bf214b22e7d45a9b1ac0e83f954aeeb7c0755bcdf837adab",
     "include/q4t/server/realtime_conversation_pump.h": "c42ec7a485cbfa67f71e4f8848a36ca0c8e15a840055b2ff061c1c04b5e5f9ce",
-    "include/q4t/server/realtime_conversation_session.h": "864d1187d25031adc6b312322d16fa6655e10d7aacef76f42ff5e680551d20a1",
+    "include/q4t/server/realtime_conversation_session.h": "3a421f7c69f1e3b1bfe2f1b0db850ba98064d4480b25911601d0a78000fa7391",
     "include/q4t/server/realtime_duplex_input.h": "e1d7ae2a4c0a3f5ae411817d4932c24e33ce5a7fa89a05b37205de1a232cf494",
     "include/q4t/server/realtime_file_inputs.h": "847b0918693b37c2bc25b840a50e4a4b7c003d6d63109b80b13767f6c273e5c3",
     "include/q4t/server/realtime_mcp_calls.h": "019b4f6894de6baf7dc45dea1fc736868e41c37a9be02882c0681c0b299ad84e",
@@ -3031,11 +3040,11 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "6f2d7b1aacaf1ef0420012bc525d724059ddf8a69b08045c9356e96da98ff183",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "62348744b49fab5a70676563e7bd3c2d08ed3b4aa318c6748a5b7a59141c1aa6",
+    "src/server/chat_http.cpp": "3d7bef9df19fc8a1002ccd11f459cddb7ead839fe7edba628d4f7d690384362b",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
-    "src/server/chat_live_media.cpp": "a7e39a59684f653bca3d7c188bfb0e19669bc75d4c3dc60a05b309389f281f04",
+    "src/server/chat_live_media.cpp": "284c9fa0826014315b2334c9a9ca2d9459aff578ac9f8e6eaabc8da18feeb288",
     "src/server/chat_live_sideband.cpp": "b7e92aad7e42e98ff9efcc46b01706996f2c06902653855b1209458ca5c20d24",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "0623a6552ba0ea9538fedb2222563b0cf545dda071f78353186049df2f9010e7",
@@ -3161,7 +3170,7 @@
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
     "src/server/http_request.cpp": "593cd1752cb1d70b760d9d23520edfd8029dfe80eff1c697a19c43aac66f600a",
-    "src/server/http_response.cpp": "f3ac0ef3a69a0c935df7bd9915d2ba10a5c6a489c20e5f46ebb49d9b2a9e3d9d",
+    "src/server/http_response.cpp": "1587a9799071d16b9e4aa7c96bfe1a501e19f70437bc3a2f624c4153c98e5849",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
     "src/server/input_snapshot_bindings.cpp": "6fd1f18ab5e125f945f285d0f6be63a2ba8893ad69fbf52a7343f95d2d74f985",
@@ -3176,7 +3185,7 @@
     "src/server/live_decision_items.cpp": "621869b943f1a4fdf866b289c78d7ea8230d1fb98f557596b318308fd88e174b",
     "src/server/live_frontend.cpp": "a924f3b8b2ea4fd007ba5ff914d42c9838a5696c02acc00224a317fbfbcf4626",
     "src/server/live_frontend_work.cpp": "f3a064778687481c0ec49c4af9310ab6ccb4d51a6dbc127b62347606cf83a1c8",
-    "src/server/live_media_call.cpp": "d5b76afd60e2f73ea503c32bffe90a55d38af8e89d842c2d25d4e34b143d6f82",
+    "src/server/live_media_call.cpp": "4204c03d1bd5aa7c6d9b6f115e2467cf5a8d980fedcb0f7dbed5f6d5b3350ec4",
     "src/server/live_media_policy.cpp": "c2e2f356ff605d3c3d03b70b212dcebd944b599d6062b41b745e96a389eeb1a9",
     "src/server/live_media_process.cpp": "cb5597537b0e61c3aea90cb4c9a627959d674ed99528e35e60cef356fb1c4c7e",
     "src/server/live_native_backend.cpp": "14e9ec2541eb094f5dacb084679fa4411b70ba9282ac689d4d9c1450d0fabb3b",
@@ -3269,7 +3278,7 @@
     "src/server/realtime_conversation.cpp": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8",
     "src/server/realtime_conversation_input.cpp": "6e9f6c6eea012b9cb6a8b9573bafdf440e2f5ba0811b364d984375e1b021f490",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
-    "src/server/realtime_conversation_session.cpp": "6885b643ea320c82520bd3179ad357537bb315e5b81e1a125e1e2c42d6951b4d",
+    "src/server/realtime_conversation_session.cpp": "5432a7b7dcf992a62e438c87f663994c0a4d37ed2e37e24a5e7a243f2f952ef6",
     "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
     "src/server/realtime_file_inputs.cpp": "5f4418fe3567b6e83fc4a94701d87714e01702cc0ad9be5451e7202e022dcc01",
     "src/server/realtime_mcp_calls.cpp": "9d1d68fe7cdf80a96a1fc5abe27f49c7198eb9f2e1bf01edd62021c52489fc39",
@@ -3280,6 +3289,8 @@
     "src/server/realtime_mcp_history.cpp": "ea32968850f68939313a84fc695e00a595dd7a10676523e1c5b297a3d02524b0",
     "src/server/realtime_mcp_imports.cpp": "53c76e0a9bbda56f44e9b9288d51e6f1213b8eb77424279cd46954d378ffa753",
     "src/server/realtime_mcp_item.cpp": "0d3eeb1b7da1d9db3dfb2ce582fdcfa12247a80b41abc5f3a2c8d323e3f8ed59",
+    "src/server/realtime_media_call.cpp": "b0aae5d907a67b7cc536850839abf8ce95e71f258ae1569db874bbefa5e268fa",
+    "src/server/realtime_media_call.h": "1dd5869753c29098aaef0182eb8e606853b9f6601a211b9dd766787184eb693d",
     "src/server/realtime_noise_input.cpp": "1382ec96bb9f4fd6ce1fe7002eb9bb421f68246b177af6a8872409536868aeff",
     "src/server/realtime_pcm.cpp": "a7598fa3308b0e2bc124763c0341c771e09b403854384a32f6e067068235b27a",
     "src/server/realtime_prompt_settings.cpp": "591965204e4d1f2202d811e734779a5a5fdd5e0e21bb2378a5180d67c4eb46b3",
@@ -3289,8 +3300,6 @@
     "src/server/realtime_semantic_turn.cpp": "7b8784ffffe44d1e291adec9c6d40a777d32f9e872be2c9b6e682853914b614a",
     "src/server/realtime_semantic_vad.cpp": "46b367a997d3f5ad480c2c341c448c061139392a93fa058344fe052973113891",
     "src/server/realtime_session_pump.cpp": "912ab3d7d822a3f4f63868b4f5b320c4631f3e531680e25649af05caa5945356",
-    "src/server/realtime_sip_call.cpp": "e41f11807a8899826039d45eba697b5bf45d70d16e732eefc3202f75d3275af9",
-    "src/server/realtime_sip_call.h": "10b339aaf013c54ca098d3bba94f034678c44dcc5a94f5f19219f0c933c8fb40",
     "src/server/realtime_speech_encoder.cpp": "157b991895135cf15db83eeb0da4a41837cfe3dbf257f447865dab6eae0bc440",
     "src/server/realtime_speech_execution.cpp": "cf4a323cb3d790dd16c56a42fdf28e4ccc8f8eb7ae8af076d78ccdae004a8f14",
     "src/server/realtime_speech_history.cpp": "8bfc45f741ac4f9b8265255895360dee2919856a41e846fec9baabc82a6690d8",
@@ -3304,6 +3313,8 @@
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
     "src/server/realtime_transcription_session.cpp": "977d02923600847ffb07444fdf0a2f4794083723d2160b521c41cce2a36bef27",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
+    "src/server/realtime_webrtc_request.cpp": "e5113ebc30de5294423cb8384677a2eb042b98ae43d7461d2764247fcc7c9433",
+    "src/server/realtime_webrtc_request.h": "7d37cb1fdab60c2a7bf2d3ed58f7ef02b3a2b149ec656fc872a781a0c4be83ed",
     "src/server/realtime_wire_shape.cpp": "a006acd5efec6057a80fe190e41e9a93c6f40fd420d0964056bdb5accd7c77d2",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
@@ -3459,10 +3470,10 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "caff17d37412c09d17916014abb63a5de11eac9fe4493347df2e27aff80ae412",
+    "src/service/ingress_main.cpp": "ff4010cff62e928de60a4cc5a9542a912e55840e4101c688f5ac003f9aa2d9d6",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
-    "src/service/ingress_transport.cpp": "334a80728440d22f2c44da68233ae1c77f33a8dacf764ea59f108906076f224a",
+    "src/service/ingress_transport.cpp": "f0cc54b405d178fcd381a52482a4d4f32151e40a173312923cb78ebbb6ab9ea8",
     "src/service/ingress_websocket.cpp": "740ddb0a7cfbcf600816359d58fe2ea6741725982f70dbff10479c49fcf5bc97",
     "src/service/live_rtp_codec.cpp": "72c98e17b39d85e4495a5bf2ed59eb5db5ce9f6327c7325eabb79d02002326dd",
     "src/service/live_rtp_codec.h": "7b5b405fc757950c0cf023bda2df6ac0d7d103c69f8cea119c06cb70baa9a429",
@@ -3487,7 +3498,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "f6c7e04d873e30268878bcfa308c92593f1e6e821e2c71a6438b39ae9557f2b4",
+    "tools/serve_gateway/gateway.py": "8df922fc516385d54e8e4e6a6e8d09ea6abd922cced04f320b076d5fddbea8e9",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -6036,7 +6047,7 @@
       "boundary": "Wait for carrier ACK and media activation; only the owning client may attach via call_id.",
       "evidence": [
         "src/server/chat_live_media.cpp",
-        "src/server/realtime_sip_call.cpp",
+        "src/server/realtime_media_call.cpp",
         "tools/serve_live/realtime_sip_accept_sdk.mjs"
       ]
     },
@@ -6047,6 +6058,23 @@
         "src/service/ingress_cors.cpp",
         "src/service/ingress_main.cpp",
         "tools/serve_gateway/gateway.py"
+      ]
+    },
+    "POST /v1/realtime/calls": {
+      "semantics": "Create an owned native Realtime WebRTC call and return the SDP answer and call Location.",
+      "boundary": "Raw SDP or multipart SDP and a Realtime session. Admission transfers to the media owner through hangup.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/realtime_webrtc_request.cpp",
+        "tests/server_realtime_conversation_session_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/realtime/calls": {
+      "semantics": "Configured CORS preflight for creating a WebRTC call.",
+      "boundary": "Origin, method and request headers must be allowed by the deployment.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp"
       ]
     }
   },

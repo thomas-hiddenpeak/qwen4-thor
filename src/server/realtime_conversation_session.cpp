@@ -318,10 +318,11 @@ bool RealtimeConversationSession::Start() {
   return Accepted(StartSession(nullptr));
 }
 
-ObjectReply RealtimeConversationSession::StartCall(const Json& configuration) {
+ObjectReply RealtimeConversationSession::StartCall(const Json& configuration,
+                                                    RealtimeShape shape) {
   ChatPlanError error;
   const auto status = ValidateRealtimeWireShape(
-      configuration, RealtimeShape::kCallAccept, &error, "body");
+      configuration, shape, &error, shape == RealtimeShape::kSession ? "session" : "body");
   if (!status) return Invalid(error.code, status.message(), error.param);
   return StartSession(&configuration);
 }

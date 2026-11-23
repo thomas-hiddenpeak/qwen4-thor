@@ -231,3 +231,20 @@ rt.on('input_audio_buffer.dtmf_event_received', ({ event }) => handlePhoneKey(ev
 旁路收到的首个 `session.created` 含当前会话 ID 和已生效设置。应用可通过同一连接处理函数调用、发送 `function_call_output`、请求语音回答；音频走电话媒体。输出预算包括文本和实际的语音量化码，短版本号的一次实测共用 454 个输出 token。播放的开始和排空事件携带对应的 `response_id`。使用 `client.realtime.calls.hangup(callId)` 挂断。已结束的通话及其他客户的通话对该调用返回 404。[业务记录](evidence/serve-realtime-sip-accept-20261123/README.md)。
 
 在电话播报中发送 `output_audio_buffer.clear` 可停播。设置 `audio.input.turn_detection.type` 为 `server_vad` 并启用 `interrupt_response`，来电者发声时会自动打断默认回答。应用从 `conversation.item.truncated` 获取音频项 ID 和 `audio_end_ms`，可用 `conversation.item.retrieve` 核对截断后的音频；服务移除其转录以免下一轮引用未播完的内容。会话也支持只报告检测事件，设置 `interrupt_response: false` 即可。[手动与实际插话验证](evidence/serve-realtime-call-playout-20261123/README.md)。
+
+## Realtime WebRTC 建连与控制
+
+RTC 客户端先创建音轨和有序数据通道 `oai-events`，收集本地 ICE 候选。服务端应用可用固定版本 JS SDK 提交完整 offer。下面的 `peer` 是已创建并设置本地描述的 RTCPeerConnection，`client` 使用所属客户的凭据。
+
+```js
+const response = await client.realtime.calls.create({
+  sdp: peer.localDescription.sdp,
+  session: {type: 'realtime', instructions: '用中文回答。'},
+});
+const callId = response.headers.get('location').split('/').at(-1);
+await peer.setRemoteDescription({type: 'answer', sdp: await response.text()});
+```
+
+只传 `sdp` 时 SDK 使用 `application/sdp`。同时指定 `session` 时 SDK 使用 multipart；两种形式均返回 201、SDP 答复和相对的 `Location`。部署允许浏览器跨来源读取该头时，在原生 CORS 策略的 `exposed_headers` 中加入 `location`。长期 API Key 由服务端持有。
+
+ICE 和 DTLS 验证完成后，数据通道收到 `session.created` 和 `conversation.created`，客户端按 Realtime 事件合同发送更新、工具结果和控制命令。语音经 SRTP 音轨双向传输。同客户服务端可使用 `OpenAIRealtimeWS({callID: callId, options}, client)` 接入当前会话。主动挂断使用 `await client.realtime.calls.hangup(callId)`，媒体进程确认排空后返回空正文 200。不同客户使用同一 call ID 接入或挂断均返回 404。

@@ -19,9 +19,41 @@ check(endpoint.protocol === 'https:' && endpoint.hostname === '127.0.0.1' &&
 const { default: OpenAI } = await import(pathToFileURL(path.join(sdk, 'index.mjs')));
 const client = new OpenAI({ baseURL: endpoint.toString(), apiKey: args.key, maxRetries: 0, timeout: 20000 });
 try {
-  const pending = args.source ? client.live.sessions.fork(args.source, args.request) : client.live.create(args.request);
-  const { response, data } = await pending.withResponse();
-  console.log(JSON.stringify({status: response.status, data}));
+  if (args.action === 'create') {
+    const response = await client.realtime.calls.create(args.request);
+    console.log(JSON.stringify({status:response.status, sdp:await response.text(),
+      mime:response.headers.get('content-type'), location:response.headers.get('location')}));
+  } else if (args.action === 'hangup') {
+    const response = await client.realtime.calls.hangup(args.id).asResponse();
+    console.log(JSON.stringify({status:response.status, body:await response.text()}));
+  } else if (args.action === 'attach') {
+    const {OpenAIRealtimeWS} = await import(pathToFileURL(path.join(sdk,'realtime/ws.mjs')));
+    const observer = new OpenAIRealtimeWS({callID:args.id, options:{handshakeTimeout:5000,
+      perMessageDeflate:false, followRedirects:false, maxPayload:8<<20}},client);
+    try {
+      const result = await new Promise((resolve,reject)=>{
+        const timer = setTimeout(()=>reject(new Error('sideband snapshot deadline')),8000);
+        function finish(value) { clearTimeout(timer); resolve(value); }
+        observer.socket.on('unexpected-response',(_,res)=>{
+          res.resume();
+          finish({status:res.statusCode});
+        });
+        observer.on('event', event=>{
+          if (event.type === 'session.created')
+            finish({status:101, session:event.session.id, instructions:event.session.instructions});
+        });
+        observer.on('error',error=>{clearTimeout(timer); reject(error);});
+      });
+      console.log(JSON.stringify(result));
+    } finally {
+      if (observer.socket.readyState === 1) observer.close();
+      else observer.socket.terminate();
+    }
+  } else {
+    const pending = args.source ? client.live.sessions.fork(args.source, args.request) : client.live.create(args.request);
+    const { response, data } = await pending.withResponse();
+    console.log(JSON.stringify({status: response.status, data}));
+  }
 } catch (error) {
   if (!Number.isInteger(error.status)) throw error;
   console.log(JSON.stringify({status: error.status, code: error.code}));

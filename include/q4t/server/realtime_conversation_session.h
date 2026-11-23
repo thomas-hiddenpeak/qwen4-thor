@@ -1,6 +1,8 @@
 // One native conversation owner; model work receives immutable snapshots.
 #pragma once
 
+#include "q4t/server/realtime_shape.h"
+
 #include <deque>
 #include <map>
 #include <thread>
@@ -95,7 +97,8 @@ class RealtimeConversationSession {
                               size_t message_bytes = kWebSocketMessageLimit);
   // Apply the complete media-call configuration, including a scoped prompt,
   // before publishing session.created. A failure is returned to HTTP.
-  ObjectReply StartCall(const io::Json& configuration);
+  ObjectReply StartCall(const io::Json& configuration,
+                        RealtimeShape shape = RealtimeShape::kCallAccept);
   ~RealtimeConversationSession();
   bool Start();
   bool Message(WebSocketOpcode opcode, std::string_view message);

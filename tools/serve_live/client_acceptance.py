@@ -34,6 +34,14 @@ FORMAT = 'q4t-live-client-query-business-v3'
 QUERY = '请查询当前项目版本号。'
 
 
+def phone_query_matches(actual, expected):
+    # The retained zh recording specifies the spoken words, not a writing system.
+    # Compare each position, including the punctuation; do not fold other words.
+    traditional = '請查詢當前項目版本號。'
+    return (expected == '请查询当前项目版本号。' and len(actual) == len(expected)
+            and all(a in (s, t) for a, s, t in zip(actual, expected, traditional)))
+
+
 def retained_query(directory=None):
     source=directory or WORK/'client-business-02'
     names=('query-fixture.json','query-speech.http.json','query-speech.wire',

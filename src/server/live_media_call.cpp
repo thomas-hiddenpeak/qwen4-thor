@@ -16,10 +16,11 @@ constexpr size_t kDataBytes = 4ULL << 20, kPcmBytes = 4ULL << 20;
 LiveMediaCall::LiveMediaCall(std::string id, uint64_t expires_at,
                              bool expect_channel,
                              LiveSessionCallbacks callbacks,
-                             LiveSessionLimits limits, Send send, std::shared_ptr<LiveSideband> sideband)
+                             LiveSessionLimits limits, Send send,
+                             std::shared_ptr<LiveSideband> sideband)
     : send_(std::move(send)),
       sideband_(std::move(sideband)),
-      expect_channel_(expect_channel),
+      channel_(expect_channel),
       session_(std::move(id), expires_at,
                {kWebSocketMaximumLimit, [this] { return failed_; },
                 [this](auto text) { return Publish(text); }},
@@ -54,21 +55,25 @@ bool LiveMediaCall::Publish(std::string_view wire) {
     media_.push_back(std::move(pcm));
   } else {
     if (sideband_) sideband_->Publish(wire, Clock::now());
-    if (!expect_channel_ || closed_ || !frontend_.AllowsServer(event)) return true;
-    if (wire.size() > kPacketBytes || wire.size() > kDataBytes - queued_data_ ||
-        data_.size() >= 512) {
-      DropData();
-      close_pending_ = true;
-      return true;
-    }
-    data_.emplace_back(wire);
-    queued_data_ += wire.size();
+    if (frontend_.AllowsServer(event)) channel_.Queue(wire);
   }
   return true;
 }
 
-void LiveMediaCall::DropData() {
+void MediaDataChannel::Queue(std::string_view wire) {
+  if (!expected_ || closed_) return;
+  if (wire.size() > kPacketBytes || wire.size() > kDataBytes - queued_data_ ||
+      data_.size() >= 512) {
+    Disconnect();
+    return;
+  }
+  data_.emplace_back(wire);
+  queued_data_ += wire.size();
+}
+
+void MediaDataChannel::Disconnect() {
   closed_ = true;
+  close_pending_ = true;
   data_.clear();
   queued_data_ = 0;
 }
@@ -82,18 +87,10 @@ bool LiveMediaCall::Receive(char type, std::string_view payload) {
   if (!verified_) return false;
   if (type == 'K' || type == 'T' || type == 'U' || type == 'F')
     return payload.size() == 1 && session_.MediaDtmf(type, payload.front());
-  if (type == 'R' && expect_channel_ && !opened_ && payload.empty()) {
-    opened_ = true;
-    return true;
-  }
-  if (type == 'C' && expect_channel_ && payload.empty()) {
-    close_pending_ = false;
-    DropData();
-    return true;
-  }
-  if (type == 'D' && opened_ && closed_) return true;
-  if (type == 'D' && opened_)
-    return session_.Message(WebSocketOpcode::kText, payload, &frontend_);
+  if (type == 'R' || type == 'C' || type == 'D')
+    return channel_.Receive(type, payload, [&](auto wire) {
+      return session_.Message(WebSocketOpcode::kText, wire, &frontend_);
+    });
   if (type != 'P' || payload.empty() || payload.size() % 2) return false;
   std::string encoded;
   if (!io::EncodeBase64(payload, kWebSocketMessageLimit, &encoded))
@@ -105,6 +102,43 @@ bool LiveMediaCall::Receive(char type, std::string_view payload) {
                          {"audio", String(std::move(encoded))}})));
 }
 
+bool MediaDataChannel::Receive(
+    char type, std::string_view payload,
+    const std::function<bool(std::string_view)>& deliver) {
+  if (!expected_) return false;
+  if (type == 'R' && !opened_ && payload.empty()) {
+    opened_ = true;
+    return true;
+  }
+  if (type == 'C' && payload.empty()) {
+    Disconnect();
+    close_pending_ = false;
+    return true;
+  }
+  return type == 'D' && opened_ && (closed_ || deliver(payload));
+}
+
+bool MediaDataChannel::Flush(IMediaCall::Clock::time_point now,
+                             const IMediaCall::Send& send) {
+  if (!opened_ && !closed_ && !data_.empty()) {
+    if (waiting_data_ == IMediaCall::Clock::time_point{}) waiting_data_ = now;
+    if (now - waiting_data_ >= std::chrono::seconds(15)) {
+      Disconnect();
+    }
+  }
+  if (opened_ && close_pending_ && send('C', {})) close_pending_ = false;
+  if (opened_ && !closed_) {
+    for (int i = 0; i < 16 && !data_.empty(); ++i) {
+      if (!send('D', data_.front())) {
+        return false;
+      }
+      queued_data_ -= data_.front().size();
+      data_.pop_front();
+    }
+  }
+  return true;
+}
+
 bool LiveMediaCall::Tick(Clock::time_point now) {
   if (failed_) return false;
   if (sideband_) {
@@ -113,25 +147,7 @@ bool LiveMediaCall::Tick(Clock::time_point now) {
       return false;
   }
   if (!session_.Tick()) return false;
-  bool blocked = false;
-  if (verified_ && !opened_ && !closed_ && !data_.empty()) {
-    if (waiting_data_ == Clock::time_point{}) waiting_data_ = now;
-    if (now - waiting_data_ >= std::chrono::seconds(15)) {
-      DropData();
-      close_pending_ = true;
-    }
-  }
-  if (opened_ && close_pending_ && send_('C', {})) close_pending_ = false;
-  if (opened_ && !closed_) {
-    for (int i = 0; i < 16 && !data_.empty(); ++i) {
-      if (!send_('D', data_.front())) {
-        blocked = true;
-        break;
-      }
-      queued_data_ -= data_.front().size();
-      data_.pop_front();
-    }
-  }
+  bool blocked = verified_ && !channel_.Flush(now, send_);
   if (verified_ && !media_.empty() && now >= next_audio_) {
     auto chunk =
         std::string_view(media_.front()).substr(pcm_offset_, kPcmPacket);
@@ -165,6 +181,6 @@ bool LiveMediaCall::EndTransport() {
 }
 
 bool LiveMediaCall::Finished() const {
-  return session_.Finalized() && data_.empty() && media_.empty();
+  return session_.Finalized() && channel_.Empty() && media_.empty();
 }
 }  // namespace q4t::server

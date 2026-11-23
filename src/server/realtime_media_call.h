@@ -1,4 +1,5 @@
-// Connects the existing Realtime conversation to one authenticated SIP dialog.
+// Connects the existing Realtime conversation to a negotiated WebRTC or SIP
+// call.
 #pragma once
 
 #include <list>
@@ -8,13 +9,17 @@
 #include "realtime_call_pcm.h"
 
 namespace q4t::server {
-class RealtimeSipCall final : public IMediaCall {
+enum class RealtimeCarrier { kSip, kWebRtcAudio, kWebRtcData };
+
+class RealtimeMediaCall final : public IMediaCall {
  public:
-  RealtimeSipCall(io::Json defaults, RealtimeConversationCallbacks callbacks,
-                  size_t message_bytes, Send send,
-                  std::shared_ptr<LiveSideband> sideband);
+  RealtimeMediaCall(io::Json defaults, RealtimeConversationCallbacks callbacks,
+                    size_t message_bytes, Send send,
+                    std::shared_ptr<LiveSideband> sideband,
+                    RealtimeCarrier carrier = RealtimeCarrier::kSip);
   ObjectReply Start(const io::Json& configuration) override;
   bool Receive(char type, std::string_view payload) override;
+  void CloseDataChannel() override { channel_.Disconnect(); }
   bool Tick(Clock::time_point now) override;
   bool EndTransport() override;
   bool Finished() const override { return ended_; }
@@ -31,6 +36,7 @@ class RealtimeSipCall final : public IMediaCall {
     bool in_conversation = false, history_settled = false;
   };
   bool Publish(std::string_view wire);
+  void PublishEvent(std::string_view wire, std::string_view session = {});
   bool Input(std::string_view pcm, bool finish = false);
   bool Control(WebSocketOpcode opcode, std::string_view wire);
   bool Playback(Clock::time_point now);
@@ -39,6 +45,9 @@ class RealtimeSipCall final : public IMediaCall {
   bool TruncateCleared();
   const Send send_;
   std::shared_ptr<LiveSideband> sideband_;
+  const RealtimeCarrier carrier_;
+  MediaDataChannel channel_;
+  Clock::time_point channel_blocked_{};
   std::optional<RealtimeCallPcm> encoder_;
   RealtimeAudioFormat input_format_;
   std::list<Speech> speech_;

@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_live import responses_acceptance as live
 from tools.serve_live import sip_reject_acceptance as signal
-from tools.serve_live.client_acceptance import retained_query
+from tools.serve_live.client_acceptance import phone_query_matches, retained_query
 from tools.serve_live.test_sip_dialog import CarrierAudio
 from tools.serve_live.test_sip_dtmf import read_key, send_key, with_events
 from tools.serve_live.test_sip_media import Codec
@@ -33,14 +33,6 @@ from tools.serve_service.package import read, require, save, sha
 LIMITS = dict(starts=1, ingress_starts=1, calls=1, sdk_requests=6, sidebands=1,
               voice_inputs=1, client_results=1, chats=1, controls=2000, seconds=320)
 SCHEMA = 'q4t-live-sip-accept-business-v1'
-
-
-def phone_query_matches(actual, expected):
-    # The retained zh recording specifies the spoken words, not a writing system.
-    # Compare each position, including the punctuation; do not fold other words.
-    traditional = '請查詢當前項目版本號。'
-    return (expected == '请查询当前项目版本号。' and len(actual) == len(expected)
-            and all(a in (s, t) for a, s, t in zip(actual, expected, traditional)))
 
 
 class Stage(signal.Stage):

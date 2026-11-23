@@ -1,0 +1,38 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 65,
+    "cleanup_complete": true
+  },
+  "observation": {
+    "raw_sdp_status": 201,
+    "multipart_status": 201,
+    "raw_pending_hangup": 200,
+    "scope": 404,
+    "foreign_sideband": 404,
+    "owning_sideband": 101,
+    "capacity": 429,
+    "call": "rtc_e1abc0fcc96a323a4a939f30adcdfb73",
+    "codec": "opus",
+    "input": "\u8bf7\u67e5\u8be2\u5f53\u524d\u9879\u76ee\u7248\u672c\u53f7\u3002",
+    "tool": "lookup_project_record",
+    "arguments": {
+      "record_key": "release"
+    },
+    "output": "rev426",
+    "record": {
+      "path": "docs/STATUS.md",
+      "sha256": "75de5ef3d85f667e283a0a7018bcdfb2ea09999bccbe5f0aa0a8a147f06c260d"
+    },
+    "decoded_samples": 53248,
+    "peak": 14011,
+    "audio_base64_events": 0,
+    "hangup": 200,
+    "repeated_hangup": 404
+  },
+  "seconds": 67.30369328288361,
+  "default_unchanged": true,
+  "core": "42"
+}

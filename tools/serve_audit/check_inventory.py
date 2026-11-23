@@ -145,6 +145,12 @@ def current_surface(root):
             'ReadLiveForkState(*objects_, access, std::string(source))' not in live or
             not all('LoadLiveFork(fd, client, source, &state)' in unit for unit in (live, media))):
         raise ValueError('review owner-scoped fork dispatch and checkpoint loading')
+    if ('HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type)' not in dispatch or
+            'ParseRealtimeWebRtcOffer(*offer_type, body, &offer)' not in media or
+            'slot.session != id || slot.client != http->Client().Id()' not in media or
+            'RealtimeCarrier::kWebRtcData' not in media):
+        raise ValueError('review SDP negotiation, data channel and call ownership')
+    routes.append(('/v1/realtime/calls', 'POST'))
     routes.append(('/v1/live/sessions', 'POST'))
     fork = '/v1/live/sessions/{session_id}/fork'
     for method in ('GET', 'POST'):
@@ -159,7 +165,7 @@ def current_surface(root):
         routes.append((path, 'POST'))
         native_routes.append(('POST', path, 'true'))
     if ('SipControlId(path, "/accept")' not in dispatch or
-            'RealtimeSipCall' not in media or
+            'RealtimeMediaCall' not in media or
             'server::SipControlId(path, "/accept")' not in native or
             'sip_service_.Reserve(client.Id(), sip_id' not in media or
             'server::IsSipRefer(method, path)' not in native or

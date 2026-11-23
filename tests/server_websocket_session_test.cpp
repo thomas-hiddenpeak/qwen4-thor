@@ -880,6 +880,10 @@ Q4T_TEST(websocket_session_completion_slow_reader_and_eof_are_not_success) {
 Q4T_TEST(realtime_call_accept_reserves_the_call_and_attach_uses_a_distinct_lane) {
   constexpr auto accept = "/v1/realtime/calls/rtc_valid/accept";
   constexpr auto attach = "/v1/realtime?call_id=rtc_valid";
+  constexpr auto create = "/v1/realtime/calls";
+  Q4T_CHECK(IsLiveMediaCreate("POST", create));
+  Q4T_CHECK(!IsLiveMediaCreate("GET", create));
+  Q4T_CHECK(ClassifyHttpConnection("POST", create) == HttpConnectionClass::kRealtime);
   Q4T_CHECK(IsLiveMediaCreate("POST", accept));
   Q4T_CHECK(ClassifyHttpConnection("POST", accept) == HttpConnectionClass::kRealtime);
   Q4T_CHECK(RealtimeSidebandId(attach) == "rtc_valid");

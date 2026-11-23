@@ -1,5 +1,6 @@
 #include "q4t/server/http_response.h"
 
+#include "q4t/server/application_routes.h"
 #include "q4t/server/native_responses_stream.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/serve_fault.h"
@@ -692,7 +693,10 @@ bool BeginBinaryStreamResponse(int fd, std::string_view content_type,
 
 bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type, const WriteOptions& options,
-                std::string_view allow) {
+                std::string_view allow, std::string_view location) {
+  if (!location.empty() &&
+      (code != 201 || !SipControlId(location, {}).starts_with("rtc_")))
+    return false;
   auto* context = HttpResponseContext::Current(fd);
   if (context && context->Upgraded()) return false;
   if (context && (context->CapturesJson() || context->CapturesResponses())) {
@@ -715,6 +719,7 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
       "\r\nContent-Length: " + std::to_string(body.size()) + "\r\n" +
       RequestIdHeader(fd) +
       (allow.empty() ? "" : "Allow: " + std::string(allow) + "\r\n") +
+      (location.empty() ? "" : "Location: " + std::string(location) + "\r\n") +
       (persistent ? "Connection: keep-alive\r\n\r\n"
                   : "Connection: close\r\n\r\n") + body;
   if (context) {

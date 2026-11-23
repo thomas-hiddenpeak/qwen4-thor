@@ -1,4 +1,4 @@
-#include "realtime_sip_call.h"
+#include "realtime_media_call.h"
 
 #include <algorithm>
 
@@ -16,12 +16,15 @@ constexpr size_t kPcmBytes = 8ULL << 20;
 constexpr size_t kPacket = 960;  // 20 ms of 24 kHz, mono PCM16.
 }  // namespace
 
-RealtimeSipCall::RealtimeSipCall(Json defaults,
-                                 RealtimeConversationCallbacks cb,
-                                 size_t message_bytes, Send send,
-                                 std::shared_ptr<LiveSideband> sideband)
+RealtimeMediaCall::RealtimeMediaCall(Json defaults,
+                                     RealtimeConversationCallbacks cb,
+                                     size_t message_bytes, Send send,
+                                     std::shared_ptr<LiveSideband> sideband,
+                                     RealtimeCarrier carrier)
     : send_(std::move(send)),
       sideband_(std::move(sideband)),
+      carrier_(carrier),
+      channel_(carrier == RealtimeCarrier::kWebRtcData),
       session_(
           detail::NewRequestId("sess_"), detail::NewRequestId("conv_"),
           std::move(defaults),
@@ -35,23 +38,29 @@ RealtimeSipCall::RealtimeSipCall(Json defaults,
           }(),
           message_bytes) {}
 
-ObjectReply RealtimeSipCall::Start(const Json& configuration) {
-  if (!send_ || !sideband_)
+ObjectReply RealtimeMediaCall::Start(const Json& configuration) {
+  if (!send_ || (carrier_ == RealtimeCarrier::kSip && !sideband_))
     return Error(503, "realtime_media_unavailable",
                  "Call transport unavailable");
-  return session_.StartCall(configuration);
+  return session_.StartCall(configuration, carrier_ == RealtimeCarrier::kSip
+                                               ? RealtimeShape::kCallAccept
+                                               : RealtimeShape::kSession);
 }
 
-void RealtimeSipCall::BufferEvent(const char* type, const std::string& id) {
-  sideband_->Publish(
-      OutputJson(
-          Object({{"type", String(type)},
-                  {"response_id", String(id)},
-                  {"event_id", String(detail::NewRequestId("event_"))}})),
-      Clock::now());
+void RealtimeMediaCall::PublishEvent(std::string_view wire,
+                                     std::string_view session) {
+  channel_.Queue(wire);
+  if (sideband_) sideband_->Publish(wire, Clock::now(), session);
 }
 
-bool RealtimeSipCall::Clear(bool default_only) {
+void RealtimeMediaCall::BufferEvent(const char* type, const std::string& id) {
+  PublishEvent(OutputJson(
+      Object({{"type", String(type)},
+              {"response_id", String(id)},
+              {"event_id", String(detail::NewRequestId("event_"))}})));
+}
+
+bool RealtimeMediaCall::Clear(bool default_only) {
   for (auto& speech : speech_) {
     if (speech.cleared || (default_only && !speech.in_conversation)) continue;
     speech.cleared = true;
@@ -65,7 +74,7 @@ bool RealtimeSipCall::Clear(bool default_only) {
   return TruncateCleared();
 }
 
-bool RealtimeSipCall::TruncateCleared() {
+bool RealtimeMediaCall::TruncateCleared() {
   for (auto& speech : speech_) {
     if (!speech.cleared || speech.history_settled || speech.item_id.empty())
       continue;
@@ -76,7 +85,7 @@ bool RealtimeSipCall::TruncateCleared() {
   return true;
 }
 
-bool RealtimeSipCall::Publish(std::string_view wire) {
+bool RealtimeMediaCall::Publish(std::string_view wire) {
   Json event;
   const auto bad = [this] {
     failed_ = true;
@@ -84,7 +93,6 @@ bool RealtimeSipCall::Publish(std::string_view wire) {
   };
   if (!io::ParseJson(std::string(wire), &event, true)) return bad();
   const auto type = event.GetString("type");
-  const auto now = Clock::now();
   if (type == "session.created" || type == "session.updated") {
     const auto* settings = event.Find("session");
     RealtimeDuplexInput input;
@@ -92,7 +100,7 @@ bool RealtimeSipCall::Publish(std::string_view wire) {
       return bad();
     if (input_format_ != input.processing.format) encoder_.reset();
     input_format_ = input.processing.format;
-    sideband_->Publish(wire, now, OutputJson(*settings));
+    PublishEvent(wire, OutputJson(*settings));
     return true;
   }
   if (type == "input_audio_buffer.cleared") encoder_.reset();
@@ -152,11 +160,11 @@ bool RealtimeSipCall::Publish(std::string_view wire) {
     }
     if (!done) return true;  // Audio is delivered to the negotiated RTP peer.
   }
-  sideband_->Publish(wire, now);
+  PublishEvent(wire);
   return true;
 }
 
-bool RealtimeSipCall::Input(std::string_view pcm, bool finish) {
+bool RealtimeMediaCall::Input(std::string_view pcm, bool finish) {
   if (!encoder_) encoder_.emplace(RealtimeAudioFormat{}, input_format_);
   std::string bytes, encoded;
   if (!encoder_->Convert(pcm, &bytes, finish)) return false;
@@ -169,11 +177,15 @@ bool RealtimeSipCall::Input(std::string_view pcm, bool finish) {
                          {"audio", String(std::move(encoded))}})));
 }
 
-bool RealtimeSipCall::Receive(char type, std::string_view payload) {
+bool RealtimeMediaCall::Receive(char type, std::string_view payload) {
   if (failed_ || ended_) return false;
   if (type == 'V' && payload.empty() && !verified_) return verified_ = true;
   if (!verified_) return false;
-  if (type == 'K' && payload.size() == 1 &&
+  if (type == 'R' || type == 'C' || type == 'D')
+    return channel_.Receive(type, payload, [this](auto wire) {
+      return Control(WebSocketOpcode::kText, wire);
+    });
+  if (type == 'K' && carrier_ == RealtimeCarrier::kSip && payload.size() == 1 &&
       std::string_view("0123456789*#ABCD").find(payload.front()) !=
           payload.npos) {
     const auto timestamp =
@@ -191,7 +203,7 @@ bool RealtimeSipCall::Receive(char type, std::string_view payload) {
   return type == 'P' && !payload.empty() && Input(payload);
 }
 
-bool RealtimeSipCall::Control(WebSocketOpcode opcode, std::string_view wire) {
+bool RealtimeMediaCall::Control(WebSocketOpcode opcode, std::string_view wire) {
   Json event;
   if (opcode == WebSocketOpcode::kText &&
       io::ParseJson(std::string(wire), &event, true,
@@ -219,7 +231,7 @@ bool RealtimeSipCall::Control(WebSocketOpcode opcode, std::string_view wire) {
   return session_.Message(opcode, wire);
 }
 
-bool RealtimeSipCall::Playback(Clock::time_point now) {
+bool RealtimeMediaCall::Playback(Clock::time_point now) {
   if (!verified_ || now < next_) return true;
   std::erase_if(speech_, [&](const auto& stream) {
     if (!stream.done || !stream.chunks.empty()) return false;
@@ -255,15 +267,22 @@ bool RealtimeSipCall::Playback(Clock::time_point now) {
   return true;
 }
 
-bool RealtimeSipCall::Tick(Clock::time_point now) {
+bool RealtimeMediaCall::Tick(Clock::time_point now) {
   if (ended_) return true;
-  if (auto command = sideband_->Pop();
+  if (auto command = sideband_ ? sideband_->Pop() : std::nullopt;
       command && !Control(command->opcode, command->text))
     return false;
-  return !failed_ && session_.Tick() && TruncateCleared() && Playback(now);
+  if (failed_ || !session_.Tick() || !TruncateCleared()) return false;
+  if (verified_ && !channel_.Flush(now, send_)) {
+    if (channel_blocked_ == Clock::time_point{}) channel_blocked_ = now;
+    if (now - channel_blocked_ >= 15s) channel_.Disconnect();
+  } else {
+    channel_blocked_ = {};
+  }
+  return Playback(now);
 }
 
-bool RealtimeSipCall::EndTransport() {
+bool RealtimeMediaCall::EndTransport() {
   ended_ = true;
   session_.Cancel();
   session_.Join();

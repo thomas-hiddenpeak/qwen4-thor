@@ -16,8 +16,10 @@
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
+#include <future>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <span>
 #include <string>
 #include <thread>
@@ -355,7 +357,8 @@ class ChatServer {
   void HandleSipReject(int fd, std::string_view id, const std::string& body);
   void HandleLiveMediaCreate(int fd, std::string_view source,
                              const std::string& body,
-                             std::atomic<int>*& admission, std::string_view sip_id = {});
+                             std::atomic<int>*& admission, std::string_view sip_id = {},
+                             std::optional<std::string_view> offer_type = std::nullopt);
   void JoinLiveMedia();
   void HandleLive(int fd, std::string_view path,
                     const HttpRequestHeaders& headers,
@@ -454,6 +457,9 @@ class ChatServer {
   struct LiveMediaThread {
     std::string client, session;
     std::weak_ptr<LiveSideband> sideband;
+    bool webrtc_call = false;
+    std::atomic<bool> hangup{false};
+    std::shared_future<bool> completion;
     std::atomic<bool> attachable{false}, finished{true};
     std::jthread worker;
   };

@@ -6914,7 +6914,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Carrier acknowledged hangup; empty body"
+            "description": "Call and media transport closed; empty body"
           },
           "default": {
             "description": "Native API error",
@@ -6954,7 +6954,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Carrier acknowledged hangup; empty body"
+            "description": "Call and media transport closed; empty body"
           },
           "default": {
             "description": "Native API error",
@@ -6971,6 +6971,93 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtime/calls": {
+      "post": {
+        "operationId": "post_v1_realtime_calls",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "WebRTC SDP answer",
+            "headers": {
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string",
+                  "pattern": "^/v1/realtime/calls/rtc_[A-Za-z0-9_-]+$"
+                }
+              }
+            },
+            "content": {
+              "application/sdp": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 65535
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/sdp": {
+              "schema": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 65535
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sdp": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 65535
+                  },
+                  "session": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_session"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "sdp"
+                ]
+              },
+              "encoding": {
+                "sdp": {
+                  "contentType": "application/sdp"
+                },
+                "session": {
+                  "contentType": "application/json"
                 }
               }
             }
@@ -35875,6 +35962,60 @@
           },
           "realtime_195": {
             "const": "near_field"
+          },
+          "realtime_187": {
+            "type": "object",
+            "properties": {
+              "audio": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_188"
+              },
+              "include": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_221"
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "max_output_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_105"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_224"
+              },
+              "output_modalities": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_109"
+              },
+              "parallel_tool_calls": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "prompt": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_117"
+              },
+              "reasoning": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_138"
+              },
+              "tool_choice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_244"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_245"
+              },
+              "tracing": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_259"
+              },
+              "truncation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_261"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_267"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_session": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_187"
           },
           "realtime_call_accept": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_464"

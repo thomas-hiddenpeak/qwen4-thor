@@ -77,7 +77,7 @@ def schema(graph):
     definitions.update(graph_definitions(live, 'live_', ('session_accept', 'session_refer', 'session_reject', 'session_fork', 'session_forked', 'media_create', 'media_created')))
     realtime = json.loads((ROOT/'src/server/contracts/openai_realtime_types_v1.json').read_text())
     assert realtime['profile'] == 'q4t-openai-realtime-types-v1'
-    definitions.update(graph_definitions(realtime, 'realtime_', ('call_accept', 'call_refer', 'call_reject')))
+    definitions.update(graph_definitions(realtime, 'realtime_', ('session', 'call_accept', 'call_refer', 'call_reject')))
     # Realtime wire settings allow explicitly clearing these processors.
     for index, node in enumerate(realtime['nodes']):
         if node.get('kind') != 'object':

@@ -8,7 +8,8 @@
 #include <stdexcept>
 
 #include "../src/server/object_protocol.h"
-#include "../src/server/realtime_sip_call.h"
+#include "../src/server/realtime_media_call.h"
+#include "../src/server/realtime_webrtc_request.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/schema_graph.h"
@@ -2660,7 +2661,7 @@ Q4T_TEST(realtime_call_codec_streams_preserve_phase_duration_and_pcm_bytes) {
 Q4T_TEST(realtime_call_scoped_observer_joins_current_session_and_hears_dtmf) {
   Fixture f;
   auto side = std::make_shared<LiveSideband>();
-  RealtimeSipCall call(
+  RealtimeMediaCall call(
       f.settings, f.cb, kWebSocketMessageLimit, [](char, auto) { return true; },
       side);
   std::shared_ptr<const std::string> snapshot;
@@ -2702,7 +2703,7 @@ Q4T_TEST(realtime_call_playout_receipts_follow_delivery_and_clear) {
     auto side = std::make_shared<LiveSideband>();
     size_t delivered = 0;
     bool writable = false;
-    RealtimeSipCall call(
+    RealtimeMediaCall call(
         f.settings, f.cb, kWebSocketMessageLimit,
         [&](char type, std::string_view bytes) {
           if (type != 'P' || !writable) return false;
@@ -2808,5 +2809,109 @@ Q4T_TEST(realtime_call_playout_receipts_follow_delivery_and_clear) {
               part.GetString("transcript") == (clear ? "" : "spoken"));
     Q4T_CHECK(call.EndTransport());
   }
+  return true;
+}
+
+Q4T_TEST(realtime_webrtc_offer_accepts_sdk_and_browser_encodings_atomically) {
+  RealtimeWebRtcOffer offer;
+  const std::string sdp = "v=0\r\ns=-\r\n";
+  auto raw = [&](const std::string& text) {
+    return ParseRealtimeWebRtcOffer("application/sdp", text, &offer);
+  };
+  Q4T_CHECK(raw(std::string(65535, 's')).ok());
+  Q4T_CHECK(!raw(std::string(65536, 's')).ok() && !raw("").ok() &&
+            !raw(std::string("s\0p", 3)).ok() && offer.sdp.size() == 65535);
+  Q4T_CHECK(raw(sdp).ok() && offer.sdp == sdp &&
+            offer.session.GetString("type") == "realtime");
+  auto part = [](std::string name, std::string mime, const std::string& value) {
+    return "--test\r\nContent-Disposition: form-data; name=\"" + name + "\"" +
+           (mime.empty() ? "" : "\r\nContent-Type: " + mime) + "\r\n\r\n" +
+           value + "\r\n";
+  };
+  auto parse = [&](std::string form, bool terminated = true) {
+    return ParseRealtimeWebRtcOffer("multipart/form-data; boundary=\"test\"",
+                                    form + (terminated ? "--test--\r\n" : ""),
+                                    &offer);
+  };
+  const auto typed = part("sdp", "application/sdp", sdp);
+  const std::string config = R"({"type":"realtime","instructions":"test"})";
+  Q4T_CHECK(parse(typed + part("session", "application/json", config)).ok());
+  Q4T_CHECK(parse(part("session", "", config) + part("sdp", "", sdp)).ok());
+  Q4T_CHECK(offer.sdp == sdp &&
+            offer.session.GetString("instructions") == "test");
+  for (const auto& invalid :
+       {typed + typed, part("sdp", "application/json", sdp),
+        typed + part("unused", "", "x"), part("session", "", config),
+        typed + part("session", "", "null"),
+        typed + part("session", "", R"({"type":"realtime","type":"realtime"})"),
+        typed + part("session", "", R"({"session":{"type":"realtime"}})")})
+    Q4T_CHECK(!parse(invalid).ok());
+  Q4T_CHECK(!parse(typed, false).ok());
+  Q4T_CHECK(ParseRealtimeWebRtcOffer("application/json", config, &offer)
+                .http_status == 415);
+  Q4T_CHECK(offer.sdp == sdp &&
+            offer.session.GetString("instructions") == "test");
+  return true;
+}
+
+Q4T_TEST(realtime_webrtc_verified_sctp_and_sideband_share_one_conversation) {
+  Fixture f;
+  auto side = std::make_shared<LiveSideband>();
+  std::vector<Json> received;
+  size_t closes = 0;
+  RealtimeMediaCall call(
+      f.settings, f.cb, kWebSocketMessageLimit,
+      [&](char type, std::string_view wire) {
+        if (type == 'C') {
+          ++closes;
+          return wire.empty();
+        }
+        Json event;
+        if (type != 'D' || !io::ParseJson(std::string(wire), &event))
+          return false;
+        received.push_back(std::move(event));
+        return true;
+      },
+      side, RealtimeCarrier::kWebRtcData);
+  const auto start = Object({{"type", String("realtime")}});
+  Q4T_CHECK(call.Start(start).ok() && call.Tick(Clock::now()));
+  Q4T_CHECK(!call.Receive('R', {}) && !call.Receive('D', "{}"));
+  Q4T_CHECK(call.Receive('V', {}) && call.Tick(Clock::now()) &&
+            received.empty());
+  Q4T_CHECK(!call.Receive('D', "{}") && !call.Receive('K', "#"));
+  Q4T_CHECK(call.Receive('R', {}) && call.Tick(Clock::now()));
+  Q4T_CHECK(received.size() == 2 &&
+            received[0].GetString("type") == "session.created" &&
+            received[1].GetString("type") == "conversation.created");
+  const auto session = received.front().Find("session")->GetString("id");
+  const std::string change =
+      R"({"type":"session.update","session":{"type":"realtime","instructions":"shared"}})";
+  Q4T_CHECK(call.Receive('D', change) && call.Tick(Clock::now()));
+  Q4T_CHECK(received.back().GetString("type") == "session.updated");
+  std::shared_ptr<const std::string> wire;
+  uint64_t cursor = 0;
+  Q4T_CHECK(side->AttachRealtime(&cursor, &wire).ok());
+  Json e;
+  Q4T_CHECK(io::ParseJson(*wire, &e) &&
+            e.GetString("id") == session &&
+            e.GetString("instructions") == "shared");
+  call.CloseDataChannel();
+  Q4T_CHECK(call.Tick(Clock::now()) && closes == 1);
+  const auto count = received.size();
+  Q4T_CHECK(call.Receive('C', {}) && call.Receive('D', change));
+  Q4T_CHECK(side->Enqueue(WebSocketOpcode::kText, change) &&
+            call.Tick(Clock::now()));
+  Q4T_CHECK(received.size() == count && closes == 1 && !call.Finished());
+  Q4T_CHECK(side->Next(cursor, &wire) == LiveSideband::Read::kEvent &&
+            io::ParseJson(*wire, &e) &&
+            e.GetString("type") == "session.updated");
+  Q4T_CHECK(call.EndTransport() && call.Finished());
+  RealtimeMediaCall audio(
+      f.settings, f.cb, kWebSocketMessageLimit,
+      [](char, std::string_view) { return false; }, {},
+      RealtimeCarrier::kWebRtcAudio);
+  Q4T_CHECK(audio.Start(start).ok() && audio.Receive('V', {}) &&
+            !audio.Receive('R', {}) && audio.Tick(Clock::now()) &&
+            audio.EndTransport());
   return true;
 }

@@ -16,6 +16,7 @@
 #include <optional>
 
 #include "q4t/service/guardian_wire.h"
+#include "q4t/server/application_routes.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/http_request.h"
 
@@ -97,7 +98,7 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
   output->assign(first);
   output->append("\r\n");
   pos += 2;
-  bool seen_type = false;
+  bool seen_type = false, call_location = false;
   unsigned preparation_headers = 0;
   std::vector<std::string> connection;
   while (pos < raw.size()) {
@@ -134,6 +135,11 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
       if (seen_type) return false;
       seen_type = true;
     }
+    if (name == "location") {
+      if (call_location) return false;
+      call_location = status == 201 &&
+          server::SipControlId(value, {}).starts_with("rtc_");
+    }
     const auto preparation = PreparationHeader(name);
     if (preparation) {
       uint64_t tokens = 0;
@@ -147,7 +153,7 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
     // Preserve the runner's public response metadata, never private headers,
     // cookies, hop-by-hop options or a second response on this connection.
     if (name == "content-length" || name == "content-type" ||
-        name == "retry-after" || name == "www-authenticate" ||
+        (name == "location" && call_location) || name == "retry-after" || name == "www-authenticate" ||
         name == "allow" || preparation) {
       output->append(field);
       output->append("\r\n");
@@ -157,7 +163,8 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
   if (preparation_headers && preparation_headers != 7) return false;
   if (*chunked && length->has_value()) return false;
   for (const auto& field : connection)
-    if (server::http::Protected(field) || PreparationHeader(field))
+    if (server::http::Protected(field) || PreparationHeader(field) ||
+        (call_location && field == "location"))
       return false;
   if ((status == 204 || status == 304) && length->value_or(0) != 0)
     return false;

@@ -1,0 +1,48 @@
+{
+  "engine_sha256": "d970a37a9bf1d3902e7806b90ca0bf261f38ba65b2fd9e0c12325ddaf1b9a8b3",
+  "worker_sha256": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+  "ingress_sha256": "c0610fbc3fc1d2255223db185f39d5acfd65895ffa6a1668d0424bb470734811",
+  "openapi": [
+    "......",
+    "----------------------------------------------------------------------",
+    "Ran 6 tests in 0.086s",
+    "",
+    "OK"
+  ],
+  "native_gateway": [
+    ".",
+    "----------------------------------------------------------------------",
+    "Ran 1 test in 5.121s",
+    "",
+    "OK"
+  ],
+  "optional_nginx": [
+    ".",
+    "----------------------------------------------------------------------",
+    "Ran 1 test in 5.285s",
+    "",
+    "OK"
+  ],
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "sdk_posts": 7,
+    "sidebands": 2,
+    "voice_inputs": 1,
+    "client_results": 1,
+    "chats": 1,
+    "controls": 33
+  },
+  "remaining_processes": [],
+  "tool_terminal": {
+    "status": "completed",
+    "output": [
+      {
+        "type": "function_call",
+        "status": "completed",
+        "name": "lookup_project_record",
+        "arguments": "{\"record_key\":\"release\"}"
+      }
+    ]
+  }
+}
