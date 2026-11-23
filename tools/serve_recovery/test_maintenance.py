@@ -94,7 +94,7 @@ class MaintenanceTests(unittest.TestCase):
         self.assertFalse(status['model_actions'])
         self.assertEqual(status['deleted_files'], 0)
         self.assertEqual(status['pools'][kind]['capacity'],
-                         {'intents': 128, 'generations': 32, 'versions': 16}[kind])
+                         {'intents': 128, 'generations': 32, 'versions': 18}[kind])
         self.assertIn(self.selected, status['pools'][kind]['candidate_ids'])
         self.assertEqual(self.state_bytes(), before)
         plan = self.plan()

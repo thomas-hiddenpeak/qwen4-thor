@@ -54,6 +54,24 @@ class TransferTests(unittest.TestCase):
         self.switch(self.old); self.assert_old(5)
         self.assertEqual(len(list((self.state/root_checkpoints.DIRECTORY).iterdir())), 4)
 
+    def test_reserve_cycle_rolls_back_to_consumed_base_and_forward(self):
+        cycle = self.fresh['registry']['cycle_id']
+        reserve = self.state/version_registration.RESERVE_DIRECTORY
+        reserve.mkdir(mode=0o700)
+        base = self.state/version_registration.DIRECTORY
+        (base/(cycle+'.json')).rename(reserve/(cycle+'.json'))
+        self.switch(self.old)
+        self.assert_old(3)
+        old = self.spent['registry']['cycle_id']
+        self.assertEqual({p.name for p in base.iterdir()}, {old+'.json'})
+        self.assertEqual({p.name for p in (self.state/root_checkpoints.DIRECTORY).iterdir()},
+                         {old+'.bound', old+'.json'})
+        self.switch(self.new)
+        self.assertEqual(self.base.load(), dict(self.fresh, revision=4))
+        self.assertEqual({p.name for p in (self.state/root_checkpoints.RESERVE_DIRECTORY).iterdir()},
+                         {cycle+'.bound', cycle+'.json'})
+        self.assert_protected()
+
     def test_terminal_cycle_survives_roundtrip_and_actual_launch_gate(self):
         self.switch(self.old)
         value = self.base.load()

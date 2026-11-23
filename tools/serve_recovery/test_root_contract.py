@@ -18,7 +18,7 @@ class ContractTests(unittest.TestCase):
             for n in ('root_checkpoints', 'root_transfer', 'root_version_policy')})
 
     def test_checkpoint_or_partial_intent_requires_complete_migration_support(self):
-        for name in (root_checkpoints.DIRECTORY, root_transfer.INTENT,
+        for name in (root_checkpoints.DIRECTORY, root_checkpoints.RESERVE_DIRECTORY, root_transfer.INTENT,
                      root_transfer.INTENT+'.new'):
             marker = self.state/name;marker.touch()
             with self.assertRaisesRegex(ValueError, 'root recovery migration'):
