@@ -716,6 +716,15 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     except (OSError, ValueError, RuntimeError, KeyError, TypeError) as error:
         # Fixed error class only: do not print private config or API credentials.
         result = dict(status='FAILED', category=type(error).__name__)
+        if args.operation in ('publish', 'publish-resume', 'publish-rollback',
+                              'version-register') and isinstance(error, ledger.LedgerError):
+            pools = {'publication intent capacity reached': 'intents',
+                     'publication generation capacity reached': 'generations',
+                     'version registration storage is full': 'versions'}
+            pool = pools.get(str(error))
+            if pool is not None:
+                result.update(code='maintenance_capacity_reached', pool=pool,
+                              next_operation='maintenance-status')
         if args.operation.startswith('access-'):
             from tools.serve_recovery import access_manager
             result = access_manager.failure(error)

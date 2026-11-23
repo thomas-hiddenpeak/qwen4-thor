@@ -45,8 +45,10 @@ class IntentArchiveTests(unittest.TestCase):
     def test_capacity_archive_replay_restore_and_new_publish_without_budget_reset(self):
         before, raw = self.preserved(), self.source.read_bytes()
         with mock.patch.object(fixture.p, 'MAX_INTENTS', 17), \
+                mock.patch.object(fixture.p.files, 'snapshot') as snapshot, \
                 self.assertRaisesRegex(ValueError, 'intent capacity reached'):
             self.publish()
+        snapshot.assert_not_called()
         plan = self.prepare()
         with mock.patch.object(archive.archives.service, 'launch',
                                side_effect=AssertionError('no model')):

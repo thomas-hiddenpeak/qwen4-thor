@@ -1,0 +1,153 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 438,
+    "version_revision": 148,
+    "profile_revision": 38,
+    "previous_profile_revision": 38,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "a4ff80869d40baa23a2ed803c6824de73a8c1d89ba0bf0fbe5cd0c4443eccb06",
+    "fallback": "4112e7d3b21d305f6997451dc9b7fc38e34aeb0ba0c9a3574a5c12c7473670bf",
+    "engine": "642b2619c866021b3a9cee21cc208379fc873e64d0c39c2c1699055300df1629",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "installed": {
+    "revision": 438,
+    "pools": {
+      "intents": {
+        "used": 126,
+        "capacity": 128,
+        "available": 2
+      },
+      "generations": {
+        "used": 31,
+        "capacity": 32,
+        "available": 1
+      },
+      "versions": {
+        "used": 15,
+        "capacity": 16,
+        "available": 1
+      }
+    }
+  },
+  "qualifying_retirement": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "decd543841fb11baea6f2487a79caf3e59f5d52c101bcb1d8597029ed866ae18",
+          "ba572aa2050db924bf0be7f7203a99a0b65033add2131aa0a58f2c6a9b39c6fc"
+        ],
+        "sha256": "447e489bf85a3c942396144cdff823a738a087fdb96eea4c84199de4ac8269f3",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 16,
+        "archived": [
+          "e7e00d2d-4cd7-44ba-97f2-ba49cb249097",
+          "46dd493b-2d36-462c-a557-3e2ff07b5d0a"
+        ],
+        "sha256": "d012b23bc658825f45f04b0b53f3ebd97cc6c8e74ad4c7d7cb0530da6f9f5050",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "main_pr62": {
+    "merge": "77e943e4af8325cfe5db95928e2fcf9eb3ceb762",
+    "head": "894e569f9d32516a557dc9535097aa9ecd1f467a",
+    "checks": [
+      {
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45143097372/job/137585677570",
+        "result": "SUCCESS"
+      },
+      {
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45143089774/job/137585652754",
+        "result": "SUCCESS"
+      }
+    ]
+  },
+  "day": {
+    "source_commit": "a03b6dd944b25debad9f6762f19cd69d974da39e",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/maintenance-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/maintenance-package-01/bundle",
+      "manifest_sha256": "a4ff80869d40baa23a2ed803c6824de73a8c1d89ba0bf0fbe5cd0c4443eccb06"
+    },
+    "revision": 438,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/maintenance-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "bd458aa602b12156e1b0076252d63b649f6d28aebbff1427f18dd7da5331b8db",
+    "handoff_sha256": "b52464ba37ba232044b81602f4e4df2aff09c4fad011b952ce5f8772a0480db5",
+    "checked": true,
+    "source_files": 696,
+    "hours_executed": 0
+  },
+  "cold": {
+    "sdk": {
+      "status": 503,
+      "code": "live_media_unavailable",
+      "start": 1795426989390,
+      "end": 1795426989464,
+      "request_id": "hosted-cold-live-probe"
+    },
+    "admission": [
+      {
+        "result": "allowed",
+        "known": true,
+        "model": 1,
+        "duration_ns": 230470
+      },
+      {
+        "result": "allowed",
+        "known": true,
+        "model": 1,
+        "duration_ns": 124110
+      }
+    ],
+    "business": {
+      "status": "PASS",
+      "seconds": 44.476081382948905,
+      "model_starts": 1,
+      "stop_returncode": 0,
+      "supervisor_exit": 0,
+      "remaining": [],
+      "ports_free": true,
+      "unchanged_default": true,
+      "receipt_sha256": "a4ff80869d40baa23a2ed803c6824de73a8c1d89ba0bf0fbe5cd0c4443eccb06"
+    },
+    "isolation": {
+      "continued": true,
+      "model_generation": 1,
+      "same_guardian": true,
+      "same_gateway": true,
+      "stored_chat_read": true
+    },
+    "first_attempt": "ENV_ABORT",
+    "original_incident_root_cause": "unknown"
+  },
+  "receipts": {
+    "maintenance-delivery/result.json": "a2441c5eb3b7981feef73b5808799869f3db0dd3d51c9e21c8215f60d9675604",
+    "preflight-retention-01/result.json": "480beeab831baf4abea9fba0a8b68ba4a6d1ea0907edf06c3811898119d18061",
+    "preflight-retention-lease-02/exit.json": "71368509400b530ca9d97a28fc5a5aaa7a6720787c73b23ad4b0163f8fbb7728",
+    "maintenance-publish-lease-01/exit.json": "01aa0d713df396cdb53a95c1d248d37253cf4d194b26fbeff3386eda3704b6ed",
+    "installed-maintenance.json": "86162816d95d093ffeb7858f6ba2121017f6ab2d28251cca141169c07c42bc4e",
+    "installed-maintenance-lease-01/exit.json": "f4f7a83014169a68a3b9ceb0dfcbd7815250f57e89fc2b32a9fe11ef778ff4a1",
+    "maintenance-day.json": "fae3454de96928755233f0d773051985605c1cb4bf58df19010acff6c6216a12",
+    "startup-cold-02/degraded-http.json": "46e90921005800f804e3058712bb32c42215d25cd04c2a3893b913ebd2e8d27d",
+    "startup-cold-02/admission-windows.json": "a4000b0a615d6c64b13656cb65a93da670eac574eca947f23d017c3a9e6bf5d4",
+    "startup-cold-02/isolation.json": "c3fc6d0462706c95793517c6d2d49c8f9e44ce1e869d445ac7014c6e860b55e2",
+    "cold-lease-01/exit.json": "c2881b2078635c7255005355a9201b592adcadb6de2b274bb5fecd2f815a66e8",
+    "cold-lease-02/exit.json": "d6530247fbdb19dfc131ad509d70e420df2e6f27dd8ce0e0b073088eafbf4419",
+    "create_peer_offer.py": "4fb5fc500080ae1911094f7032770ab5a3988d87ca3f8878f94ca59fc74c9c54",
+    "cold-peer.sdp": "37855f5dec0d526ac589df2daced43173bbbb7cea03df19f61d5b903252fb7a7",
+    "cold_business2.py": "01cd87929557fb4a023e9fa4c2b86a17532dd691195d28c55d9b0a0a9deb8f3b",
+    "observe_cold.py": "5c064ed938c4f170746d943fcfc7f62b1bf8f8b783775dc6398d4c236e1276ee",
+    "maintenance-cpu-02.log": "a509bb25e65cfea1854945b6535ec84ccfc84f3123e4ef58e7ecbcaf42201333"
+  }
+}

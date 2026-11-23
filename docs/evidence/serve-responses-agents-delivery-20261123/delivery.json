@@ -1,0 +1,257 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 436,
+    "version_revision": 147,
+    "profile_revision": 38,
+    "previous_profile_revision": 37,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "4112e7d3b21d305f6997451dc9b7fc38e34aeb0ba0c9a3574a5c12c7473670bf",
+    "fallback": "09621c4db14b776a8d19224d592e5e4c0695cf94ca472c771438c537b97e5848",
+    "engine": "642b2619c866021b3a9cee21cc208379fc873e64d0c39c2c1699055300df1629",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "handoff": {
+    "source_commit": "894e569f9d32516a557dc9535097aa9ecd1f467a",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/primary-01/bundle",
+      "manifest_sha256": "4112e7d3b21d305f6997451dc9b7fc38e34aeb0ba0c9a3574a5c12c7473670bf"
+    },
+    "revision": 436,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "c3aeff49fbc1c69b73f046114f4da3c8d1388c0d74c4a3a705a6a806a18ef1f1",
+    "handoff_sha256": "f1716af967ec4ab9f58529ac0e0973b4395637d7eae3e6e5674bf248f9aa063a",
+    "checked": true,
+    "source_files": 695,
+    "hours_executed": 0
+  },
+  "recoveries": {
+    "managed-01": {
+      "result": {
+        "status": "PASS",
+        "seconds": 64.39733946695924,
+        "model_starts": 1,
+        "stop_returncode": 0,
+        "supervisor_exit": 0,
+        "remaining": [],
+        "ports_free": true,
+        "unchanged_default": true,
+        "receipt_sha256": "09621c4db14b776a8d19224d592e5e4c0695cf94ca472c771438c537b97e5848"
+      },
+      "same_guardian": true,
+      "same_model": true,
+      "model_generations": [
+        1,
+        1
+      ],
+      "owner": {
+        "owner": 200,
+        "other": 404
+      },
+      "replayed_output_equal": true,
+      "new_response_after_recovery": true,
+      "before_and_fresh": [
+        {
+          "usage": {
+            "input_tokens": 3384,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0
+            },
+            "output_tokens": 95,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 3479
+          },
+          "answers": [
+            "37",
+            "37"
+          ]
+        },
+        {
+          "usage": {
+            "input_tokens": 3384,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0
+            },
+            "output_tokens": 95,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 3479
+          },
+          "answers": [
+            "37",
+            "37"
+          ]
+        }
+      ],
+      "webrtc": [
+        201,
+        201
+      ]
+    },
+    "fatal-business-01": {
+      "result": {
+        "status": "PASS",
+        "seconds": 125.36927585769445,
+        "model_starts": 2,
+        "stop_returncode": 0,
+        "supervisor_exit": 0,
+        "remaining": [],
+        "ports_free": true,
+        "unchanged_default": true,
+        "receipt_sha256": "4112e7d3b21d305f6997451dc9b7fc38e34aeb0ba0c9a3574a5c12c7473670bf"
+      },
+      "same_guardian": true,
+      "same_model": false,
+      "model_generations": [
+        1,
+        2
+      ],
+      "owner": {
+        "owner": 200,
+        "other": 404
+      },
+      "replayed_output_equal": true,
+      "new_response_after_recovery": true,
+      "before_and_fresh": [
+        {
+          "usage": {
+            "input_tokens": 3384,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0
+            },
+            "output_tokens": 95,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 3479
+          },
+          "answers": [
+            "37",
+            "37"
+          ]
+        },
+        {
+          "usage": {
+            "input_tokens": 3384,
+            "input_tokens_details": {
+              "cached_tokens": 0,
+              "cache_write_tokens": 0
+            },
+            "output_tokens": 95,
+            "output_tokens_details": {
+              "reasoning_tokens": 0
+            },
+            "total_tokens": 3479
+          },
+          "answers": [
+            "37",
+            "37"
+          ]
+        }
+      ],
+      "webrtc": [
+        201,
+        201
+      ],
+      "takeover": {
+        "selection": "fallback",
+        "probes": 1,
+        "signal": 6,
+        "consumed": true
+      }
+    }
+  },
+  "receipts": {
+    "fallback-lease-01/exit.json": "c1135e7e1a1fc6e1165236149a0472898466dcd6289f3a9049601f96e4d771c6",
+    "managed-01/result.json": "cd588a4b7a700706213ea8df7902901f0c4f0d2a3f7eda6aad710489128ab900",
+    "managed-01/recovery.json": "d406acdd1a4f3b38ad49081e18cff0c2a6ff3116b59309eceae4d9063bf5db27",
+    "managed-01/agent-before.wire": "b380031c9a640ee4f3ff4a970d484dcec3cbeb8ff61224993cf721ed2c0c27a7",
+    "managed-01/agent-after.wire": "b380031c9a640ee4f3ff4a970d484dcec3cbeb8ff61224993cf721ed2c0c27a7",
+    "managed-01/agent-fresh.wire": "cb4cced2d5736d3c5e6dcdff827441387aaf550b4c76fcb3cd4902fea167c8bc",
+    "managed-01/owner.json": "70c26a3e363874410381a26f55e8a07bf0a4d79480a02f26fc6c0226e0c4104a",
+    "managed-01/chat-before.wire": "ff3658569683597bc9d20d7e64fd482ad155c81421c55ae0adb91124f5dce938",
+    "managed-01/chat-after.wire": "0a5ea1e5e809fcadf914ee67854d528a493a45e3bb778363048186346c44be97",
+    "managed-01/stored.wire": "ff3658569683597bc9d20d7e64fd482ad155c81421c55ae0adb91124f5dce938",
+    "fatal-lease-01/exit.json": "b7c7605e746948d94dd633af8ad0e9cd0412b197301582e9304b88e4ed307c81",
+    "fatal-business-01/result.json": "620c19e89142fe337e2e268208e1ed71bf3244952525ad9bc988cdcde8ade30d",
+    "fatal-business-01/recovery.json": "1483164219803d399b72839cb5741ae806f8b9ff9b6ab10204d9b866ded125cc",
+    "fatal-business-01/agent-before.wire": "feb7cfaf9f53bf3132312a0468e4232e62f41c369e1fc346b612114dea45f4cb",
+    "fatal-business-01/agent-after.wire": "feb7cfaf9f53bf3132312a0468e4232e62f41c369e1fc346b612114dea45f4cb",
+    "fatal-business-01/agent-fresh.wire": "6de0b75092e9e670848850f40d0f16f12321dbf8da6a18c2c02fc6c550c9ab13",
+    "fatal-business-01/owner.json": "70c26a3e363874410381a26f55e8a07bf0a4d79480a02f26fc6c0226e0c4104a",
+    "fatal-business-01/chat-before.wire": "43a64de34c14c9ae50cc3481629b104d0bf685975b04f33f599f0ca7e955ca9c",
+    "fatal-business-01/chat-after.wire": "e437dbcfdd2020baa8ece5dc51e04a41ae912af7c03a2c48bfef8c681ab4984d",
+    "fatal-business-01/stored.wire": "43a64de34c14c9ae50cc3481629b104d0bf685975b04f33f599f0ca7e955ca9c",
+    "maintenance-01/status.stdout": "84a6a2dc7b7156034c68661ec04fdd21568f7cfc4eb0b88e162383937dc28307",
+    "publish-initial.stderr": "9410dae18827d530b7b8246fe772ccba5edbaa92c9f62e75a5fda540e998a7e9",
+    "register-initial.stderr": "9410dae18827d530b7b8246fe772ccba5edbaa92c9f62e75a5fda540e998a7e9",
+    "maintenance-diagnose.log": "1b7545887f34ab529496bbbf8b92f0227384fbc44c5a18195ec88c4bae18ab6c",
+    "maintenance-cpu.log": "418ccba18ac0474248da328ad67ed587bb2ee1acafa5e9a0fc787e6bee5a6e45",
+    "maintenance-cpu-02.log": "a509bb25e65cfea1854945b6535ec84ccfc84f3123e4ef58e7ecbcaf42201333",
+    "maintenance-versions-02/archive/plan.json": "3c9148c20142d41f60b53f67a5c86c16a38b2be018192f5b2a8ba53cd9f2487a",
+    "publish-lease-03/exit.json": "fcd24b4c2264b9a58a3bb87d9a80f2d6141e4cfeaae88b1ca88f8b104aba625d",
+    "delivery/check.stdout": "cbcf83ef45a29c4ffbb85364bfe4b16efdc7893fb035c27dc50592475b6f575e",
+    "delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    "delivery/version-status.stdout": "ce1ffc08d5347b2f30d96c6fd37192116119a9411ec1e84c8eea4bfc668e52c9",
+    "delivery/publish-status.stdout": "39b3e7d1418bbcd8e1a78d2770a4193e658913af9c25f7e7cd50dbca3abb41fc",
+    "day.json": "733479449403ca589e85cde0d9c2936cc741af6014d50a8230ca0519cbf37d4a"
+  },
+  "maintenance": [
+    {
+      "status": "PASS",
+      "seconds": 73.035089278128,
+      "model_starts": 0,
+      "revision": 434,
+      "before": 128,
+      "after": 124,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/maintenance-01/archive/plan.json",
+      "plan_sha256": "bd3c03cb8d9678bd8d48975416becb7d43925f074719f570611a9032c2e47522",
+      "request_ids": [
+        "ba0b241b-348c-4216-83cd-1b4572ae8757",
+        "d1ab8a96-164b-4fe4-be07-413d6b7a99e4",
+        "9e1f094f-c7b1-42d7-9605-d83397cc2827",
+        "7a9ea93d-6260-4ac9-9f8e-721374f1a03c"
+      ],
+      "protected_files": 70,
+      "unchanged": true,
+      "identical_inodes_and_content": true,
+      "wrong_proof_rejected": true,
+      "protected_request_rejected": true,
+      "deleted_files": 0
+    },
+    {
+      "status": "PASS",
+      "seconds": 217.12723774509504,
+      "model_starts": 0,
+      "revision": 436,
+      "before": 16,
+      "after": 15,
+      "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/maintenance-versions-02/archive/plan.json",
+      "plan_sha256": "3c9148c20142d41f60b53f67a5c86c16a38b2be018192f5b2a8ba53cd9f2487a",
+      "cycle_ids": [
+        "2be2bd89-2ada-4981-991e-0e9396dbf763"
+      ],
+      "protected_files": 30,
+      "unchanged": true,
+      "identical_inodes_and_content": true,
+      "wrong_proof_rejected": true,
+      "protected_request_rejected": true,
+      "deleted_files": 0
+    }
+  ],
+  "initial_failures": [
+    "Publication intent pool at 128; target generation was staged before the refusal",
+    "Version registration pool at 16 after publication; ordinary maintenance refused the earlier active root",
+    "CPU fixture suite had 8 competing lock errors plus a missing historical source fixture; rerun isolated"
+  ],
+  "cpu_tests": 33
+}

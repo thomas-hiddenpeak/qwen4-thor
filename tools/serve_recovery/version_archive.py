@@ -24,10 +24,29 @@ MAX_SELECTED = 4
 # Reviewed predecessors: original archive, then the identity-guard-only revision.
 # Their plan formats and move/restore semantics are unchanged. Keep plan bytes.
 LEGACY_PLAN_SOURCES = frozenset((
+    'a498cb313fe45dd947fe91695e230777c906230312f13e9a93b6a35dc2d29afe',
     '03c4074d6584fe4c85fb06c9eb91ff8fd527453328acd04f1be2ed3a1a8a69e5',
     '0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e',
     '40610c3d30b67f370ce20e4e17beb107f86be69eac953795a1dac9ee52139c08',
 ))
+
+
+def verify_selected(state, desc, current, selected, *, read_bundle=None):
+    """Verify the cycle for offline maintenance between publication and registration."""
+    root = desc
+    digest = selected['registry']['root_manifest_sha256']
+    if digest != desc['manifest_sha256']:
+        # Publication and version registration are separate commits. The last
+        # stable publication names both roots while the old cycle is active.
+        history = current['history']
+        ledger.require(current['phase'] == 'stable' and history and
+            history[-1]['selected'] == current['current'] and
+            all(current['current'][k] == desc[k] for k in ('package', 'manifest_sha256')) and
+            history[-1]['previous']['manifest_sha256'] == digest,
+            'registered root is not the immediate publication predecessor')
+        previous = history[-1]['previous']
+        root = dict(desc, package=previous['package'], manifest_sha256=digest)
+    registration.for_state(state, root, selected, read_bundle=read_bundle or bundle.verify)
 
 
 @contextmanager
@@ -38,7 +57,7 @@ def locked(state, *, authority=None, read_bundle=None):
         binding = access_store.binding(state, desc['service_id'])
         with version_store.open_bound(binding) as writer:
             selected = writer.head['state']['policy']
-            registration.for_state(state, desc, selected, read_bundle=read_bundle or bundle.verify)
+            verify_selected(state, desc, current, selected, read_bundle=read_bundle)
             yield state, desc, manifest, current, selected, binding
 
 
