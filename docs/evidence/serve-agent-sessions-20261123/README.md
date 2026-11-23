@@ -21,3 +21,15 @@ Managed Agent 流式工具短验通过。首次官方 SDK 在函数参数尚未�
 主配置生成的真实工具调用已由轻配置接续。官方 Node SDK 用同一结果回填两次，原回合只保存一份结果并回答 442。保留夹具的 3 RPM 上限后，第 4 笔推理准确返回 rate_limit_exceeded，原回合的失败可回读，会话仍可使用。窗口恢复后续问再答 442。主、轻各启动一次，146 次 NVML 采样；默认 rev442 仍为 STOPPED。 两次真实业务失败揭示了配额耗尽被映射为 server_error，以及可重试的回合失败会把整个会话置为 failed。现有持久化原件也使用修正后的投影。两次环境中止和原始错误均收录于[主轻配置验收](profiles.json)。此处的接续由两个独立进程依次执行，托管自动接管另行验收。
 
 PR #66 合入 main 的两项[检查回执](main.json)已固定。用 `python tools/serve_audit/scope_routes.py` 可从 G00 冻结清单、发行 OpenAPI 复算[合同覆盖快照](scope-routes.json)。运行时与不同客户端的通过情况仍由各业务回执记录。
+
+### rev444 故障恢复和长稳交接
+
+模型丢失与网关致命退出均由真正的托管进程恢复。两次都在恢复后收到原回合签发的工具调用，以同一结果再次提交仍保存一份，随后 Chat 答 42。默认 rev444 所用的原生入口、模型与单独注册的回退包身份已固定；停服意图与配额保留。[发行回执](delivery.json)
+
+用户在 Thor 上选定 GPU 时段后，可在固定源码工作区复核并执行 24 小时计划。已完成预检，尚未实跑。
+
+```bash
+cd /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/session-soak-src
+/usr/bin/python3 -I -B tools/serve_soak/native_stage.py check --plan .q4t-work/day-01/plan.json
+/usr/bin/python3 -I -B tools/serve_soak/native_stage.py run --plan .q4t-work/day-01/plan.json
+```

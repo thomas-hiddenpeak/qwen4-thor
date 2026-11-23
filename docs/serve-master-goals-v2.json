@@ -16524,11 +16524,16 @@
   },
   "agent_session_handoff_20261123": {
     "evidence": "evidence/serve-agent-sessions-20261123/profiles.json",
-    "state": "primary_light_qualified",
+    "state": "released_stopped",
     "registered_profiles": 2,
     "selectable_previous_release": "rev442",
-    "managed_takeover": "pending",
+    "managed_takeover": "verified_model_loss_and_fatal_gateway_takeover",
     "profile_start_count": 2,
-    "quota_window_recovery": true
+    "quota_window_recovery": true,
+    "publication_revision": 444,
+    "delivery": "evidence/serve-agent-sessions-20261123/delivery.json",
+    "scope_routes": "evidence/serve-agent-sessions-20261123/scope-routes.json",
+    "long_run": "prepared_and_checked_user_runs",
+    "next": "Agent vaults and credential access, other remaining application and reliability contracts"
   }
 }
