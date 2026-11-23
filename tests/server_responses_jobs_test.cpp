@@ -413,6 +413,7 @@ int ResponsesJobsFixture(int argc, char** argv) {
                    (poll(&peer, 1, 0) > 0 &&
                     (peer.revents & (POLLRDHUP | POLLERR | POLLHUP)));
           };
+          NormalizeResponsesPostTarget(method, target);
           if (method == "POST" && target == "/v1/responses")
             ServeBackgroundResponse(fd, objects, jobs, Parse(body), Config(),
                                     access);

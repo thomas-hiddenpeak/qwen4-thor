@@ -1254,7 +1254,8 @@
         "evidence/serve-input-tokens-delivery-20261110/README.md",
         "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "evidence/serve-live-default-20261123/README.md"
+        "evidence/serve-live-default-20261123/README.md",
+        "evidence/serve-responses-beta-selector-20261123/README.md"
       ],
       "release": {
         "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
@@ -5991,7 +5992,8 @@
       "evidence": [
         "evidence/serve-managed-vision-delivery-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "evidence/serve-speech-http-20261118/README.md"
+        "evidence/serve-speech-http-20261118/README.md",
+        "evidence/serve-responses-beta-selector-20261123/README.md"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -8005,7 +8007,8 @@
         "evidence/serve-outer-resource-business-20261112/README.md",
         "evidence/serve-outer-resource-delivery-20261112/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "evidence/serve-live-default-20261123/README.md"
+        "evidence/serve-live-default-20261123/README.md",
+        "evidence/serve-live-stability-handoff-20261123/README.md"
       ],
       "release": null,
       "plan": "SERVE_RESOURCE_DOMAIN_2026-11-12.md",
@@ -8281,7 +8284,9 @@
         "evidence/serve-retrieval-managed-business-20261112/README.md",
         "evidence/serve-managed-vision-delivery-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "evidence/serve-live-default-20261123/README.md"
+        "evidence/serve-live-default-20261123/README.md",
+        "evidence/serve-live-stability-handoff-20261123/README.md",
+        "evidence/serve-responses-beta-selector-20261123/README.md"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -9050,7 +9055,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev396_delivered_duplex_main_merged_remaining_master_active",
+      "state": "rev432_delivered_live_main_checks_pending",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9064,7 +9069,8 @@
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-root-rollback-business-20261116/README.md",
         "evidence/serve-recovery-recording-option-20261123/README.md",
-        "evidence/serve-live-default-20261123/README.md"
+        "evidence/serve-live-default-20261123/README.md",
+        "evidence/serve-live-stability-handoff-20261123/README.md"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -9314,7 +9320,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Realtime duplex final-head CI and actual main merge",
+        "Complete Live main integration on the final checked revision",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -10222,7 +10228,8 @@
         "Q02"
       ],
       "evidence": [
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-stability-handoff-20261123/README.md"
       ],
       "release": null,
       "surface_prose_audit": {
@@ -10307,6 +10314,101 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
+        "source_commit": "0b0dbebcbe3956a61a5a5f1e2f9cc9d2dc0c9019",
+        "package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/observer-01/bundle",
+          "manifest_sha256": "3a9ef885ac55cff32426125b7f33c8debc92781997fa8deacc3cd1b302f6a042"
+        },
+        "revision": 432,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/observer-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "61e7860c6aeee8138b541254746fa186775520adfbed9928c74d4240ea592dfb",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/observer-src",
+        "sources": 695,
+        "evidence": "evidence/serve-live-stability-handoff-20261123/README.md",
+        "short": "PASS_NATIVE_SHORT_SOAK",
+        "executed": false,
+        "owner": "user"
+      },
+      "video_affine_detail_20261117": {
+        "state": "delivered_main_pending",
+        "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
+        "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
+        "whole_task_complete": false,
+        "original_model_quality_failures_retained": true,
+        "pull_request": 41,
+        "revision": 244,
+        "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
+        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
+      },
+      "realtime_history_business_20261119": {
+        "state": "business_qualified_recovery_delivery_pending",
+        "evidence": "evidence/serve-realtime-history-business-20261119/README.md",
+        "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
+        "actual_input_tokens": [
+          70,
+          81,
+          70
+        ],
+        "actual_transcription_tokens": 561,
+        "starts": 1,
+        "websocket_sessions": 2,
+        "transcriptions": 4,
+        "chats": 1,
+        "seconds": 45.34753486327827,
+        "nvml_queries": 44,
+        "resources_released": true,
+        "default_unchanged": true,
+        "complete": false
+      },
+      "native_realtime_speech_output_20261120": {
+        "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
+        "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
+        "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
+        "cpu_execution_cases": 110,
+        "cpu_business_cases": 23,
+        "actual_model_starts": 2,
+        "independent_leases": 2,
+        "response_creates": 14,
+        "chat_or_completions": 4,
+        "unprompted_asr": 6,
+        "seconds": 157.91322873625904,
+        "nvml_ok": 150,
+        "actual_formats": [
+          "audio/pcm",
+          "audio/pcmu",
+          "audio/pcma"
+        ],
+        "fractional_speed": 0.75,
+        "original_quality_failures_preserved": true,
+        "new_user_content_pass": true,
+        "sampling_defaults_unchanged": true,
+        "default_revision": 366,
+        "default_changed": false,
+        "profile_recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "full_realtime_complete": false,
+        "owner_listening_deferred": true,
+        "pull_request": 54
+      },
+      "realtime_speech_primary_light_20261120": {
+        "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
+        "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
+        "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
+        "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
+        "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
+        "model_starts": 2,
+        "response_attempts": 10,
+        "wss": 6,
+        "seconds": 157.3836771757342,
+        "nvml_ok": 151,
+        "original_failures_preserved": true,
+        "default_unchanged": true,
+        "recovery_delivery_pending": true,
+        "duplex_input_pending": true,
+        "master_complete": false
+      },
+      "retained_rev276_day_handoff": {
         "status": "PASS_FROZEN_DAY_HANDOFF",
         "source_commit": "5ed5f57c17da0a1fa434624e05594a73d7a7b73f",
         "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-audio-native-20261117/validation-src",
@@ -10387,90 +10489,11 @@
         "asr_long_stability_accepted": false,
         "archive_sha256": "75e08d25918f784894ee91eaf131552ab0ce1b6e24e6b30dffc860e71daef5c0",
         "evidence": "evidence/serve-asr-day-handoff-20261117/README.md"
-      },
-      "video_affine_detail_20261117": {
-        "state": "delivered_main_pending",
-        "evidence": "evidence/serve-video-affine-composition-20261117/README.md",
-        "binary_sha256": "e16c8108ec4bb1b2a3fbcc01641a36657b8b0558a724fe9a019791fd3f262bbc",
-        "whole_task_complete": false,
-        "original_model_quality_failures_retained": true,
-        "pull_request": 41,
-        "revision": 244,
-        "manifest_sha256": "ad8f443e7e16adaa864ad1729c4c7cda5fc7338473d89da5e1cb3aadf3e7d976",
-        "delivery_evidence": "evidence/serve-video-affine-delivery-20261117/README.md"
-      },
-      "realtime_history_business_20261119": {
-        "state": "business_qualified_recovery_delivery_pending",
-        "evidence": "evidence/serve-realtime-history-business-20261119/README.md",
-        "binary_sha256": "c530de4862683069e279f7c2685c43f7368958106ae9935206eedefafc88ba04",
-        "actual_input_tokens": [
-          70,
-          81,
-          70
-        ],
-        "actual_transcription_tokens": 561,
-        "starts": 1,
-        "websocket_sessions": 2,
-        "transcriptions": 4,
-        "chats": 1,
-        "seconds": 45.34753486327827,
-        "nvml_queries": 44,
-        "resources_released": true,
-        "default_unchanged": true,
-        "complete": false
-      },
-      "native_realtime_speech_output_20261120": {
-        "state": "native_speech_output_business_accepted_profiles_recovery_delivery_pending",
-        "candidate_binary": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
-        "plan": "SERVE_REALTIME_AUDIO_OUTPUT_2026-11-20.md",
-        "evidence": "evidence/serve-realtime-speech-content-20261120/README.md",
-        "cpu_execution_cases": 110,
-        "cpu_business_cases": 23,
-        "actual_model_starts": 2,
-        "independent_leases": 2,
-        "response_creates": 14,
-        "chat_or_completions": 4,
-        "unprompted_asr": 6,
-        "seconds": 157.91322873625904,
-        "nvml_ok": 150,
-        "actual_formats": [
-          "audio/pcm",
-          "audio/pcmu",
-          "audio/pcma"
-        ],
-        "fractional_speed": 0.75,
-        "original_quality_failures_preserved": true,
-        "new_user_content_pass": true,
-        "sampling_defaults_unchanged": true,
-        "default_revision": 366,
-        "default_changed": false,
-        "profile_recovery_delivery_pending": true,
-        "duplex_input_pending": true,
-        "full_realtime_complete": false,
-        "owner_listening_deferred": true,
-        "pull_request": 54
-      },
-      "realtime_speech_primary_light_20261120": {
-        "state": "native_speech_primary_light_accepted_managed_recovery_delivery_pending",
-        "evidence": "docs/evidence/serve-realtime-speech-profiles-20261120/README.md",
-        "candidate_binary_sha256": "cfae4d608d80f9ec5f791412c889a579d8f0f5270ffa07341d6235a243121b1c",
-        "protocol_sha256": "71bd09a53730a8c4e1216a38813796b96049b7848c48c37301f2da16642cc99e",
-        "registry_sha256": "d2ff5b3b283bc641401e9ad7a8219811f18eb982a0d3503f8a1ecc7c8fc558a2",
-        "model_starts": 2,
-        "response_attempts": 10,
-        "wss": 6,
-        "seconds": 157.3836771757342,
-        "nvml_ok": 151,
-        "original_failures_preserved": true,
-        "default_unchanged": true,
-        "recovery_delivery_pending": true,
-        "duplex_input_pending": true,
-        "master_complete": false
       }
     }
   ],
-  "next_task": "Integrate qualified Live delivery after host CI, diagnose the startup 503, and continue the remaining inference, application and recovery tasks.",
-  "next": "核对 Live 主线检查并合入；定位启动期 503；按总计划推进剩余推理与应用服务组合、恢复和交付。",
+  "next_task": "Integrate Live on main and qualify the Responses beta engine for both capacity profiles; continue named multi-agent capabilities, startup diagnostics and the remaining master tasks.",
+  "next": "完成 Live 主线集成；将已通过真实 SDK 的 Responses Beta 候选封入主轻发行，继续具名多代理扩展、启动期 503 和剩余推理应用能力。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16379,6 +16402,20 @@
     "qualified_profile_observations": "evidence/serve-live-profile-observations-20261123/README.md",
     "sealed_live_profiles": "evidence/serve-live-registry-20261123/README.md",
     "managed_optional_workers": "evidence/serve-live-managed-workers-20261123/README.md",
-    "default_and_registered_failover": "evidence/serve-live-default-20261123/README.md"
+    "default_and_registered_failover": "evidence/serve-live-default-20261123/README.md",
+    "sideband_metrics_and_soak_delivery": "evidence/serve-live-stability-handoff-20261123/README.md"
+  },
+  "responses_beta_selector_20261123": {
+    "status": "ACTUAL_HTTP_QUALIFIED_CANDIDATE",
+    "evidence": "evidence/serve-responses-beta-selector-20261123/README.md",
+    "official_sdk": "7.47.0",
+    "covered_paths": 6,
+    "covered_methods": 7,
+    "actual_http_requests": 12,
+    "packaged_as_default": false,
+    "remaining": [
+      "Named multi-agent beta and its separate item, tool and event behavior",
+      "Formal qualification and delivery of the new engine"
+    ]
   }
 }

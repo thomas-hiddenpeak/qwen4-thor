@@ -378,11 +378,17 @@ def add_openapi(paths, response, error):
                       for part in path.split('/') if part.startswith('{')]
         if query:
             parameters += query_fields(query)
+        query_contract = query or 'no query'
+        if path == '/v1/responses' or path.startswith('/v1/responses/'):
+            parameters.append(dict(name='beta', **{'in': 'query'}, required=False,
+                schema=dict(type='string', enum=['true']),
+                description='Select the beta Responses endpoint.'))
+            query_contract = query + ' with optional beta' if query else 'optional beta'
         success = response(external(result))
         operation = dict(operationId=method+'_'+path.strip('/').replace('/', '_').replace('{', '').replace('}', ''),
             parameters=parameters, responses={'200': success,
                 'default': response(error, 'Native error; unknown/other-client identities return 404')},
-            **{'x-q4t-query-contract': query or 'no query',
+            **{'x-q4t-query-contract': query_contract,
                'x-q4t-body-contract': body or 'empty body only'})
         if body:
             optional = path in ('/v1/conversations', '/v1/responses/input_tokens')

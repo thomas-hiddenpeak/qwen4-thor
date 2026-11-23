@@ -153,6 +153,22 @@ struct StreamState {
 };
 }  // namespace
 
+void NormalizeResponsesPostTarget(std::string_view method,
+                                  std::string& target) {
+  if (method != "POST" || !target.starts_with("/v1/responses")) return;
+  const std::string_view raw = target;
+  const auto separator = raw.find('?');
+  if (separator == raw.npos) return;
+  const auto path = raw.substr(0, separator);
+  if (path != "/v1/responses" && path != "/v1/responses/compact" &&
+      path != "/v1/responses/input_tokens")
+    return;
+  const auto query = ParseApplicationQuery(raw.substr(separator + 1));
+  if (query.ok() && query.value.object.size() == 1 &&
+      query.value.GetString("beta") == "true")
+    target.resize(separator);
+}
+
 ObjectReply PlanResponsesRead(std::string_view method, std::string_view target,
                               std::string_view body, ResponsesReadPlan* plan) {
   *plan = {};
@@ -180,6 +196,11 @@ ObjectReply PlanResponsesRead(std::string_view method, std::string_view target,
   auto query = ParseApplicationQuery(
       separator == target.npos ? "" : target.substr(separator + 1));
   if (!query.ok()) return query;
+  if (query.value.Has("beta")) {
+    if (query.value.GetString("beta") != "true")
+      return Invalid("Responses beta selector requires true", "beta");
+    Remove(&query.value, "beta");
+  }
   if (cancel) {
     if (!query.value.object.empty())
       return Invalid("Query is not allowed on cancellation", "query");

@@ -4320,7 +4320,20 @@
     "/v1/responses": {
       "post": {
         "operationId": "post_v1_responses",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ]
+            },
+            "description": "Select the beta Responses endpoint."
+          }
+        ],
         "responses": {
           "200": {
             "description": "JSON response",
@@ -4370,7 +4383,7 @@
             }
           }
         },
-        "x-q4t-query-contract": "no query",
+        "x-q4t-query-contract": "optional beta",
         "x-q4t-body-contract": "response_create",
         "requestBody": {
           "required": true,
@@ -4387,7 +4400,20 @@
     "/v1/responses/compact": {
       "post": {
         "operationId": "post_v1_responses_compact",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ]
+            },
+            "description": "Select the beta Responses endpoint."
+          }
+        ],
         "responses": {
           "200": {
             "description": "JSON response",
@@ -4428,7 +4454,7 @@
             }
           }
         },
-        "x-q4t-query-contract": "no query",
+        "x-q4t-query-contract": "optional beta",
         "x-q4t-body-contract": "response_compact",
         "requestBody": {
           "required": true,
@@ -4445,7 +4471,20 @@
     "/v1/responses/input_tokens": {
       "post": {
         "operationId": "post_v1_responses_input_tokens",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ]
+            },
+            "description": "Select the beta Responses endpoint."
+          }
+        ],
         "responses": {
           "200": {
             "description": "JSON response",
@@ -4486,7 +4525,7 @@
             }
           }
         },
-        "x-q4t-query-contract": "no query",
+        "x-q4t-query-contract": "optional beta",
         "x-q4t-body-contract": "input_tokens_request",
         "requestBody": {
           "required": false,
@@ -4560,6 +4599,18 @@
             },
             "style": "form",
             "explode": true
+          },
+          {
+            "name": "beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ]
+            },
+            "description": "Select the beta Responses endpoint."
           }
         ],
         "responses": {
@@ -4611,7 +4662,7 @@
             }
           }
         },
-        "x-q4t-query-contract": "response_retrieve",
+        "x-q4t-query-contract": "response_retrieve with optional beta",
         "x-q4t-body-contract": "empty body only"
       },
       "delete": {
@@ -4625,6 +4676,18 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ]
+            },
+            "description": "Select the beta Responses endpoint."
           }
         ],
         "responses": {
@@ -4667,7 +4730,7 @@
             }
           }
         },
-        "x-q4t-query-contract": "no query",
+        "x-q4t-query-contract": "optional beta",
         "x-q4t-body-contract": "empty body only"
       }
     },
@@ -4683,6 +4746,18 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ]
+            },
+            "description": "Select the beta Responses endpoint."
           }
         ],
         "responses": {
@@ -4725,7 +4800,7 @@
             }
           }
         },
-        "x-q4t-query-contract": "no query",
+        "x-q4t-query-contract": "optional beta",
         "x-q4t-body-contract": "empty body only",
         "description": "Idempotent native background cancellation, empty body, 200 real resource. Independent bounded cancellation admission."
       }
@@ -4784,6 +4859,18 @@
             },
             "style": "form",
             "explode": true
+          },
+          {
+            "name": "beta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ]
+            },
+            "description": "Select the beta Responses endpoint."
           }
         ],
         "responses": {
@@ -4826,7 +4913,7 @@
             }
           }
         },
-        "x-q4t-query-contract": "input_items_query",
+        "x-q4t-query-contract": "input_items_query with optional beta",
         "x-q4t-body-contract": "empty body only"
       }
     },

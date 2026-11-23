@@ -170,6 +170,46 @@ Q4T_TEST(responses_api_query_contract_and_routes_before_storage) {
   return true;
 }
 
+Q4T_TEST(responses_beta_selector_preserves_commands_and_read_options) {
+  for (const std::string path : {"/v1/responses", "/v1/responses/compact",
+                                 "/v1/responses/input_tokens"}) {
+    for (const auto* query : {"?beta=true", "?%62eta=tr%75e"}) {
+      auto target = path + query;
+      NormalizeResponsesPostTarget("POST", target);
+      Q4T_CHECK(target == path);
+    }
+    for (const auto* query : {"?", "?beta=false", "?beta=true&beta=true",
+                              "?beta=true&", "?beta=true&stream=true",
+                              "?beta=true#fragment", "?beta=true%00"}) {
+      auto target = path + query;
+      NormalizeResponsesPostTarget("POST", target);
+      Q4T_CHECK(target == path + query);
+    }
+  }
+  for (const std::string path : {"/v1/embeddings", "/v1/responses-extra",
+                                 "/v1/responses/resp_a/cancel"}) {
+    auto target = path + "?beta=true";
+    NormalizeResponsesPostTarget("POST", target);
+    Q4T_CHECK(target == path + "?beta=true");
+  }
+  ResponsesReadPlan plan;
+  const std::string root = "/v1/responses/resp_a";
+  Q4T_CHECK(Ok(PlanResponsesRead("GET", root + "?starting_after=3&beta=true"
+                                      "&stream=true", "", &plan)));
+  Q4T_CHECK(plan.stream && plan.starting_after == 3 && plan.id == "resp_a");
+  Q4T_CHECK(
+      Ok(PlanResponsesRead("POST", root + "/cancel?beta=true", "", &plan)));
+  Q4T_CHECK(plan.operation == ResponsesReadPlan::Operation::kCancel);
+  Q4T_CHECK(Ok(PlanResponsesRead("DELETE", root + "?beta=true", "", &plan)));
+  Q4T_CHECK(plan.operation == ResponsesReadPlan::Operation::kDelete);
+  for (const auto* query : {"beta=false", "beta=true&%62eta=true",
+                            "beta=true&bad=1", "beta=true&"}) {
+    Q4T_CHECK(PlanResponsesRead("DELETE", root + "?" + query, "", &plan)
+                  .http_status == 400);
+  }
+  return true;
+}
+
 Q4T_TEST(responses_api_body_capacity_is_charged_before_reading) {
   int fd[2];
   Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
@@ -214,6 +254,10 @@ Q4T_TEST(responses_api_history_pagination_and_scope_survive_worker_restart) {
   Q4T_CHECK(Ok(restored) && restored.value.GetString("id") == id);
   auto page = Read(reopened, "GET", root + "/input_items?order=asc&limit=1");
   Q4T_CHECK(Ok(page) && page.value.GetBool("has_more"));
+  auto beta_page =
+      Read(reopened, "GET", root + "/input_items?beta=true&order=asc&limit=1");
+  Q4T_CHECK(Ok(beta_page) && beta_page.value.GetString("last_id") ==
+                                 page.value.GetString("last_id"));
   Q4T_CHECK(page.value.GetArray("data")->array[0].GetString("role") == "user");
   auto next = Read(reopened, "GET",
                    root + "/input_items?order=asc&limit=1&after=" +
