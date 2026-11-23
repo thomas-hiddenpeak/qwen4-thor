@@ -3443,7 +3443,7 @@
     "src/server/agent_session_mcp.cpp": "b261ce09eb9fedbcc2c448affdf717a9b2b218a61ce673566dce6d0977705ff4",
     "src/server/agent_session_settings.cpp": "69423427f4fa41a770b816a50e5d7bf784c7107aeae5f315a1b8e679f5dbe06f",
     "src/server/agent_session_traces.cpp": "a9a660892710ee4a91b532e00078d2052e4ded32a08d8488d34c7eb518a078c8",
-    "src/server/agent_session_turn.cpp": "724297d25e92c40292bb75e70098d991e3e03aa54a754a99f36933051fcff6da",
+    "src/server/agent_session_turn.cpp": "24fccaa2b3c4dab68a4b8ca96f3e3e2fef6a8f97de4b9162dfb138a8e25abee9",
     "src/server/agent_subagent.cpp": "aed3f6e8a5f314d6fa6fadb362b0fe369b41acb285925e916ecb89dd6577d89d",
     "src/server/agent_subagent_internal.h": "67454f9ac70aa219838e27733a02c53ac1b4845f3ee056af1ce1993d40467113",
     "src/server/agent_vault.cpp": "b87ce82b04798721c6137540cac7d47a8bc54b1453e619dc5eca8b2e8761bc8a",

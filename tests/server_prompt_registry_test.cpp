@@ -962,6 +962,8 @@ Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
       {429, "client_rpm_exhausted", "rate_limit_exceeded", true},
       {429, "client_tpm_exhausted", "rate_limit_exceeded", true},
       {408, "request_deadline_exceeded", "request_timeout", true},
+      {400, "client_prompt_limit_exceeded", "invalid_request", true},
+      {400, "client_output_limit_exceeded", "invalid_request", true},
       {400, "context_length_exceeded", "context_length_exceeded", false},
       {503, "service_draining", "server_overloaded", true},
       {429, "client_capacity_exhausted", "server_overloaded", true},
@@ -989,6 +991,18 @@ Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
     Q4T_CHECK(view.turn.GetString("status") == "failed" && error &&
               error->GetString("code") == item.projected &&
               error->GetString("message") == "original message");
+    AgentEventCursor cursor;
+    Json events;
+    bool settled = false;
+    Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor,
+                                          &events, &settled)));
+    Q4T_CHECK(settled && events.array.size() >= 2);
+    const auto& failure = events.array[events.array.size() - 2];
+    Q4T_CHECK(failure.GetString("type") == "agent.session.turn.failed" &&
+              failure.Find("turn")->Find("error")->GetString("code") ==
+                  item.projected);
+    Q4T_CHECK(events.array.back().GetString("type") ==
+              (item.retryable ? "agent.session.idle" : "agent.session.failed"));
     auto traces = ListAgentSessionTraces(store, id, {}, Access());
     Q4T_CHECK(Ok(traces) && traces.value.GetArray("data")->array.size() == 1);
     const auto* resources = traces.value.GetArray("data")->array.front()

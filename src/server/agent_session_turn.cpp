@@ -38,6 +38,11 @@ const char* SessionErrorCode(std::string_view code) {
     return "rate_limit_exceeded";
   if (code == "request_deadline_exceeded" || code == "request_timeout")
     return "request_timeout";
+  // The client token cap applies to a single logical request. A smaller
+  // subsequent turn is eligible immediately under the same client policy.
+  if (code == "client_prompt_limit_exceeded" ||
+      code == "client_output_limit_exceeded")
+    return "invalid_request";
   if (code == "context_length_exceeded") return "context_length_exceeded";
   if (code == "service_draining" || code == "client_capacity_exhausted")
     return "server_overloaded";
@@ -390,7 +395,8 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
   const auto category = error.GetString("code");
   const bool session_failed =
       failed && category != "rate_limit_exceeded" &&
-      category != "server_overloaded" && category != "request_timeout";
+      category != "server_overloaded" && category != "request_timeout" &&
+      category != "invalid_request";
   const auto usage = Usage(response);
   const auto* agent = session.Find("agent");
   if (!agent) return InvalidRecord();
