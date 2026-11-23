@@ -67,11 +67,26 @@ class RealtimeMetrics(unittest.TestCase):
         declaration = source.split('kHttpConnectionClasses = {', 1)[1].split('};', 1)[0]
         names = re.findall(r'"([a-z_]+)"', declaration)
         self.assertTrue(names)
-        contract = {**c.METRICS_V5, **c.METRICS_V5_ADDITIONS, **c.METRICS_V5_REALTIME_ADDITIONS}
+        contract = {**c.METRICS_V5, **c.METRICS_V5_ADDITIONS,
+                    **c.METRICS_V5_REALTIME_ADDITIONS, **c.METRICS_V5_SIDEBAND_ADDITIONS}
         for name in names:
             for family in ('q4t_connection_rejections_total',
                            'q4t_operations_connection_rejections_total'):
                 self.assertIn(c.key(family, kind=name), contract)
+
+    def test_live_sideband_group_is_optional_and_complete(self):
+        base = self.raw()
+        rows = [f'{name} {i}\n' for i, name in enumerate(
+            c.METRICS_V5_SIDEBAND_ADDITIONS, start=1)]
+        values, _ = c.parse_metrics(base + ''.join(rows), version=5)
+        for i, name in enumerate(c.METRICS_V5_SIDEBAND_ADDITIONS, start=1):
+            self.assertEqual(values[name], i)
+        for row in rows:
+            incomplete = ''.join(r for r in rows if r != row)
+            with self.assertRaises(c.InvalidObservation):
+                c.parse_metrics(base + incomplete, version=5)
+            with self.assertRaises(c.InvalidObservation):
+                c.parse_metrics(base + ''.join(rows) + row, version=5)
 
     def test_failed_drain_keeps_original_response_before_parsing(self):
         from tools.native_asr import service_acceptance as service
