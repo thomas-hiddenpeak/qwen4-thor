@@ -50,6 +50,40 @@ function open(account, target) {
 async function status(pending) {
   try {return (await pending.asResponse()).status;} catch (e) {return e.status;}
 }
+async function legacyTranscription() {
+  const sessions = parent.beta.realtime.transcriptionSessions;
+  check(await status(sessions.create({client_secret:{expires_at:{seconds:9}}})) === 400, 'expiry minimum');
+  check(await status(sessions.create({input_audio_format:'mp3'})) === 400, 'invalid wire encoding');
+  const before = Math.floor(Date.now()/1000);
+  const {data:session,response} = await sessions.create({input_audio_format:'pcm16',
+    input_audio_transcription:{model:'qwen3-asr-0.6b',language:'zh'}, turn_detection:null,
+    client_secret:{expires_at:{anchor:'created_at',seconds:15}}}).withResponse();
+  const {value,expires_at:expires} = session.client_secret;
+  check(response.status===200 && session.object==='realtime.transcription_session' &&
+    session.input_audio_format==='pcm16' && session.input_audio_transcription.language==='zh' &&
+    value.startsWith('ek_') && expires>=before+15 && expires<=Math.floor(Date.now()/1000)+15,
+    'typed issuance and expiry');
+  const delegated = client(value);
+  check(await status(delegated.beta.realtime.transcriptionSessions.create({}))===401, 'recursive issuance');
+  check(await status(delegated.models.list())===401, 'credential scope');
+  const connection = open(delegated,{intent:'transcription'});
+  try {
+    const created = (await connection.wait('session.created')).session;
+    check(created.audio.input.transcription.language==='zh' && created.audio.input.turn_detection===null &&
+      created.audio.input.format.type==='audio/pcm', 'inherited transcription settings');
+    connection.send({type:'input_audio_buffer.append',audio:fs.readFileSync(args.pcm).toString('base64')});
+    connection.send({type:'input_audio_buffer.commit'});
+    const event = await connection.wait('conversation.item.input_audio_transcription.completed');
+    const modelReply = await parent.chat.completions.create({model,
+      messages:[{role:'user',content:'What is 6 times 7? Reply with only the number.'}],
+      temperature:0,reasoning_effort:'none',max_tokens:20});
+    const reply = modelReply.choices[0].message.content.trim();
+    check(reply==='42','fresh Chat');
+    return {sdk:'7.47.0',issued:200,invalid_ttl:400,invalid_format:400,recursive_issue:401,
+      models:401,requested_ttl:15,language:'zh',transcript:event.transcript,independent_chat:reply};
+  } finally {connection.close();}
+}
+
 async function run() {
   const instructions = 'Reply with the exact requested number.';
   const {data:grant,response} = await parent.realtime.clientSecrets.create({
@@ -95,7 +129,7 @@ async function run() {
           models:401, existing_session_reply:'42', actual_tokens:total, transcript};
 }
 try {
-  console.log(JSON.stringify(await run()));
+  console.log(JSON.stringify(args.legacy_transcription ? await legacyTranscription() : await run()));
 } catch (e) {
   // SDK error objects may hold request metadata; never print them wholesale.
   console.error('SDK check failed', e.status || '', e.code || '', String(e.message).slice(0,320));

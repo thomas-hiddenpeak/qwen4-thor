@@ -107,6 +107,27 @@ def add_voice_routes(paths, response, error):
     operation('post', secrets, json_result({'$ref':realtime+'client_secret_created'}),
               body=content('application/json', {'$ref':realtime+'client_secret_create'}))
     paths[secrets]['post']['requestBody']['required'] = False
+    legacy = '/v1/realtime/transcription_sessions'
+    # Reuse the nested transcription input contracts from the generated GA schema.
+    def input_field(name):
+        return {'$ref':realtime+'508/properties/'+name}
+    transcription = {'input_audio_format':dict(enum=['pcm16','g711_ulaw','g711_alaw']),
+                     'input_audio_transcription':{'$ref':realtime+'198'},
+                     'input_audio_noise_reduction':input_field('noise_reduction'),
+                     'turn_detection':dict(anyOf=[input_field('turn_detection'),
+                         obj(dict(type=dict(const='semantic_vad'),
+                                  eagerness=dict(enum=['auto','low','medium','high'])), ['type'])]),
+                     'include':dict(type='array',maxItems=1,
+                                    items=dict(const='item.input_audio_transcription.logprobs'))}
+    ticket = obj(dict(value=dict(type='string',minLength=1), expires_at=dict(type='integer')),
+                 ['value','expires_at'])
+    created = obj(dict(transcription, id=ident, object=dict(const='realtime.transcription_session'),
+                       modalities=dict(const=['text']), client_secret=ticket),
+                  ['id','object','client_secret','input_audio_format'])
+    duration = obj(dict(anchor=dict(const='created_at'), seconds=dict(type='integer',minimum=10,maximum=7200)), [])
+    request = obj(dict(transcription, client_secret=obj({'expires_at':duration}, []), modalities=dict(const=['text'])), [])
+    operation('post', legacy, json_result(created), body=content('application/json', request))
+    paths[legacy]['post']['requestBody']['required'] = False
     sdp = dict(type='string',minLength=1,maxLength=65535)
     form = obj(dict(sdp=sdp, session={'$ref':realtime+'session'}), ['sdp'])
     operation('post','/v1/realtime/calls', {'201':dict(description='WebRTC SDP answer',

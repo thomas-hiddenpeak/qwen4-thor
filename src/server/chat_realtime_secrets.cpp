@@ -24,7 +24,8 @@ io::Json ChatServer::RealtimeClientDefaults(int fd, std::string model) {
 }
 
 void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
-                                     const std::string& body) {
+                                     const std::string& body,
+                                     bool legacy_transcription) {
   const auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
   const auto client = http->Client();
@@ -44,6 +45,14 @@ void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
     detail::SendError(fd, 400, "Invalid credential request JSON", {}, "invalid_request", "body");
     return;
   }
+  if (legacy_transcription) {
+    const auto reply = LegacyTranscriptionCredential(request, &request);
+    if (!reply.ok()) {
+      detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                        reply.ClientCode(), reply.value.GetString("param"));
+      return;
+    }
+  }
   ChatPlanError failure;
   if (const auto status = ValidateRealtimeWireShape(
           request, RealtimeShape::kClientSecretCreate, &failure, "body"); !status) {
@@ -54,7 +63,7 @@ void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
     Set(&request, "session", Object({{"type", String("realtime")}}));
   auto& startup = Field(request, "session");
   const auto id = detail::NewRequestId("sess_");
-  Json resource;
+  Json resource, legacy_resource;
   ObjectReply reply;
   const size_t bytes = client.Scoped()
       ? std::min<size_t>(client.Limits()->max_body_bytes, kWebSocketMessageLimit)
@@ -71,7 +80,10 @@ void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
       RealtimeTranscriptionSession preview(id, output, PrepareRealtimeInput(client),
                                            asr_limits_.max_audio_seconds, bytes);
       reply = preview.Configure(settings);
-      if (reply.ok()) resource = preview.SessionResource();
+      if (reply.ok()) {
+        resource = preview.SessionResource();
+        if (legacy_transcription) legacy_resource = preview.SessionResource(true);
+      }
     }
   } else {
     RealtimeConversationSession preview(
@@ -89,6 +101,13 @@ void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
     detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
                       reply.ClientCode(), reply.value.GetString("param"));
     return;
+  }
+  if (legacy_transcription) {
+    Set(&legacy_resource, "modalities", Array({String("text")}));
+    Set(&legacy_resource, "client_secret",
+        Object({{"value", Field(reply.value, "value")},
+                {"expires_at", Field(reply.value, "expires_at")}}));
+    reply.value = std::move(legacy_resource);
   }
   detail::SendSimple(fd, 200, "OK", OutputJson(reply.value), "application/json",
                      {}, {}, {}, true);

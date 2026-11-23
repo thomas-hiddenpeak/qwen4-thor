@@ -52,6 +52,9 @@ ObjectReply UpdateRealtimeTranscriptionSettings(
     const io::Json& session, bool legacy,
     const RealtimeTranscriptionSettings& current,
     RealtimeTranscriptionSettings* output);
+// Translate only supplied legacy fields for storage in an ephemeral grant.
+ObjectReply LegacyTranscriptionCredential(const io::Json& body,
+                                         io::Json* request);
 io::Json RealtimeTranscriptionSettingsJson(
     const RealtimeTranscriptionSettings& settings, bool legacy);
 }  // namespace q4t::server

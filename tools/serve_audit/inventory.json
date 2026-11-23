@@ -2323,6 +2323,16 @@
         "src/server/agent_session_http.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
+    },
+    "POST /v1/realtime/transcription_sessions": {
+      "semantics": "Issue an owner-bound transcription credential from the flat beta session settings.",
+      "boundary": "The default expiry is 60 seconds. An explicit lifetime accepts 10 through 7200 seconds. Redemption uses the saved transcription settings and rechecks the issuing key.",
+      "evidence": [
+        "src/server/chat_realtime_secrets.cpp",
+        "src/server/realtime_transcription_protocol.cpp",
+        "src/server/realtime_client_secrets.cpp",
+        "src/service/ingress_main.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3019,7 +3029,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "9191756c811b5468cf2d4748cc3d9da154e68490ad03fdaa1420525c3b496c76",
+    "include/q4t/server/application_routes.h": "785fec1b8f16352b4e04f9544434c230ca6415762e6c54255c3dbb02c50f067d",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3060,7 +3070,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "103fb822be1a83f7043b8bba6edf47b0d7c01fcb974181a8a3d4016648e38be7",
+    "include/q4t/server/chat_server.h": "24794f8bb9710e4ba62aa3b170380adfc06c3aff904365500278cc8cfff237ca",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -3218,7 +3228,7 @@
     "include/q4t/server/realtime_trace_session.h": "0e70216e48a10046d4f0584e33b4c65d492b9001c2943220415cc26a5e27d248",
     "include/q4t/server/realtime_trace_store.h": "6490a52f448b4bab36e9aeb8cb097aabfe9510a54c87f2b56827121ed087c65b",
     "include/q4t/server/realtime_transcript_history.h": "d97b1a2ccc916509fbbfb83bd4f55df22c037225011ba365a10c591da8c620fb",
-    "include/q4t/server/realtime_transcription_protocol.h": "e6cfb3324c8f6b4b30f568a6494a45ca5b27173f3f6496809ec0fa09a8c86725",
+    "include/q4t/server/realtime_transcription_protocol.h": "a5a7fe284153ceb1043f289fda04094995afc1ead822f47b751bfc128de8cec0",
     "include/q4t/server/realtime_transcription_pump.h": "fb5466ca0e10ed20bb8d7e45dadd0ad01dac11287b93c49a1d795253cc0611ef",
     "include/q4t/server/realtime_transcription_session.h": "d1d9ec069b6e13c0512a8228d11148f670645c9140c8696a1d85f9e2d5c2d1af",
     "include/q4t/server/realtime_vad.h": "25c45f7f3a4194f61dbe0024c2991a1078e2e857a50ae79a1596e8e586e38ba8",
@@ -3495,7 +3505,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "000afcc92895f2388e09279b6a7274523212ec59b102d2380a3d8158fefca0a3",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "3f237cf9ddb968cd8074e23aa760806f9227b92d58b58caef04c06d2c4fc2c2a",
+    "src/server/chat_http.cpp": "a6effe1d3237b66824b3679e302f908273287f4af13e6d9f29c66d2259ebcb0d",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3512,7 +3522,7 @@
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
     "src/server/chat_realtime.cpp": "c08ba5af5f0d2ff7e6dfead669abcd86ef69a226f589efb73be3751734dc38bc",
     "src/server/chat_realtime_conversation.cpp": "07e031b4fc226f5a08482bf6cca2b09846f93b7bed0d5e1e64504ac725d2dbc0",
-    "src/server/chat_realtime_secrets.cpp": "253cd7c9f6e1d3ac9809640528fc5987a027092274ec6527acdd39d44a20d85f",
+    "src/server/chat_realtime_secrets.cpp": "3c01dc26ddd249d20d1dada22347b5c876d95fa09d648586c052dbe4c1f42bf1",
     "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab",
     "src/server/chat_response_parser.cpp": "fdda93a831b6487af815b2f386b9cb8244bf8106f7e1bb8db75838fa5b1547df",
     "src/server/chat_responses.cpp": "1e0d42b60014d1a4bbb8bb7da70c8a9643890161c7b11171bed3615f4d83ca6a",
@@ -3772,7 +3782,7 @@
     "src/server/realtime_trace_session.cpp": "739c2e2d340acb1865e238d94fa67c59783fae928cc7373655d4097bb85bf5ac",
     "src/server/realtime_trace_store.cpp": "e1b1ade794248bb7f58270f42839d9f80dd9f17805cbf7dcd68c3189dbc3dce1",
     "src/server/realtime_transcript_history.cpp": "82395bfcece8c08a9d62b7dbe30198f7bc49d2f136420bd28bdf86b2668492f6",
-    "src/server/realtime_transcription_protocol.cpp": "936d9e12ca45edd46b87e67c890ea89b6e33526e107f8a57d63f1035fba2be0c",
+    "src/server/realtime_transcription_protocol.cpp": "537a46b3f29c4050475b578a0462b4a726ad712c8f9c3fe096abf536c8ea2d4c",
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
     "src/server/realtime_transcription_session.cpp": "43f0c052233f8b3df4c27e42d4c67ca17c4bcd4a922cdf4a8f118d6edeb3ce06",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
@@ -3939,7 +3949,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "61cebd1c09b6d347ce6d6fa19007db902c90371e81f2f731bac1ee84212199c6",
+    "src/service/ingress_main.cpp": "a9dfe3ac1c0781af80ff20e91dbdcd8eb63d3c92ef0f4d0661a2d39db599a6e6",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -3969,7 +3979,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "e9bef22521170209882e9acec5d71ab5ade73c8bc7aefe773c1c947085591953",
+    "tools/serve_gateway/gateway.py": "b78c43185f00841ea05dbf141fdfe837d3b8f421d20cd518e16207349212689b",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -7229,6 +7239,24 @@
         "src/server/agent_subagent.cpp",
         "src/server/agent_session_http.cpp",
         "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/realtime/transcription_sessions": {
+      "semantics": "Issue an owner-bound transcription credential from the flat beta session settings.",
+      "boundary": "The default expiry is 60 seconds. An explicit lifetime accepts 10 through 7200 seconds. Redemption uses the saved transcription settings and rechecks the issuing key.",
+      "evidence": [
+        "src/server/chat_realtime_secrets.cpp",
+        "src/server/realtime_transcription_protocol.cpp",
+        "src/server/realtime_client_secrets.cpp",
+        "src/service/ingress_main.cpp"
+      ]
+    },
+    "OPTIONS /v1/realtime/transcription_sessions": {
+      "semantics": "Configured CORS preflight for issuing Realtime client credentials.",
+      "boundary": "Origin, method and request headers must be allowed by the deployment.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp"
       ]
     }
   },
