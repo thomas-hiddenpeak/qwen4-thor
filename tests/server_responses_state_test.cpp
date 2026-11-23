@@ -6,6 +6,7 @@
 #include <filesystem>
 
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_output.h"
 #include "q4t/test.h"
 
@@ -272,6 +273,57 @@ Q4T_TEST(refusal_state_persistence_restart_history_and_client_isolation) {
   Q4T_CHECK(OutputJson(generation.input.messages).find("不能提供") !=
             std::string::npos);
   Q4T_CHECK(!generation.input.messages.array[1].Has("tool_calls"));
+  return true;
+}
+
+Q4T_TEST(responses_state_interruption_preserves_committed_agent_items) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState state(objects);
+  ResponseStatePlan plan;
+  Q4T_CHECK(Ok(state.Resolve(Envelope(R"({"input":"delegate"})"), Access(),
+                             &plan)));
+  plan.multi_agent_beta = true;
+  auto output = Parse(R"([
+    {"type":"multi_agent_call","id":"agentcall_1","call_id":"call_1",
+     "action":"spawn_agent","agent":{"agent_name":"root"},"arguments":"{}"},
+    {"type":"multi_agent_call_output","id":"agentresult_1","call_id":"call_1",
+     "action":"spawn_agent","agent":{"agent_name":"root"},
+     "output":[{"type":"output_text","text":"queued","annotations":[]}]}])");
+  ChatPlanError error;
+  for (const auto& item : output.array) {
+    Q4T_CHECK(ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
+                                         &error, "output", true).ok());
+    auto invalid = item;
+    Set(&invalid, "status", String("incomplete"));
+    Q4T_CHECK(!ValidateResponsesItemShape(invalid, ResponsesItemShape::kOutput,
+                                          &error, "output", true).ok());
+  }
+  auto message = Answer().array.front();
+  output.array.push_back(message);
+  Set(&message, "id", String("msg_next"));
+  Set(&message, "status", String("in_progress"));
+  output.array.push_back(message);
+  output.array.push_back(Parse(R"({"type":"image_generation_call",
+    "id":"img_1","result":null,"status":"generating"})"));
+  output.array.push_back(Parse(R"({"type":"apply_patch_call","id":"patch_1",
+    "call_id":"call_2","status":"in_progress",
+    "operation":{"type":"delete_file","path":"sample.txt"}})"));
+  Q4T_CHECK(Ok(state.Begin(Snapshot(plan, "in_progress"), Access(), &plan)));
+  Q4T_CHECK(Ok(state.Checkpoint(Snapshot(plan, "in_progress", output),
+                                Parse("[]"), Access(), &plan)));
+  const auto closed =
+      state.Interrupt(plan.id, Access(), "background_execution_interrupted",
+                      "Previous execution process exited");
+  Q4T_CHECK(Ok(closed));
+  Q4T_CHECK(closed.value.GetString("status") == "failed");
+  const auto* saved = closed.value.GetArray("output");
+  Q4T_CHECK(saved && saved->array.size() == 6);
+  Q4T_CHECK(!saved->array[0].Find("status") && !saved->array[1].Find("status"));
+  Q4T_CHECK(saved->array[2].GetString("status") == "completed");
+  Q4T_CHECK(saved->array[3].GetString("status") == "incomplete");
+  Q4T_CHECK(saved->array[4].GetString("status") == "failed");
+  Q4T_CHECK(saved->array[5].GetString("status") == "in_progress");
   return true;
 }
 

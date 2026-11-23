@@ -3373,7 +3373,7 @@
     "src/server/responses_program_output.cpp": "b3440be7b8d21b0a5488b251979b127e1536bcb47899ead83a2320b4d49c2fc2",
     "src/server/responses_program_plan.cpp": "3980f9a8cbb22904a4cd2f418c4063a781a16b4f95fc6ff97a658aece5e08ff3",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
-    "src/server/responses_state.cpp": "ac8abe0234449e8add2f1529c11a1ee4cb57b11ea970d984bd1563ed40f60a69",
+    "src/server/responses_state.cpp": "a2d0b29bf0f7a7568e73ffd6a5692a7aebd809387aa80297d4dd91d7194d716b",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
     "src/server/responses_tokens.cpp": "9ebdf955e1dbe6bacaad748005e8200dff0930a66799ade9c0bff6a7238f32e2",
     "src/server/responses_tool_catalog_history.cpp": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5",

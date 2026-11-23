@@ -595,15 +595,20 @@ ObjectReply ResponsesState::Interrupt(const std::string& id,
                        .Reconcile(&Field(snapshot, "output"), plan, access);
   if (!recovered.ok() || recovered.commit_unknown) return recovered;
   for (auto& item : Field(snapshot, "output").array) {
-    // MCP catalogs and approvals have no status. Proven invocation results
-    // remain terminal, including a result committed just before owner exit.
-    const auto type = item.GetString("type");
-    if (type == "mcp_list_tools" || type == "mcp_approval_request") continue;
-    if ((type == "mcp_call" || type == "web_search_call") &&
-        (item.GetString("status") == "completed" ||
-                               item.GetString("status") == "failed"))
+    // Only open items need a transition. A committed agent exchange has no
+    // status field, and a completed child message remains completed.
+    auto* status = item.Find("status");
+    if (!status || !status->IsString() ||
+        (status->str != "in_progress" && status->str != "calling" &&
+         status->str != "searching" && status->str != "interpreting" &&
+         status->str != "generating"))
       continue;
-    Set(&item, "status", String("incomplete"));
+    const auto type = item.GetString("type");
+    // Apply-patch calls can only be in_progress or completed. A dead owner
+    // cannot establish completion. Preserve the last observed item state.
+    if (type != "apply_patch_call")
+      Set(&item, "status",
+          String(type == "image_generation_call" ? "failed" : "incomplete"));
   }
   Set(&snapshot, "status", String("failed"));
   Set(&snapshot, "error",
