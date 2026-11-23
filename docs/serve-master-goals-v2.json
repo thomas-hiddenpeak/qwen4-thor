@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-23",
+  "updated": "2026-11-24",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -2484,7 +2484,8 @@
         "evidence/serve-retention-business-20261110/README.md",
         "evidence/serve-retention-delivery-20261110/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "evidence/serve-live-default-20261123/README.md"
+        "evidence/serve-live-default-20261123/README.md",
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
       ],
       "release": {
         "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
@@ -5318,7 +5319,8 @@
         "evidence/serve-retrieval-managed-business-20261112/README.md",
         "evidence/serve-retrieval-delivery-20261112/README.md",
         "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
       ],
       "release": null,
       "security_requirements": [
@@ -6017,7 +6019,8 @@
         "evidence/serve-responses-agents-profiles-20261123/README.md",
         "evidence/serve-responses-agents-delivery-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/README.md",
-        "evidence/serve-responses-agent-interruption-20261123/delivery.json"
+        "evidence/serve-responses-agent-interruption-20261123/delivery.json",
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -8330,7 +8333,8 @@
         "evidence/serve-responses-hosted-agents-20261123/README.md",
         "evidence/serve-responses-agents-delivery-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/README.md",
-        "evidence/serve-responses-agent-interruption-20261123/delivery.json"
+        "evidence/serve-responses-agent-interruption-20261123/delivery.json",
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -9107,7 +9111,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev446_delivered_remaining_deliveries",
+      "state": "rev448_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9130,7 +9134,8 @@
         "evidence/serve-native-maintenance-delivery-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/delivery.json",
-        "evidence/serve-agent-vaults-20261123/delivery.json"
+        "evidence/serve-agent-vaults-20261123/delivery.json",
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -10295,7 +10300,8 @@
         "evidence/serve-live-stability-handoff-20261123/README.md",
         "evidence/serve-responses-agents-delivery-20261123/README.md",
         "evidence/serve-native-maintenance-delivery-20261123/README.md",
-        "evidence/serve-responses-agent-interruption-20261123/delivery.json"
+        "evidence/serve-responses-agent-interruption-20261123/delivery.json",
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
       ],
       "release": null,
       "surface_prose_audit": {
@@ -10380,18 +10386,18 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "478e5e82ab73253a101ebe3fcb11597dd696e7b7",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupt-soak-src",
+        "source_commit": "d8a8d78e1fca3b70f3627423179e49a5c1b7e5ad",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/oauth-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupt-primary-01/bundle",
-          "manifest_sha256": "2927fe4e3cf45a5499b745883e3371110cf9b35a10c5cc9e0e3ce82c42b65314"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/oauth-primary-01/bundle",
+          "manifest_sha256": "2d7abfda4c26a89b118f6b2af375643745287fe5e66bf4bed1427c40a379c36f"
         },
-        "revision": 440,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupt-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "2a2f518ac947e7f68786ea286d07d7361d5c24b5856c43446cab382fa257d754",
-        "handoff_sha256": "159f4dda7c6f1af5be8728d07cdfd3c8160cbcb6d66871aadfb96234a35f8213",
+        "revision": 448,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/oauth-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "4c82e84917d31c849ba48c752a9bc9302ce7a287e06e29cf8ae401ee7881a2a5",
+        "handoff_sha256": "0b5f0464df3ab5ef71a41244c2d0fe23f0fb5d4ac9f6ae2e2066fea53a6a033a",
         "checked": true,
-        "source_files": 696,
+        "source_files": 697,
         "hours_executed": 0
       },
       "video_affine_detail_20261117": {
@@ -10558,8 +10564,8 @@
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
     }
   ],
-  "next_task": "Complete OAuth refresh and eligible environment execution, then continue the remaining in-scope inference, application and recovery tasks.",
-  "next": "验证标准 Agent 会话在托管模型异常和版本切换后能接续原工具调用，再完成可回退发布与其余应用服务、恢复任务。",
+  "next_task": "Deliver Agent session traces; implement execution environments and the remaining inference, application and recovery tasks.",
+  "next": "验证 Agent 会话跟踪，补齐执行环境及其凭据接入，继续其余推理、应用服务和恢复工作。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16544,7 +16550,7 @@
       "A12",
       "Q01"
     ],
-    "state": "rev446_delivered",
+    "state": "rev448_oauth_delivered",
     "operations": [
       "create",
       "list",
@@ -16561,7 +16567,7 @@
     },
     "evidence": "evidence/serve-agent-vaults-20261123/acceptance.json",
     "remaining": [
-      "Qualify and deliver OAuth renewal, complete transient failure recovery and active-session continuity; implement hosted environment transport and environment credential substitution.",
+      "Implement hosted environment transport and environment credential substitution.",
       "Complete remaining declared and undeclared application operations"
     ],
     "credential_management": "candidate_real_http_passed",
@@ -16575,6 +16581,10 @@
     },
     "profile_evidence": "evidence/serve-agent-vaults-20261123/profiles.json",
     "delivery": "evidence/serve-agent-vaults-20261123/delivery.json",
-    "oauth_refresh_candidate": "evidence/serve-agent-vaults-20261123/oauth.json"
+    "oauth_refresh_candidate": "evidence/serve-agent-vaults-20261123/oauth.json",
+    "oauth_delivery": "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
+    "oauth_temporary": "evidence/serve-agent-vaults-20261123/oauth-temporary.json",
+    "oauth_session": "evidence/serve-agent-vaults-20261123/oauth-session.json",
+    "oauth_profiles": "evidence/serve-agent-vaults-20261123/oauth-profiles.json"
   }
 }
