@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+子 Agent 归属检查已分别在真实原生网关与可选 nginx 验证。两个入口对其他客户都返回 404。原生入口先拒绝外部传入的身份头（400，后端收到零次请求），nginx 覆盖该头并按密钥对应的客户转发，后端返回 404。修正 CI 对两个入口共用同一状态码的预期，四项 CPU 网络检查通过。 下一步复核远端检查。[回执](evidence/serve-agent-workspaces-20261124/subagent-gateway-policies.json)
+
 修复了单回合客户 token 配额超限后，Agents 将整个会话报为服务器故障的问题。从真实故障对象库的副本启动，原失败回合保留 invalid_request 和用量，SDK 读到会话 idle，同一客户使用 1793/4096 输入 token 取回子 Agent 已算出的 457。子回合仍为两个，没有再次派发；其他客户读取返回 404。真实转写与独立 Chat 同机验证通过，一次启动 41.592 秒。六项 CPU 测试覆盖投影、SSE、重开及取消。下一步重新验证此二进制的主轻配置和封包恢复。[真实失败与恢复](evidence/serve-agent-workspaces-20261124/subagent-quota.json)
 
 官方 Node SDK 7.47.0 经原生 TLS 从旧版实时转写入口领取 15 秒临时密钥，再经 WSS 发送真实录音，识别出“请查询当前项目版本号。”。越权签发与模型列表均返回 401，错误期限和音频格式返回 400，随后 Chat 返回 42。一次模型启动，38.053 秒。4 项针对性 C++ 检查、19 项协议及网关检查和真实可选 nginx 转发通过。该候选声明 133/231 个方法，验收时默认 rev456 声明 126 个。待验证同族会话接口及封包交付。[转写验收](evidence/serve-realtime-legacy-sessions-20261124/transcription.json)

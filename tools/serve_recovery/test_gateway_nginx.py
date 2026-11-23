@@ -551,9 +551,18 @@ class NginxTests(unittest.TestCase):
                 self.assertEqual((row['method'],row['path'],row['client'],row.get('openai_beta'),
                                   row['upstream_port']), ('GET',path,'alpha','agents=v1',
                                   self.stack.value['policy']['upstream_operations_port']))
-        self.assertEqual(self.stack.request(path=member, key='B'*40,
-            extra=dict(selector, **{'X-Q4T-Client-Id':'alpha'}))[0], 404)
-        self.assertEqual(self.stack.application_requests[-1]['client'],'beta')
+        self.assertEqual(self.stack.request(path=member, key='B'*40, extra=selector)[0], 404)
+        self.assertEqual(self.stack.application_requests[-1]['client'], 'beta')
+        before = len(self.stack.application_requests)
+        status, _, _ = self.stack.request(path=member, key='B'*40,
+            extra=dict(selector, **{'X-Q4T-Client-Id':'alpha'}))
+        if self.stack.native_ingress:
+            self.assertEqual(status, 400)
+            self.assertEqual(len(self.stack.application_requests), before)
+        else:
+            self.assertEqual(status, 404)
+            self.assertEqual(len(self.stack.application_requests), before + 1)
+            self.assertEqual(self.stack.application_requests[-1]['client'], 'beta')
         before = len(self.stack.application_requests)
         for path in (root+'/untyped', member+'/turns/not_a_turn', member+'/extra'):
             self.assertEqual(self.stack.request(path=path,extra=selector)[0],404)
