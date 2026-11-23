@@ -313,6 +313,14 @@ bool RealtimeTranscriptionSession::SettingsEvent(bool legacy, bool created) {
   Set(&event, "session", std::move(session));
   return Emit(std::move(event));
 }
+ObjectReply RealtimeTranscriptionSession::StartConfigured(const Json& configuration) {
+  if (started_ || cancelled_) return Error(409, "realtime_session_started", "Session already started");
+  RealtimeTranscriptionSettings settings;
+  auto reply = UpdateRealtimeTranscriptionSettings(configuration, false, settings_, &settings);
+  if (reply.ok()) reply = Configure(std::move(settings));
+  if (!reply.ok() || reply.commit_unknown) return reply;
+  return Start() ? ObjectReply{} : Error(503, "realtime_session_unavailable", "Session startup failed");
+}
 bool RealtimeTranscriptionSession::Start() {
   if (started_ || cancelled_ || !queue_.Valid() || !history_.Valid() ||
       !audio_history_.Valid() || id_.empty() || !output_.Valid() ||

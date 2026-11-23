@@ -40,6 +40,7 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/live/sessions', 'realtime'),
     ('GET', '/v1/live/sessions/{session_id}/attach', 'sideband'),
     ('POST', '/v1/live/sessions', 'data'),
+    ('POST', '/v1/realtime/client_secrets', 'data'),
     ('POST', '/v1/realtime/calls', 'data'),
     ('POST', '/v1/live/sessions/{session_id}/accept', 'data'),
     ('POST', '/v1/realtime/calls/{call_id}/accept', 'data'),
@@ -296,6 +297,16 @@ def tunnel_limits():
       limit_conn all_tunnel_response 4;
       limit_req zone=tunnel_poll_rate burst=20 nodelay;
       limit_req zone=tunnel_response_rate burst=64 nodelay;'''
+
+
+def realtime_issuer_maps(clients):
+    # Only the digest of the authenticated issuing key goes to the model.
+    rows = '\n'.join('    "~^[Bb][Ee][Aa][Rr][Ee][Rr] '+c['api_key']+'$" '+
+                     hashlib.sha256(c['api_key'].encode('ascii')).hexdigest()+';'
+                     for c in clients)
+    return ('  map $http_authorization $q4t_issuer_digest {\n    default "";\n'+rows+
+            '\n  }\n  map "$request_method:$request_uri" $q4t_realtime_issuer {\n'
+            '    default "";\n    "POST:/v1/realtime/client_secrets" "Q4T-Issuer $q4t_issuer_digest";\n  }')
 
 
 def tunnel_headers():
@@ -571,6 +582,7 @@ http {{
   scgi_temp_path {q('runtime/scgi')};
   log_format q4t escape=json '{{"gateway_id":"$request_id","client":"$q4t_client","lane":"$q4t_lane","status":$status,"bytes":$body_bytes_sent,"seconds":$request_time,"upstream_status":"$upstream_status","connection_limit":"$limit_conn_status","rate_limit":"$limit_req_status"{source_log}}}';
   access_log /dev/stdout q4t;
+{realtime_issuer_maps(p['clients'])}
 {source_map}{upstream_map}  map $http_authorization $q4t_client {{
     default "";
 {clients}
@@ -630,6 +642,7 @@ http {{
       proxy_set_header Content-Type $http_content_type;
       proxy_set_header X-Request-Id $http_x_request_id;
 {tunnel_headers()}
+      proxy_set_header Authorization $q4t_realtime_issuer;
       {identity_headers}
       proxy_buffering off;
       proxy_request_buffering on;

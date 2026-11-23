@@ -42,7 +42,15 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
     HandleLive(fd, path, headers, initial, accept);
     return;
   }
-  if (path != "/v1/realtime?intent=transcription") {
+  const auto* startup = http->RealtimeStartup();
+  const bool transcription = path == "/v1/realtime?intent=transcription" ||
+      (startup && path == "/v1/realtime" && startup->GetString("type") == "transcription");
+  if (startup && (startup->GetString("type") == "transcription") != transcription) {
+    detail::SendError(fd, 400, "Realtime intent conflicts with credential", {},
+                      "realtime_session_type_invalid", "intent");
+    return;
+  }
+  if (!transcription) {
     HandleRealtimeConversation(fd, path, headers, initial, accept);
     return;
   }
@@ -73,9 +81,9 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
   RealtimeTranscriptionPump session(
       detail::NewRequestId("sess_"), output, std::move(callbacks),
       asr_limits_.max_audio_seconds, message_bytes);
-  if (!session.Start()) {
-    detail::SendError(fd, 503, "Realtime session initialization failed", {},
-                      "realtime_session_unavailable");
+  if (const auto reply = session.Start(startup); !reply.ok()) {
+    detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                      reply.ClientCode(), reply.value.GetString("param"));
     return;
   }
   const auto protocol =

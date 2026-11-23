@@ -169,21 +169,33 @@ AccessIdentity ClientAccess::Authenticate(
   if (digest.empty()) return result;
   const auto policy = current_.load();
   if (!policy) return result;
-  size_t match = kAccessClients;
+  size_t match = kAccessClients, key_index = 0;
   for (size_t i = 0; i < policy->clients.size(); ++i) {
-    for (const auto& key : policy->clients[i].key_sha256) {
+    const auto& keys = policy->clients[i].key_sha256;
+    for (size_t n = 0; n < keys.size(); ++n) {
+      const auto& key = keys[n];
       unsigned difference = 0;
       for (size_t j = 0; j < 64; ++j)
         difference |= static_cast<unsigned char>(key[j]) ^
                       static_cast<unsigned char>(digest[j]);
-      if (difference == 0) match = i;
+      if (difference == 0) { match = i; key_index = n; }
     }
   }
   if (match != kAccessClients) {
     result.policy_ = policy;
     result.index_ = match;
+    result.key_ = key_index;
   }
   return result;
+}
+
+bool ClientAccess::StillActive(const AccessIdentity& identity) const {
+  const auto policy = current_.load();
+  if (!identity.Allowed() || !policy || identity.Index() >= policy->clients.size())
+    return false;
+  const auto& row = policy->clients[identity.Index()];
+  return row.id == identity.Id() && std::ranges::find(row.key_sha256,
+      identity.IssuerDigest()) != row.key_sha256.end();
 }
 
 io::Json ClientAccess::Describe() const {

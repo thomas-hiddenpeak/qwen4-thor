@@ -58,6 +58,7 @@
 #include "q4t/server/asr_response.h"
 #include "q4t/server/realtime_transcription_session.h"
 #include "q4t/server/realtime_conversation_session.h"
+#include "q4t/server/realtime_client_secrets.h"
 #include "q4t/audio/features.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
@@ -335,6 +336,8 @@ class ChatServer {
       audio::AlignerTimes* aligned_times = nullptr);
   void HandleTranscription(int fd, std::string_view content_type,
                             std::string_view body);
+  io::Json RealtimeClientDefaults(int fd, std::string model);
+  void IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers, const std::string& body);
   void HandleRealtime(int fd, std::string_view path,
                        const HttpRequestHeaders& headers,
                        std::string_view initial, std::string_view accept);
@@ -451,6 +454,7 @@ class ChatServer {
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
   ClientAdmission clients_;
+  RealtimeClientSecrets realtime_secrets_;
   std::shared_ptr<const AccessProgramPolicy> access_program_policy_;
   std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;

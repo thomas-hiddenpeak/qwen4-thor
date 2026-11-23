@@ -1,6 +1,7 @@
 """Real native HTTP/TLS upgrades with explicit CPU WebSocket backend peers."""
 import base64
 import hashlib
+import hmac
 import json
 import os
 from pathlib import Path
@@ -222,6 +223,34 @@ class NativeUpgrade(unittest.TestCase):
         self.assertEqual(status, 401)
         _, status, _ = self.connect(key=None, fields=fields.replace(key, key.lower()))
         self.assertEqual(status, 401)
+
+    def test_native_ticket_authenticates_the_issuing_key_before_admission(self):
+        self.ready()
+        def ticket(owner='alpha', key='A'*40, binding='e'*64, ttl=60):
+            payload = f'ek_q4t1.{owner}.{int(time.time())+ttl}.'+'1'*64
+            digest = hashlib.sha256(key.encode()).hexdigest()
+            mac = hmac.digest(binding.encode(), ('q4t.realtime.client_secret.v1/'+
+                              digest+'/'+payload).encode(), 'sha256')
+            return payload+'.'+base64.urlsafe_b64encode(mac).decode().rstrip('=')
+        valid = ticket()
+        for key, path in [(ticket(ttl=-1), '/v1/realtime'),
+                          (ticket(binding='f'*64), '/v1/realtime'),
+                          (ticket(key='B'*40), '/v1/realtime'),
+                          (ticket(owner='beta'), '/v1/realtime'),
+                          (valid, '/v1/realtime?call_id=rtc_other'),
+                          (valid, '/v1/models')]:
+            client, status, _ = self.connect(key=key, path=path)
+            self.assertEqual(status, 401)
+            client.sock.close()
+        self.assertEqual(self.rows, [])
+        client, status, headers = self.connect(key=None, path='/v1/realtime?model=qwen3.8-flash-next',
+            fields='Sec-WebSocket-Protocol: realtime, openai-insecure-api-key.'+valid+'\r\n')
+        self.assertEqual(status, 101)
+        self.assertNotIn(valid, str(headers))
+        self.assertEqual(self.rows[-1]['headers']['X-Q4T-Client-Id'], 'alpha')
+        self.assertEqual(self.rows[-1]['headers']['Authorization'], 'Bearer '+valid)
+        self.assertEqual(self.connect(key='A'*40)[1], 429)
+        self.close_session(client)
 
     def test_invalid_upstream_101_never_publishes_upgrade(self):
         self.ready()

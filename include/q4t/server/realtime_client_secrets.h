@@ -15,6 +15,10 @@ struct RealtimeSecretTime {
   static RealtimeSecretTime Now();
 };
 
+struct RealtimeSecretIssuer {
+  std::string_view owner, binding, key_digest;
+};
+
 struct RealtimeSecretGrant {
   std::string owner;
   io::Json session;
@@ -24,7 +28,7 @@ class RealtimeClientSecrets {
  public:
   // Caller supplies an authenticated owner and its resolved public session
   // resource. Only the private startup options are retained for redemption.
-  ObjectReply Issue(std::string_view owner, const io::Json& request,
+  ObjectReply Issue(RealtimeSecretIssuer issuer, const io::Json& request,
                     const io::Json& resource,
                     RealtimeSecretTime now = RealtimeSecretTime::Now());
   ObjectReply Resolve(std::string_view token, RealtimeSecretGrant* grant,

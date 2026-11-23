@@ -14,8 +14,10 @@ add_executable(q4t_ingress
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_main.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_transport.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_duplex.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_realtime.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_websocket.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/websocket.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_client_ticket.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_crypto.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_proxy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/service/ingress_tls.cpp

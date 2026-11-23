@@ -100,6 +100,12 @@ class VoiceContract(unittest.TestCase):
     def test_realtime_client_secret_request_and_response_definitions(self):
         def valid(root, value):
             return Draft202012Validator({'$defs':self.defs, '$ref':'#/$defs/realtime_client_secret_'+root}).is_valid(value)
+        op = self.paths['/v1/realtime/client_secrets']['post']
+        self.assertFalse(op['requestBody']['required'])
+        self.assertTrue(op['requestBody']['content']['application/json']['schema']['$ref']
+                        .endswith('/realtime_client_secret_create'))
+        self.assertTrue(op['responses']['200']['content']['application/json']['schema']['$ref']
+                        .endswith('/realtime_client_secret_created'))
         self.assertTrue(valid('create',{}))
         for seconds in (10, 600, 7200):
             self.assertTrue(valid('create',{'expires_after':{'anchor':'created_at','seconds':seconds},

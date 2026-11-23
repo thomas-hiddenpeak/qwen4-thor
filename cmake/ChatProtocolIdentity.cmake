@@ -656,11 +656,13 @@ set(protocol_inputs
   src/server/live_media_policy.cpp
   src/server/live_media_call.cpp
   src/server/realtime_media_call.cpp
+  src/server/realtime_client_ticket.cpp
   src/server/realtime_client_secrets.cpp
   src/server/realtime_webrtc_request.cpp
   src/server/realtime_call_pcm.cpp
   src/server/realtime_media_call.h
-  src/server/realtime_client_secrets.h
+  include/q4t/server/realtime_client_ticket.h
+  include/q4t/server/realtime_client_secrets.h
   src/server/realtime_webrtc_request.h
   src/server/realtime_call_pcm.h
   src/server/live_sideband.cpp
@@ -846,6 +848,7 @@ set(protocol_inputs
   src/server/realtime_chat_plan.cpp
   include/q4t/server/realtime_chat_execution.h
   src/server/realtime_chat_execution.cpp
+  src/server/chat_realtime_secrets.cpp
   src/server/chat_realtime_conversation.cpp
   src/server/chat_live.cpp
   src/server/chat_live_media.cpp

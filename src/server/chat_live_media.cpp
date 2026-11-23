@@ -218,6 +218,14 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
       return;
     }
     request = std::move(offer.session);
+    if (const auto* grant = http->RealtimeStartup()) {
+      if (grant->GetString("type") != "realtime") {
+        detail::SendError(fd, 400, "Expected a conversation credential", {},
+                          "realtime_session_type_invalid", "session.type");
+        return;
+      }
+      request = MergeRealtimeStartup(*grant, request);
+    }
   } else if (!io::ParseJson(body, &request, true,
                      {.max_depth = 64,
                       .max_values = 65536,
@@ -329,6 +337,8 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
                                    {"rate", Number(24000)}})},
                 {"transcription", Json()},
                 {"turn_detection", Object({{"type", String("server_vad")}})}}));
+    if (http->RealtimeStartup())
+      defaults = RealtimeClientDefaults(fd, request.GetString("model"));
     owner->call = std::make_unique<RealtimeMediaCall>(
         std::move(defaults), MakeRealtimeCallbacks(client), message_bytes,
         output, owner->sideband, sip ? RealtimeCarrier::kSip : data_channel ? RealtimeCarrier::kWebRtcData : RealtimeCarrier::kWebRtcAudio);

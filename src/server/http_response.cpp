@@ -693,7 +693,7 @@ bool BeginBinaryStreamResponse(int fd, std::string_view content_type,
 
 bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type, const WriteOptions& options,
-                std::string_view allow, std::string_view location) {
+                std::string_view allow, std::string_view location, bool no_store) {
   if (!location.empty() &&
       (code != 201 || !SipControlId(location, {}).starts_with("rtc_")))
     return false;
@@ -718,6 +718,7 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
       "\r\nContent-Type: " + content_type +
       "\r\nContent-Length: " + std::to_string(body.size()) + "\r\n" +
       RequestIdHeader(fd) +
+      (no_store ? "Cache-Control: no-store\r\n" : "") +
       (allow.empty() ? "" : "Allow: " + std::string(allow) + "\r\n") +
       (location.empty() ? "" : "Location: " + std::string(location) + "\r\n") +
       (persistent ? "Connection: keep-alive\r\n\r\n"

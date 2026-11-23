@@ -1,3 +1,4 @@
+#include "q4t/server/realtime_client_ticket.h"
 #include "q4t/service/ingress_websocket.h"
 
 #include <poll.h>
@@ -64,7 +65,8 @@ bool WebSocketCredentials(server::HttpRequestHeaders* headers) {
     if (!protocol.starts_with(prefix)) continue;
     const auto value = std::string_view(protocol).substr(prefix.size());
     if (!key.empty() || !headers->authorization.empty() || value.empty() ||
-        value.size() > 128) return false;
+        (value.size() > 128 && !(value.starts_with(server::kRealtimeTicketPrefix) &&
+                                value.size() <= 176))) return false;
     key = value;
   }
   if (!key.empty()) headers->authorization = "Bearer " + std::string(key);

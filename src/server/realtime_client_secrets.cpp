@@ -1,9 +1,10 @@
-#include "realtime_client_secrets.h"
+#include "q4t/server/realtime_client_secrets.h"
 
 #include "object_protocol.h"
 #include "q4t/server/application_routes.h"
 #include "q4t/server/client_identity.h"
 #include "q4t/server/native_crypto.h"
+#include "q4t/server/realtime_client_ticket.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/trace/sha256.h"
@@ -57,10 +58,11 @@ void RealtimeClientSecrets::Expire(RealtimeSecretTime now) {
   }
 }
 
-ObjectReply RealtimeClientSecrets::Issue(std::string_view owner,
+ObjectReply RealtimeClientSecrets::Issue(RealtimeSecretIssuer issuer,
                                          const Json& request,
                                          const Json& resource,
                                          RealtimeSecretTime now) {
+  const auto owner = issuer.owner;
   if (!owner.empty() && !ValidClientId(owner)) return Unauthorized();
   ChatPlanError error;
   auto valid = ValidateRealtimeWireShape(
@@ -108,6 +110,14 @@ ObjectReply RealtimeClientSecrets::Issue(std::string_view owner,
   std::string token = "ek_" + trace::HexDigest(random);
   CryptoWipe(random);
   Wipe wipe_token{token};
+  if (!owner.empty()) {
+    std::string signed_token;
+    if (!SignRealtimeTicket(issuer.binding, issuer.key_digest, owner, token,
+                            expires.unix_seconds, &signed_token))
+      return Error(503, "realtime_secret_unavailable", "Credential signing unavailable");
+    token.swap(signed_token);
+    CryptoWipe(&signed_token);
+  }
   auto key = Digest(token);
   ObjectReply reply;
   reply.value = Object({{"value", String(token)},
@@ -147,8 +157,10 @@ ObjectReply RealtimeClientSecrets::Issue(std::string_view owner,
 ObjectReply RealtimeClientSecrets::Resolve(std::string_view token,
                                            RealtimeSecretGrant* grant,
                                            RealtimeSecretTime now) {
-  if (token.size() != 67 || !token.starts_with("ek_") ||
-      token.substr(3).find_first_not_of("0123456789abcdef") != token.npos)
+  RealtimeClientTicket ticket;
+  const bool scoped = ReadRealtimeTicket(token, &ticket);
+  if (!scoped && (token.size() != 67 || !token.starts_with("ek_") ||
+      token.substr(3).find_first_not_of("0123456789abcdef") != token.npos))
     return Unauthorized();
   const auto key = Digest(token);
   RealtimeSecretGrant next;

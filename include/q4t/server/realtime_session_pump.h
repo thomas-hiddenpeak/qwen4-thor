@@ -10,6 +10,7 @@
 #include <thread>
 
 #include "q4t/server/websocket.h"
+#include "q4t/server/object_store.h"
 
 namespace q4t::server {
 inline constexpr size_t kRealtimeInboxBytes = 16ULL << 20;
@@ -20,6 +21,7 @@ class RealtimeSessionPump {
   // session mutations and model joins. No parsing or backend work on the
   // reader.
   bool Start();
+  ObjectReply Start(const io::Json* configuration);
   bool Message(WebSocketOpcode opcode, std::string_view message);
   bool CanAccept(size_t message_bytes) const;
   bool Alive() const { return started_ && !stopped_.load(); }
@@ -39,7 +41,17 @@ class RealtimeSessionPump {
   // session's interruption callback may reference this base's live stop flag.
   template <typename Session>
   void Attach(std::shared_ptr<Session> session) {
-    operations_.start = [session] { return session->Start(); };
+    operations_.start = [session](const io::Json* settings) -> ObjectReply {
+      if (settings) {
+        if constexpr (requires { session->StartConfigured(*settings); }) {
+          return session->StartConfigured(*settings);
+        }
+      } else if (session->Start()) {
+        return {};
+      }
+      return {.value={}, .http_status=503, .code="realtime_session_unavailable",
+              .message="Realtime session initialization failed"};
+    };
     operations_.message = [session](auto opcode, auto text) {
       return session->Message(opcode, text);
     };
@@ -65,7 +77,8 @@ class RealtimeSessionPump {
   bool started_ = false;
   // Destroy captured sessions first, while the pump's state is still alive.
   struct Operations {
-    std::function<bool()> start, tick;
+    std::function<ObjectReply(const io::Json*)> start;
+    std::function<bool()> tick;
     std::function<bool(WebSocketOpcode, std::string_view)> message;
     std::function<void()> cancel, join;
   } operations_;

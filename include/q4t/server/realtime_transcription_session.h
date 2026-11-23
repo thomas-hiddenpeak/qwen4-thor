@@ -100,6 +100,7 @@ class RealtimeTranscriptionSession {
                                uint64_t lifetime_ticks = kRealtimeSessionTicks);
   ~RealtimeTranscriptionSession();
   bool Start();
+  ObjectReply StartConfigured(const io::Json& configuration);
   // Session-owner transaction for a composed conversation. Validates the
   // actual processor and pending audio before committing; emits no separate
   // session acknowledgement and never starts an ASR worker. The by-value

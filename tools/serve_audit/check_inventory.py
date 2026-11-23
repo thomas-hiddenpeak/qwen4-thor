@@ -150,6 +150,15 @@ def current_surface(root):
             'slot.session != id || slot.client != http->Client().Id()' not in media or
             'RealtimeCarrier::kWebRtcData' not in media):
         raise ValueError('review SDP negotiation, data channel and call ownership')
+    issuer = (root / 'src/server/chat_realtime_secrets.cpp').read_text()
+    if ('IssueRealtimeSecret(fd, headers, body)' not in dispatch or
+            'grant.owner != client.Id()' not in dispatch or
+            'realtime_secrets_.Resolve(' not in dispatch or
+            'PreviewCredential(startup, &resource)' not in issuer or
+            'realtime_secrets_.Issue({client.Id(), headers.gateway_token, issuer}' not in issuer or
+            'access.AuthenticateRealtime(ticket, binding.token, now)' not in native or
+            'access.StillActive(identity)' not in native):
+        raise ValueError('review Realtime credential issuing key, verified owner and allowed targets')
     routes.append(('/v1/realtime/calls', 'POST'))
     routes.append(('/v1/live/sessions', 'POST'))
     fork = '/v1/live/sessions/{session_id}/fork'

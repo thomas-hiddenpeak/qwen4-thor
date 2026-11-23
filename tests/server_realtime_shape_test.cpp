@@ -1,6 +1,7 @@
 #include "q4t/server/realtime_shape.h"
 
-#include "../src/server/realtime_client_secrets.h"
+#include "q4t/server/realtime_client_secrets.h"
+#include "q4t/server/realtime_client_ticket.h"
 #include "../src/server/object_protocol.h"
 
 #include <filesystem>
@@ -110,6 +111,12 @@ Q4T_TEST(realtime_shape_duplicate_keys_and_bounded_error_path) {
   return true;
 }
 
+namespace {
+const std::string binding(64,'a'), issuer_key(64,'b');
+const q4t::server::RealtimeSecretIssuer alpha{"alpha", binding, issuer_key};
+const q4t::server::RealtimeSecretIssuer beta{"beta", binding, issuer_key};
+}  // namespace
+
 Q4T_TEST(realtime_client_secret_issue_redeem_and_expire_at_either_clock) {
   using namespace q4t::server;
   using namespace q4t::server::object_detail;
@@ -124,7 +131,7 @@ Q4T_TEST(realtime_client_secret_issue_redeem_and_expire_at_either_clock) {
   RealtimeClientSecrets secrets;
   const RealtimeSecretTime now{1000, {}};
   const auto first =
-      secrets.Issue("alpha", Object(), resource("realtime"), now);
+      secrets.Issue(alpha, Object(), resource("realtime"), now);
   Q4T_CHECK(first.ok() && first.value.GetInt("expires_at") == 1600);
   const std::string key = first.value.GetString("value");
   RealtimeSecretGrant grant;
@@ -134,7 +141,7 @@ Q4T_TEST(realtime_client_secret_issue_redeem_and_expire_at_either_clock) {
   auto request =
       Object({{"expires_after", Object({{"seconds", Number(10)}})},
               {"session", Object({{"type", String("transcription")}})}});
-  auto second = secrets.Issue("beta", request, resource("transcription"), now);
+  auto second = secrets.Issue(beta, request, resource("transcription"), now);
   Q4T_CHECK(second.ok() && second.value.GetInt("expires_at") == 1010);
   auto other = second.value.GetString("value");
   Q4T_CHECK(key != other);
@@ -170,7 +177,7 @@ Q4T_TEST(
   auto issue = [&](const char* raw) {
     q4t::io::Json request;
     if (!q4t::io::ParseJson(raw, &request)) throw std::logic_error("fixture");
-    return store.Issue("alpha", request, resource, now);
+    return store.Issue(alpha, request, resource, now);
   };
   for (
       const char* raw :
@@ -192,7 +199,7 @@ Q4T_TEST(
   Set(&unsafe, "tools",
       Array({Object({{"type", String("mcp")},
                      {"authorization", String("private_fixture")}})}));
-  const auto failed = store.Issue("alpha", Object(), unsafe, now);
+  const auto failed = store.Issue(alpha, Object(), unsafe, now);
   Q4T_CHECK(!failed.ok() && !failed.value.Has("value"));
   return true;
 }
@@ -213,7 +220,7 @@ Q4T_TEST(realtime_client_secret_capacity_is_scoped_and_expiry_releases_it) {
       workers.emplace_back([&] {
         for (int j = 0; j < 10; ++j) {
           const auto reply =
-              store.Issue("alpha", Object(), resource, {100, {}});
+              store.Issue(alpha, Object(), resource, {100, {}});
           if (reply.http_status == 429) {
             ++limited;
           } else if (reply.ok()) {
@@ -227,9 +234,9 @@ Q4T_TEST(realtime_client_secret_capacity_is_scoped_and_expiry_releases_it) {
     }
   }
   Q4T_CHECK(issued.size() == 64 && limited == 16 && errors == 0);
-  Q4T_CHECK(store.Issue("alpha", Object(), resource, {699, {}}).http_status ==
+  Q4T_CHECK(store.Issue(alpha, Object(), resource, {699, {}}).http_status ==
             429);
-  Q4T_CHECK(store.Issue("beta", Object(), resource, {699, {}}).ok());
-  Q4T_CHECK(store.Issue("alpha", Object(), resource, {700, {}}).ok());
+  Q4T_CHECK(store.Issue(beta, Object(), resource, {699, {}}).ok());
+  Q4T_CHECK(store.Issue(alpha, Object(), resource, {700, {}}).ok());
   return true;
 }

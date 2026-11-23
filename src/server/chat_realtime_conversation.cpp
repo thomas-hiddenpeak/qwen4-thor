@@ -231,15 +231,23 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
                 {"transcription", Json()},
                 {"turn_detection", Json()}}));
   }
+  const auto* startup = http->RealtimeStartup();
+  Json selected;
+  if (startup) {
+    selected = *startup;
+    if (path.find("model=") != path.npos)
+      Set(&selected, "model", Field(settings, "model"));
+    settings = RealtimeClientDefaults(fd, selected.GetString("model"));
+  }
   auto callbacks = MakeRealtimeCallbacks(client);
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
   RealtimeConversationPump session(
       detail::NewRequestId("sess_"), detail::NewRequestId("conv_"),
       std::move(settings), output, std::move(callbacks), message_bytes);
-  if (!session.Start()) {
-    detail::SendError(fd, 503, "Realtime session initialization failed", {},
-                      "realtime_session_unavailable");
+  if (const auto reply = session.Start(startup ? &selected : nullptr); !reply.ok()) {
+    detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                      reply.ClientCode(), reply.value.GetString("param"));
     return;
   }
   const auto protocol =

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Realtime 临时凭据已通过原生 TLS 和官方 SDK 的对话与转录验收。相同客户的长期 Key 与临时凭据共享准入；到期的新连接返回 401，已建立会话继续回答 42。真实录音转录为“请查询当前项目版本号。”。1 次启动，51.89 秒，GPU 已释放。继续 WebRTC 临时凭据、组合恢复及发行，默认 rev426。[签发和兑换证据](evidence/serve-realtime-client-issuer-20261123/README.md)。
+
 Realtime 短期凭据的本机签发与兑换组件、对话及转录类型已通过 7 项原生和 7 项公开合同检查，508 个 SDK 样例零差异。并发签发、客户隔离、到期回收及继续持有已兑换的配置均已验证。公开 HTTP 签发、原生入口兑换和实际客户端业务待接通。[凭据合同](evidence/serve-realtime-client-secret-contract-20261123/README.md)。
 
 已修复两种入口对 Realtime 旁路连接的误限流。持有主 WebSocket 的客户现在还能同时接入两个合法旁路，第三个收到 429。原生与可选 nginx 各保留一条原始失败，4 项进程回环通过。[容量回归](evidence/serve-realtime-sideband-capacity-20261123/README.md)。

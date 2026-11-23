@@ -103,6 +103,10 @@ def add_voice_routes(paths, response, error):
     for path in ('/v1/live/sessions/{session_id}/hangup', '/v1/realtime/calls/{call_id}/hangup'):
         operation('post', path, {'200': {'description': 'Call and media transport closed; empty body'}})
     realtime = 'serve-application-v1.schema.json#/$defs/realtime_'
+    secrets = '/v1/realtime/client_secrets'
+    operation('post', secrets, json_result({'$ref':realtime+'client_secret_created'}),
+              body=content('application/json', {'$ref':realtime+'client_secret_create'}))
+    paths[secrets]['post']['requestBody']['required'] = False
     sdp = dict(type='string',minLength=1,maxLength=65535)
     form = obj(dict(sdp=sdp, session={'$ref':realtime+'session'}), ['sdp'])
     operation('post','/v1/realtime/calls', {'201':dict(description='WebRTC SDP answer',

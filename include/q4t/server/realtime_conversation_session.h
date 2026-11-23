@@ -97,6 +97,10 @@ class RealtimeConversationSession {
                               size_t message_bytes = kWebSocketMessageLimit);
   // Apply the complete media-call configuration, including a scoped prompt,
   // before publishing session.created. A failure is returned to HTTP.
+  ObjectReply PreviewCredential(const io::Json& configuration, io::Json* resource);
+  ObjectReply StartConfigured(const io::Json& configuration) {
+    return StartCall(configuration, RealtimeShape::kSession);
+  }
   ObjectReply StartCall(const io::Json& configuration,
                         RealtimeShape shape = RealtimeShape::kCallAccept);
   ~RealtimeConversationSession();
@@ -139,7 +143,7 @@ class RealtimeConversationSession {
   bool ImportMcp(const RealtimeMcpSelection& selection, Work* work = nullptr);
   io::Json PublicSettings() const;
   RealtimePromptResolver PromptResolver();
-  ObjectReply StartSession(const io::Json* call);
+  ObjectReply StartSession(const io::Json* call, io::Json* preview = nullptr);
   ObjectReply ApplySettings(const io::Json& update);
   bool Settings(const io::Json& update, std::string_view event_id);
   bool CreateItem(const io::Json& event);

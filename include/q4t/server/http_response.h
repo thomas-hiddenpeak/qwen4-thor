@@ -19,6 +19,7 @@
 #include "q4t/server/http_observation.h"
 #include "q4t/server/finite_response.h"
 
+namespace q4t::io { struct Json; }
 namespace q4t::server {
 class IResponsesStreamCapture;
 }
@@ -112,6 +113,8 @@ class HttpResponseContext {
     return preparation_usage_;
   }
   // Handler-thread-only identity, minted by header admission.
+  const io::Json* RealtimeStartup() const { return realtime_startup_; }
+  void SetRealtimeStartup(const io::Json* settings) { realtime_startup_ = settings; }
   const ClientIdentity& Client() const { return client_; }
   ClientRateDomain RateDomain() const { return rate_domain_; }
   // Trusted native execution only. The context settles on destruction unless
@@ -252,6 +255,7 @@ class HttpResponseContext {
   std::string trace_id_;
   PreparationUsage preparation_usage_;
   ClientIdentity client_;
+  const io::Json* realtime_startup_ = nullptr;
   ClientRateDomain rate_domain_ = ClientRateDomain::kOnline;
   ClientLease* client_lease_ = nullptr;  // Owner outlives this context.
   std::shared_ptr<ClientRateLease> batch_rate_;
@@ -299,7 +303,7 @@ bool WriteAll(int fd, const std::string& s, const WriteOptions& options = {});
 bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type,
                 const WriteOptions& options = {}, std::string_view allow = {},
-                std::string_view location = {});
+                std::string_view location = {}, bool no_store = false);
 // Fixed-length response from bounded chunks (<=1 MiB). A failed or
 // short source closes the frame; never append JSON/SSE or reuse the connection.
 bool SendBinaryResponse(int fd, uint64_t length,

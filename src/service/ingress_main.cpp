@@ -382,6 +382,7 @@ constexpr RouteSpec kRoutes[] = {
     {"GET", "/v1/realtime", false},
     {"GET", "/v1/live/sessions", false},
     {"POST", "/v1/live/sessions", false},
+    {"POST", "/v1/realtime/client_secrets", false},
     {"POST", "/v1/realtime/calls", false},
     {"POST", "/v1/audio/speech", false},
     {"POST", "/v1/audio/transcriptions", false},
@@ -476,6 +477,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   Lease lease{capacity};
   AccessIdentity identity;
   Decision binding;
+  std::string_view delegated;
   int status = 400;
   bool rejected = false;
   bool preflight = false;
@@ -508,6 +510,9 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            framing + "\r\nX-Request-Id: " + request_id +
            "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
            "\r\nX-Q4T-Gateway-Token: " + binding.token + "\r\n" +
+           (!delegated.empty() ? "Authorization: Bearer " + std::string(delegated) + "\r\n"
+             : path == "/v1/realtime/client_secrets"
+                 ? "Authorization: Q4T-Issuer " + std::string(identity.IssuerDigest()) + "\r\n" : "") +
            (headers.content_type.empty()
                 ? ""
                 : "Content-Type: " + headers.content_type + "\r\n") +
@@ -592,7 +597,21 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       return reject(401, "gateway_unauthorized");
     if (!access.Configured()) return reject(503, "access_policy_unavailable");
     identity = access.Authenticate(headers.authorization);
-    if (!identity.Allowed()) return reject(401, "gateway_unauthorized");
+    if (!identity.Allowed()) {
+      const auto credential = server::BearerCredential(headers.authorization);
+      server::RealtimeClientTicket ticket;
+      const auto now = std::chrono::duration_cast<std::chrono::seconds>(
+          std::chrono::system_clock::now().time_since_epoch()).count();
+      if (!server::RealtimeGrantTarget(method, path) ||
+          !server::ReadRealtimeTicket(credential, &ticket) || ticket.expires_at <= now)
+        return reject(401, "gateway_unauthorized");
+      binding = Authorize(config.address, config.parent.pid, ticket.owner,
+                          false, config.backend);
+      if (!binding.port) return reject(503, binding.error.c_str());
+      identity = access.AuthenticateRealtime(ticket, binding.token, now);
+      if (!identity.Allowed()) return reject(401, "gateway_unauthorized");
+      delegated = credential;
+    }
     lease.client = identity.Index();
     if (!headers.client_id.empty() || !headers.gateway_token.empty())
       return reject(400, "invalid_client_header");
@@ -641,7 +660,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
                                       lease.websocket, lease.sideband);
     if (!lease.acquired) return reject(429, "gateway_rate_limit");
     if (path == "/livez") return true;
-    binding = authorize();
+    if (delegated.empty()) binding = authorize();
     if (!binding.port) return reject(503, binding.error.c_str());
     if (streaming) {
       upload.max_bytes = headers.body_limit;
@@ -746,6 +765,11 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     return Relay(upstream.Get(), client, config.idle_seconds, request_id,
                  started);
   }
+  if ((!delegated.empty() || path == "/v1/realtime/client_secrets") &&
+      !access.StillActive(identity)) {
+    Error(client, 401, "gateway_unauthorized", request_id, started);
+    return false;
+  }
   const auto current = authorize();
   if (!current.port || current != binding) {
     Error(client, 503, current.port ? "service_recovering" : current.error,
@@ -767,6 +791,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   }
   if (lease.websocket) {
     const auto still_authorized = [&] {
+      if (!delegated.empty()) return access.StillActive(identity) && authorize() == binding;
       const auto current_identity = access.Authenticate(headers.authorization);
       return current_identity.Allowed() &&
              current_identity.Id() == identity.Id() && authorize() == binding;

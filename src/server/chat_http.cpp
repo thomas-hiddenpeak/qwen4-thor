@@ -2,6 +2,7 @@
 #include "chat_server_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/chat_storage.h"
+#include "q4t/server/realtime_client_ticket.h"
 #include "q4t/server/realtime_trace_api.h"
 #include "q4t/server/mcp_transport.h"
 
@@ -313,6 +314,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
 
 bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                               bool allow_keep_alive) {
+  RealtimeSecretGrant grant;
   ClientLease client_lease;  // Outlives response and heartbeat cleanup.
   detail::HttpResponseContext context(fd, &metrics_.http_transport);
   bool dispatch_started = false;
@@ -339,11 +341,28 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         headers.failure = HttpReceiveFailure::kRoute;
         return false;
       }
+      const auto credential = BearerCredential(headers.authorization);
+      if (credential.starts_with("ek_")) {
+        const auto client =
+            clients_.Authenticate(headers.client_id, headers.gateway_token);
+        if (!RealtimeGrantTarget(method, path) || !client.Allowed() ||
+            !realtime_secrets_.Resolve(credential, &grant).ok() ||
+            grant.owner != client.Id()) {
+          failure_status = 401;
+          headers.error_code = "invalid_api_key";
+          headers.failure = HttpReceiveFailure::kAdmission;
+          return false;
+        }
+        context.SetRealtimeStartup(&grant.session);
+      }
       ClientIdentity identity;
       if (!AdmitClientRequest(method, path, &headers, clients_, &client_lease,
                               &identity, &failure_status))
         return false;
       context.SetClient(identity, &client_lease);
+      if (method == "POST" && path == "/v1/realtime/client_secrets")
+        headers.body_limit = std::min<uint64_t>(headers.body_limit,
+                                                kWebSocketMessageLimit);
       if (IsRealtimeTarget(path) && !IsLiveMediaCreate(method, path)) {
         if (!headers.origin.empty()) {
           // The optional ingress validates browser origins before forwarding.
@@ -501,14 +520,22 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                     headers.error_param);
       return false;
     }
-    if (IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
+    if (context.RealtimeStartup()) {
+      const auto reply =
+          realtime_secrets_.Resolve(BearerCredential(headers.authorization), &grant);
+      if (!reply.ok()) {
+        SendError(fd, reply.http_status, reply.ClientMessage(), {}, reply.ClientCode());
+        return false;
+      }
+    }
+    if (path == "/v1/realtime/client_secrets" || IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
         IsConversationTarget(path) || IsPromptTarget(path) ||
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && path != "/v1/realtime/calls" && !((IsResponseCancellation(method, path) ||
+      if (method == "POST" && path != "/v1/realtime/calls" && !((path == "/v1/realtime/client_secrets" || IsResponseCancellation(method, path) ||
                                  IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
                                  IsBatchCancellation(method, path) ||
@@ -549,6 +576,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       HandleSipControl(fd, SipControlId(path, "/refer"), body, true);
     else if (method == "POST" && !SipControlId(path, "/accept").empty())
       HandleLiveMediaCreate(fd, {}, body, admission, SipControlId(path, "/accept"));
+    else if (path == "/v1/realtime/client_secrets" && method == "POST")
+      IssueRealtimeSecret(fd, headers, body);
     else if (method == "POST" && path == "/v1/realtime/calls") {
       HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type);
     } else if (IsLiveMediaCreate(method, path))

@@ -327,7 +327,11 @@ ObjectReply RealtimeConversationSession::StartCall(const Json& configuration,
   return StartSession(&configuration);
 }
 
-ObjectReply RealtimeConversationSession::StartSession(const Json* call) {
+ObjectReply RealtimeConversationSession::PreviewCredential(const Json& configuration, Json* resource) {
+  if (!resource) return Invalid("invalid_request", "Missing session resource", "session");
+  return StartSession(&configuration, resource);
+}
+ObjectReply RealtimeConversationSession::StartSession(const Json* call, Json* preview) {
   const auto& settings = settings_.Current().settings;
   size_t storage = 0;
   if (started_ || cancelled_ || !history_.Valid() || !output_.Valid() ||
@@ -347,6 +351,12 @@ ObjectReply RealtimeConversationSession::StartSession(const Json* call) {
   auto reply = call ? ApplySettings(*call)
                     : ApplySettings(Object({{"type", String("realtime")}}));
   if (!Accepted(reply)) return reply;
+  if (preview) {
+    *preview = PublicSettings();
+    // The SDK credential response has a separate resource type.
+    std::erase_if(preview->object, [](const auto& field) { return field.first == "parallel_tool_calls"; });
+    return {};
+  }
   started_ = true;
   ConfigureTracing();
   const bool published = Event("session.created", Object({{"session", PublicSettings()}})) &&
