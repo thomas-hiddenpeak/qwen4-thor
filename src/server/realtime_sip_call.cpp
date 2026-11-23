@@ -28,7 +28,9 @@ RealtimeSipCall::RealtimeSipCall(Json defaults,
           {kWebSocketMaximumLimit, [this] { return failed_ || ended_; },
            [this](auto text) { return Publish(text); }},
           [&] {
-            cb.interrupt_playout = [this] { Clear(); };
+            cb.interrupt_playout = [this] {
+              if (!Clear(true)) failed_ = true;
+            };
             return std::move(cb);
           }(),
           message_bytes) {}
@@ -49,15 +51,29 @@ void RealtimeSipCall::BufferEvent(const char* type, const std::string& id) {
       Clock::now());
 }
 
-void RealtimeSipCall::Clear() {
+bool RealtimeSipCall::Clear(bool default_only) {
   for (auto& speech : speech_) {
-    if (speech.cleared) continue;
+    if (speech.cleared || (default_only && !speech.in_conversation)) continue;
     speech.cleared = true;
+    size_t queued = 0;
+    for (const auto& chunk : speech.chunks) queued += chunk.size();
+    pcm_bytes_ -= queued - speech.offset;
     speech.chunks.clear();
     speech.offset = 0;
     BufferEvent("output_audio_buffer.cleared", speech.id);
   }
-  pcm_bytes_ = 0;
+  return TruncateCleared();
+}
+
+bool RealtimeSipCall::TruncateCleared() {
+  for (auto& speech : speech_) {
+    if (!speech.cleared || speech.history_settled || speech.item_id.empty())
+      continue;
+    if (!session_.TruncatePlayout(speech.item_id, speech.submitted_samples))
+      return false;
+    speech.history_settled = true;
+  }
+  return true;
 }
 
 bool RealtimeSipCall::Publish(std::string_view wire) {
@@ -95,7 +111,19 @@ bool RealtimeSipCall::Publish(std::string_view wire) {
       return bad();
     }
     if (speech_.size() >= 16) return false;
-    speech_.push_back({response->GetString("id"), {from, {}}, {}});
+    speech_.push_back({.id = response->GetString("id"),
+                       .decoder = {from, {}},
+                       .chunks = {},
+                       .item_id = {},
+                       .in_conversation = response->Has("conversation_id")});
+  } else if (type == "response.content_part.added") {
+    const auto* part = event.Find("part");
+    if (part && part->GetString("type") == "audio") {
+      const auto it = std::ranges::find(speech_, event.GetString("response_id"),
+                                        &Speech::id);
+      if (it == speech_.end() || !it->item_id.empty()) return bad();
+      it->item_id = event.GetString("item_id");
+    }
   } else if (type == "response.output_audio.delta" || type == "response.done") {
     const bool done = type == "response.done";
     const auto id = done && response ? response->GetString("id")
@@ -174,8 +202,7 @@ bool RealtimeSipCall::Control(WebSocketOpcode opcode, std::string_view wire) {
     ChatPlanError error;
     if (type == "output_audio_buffer.clear" &&
         ValidateRealtimeWireShape(event, RealtimeShape::kClientEvent, &error)) {
-      Clear();
-      return true;
+      return Clear(false);
     }
     const auto* update = event.Find("session");
     const auto* audio = update ? update->Find("audio") : nullptr;
@@ -212,6 +239,7 @@ bool RealtimeSipCall::Playback(Clock::time_point now) {
       return now - blocked_ < 15s;
     }
     blocked_ = {};
+    speech.submitted_samples += chunk.size() / 2;
     if (!speech.started) {
       speech.started = true;
       BufferEvent("output_audio_buffer.started", speech.id);
@@ -232,7 +260,7 @@ bool RealtimeSipCall::Tick(Clock::time_point now) {
   if (auto command = sideband_->Pop();
       command && !Control(command->opcode, command->text))
     return false;
-  return !failed_ && session_.Tick() && Playback(now);
+  return !failed_ && session_.Tick() && TruncateCleared() && Playback(now);
 }
 
 bool RealtimeSipCall::EndTransport() {

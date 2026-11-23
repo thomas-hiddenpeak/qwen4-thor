@@ -26,13 +26,17 @@ class RealtimeSipCall final : public IMediaCall {
     std::deque<std::string> chunks;
     size_t offset = 0;
     bool started = false, done = false, cleared = false;
+    std::string item_id;
+    size_t submitted_samples = 0;
+    bool in_conversation = false, history_settled = false;
   };
   bool Publish(std::string_view wire);
   bool Input(std::string_view pcm, bool finish = false);
   bool Control(WebSocketOpcode opcode, std::string_view wire);
   bool Playback(Clock::time_point now);
   void BufferEvent(const char* type, const std::string& id);
-  void Clear();
+  bool Clear(bool default_only);
+  bool TruncateCleared();
   const Send send_;
   std::shared_ptr<LiveSideband> sideband_;
   std::optional<RealtimeCallPcm> encoder_;

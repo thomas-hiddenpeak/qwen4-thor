@@ -2691,8 +2691,14 @@ Q4T_TEST(realtime_call_scoped_observer_joins_current_session_and_hears_dtmf) {
 }
 
 Q4T_TEST(realtime_call_playout_receipts_follow_delivery_and_clear) {
-  for (bool clear : {false, true}) {
+  enum class Stop { kDrain, kClear, kVad, kOutOfBandVad, kDisabledVad };
+  for (auto mode : {Stop::kDrain, Stop::kClear, Stop::kVad, Stop::kOutOfBandVad,
+                    Stop::kDisabledVad}) {
+    const bool vad = mode != Stop::kDrain && mode != Stop::kClear;
+    const bool clear = mode == Stop::kClear || mode == Stop::kVad;
+    InputFixture input;
     SpeechFixture f;
+    f.cb.input = input.cb.input;
     auto side = std::make_shared<LiveSideband>();
     size_t delivered = 0;
     bool writable = false;
@@ -2704,7 +2710,18 @@ Q4T_TEST(realtime_call_playout_receipts_follow_delivery_and_clear) {
           return true;
         },
         side);
-    Q4T_CHECK(call.Start(Object({{"type", String("realtime")}})).ok());
+    auto config = Object({{"type", String("realtime")}});
+    if (vad) {
+      Set(&config, "audio",
+          Object(
+              {{"input",
+                Object({{"turn_detection",
+                         Object({{"type", String("server_vad")},
+                                 {"create_response", Boolean(false)},
+                                 {"interrupt_response",
+                                  Boolean(mode != Stop::kDisabledVad)}})}})}}));
+    }
+    Q4T_CHECK(call.Start(config).ok());
     Q4T_CHECK(call.Receive('V', {}));
     std::shared_ptr<const std::string> wire;
     uint64_t cursor = 0;
@@ -2713,10 +2730,13 @@ Q4T_TEST(realtime_call_playout_receipts_follow_delivery_and_clear) {
         WebSocketOpcode::kText,
         OutputJson(Object({{"type", String("conversation.item.create")},
                            {"item", User("item_test", "say hello")}}))));
-    Q4T_CHECK(
-        side->Enqueue(WebSocketOpcode::kText, R"({"type":"response.create"})"));
+    auto request = Object({{"type", String("response.create")}});
+    if (mode == Stop::kOutOfBandVad)
+      Set(&request, "response", Object({{"conversation", String("none")}}));
+    Q4T_CHECK(side->Enqueue(WebSocketOpcode::kText, OutputJson(request)));
     const auto deadline = Clock::now() + 2s;
     bool done = false;
+    std::string item_id;
     while (!done && Clock::now() < deadline) {
       Q4T_CHECK(call.Tick(Clock::now()));
       while (side->Next(cursor, &wire) == LiveSideband::Read::kEvent) {
@@ -2725,6 +2745,8 @@ Q4T_TEST(realtime_call_playout_receipts_follow_delivery_and_clear) {
         Q4T_CHECK(io::ParseJson(*wire, &e));
         Q4T_CHECK(e.GetString("type") != "output_audio_buffer.started");
         Q4T_CHECK(e.GetString("type") != "response.output_audio.delta");
+        if (e.GetString("type") == "response.content_part.added")
+          item_id = e.GetString("item_id");
         if (e.GetString("type") == "response.done") {
           Q4T_CHECK(e.Find("response")->GetString("status") == "completed");
           done = true;
@@ -2732,7 +2754,7 @@ Q4T_TEST(realtime_call_playout_receipts_follow_delivery_and_clear) {
       }
       std::this_thread::sleep_for(1ms);
     }
-    Q4T_CHECK(done && delivered == 0);
+    Q4T_CHECK(done && !item_id.empty() && delivered == 0);
     writable = true;
     auto start = Clock::now();
     Q4T_CHECK(call.Tick(start) && delivered > 0 && delivered <= 960);
@@ -2741,20 +2763,49 @@ Q4T_TEST(realtime_call_playout_receipts_follow_delivery_and_clear) {
     Q4T_CHECK(io::ParseJson(*wire, &started) &&
               started.GetString("type") == "output_audio_buffer.started");
     const auto first = delivered;
-    if (clear)
+    if (vad)
+      Q4T_CHECK(call.Receive('P', std::string((2 * 768 + 48) * 2, '\0')));
+    if (mode == Stop::kClear)
       Q4T_CHECK(side->Enqueue(WebSocketOpcode::kText,
                               R"({"type":"output_audio_buffer.clear"})"));
     for (int i = 1; i < 30; ++i) Q4T_CHECK(call.Tick(start + i * 20ms));
     Q4T_CHECK(delivered == (clear ? first : f.samples * 2));
-    Q4T_CHECK(side->Next(cursor++, &wire) == LiveSideband::Read::kEvent);
-    Json terminal;
-    Q4T_CHECK(io::ParseJson(*wire, &terminal));
-    Q4T_CHECK(terminal.GetString("type") ==
-              (clear ? "output_audio_buffer.cleared"
-                     : "output_audio_buffer.stopped"));
-    Q4T_CHECK(terminal.GetString("response_id") ==
-              started.GetString("response_id"));
-    Q4T_CHECK(side->Next(cursor, &wire) == LiveSideband::Read::kPending);
+    bool cut = false, cleared = false, stopped = false, detected = false;
+    while (side->Next(cursor, &wire) == LiveSideband::Read::kEvent) {
+      ++cursor;
+      Json event;
+      Q4T_CHECK(io::ParseJson(*wire, &event));
+      const auto type = event.GetString("type");
+      Q4T_CHECK(type != "error");
+      if (type == "input_audio_buffer.speech_started") detected = true;
+      if (type == "conversation.item.truncated") {
+        Q4T_CHECK(!cut && event.GetString("item_id") == item_id);
+        Q4T_CHECK(event.GetInt("audio_end_ms") == int(first / 48));
+        cut = true;
+      }
+      if (type == "output_audio_buffer.cleared" ||
+          type == "output_audio_buffer.stopped") {
+        Q4T_CHECK(event.GetString("response_id") ==
+                  started.GetString("response_id"));
+        (type == "output_audio_buffer.cleared" ? cleared : stopped) = true;
+      }
+    }
+    Q4T_CHECK(cut == clear && cleared == clear && stopped == !clear &&
+              detected == vad);
+    const auto get = Object({{"type", String("conversation.item.retrieve")},
+                             {"item_id", String(item_id)}});
+    Q4T_CHECK(side->Enqueue(WebSocketOpcode::kText, OutputJson(get)) &&
+              call.Tick(Clock::now()));
+    Q4T_CHECK(side->Next(cursor, &wire) == LiveSideband::Read::kEvent);
+    Json retrieved;
+    Q4T_CHECK(io::ParseJson(*wire, &retrieved) &&
+              retrieved.GetString("type") == "conversation.item.retrieved");
+    const auto& part =
+        retrieved.Find("item")->GetArray("content")->array.front();
+    std::string pcm;
+    Q4T_CHECK(DecodeRealtimeAudioBase64(part.GetString("audio"), &pcm).ok());
+    Q4T_CHECK(pcm.size() == delivered &&
+              part.GetString("transcript") == (clear ? "" : "spoken"));
     Q4T_CHECK(call.EndTransport());
   }
   return true;

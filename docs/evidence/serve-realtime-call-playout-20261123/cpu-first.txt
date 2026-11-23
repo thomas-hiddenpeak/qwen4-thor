@@ -1,0 +1,22 @@
+Fixture received {"error":{"type":"invalid_request_error","code":"realtime_audio_item_not_found","message":"No owned audio content at this position","param":"item_id"},"type":"error","event_id":"event_896dcd1af1d07bfe248d12c80aed8c80"}
+Fixture received {"error":{"type":"invalid_request_error","code":"realtime_audio_truncate_invalid","message":"Realtime audio history: played duration exceeds available audio","param":"audio_end_ms"},"type":"error","event_id":"event_bedfe63be3a54631d619a85fcf86877e"}
+[PASS] realtime_session_active_audio_truncate_cancels_without_late_revival
+[PASS] realtime_session_native_vad_auto_context_and_settings_are_frozen
+[PASS] realtime_session_native_vad_interrupt_preserves_out_of_band
+[PASS] realtime_session_native_vad_controls_do_not_invent_response
+[PASS] realtime_call_start_resolves_prompt_before_first_unframed_event
+[PASS] realtime_call_rejected_configuration_precedes_any_session_event
+[PASS] realtime_call_codec_streams_preserve_phase_duration_and_pcm_bytes
+[PASS] realtime_call_scoped_observer_joins_current_session_and_hears_dtmf
+  CHECK failed: cut == clear && cleared == clear && stopped == !clear && detected == vad (line 2786)
+[FAIL] realtime_call_playout_receipts_follow_delivery_and_clear
+[PASS] realtime_speech_history_reserves_before_actual_pcm_and_complete
+[PASS] realtime_speech_history_capacity_and_item_rejections_are_atomic
+[PASS] realtime_speech_history_owner_generation_and_delete_prevent_revival
+[PASS] realtime_speech_history_pcm_truncate_keeps_generation_and_charge
+[PASS] realtime_speech_history_g711_truncate_uses_negotiated_clock
+[PASS] realtime_speech_history_interruption_preserves_real_partial_extent
+[PASS] realtime_speech_history_empty_and_duplicate_completion_keep_owner
+[PASS] realtime_speech_history_settlement_releases_unused_reservation
+[PASS] realtime_speech_output_truncate_discards_late_audio_and_transcript
+18 tests, 17 passed, 1 failed, 0 skipped

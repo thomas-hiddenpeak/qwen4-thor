@@ -657,22 +657,45 @@ bool RealtimeConversationSession::TruncateItem(const Json& event) {
     return ErrorEvent(Invalid("realtime_audio_truncate_invalid",
                               "Invalid played duration", "audio_end_ms"),
                       event.GetString("event_id"));
-  auto status = speech_.Truncate(ticket, static_cast<uint64_t>(end->number));
+  return TruncateStoredAudio(ticket, static_cast<uint64_t>(end->number),
+                             event.GetString("event_id"));
+}
+
+bool RealtimeConversationSession::TruncatePlayout(
+    const std::string& item_id, uint64_t submitted_samples) {
+  RealtimeItemTicket ticket;
+  RealtimeSpeechView view;
+  // The application can explicitly delete or truncate an item during playback.
+  if (!history_.Find(item_id, &ticket) || !speech_.Get(ticket, &view))
+    return true;
+  const size_t width =
+      view.format.encoding == RealtimeAudioEncoding::kPcm16 ? 2 : 1;
+  const uint64_t frames = view.bytes.size() / width;
+  const uint64_t submitted = submitted_samples / (24000 / view.format.rate);
+  if ((view.complete || view.truncated) && submitted >= frames) return true;
+  const auto end_ms = std::min(frames, submitted) * 1000 / view.format.rate;
+  return TruncateStoredAudio(ticket, end_ms, {});
+}
+
+bool RealtimeConversationSession::TruncateStoredAudio(
+    const RealtimeItemTicket& ticket, uint64_t end_ms,
+    std::string_view event_id) {
+  auto status = speech_.Truncate(ticket, end_ms);
   if (!status)
     return ErrorEvent(Invalid("realtime_audio_truncate_invalid",
                               status.message(), "audio_end_ms"),
-                      event.GetString("event_id"));
+                      event_id);
   if (!history_.TruncateAudioTranscript(ticket)) return false;
   for (auto& work : work_) {
-    if (!work->tickets.contains(id)) continue;
-    if (!Accepted(work->output->TruncateAudio(id))) return false;
+    if (!work->tickets.contains(ticket.id)) continue;
+    if (!Accepted(work->output->TruncateAudio(ticket.id))) return false;
     work->cancelled_after_generation |= !work->control->Cancel();
     work->changed.notify_all();
   }
   return Event("conversation.item.truncated",
-               Object({{"item_id", String(id)},
+               Object({{"item_id", String(ticket.id)},
                        {"content_index", Number(0)},
-                       {"audio_end_ms", *end}}));
+                       {"audio_end_ms", Number(end_ms)}}));
 }
 
 ObjectReply RealtimeConversationSession::Store(Work& work, const Json& item,

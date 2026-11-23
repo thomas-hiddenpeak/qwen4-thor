@@ -229,3 +229,5 @@ rt.on('input_audio_buffer.dtmf_event_received', ({ event }) => handlePhoneKey(ev
 ```
 
 旁路收到的首个 `session.created` 含当前会话 ID 和已生效设置。应用可通过同一连接处理函数调用、发送 `function_call_output`、请求语音回答；音频走电话媒体。输出预算包括文本和实际的语音量化码，短版本号的一次实测共用 454 个输出 token。播放的开始和排空事件携带对应的 `response_id`。使用 `client.realtime.calls.hangup(callId)` 挂断。已结束的通话及其他客户的通话对该调用返回 404。[业务记录](evidence/serve-realtime-sip-accept-20261123/README.md)。
+
+在电话播报中发送 `output_audio_buffer.clear` 可停播。设置 `audio.input.turn_detection.type` 为 `server_vad` 并启用 `interrupt_response`，来电者发声时会自动打断默认回答。应用从 `conversation.item.truncated` 获取音频项 ID 和 `audio_end_ms`，可用 `conversation.item.retrieve` 核对截断后的音频；服务移除其转录以免下一轮引用未播完的内容。会话也支持只报告检测事件，设置 `interrupt_response: false` 即可。[手动与实际插话验证](evidence/serve-realtime-call-playout-20261123/README.md)。

@@ -7,7 +7,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-Realtime 独立接听和按 `call_id` 接入的官方 SDK 旁路已通过 Thor 原生 TLS 验收。一通加密 Opus 来电完成按键、语音查询、真实工具回填及播报 rev426。迟到的同客户旁路拿到当前会话，其他客户接听、挂断与旁路均得到 404。通过轮 68.48 秒，普通 Chat 回答 42，GPU 已释放。前两轮分别因简繁写法和客户端语音输出预算不足失败。接下来补 Realtime WebRTC 建连、临时凭据及打断时的播放历史对齐；默认发行仍为 rev426。[业务证据](evidence/serve-realtime-sip-accept-20261123/README.md)。
+Realtime 电话打断已通过默认对话的真实业务短验。应用手动停播及来电方实际插话后，同一语音项分别保留 985 和 1,702 毫秒，取回字节均为原 PCM 的精确前缀，转录清空。两次挂断后 Chat 正常、GPU 释放。一次 NVML 环境中断和一次命名工具返回 502 均保留；工具调用失败的根因仍需定位。下一步是 Realtime WebRTC 建连、临时凭据和剩余组合交付，默认 rev426。[打断验收](evidence/serve-realtime-call-playout-20261123/README.md)。
+
+Realtime 独立接听和按 `call_id` 接入的官方 SDK 旁路已通过 Thor 原生 TLS 验收。一通加密 Opus 来电完成按键、语音查询、真实工具回填及播报 rev426。迟到的同客户旁路拿到当前会话，其他客户接听、挂断与旁路均得到 404。通过轮 68.48 秒，普通 Chat 回答 42，GPU 已释放。前两轮分别因简繁写法和客户端语音输出预算不足失败。本轮默认发行仍为 rev426。[业务证据](evidence/serve-realtime-sip-accept-20261123/README.md)。
 
 Realtime 拒接、转接的运行时输入和公开合同已对齐官方 SDK 自身类型。492 个 SDK 正反例零差异。一次真实来电验证 `reject(id, null)` 得到远端 603，而 `{status_code:null}` 得到 400，通话保持可处置。37.49 秒，普通 Chat 及清理通过。该轮验证了独立 Realtime 接听的扁平输入。[验收与边界](evidence/serve-realtime-sip-control-contract-20261123/README.md)。
 

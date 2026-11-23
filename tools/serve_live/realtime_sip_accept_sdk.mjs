@@ -93,6 +93,9 @@ try {
       properties:{record_key:{type:'string',enum:['release']}},required:['record_key'],additionalProperties:false}}],
     tool_choice:{type:'function',name:'lookup_project_record'}}});
   const first = (await waitEvent('response.done')).response;
+  save('sdk-tool-terminal.json',{status:first.status,details:first.status_details,usage:first.usage,
+    calls:first.output.filter(i=>i.type==='function_call').map(i=>({
+      name:i.name,status:i.status,arguments:i.arguments}))});
   const call = functionCall(first);
   const raw = fs.readFileSync(args.record.path);
   assert.equal(createHash('sha256').update(raw).digest('hex'),args.record.sha256);
@@ -100,6 +103,15 @@ try {
   rt.send({type:'conversation.item.create',item:{type:'function_call_output',id:'release_result',
     call_id:call.call_id,output:JSON.stringify({record_key:'release',version,source:'docs/STATUS.md',sha256:args.record.sha256})}});
   await until(()=>events.find(e=>e.type==='conversation.item.done' && e.item?.id==='release_result'),'stored real result');
+  if (args.barge_in) {
+    const at = events.length;
+    rt.send({type:'session.update',session:{type:'realtime',audio:{input:{turn_detection:{
+      type:'server_vad',threshold:0.5,prefix_padding_ms:300,silence_duration_ms:500,
+      create_response:false,interrupt_response:true}}}}});
+    const updated = (await waitEvent('session.updated',at)).session;
+    assert.equal(updated.audio.input.turn_detection.interrupt_response,true);
+    assert.equal(updated.audio.input.turn_detection.create_response,false);
+  }
   const next = events.length;
   rt.send({type:'response.create',response:{output_modalities:['audio'],tools:[],tool_choice:'none',
     // Bounded duplex profile includes 16 codec tokens per generated speech frame.
@@ -110,12 +122,46 @@ try {
     usage:response.usage});
   assert.equal(response.status,'completed');
   const start = await waitEvent('output_audio_buffer.started',next);
-  const stop = await waitEvent('output_audio_buffer.stopped',next);
   assert.equal(start.response_id,response.id);
-  assert.equal(stop.response_id,response.id);
   answer = (await waitEvent('response.output_audio_transcript.done',next)).transcript;
   assert.equal(answer.replace(/[^a-z0-9]/gi,'').toLowerCase(),version);
-  await until(()=>fs.existsSync(marker('carrier-heard')),'carrier playout');
+  if (args.clear_playout) {
+    const item = response.output.find(i=>i.type==='message');
+    async function retrieve() {
+      const from = events.length;
+      rt.send({type:'conversation.item.retrieve',item_id:item.id});
+      const result = (await waitEvent('conversation.item.retrieved',from)).item;
+      assert.equal(result.id,item.id);
+      return result.content[0];
+    }
+    const before = await retrieve();
+    assert.equal(before.transcript,answer);
+    if (args.barge_in) save('sdk-playout-reference',true);
+    await until(()=>fs.existsSync(marker('carrier-heard')),'partial carrier playout');
+    if (args.barge_in) {
+      const started = await waitEvent('input_audio_buffer.speech_started',next);
+      assert.ok(started.item_id && started.item_id!==item.id);
+    } else {
+      rt.send({type:'output_audio_buffer.clear',event_id:'stop_speaking'});
+    }
+    const cleared = await waitEvent('output_audio_buffer.cleared',next);
+    const truncated = await waitEvent('conversation.item.truncated',next);
+    assert.equal(cleared.response_id,response.id);
+    assert.equal(truncated.item_id,item.id);
+    assert.equal(truncated.content_index,0);
+    const after = await retrieve();
+    const full = Buffer.from(before.audio,'base64'), kept = Buffer.from(after.audio,'base64');
+    assert.equal(after.transcript,'');
+    assert.ok(kept.length > 0 && kept.length < full.length);
+    assert.equal(kept.length,truncated.audio_end_ms*48);
+    assert.ok(kept.equals(full.subarray(0,kept.length)));
+    save('sdk-truncation.json',{generated_pcm_bytes:full.length,retained_pcm_bytes:kept.length,
+      audio_end_ms:truncated.audio_end_ms,exact_prefix:true,retained_transcript:after.transcript});
+  } else {
+    const stop = await waitEvent('output_audio_buffer.stopped',next);
+    assert.equal(stop.response_id,response.id);
+    await until(()=>fs.existsSync(marker('carrier-heard')),'carrier playout');
+  }
   const hung = await owner.realtime.calls.hangup(id).withResponse();
   assert.equal(hung.response.status,200);
   assert.equal(hung.data,undefined);

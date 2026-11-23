@@ -69,6 +69,8 @@ class Stage(signal.Stage):
         stack.callback(finish)
         args = dict(id=live_id, dtmf=self.plan.get('dtmf',False), realtime_id=realtime_id, blocked_media=blocked_media, port=self.plan['public_port'], key=self.keys['alpha'],
                     other=self.keys['beta'], out=str(self.out), record=self.plan['record'],
+                    clear_playout=self.plan.get('clear_playout', False),
+                    barge_in=self.plan.get('barge_in', False),
                     sdk=self.plan['sdk_directory'], ca=self.plan['tls']['certificate'])
         with proc.stdin:
             proc.stdin.write(json.dumps(args).encode())
@@ -121,6 +123,26 @@ class Stage(signal.Stage):
         if sdk is not None:
             require(sdk.poll() is None, 'SDK completed before hangup receipt')
         peer.reply_dialog(headers, 200)
+
+    def interrupt_with_speech(self, audio, codec, seq, sdk):
+        self.wait_file(self.out/'sdk-playout-reference', sdk, 20)
+        clip = retained_query()
+        require(clip == self.plan['retained_query'], 'barge-in audio identity')
+        # Up to one second from the same verified spoken recording, at live pace.
+        pcm, _ = audioop.ratecv(Path(clip['path']).read_bytes()[:48000],
+                                2, 1, 24000, 48000, None)
+        start = time.monotonic()
+        frames = 0
+        for offset in range(0, len(pcm), 1920):
+            frame = pcm[offset:offset+1920].ljust(1920, b'\0')
+            header = struct.pack('!BBHII', 128, 111, seq, 32000+seq*960, 0x11334455)
+            audio.rtp.sendto(audio.send.protect(header + codec.encode(frame)), audio.target)
+            seq += 1
+            frames += 1
+            time.sleep(max(0, start + frames*.020 - time.monotonic()))
+            if (self.out/'sdk-truncation.json').is_file():
+                break
+        save(self.out/'carrier-interrupt.json', dict(frames=frames, source_sha256=clip['sha256']))
 
     def transfers(self, peer, token, tag, contact, sdk):
         first = peer.dialog_request('REFER', token, tag)
@@ -246,15 +268,22 @@ class Stage(signal.Stage):
                      sdk_hangup_during_input=True))
             else:
                 save(self.out/'carrier-heard', True)
+            if self.plan.get('barge_in'):
+                self.budget('voice_inputs')
+                self.interrupt_with_speech(audio, codec, seq, sdk)
             self.confirm_bye(peer, token, tag, sdk)
             require(sdk.wait(25) == 0, 'SDK receipt or sideband close failure')
         self.budget('client_results')
         observed = read(self.out/'voice.json')
         kinds = observed['kinds']
         if self.plan.get('realtime_accept'):
+            cut = self.plan.get('clear_playout', False)
             lifecycle = (kinds.count('response.done') == 2 and
                          kinds.count('output_audio_buffer.started') == 1 and
-                         kinds.count('output_audio_buffer.stopped') == 1 and
+                         kinds.count('output_audio_buffer.stopped') == int(not cut) and
+                         kinds.count('output_audio_buffer.cleared') == int(cut) and
+                         kinds.count('conversation.item.truncated') == int(cut) and
+                         kinds.count('input_audio_buffer.speech_started') == int(self.plan.get('barge_in', False)) and
                          kinds.count('input_audio_buffer.dtmf_event_received') == 1)
         else:
             lifecycle = (kinds.count('session.delegation.created') == 1 and kinds.count('session.closed') == 1)
@@ -336,7 +365,13 @@ class TransferStage(Stage):
     limits = dict(LIMITS, sdk_requests=13)
 
 
+class BargeInStage(Stage):
+    limits = dict(LIMITS, voice_inputs=2)
+
+
 def stage_for(plan):
+    if plan.get('barge_in'):
+        return BargeInStage
     if plan.get('dual') and not plan.get('realtime_accept'):
         return TransferStage
     return ActivationStage if plan.get('unready_media') else Stage
@@ -352,6 +387,8 @@ def main():
     mode.add_argument('--transfer', action='store_true')
     mode.add_argument('--dtmf', action='store_true')
     mode.add_argument('--realtime-accept', action='store_true')
+    mode.add_argument('--realtime-clear', action='store_true')
+    mode.add_argument('--realtime-barge', action='store_true')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     out = args.output.resolve()
@@ -361,8 +398,10 @@ def main():
         plan = read(out/'plan.json')
         signal_worker = Path(plan['binary']).with_name('q4t-live-sip')
         audio_worker = signal_worker.with_name('q4t-sip-media')
-        plan.update(unready_media=args.unready_media, dual=args.transfer or args.realtime_accept,
-                    realtime_accept=args.realtime_accept, dtmf=args.dtmf)
+        realtime = args.realtime_accept or args.realtime_clear or args.realtime_barge
+        plan.update(unready_media=args.unready_media, dual=args.transfer or realtime,
+                    realtime_accept=realtime, clear_playout=args.realtime_clear or args.realtime_barge,
+                    barge_in=args.realtime_barge, dtmf=args.dtmf)
         plan.update(schema=SCHEMA,limits=stage_for(plan).limits,
                     hangup_tail=args.hangup_tail,port=18821,operations_port=18822,
                     public_port=18823,sip_port=18824,sip_binary=str(signal_worker),
@@ -390,6 +429,8 @@ def main():
         require(all(sha(ROOT/n)==h for n,h in plan['sources'].items()), 'source drift')
         save(out/'acceptance.json', dict(environment=env,seconds=result['seconds'],
             counts=result['counts'],
+            truncation=read(out/'sdk-truncation.json') if plan.get('clear_playout') else None,
+            barge_in=read(out/'carrier-interrupt.json') if plan.get('barge_in') else None,
             dtmf=read(out/'dtmf-carrier.json') if plan.get('dtmf') else None,
             dtmf_sdk=read(out/'dtmf-sdk.json') if plan.get('dtmf') else None,
             transfers=read(out/'transfer-carrier.json') if plan.get('dual') and not plan.get('realtime_accept') else None,

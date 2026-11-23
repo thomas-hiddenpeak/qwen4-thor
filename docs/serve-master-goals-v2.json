@@ -3033,7 +3033,8 @@
       "remaining_required": [
         "Multiple video tracks, presentation canvas/clipping and remaining format combinations",
         "Audio/Realtime/image-generation/video-generation model assets and actual backend execution",
-        "Recorded model quality failures remain unresolved; never relabelled by other input/mode successes"
+        "Recorded model quality failures remain unresolved; never relabelled by other input/mode successes",
+        "Identify the cause of the observed Realtime SIP named-tool structured_output_invalid response and validate any necessary correction; preserve failure and captured SDK diagnostics in evidence/serve-realtime-call-playout-20261123/README.md."
       ],
       "media_state_cache_plan": {
         "state": "cpu_pass_business_pending",
@@ -10451,8 +10452,8 @@
       }
     }
   ],
-  "next_task": "Implement authenticated call acceptance with negotiated secure SIP media, in-call controls, recoverable delivery and remaining Serve master tasks.",
-  "next": "Realtime 独立 SIP 接听、按 call_id 接入、真实语音工具回填与挂断已通过。继续 Realtime WebRTC 建连及凭据、播放打断的历史对齐、恢复与可回退组合发行。默认 rev426。",
+  "next_task": "Implement Realtime WebRTC call creation and scoped client secrets, investigate the observed structured tool failure and continue remaining Serve delivery.",
+  "next": "Realtime 电话接听、语音工具、手动停播和真实来电插话的历史均已验证。继续 WebRTC 建连和临时凭据、一次结构化工具 502 定位、恢复及可回退组合发行。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16334,6 +16335,7 @@
     "sip_transfer_business_evidence": "evidence/serve-live-sip-transfer-20261123/README.md",
     "sip_dtmf_business_evidence": "evidence/serve-live-sip-dtmf-20261123/README.md",
     "realtime_sip_control_contract_evidence": "evidence/serve-realtime-sip-control-contract-20261123/README.md",
-    "realtime_sip_accept_business_evidence": "evidence/serve-realtime-sip-accept-20261123/README.md"
+    "realtime_sip_accept_business_evidence": "evidence/serve-realtime-sip-accept-20261123/README.md",
+    "realtime_sip_playout_history_evidence": "evidence/serve-realtime-call-playout-20261123/README.md"
   }
 }

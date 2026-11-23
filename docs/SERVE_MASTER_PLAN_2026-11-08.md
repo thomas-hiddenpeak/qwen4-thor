@@ -20,6 +20,10 @@
 6. **只有用户可以缩减最终范围。** 新发现的问题入表；确需调整范围，
    保留原问题、原因和用户决定。不得靠改命名/改完成条件把缺口消失。
 
+## 当前阶段更新（2026-11-23）
+
+工作分支已完成 Realtime SIP 独立接听、按 call ID 接入、工具回填和播报，以及手动停播和真实来电插话后的会话历史截断。默认发行 rev426。继续 Realtime WebRTC 创建、临时凭据、组合恢复与可回退交付。另有一次命名工具生成返回 502，已登记到 A10，保留实际失败终态与后续排查入口。[接听](evidence/serve-realtime-sip-accept-20261123/README.md)、[播放与历史](evidence/serve-realtime-call-playout-20261123/README.md)。
+
 ## 当前阶段更新（2026-11-21）
 
 [PR #55已进入main](evidence/serve-pr55-merged-20261120/README.md)，包含

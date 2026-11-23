@@ -100,6 +100,8 @@ class RealtimeConversationSession {
   bool Start();
   bool Message(WebSocketOpcode opcode, std::string_view message);
   bool Tick();
+  // The native media clock commits mono 24 kHz samples to its paced sender.
+  bool TruncatePlayout(const std::string& item_id, uint64_t submitted_samples);
   // All methods belong to the session owner, never the socket reader. The
   // socket pump signals its own stop flag, then joins the session worker.
   void Cancel() noexcept;
@@ -140,6 +142,8 @@ class RealtimeConversationSession {
   bool CreateItem(const io::Json& event);
   bool ItemCommand(const io::Json& event, bool erase);
   bool TruncateItem(const io::Json& event);
+  bool TruncateStoredAudio(const RealtimeItemTicket& ticket, uint64_t end_ms,
+                           std::string_view event_id);
   ObjectReply ValidateSpeech(const RealtimeSpeechOptions& speech) const;
   bool CreateResponse(const io::Json& event,
                       RealtimeInputCommit* automatic = nullptr);
