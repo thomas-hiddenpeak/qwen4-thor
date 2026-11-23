@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #66 的两项远端检查通过，合并提交 `5806ed388` 与受检提交文件树相同。G00 冻结的 157 个推理与应用路径或选择器中，发行 OpenAPI 已声明其中 73 个的至少一项操作，另 84 个尚无匹配声明。此计数不代表逐方法业务验收。88 个云平台管理条目继续按用户决定排除。[主线回执](evidence/serve-agent-sessions-20261123/main.json) · [逐条对照](evidence/serve-agent-sessions-20261123/scope-routes.json)
+
 主配置生成的真实工具调用已由轻配置接续。官方 Node SDK 用同一结果回填两次，原回合只保存一份结果并回答 442。保留夹具的 3 RPM 上限后，第 4 笔推理准确返回 rate_limit_exceeded，原回合的失败可回读，会话仍可使用。窗口恢复后续问再答 442。主、轻各启动一次，146 次 NVML 采样；默认 rev442 仍为 STOPPED。[资格与原失败记录](evidence/serve-agent-sessions-20261123/profiles.json)
 
 会话的 7 条路径、11 项操作已列入发布用 OpenAPI。创建时的 JSON 或 SSE、事件订阅的 SSE、提交事件的 202 空响应、Beta 请求头和列表元数据筛选都有合同回归。原生入口与可选 nginx 逐路由转发通过。PR #66 首轮 CI 的合同遗漏已修复，等待远端复检。

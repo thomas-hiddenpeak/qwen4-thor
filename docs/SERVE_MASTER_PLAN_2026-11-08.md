@@ -22,6 +22,8 @@
 
 ## 当前阶段更新（2026-11-23）
 
+PR #66 的两项远端检查通过，合并提交 `5806ed388` 与受检提交文件树相同。G00 冻结的 157 个推理与应用路径或选择器中，发行 OpenAPI 已声明其中 73 个的至少一项操作，另 84 个尚无匹配声明。此计数不代表逐方法业务验收。88 个云平台管理条目继续按用户决定排除。[主线回执](evidence/serve-agent-sessions-20261123/main.json) · [逐条对照](evidence/serve-agent-sessions-20261123/scope-routes.json)
+
 主配置生成的真实工具调用已由轻配置接续。官方 Node SDK 用同一结果回填两次，原回合只保存一份结果并回答 442。保留夹具的 3 RPM 上限后，第 4 笔推理准确返回 rate_limit_exceeded，原回合的失败可回读，会话仍可使用。窗口恢复后续问再答 442。主、轻各启动一次，146 次 NVML 采样；默认 rev442 仍为 STOPPED。[主轻验收](evidence/serve-agent-sessions-20261123/profiles.json)
 
 Managed Agent 流式工具短验通过。首次官方 SDK 在函数参数尚未齐备时就按 item.added 调用本地工具，回填得到 409。修复后只在持久化交接成功后向 SDK 公布可调用项。创建流 26 个事件，工具只执行一次；从空闲会话订阅的下一回合 19 个事件，两次均返回 442，未重复调用旧工具。跨客户订阅 404。继续完善会话管理、取消和恢复。[流式验收](evidence/serve-agent-sessions-20261123/stream.json)
