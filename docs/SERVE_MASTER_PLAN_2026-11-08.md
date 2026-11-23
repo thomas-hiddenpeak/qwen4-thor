@@ -22,7 +22,7 @@
 
 ## 当前阶段更新（2026-11-23）
 
-G00 已按用户决定冻结 157 条推理与应用服务路径，另有 88 条平台管理路径排除。新增标准 Agents 配置的两条路径、五项操作已完成原生 TLS、官方 SDK 及真实重启验证。会话、回合、环境、自动化及其余应用接口继续列入 A08/A11/A12/Q01，主轻资格和发行列入 Q02。[配置验收](evidence/serve-agent-registration-20261123/README.md)
+G00 已按用户决定冻结 157 条推理与应用服务路径，另有 88 条平台管理路径排除。新增标准 Agents 配置的两条路径、五项操作已完成原生 TLS、官方 SDK 及真实重启验证。会话、回合、环境、自动化及其余应用接口继续列入 A08/A11/A12/Q01，主轻资格已通过，Q02 继续核对打包、接管及默认交付。[配置验收](evidence/serve-agent-registration-20261123/README.md)
 
 默认已发布 **rev440，STOPPED**。模型骤停后 SDK 保留原代理输出并收到一个中断终态；网关致命退出后注册回退包接管，续读到旧模型排空前提交的 wait_agent，随后 Chat 答 42。用户 24 小时计划已固定。NVML 冷启动通过原包预检，设备仍由相机与 jtop 持有。[交付回执](evidence/serve-responses-agent-interruption-20261123/delivery.json) 模型步骤排空、RPM、TPM 与非法预约现在各有对应说明。9 项针对性 CPU 检查通过。候选经原生 TLS 和真实模型验证。代理创建子任务后，合法父进程通过配额管理通道发起排空；SDK 收到准确的 service_draining 说明，已提交输出及唯一失败终态可回读，另一客户 404。 当前 rev440 的排空错误码正确、提示仍是旧文案。[排空提示检查](evidence/serve-responses-agent-interruption-20261123/draining-message.json)
 

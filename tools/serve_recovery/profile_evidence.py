@@ -1638,7 +1638,12 @@ def validate(value, registry, name, digest):
         value['capabilities'], value['configuration'], value['startup_memory'], digest)
     ledger.require(actual == registry['qualifications'][name],
                    'profile receipt does not match retained observations')
-    business(value['business'], value['identity'], value['capacity'], value['capabilities'])
+    observed = value['business']
+    if value['format'] == 'q4t-profile-business-v26':
+        from tools.serve_recovery import profile_duplex_reuse
+        observed = dict(observed, realtime_duplex=profile_duplex_reuse.unpack_text(
+            observed['realtime_duplex']))
+    business(observed, value['identity'], value['capacity'], value['capabilities'])
     if 'live' in value['capabilities']:
         from tools.serve_recovery import profile_live_reuse
         ledger.require('reused_business' in value, 'Live business source missing')

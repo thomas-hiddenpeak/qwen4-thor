@@ -7,7 +7,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-标准 Beta Agents 配置已通过官方 Node SDK 的原生 TLS 短验。两个不同客户端验证了配置隔离，跨模型进程重启后仍可读取和修改七类工具配置。五个 HTTP 操作覆盖 157 条范围内路径中的两条。候选待主轻资格及可回退发布，默认 rev440 仍为 STOPPED。[验收与当前边界](evidence/serve-agent-registration-20261123/README.md)
+标准 Beta Agents 配置已通过官方 Node SDK 的原生 TLS 短验。两个不同客户端验证了配置隔离，跨模型进程重启后仍可读取和修改七类工具配置。五个 HTTP 操作覆盖 157 条范围内路径中的两条。主轻资格已通过，轻配置可在接管主配置后更新和删除原对象。轻资格文件从 8,385,882 降至 5,451,698 字节，可逐字节还原旧资格。候选待可回退发布，默认 rev440 仍为 STOPPED。[验收与当前边界](evidence/serve-agent-registration-20261123/README.md)
 
 PR #64 的 CI 发现自动回退在拒绝跨能力切换前读取了不相关的中断证据。已调整检查顺序，双工迁移针对性回归通过，等待两项远端 host-contracts。
 

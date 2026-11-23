@@ -52,3 +52,70 @@ def attach(value):
         source=copy.deepcopy(source),keys=sorted(set(source['business'])-set(FRESH)),
         fresh_keys=sorted(FRESH))
     validate(result);return result
+
+# The raw duplex transcript can contain the same long PCM/event text in several
+# observed requests and replies. Keep every occurrence recoverable in new records.
+TEXT_FORMAT = 'q4t-duplex-shared-strings-v1'
+TEXT_REF = '$q4t_duplex_text'
+TEXT_BYTES = 8 << 20
+MIN_TEXT = 1024
+
+
+def _visit_text(value, string, reference):
+    if type(value) is dict:
+        if TEXT_REF in value:
+            ledger.require(set(value) == {TEXT_REF}, 'invalid duplex text reference')
+            return reference(value[TEXT_REF])
+        return {k:_visit_text(v, string, reference) for k,v in value.items()}
+    if type(value) is list:
+        return [_visit_text(v, string, reference) for v in value]
+    return string(value) if type(value) is str and len(value) >= MIN_TEXT else value
+
+
+def pack_text(value):
+    raw = ledger.canonical(value)
+    ledger.require(0 < len(raw) <= TEXT_BYTES, 'duplex transcript size')
+    counts = {}
+
+    def count(text):
+        counts[text] = counts.get(text, 0) + 1
+
+    def collision(_):
+        raise ValueError('reserved duplex text reference in original evidence')
+
+    _visit_text(value, count, collision)
+    strings = sorted(text for text,n in counts.items() if n > 1)
+    lookup = {text:i for i,text in enumerate(strings)}
+    def replace(text):
+        return {TEXT_REF:lookup[text]} if text in lookup else text
+    return dict(format=TEXT_FORMAT, bytes=len(raw), sha256=ledger.digest(value),
+                strings=strings, witness=_visit_text(value, replace, collision))
+
+
+def unpack_text(value):
+    ledger.keys(value, ('format','bytes','sha256','strings','witness'))
+    strings = value['strings']
+    ledger.require(value['format'] == TEXT_FORMAT and type(value['bytes']) is int and
+        0 < value['bytes'] <= TEXT_BYTES and type(value['sha256']) is str and
+        ledger.HASH.fullmatch(value['sha256']) and type(strings) is list and
+        len(strings) <= TEXT_BYTES // (2 * MIN_TEXT) and
+        all(type(s) is str and len(s) >= MIN_TEXT for s in strings) and
+        strings == sorted(set(strings)), 'invalid shared duplex transcript')
+    # Budget the exact serialized expansion before committing to a complete
+    # serialization. Resolving each reference only borrows an immutable string.
+    size = len(ledger.canonical(value['witness']))
+    ledger.require(size <= value['bytes'], 'duplex template exceeds declared size')
+    gains = [len(ledger.canonical(s)) - len(ledger.canonical({TEXT_REF:i}))
+             for i,s in enumerate(strings)]
+    uses = [0] * len(strings)
+    def resolve(i):
+        nonlocal size
+        ledger.require(type(i) is int and 0 <= i < len(strings), 'invalid duplex text index')
+        size += gains[i]
+        ledger.require(size <= value['bytes'], 'duplex text expansion exceeds bound')
+        uses[i] += 1
+        return strings[i]
+    restored = _visit_text(value['witness'], lambda s:s, resolve)
+    ledger.require(size == value['bytes'] and all(n >= 2 for n in uses) and
+                   ledger.digest(restored) == value['sha256'], 'duplex transcript identity differs')
+    return restored

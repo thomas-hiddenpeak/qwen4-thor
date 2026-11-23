@@ -11,6 +11,16 @@ BETA_RECORD_FORMAT = 'q4t-profile-business-v24'
 AGENT_RECORD_FORMAT = 'q4t-profile-business-v25'
 AGENT_FORMAT = 'q4t-agent-profile-source-reuse-v1'
 AGENT_REFRESH = 'q4t-agent-profile-requalification-v1'
+REGISTRATION_RECORD = 'q4t-profile-business-v26'
+REGISTRATION_FORMAT = 'q4t-agent-registration-profile-source-v1'
+REGISTRATION_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents',
+    operations=['create','retrieve','update','list','delete'],
+    storage='authenticated_client', retention='until_deleted', tool_list_max_bytes=3145728)
+REGISTRATION_REVIEWED = {
+    'primary': 'd957150126ea565ce9d23c4b8707100cae80f95fd1b4ab5c81d5021e916565e1',
+    'light': '2e68838e87b3fe8fb4f0b578269dac10ccb9fc000a34b490a57562613bff0736',
+}
+
 REFRESH_REVIEWED = {
     'primary': 'a759ecb078ce7791679061f24560ec4a0c9622e47732ab7dd675c97fdf4fe49f',
     'light': '5265a9815da252b78560b391e1cb2b441ae35e9c8e2cbc89d450e6e1a0e99dd5',
@@ -20,7 +30,7 @@ AGENT_REVIEWED = {
     'light': 'de3a519c4411138d02a6d863704d1c8142a5bb0334257ad35b0a99e81f692f06',
 }
 REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
-                AGENT_RECORD_FORMAT: AGENT_FORMAT}
+                AGENT_RECORD_FORMAT: AGENT_FORMAT, REGISTRATION_RECORD: REGISTRATION_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -42,6 +52,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '7014bde675707b1bc3a52765ebbacfe2455a6b0be61b1eee7d4a61c3cb36dd5f':
+        '4ef57fba3d32d8a213471f7db499a4e097c82b120da4e2a08dd7878a10f71d3b',
     'da34734b772404e09ed8f7ac1c91f08683a712194c27c97a4c8e69f6501e8b88':
         '72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3',
     '0c2bb7554043ff66e2d59113a666b5233ac7a2a52d1042f5c0f2f1d48417ba0b':
@@ -73,6 +85,10 @@ def format_for(capabilities):
                 shared_output_budget=True, agent_events=True, actions=['spawn_agent',
                 'interrupt_agent', 'list_agents', 'send_message', 'followup_task', 'wait_agent']),
                 'unknown qualified hosted Responses agent capabilities')
+            if 'agent_registration' in capabilities:
+                ledger.require(capabilities['agent_registration'] == REGISTRATION_CAPABILITY,
+                               'unknown registered Agent configuration capability')
+                return REGISTRATION_RECORD
             return AGENT_RECORD_FORMAT
         return BETA_RECORD_FORMAT
     return RECORD_FORMAT
@@ -92,8 +108,21 @@ def attach(value, prior):
     previous['added'] = sorted(after.keys() - before.keys())
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and prior['format'] == AGENT_RECORD_FORMAT
-    revision = agent or value['format'] == BETA_RECORD_FORMAT
-    if refresh:
+    registration = value['format'] == REGISTRATION_RECORD
+    revision = agent or registration or value['format'] == BETA_RECORD_FORMAT
+    if registration:
+        from tools.serve_recovery import profile_duplex_reuse
+        ledger.require(prior['format'] == AGENT_RECORD_FORMAT and
+                       record_hash(prior) == REFRESH_REVIEWED.get(prior['profile']) and
+                       previous['added'] == ['agent_registration'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256'} and
+                       value['capabilities']['agent_registration'] == REGISTRATION_CAPABILITY and
+                       {'interruption.json','registration.json'} <=
+                       value['business']['live']['evidence_sha256'].keys(),
+                       'registration must extend the qualified recovery and SDK business')
+        value['business']['realtime_duplex'] = profile_duplex_reuse.pack_text(
+            value['business']['realtime_duplex'])
+    elif refresh:
         ledger.require(record_hash(prior) == AGENT_REVIEWED.get(prior['profile']) and
                        not previous['added'] and
                        set(previous['capabilities']) == {'protocol_source_sha256'},
@@ -119,7 +148,8 @@ def previous_record(value):
     ledger.keys(reuse, ('format', 'previous'))
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and reuse['format'] == AGENT_REFRESH
-    revision = agent or value['format'] == BETA_RECORD_FORMAT
+    registration = value['format'] == REGISTRATION_RECORD
+    revision = agent or registration or value['format'] == BETA_RECORD_FORMAT
     ledger.require(refresh or reuse['format'] == REUSE_FORMAT.get(value['format']),
                    'incorrect Live qualification source')
     previous = codec.unpack(reuse['previous'])
@@ -135,6 +165,10 @@ def previous_record(value):
     original['capabilities'].update(previous['capabilities'])
     if agent and not refresh:
         del original['capabilities']['responses']['multi_agent']
+    if registration:
+        from tools.serve_recovery import profile_duplex_reuse
+        original['business']['realtime_duplex'] = profile_duplex_reuse.unpack_text(
+            original['business']['realtime_duplex'])
     if revision:
         original['business']['live'] = previous['live']
     else:
@@ -144,6 +178,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == REGISTRATION_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == REGISTRATION_REVIEWED.get(name),
+                       'Agent registration differs from its reviewed qualification')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == REFRESH_REVIEWED.get(name),
+                       'Agent registration lost the qualified interruption recovery')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == AGENT_RECORD_FORMAT:
         name = value['profile']
         if value['reused_business'].get('format') == AGENT_REFRESH:

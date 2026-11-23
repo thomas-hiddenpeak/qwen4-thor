@@ -79,6 +79,10 @@ def observations(directory, accepted):
             from tools.serve_responses import interruption_profile_acceptance
             profiles[name]['evidence_sha256'].update(
                 interruption_profile_acceptance.verify(phase, plan))
+        if 'agent_registration' in declared or 'agent_registration' in plan:
+            from tools.serve_responses import registration_profile_acceptance
+            profiles[name]['evidence_sha256'].update(
+                registration_profile_acceptance.verify(phase, plan, declared))
     profile_contract.capability_pair(*capabilities)
     package.require(profiles['primary']['workers'] == profiles['light']['workers'] and
                     profiles['primary']['protocol_sha256'] == profiles['light']['protocol_sha256'],
