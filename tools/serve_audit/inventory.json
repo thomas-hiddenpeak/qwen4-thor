@@ -3256,7 +3256,7 @@
     "src/server/model_assets.cpp": "42aead17aaf247f527ccd91da587d5379acb4ca13ed61bab05b307b2dc1bf53e",
     "src/server/model_assets_protocol.h": "24577a2d6c544d998fb2b9815e118fdf19b8dea5fd809d9205cb4e4dba157d40",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
-    "src/server/model_preparation.cpp": "8882fe186e64feb0864f2f0036c98ead2c14865fc23314b5dee8cdfb8b50083d",
+    "src/server/model_preparation.cpp": "f93b8943664954fcdd6e0f322fe1dbf2baf4eb453bf394cc8f1f34017fcf56e6",
     "src/server/moderation.cpp": "6cbbf4046419304d592f91a04a128562a74fda85aceeeb7b654042862dd8eafb",
     "src/server/moderations_execution.cpp": "d06279668f68239ce7dfffbe4f160dbbdbc685a58baefa767016124b0c7034c6",
     "src/server/moderations_plan.cpp": "d61981830fdc2b75a9af372a32be3f875893317e64c13ec3aec70cb8186723ab",

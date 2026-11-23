@@ -36,24 +36,27 @@ ObjectReply ModelPreparation::ReservePrompt(uint64_t tokens) {
   if (const auto* limits = identity_.Limits();
       limits && prior_input_ + input_ + tokens > limits->max_prompt_tokens)
     return Error(400, "client_prompt_limit_exceeded",
-                 "File preparation exceeds cumulative client input limit");
+                 "Model input exceeds the cumulative client prompt limit");
   const auto result =
       reserved_ ? rate_.ExtendPrompt(clients_, identity_, tokens)
                 : rate_.Reserve(clients_, identity_, tokens, public_output_,
                                 ClientClock::now(), auxiliary_output_,
                                 preparation_output_);
-  if (result != ClientRateResult::kAllowed) {
-    const bool rpm = result == ClientRateResult::kRpm;
-    const bool tpm = result == ClientRateResult::kTpm;
-    const bool frozen = result == ClientRateResult::kFrozen;
-    return Error(rpm || tpm ? 429
-                 : frozen   ? 503
-                            : 500,
-                 rpm      ? "client_rpm_exhausted"
-                 : tpm    ? "client_tpm_exhausted"
-                 : frozen ? "service_draining"
-                          : "client_rate_invalid",
-                 "File preparation minute quota unavailable");
+  switch (result) {
+    case ClientRateResult::kFrozen:
+      return Error(503, "service_draining",
+                   "Service is draining and cannot admit another model step");
+    case ClientRateResult::kRpm:
+      return Error(429, "client_rpm_exhausted",
+                   "Client request rate limit reached");
+    case ClientRateResult::kTpm:
+      return Error(429, "client_tpm_exhausted",
+                   "Client token rate limit reached");
+    case ClientRateResult::kInvalid:
+      return Error(500, "client_rate_invalid",
+                   "Invalid model step rate reservation");
+    case ClientRateResult::kAllowed:
+      break;
   }
   reserved_ = pending_ = true;
   pending_input_ = tokens;

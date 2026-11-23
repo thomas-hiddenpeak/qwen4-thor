@@ -1,0 +1,29 @@
+{
+  "installed_revision": 440,
+  "source": "src/server/model_preparation.cpp",
+  "observed_http": {
+    "error_code": "service_draining",
+    "message": "File preparation minute quota unavailable",
+    "where": "registered-version gateway recovery, after a saved agent spawn"
+  },
+  "corrected_message": "Service is draining and cannot admit another model step",
+  "checks": [
+    "model_preparation_reports_drain_and_quota_separately",
+    "model_preparation_shares_one_rpm_with_primary_and_actual_usage",
+    "model_preparation_late_tool_reuses_original_rpm_and_cumulative_usage",
+    "model_preparation_late_cancel_retains_prior_work_and_prompt_limit",
+    "model_preparation_failed_steps_charge_only_admitted_actual_work",
+    "model_preparation_budget_cannot_bypass_tpm_prompt_or_public_output",
+    "model_preparation_total_exhaustion_does_not_refill_reservation",
+    "model_preparation_primary_handoff_requires_current_closed_owned_rate",
+    "model_preparation_over_budget_cannot_handoff_or_hide_actual_usage"
+  ],
+  "results": {
+    "drain-cpu.log": "d4bce44f28064f57ad3459a10d76c25e80905ddec803abcfb86fec3944853d8b",
+    "drain-cpu2.log": "2c74e5f20801bed42736074071e4db0a22080acf5357963b5db36c2e1c949109",
+    "drain-host-build2.log": "1b7590cc56c8473cbe7dbff175d62339d3fcb578c85c45a2a633b7e328878381"
+  },
+  "first_failure": "Reusing the rejected rate lease returns client_rate_invalid. Repeat drain check with the independent request lease and retain the invalid-reuse check.",
+  "cpu_passed": 9,
+  "new_runtime_acceptance": false
+}

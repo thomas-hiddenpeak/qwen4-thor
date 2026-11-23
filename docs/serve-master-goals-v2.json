@@ -16486,6 +16486,7 @@
     "interruption": "evidence/serve-responses-agent-interruption-20261123/README.md",
     "candidate_status": "rev440 registered; model loss and graceful drain verified independently",
     "interruption_profiles": "evidence/serve-responses-agent-interruption-20261123/profiles.json",
-    "interruption_delivery": "evidence/serve-responses-agent-interruption-20261123/delivery.json"
+    "interruption_delivery": "evidence/serve-responses-agent-interruption-20261123/delivery.json",
+    "draining_message": "evidence/serve-responses-agent-interruption-20261123/draining-message.json"
   }
 }

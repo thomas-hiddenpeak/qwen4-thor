@@ -1667,6 +1667,32 @@ Q4T_TEST(client_rate_auxiliary_cannot_bypass_tpm_or_public_output_limit) {
   return true;
 }
 
+Q4T_TEST(model_preparation_reports_drain_and_quota_separately) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(DynamicPolicy(1, 50)));
+  const auto client = admission.Authenticate("alpha", kSecret);
+  Q4T_CHECK(admission.EnableRateRecovery());
+  Q4T_CHECK(admission.RestoreRates(nullptr, std::string(64, '1')));
+  ClientRateLease lease;
+  ModelPreparation preparation(admission, client, lease, 10, 0, 10);
+  const auto over_tokens = preparation.ReservePrompt(40);
+  Q4T_CHECK(over_tokens.http_status == 429 &&
+            over_tokens.code == "client_tpm_exhausted" &&
+            over_tokens.message == "Client token rate limit reached");
+  const auto invalid = preparation.ReservePrompt(1);
+  Q4T_CHECK(invalid.http_status == 500 && invalid.code == "client_rate_invalid");
+  ClientRateState snapshot;
+  Q4T_CHECK(admission.FreezeRates(&snapshot));
+  ClientRateLease next;
+  ModelPreparation after_freeze(admission, client, next, 10, 0, 10);
+  const auto draining = after_freeze.ReservePrompt(1);
+  Q4T_CHECK(draining.http_status == 503 && draining.code == "service_draining");
+  Q4T_CHECK(draining.message ==
+            "Service is draining and cannot admit another model step");
+  Q4T_CHECK(admission.RateUsage(0).requests == 0);
+  return true;
+}
+
 Q4T_TEST(model_preparation_shares_one_rpm_with_primary_and_actual_usage) {
   ClientAdmission admission;
   Q4T_CHECK(admission.Configure(DynamicPolicy(1, 200)));
