@@ -1,0 +1,81 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 434,
+    "version_revision": 146,
+    "profile_revision": 37,
+    "previous_profile_revision": 36,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "4c832acf736ebc0080cbd7b15c5c155c587867d84a5f6dba759e6a6a482498d8",
+    "fallback": "7c39485ee7c4365620130e8b8a911807fb99bb35b80c6ea43d1f31f8800c5db7",
+    "engine": "ecd5bdf043261c9381ac3fd48d5822a49a6b8f0253693cb9c8bf1b026747928f",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "takeover": {
+    "status": "PASS",
+    "seconds": 110.70127571886405,
+    "model_starts": 2,
+    "stop_returncode": 0,
+    "supervisor_exit": 0,
+    "remaining": [],
+    "ports_free": true,
+    "unchanged_default": true,
+    "receipt_sha256": "4c832acf736ebc0080cbd7b15c5c155c587867d84a5f6dba759e6a6a482498d8"
+  },
+  "guardian_retained": true,
+  "old_model_generation": 1,
+  "new_model_generation": 2,
+  "fallback_selection": "fallback",
+  "fallback_consumed": true,
+  "device_probes": 1,
+  "signal": 6,
+  "webrtc_status": [
+    201,
+    201
+  ],
+  "recovered_beta_id_matches": true,
+  "day_plan": {
+    "source_commit": "c18a86bd879261d2ed8f0ba80bf8bfcc233f9b67",
+    "package_sha256": "4c832acf736ebc0080cbd7b15c5c155c587867d84a5f6dba759e6a6a482498d8",
+    "source_files": 695,
+    "checked": true,
+    "hours_executed": 0
+  },
+  "merged_prs": {
+    "58": {
+      "commit": "d62041549d361e3081239099c4a8ad36f852bb42",
+      "checks": [
+        45121357401,
+        45121350660
+      ]
+    },
+    "59": {
+      "commit": "2c39ad7949f7964ff13d3c63151ae37d8cbac2e2",
+      "checks": [
+        45122990734,
+        45122845459
+      ]
+    }
+  },
+  "sha256": {
+    "fatal-business-01/result.json": "96b9b171bb2a1f7ea705eebed6bfc2cf72f3aa9f748284f3be57757d641769e9",
+    "fatal-business-01/recovery.json": "738f84c0822e408463510b5080a11b0bb19497197b5a70f8eaa047620921496f",
+    "fatal-business-01/beta-before.wire": "b753b6bc99601a5e90090bfc660aed2f67dca26fb096172816755638e4797e2e",
+    "fatal-business-01/beta-after.wire": "2a686a678ee71fcb847b8da04dcf74e3e7bdfa32c9f77663e9e2691a4180f821",
+    "fatal-business-01/stored.wire": "003583f7473105a603ab54123bc9b2ea2793c7775153b3f0684df562cb74be18",
+    "fatal-business-01/chat-before.wire": "003583f7473105a603ab54123bc9b2ea2793c7775153b3f0684df562cb74be18",
+    "fatal-business-01/chat-after.wire": "5b7d97758415adf932a30c51d2f5e2ffaf085327ac0516a2d3c61789124213f5",
+    "fatal-lease-01/exit.json": "5240d31299fbb9c308b972140d05d9f8300109ffdae49e7c5c4b94e3f53899ac",
+    "fallback-01/origin.json": "68a5db27589ad20231a265bac57f043183986c0820ba1d9f7ef66d0ee979970b",
+    "primary-01/origin.json": "95738dafd8d407db71b5f895e2cc7c9c7f25e91c03ff06ad7d8c05846c991bdc",
+    "delivery/result.json": "e086b5a42cb8f5d2577d54387b83e279b858104c04ca253b1f7886e770f56ef4",
+    "publish-lease-01/exit.json": "f435c952909d61e0f6501035e3e6b14561b3cf617d400d083b2916bfe2ce81de",
+    "delivery/check.stdout": "1bd15e2cf3362e8ea967161b69be20936f20883ee9f16ff5dacdedd106dddbb6",
+    "delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    "delivery/version-status.stdout": "77bd7cb87045fa4e7cfb6105866bb46fca4d68b3a53afb7702e610adb8a33742",
+    "soak-src/.q4t-work/day-01/plan.json": "d91a1a5787585a5e89b9adffc10a149cc60c23921bfa215c8ffb80377c9dbc08",
+    "soak-day-check.log": "e2f640868fea1f87366011094012c9a999aed935ebf87220ef38f45cf2a37db0"
+  }
+}
