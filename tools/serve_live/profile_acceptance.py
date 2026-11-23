@@ -46,10 +46,6 @@ def discovery_candidate(build, previous, witness, expected):
 
 
 def prepare(out, selection, *, discovery_build=None, previous_profiles=None):
-    pkg.require(not out.exists(), 'fresh stage required')
-    out.mkdir(mode=0o700, parents=True)
-    state = out/'state'
-    state.mkdir(mode=0o700)
     previous = ROOT/'build/service'
     envelope = pkg.read(previous/'manifest.json')
     selected = pkg.verify(previous/'engine', envelope['engine_manifest_sha256'])
@@ -58,7 +54,6 @@ def prepare(out, selection, *, discovery_build=None, previous_profiles=None):
     pkg.require(qualified['environment']['status'] == 'PASS' and
                 qualified['observation']['restored'] == 201 and
                 qualified['observation']['same_model'], 'worker business qualification')
-    receipt = out/'identity.json'
     witness = pkg.read(selection.parent/'plan.json')
     pkg.require(witness['binary_sha256'] == expected['engine_sha256'] and
                 witness['live_workers'] == expected, 'worker witness binary binding')
@@ -68,8 +63,19 @@ def prepare(out, selection, *, discovery_build=None, previous_profiles=None):
     if discovery_build is not None:
         change = discovery_candidate(discovery_build, previous_profiles, witness, expected)
         expected = dict(expected, engine_sha256=change['binary'])
+    prepare_profiles(out, envelope, selected, expected, witness['ingress_sha256'],
+                     discovery_change=change)
+
+
+def prepare_profiles(out, envelope, selected, expected, ingress_sha256, *,
+                     discovery_change=None, beta_change=None, protected=None):
+    pkg.require(not out.exists(), 'fresh stage required')
+    out.mkdir(mode=0o700, parents=True)
+    state = out/'state'
+    state.mkdir(mode=0o700)
+    receipt = out/'identity.json'
     pkg.save(receipt, dict(engine_sha256=expected['engine_sha256'],
-                          ingress_sha256=witness['ingress_sha256']))
+                          ingress_sha256=ingress_sha256))
     ports = []
     with contextlib.ExitStack() as stack:
         for _ in range(3 * len(PROFILES)):
@@ -78,7 +84,7 @@ def prepare(out, selection, *, discovery_build=None, previous_profiles=None):
             ports.append(sock.getsockname()[1])
     for index, name in enumerate(PROFILES):
         phase = out/name
-        live.prepare(phase, receipt)
+        live.prepare(phase, receipt, protected=protected)
         plan = pkg.read(phase/'plan.json')
         plan['port'], plan['operations_port'], plan['public_port'] = ports[3*index:3*index+3]
         workers.Stage.prepare_fixture(phase, plan)
@@ -98,9 +104,13 @@ def prepare(out, selection, *, discovery_build=None, previous_profiles=None):
         pkg.require(command[0] == plan['binary'] and '--live-recordings' in command and
                     '--live-worker-sha256' in command, 'managed model command')
         plan.update(schema=SCHEMA, limits=Stage.limits, name=name, command=command,
-                    discovery_change=change,
-                    capacity=settings['profile'], selected_sha256=pkg.sha(previous/'manifest.json'),
+                    discovery_change=discovery_change,
+                    capacity=settings['profile'], selected_sha256=pkg.sha(ROOT/'build/service/manifest.json'),
                     installed_policy_sha256=pkg.sha(package_dir/'client-policy.json'))
+        if beta_change is not None:
+            plan['beta_change'] = beta_change
+            helper = 'tools/serve_responses/beta_profile_acceptance.py'
+            plan['sources'][helper] = pkg.sha(ROOT/helper)
         pkg.save(phase/'plan.json', plan)
 
 
@@ -148,6 +158,9 @@ class Stage(workers.ice.Stage):
                         capabilities['realtime']['calls']['create'] == '/v1/realtime/calls' and
                         capabilities['realtime']['pending_execution'] == [],
                         'actual Live discovery differs')
+        if 'beta_change' in self.plan:
+            from tools.serve_responses import beta_profile_acceptance
+            beta_profile_acceptance.business(self, capabilities)
         shared = self.out.parent/'conversation.json'
         if name == 'primary':
             status, value = self.api('POST', '/v1/conversations',

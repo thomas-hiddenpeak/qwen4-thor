@@ -205,6 +205,38 @@ class ManagedQuotaTests(unittest.TestCase):
                 self.assertIn('error', admission.request('data', 'beta'))
         channel.begin.assert_not_called();self.assertIsNone(model.process.poll())
 
+    def test_confirmed_slot_changes_and_missing_observations_have_distinct_effects(self):
+        cfg = bundle.gateway_config_for(self.package, self.manifest,
+                                        self.fixture.directory, access=self.binding)
+        admission = gateway.Admission(cfg, mock.Mock(service_id=self.desc['service_id']))
+        self.addCleanup(admission.close)
+        policy = mock.Mock()
+        admission.policy_channel = policy
+        sample = dict(model_owner=dict(pid=10, start_ticks=20))
+
+        def observe(ids, *, mutable=True):
+            policy.step.return_value = dict(error='', observed=dict(
+                clients=ids, configured=True, mutable=mutable))
+            return admission.update_policy(sample)
+
+        self.assertTrue(observe(['alpha', 'beta', 'gamma']))
+        self.assertTrue(observe(['alpha']))
+        self.assertEqual(admission.verified_clients, ('alpha',))
+        policy.step.return_value = dict(error='client_policy_status_unknown', observed=None)
+        self.assertTrue(admission.update_policy(sample))
+        self.assertTrue(observe(['alpha', 'delta']))
+        self.assertEqual(admission.verified_clients, ('alpha',))
+        self.assertTrue(observe(['alpha', 'beta', 'gamma', 'delta']))
+        self.assertEqual(admission.verified_clients, ('alpha', 'beta', 'gamma', 'delta'))
+        self.assertFalse(observe(['alpha'], mutable=False))
+        self.assertEqual(admission.policy_failure, 'gateway_client_policy_mismatch')
+        self.assertFalse(observe(['other']))
+        self.assertFalse(admission.verified_clients)
+        admission.close()
+        admission.policy_channel = policy
+        self.assertTrue(observe(['alpha', 'delta']))
+        self.assertEqual(admission.verified_clients, ('alpha', 'delta'))
+
     def test_limits_loss_does_not_prevent_existing_key_revocation_or_reinitialize(self):
         shutil.rmtree(self.state/'client-limits')
         keys = self.fixture.directory/'revoked.json';proposal = self.fixture.directory/'revoke-proposal.json'

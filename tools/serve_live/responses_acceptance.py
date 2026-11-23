@@ -36,10 +36,13 @@ def current_model_assets(model, previous):
 DEFAULT_QUALIFICATION = ROOT / 'docs/evidence/serve-live-responses-execution-cpu-20261123/result.json'
 
 
-def prepare(out, qualification=DEFAULT_QUALIFICATION):
+def prepare(out, qualification=DEFAULT_QUALIFICATION, *, protected=None):
     previous = fixture.WORK / 'fixture-business-01'
     require(read(previous / 'acceptance.json')['observation']['fixture']['source_equal'], 'prior native WSS qualification')
     plan = read(previous / 'plan.json')
+    if protected is not None:
+        require(set(protected) == set(plan['protected']), 'protected deployment file set')
+        plan['protected'] = protected
     plan['model_assets'] = current_model_assets(plan['model'], plan['model_assets'])
     verified = read(qualification)
     require(sha(plan['binary']) == verified['engine_sha256'] and

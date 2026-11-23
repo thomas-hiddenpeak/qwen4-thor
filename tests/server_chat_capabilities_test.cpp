@@ -484,6 +484,7 @@ Q4T_TEST(chat_capabilities_native_responses_state_and_recovery) {
   Q4T_CHECK(responses && responses->GetBool("shared_native_generation") &&
             responses->GetBool("store_default") &&
             !responses->GetBool("chat_done_sentinel", true));
+  Q4T_CHECK(responses->GetString("beta_query_selector") == "beta=true");
   Q4T_CHECK(responses->GetBool("previous_response_id") &&
             responses->GetBool("conversation"));
   const auto* identity = responses->Find("tool_identity");

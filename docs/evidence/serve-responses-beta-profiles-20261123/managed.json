@@ -1,0 +1,32 @@
+{
+  "fallback": {
+    "status": "PASS",
+    "seconds": 57.56841639382765,
+    "model_starts": 1,
+    "stop_returncode": 0,
+    "supervisor_exit": 0,
+    "remaining": [],
+    "ports_free": true,
+    "unchanged_default": true,
+    "receipt_sha256": "7c39485ee7c4365620130e8b8a911807fb99bb35b80c6ea43d1f31f8800c5db7"
+  },
+  "gateway_replaced": true,
+  "same_model": true,
+  "beta_answer": "42",
+  "beta_storage_restored": true,
+  "webrtc": [
+    201,
+    201
+  ],
+  "lease": "COMPLETED",
+  "cpu_tests": 13,
+  "raw_sha256": {
+    "managed-01/result.json": "c8fc5c58a90ef68a7afdc48541775f840977f6e6a6091b6bedb1f64d8873b6dd",
+    "managed-01/recovery.json": "ca351d836c0e048ee1ba0084620a51c2dde1de2308343b1f811de57a44ecef78",
+    "managed-01/beta-before.wire": "351572f0903c722fbc13955488d9b645603bd47245f8207497c54b8b89db4617",
+    "managed-01/beta-after.wire": "3e6dee7a45b0fb126fe044413b93440a4959901bc83ad3bdbf0e4bad843634fe",
+    "fallback-lease-01/exit.json": "ae7a185e33d9c417541c3461976487f31133a31e30bebcba242ab8a479fbeffc",
+    "fallback-01/origin.json": "68a5db27589ad20231a265bac57f043183986c0820ba1d9f7ef66d0ee979970b",
+    "policy-observation-final.log": "e54bdbbef705e9920dfd910728dfeb22d002cebd5c8996e60b661fe8cc793c09"
+  }
+}

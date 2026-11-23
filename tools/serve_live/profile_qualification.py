@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'beta_query_selector' in declared.get('responses', {}) or 'beta_change' in plan:
+            from tools.serve_responses import beta_profile_acceptance
+            proofs = beta_profile_acceptance.verify(phase, plan, declared)
+            profiles[name]['evidence_sha256'].update(proofs)
     profile_contract.capability_pair(*capabilities)
     package.require(profiles['primary']['workers'] == profiles['light']['workers'] and
                     profiles['primary']['protocol_sha256'] == profiles['light']['protocol_sha256'],
