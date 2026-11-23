@@ -1,0 +1,18 @@
+{
+  "optional_nginx_sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+  "cpu_configuration_tests": 10,
+  "wire_tests": 2,
+  "child_get_routes": 6,
+  "other_client_status": 404,
+  "invalid_key_status": 401,
+  "wrong_method_status": 404,
+  "setup": "Real optional nginx and gateway worker, private Guardian peer and CPU backend with owned fixture. Native model SDK ownership is independently recorded in subagent-queries.json.",
+  "sources": {
+    "tools/serve_gateway/gateway.py": "e9bef22521170209882e9acec5d71ab5ade73c8bc7aefe773c1c947085591953",
+    "tools/serve_recovery/test_gateway_nginx.py": "c1b3b413eaf90a8fb0ec21fa1826939ddd0d2c4d99cbeaf4fc9c8d7f6c25452a"
+  },
+  "artifacts": {
+    ".q4t-work/serve-responses-agents-20261123/pr77-gateway-cpu-01.log": "e7e3c64423a896245fce95782f4ce5f93d1daafd6adf5434e4e5dc5ca05b9add",
+    ".q4t-work/serve-responses-agents-20261123/pr77-gateway-wire-01.log": "5c843a17e1a6d34e78be7bc1284537dbd04269aeba8e4417797af6231ebf3de1"
+  }
+}

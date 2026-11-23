@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已补齐可选 nginx 前置遗漏的六项子 Agent 查询。真实 nginx 转发了原始分页游标、客户身份和 Agents beta 选择器；另一个客户伪造身份头时，CPU 后端收到真实身份并返回 404。错误方法、畸形 ID 和无效密钥均在前置被拒绝。10 项配置测试和 2 项真实 nginx 转发测试通过，后续复核 PR 检查。[前置验收](evidence/serve-agent-workspaces-20261124/subagent-nginx.json)
+
 PR #76 两项 host-contracts 检查通过，rev456 的发布与回退记录已随 `38bc57402` 合入 main。合并树与受检提交一致。子 Agent 的查询和事件验收位于后续工作分支。[主线回执](evidence/serve-agent-workspaces-20261124/session-tools-main.json)
 
 子 Agent 的创建、领取任务、输出及终态已接入托管会话 SSE。15 项 CPU 短验覆盖领取后的晚订阅、重开存储、跨回合分页和根回合隔离。官方 SDK 在原生 TLS 上接收两个子回合的完整事件，文本与 GET 结果逐字相同，两个回答分别包含 456 和 457，随后独立 Chat 答 42。一次模型启动，耗时 55.9 秒。首轮夹具遗漏无环境会话所需的初始输入，原 400 保留。下一步继续显式关闭、恢复与发行验收。[子回合 SSE 回执](evidence/serve-agent-workspaces-20261124/subagent-stream.json)
