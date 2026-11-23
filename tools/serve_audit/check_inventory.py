@@ -281,14 +281,24 @@ def current_surface(root):
     native_routes.extend((method, path, "true" if method != "POST" else "false")
                          for method, path in prompts)
     if 'HandleAgentRegistration(*objects_' not in dispatch or (
-            'server::AgentRegistrationMethodAllowed(method, path)' not in native or
-            'server::IsAgentRegistrationObservation(method, path)' not in native):
+            'server::ManagedAgentMethodAllowed(method, path)' not in native or
+            'server::IsManagedAgentObservation(method, path)' not in native):
         raise ValueError("review native agent registration routing")
     for path, methods in (('/v1/agents', ('GET', 'POST')),
                           ('/v1/agents/{agent_id}', ('GET', 'POST', 'DELETE'))):
         for method in methods:
             routes.append((path, method))
             native_routes.append((method, path, 'false' if method == 'POST' else 'true'))
+    if 'ServeAgentSession(fd, *objects_' not in dispatch or (
+            'ParseAgentSessionRoute(target).kind' not in application_routes):
+        raise ValueError("review native session routing")
+    session = '/v1/agents/sessions'
+    resource = session + '/{session_id}'
+    for method, path in [('POST', session), ('GET', resource), ('DELETE', resource),
+                         *(('GET', resource + suffix) for suffix in
+                           ('/turns', '/turns/{turn_id}', '/items', '/turns/{turn_id}/items'))]:
+        routes.append((path, method))
+        native_routes.append((method, path, 'false' if method == 'POST' else 'true'))
     if 'IsFileTarget(path)' not in dispatch or \
             'file_request->Serve(fd)' not in dispatch or \
             'inline bool FileMethodAllowed' not in application_routes:
@@ -537,6 +547,10 @@ def mutation_checks(inventory, actual):
             raise ValueError("Voice/Consent routes escaped extraction")
         cases.append(dict(actual, **{group: [route for route in actual[group]
                                             if route != omitted]}))
+        session = "POST /v1/agents/sessions"
+        if session not in actual[group]:
+            raise ValueError("Managed session creation escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group] if route != session]}))
         trace = "DELETE /v1/realtime/traces/{trace_id}"
         if trace not in actual[group]:
             raise ValueError("trace deletion escaped extraction")

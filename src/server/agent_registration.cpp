@@ -1,5 +1,7 @@
 #include "q4t/server/agent_registration.h"
 
+#include "q4t/server/agent_session.h"
+
 #include <algorithm>
 #include <chrono>
 
@@ -151,6 +153,49 @@ ObjectReply Validate(const Json& value, AgentRegistrationShape shape) {
   return Invalid(check.message(), error.param);
 }
 }  // namespace
+
+ObjectReply ResolveSessionAgent(ObjectStore& objects, const Json& request,
+                                const ChatPlanConfig& config,
+                                const StateAccess& access) {
+  const auto* agent_id = request.Find("agent_id");
+  Json settings = Object();
+  if (agent_id) {
+    const auto route = std::string(kRoot) + "/" + agent_id->str;
+    if (!IsAgentRegistrationTarget(route) || !ValidApplicationId(agent_id->str))
+      return Error(404, "object_not_found", "Agent not found");
+    auto saved =
+        HandleAgentRegistration(objects, "GET", route, "", config, access);
+    if (!saved.ok()) return saved;
+    settings = std::move(saved.value);
+  } else {
+    const auto id = NewObjectId(ObjectKind::kAgent);
+    if (id.empty()) return Error(503, "agent_id_unavailable", "No agent ID");
+    Set(&settings, "id", String(id));
+  }
+  const auto* overrides = request.Find("agent");
+  if (!agent_id && (!overrides || !overrides->Has("model")))
+    return Invalid("An inline agent needs a model", "agent.model");
+  auto result = Resolve(settings, overrides ? *overrides : Object(), config);
+  if (!result.ok()) return result;
+
+  // Session resources expose the public HTTP endpoint or stdio launch shape.
+  // Header values, supplied authorization and literal environment values stay
+  // out of SDK responses and public history.
+  for (auto& tool : Field(settings, "tools").array) {
+    if (tool.GetString("type") != "mcp") continue;
+    auto& transport = Field(tool, "transport");
+    std::erase_if(transport.object, [](const auto& field) {
+      return field.first == "authorization" || field.first == "headers" ||
+             field.first == "env";
+    });
+  }
+  std::erase_if(settings.object, [](const auto& field) {
+    return field.first == "object" || field.first == "metadata" ||
+           field.first == "created_at" || field.first == "updated_at";
+  });
+  result.value = std::move(settings);
+  return result;
+}
 
 ObjectReply HandleAgentRegistration(ObjectStore& objects,
                                     std::string_view method,

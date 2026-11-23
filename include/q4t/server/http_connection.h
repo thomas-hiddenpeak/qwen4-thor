@@ -56,7 +56,7 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
       IsResponsesObservation(method, path) ||
       IsVectorStoreObservation(method, path) ||
       IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
-      IsVoiceMetadata(method, path) || IsAgentRegistrationObservation(method, path) ||
+      IsVoiceMetadata(method, path) || IsManagedAgentObservation(method, path) ||
       IsPromptObservation(method, path) ||
       IsStoredChatManagement(method, path))
     return HttpConnectionClass::kObservation;

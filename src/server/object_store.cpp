@@ -113,7 +113,8 @@ bool ApplicationObject(ObjectKind kind) {
          kind == ObjectKind::kBatch || kind == ObjectKind::kVectorStore ||
          kind == ObjectKind::kVectorStoreFile ||
          kind == ObjectKind::kVectorStoreBatch ||
-         kind == ObjectKind::kLiveForkState || kind == ObjectKind::kAgent;
+         kind == ObjectKind::kLiveForkState || kind == ObjectKind::kAgent ||
+         kind == ObjectKind::kAgentSession || kind == ObjectKind::kVault;
 }
 bool PreparePayload(const ObjectRequest& request) {
   return request.operation == ObjectOperation::kPut &&

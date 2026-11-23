@@ -28,6 +28,12 @@ struct ResponseStatePlan {
   io::Json execution_owner;
   bool multi_agent_beta = false;
   std::optional<BatchResponseLink> batch_parent = {};
+  // The first durable queue receipt publishes the session CAS in the same
+  // transaction. Later checkpoints retain just the ID in the private record.
+  std::string agent_session_id;
+  int64_t agent_turn_started_at = 0;
+  int64_t agent_turn_finished_at = 0;
+  std::optional<ObjectRequest> agent_session_write;
   ClientRateDomain rate_domain = ClientRateDomain::kOnline;
   io::Json history;    // Full authorized input for this generation.
   io::Json own_input;  // New input, without inherited context/instructions.

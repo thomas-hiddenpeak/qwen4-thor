@@ -66,6 +66,23 @@ class Inspector {
       Reference(file->Find("file_id"));
   }
 
+  void AgentTools(const Json* tools) {
+    if (!tools || !tools->IsArray()) {
+      value.uncertain = true;
+      return;
+    }
+    for (const auto& tool : tools->array) {
+      const auto type = tool.GetString("type");
+      if (type == "mcp") {
+        Reference(tool.Find("credential_id"));
+      } else if (type != "function" && type != "web_search" &&
+                 type != "tool_search" && type != "programmatic_tool_calling" &&
+                 type != "computer_use" && type != "automations") {
+        value.uncertain = true;
+      }
+    }
+  }
+
   void Request(const Json* request) {
     if (!request || request->IsNull()) return;
     if (!request->IsObject()) {
@@ -307,6 +324,26 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       }
       // Result Files have their own declared expiry. A historical Batch
       // receipt must not pin their content beyond output_expires_after.
+    }
+  } else if (kind == "agent" && data.GetString("object") == "agent") {
+    inspector.AgentTools(data.GetArray("tools"));
+  } else if (kind == "vault" && data.GetString("object") == "vault") {
+    // The container metadata has no content or credential object edges.
+  } else if (kind == "agent_session") {
+    const auto* session = data.Find("session");
+    const auto* agent = session ? session->Find("agent") : nullptr;
+    const auto* vaults = session ? session->GetArray("vault_ids") : nullptr;
+    const auto* turns = data.GetArray("turns");
+    if (!session || session->GetString("object") != "agent.session" ||
+        !agent || !vaults || !turns || turns->array.empty()) {
+      inspector.value.uncertain = true;
+    } else {
+      inspector.AgentTools(agent->GetArray("tools"));
+      for (const auto& vault : vaults->array) inspector.Reference(&vault);
+      for (const auto& turn : turns->array) {
+        if (!turn.Has("response_id")) inspector.value.uncertain = true;
+        inspector.Reference(turn.Find("response_id"));
+      }
     }
   } else if (kind == "live_recording" &&
              data.GetString("format") == "q4t.live_recording.v1") {

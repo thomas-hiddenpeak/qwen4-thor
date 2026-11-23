@@ -1,0 +1,110 @@
+{
+  "day": "2026-11-23",
+  "state": "direct_initial_turn_http_candidate",
+  "gpu_runs": [
+    {
+      "stage": "01",
+      "reason": "SDK fixture imported its helper from the parent of the repository; no public call.",
+      "summary": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 32.261,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "guard": "COMMAND_FAILED",
+      "guard_receipt_sha256": "670300296b79a106c6824350d979c371bf37f98d7af5a39551cd6e30662aef63",
+      "nvml_samples": 32
+    },
+    {
+      "stage": "02",
+      "reason": "SDK registered an Agent, then the old ingress executable rejected session creation with gateway_route_not_found. The build requested its output filename instead of the CMake target q4t_ingress.",
+      "summary": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 32.608,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "guard": "COMMAND_FAILED",
+      "guard_receipt_sha256": "48dc78d948334400549c02f4999e6cce021fee20e87f74e98e59ed1507f7fc99",
+      "nvml_samples": 33
+    },
+    {
+      "stage": "03",
+      "reason": "Actual native session completed and was deleted.",
+      "summary": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 34.06,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "guard": "COMPLETED",
+      "guard_receipt_sha256": "322e00fb572409392cf7605f82e016d9994020e83762d9c00d8b3efd5b8dd729",
+      "nvml_samples": 34
+    }
+  ],
+  "native_result": {
+    "sdk": "7.47.0",
+    "answer": "442",
+    "usage": {
+      "input_tokens": 112,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 4,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 116
+    },
+    "turn": "completed",
+    "foreign_status": 404,
+    "deleted": true,
+    "items": 2,
+    "pagination": true
+  },
+  "verified_identity": {
+    "binary": "be62ebcd260a202d4b68d4e94697e1a5eb8174b5fdf571f33f034cc51f128da7",
+    "ingress": "c7b8811c91bc40774fab5453f094d5ee641f699ed37d54c5f954c6abc6e1d2a5",
+    "sdk_driver": "4c67d8529d53b180d75d03b66c85c207d59ccc208cf5a6723d5384b34de90e67"
+  },
+  "private_evidence": ".q4t-work/serve-responses-agents-20261123",
+  "scope": "Registered Agent, direct environment, initial non-streamed session, real model answer, owner-only reads, paginated items, turn and deletion. Default rev442 registration package remains installed and STOPPED.",
+  "cpu": {
+    "identity": {
+      "file": "session-identity-cpu.log",
+      "sha256": "668940d8c9437adc7de0b4f59bcba3a240017ff6fc9d653388911c76beb95148",
+      "summary": "8 tests, 8 passed, 0 failed, 0 skipped"
+    },
+    "required_action": {
+      "file": "session-tool-cpu-r2.log",
+      "sha256": "14fd322e8ddf367f95f75d75eb82e1c80c3874fdbef5486bd712cc4c799b4585",
+      "summary": "1 tests, 1 passed, 0 failed, 0 skipped"
+    },
+    "retained_tool_fixture_failure": {
+      "file": "session-tool-cpu.log",
+      "sha256": "d1bbef0e5e5f1244381e2cf9c6a1b60f263ab144686fe9a2026e9f80c99520e0",
+      "summary": "1 tests, 0 passed, 1 failed, 0 skipped"
+    },
+    "native_ingress": {
+      "file": "session-ingress-proof-r2.log",
+      "sha256": "649cbf04ee250404c3c888ca7732dd3f3cf3a47e9476893a1f3c162502835065",
+      "summary": "PASS native TLS session POST and SDK selector reached upstream"
+    }
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 117,
+    "native_routes": 197,
+    "reviewed_source_anchors": 1215,
+    "mutation_checks": 38,
+    "errors": []
+  }
+}

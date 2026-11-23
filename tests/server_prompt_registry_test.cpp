@@ -1,4 +1,5 @@
 #include "q4t/server/agent_registration.h"
+#include "q4t/server/agent_session.h"
 #include "q4t/server/prompt_registry.h"
 
 #include <cstdlib>
@@ -100,6 +101,229 @@ ObjectReply Api(ObjectStore& store, std::string method, std::string path,
                              access);
 }
 }  // namespace
+
+Q4T_TEST(agent_session_wire_shapes_follow_the_sdk_transport_fields) {
+  ChatPlanError error;
+  for (const char* input : {
+           R"({"agent":{"model":"cpu"},"environment":{"type":"none"}})",
+           R"({"agent_id":"agent_1","environment":{"type":"none"},
+               "stream":true,"input":"hello"})"}) {
+    Q4T_CHECK(ValidateAgentSession(Parse(input), AgentSessionShape::kCreate,
+                                   &error));
+  }
+  for (const char* input : {
+           R"({"agent_id":"agent_1"})",
+           R"({"environment":{"type":"none","container_size":"medium"}})",
+           R"({"environment":{"type":"none"},"toolHandlers":{}})",
+           R"({"environment":{"type":"none"},"stream":"true"})"}) {
+    Q4T_CHECK(!ValidateAgentSession(Parse(input), AgentSessionShape::kCreate,
+                                    &error));
+  }
+  Q4T_CHECK(ValidateAgentSession(
+      Parse(R"({"id":"as_1","object":"agent.session.deleted","deleted":true})"),
+      AgentSessionShape::kDeleted, &error));
+  Q4T_CHECK(!ValidateAgentSession(
+      Parse(R"({"id":"as_1","object":"agent.deleted","deleted":true})"),
+      AgentSessionShape::kDeleted, &error));
+  return true;
+}
+
+Q4T_TEST(agent_session_prepares_native_input_and_validates_public_snapshot) {
+  Fixture f;
+  ObjectStore store(f.options);
+  AgentSessionStart start;
+  auto begin = [&](const Json& request) {
+    return PrepareDirectAgentSession(store, request, Config(), Access(), "session_1",
+                                     123, &start);
+  };
+  auto request = Parse(R"({"agent":{"model":"cpu"},
+    "environment":{"type":"none"},"input":"project records",
+    "metadata":{"project":"q4t"},"spend_control":{"limit":25}})");
+  Q4T_CHECK(Ok(begin(request)));
+  Q4T_CHECK(start.session.GetString("object") == "agent.session" &&
+            start.session.GetString("status") == "in_progress" &&
+            start.session.GetInt("last_active_at") == 123);
+  Q4T_CHECK(start.session.Find("agent")->GetString("model") == "cpu");
+  Q4T_CHECK(start.session.Find("spend_control")->Find("consumed")->IsNull());
+  Q4T_CHECK(start.input.array[0].Find("content")->array[0].GetString("text") ==
+            "project records");
+  for (const char* invalid : {"null", "[]", R"("")",
+                               R"([{"role":"user","content":[]}])"}) {
+    auto bad = request;
+    Set(&bad, "input", Parse(invalid));
+    Q4T_CHECK(begin(bad).http_status == 400);
+  }
+  Set(&request, "spend_control", Parse(R"({"limit":0})"));
+  Q4T_CHECK(begin(request).http_status == 400);
+  return true;
+}
+
+Q4T_TEST(agent_session_snapshot_owns_settings_and_omits_transport_secrets) {
+  Fixture f;
+  ObjectStore store(f.options);
+  auto source = HandleAgentRegistration(
+      store, "POST", "/v1/agents", R"({"model":"cpu","name":"records",
+        "instructions":"original","tools":[{"type":"mcp","server_label":"docs",
+        "transport":{"type":"http","server_url":"https://example.org",
+        "headers":{"x-correlation":"private-config"}}}]})", Config(), Access());
+  Q4T_CHECK(Ok(source));
+  auto request = Parse(R"({"environment":{"type":"none"},"input":"hello",
+                            "agent":{"instructions":"one session"}})");
+  Set(&request, "agent_id", *source.value.Find("id"));
+  Q4T_CHECK(ResolveSessionAgent(store, request, Config(), Access("client:other"))
+                .http_status == 404);
+  auto snapshot = ResolveSessionAgent(store, request, Config(), Access());
+  Q4T_CHECK(Ok(snapshot) && snapshot.value.GetString("name") == "records" &&
+            snapshot.value.GetString("instructions") == "one session");
+  Q4T_CHECK(!snapshot.value.Has("metadata") &&
+            OutputJson(snapshot.value).find("private-config") == std::string::npos);
+  auto saved = HandleAgentRegistration(store, "GET",
+      "/v1/agents/" + source.value.GetString("id"), "", Config(), Access());
+  Q4T_CHECK(Ok(saved) && saved.value.GetString("instructions") == "original" &&
+            OutputJson(saved.value).find("private-config") != std::string::npos);
+  auto inline_request = Parse(R"({"environment":{"type":"none"},"input":"hi",
+    "agent":{"model":"cpu","tools":[{"type":"mcp","server_label":"docs",
+    "transport":{"type":"http","server_url":"https://example.org",
+    "authorization":"private-inline"}}]}})");
+  ChatPlanError error;
+  Q4T_CHECK(ValidateAgentSession(inline_request, AgentSessionShape::kCreate,
+                                 &error));
+  auto ephemeral = ResolveSessionAgent(store, inline_request, Config(), Access());
+  Q4T_CHECK(Ok(ephemeral) && ephemeral.value.GetString("id").starts_with("agent_") &&
+            OutputJson(ephemeral.value).find("private-inline") == std::string::npos);
+  Q4T_CHECK(ResolveSessionAgent(store, Parse("{}"), Config(), Access())
+                .http_status == 400);
+  return true;
+}
+
+Q4T_TEST(agent_session_turn_shares_queue_receipt_and_reopens_native_output) {
+  Fixture f;
+  const auto request = Parse(R"({"agent":{"model":"cpu"},
+    "environment":{"type":"none"},"input":"what is six times seven?"})");
+  std::string id, turn;
+  {
+    ObjectStore store(f.options);
+    ResponsesExecution run(store);
+    auto prepared = PrepareAgentSessionExecution(store, request, Config(), Access(),
+                                                 std::time(nullptr), run);
+    Q4T_CHECK(Ok(prepared));
+    id = prepared.value.GetString("id");
+    AgentSessionView view;
+    Q4T_CHECK(ReadAgentSessionTurn(store, id, "", Access(), &view).http_status == 404);
+    run.BindBackgroundControl(std::make_shared<RequestControl>(
+        run.Id(), "", Clock::now() + 5s));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)));
+    Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
+    turn = view.turn.GetString("id");
+    Q4T_CHECK(view.turn.GetString("status") == "queued" &&
+              view.items.array.size() == 1 &&
+              view.turn.Find("started_at")->IsNull());
+    Q4T_CHECK(Ok(run.StartRunning(&wire)));
+    ResponseDelta delta;
+    delta.kind = ResponseDelta::Kind::kContent;
+    delta.text = "42";
+    Q4T_CHECK(run.Append(delta, "null", &wire));
+    Q4T_CHECK(Ok(run.Finish(false, 0, {12, 1, 2, 0}, std::time(nullptr), &wire)));
+    Q4T_CHECK(ResponsesState(store).Erase(run.Id(), Access()).http_status == 409);
+  }
+  ObjectStore store(f.options);
+  AgentSessionView view;
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, turn, Access(), &view)));
+  Q4T_CHECK(view.session.GetString("status") == "idle" &&
+            view.turn.GetString("status") == "completed" &&
+            view.turn.GetInt("completed_at") >= view.turn.GetInt("started_at") &&
+            view.turn.GetInt("started_at") > 0);
+  Q4T_CHECK(view.items.array.size() == 2 &&
+            view.items.array.back().GetArray("content")->array[0].GetString("text") == "42");
+  Q4T_CHECK(view.session.Find("usage")->GetInt("total_tokens") == 14 &&
+            !view.session.Find("usage")->Find("input_tokens_details")->Has("cache_write_tokens"));
+  Q4T_CHECK(ReadAgentSessionTurn(store, id, "turn_other", Access(), &view).http_status == 404);
+  Q4T_CHECK(ReadAgentSessionTurn(store, id, turn, Access("client:other"), &view).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(agent_session_tool_action_requires_a_completed_owned_call) {
+  Fixture f;
+  ObjectStore store(f.options);
+  ResponsesExecution run(store);
+  const auto request = Parse(R"({"agent":{"model":"cpu","tools":[
+    {"type":"function","name":"lookup","description":"Read a project record",
+     "parameters":{"type":"object","properties":{"revision":{"type":"integer"}}}}]},
+    "environment":{"type":"none"},"input":"Look up revision 442."})");
+  const auto now = std::time(nullptr);
+  auto config = Config();
+  Q4T_CHECK(PrepareAgentSessionExecution(store, request, config, Access(),
+                                         now, run).code ==
+            "structured_backend_unavailable");
+  config.structured = true;
+  auto prepared = PrepareAgentSessionExecution(store, request, config,
+                                               Access(), now, run);
+  Q4T_CHECK(Ok(prepared));
+  const auto id = prepared.value.GetString("id");
+  run.BindBackgroundControl(std::make_shared<RequestControl>(
+      run.Id(), "", Clock::now() + 5s));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call = {0, "call_lookup", "lookup", R"({"revision":442})"};
+  Q4T_CHECK(run.Append(delta, "null", &wire));
+  Q4T_CHECK(Ok(run.Checkpoint()));
+  AgentSessionView view;
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
+  Q4T_CHECK(view.session.GetArray("required_actions")->array.empty());
+  Q4T_CHECK(Ok(run.Finish(false, 1, {9, 0, 8, 0}, std::time(nullptr), &wire)));
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
+  const auto& actions = view.session.GetArray("required_actions")->array;
+  Q4T_CHECK(view.session.GetString("status") == "requires_action" &&
+            view.turn.GetString("status") == "waiting" &&
+            view.turn.Find("completed_at")->IsNull() && actions.size() == 1);
+  Q4T_CHECK(actions[0].GetString("call_id") == "call_lookup" &&
+            actions[0].Find("arguments")->GetInt("revision") == 442 &&
+            actions[0].GetString("turn_id") == view.turn.GetString("id"));
+  return true;
+}
+
+Q4T_TEST(agent_session_turn_exhausted_object_quota_leaves_no_orphan) {
+  Fixture f;
+  f.options.max_client_objects = 1;
+  ObjectStore store(f.options);
+  ResponsesExecution run(store);
+  const auto request = Parse(R"({"agent":{"model":"cpu"},
+    "environment":{"type":"none"},"input":"project records"})");
+  auto prepared = PrepareAgentSessionExecution(store, request, Config(), Access(),
+                                               std::time(nullptr), run);
+  Q4T_CHECK(Ok(prepared));
+  run.BindBackgroundControl(std::make_shared<RequestControl>(run.Id(), "", Clock::now() + 5s));
+  std::string wire;
+  auto rejected = run.Begin(&wire);
+  Q4T_CHECK(!rejected.ok() && !rejected.commit_unknown && rejected.http_status == 429);
+  AgentSessionView view;
+  Q4T_CHECK(ReadAgentSessionTurn(store, prepared.value.GetString("id"), "", Access(), &view).http_status == 404);
+  Q4T_CHECK(ResponsesState(store).Retrieve(run.Id(), Access()).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(agent_session_vaults_require_owned_identity_and_spend_limit_null_resets) {
+  Fixture f;
+  ObjectStore store(f.options);
+  auto request = Parse(R"({"agent":{"model":"cpu"},"environment":{"type":"none"},
+    "input":"records","vault_ids":["vault_1"],"spend_control":{"limit":null}})");
+  ObjectRequest vault;
+  vault.kind = ObjectKind::kVault;
+  vault.operation = ObjectOperation::kPut;
+  vault.scope = Access().scope;
+  vault.id = "vault_1";
+  vault.data = Parse(R"({"id":"vault_1","object":"vault"})");
+  Q4T_CHECK(Ok(store.Execute(vault, Access().deadline)));
+  AgentSessionStart start;
+  Q4T_CHECK(Ok(PrepareDirectAgentSession(store, request, Config(), Access(), "s1", 1, &start)));
+  Q4T_CHECK(!start.session.Has("spend_control") &&
+            start.session.GetArray("vault_ids")->array.at(0).str == "vault_1");
+  Q4T_CHECK(PrepareDirectAgentSession(store, request, Config(), Access("client:other"), "s1", 1, &start).http_status == 404);
+  return true;
+}
 
 Q4T_TEST(agent_registration_owned_crud_defaults_and_stored_pagination) {
   Fixture f;

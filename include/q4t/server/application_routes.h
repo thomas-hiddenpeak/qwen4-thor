@@ -381,10 +381,59 @@ inline bool AgentRegistrationMethodAllowed(std::string_view method,
          (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/agents");
 }
 
-inline bool IsAgentRegistrationObservation(std::string_view method,
-                                           std::string_view target) {
+enum class AgentSessionRouteKind { kNone, kCollection, kSession, kTurns, kTurn, kItems, kTurnItems };
+struct AgentSessionRoute {
+  AgentSessionRouteKind kind = AgentSessionRouteKind::kNone;
+  std::string_view session, turn;
+};
+
+inline AgentSessionRoute ParseAgentSessionRoute(std::string_view target) {
+  using Kind = AgentSessionRouteKind;
+  if (target.find('#') != target.npos) return {};
+  auto path = target.substr(0, target.find('?'));
+  constexpr std::string_view root = "/v1/agents/sessions";
+  if (path == root) return {Kind::kCollection, {}, {}};
+  if (!path.starts_with(root) || path.substr(root.size(), 1) != "/") return {};
+  path.remove_prefix(root.size() + 1);
+  const auto split = path.find('/');
+  const auto id = path.substr(0, split);
+  if (!id.starts_with("agent_session_") || id.size() <= 14 ||
+      !ValidApplicationId(id)) return {};
+  if (split == path.npos) return {Kind::kSession, id, {}};
+  path.remove_prefix(split + 1);
+  if (path == "items") return {Kind::kItems, id, {}};
+  if (path == "turns") return {Kind::kTurns, id, {}};
+  if (!path.starts_with("turns/")) return {};
+  path.remove_prefix(6);
+  const auto tail = path.find('/');
+  const auto turn = path.substr(0, tail);
+  if (!turn.starts_with("turn_") || turn.size() <= 5 ||
+      !ValidApplicationId(turn)) return {};
+  if (tail == path.npos) return {Kind::kTurn, id, turn};
+  if (path.substr(tail) == "/items") return {Kind::kTurnItems, id, turn};
+  return {};
+}
+
+inline bool IsManagedAgentTarget(std::string_view target) {
+  return IsAgentRegistrationTarget(target) ||
+         ParseAgentSessionRoute(target).kind != AgentSessionRouteKind::kNone;
+}
+
+inline bool ManagedAgentMethodAllowed(std::string_view method,
+                                      std::string_view target) {
+  using Kind = AgentSessionRouteKind;
+  switch (ParseAgentSessionRoute(target).kind) {
+    case Kind::kNone: return AgentRegistrationMethodAllowed(method, target);
+    case Kind::kCollection: return method == "POST";
+    case Kind::kSession: return method == "GET" || method == "DELETE";
+    default: return method == "GET";
+  }
+}
+
+inline bool IsManagedAgentObservation(std::string_view method,
+                                      std::string_view target) {
   return (method == "GET" || method == "DELETE") &&
-         AgentRegistrationMethodAllowed(method, target);
+         ManagedAgentMethodAllowed(method, target);
 }
 
 inline bool IsPromptTarget(std::string_view target) {

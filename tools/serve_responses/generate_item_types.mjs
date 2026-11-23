@@ -7,9 +7,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--agent-sessions'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--agent-sessions]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -31,6 +31,8 @@ const realtimeSecrets = resolve(sdk, 'src/resources/realtime/client-secrets.ts')
 const live = resolve(sdk, 'src/resources/live/live.ts');
 const decisions = resolve(sdk, 'src/resources/decisions.ts');
 const agents = resolve(sdk, 'src/resources/beta/agents/agents.ts');
+const agentSessions = resolve(sdk, 'src/resources/beta/agents/sessions/sessions.ts');
+const agentTurns = resolve(sdk, 'src/resources/beta/agents/sessions/turns/turns.ts');
 const beta = resolve(sdk, 'src/resources/beta/responses/responses.ts');
 const liveSessions = resolve(sdk, 'src/resources/live/sessions.ts');
 const liveSideband = resolve(sdk, 'src/resources/live/sideband/sideband.ts');
@@ -41,6 +43,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--multi-agent' ? [beta] : []),
   ...(mode === '--agents' ? [agents] : []),
+  ...(mode === '--agent-sessions' ? [agents, agentSessions, agentTurns] : []),
   ...(mode === '--live' ? [live, liveSessions, liveSideband, liveForks] : [])], {
   target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext,
@@ -117,10 +120,13 @@ function encode(type) {
     for (const property of checker.getPropertiesOfType(type).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) {
       track(property);
       const declaration = property.valueDeclaration ?? property.declarations?.[0];
-      if (!declaration) throw new Error(`missing property declaration ${property.name}`);
+      // TypeScript synthesizes properties for mapped unions without a declaration.
+      const propType = declaration ? checker.getTypeOfSymbolAtLocation(property, declaration) :
+        checker.getTypeOfPropertyOfType(type, property.name);
+      if (!propType) throw new Error(`unresolved property ${property.name}`);
       fields.push({ name: property.name,
         optional: Boolean(property.flags & ts.SymbolFlags.Optional),
-        type: encode(checker.getTypeOfSymbolAtLocation(property, declaration)) });
+        type: encode(propType) });
     }
     const index = checker.getIndexTypeOfType(type, ts.IndexKind.String);
     if (checker.getSignaturesOfType(type, ts.SignatureKind.Call).length)
@@ -141,7 +147,17 @@ function exported(file, name) {
   }
   return encode(checker.getDeclaredTypeOfSymbol(symbol));
 }
-const roots = mode === '--agents' ? {
+const roots = mode === '--agent-sessions' ? {
+  create: exported(agentSessions, 'SessionCreateParamsBase'),
+  update: exported(agentSessions, 'SessionUpdateParams'),
+  resource: exported(agents, 'AgentSession'),
+  deleted: exported(agents, 'AgentSessionDeleted'),
+  query: exported(agentSessions, 'SessionListParams'),
+  input_event: exported(agents, 'AgentSessionInputParam'),
+  event: exported(agents, 'AgentSessionEvent'),
+  item: exported(agents, 'AgentSessionItem'),
+  turn: exported(agentTurns, 'Turn'),
+} : mode === '--agents' ? {
   create: exported(agents, 'AgentCreateParams'),
   update: exported(agents, 'AgentUpdateParams'),
   resource: exported(agents, 'Agent'),
@@ -211,7 +227,8 @@ if (mode === '--api') Object.assign(roots, {
   input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
 });
 const result = {
-  profile: mode === '--agents' ? 'q4t-openai-agent-registration-types-v1' :
+  profile: mode === '--agent-sessions' ? 'q4t-openai-agent-session-types-v1' :
+    mode === '--agents' ? 'q4t-openai-agent-registration-types-v1' :
     mode === '--multi-agent' ? 'q4t-openai-multi-agent-types-v1' :
     mode === '--decisions' ? 'q4t-openai-decision-types-v1' :
     mode === '--live' ? 'q4t-openai-live-types-v1' : mode === '--realtime' ? 'q4t-openai-realtime-types-v1' :

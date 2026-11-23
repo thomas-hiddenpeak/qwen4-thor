@@ -34,7 +34,9 @@ enum class ObjectKind {
   kTrace,
   kLiveRecording,
   kLiveForkState,
-  kAgent
+  kAgent,
+  kAgentSession,
+  kVault
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

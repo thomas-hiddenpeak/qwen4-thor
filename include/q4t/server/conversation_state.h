@@ -14,7 +14,7 @@ struct ItemViewOptions {
   std::vector<std::string> include;
 };
 
-enum class StoredItemView { kInputList, kConversation };
+enum class StoredItemView { kInputList, kConversation, kAgentSession };
 
 ObjectReply NormalizeConversationMetadata(const io::Json& metadata);
 
