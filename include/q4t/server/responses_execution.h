@@ -59,7 +59,8 @@ class ResponsesExecution {
   ResponsesExecution& operator=(const ResponsesExecution&) = delete;
   ObjectReply Prepare(const io::Json& request, const ChatPlanConfig& config,
                       StateAccess access, int64_t created,
-                      bool background_executor = false);
+                      bool background_executor = false,
+                      const CancelledAgentHistory* cancelled = nullptr);
   ObjectReply RestoreQueued(const std::string& id, const ChatPlanConfig& config,
                             StateAccess access);
   // Private, unexecuted queue state. Freeze publishes no Response resource;
@@ -106,7 +107,7 @@ class ResponsesExecution {
                          const ResponsesContextCheck& check);
   ObjectReply Begin(std::string* wire);
   ObjectReply StartRunning(std::string* wire);
-  ObjectReply CheckBatchParent(bool* cancelled);
+  ObjectReply CheckParentCancellation(bool* cancelled);
   ObjectReply Cancel();
   ObjectReply Checkpoint();
   // Block policy keeps all generated items/events private until the actual

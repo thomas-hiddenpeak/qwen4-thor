@@ -2016,11 +2016,13 @@
       ]
     },
     "POST /v1/agents/sessions/{session_id}/events": {
-      "semantics": "按客户和回合匹配工具结果或提交新的输入消息。提交支持幂等键。",
-      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "semantics": "交付用户输入、按所有者回填调用结果、对当前响应发起持久取消。幂等键绑定原请求。",
+      "boundary": "本地模型支持活动生成与等待客户端工具的独立取消事件。环境执行及取消与新输入混合的批次仍在总计划内。",
       "evidence": [
         "src/server/agent_session_turn.cpp",
-        "tools/serve_responses/agent_session_tools_sdk.mjs"
+        "tools/serve_responses/agent_session_tools_sdk.mjs",
+        "src/server/agent_session_cancel.cpp",
+        "tools/serve_responses/agent_session_cancel_sdk.mjs"
       ]
     },
     "GET /v1/agents/sessions/{session_id}/events": {
@@ -2664,8 +2666,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "de965ef0e003d71efd91b83caecc849d223b00c996acbb892c139e893ec2b836",
-    "cmake/ChatProtocolIdentity.cmake": "d3e57274ace043692560c99189ec28a7345e881671c7d9d1766dbf9212554c75",
+    "CMakeLists.txt": "7eee2f06f41ac71b964bc67c7287f25c92d3d4d146db8b668936698007819aef",
+    "cmake/ChatProtocolIdentity.cmake": "3d29000aa19394ff9aa856ab2c2345c1f6e980c94e3e9cd59f3f74edc397c558",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2957,7 +2959,7 @@
     "include/q4t/server/responses_api.h": "d8e3a8d4f8f25e3cbd3e5ff06c0bd5f19812488c60396d34e8b60689a664021d",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "aa8d4443d66059ece77b3eceab3e438d8cc1104bf729ebe27ac1500aa0d7d235",
+    "include/q4t/server/responses_execution.h": "d06e6eefe688f8a889f68d013ed621f4a16e773973c827ff1139f270e35a2e97",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
     "include/q4t/server/responses_input.h": "9456da1ef5673dd4de669cd80b2f532690815193d466ec5ab97bd4a097b3fc3b",
     "include/q4t/server/responses_item_shape.h": "0d60c4985b05e0cdbf25da8140fd98ec1b176509425be6ca6dbd6c748aa6d5e6",
@@ -2971,7 +2973,7 @@
     "include/q4t/server/responses_plan.h": "2d365baa44c792fcf54322d51b2968b3b635b0d261f2e330f1f758098eacc2af",
     "include/q4t/server/responses_program.h": "3c8c653c9ae3204cf56f029e0be8e83dace56e1b67eeeb088b06a52f89c1baa5",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
-    "include/q4t/server/responses_state.h": "c71b8cb91d0e8b37f6923445cafdc9ee317a15dd2002c05adf47738efd645ce0",
+    "include/q4t/server/responses_state.h": "80516b8a64a2c00999a1af500246c17ee355b05683eac7f969acdb635dd919cc",
     "include/q4t/server/responses_tokens.h": "9b1fb8cbea6d9fe24e33fa8af6dd4be3bb90af780b40ee4249450cc007f98324",
     "include/q4t/server/responses_tool_search.h": "6f6e7bfaefa71ff621c2db1d24a6f0fff287e4d4e47968cb8665d081d6e8337f",
     "include/q4t/server/responses_web_search.h": "b1378c90e9f3be4aea864820b06682879693940e448e0d58ad3fa9bdcfa05f06",
@@ -3404,7 +3406,7 @@
     "src/server/native_crypto.cpp": "9da39bb1de51c80b9a028e4e748a77266a5d145a24173ab5d0fdc192bccde92a",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
     "src/server/object_protocol.h": "70f1079ff33ebbc7eeaf98a2e238b6a772ef351638e6a34e21cbbb08ff0a11d2",
-    "src/server/object_retention.cpp": "372573bbd57fb9bae7c5a2dca751108872898a5e369b57513317eb4f98ab1773",
+    "src/server/object_retention.cpp": "8a291bd439a04549e1539de70a0546d19d4a8dcf5e464d7138e8df98ce303785",
     "src/server/object_store.cpp": "e46481f6df495224edce3ce1f53cabd46fdc14aba45cba51cd2ae5f2a31111a2",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "c568e41d67c5723851c88953b6813dc5c58fa97329ad602daef2fef754329dba",
@@ -3482,7 +3484,7 @@
     "src/server/responses_api.cpp": "a05a5cd8ee8724f874d68a6f8cd9d14e6db5836313c6494baa0f0a0aa4a015ae",
     "src/server/responses_compaction.cpp": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "222b0249eb984ac0ec59c049eb9302e58d698de213e6567e33ca44599da4a01b",
+    "src/server/responses_execution.cpp": "fa128f7fae08c2c6a93c521de6fb953eed1f9054b0cf209112c24d4655f0bde4",
     "src/server/responses_execution_compaction.cpp": "7b9fcb2c171311a358c34a5782eea6132a3c23a48b7172cc19b976ea964d2bb3",
     "src/server/responses_execution_files.cpp": "8e2030adeb168b3d8672fee4ad58410f5a21989563d7f788f43ab9b7662ad33b",
     "src/server/responses_execution_inputs.cpp": "c163dd2db6f672d9e18cd6f05f8a219c4f527bb5bbbab45432eaad0dbcb0c885",
@@ -3495,7 +3497,7 @@
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "2fb783afdb0d4478647b9b1231db474835697971203966bd8cb1c5a696e85940",
     "src/server/responses_item_shape.cpp": "4c4d11131cc8a30ea366df11af7514003c14883c2678031f1a6ce6c513464a41",
-    "src/server/responses_jobs.cpp": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47",
+    "src/server/responses_jobs.cpp": "02ba0eb00df0e814216696c04000c848f2b8aa88ca89509b4cbd9bb7e508a5b8",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
     "src/server/responses_mcp_binding.cpp": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded",
@@ -3512,7 +3514,7 @@
     "src/server/responses_program_output.cpp": "b3440be7b8d21b0a5488b251979b127e1536bcb47899ead83a2320b4d49c2fc2",
     "src/server/responses_program_plan.cpp": "3980f9a8cbb22904a4cd2f418c4063a781a16b4f95fc6ff97a658aece5e08ff3",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
-    "src/server/responses_state.cpp": "e0fec5ac58baea6a9c3c1988b94794fd75e2d007370fb05d46c72c99aaf5a40a",
+    "src/server/responses_state.cpp": "98c1eac1c0d0a2fa111f84260470c2180884e0bfb1153776d504d5a03bc44fbe",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
     "src/server/responses_tokens.cpp": "9ebdf955e1dbe6bacaad748005e8200dff0930a66799ade9c0bff6a7238f32e2",
     "src/server/responses_tool_catalog_history.cpp": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5",
@@ -3874,14 +3876,15 @@
     "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
     "src/server/agent_registration.cpp": "04930651a2e0744e394f84852aede73c2fa8d1790e6beb7da2dae54f8b459bea",
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
-    "include/q4t/server/agent_session.h": "0b9c5825027bbb6d36dbe5b87ec05aeaa997115ccfe6b30bf2d0f6e500d184f5",
+    "include/q4t/server/agent_session.h": "cf31324b7e9a74ba5c9dcbd5a943b29edce1e2d79b45d37fc67e1afc574f69cb",
     "src/server/agent_session.cpp": "0c8b64e96c55b4a7be6fd76d1ec123ad7ad3ece564d86fb05eba373add8254d5",
-    "src/server/agent_session_http.cpp": "b4685757bbd66c0301c3fd9d88a82f484bafbd4304b8d2097c942d8e74a10f87",
-    "src/server/agent_session_turn.cpp": "14c8a07b73cd7c8ba501eb5454de8317ee72d1d5688608e524087a053bb921ed",
+    "src/server/agent_session_http.cpp": "04808ccdcd3446e7e35e3cae8f56b8f537463650e715ef3af4db4b18f505d388",
+    "src/server/agent_session_turn.cpp": "6219239fb1890fc48f4398b4dcdd3d58068f00c1b01d2c65c3a366c227a4f86d",
     "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3",
-    "src/server/agent_session_events.cpp": "7f82751d1cfa00c5a3a35d6aeaeccd56bb7a51462715ee13f71fded58861ac1c",
-    "src/server/agent_session_internal.h": "e6e61b98dc310b1fc42b8100e761bcbd2bcfe3d4931d382dbe79e961acc6e413",
-    "src/server/agent_session_settings.cpp": "786d49469a767e68921ad86a7c7005d838ca50d66258fae7e249a2d7ae65c4a2"
+    "src/server/agent_session_events.cpp": "1e3fe269ec6f3a8e25632c85617c73eff52ae3a6566446c485b5cf803a6af5b1",
+    "src/server/agent_session_internal.h": "f7608e2cb672bfb5d5eaf3b8cd82301be486a7b00739a312931edc0c9c658d44",
+    "src/server/agent_session_settings.cpp": "e42cc36e71cb89d8b89ac43bff0d1c7bf55314dd123ed8012cfc6e7bc65dc70a",
+    "src/server/agent_session_cancel.cpp": "7b3ce808f145730f3d38e79c7ae2ec7c13a97aeacbd7d4298294aa3a00b5994f"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6454,11 +6457,13 @@
       ]
     },
     "POST /v1/agents/sessions/{session_id}/events": {
-      "semantics": "按客户和回合匹配工具结果或提交新的输入消息。提交支持幂等键。",
-      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "semantics": "交付用户输入、按所有者回填调用结果、对当前响应发起持久取消。幂等键绑定原请求。",
+      "boundary": "本地模型支持活动生成与等待客户端工具的独立取消事件。环境执行及取消与新输入混合的批次仍在总计划内。",
       "evidence": [
         "src/server/agent_session_turn.cpp",
-        "tools/serve_responses/agent_session_tools_sdk.mjs"
+        "tools/serve_responses/agent_session_tools_sdk.mjs",
+        "src/server/agent_session_cancel.cpp",
+        "tools/serve_responses/agent_session_cancel_sdk.mjs"
       ]
     },
     "GET /v1/agents/sessions/{session_id}/events": {

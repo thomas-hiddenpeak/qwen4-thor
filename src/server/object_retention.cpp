@@ -346,10 +346,12 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
             inspector.AgentTools(changed->GetArray("tools"));
         }
       }
+      inspector.Items(data.Find("pending_tool_results"));
       for (const auto& vault : vaults->array) inspector.Reference(&vault);
       for (const auto& turn : turns->array) {
         if (!turn.Has("response_id")) inspector.value.uncertain = true;
         inspector.Reference(turn.Find("response_id"));
+        inspector.Items(turn.Find("saved_tool_results"));
       }
     }
   } else if (kind == "live_recording" &&

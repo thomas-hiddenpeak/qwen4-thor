@@ -66,7 +66,15 @@ ObjectReply UpdateAgentSession(ObjectStore& objects, const std::string& id,
                                const io::Json& request,
                                const ChatPlanConfig& config,
                                const StateAccess& access);
+class ResponsesJobs;
+ObjectReply CancelAgentSessionTurn(ObjectStore& objects, ResponsesJobs* jobs,
+                                   const std::string& id,
+                                   const io::Json& events, std::string_view key,
+                                   const StateAccess& access);
 struct AgentEventCursor {
+  // A native step finished with outstanding client actions. A later session
+  // cancellation can still produce a logical terminal for this step.
+  bool waiting = false;
   size_t step = 0;
   size_t sequence = 0;
   std::string turn_id;
@@ -87,7 +95,6 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
                                      const StateAccess& access,
                                      AgentEventCursor* cursor, io::Json* events,
                                      bool* settled);
-class ResponsesJobs;
 void ServeAgentSession(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                        std::string_view method, std::string_view target,
                        const std::string& body, const ChatPlanConfig& config,

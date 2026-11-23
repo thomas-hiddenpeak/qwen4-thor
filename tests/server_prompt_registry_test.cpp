@@ -396,6 +396,128 @@ Q4T_TEST(agent_session_tool_action_requires_a_completed_owned_call) {
   return true;
 }
 
+Q4T_TEST(
+    agent_session_cancel_preserves_saved_results_and_never_retargets_a_retry) {
+  Fixture f;
+  ObjectStore store(f.options);
+  auto config = Config();
+  config.structured = true;
+  const auto start = Parse(R"({"agent":{"model":"cpu","tools":[
+    {"type":"function","name":"lookup","description":"Read a record","parameters":{"type":"object","properties":{}}}]},
+    "environment":{"type":"none"},"input":"look up both project releases"})");
+  ResponsesExecution run(store);
+  auto session = PrepareAgentSessionExecution(store, start, config, Access(),
+                                              std::time(nullptr), run);
+  Q4T_CHECK(Ok(session));
+  const auto id = session.value.GetString("id");
+  run.BindBackgroundControl(
+      std::make_shared<RequestControl>(run.Id(), "", Clock::now() + 5s));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
+  for (size_t i = 0; i < 2; ++i) {
+    ResponseDelta delta;
+    delta.kind = ResponseDelta::Kind::kTool;
+    delta.call = {i, "call_" + std::to_string(i), "lookup", "{}"};
+    Q4T_CHECK(run.Append(delta, "null", &wire));
+  }
+  Q4T_CHECK(Ok(run.Finish(false, 2, {9, 0, 8, 0}, std::time(nullptr), &wire)));
+  AgentSessionView view;
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)) &&
+            view.session.GetArray("required_actions")->array.size() == 2);
+  const auto turn = view.turn.GetString("id");
+  auto result = Parse(R"({"events":[{"type":"agent.session.input.tool_result",
+    "turn_id":"","call_id":"call_0","success":true,"output":"release 442"}]})");
+  Set(&result.object[0].second.array.front(), "turn_id", *view.turn.Find("id"));
+  ResponsesExecution partial(store);
+  bool replay = false;
+  Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, result, "saved", config,
+                                         Access(), partial, &replay)) &&
+            !partial.Prepared());
+  AgentEventCursor live;
+  Q4T_CHECK(Ok(OpenAgentEventSubscription(store, id, Access(), &live)) &&
+            live.waiting);
+  auto cancel = Parse(R"({"events":[{"type":"agent.session.input.cancel"}]})");
+  Q4T_CHECK(CancelAgentSessionTurn(store, nullptr, id, cancel, "stop",
+                                   Access("client:other"))
+                .http_status == 404);
+  Q4T_CHECK(
+      CancelAgentSessionTurn(store, nullptr, id, cancel, "saved", Access())
+          .http_status == 409);
+  Q4T_CHECK(
+      Ok(CancelAgentSessionTurn(store, nullptr, id, cancel, "stop", Access())));
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, turn, Access(), &view)) &&
+            view.turn.GetString("status") == "cancelled" &&
+            view.session.GetString("status") == "idle" &&
+            view.session.GetArray("required_actions")->array.empty() &&
+            view.items.array.back().GetString("output") == "release 442");
+  Json events;
+  bool settled = false;
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &live, &events,
+                                        &settled)) &&
+            settled && events.array.size() == 2 &&
+            events.array.front().GetString("type") ==
+                "agent.session.turn.cancelled" &&
+            events.array.back().GetString("type") == "agent.session.idle");
+  const auto once = events.array.front().GetString("event_id");
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &live, &events,
+                                        &settled)) &&
+            events.array.empty() && !settled);
+  AgentEventCursor history;
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &history, &events,
+                                        &settled)) &&
+            settled);
+  Q4T_CHECK(events.array.at(events.array.size() - 2).GetString("event_id") ==
+            once);
+  for (const auto& ev : events.array)
+    Q4T_CHECK(ev.GetString("type") != "agent.session.turn.item.added" ||
+              ev.Find("item")->GetString("type") != "function_call");
+  auto follow =
+      Parse(R"({"events":[{"type":"agent.session.input.message","input":[
+    {"role":"user","content":[{"type":"input_text","text":"what was the saved result?"}]}]}]})");
+  ResponsesExecution next(store);
+  Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, follow, "follow", config,
+                                         Access(), next, &replay)));
+  next.BindBackgroundControl(
+      std::make_shared<RequestControl>(next.Id(), "", Clock::now() + 5s));
+  Q4T_CHECK(Ok(next.Begin(&wire)));
+  auto row = ResponsesState(store).ReadRecord(next.Id(), Access());
+  Q4T_CHECK(Ok(row));
+  const auto* inherited = row.value.GetArray("history");
+  Q4T_CHECK(inherited &&
+            std::ranges::count_if(
+                inherited->array,
+                [](const auto& item) {
+                  return item.GetString("type") == "function_call_output" &&
+                         item.GetString("output") == "release 442";
+                }) == 1 &&
+            std::ranges::none_of(inherited->array, [](const auto& item) {
+              return item.GetString("call_id") == "call_1";
+            }));
+  Q4T_CHECK(
+      Ok(CancelAgentSessionTurn(store, nullptr, id, cancel, "stop", Access())));
+  bool cancelled = true;
+  Q4T_CHECK(Ok(next.CheckParentCancellation(&cancelled)) && !cancelled);
+  // Lose the signalling executor after writing the intent. Restored queued work
+  // observes the same durable intent before starting the model.
+  Q4T_CHECK(
+      CancelAgentSessionTurn(store, nullptr, id, cancel, "stop-next", Access())
+          .http_status == 503);
+  ResponsesExecution restored(store);
+  Q4T_CHECK(Ok(restored.RestoreQueued(next.Id(), config, Access())));
+  Q4T_CHECK(Ok(restored.CheckParentCancellation(&cancelled)) && cancelled);
+  Q4T_CHECK(Ok(next.Cancel()) &&
+            Ok(CancelAgentSessionTurn(store, nullptr, id, cancel, "stop-next",
+                                      Access())));
+  int terminals = 0;
+  for (int i = 0; i < 4; ++i) {
+    Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &live, &events, &settled)));
+    for (const auto& event : events.array)
+      terminals += event.GetString("type") == "agent.session.turn.cancelled";
+  }
+  Q4T_CHECK(terminals == 1);
+  return true;
+}
+
 Q4T_TEST(agent_session_turn_exhausted_object_quota_leaves_no_orphan) {
   Fixture f;
   f.options.max_client_objects = 1;

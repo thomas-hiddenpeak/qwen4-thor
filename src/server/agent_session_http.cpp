@@ -1,5 +1,6 @@
 #include "q4t/server/agent_session.h"
 
+#include <algorithm>
 #include <ctime>
 #include <thread>
 
@@ -216,6 +217,14 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     Json request;
     auto valid = io::ParseJson(body, &request, true, kSchemaJsonLimits);
     if (!valid) return Invalid(valid.message(), "body");
+    if (route.kind == Kind::kEvents) {
+      const auto* events = request.GetArray("events");
+      if (events && std::ranges::any_of(events->array, [](const auto& event) {
+            return event.GetString("type") == "agent.session.input.cancel";
+          }))
+        return CancelAgentSessionTurn(objects, jobs, std::string(route.session),
+                                      request, http->AgentEventKey(), access);
+    }
     *stream = route.kind == Kind::kCollection && request.GetBool("stream");
     auto run = std::make_unique<ResponsesExecution>(objects, jobs, true);
     const bool event = route.kind == Kind::kEvents;

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 SDK 经原生 TLS 取消等待工具的回合和正在生成的回合，流中各有一个取消终态。迟到的工具结果收到 409，另一客户取消收到 404，重发旧取消键后下一回合正常答 42。9 项 CPU 检查覆盖部分结果留存、恢复前撤销排队工作、会话隔离及原有 Batch 和 Responses 取消。首轮短验因夹具修改了 SDK 不允许更新的字段而返回 400，已保留。 接着验证单数据槽的取消和后续模型工作准入。[回执](evidence/serve-agent-sessions-20261123/cancel.json)
+
 PR #65 的两项 host-contracts 已通过，受检提交 1d57e0897 与主线合并提交 92eef5137 的文件树一致。rev442 注册配置及交付记录已进入主线。[主线回执](evidence/serve-agent-registration-20261123/main.json)
 
 官方 Node SDK 经原生 TLS 修改会话设置，按 Agent ID 与两个元数据键筛选出一条记录。另一客户列表为空、修改返回 404，清除设置后原筛选同样为空。原回合正常答 42。4 项 CPU 用例覆盖跨存储分页、旧回合快照、回填及保留关系，两种入口的实际转发通过。开销配置的存取已验，费用结算另行验收。[会话设置验收](evidence/serve-agent-sessions-20261123/settings.json)

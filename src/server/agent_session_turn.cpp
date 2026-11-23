@@ -194,8 +194,21 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
       if (!projected.ok()) return projected;
     }
   }
+  const auto cancel_at = link.GetInt("cancel_requested_at");
+  const bool abandoned = cancel_at > 0 && !actions.array.empty();
+  if (abandoned) {
+    actions = Array();
+    if (const auto* saved = link.GetArray("saved_tool_results")) {
+      for (const auto& source : saved->array) {
+        auto item = SavedAgentToolResult(link.GetString("response_id"), source);
+        auto projected = ProjectItem(item, token, &result.items, &actions, false);
+        if (!projected.ok()) return projected;
+      }
+    }
+  }
   const bool waiting = !actions.array.empty();
-  const auto finished = record.GetInt("agent_turn_finished_at");
+  const auto finished = std::max(record.GetInt("agent_turn_finished_at"),
+                                 abandoned ? cancel_at : int64_t{0});
   const auto started = record.GetInt("agent_turn_started_at");
   const auto created = response.GetInt("created_at");
   const bool failed = status == "failed" || status == "incomplete";
@@ -220,7 +233,7 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
        {"agent_id", Copy(*agent, "id")},
        {"subagent_id", {}},
        {"object", String("agent.session.turn")},
-       {"status", String(waiting  ? "waiting"
+       {"status", String(abandoned ? "cancelled" : waiting  ? "waiting"
                          : failed ? "failed"
                                   : status)},
        {"created_at", Number(created)},
@@ -292,6 +305,9 @@ ObjectReply EventReceipt(const Json& receipts, const std::string& name,
   return {};
 }
 
+}  // namespace
+
+namespace agent_detail {
 ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
                            const std::string& id, std::string_view turn_id,
                            const StateAccess& access, AgentSessionView* view,
@@ -373,7 +389,7 @@ ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
   *view = std::move(result);
   return {};
 }
-}  // namespace
+}  // namespace agent_detail
 
 ObjectReply ReadAgentSessionTurn(ObjectStore& objects, const std::string& id,
                                  std::string_view turn_id,
@@ -627,8 +643,11 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   if (!native.ok()) return native;
   Set(&native.value, "previous_response_id",
       Copy(links.array.back(), "response_id"));
-  auto prepared =
-      run.Prepare(native.value, config, access, std::time(nullptr), true);
+  const auto& last = links.array.back();
+  const bool cancelled = view.turn.GetString("status") == "cancelled";
+  CancelledAgentHistory previous{id, Copy(last, "saved_tool_results")};
+  auto prepared = run.Prepare(native.value, config, access, std::time(nullptr),
+                              true, cancelled ? &previous : nullptr);
   if (!prepared.ok()) return prepared;
   auto turn = view.turn.GetString("id");
   if (!waiting) {

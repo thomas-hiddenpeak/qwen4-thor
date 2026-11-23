@@ -165,7 +165,8 @@ ObjectReply UpdateAgentSession(ObjectStore& objects, const std::string& id,
   // Prepare the public result before the write. A confirmed CAS can then
   // acknowledge this revision even if another caller immediately deletes it.
   AgentSessionView view;
-  auto projected = ReadAgentSessionTurn(objects, id, "", access, &view);
+  auto projected =
+      agent_detail::ProjectHistory(objects, data, id, "", access, &view, false);
   if (!projected.ok()) return projected;
   for (const auto* key : {"agent", "metadata", "review", "spend_control"}) {
     if (const auto* value = session.Find(key))

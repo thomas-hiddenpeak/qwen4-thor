@@ -383,7 +383,8 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
 
 ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
                                     const StateAccess& access,
-                                    ResponseStatePlan* plan) {
+                                    ResponseStatePlan* plan,
+                                    const CancelledAgentHistory* cancelled) {
   *plan = {};
   if (access.scope.empty() || access.scope.size() > 256)
     return StateError("Authenticated state scope is unavailable");
@@ -424,8 +425,12 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
       if (!reply.ok()) return reply;
     }
     const auto& output = response->GetArray("output")->array;
-    plan->history.array.insert(plan->history.array.end(), output.begin(),
-                               output.end());
+    if (cancelled) {
+      auto appended = AppendCancelledAgentHistory(*cancelled, *data, &plan->history);
+      if (!appended.ok()) return appended;
+    } else {
+      plan->history.array.insert(plan->history.array.end(), output.begin(), output.end());
+    }
     Json inherited;
     if (const auto* contracts = data->Find("tool_contracts")) {
       auto reply =
