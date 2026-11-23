@@ -1,0 +1,168 @@
+{
+  "engine": "1dfb6691c1248e359adb73286f3c73fefd58de2895799fbce4d90b56a52e2cd5",
+  "ingress": "72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3",
+  "acceptance_sha256": "da34734b772404e09ed8f7ac1c91f08683a712194c27c97a4c8e69f6501e8b88",
+  "profiles": {
+    "primary": {
+      "recovery": {
+        "sdk": {
+          "status": "failed",
+          "error": {
+            "code": "background_execution_interrupted",
+            "message": "Previous execution process exited; started work is not replayed"
+          },
+          "id": "resp_46bc4fd049c03f9120b153a65243a71c",
+          "other": 404,
+          "observed": [
+            "failed"
+          ],
+          "replay": [
+            "response.failed"
+          ]
+        },
+        "from_revision": 5,
+        "to_revision": 6,
+        "original_sha256": "f8566bf5cf59b336d85b3763fbaf84a55e267313cf00ac0a3d9379d46ddd0c17",
+        "terminal_sha256": "e544ddc0f6ac73076842b75fe69e1fdf440926d5e5e6ae7b728268e6f5ea39a7"
+      },
+      "seconds": 44.610577228013426,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 75
+      },
+      "same_default": true,
+      "protocol": "8e51b9e32560b4b6b138900658d4d7a5aa36e5716e1140e99f79202a6b34e78e",
+      "mtp": true,
+      "retained_business": "42",
+      "http_webrtc": 201,
+      "evidence": {
+        "configuration.wire": "5be300cf1e3b248d2a242ba354f8cd7dd94e2768af6e0cb6d0de74c678c78511",
+        "capabilities.json": "847342e706ad710ca881e2131e27d8bc627b02b1780ee8d539952b8ff45af068",
+        "core-after.wire": "c1af348e6d6563e6f2eed6baaca89a3a3e162955695c6bbafd0158224beb83ef",
+        "observation.json": "05f06c84596cbee4739c2d9d7d3062cd796940036d1202626f839ed2f4467b05",
+        "result.json": "f0dee6b192c3a4b9832b32622a9db3f4e63086953421fe913c85f157764a52c2",
+        "cleanup.json": "cf85a9f86a43f3a2d763382853579b62472be43b67fbae74bbe425c79ec0b1f8",
+        "plan.json": "c5912d0e3699b58a7f4153dbf4b52ebdae9e48840c24abe3b97e7c42a5089cef",
+        "beta-response.json": "a7fd839c3cd53f79872030e661d4073903ca0e6f79f55dedc3bbe9d83a461e64",
+        "beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+        "agent-response.json": "4a323d67c0e57d01cb6c312fb68987471b77a7e293334d942f2258972c2fab6a",
+        "interruption.json": "8646684af8e7fb5e6d9648816a9815b880add70a39f32619027565332ff6cfb9"
+      }
+    },
+    "light": {
+      "recovery": {
+        "sdk": {
+          "status": "failed",
+          "error": {
+            "code": "background_execution_interrupted",
+            "message": "Previous execution process exited; started work is not replayed"
+          },
+          "id": "resp_46bc4fd049c03f9120b153a65243a71c",
+          "other": 404,
+          "observed": [
+            "failed"
+          ],
+          "replay": [
+            "response.failed"
+          ]
+        },
+        "from_revision": 5,
+        "to_revision": 6,
+        "original_sha256": "f8566bf5cf59b336d85b3763fbaf84a55e267313cf00ac0a3d9379d46ddd0c17",
+        "terminal_sha256": "07f1f391096f908b062ae173eefcbf2d86cb7aafd86803b94a7f8ebfa60f9918"
+      },
+      "seconds": 43.58577969716862,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 71
+      },
+      "same_default": true,
+      "protocol": "8e51b9e32560b4b6b138900658d4d7a5aa36e5716e1140e99f79202a6b34e78e",
+      "mtp": false,
+      "retained_business": "42",
+      "http_webrtc": 201,
+      "evidence": {
+        "configuration.wire": "b2a10059bbfd956830252b7e20b41d55eff275cb7e69d37fb2b9fd4bb2f8738e",
+        "capabilities.json": "78687b4429e91bb392e44ba9d59b8a9e579bfe0b6106eb77d8b75737fa2046a3",
+        "core-after.wire": "c450b715afa03ee733c10b2a269e501b257bb9c93d037077cc3cddeacd4d910e",
+        "observation.json": "fd51c061a45ecae9b3690f4fb00f1567d5dafe3b55fe34660f35f591a16a4b45",
+        "result.json": "a1eb381c8f373915c7538f00d76c87606d23955f51d1a2395ec2fcc9a4fdb837",
+        "cleanup.json": "ec67b33faf5cb3a77a2bcdaca01f8dedbbcad089932cbe92ebea5eec5af62e34",
+        "plan.json": "46e707173f480595daeb077432af5c2a48f32b9bd030aa1d04b6de3bc55b82b2",
+        "beta-response.json": "9e9c4a7eea7ce2c3655ff57fa14d78d4e48859e9e6763df0b26c048c0612544e",
+        "beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+        "beta-restored.json": "740a2c4551b2dfe7dac88f32b0d502c3b4ac1939d0b72f6310137886c1857462",
+        "agent-response.json": "335b93a8358b41a8ec517788bbc4d6919223567e04289dac8470820ce1141fce",
+        "agent-restored.json": "68f2125f5a3f52953f86d8859f18c4098f595bd624e55dd8d31194dd6702092a",
+        "interruption.json": "d898aded8e0c550cd451fef6d73d4bae5d4d172035787b765a12baac54843ef4"
+      }
+    }
+  },
+  "registry": {
+    "primary": [
+      "current raw digest",
+      "exact hosted-agent predecessor",
+      "exact Beta predecessor",
+      "exact Live predecessor",
+      "native ingress and workers",
+      "rejected changed evidence",
+      "rejected missing history",
+      "rejected wrong ingress",
+      "rejected wrong worker"
+    ],
+    "light": [
+      "current raw digest",
+      "exact hosted-agent predecessor",
+      "exact Beta predecessor",
+      "exact Live predecessor",
+      "native ingress and workers",
+      "rejected changed evidence",
+      "rejected missing history",
+      "rejected wrong ingress",
+      "rejected wrong worker"
+    ],
+    "automatic_to_rev438": "rejected: automatic fallback would lose qualified agent interruption recovery",
+    "identical_recovery_automatic": true,
+    "successor_acceptance": {
+      "status": "ACCEPT_AGENT_RECOVERY_PRIMARY_LIGHT",
+      "registry_sha256": "15d593615ba9e88e531f3f9732ca44597e7b83a47698626deb4982f77148c5f1",
+      "environment": {
+        "status": "PASS",
+        "env_abort": false,
+        "all_queries_ok": true,
+        "nvml_queries": 84,
+        "cleanup_complete": true,
+        "lease_result_sha256": "8521b708db6ce4ff5a9b74daac6021735399fef43fd6e4ab02ffe8df8166bb0c"
+      },
+      "migration_permit_sha256": "8f85f44a852ae70ab9ee61dd59326186d010ac3c645c137f4c808ef9b50cc9f5",
+      "actual_model_starts": 2,
+      "additional_model_starts": 0,
+      "historical_business_preserved": true
+    },
+    "pins": {
+      "records": {
+        "primary": {
+          "previous": "fa7353fa12ef7aef3514e25cb97ecff0bffa49e260267296ceb4ff6ee179cbad",
+          "selected": "a759ecb078ce7791679061f24560ec4a0c9622e47732ab7dd675c97fdf4fe49f"
+        },
+        "light": {
+          "previous": "de3a519c4411138d02a6d863704d1c8142a5bb0334257ad35b0a99e81f692f06",
+          "selected": "5265a9815da252b78560b391e1cb2b441ae35e9c8e2cbc89d450e6e1a0e99dd5"
+        }
+      },
+      "bytes": {
+        "primary": 5677548,
+        "light": 8385882
+      },
+      "registry": "15d593615ba9e88e531f3f9732ca44597e7b83a47698626deb4982f77148c5f1"
+    }
+  },
+  "cpu_tests": 4,
+  "default_revision": 438
+}

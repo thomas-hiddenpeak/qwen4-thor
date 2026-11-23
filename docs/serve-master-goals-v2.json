@@ -16477,6 +16477,7 @@
     "maintenance_delivery": "evidence/serve-native-maintenance-delivery-20261123/README.md",
     "merged_pr": 62,
     "interruption": "evidence/serve-responses-agent-interruption-20261123/README.md",
-    "candidate_status": "failed on rev438; corrected against preserved original objects; production qualification pending"
+    "candidate_status": "qualified on both capacities; same-surface automatic rollback to rev438 rejected; managed release pending",
+    "interruption_profiles": "evidence/serve-responses-agent-interruption-20261123/profiles.json"
   }
 }

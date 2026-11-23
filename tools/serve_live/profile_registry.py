@@ -77,7 +77,11 @@ def prepare(source, manifest_sha256, stage, observations, output):
         status = {profile_live_reuse.RECORD_FORMAT: 'ACCEPT_LIVE_PRIMARY_LIGHT',
                   profile_live_reuse.BETA_RECORD_FORMAT: 'ACCEPT_RESPONSES_BETA_PRIMARY_LIGHT',
                   profile_live_reuse.AGENT_RECORD_FORMAT: 'ACCEPT_HOSTED_AGENTS_PRIMARY_LIGHT'}
-        package.save(work/'acceptance.json', dict(status=status[evidence['primary']['record']['format']],
+        primary = evidence['primary']['record']
+        label = status[primary['format']]
+        if primary['reused_business']['format'] == profile_live_reuse.AGENT_REFRESH:
+            label = 'ACCEPT_AGENT_RECOVERY_PRIMARY_LIGHT'
+        package.save(work/'acceptance.json', dict(status=label,
             registry_sha256=package.sha(qualified/'registry.json'), environment=environment,
             migration_permit_sha256=ledger.digest(permit), actual_model_starts=2,
             additional_model_starts=0, historical_business_preserved=True))

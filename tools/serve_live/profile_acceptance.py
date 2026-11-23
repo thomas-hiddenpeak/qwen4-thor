@@ -169,6 +169,9 @@ class Stage(workers.ice.Stage):
         if 'beta_change' in self.plan:
             from tools.serve_responses import beta_profile_acceptance
             beta_profile_acceptance.business(self, capabilities)
+        if 'agent_interruption' in self.plan:
+            from tools.serve_responses import interruption_profile_acceptance
+            interruption_profile_acceptance.business(self)
         if 'agent_change' in self.plan:
             from tools.serve_responses import agent_profile_acceptance
             agent_profile_acceptance.business(self, capabilities)
@@ -240,6 +243,9 @@ def main():
     if args.action == 'run':
         with base.lifecycle.child_subreaper():
             for plan in plans:
+                if 'agent_interruption' in plan:
+                    from tools.serve_responses import interruption_profile_acceptance
+                    interruption_profile_acceptance.seed(Path(plan['output']), plan)
                 Stage(plan).run()
         return
     # Development-only release validation. Neither the model nor its guardian

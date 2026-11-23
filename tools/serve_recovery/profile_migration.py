@@ -558,6 +558,13 @@ def permit(previous, target, previous_evidence, target_evidence,
            reviewed_content=None):
     first = observations(previous, previous_evidence)
     second = observations(target, target_evidence)
+    if automatic:
+        for name in profile_contract.NAMES:
+            prior = previous_evidence[name]['record']['business'].get('live', {})
+            target_live = target_evidence[name]['record']['business'].get('live', {})
+            ledger.require('interruption.json' not in prior.get('evidence_sha256', {}) or
+                           'interruption.json' in target_live.get('evidence_sha256', {}),
+                           'automatic fallback would lose qualified agent interruption recovery')
     old_contract, new_contract = map(semantic_capabilities, (first, second))
     extension = old_contract != new_contract
     ledger.require(type(allow_capability_extension) is bool and
