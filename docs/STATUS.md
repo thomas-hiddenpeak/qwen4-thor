@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+会话的 7 条路径、11 项操作已列入发布用 OpenAPI。创建时的 JSON 或 SSE、事件订阅的 SSE、提交事件的 202 空响应、Beta 请求头和列表元数据筛选都有合同回归。原生入口与可选 nginx 逐路由转发通过。PR #66 首轮 CI 的合同遗漏已修复，等待远端复检。
+
 PR #65 的两项 host-contracts 已通过，受检提交 1d57e0897 与主线合并提交 92eef5137 的文件树一致。rev442 注册配置及交付记录已进入主线。[主线回执](evidence/serve-agent-registration-20261123/main.json)
 
 官方 Node SDK 经原生 TLS 修改会话设置，按 Agent ID 与两个元数据键筛选出一条记录。另一客户列表为空、修改返回 404，清除设置后原筛选同样为空。原回合正常答 42。4 项 CPU 用例覆盖跨存储分页、旧回合快照、回填及保留关系，两种入口的实际转发通过。开销配置的存取已验，费用结算另行验收。[会话设置验收](evidence/serve-agent-sessions-20261123/settings.json)
