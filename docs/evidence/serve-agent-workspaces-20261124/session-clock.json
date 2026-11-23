@@ -1,0 +1,59 @@
+{
+  "default_revision": 454,
+  "engine": "6b2996f1c68ffb091d716ab9b308f81ce4c8234a292faeb876e2dcbba0004469",
+  "ingress": "a201da20bee226df67d1c7c409c0431b587dfe4b648f09d71ae046d6d6ffc5dc",
+  "sdk_driver": "3eeb53b3b69312bb49aa6760b3ca152b05a87f87ea45514c5d28b4abb1cc5f00",
+  "cpu": 50,
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 146,
+    "native_routes": 240,
+    "reviewed_source_anchors": 1242,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 40.933,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "calls": 1,
+    "events": 26,
+    "new_turn_events": 44,
+    "output": "The actual publication revision is 442.",
+    "new_turn_output": "The actual publication revision is 442.\n\nCurrent UTC time: 2026-11-23T21:16Z.",
+    "foreign_status": 404,
+    "clock_checked": true,
+    "first_items": [
+      {
+        "type": "function_call",
+        "index": 0
+      },
+      {
+        "type": "message",
+        "index": 1
+      }
+    ],
+    "next_indices": [
+      0
+    ]
+  },
+  "clock_semantics": "UTC reminder regenerated for each prepared Agent model step, if enabled. Clock prompts are private. Wall clock is observed on the host. The text stream is not interrupted during generation.",
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/session-clock-http-01/result.json": "85543dde79504b4e84780f42beab60db26cd2e30ef43e098c6d5b9694fb0ee5f",
+    ".q4t-work/serve-responses-agents-20261123/session-clock-http-01/plan.json": "0236cad19e51c2df5da38fe2de87e156b0293590329f2b430750c9fc291596a9",
+    ".q4t-work/serve-responses-agents-20261123/session-clock-http-01/create/sdk-result.json": "2051347f91bbe4f6d0e82436a4a734af092533a0f4cb8b242a84758aa19c17a9",
+    ".q4t-work/serve-responses-agents-20261123/session-clock-cpu-01/result.log": "69e6ef12ac2b8ee3ae6c8e0c88e376e7f74a4eb4fe8daa1e270b8c472fcde7b8",
+    ".q4t-work/serve-responses-agents-20261123/session-clock-cpu-01/required.txt": "2628ade30d1d6946a3b439fac635355ddd4751283c2a4dae9ac0176e376a16b8",
+    ".q4t-work/serve-responses-agents-20261123/session-clock-lease-01/exit.json": "1238c361ee5f51e4117def4dfb8d1d349a1f8d579903963ca1a17a9b2e6f0538"
+  }
+}

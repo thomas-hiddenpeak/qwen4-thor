@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <charconv>
+#include <chrono>
 #include <cmath>
+#include <format>
 #include <limits>
 #include <string_view>
 #include <unordered_map>
@@ -694,6 +696,13 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   Set(&chat, "enable_thinking", Boolean(envelope.reasoning_effort != "none"));
   std::string guidance = envelope.access_program.instructions;
   if (!guidance.empty()) guidance += '\n';
+  if (envelope.agent_time_awareness) {
+    // Each new model step, including a tool continuation, gets the live UTC
+    // time. Keep the reminder out of stored messages and SDK item history.
+    const auto now = std::chrono::floor<std::chrono::seconds>(
+        std::chrono::system_clock::now());
+    guidance += std::format("Current UTC time: {:%FT%TZ}.\n", now);
+  }
   if (envelope.personality == "friendly")
     guidance +=
         "Use a warm, approachable style. Explain clearly and respectfully "

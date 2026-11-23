@@ -1,0 +1,157 @@
+{
+  "status": "PASS_TARGETED_CAPACITY_AND_ROLLBACK",
+  "scope": "CPU storage and stopped mixed-controller retention, independent of engine quality and service publication",
+  "publication_blocker": {
+    "prior_lease": {
+      "path": ".q4t-work/serve-responses-agents-20261123/session-tools-publication-lease-01/exit.json",
+      "sha256": "d2fe4042fe8222a23f1fce40716dca871d815b75663339a523e6dde8ec9b8059"
+    },
+    "pool": {
+      "capacity": 16,
+      "used": 16,
+      "available": 0,
+      "protected_ids": [
+        "0cf8e3fe-a589-4aea-90c8-9b3c7e4adf5b",
+        "16209603-d386-4b70-a233-cd0b201a13c0",
+        "20422e4f-7a48-4b82-9c53-e92e8098352b",
+        "399d1d4c-aca4-44c0-ae0a-e7495e955cb1",
+        "3f60844f-d462-413b-9336-5e2eb1f502c6",
+        "54cc268c-54dd-4d7c-9b63-61c0e027d523",
+        "59e975c1-d3cf-4aa5-a94d-38376ff86ce1",
+        "5b673f7b-b18b-4322-998a-5d7c4bd7aebd",
+        "6c89b6a1-9720-41da-9906-b97f8d10f7f1",
+        "75d02733-6e0d-4e5e-aaa0-483089567ee8",
+        "80b117fb-8196-4fc1-9e2e-e92e728b6cbc",
+        "8e7e1ba1-0d4a-4eba-bf0f-fc22700a862b",
+        "bb2952bf-0eba-4d84-921e-66b26d24d1ef",
+        "d0c2dd86-e892-4324-98f3-5870f061ee9a",
+        "d46aa37d-c2fe-4a29-9294-c1d191d43e65",
+        "fbc9e0e3-06ef-4108-91e9-b5b902f1de3d"
+      ],
+      "candidate_ids": [],
+      "candidates_require_plan": true,
+      "initialized": true
+    },
+    "prior_publication": 454,
+    "model_starts": 0
+  },
+  "cpu": {
+    "unique_passing": 54,
+    "initial": {
+      "path": ".q4t-work/serve-responses-agents-20261123/rolling-retention-cpu-01.log",
+      "sha256": "93490488d621225e01f952e3631b1a092df8345646986a354a41191da7eb9c15"
+    },
+    "fixture_failure": "Two prepared CPU model packages initially had identical bytes. Each subsequent fixture now changes the binary before packaging.",
+    "targeted_rerun_and_additional_cross_pool_roundtrip": {
+      "path": ".q4t-work/serve-responses-agents-20261123/rolling-retention-cpu-02.log",
+      "sha256": "4a40bbb7882a31f2be7e6c1938ed61f651e67735d5068932c9821ac29e93fb7b"
+    },
+    "coverage": [
+      "actual stopped register up to 18 then refuse the 19th",
+      "duplicate base/reserve cycle refused",
+      "same-cycle replay",
+      "rollback/forward preserve consumed fallback",
+      "reserve checkpoint archive/restore original inodes and bytes",
+      "historical v2 archive plans verified by their original implementations"
+    ]
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 146,
+    "native_routes": 240,
+    "reviewed_source_anchors": 1242,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "original_rev454_reader": {
+    "status": "PASS",
+    "actual_release": "9867dc4a9c647e445dca75447a15d501175f40aa24bde80a0a8efb33ea6e313c",
+    "old_source": "a4efda585b3fcaeb2a4014ecea9a469f37d4458dc492793ad7a146d5cc5d7592",
+    "new_source": "8f127f8423fcba9a383232f596ed8e25239953725f092c0680acba9518cecede",
+    "publication_revision": 454,
+    "version_revision": 156,
+    "cycles": {
+      "bb2952bf-0eba-4d84-921e-66b26d24d1ef.json": "12a2bbb6e27521204c72df5bbda044ed1c32c518ed0039a1f8d27330205c9fbd",
+      "0cf8e3fe-a589-4aea-90c8-9b3c7e4adf5b.json": "f24a0875688e5ea70aa698bb55338d47f5c1d292bf31800e32e4e907bfb33f1a",
+      "80b117fb-8196-4fc1-9e2e-e92e728b6cbc.json": "5675d3df8d55fe8b08afe74a690cbf9e98db11ff86643c6e36e8170eb51c7a99",
+      "5b673f7b-b18b-4322-998a-5d7c4bd7aebd.json": "9680ac0d8ca062af91ed7b5a660d39e549111ef6bce996b7279ad199fbcbb2ec",
+      "75d02733-6e0d-4e5e-aaa0-483089567ee8.json": "637d2c3910ab17597d6115cf038faf378877930b4497787dbbd48aa7bb9b99fe",
+      "d0c2dd86-e892-4324-98f3-5870f061ee9a.json": "57443b547c9fdc3dadda2c43eac9ef05bf52d4d7f404a40499aa47c7dec5d0ae",
+      "8e7e1ba1-0d4a-4eba-bf0f-fc22700a862b.json": "d91a2badff43c3c3ec4ebb3a6de6be79bca1eb67dea27ed6b6daaf2a16aa5ced",
+      "3f60844f-d462-413b-9336-5e2eb1f502c6.json": "80e800581ffadb2c7c6da9b7aee50c27796e996a5d6473351d092c662d08626c",
+      "54cc268c-54dd-4d7c-9b63-61c0e027d523.json": "2f00f9bc31a14641a46939a98dc49824b56a2620ec55c5ce8c25373a27de8144",
+      "fbc9e0e3-06ef-4108-91e9-b5b902f1de3d.json": "72a49c91b8a55f6292a9aa1bffef852c912007889f5251156cb22f7ae7413b50",
+      "16209603-d386-4b70-a233-cd0b201a13c0.json": "9cd235bbf0906001d107e01f24444698fb1deecbceea2fb1181f6a6aea0a3bff",
+      "6c89b6a1-9720-41da-9906-b97f8d10f7f1.json": "4e8e551677fd423016609a09c7fb2e37262974059785c96ae2d53ef1ef503feb",
+      "d46aa37d-c2fe-4a29-9294-c1d191d43e65.json": "a0b44d7b9248c4408179aee5cc361afc0d90789d4fc0967f9e20a7355f83985d",
+      "59e975c1-d3cf-4aa5-a94d-38376ff86ce1.json": "12219d962c36d91cdadc0d41564f2b1035ecabc010fae415fa77196874e758e4",
+      "399d1d4c-aca4-44c0-ae0a-e7495e955cb1.json": "afc4da849bc0df647fa539c7eedb5216761f62fc37db1bf12aaca1017a36c41c",
+      "20422e4f-7a48-4b82-9c53-e92e8098352b.json": "53a846d055ca9f434d44ef3b60de6a06a1440a4fb1f6155b2ac4e6c519382148"
+    },
+    "registered_roots": 16,
+    "current_rollback_edges": 16,
+    "released_after_one": [],
+    "released_after_two": [
+      "20871e8a81691446dda42b49429fffff44b12322088f290c5f92333f27870015"
+    ],
+    "retained_all_16_after_copy": true,
+    "legacy_visible_at_16_17_18_19": [
+      16,
+      16,
+      16,
+      16
+    ],
+    "new_visible_at_16_17_18": [
+      16,
+      17,
+      18
+    ],
+    "nineteenth_refusal": "version registration cycle bound",
+    "archived_fixtures": [
+      {
+        "path": ".q4t-work/serve-responses-agents-20261123/artifact-maintenance-01/archive-versions/69da155c-5c9e-4a64-8ea4-dcc237529947.json",
+        "sha256": "66960da6a8a1cf92f4c145e366809c0dad0ecec1978de84e6513cba94ed5a4ca"
+      },
+      {
+        "path": ".q4t-work/serve-responses-agents-20261123/environment-maintenance-01/archive-versions/04019c41-634e-4813-b8c2-b7e6d43f8574.json",
+        "sha256": "e9ee62aa2dea26937504ba0c9b5748e870f9aee552e16e084f89a8f856ef76a2"
+      },
+      {
+        "path": ".q4t-work/serve-responses-agents-20261123/oauth-maintenance-01/archive-versions/5f6bf45b-1c1e-4ff4-baaa-c5b31a00ceff.json",
+        "sha256": "40e82ca992cad81409e87c13fb3b0540f78c90e080d4d5195e74ec89759eedb9"
+      }
+    ],
+    "model_starts": 0
+  },
+  "offline_read_receipt": {
+    "path": ".q4t-work/serve-responses-agents-20261123/rolling-old-reader-01/result.json",
+    "sha256": "bdcfedbc67a235c1f95525f3b3df16729de4c938812d1485a02c8b25804c6d14"
+  },
+  "previous_exact_managed_packages": [
+    {
+      "stage": "session-tools-fallback-business-01",
+      "manifest_sha256": "0b8fa84a0989a278f91e888d8265e4a873333bfe82a277ffa3b5f857396a3abc",
+      "seconds": 129.8717865566723,
+      "starts": 2,
+      "passed": true,
+      "result": {
+        "path": ".q4t-work/serve-responses-agents-20261123/session-tools-fallback-business-01/result.json",
+        "sha256": "baf855215b2635028e68423621a44193f3acdcf8b4856d371f7f85a1d733e888"
+      }
+    },
+    {
+      "stage": "fatal-business-session-tools-01",
+      "manifest_sha256": "18b6ffb158b5dc70d70d8894568effaf2dfa883fcbf712a622f5128aeac5a969",
+      "seconds": 160.9607859221287,
+      "starts": 2,
+      "passed": true,
+      "result": {
+        "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-session-tools-01/result.json",
+        "sha256": "bbc303977a1743d148c7e560df9750096923aa70acd1722096e86d439011f5ca"
+      }
+    }
+  ]
+}

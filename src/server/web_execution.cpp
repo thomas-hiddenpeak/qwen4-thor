@@ -52,6 +52,8 @@ ObjectReply Index(ObjectStore& objects, const BinaryAccess& access,
                   const WebSearchOptions& options, WebExecutionBudget* budget,
                   WebIndexSnapshot* snapshot, bool* cached,
                   GrammarControl control) {
+  // With no permitted sources there is nothing to fetch or read from cache.
+  if (options.empty_domain_allowlist) return {};
   WebIndexStore index(objects);
   const auto identity = WebIndexIdentity(policy, options);
   auto result = index.Read(access, identity, snapshot);

@@ -159,7 +159,7 @@ ObjectReply ResponsesExecution::ExecuteMcpCall(
   };
   auto result = invoke();
   if (result.code == "mcp_session_binding_changed" && !receipt.call_permitted &&
-      agent_http_session_.empty()) {
+      agent_session_id_.empty()) {
     // The catalog/target was authenticated above. Newly supplied credentials
     // or deployment policy need a fresh session, never the previous token.
     // A managed Agent call already belongs to its selected authorization.

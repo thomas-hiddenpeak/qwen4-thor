@@ -45,12 +45,35 @@ const char* SessionErrorCode(std::string_view code) {
 
 ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
   const auto& agent = *session.Find("agent");
+  const auto& session_tools = agent.GetArray("tools")->array;
   auto tools = Array();
-  if (tool_search) {
+  // The registration enables discovery, but the session owner can revoke its
+  // last deferred function while the current call is waiting for a result.
+  if (tool_search && std::ranges::any_of(session_tools, [](const Json& tool) {
+        return tool.GetString("type") == "function" &&
+               tool.GetBool("defer_loading");
+      })) {
     tools.array.push_back(Object({{"type", String("tool_search")},
                                   {"execution", String("server")}}));
   }
-  for (const auto& tool : agent.GetArray("tools")->array) {
+  for (const auto& tool : session_tools) {
+    if (tool.GetString("type") == "web_search") {
+      const auto mode = tool.GetString("mode");
+      if (mode == "disabled") continue;
+      auto native = Object({{"type", String("web_search")},
+                            {"external_web_access", Boolean(mode == "live")},
+                            {"search_context_size", Copy(tool, "context_size")}});
+      if (Nonnull(tool, "allowed_domains"))
+        Set(&native, "filters",
+            Object({{"allowed_domains", Copy(tool, "allowed_domains")}}));
+      if (Nonnull(tool, "location")) {
+        auto location = Copy(tool, "location");
+        Set(&location, "type", String("approximate"));
+        Set(&native, "user_location", std::move(location));
+      }
+      tools.array.push_back(std::move(native));
+      continue;
+    }
     if (tool.GetString("type") == "mcp") {
       const auto& transport = *tool.Find("transport");
       if (tool.GetString("connection_origin") != "service" ||
@@ -71,8 +94,7 @@ ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
                    "Session tool executor is unavailable");
     tools.array.push_back(tool);
   }
-  if (agent.Find("multi_agent")->GetBool("enabled") ||
-      agent.Find("experimental")->GetBool("time_awareness"))
+  if (agent.Find("multi_agent")->GetBool("enabled"))
     return Error(503, "agent_executor_unavailable",
                  "Requested session execution mode is unavailable");
   auto result = ObjectReply{};
@@ -184,6 +206,17 @@ ObjectReply ProjectItem(const Json& from, const std::string& turn_id,
     Set(&item, "output", Copy(from, "output"));
     Set(&item, "status",
         String(Nonnull(from, "error") ? "failed" : "completed"));
+  } else if (type == "web_search_call") {
+    const auto status = from.GetString("status");
+    if (status == "searching") Set(&item, "status", String("in_progress"));
+    if (status == "failed") Set(&item, "status", String("incomplete"));
+    auto action = Copy(from, "action");
+    // Sources stay in the native receipt. The Agent search action has only
+    // query and queries, and the open/find actions retain their URL and text.
+    std::erase_if(action.object, [](const auto& field) {
+      return field.first == "sources";
+    });
+    Set(&item, "action", std::move(action));
   } else if (type == "mcp_call") {
     for (const auto* field : {"server_label", "name", "error"})
       Set(&item, field, Copy(from, field));
@@ -261,7 +294,7 @@ ObjectReply PrepareAgentSessionExecution(
     auto native = NativeRequest(start.session, std::move(start.input),
                                 start.tool_search);
     if (!native.ok()) return native;
-    run.ConfigureAgentMcp(start.session, start.sealed_http);
+    run.ConfigureAgentSession(start.session, start.sealed_http);
     result = run.Prepare(native.value, config, access, created, true);
     if (!result.ok()) return result;
     auto link = Object({{"id", String("turn_" + nonce.substr(14))},
@@ -787,7 +820,7 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
     previous.results = Copy(last, "saved_tool_results");
   }
   const bool cancelled = view.turn.GetString("status") == "cancelled";
-  run.ConfigureAgentMcp(execution_settings, data.GetString("sealed_http"));
+  run.ConfigureAgentSession(execution_settings, data.GetString("sealed_http"));
   auto prepared = run.Prepare(native.value, config, access, std::time(nullptr),
                               true, cancelled ? &previous : nullptr);
   if (!prepared.ok()) return prepared;

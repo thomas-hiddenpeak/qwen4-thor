@@ -133,7 +133,7 @@ class ResponsesExecution {
                                std::optional<ObjectRequest> environment = {},
                                std::shared_ptr<environment_detail::WorkspaceCopies> workspace_copies = {});
   // Bind only the owned Agent settings for this model step, before preparation.
-  void ConfigureAgentMcp(const io::Json& session, std::string sealed_http);
+  void ConfigureAgentSession(const io::Json& session, std::string sealed_http);
   bool BindRateDomain(ClientRateDomain domain) {
     if (domain != ClientRateDomain::kOnline &&
         domain != ClientRateDomain::kBatch)
@@ -283,7 +283,7 @@ class ResponsesExecution {
       const std::function<bool(const std::string&)>& publish);
   Status BindActiveTools(const io::Json& active, ChatPlanError* error,
                          const io::Json* history = nullptr);
-  ObjectReply RestoreAgentMcp();
+  ObjectReply RestoreAgentSession();
   ObjectReply AuthorizeAgentMcp(ResponsesMcpDefinition* definition,
                                 bool dispatch = true);
   bool BeforeModelOutput() const;
@@ -323,7 +323,8 @@ class ResponsesExecution {
   mutable FileExpansionUsage file_usage_;
   bool mcp_sheet_issued_ = false;
   io::Json agent_mcp_tools_, agent_vaults_;
-  std::string agent_http_session_, agent_http_sealed_;
+  bool agent_time_awareness_ = false;
+  std::string agent_session_id_, agent_http_sealed_;
   std::vector<ResponsesMcpDefinition> mcp_credentials_;
   // Digest of the caller's original request, not the expanded/stored one.
   // Batch may resupply that authenticated File row, never persisted secrets.

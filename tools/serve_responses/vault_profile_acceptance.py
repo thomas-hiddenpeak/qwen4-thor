@@ -88,6 +88,9 @@ def verify_identity(plan, capabilities):
     sessions = dict(CAPABILITY, tool_types=['function','mcp'], mcp=methods)
     if witness.get('hosted_workspaces'):
         sessions = dict(sessions, environments=['none','openai_hosted'])
+    if witness.get('session_tools'):
+        from tools.serve_recovery.profile_live_reuse import MANAGED_TOOL_SESSION
+        sessions = MANAGED_TOOL_SESSION
     pkg.require(witness['receipt_sha256'] == pkg.sha(evidence) and
                 plan['binary_sha256'] == witness['binary'] == pkg.sha(plan['binary']) ==
                 pkg.read(evidence)['engine' if renewal else 'engine_sha256'] and

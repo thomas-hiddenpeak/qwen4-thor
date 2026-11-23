@@ -36,9 +36,11 @@ ObjectReply agent_detail::SealAgentHttp(ObjectStore& objects,
   return result;
 }
 
-void ResponsesExecution::ConfigureAgentMcp(const Json& session,
+void ResponsesExecution::ConfigureAgentSession(const Json& session,
                                            std::string sealed_http) {
-  agent_http_session_ = session.GetString("id");
+  agent_session_id_ = session.GetString("id");
+  const auto* experimental = session.Find("agent")->Find("experimental");
+  agent_time_awareness_ = experimental && experimental->GetBool("time_awareness");
   agent_http_sealed_ = std::move(sealed_http);
   agent_vaults_ = *session.Find("vault_ids");
   agent_mcp_tools_ = Array();
@@ -46,7 +48,7 @@ void ResponsesExecution::ConfigureAgentMcp(const Json& session,
     if (tool.GetString("type") == "mcp") agent_mcp_tools_.array.push_back(tool);
 }
 
-ObjectReply ResponsesExecution::RestoreAgentMcp() {
+ObjectReply ResponsesExecution::RestoreAgentSession() {
   if (plan_.agent_session_id.empty()) return {};
   auto row = agent_detail::ReadRow(objects_, plan_.agent_session_id, access_);
   if (!row.ok()) return row;
@@ -58,13 +60,13 @@ ObjectReply ResponsesExecution::RestoreAgentMcp() {
   auto settings = agent_detail::SessionSettings(*data, &step);
   if (!settings.ok()) return settings;
   if (!settings.value.GetArray("vault_ids")) return InvalidSettings();
-  ConfigureAgentMcp(settings.value, step.GetString("sealed_http"));
+  ConfigureAgentSession(settings.value, step.GetString("sealed_http"));
   return {};
 }
 
 ObjectReply ResponsesExecution::AuthorizeAgentMcp(
     ResponsesMcpDefinition* definition, bool dispatch) {
-  if (agent_http_session_.empty()) return {};
+  if (agent_session_id_.empty()) return {};
   const auto label = definition->declaration.GetString("server_label");
   const auto found =
       std::ranges::find_if(agent_mcp_tools_.array, [&](const auto& tool) {
@@ -87,7 +89,7 @@ ObjectReply ResponsesExecution::AuthorizeAgentMcp(
   if (!agent_http_sealed_.empty()) {
     std::string wire;
     auto opened =
-        cipher_.Open(agent_http_sealed_, TransportBinding(agent_http_session_),
+        cipher_.Open(agent_http_sealed_, TransportBinding(agent_session_id_),
                      access_, &wire);
     if (!opened.ok()) return opened;
     Json overrides;

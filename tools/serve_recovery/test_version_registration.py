@@ -276,6 +276,50 @@ class RegistrationTests(unittest.TestCase):
                           request_id=str(uuid.uuid4()))
         return self.prepare(dict(package=str(package),manifest_sha256=digest))
 
+    def test_full_history_preserves_legacy_slots_and_bounds_reserve(self):
+        registration = self.registration
+        self.install()
+        original = None
+        for count in range(2, 20):
+            before = self.load()
+            self.base.fixture.binary.write_bytes(f'cpu release {count}'.encode())
+            self.base.fixture.base['files']['q4t'] = bundle.engine.sha(self.base.fixture.binary)
+            package, digest = self.base.prepare('roll-'+str(count))
+            self.assertNotEqual(digest, registration['root']['manifest_sha256'])
+            deployment.switch(self.state, package, digest,
+                expected=registration['root']['manifest_sha256'], request_id=str(uuid.uuid4()))
+            registration = self.prepare(dict(package=str(package), manifest_sha256=digest))
+            if count == 19:
+                with self.assertRaisesRegex(ValueError, 'storage is full'):
+                    self.install(registration, before['registry']['cycle_id'])
+                self.assertEqual(self.load(), before)
+                break
+            self.install(registration, before['registry']['cycle_id'])
+            self.install(registration, before['registry']['cycle_id'])
+            entries = manager.intents(self.state)
+            self.assertEqual(len(entries), count)
+            pool = self.state/manager.DIRECTORY
+            if count == 16:
+                original = {p:(p.stat().st_ino, p.read_bytes()) for p in pool.iterdir()}
+            if count > 16:
+                self.assertEqual(original, {p:(p.stat().st_ino, p.read_bytes()) for p in pool.iterdir()})
+                cycle = registration['registry']['cycle_id']
+                path = entries[cycle]['committed']
+                self.assertEqual(path.parent.name, manager.RESERVE_DIRECTORY)
+                self.assertEqual(manager.load(self.state, deployment.read_descriptor(self.state))['state'],
+                                 self.load())
+                duplicate = pool/(cycle+'.json.new')
+                first = next(iter(original))
+                backup = self.state/'saved-for-duplicate-test'
+                first.rename(backup)
+                try:
+                    duplicate.touch()
+                    with self.assertRaisesRegex(ValueError, 'duplicate version registration'):
+                        manager.intents(self.state)
+                finally:
+                    duplicate.unlink()
+                    backup.rename(first)
+
     def test_interrupted_explicit_repair_keeps_predecessor_and_resumes_one_cycle(self):
         self.install();spent = self.consume();repaired = self.repair()
         original = os.replace

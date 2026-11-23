@@ -13,12 +13,14 @@ from tools.serve_recovery import ledger, publication_files as files, store
 from tools.serve_recovery import version_policy, version_registration
 
 DIRECTORY = 'version-checkpoints'
+RESERVE_DIRECTORY = 'version-checkpoints-reserve'
+SUFFIXES = ('.bound', '.json', '.bound.new', '.json.new')
 FORMAT = 'q4t-version-checkpoint-v1'
 MAX_BYTES = 24*1024
 
 
-def directory(state, *, create=False):
-    path = Path(state)/DIRECTORY
+def directory(state, *, create=False, reserve=False):
+    path = Path(state)/(RESERVE_DIRECTORY if reserve else DIRECTORY)
     if not os.path.lexists(path) and not create:
         return None
     files.directory(path, create=create)
@@ -26,16 +28,27 @@ def directory(state, *, create=False):
                    'private version checkpoints required')
     if create: files.sync(path.parent)
     names = list(path.iterdir())
-    ledger.require(len(names) <= version_registration.MAX_CYCLES*4,
+    limit = version_registration.capacity(reserve)
+    ledger.require(len(names) <= limit*4,
                    'version checkpoint file bound')
     for name in names:
         cycle, suffix = name.name[:36], name.name[36:]
-        ledger.require(ledger.identifier(cycle) and suffix in
-            ('.json', '.json.new', '.bound', '.bound.new'),
+        ledger.require(ledger.identifier(cycle) and suffix in SUFFIXES,
             'unexpected version checkpoint file')
-    ledger.require(len({name.name[:36] for name in names}) <= version_registration.MAX_CYCLES,
+    ledger.require(len({name.name[:36] for name in names}) <= limit,
                    'version checkpoint cycle bound')
     return path
+
+
+def cycle_directory(state, cycle, *, create=False):
+    entries = version_registration.intents(state)
+    ledger.require(cycle in entries and set(entries[cycle]) == {'committed'},
+                   'checkpoint requires a committed registration')
+    reserve = entries[cycle]['committed'].parent.name == version_registration.RESERVE_DIRECTORY
+    other = directory(state, reserve=not reserve)
+    ledger.require(other is None or not any(os.path.lexists(other/(cycle+s)) for s in SUFFIXES),
+                   'checkpoint in wrong registration pool')
+    return directory(state, create=create, reserve=reserve)
 
 
 def identity(binding, registration_sha256, cycle):
@@ -56,10 +69,10 @@ def validate(value, marker):
 
 
 def read(state, marker):
-    path = directory(state)
+    path = cycle_directory(state, marker['cycle_id'])
     if path is None: return None
     base = path/marker['cycle_id']
-    names = [base.with_suffix(s) for s in ('.bound', '.json', '.bound.new', '.json.new')]
+    names = [base.with_suffix(s) for s in SUFFIXES]
     if not any(os.path.lexists(p) for p in names): return None
     ledger.require(all(os.path.lexists(p) for p in names[:2]) and
         not any(os.path.lexists(p) for p in names[2:]),
@@ -84,9 +97,10 @@ def extends(previous, following):
 def write(state, marker, selected):
     """Caller holds deployment/core/version writers and an exact saved intent."""
     value = validate(dict(identity=marker, snapshot=copy.deepcopy(selected)), marker)
-    path = directory(state, create=True)
+    path = cycle_directory(state, marker['cycle_id'], create=True)
     cycles = {name.name[:36] for name in path.iterdir()}
-    ledger.require(marker['cycle_id'] in cycles or len(cycles) < version_registration.MAX_CYCLES,
+    limit = version_registration.capacity(path.name == RESERVE_DIRECTORY)
+    ledger.require(marker['cycle_id'] in cycles or len(cycles) < limit,
                    'version checkpoint capacity reached')
     base = path/marker['cycle_id']
     bound, target = base.with_suffix('.bound'), base.with_suffix('.json')

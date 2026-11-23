@@ -40,3 +40,16 @@ python3 -B -m tools.serve_recovery.version_archive restore \
 
 [8项CPU与实际归档](evidence/serve-version-retention-20261116/README.md)通过：
 16→14、原政策/default不变，首次夹具setup失败保留；下一步继续原交付。
+
+## 2026-11-24 滚动发布与旧控制器
+
+16 次发布迁移最多涉及 17 个不同根。rev454 的所有 16 份登记均受保护，
+其中最早两次迁移往返于同一对根。保留这些迁移时需要为后续发布预留位置。
+新控制器保留原目录的 16 个槽位，并允许另存 2 个登记。每个周期的
+检查点随登记存入对应目录，归档和恢复沿用原 inode、摘要和预算。
+旧控制器仍可读取其原有周期，已满的原目录不会继续增长。
+
+跨这两个目录进行整根回退、再升级或归档时，请用新包附带的服务管理入口。
+发布前执行 `maintenance-status` 核对可用槽位和受保护周期；
+恢复已归档周期还需在其原目录留有槽位。已消费的回退预算随原周期恢复。
+[针对性验证与旧包实际读取记录](evidence/serve-agent-workspaces-20261124/rolling-retention.json)

@@ -17,6 +17,7 @@
 #include <set>
 #include <filesystem>
 #include <fstream>
+#include <format>
 #include <sstream>
 #include <thread>
 
@@ -997,6 +998,46 @@ Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
   return true;
 }
 
+Q4T_TEST(agent_session_time_reminders_refresh_only_in_the_model_prompt) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  const auto config = Config();
+  for (bool enabled : {false, true}) {
+    auto request = Parse(R"({"agent":{"model":"cpu","experimental":{}},
+        "environment":{"type":"none"},"input":"Tell me the time"})");
+    auto agent = *request.Find("agent");
+    Set(&agent, "experimental", Parse(enabled ? R"({"time_awareness":true})"
+                                              : R"({"time_awareness":false})"));
+    Set(&request, "agent", std::move(agent));
+    ResponsesExecution run(store);
+    const auto before = std::chrono::floor<std::chrono::seconds>(
+        std::chrono::system_clock::now());
+    auto started = PrepareAgentSessionExecution(store, request, config,
+                                                Access(), 42, run);
+    Q4T_CHECK(Ok(started));
+    const std::string marker = "Current UTC time: ";
+    const auto first = OutputJson(run.Generation().generation_request);
+    const auto at = first.find(marker);
+    Q4T_CHECK((at != first.npos) == enabled);
+    Q4T_CHECK(OutputJson(started.value).find(marker) == first.npos &&
+              OutputJson(run.Envelope().request).find(marker) == first.npos);
+    if (!enabled) continue;
+    const auto stamp = first.substr(at + marker.size(), 20);
+    const auto after = std::chrono::floor<std::chrono::seconds>(
+        std::chrono::system_clock::now());
+    Q4T_CHECK(stamp >= std::format("{:%FT%TZ}", before) &&
+              stamp <= std::format("{:%FT%TZ}", after));
+    std::this_thread::sleep_until(after + 1s);
+    ResponsesGenerationPlan next;
+    ChatPlanError error;
+    Q4T_CHECK(PrepareResponsesGeneration(run.Envelope(), run.Generation().input.items,
+                                         config, &next, &error));
+    const auto prompt = OutputJson(next.generation_request);
+    Q4T_CHECK(prompt.find(marker) != prompt.npos && prompt.find(stamp) == prompt.npos);
+  }
+  return true;
+}
+
 Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration) {
   for (bool replace : {false, true}) {
     Fixture f;
@@ -1056,6 +1097,8 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
       ++calls;
     }
     Q4T_CHECK(calls == 1);
+    AgentEventCursor live;
+    Q4T_CHECK(Ok(OpenAgentEventSubscription(store, id, Access(), &live)));
     const auto update = replace
         ? Parse(R"({"agent":{"tools":[{"type":"function","name":"read_release",
                "defer_loading":true,"description":"Replacement description",
@@ -1070,16 +1113,16 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     bool replay = false;
     Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, results, "fill-release", config,
                                           Access(), resumed, &replay)) &&
-              resumed.HasToolSearch());
+              resumed.HasToolSearch() == replace);
     const auto* active = resumed.Generation().generation_request.GetArray("tools");
-    Q4T_CHECK(active && active->array.size() == (replace ? 2 : 1));
-    const auto catalog = OutputJson(*active);
-    Q4T_CHECK(catalog.find("Read the release") == std::string::npos);
     if (replace) {
-      Q4T_CHECK(catalog.find("Replacement description") != std::string::npos &&
+      Q4T_CHECK(active && active->array.size() == 2);
+      const auto catalog = OutputJson(*active);
+      Q4T_CHECK(catalog.find("Read the release") == std::string::npos &&
+                catalog.find("Replacement description") != std::string::npos &&
                 catalog.find("build") != std::string::npos);
     } else {
-      Q4T_CHECK(catalog.find("read_release") == std::string::npos);
+      Q4T_CHECK(!active || active->array.empty());
     }
     resumed.BindBackgroundControl(std::make_shared<RequestControl>(
         resumed.Id(), "", Clock::now() + 10s));
@@ -1089,6 +1132,17 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     text.text = "rev452";
     Q4T_CHECK(resumed.Append(text,"null",&wire) &&
               Ok(resumed.Finish(false, 0, {6, 0, 1, 0}, now, &wire)));
+    for (auto* subscription : {&cursor, &live}) {
+      Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), subscription,
+                                           &events, &settled)) && settled);
+      size_t indexed = 0;
+      for (const auto& event : events.array) {
+        if (!event.Has("output_index")) continue;
+        Q4T_CHECK(event.GetInt("output_index", -1) == 1);
+        ++indexed;
+      }
+      Q4T_CHECK(indexed >= 3);
+    }
     auto follow = Parse(R"({"events":[{"type":"agent.session.input.message",
       "input":[{"role":"user","content":[{"type":"input_text","text":"again"}]}]}]})");
     ResponsesExecution next(store);

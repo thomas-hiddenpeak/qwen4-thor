@@ -134,7 +134,7 @@ def preserve_outer(state, target, *, migration=False):
             'target would discard established native outer supervision')
     from tools.serve_recovery import root_checkpoints, root_transfer
     if migration or any(os.path.lexists(Path(state)/name) for name in
-           (root_checkpoints.DIRECTORY, root_transfer.INTENT,
+           (root_checkpoints.DIRECTORY, root_checkpoints.RESERVE_DIRECTORY, root_transfer.INTENT,
             root_transfer.INTENT+'.new')):
         ledger.require(target['version'] >= 19 and all(
             'source/tools/serve_recovery/'+name+'.py' in target['files']

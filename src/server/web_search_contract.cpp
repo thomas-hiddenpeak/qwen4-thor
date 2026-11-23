@@ -87,6 +87,7 @@ bool WebSearchDomainMatches(std::string_view host, std::string_view domain) {
 }
 bool WebSearchUrlAllowed(std::string_view raw,
                          const WebSearchOptions& options) {
+  if (options.empty_domain_allowlist) return false;
   file_detail::Url url;
   if (!file_detail::ParseUrl(raw, &url)) return false;
   const auto matches = [&](const auto& domain) {

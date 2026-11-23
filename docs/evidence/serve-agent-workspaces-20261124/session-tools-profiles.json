@@ -1,0 +1,130 @@
+{
+  "profiles": {
+    "primary": {
+      "session_tools": {
+        "deferred": true,
+        "hidden": true,
+        "revoked": true,
+        "prefix": [
+          "msg_586177529333c73c16318d2f0f09a73b",
+          "fc_af7a8ad310b606a7bbe8d4e501406ba2"
+        ]
+      },
+      "starts": 1,
+      "seconds": 50.81626266799867,
+      "artifacts": {
+        "source_bytes": 393216,
+        "sha256": "71745c18776cd0686c4f2d52caffa368a5a0599d5976173b20fc7c97a6fdfbf6",
+        "deleted_source": 404,
+        "waiting_count": 0
+      },
+      "workspace": {
+        "id": "environment_6a1e92d82ee9c7a1c7a75bb8f594587e",
+        "session": "agent_session_9225aab2393be0a66d286fce6960ea5b",
+        "files_digest": "137f3e7c87bfa5776f25c614a29d36e187ae13e459e942055964b08dc94e6987",
+        "active_write": 409
+      },
+      "record": "a861225ac8bf4e9216fc7670b152039340237ab83e8f002854c8f92d2cb58cc2",
+      "prior": "9134b3c35009291ee215d9d807508c0171001eddc6aa8e01ec2f3111a0fb1f32"
+    },
+    "light": {
+      "session_tools": {
+        "resumed": true,
+        "indices": [
+          2
+        ],
+        "clock_checked": true
+      },
+      "starts": 1,
+      "seconds": 120.95337017579004,
+      "artifacts": {
+        "source_bytes": 393216,
+        "sha256": "71745c18776cd0686c4f2d52caffa368a5a0599d5976173b20fc7c97a6fdfbf6",
+        "deleted_source": 404,
+        "waiting_count": 0,
+        "published": 2,
+        "distinct": true,
+        "matched": 2,
+        "foreign": 404,
+        "deleted": 404
+      },
+      "workspace": {
+        "id": "environment_6a1e92d82ee9c7a1c7a75bb8f594587e",
+        "session": "agent_session_9225aab2393be0a66d286fce6960ea5b",
+        "files_digest": "137f3e7c87bfa5776f25c614a29d36e187ae13e459e942055964b08dc94e6987",
+        "active_write": 409,
+        "byte_length": 0,
+        "disconnected": true
+      },
+      "record": "190809a136db0c5f0dec62fc808cd39df9db137470cf374da18640fe9801a13b",
+      "prior": "8ef5c5c0378b0c1ffafc830755607e43fbad9679e98bf6a11b66f5cfc09cb0d0"
+    }
+  },
+  "qualification": {
+    "status": "ACCEPT_MANAGED_SESSION_TOOLS_PRIMARY_LIGHT",
+    "registry_sha256": "4748fffca3905a9f6191ff0a4597c362b89ed3d4141fcff498751f1b6846f0b2",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 161,
+      "cleanup_complete": true,
+      "lease_result_sha256": "7c4dcb810a36fee444e5c00e22a3eed0a587432deea862c4b0265923a2983bc7"
+    },
+    "migration_permit_sha256": "9dbac640ca4f9cc71a85bad69e7dd965dd2a3e42de72e6b44ec66410cdf837df",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "retained_attempts": {
+    "1": {
+      "reason": "Qualification sources changed before light started",
+      "light_started": false,
+      "lease": "882ab537fa89dba4d8db8dd2c4dc4afa88f75dd70bdc2ea3138afb0ec01e6d74"
+    },
+    "2": {
+      "reason": "The temporary tool Agent remained in the isolated registration fixture list",
+      "light_started": true,
+      "lease": "d3ca0cee2ba9bfff3262fc1bf1aa00348f4ead457b9b7ed94b511c6017ff842d"
+    },
+    "3": {
+      "reason": "Fixed index 1 in the fixture was wrong: two public preambles and a function yield next index 3",
+      "light_started": true,
+      "lease": "c90f6d501579b5c23903ce52cca7a8fe695adda28f17bf133b250b798a81871e"
+    },
+    "4": {
+      "reason": "Revoked final function left a discoverable empty catalogue that exhausted cumulative input; fixed and separately verified with no searches on continuation",
+      "light_started": true,
+      "lease": "b8bd44b263fe14fbc0a464d18ed4a004bda055be60f52c1acc877216f7a7b34c"
+    }
+  },
+  "engine": "d2badf70581bdf3439e9034da1b6f3b2f54d229100e29c68935bbef41583f41f",
+  "protocol": "7c4b9612bbbfe52fb47d947c88d914097654c8ee6f91a6b7d7af588485bf7115",
+  "receipt": {
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-05/acceptance.json": "555452009732e11ab1859f4e4996b23c69669691396be2d943850b40cb55e4f9",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-05/profile-observations.json": "270f65bf8a461d21e71c336cab414d7275318bbb1906a040fe5e7ea511ecf029",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-lease-05/exit.json": "7c4dcb810a36fee444e5c00e22a3eed0a587432deea862c4b0265923a2983bc7",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-05/primary/session-handoff.json": "630f43da66fb15e1ef46b93c5aa6479bafa550ca6aa5e68eec8fbee759dcd303",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-05/primary/result.json": "9f148424687f737e88576235f9ce5b564ac5ab44def160f2a55db87acd91d30c",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-compose-01/primary.json": "a861225ac8bf4e9216fc7670b152039340237ab83e8f002854c8f92d2cb58cc2",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-05/light/session-handoff.json": "7a8f81714b426aadfa99604693008095deb18b50138593bd0bfcca5638588263",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-05/light/result.json": "8228d72700e9839e9432a17ef9ef70733151f6624e8746853863e3f284b1024a",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-compose-01/light.json": "190809a136db0c5f0dec62fc808cd39df9db137470cf374da18640fe9801a13b",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-qualification-01/acceptance.json": "4ad5a6c332a05d61148acf9dc5e5d669e6ec4826d9b7e74da501286f3822e020",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-proof-migration-01.log": "1ca292362f7c6e7736db1b3f9d222e76348a94a266d81688ea46d26b1f668279",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-lease-01/exit.json": "882ab537fa89dba4d8db8dd2c4dc4afa88f75dd70bdc2ea3138afb0ec01e6d74",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-01/primary/result.json": "263edf7d1964c9aa53d5089e298431e871253e58713b9e2cf0e342c5fc921555",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-lease-02/exit.json": "d3ca0cee2ba9bfff3262fc1bf1aa00348f4ead457b9b7ed94b511c6017ff842d",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-02/primary/result.json": "692259836e27cfeae7c26d8a9b7fef759d8de5142bc3b0d3142f0c13498dde97",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-02/light/result.json": "e49d8982d5395b9b7dd40bc5385a5903e8b09ee725cebffb3342bc9d29f02a6a",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-lease-03/exit.json": "c90f6d501579b5c23903ce52cca7a8fe695adda28f17bf133b250b798a81871e",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-03/primary/result.json": "bd58422e610f8f649f947cbd56d83d0506c05f4ac7900ab3a4e4fafb0a17d32f",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-03/light/result.json": "2d99703062aa2533cb67138c72f6009d406f78c4ef4b2d6892c83c4c5ed7d158",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-lease-04/exit.json": "b8bd44b263fe14fbc0a464d18ed4a004bda055be60f52c1acc877216f7a7b34c",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-04/primary/result.json": "c960bc99de0e878b23f6e6d4a068eda76c98652930d1d69303d4a531e3c6ed94",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-04/light/result.json": "4d784ce407ddcfa45df9a18d6f47d7aea810f25ff150084e9d9c1279b1e2e425",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-index-counterexample.json": "11690f7d5fe03a21b1ec29d0a6e100cd64390f9c772ce64937ac067ce25de682",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-index-negative.log": "c2ba2ee274950549449186abff2f67a3806b7ab5cb817e9c580a76f419be1794",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-03/light/session-handoff.stderr": "d0e9eb8ea80d95c8ef94f5f76345b31431a25f99a303198736b9cc9c717fa2e8"
+  }
+}

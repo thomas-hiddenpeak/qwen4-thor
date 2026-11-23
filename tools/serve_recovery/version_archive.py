@@ -15,7 +15,7 @@ from tools.serve_recovery import access_store, bundle, ledger
 from tools.serve_recovery import publication_archive as publication
 from tools.serve_recovery import publication_files as files
 from tools.serve_recovery import version_registration as registration
-from tools.serve_recovery import version_store
+from tools.serve_recovery import root_checkpoints as checkpoints, version_store
 from tools.serve_service import package as engine
 
 FORMAT = 'q4t-version-archive-v2'
@@ -28,6 +28,7 @@ LEGACY_PLAN_SOURCES = frozenset((
     '03c4074d6584fe4c85fb06c9eb91ff8fd527453328acd04f1be2ed3a1a8a69e5',
     '0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e',
     '40610c3d30b67f370ce20e4e17beb107f86be69eac953795a1dac9ee52139c08',
+    '69b93cd61c58b8d5955c4035f779ef547298a696914d90260bc46ac1ddca08cd',
 ))
 
 
@@ -104,7 +105,7 @@ def unreferenced(state, current, source):
     # Historical intent snapshots retain complete predecessor policy values;
     # they are evidence, not a live dependency on the original intent file.
     paths = []
-    excluded = {'runs', registration.DIRECTORY,
+    excluded = {'runs', registration.DIRECTORY, registration.RESERVE_DIRECTORY,
                 publication.publication.INTENTS}
     for parent, dirs, names in os.walk(state, followlinks=False):
         dirs[:] = [n for n in dirs if n not in excluded]
@@ -124,7 +125,11 @@ def unreferenced(state, current, source):
 
 
 def verify_file(path, row, binding, *, read_bundle=None):
-    ledger.keys(row, ('cycle_id', 'sha256', 'identity', 'checkpoints'))
+    keys = ('cycle_id', 'sha256', 'identity', 'checkpoints')
+    if 'reserve' in row:
+        ledger.require(row['reserve'] is True, 'invalid registration reserve')
+        keys += ('reserve',)
+    ledger.keys(row, keys)
     ledger.require(ledger.identifier(row['cycle_id']) and
         type(row['sha256']) is str and ledger.HASH.fullmatch(row['sha256']),
         'invalid archive registration identity')
@@ -140,20 +145,18 @@ def verify_file(path, row, binding, *, read_bundle=None):
 
 
 def checkpoint_rows(state, binding, row, value):
-    from tools.serve_recovery import root_checkpoints as checkpoints
     marker = checkpoints.identity(binding, row['sha256'], row['cycle_id'])
     snapshot = checkpoints.read(state, marker)
     if snapshot is None: return []
     ledger.require(snapshot['registry'] == value['registration']['registry'],
                    'checkpoint registration changed')
-    directory = Path(state)/checkpoints.DIRECTORY
+    directory = checkpoints.cycle_directory(state, row['cycle_id'])
     return [dict(name=row['cycle_id']+suffix, sha256=engine.sha(directory/(row['cycle_id']+suffix)),
                  identity=native.inode(directory/(row['cycle_id']+suffix)))
             for suffix in ('.bound', '.json')]
 
 
 def verify_checkpoint(path, item, row, binding, value):
-    from tools.serve_recovery import root_checkpoints as checkpoints
     ledger.keys(item, ('name', 'sha256', 'identity'))
     ledger.require(item['name'] in (row['cycle_id']+'.bound', row['cycle_id']+'.json') and
         engine.sha(path) == item['sha256'] and native.inode(path) == item['identity'],
@@ -191,6 +194,8 @@ def prepare(state, output, cycles, *, authority=None, read_bundle=None):
                            'archive requires same filesystem atomic rename')
             row = dict(cycle_id=cycle, sha256=engine.sha(path), identity=native.inode(path),
                        checkpoints=[])
+            if path.parent.name == registration.RESERVE_DIRECTORY:
+                row['reserve'] = True
             row['checkpoints'] = checkpoint_rows(state, binding, row, value)
             verify_file(path, row, binding, read_bundle=read_bundle)
             rows.append(row)
@@ -217,7 +222,6 @@ def apply(path, expected, *, restore=False, authority=None, read_bundle=None):
         type(value['cycles']) is list and 1 <= len(value['cycles']) <= MAX_SELECTED,
         'archive plan/source identity differs')
     with locked(value['state'], authority=authority, read_bundle=read_bundle) as (state, desc, manifest, current, selected, binding):
-        pool = state/registration.DIRECTORY
         ledger.require(value['service_id'] == desc['service_id'] and
             archive.is_relative_to(Path(manifest['repository'])/'.q4t-work') and
             not archive.is_relative_to(state) and
@@ -235,11 +239,25 @@ def apply(path, expected, *, restore=False, authority=None, read_bundle=None):
         records = entries(state, binding, selected, read_bundle=read_bundle)
         keep = protected(state, desc, current, selected, records)
         moves, seen, saved_records = [], set(), {}
+        pools = {}
+        restored = {False: 0, True: 0}
         for row in value['cycles']:
             cycle = row['cycle_id']
             ledger.require(ledger.identifier(cycle) and cycle not in seen,
                            'invalid or duplicate archive cycle')
             seen.add(cycle)
+            reserve = row.get('reserve', False)
+            ledger.require(type(reserve) is bool and
+                (not reserve or value['source_sha256'] not in LEGACY_PLAN_SOURCES),
+                'invalid archive registration pool')
+            pool = files.directory(state/(registration.RESERVE_DIRECTORY if reserve else registration.DIRECTORY))
+            checkpoint_pool = state/(checkpoints.RESERVE_DIRECTORY if reserve else checkpoints.DIRECTORY)
+            pools[cycle] = pool, checkpoint_pool
+            ledger.require(cycle not in records or records[cycle][0].parent == pool,
+                           'registration in wrong archive pool')
+            other = checkpoints.directory(state, reserve=not reserve)
+            ledger.require(other is None or not any(os.path.lexists(other/(cycle+s))
+                for s in checkpoints.SUFFIXES), 'checkpoint in wrong archive pool')
             source, target = pool/(cycle+'.json'), archive/(cycle+'.json')
             if restore: source, target = target, source
             else:
@@ -257,19 +275,19 @@ def apply(path, expected, *, restore=False, authority=None, read_bundle=None):
                 combined = dict(records, **{cycle: (source, item)})
                 ledger.require(cycle not in protected(state, desc, current, selected, combined),
                                'registration root became retained')
-            if exists[0]: moves.append((source, target))
-            from tools.serve_recovery import root_checkpoints as checkpoints
+            if exists[0]:
+                moves.append((source, target))
+                if restore: restored[reserve] += 1
             expected_names = [cycle+'.bound', cycle+'.json']
             ledger.require(type(row['checkpoints']) is list and
                 [p['name'] for p in row['checkpoints']] in ([], expected_names),
                 'archive checkpoint selection differs')
-            checkpoint_pool = state/checkpoints.DIRECTORY
             if not row['checkpoints']:
                 ledger.require(not any(os.path.lexists(checkpoint_pool/(cycle+s))
                     for s in ('.bound', '.json', '.bound.new', '.json.new')),
                     'checkpoint appeared after archive preparation')
             else:
-                files.directory(checkpoint_pool, create=restore)
+                checkpoints.directory(state, reserve=reserve, create=restore)
                 ledger.require(not any(os.path.lexists(checkpoint_pool/(cycle+s))
                     for s in ('.bound.new', '.json.new')), 'checkpoint needs original transaction')
             for checkpoint in row['checkpoints']:
@@ -282,20 +300,24 @@ def apply(path, expected, *, restore=False, authority=None, read_bundle=None):
                 ledger.require((source if exists[0] else target).stat().st_dev ==
                     archive.stat().st_dev, 'checkpoint archive must use the same filesystem')
                 if exists[0]: moves.append((source, target))
-        restored_count = sum(not os.path.lexists(pool/(row['cycle_id']+'.json'))
-                             for row in value['cycles'])
-        ledger.require(not restore or len(records)+restored_count <= registration.MAX_CYCLES,
-                       'restore exceeds active registration capacity')
+        if restore:
+            for reserve, added in restored.items():
+                count = sum((p.parent.name == registration.RESERVE_DIRECTORY) == reserve
+                            for p, _ in records.values())
+                ledger.require(count+added <= registration.capacity(reserve),
+                               'restore exceeds active registration capacity')
         for source, target in moves:
             os.rename(source, target); files.sync(source.parent); files.sync(target.parent)
-        files.sync(pool); files.sync(archive)
+        files.sync(archive)
         for row in value['cycles']:
+            pool, checkpoint_pool = pools[row['cycle_id']]
+            files.sync(pool)
+            if os.path.lexists(checkpoint_pool): files.sync(checkpoint_pool)
             verify_file((pool if restore else archive)/(row['cycle_id']+'.json'), row, binding, read_bundle=read_bundle)
             for checkpoint in row['checkpoints']:
-                path = (state/checkpoints.DIRECTORY/checkpoint['name'] if restore else
+                path = (checkpoint_pool/checkpoint['name'] if restore else
                         archive/('checkpoint-'+checkpoint['name']))
                 verify_checkpoint(path, checkpoint, row, binding, saved_records[row['cycle_id']])
-        if os.path.lexists(state/checkpoints.DIRECTORY): files.sync(state/checkpoints.DIRECTORY)
         ledger.require(native.private_json(state/version_store.Store.directory_name/
             'policy.json')['state']['policy'] == selected,
                        'version policy changed during archive')

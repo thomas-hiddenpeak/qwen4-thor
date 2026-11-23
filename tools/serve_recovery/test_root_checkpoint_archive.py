@@ -47,6 +47,25 @@ class CheckpointArchiveTests(unittest.TestCase):
         archive.apply(plan['plan'], plan['sha256'], restore=True)
         self.assertEqual(root_checkpoints.read(self.state, self.marker), self.base.spent)
 
+    def test_reserve_retirement_restores_original_files_and_consumed_cycle(self):
+        # Reproduce a retired cycle after the base pool has been filled and
+        # another historical cycle archived. Its location must remain stable.
+        reserve = self.state/version_registration.RESERVE_DIRECTORY
+        reserve.mkdir(mode=0o700)
+        self.base.source.rename(reserve/self.base.source.name)
+        extra = self.state/root_checkpoints.RESERVE_DIRECTORY
+        with self.assertRaisesRegex(ValueError, 'wrong registration pool'):
+            root_checkpoints.read(self.state, self.marker)
+        self.pool.rename(extra)
+        retained = [reserve/self.base.source.name, *extra.iterdir()]
+        before = {p:(p.stat().st_ino, p.read_bytes()) for p in retained}
+        plan = self.base.prepare()
+        archive.apply(plan['plan'], plan['sha256'])
+        self.assertTrue(all(not p.exists() for p in retained))
+        archive.apply(plan['plan'], plan['sha256'], restore=True)
+        self.assertEqual(before, {p:(p.stat().st_ino, p.read_bytes()) for p in retained})
+        self.assertEqual(root_checkpoints.read(self.state, self.marker), self.base.spent)
+
     def test_changed_missing_or_partial_checkpoint_does_not_reuse_older_seed(self):
         plan = self.base.prepare()
         snapshot = self.pool/(self.cycle+'.json')

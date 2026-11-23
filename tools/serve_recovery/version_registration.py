@@ -11,26 +11,36 @@ from pathlib import Path
 
 from tools.serve_host import native
 from tools.serve_recovery import access_store, bundle, deployment, ledger, publication_files
-from tools.serve_recovery import store, version_contract, version_policy, version_store
+from tools.serve_recovery import publication_policy, store, version_contract, version_policy, version_store
 
 DIRECTORY = 'version-registrations'
+RESERVE_DIRECTORY = 'version-registrations-reserve'
 FORMAT = 'q4t-version-registration-intent-v1'
-MAX_CYCLES = 16
+# The old controller must still be able to enumerate its 16 original slots.
+# N history edges can retain N+1 distinct roots during a rolling publication.
+BASE_CAPACITY = 16
+MAX_CYCLES = publication_policy.MAX_HISTORY + 2
 MAX_BYTES = 64*1024
 
 
 def present(state):
     return any(os.path.lexists(Path(state)/name) for name in
-               (DIRECTORY, version_store.Store.marker_name, version_store.Store.directory_name))
+               (DIRECTORY, RESERVE_DIRECTORY, version_store.Store.marker_name,
+                version_store.Store.directory_name))
 
 
-def intents(state):
-    directory = Path(state)/DIRECTORY
+def capacity(reserve):
+    if reserve:
+        return max(0, MAX_CYCLES - BASE_CAPACITY)
+    return min(BASE_CAPACITY, MAX_CYCLES)
+
+
+def _entries(directory, limit):
     publication_files.directory(directory)
     ledger.require(directory.stat().st_mode & 0o777 == 0o700,
                    'private version registration directory required')
     entries = list(directory.iterdir())
-    ledger.require(len(entries) <= MAX_CYCLES*2, 'version registration count bound')
+    ledger.require(len(entries) <= limit*2, 'version registration count bound')
     result = {}
     for path in entries:
         suffix = '.json.new' if path.name.endswith('.json.new') else '.json'
@@ -38,8 +48,31 @@ def intents(state):
         ledger.require(path.name == identifier+suffix and ledger.identifier(identifier),
                        'unexpected version registration entry')
         result.setdefault(identifier, {})['pending' if suffix.endswith('.new') else 'committed'] = path
-    ledger.require(len(result) <= MAX_CYCLES, 'version registration cycle bound')
+    ledger.require(len(result) <= limit, 'version registration cycle bound')
     return result
+
+
+def intents(state):
+    state = Path(state)
+    result = _entries(state/DIRECTORY, capacity(False))
+    reserve = state/RESERVE_DIRECTORY
+    if os.path.lexists(reserve):
+        extra = _entries(reserve, capacity(True))
+        ledger.require(not result.keys() & extra.keys(), 'duplicate version registration cycle')
+        result.update(extra)
+    return result
+
+
+def destination(state, entries, cycle):
+    if cycle in entries:
+        return next(iter(entries[cycle].values())).parent
+    ledger.require(len(entries) < MAX_CYCLES, 'version registration storage is full')
+    base = state/DIRECTORY
+    if sum(next(iter(paths.values())).parent == base for paths in entries.values()) < capacity(False):
+        return base
+    reserve = publication_files.directory(state/RESERVE_DIRECTORY, create=True)
+    publication_files.sync(state)
+    return reserve
 
 
 def intent(value, binding, *, read_bundle=bundle.verify):
@@ -92,15 +125,13 @@ def install(state, registration, *, request_id, expected_cycle):
         if not os.path.lexists(directory):
             directory.mkdir(mode=0o700);publication_files.sync(state)
         entries = intents(state)
-        path = directory/(request_id+'.json')
+        path = destination(state, entries, request_id)/(request_id+'.json')
         if os.path.lexists(path):
             value = intent(native.private_json(path,MAX_BYTES),binding)
             ledger.require(value['registration'] == registration and expected_cycle ==
                 (None if value['previous'] is None else value['previous']['registry']['cycle_id']),
                 'version registration replay changed')
         else:
-            ledger.require(len(entries) < MAX_CYCLES or request_id in entries,
-                           'version registration storage is full')
             previous = None
             if os.path.lexists(state/version_store.Store.marker_name):
                 with version_store.open_bound(binding) as current:

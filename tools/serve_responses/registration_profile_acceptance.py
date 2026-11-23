@@ -93,6 +93,9 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
             plan['sources'][source] = pkg.sha(ROOT/source)
         if vault:
             plan['agent_vaults'] = dict(vault, fixture=fixture)
+            if vault.get('session_tools'):
+                indices = 'tools/serve_responses/agent_session_output_indices.mjs'
+                plan['sources'][indices] = pkg.sha(ROOT/indices)
             plan['command'].extend(['--mcp-policy-file',str(out/'mcp/policy.json')])
             sources = [vaults.SDK, vaults.HELPER, vaults.PEER, str(publication.relative_to(ROOT))]
             if vault_oauth:
@@ -146,7 +149,9 @@ def business(stage, capabilities):
         params.update(id=prior['id'],second=prior['second'])
     result = subprocess.run(['node',ROOT/SDK],input=json.dumps(params),text=True,capture_output=True,
         env=dict(os.environ,NODE_EXTRA_CA_CERTS=stage.plan['tls']['certificate']),timeout=60)
-    pkg.require(result.returncode==0, 'official registration SDK failed in '+name)
+    if result.returncode:
+        (stage.out/'registration.stderr').write_text(result.stderr)
+        raise RuntimeError('official registration SDK failed in '+name+'; see private registration.stderr')
     observed = json.loads(result.stdout)
     if name=='light':
         observed.update(id=params['id'],second=params['second'])
