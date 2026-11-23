@@ -1,4 +1,5 @@
 #include "../src/server/schema_string.h"
+#include "../src/server/mcp_transport_internal.h"
 #include "../src/server/vault_credential_internal.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/agent_session.h"
@@ -705,6 +706,114 @@ Q4T_TEST(vault_credentials_cipher_binding_rotation_scope_and_cascade) {
     const std::string content{std::istreambuf_iterator<char>(file), {}};
     Q4T_CHECK(content.find("fixture-bearer-") == std::string::npos);
   }
+  return true;
+}
+
+Q4T_TEST(agent_vault_refresh_forms_bind_authentication_method_and_resource) {
+  const auto grant = Parse(R"({"client_id":"a b:c","refresh_token":"r+&",
+    "scope":"one two","resource":"https://r/x","token_endpoint_auth":
+    {"type":"client_secret_basic","client_secret":"p:+"}})");
+  std::map<std::string, std::string> headers;
+  std::string body;
+  Q4T_CHECK(Ok(mcp_detail::BuildGrant(grant, &headers, &body)));
+  Q4T_CHECK(headers.at("Authorization") == "Basic YStiJTNBYzpwJTNBJTJC" &&
+            headers.at("Content-Type") == "application/x-www-form-urlencoded");
+  Q4T_CHECK(body ==
+            "grant_type=refresh_token&refresh_token=r%2B%26"
+            "&resource=https%3A%2F%2Fr%2Fx&scope=one+two");
+  auto saved = grant;
+  Set(&saved, "token_endpoint_auth",
+      Parse(R"({"type":"client_secret_post","client_secret":"p:+"})"));
+  Q4T_CHECK(Ok(mcp_detail::BuildGrant(saved, &headers, &body)) &&
+            !headers.contains("Authorization") &&
+            body.find("&client_id=a+b%3Ac&client_secret=p%3A%2B&") !=
+                body.npos);
+  Set(&saved, "token_endpoint_auth", Parse(R"({"type":"none"})"));
+  Q4T_CHECK(Ok(mcp_detail::BuildGrant(saved, &headers, &body)) &&
+            !headers.contains("Authorization") &&
+            body.find("client_secret") == body.npos);
+  Set(&saved, "token_endpoint_auth", Parse(R"({"type":"client_secret_post"})"));
+  Q4T_CHECK(!mcp_detail::BuildGrant(saved, &headers, &body).ok());
+  return true;
+}
+
+Q4T_TEST(agent_vault_refresh_validates_bearer_expiry_and_rotated_grant) {
+  Json result;
+  auto decode = [&](std::string_view fields) {
+    return mcp_detail::DecodeGrant("{" + std::string(fields) + "}", 100,
+                                   &result);
+  };
+  Q4T_CHECK(
+      Ok(decode(R"("token_type":"bEaReR","access_token":"new","expires_in":60,
+               "refresh_token":"next","scope":"read")")));
+  Q4T_CHECK(result.GetString("expires_at") == "1970-01-01T00:02:40Z" &&
+            result.Find("refresh")->GetString("refresh_token") == "next" &&
+            !result.Find("refresh")->Has("scope"));
+  Q4T_CHECK(Ok(decode(R"("token_type":"Bearer","access_token":"next")")) &&
+            !result.Has("refresh") && !result.Has("expires_at"));
+  for (const auto* fields :
+       {R"("token_type":"Other","access_token":"t")", R"("access_token":"t")",
+        R"("token_type":"bearer","access_token":"a b")",
+        R"("token_type":"bearer","access_token":"t","expires_in":-1)",
+        R"("token_type":"bearer","access_token":"t","expires_in":1.5)",
+        R"("token_type":"bearer","access_token":"t","expires_in":253402300800)",
+        R"("token_type":"bearer","access_token":"t","refresh_token":null)",
+        R"("token_type":"bearer","access_token":"t","access_token":"x")"})
+    Q4T_CHECK(decode(fields).code == "oauth_refresh_response_invalid");
+  return true;
+}
+
+Q4T_TEST(agent_vault_refresh_inspection_and_uncertain_grants_do_not_replay) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto vault =
+      HandleAgentVault(objects, "POST", "/v1/vaults", "{}", Access())
+          .value.GetString("id");
+  const std::string path = "/v1/vaults/" + vault + "/credentials";
+  const std::string target = "https://records.example/mcp";
+  const auto body =
+      R"({"name":"read","auth":{"type":"mcp_oauth","access_token":"expired",
+    "mcp_server_url":"https://records.example/mcp","expires_at":"2001-01-01T00:00:00Z",
+    "refresh":{"token_endpoint":"https://issuer.example/token","client_id":"reader",
+    "refresh_token":"original","token_endpoint_auth":{"type":"none"}}}})";
+  const auto cred = HandleAgentVault(objects, "POST", path, body, Access())
+                        .value.GetString("id");
+  const auto attached = Parse("[\"" + vault + "\"]");
+  std::string token = "discard";
+  bool needs_refresh = false;
+  auto inspect = [&] {
+    return vault_detail::ResolveMcpToken(objects, Access(), attached, cred,
+                                         target, &token, nullptr,
+                                         &needs_refresh);
+  };
+  Q4T_CHECK(!cred.empty() && Ok(inspect()) && needs_refresh && token.empty());
+  ObjectRequest req;
+  req.kind = ObjectKind::kVault;
+  req.scope = Access().scope;
+  req.id = vault;
+  auto saved = objects.Execute(req, Access().deadline, {});
+  Q4T_CHECK(Ok(saved));
+  auto record = *saved.value.Find("data");
+  auto entries = *record.Find("credentials");
+  Set(&entries.array[0], "refreshing", Parse("true"));
+  Set(&record, "credentials", entries);
+  req.operation = ObjectOperation::kPut;
+  req.expected_revision = saved.value.GetInt("revision");
+  req.data = record;
+  req.ttl_seconds = 0;
+  Q4T_CHECK(Ok(objects.Execute(req, Access().deadline, {})));
+  Q4T_CHECK(inspect().code == "oauth_refresh_pending" && token.empty());
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "POST", path + "/" + cred,
+                                R"({"metadata":{"a":"b"}})", Access())));
+  Q4T_CHECK(inspect().code == "oauth_refresh_pending" && token.empty());
+  Q4T_CHECK(Ok(HandleAgentVault(
+      objects, "POST", path + "/" + cred,
+      R"({"auth":{"type":"mcp_oauth","refresh":{"refresh_token":"replacement"}}})",
+      Access())));
+  Q4T_CHECK(Ok(inspect()) && needs_refresh && token.empty());
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "DELETE", "/v1/vaults/" + vault, "",
+                                Access())));
+  Q4T_CHECK(inspect().http_status == 404 && token.empty());
   return true;
 }
 

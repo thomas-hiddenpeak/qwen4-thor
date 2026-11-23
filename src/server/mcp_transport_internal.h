@@ -1,8 +1,23 @@
 #pragma once
 
+#include <ctime>
+
 #include "q4t/server/mcp_transport.h"
 
 namespace q4t::server::mcp_detail {
+// Private worker operation for a Vault-owned grant, never an MCP JSON-RPC.
+inline constexpr std::string_view kRefreshGrant = "vault/oauth-refresh";
+ObjectReply BuildGrant(const io::Json& grant,
+                       std::map<std::string, std::string>* headers,
+                       std::string* body);
+ObjectReply DecodeGrant(const std::string& response, std::time_t now,
+                        io::Json* destination);
+ObjectReply RefreshGrant(const McpEndpoint& endpoint,
+                         const FileFetchOptions& deployment,
+                         const io::Json& grant,
+                         std::chrono::steady_clock::time_point deadline,
+                         const std::function<bool()>& permit,
+                         McpTransportReceipt* receipt);
 ObjectReply CheckHeaders(const McpEndpoint& endpoint);
 ObjectReply CheckEndpoint(const McpEndpoint& endpoint,
                           const FileFetchOptions& deployment);

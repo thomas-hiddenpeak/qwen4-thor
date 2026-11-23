@@ -21,7 +21,9 @@ assert.deepEqual(capability.mcp, {connection_origin:'service',transport:'http',
   vault_auth:['static_bearer','mcp_oauth_access_token']});
 const vault = await vaults.create({name: 'project records'});
 const credentials = vaults.credentials;
-const auth = {type:'static_bearer', mcp_server_url:target.href, token:plan.secret};
+const auth = plan.refresh ? {type:'mcp_oauth', mcp_server_url:target.href,
+  access_token:'expired-fixture', expires_at:'2000-01-01T00:00:00Z', refresh:plan.refresh}
+  : {type:'static_bearer', mcp_server_url:target.href, token:plan.secret};
 const credential = await credentials.create(vault.id, {name: 'read records', auth});
 const transport = {type:'http', server_url:target.href, headers:{'x-q4t-project':plan.header}};
 const tool = {type:'mcp', server_label:'project', transport, required:true,
@@ -70,6 +72,17 @@ assert.equal(done.length, 1);
 assert.deepEqual(done[0].item, call);
 const visible = items.filter(row=>row.role !== 'user');
 assert.equal(done[0].output_index, visible.findIndex(row=>row.id===call.id));
+if (plan.refresh) {
+  const options = {vault_id:vault.id};
+  const after = await credentials.retrieve(credential.id,options);
+  assert.ok(Date.parse(after.auth.expires_at) > Date.now());
+  assert.equal(after.auth.refresh.scope, plan.refresh.scope);
+  assert.ok(!JSON.stringify(after).includes(plan.secret));
+  await credentials.update(credential.id, {...options, auth:{type:'mcp_oauth',
+    expires_at:'2000-01-01T00:00:00Z'}});
+  await failure(() => sessions.create(req(tool)), 502);
+  await failure(() => sessions.create(req(tool)), 409);
+}
 await credentials.delete(credential.id, {vault_id:vault.id});
 await failure(() => sessions.create(req({...tool, credential_id:credential.id})), 404);
 await failure(() => sessions.create(req(tool)), 404);

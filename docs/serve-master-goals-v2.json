@@ -16561,7 +16561,7 @@
     },
     "evidence": "evidence/serve-agent-vaults-20261123/acceptance.json",
     "remaining": [
-      "OAuth token endpoint refresh, hosted environment transport and environment credential substitution",
+      "Qualify and deliver OAuth renewal, complete transient failure recovery and active-session continuity; implement hosted environment transport and environment credential substitution.",
       "Complete remaining declared and undeclared application operations"
     ],
     "credential_management": "candidate_real_http_passed",
@@ -16574,6 +16574,7 @@
       "without_declared_operations": 80
     },
     "profile_evidence": "evidence/serve-agent-vaults-20261123/profiles.json",
-    "delivery": "evidence/serve-agent-vaults-20261123/delivery.json"
+    "delivery": "evidence/serve-agent-vaults-20261123/delivery.json",
+    "oauth_refresh_candidate": "evidence/serve-agent-vaults-20261123/oauth.json"
   }
 }

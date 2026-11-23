@@ -34,6 +34,10 @@ ObjectReply Failed(GrammarFailure failure) {
 }
 bool ValidOperation(std::string_view method, const Json& params) {
   if (!params.IsObject()) return false;
+  if (method == mcp_detail::kRefreshGrant)
+    return params.GetString("token_endpoint").starts_with("https://") &&
+           params.Find("token_endpoint_auth") &&
+           params.Find("token_endpoint_auth")->IsObject();
   if (method == "tools/list") return params.object.empty();
   if (method == "resources/read")
     return params.object.size() == 1 && McpResourceUri(params.GetString("uri"));
@@ -169,6 +173,12 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
   if (!ValidOperation(method, params) ||
       (method != "tools/list" && !before_call))
     return Error(400, "mcp_operation_invalid", "Invalid MCP operation");
+  if (method == mcp_detail::kRefreshGrant &&
+      (session || !endpoint.exact_target || !endpoint.headers.empty() ||
+       !endpoint.authorization.empty() || !endpoint.tunnel_id.empty() ||
+       !endpoint.provider_id.empty() ||
+       endpoint.url != params.GetString("token_endpoint")))
+    return Error(400, "mcp_refresh_invalid", "Invalid token exchange target");
   checked = BindSession(access, endpoint, deployment, session);
   if (!checked.ok()) return checked;
   control.domain = IsolatedWorkerDomain::kMcp;
@@ -469,15 +479,21 @@ int MaybeRunMcpWorker(int argc, char** argv) {
       };
       try {
         const auto deadline = Clock::now() + std::chrono::milliseconds(timeout);
-        reply = session->IsNull()
-                    ? mcp_detail::Exchange(endpoint, deployment, method,
-                                           *params, deadline, permit, &receipt)
-                    : sessions.Exchange(endpoint, deployment, method, *params,
-                                        deadline, &next_session,
-                                        request.GetBool("allow_new"),
-                                        request.GetInt("idle_ms"),
-                                        request.GetInt("lifetime_ms"),
-                                        checkpoint, permit, &receipt);
+        if (method == mcp_detail::kRefreshGrant) {
+          reply = mcp_detail::RefreshGrant(endpoint, deployment, *params,
+                                           deadline, permit, &receipt);
+        } else {
+          reply =
+              session->IsNull()
+                  ? mcp_detail::Exchange(endpoint, deployment, method, *params,
+                                         deadline, permit, &receipt)
+                  : sessions.Exchange(endpoint, deployment, method, *params,
+                                      deadline, &next_session,
+                                      request.GetBool("allow_new"),
+                                      request.GetInt("idle_ms"),
+                                      request.GetInt("lifetime_ms"), checkpoint,
+                                      permit, &receipt);
+        }
       } catch (const std::bad_alloc&) {
         reply = Error(503, "mcp_memory_capacity", "MCP worker memory limit");
       } catch (...) {

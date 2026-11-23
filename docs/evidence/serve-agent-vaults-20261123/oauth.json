@@ -1,0 +1,107 @@
+{
+  "engine": "e9e73436c6a8eb4414f87942e21aaa958c6e693f56be044ec77a9b1f8b25d1f8",
+  "ingress": "1e71f9b806763a77a7dce8923ed9585f3d678b2105acfbdf9c9fa98be6e16593",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 46.885,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "refresh": {
+    "seen": [
+      "original",
+      "rotated"
+    ],
+    "no_replay": true,
+    "issuer_tls": true
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "calls": 1,
+    "citation": "[docs/MODEL.md:L1-L3]",
+    "events": 24,
+    "public_index": 0,
+    "wrong_tenant": 404,
+    "wrong_target": 404,
+    "ambiguous": 409,
+    "revoked": 404,
+    "chat_choices": [
+      0,
+      1
+    ],
+    "chat": "42"
+  },
+  "peer": {
+    "methods": [
+      "initialize",
+      "notifications/initialized",
+      "tools/list",
+      "tools/call",
+      "resources/read"
+    ],
+    "http_requests": 5,
+    "source_sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "credential_scan": true
+  },
+  "original_scope": "Existing session with expired Vault OAuth access token bound to the exact HTTPS MCP server; isolated TLS issuer checked Basic authentication, requested scope and resource.",
+  "grant_outcome": "Issuer supplied a replacement refresh token. A second exchange used the replacement and lost its response. A later SDK submission returned 409 without another issuer request; Chat then returned two indexed answers of 42.",
+  "cpu": {
+    "passed": 15,
+    "tests": [
+      "agent_vault_refresh_forms_bind_authentication_method_and_resource",
+      "agent_vault_refresh_validates_bearer_expiry_and_rotated_grant",
+      "agent_vault_refresh_inspection_and_uncertain_grants_do_not_replay",
+      "agent_mcp_resolves_only_attached_active_exact_url_credentials",
+      "agent_vault_oauth_expiry_uses_offset_fraction_and_full_year_range",
+      "agent_vault_sdk_fields_owner_archive_and_session_binding",
+      "mcp_transport_actual_call_requires_owned_persisted_approval",
+      "mcp_transport_rejects_headers_and_targets_before_worker",
+      "mcp_transport_timeout_and_cancel_are_bounded",
+      "mcp_transport_does_not_forward_auth_to_cross_origin_endpoint",
+      "mcp_transport_exact_target_keeps_legacy_post_on_credential_path",
+      "mcp_transport_versions_and_auth_failures_do_not_dispatch",
+      "mcp_transport_cancel_after_dispatch_reports_unknown",
+      "agent_mcp_required_listing_fails_before_session_publication",
+      "agent_mcp_queued_restore_uses_original_session_tool_configuration"
+    ],
+    "log": {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-cpu.log",
+      "sha256": "74eebd13caaa959c08f7e1bc13bc46fe51769ae89ba510d0b05f08171d82b314"
+    }
+  },
+  "evidence": {
+    "plan.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-01/plan.json",
+      "sha256": "b03f756c029e0adeac27a88e0a612424f887965fb8d6986587eb13ff3bc5aa9c"
+    },
+    "create/sdk-result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-01/create/sdk-result.json",
+      "sha256": "60973e828f1064b4d0946d5a35a93059871bcc7f4de7ddce891344c9c77f1989"
+    },
+    "result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-01/result.json",
+      "sha256": "6023868109a0505415867a820f7fd2348abd1570602f425e32c5e8e4111f61d1"
+    },
+    "create/refresh.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-01/create/refresh.json",
+      "sha256": "4058b82a6ff7166798521c927682e0f69f60972c7b5e2c8f6ffc15bd2a038812"
+    },
+    "create/peer-receipt.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-01/create/peer-receipt.json",
+      "sha256": "d49e1502dcb9f0b6e3ff64927a2b9c43397191c457ea22d522fb5aa2b6ad5ef5"
+    }
+  },
+  "lease": {
+    "path": ".q4t-work/serve-responses-agents-20261123/oauth-lease-01/exit.json",
+    "sha256": "176c4381fa1246b9fd8ef8650835165b51135fc7f77bd65ca3d4ff443ea175c1"
+  },
+  "default_at_test": "rev446, STOPPED",
+  "follow_up": [
+    "Explicit temporary issuer errors and safe bounded retry",
+    "Session continuity if access expires during a live multi-step MCP operation",
+    "Qualification with deployment on the supported capacities"
+  ]
+}
