@@ -878,6 +878,47 @@ Q4T_TEST(agent_vault_refresh_inspection_and_uncertain_grants_do_not_replay) {
   return true;
 }
 
+Q4T_TEST(agent_vault_renewable_binding_changes_on_owner_auth_edits_only) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto vault =
+      HandleAgentVault(objects, "POST", "/v1/vaults", "{}", Access())
+          .value.GetString("id");
+  const auto path = "/v1/vaults/" + vault + "/credentials";
+  const auto body =
+      R"({"name":"read","auth":{"type":"mcp_oauth","access_token":"same",
+    "mcp_server_url":"https://records.example/mcp",
+    "refresh":{"token_endpoint":"https://issuer.example/token","client_id":"reader",
+    "refresh_token":"original","token_endpoint_auth":{"type":"none"}}}})";
+  const auto a = HandleAgentVault(objects, "POST", path, body, Access())
+                     .value.GetString("id");
+  const auto b = HandleAgentVault(objects, "POST", path, body, Access())
+                     .value.GetString("id");
+  auto attached = Parse("[\"" + vault + "\"]");
+  std::string token, binding;
+  auto get = [&](const std::string& id, StateAccess access = Access()) {
+    return vault_detail::ResolveMcpToken(objects, access, attached, id,
+                                         "https://records.example/mcp", &token,
+                                         nullptr, nullptr, &binding);
+  };
+  Q4T_CHECK(Ok(get(a)) && binding.size() == 64 && token == "same");
+  const auto first = binding;
+  Q4T_CHECK(Ok(get(b)) && binding != first && token == "same");
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "POST", path + "/" + a,
+                                R"({"metadata":{"x":"1"}})", Access())));
+  Q4T_CHECK(Ok(get(a)) && binding == first);
+  Q4T_CHECK(Ok(HandleAgentVault(
+      objects, "POST", path + "/" + a,
+      R"({"auth":{"type":"mcp_oauth","access_token":"same"}})", Access())));
+  Q4T_CHECK(Ok(get(a)) && binding != first && token == "same");
+  Q4T_CHECK(get(a, Access("client:other")).http_status == 404 &&
+            binding.empty() && token.empty());
+  Q4T_CHECK(
+      Ok(HandleAgentVault(objects, "DELETE", path + "/" + a, "", Access())));
+  Q4T_CHECK(get(a).http_status == 404 && binding.empty() && token.empty());
+  return true;
+}
+
 Q4T_TEST(agent_mcp_resolves_only_attached_active_exact_url_credentials) {
   Fixture fixture;
   ObjectStore objects(fixture.options);

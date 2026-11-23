@@ -56,7 +56,8 @@ def prepare_tls(output):
 
 class ProjectMcp:
     def __init__(self, root, output, port, *, source=None, tls=None,
-                 request_metadata=None, required_headers=None, bearer=None):
+                 request_metadata=None, required_headers=None, bearer=None,
+                 before_reply=None):
         self.source = source if source is not None else DocumentSource(root)
         self.calls, self.reads, self.methods, self.deleted = [], [], [], []
         self.sessions = set()
@@ -172,6 +173,8 @@ class ProjectMcp:
                     else:
                         self.reply(400)
                         return
+                    if before_reply is not None:
+                        before_reply(method)
                     self.reply(200, dict(jsonrpc='2.0', id=body['id'], result=result),
                                session if method == 'initialize' else None)
                 except (ValueError, KeyError, TypeError, RuntimeError):

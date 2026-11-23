@@ -14,6 +14,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/mcp_content.h"
+#include "q4t/server/native_crypto.h"
 #include "q4t/server/application_routes.h"
 #include "remote_http_internal.h"
 
@@ -192,9 +193,16 @@ class Client {
         String(session == headers_.end() ? "" : session->second));
     if (native_) Set(state, "agent_instance", String(instance_));
   }
-  void Begin(Deadline deadline) {
+  void Begin(Deadline deadline, const McpEndpoint& endpoint) {
     deadline_ = deadline;
     exchanges_ = 0;
+    // The parent bound this exchange to the same authority and checked the
+    // current grant. Send the current bearer on the original remote session.
+    if (exact_target_ && !endpoint.authorization.empty()) {
+      auto& header = headers_["Authorization"];
+      CryptoWipe(&header);
+      header = "Bearer " + endpoint.authorization;
+    }
     if (legacy_) legacy_->BeginRead(deadline);
   }
   ObjectReply Invoke(std::string_view method, const Json& params, Json* result,
@@ -414,6 +422,13 @@ class Client {
 
 ObjectReply CheckEndpoint(const McpEndpoint& endpoint,
                           const FileFetchOptions& deployment) {
+  if (!endpoint.vault_grant.empty() &&
+      (!endpoint.exact_target || !endpoint.url.starts_with("https://") ||
+       !endpoint.provider_id.empty() || !endpoint.tunnel_id.empty() ||
+       endpoint.authorization.empty() || endpoint.vault_grant.size() != 64 ||
+       endpoint.vault_grant.find_first_not_of("0123456789abcdef") !=
+           std::string::npos))
+    return Error(400, "mcp_credentials_invalid", "Invalid Vault grant binding");
   if (!endpoint.provider_id.empty()) {
     if (!NativeProvider(endpoint.provider_id) || !endpoint.url.empty() ||
         !endpoint.tunnel_id.empty() || !endpoint.tunnel_generation.empty())
@@ -684,10 +699,12 @@ ObjectReply Sessions::Exchange(
             .first;
   }
   auto& entry = found->second;
-  entry.client->Begin(std::min(
-      deadline,
-      Clock::now() + std::chrono::milliseconds(std::max<int64_t>(
-                         0, entry.state.GetInt("expires_ms") - NowMillis()))));
+  entry.client->Begin(
+      std::min(deadline,
+               Clock::now() +
+                   std::chrono::milliseconds(std::max<int64_t>(
+                       0, entry.state.GetInt("expires_ms") - NowMillis()))),
+      endpoint);
   Set(&entry.state, "idle_expires_ms",
       Number(NowMillis() + entry.state.GetInt("idle_ms")));
   *session = entry.state;

@@ -1,0 +1,127 @@
+{
+  "engine": "f8af31fe07dfeba0a2738b5ce7ba9b23b2aff8c6e5c33c59b2abc5ce242fee90",
+  "ingress": "1e71f9b806763a77a7dce8923ed9585f3d678b2105acfbdf9c9fa98be6e16593",
+  "protocol": "68ded1c270614d88de782b8e523f5bbf52ef655c2927f68eb1a140c40e5f62f9",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 48.923,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "issuer": {
+    "seen": [
+      "original",
+      "rotated",
+      "rotated",
+      "rotated"
+    ],
+    "methods_at_exchange": [
+      [],
+      [
+        "initialize",
+        "notifications/initialized",
+        "tools/list"
+      ],
+      [
+        "initialize",
+        "notifications/initialized",
+        "tools/list",
+        "tools/call"
+      ],
+      [
+        "initialize",
+        "notifications/initialized",
+        "tools/list",
+        "tools/call",
+        "resources/read"
+      ]
+    ],
+    "distinct_bearers": 3,
+    "no_replay": true,
+    "issuer_tls": true
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "calls": 1,
+    "citation": "[docs/MODEL.md:L1-L3]",
+    "events": 24,
+    "public_index": 0,
+    "wrong_tenant": 404,
+    "wrong_target": 404,
+    "ambiguous": 409,
+    "revoked": 404,
+    "chat_choices": [
+      0,
+      1
+    ],
+    "chat": "42"
+  },
+  "mcp": {
+    "methods": [
+      "initialize",
+      "notifications/initialized",
+      "tools/list",
+      "tools/call",
+      "resources/read"
+    ],
+    "http_requests": 5,
+    "source_sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "credential_scan": true
+  },
+  "cpu_cases": 22,
+  "evidence": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-03/result.json",
+      "sha256": "0a4110b6504676e4f01c878aef0dc279bafccd06006277ccbad0d32864956583"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-03/create/refresh.json",
+      "sha256": "8df37c026ff4a7b853db5643bc450d31de86e61fa56be9c3754b555078c3ceef"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-03/create/sdk-result.json",
+      "sha256": "60973e828f1064b4d0946d5a35a93059871bcc7f4de7ddce891344c9c77f1989"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-03/create/peer-receipt.json",
+      "sha256": "d49e1502dcb9f0b6e3ff64927a2b9c43397191c457ea22d522fb5aa2b6ad5ef5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-lease-03/exit.json",
+      "sha256": "e9402570674a380a20c01f96a3b50f4b105519d780668febcb0e715e75ec65ff"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-r3-required.txt",
+      "sha256": "cd57dedf706f496472e091e68e8a6e02c6b62543246e78bfcc39c20d6c0b3fc7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-r3-cpu.log",
+      "sha256": "da59404a76b8edd7b1f1dc4cd3ea4b3d2211d84de5b3b5d7c7ba157a5e5f2af0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth_business_r3.py",
+      "sha256": "304a142a9f5ba99adb07e04733228d689792d3e0d1b4869af071d403aaa89a96"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-r3-audit-ok.json",
+      "sha256": "01087e85f9407defac20a2240b1c39f85824968f93f96f2b791672d03e10c3b3"
+    },
+    {
+      "path": "tools/serve_responses/vault_oauth_fixture.py",
+      "sha256": "34f34f3a43157d57506d405318918ab720bf9ba8f00dc1389be0c26a13c04f8b"
+    },
+    {
+      "path": "tools/serve_responses/mcp_business_peer.py",
+      "sha256": "6c0425d74541c8cc41b38337373c340ee77eb7645268308c264551827a3c8d98"
+    },
+    {
+      "path": "tools/serve_responses/agent_session_mcp_sdk.mjs",
+      "sha256": "d0dbdc3db0d2df3ab2bb30b54691f3c1fc6f50e9a96942bc8c2067de78989c7d"
+    }
+  ],
+  "compatibility": "Older sessions can resume with their original bearer. Newly bound renewable grants preserve the exact remote session across issuer rotation. An owner auth edit starts a new authority.",
+  "default_at_test": "rev446 STOPPED"
+}

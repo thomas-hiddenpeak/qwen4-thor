@@ -194,8 +194,9 @@ ObjectReply Unavailable() {
 // request byte. An unknown outcome leaves the grant pending across restart.
 ObjectReply Refresh(ObjectStore& store, const StateAccess& access,
                     const std::string& vault_id, const std::string& id,
-                    const std::string& sealed, ProtectedAuth& config,
-                    const FileFetchOptions& deployment, std::string* token) {
+                    const std::string& sealed, const std::string& origin,
+                    ProtectedAuth& config, const FileFetchOptions& deployment,
+                    std::string* token) {
   const auto& grant = *config.value.Find("refresh");
   McpEndpoint endpoint;
   endpoint.url = grant.GetString("token_endpoint");
@@ -226,6 +227,7 @@ ObjectReply Refresh(ObjectStore& store, const StateAccess& access,
         return Error(503, "credential_state_invalid",
                      "Invalid stored credential");
       if (it->GetString("sealed") != sealed ||
+          it->GetString("grant_origin") != origin ||
           it->GetBool("refreshing") != (action != Action::kBegin))
         return Error(409, "oauth_refresh_conflict",
                      "Credential changed or refresh is pending");
@@ -236,6 +238,8 @@ ObjectReply Refresh(ObjectStore& store, const StateAccess& access,
         return f.first == "refreshing" || f.first == "retry_at";
       });
       if (action == Action::kFinish) {
+        Set(&*it, "grant_origin",
+            String(origin.empty() ? Digest(sealed) : origin));
         Set(&*it, "sealed", String(replacement));
         auto& resource = Field(*it, "resource");
         Set(&resource, "auth", value);
@@ -324,8 +328,9 @@ ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
                             const Json& vaults, std::string_view id,
                             const std::string& destination, std::string* token,
                             const FileFetchOptions* deployment,
-                            bool* refresh_needed) {
+                            bool* refresh_needed, std::string* grant_binding) {
   CryptoWipe(token);
+  if (grant_binding) grant_binding->clear();
   if (refresh_needed) *refresh_needed = false;
   const auto corrupt = [] {
     return Error(503, "credential_state_invalid", "Invalid stored credential");
@@ -351,7 +356,7 @@ ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
   req.kind = ObjectKind::kVault;
   req.scope = access.scope;
   std::set<std::string> visited;
-  std::string selected_vault, selected_id, sealed;
+  std::string selected_vault, selected_id, sealed, origin;
   bool refreshing = false;
   int64_t retry_at = 0;
   bool revoked = false;
@@ -393,6 +398,11 @@ ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
       selected_vault = req.id;
       selected_id = key;
       sealed = row.GetString("sealed");
+      origin = row.GetString("grant_origin");
+      if (row.Has("grant_origin") &&
+          (origin.size() != 64 ||
+           origin.find_first_not_of("0123456789abcdef") != origin.npos))
+        return corrupt();
       refreshing = row.GetBool("refreshing");
       retry_at = row.GetInt("retry_at");
     }
@@ -410,6 +420,9 @@ ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
     return corrupt();
   const auto type = config.value.GetString("type");
   if (type != "static_bearer" && type != "mcp_oauth") return corrupt();
+  const bool renewable =
+      type == "mcp_oauth" && Nonnull(config.value, "refresh");
+  if (!origin.empty() && !renewable) return corrupt();
   const auto* expiry = config.value.Find("expires_at");
   if (expiry && !expiry->IsNull() &&
       !SchemaDateTimeAfter(expiry->str, std::chrono::system_clock::now())) {
@@ -420,15 +433,23 @@ ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
       return Error(409, "oauth_refresh_pending",
                    "Token exchange awaits settlement or credential rotation");
     if (retry_at > std::time(nullptr)) return Unavailable();
-    if (deployment)
-      return Refresh(store, access, selected_vault, selected_id, sealed, config,
-                     *deployment, token);
-    *refresh_needed = true;
-    return {};
+    if (deployment) {
+      auto refreshed = Refresh(store, access, selected_vault, selected_id,
+                               sealed, origin, config, *deployment, token);
+      if (!refreshed.ok() || refreshed.commit_unknown) return refreshed;
+    } else {
+      *refresh_needed = true;
+      return {};
+    }
+  } else {
+    const auto* field = type == "static_bearer" ? "token" : "access_token";
+    if (!SafeValue(config.value, field)) return corrupt();
+    *token = config.value.Find(field)->str;
   }
-  const auto* field = type == "static_bearer" ? "token" : "access_token";
-  if (!SafeValue(config.value, field)) return corrupt();
-  *token = config.value.Find(field)->str;
+  if (renewable && grant_binding)
+    *grant_binding = Digest(OutputJson(Array(
+        {String(access.scope), String(selected_vault), String(selected_id),
+         String(origin.empty() ? Digest(sealed) : origin)})));
   return {};
 }
 

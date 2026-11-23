@@ -598,7 +598,7 @@ std::string ChatCapabilitiesJson(
          R"("endpoint":"/v1/agents/sessions","environments":["none"],)"
          R"("tool_types":["function","mcp"],"stream":true,)"
          R"("mcp":{"connection_origin":"service","transport":"http",)"
-         R"("vault_auth":["static_bearer","mcp_oauth_access_token"]},)"
+         R"("vault_auth":["static_bearer","mcp_oauth_access_token","mcp_oauth_refresh"]},)"
          R"("idempotent_input_events":true,"cancel_turn":true,)"
          R"("storage":"authenticated_client"})"
          R"(,"stored_chat":{"profile":"q4t-stored-chat-v1",)"
