@@ -381,10 +381,10 @@ inline bool AgentRegistrationMethodAllowed(std::string_view method,
          (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/agents");
 }
 
-enum class AgentSessionRouteKind { kNone, kCollection, kSession, kTurns, kTurn, kItems, kTurnItems, kEvents, kTraces };
+enum class AgentSessionRouteKind { kNone, kCollection, kSession, kTurns, kTurn, kItems, kTurnItems, kEvents, kTraces, kArtifacts, kArtifact, kArtifactContent };
 struct AgentSessionRoute {
   AgentSessionRouteKind kind = AgentSessionRouteKind::kNone;
-  std::string_view session, turn;
+  std::string_view session, turn, artifact = {};
 };
 
 inline AgentSessionRoute ParseAgentSessionRoute(std::string_view target) {
@@ -405,6 +405,18 @@ inline AgentSessionRoute ParseAgentSessionRoute(std::string_view target) {
   if (path == "items") return {Kind::kItems, id, {}};
   if (path == "turns") return {Kind::kTurns, id, {}};
   if (path == "traces") return {Kind::kTraces, id, {}};
+  if (path == "artifacts") return {Kind::kArtifacts, id, {}};
+  if (path.starts_with("artifacts/")) {
+    path.remove_prefix(10);
+    const auto tail = path.find('/');
+    const auto artifact = path.substr(0, tail);
+    if (!artifact.starts_with("artifact_") || artifact.size() <= 9 ||
+        !ValidApplicationId(artifact)) return {};
+    if (tail == path.npos) return {Kind::kArtifact, id, {}, artifact};
+    if (path.substr(tail) == "/content")
+      return {Kind::kArtifactContent, id, {}, artifact};
+    return {};
+  }
   if (!path.starts_with("turns/")) return {};
   path.remove_prefix(6);
   const auto tail = path.find('/');
@@ -516,6 +528,7 @@ inline bool ManagedAgentMethodAllowed(std::string_view method,
     case Kind::kEvents: return method == "GET" || method == "POST";
     case Kind::kCollection: return method == "GET" || method == "POST";
     case Kind::kSession: return method == "GET" || method == "POST" || method == "DELETE";
+    case Kind::kArtifact: return method == "GET" || method == "DELETE";
     default: return method == "GET";
   }
 }
@@ -530,6 +543,7 @@ inline bool IsAgentEventSubmission(std::string_view method, std::string_view tar
 inline bool IsManagedAgentObservation(std::string_view method,
                                       std::string_view target) {
   return (method == "GET" || method == "DELETE") &&
+         ParseAgentSessionRoute(target).kind != AgentSessionRouteKind::kArtifactContent &&
          !IsAgentEventStream(method, target) && ManagedAgentMethodAllowed(method, target);
 }
 

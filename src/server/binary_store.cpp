@@ -116,7 +116,8 @@ bool Root(const ObjectRequest& root) {
          (root.kind == ObjectKind::kBatch && format == "q4t.batch.v1") ||
          (root.kind == ObjectKind::kToolRun &&
           (format == "q4t.upload_part.v1" ||
-           format == "q4t.batch_result.v1")) ||
+           format == "q4t.batch_result.v1" ||
+           format == "q4t.agent_artifact.v1")) ||
          (root.kind == ObjectKind::kInputSnapshot &&
           format == "q4t.input_snapshot.v1");
 }
@@ -216,26 +217,41 @@ ObjectReply BinaryStore::Append(const BinaryAccess& access, BinaryStage* stage,
   }
   return reply;
 }
+ObjectReply BinaryStore::PreparePublish(const BinaryAccess& access,
+                                        const BinaryStage& stage,
+                                        ObjectRequest root,
+                                        std::vector<ObjectRequest>* writes) {
+  auto checked = State(access, stage.scope, stage.id, stage.expires,
+                       stage.closed, stage.commit_unknown);
+  if (!checked.ok()) return checked;
+  if (!writes || root.operation != ObjectOperation::kPut ||
+      root.expected_revision || root.scope != access.scope ||
+      !ValidId(root.id) || root.id == stage.id || !Root(root))
+    return Invalid("Invalid binary publication root");
+  for (const auto& existing : *writes)
+    if (existing.scope != access.scope || existing.id == stage.id ||
+        existing.id == root.id)
+      return Invalid("Invalid binary publication parent");
+  Set(&root.data, "blob", BinaryManifestJson(stage.manifest));
+  auto erase = Request(access, stage.id, ObjectOperation::kErase);
+  erase.expected_revision = stage.revision;
+  writes->push_back(std::move(root));
+  writes->push_back(std::move(erase));
+  return {};
+}
 ObjectReply BinaryStore::Publish(const BinaryAccess& access, BinaryStage* stage,
                                  ObjectRequest root,
                                  std::span<const ObjectRequest> parents) {
-  if (!stage) return Invalid("Missing staging handle");
-  auto checked = State(access, stage->scope, stage->id, stage->expires,
-                       stage->closed, stage->commit_unknown);
-  if (!checked.ok()) return checked;
-  if (root.operation != ObjectOperation::kPut || root.expected_revision ||
-      root.scope != access.scope || !ValidId(root.id) || root.id == stage->id ||
-      !Root(root) || parents.size() > 128)
-    return Invalid("Invalid binary publication root");
+  if (!stage || parents.size() > 128)
+    return Invalid("Invalid binary staging handle or publication parents");
+  const auto id = root.id;
+  std::vector<ObjectRequest> requests;
+  auto prepared = PreparePublish(access, *stage, std::move(root), &requests);
+  if (!prepared.ok()) return prepared;
   for (const auto& parent : parents)
     if (parent.scope != access.scope || parent.id == stage->id ||
-        parent.id == root.id)
+        parent.id == id)
       return Invalid("Invalid binary publication parent");
-  Set(&root.data, "blob", BinaryManifestJson(stage->manifest));
-  auto erase = Request(access, stage->id, ObjectOperation::kErase);
-  erase.expected_revision = stage->revision;
-  const auto id = root.id;
-  std::vector requests{std::move(root), std::move(erase)};
   requests.insert(requests.end(), parents.begin(), parents.end());
   auto reply =
       objects_.ExecuteBatch(requests, access.deadline, access.cancelled);

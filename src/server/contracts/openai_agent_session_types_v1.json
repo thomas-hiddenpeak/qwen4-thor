@@ -11,7 +11,10 @@
     "input_event": 255,
     "event": 277,
     "item": 347,
-    "turn": 304
+    "turn": 304,
+    "artifact": 487,
+    "artifact_deleted": 489,
+    "artifact_query": 491
   },
   "nodes": [
     {
@@ -6375,11 +6378,113 @@
     {
       "kind": "literal",
       "value": "agent.session.turn.reasoning_summary_text.done"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "environment_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 488
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "size_bytes",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.artifact"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 490
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.artifact.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "environment_id",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 252
+        }
+      ],
+      "additional": null
     }
   ],
   "sources_sha256": {
     "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
     "src/resources/beta/agents/agents.ts": "03d26f89be2ce0137ef1326e8e196138c8a5a882af3c845cb05d6f6303dc19a2",
+    "src/resources/beta/agents/sessions/artifacts.ts": "caf511144b7aebaefc99c9fea9d409934adaf851e56d3bab52b3332ec1954213",
     "src/resources/beta/agents/sessions/sessions.ts": "80ee2d0fdfcc6579e4b76f31b4401f88f65acd36b817e98eb7f3c979d5bb0cca",
     "src/resources/beta/agents/sessions/turns/turns.ts": "fe8b44a1227041176c34413a9d645b8bc68673ce1ed612a9fc63a3b979b05730"
   },

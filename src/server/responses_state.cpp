@@ -1,5 +1,7 @@
 #include "q4t/server/responses_state.h"
 
+#include "agent_artifact_internal.h"
+
 #include <algorithm>
 #include <array>
 #include <ctime>
@@ -876,8 +878,15 @@ ObjectReply ResponsesState::Finish(const Json& snapshot, const Json& events,
                                       {"web_content", item_web}}),
                               keep, temporary));
   }
+  agent_detail::TurnArtifacts artifacts(objects_, access);
+  if (!plan->agent_session_id.empty() &&
+      snapshot.GetString("status") == "completed") {
+    auto capture = artifacts.Prepare(plan->agent_session_id, plan->id, &mutations);
+    if (!capture.ok()) return capture;
+  }
   auto written =
       objects_.ExecuteBatch(mutations, access.deadline, access.cancelled);
+  artifacts.Settle(written);
   if (written.ok()) {
     if (plan->store) ++plan->response_revision;
     if (append) ++plan->conversation_revision;

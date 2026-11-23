@@ -280,6 +280,17 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     } else {
       inspector.value.uncertain = true;
     }
+    if (const auto* ids = data.Find("agent_artifact_ids")) {
+      if (!ids->IsArray() || !data.Has("agent_session_id")) {
+        inspector.value.uncertain = true;
+      } else {
+        for (const auto& id : ids->array) {
+          if (!id.IsString() || !id.str.starts_with("artifact_"))
+            inspector.value.uncertain = true;
+          inspector.Reference(&id);
+        }
+      }
+    }
     inspector.Request(data.Find("request"));
     inspector.Items(data.Find("history"));
     inspector.Items(data.Find("own_input"));
@@ -522,6 +533,13 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     } else if (format == "q4t.binary_stage.v1" ||
                format == "q4t.binary_read.v1") {
       inspector.Blob(data);
+    } else if (format == "q4t.agent_artifact.v1") {
+      const auto* row = data.Find("resource");
+      if (!row || row->GetString("object") != "agent.session.artifact" ||
+          !row->GetString("id").starts_with("artifact_"))
+        inspector.value.uncertain = true;
+      inspector.Blob(data);
+      inspector.value.collect_when_unreferenced = true;
     } else if (format == "q4t.upload_part.v1") {
       inspector.Blob(data);
       inspector.value.collect_when_unreferenced = true;

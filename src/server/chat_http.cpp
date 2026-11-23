@@ -458,7 +458,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
             IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
             IsFileTarget(path) || IsUploadTarget(path))) ||
-          (method == "GET" && !LiveRecordingId(path).empty()) ||
+          (method == "GET" && (!LiveRecordingId(path).empty() ||
+             ParseAgentSessionRoute(path).kind == AgentSessionRouteKind::kArtifactContent)) ||
           (method == "GET" && IsVectorStoreTarget(path) &&
            !IsVectorStoreObservation(method, path)) ||
           (method == "GET" && IsFileTarget(path) &&

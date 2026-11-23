@@ -204,6 +204,38 @@ Q4T_TEST(binary_publication_parent_conflict_preserves_staging) {
   return true;
 }
 
+Q4T_TEST(binary_terminal_and_multiple_artifacts_share_one_commit) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  BinaryStore binary(objects);
+  BinaryStage first, second;
+  Q4T_CHECK(Ok(binary.Begin(Access(), 3, 60, &first)) &&
+            Ok(binary.Append(Access(), &first, "one")) &&
+            Ok(binary.Begin(Access(), 3, 60, &second)) &&
+            Ok(binary.Append(Access(), &second, "two")));
+  auto parent = Request("conv_parent", ObjectKind::kConversation,
+                        ObjectOperation::kPut);
+  parent.data = Object({{"items", Array()}});
+  Q4T_CHECK(Ok(Run(objects, parent)));
+  parent.expected_revision = 2;  // Stale terminal writer.
+  std::vector<ObjectRequest> writes{parent};
+  Q4T_CHECK(Ok(binary.PreparePublish(Access(), first, File("file_a"), &writes)));
+  Q4T_CHECK(Ok(binary.PreparePublish(Access(), second, File("file_b"), &writes)));
+  auto result = objects.ExecuteBatch(writes, Access().deadline);
+  Q4T_CHECK(result.http_status == 409 && !result.commit_unknown);
+  for (const auto* id : {"file_a", "file_b"})
+    Q4T_CHECK(Run(objects, Request(id)).http_status == 404);
+  for (const auto* stage : {&first, &second})
+    Q4T_CHECK(Ok(Run(objects, Request(stage->id, ObjectKind::kToolRun))));
+  writes.front().expected_revision = 1;
+  Q4T_CHECK(Ok(objects.ExecuteBatch(writes, Access().deadline)));
+  for (const auto* id : {"file_a", "file_b"})
+    Q4T_CHECK(Ok(Run(objects, Request(id))));
+  for (const auto* stage : {&first, &second})
+    Q4T_CHECK(Run(objects, Request(stage->id, ObjectKind::kToolRun)).http_status == 404);
+  return true;
+}
+
 Q4T_TEST(binary_download_pin_survives_file_deletion_then_releases_chunks) {
   Fixture fixture;
   ObjectStore objects(fixture.options);

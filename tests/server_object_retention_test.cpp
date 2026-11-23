@@ -103,6 +103,32 @@ Q4T_TEST(object_retention_agent_session_follows_typed_dependencies) {
   return true;
 }
 
+Q4T_TEST(object_retention_session_artifact_releases_chunks_when_its_owner_is_gone) {
+  auto response = InspectObjectRetention("response", Parse(R"({
+    "response":{"status":"completed","output":[]},"agent_session_id":"agent_session_x",
+    "agent_artifact_ids":["artifact_first"]})"));
+  auto artifact = InspectObjectRetention("tool_run", Parse(
+      "{\"format\":\"q4t.agent_artifact.v1\",\"resource\":{\"id\":\"artifact_first\","
+      "\"object\":\"agent.session.artifact\"},\"blob\":{\"bytes\":3,\"chunks\":["
+      "{\"id\":\"chunk_a\",\"bytes\":3,\"sha256\":\"" + kDigest + "\"}]}}"));
+  auto chunk = InspectObjectRetention("tool_run", Parse(R"({"format":"q4t.binary_chunk.v1"})"));
+  Q4T_CHECK(!response.uncertain && !artifact.uncertain &&
+            artifact.collect_when_unreferenced && !chunk.uncertain);
+  std::vector nodes{Node("resp_a", response, 0, "response"),
+                    Node("artifact_first", artifact, 0, "tool_run"),
+                    Node("chunk_a", chunk, 0, "tool_run")};
+  ObjectRetentionPlan plan;
+  Q4T_CHECK(PlanObjectRetention(nodes, 20, 0, 32, &plan) &&
+            !plan.uncertain && plan.eligible == 0);
+  nodes.erase(nodes.begin());
+  Q4T_CHECK(PlanObjectRetention(nodes, 20, 0, 32, &plan) &&
+            !plan.uncertain && plan.eligible == 2);
+  Q4T_CHECK(InspectObjectRetention("response", Parse(R"({
+    "response":{"status":"completed"},"agent_session_id":"agent_session_x",
+    "agent_artifact_ids":[{"id":"artifact_first"}]})")).uncertain);
+  return true;
+}
+
 Q4T_TEST(object_retention_hosted_workspace_edges_allow_unrelated_collection) {
   const auto tmpl = InspectObjectRetention("environment_template", Parse(R"({
     "resource":{"object":"agent.environment.template","id":"environment_template_x",

@@ -1,3 +1,4 @@
+#include "../src/server/agent_artifact_internal.h"
 #include "../src/server/agent_environment_internal.h"
 #include "../src/server/schema_string.h"
 #include "q4t/io/base64.h"
@@ -284,6 +285,107 @@ Q4T_TEST(hosted_workspace_session_turn_and_file_commit_share_revision) {
   Q4T_CHECK(Ok(change("after", "")));
   Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
   Q4T_CHECK(view.session.Find("environment")->GetArray("files")->array.size() == 4);
+  return true;
+}
+
+Q4T_TEST(hosted_artifacts_publish_immutable_outputs_and_paginate_after_reopen) {
+  Fixture f;
+  const auto create = Parse(R"({"agent":{"model":"cpu"},"environment":{
+      "type":"openai_hosted","files":[
+        {"type":"inline","path":"/workspace/outputs/result","data":"cQB0"},
+        {"type":"inline","path":"/workspace/outputs/empty","data":""},
+        {"type":"inline","path":"/workspace/private","data":"cQ=="}]}})");
+  const auto event = Parse(R"({"events":[{"type":"agent.session.input.message",
+      "input":[{"role":"user","content":[{"type":"input_text","text":"read"}]}]}]})");
+  std::string session, environment, old_id, new_id, empty_id;
+  auto page = [&](ObjectStore& store, const Json& query) {
+    bool sent = false;
+    return agent_detail::HandleArtifacts(store, Access(),
+        {AgentSessionRouteKind::kArtifacts, session, {}, {}}, "GET", query, -1,
+        &sent);
+  };
+  {
+    ObjectStore store(f.options);
+    ResponsesExecution idle(store);
+    auto created = PrepareAgentSessionExecution(store, create, Config(), Access(),
+                                               std::time(nullptr), idle);
+    Q4T_CHECK(Ok(created));
+    session = created.value.GetString("id");
+    environment = created.value.Find("environment")->GetString("id");
+    auto run_turn = [&](const std::string& key, bool incomplete) {
+      ResponsesExecution run(store);
+      bool replay = false;
+      auto ready = PrepareAgentSessionEvents(store, session, event, key, Config(),
+                                             Access(), run, &replay);
+      if (!Ok(ready) || replay) return false;
+      run.BindBackgroundControl(std::make_shared<RequestControl>(
+          run.Id(), "", Clock::now() + 5s));
+      std::string wire;
+      return Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)) &&
+             Ok(run.Finish(incomplete, 0, {4, 0, 0, 0}, std::time(nullptr), &wire));
+    };
+    auto before = page(store, Parse("{}"));
+    Q4T_CHECK(Ok(before) && before.value.GetArray("data")->array.empty() &&
+              before.value.Find("first_id")->IsNull());
+    Q4T_CHECK(run_turn("partial", true));
+    auto partial = page(store, Parse("{}"));
+    Q4T_CHECK(Ok(partial) && partial.value.GetArray("data")->array.empty());
+    Q4T_CHECK(run_turn("first-complete", false));
+    auto ascending = page(store, Parse(R"({"order":"asc","limit":1})"));
+    Q4T_CHECK(Ok(ascending) && ascending.value.GetBool("has_more"));
+    const auto& first = ascending.value.GetArray("data")->array.at(0);
+    Q4T_CHECK(first.GetString("path") == "/workspace/outputs/result" &&
+              first.GetInt("size_bytes") == 3 && first.GetString("environment_id") == environment);
+    old_id = first.GetString("id");
+    const auto first_turn = first.GetString("turn_id");
+    auto next = page(store, Parse("{\"order\":\"asc\",\"after\":\"" + old_id + "\"}"));
+    Q4T_CHECK(Ok(next) && !next.value.GetBool("has_more") &&
+              next.value.GetArray("data")->array.size() == 1);
+    empty_id = next.value.GetString("first_id");
+    Q4T_CHECK(next.value.GetArray("data")->array.front().GetInt("size_bytes", -1) == 0);
+    const auto files = "/v1/agents/environments/" + environment + "/files";
+    Q4T_CHECK(Ok(HandleHostedEnvironment(store, "POST", files,
+        R"({"type":"inline","path":"/workspace/outputs/result","data":"YmFy"})",
+        Access(), "")));
+    Q4T_CHECK(run_turn("second-complete", false));
+    auto both = page(store, Parse("{}"));
+    Q4T_CHECK(Ok(both) && both.value.GetArray("data")->array.size() == 4);
+    for (const auto& item : both.value.GetArray("data")->array)
+      if (item.GetString("path") == "/workspace/outputs/result" &&
+          item.GetString("turn_id") != first_turn)
+        new_id = item.GetString("id");
+    Q4T_CHECK(!new_id.empty() && old_id != new_id);
+  }
+  ObjectStore store(f.options);
+  BinaryStore binary(store);
+  BinaryAccess access{Access().scope, Clock::now() + 5s, {}};
+  auto verify = [&](const std::string& id, const std::string& expected) {
+    BinaryRead read;
+    auto result = binary.Open(access, ObjectKind::kToolRun, id, 60, &read);
+    if (!Ok(result) || read.manifest.bytes != expected.size()) return false;
+    std::string value;
+    if (!read.manifest.chunks.empty() && !Ok(binary.Read(access, read, 0, &value)))
+      return false;
+    return value == expected && Ok(binary.Close(access, &read));
+  };
+  Q4T_CHECK(verify(old_id, std::string("q\0t", 3)) && verify(new_id, "bar") &&
+            verify(empty_id, ""));
+  bool sent = false;
+  AgentSessionRoute route{AgentSessionRouteKind::kArtifact, session, {}, old_id};
+  auto get = [&](const StateAccess& who, std::string_view method) {
+    return agent_detail::HandleArtifacts(store, who, route, method, Parse("{}"), -1, &sent);
+  };
+  Q4T_CHECK(get(Access("client:peer"), "DELETE").http_status == 404);
+  auto deleted = get(Access(), "DELETE");
+  Q4T_CHECK(Ok(deleted) && deleted.value.GetBool("deleted") &&
+            deleted.value.GetString("id") == old_id && !sent);
+  Q4T_CHECK(get(Access(), "GET").http_status == 404 && verify(new_id, "bar"));
+  auto missing = page(store, Parse("{\"after\":\"" + old_id + "\"}"));
+  Q4T_CHECK(missing.http_status == 400 && missing.value.GetString("param") == "after");
+  auto filtered = page(store, Parse(R"({"environment_id":"env_other"})"));
+  Q4T_CHECK(Ok(filtered) && filtered.value.GetArray("data")->array.empty());
+  auto rest = page(store, Parse("{}"));
+  Q4T_CHECK(Ok(rest) && rest.value.GetArray("data")->array.size() == 3);
   return true;
 }
 

@@ -5,6 +5,11 @@
 #include "q4t/server/uploads.h"
 
 namespace q4t::server {
+// Streams and releases an already pinned immutable manifest, including on a
+// disconnected reader. Its caller supplies the authenticated resource check.
+void SendPinnedBinary(int fd, BinaryStore& binary, const BinaryAccess& access,
+                      BinaryRead& read);
+
 // One authenticated Files/Uploads operation. This implementation is used by the
 // actual engine and model-free CPU transport fixtures; no secondary web app.
 class FileHttpRequest {

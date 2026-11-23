@@ -322,10 +322,12 @@ def current_surface(root):
                          ('POST', resource + '/events'),
                          ('GET', resource + '/events'),
                          ('GET', resource), ('DELETE', resource),
+                         ('DELETE', resource + '/artifacts/{artifact_id}'),
                          *(('GET', resource + suffix) for suffix in
-                           ('/turns', '/turns/{turn_id}', '/items', '/turns/{turn_id}/items', '/traces'))]:
+                           ('/turns', '/turns/{turn_id}', '/items', '/turns/{turn_id}/items', '/traces',
+                            '/artifacts', '/artifacts/{artifact_id}', '/artifacts/{artifact_id}/content'))]:
         routes.append((path, method))
-        operations = method != 'POST' and path != resource + '/events'
+        operations = method != 'POST' and path != resource + '/events' and not path.endswith('/content')
         native_routes.append((method, path, 'true' if operations else 'false'))
     if 'IsFileTarget(path)' not in dispatch or \
             'file_request->Serve(fd)' not in dispatch or \

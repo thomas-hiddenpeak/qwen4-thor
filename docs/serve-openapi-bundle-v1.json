@@ -6734,6 +6734,338 @@
         "x-q4t-body-contract": "empty body only"
       }
     },
+    "/v1/agents/sessions/{session_id}/artifacts": {
+      "get": {
+        "operationId": "get_v1_agents_sessions_session_id_artifacts",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_14"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "environment_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_12"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_artifact_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "agent_session_artifact_query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/agents/sessions/{session_id}/artifacts/{artifact_id}": {
+      "get": {
+        "operationId": "get_v1_agents_sessions_session_id_artifacts_artifact_id",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_artifact"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "delete": {
+        "operationId": "delete_v1_agents_sessions_session_id_artifacts_artifact_id",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_artifact_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/agents/sessions/{session_id}/artifacts/{artifact_id}/content": {
+      "get": {
+        "operationId": "get_v1_agents_sessions_session_id_artifacts_artifact_id_content",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Immutable artifact contents",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
     "/v1/agents/sessions/{session_id}/traces": {
       "get": {
         "operationId": "get_v1_agents_sessions_session_id_traces",
@@ -51208,6 +51540,94 @@
           "agent_session_486": {
             "const": "agent.session.turn.reasoning_summary_text.done"
           },
+          "agent_session_487": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_19"
+              },
+              "environment_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_13"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_13"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_488"
+              },
+              "path": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_13"
+              },
+              "session_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_13"
+              },
+              "size_bytes": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_19"
+              },
+              "turn_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_13"
+              }
+            },
+            "required": [
+              "created_at",
+              "environment_id",
+              "id",
+              "object",
+              "path",
+              "session_id",
+              "size_bytes",
+              "turn_id"
+            ],
+            "additionalProperties": false
+          },
+          "agent_session_488": {
+            "const": "agent.session.artifact"
+          },
+          "agent_session_489": {
+            "type": "object",
+            "properties": {
+              "deleted": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_17"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_13"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_490"
+              }
+            },
+            "required": [
+              "deleted",
+              "id",
+              "object"
+            ],
+            "additionalProperties": false
+          },
+          "agent_session_490": {
+            "const": "agent.session.artifact.deleted"
+          },
+          "agent_session_491": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_14"
+              },
+              "environment_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_12"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 20
+              },
+              "order": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
           "agent_session_create": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_0"
           },
@@ -51234,6 +51654,15 @@
           },
           "agent_session_turn": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_304"
+          },
+          "agent_session_artifact": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_487"
+          },
+          "agent_session_artifact_deleted": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_489"
+          },
+          "agent_session_artifact_query": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_491"
           },
           "agent_session_trace": {
             "type": "object",
@@ -51419,6 +51848,51 @@
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_trace"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "has_more",
+              "first_id",
+              "last_id"
+            ],
+            "additionalProperties": false
+          },
+          "agent_session_artifact_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_artifact"
                 }
               },
               "has_more": {

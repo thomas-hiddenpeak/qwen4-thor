@@ -16646,6 +16646,14 @@
     "inline_upload_limits": {
       "state": "candidate_verified",
       "evidence": "docs/evidence/serve-agent-workspaces-20261124/inline-limits.json"
+    },
+    "artifacts": {
+      "state": "candidate_verified",
+      "evidence": "docs/evidence/serve-agent-workspaces-20261124/artifacts.json",
+      "remaining": [
+        "large source files and hosted execution",
+        "profile continuity, recovery, delivery and remaining application methods"
+      ]
     }
   }
 }
