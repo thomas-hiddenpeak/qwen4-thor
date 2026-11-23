@@ -13,11 +13,29 @@ import subprocess
 import tempfile
 import threading
 import unittest
+from unittest.mock import MagicMock, patch
 
-from tools.serve_realtime.ingress_fixture import NativeIngress, certificate
+from tools.serve_realtime.ingress_fixture import NativeIngress, certificate, unused_operations_port
 from tools.serve_realtime.test_transcription_sdk import free_port, frame, read_frame
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+class PortSelection(unittest.TestCase):
+    def test_operations_port_rejects_both_reserved_roles(self):
+        sockets = []
+        def allocate():
+            for held in sockets:
+                held.__exit__.assert_not_called()
+            sock = MagicMock()
+            sock.__enter__.return_value = sock
+            sock.getsockname.return_value = ('127.0.0.1', 40000 + len(sockets))
+            sockets.append(sock)
+            return sock
+        with patch('tools.serve_realtime.ingress_fixture.socket.socket', allocate):
+            self.assertEqual(unused_operations_port(40000, 40001), 40002)
+        for sock in sockets:
+            sock.__exit__.assert_called_once()
 
 
 class SemanticSdk(unittest.TestCase):
@@ -111,7 +129,7 @@ class SemanticSdk(unittest.TestCase):
         worker.start()
         try:
             ingress = NativeIngress(directory/'ingress', self.ingress, free_port(),
-                server.server_port, free_port(), 'e'*64, {'alpha': 'A'*40},
+                server.server_port, None, 'e'*64, {'alpha': 'A'*40},
                 None if plain else self.tls, lambda: worker.is_alive())
             try:
                 ca = certificate(directory/'untrusted')['certificate'] if wrong_ca else self.tls['certificate']

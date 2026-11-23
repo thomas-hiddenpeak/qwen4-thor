@@ -157,7 +157,7 @@ class SdkTls(unittest.TestCase):
         self.front=None
         self.addCleanup(self.close)
         self.front=NativeIngress(self.directory/'ingress',self.ingress,free_port(),
-            self.server.server_port,free_port(),'e'*64,{'alpha':'A'*40},
+            self.server.server_port,None,'e'*64,{'alpha':'A'*40},
             self.tls,lambda:True)
         self.clip=self.directory/'source.pcm';self.clip.write_bytes(bytes(range(256))*128)
 

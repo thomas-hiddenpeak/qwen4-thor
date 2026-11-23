@@ -96,7 +96,7 @@ class HistorySdk(unittest.TestCase):
         self.thread=threading.Thread(target=self.server.serve_forever);self.thread.start()
         self.front=None;self.addCleanup(self.close)
         self.front=NativeIngress(self.out/'ingress',Path(os.environ['Q4T_INGRESS']),free_port(),
-            self.server.server_port,free_port(),'e'*64,{'alpha':'A'*40},self.tls,lambda:True)
+            self.server.server_port,None,'e'*64,{'alpha':'A'*40},self.tls,lambda:True)
 
     def close(self):
         if self.front:self.front.close()
