@@ -713,7 +713,9 @@ set(protocol_inputs
   cmake/agent_session_types.h.in
   include/q4t/server/agent_session.h
   include/q4t/server/agent_registration.h
+  include/q4t/server/agent_vault.h
   src/server/agent_registration.cpp
+  src/server/agent_vault.cpp
   src/server/agent_session.cpp
   src/server/agent_session_turn.cpp
   src/server/agent_session_internal.h

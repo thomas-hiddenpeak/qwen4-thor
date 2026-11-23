@@ -82,7 +82,8 @@ class Contracts(unittest.TestCase):
 
     def test_openapi_refs_routes_and_explicit_semantic_boundaries(self):
         spec = build_contract.openapi()
-        routes = {method.upper()+" "+path for path, methods in spec["paths"].items() for method in methods}
+        routes = build_contract.runtime_routes(spec)
+        self.assertIn('GET /v1/realtime?intent=transcription', routes)
         self.assertEqual(routes, set(stage.h.read(stage.ROOT / "tools/serve_audit/inventory.json")["routes"]))
         documents = {p.name: json.loads(p.read_text()) for p in (stage.ROOT / "docs").glob("*.schema.json")}
         documents["serve-openapi-v1.json"] = spec
@@ -95,7 +96,7 @@ class Contracts(unittest.TestCase):
                     target = documents[file or owner]
                     for component in pointer.split("/")[1:]:
                         target = target[component.replace("~1", "/").replace("~0", "~")]
-                    self.assertIsInstance(target, dict)
+                    self.assertIsInstance(target, (dict, bool))  # JSON Schema permits boolean schemas.
                 for child in value.values(): check(child, owner)
             elif isinstance(value, list):
                 for child in value: check(child, owner)

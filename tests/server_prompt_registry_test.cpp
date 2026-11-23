@@ -1,5 +1,6 @@
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/agent_session.h"
+#include "q4t/server/agent_vault.h"
 #include "q4t/server/prompt_registry.h"
 
 #include <algorithm>
@@ -638,6 +639,56 @@ Q4T_TEST(agent_session_settings_use_cas_filtered_pages_and_immutable_step_settin
   auto invalid = UpdateAgentSession(store, first, Parse(R"({"agent":{"model":"foreign"}})"),
                                     config, Access());
   Q4T_CHECK(invalid.http_status == 404);
+  return true;
+}
+
+Q4T_TEST(agent_vault_sdk_fields_owner_archive_and_session_binding) {
+  Fixture f;
+  ObjectStore store(f.options);
+  const std::string base = "/v1/vaults";
+  auto api = [&](std::string method, std::string path, std::string body = "",
+                 StateAccess access = Access()) {
+    return HandleAgentVault(store, method, path, body, access);
+  };
+  auto first = api("POST", base,
+      R"({"name":"　 项目资料　","metadata":{"team":"资料","a":"1"}})");
+  Q4T_CHECK(Ok(first));
+  const auto id = first.value.GetString("id");
+  const auto path = base + "/" + id;
+  Q4T_CHECK(first.value.GetString("name") == "项目资料" && first.value.object.size() == 5);
+  Q4T_CHECK(api("GET", path, "", Access("client:peer")).http_status == 404);
+  auto blank = api("POST", base, "null");
+  Q4T_CHECK(Ok(blank) && blank.value.Find("name")->IsNull());
+  Q4T_CHECK(api("POST", base, R"({"name":null})").http_status == 400);
+  Q4T_CHECK(api("POST", base, R"({"name":" \t "})").http_status == 400);
+  Q4T_CHECK(api("POST", base, "{\"name\":\"" + std::string(257, 'x') + "\"}").http_status == 400);
+  Q4T_CHECK(api("POST", path, R"({"metadata":null})").http_status == 400);
+  Q4T_CHECK(api("POST", path, R"({"metadata":{"":"bad"}})").http_status == 400);
+  Q4T_CHECK(api("POST", path, R"({"secret":"value"})").http_status == 400);
+  auto update = api("POST", path, R"({"name":null})");
+  Q4T_CHECK(Ok(update) && update.value.Find("name")->IsNull());
+  auto matching = api("GET", base + "?metadata%5Bteam%5D=资料&metadata%5Ba%5D=1&status=active");
+  Q4T_CHECK(Ok(matching) && matching.value.GetArray("data")->array.size() == 1);
+  auto request = Parse(R"({"agent":{"model":"cpu"},"environment":{"type":"none"},"input":"lookup"})");
+  Set(&request, "vault_ids", Parse("[\"" + id + "\"]"));
+  AgentSessionStart start;
+  Q4T_CHECK(Ok(PrepareDirectAgentSession(store, request, Config(), Access(), "s", 1, &start)));
+  auto deleted = api("DELETE", path);
+  Q4T_CHECK(Ok(deleted) && deleted.value.GetBool("deleted"));
+  Q4T_CHECK(api("POST", path, "{}").http_status == 409);
+  auto recovered = api("GET", path);
+  Q4T_CHECK(Ok(recovered) && !recovered.value.Has("archived"));
+  Q4T_CHECK(PrepareDirectAgentSession(store, request, Config(), Access(), "s", 1, &start).http_status == 404);
+  auto archived = api("GET", base + "?status%5B%5D=archived");
+  Q4T_CHECK(Ok(archived) && archived.value.GetString("first_id") == id);
+  auto both = api("GET", base + "?status[]=active&status[]=archived&limit=1&order=asc");
+  Q4T_CHECK(Ok(both) && both.value.GetBool("has_more"));
+  auto next = api("GET", base + "?order=asc&after=" + both.value.GetString("last_id"));
+  Q4T_CHECK(Ok(next) && next.value.GetArray("data")->array.size() == 1 &&
+            next.value.GetString("first_id") != both.value.GetString("first_id"));
+  Q4T_CHECK(api("GET", base + "?status=other").http_status == 400);
+  Q4T_CHECK(api("GET", base + "?status=active&status[]=archived").http_status == 400);
+  Q4T_CHECK(api("GET", base + "?metadata%5B%5D=x").http_status == 400);
   return true;
 }
 

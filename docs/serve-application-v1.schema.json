@@ -22370,6 +22370,228 @@
       "required": [],
       "additionalProperties": false
     },
+    "vault": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "object": {
+          "const": "vault"
+        },
+        "created_at": {
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "created_at",
+        "name",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "vault_create": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes."
+        },
+        "metadata": {
+          "anyOf": [
+            {
+              "type": "object",
+              "maxProperties": 16,
+              "propertyNames": {
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 512
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "vault_update": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "vault_deleted": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "object": {
+          "const": "vault.deleted"
+        },
+        "deleted": {
+          "const": true
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "deleted"
+      ],
+      "additionalProperties": false
+    },
+    "vault_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/vault"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
+    "vault_query": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "after": {
+          "type": "string"
+        },
+        "order": {
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 512
+          }
+        },
+        "status": {
+          "anyOf": [
+            {
+              "enum": [
+                "active",
+                "archived"
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "active",
+                  "archived"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
     "agent_session_0": {
       "type": "object",
       "properties": {

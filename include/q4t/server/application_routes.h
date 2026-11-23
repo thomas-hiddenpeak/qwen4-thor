@@ -415,14 +415,27 @@ inline AgentSessionRoute ParseAgentSessionRoute(std::string_view target) {
   return {};
 }
 
+inline bool IsVaultTarget(std::string_view target) {
+  constexpr std::string_view prefix = "/v1/vaults/";
+  const auto path = target.substr(0, target.find('?'));
+  if (target.find('#') != target.npos) return false;
+  if (path == "/v1/vaults") return true;
+  if (!path.starts_with(prefix)) return false;
+  const auto id = path.substr(prefix.size());
+  return id.starts_with("vault_") && id.size() > 6 && ValidApplicationId(id);
+}
+
 inline bool IsManagedAgentTarget(std::string_view target) {
-  return IsAgentRegistrationTarget(target) ||
+  return IsVaultTarget(target) || IsAgentRegistrationTarget(target) ||
          ParseAgentSessionRoute(target).kind != AgentSessionRouteKind::kNone;
 }
 
 inline bool ManagedAgentMethodAllowed(std::string_view method,
                                       std::string_view target) {
   using Kind = AgentSessionRouteKind;
+  if (IsVaultTarget(target))
+    return method == "GET" || method == "POST" ||
+           (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/vaults");
   switch (ParseAgentSessionRoute(target).kind) {
     case Kind::kNone: return AgentRegistrationMethodAllowed(method, target);
     case Kind::kEvents: return method == "GET" || method == "POST";

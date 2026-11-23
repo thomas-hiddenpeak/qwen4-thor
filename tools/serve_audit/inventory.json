@@ -2054,6 +2054,46 @@
         "tests/server_prompt_registry_test.cpp",
         "tools/serve_responses/agent_session_settings_sdk.mjs"
       ]
+    },
+    "DELETE /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -2668,8 +2708,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "7eee2f06f41ac71b964bc67c7287f25c92d3d4d146db8b668936698007819aef",
-    "cmake/ChatProtocolIdentity.cmake": "3d29000aa19394ff9aa856ab2c2345c1f6e980c94e3e9cd59f3f74edc397c558",
+    "CMakeLists.txt": "abaa3c46a498a0601ccadceba334eed620458999f78dad4525ba38518011964c",
+    "cmake/ChatProtocolIdentity.cmake": "42285f9a63a465ad6ee77c743dceff6e655be2b7f045a53051344088c000c3dc",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2745,8 +2785,8 @@
     "include/q4t/server/aligner_service.h": "6e3bd5218668a6ea21c52963743be5da8d488e02ae0d77d8d29114a34876c017",
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
-    "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "6d2afe996265e8d9076d05ff07404fcb13e350769ad329e05b551453c7756c16",
+    "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
+    "include/q4t/server/application_routes.h": "791d91adae96e6a861f6c26cba6c65da5a62caae0b6fed746d679f816bb0dfae",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3145,7 +3185,7 @@
     "src/server/aligner_service.cpp": "5f971cb849b343934b620d7966994807484d765b0ba2bdcc8402e55bd7c56bba",
     "src/server/application_owner.cpp": "15796bb55a96ae0f74e7b271d21f3e734e5d251903fd00d5f3155294ba8cfdf1",
     "src/server/application_payload.cpp": "ab6019c92bc45730ba115968550e42f4ce5c2928f109fbed7baaca9f2169725f",
-    "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
+    "src/server/application_query.cpp": "ad98565f23796c3c6f5995d4b969be8b915328b4cc69f67422456ef10a7932c9",
     "src/server/asr_alignment_output.cpp": "66d495f012519ac93a39d16d0fd92b69e1345a921ee81a900079f246ca191d51",
     "src/server/asr_assets.cpp": "a42df736701e1a063f9747c3bc92718707804272b06122358451efffc4144648",
     "src/server/asr_chunk_output.cpp": "80b0a2b938c2c4d8a42853d465a5b35748c09700d488eaf2f998282a366643a5",
@@ -3187,7 +3227,7 @@
     "src/server/chat_audio_inputs.cpp": "9a9f94790bcf4171a0c65ed6dc6655bcd834ac909ae394573aa6e4850a1d0ba1",
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
-    "src/server/chat_capabilities.cpp": "4b330a06d004ba69933d564cadf30d2f0898f66f8fdbfb34b6643d62cc258911",
+    "src/server/chat_capabilities.cpp": "8831f4112468023c48319e1103ca04517462ac5134bd544fa00ffcd66b2b6ddd",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -3197,7 +3237,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "c111130f7d68f233b0f99805c8fe636dbd7a909e815d6f3c2554f58214820922",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "0c29ae767daff02dbf9fccfd93670c586a1410ab6169f5e50ff1e8960e982d72",
+    "src/server/chat_http.cpp": "2d3bf54aa949be86d4ddb21b075ca40ce0077cdc320aa28ebd60115acd870d37",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3663,7 +3703,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "53e672b8fc08ea899263515852c7fed5fd1b7b9c205e24073535b66299faab69",
+    "tools/serve_gateway/gateway.py": "c7b3f2bf06f858eb5252190aaaaaa3bbd3a4e3ccdcfbd84f1039ead3a3737dc0",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -3879,14 +3919,16 @@
     "src/server/agent_registration.cpp": "04930651a2e0744e394f84852aede73c2fa8d1790e6beb7da2dae54f8b459bea",
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
     "include/q4t/server/agent_session.h": "5de400ebf0d49cb478f5f9bb8a0e0cddc971d6077d206932eef189937d9ecdfa",
-    "src/server/agent_session.cpp": "0c8b64e96c55b4a7be6fd76d1ec123ad7ad3ece564d86fb05eba373add8254d5",
+    "src/server/agent_session.cpp": "c60842ededcd3b25fbd4716e635690497ca7bdd325a79fe9973a8dd4a3229c95",
     "src/server/agent_session_http.cpp": "0dfe803f73a992252b29311bc4aa55ea2a5cf8b49124bce7c939292b0bffd3cc",
     "src/server/agent_session_turn.cpp": "3040f1048fd5568565129a71f8f96d195a1f5c36beff52a075d47b6c626e9451",
     "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3",
     "src/server/agent_session_events.cpp": "1e3fe269ec6f3a8e25632c85617c73eff52ae3a6566446c485b5cf803a6af5b1",
     "src/server/agent_session_internal.h": "f7608e2cb672bfb5d5eaf3b8cd82301be486a7b00739a312931edc0c9c658d44",
     "src/server/agent_session_settings.cpp": "e42cc36e71cb89d8b89ac43bff0d1c7bf55314dd123ed8012cfc6e7bc65dc70a",
-    "src/server/agent_session_cancel.cpp": "7b3ce808f145730f3d38e79c7ae2ec7c13a97aeacbd7d4298294aa3a00b5994f"
+    "src/server/agent_session_cancel.cpp": "7b3ce808f145730f3d38e79c7ae2ec7c13a97aeacbd7d4298294aa3a00b5994f",
+    "include/q4t/server/agent_vault.h": "3e4bb28fb1074e81a67af9f517eb9bf73be66bf93c621771841cf339963d62a0",
+    "src/server/agent_vault.cpp": "6d82bb29d4a2f65d82a20de6fc19ac7fb9c6268dc66027d8faad60ca25114592"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6496,6 +6538,66 @@
         "src/server/agent_session_turn.cpp",
         "tests/server_prompt_registry_test.cpp",
         "tools/serve_responses/agent_session_settings_sdk.mjs"
+      ]
+    },
+    "DELETE /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/vaults": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/vaults/{vault_id}": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "POST /v1/vaults": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
       ]
     }
   },

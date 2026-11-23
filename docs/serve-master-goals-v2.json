@@ -16535,5 +16535,33 @@
     "scope_routes": "evidence/serve-agent-sessions-20261123/scope-routes.json",
     "long_run": "prepared_and_checked_user_runs",
     "next": "Agent vaults and credential access, other remaining application and reliability contracts"
+  },
+  "agent_vaults_20261123": {
+    "owners": [
+      "A08",
+      "A11",
+      "A12",
+      "Q01"
+    ],
+    "state": "candidate_targeted_http_passed",
+    "operations": [
+      "create",
+      "list",
+      "retrieve",
+      "update",
+      "delete"
+    ],
+    "coverage": {
+      "scope_snapshot_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "issued_openapi_sha256": "e24c2a862a9321512f1fbd05966efa99a4ec303351ceedc292c949d9b74eb31e",
+      "scope_path_selectors": 157,
+      "with_declared_operations": 75,
+      "without_declared_operations": 82
+    },
+    "evidence": "evidence/serve-agent-vaults-20261123/acceptance.json",
+    "remaining": [
+      "Credential management, protected secret storage and authorized executor use.",
+      "Qualify and deliver the combined Vault capability on the recoverable profiles."
+    ]
   }
 }

@@ -7,5 +7,6 @@
 namespace q4t::server {
 // Strict bounded URL query decoding shared by native application endpoints.
 // Semantic field allowlists are applied by each endpoint after decoding.
-ObjectReply ParseApplicationQuery(std::string_view query);
+ObjectReply ParseApplicationQuery(std::string_view query,
+                                  bool allow_status_list = false);
 }  // namespace q4t::server

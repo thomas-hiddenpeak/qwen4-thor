@@ -284,7 +284,11 @@ def current_surface(root):
             'server::ManagedAgentMethodAllowed(method, path)' not in native or
             'server::IsManagedAgentObservation(method, path)' not in native):
         raise ValueError("review native agent registration routing")
-    for path, methods in (('/v1/agents', ('GET', 'POST')),
+    if 'HandleAgentVault(*objects_' not in dispatch or 'IsVaultTarget(target)' not in application_routes:
+        raise ValueError("review native vault routing")
+    for path, methods in (('/v1/vaults', ('GET', 'POST')),
+                          ('/v1/vaults/{vault_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/agents', ('GET', 'POST')),
                           ('/v1/agents/{agent_id}', ('GET', 'POST', 'DELETE'))):
         for method in methods:
             routes.append((path, method))

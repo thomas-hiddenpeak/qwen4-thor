@@ -73,6 +73,8 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
       if (!data || data->GetString("id") != id.str ||
           data->GetString("object") != "vault")
         return Error(503, "vault_record_invalid", "Invalid vault record");
+      if (data->GetBool("archived"))
+        return Error(404, "object_not_found", "Vault not found");
     }
     Set(&session, "vault_ids", *vaults);
   }
