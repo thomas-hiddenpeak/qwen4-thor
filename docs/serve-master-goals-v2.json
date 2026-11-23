@@ -16596,13 +16596,14 @@
     "oauth_profiles": "evidence/serve-agent-vaults-20261123/oauth-profiles.json"
   },
   "agent_environment_templates_20261124": {
-    "state": "candidate_real_sdk_http_pass",
+    "state": "primary_light_qualified",
     "evidence": "evidence/serve-agent-environments-20261124/templates.json",
     "declared_scope_paths": 80,
     "pending": [
-      "managed capacity handoff and rollback release",
+      "managed model loss and gateway fallback, rollback release",
       "environment provisioning, files and Agent session execution"
     ],
-    "network_evidence": "evidence/serve-agent-environments-20261124/template-network.json"
+    "network_evidence": "evidence/serve-agent-environments-20261124/template-network.json",
+    "profiles": "evidence/serve-agent-environments-20261124/profiles.json"
   }
 }

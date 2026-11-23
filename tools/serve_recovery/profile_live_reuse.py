@@ -17,6 +17,16 @@ SESSION_RECORD = 'q4t-profile-business-v27'
 SESSION_FORMAT = 'q4t-agent-session-profile-source-v1'
 VAULT_RECORD = 'q4t-profile-business-v28'
 VAULT_FORMAT = 'q4t-agent-vault-profile-source-v1'
+ENVIRONMENT_RECORD = 'q4t-profile-business-v30'
+ENVIRONMENT_FORMAT = 'q4t-agent-environment-template-source-v1'
+TEMPLATE_CAPABILITY = dict(selector='agents=v1', operations=['create','retrieve','update','list','delete'],
+                           confidential_definition='sealed', default_network='disabled')
+SESSION_TRACE_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents/sessions/{session_id}/traces',
+                                format='otlp_json', anchor='root_turn_id', published_only=True)
+ENVIRONMENT_REVIEWED = {
+    'primary': '2dfe88998e517324a5cb71f02a3cc6d3135157caca3ae49d076755aa196a453f',
+    'light': '608e130e4026322b69666b27572caee1c53d7558bf279771ee700c19f95f5125',
+}
 OAUTH_RECORD = 'q4t-profile-business-v29'
 OAUTH_FORMAT = 'q4t-vault-oauth-profile-source-v1'
 SESSION_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents/sessions',
@@ -63,7 +73,7 @@ AGENT_REVIEWED = {
 REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 AGENT_RECORD_FORMAT: AGENT_FORMAT, REGISTRATION_RECORD: REGISTRATION_FORMAT,
                 SESSION_RECORD: SESSION_FORMAT, VAULT_RECORD: VAULT_FORMAT,
-                OAUTH_RECORD: OAUTH_FORMAT}
+                OAUTH_RECORD: OAUTH_FORMAT, ENVIRONMENT_RECORD: ENVIRONMENT_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -85,6 +95,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '6665a8f7d995806d68572b8c141110538bb689d25c872979a02ddcda5bc8d367':
+        '8afa45887db80173df1841d48f11c50a507b6828e861e555018648744a07acb5',
     '3d05f0cc1c99a70f16e4f96291d6e6234a680765facc386c93d59f72ce5a40be':
         '1e71f9b806763a77a7dce8923ed9585f3d678b2105acfbdf9c9fa98be6e16593',
     '26dab53af96b229e3b653e983828f7b4ef3979e4237a564c9518eeffc307dc33':
@@ -131,6 +143,13 @@ def format_for(capabilities):
                     if 'agent_vaults' in capabilities:
                         if (ledger.canonical(capabilities['agent_vaults']) == ledger.canonical(VAULT_CAPABILITY)
                                 and ledger.canonical(capabilities['agent_sessions']) == ledger.canonical(OAUTH_SESSION)):
+                            if 'agent_environment_templates' in capabilities or 'agent_session_traces' in capabilities:
+                                ledger.require(ledger.canonical(capabilities.get('agent_environment_templates')) ==
+                                               ledger.canonical(TEMPLATE_CAPABILITY) and
+                                               ledger.canonical(capabilities.get('agent_session_traces')) ==
+                                               ledger.canonical(SESSION_TRACE_CAPABILITY),
+                                               'incomplete environment or session trace qualification')
+                                return ENVIRONMENT_RECORD
                             return OAUTH_RECORD
                         ledger.require(ledger.canonical(capabilities['agent_vaults']) ==
                                        ledger.canonical(VAULT_CAPABILITY) and
@@ -165,8 +184,19 @@ def attach(value, prior):
     session = value['format'] == SESSION_RECORD
     vault = value['format'] == VAULT_RECORD
     oauth = value['format'] == OAUTH_RECORD
-    revision = agent or registration or session or vault or oauth or value['format'] == BETA_RECORD_FORMAT
-    if oauth:
+    templates = value['format'] == ENVIRONMENT_RECORD
+    revision = agent or registration or session or vault or oauth or templates or value['format'] == BETA_RECORD_FORMAT
+    if templates:
+        evidence = value['business']['live']['evidence_sha256']
+        ledger.require(prior['format'] == OAUTH_RECORD and record_hash(prior) == OAUTH_REVIEWED.get(prior['profile'])
+                       and previous['added'] == ['agent_environment_templates', 'agent_session_traces']
+                       and set(previous['capabilities']) == {'protocol_source_sha256'}
+                       and format_for(after) == ENVIRONMENT_RECORD
+                       and {'oauth-handoff.json', 'vault-handoff.json', 'session-handoff.json',
+                            'registration.json', 'interruption.json'} <= evidence.keys()
+                       and evidence['session-handoff.json'] != prior['business']['live']['evidence_sha256']['session-handoff.json'],
+                       'templates and traces need the reviewed OAuth predecessor and a fresh cross-capacity handoff')
+    elif oauth:
         ledger.require(prior['format'] == VAULT_RECORD and
                        record_hash(prior) == VAULT_REVIEWED.get(prior['profile']) and
                        not previous['added'] and
@@ -233,7 +263,7 @@ def previous_record(value):
     refresh = agent and reuse['format'] == AGENT_REFRESH
     registration = value['format'] == REGISTRATION_RECORD
     session = value['format'] == SESSION_RECORD
-    revision = agent or registration or session or value['format'] in (BETA_RECORD_FORMAT, VAULT_RECORD, OAUTH_RECORD)
+    revision = agent or registration or session or value['format'] in (BETA_RECORD_FORMAT, VAULT_RECORD, OAUTH_RECORD, ENVIRONMENT_RECORD)
     ledger.require(refresh or reuse['format'] == REUSE_FORMAT.get(value['format']),
                    'incorrect Live qualification source')
     previous = codec.unpack(reuse['previous'])
@@ -262,6 +292,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == ENVIRONMENT_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == ENVIRONMENT_REVIEWED.get(name),
+                       'template and session trace qualification differs from the reviewed handoff')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == OAUTH_REVIEWED.get(name),
+                       'template qualification lost the OAuth predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == OAUTH_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) == OAUTH_REVIEWED.get(name),

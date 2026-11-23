@@ -67,6 +67,9 @@ def verify(phase, plan, capabilities):
     verify_identity(plan, capabilities)
     path = phase/'session-handoff.json'
     row = pkg.read(path)
+    if plan.get('agent_vaults', {}).get('environment_templates'):
+        from tools.serve_responses import environment_profile_acceptance
+        environment_profile_acceptance.verify(phase, plan, capabilities, row)
     action = row['action']
     pkg.require(row['sdk'] == '7.47.0' and row['foreign'] == 404 and
                 row['id'].startswith('agent_session_') and bool(action['turn_id']) and
@@ -93,7 +96,8 @@ def business(stage, capabilities):
     name = stage.plan['name']
     params = dict(base='https://127.0.0.1:'+str(stage.plan['public_port'])+'/v1',
                   key=stage.keys['alpha'], other=stage.keys['gamma'],
-                  sdk=stage.plan['sdk_directory'], profile=name)
+                  sdk=stage.plan['sdk_directory'], profile=name,
+                  environment_templates=stage.plan.get('agent_vaults', {}).get('environment_templates',False))
     if name == 'light':
         params['prior'] = pkg.read(stage.out.parent/'primary/session-handoff.json')
     result = subprocess.run(['node', ROOT/SDK], input=json.dumps(params), text=True,

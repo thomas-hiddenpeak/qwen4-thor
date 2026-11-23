@@ -73,6 +73,11 @@ def verify_identity(plan, capabilities):
     renewal = witness.get('renewal') is True
     evidence = OAUTH_EVIDENCE if renewal else EVIDENCE
     sources = [SDK, HELPER, PEER, str((OAUTH_PUBLICATION if renewal else PUBLICATION).relative_to(ROOT))]
+    if witness.get('environment_templates'):
+        from tools.serve_responses import environment_profile_acceptance as environments
+        pkg.require(renewal, 'template handoff requires the renewable Vault profile')
+        evidence = environments.EVIDENCE
+        sources = [SDK, HELPER, PEER, *environments.SOURCES]
     methods = SESSION_MCP
     if renewal:
         sources.append(OAUTH_ISSUER)
