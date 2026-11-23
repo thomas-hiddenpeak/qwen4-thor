@@ -336,6 +336,29 @@ Q4T_TEST(client_upload_parts_use_file_limit_and_cancel_reserved_lane) {
   return true;
 }
 
+Q4T_TEST(agent_event_admission_can_cancel_a_busy_client_and_preserves_data_quota) {
+  ClientAdmission clients;
+  auto policy = RatePolicy(60, 1000);
+  policy.clients.front().max_inflight = 1;
+  Q4T_CHECK(clients.Configure(std::move(policy)));
+  const auto owner = clients.Authenticate("alpha", kSecret);
+  ClientLease model, stream, submission, extra;
+  Q4T_CHECK(model.Acquire(clients, owner, ClientLane::kData));
+  HttpRequestHeaders headers;
+  headers.client_id = "alpha";
+  headers.gateway_token = kSecret;
+  const std::string path = "/v1/agents/sessions/agent_session_live/events";
+  int status = 0;
+  ClientIdentity identity;
+  Q4T_CHECK(AdmitClientRequest("GET", path, &headers, clients, &stream, &identity, &status));
+  Q4T_CHECK(stream.Holds(owner, ClientLane::kSideband));
+  Q4T_CHECK(AdmitClientRequest("POST", path, &headers, clients, &submission, &identity, &status));
+  Q4T_CHECK(submission.Holds(owner, ClientLane::kControl));
+  Q4T_CHECK(!extra.Acquire(clients, owner, ClientLane::kData));
+  Q4T_CHECK(clients.Usage(0).data_active == 1 && clients.Usage(0).control_active == 1);
+  return true;
+}
+
 Q4T_TEST(client_file_chunked_cannot_bypass_current_or_legacy_limit) {
   for (const auto bytes : {2048, 2049}) {
     for (const bool legacy : {false, true}) {

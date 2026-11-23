@@ -87,10 +87,12 @@ Q4T_TEST(object_retention_agent_session_follows_typed_dependencies) {
   const auto record = Parse(R"({"session":{"object":"agent.session",
     "agent":{"tools":[{"type":"mcp","credential_id":"cred_owned"}]},
     "vault_ids":["vault_owned"],"metadata":{"ignore":"resp_unrelated"}},
-    "turns":[{"id":"turn_1","response_id":"resp_owned"}]})");
+    "pending_tool_results":[{"output":[{"type":"input_file","file_id":"file_pending"}]}],
+    "turns":[{"id":"turn_1","response_id":"resp_owned","saved_tool_results":[
+      {"output":[{"type":"input_image","file_id":"file_saved"}]}]}]})");
   auto graph = InspectObjectRetention("agent_session", record);
-  Q4T_CHECK(!graph.uncertain && graph.references.size() == 3);
-  for (const auto* id : {"resp_owned", "vault_owned", "cred_owned"})
+  Q4T_CHECK(!graph.uncertain && graph.references.size() == 5);
+  for (const auto* id : {"resp_owned", "vault_owned", "cred_owned", "file_pending", "file_saved"})
     Q4T_CHECK(std::find(graph.references.begin(), graph.references.end(), id) !=
               graph.references.end());
   Q4T_CHECK(InspectObjectRetention("agent_session", Parse("{}")).uncertain);

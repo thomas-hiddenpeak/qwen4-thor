@@ -1,0 +1,149 @@
+{
+  "status": "ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT",
+  "engine": "b7dba2b61d15582ab2453b916958ddde355f89d1abc34d010c15c2de199ac341",
+  "ingress": "96449e96cf5401726e47505e3a816dacd18ad2eeb8d4c09114eb54a24a8dddc8",
+  "profiles": {
+    "primary": {
+      "record": "3d6691759a569a94a7f9aaaa010f6eacc7bf10ca798a220b015139d73248e329",
+      "prior": "d957150126ea565ce9d23c4b8707100cae80f95fd1b4ab5c81d5021e916565e1",
+      "bytes": 4053098,
+      "seconds": 46.650552168954164,
+      "starts": 1,
+      "capacity_mtp": true,
+      "checks": {
+        "agent-response.json": "98ae3b541f91ba5ecfcdac5eb85b1f2252e6081b3a72e7503bd50809d7c046eb",
+        "beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+        "beta-response.json": "2d7ab9882430f916784831b57f7263907fc1a965af42126d96fcfd8ba98bb9ea",
+        "capabilities.json": "60cf0aef03e5e51bcdfaaa8835f9df04628e398d9f59660d1954b91e4f1466e4",
+        "cleanup.json": "35fdafe8802afa6ce6b371983026d900cbf28baa8191630bce3911739453cde6",
+        "configuration.wire": "5ef1af85a3727a2c3da6314fb01c3734ad66b56eac4d5295de003a6a8ec94c61",
+        "core-after.wire": "629bfde77f13fcc1b5a600afe3854b461ef6b77483293cf8a7efcb138ca9b571",
+        "interruption.json": "7ce8416fd16fb268074ded4d7ec32b3117bf4a06a8df97bd9f6f95f1f083c6de",
+        "observation.json": "fae4d69bdcaf207d0532df57bff267c091d93db0efd02ddb0ae5581d378475d9",
+        "plan.json": "ec549ef4d37417146220bfcd5ae4ea09a59e6d759e2095e3b3bb4192070af960",
+        "registration.json": "aebfb8af2b83c1f6823b786b7e03d61ad74dc1d21ed76523a7edecb0ceaff17c",
+        "result.json": "1184f7309524e8899e62e9302ae044f3495a5d31e0f93ea56c335e780e0a5c4c",
+        "session-handoff.json": "99a5c4a42a01f435e95009e97802395302168ebda2c535a56f5fe879c2f0aa2b"
+      }
+    },
+    "light": {
+      "record": "5c3e6a8a050d64e4da85319ea7bbb23aff80a80a72952c555f348599f151bafe",
+      "prior": "2e68838e87b3fe8fb4f0b578269dac10ccb9fc000a34b490a57562613bff0736",
+      "bytes": 5455494,
+      "seconds": 106.71273954305798,
+      "starts": 1,
+      "capacity_mtp": false,
+      "checks": {
+        "agent-response.json": "2975d788b7ee9779200f0265a4ea4663147c917a103ad718b802ba56e46f32a0",
+        "agent-restored.json": "5f4d83b23b07e4d9b4d4ea244c378febb7af62ff22529a8b66440ee064d1d891",
+        "beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+        "beta-response.json": "5b98f6aa1d1bdce526fbe1c71a81e42045678b6f2bb20b46b0446c5a2c3f85ca",
+        "beta-restored.json": "352811e7200517a09dddcafa4d9dd30caac4e15e0e51ef2527f5c4d19896f5f0",
+        "capabilities.json": "05bc6cfc12ea6330465d41486a1cc3b4385fa7dcaa510826df116e41514e1b91",
+        "cleanup.json": "03aa1eef18971cd3d84b397d231888d96bcd42d5fa5ce07c6edd1467f2f060c3",
+        "configuration.wire": "36c5f1cc0a0df9e6d518d158fd4b2148f097c62e2ba6368e8d4ec8b523e88a93",
+        "core-after.wire": "688b89244220788b91ec1420d58f70b77bddbfab10fa645f87dec725fa235be1",
+        "interruption.json": "37e280d02304cea637c13cc02d683fd7dc55030a2be0988abfffa643943afd31",
+        "observation.json": "e73bd49e2df4ade9d16694b1c0ef673ea41c210d1d58681e53aa3a447e1721bd",
+        "plan.json": "5be830cf8e34f2e2216246265d22ea1a365a457bad481ba4460cb93d947a749b",
+        "registration.json": "b39b88de9c82dbda7c123b810706ad7339339ca6c28c6f8d91433a4302b211e8",
+        "result.json": "dd998540120de5bb825a2224fb13c9e4de1d3d36f1e2763dae1869e81ca5974f",
+        "session-handoff.json": "880cbaefa996fb713e16d1fa5ac079e0684a2658dab2ebcdb2a2f40a5185b08c"
+      }
+    }
+  },
+  "qualification": {
+    "path": ".q4t-work/serve-responses-agents-20261123/session-registry-01/acceptance.json",
+    "sha256": "f84659550e75bfda2761d4cc489fc6a6fdda0e7eca5231b77f91a79ef9c34d60"
+  },
+  "run": {
+    "path": ".q4t-work/serve-responses-agents-20261123/session-profiles-05/acceptance.json",
+    "sha256": "f742f4a99411c3f60099d219e1c4959a08c06e9878d34ff9153de1b256a3105c"
+  },
+  "lease": {
+    "path": ".q4t-work/serve-responses-agents-20261123/session-profiles-05/lease/exit.json",
+    "sha256": "bc4ee5857b0ec6159c101770c5aa05fbaa6a47e92ed7fe29480210c6f03d5106"
+  },
+  "samples": 146,
+  "negative_checks": 7,
+  "original_attempts": [
+    {
+      "outcome": "ENV_ABORT",
+      "reason": "competing workload during lease",
+      "exit": {
+        "path": ".q4t-work/serve-responses-agents-20261123/session-profiles-01/lease/exit.json",
+        "sha256": "9716c36905cc47a479a2c924458bc754a02c404c042fbfaa9a749cf6fb1dde29"
+      },
+      "model_starts": 2,
+      "fixture": "The original SDK awaited EOF on a persistent subscription after idle. The concurrently started GStreamer discovery process then triggered the GPU guard."
+    },
+    {
+      "outcome": "COMMAND_FAILED",
+      "reason": null,
+      "exit": {
+        "path": ".q4t-work/serve-responses-agents-20261123/session-profiles-02/lease/exit.json",
+        "sha256": "e48b0ff393f9575f3ed453195e03d3e8e3819f2b67f9ae3f3153ce0542cca3a5"
+      },
+      "model_starts": 2,
+      "native_error": "client_rpm_exhausted",
+      "sdk_error": "server_error",
+      "native_record": {
+        "path": ".q4t-work/serve-responses-agents-20261123/session-profiles-02/state/application-objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_c5a6c58a07a44cea42ef6e9bb21cc631.json",
+        "sha256": "5c4b9ed6ab3adcda65c675acb8bf29c74cee11b979db84c99f7b2146a55d1282"
+      },
+      "sdk_result": {
+        "path": ".q4t-work/serve-responses-agents-20261123/session-profiles-02/light/result.json",
+        "sha256": "0f9378706183a7956ec9f89e508d51f5b09070895832e70b9c71625abbb31c9e"
+      }
+    },
+    {
+      "outcome": "ENV_ABORT",
+      "reason": "competing workload during lease",
+      "exit": {
+        "path": ".q4t-work/serve-responses-agents-20261123/session-profiles-03-lease/exit.json",
+        "sha256": "853128a76752464ae44e8472415548834951458d0af2351f68698893bd89ee71"
+      },
+      "model_starts": 0,
+      "fixture": "GPU guard observed nvargus-daemon during uncached discovery, before any model start."
+    },
+    {
+      "outcome": "COMMAND_FAILED",
+      "reason": null,
+      "exit": {
+        "path": ".q4t-work/serve-responses-agents-20261123/session-profiles-04-lease/exit.json",
+        "sha256": "a4bdd82a86a96d756623d73ed842aa2219f3176b273389783974dd33fe4298fb"
+      },
+      "model_starts": 2,
+      "fixture": "SDK received and retrieved the expected rate_limit_exceeded turn, but after the window renewed the high-level SDK refused a new turn because the session itself remained failed.",
+      "sdk_result": {
+        "path": ".q4t-work/serve-responses-agents-20261123/session-profiles-04/light/result.json",
+        "sha256": "87e879d20255e87781d4e36d0f4fb87f7d4f9518a6120092b882abf854d5db91"
+      }
+    }
+  ],
+  "cxx_cases": 11,
+  "unit_migration_and_contract_cases": 29,
+  "sdk": {
+    "sdk": "7.47.0",
+    "id": "agent_session_f44fb08d7b4bfa8561caadbf360078fa",
+    "action": {
+      "type": "function_call",
+      "turn_id": "turn_728f477f4141c22f4c264435041cc02f",
+      "arguments": {},
+      "name": "read_release_record",
+      "call_id": "call_resp_1b2913e464714fa20a9406f0c534579f_0"
+    },
+    "completed": 1,
+    "idle": 1,
+    "answer": "442",
+    "next_answer": "442",
+    "next_turn": "turn_4490c071e3902cdee03dabfb7c7a395c",
+    "rejected_turn": "turn_3d9ffa086576f4842d60b2d1c781cdcd",
+    "quota_error": "rate_limit_exceeded",
+    "revision": 442,
+    "result_count": 1,
+    "replay": 202,
+    "foreign": 404
+  },
+  "default_at_qualification": "rev442, STOPPED"
+}

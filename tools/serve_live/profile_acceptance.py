@@ -178,6 +178,9 @@ class Stage(workers.ice.Stage):
         if 'agent_registration' in self.plan:
             from tools.serve_responses import registration_profile_acceptance
             registration_profile_acceptance.business(self, capabilities)
+        if 'agent_sessions' in self.plan:
+            from tools.serve_responses import session_profile_acceptance
+            session_profile_acceptance.business(self, capabilities)
         shared = self.out.parent/'conversation.json'
         if name == 'primary':
             status, value = self.api('POST', '/v1/conversations',

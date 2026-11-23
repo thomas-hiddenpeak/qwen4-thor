@@ -169,9 +169,9 @@ http {{
 {routes}
   }}
   map $q4t_lane $q4t_data {{ default ""; data $q4t_client; }}
-  map $q4t_lane $q4t_control {{ default ""; control $q4t_client; }}
+  map $q4t_lane $q4t_control {{ default ""; control $q4t_client; events $q4t_client; }}
   map $q4t_lane $q4t_all_data {{ default ""; data all; }}
-  map $q4t_lane $q4t_all_control {{ default ""; control all; }}
+  map $q4t_lane $q4t_all_control {{ default ""; control all; events all; }}
   map $q4t_auth_error $q4t_error {{
     default service_binding_unavailable;
 {codes}

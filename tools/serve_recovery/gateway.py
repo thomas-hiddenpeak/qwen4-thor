@@ -301,7 +301,8 @@ class AdmissionServer:
                                     self.secret) and
                 headers.get('x-q4t-client') in self.clients and
                 headers.get('x-q4t-lane') in (
-                    'control', 'data', 'tunnel_poll', 'tunnel_response', 'realtime', 'sideband'),
+                    'control', 'data', 'tunnel_poll', 'tunnel_response', 'realtime',
+                    'sideband', 'events', 'subscription'),
                 'unauthorized internal admission')
         except (ValueError, UnicodeError):
             return b'HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'

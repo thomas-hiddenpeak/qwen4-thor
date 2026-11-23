@@ -28,6 +28,19 @@ Json Copy(const Json& source, const char* key) {
   return value ? *value : Json{};
 }
 
+// Project durable Responses errors, including records from older processes,
+// into the SessionTurnError categories published by the Agents SDK.
+const char* SessionErrorCode(std::string_view code) {
+  if (code == "client_rpm_exhausted" || code == "client_tpm_exhausted")
+    return "rate_limit_exceeded";
+  if (code == "request_deadline_exceeded" || code == "request_timeout")
+    return "request_timeout";
+  if (code == "context_length_exceeded") return "context_length_exceeded";
+  if (code == "service_draining" || code == "client_capacity_exhausted")
+    return "server_overloaded";
+  return "server_error";
+}
+
 ObjectReply NativeRequest(const AgentSessionStart& start) {
   const auto& agent = *start.session.Find("agent");
   auto tools = Array();
@@ -194,8 +207,21 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
       if (!projected.ok()) return projected;
     }
   }
+  const auto cancel_at = link.GetInt("cancel_requested_at");
+  const bool abandoned = cancel_at > 0 && !actions.array.empty();
+  if (abandoned) {
+    actions = Array();
+    if (const auto* saved = link.GetArray("saved_tool_results")) {
+      for (const auto& source : saved->array) {
+        auto item = SavedAgentToolResult(link.GetString("response_id"), source);
+        auto projected = ProjectItem(item, token, &result.items, &actions, false);
+        if (!projected.ok()) return projected;
+      }
+    }
+  }
   const bool waiting = !actions.array.empty();
-  const auto finished = record.GetInt("agent_turn_finished_at");
+  const auto finished = std::max(record.GetInt("agent_turn_finished_at"),
+                                 abandoned ? cancel_at : int64_t{0});
   const auto started = record.GetInt("agent_turn_started_at");
   const auto created = response.GetInt("created_at");
   const bool failed = status == "failed" || status == "incomplete";
@@ -205,12 +231,18 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
     const auto text = cause ? cause->GetString("message") : "";
     const auto* details = response.Find("incomplete_details");
     error = Object(
-        {{"code", String("server_error")},
+        {{"code", String(SessionErrorCode(cause ? cause->GetString("code") : ""))},
          {"message", String(!text.empty() ? text
                             : details     ? details->GetString(
                                             "reason", "Incomplete model output")
                                       : "Model execution failed")}});
   }
+  // A retryable failure ends this turn. The SDK requires the session to
+  // return to idle before it will submit the next turn on the same history.
+  const auto category = error.GetString("code");
+  const bool session_failed =
+      failed && category != "rate_limit_exceeded" &&
+      category != "server_overloaded" && category != "request_timeout";
   const auto usage = Usage(response);
   const auto* agent = session.Find("agent");
   if (!agent) return InvalidRecord();
@@ -220,7 +252,7 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
        {"agent_id", Copy(*agent, "id")},
        {"subagent_id", {}},
        {"object", String("agent.session.turn")},
-       {"status", String(waiting  ? "waiting"
+       {"status", String(abandoned ? "cancelled" : waiting  ? "waiting"
                          : failed ? "failed"
                                   : status)},
        {"created_at", Number(created)},
@@ -231,10 +263,10 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
   Set(&result.session, "required_actions", std::move(actions));
   Set(&result.session, "status",
       String(waiting                                         ? "requires_action"
-             : failed                                        ? "failed"
+             : session_failed                                ? "failed"
              : status == "queued" || status == "in_progress" ? "in_progress"
                                                              : "idle"));
-  Set(&result.session, "error", Copy(error, "message"));
+  Set(&result.session, "error", session_failed ? Copy(error, "message") : Json{});
   Set(&result.session, "usage", usage);
   Set(&result.session, "last_active_at",
       Number(std::max({created, started, finished})));
@@ -292,6 +324,9 @@ ObjectReply EventReceipt(const Json& receipts, const std::string& name,
   return {};
 }
 
+}  // namespace
+
+namespace agent_detail {
 ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
                            const std::string& id, std::string_view turn_id,
                            const StateAccess& access, AgentSessionView* view,
@@ -373,7 +408,7 @@ ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
   *view = std::move(result);
   return {};
 }
-}  // namespace
+}  // namespace agent_detail
 
 ObjectReply ReadAgentSessionTurn(ObjectStore& objects, const std::string& id,
                                  std::string_view turn_id,
@@ -627,8 +662,11 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   if (!native.ok()) return native;
   Set(&native.value, "previous_response_id",
       Copy(links.array.back(), "response_id"));
-  auto prepared =
-      run.Prepare(native.value, config, access, std::time(nullptr), true);
+  const auto& last = links.array.back();
+  const bool cancelled = view.turn.GetString("status") == "cancelled";
+  CancelledAgentHistory previous{id, Copy(last, "saved_tool_results")};
+  auto prepared = run.Prepare(native.value, config, access, std::time(nullptr),
+                              true, cancelled ? &previous : nullptr);
   if (!prepared.ok()) return prepared;
   auto turn = view.turn.GetString("id");
   if (!waiting) {

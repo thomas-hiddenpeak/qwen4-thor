@@ -39,7 +39,9 @@ def shape(value, size):
               value['reused_business'].get('format') in (
                   'q4t-agent-profile-source-reuse-v1', 'q4t-agent-profile-requalification-v1')) or
              (value.get('format') == 'q4t-profile-business-v26' and
-              value['reused_business'].get('format') == 'q4t-agent-registration-profile-source-v1')),
+              value['reused_business'].get('format') == 'q4t-agent-registration-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v27' and
+              value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1')),
             'only explicit reviewed source records have the larger evidence bound')
 
 
@@ -103,6 +105,7 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_HOSTED_AGENTS_PRIMARY_LIGHT': 'q4t-agent-profile-source-reuse-v1',
         'ACCEPT_AGENT_RECOVERY_PRIMARY_LIGHT': 'q4t-agent-profile-requalification-v1',
         'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT': 'q4t-agent-registration-profile-source-v1',
+        'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT': 'q4t-agent-session-profile-source-v1',
         'ACCEPT_TRACING_PRIMARY_LIGHT': 'q4t-tracing-profile-source-reuse-v1',
     }
     status = accepted.get('status')

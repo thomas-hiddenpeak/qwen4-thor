@@ -341,8 +341,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       context.SetResponsesMultiAgent(headers.responses_multi_agent &&
                                      IsResponsesTarget(path));
       const auto kind = ClassifyHttpConnection(method, path);
-      if (operations && kind != HttpConnectionClass::kControl &&
-          kind != HttpConnectionClass::kObservation) {
+      if (operations && ((kind != HttpConnectionClass::kControl &&
+                          kind != HttpConnectionClass::kObservation) ||
+                         IsAgentEventSubmission(method, path))) {
         failure_status = 404;
         headers.error_code = "route_not_found";
         headers.failure = HttpReceiveFailure::kRoute;
@@ -792,7 +793,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
       return;
     }
     if (ParseAgentSessionRoute(path).kind != AgentSessionRouteKind::kNone) {
-      ServeAgentSession(fd, *objects_, background_.Get(), method, path, body,
+      ServeAgentSession(fd, *objects_, clients_, background_.Get(), method, path, body,
                         PlanningConfig(fd), access);
       return;
     }

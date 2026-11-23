@@ -8,6 +8,7 @@
 #include <thread>
 
 #include "../src/server/object_protocol.h"
+#include "q4t/server/grammar_process.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/test.h"
 
@@ -85,10 +86,16 @@ struct Injection {
   ~Injection() { ObjectWorkerEntryForTesting({}); }
 };
 void Reaped(ObjectStore& objects) {
-  const auto deadline = Clock::now() + 1s;
-  while (objects.Health().pending && Clock::now() < deadline)
+  const auto deadline = Clock::now() + 3s;
+  do {
+    detail::PollIsolatedWorkers(IsolatedWorkerDomain::kObjects);
+    const auto health = objects.Health();
+    if (!health.pending && health.workers_started > 0 &&
+        health.workers_started == health.workers_reaped)
+      return;
     std::this_thread::sleep_for(1ms);
-  if (objects.Health().pending) throw std::runtime_error("snapshot worker");
+  } while (Clock::now() < deadline);
+  throw std::runtime_error("snapshot worker was not reaped");
 }
 }  // namespace
 
@@ -381,7 +388,9 @@ Q4T_TEST(input_snapshot_long_parent_deadline_preserves_absolute_hold) {
 
 Q4T_TEST(input_snapshot_actual_lost_cleanup_receipt_keeps_verified_content) {
   Fixture fixture;
-  fixture.options.io_timeout_ms = 100;
+  // Lost close acknowledgements already have a separate 250 ms deadline.
+  // Healthy reads, including starting the replacement worker, use the normal
+  // store timeout so scheduling delay cannot masquerade as corrupted content.
   Injection injection("--q4t-object-worker-read-close-lost-ack");
   ObjectStore objects(fixture.options);
   InputSnapshotStore snapshots(objects);

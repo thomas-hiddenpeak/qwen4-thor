@@ -1,0 +1,75 @@
+{
+  "outcome": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.375,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "plan": {
+    "binary": "8f2af43a585214f6f081fa9d415cef9ebdedb80249c6590c3a4d99f07400d5c8",
+    "ingress": "96449e96cf5401726e47505e3a816dacd18ad2eeb8d4c09114eb54a24a8dddc8",
+    "sdk_driver": "a2c711059cb0adc7dc0a43877ce177662ee1076a1875bf1b6a1e506bbfa1a3db",
+    "protected": {
+      "build/q4t": "479f87dfa7b2f335fdacf163af8e4cbd7e73c20b11c31ec3e3e39d3b173490d0",
+      "build/service/manifest.json": "c4975edef34a88a17957cb248a2884ad36a50f87f3daa1fff1f88d83675c9f77",
+      "build/service.release.json": "2adfd63ad4c072a96480571ea2c9513a956de4bd8bb3e51e9f10f7281a49e3cc",
+      "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+    },
+    "starts": 1,
+    "seconds": 180
+  },
+  "lease": "COMPLETED",
+  "monitor_samples": 39,
+  "sdk": {
+    "sdk": "7.47.0",
+    "foreign": 404,
+    "late_result": 409,
+    "waiting_terminal": "cancelled",
+    "retry_accepted": 202,
+    "next_turn": "completed",
+    "answer": "42",
+    "active_terminal": "cancelled",
+    "active_terminal_count": 1,
+    "both_deleted": true,
+    "saturated_submit": 429,
+    "resubmitted_after_release": true
+  },
+  "path": ".q4t-work/serve-responses-agents-20261123/session-real-admission-01",
+  "limits": {
+    "native_ingress_client_inflight": 1,
+    "core_client_data": 1,
+    "core_client_control": 1
+  },
+  "cpu": [
+    "[PASS] agent_session_turn_shares_queue_receipt_and_reopens_native_output",
+    "[PASS] agent_session_tool_action_requires_a_completed_owned_call",
+    "[PASS] agent_session_cancel_preserves_saved_results_and_never_retargets_a_retry",
+    "[PASS] agent_session_settings_use_cas_filtered_pages_and_immutable_step_settings",
+    "[PASS] agent_event_admission_can_cancel_a_busy_client_and_preserves_data_quota",
+    "[PASS] responses_pro_queued_restore_cancel_and_no_started_replay",
+    "[PASS] responses_cancel_usage_distinguishes_queued_drained_and_unknown",
+    "[PASS] responses_background_cancel_preserves_partial_without_tool_done",
+    "[PASS] responses_batch_recovery_minute_wait_cancel_and_original_deadline",
+    "[PASS] object_retention_agent_session_follows_typed_dependencies",
+    "10 tests, 10 passed, 0 failed, 0 skipped"
+  ],
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 121,
+    "native_routes": 202,
+    "reviewed_source_anchors": 1219,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "gateway": {
+    "native": "PASS",
+    "optional_nginx": "PASS",
+    "original_nginx_failure": "The managed admission socket rejected both new internal lane names. Original two 403 responses retained in session-admission-nginx-01.log."
+  }
+}

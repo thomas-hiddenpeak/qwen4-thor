@@ -6,6 +6,7 @@
 #include <cstring>
 #include <ctime>
 
+#include "agent_session_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/input_contract.h"
@@ -167,7 +168,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
 ObjectReply ResponsesExecution::Prepare(const Json& request,
                                         const ChatPlanConfig& config,
                                         StateAccess access, int64_t created,
-                                        bool background_executor) {
+                                        bool background_executor,
+                                        const CancelledAgentHistory* cancelled) {
   if (prepared_ || begun_)
     return Error(500, "response_state_invalid", "Response already prepared");
   access_ = std::move(access);
@@ -209,7 +211,7 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
     if (!identity)
       return Error(413, "mcp_credential_source_capacity", identity.message());
   }
-  auto resolved = state_.Resolve(envelope_, access_, &plan_);
+  auto resolved = state_.Resolve(envelope_, access_, &plan_, cancelled);
   if (!resolved.ok()) return resolved;
   return PlanGeneration(config, created);
 }
@@ -622,11 +624,22 @@ ObjectReply ResponsesExecution::Checkpoint() {
   return reply;
 }
 
-ObjectReply ResponsesExecution::CheckBatchParent(bool* cancelled) {
+ObjectReply ResponsesExecution::CheckParentCancellation(bool* cancelled) {
   if (!cancelled)
     return Error(500, "batch_response_binding_invalid",
                  "Missing parent output");
   *cancelled = false;
+  if (!plan_.agent_session_id.empty()) {
+    auto row = agent_detail::ReadRow(objects_, plan_.agent_session_id, access_);
+    if (!row.ok()) return row;
+    const auto* data = row.value.Find("data");
+    const auto* turns = data ? data->GetArray("turns") : nullptr;
+    if (!turns || turns->array.empty() ||
+        turns->array.back().GetString("response_id") != plan_.id)
+      return Error(503, "agent_session_record_invalid", "Invalid active session step");
+    *cancelled = turns->array.back().GetInt("cancel_requested_at") > 0;
+    return {};
+  }
   if (!plan_.batch_parent) return {};
   return CheckBatchResponseParent(objects_, *plan_.batch_parent, access_,
                                   cancelled);

@@ -49,6 +49,16 @@ struct ResponseStatePlan {
   bool finished = false;
 };
 
+// Private continuation of a cancelled Agent step. The retained response must
+// belong to this same session. Only saved client results enter model history.
+struct CancelledAgentHistory {
+  std::string session_id;
+  io::Json results;
+};
+ObjectReply AppendCancelledAgentHistory(const CancelledAgentHistory& prior,
+                                        const io::Json& record,
+                                        io::Json* history);
+
 // JSON object order is not identity; exact numbers and array order remain so.
 ObjectReply CompareStoredItem(const io::Json& stored, const io::Json& incoming);
 
@@ -66,7 +76,8 @@ class ResponsesState {
                            io::Json* web_content = nullptr,
                            bool multi_agent = false);
   ObjectReply Resolve(const ResponsesEnvelope& envelope,
-                      const StateAccess& access, ResponseStatePlan* plan);
+                      const StateAccess& access, ResponseStatePlan* plan,
+                      const CancelledAgentHistory* cancelled = nullptr);
   // Loads authoritative inputs and revision, without rerunning resolution or
   // any tool/model. The result is the internal stored record, never an API
   // body.

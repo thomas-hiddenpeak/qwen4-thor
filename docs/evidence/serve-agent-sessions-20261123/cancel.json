@@ -1,0 +1,101 @@
+{
+  "runs": [
+    {
+      "outcome": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 35.759,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "plan": {
+        "binary": "3b4634439594764f323dc41b8042014eed412f527927c010eeed168200f7b96d",
+        "ingress": "7598a5f32abf2d13916507d04412397c2637ee6e9b0a9f7dd483848596e1a388",
+        "sdk_driver": "67aa2c6f1fc5df9b7170d7b9e9d575cfcf31fb78cbb17145f939e7a35cec998f",
+        "protected": {
+          "build/q4t": "479f87dfa7b2f335fdacf163af8e4cbd7e73c20b11c31ec3e3e39d3b173490d0",
+          "build/service/manifest.json": "c4975edef34a88a17957cb248a2884ad36a50f87f3daa1fff1f88d83675c9f77",
+          "build/service.release.json": "2adfd63ad4c072a96480571ea2c9513a956de4bd8bb3e51e9f10f7281a49e3cc",
+          "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+        },
+        "starts": 1,
+        "seconds": 180
+      },
+      "lease": "COMMAND_FAILED",
+      "monitor_samples": 35,
+      "path": ".q4t-work/serve-responses-agents-20261123/session-real-cancel-01",
+      "failure": "The fixture attempted to update agent.instructions, which is not an Agent session update field. HTTP 400 preserved. Waiting-turn cancellation and foreign denial had already succeeded."
+    },
+    {
+      "outcome": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 36.875,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "plan": {
+        "binary": "3b4634439594764f323dc41b8042014eed412f527927c010eeed168200f7b96d",
+        "ingress": "7598a5f32abf2d13916507d04412397c2637ee6e9b0a9f7dd483848596e1a388",
+        "sdk_driver": "0579fffa0bae3c577719ef6779cafda119cab9fda18b76e07d39e1a915906f76",
+        "protected": {
+          "build/q4t": "479f87dfa7b2f335fdacf163af8e4cbd7e73c20b11c31ec3e3e39d3b173490d0",
+          "build/service/manifest.json": "c4975edef34a88a17957cb248a2884ad36a50f87f3daa1fff1f88d83675c9f77",
+          "build/service.release.json": "2adfd63ad4c072a96480571ea2c9513a956de4bd8bb3e51e9f10f7281a49e3cc",
+          "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+        },
+        "starts": 1,
+        "seconds": 180
+      },
+      "lease": "COMPLETED",
+      "monitor_samples": 36,
+      "path": ".q4t-work/serve-responses-agents-20261123/session-real-cancel-02",
+      "sdk": {
+        "sdk": "7.47.0",
+        "foreign": 404,
+        "late_result": 409,
+        "waiting_terminal": "cancelled",
+        "retry_accepted": 202,
+        "next_turn": "completed",
+        "answer": "42",
+        "active_terminal": "cancelled",
+        "active_terminal_count": 1,
+        "both_deleted": true
+      }
+    }
+  ],
+  "cpu": [
+    "[PASS] agent_session_turn_shares_queue_receipt_and_reopens_native_output",
+    "[PASS] agent_session_tool_action_requires_a_completed_owned_call",
+    "[PASS] agent_session_cancel_preserves_saved_results_and_never_retargets_a_retry",
+    "[PASS] agent_session_settings_use_cas_filtered_pages_and_immutable_step_settings",
+    "[PASS] responses_pro_queued_restore_cancel_and_no_started_replay",
+    "[PASS] responses_cancel_usage_distinguishes_queued_drained_and_unknown",
+    "[PASS] responses_background_cancel_preserves_partial_without_tool_done",
+    "[PASS] responses_batch_recovery_minute_wait_cancel_and_original_deadline",
+    "[PASS] object_retention_agent_session_follows_typed_dependencies",
+    "9 tests, 9 passed, 0 failed, 0 skipped"
+  ],
+  "cpu_fixture_failures": [
+    "missing required tool description",
+    "declared one completed call for a two-call fixture"
+  ],
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 121,
+    "native_routes": 202,
+    "reviewed_source_anchors": 1219,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "remaining": [
+    "mixed event batches",
+    "client admission for event submission at a saturated data limit",
+    "deployment qualification"
+  ]
+}

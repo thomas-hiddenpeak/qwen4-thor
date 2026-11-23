@@ -2616,7 +2616,9 @@
       "agent_session_initial_turn_evidence_20261123": "docs/evidence/serve-agent-sessions-20261123/checks.json",
       "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json",
       "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json",
-      "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json"
+      "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
+      "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
     },
     {
       "id": "A09",
@@ -6876,7 +6878,9 @@
       "agent_session_initial_turn_evidence_20261123": "docs/evidence/serve-agent-sessions-20261123/checks.json",
       "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json",
       "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json",
-      "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json"
+      "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
+      "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
     },
     {
       "id": "N01",
@@ -7034,7 +7038,8 @@
           "/vaults/{vault_id}/credentials/{credential_id}"
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
-      }
+      },
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
     },
     {
       "id": "N05",
@@ -9095,7 +9100,9 @@
       "agent_session_initial_turn_evidence_20261123": "docs/evidence/serve-agent-sessions-20261123/checks.json",
       "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json",
       "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json",
-      "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json"
+      "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
+      "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
     },
     {
       "id": "Q02",
@@ -10551,7 +10558,7 @@
     }
   ],
   "next_task": "Implement standard managed Agent sessions, input events and real model turns while continuing the remaining G00 application and recovery work.",
-  "next": "推进标准 Agent 会话、回合与事件流；继续剩余应用范围与恢复工作。",
+  "next": "验证标准 Agent 会话在托管模型异常和版本切换后能接续原工具调用，再完成可回退发布与其余应用服务、恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16514,5 +16521,19 @@
     "interruption_profiles": "evidence/serve-responses-agent-interruption-20261123/profiles.json",
     "interruption_delivery": "evidence/serve-responses-agent-interruption-20261123/delivery.json",
     "draining_message": "evidence/serve-responses-agent-interruption-20261123/draining-message.json"
+  },
+  "agent_session_handoff_20261123": {
+    "evidence": "evidence/serve-agent-sessions-20261123/profiles.json",
+    "state": "released_stopped",
+    "registered_profiles": 2,
+    "selectable_previous_release": "rev442",
+    "managed_takeover": "verified_model_loss_and_fatal_gateway_takeover",
+    "profile_start_count": 2,
+    "quota_window_recovery": true,
+    "publication_revision": 444,
+    "delivery": "evidence/serve-agent-sessions-20261123/delivery.json",
+    "scope_routes": "evidence/serve-agent-sessions-20261123/scope-routes.json",
+    "long_run": "prepared_and_checked_user_runs",
+    "next": "Agent vaults and credential access, other remaining application and reliability contracts"
   }
 }

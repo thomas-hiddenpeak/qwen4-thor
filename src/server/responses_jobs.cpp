@@ -705,7 +705,7 @@ void ResponsesJobs::Reconcile(const std::shared_ptr<Job>& job) noexcept {
 void ResponsesJobs::Execute(const std::shared_ptr<Job>& job) noexcept {
   try {
     bool parent_cancelled = false;
-    ObjectReply admission = job->run->CheckBatchParent(&parent_cancelled);
+    ObjectReply admission = job->run->CheckParentCancellation(&parent_cancelled);
     if (parent_cancelled) job->control->Cancel();
     if (!admission.ok())
       ResponsesExecution::ObserveError(job->run.get(), admission.http_status,

@@ -35,7 +35,9 @@ inline constexpr std::array<std::string_view, 8> kHttpConnectionClasses = {
 
 inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
                                                   std::string_view path) {
-  if (method == "GET" && IsCallSideband(path)) return HttpConnectionClass::kSideband;
+  if ((method == "GET" && IsCallSideband(path)) || IsAgentEventStream(method, path))
+    return HttpConnectionClass::kSideband;
+  if (IsAgentEventSubmission(method, path)) return HttpConnectionClass::kControl;
   if (IsRealtimeUpgrade(method, path) || IsLiveMediaCreate(method, path)) return HttpConnectionClass::kRealtime;
   if (IsMcpTunnelPoll(method, path)) return HttpConnectionClass::kTunnelPoll;
   if (IsMcpTunnelResponse(method, path))

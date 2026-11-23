@@ -1,0 +1,1578 @@
+{
+  "scope_snapshot_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+  "issued_openapi_sha256": "50a590432561a1ae2a1871bb4b19c84cf02dc2eb6182ec7dc47ae157297541d4",
+  "scope_path_selectors": 157,
+  "with_declared_operations": 73,
+  "without_declared_operations": 84,
+  "measurement": "Path templates ignore parameter names. A query selector must be explicitly declared with a matching enum or constant on the listed operation. This measures declarations only; the frozen scope inventory does not list all required methods or their acceptance.",
+  "rows": [
+    {
+      "path": "/agents",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": "/v1/agents",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/agents/automations",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}/invocations",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}/invocations/{invocation_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}/pause",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/automations/{automation_id}/resume",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/environments",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/environments/templates",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/environments/templates/{environment_template_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/environments/{environment_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/environments/{environment_id}/files",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": "/v1/agents/sessions",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/agents/sessions/{session_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": "/v1/agents/sessions/{session_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts/{artifact_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts/{artifact_id}/content",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/events",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": "/v1/agents/sessions/{session_id}/events",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/agents/sessions/{session_id}/items",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": "/v1/agents/sessions/{session_id}/items",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/items",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/traces",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": "/v1/agents/sessions/{session_id}/turns",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns/{turn_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": "/v1/agents/sessions/{session_id}/turns/{turn_id}",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns/{turn_id}/items",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": "/v1/agents/sessions/{session_id}/turns/{turn_id}/items",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/agents/{agent_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "issued_path": "/v1/agents/{agent_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/assistants",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/assistants/{assistant_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/audio/speech",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/audio/speech",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/audio/transcriptions",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/audio/transcriptions",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/audio/translations",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/audio/voice_consents",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/audio/voice_consents",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/audio/voice_consents/{consent_id}",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/audio/voice_consents/{consent_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/audio/voices",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/audio/voices",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/audio/voices/{voice_id}",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/audio/voices/{voice_id}",
+      "issued_methods": [
+        "DELETE"
+      ]
+    },
+    {
+      "path": "/batches",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/batches",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/batches/{batch_id}",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/batches/{batch_id}",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/batches/{batch_id}/cancel",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/batches/{batch_id}/cancel",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/chat/completions",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "issued_path": "/v1/chat/completions",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/chat/completions/{completion_id}",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "issued_path": "/v1/chat/completions/{completion_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/chat/completions/{completion_id}/messages",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "issued_path": "/v1/chat/completions/{completion_id}/messages",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/chatkit/sessions",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/chatkit/sessions/{session_id}/cancel",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/chatkit/threads",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/chatkit/threads/{thread_id}",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/chatkit/threads/{thread_id}/items",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/completions",
+      "tasks": [
+        "A06"
+      ],
+      "issued_path": "/v1/completions",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/containers",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/containers/{container_id}",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/containers/{container_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/containers/{container_id}/files/{file_id}",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/containers/{container_id}/files/{file_id}/content",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/content_provenance_checks",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/conversations",
+      "tasks": [
+        "A08"
+      ],
+      "issued_path": "/v1/conversations",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/conversations/{conversation_id}",
+      "tasks": [
+        "A08"
+      ],
+      "issued_path": "/v1/conversations/{conversation_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/conversations/{conversation_id}/items",
+      "tasks": [
+        "A08"
+      ],
+      "issued_path": "/v1/conversations/{conversation_id}/items",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/conversations/{conversation_id}/items/{item_id}",
+      "tasks": [
+        "A08"
+      ],
+      "issued_path": "/v1/conversations/{conversation_id}/items/{item_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET"
+      ]
+    },
+    {
+      "path": "/decisions",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/decisions",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/embeddings",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/embeddings",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/evals",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/evals/{eval_id}",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/cancel",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/files",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/files",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/files/{file_id}",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/files/{file_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET"
+      ]
+    },
+    {
+      "path": "/files/{file_id}/content",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/files/{file_id}/content",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/images/edits",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/images/generations",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/images/variations",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/live/sessions",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/live/sessions",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/live/sessions/{session_id}/accept",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/live/sessions/{session_id}/accept",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/live/sessions/{session_id}/content",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/live/sessions/{session_id}/content",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/live/sessions/{session_id}/fork",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/live/sessions/{session_id}/fork",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/live/sessions/{session_id}/hangup",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/live/sessions/{session_id}/hangup",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/live/sessions/{session_id}/refer",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/live/sessions/{session_id}/refer",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/live/sessions/{session_id}/reject",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/live/sessions/{session_id}/reject",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/models",
+      "tasks": [
+        "A06"
+      ],
+      "issued_path": "/v1/models",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/models/{model}",
+      "tasks": [
+        "A06"
+      ],
+      "issued_path": "/v1/models/{model}",
+      "issued_methods": [
+        "DELETE",
+        "GET"
+      ]
+    },
+    {
+      "path": "/moderations",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/moderations",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/realtime/calls",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/realtime/calls",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/realtime/calls/{call_id}/accept",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/realtime/calls/{call_id}/accept",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/realtime/calls/{call_id}/hangup",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/realtime/calls/{call_id}/hangup",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/realtime/calls/{call_id}/refer",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/realtime/calls/{call_id}/refer",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/realtime/calls/{call_id}/reject",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/realtime/calls/{call_id}/reject",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/realtime/client_secrets",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": "/v1/realtime/client_secrets",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/realtime/sessions",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/realtime/transcription_sessions",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/realtime/translations/client_secrets",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/responses",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/responses/compact",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/compact",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/responses/compact?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/compact",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/responses/input_tokens",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/input_tokens",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/responses/input_tokens?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/input_tokens",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/responses/{response_id}",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/{response_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET"
+      ]
+    },
+    {
+      "path": "/responses/{response_id}/cancel",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/{response_id}/cancel",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/responses/{response_id}/cancel?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/{response_id}/cancel",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/responses/{response_id}/input_items",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/{response_id}/input_items",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/responses/{response_id}/input_items?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/{response_id}/input_items",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/responses/{response_id}?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses/{response_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET"
+      ]
+    },
+    {
+      "path": "/responses?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "issued_path": "/v1/responses",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/safety/alerts/{id}",
+      "tasks": [
+        "A10",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/safety/cases/{id}",
+      "tasks": [
+        "A10",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/skills",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/skills/{skill_id}",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/skills/{skill_id}/content",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/skills/{skill_id}/versions",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/skills/{skill_id}/versions/{version}",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/skills/{skill_id}/versions/{version}/content",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/runs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/{thread_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/{thread_id}/messages",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/{thread_id}/messages/{message_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/cancel",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/steps",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/steps/{step_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/uploads",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/uploads",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/uploads/{upload_id}/cancel",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/uploads/{upload_id}/cancel",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/uploads/{upload_id}/complete",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/uploads/{upload_id}/complete",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/uploads/{upload_id}/parts",
+      "tasks": [
+        "A09"
+      ],
+      "issued_path": "/v1/uploads/{upload_id}/parts",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/vaults",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/vaults/{vault_id}",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/vaults/{vault_id}/credentials",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/vaults/{vault_id}/credentials/{credential_id}",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/vector_stores",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores/{vector_store_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores/{vector_store_id}/file_batches",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/files",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores/{vector_store_id}/files",
+      "issued_methods": [
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores/{vector_store_id}/files/{file_id}",
+      "issued_methods": [
+        "DELETE",
+        "GET",
+        "POST"
+      ]
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}/content",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores/{vector_store_id}/files/{file_id}/content",
+      "issued_methods": [
+        "GET"
+      ]
+    },
+    {
+      "path": "/vector_stores/{vector_store_id}/search",
+      "tasks": [
+        "A11"
+      ],
+      "issued_path": "/v1/vector_stores/{vector_store_id}/search",
+      "issued_methods": [
+        "POST"
+      ]
+    },
+    {
+      "path": "/videos",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/videos/characters",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/videos/characters/{character_id}",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/videos/edits",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/videos/extensions",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/videos/{video_id}",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/videos/{video_id}/content",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/videos/{video_id}/remix",
+      "tasks": [
+        "A10"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/webhook_endpoints",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/webhook_endpoints/{webhook_endpoint_id}",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/webhook_endpoints/{webhook_endpoint_id}/rotate_secret",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/webhook_endpoints/{webhook_endpoint_id}/test",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    },
+    {
+      "path": "/webhook_event_types",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "issued_path": null,
+      "issued_methods": []
+    }
+  ]
+}

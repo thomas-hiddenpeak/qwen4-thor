@@ -29,6 +29,26 @@ bool Emit(Json* events, const std::string& prefix, const char* type,
   return true;
 }
 
+ObjectReply CloseWaiting(AgentSessionView snapshot, const Json& link,
+                         const AgentEventCursor& cursor, Json* events) {
+  if (snapshot.turn.GetString("status") != "cancelled") return Invalid();
+  Set(&snapshot.turn, "created_at", Number(cursor.created_at));
+  if (cursor.started_at)
+    Set(&snapshot.turn, "started_at", Number(cursor.started_at));
+  Set(&snapshot.turn, "usage", cursor.turn_usage);
+  Set(&snapshot.session, "usage", cursor.session_usage);
+  const auto key = link.GetString("response_id") + "_cancel";
+  const auto loc = Object({{"session_id", Member(snapshot.session, "id")},
+                           {"turn_id", Member(snapshot.turn, "id")},
+                           {"turn", snapshot.turn},
+                           {"usage", cursor.turn_usage}});
+  if (!Emit(events, key, "agent.session.turn.cancelled", loc) ||
+      !Emit(events, key, "agent.session.idle",
+            Object({{"session", snapshot.session}})))
+    return Invalid();
+  return {};
+}
+
 ObjectReply Translate(const Json& session, const Json& link, const Json& record,
                       const Json& event, AgentEventCursor& cursor, Json* events,
                       bool* end_step, bool* settled) {
@@ -100,13 +120,20 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
                             {"output_index", Number(index)},
                             {"item", item}});
         const auto key = prefix + "_call_" + std::to_string(index);
-        if (state == "completed" && item.GetString("status") == "completed" &&
+        if (snapshot.turn.GetString("status") == "waiting" &&
+            item.GetString("status") == "completed" &&
             !Emit(events, key, "agent.session.turn.item.added", call))
           return Invalid();
         if (!Emit(events, key, "agent.session.turn.item.done", call))
           return Invalid();
       }
+      if (state == "completed" &&
+          snapshot.turn.GetString("status") == "cancelled") {
+        *settled = true;
+        return CloseWaiting(std::move(snapshot), link, cursor, events);
+      }
       if (snapshot.session.GetString("status") == "requires_action") {
+        cursor.waiting = true;
         if (!Emit(events, prefix, "agent.session.requires_action", resource))
           return Invalid();
       } else {
@@ -215,7 +242,12 @@ ObjectReply OpenAgentEventSubscription(ObjectStore& objects,
       if (!AddUsage(&next.session_usage, usage) ||
           !AddUsage(&next.turn_usage, usage))
         return Invalid();
-      ++next.step;
+      if (status == "waiting" && &link == &links->array.back()) {
+        next.waiting = true;
+        next.sequence = record.value.GetArray("events")->array.size();
+      } else {
+        ++next.step;
+      }
     }
   }
   *cursor = std::move(next);
@@ -238,6 +270,29 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
       cursor->step > links->array.size())
     return Invalid();
   if (cursor->step == links->array.size()) return {};
+  if (cursor->waiting) {
+    const auto& pending = links->array[cursor->step];
+    if (pending.Has("cancel_requested_at")) {
+      auto settings = SessionSettings(*data, &pending);
+      if (!settings.ok()) return settings;
+      auto stored = ResponsesState(objects).ReadRecord(
+          pending.GetString("response_id"), access);
+      if (!stored.ok()) return stored;
+      AgentSessionView snapshot;
+      auto projected =
+          ProjectStep(settings.value, pending, stored.value, &snapshot);
+      if (!projected.ok()) return projected;
+      auto closed = CloseWaiting(std::move(snapshot), pending, *cursor, events);
+      if (!closed.ok()) return closed;
+      *settled = true;
+    } else if (cursor->step + 1 == links->array.size()) {
+      return {};
+    }
+    cursor->waiting = false;
+    ++cursor->step;
+    cursor->sequence = 0;
+    if (*settled) return {};
+  }
   const auto& link = links->array[cursor->step];
   auto settings = SessionSettings(*data, &link);
   if (!settings.ok()) return settings;
@@ -247,10 +302,13 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
   if (record.value.GetString("agent_session_id") != id) return Invalid();
   const auto& journal = *record.value.GetArray("events");
   const auto& response = *record.value.Find("response");
-  // A storage-capacity terminal may have consumed its reservation and retained
-  // just a failed snapshot, without the original journal.
-  if (journal.array.empty() && (response.GetString("status") == "failed" ||
-                                response.GetString("status") == "cancelled")) {
+  // Native Responses keeps the cancelled snapshot and its committed prefix.
+  // There is no native response.cancelled SSE record. Emit the Agent terminal
+  // after that prefix, including when storage reserved only the final snapshot.
+  const auto status = response.GetString("status");
+  if (cursor->sequence == journal.array.size() &&
+      (status == "cancelled" ||
+       (journal.array.empty() && status == "failed"))) {
     auto event =
         Object({{"type", String("response." + response.GetString("status"))},
                 {"response", response}});
@@ -282,8 +340,10 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
     ++cursor->sequence;
     if (end) {
       if (cursor->sequence != journal.array.size()) return Invalid();
-      ++cursor->step;
-      cursor->sequence = 0;
+      if (!cursor->waiting) {
+        ++cursor->step;
+        cursor->sequence = 0;
+      }
       break;
     }
   }

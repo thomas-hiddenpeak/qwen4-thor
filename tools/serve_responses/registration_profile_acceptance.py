@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT))
 from tools.serve_live import profile_acceptance
 from tools.serve_recovery import bundle
 from tools.serve_responses import agent_profile_acceptance as agents
+from tools.serve_responses import session_profile_acceptance as sessions
 from tools.serve_responses import interruption_profile_acceptance as recovery
 from tools.serve_responses.beta_profile_acceptance import protocol
 from tools.serve_service import package as pkg
@@ -23,10 +24,12 @@ CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents',
     storage='authenticated_client', retention='until_deleted', tool_list_max_bytes=3145728)
 
 
-def prepare(out, build, original):
+def prepare(out, build, original, session_witness=None):
     receipt = pkg.read(EVIDENCE)
     deployed = ROOT/'build/service'
     delivery = pkg.read(recovery.EVIDENCE.parent/'delivery.json')['publication']
+    if session_witness is not None:
+        delivery = pkg.read(sessions.PUBLICATION)['publication']
     previous = delivery['primary']
     manifest = bundle.verify(deployed, previous)
     engine = pkg.verify(deployed/'engine', manifest['engine_manifest_sha256'])
@@ -37,16 +40,21 @@ def prepare(out, build, original):
     current = pkg.read(build/'generated/q4t/server/chat_protocol_sources.json')
     change = dict(source_manifest_sha256=previous, previous_protocol=engine['protocol_sha256'],
         sdk_binary=pkg.sha(build/'q4t'), sdk_protocol=protocol(current), protocol=protocol(current))
+    session = sessions.candidate(build, session_witness, current) if session_witness else None
+    ingress = session['ingress'] if session else receipt['ingress_sha256']
+    if session:
+        change.update(sdk_binary=pkg.sha(session_witness/'q4t'), sdk_protocol=session['tested_protocol'])
+    else:
+        pkg.require(change['sdk_binary'] == receipt['engine_sha256'], 'registration SDK binary drift')
     pkg.require(protocol({n:old[n] for n in current if n in old}) == engine['protocol_sha256'] and
                 all(pkg.sha(ROOT/n) == digest for n,digest in current.items()) and
-                change['sdk_binary'] == receipt['engine_sha256'] and
                 pkg.sha(ROOT/SDK) == receipt['sdk_driver_sha256'], 'SDK/build/current source binding')
     for filename, digest in pkg.read(recovery.EVIDENCE)['original']['record'].items():
         pkg.require(pkg.sha(original/filename) == digest, 'interrupted state fixture differs')
     protected = {str(ROOT/'build'/n): pkg.sha(ROOT/'build'/n) for n in (
         'q4t','q4t.release.json','service/manifest.json','service.release.json','service-native-state/ledger.json')}
     profile_acceptance.prepare_profiles(out,manifest,engine,
-        dict(engine['live_workers'],engine_sha256=change['sdk_binary']), receipt['ingress_sha256'],
+        dict(engine['live_workers'],engine_sha256=pkg.sha(build/'q4t')), ingress,
         protected=protected, beta_change=change, agent_change=dict(
             witness_sha256=pkg.sha(agents.EVIDENCE),
             capabilities=pkg.read(agents.EVIDENCE)['selected']['capabilities']))
@@ -58,21 +66,28 @@ def prepare(out, build, original):
         # ingress with this stage so offline review can rehash the tested bytes.
         pinned = phase/'engine/q4t-ingress'
         shutil.copy2(plan['ingress'],pinned)
-        pkg.require(pkg.sha(pinned) == receipt['ingress_sha256'], 'ingress snapshot drift')
+        pkg.require(pkg.sha(pinned) == ingress, 'ingress snapshot drift')
         plan.update(ingress=str(pinned), agent_registration=pkg.sha(EVIDENCE),
                     agent_interruption=dict(original=str(original), evidence_sha256=pkg.sha(recovery.EVIDENCE)))
         for source in (recovery.SDK, SDK, 'tools/serve_responses/interruption_profile_acceptance.py',
                        'tools/serve_responses/registration_profile_acceptance.py'):
             plan['sources'][source] = pkg.sha(ROOT/source)
+        if session:
+            plan['agent_sessions'] = session
+            for source in (sessions.SDK, sessions.HELPER, str(sessions.PUBLICATION.relative_to(ROOT))):
+                plan['sources'][source] = pkg.sha(ROOT/source)
         pkg.save(path,plan)
 
 
 def verify(phase, plan, capabilities):
     expected = pkg.read(EVIDENCE)
+    if 'agent_sessions' in plan:
+        sessions.verify_identity(plan, capabilities)
+    else:
+        pkg.require(plan['binary_sha256'] == expected['engine_sha256'] and
+                    plan['ingress_sha256'] == expected['ingress_sha256'], 'registration actor identity')
     pkg.require(plan.get('agent_registration') == pkg.sha(EVIDENCE) and
                 capabilities.get('agent_registration') == CAPABILITY and
-                plan['binary_sha256'] == expected['engine_sha256'] and
-                plan['ingress_sha256'] == expected['ingress_sha256'] and
                 plan['sources'][SDK] == expected['sdk_driver_sha256'], 'registration witness identity')
     row = pkg.read(phase/'registration.json')
     pkg.require(row['sdk'] == expected['sdk']['version'] and row['foreign_status'] == 404,
@@ -111,7 +126,9 @@ if __name__ == '__main__':
     cli = argparse.ArgumentParser(description=__doc__)
     for opt in ('output','build','original'):
         cli.add_argument('--'+opt,type=Path,required=True)
+    cli.add_argument('--session-witness', type=Path)
     args = cli.parse_args()
     out = args.output.resolve()
     pkg.require(out.is_relative_to(ROOT/'.q4t-work'), 'private stage required')
-    prepare(out,args.build.resolve(strict=True),args.original.resolve(strict=True))
+    prepare(out,args.build.resolve(strict=True),args.original.resolve(strict=True),
+            args.session_witness.resolve(strict=True) if args.session_witness else None)

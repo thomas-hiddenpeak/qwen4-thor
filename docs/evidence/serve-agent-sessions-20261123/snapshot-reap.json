@@ -1,0 +1,21 @@
+{
+  "first_remote_failure": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45197503065/job/137771803447",
+  "failing_head": "4f3d42424e26272199a94c98ebcb124789826142",
+  "first_assertion": "input_snapshot_actual_lost_cleanup_receipt_keeps_verified_content",
+  "observed_failed_tests": 28,
+  "original": {
+    "path": ".q4t-work/serve-responses-agents-20261123/pr67-45197503065-failed.log",
+    "sha256": "962d808124e5a4c2580c76c6a94bbab0caf84193a5ecbcb300521ddcbdce60c6"
+  },
+  "cpu_regression_tests": 39,
+  "local_test_runner": "Thor host build includes later independent Vault work; snapshot, worker and upload implementation is unchanged.",
+  "targets": {
+    "path": ".q4t-work/serve-responses-agents-20261123/pr67-fix-targets.txt",
+    "sha256": "75e78c46d55b2e5cb99ea07fcef3a5a56565abc5b83a154839eed8b047820176"
+  },
+  "output": {
+    "path": ".q4t-work/serve-responses-agents-20261123/pr67-fix-targets.log",
+    "sha256": "eac16449176a98f4ed290f8e0eb11be9fadf02f29c7f36ef643e7d346f87ac6a"
+  },
+  "default_affected": false
+}

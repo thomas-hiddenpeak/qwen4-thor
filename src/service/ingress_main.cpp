@@ -311,7 +311,7 @@ class Capacity {
                         : cancel        ? 2
                         : control       ? 1
                                         : 0;
-    const bool auxiliary = tunnel_poll || tunnel_response || websocket;
+    const bool auxiliary = tunnel_poll || tunnel_response || websocket || sideband;
     auto& used = usage_[client];
     const auto now = Clock::now();
     const double elapsed =
@@ -363,12 +363,13 @@ struct Lease {
   size_t client = 0;
   bool control = false;
   bool cancel = false;
+  bool event_submission = false;
   bool acquired = false;
   bool tunnel_poll = false, tunnel_response = false;
   bool websocket = false, sideband = false;
   ~Lease() {
     if (acquired)
-      capacity.Release(client, control, cancel, tunnel_poll, tunnel_response,
+      capacity.Release(client, control || event_submission, cancel, tunnel_poll, tunnel_response,
                          websocket, sideband);
   }
 };
@@ -595,7 +596,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     }
     if (!headers.cors_method.empty() || !headers.cors_headers.empty())
       return reject(400, "cors_invalid_preflight");
-    lease.sideband = method == "GET" && server::IsCallSideband(path);
+    lease.sideband = (method == "GET" && server::IsCallSideband(path)) ||
+                     server::IsAgentEventStream(method, path);
     lease.websocket = server::IsRealtimeUpgrade(method, path);
     // WebSocket browsers do not enforce CORS response headers. An Origin
     // therefore needs explicit server-side permission even with CORS off.
@@ -663,7 +665,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     if (lease.cancel) body_lease.SelectBudget(cancel_budget);
     if (lease.tunnel_poll || lease.tunnel_response)
       body_lease.SelectBudget(tunnel_budget);
-    lease.acquired = capacity.Acquire(lease.client, lease.control, lease.cancel,
+    lease.event_submission = server::IsAgentEventSubmission(method, path);
+    lease.acquired = capacity.Acquire(lease.client, lease.control || lease.event_submission, lease.cancel,
                                       lease.tunnel_poll, lease.tunnel_response,
                                       lease.websocket, lease.sideband);
     if (!lease.acquired) return reject(429, "gateway_rate_limit");
