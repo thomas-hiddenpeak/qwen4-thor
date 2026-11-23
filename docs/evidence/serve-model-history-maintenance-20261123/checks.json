@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "seconds": 62.66287022270262,
+  "model_starts": 0,
+  "revision": 426,
+  "before": 128,
+  "after": 124,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-model-history-maintenance-20261123/actual-01/archive/plan.json",
+  "plan_sha256": "a07e49dd451143c3227b3ffc3daa1df41cb5cdf0575f511929b5767243aeaf1c",
+  "request_ids": [
+    "f863aa4f-f338-4a39-b05d-0d4fa04036ce",
+    "5f561e42-4e0f-4eca-b8a7-c6ad9b9993b7",
+    "648ebb26-3d60-4653-8b35-461f033d1499",
+    "e9b458f0-2373-4d94-b31c-f71664be2299"
+  ],
+  "protected_files": 66,
+  "unchanged": true,
+  "identical_inodes_and_content": true,
+  "wrong_proof_rejected": true,
+  "protected_request_rejected": true,
+  "deleted_files": 0,
+  "cpu_cases": 23,
+  "prior_failures": 11,
+  "targeted_retests": 11,
+  "strict_nvml_samples": 61,
+  "lease_status": "COMPLETED",
+  "source_digests": {
+    "maintenance-cpu.log": "ad54d75172e5281f911101d7046adbe1a985f70f64806d67df9ed64caf0510af",
+    "maintenance-retest.log": "cc1fecf0e5b85f516f858fe6c97b0dfd76c176e554cefa4503d35f11ba999bf0",
+    "actual-01/plan.stdout": "9bddd7335b6ef36d6111ab7af3ab21fc96dec54f118f4b64fa9f48b4324b5238",
+    "actual-01/apply.stdout": "90328a014713180a48c6d5e1f88829087d0c2201cf785cbf53d6cb21fbbeee80",
+    "actual-01/archive/plan.json": "a07e49dd451143c3227b3ffc3daa1df41cb5cdf0575f511929b5767243aeaf1c",
+    "lease-02/exit.json": "abfb6331504ec1d68ff9e8290357b32eb67cd2a30762cbe2fb1d768d32a3654a",
+    "lease-01/exit.json": "a6b3122528fb09eb33b2581afee71bacdbe2765d77417a261a04cad19c001c2d"
+  }
+}

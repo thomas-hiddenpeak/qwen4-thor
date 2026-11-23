@@ -46,12 +46,12 @@ def read_descriptor(state):
     return value
 
 
-def ready(state, desc):
+def ready(state, desc, *, read_bundle=None):
     if (os.path.lexists(Path(state)/'service-publication.json') or
             os.path.lexists(Path(state)/'service-publication') or
             os.path.lexists(Path(state)/'service-publication-intents')):
         from tools.serve_recovery import publication
-        publication.ready(state, desc)
+        publication.ready(state, desc, read_bundle=read_bundle)
     if desc['version'] == 1 and not os.path.lexists(Path(state)/Store.marker_name):
         return
     with access_store.open_bound(access_store.binding(state, desc['service_id']), Store) as current:

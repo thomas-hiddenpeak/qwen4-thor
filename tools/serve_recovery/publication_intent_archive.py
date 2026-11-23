@@ -20,6 +20,7 @@ MAX_SELECTED = 4
 # Reviewed predecessors: original archive, then the identity-guard-only revision.
 # Their plan formats and move/restore semantics are unchanged. Keep plan bytes.
 LEGACY_PLAN_SOURCES = frozenset((
+    '1e8b67d27779fd344aa9c13a2b3e57a75984255537380391d4556b64c14bc6ec',
     '665ec99d7f46c60e750872901640660f0e34708b5d9ed058c9265b81b71b2763',
     '53a3582cc80b7049b55997caf4aa1686e03dfa1cdb1a1caf9342259cb070e865',
 ))
@@ -59,12 +60,12 @@ def destination(output, state, manifest, current):
         'new private archive directory required')
 
 
-def prepare(state, output, requests, *, authority=None):
+def prepare(state, output, requests, *, authority=None, read_bundle=None):
     ledger.require(type(requests) is list and 1 <= len(requests) <= MAX_SELECTED
         and len(set(requests)) == len(requests)
         and all(ledger.identifier(v) for v in requests),
         'one to four explicit request UUIDs required')
-    with archives.locked(state, authority=authority) as (state, desc, manifest, current):
+    with archives.locked(state, authority=authority, read_bundle=read_bundle) as (state, desc, manifest, current):
         output = Path(output).absolute()
         parent = files.directory(output.parent)
         destination(output, state, manifest, current)
@@ -95,7 +96,7 @@ def prepare(state, output, requests, *, authority=None):
                     requests=requests, model_actions=False, files_moved=False)
 
 
-def apply(path, expected, *, restore=False, authority=None):
+def apply(path, expected, *, restore=False, authority=None, read_bundle=None):
     path = Path(path).absolute()
     ledger.require(engine.sha(path) == expected, 'reviewed archive plan changed')
     value = native.private_json(path)
@@ -107,7 +108,7 @@ def apply(path, expected, *, restore=False, authority=None):
             *LEGACY_PLAN_SOURCES) and
         type(value['requests']) is list and 1 <= len(value['requests']) <= MAX_SELECTED,
         'archive plan/source identity differs')
-    with archives.locked(value['state'], authority=authority) as (state, desc, manifest, current):
+    with archives.locked(value['state'], authority=authority, read_bundle=read_bundle) as (state, desc, manifest, current):
         destination(archive, state, manifest, current)
         ledger.require(value['service_id'] == desc['service_id'] and
             value['root'] == current['root'], 'archive service/root differs')
@@ -154,7 +155,7 @@ def apply(path, expected, *, restore=False, authority=None):
         for row in value['requests']:
             verify((pool if restore else archive)/(row['request_id']+'.json'),
                    row, state, desc)
-        ledger.require(publication.ready(state, desc) == current,
+        ledger.require(publication.ready(state, desc, read_bundle=read_bundle) == current,
                        'publication changed during archive')
         receipt = dict(status='RESTORED' if restore else 'RETIRED',
             plan_sha256=expected, publication_revision=current['revision'],

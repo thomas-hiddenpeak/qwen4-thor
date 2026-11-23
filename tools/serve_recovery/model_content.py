@@ -193,6 +193,12 @@ def publication_proof(value):
     return value
 
 
+def cli_publication_proof(args):
+    path, digest = args.model_history, args.model_history_sha256
+    ledger.require((path is None) == (digest is None), 'model history file and digest required together')
+    return publication_proof(read_bound(path, digest, 'model history proof')) if path else None
+
+
 class HistoricalModelReader:
     """Read archived registrations sharing the exact audited model inventory."""
 

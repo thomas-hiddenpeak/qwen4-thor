@@ -20,22 +20,23 @@ MAX_SELECTED=4
 # Reviewed predecessors: original archive, then the identity-guard-only revision.
 # Their plan formats and move/restore semantics are unchanged. Keep plan bytes.
 LEGACY_PLAN_SOURCES = frozenset((
+    '5a464925f9f493ee6c1813b0d35d3624f1f237dea5ec3e62d7f27d67e3b33bb4',
     '6e00d453979151b48fbfe37fbbdef2af56833a5931957f2172e2c697d0dfbc99',
     'c205cdc99b348787b568e5410f90c3996821809c6156413dc99d9172a6bd260b',
 ))
 
 
 @contextmanager
-def locked(state, *, authority=None):
+def locked(state, *, authority=None, read_bundle=None):
     state=files.directory(state)
     with ExitStack() as locks:
         locks.enter_context(deployment.claim(state,name='publication.lock'))
         desc=deployment.read_descriptor(state)
-        manifest=publication.bundle.verify(desc['package'],desc['manifest_sha256'])
+        manifest=(read_bundle or publication.bundle.verify)(desc['package'],desc['manifest_sha256'])
         lease=service.acquire_lease(manifest['lock_path']);locks.callback(os.close,lease)
         locks.enter_context(publication.quiescent(state,desc))
-        deployment.ready(state,desc)
-        current=publication.ready(state,desc)
+        deployment.ready(state,desc, read_bundle=read_bundle)
+        current=publication.ready(state,desc, read_bundle=read_bundle)
         if authority is not None: authority(state, desc)
         yield state,desc,manifest,current
 
@@ -96,7 +97,7 @@ def unreferenced(state,current,source):
                        'generation remains an active state/release dependency')
 
 
-def verify_copy(path,row,root,state,desc):
+def verify_copy(path,row,root,state,desc, *, read_bundle=None):
     files.directory(path)
     ledger.require(native.inode(path)==row['identity'],'archive directory identity changed')
     value=native.private_json(path/'generation.json')
@@ -113,15 +114,15 @@ def verify_copy(path,row,root,state,desc):
                    'archive package link changed')
     files.accepted(path/'service.release.json',row['selected']['package'],
         row['selected']['manifest_sha256'],state,desc,
-        decision_copy=path/'service.acceptance.json')
+        decision_copy=path/'service.acceptance.json', read_bundle=read_bundle)
 
 
-def prepare(state,output,generations,*,authority=None):
+def prepare(state,output,generations,*,authority=None, read_bundle=None):
     ledger.require(type(generations) is list and 1<=len(generations)<=MAX_SELECTED and
         len(set(generations))==len(generations) and
         all(type(v) is str and ledger.HASH.fullmatch(v) for v in generations),
         'one to four explicit generation hashes required')
-    with locked(state,authority=authority) as (state,desc,manifest,current):
+    with locked(state,authority=authority, read_bundle=read_bundle) as (state,desc,manifest,current):
         root=Path(current['root']);output=Path(output).absolute()
         parent=files.directory(output.parent)
         repository=Path(manifest['repository'])
@@ -135,7 +136,7 @@ def prepare(state,output,generations,*,authority=None):
             path=root/files.DIRECTORY/'generations'/digest
             value=native.private_json(path/'generation.json');selected=files.record(value)
             ledger.require(selected['generation_sha256']==digest,'generation name differs')
-            files.verify(root,state,desc,selected)
+            files.verify(root,state,desc,selected, read_bundle=read_bundle)
             unreferenced(state,current,path)
             ledger.require(path.stat().st_dev==parent.stat().st_dev,
                            'archive requires same filesystem atomic rename')
@@ -150,7 +151,7 @@ def prepare(state,output,generations,*,authority=None):
                     selected=generations,model_actions=False,files_moved=False)
 
 
-def apply(path,expected,*,restore=False,authority=None):
+def apply(path,expected,*,restore=False,authority=None, read_bundle=None):
     path=Path(path).absolute()
     ledger.require(engine.sha(path)==expected,'reviewed archive plan changed')
     value=native.private_json(path)
@@ -162,7 +163,7 @@ def apply(path,expected,*,restore=False,authority=None):
             *LEGACY_PLAN_SOURCES) and
         type(value['generations']) is list and 1<=len(value['generations'])<=MAX_SELECTED,
         'archive plan/source identity differs')
-    with locked(value['state'],authority=authority) as (state,desc,manifest,current):
+    with locked(value['state'],authority=authority, read_bundle=read_bundle) as (state,desc,manifest,current):
         root=Path(current['root']);pool=root/files.DIRECTORY/'generations'
         ledger.require(value['service_id']==desc['service_id'] and value['root']==str(root) and
             archive.is_relative_to(Path(manifest['repository'])/'.q4t-work') and
@@ -188,7 +189,7 @@ def apply(path,expected,*,restore=False,authority=None):
                 unreferenced(state,current,source)
             exists=[os.path.lexists(p) for p in (source,target)]
             ledger.require(sum(exists)==1,'archive source/destination collision or loss')
-            verify_copy(source if exists[0] else target,row,root,state,desc)
+            verify_copy(source if exists[0] else target,row,root,state,desc, read_bundle=read_bundle)
             if exists[0]:moves.append((source,target))
         ledger.require(not restore or len(list(pool.iterdir()))+len(moves)<=files.MAX_GENERATIONS,
                        'restore exceeds active generation capacity')
@@ -200,8 +201,8 @@ def apply(path,expected,*,restore=False,authority=None):
         files.sync(pool);files.sync(archive)
         for row in value['generations']:
             verify_copy((pool if restore else archive)/row['selected']['generation_sha256'],
-                        row,root,state,desc)
-        ledger.require(publication.ready(state,desc)==current,'publication changed during archive')
+                        row,root,state,desc, read_bundle=read_bundle)
+        ledger.require(publication.ready(state,desc, read_bundle=read_bundle)==current,'publication changed during archive')
         receipt=dict(status='RESTORED' if restore else 'RETIRED',plan_sha256=expected,
             publication_revision=current['revision'],generations=sorted(seen),
             current_unchanged=True,packages_unchanged=True,deleted_files=0,model_actions=False)
