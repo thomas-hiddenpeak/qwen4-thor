@@ -39,7 +39,8 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
         pkg.require(session_witness is None, 'select a single candidate source')
         publication = vaults.OAUTH_PUBLICATION if vault_oauth else vaults.PUBLICATION
         if environment_templates:
-            publication = environments.WORKSPACE_RELEASE if hosted_workspaces else environments.PUBLICATION
+            publication = (environments.workspace_release(environments.workspace_proof(pkg.sha(build/'q4t')))
+                           if hosted_workspaces else environments.PUBLICATION)
         delivery = pkg.read(publication)['publication']
     previous = delivery['primary']
     manifest = bundle.verify(deployed, previous)

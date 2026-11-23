@@ -67,6 +67,19 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 live.format_for(altered)
 
+    def test_artifacts_extend_only_qualified_workspace_with_immutable_files(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(agent_sessions=live.WORKSPACE_SESSION, agent_environments=live.WORKSPACE_CAPABILITY)
+        new = dict(old, agent_session_artifacts=live.ARTIFACT_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        self.assertFalse(migration.explicit_extension({}, new))
+        for change in (dict(immutable=1), dict(source='/workspace/'), dict(operations=['list'])):
+            altered = dict(new, agent_session_artifacts=dict(live.ARTIFACT_CAPABILITY, **change))
+            self.assertFalse(migration.explicit_extension(old, altered))
+            with self.assertRaises(ValueError):
+                live.format_for(altered)
+
     def test_vault_oauth_adds_only_renewal_to_qualified_mcp_authority(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(agent_sessions=live.VAULT_SESSION, agent_vaults=live.VAULT_CAPABILITY, storage='owned')
