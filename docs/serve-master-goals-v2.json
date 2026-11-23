@@ -2611,7 +2611,8 @@
       },
       "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
       "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json",
-      "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json"
+      "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json",
+      "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
     },
     {
       "id": "A09",
@@ -8247,7 +8248,8 @@
         "revision": 182,
         "guardian_sha256": "e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a"
       },
-      "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json"
+      "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json",
+      "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
     },
     {
       "id": "R10",
@@ -9080,12 +9082,13 @@
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       },
       "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
-      "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json"
+      "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json",
+      "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev440_delivered_remaining_deliveries",
+      "state": "rev442_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -10254,7 +10257,8 @@
       },
       "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
       "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json",
-      "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json"
+      "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json",
+      "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
     },
     {
       "id": "Q03",
@@ -10529,11 +10533,12 @@
         "asr_long_stability_accepted": false,
         "archive_sha256": "75e08d25918f784894ee91eaf131552ab0ce1b6e24e6b30dffc860e71daef5c0",
         "evidence": "evidence/serve-asr-day-handoff-20261117/README.md"
-      }
+      },
+      "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
     }
   ],
-  "next_task": "Publish and qualify managed takeover for native Agent registration, then continue Agent sessions and turns.",
-  "next": "完成配置候选的主轻资格与发行，推进 Agent 会话、回合及其余 G00 应用路径和恢复任务。",
+  "next_task": "Implement standard managed Agent sessions, input events and real model turns while continuing the remaining G00 application and recovery work.",
+  "next": "推进标准 Agent 会话、回合与事件流；继续剩余应用范围与恢复工作。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

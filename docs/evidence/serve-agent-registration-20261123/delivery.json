@@ -1,0 +1,126 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 442,
+    "version_revision": 150,
+    "profile_revision": 40,
+    "previous_profile_revision": 39,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "c4975edef34a88a17957cb248a2884ad36a50f87f3daa1fff1f88d83675c9f77",
+    "fallback": "281e0b387a89b269ea28dcca8d8fef5e3c09686e1b683e04a081d81c6ef7a89f",
+    "engine": "479f87dfa7b2f335fdacf163af8e4cbd7e73c20b11c31ec3e3e39d3b173490d0",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "service_release_sha256": "2adfd63ad4c072a96480571ea2c9513a956de4bd8bb3e51e9f10f7281a49e3cc",
+  "runs": {
+    "registration-fallback-business-01": {
+      "status": "FAIL",
+      "seconds": 45.67582132387906,
+      "model_starts": 1,
+      "ports_free": true,
+      "remaining": [],
+      "unchanged_default": true,
+      "lease": "6d3be04b922ae21f8af6cb2ded853e99ae6310e82530bb01ae73b1651c6f4a03",
+      "evidence": {
+        "result.json": "f5a085edcdbf1e806489bfa4863452eed14fd574755f095748383b3d7e66bc65"
+      },
+      "fixture_error": "unknown fixture client"
+    },
+    "registration-fallback-business-02": {
+      "status": "PASS",
+      "seconds": 113.03174782078713,
+      "model_starts": 2,
+      "ports_free": true,
+      "remaining": [],
+      "unchanged_default": true,
+      "lease": "25f07fdcf3630d4a67af72649a01c3d7b6965f65b12e94443b813fdff6f56604",
+      "evidence": {
+        "result.json": "5587cadbd339ba60106f5808b6f0bc1f4074942a6b77377cae690c73a6c36d21",
+        "registration-before.json": "8f2ca72ccdcddfe32651df07f7811c9f5179c2e38cffff0bdbc8753069376ac9",
+        "registration-after.json": "fbaf03541cb6744d3d61a0c753d7ec9d35224d5120bd356f90e525039e5c32a0",
+        "terminal.json": "9cad8eb3547e5e0920b52c7ab5e6e98ee652de53d4eb02b53c47b85afa619990",
+        "recover-events.json": "11f4a27d797fd1c0129e927afc218697e9ce096e66d8eccd2fce9c2bb926728f",
+        "chat-after.wire": "6167b78e64871d2498f1de14a406b11431b5c7e7cc9d0b97599604196d8ad698"
+      }
+    },
+    "registration-takeover-business-01": {
+      "status": "FAIL",
+      "seconds": 21.702181642875075,
+      "model_starts": 0,
+      "ports_free": true,
+      "remaining": [],
+      "unchanged_default": true,
+      "lease": "317f84e8a21b7856048b83c80b375380b96d395e8d90be73c271352b5eb25a04",
+      "evidence": {
+        "result.json": "72671208bf0e7d0c4f80239f2e84d3aaa29f6f84093aa6a2b36e87645c8f2ebc"
+      },
+      "fixture_error": "fault fixture working directory prefix"
+    },
+    "fatal-business-registration-01": {
+      "status": "PASS",
+      "seconds": 127.90612434782088,
+      "model_starts": 2,
+      "ports_free": true,
+      "remaining": [],
+      "unchanged_default": true,
+      "lease": "356f7c9006273c4292e70c3518a4160a9d8a7a4bb826b4686ebf14e63dbb7b6d",
+      "evidence": {
+        "result.json": "679da2401389834fdbc5952f8112ecc2a0118daa0a10bf8f76db5e805a72ddb1",
+        "registration-before.json": "8c972d018d31aad591817b2420d2ed89b663a90482f3d672b250ebcc648901ab",
+        "registration-after.json": "ad9f75413c1b80c66ad65e2ca6c79ed6dcefafb6a81004a1f0d49a354740ce9e",
+        "takeover.json": "896713bd7459e135b578782f49870940111d2b40c35825de1cea8bf9558d57d1",
+        "terminal.json": "cdd00329065145eb7ed36afed67ca7b0d417a1c4b13cd9b0a40dfe6e14ad7ec4",
+        "recover-events.json": "a86b068755fc86d281339237e458125e8bd1e71ab8d36c1a5f0dfe804faf2c25",
+        "chat-after.wire": "601b525456fc90103bff1fbfee22eb04daa54652da472b42c22994e57501f1a7"
+      }
+    }
+  },
+  "day": {
+    "source_commit": "5db4efe336cbe7129e9fa24305ecad2e5f7c3a48",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/registration-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/registration-primary-01/bundle",
+      "manifest_sha256": "c4975edef34a88a17957cb248a2884ad36a50f87f3daa1fff1f88d83675c9f77"
+    },
+    "revision": 442,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/registration-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "28449d3912e400cdf2c44352e7f46d71bf6abe5c37e111ced79259b6e6e0a541",
+    "handoff_sha256": "aa0c08b742e60cafc4de48ea5ff8351567972497445008b79919f7214e3df7cb",
+    "checked": true,
+    "source_files": 697,
+    "hours_executed": 0
+  },
+  "recovered_error": {
+    "code": "service_draining",
+    "message": "Service is draining and cannot admit another model step"
+  },
+  "initial_publication": "initial preflight refused full generation pool; no intent written",
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "9dfea228f7a024be8310820d1ccd57e1b3ddb235dfab66f82a6dd8ae14174131"
+        ],
+        "sha256": "fa3c69ecd684946acd0c6983f4d74ba5f04a96f185acb6d64669fdf5466d223b",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 16,
+        "archived": [
+          "f5df1b66-97c2-47d0-8630-43d9032b3f55"
+        ],
+        "sha256": "ce2c5a48fce5d57dab22833854e16201545445c2393a5aecc81d3857165355e3",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "maintenance_receipt": "f199c0d89289e8461edf800ebae77bf7210d0926e4cc0ba04d07f073aa674c82",
+  "publication_lease": "438867c26ebd4b010a09b901fe580850a9133e3f374023ef55c5eeb5abd40ee6"
+}
