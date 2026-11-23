@@ -71,11 +71,7 @@ void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
       RealtimeTranscriptionSession preview(id, output, PrepareRealtimeInput(client),
                                            asr_limits_.max_audio_seconds, bytes);
       reply = preview.Configure(settings);
-      if (reply.ok()) {
-        resource = RealtimeTranscriptionSettingsJson(settings, false);
-        Set(&resource, "id", String(id));
-        Set(&resource, "object", String("realtime.transcription_session"));
-      }
+      if (reply.ok()) resource = preview.SessionResource();
     }
   } else {
     RealtimeConversationSession preview(

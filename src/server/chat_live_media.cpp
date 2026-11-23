@@ -219,12 +219,13 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     }
     request = std::move(offer.session);
     if (const auto* grant = http->RealtimeStartup()) {
-      if (grant->GetString("type") != "realtime") {
-        detail::SendError(fd, 400, "Expected a conversation credential", {},
+      if (offer.explicit_session &&
+          grant->GetString("type") != request.GetString("type")) {
+        detail::SendError(fd, 400, "Call and credential session types differ", {},
                           "realtime_session_type_invalid", "session.type");
         return;
       }
-      request = MergeRealtimeStartup(*grant, request);
+      request = offer.explicit_session ? MergeRealtimeStartup(*grant, request) : *grant;
     }
   } else if (!io::ParseJson(body, &request, true,
                      {.max_depth = 64,
@@ -257,8 +258,9 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     const auto reply = sip_service_.Reserve(client.Id(), sip_id, &invitation);
     if (!reply.ok()) { failed(reply); return; }
   }
-  if (asr_model_dir_.empty() || tts_model_dir_.empty()) {
-    detail::SendError(fd, 503, "Native Live requires ASR and speech assets", {},
+  const bool transcription = offer_type && request.GetString("type") == "transcription";
+  if (asr_model_dir_.empty() || (!transcription && tts_model_dir_.empty())) {
+    detail::SendError(fd, 503, transcription ? "Native transcription requires ASR assets" : "Native Live requires ASR and speech assets", {},
                       "live_processor_unavailable");
     return;
   }
@@ -267,7 +269,8 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     return;
   auto owner = std::make_shared<MediaOwner>(realtime_host_budget_);
   const size_t host_bytes =
-      kRealtimeConversationHostBytes + kRealtimeConversationInputHostBytes +
+      (transcription ? kRealtimeSessionHostBytes :
+       kRealtimeConversationHostBytes + kRealtimeConversationInputHostBytes) +
       (16ULL << 20) + (source.empty() ? 0 : 3 * kLiveForkStateBytes);
   if (!owner->memory.Acquire(host_bytes) ||
       !runtime::ReadSystemMemory().CanAllocate(host_bytes + (512ULL << 20))) {
@@ -328,7 +331,11 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
   };
   const auto* startup = realtime ? &request : request.Find("session");
   const bool data_channel = !sip && answer.find("\nm=application ") != answer.npos;
-  if (realtime) {
+  if (transcription) {
+    owner->call = std::make_unique<RealtimeMediaCall>(
+        PrepareRealtimeInput(client), asr_limits_.max_audio_seconds, message_bytes,
+        output, owner->sideband, data_channel);
+  } else if (realtime) {
     auto defaults = DefaultRealtimeChatSettings(PlanningConfig(fd),
                                                 request.GetString("model"));
     Set(&defaults, "output_modalities", Array({String("audio")}));

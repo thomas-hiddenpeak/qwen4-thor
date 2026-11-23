@@ -25,10 +25,10 @@ RealtimeMediaCall::RealtimeMediaCall(Json defaults,
       sideband_(std::move(sideband)),
       carrier_(carrier),
       channel_(carrier == RealtimeCarrier::kWebRtcData),
-      session_(
+      conversation_(std::make_unique<RealtimeConversationSession>(
           detail::NewRequestId("sess_"), detail::NewRequestId("conv_"),
           std::move(defaults),
-          {kWebSocketMaximumLimit, [this] { return failed_ || ended_; },
+          SessionEventOutput{kWebSocketMaximumLimit, [this] { return failed_ || ended_; },
            [this](auto text) { return Publish(text); }},
           [&] {
             cb.interrupt_playout = [this] {
@@ -36,13 +36,37 @@ RealtimeMediaCall::RealtimeMediaCall(Json defaults,
             };
             return std::move(cb);
           }(),
-          message_bytes) {}
+          message_bytes)) {}
+
+RealtimeMediaCall::Transcription::Transcription(
+    RealtimeTranscriptionCallbacks callbacks, uint32_t max_seconds,
+    size_t message_bytes)
+    : session(detail::NewRequestId("sess_"), output, std::move(callbacks),
+              max_seconds, message_bytes) {}
+
+RealtimeMediaCall::RealtimeMediaCall(RealtimeTranscriptionCallbacks callbacks,
+                                     uint32_t max_seconds, size_t message_bytes,
+                                     Send send, std::shared_ptr<LiveSideband> sideband,
+                                     bool data_channel)
+    : send_(std::move(send)),
+      sideband_(std::move(sideband)),
+      carrier_(data_channel ? RealtimeCarrier::kWebRtcData : RealtimeCarrier::kWebRtcAudio),
+      channel_(data_channel),
+      transcription_(std::make_unique<Transcription>(std::move(callbacks), max_seconds,
+                                                     message_bytes)) {}
 
 ObjectReply RealtimeMediaCall::Start(const Json& configuration) {
   if (!send_ || (carrier_ == RealtimeCarrier::kSip && !sideband_))
     return Error(503, "realtime_media_unavailable",
                  "Call transport unavailable");
-  return session_.StartCall(configuration, carrier_ == RealtimeCarrier::kSip
+  if (transcription_) {
+    auto reply = transcription_->session.StartConfigured(configuration);
+    input_format_ = transcription_->session.InputFormat();
+    if (reply.ok() && !DrainTranscription())
+      return Error(503, "realtime_media_unavailable", "Session events unavailable");
+    return reply;
+  }
+  return conversation_->StartCall(configuration, carrier_ == RealtimeCarrier::kSip
                                                ? RealtimeShape::kCallAccept
                                                : RealtimeShape::kSession);
 }
@@ -78,7 +102,7 @@ bool RealtimeMediaCall::TruncateCleared() {
   for (auto& speech : speech_) {
     if (!speech.cleared || speech.history_settled || speech.item_id.empty())
       continue;
-    if (!session_.TruncatePlayout(speech.item_id, speech.submitted_samples))
+    if (!conversation_->TruncatePlayout(speech.item_id, speech.submitted_samples))
       return false;
     speech.history_settled = true;
   }
@@ -171,10 +195,46 @@ bool RealtimeMediaCall::Input(std::string_view pcm, bool finish) {
   if (finish) encoder_.reset();
   if (bytes.empty()) return true;
   if (!io::EncodeBase64(bytes, kWebSocketMessageLimit, &encoded)) return false;
-  return session_.Message(
+  return Deliver(
       WebSocketOpcode::kText,
       OutputJson(Object({{"type", String("input_audio_buffer.append")},
                          {"audio", String(std::move(encoded))}})));
+}
+
+bool RealtimeMediaCall::DrainTranscription() {
+  auto& asr = *transcription_;
+  for (size_t count = 0; count < 64; ++count) {
+    const auto frame = asr.output.Front();
+    if (frame.empty()) break;
+    size_t consumed = 0;
+    if (asr.decoder.Consume({reinterpret_cast<const uint8_t*>(frame.data()), frame.size()},
+                            &consumed) != WebSocketRead::kEvent ||
+        consumed != frame.size() || asr.decoder.Event().opcode != WebSocketOpcode::kText)
+      return false;
+    const auto wire = asr.decoder.Event().payload;
+    Json event;
+    if (!io::ParseJson(std::string(wire), &event, true,
+                       {64, 65536, kWebSocketMaximumLimit, true})) return false;
+    const auto type = event.GetString("type");
+    if (type == "transcription_session.updated")
+      PublishEvent(wire, OutputJson(asr.session.SessionResource()));
+    else if (const auto* settings = event.Find("session"))
+      PublishEvent(wire, OutputJson(*settings));
+    else
+      PublishEvent(wire);
+    asr.decoder.Acknowledge();
+    asr.output.Acknowledge();
+  }
+  return true;
+}
+
+bool RealtimeMediaCall::Deliver(WebSocketOpcode opcode, std::string_view wire) {
+  if (!transcription_) return conversation_->Message(opcode, wire);
+  if (!transcription_->session.Message(opcode, wire)) return false;
+  const auto format = transcription_->session.InputFormat();
+  if (format != input_format_) encoder_.reset();
+  input_format_ = format;
+  return DrainTranscription();
 }
 
 bool RealtimeMediaCall::Receive(char type, std::string_view payload) {
@@ -210,9 +270,9 @@ bool RealtimeMediaCall::Control(WebSocketOpcode opcode, std::string_view wire) {
                     {64, 65536, kWebSocketMessageLimit, true})) {
     const auto type = event.GetString("type");
     if (event.GetString("event_id").size() > 512)
-      return session_.Message(opcode, wire);
+      return Deliver(opcode, wire);
     ChatPlanError error;
-    if (type == "output_audio_buffer.clear" &&
+    if (conversation_ && type == "output_audio_buffer.clear" &&
         ValidateRealtimeWireShape(event, RealtimeShape::kClientEvent, &error)) {
       return Clear(false);
     }
@@ -222,13 +282,17 @@ bool RealtimeMediaCall::Control(WebSocketOpcode opcode, std::string_view wire) {
     const bool may_change_format =
         type == "session.update" && update &&
         (update->Has("prompt") || (input && input->Has("format")));
-    if (encoder_ &&
-        (type == "input_audio_buffer.commit" || may_change_format) &&
-        ValidateRealtimeWireShape(event, RealtimeShape::kClientEvent, &error) &&
-        !Input({}, true))
-      return false;
+    bool flush = (type == "input_audio_buffer.commit" || may_change_format) &&
+                 ValidateRealtimeWireShape(event, RealtimeShape::kClientEvent, &error);
+    if (transcription_ && type == "transcription_session.update" && update &&
+        update->Has("input_audio_format")) {
+      RealtimeTranscriptionCommand command;
+      flush = ParseRealtimeTranscriptionCommand(wire, kWebSocketMessageLimit,
+                                                &command).ok();
+    }
+    if (encoder_ && flush && !Input({}, true)) return false;
   }
-  return session_.Message(opcode, wire);
+  return Deliver(opcode, wire);
 }
 
 bool RealtimeMediaCall::Playback(Clock::time_point now) {
@@ -272,7 +336,12 @@ bool RealtimeMediaCall::Tick(Clock::time_point now) {
   if (auto command = sideband_ ? sideband_->Pop() : std::nullopt;
       command && !Control(command->opcode, command->text))
     return false;
-  if (failed_ || !session_.Tick() || !TruncateCleared()) return false;
+  if (failed_) return false;
+  if (transcription_) {
+    if (!transcription_->session.Tick() || !DrainTranscription()) return false;
+  } else if (!conversation_->Tick() || !TruncateCleared()) {
+    return false;
+  }
   if (verified_ && !channel_.Flush(now, send_)) {
     if (channel_blocked_ == Clock::time_point{}) channel_blocked_ = now;
     if (now - channel_blocked_ >= 15s) channel_.Disconnect();
@@ -284,8 +353,13 @@ bool RealtimeMediaCall::Tick(Clock::time_point now) {
 
 bool RealtimeMediaCall::EndTransport() {
   ended_ = true;
-  session_.Cancel();
-  session_.Join();
+  if (transcription_) {
+    transcription_->session.Cancel();
+    transcription_->session.Join();
+  } else {
+    conversation_->Cancel();
+    conversation_->Join();
+  }
   speech_.clear();
   return true;
 }

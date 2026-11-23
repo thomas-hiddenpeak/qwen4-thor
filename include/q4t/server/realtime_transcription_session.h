@@ -123,6 +123,8 @@ class RealtimeTranscriptionSession {
   // Preserves transcript/audio history, budgets, IDs and the absolute clock;
   // never reloads a model, replays audio, or repeats session.created.
   ObjectReply Recover(RealtimeTranscriptionSettings settings);
+  io::Json SessionResource(bool legacy = false) const;
+  RealtimeAudioFormat InputFormat() const { return settings_.format; }
   size_t QueuedItems() const { return jobs_.size(); }
   // Session-owner only; a completed worker still owns admission until join.
   bool Executing() const { return worker_.joinable(); }

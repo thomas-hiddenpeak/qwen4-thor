@@ -2915,3 +2915,47 @@ Q4T_TEST(realtime_webrtc_verified_sctp_and_sideband_share_one_conversation) {
             audio.EndTransport());
   return true;
 }
+
+Q4T_TEST(realtime_transcription_call_owns_input_and_excludes_chat_output) {
+  InputFixture f;
+  auto side = std::make_shared<LiveSideband>();
+  std::vector<Json> events;
+  RealtimeMediaCall call(*f.cb.input, 60, kWebSocketMessageLimit,
+      [&](char type, std::string_view bytes) {
+        if (type != 'D') return false;
+        Json event;
+        if (!io::ParseJson(std::string(bytes), &event)) return false;
+        events.push_back(std::move(event));
+        return true;
+      }, side, true);
+  Q4T_CHECK(call.Start(Object({{"type", String("transcription")}})).ok());
+  Q4T_CHECK(!call.Receive('P', "00"));
+  Q4T_CHECK(call.Receive('V', {}) && call.Receive('R', {}));
+  Q4T_CHECK(call.Tick(Clock::now()) && events.size() == 1);
+  const auto* session = events.front().Find("session");
+  Q4T_CHECK(session && session->GetString("object") == "realtime.transcription_session");
+  Q4T_CHECK(call.Receive('D', R"({"type":"response.create","event_id":"chat"})"));
+  Q4T_CHECK(call.Tick(Clock::now()) && events.back().GetString("type") == "error");
+  Q4T_CHECK(call.Receive('D', R"({"type":"transcription_session.update","session":{"input_audio_format":"g711_ulaw"}})"));
+  Q4T_CHECK(call.Tick(Clock::now()) && events.back().GetString("type") == "transcription_session.updated");
+  std::shared_ptr<const std::string> snapshot;
+  uint64_t cursor = 0;
+  Q4T_CHECK(side->AttachRealtime(&cursor, &snapshot).ok());
+  Json current;
+  Q4T_CHECK(io::ParseJson(*snapshot, &current));
+  Q4T_CHECK(current.GetString("type") == "transcription" &&
+            Field(Field(Field(current, "audio"), "input"), "format").GetString("type") == "audio/pcmu");
+  Q4T_CHECK(call.Receive('P', std::string(12000, 1)));
+  Q4T_CHECK(call.Receive('D', R"({"type":"input_audio_buffer.commit"})"));
+  const auto deadline = Clock::now() + 2s;
+  while (Clock::now() < deadline && std::ranges::none_of(events, [](const auto& e) {
+    return e.GetString("type") == "conversation.item.input_audio_transcription.completed";
+  })) {
+    Q4T_CHECK(call.Tick(Clock::now()));
+    std::this_thread::sleep_for(1ms);
+  }
+  Q4T_CHECK(f.asr_calls == 1 && f.asr_released == 1 &&
+            events.back().GetString("type") == "conversation.item.input_audio_transcription.completed");
+  Q4T_CHECK(call.EndTransport() && call.Finished());
+  return true;
+}

@@ -64,6 +64,7 @@ ObjectReply ParseRealtimeWebRtcOffer(std::string_view content_type,
     status = parts.Feed(body);
     if (status) status = parts.Finish();
     if (!status) return Error(400, "invalid_request", status.message());
+    next.explicit_session = session;
     if (session && !io::ParseJson(configuration, &next.session, true,
                                   {64, 65536, body.size(), true}))
       return Error(400, "invalid_request", "Invalid WebRTC session JSON");

@@ -303,14 +303,17 @@ bool RealtimeTranscriptionSession::ErrorEvent(ObjectReply reply,
   Set(&event, "error", std::move(error));
   return Emit(std::move(event));
 }
-bool RealtimeTranscriptionSession::SettingsEvent(bool legacy, bool created) {
+io::Json RealtimeTranscriptionSession::SessionResource(bool legacy) const {
   auto session = RealtimeTranscriptionSettingsJson(settings_, legacy);
   Set(&session, "id", String(id_));
   Set(&session, "object", String("realtime.transcription_session"));
+  return session;
+}
+bool RealtimeTranscriptionSession::SettingsEvent(bool legacy, bool created) {
   auto event =
       Event(std::string(legacy ? "transcription_session." : "session.") +
             (created ? "created" : "updated"));
-  Set(&event, "session", std::move(session));
+  Set(&event, "session", SessionResource(legacy));
   return Emit(std::move(event));
 }
 ObjectReply RealtimeTranscriptionSession::StartConfigured(const Json& configuration) {

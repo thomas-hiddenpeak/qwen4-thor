@@ -17,6 +17,9 @@ class RealtimeMediaCall final : public IMediaCall {
                     size_t message_bytes, Send send,
                     std::shared_ptr<LiveSideband> sideband,
                     RealtimeCarrier carrier = RealtimeCarrier::kSip);
+  RealtimeMediaCall(RealtimeTranscriptionCallbacks callbacks,
+                    uint32_t max_audio_seconds, size_t message_bytes, Send send,
+                    std::shared_ptr<LiveSideband> sideband, bool data_channel);
   ObjectReply Start(const io::Json& configuration) override;
   bool Receive(char type, std::string_view payload) override;
   void CloseDataChannel() override { channel_.Disconnect(); }
@@ -38,6 +41,8 @@ class RealtimeMediaCall final : public IMediaCall {
   bool Publish(std::string_view wire);
   void PublishEvent(std::string_view wire, std::string_view session = {});
   bool Input(std::string_view pcm, bool finish = false);
+  bool Deliver(WebSocketOpcode opcode, std::string_view wire);
+  bool DrainTranscription();
   bool Control(WebSocketOpcode opcode, std::string_view wire);
   bool Playback(Clock::time_point now);
   void BufferEvent(const char* type, const std::string& id);
@@ -54,6 +59,16 @@ class RealtimeMediaCall final : public IMediaCall {
   size_t pcm_bytes_ = 0;
   Clock::time_point next_{}, blocked_{};
   bool verified_ = false, ended_ = false, failed_ = false;
-  RealtimeConversationSession session_;
+  // Transcription has a worker-side producer. Drain its bounded mailbox on
+  // the carrier owner before publishing to SCTP or a sideband.
+  struct Transcription {
+    Transcription(RealtimeTranscriptionCallbacks callbacks,
+                  uint32_t max_seconds, size_t message_bytes);
+    WebSocketOutput output{kWebSocketOutputMaximumBytes, 64, kWebSocketMaximumLimit};
+    WebSocketDecoder decoder{false, kWebSocketMaximumLimit};
+    RealtimeTranscriptionSession session;
+  };
+  std::unique_ptr<RealtimeConversationSession> conversation_;
+  std::unique_ptr<Transcription> transcription_;
 };
 }  // namespace q4t::server

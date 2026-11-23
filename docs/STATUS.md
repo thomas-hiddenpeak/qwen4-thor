@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Realtime 临时凭据已通过两个真实 WebRTC 业务场景。对话调用保留文本模态和手动音频设置，按连接覆盖指令并回答 42。仅转录的凭据在独立 Opus 音轨上识别出“请查询当前项目版本号。”，切换为对话类型得到 400。通过轮 47.60 秒、同模型 Chat=42，GPU 已释放。下一步为凭据恢复、可选前置组合及发行，默认 rev426。[配置与媒体证据](evidence/serve-realtime-client-rtc-20261123/README.md)。
+
 Realtime 临时凭据已通过原生 TLS 和官方 SDK 的对话与转录验收。相同客户的长期 Key 与临时凭据共享准入；到期的新连接返回 401，已建立会话继续回答 42。真实录音转录为“请查询当前项目版本号。”。1 次启动，51.89 秒，GPU 已释放。继续 WebRTC 临时凭据、组合恢复及发行，默认 rev426。[签发和兑换证据](evidence/serve-realtime-client-issuer-20261123/README.md)。
 
 Realtime 短期凭据的本机签发与兑换组件、对话及转录类型已通过 7 项原生和 7 项公开合同检查，508 个 SDK 样例零差异。并发签发、客户隔离、到期回收及继续持有已兑换的配置均已验证。公开 HTTP 签发、原生入口兑换和实际客户端业务待接通。[凭据合同](evidence/serve-realtime-client-secret-contract-20261123/README.md)。

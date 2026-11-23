@@ -248,3 +248,19 @@ await peer.setRemoteDescription({type: 'answer', sdp: await response.text()});
 只传 `sdp` 时 SDK 使用 `application/sdp`。同时指定 `session` 时 SDK 使用 multipart；两种形式均返回 201、SDP 答复和相对的 `Location`。部署允许浏览器跨来源读取该头时，在原生 CORS 策略的 `exposed_headers` 中加入 `location`。长期 API Key 由服务端持有。
 
 ICE 和 DTLS 验证完成后，数据通道收到 `session.created` 和 `conversation.created`，客户端按 Realtime 事件合同发送更新、工具结果和控制命令。语音经 SRTP 音轨双向传输。同客户服务端可使用 `OpenAIRealtimeWS({callID: callId, options}, client)` 接入当前会话。主动挂断使用 `await client.realtime.calls.hangup(callId)`，媒体进程确认排空后返回空正文 200。不同客户使用同一 call ID 接入或挂断均返回 404。
+
+### 给客户端签发短期凭据
+
+服务端应用以该客户的长期 Key 调用签发接口，将响应中的 `value` 交给客户端。下面的配置建立手动提交的中文转录会话。客户端通过原生 TLS 提交 SDP，或用官方 SDK 以 `intent: 'transcription'` 建立 WSS。
+
+```js
+const grant = await client.realtime.clientSecrets.create({
+  expires_after: { anchor: 'created_at', seconds: 60 },
+  session: {
+    type: 'transcription',
+    audio: { input: { transcription: { model: 'qwen3-asr-0.6b', language: 'zh' }, turn_detection: null } }
+  }
+});
+```
+
+`expires_at` 为新连接的最晚使用时间（Unix 秒）。同一客户的长期和短期凭据共享业务准入。需要文本或语音对话时使用 `type: 'realtime'`；WebRTC 的显式 `session` 可覆盖该对话的配置。模型进程保存签发记录，重启后应用须重新签发凭据。已通过本机原生 TLS 实测的范围见 [WSS 及到期行为](evidence/serve-realtime-client-issuer-20261123/README.md) 和 [WebRTC 音轨与配置覆盖](evidence/serve-realtime-client-rtc-20261123/README.md)。

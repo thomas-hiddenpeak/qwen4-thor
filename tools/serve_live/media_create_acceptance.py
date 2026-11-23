@@ -151,6 +151,8 @@ def main(stage=Stage, schema=SCHEMA):
         require(sha(worker)==read(args.qualification)['worker_sha256'], 'qualified media worker')
         plan.update(schema=schema,limits=limits,worker=str(worker),worker_sha256=sha(worker),
                     port=18721,operations_port=18722,public_port=18723)
+        if hasattr(stage, 'prepare_fixture'):
+            stage.prepare_fixture(out, plan)
         save(out/'plan.json',plan)
     elif args.action=='run':
         plan=read(out/'plan.json')

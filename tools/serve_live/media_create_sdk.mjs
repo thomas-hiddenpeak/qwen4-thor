@@ -19,8 +19,14 @@ check(endpoint.protocol === 'https:' && endpoint.hostname === '127.0.0.1' &&
 const { default: OpenAI } = await import(pathToFileURL(path.join(sdk, 'index.mjs')));
 const client = new OpenAI({ baseURL: endpoint.toString(), apiKey: args.key, maxRetries: 0, timeout: 20000 });
 try {
-  if (args.action === 'create') {
-    const response = await client.realtime.calls.create(args.request);
+  if (args.action === 'create' || args.action === 'credential-call') {
+    let account = client;
+    if (args.action === 'credential-call') {
+      const grant = await client.realtime.clientSecrets.create({session:args.credential});
+      check(grant.session.type === args.credential.type, 'credential resource type');
+      account = new OpenAI({baseURL:endpoint.toString(), apiKey:grant.value, maxRetries:0, timeout:20000});
+    }
+    const response = await account.realtime.calls.create(args.request);
     console.log(JSON.stringify({status:response.status, sdp:await response.text(),
       mime:response.headers.get('content-type'), location:response.headers.get('location')}));
   } else if (args.action === 'hangup') {
