@@ -3,9 +3,9 @@
   "sdk_version": "7.47.0",
   "compiler_version": "5.9.3",
   "validation_mode": "concrete-sdk-union-members",
-  "graph_sha256": "90654ce5a77094d472223bdf5fe44cdb43362ef08e8054f61ad8d3780cd07898",
-  "fixture_sha256": "829efd389766c0a6694539480a09fcb60cb5c522f43b06ad65c9f19ab723fdbe",
-  "concrete_fixture_sha256": "9c77b67d8e04acdf7cb4d19eb2f7436177caa3e36c0470dc84d3902994b5c832",
+  "graph_sha256": "4055c325fca57d6de987aa4f9e93bca1fe2f3740d5e65eec23156b23ebfe0d0c",
+  "fixture_sha256": "890ba9594787b38e0dc7ad398ef041ba8bee467b098833929adecb2b1c3a36fe",
+  "concrete_fixture_sha256": "90b744d30c9ce3bcc4cd74a558b9b9a7426c16b558a59c2f9f377cb4365ea440",
   "member_names": {
     "conversation_item": [
       {
@@ -312,9 +312,21 @@
         "name": "CallRejectParams",
         "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/calls.ts\").CallRejectParams"
       }
+    ],
+    "client_secret_create": [
+      {
+        "name": "ClientSecretCreateParams",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/client-secrets.ts\").ClientSecretCreateParams"
+      }
+    ],
+    "client_secret_created": [
+      {
+        "name": "ClientSecretCreateResponse",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/client-secrets.ts\").ClientSecretCreateResponse"
+      }
     ]
   },
-  "concrete_checks": 2422,
+  "concrete_checks": 2428,
   "vectors": [
     {
       "name": "conversation_item_0_valid",
@@ -9058,6 +9070,164 @@
       "accepted": false
     },
     {
+      "name": "client_secret_create_0_valid",
+      "shape": "client_secret_create",
+      "input": {},
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "client_secret_create_0_extra",
+      "shape": "client_secret_create",
+      "input": {
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'ClientSecretCreateParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_create_0_wrong_root",
+      "shape": "client_secret_create",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2559,
+          "message": "Type '\"not-an-item\"' has no properties in common with type 'ClientSecretCreateParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_valid",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 1,
+        "session": {
+          "id": "fixture",
+          "object": "realtime.session",
+          "type": "realtime"
+        },
+        "value": "fixture"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateResponse"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "client_secret_created_0_extra",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 1,
+        "session": {
+          "id": "fixture",
+          "object": "realtime.session",
+          "type": "realtime"
+        },
+        "value": "fixture",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_wrong_root",
+      "shape": "client_secret_created",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_missing_expires_at",
+      "shape": "client_secret_created",
+      "input": {
+        "session": {
+          "id": "fixture",
+          "object": "realtime.session",
+          "type": "realtime"
+        },
+        "value": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'expires_at' is missing in type '{ session: { id: string; object: \"realtime.session\"; type: \"realtime\"; }; value: string; }' but required in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_missing_session",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 1,
+        "value": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'session' is missing in type '{ expires_at: number; value: string; }' but required in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_missing_value",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 1,
+        "session": {
+          "id": "fixture",
+          "object": "realtime.session",
+          "type": "realtime"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'value' is missing in type '{ expires_at: number; session: { id: string; object: \"realtime.session\"; type: \"realtime\"; }; }' but required in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
       "name": "call_accept_flat",
       "shape": "call_accept",
       "input": {
@@ -9344,6 +9514,140 @@
         "ResponseFunctionCallArgumentsDeltaEvent"
       ],
       "accepted": true
+    },
+    {
+      "name": "secret_default",
+      "shape": "client_secret_create",
+      "positive": true,
+      "input": {},
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "secret_transcription",
+      "shape": "client_secret_create",
+      "positive": true,
+      "input": {
+        "expires_after": {
+          "anchor": "created_at",
+          "seconds": 10
+        },
+        "session": {
+          "type": "transcription",
+          "audio": {
+            "input": {
+              "transcription": {
+                "model": "qwen3-asr-0.6b"
+              }
+            }
+          }
+        }
+      },
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "secret_realtime",
+      "shape": "client_secret_create",
+      "positive": true,
+      "input": {
+        "session": {
+          "type": "realtime",
+          "instructions": "look up the project record"
+        }
+      },
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "secret_unknown_anchor",
+      "shape": "client_secret_create",
+      "input": {
+        "expires_after": {
+          "anchor": "last_use"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '\"last_use\"' is not assignable to type '\"created_at\"'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "secret_wrong_session",
+      "shape": "client_secret_create",
+      "input": {
+        "session": {
+          "type": "live"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '\"live\"' is not assignable to type '\"realtime\" | \"transcription\"'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "secret_reply_has_distinct_expiries",
+      "shape": "client_secret_created",
+      "positive": true,
+      "input": {
+        "value": "ek_fixture",
+        "expires_at": 100,
+        "session": {
+          "id": "sess_fixture",
+          "type": "realtime",
+          "object": "realtime.session",
+          "expires_at": 500
+        }
+      },
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateResponse"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "secret_reply_requires_value",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 100,
+        "session": {
+          "id": "sess_fixture",
+          "type": "transcription",
+          "object": "realtime.transcription_session"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'value' is missing in type '{ expires_at: number; session: { id: string; type: \"transcription\"; object: string; }; }' but required in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
     }
   ]
 }

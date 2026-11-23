@@ -13,7 +13,9 @@ enum class RealtimeShape {
   kResponse,
   kCallAccept,
   kCallRefer,
-  kCallReject
+  kCallReject,
+  kClientSecretCreate,
+  kClientSecretCreated
 };
 Status ValidateRealtimeShape(const io::Json& value, RealtimeShape shape,
                              ChatPlanError* error,

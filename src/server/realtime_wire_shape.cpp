@@ -42,11 +42,13 @@ Status ValidateWireShape(const io::Json& value, RealtimeShape shape,
   }
   const bool flat_session = shape == RealtimeShape::kSession ||
                             shape == RealtimeShape::kCallAccept;
-  if (!flat_session &&
+  const bool secret = shape == RealtimeShape::kClientSecretCreate ||
+                      shape == RealtimeShape::kClientSecretCreated;
+  if (!flat_session && !secret &&
       shape != RealtimeShape::kClientEvent &&
       shape != RealtimeShape::kServerEvent)
     return status;
-  if (!flat_session) {
+  if (!flat_session && !secret) {
     const auto type = value.GetString("type");
     if (type != "session.update" && type != "session.created" &&
         type != "session.updated")
@@ -89,6 +91,19 @@ Status ValidateRealtimeWireShape(const io::Json& value, RealtimeShape shape,
     return shape == RealtimeShape::kCallReject
                ? CheckSipRejectCode(value, error)
                : CheckSipReferTarget(value, error);
+  }
+  if (shape == RealtimeShape::kClientSecretCreate) {
+    auto status = ValidateWireShape(value, shape, error, path);
+    if (!status) return status;
+    const auto* expiry = value.Find("expires_after");
+    const auto* seconds = expiry ? expiry->Find("seconds") : nullptr;
+    if (seconds && (!IsInputInteger(*seconds) || seconds->number < 10 ||
+                    seconds->number > 7200)) {
+      if (error)
+        *error = {"invalid_request", std::string(path) + ".expires_after.seconds", 400};
+      return Status::Fail("Client secret lifetime must be 10 to 7200 seconds");
+    }
+    return {};
   }
   const auto type = value.GetString("type");
   if (shape != RealtimeShape::kServerEvent ||

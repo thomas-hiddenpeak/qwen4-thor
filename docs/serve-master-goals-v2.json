@@ -16336,6 +16336,7 @@
     "sip_dtmf_business_evidence": "evidence/serve-live-sip-dtmf-20261123/README.md",
     "realtime_sip_control_contract_evidence": "evidence/serve-realtime-sip-control-contract-20261123/README.md",
     "realtime_sip_accept_business_evidence": "evidence/serve-realtime-sip-accept-20261123/README.md",
+    "realtime_client_secret_component_evidence": "evidence/serve-realtime-client-secret-contract-20261123/README.md",
     "realtime_sideband_capacity_evidence": "evidence/serve-realtime-sideband-capacity-20261123/README.md",
     "realtime_webrtc_create_business_evidence": "evidence/serve-realtime-webrtc-create-20261123/README.md",
     "realtime_sip_playout_history_evidence": "evidence/serve-realtime-call-playout-20261123/README.md"

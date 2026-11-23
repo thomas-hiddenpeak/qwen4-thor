@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Realtime 短期凭据的本机签发与兑换组件、对话及转录类型已通过 7 项原生和 7 项公开合同检查，508 个 SDK 样例零差异。并发签发、客户隔离、到期回收及继续持有已兑换的配置均已验证。公开 HTTP 签发、原生入口兑换和实际客户端业务待接通。[凭据合同](evidence/serve-realtime-client-secret-contract-20261123/README.md)。
+
 已修复两种入口对 Realtime 旁路连接的误限流。持有主 WebSocket 的客户现在还能同时接入两个合法旁路，第三个收到 429。原生与可选 nginx 各保留一条原始失败，4 项进程回环通过。[容量回归](evidence/serve-realtime-sideband-capacity-20261123/README.md)。
 
 Realtime WebRTC 创建与挂断已通过 Thor 本机原生 TLS 和官方 JS SDK 短验。裸 SDP 及带配置的 multipart 均返回 201，所属客户端的旁路与音轨操作同一会话，其他客户得到 404。一通 Opus 语音查询完成工具回填并播报 rev426，挂断后 Chat=42。67.30 秒，GPU 已释放。接下来补临时客户端凭据及组合恢复、发行，默认 rev426。[真实通话和入口回归](evidence/serve-realtime-webrtc-create-20261123/README.md)。

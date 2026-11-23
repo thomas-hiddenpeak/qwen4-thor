@@ -656,9 +656,11 @@ set(protocol_inputs
   src/server/live_media_policy.cpp
   src/server/live_media_call.cpp
   src/server/realtime_media_call.cpp
+  src/server/realtime_client_secrets.cpp
   src/server/realtime_webrtc_request.cpp
   src/server/realtime_call_pcm.cpp
   src/server/realtime_media_call.h
+  src/server/realtime_client_secrets.h
   src/server/realtime_webrtc_request.h
   src/server/realtime_call_pcm.h
   src/server/live_sideband.cpp

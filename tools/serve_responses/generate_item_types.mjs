@@ -27,6 +27,7 @@ const inputItems = resolve(sdk, 'src/resources/responses/input-items.ts');
 const inputTokens = resolve(sdk, 'src/resources/responses/input-tokens.ts');
 const realtime = resolve(sdk, 'src/resources/realtime/realtime.ts');
 const realtimeCalls = resolve(sdk, 'src/resources/realtime/calls.ts');
+const realtimeSecrets = resolve(sdk, 'src/resources/realtime/client-secrets.ts');
 const live = resolve(sdk, 'src/resources/live/live.ts');
 const decisions = resolve(sdk, 'src/resources/decisions.ts');
 const liveSessions = resolve(sdk, 'src/resources/live/sessions.ts');
@@ -34,7 +35,7 @@ const liveSideband = resolve(sdk, 'src/resources/live/sideband/sideband.ts');
 const liveForks = resolve(sdk, 'src/resources/live/forks/forks.ts');
 const program = ts.createProgram([source, conversation,
   ...(mode === '--api' ? [conversations, inputItems, inputTokens] : []),
-  ...(mode === '--realtime' ? [realtime, realtimeCalls] : []),
+  ...(mode === '--realtime' ? [realtime, realtimeCalls, realtimeSecrets] : []),
   ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--live' ? [live, liveSessions, liveSideband, liveForks] : [])], {
   target: ts.ScriptTarget.ES2022,
@@ -165,6 +166,8 @@ const roots = mode === '--decisions' ? {
   call_accept: exported(realtimeCalls, 'CallAcceptParams'),
   call_refer: exported(realtimeCalls, 'CallReferParams'),
   call_reject: exported(realtimeCalls, 'CallRejectParams'),
+  client_secret_create: exported(realtimeSecrets, 'ClientSecretCreateParams'),
+  client_secret_created: exported(realtimeSecrets, 'ClientSecretCreateResponse'),
 } : {
   input_item: exported(source, 'ResponseInputItem'),
   output_item: exported(source, 'ResponseOutputItem'),

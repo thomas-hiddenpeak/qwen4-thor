@@ -112,7 +112,22 @@ const types = live ? Object.fromEntries(Object.entries(liveTypes).map(([k,v])=>[
   server_event: 'RealtimeServerEvent', response_create: 'RealtimeResponseCreateParamsWithReferencesParam',
   session: 'RealtimeSessionCreateRequest', response: 'RealtimeResponse',
   call_accept: 'CallAcceptParams', call_refer: 'CallReferParams', call_reject: 'CallRejectParams',
+  client_secret_create: 'ClientSecretCreateParams', client_secret_created: 'ClientSecretCreateResponse',
 } : {input_item:'ResponseInputItem',output_item:'ResponseOutputItem',conversation_item:'ConversationItem'};
+if (realtime) vectors.push(
+  {name:'secret_default',shape:'client_secret_create',positive:true,input:{}},
+  {name:'secret_transcription',shape:'client_secret_create',positive:true,input:{
+    expires_after:{anchor:'created_at',seconds:10},session:{type:'transcription',
+      audio:{input:{transcription:{model:'qwen3-asr-0.6b'}}}}}},
+  {name:'secret_realtime',shape:'client_secret_create',positive:true,input:{
+    session:{type:'realtime',instructions:'look up the project record'}}},
+  {name:'secret_unknown_anchor',shape:'client_secret_create',input:{expires_after:{anchor:'last_use'}}},
+  {name:'secret_wrong_session',shape:'client_secret_create',input:{session:{type:'live'}}},
+  {name:'secret_reply_has_distinct_expiries',shape:'client_secret_created',positive:true,input:{
+    value:'ek_fixture',expires_at:100,session:{id:'sess_fixture',type:'realtime',object:'realtime.session',expires_at:500}}},
+  {name:'secret_reply_requires_value',shape:'client_secret_created',input:{
+    expires_at:100,session:{id:'sess_fixture',type:'transcription',object:'realtime.transcription_session'}}},
+);
 if(live) vectors.push(
  {name:'manual_start_native_model_pcm',shape:'client_event',positive:true,input:{type:'session.start',event_id:'s1',session:{model:'q4t',audio:{format:{type:'audio/pcm',rate:16000}},store:false}}},
  {name:'manual_start_model_missing',shape:'client_event',input:{type:'session.start',session:{audio:{format:{type:'audio/pcm',rate:24000}}}}},
@@ -129,7 +144,8 @@ if(live) vectors.push(
 );
 const directory = resolve(outputDir); mkdirSync(directory, { recursive: true });
 const fixture = resolve(directory, 'sdk-shape-cases.mts');
-const realtimeFile = shape => resolve(sdk, 'src/resources/realtime', shape.startsWith('call_') ? 'calls.ts' : 'realtime.ts');
+const realtimeFile = shape => resolve(sdk, 'src/resources/realtime', shape.startsWith('call_') ? 'calls.ts' :
+  shape.startsWith('client_secret_') ? 'client-secrets.ts' : 'realtime.ts');
 let source = live ? Object.entries(liveTypes).map(([shape,[file,name]])=>`import type { ${name} } from ${JSON.stringify(resolve(sdk,'src/resources/live/'+file+'.ts'))};`).filter((x,i,a)=>a.indexOf(x)===i).join('\n')+'\n' : realtime ? Object.entries(types).map(([shape,name]) => `import type { ${name} } from ${JSON.stringify(realtimeFile(shape))};\n`).join('') :
   `import type { ResponseInputItem, ResponseOutputItem } from ${JSON.stringify(resolve(sdk, 'src/resources/responses/responses.ts'))};\n` +
   `import type { ConversationItem } from ${JSON.stringify(resolve(sdk, 'src/resources/conversations/items.ts'))};\n`;

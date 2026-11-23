@@ -97,6 +97,19 @@ class VoiceContract(unittest.TestCase):
         for invalid in ({'session':{'type':'realtime'}},{'type':'live'},None):
             self.assertFalse(validator.is_valid(invalid))
 
+    def test_realtime_client_secret_request_and_response_definitions(self):
+        def valid(root, value):
+            return Draft202012Validator({'$defs':self.defs, '$ref':'#/$defs/realtime_client_secret_'+root}).is_valid(value)
+        self.assertTrue(valid('create',{}))
+        for seconds in (10, 600, 7200):
+            self.assertTrue(valid('create',{'expires_after':{'anchor':'created_at','seconds':seconds},
+                'session':{'type':'transcription','audio':{'input':{'transcription':None}}}}))
+        for seconds in (9, 7201, 10.5, '600', None):
+            self.assertFalse(valid('create',{'expires_after':{'seconds':seconds}}))
+        session = {'id':'sess_test','object':'realtime.session','type':'realtime'}
+        self.assertTrue(valid('created', {'session':session,'expires_at':1000,'value':'ek_test'}))
+        self.assertFalse(valid('created', {'session':session,'value':'ek_test'}))
+
     def test_decision_question_bounds_and_wire_results(self):
         def valid(value, name):
             return Draft202012Validator({'$ref':'#/$defs/decisions_'+name,
