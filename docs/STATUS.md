@@ -7,11 +7,23 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+会话的 7 条路径、11 项操作已列入发布用 OpenAPI。创建时的 JSON 或 SSE、事件订阅的 SSE、提交事件的 202 空响应、Beta 请求头和列表元数据筛选都有合同回归。原生入口与可选 nginx 逐路由转发通过。PR #66 首轮 CI 的合同遗漏已修复，等待远端复检。
+
+PR #65 的两项 host-contracts 已通过，受检提交 1d57e0897 与主线合并提交 92eef5137 的文件树一致。rev442 注册配置及交付记录已进入主线。[主线回执](evidence/serve-agent-registration-20261123/main.json)
+
+官方 Node SDK 经原生 TLS 修改会话设置，按 Agent ID 与两个元数据键筛选出一条记录。另一客户列表为空、修改返回 404，清除设置后原筛选同样为空。原回合正常答 42。4 项 CPU 用例覆盖跨存储分页、旧回合快照、回填及保留关系，两种入口的实际转发通过。开销配置的存取已验，费用结算另行验收。[会话设置验收](evidence/serve-agent-sessions-20261123/settings.json)
+
+Managed Agent 流式工具短验通过。首次官方 SDK 在函数参数尚未齐备时就按 item.added 调用本地工具，回填得到 409。修复后只在持久化交接成功后向 SDK 公布可调用项。创建流 26 个事件，工具只执行一次；从空闲会话订阅的下一回合 19 个事件，两次均返回 442，未重复调用旧工具。跨客户订阅 404。继续完善会话管理、取消和恢复。[流式验收](evidence/serve-agent-sessions-20261123/stream.json)
+
+官方 SDK 的真实模型经原生 TLS 调用 read_release_record，从本项目发行回执读出 442，并在同一回合给出正确答案。SDK 重发同一结果得到 202；变更载荷 409、其他客户端 404，只保存一份工具结果。计入两步共 876 tokens。并发 CAS 失败后的重复回执还通过 CPU 验证。下一步继续流式、取消与恢复。[工具闭环](evidence/serve-agent-sessions-20261123/tool-round.json)
+
 PR #65 的首轮 CI 发现 Conversation 用例误包含 Agent 配置路由，网关夹具缺少 Agent ID 和上游路径。已校正分类并单独断言 Agent GET、POST、DELETE 与 Conversation 拒绝结果。两项 C++ 合同、可选 nginx 及已封包原生网关的实际转发检查通过，继续等待两项远端 host-contracts。
+
+Managed Agent 初始非流式回合已通过官方 Node SDK 和真实模型短验。SDK 经原生 TLS 提交发行记录，模型答 442，回读 112 个输入和 4 个输出 token、分页消息及持久化回合；跨客户读取和删除后回读均为 404。保留两次夹具失败。rev442 默认仍为 STOPPED。继续事件、工具回填及后续回合。[会话短验](evidence/serve-agent-sessions-20261123/README.md)
 
 标准 Beta Agents 配置已通过官方 Node SDK 的原生 TLS 短验。两个不同客户端验证了配置隔离，跨模型进程重启后仍可读取和修改七类工具配置。五个 HTTP 操作覆盖 157 条范围内路径中的两条。主轻资格已通过，轻配置可在接管主配置后更新和删除原对象。轻资格文件从 8,385,882 降至 5,451,698 字节，可逐字节还原旧资格。rev442 已发布，默认保持 STOPPED。真实托管接管后旧配置、单终态和 Chat 均可使用。24 小时计划完成预检。[发行与交接](evidence/serve-agent-registration-20261123/delivery.json)[验收与当前边界](evidence/serve-agent-registration-20261123/README.md)
 
-PR #64 的 CI 发现自动回退在拒绝跨能力切换前读取了不相关的中断证据。已调整检查顺序，双工迁移针对性回归通过，等待两项远端 host-contracts。
+PR #64 两项 host-contracts 通过，已合入 main（6f0ffca0f）。合并树与受检提交一致。rev442 注册配置和交付记录见 PR #65。
 
 默认已发布 **rev440，STOPPED**。模型骤停后 SDK 保留原代理输出并收到一个中断终态；网关致命退出后注册回退包接管，续读到旧模型排空前提交的 wait_agent，随后 Chat 答 42。用户 24 小时计划已固定。NVML 冷启动通过原包预检，设备仍由相机与 jtop 持有。[交付回执](evidence/serve-responses-agent-interruption-20261123/delivery.json) 模型步骤排空、RPM、TPM 与非法预约现在各有对应说明。9 项针对性 CPU 检查通过。候选经原生 TLS 和真实模型验证。代理创建子任务后，合法父进程通过配额管理通道发起排空；SDK 收到准确的 service_draining 说明，已提交输出及唯一失败终态可回读，另一客户 404。 当前 rev440 的排空错误码正确、提示仍是旧文案。[排空提示检查](evidence/serve-responses-agent-interruption-20261123/draining-message.json)
 

@@ -20,6 +20,38 @@ from tools.serve_service import supervisor
 
 
 class RouteInventoryTests(unittest.TestCase):
+    def test_managed_agent_event_responses_and_beta_headers_are_published(self):
+        paths = json.loads(frontend.API_CONTRACT.read_text())['paths']
+        collection = '/v1/agents/sessions'
+        operations = [op for path, methods in paths.items()
+                      if path == collection or path.startswith(collection + '/')
+                      for op in methods.values()]
+        expected = {
+            '': ('get', 'post'), '/{session_id}': ('get', 'post', 'delete'),
+            '/{session_id}/events': ('get', 'post'),
+            '/{session_id}/turns': ('get',), '/{session_id}/items': ('get',),
+            '/{session_id}/turns/{turn_id}': ('get',),
+            '/{session_id}/turns/{turn_id}/items': ('get',),
+        }
+        for suffix, methods in expected.items():
+            with self.subTest(suffix=suffix):
+                self.assertTrue(set(methods) <= paths[collection + suffix].keys())
+        for op in operations:
+            beta = next(p for p in op['parameters'] if p['name'] == 'OpenAI-Beta')
+            self.assertTrue(beta['required'])
+            self.assertEqual(beta['example'], 'agents=v1')
+        event = paths[collection + '/{session_id}/events']
+        self.assertNotIn('content', event['post']['responses']['202'])
+        self.assertNotIn('200', event['post']['responses'])
+        self.assertIn('Idempotency-Key', [p['name'] for p in event['post']['parameters']])
+        stream = event['get']['responses']['200']['content']
+        self.assertEqual(set(stream), {'text/event-stream'})
+        self.assertTrue(stream['text/event-stream']['x-q4t-event-schema']['$ref'].endswith('/agent_session_event'))
+        create = paths[collection]['post']['responses']['200']['content']
+        self.assertEqual(set(create), {'text/event-stream', 'application/json'})
+        meta = next(p for p in paths[collection]['get']['parameters'] if p['name'] == 'metadata')
+        self.assertEqual(meta['style'], 'deepObject')
+
     def test_transcription_route_reaches_data_lane_without_exposing_neighbors(self):
         # Exercise the actual patterns emitted into both optional nginx modes.
         patterns = []

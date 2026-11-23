@@ -545,6 +545,11 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/prompt_registry.cpp
   src/server/prompt_api.cpp
   src/server/agent_registration.cpp
+  src/server/agent_session.cpp
+  src/server/agent_session_turn.cpp
+  src/server/agent_session_http.cpp
+  src/server/agent_session_settings.cpp
+  src/server/agent_session_events.cpp
   src/server/chat_storage.cpp
   src/server/chat_storage_options.cpp
   src/server/responses_item_shape.cpp

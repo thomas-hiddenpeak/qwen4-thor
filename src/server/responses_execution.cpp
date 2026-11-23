@@ -49,8 +49,29 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
   return reply;
 }
 
+ObjectReply ResponsesExecution::BindAgentSession(ObjectRequest mutation) {
+  const auto* session = mutation.data.Find("session");
+  const auto* turns = mutation.data.GetArray("turns");
+  if (!prepared_ || begun_ || !plan_.store || plan_.ephemeral ||
+      !envelope_.background || plan_.agent_session_write ||
+      mutation.operation != ObjectOperation::kPut ||
+      mutation.kind != ObjectKind::kAgentSession || mutation.scope != Scope() ||
+      !mutation.id.starts_with("agent_session_") || !ValidId(mutation.id) ||
+      !session ||
+      session->GetString("id") != mutation.id ||
+      session->GetString("object") != "agent.session" || !turns ||
+      turns->array.empty() || turns->array.back().GetString("response_id") != Id() ||
+      mutation.ttl_seconds != 0)
+    return Error(500, "agent_session_binding_invalid", "Invalid session handoff");
+  plan_.agent_session_id = mutation.id;
+  plan_.agent_session_write = std::move(mutation);
+  return {};
+}
+
 size_t ResponsesExecution::RetainedInputBytes() const {
-  size_t bytes = 0;
+  size_t bytes = plan_.agent_session_write
+                     ? OutputJson(plan_.agent_session_write->data).size()
+                     : 0;
   for (const auto* value : {&plan_.request,
                             &plan_.history,
                             &plan_.own_input,

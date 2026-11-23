@@ -1,5 +1,6 @@
 #include "q4t/server/object_retention.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <array>
 #include <ctime>
@@ -81,6 +82,24 @@ void Expired(int64_t until) {
     throw std::runtime_error("retention fixture expiry deadline");
 }
 }  // namespace
+
+Q4T_TEST(object_retention_agent_session_follows_typed_dependencies) {
+  const auto record = Parse(R"({"session":{"object":"agent.session",
+    "agent":{"tools":[{"type":"mcp","credential_id":"cred_owned"}]},
+    "vault_ids":["vault_owned"],"metadata":{"ignore":"resp_unrelated"}},
+    "turns":[{"id":"turn_1","response_id":"resp_owned"}]})");
+  auto graph = InspectObjectRetention("agent_session", record);
+  Q4T_CHECK(!graph.uncertain && graph.references.size() == 3);
+  for (const auto* id : {"resp_owned", "vault_owned", "cred_owned"})
+    Q4T_CHECK(std::find(graph.references.begin(), graph.references.end(), id) !=
+              graph.references.end());
+  Q4T_CHECK(InspectObjectRetention("agent_session", Parse("{}")).uncertain);
+  Q4T_CHECK(!InspectObjectRetention("agent", Parse(
+      R"({"object":"agent","tools":[{"type":"function","parameters":{}}]})")).uncertain);
+  Q4T_CHECK(InspectObjectRetention("agent", Parse(
+      R"({"object":"agent","tools":[{"type":"future"}]})")).uncertain);
+  return true;
+}
 
 Q4T_TEST(object_retention_expired_active_cas_can_finish_without_extending_expiry) {
   Fixture f;

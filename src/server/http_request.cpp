@@ -357,6 +357,17 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
         field += ',';
       }
       field.append(value);
+    } else if (name == "idempotency-key" && verb == "POST" &&
+               ParseAgentSessionRoute(target).kind == AgentSessionRouteKind::kEvents) {
+      if (!headers->agent_event_key.empty() || value.empty() ||
+          value.size() > 255 || !std::ranges::all_of(value, [](unsigned char c) {
+            return c >= 0x21 && c <= 0x7e && c != ',';
+          })) {
+        headers->error_code = "invalid_idempotency_key";
+        headers->error_param = "Idempotency-Key";
+        return false;
+      }
+      headers->agent_event_key = value;
     } else if (name == "openai-beta") {
       auto remaining = value;
       for (;;) {
@@ -434,7 +445,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      *path == "/v1/decisions" ||
                      *path == "/v1/embeddings" || *path == "/v1/audio/speech" ||
                      IsResponsesTarget(*path) || IsConversationTarget(*path) ||
-                     IsAgentRegistrationTarget(*path) || IsPromptTarget(*path) ||
+                     IsManagedAgentTarget(*path) || IsPromptTarget(*path) ||
                      IsUploadTarget(*path)
                  ? kChatBodyBytes
                  : 4096);

@@ -62,6 +62,16 @@ APPLICATION_ROUTES = [
       for method in ('GET', 'POST')),
     *((method, '/v1/agents/{agent_id}', 'data' if method == 'POST' else 'control')
       for method in ('GET', 'POST', 'DELETE')),
+    ('POST', '/v1/agents/sessions', 'data'),
+    ('GET', '/v1/agents/sessions', 'control'),
+    ('POST', '/v1/agents/sessions/{session_id}', 'data'),
+    ('POST', '/v1/agents/sessions/{session_id}/events', 'data'),
+    ('GET', '/v1/agents/sessions/{session_id}/events', 'control'),
+    *((method, '/v1/agents/sessions/{session_id}', 'control')
+      for method in ('GET', 'DELETE')),
+    *(('GET', '/v1/agents/sessions/{session_id}/' + suffix, 'control')
+      for suffix in ('turns', 'items', 'turns/{turn_id}',
+                     'turns/{turn_id}/items')),
     *((method, '/v1/prompts', 'control' if method == 'GET' else 'data')
       for method in ('GET', 'POST')),
     *((method, '/v1/prompts/{prompt_id}',
@@ -209,6 +219,8 @@ def route_map():
     rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
+                           'agent_session_[A-Za-z0-9_-]{1,114}' if part == '{session_id}' and path.startswith('/v1/agents/sessions/') else
+                           'turn_[A-Za-z0-9_-]{1,123}' if part == '{turn_id}' else
                            '[A-Za-z0-9_-]{1,128}' if part.startswith('{')
                            else re.escape(part) for part in path.split('/'))
         rows.append('    "~^'+method+':'+pattern+'(?:[?][^#]*)?$" '+lane+';')
@@ -663,6 +675,7 @@ http {{
 {websocket_proxy_headers()}
       proxy_set_header Content-Type $http_content_type;
       proxy_set_header OpenAI-Beta $q4t_responses_beta;
+      proxy_set_header Idempotency-Key $http_idempotency_key;
       proxy_set_header X-Request-Id $http_x_request_id;
 {tunnel_headers()}
       proxy_set_header Authorization $q4t_realtime_issuer;

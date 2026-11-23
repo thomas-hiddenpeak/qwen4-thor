@@ -431,7 +431,7 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(agent_id='agent_1', response_id='resp_1', conversation_id='conv_1',
+            identities = dict(agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
@@ -439,6 +439,8 @@ class NginxTests(unittest.TestCase):
                               voice_id='voice_1', trace_id='trace_1', session_id='live_1', call_id='rtc_1')
             self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
                                  identities.keys())
+            if template.startswith('/v1/agents/sessions/'):
+                identities['session_id'] = 'agent_session_1'
             path = template.format(**identities)
             if method == 'GET' and template != '/v1/live/sessions/{session_id}/content':
                 path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'

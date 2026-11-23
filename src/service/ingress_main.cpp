@@ -419,7 +419,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::RealtimeTraceMethodAllowed(method, path) ||
       server::VoiceMethodAllowed(method, path) ||
       server::ConversationMethodAllowed(method, path) ||
-      server::AgentRegistrationMethodAllowed(method, path) ||
+      server::ManagedAgentMethodAllowed(method, path) ||
       server::PromptMethodAllowed(method, path) ||
       server::McpTunnelMethodAllowed(method, path) ||
       server::ResponsesMethodAllowed(method, path) ||
@@ -434,7 +434,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
                server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||
                server::IsBatchObservation(method, path) ||
-               server::IsAgentRegistrationObservation(method, path) ||
+               server::IsManagedAgentObservation(method, path) ||
                server::IsPromptObservation(method, path) ||
                server::IsCancellationRequest(method, path) ||
                server::IsFileMetadata(method, path) ||
@@ -518,7 +518,9 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            (headers.content_type.empty()
                 ? ""
                 : "Content-Type: " + headers.content_type + "\r\n") +
-           (headers.agents_beta && server::IsAgentRegistrationTarget(path)
+           (headers.agent_event_key.empty() ? "" :
+                "Idempotency-Key: " + headers.agent_event_key + "\r\n") +
+           (headers.agents_beta && server::IsManagedAgentTarget(path)
                 ? "OpenAI-Beta: agents=v1\r\n" : "") +
            (headers.responses_multi_agent && server::IsResponsesTarget(path)
                 ? "OpenAI-Beta: responses_multi_agent=v1\r\n" : "") +

@@ -709,8 +709,17 @@ set(protocol_inputs
   cmake/multi_agent_types.h.in
   src/server/contracts/openai_agent_registration_types_v1.json
   cmake/agent_registration_types.h.in
+  src/server/contracts/openai_agent_session_types_v1.json
+  cmake/agent_session_types.h.in
+  include/q4t/server/agent_session.h
   include/q4t/server/agent_registration.h
   src/server/agent_registration.cpp
+  src/server/agent_session.cpp
+  src/server/agent_session_turn.cpp
+  src/server/agent_session_internal.h
+  src/server/agent_session_http.cpp
+  src/server/agent_session_settings.cpp
+  src/server/agent_session_events.cpp
   include/q4t/server/decision_plan.h
   include/q4t/server/decision_scoring.h
   src/server/decision_plan.cpp
@@ -1002,3 +1011,12 @@ if(NOT agent_registration_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/agent_registration_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/agent_registration_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_agent_session_types_v1.json"
+  Q4T_AGENT_SESSION_TYPES)
+string(FIND "${Q4T_AGENT_SESSION_TYPES}" ")q4t_types\"" agent_session_delimiter)
+if(NOT agent_session_delimiter EQUAL -1)
+  message(FATAL_ERROR "Agent registration type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/agent_session_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/agent_session_types_data.h" @ONLY)

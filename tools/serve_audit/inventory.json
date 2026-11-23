@@ -1951,6 +1951,105 @@
         "src/server/agent_registration.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
+    },
+    "DELETE /v1/agents/sessions/{session_id}": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/items": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/turns": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/turns/{turn_id}": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/turns/{turn_id}/items": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/sessions": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/sessions/{session_id}/events": {
+      "semantics": "按客户和回合匹配工具结果或提交新的输入消息。提交支持幂等键。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_turn.cpp",
+        "tools/serve_responses/agent_session_tools_sdk.mjs"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/events": {
+      "semantics": "原生实时 Agent 会话订阅。SDK 可从空闲会话订阅下一回合。",
+      "boundary": "事件源是该客户实际持久化的模型步骤。",
+      "evidence": [
+        "src/server/agent_session_events.cpp",
+        "tools/serve_responses/agent_session_stream_sdk.mjs"
+      ]
+    },
+    "POST /v1/agents/sessions/{session_id}": {
+      "semantics": "按存储修订更新可变设置，每一步引用不可变历史设置。",
+      "boundary": "直接执行的会话，配额与审批执行仍需单独完成。",
+      "evidence": [
+        "src/server/agent_session_settings.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp",
+        "tools/serve_responses/agent_session_settings_sdk.mjs"
+      ]
+    },
+    "GET /v1/agents/sessions": {
+      "semantics": "按客户端隔离、固定游标、agent_id 与多键 metadata 精确筛选会话。",
+      "boundary": "直接执行的会话，配额与审批执行仍需单独完成。",
+      "evidence": [
+        "src/server/agent_session_settings.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp",
+        "tools/serve_responses/agent_session_settings_sdk.mjs"
+      ]
     }
   },
   "whitelists": {
@@ -2565,8 +2664,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "4bfc4f8c87f143d0e059f60dd86943a3462e6099dee73c3aa83a092aa96e9edf",
-    "cmake/ChatProtocolIdentity.cmake": "d707d16e44e62ba437118ad5c67a288adcd054300690240b2a5ce9d956215bd2",
+    "CMakeLists.txt": "de965ef0e003d71efd91b83caecc849d223b00c996acbb892c139e893ec2b836",
+    "cmake/ChatProtocolIdentity.cmake": "d3e57274ace043692560c99189ec28a7345e881671c7d9d1766dbf9212554c75",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2643,7 +2742,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "610b9a3aa7c8eb4faf8e73a6d4c20d488111a9d15ef5d17ff13d59f923cd7ca1",
+    "include/q4t/server/application_routes.h": "1435dbd1867fef640c400d55157e6a87edf883824d28f5dc99f196863ae19914",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -2697,7 +2796,7 @@
     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
     "include/q4t/server/conversation_api.h": "df3cb4b69686e881fcaa1f9e46f0f97309cb8feddf21a09e457ee86f1842b878",
-    "include/q4t/server/conversation_state.h": "b30f3ba111a2ce4170542a4961215a396581b223cd9dd075397f5425d81a0a03",
+    "include/q4t/server/conversation_state.h": "073237c038816155bbacecbec129e5dfee77f7cb7dd45068903cfa34f8a0fc95",
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
     "include/q4t/server/cuda_quota_policy.h": "e4143f1ec2f099edd81796bfca6db5cf916d547456af96c370d43991e176e297",
     "include/q4t/server/custom_grammar.h": "d560f89881ff27ce260c939d046a7b5f5c5afccce2125e4170ef53a661f507ec",
@@ -2731,12 +2830,12 @@
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
     "include/q4t/server/grammar_process.h": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447",
-    "include/q4t/server/http_connection.h": "7f70394ab29cc4a2cfafb6c5c88328670f3c2a0f7c7e31ea0441648c85b9d2e0",
+    "include/q4t/server/http_connection.h": "c7e4a32c512526cea236237d30f0060cd1795b56586663b46ecfed6bac069509",
     "include/q4t/server/http_framing.h": "689fd32f9bf2b042c8f8b59cebd92d70d55f7b950c1f475babfe736420765524",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
-    "include/q4t/server/http_request.h": "0286c17017661ab1e160995ce13686d9aa855072e8bdb56910247d3d6e77e2d5",
-    "include/q4t/server/http_response.h": "7fd3b6ffe5f4e8dae61d09e30b316c759d6835db82ba39935ad523d3884adc25",
+    "include/q4t/server/http_request.h": "ec5b83482a084eb7ac7f9f8c80bbe77280d7bf4dfbc69260a6cf4012e22a8dc4",
+    "include/q4t/server/http_response.h": "5caca8e269329b47d50d23bbc194556695422d59dd0f85f4f6fed89cd4a4cb49",
     "include/q4t/server/input_contract.h": "af0929dfa050a137da35156e2fa4398f3710eee05cc3db0c5538ffa7825c6209",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
     "include/q4t/server/input_snapshot_bindings.h": "d856b9d2be400c9ed24a31a6689ae935c1bbdecb8647d303a6a809db13d96f37",
@@ -2790,7 +2889,7 @@
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
-    "include/q4t/server/object_store.h": "67ac341d9379ac1e568b5dd7e886bbc8b17059d8de6615d4eb3554f0e1852501",
+    "include/q4t/server/object_store.h": "6c82f4c4527629537f17a0ce3cbfec97690f0c657871dd919fb11361afd72c43",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -2858,7 +2957,7 @@
     "include/q4t/server/responses_api.h": "d8e3a8d4f8f25e3cbd3e5ff06c0bd5f19812488c60396d34e8b60689a664021d",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "460e3b7179cdffdd8f9bdbadc0bc9bded877c242ac2434518bd81dbe01430d80",
+    "include/q4t/server/responses_execution.h": "aa8d4443d66059ece77b3eceab3e438d8cc1104bf729ebe27ac1500aa0d7d235",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
     "include/q4t/server/responses_input.h": "9456da1ef5673dd4de669cd80b2f532690815193d466ec5ab97bd4a097b3fc3b",
     "include/q4t/server/responses_item_shape.h": "0d60c4985b05e0cdbf25da8140fd98ec1b176509425be6ca6dbd6c748aa6d5e6",
@@ -2872,7 +2971,7 @@
     "include/q4t/server/responses_plan.h": "2d365baa44c792fcf54322d51b2968b3b635b0d261f2e330f1f758098eacc2af",
     "include/q4t/server/responses_program.h": "3c8c653c9ae3204cf56f029e0be8e83dace56e1b67eeeb088b06a52f89c1baa5",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
-    "include/q4t/server/responses_state.h": "756da8e16496cf55ceaeda06c52616546a288ab2f104bfe27cee899b613d6a6b",
+    "include/q4t/server/responses_state.h": "c71b8cb91d0e8b37f6923445cafdc9ee317a15dd2002c05adf47738efd645ce0",
     "include/q4t/server/responses_tokens.h": "9b1fb8cbea6d9fe24e33fa8af6dd4be3bb90af780b40ee4249450cc007f98324",
     "include/q4t/server/responses_tool_search.h": "6f6e7bfaefa71ff621c2db1d24a6f0fff287e4d4e47968cb8665d081d6e8337f",
     "include/q4t/server/responses_web_search.h": "b1378c90e9f3be4aea864820b06682879693940e448e0d58ad3fa9bdcfa05f06",
@@ -3094,7 +3193,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "c111130f7d68f233b0f99805c8fe636dbd7a909e815d6f3c2554f58214820922",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "1d3321a60f2333281caee8481f9afc1dbb530cbd45dc181d96e41d36ee79b94b",
+    "src/server/chat_http.cpp": "4ae15ab0cd0843a6242ce689d3f1f019a722f612a6ba292dff7c76b9844eba35",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3142,7 +3241,7 @@
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "e47c1f3afbdb7396698035e4e4cae1e2d054762f53300900a360142d4c5c0c56",
+    "src/server/client_request.cpp": "fa38190bedd96146e14a81e356dbe2d05cb7407ba0ccb7a3c7f790cab7a7969c",
     "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
@@ -3151,7 +3250,7 @@
     "src/server/contracts/openai_multi_agent_types_v1.json": "2c07ee92deacfb8c247d6fdd48f6eed1b073c75235065eb6ded5ca23f82f19e6",
     "src/server/contracts/openai_realtime_types_v1.json": "4055c325fca57d6de987aa4f9e93bca1fe2f3740d5e65eec23156b23ebfe0d0c",
     "src/server/conversation_api.cpp": "3c8196c30809f764da5cc714b1f89ec7deefab8ecd86942d7f300bac67e96f41",
-    "src/server/conversation_state.cpp": "631cf5a65ac260da9b14f42687d136eca078dc1b9efffe0d8fab7db64104a7c9",
+    "src/server/conversation_state.cpp": "e974516e7ae4f3c7a65de603794d784a5797e489a3891a788e7746586ab2cfca",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
     "src/server/custom_grammar.cpp": "6ce06340c9b7348533118c8661210d99623c334b5ff6e70b466574d32f5e2dab",
     "src/server/custom_regex.cpp": "eb8ab53b44dbb9ec2011676a854a18e38244975e76955b74a441829bdd67031a",
@@ -3225,7 +3324,7 @@
     "src/server/grammar_process.cpp": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "8f79f7075f2f1a160301bbdd4d7c199c8d9975729d71171cb37deeac37236d75",
+    "src/server/http_request.cpp": "6009ba261b10e4899b4c6e3e4db4e56efb31e263a7b55a28c4755547b067ae32",
     "src/server/http_response.cpp": "d1bfa111f02f70372f566859049d3fd73886155865b97ab74a2ac9e964cbbe54",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -3304,11 +3403,11 @@
     "src/server/native_chat_generation.cpp": "4f223e5f912d2382df67a5258aba6dec0328e4199bf04621da8012fbdd5b183b",
     "src/server/native_crypto.cpp": "9da39bb1de51c80b9a028e4e748a77266a5d145a24173ab5d0fdc192bccde92a",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "7cda7d9110dd5375262220d8dd659a476bb85765ef333c61bfd189d5312acbe2",
-    "src/server/object_retention.cpp": "e78f6d460848f8f24f53d9be0a9ab68f0ff7f7e9aaca3c3a2a37d53826034524",
-    "src/server/object_store.cpp": "48b5bb9a3a6f0e03489f2eb8fa6ea6febdef43af5fe704542f4b7fb64a04aadd",
+    "src/server/object_protocol.h": "70f1079ff33ebbc7eeaf98a2e238b6a772ef351638e6a34e21cbbb08ff0a11d2",
+    "src/server/object_retention.cpp": "372573bbd57fb9bae7c5a2dca751108872898a5e369b57513317eb4f98ab1773",
+    "src/server/object_store.cpp": "e46481f6df495224edce3ce1f53cabd46fdc14aba45cba51cd2ae5f2a31111a2",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
-    "src/server/object_worker.cpp": "68bb06959fe9e695e73092094cc0bed04056e6a5845312f6fc279f3bc3cabd28",
+    "src/server/object_worker.cpp": "c568e41d67c5723851c88953b6813dc5c58fa97329ad602daef2fef754329dba",
     "src/server/output_constraints.cpp": "add0daef3ba87df074329f1ed554220023ab0db4211667f27ea723e23c4cacd9",
     "src/server/output_schema.cpp": "f74cd72e27af2095859c1d6f2f2eb51ab2d8d6317f268c15de571c70fba0a358",
     "src/server/overlapping_output.cpp": "bbc75868fc9be368ced28d5000404e86ee9391b071e4f90465b6c681540a9302",
@@ -3383,7 +3482,7 @@
     "src/server/responses_api.cpp": "a05a5cd8ee8724f874d68a6f8cd9d14e6db5836313c6494baa0f0a0aa4a015ae",
     "src/server/responses_compaction.cpp": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "010754c9234c0ef51fad91f5fbb428cfe9c4a34a727333d07bdb7a8add191c08",
+    "src/server/responses_execution.cpp": "222b0249eb984ac0ec59c049eb9302e58d698de213e6567e33ca44599da4a01b",
     "src/server/responses_execution_compaction.cpp": "7b9fcb2c171311a358c34a5782eea6132a3c23a48b7172cc19b976ea964d2bb3",
     "src/server/responses_execution_files.cpp": "8e2030adeb168b3d8672fee4ad58410f5a21989563d7f788f43ab9b7662ad33b",
     "src/server/responses_execution_inputs.cpp": "c163dd2db6f672d9e18cd6f05f8a219c4f527bb5bbbab45432eaad0dbcb0c885",
@@ -3395,7 +3494,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "2fb783afdb0d4478647b9b1231db474835697971203966bd8cb1c5a696e85940",
-    "src/server/responses_item_shape.cpp": "44219a2b79d4d68842e101bd48dfc7124f06af4c8c52a7ff2703c7ea0849fdfb",
+    "src/server/responses_item_shape.cpp": "4c4d11131cc8a30ea366df11af7514003c14883c2678031f1a6ce6c513464a41",
     "src/server/responses_jobs.cpp": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -3413,7 +3512,7 @@
     "src/server/responses_program_output.cpp": "b3440be7b8d21b0a5488b251979b127e1536bcb47899ead83a2320b4d49c2fc2",
     "src/server/responses_program_plan.cpp": "3980f9a8cbb22904a4cd2f418c4063a781a16b4f95fc6ff97a658aece5e08ff3",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
-    "src/server/responses_state.cpp": "a2d0b29bf0f7a7568e73ffd6a5692a7aebd809387aa80297d4dd91d7194d716b",
+    "src/server/responses_state.cpp": "e0fec5ac58baea6a9c3c1988b94794fd75e2d007370fb05d46c72c99aaf5a40a",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
     "src/server/responses_tokens.cpp": "9ebdf955e1dbe6bacaad748005e8200dff0930a66799ade9c0bff6a7238f32e2",
     "src/server/responses_tool_catalog_history.cpp": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5",
@@ -3530,7 +3629,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "9b6b802f6616cb4844df2ed4ee537d7e91f793a12ebe7bc6f6a3a6c33ec07432",
+    "src/service/ingress_main.cpp": "e37997f49a14f118635d07d975b75342ff02c9f75e7370c5459781d5e6f9dd55",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -3560,7 +3659,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "35ce7940939a31a2e7fee82fc8e7df877f438a83b80874cb438c541294b80278",
+    "tools/serve_gateway/gateway.py": "810aacdef70b1cf903c033621fc5115527f9e03e424380440f157acebfea0ae3",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -3773,8 +3872,16 @@
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
     "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
     "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
-    "src/server/agent_registration.cpp": "d5f0a231ff92c4dcffbce182d445c8c3e6ece6006fd1389d287a367ce6b3718e",
-    "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0"
+    "src/server/agent_registration.cpp": "04930651a2e0744e394f84852aede73c2fa8d1790e6beb7da2dae54f8b459bea",
+    "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
+    "include/q4t/server/agent_session.h": "0b9c5825027bbb6d36dbe5b87ec05aeaa997115ccfe6b30bf2d0f6e500d184f5",
+    "src/server/agent_session.cpp": "0c8b64e96c55b4a7be6fd76d1ec123ad7ad3ece564d86fb05eba373add8254d5",
+    "src/server/agent_session_http.cpp": "b4685757bbd66c0301c3fd9d88a82f484bafbd4304b8d2097c942d8e74a10f87",
+    "src/server/agent_session_turn.cpp": "14c8a07b73cd7c8ba501eb5454de8317ee72d1d5688608e524087a053bb921ed",
+    "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3",
+    "src/server/agent_session_events.cpp": "7f82751d1cfa00c5a3a35d6aeaeccd56bb7a51462715ee13f71fded58861ac1c",
+    "src/server/agent_session_internal.h": "e6e61b98dc310b1fc42b8100e761bcbd2bcfe3d4931d382dbe79e961acc6e413",
+    "src/server/agent_session_settings.cpp": "786d49469a767e68921ad86a7c7005d838ca50d66258fae7e249a2d7ae65c4a2"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6219,6 +6326,167 @@
       "evidence": [
         "src/server/agent_registration.cpp",
         "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "DELETE /v1/agents/sessions/{session_id}": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/items": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/turns": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/turns/{turn_id}": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/turns/{turn_id}/items": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/sessions": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/sessions/{session_id}": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/sessions/{session_id}/items": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/sessions/{session_id}/turns": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/sessions/{session_id}/turns/{turn_id}": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/sessions/{session_id}/turns/{turn_id}/items": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/sessions": {
+      "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_http.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/sessions/{session_id}/events": {
+      "semantics": "按客户和回合匹配工具结果或提交新的输入消息。提交支持幂等键。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_turn.cpp",
+        "tools/serve_responses/agent_session_tools_sdk.mjs"
+      ]
+    },
+    "POST /v1/agents/sessions/{session_id}/events": {
+      "semantics": "按客户和回合匹配工具结果或提交新的输入消息。提交支持幂等键。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_turn.cpp",
+        "tools/serve_responses/agent_session_tools_sdk.mjs"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/events": {
+      "semantics": "原生实时 Agent 会话订阅。SDK 可从空闲会话订阅下一回合。",
+      "boundary": "事件源是该客户实际持久化的模型步骤。",
+      "evidence": [
+        "src/server/agent_session_events.cpp",
+        "tools/serve_responses/agent_session_stream_sdk.mjs"
+      ]
+    },
+    "POST /v1/agents/sessions/{session_id}": {
+      "semantics": "按存储修订更新可变设置，每一步引用不可变历史设置。",
+      "boundary": "直接执行的会话，配额与审批执行仍需单独完成。",
+      "evidence": [
+        "src/server/agent_session_settings.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp",
+        "tools/serve_responses/agent_session_settings_sdk.mjs"
+      ]
+    },
+    "GET /v1/agents/sessions": {
+      "semantics": "按客户端隔离、固定游标、agent_id 与多键 metadata 精确筛选会话。",
+      "boundary": "直接执行的会话，配额与审批执行仍需单独完成。",
+      "evidence": [
+        "src/server/agent_session_settings.cpp",
+        "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp",
+        "tools/serve_responses/agent_session_settings_sdk.mjs"
       ]
     }
   },

@@ -1,6 +1,7 @@
 #include "q4t/server/responses_state.h"
 
 #include <algorithm>
+#include <array>
 #include <ctime>
 #include <unordered_set>
 
@@ -41,7 +42,9 @@ ObjectRequest Write(ObjectKind kind, const std::string& id,
   request.scope = access.scope;
   request.expected_revision = revision;
   request.data = std::move(data);
-  if (permanent) request.ttl_seconds = 0;
+  if (permanent || (kind == ObjectKind::kResponse &&
+                    request.data.Has("agent_session_id")))
+    request.ttl_seconds = 0;
   if (ephemeral) {
     request.ttl_seconds = 600;
     const auto* response = request.data.Find("response");
@@ -61,7 +64,7 @@ ObjectRequest Write(ObjectKind kind, const std::string& id,
   }
   return request;
 }
-Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
+Json SavedResponse(ResponseStatePlan& plan, const Json& response,
                    const Json& events) {
   auto result = Object({{"response", response},
                         {"history", plan.history},
@@ -85,6 +88,15 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
                                                                    : "online")},
               {"conversation_id", String(plan.conversation_id)},
               {"conversation_revision", Number(plan.conversation_revision)}}));
+  if (!plan.agent_session_id.empty()) {
+    if (!plan.agent_turn_started_at && response.GetString("status") == "in_progress")
+      plan.agent_turn_started_at = std::time(nullptr);
+    if (!plan.agent_turn_finished_at && Terminal(response))
+      plan.agent_turn_finished_at = std::time(nullptr);
+    Set(&result, "agent_session_id", String(plan.agent_session_id));
+    Set(&result, "agent_turn_started_at", Number(plan.agent_turn_started_at));
+    Set(&result, "agent_turn_finished_at", Number(plan.agent_turn_finished_at));
+  }
   if (plan.batch_parent)
     Set(&result, "batch_parent", BatchResponseLinkValue(*plan.batch_parent));
   if (plan.multi_agent_beta) Set(&result, "multi_agent_beta", Boolean(true));
@@ -500,6 +512,14 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
     return StateError("Stored response cannot restore execution state");
   plan->id = id;
   plan->scope = access.scope;
+  if (const auto* session = data->Find("agent_session_id")) {
+    if (!session->IsString() || !session->str.starts_with("agent_session_") ||
+        !ValidId(session->str) || !response->GetBool("background"))
+      return StateError("Invalid stored Agent session binding");
+    plan->agent_session_id = session->str;
+    plan->agent_turn_started_at = data->GetInt("agent_turn_started_at");
+    plan->agent_turn_finished_at = data->GetInt("agent_turn_finished_at");
+  }
   if (const auto* selected = data->Find("multi_agent_beta")) {
     if (!selected->IsBool()) return StateError("Invalid stored Beta selector");
     plan->multi_agent_beta = selected->boolean;
@@ -661,11 +681,20 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
   if (!bindings.ok()) return bindings;
   bindings = BindGeneratedContracts(snapshot, plan);
   if (!bindings.ok()) return bindings;
-  auto written =
-      objects_.Execute(Write(ObjectKind::kResponse, plan->id, access, 0,
-                             SavedResponse(*plan, snapshot, events),
-                             !plan->conversation_id.empty(), plan->ephemeral),
-                       access.deadline, access.cancelled);
+  auto mutation = Write(ObjectKind::kResponse, plan->id, access, 0,
+                        SavedResponse(*plan, snapshot, events),
+                        !plan->conversation_id.empty(), plan->ephemeral);
+  if (plan->agent_session_write) {
+    std::array writes{std::move(mutation),
+                      std::move(*plan->agent_session_write)};
+    plan->agent_session_write.reset();
+    auto result = objects_.ExecuteBatch(writes, access.deadline, access.cancelled);
+    if (result.ok()) plan->response_revision = 1;
+    return result;
+  }
+  if (!plan->agent_session_id.empty())
+    return StateError("Agent session creation requires an atomic receipt");
+  auto written = objects_.Execute(mutation, access.deadline, access.cancelled);
   if (written.ok()) plan->response_revision = written.value.GetInt("revision");
   return written;
 }
@@ -901,6 +930,9 @@ ObjectReply ResponsesState::Erase(std::string id, const StateAccess& access) {
   if (!Terminal(response.value))
     return Error(409, "response_not_completed",
                  "Cancel an active response before deletion");
+  if (existing.value.Find("data")->Has("agent_session_id"))
+    return Error(409, "agent_session_owns_response",
+                 "Delete the owning Agent session to release its turn");
   if (const auto* parent = existing.value.Find("data")->Find("batch_parent")) {
     BatchResponseLink link;
     if (!ParseBatchResponseLink(*parent, &link) || link.scope != access.scope ||

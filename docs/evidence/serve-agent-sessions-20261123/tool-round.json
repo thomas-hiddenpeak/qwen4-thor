@@ -1,0 +1,67 @@
+{
+  "gpu": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 36.201,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "lookup": "read_release_record",
+    "publication_revision": 442,
+    "answer": "The actual publication revision is **442**.",
+    "turns": 1,
+    "items": 4,
+    "usage": {
+      "input_tokens": 847,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 29,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 876
+    },
+    "replay_status": 202,
+    "conflict_status": 409,
+    "foreign_status": 404,
+    "deleted": true
+  },
+  "identity": {
+    "binary": "27f66b14e1fc7bfdc1fa77efcf9f3d0a311971ea8073a544d085178d4c7f1578",
+    "ingress": "c543996eb63c57db3dd672de8fdde747b3d4793e740ed2747821ef35ea4cc406",
+    "sdk_driver": "375383e85ee2e8c4080677adb6252e4a3c6c21470e90dce78436c93390e418e2",
+    "protected": {
+      "build/q4t": "479f87dfa7b2f335fdacf163af8e4cbd7e73c20b11c31ec3e3e39d3b173490d0",
+      "build/service/manifest.json": "c4975edef34a88a17957cb248a2884ad36a50f87f3daa1fff1f88d83675c9f77",
+      "build/service.release.json": "2adfd63ad4c072a96480571ea2c9513a956de4bd8bb3e51e9f10f7281a49e3cc",
+      "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+    },
+    "starts": 1,
+    "seconds": 180
+  },
+  "lease": "COMPLETED",
+  "samples": 36,
+  "source_receipt": "docs/evidence/serve-agent-registration-20261123/delivery.json",
+  "race_cpu": [
+    "[PASS] agent_session_tool_action_requires_a_completed_owned_call",
+    "1 tests, 1 passed, 0 failed, 0 skipped"
+  ],
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 118,
+    "native_routes": 199,
+    "reviewed_source_anchors": 1215,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "private_evidence": ".q4t-work/serve-responses-agents-20261123/session-real-tool-01",
+  "release_state": "candidate_only"
+}

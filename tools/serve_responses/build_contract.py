@@ -110,6 +110,16 @@ def schema(graph):
         ('object', 'data', 'has_more', 'first_id', 'last_id'))
     definitions['agents_query'] = obj(dict(limit=dict(type='integer', minimum=1, maximum=100),
         after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
+    sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
+    assert sessions['profile'] == 'q4t-openai-agent-session-types-v1'
+    definitions.update(graph_definitions(sessions, 'agent_session_'))
+    for suffix, member in [('list', 'resource'), ('turn_list', 'turn'), ('item_list', 'item')]:
+        page = copy.deepcopy(definitions['agents_list'])
+        page['properties']['data']['items'] = ref('agent_session_' + member)
+        definitions['agent_session_' + suffix] = page
+    definitions['agent_session_event_batch'] = obj({
+        'events': dict(type='array', minItems=1, maxItems=256,
+                       items=ref('agent_session_input_event'))}, ['events'])
     decisions = json.loads((ROOT/'src/server/contracts/openai_decision_types_v1.json').read_text())
     assert decisions['profile'] == 'q4t-openai-decision-types-v1'
     definitions.update(graph_definitions(decisions, 'decisions_'))
@@ -415,6 +425,17 @@ def add_openapi(paths, response, error):
         ('/v1/agents/{agent_id}', 'get', None, 'agents_resource', None),
         ('/v1/agents/{agent_id}', 'post', 'agents_update', 'agents_resource', None),
         ('/v1/agents/{agent_id}', 'delete', None, 'agents_deleted', None),
+        ('/v1/agents/sessions', 'post', 'agent_session_create', 'agent_session_resource', None),
+        ('/v1/agents/sessions', 'get', None, 'agent_session_list', 'agent_session_query'),
+        ('/v1/agents/sessions/{session_id}', 'get', None, 'agent_session_resource', None),
+        ('/v1/agents/sessions/{session_id}', 'post', 'agent_session_update', 'agent_session_resource', None),
+        ('/v1/agents/sessions/{session_id}', 'delete', None, 'agent_session_deleted', None),
+        ('/v1/agents/sessions/{session_id}/events', 'get', None, None, None),
+        ('/v1/agents/sessions/{session_id}/events', 'post', 'agent_session_event_batch', None, None),
+        ('/v1/agents/sessions/{session_id}/turns', 'get', None, 'agent_session_turn_list', 'agents_query'),
+        ('/v1/agents/sessions/{session_id}/turns/{turn_id}', 'get', None, 'agent_session_turn', None),
+        ('/v1/agents/sessions/{session_id}/items', 'get', None, 'agent_session_item_list', 'agents_query'),
+        ('/v1/agents/sessions/{session_id}/turns/{turn_id}/items', 'get', None, 'agent_session_item_list', 'agents_query'),
         ('/v1/prompts', 'post', 'prompt_create', 'prompt_resource', None),
         ('/v1/prompts', 'get', None, 'prompt_list', 'prompt_query'),
         ('/v1/prompts/{prompt_id}', 'get', None, 'prompt_resource', None),
@@ -459,9 +480,22 @@ def add_openapi(paths, response, error):
                 description='Comma-separated feature selectors. '
                             'responses_multi_agent=v1 selects hosted multi-agent execution and typed history.'))
             query_contract = query + ' with optional beta' if query else 'optional beta'
-        success = response(external(result))
+        event_stream = path.endswith('/events') and method == 'get'
+        accepted = body == 'agent_session_event_batch'
+        if event_stream or accepted:
+            success = response({}, 'Live session events' if event_stream else 'Events accepted')
+            success.pop('content')
+        else:
+            success = response(external(result))
+        if event_stream or body == 'agent_session_create':
+            success.setdefault('content', {})['text/event-stream'] = dict(
+                schema=dict(type='string'), **{'x-q4t-event-schema': external('agent_session_event')})
+        if accepted:
+            parameters.append(dict(name='Idempotency-Key', **{'in': 'header'}, required=False,
+                schema=dict(type='string', minLength=1, maxLength=255, pattern=r'^[!-+\--~]+$')))
+
         operation = dict(operationId=method+'_'+path.strip('/').replace('/', '_').replace('{', '').replace('}', ''),
-            parameters=parameters, responses={'200': success,
+            parameters=parameters, responses={'202' if accepted else '200': success,
                 'default': response(error, 'Native error; unknown/other-client identities return 404')},
             **{'x-q4t-query-contract': query_contract,
                'x-q4t-body-contract': body or 'empty body only'})
@@ -474,6 +508,11 @@ def add_openapi(paths, response, error):
             operation['requestBody'] = dict(required=not optional,
                 content={'application/json': dict(schema=nullable(external(body))
                     if optional else external(body))})
+        if body == 'agent_session_create':
+            operation['description'] = (
+                'Start a model turn with nonempty input and environment.type=none. '
+                'Client function results are submitted to the session events endpoint. '
+                'stream=true selects server-sent events.')
         if body in ('response_create', 'response_compact', 'input_tokens_request'):
             media = operation['requestBody']['content']['application/json']
             media['schema'] = dict(anyOf=[media['schema'], external('agent_history_'+body)])

@@ -168,6 +168,7 @@ Status ParseItemViewOptions(const Json& query, ItemViewOptions* options,
 
 Json ProjectStoredItem(const Json& item, const ItemViewOptions& options,
                        StoredItemView view) {
+  if (view == StoredItemView::kAgentSession) return item;
   auto result = item;
   const auto included = [&](std::string_view key) {
     return std::find(options.include.begin(), options.include.end(), key) !=

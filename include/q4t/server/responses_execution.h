@@ -128,6 +128,7 @@ class ResponsesExecution {
     return access_.deadline;
   }
   // Trusted service origin. It cannot be changed once execution is published.
+  ObjectReply BindAgentSession(ObjectRequest mutation);
   bool BindRateDomain(ClientRateDomain domain) {
     if (domain != ClientRateDomain::kOnline &&
         domain != ClientRateDomain::kBatch)

@@ -68,7 +68,8 @@ bool ApplicationKind(std::string_view kind) {
   return kind == "chat" || kind == "response" || kind == "conversation" ||
          kind == "item" || kind == "prompt" || kind == "batch" ||
          kind == "vector_store" || kind == "vector_store_file" ||
-         kind == "vector_store_batch" || kind == "live_fork_state" || kind == "agent";
+         kind == "vector_store_batch" || kind == "live_fork_state" ||
+         kind == "agent" || kind == "agent_session" || kind == "vault";
 }
 ObjectReply SnapshotConflict() {
   return Error(409, "input_snapshot_reference_conflict",

@@ -1,0 +1,6388 @@
+{
+  "profile": "q4t-openai-agent-session-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "create": 0,
+    "update": 153,
+    "resource": 162,
+    "deleted": 247,
+    "query": 249,
+    "input_event": 255,
+    "event": 277,
+    "item": 347,
+    "turn": 304
+  },
+  "nodes": [
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "agent_id",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 90
+        },
+        {
+          "name": "input",
+          "optional": true,
+          "type": 134
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 146
+        },
+        {
+          "name": "review",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "spend_control",
+          "optional": true,
+          "type": 150
+        },
+        {
+          "name": "stream",
+          "optional": true,
+          "type": 11
+        },
+        {
+          "name": "vault_ids",
+          "optional": true,
+          "type": 61
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "compaction",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "experimental",
+          "optional": true,
+          "type": 9
+        },
+        {
+          "name": "instructions",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "multi_agent",
+          "optional": true,
+          "type": 15
+        },
+        {
+          "name": "reasoning",
+          "optional": true,
+          "type": 20
+        },
+        {
+          "name": "service_tier",
+          "optional": true,
+          "type": 34
+        },
+        {
+          "name": "text",
+          "optional": true,
+          "type": 40
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 50
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        5
+      ]
+    },
+    {
+      "kind": "null"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "async",
+          "optional": true,
+          "type": 6
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        7,
+        8
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": false
+    },
+    {
+      "kind": "literal",
+      "value": true
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "time_awareness",
+          "optional": true,
+          "type": 11
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        7,
+        8
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        13
+      ]
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        13
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        16
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "max_concurrent_subagents",
+          "optional": true,
+          "type": 18
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "boolean"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        19
+      ]
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        21
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "effort",
+          "optional": true,
+          "type": 22
+        },
+        {
+          "name": "summary",
+          "optional": true,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "none"
+    },
+    {
+      "kind": "literal",
+      "value": "minimal"
+    },
+    {
+      "kind": "literal",
+      "value": "low"
+    },
+    {
+      "kind": "literal",
+      "value": "medium"
+    },
+    {
+      "kind": "literal",
+      "value": "high"
+    },
+    {
+      "kind": "literal",
+      "value": "xhigh"
+    },
+    {
+      "kind": "literal",
+      "value": "max"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        31,
+        32,
+        33
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "concise"
+    },
+    {
+      "kind": "literal",
+      "value": "detailed"
+    },
+    {
+      "kind": "literal",
+      "value": "auto"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        33,
+        35,
+        36,
+        37,
+        38,
+        39
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "default"
+    },
+    {
+      "kind": "literal",
+      "value": "flex"
+    },
+    {
+      "kind": "literal",
+      "value": "priority"
+    },
+    {
+      "kind": "literal",
+      "value": "fast"
+    },
+    {
+      "kind": "literal",
+      "value": "ultrafast"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        41
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "format",
+          "optional": true,
+          "type": 42
+        },
+        {
+          "name": "verbosity",
+          "optional": true,
+          "type": 49
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        43,
+        45
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 44
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "text"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "schema",
+          "optional": false,
+          "type": 46
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 48
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 47
+    },
+    {
+      "kind": "any"
+    },
+    {
+      "kind": "literal",
+      "value": "json_schema"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        25,
+        26,
+        27
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        51
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 52
+    },
+    {
+      "kind": "union",
+      "variants": [
+        53,
+        56,
+        58,
+        60,
+        78,
+        86,
+        88
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "defer_loading",
+          "optional": true,
+          "type": 11
+        },
+        {
+          "name": "description",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "parameters",
+          "optional": false,
+          "type": 54
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 55
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 47
+    },
+    {
+      "kind": "literal",
+      "value": "function"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 57
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "tool_search"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": true,
+          "type": 11
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 59
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "programmatic_tool_calling"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_tools",
+          "optional": true,
+          "type": 61
+        },
+        {
+          "name": "connection_origin",
+          "optional": true,
+          "type": 63
+        },
+        {
+          "name": "credential_id",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "request_metadata",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": 11
+        },
+        {
+          "name": "server_label",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "transport",
+          "optional": false,
+          "type": 68
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 77
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        62
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 13
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        64,
+        65
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "service"
+    },
+    {
+      "kind": "literal",
+      "value": "environment"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        67
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 47
+    },
+    {
+      "kind": "union",
+      "variants": [
+        69,
+        73
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "authorization",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "headers",
+          "optional": true,
+          "type": 70
+        },
+        {
+          "name": "server_url",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 72
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        71
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 13
+    },
+    {
+      "kind": "literal",
+      "value": "http"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "args",
+          "optional": true,
+          "type": 61
+        },
+        {
+          "name": "command",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "cwd",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "env",
+          "optional": true,
+          "type": 74
+        },
+        {
+          "name": "env_vars",
+          "optional": true,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 76
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        75
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 13
+    },
+    {
+      "kind": "literal",
+      "value": "stdio"
+    },
+    {
+      "kind": "literal",
+      "value": "mcp"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 61
+        },
+        {
+          "name": "context_size",
+          "optional": true,
+          "type": 49
+        },
+        {
+          "name": "location",
+          "optional": true,
+          "type": 79
+        },
+        {
+          "name": "mode",
+          "optional": true,
+          "type": 81
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 85
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        80
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "city",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "country",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "region",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "timezone",
+          "optional": true,
+          "type": 12
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        82,
+        83,
+        84
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "disabled"
+    },
+    {
+      "kind": "literal",
+      "value": "cached"
+    },
+    {
+      "kind": "literal",
+      "value": "live"
+    },
+    {
+      "kind": "literal",
+      "value": "web_search"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "include_screenshots",
+          "optional": true,
+          "type": 11
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 87
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "computer_use"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 89
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "automations"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        91,
+        92,
+        131,
+        133
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 23
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": true,
+          "type": 61
+        },
+        {
+          "name": "container_size",
+          "optional": true,
+          "type": 93
+        },
+        {
+          "name": "desktop",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "env",
+          "optional": true,
+          "type": 98
+        },
+        {
+          "name": "environment_id",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "environment_template_id",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": 101
+        },
+        {
+          "name": "network",
+          "optional": true,
+          "type": 108
+        },
+        {
+          "name": "packages",
+          "optional": true,
+          "type": 113
+        },
+        {
+          "name": "plugins",
+          "optional": true,
+          "type": 115
+        },
+        {
+          "name": "setup_commands",
+          "optional": true,
+          "type": 121
+        },
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 124
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 130
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        26,
+        94,
+        95
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "small"
+    },
+    {
+      "kind": "literal",
+      "value": "large"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        97
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        99
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 13
+    },
+    {
+      "kind": "never"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        102
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 103
+    },
+    {
+      "kind": "union",
+      "variants": [
+        104,
+        106
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 105
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "file_id"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 107
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "inline"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        109
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "access",
+          "optional": false,
+          "type": 110
+        },
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 61
+        },
+        {
+          "name": "blocked_domains",
+          "optional": true,
+          "type": 61
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        82,
+        111,
+        112
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "enabled"
+    },
+    {
+      "kind": "literal",
+      "value": "restricted"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        114
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "npm",
+          "optional": true,
+          "type": 61
+        },
+        {
+          "name": "python",
+          "optional": true,
+          "type": 61
+        },
+        {
+          "name": "system",
+          "optional": true,
+          "type": 61
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        116
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 117
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 118
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 107
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "media_type",
+          "optional": false,
+          "type": 119
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 120
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "application/zip"
+    },
+    {
+      "kind": "literal",
+      "value": "base64"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        122
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 123
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "command",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "cwd",
+          "optional": true,
+          "type": 12
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        125
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 126
+    },
+    {
+      "kind": "union",
+      "variants": [
+        127,
+        129
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 128
+        },
+        {
+          "name": "version",
+          "optional": true,
+          "type": 12
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "skill_reference"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 118
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 107
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "openai_hosted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": true,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 132
+        },
+        {
+          "name": "workspace_directory",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "self_hosted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "container_size",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "desktop",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "env",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "environment_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "environment_template_id",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "network",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "packages",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "plugins",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "setup_commands",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 100
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 130
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        13,
+        135
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 136
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 137
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 143
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 144
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 138
+    },
+    {
+      "kind": "union",
+      "variants": [
+        139,
+        141
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 140
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "input_text"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 142
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "input_image"
+    },
+    {
+      "kind": "literal",
+      "value": "user"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        145
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "message"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        147
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 13
+    },
+    {
+      "kind": "union",
+      "variants": [
+        23,
+        149
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "auto_review"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        151
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "limit",
+          "optional": false,
+          "type": 152
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        19
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent",
+          "optional": true,
+          "type": 154
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 158
+        },
+        {
+          "name": "review",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "spend_control",
+          "optional": true,
+          "type": 160
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        155
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "model",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "reasoning",
+          "optional": true,
+          "type": 156
+        },
+        {
+          "name": "service_tier",
+          "optional": true,
+          "type": 34
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 50
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        157
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "effort",
+          "optional": true,
+          "type": 22
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        159
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 13
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        161
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "limit",
+          "optional": false,
+          "type": 152
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent",
+          "optional": false,
+          "type": 163
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 198
+        },
+        {
+          "name": "error",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "last_active_at",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 217
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 218
+        },
+        {
+          "name": "required_actions",
+          "optional": false,
+          "type": 219
+        },
+        {
+          "name": "review",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "spend_control",
+          "optional": true,
+          "type": 236
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 238
+        },
+        {
+          "name": "usage",
+          "optional": false,
+          "type": 243
+        },
+        {
+          "name": "vault_ids",
+          "optional": false,
+          "type": 62
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "compaction",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "experimental",
+          "optional": true,
+          "type": 166
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "instructions",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "multi_agent",
+          "optional": false,
+          "type": 169
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "reasoning",
+          "optional": false,
+          "type": 170
+        },
+        {
+          "name": "service_tier",
+          "optional": false,
+          "type": 173
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 174
+        },
+        {
+          "name": "tools",
+          "optional": false,
+          "type": 180
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        165
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "async",
+          "optional": false,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        167
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "time_awareness",
+          "optional": false,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        13
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "max_concurrent_subagents",
+          "optional": false,
+          "type": 152
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "effort",
+          "optional": false,
+          "type": 171
+        },
+        {
+          "name": "summary",
+          "optional": false,
+          "type": 172
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        31,
+        32,
+        33
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        33,
+        35,
+        36,
+        37,
+        38,
+        39
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "format",
+          "optional": false,
+          "type": 175
+        },
+        {
+          "name": "verbosity",
+          "optional": false,
+          "type": 179
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        176,
+        177
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 44
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "schema",
+          "optional": false,
+          "type": 178
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 48
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 47
+    },
+    {
+      "kind": "union",
+      "variants": [
+        25,
+        26,
+        27
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 181
+    },
+    {
+      "kind": "union",
+      "variants": [
+        182,
+        184,
+        185,
+        192,
+        196,
+        197
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "defer_loading",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "description",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "parameters",
+          "optional": false,
+          "type": 183
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 55
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 47
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 59
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_tools",
+          "optional": false,
+          "type": 186
+        },
+        {
+          "name": "connection_origin",
+          "optional": false,
+          "type": 187
+        },
+        {
+          "name": "credential_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "request_metadata",
+          "optional": false,
+          "type": 188
+        },
+        {
+          "name": "required",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "server_label",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "transport",
+          "optional": false,
+          "type": 189
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 77
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        62
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        64,
+        65
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 47
+    },
+    {
+      "kind": "union",
+      "variants": [
+        190,
+        191
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "server_url",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 72
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "args",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "command",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "cwd",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "env_vars",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 76
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": false,
+          "type": 186
+        },
+        {
+          "name": "context_size",
+          "optional": false,
+          "type": 179
+        },
+        {
+          "name": "location",
+          "optional": false,
+          "type": 193
+        },
+        {
+          "name": "mode",
+          "optional": false,
+          "type": 195
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 85
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        194
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "city",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "country",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "region",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "timezone",
+          "optional": false,
+          "type": 168
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        82,
+        83,
+        84
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "include_screenshots",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 87
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 89
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        199,
+        200,
+        216
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 23
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "container_size",
+          "optional": true,
+          "type": 201
+        },
+        {
+          "name": "desktop",
+          "optional": true,
+          "type": 202
+        },
+        {
+          "name": "files",
+          "optional": false,
+          "type": 204
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "network",
+          "optional": false,
+          "type": 208
+        },
+        {
+          "name": "packages",
+          "optional": false,
+          "type": 209
+        },
+        {
+          "name": "plugins",
+          "optional": false,
+          "type": 210
+        },
+        {
+          "name": "skills",
+          "optional": false,
+          "type": 212
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 130
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        26,
+        94,
+        95
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        203
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 205
+    },
+    {
+      "kind": "union",
+      "variants": [
+        206,
+        207
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "size_bytes",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 105
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "size_bytes",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 107
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "access",
+          "optional": false,
+          "type": 110
+        },
+        {
+          "name": "allowed_domains",
+          "optional": false,
+          "type": 62
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "npm",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "python",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "system",
+          "optional": false,
+          "type": 62
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 211
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 107
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 213
+    },
+    {
+      "kind": "union",
+      "variants": [
+        214,
+        215
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 128
+        },
+        {
+          "name": "version",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 107
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "remote_url",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 132
+        },
+        {
+          "name": "workspace_directory",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 13
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session"
+    },
+    {
+      "kind": "array",
+      "element": 220
+    },
+    {
+      "kind": "union",
+      "variants": [
+        221,
+        232,
+        234
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "request",
+          "optional": false,
+          "type": 222
+        },
+        {
+          "name": "request_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 231
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        223,
+        229
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "credential_origin",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "fields",
+          "optional": false,
+          "type": 224
+        },
+        {
+          "name": "options",
+          "optional": false,
+          "type": 226
+        },
+        {
+          "name": "reason",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 228
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 225
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "required",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 227
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "field_ids",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "browser_authentication"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "origin",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "reason",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 230
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "browser_origin_access"
+    },
+    {
+      "kind": "literal",
+      "value": "computer_use_approval_request"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "arguments",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 233
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "function_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 235
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "environment_connection"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        237
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "consumed",
+          "optional": false,
+          "type": 152
+        },
+        {
+          "name": "limit",
+          "optional": false,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        239,
+        240,
+        241,
+        242
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "idle"
+    },
+    {
+      "kind": "literal",
+      "value": "in_progress"
+    },
+    {
+      "kind": "literal",
+      "value": "requires_action"
+    },
+    {
+      "kind": "literal",
+      "value": "failed"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        244
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input_tokens",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "input_tokens_details",
+          "optional": false,
+          "type": 245
+        },
+        {
+          "name": "output_tokens",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "output_tokens_details",
+          "optional": false,
+          "type": 246
+        },
+        {
+          "name": "total_tokens",
+          "optional": false,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "cached_tokens",
+          "optional": false,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "reasoning_tokens",
+          "optional": false,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 248
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "agent_id",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 250
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 252
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        251
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 13
+    },
+    {
+      "kind": "union",
+      "variants": [
+        253,
+        254
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "asc"
+    },
+    {
+      "kind": "literal",
+      "value": "desc"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        256,
+        269,
+        271,
+        273
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "request_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "response",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 268
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        258,
+        262,
+        264
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": false,
+          "type": 259
+        },
+        {
+          "name": "fields",
+          "optional": false,
+          "type": 260
+        },
+        {
+          "name": "selected_option",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 228
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "submit"
+    },
+    {
+      "kind": "array",
+      "element": 261
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "field_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": false,
+          "type": 263
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 228
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "cancel"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "decision",
+          "optional": false,
+          "type": 265
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 230
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        263,
+        266,
+        267
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "approve"
+    },
+    {
+      "kind": "literal",
+      "value": "deny"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.input.computer_use_approval_request_result"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": false,
+          "type": 135
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 270
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.input.message"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 272
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.input.cancel"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "error",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "output",
+          "optional": true,
+          "type": 274
+        },
+        {
+          "name": "success",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 276
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        13,
+        275
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 138
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.input.tool_result"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        278,
+        281,
+        293,
+        295,
+        297,
+        299,
+        301,
+        303,
+        338,
+        340,
+        342,
+        344,
+        346,
+        428,
+        430,
+        432,
+        434,
+        436,
+        438,
+        440,
+        442,
+        444,
+        452,
+        454,
+        456,
+        470,
+        472,
+        474,
+        476,
+        478,
+        480,
+        483,
+        485
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "error",
+          "optional": false,
+          "type": 279
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 280
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "message",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "param",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "error"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 282
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 292
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "error",
+          "optional": false,
+          "type": 283
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 285
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        284
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "message",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        242,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "pending"
+    },
+    {
+      "kind": "literal",
+      "value": "ready"
+    },
+    {
+      "kind": "literal",
+      "value": "connected"
+    },
+    {
+      "kind": "literal",
+      "value": "disconnected"
+    },
+    {
+      "kind": "literal",
+      "value": "suspended"
+    },
+    {
+      "kind": "literal",
+      "value": "expired"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.environment.ready"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 282
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 294
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.environment.suspended"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 282
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 296
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.environment.expired"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "reset_count",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 298
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.environment.reset"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "delta",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 300
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.output.command_execution_output.delta"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 162
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 302
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.created"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn",
+          "optional": false,
+          "type": 304
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 337
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "completed_at",
+          "optional": false,
+          "type": 152
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "error",
+          "optional": false,
+          "type": 305
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 331
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "started_at",
+          "optional": false,
+          "type": 152
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 332
+        },
+        {
+          "name": "subagent_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "usage",
+          "optional": false,
+          "type": 243
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        306
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code",
+          "optional": false,
+          "type": 307
+        },
+        {
+          "name": "message",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "context_length_exceeded"
+    },
+    {
+      "kind": "literal",
+      "value": "session_budget_exceeded"
+    },
+    {
+      "kind": "literal",
+      "value": "usage_limit_exceeded"
+    },
+    {
+      "kind": "literal",
+      "value": "project_spend_limit_exceeded"
+    },
+    {
+      "kind": "literal",
+      "value": "organization_spend_limit_exceeded"
+    },
+    {
+      "kind": "literal",
+      "value": "organization_usage_limit_exceeded"
+    },
+    {
+      "kind": "literal",
+      "value": "billing_not_active"
+    },
+    {
+      "kind": "literal",
+      "value": "credit_balance_exhausted"
+    },
+    {
+      "kind": "literal",
+      "value": "rate_limit_exceeded"
+    },
+    {
+      "kind": "literal",
+      "value": "flex_unavailable"
+    },
+    {
+      "kind": "literal",
+      "value": "server_overloaded"
+    },
+    {
+      "kind": "literal",
+      "value": "cyber_policy"
+    },
+    {
+      "kind": "literal",
+      "value": "misalignment_policy_violation"
+    },
+    {
+      "kind": "literal",
+      "value": "connection_failed"
+    },
+    {
+      "kind": "literal",
+      "value": "server_error"
+    },
+    {
+      "kind": "literal",
+      "value": "authentication_error"
+    },
+    {
+      "kind": "literal",
+      "value": "invalid_request"
+    },
+    {
+      "kind": "literal",
+      "value": "resource_not_found"
+    },
+    {
+      "kind": "literal",
+      "value": "sandbox_error"
+    },
+    {
+      "kind": "literal",
+      "value": "executor_version_incompatible"
+    },
+    {
+      "kind": "literal",
+      "value": "active_turn_not_steerable"
+    },
+    {
+      "kind": "literal",
+      "value": "request_timeout"
+    },
+    {
+      "kind": "literal",
+      "value": "internal_error"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        240,
+        242,
+        333,
+        334,
+        335,
+        336
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "queued"
+    },
+    {
+      "kind": "literal",
+      "value": "waiting"
+    },
+    {
+      "kind": "literal",
+      "value": "completed"
+    },
+    {
+      "kind": "literal",
+      "value": "cancelled"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.created"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn",
+          "optional": false,
+          "type": 304
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 339
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.in_progress"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn",
+          "optional": false,
+          "type": 304
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 341
+        },
+        {
+          "name": "usage",
+          "optional": false,
+          "type": 243
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.completed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn",
+          "optional": false,
+          "type": 304
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 343
+        },
+        {
+          "name": "usage",
+          "optional": false,
+          "type": 243
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.failed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn",
+          "optional": false,
+          "type": 304
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 345
+        },
+        {
+          "name": "usage",
+          "optional": false,
+          "type": 243
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.cancelled"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item",
+          "optional": false,
+          "type": 347
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 152
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 427
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        348,
+        362,
+        368,
+        370,
+        377,
+        384,
+        386,
+        391,
+        397,
+        402,
+        413,
+        415,
+        417,
+        419,
+        421,
+        423,
+        425
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 349
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "phase",
+          "optional": false,
+          "type": 355
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 358
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 360
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 145
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 350
+    },
+    {
+      "kind": "union",
+      "variants": [
+        351,
+        352,
+        353
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 140
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 142
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 354
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "output_text"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        356,
+        357
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "commentary"
+    },
+    {
+      "kind": "literal",
+      "value": "final_answer"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        143,
+        359
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "assistant"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        240,
+        335,
+        361
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "incomplete"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 363
+        },
+        {
+          "name": "summary",
+          "optional": false,
+          "type": 364
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 367
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        240,
+        335,
+        361
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 365
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 366
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "summary_text"
+    },
+    {
+      "kind": "literal",
+      "value": "reasoning"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "arguments",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 233
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        240,
+        242,
+        335,
+        361
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "error",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 371
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 376
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        13,
+        372
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 373
+    },
+    {
+      "kind": "union",
+      "variants": [
+        374,
+        375
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 140
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 142
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "function_call_output"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 378
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "recipient_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "sender_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 383
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 379
+    },
+    {
+      "kind": "union",
+      "variants": [
+        380,
+        381
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 354
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "encrypted_content",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 382
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "encrypted_content"
+    },
+    {
+      "kind": "literal",
+      "value": "agent_message"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "arguments",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "error",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "server_label",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 385
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "mcp_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 387
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 390
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        388
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 389
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "computer_screenshot"
+    },
+    {
+      "kind": "literal",
+      "value": "computer_use_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "request",
+          "optional": false,
+          "type": 392
+        },
+        {
+          "name": "request_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 231
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "credential_origin",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "fields",
+          "optional": false,
+          "type": 393
+        },
+        {
+          "name": "options",
+          "optional": false,
+          "type": 395
+        },
+        {
+          "name": "reason",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 228
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 394
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "required",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 396
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "field_ids",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "request_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "response",
+          "optional": false,
+          "type": 398
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 401
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        399,
+        400
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": false,
+          "type": 259
+        },
+        {
+          "name": "selected_option",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 228
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": false,
+          "type": 263
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 228
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "computer_use_approval_request_result"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": false,
+          "type": 403
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 360
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 412
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        404,
+        406,
+        408,
+        410
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "queries",
+          "optional": false,
+          "type": 186
+        },
+        {
+          "name": "query",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 405
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "search"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 407
+        },
+        {
+          "name": "url",
+          "optional": false,
+          "type": 168
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "open_page"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "pattern",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 409
+        },
+        {
+          "name": "url",
+          "optional": false,
+          "type": 168
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "find_in_page"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 411
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "other"
+    },
+    {
+      "kind": "literal",
+      "value": "web_search_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "command",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "cwd",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "duration_ms",
+          "optional": false,
+          "type": 152
+        },
+        {
+          "name": "exit_code",
+          "optional": false,
+          "type": 152
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 414
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "command_execution"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "content",
+          "optional": false,
+          "type": 378
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 416
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "create_subagent_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 378
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "recipient_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "sender_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 418
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "send_subagent_input_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "recipient_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "sender_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 420
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "resume_subagent_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "recipient_agent_ids",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "sender_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 422
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "wait_for_subagents_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "recipient_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "sender_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 424
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "interrupt_subagent_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "recipient_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "sender_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 426
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "close_subagent_call"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.item.added"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 162
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 429
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.idle"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 162
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 431
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.in_progress"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 162
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 433
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.requires_action"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 162
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 435
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.failed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 282
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 437
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.environment.pending"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 282
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 439
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.environment.connected"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 282
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 441
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.environment.disconnected"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 282
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 443
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.environment.failed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "subagent",
+          "optional": false,
+          "type": 445
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 451
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "closed_at",
+          "optional": false,
+          "type": 152
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "instructions",
+          "optional": false,
+          "type": 446
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 447
+        },
+        {
+          "name": "opened_at",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "parent_agent_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 448
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        378
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.subagent"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        449,
+        450
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "active"
+    },
+    {
+      "kind": "literal",
+      "value": "closed"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.subagent.created"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "subagent",
+          "optional": false,
+          "type": 445
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 453
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.subagent.active"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "subagent",
+          "optional": false,
+          "type": 445
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 455
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.subagent.closed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item",
+          "optional": false,
+          "type": 457
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 469
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        362,
+        368,
+        384,
+        402,
+        413,
+        415,
+        417,
+        419,
+        421,
+        423,
+        425,
+        458,
+        460,
+        463
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 459
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "phase",
+          "optional": false,
+          "type": 355
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 359
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 360
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 145
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 380
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 461
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 390
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        462
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 389
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "request",
+          "optional": false,
+          "type": 464
+        },
+        {
+          "name": "request_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 231
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "credential_origin",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "fields",
+          "optional": false,
+          "type": 465
+        },
+        {
+          "name": "options",
+          "optional": false,
+          "type": 467
+        },
+        {
+          "name": "reason",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 228
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 466
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "required",
+          "optional": false,
+          "type": 17
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 468
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "field_ids",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "label",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.item.done"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "part",
+          "optional": false,
+          "type": 380
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 471
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.content_part.added"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "part",
+          "optional": false,
+          "type": 380
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 473
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.content_part.done"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "delta",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 475
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.output_text.delta"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 477
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.output_text.done"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "part",
+          "optional": false,
+          "type": 365
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "summary_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 479
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.reasoning_summary_part.added"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "part",
+          "optional": false,
+          "type": 365
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 481
+        },
+        {
+          "name": "summary_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 482
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        361
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.reasoning_summary_part.done"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "delta",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "summary_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 484
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.reasoning_summary_text.delta"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "item_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "output_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "summary_index",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 13
+        },
+        {
+          "name": "turn_id",
+          "optional": false,
+          "type": 168
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 486
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.turn.reasoning_summary_text.done"
+    }
+  ],
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/beta/agents/agents.ts": "03d26f89be2ce0137ef1326e8e196138c8a5a882af3c845cb05d6f6303dc19a2",
+    "src/resources/beta/agents/sessions/sessions.ts": "80ee2d0fdfcc6579e4b76f31b4401f88f65acd36b817e98eb7f3c979d5bb0cca",
+    "src/resources/beta/agents/sessions/turns/turns.ts": "fe8b44a1227041176c34413a9d645b8bc68673ce1ed612a9fc63a3b979b05730"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}
