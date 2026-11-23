@@ -111,7 +111,7 @@ class McpSdk(unittest.TestCase):
     def replace_front(self,name,plain=False):
         if self.front:self.front.close()
         self.front=NativeIngress(self.out/name,Path(os.environ['Q4T_INGRESS']),free_port(),
-            self.server.server_port,free_port(),'e'*64,{'alpha':'A'*40},
+            self.server.server_port,None,'e'*64,{'alpha':'A'*40},
             None if plain else self.tls,lambda:True)
 
     def start(self,mode,*,plain=False,history=None,wrong_ca=False):

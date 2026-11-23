@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+修复 PR #75 的 Realtime SDK 验收夹具。CI 在证书用例启动前报告运维端口与已有端口冲突。15 个使用模拟上游的入口现按已选监听端口、上游端口选择第三个端口，同一轮被排除的端口保持占用到选择完成。本机通过 17 项 SDK 检查、1 项固定监听地址的恢复检查和 1 项端口重用反例。下一步在修复提交重跑 PR 检查。[验收回执](evidence/serve-agent-workspaces-20261124/pr75-port-selection.json)
+
 PR #74 的两项 host-contracts 检查通过，已合入 main（`e753ec82bb`），合并树与受检提交一致。主线现包含四项会话产物操作及 50 MiB Files 源文件的复制与回收修复。rev454 发布回执和会话延迟工具发现另随下一组提交。[主线回执](evidence/serve-agent-workspaces-20261124/artifact-main.json)
 
 Agent 会话候选已通过官方 SDK 的延迟函数发现与回填。模型实际搜索并调用 read_release_record；客户端在回填前撤销函数，服务仍接受原调用的结果，模型回答真实发行记录中的 452。跨客户回填为 404，独立 Chat 答 42。完成 49 项针对性 CPU 测试和一次 41.543 秒的原生 TLS 短验。函数撤销和同名参数替换在下一次模型调用生效；会话 API 只展示标准可见项目。当前默认仍为 rev454。继续核对多步工具回合的流式输出下标及执行能力。[候选验收](evidence/serve-agent-workspaces-20261124/tool-search.json)

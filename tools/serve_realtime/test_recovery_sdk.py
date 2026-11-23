@@ -9,7 +9,6 @@ import unittest
 from tools.serve_realtime import test_history_sdk as history
 from tools.serve_realtime.history_acceptance import settings
 from tools.serve_realtime.ingress_fixture import NativeIngress
-from tools.serve_realtime.test_transcription_sdk import free_port
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -58,7 +57,7 @@ class RecoverySdk(unittest.TestCase):
     def test_explicit_loopback_plaintext_mode_does_not_require_tls(self):
         old=self.front;old.close()
         self.front=NativeIngress(self.out/'plain',Path(os.environ['Q4T_INGRESS']),
-            old.port,self.server.server_port,free_port(),'e'*64,{'alpha':'A'*40},
+            old.port,self.server.server_port,None,'e'*64,{'alpha':'A'*40},
             None,lambda:True)
         value=self.finish(self.start('complete',secure=False))
         self.assertEqual(value['transport'],'ws-loopback')
@@ -92,7 +91,7 @@ class RecoverySdk(unittest.TestCase):
         value=self.finish(process);self.assertEqual(value['close_code'],1006)
         old.close()
         self.front=NativeIngress(self.out/'recovered',Path(os.environ['Q4T_INGRESS']),
-            old.port,self.server.server_port,free_port(),'e'*64,{'alpha':'A'*40},
+            old.port,self.server.server_port,None,'e'*64,{'alpha':'A'*40},
             self.tls,lambda:True)
         after=self.finish(self.start('complete'))
         self.assertEqual(after['close_code'],1000)

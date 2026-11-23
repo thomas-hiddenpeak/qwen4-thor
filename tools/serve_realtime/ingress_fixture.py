@@ -4,6 +4,7 @@ Uses the production CPU ingress and its PID-bound admission transport. A fixed
 owned-backend decision is an explicit controller fixture, not Guardian recovery
 qualification. API keys, TLS keys and binding tokens stay in private files.
 """
+from contextlib import ExitStack
 import hashlib
 import json
 import os
@@ -31,11 +32,24 @@ def certificate(directory):
     return dict(certificate=str(cert), key=str(key), ca='', require_client_certificate=False)
 
 
+def unused_operations_port(listener, upstream):
+    # Hold any rejected ephemeral port until the kernel assigns a distinct one.
+    with ExitStack() as reserved:
+        while True:
+            candidate = reserved.enter_context(socket.socket())
+            candidate.bind(('127.0.0.1', 0))
+            port = candidate.getsockname()[1]
+            if port not in (listener, upstream):
+                return port
+
+
 class NativeIngress:
     def __init__(self, directory, binary, port, backend_port, operations_port,
                  token, clients, tls, backend_alive, *, client_inflight=2, body_bytes=1048576):
         self.directory = Path(directory)
         self.directory.mkdir(mode=0o700)
+        if operations_port is None:
+            operations_port = unused_operations_port(port, backend_port)
         self.port = port
         self.process = None
         self.closed = threading.Event()

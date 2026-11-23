@@ -1,0 +1,18 @@
+{
+  "failed_job": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45267610940/job/138018582929",
+  "original_head": "b9e3dc18cd9079776897d9092d6194835ca9bce5",
+  "failure": "q4t_realtime_semantic_sdk_contracts: invalid operations upstream port before the untrusted-TLS case started",
+  "other_job": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45267516532/job/138018243338",
+  "fixture_sites": 15,
+  "checks": {
+    "official_local_sdk": 17,
+    "forced_port_reuse": 1,
+    "fixed_listener_recovery": 1,
+    "audit_mutations": 38
+  },
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/pr75-fixture-cpu-01.log": "c44095f98d0464e406860ca1dac75b9df2126b2a3d611dcaa1a5a438f4f8d882",
+    ".q4t-work/serve-responses-agents-20261123/pr75-fixture-port-regression.log": "24e9bbaf8767b75dc649a5443cc53e1ffd75f178bd3b9acce7710df03fc4f9f2",
+    ".q4t-work/serve-responses-agents-20261123/pr75-fixed-public-port.log": "a54effd1c4c544c5a1587f9d87934826075da98a0e6d0e86020a9184864df7d3"
+  }
+}

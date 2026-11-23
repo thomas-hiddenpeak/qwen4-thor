@@ -86,7 +86,7 @@ class RecoverySdk(unittest.TestCase):
         self.thread=threading.Thread(target=self.server.serve_forever);self.thread.start()
         self.front=None;self.addCleanup(self.close)
         self.front=NativeIngress(self.out/'ingress',Path(os.environ['Q4T_INGRESS']),free_port(),
-            self.server.server_port,free_port(),'e'*64,{'alpha':'A'*40},self.tls,lambda:True)
+            self.server.server_port,None,'e'*64,{'alpha':'A'*40},self.tls,lambda:True)
 
     def close(self):
         if self.front:self.front.close()
@@ -143,14 +143,14 @@ class RecoverySdk(unittest.TestCase):
     def test_plaintext_completed_tool_needs_explicit_new_connection_after_loss(self):
         old=self.front;old.close()
         self.front=NativeIngress(self.out/'plain',Path(os.environ['Q4T_INGRESS']),old.port,
-            self.server.server_port,free_port(),'e'*64,{'alpha':'A'*40},None,lambda:True)
+            self.server.server_port,None,'e'*64,{'alpha':'A'*40},None,lambda:True)
         process=self.start('hold_complete',plain=True);self.ready(process)
         self.front.process.kill();self.front.process.wait(5)
         value=self.finish(process);self.assertEqual(value['transport'],'ws-loopback')
         self.assertEqual(value['close_code'],1006);self.assertEqual(self.commands.count('response.create'),2)
         old=self.front;old.close()
         self.front=NativeIngress(self.out/'recovered',Path(os.environ['Q4T_INGRESS']),old.port,
-            self.server.server_port,free_port(),'e'*64,{'alpha':'A'*40},None,lambda:True)
+            self.server.server_port,None,'e'*64,{'alpha':'A'*40},None,lambda:True)
         after=self.finish(self.start('complete',plain=True));self.assertEqual(after['close_code'],1000)
         self.assertEqual(self.commands.count('response.create'),4);self.assertEqual(len(self.outputs),2)
 
