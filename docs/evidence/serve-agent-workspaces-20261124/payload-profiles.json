@@ -1,0 +1,50 @@
+{
+  "profiles": {
+    "primary": {
+      "seconds": 46.079908307641745,
+      "starts": 1,
+      "workspace": {
+        "id": "environment_6cb51829fb1fa5377276b040631814b9",
+        "session": "agent_session_0084ee5c800eb2d2adfe2f6680d7d338",
+        "files_digest": "98f9bda58855a438a652c04219927559d192edee92a3ab91ebb3d742ecb616fb",
+        "active_write": 409
+      },
+      "status": "requires_action",
+      "profile_sha256": "405210114da0add45510e800d673dff2176f62fd8123e78a0a74ac80c33f65ac",
+      "predecessor": "2dfe88998e517324a5cb71f02a3cc6d3135157caca3ae49d076755aa196a453f",
+      "sdk": "a0570dc7f3d0f7cb329c8b60b08ee77114db0a97a8e2e5c4c65e99b2fa1ddd0c"
+    },
+    "light": {
+      "seconds": 117.99833770375699,
+      "starts": 1,
+      "workspace": {
+        "id": "environment_6cb51829fb1fa5377276b040631814b9",
+        "session": "agent_session_0084ee5c800eb2d2adfe2f6680d7d338",
+        "files_digest": "98f9bda58855a438a652c04219927559d192edee92a3ab91ebb3d742ecb616fb",
+        "active_write": 409,
+        "byte_length": 0,
+        "disconnected": true
+      },
+      "status": "idle",
+      "profile_sha256": "b2051c6ba5674639ed476bf988487509fc9860aa4561bfc76c27eb12f4629f70",
+      "predecessor": "608e130e4026322b69666b27572caee1c53d7558bf279771ee700c19f95f5125",
+      "sdk": "aa99ba011f09ec0126e5fdf373362a6a743fd21fd5ed1fd431df19e018c65399"
+    }
+  },
+  "qualification": "ACCEPT_HOSTED_WORKSPACES_PRIMARY_LIGHT",
+  "additional_starts": 0,
+  "registry": "c432e0239c2302c81009da7d5502f88b5971e4fbae30e44e6c70acd952838bea",
+  "proofs": {
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-03/acceptance.json": "a486fc871b0c8c4b3d46e85d1ad092815836bb0f6f38ad34ad8bc4225d670b70",
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-03/profile-observations.json": "ff085ce851a574679e56e3d28bbe10f12bb328d80272bd15d50cce14cdd21549",
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-03/lease/exit.json": "4bd5f123364c267902a9ba46d79f4b9c53544d583dc217fd0f94d09fc65efc15",
+    ".q4t-work/serve-responses-agents-20261123/workspace-qualification-retention-03/acceptance.json": "cc4d1a2463a904002546c50eca929ac1b7654ff5636bc95ad7dfa152f6dcf44b",
+    ".q4t-work/serve-responses-agents-20261123/workspace-proof-migration-03.log": "ada2996c1af67a6d7a6c42d00d08d1783159e60f8f467669e7f2312abf56b408",
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-03/primary/session-handoff.json": "a0570dc7f3d0f7cb329c8b60b08ee77114db0a97a8e2e5c4c65e99b2fa1ddd0c",
+    ".q4t-work/serve-responses-agents-20261123/workspace-qualification-retention-03/qualified/primary.json": "405210114da0add45510e800d673dff2176f62fd8123e78a0a74ac80c33f65ac",
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-03/primary/result.json": "4ad4db927537c7d4555e48c17daebf888e37ae2485398332ae55f6d8a1f669d6",
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-03/light/session-handoff.json": "aa99ba011f09ec0126e5fdf373362a6a743fd21fd5ed1fd431df19e018c65399",
+    ".q4t-work/serve-responses-agents-20261123/workspace-qualification-retention-03/qualified/light.json": "b2051c6ba5674639ed476bf988487509fc9860aa4561bfc76c27eb12f4629f70",
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-03/light/result.json": "048bd7f42f4bb0003efe4767f5cfa9cbc16d6bc35af550b3bb21f05ed6684e95"
+  }
+}

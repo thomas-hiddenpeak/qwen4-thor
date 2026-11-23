@@ -24,10 +24,12 @@ WORKSPACE_CAPABILITY = dict(selector='agents=v1', prewarm_seconds=300,
                             network=['disabled'], between_turn_writes=True)
 WORKSPACE_REVIEWED = {
     'primary': {
+        '405210114da0add45510e800d673dff2176f62fd8123e78a0a74ac80c33f65ac',
         '6e28e44b71aab96b044d30301e8b9aa2a36fe882031e4a35d350efa10bd3f846',
         'a4641474c6326b0fd6c40faed6ff8eea95fa1c4a70277dd2061cb9f95d430faa',
     },
     'light': {
+        'b2051c6ba5674639ed476bf988487509fc9860aa4561bfc76c27eb12f4629f70',
         '994c7b2df26b9c275feec6ff859995ea50d92113cee096f764ac1cbacb90b9e5',
         '9d5abc3509687c8f38d690e97c111b80dfc5e07fd0fd47be0976608624182803',
     },
@@ -112,6 +114,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'a486fc871b0c8c4b3d46e85d1ad092815836bb0f6f38ad34ad8bc4225d670b70':
+        '3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed',
     'c4007692ba30e2a42930e73a56b74068fdaa460b869f02a597f86bbf19fe48df':
         '3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed',
     '06022952c38de6d1cebc5a77ab9f254877a73c5eae3796f2259df662b911f658':
