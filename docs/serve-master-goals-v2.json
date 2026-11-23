@@ -10455,8 +10455,8 @@
       }
     }
   ],
-  "next_task": "Qualify Live primary/light managed profiles, service recovery and rollback; complete standalone optional nginx credential compatibility and remaining delivery.",
-  "next": "将已验托管媒体机制纳入实际主轻配置、组合恢复和可回退发行，完成可选旧式 nginx 的临时凭据兼容。默认 rev426。",
+  "next_task": "Seal qualified Live primary/light observations into a managed candidate and verify Guardian recovery, rollback, optional standalone ingress and outstanding master tasks.",
+  "next": "主轻容量已通过实际媒体和跨配置状态短验。继续正式托管包、守护器恢复、版本切换与回退，再补齐可选旧式 nginx 的临时凭据兼容。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16350,6 +16350,7 @@
     "media_worker_install_evidence": "evidence/serve-live-worker-install-20261123/README.md",
     "recording_recovery_prepare_evidence": "evidence/serve-recovery-recording-option-20261123/README.md",
     "managed_trunk_binding_evidence": "docs/evidence/serve-managed-trunk-binding-20261123/",
-    "managed_worker_binding_evidence": "evidence/serve-managed-worker-binding-20261123/README.md"
+    "managed_worker_binding_evidence": "evidence/serve-managed-worker-binding-20261123/README.md",
+    "managed_capacity_business_evidence": "evidence/serve-live-primary-light-20261123/README.md"
   }
 }

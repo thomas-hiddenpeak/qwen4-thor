@@ -1,0 +1,184 @@
+"""Live primary and light business with real managed argv and persistent state."""
+import argparse
+import contextlib
+import http.client
+import json
+import shutil
+import socket
+import ssl
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from tools.serve_live import responses_acceptance as live
+from tools.serve_live import worker_binding_acceptance as workers
+from tools.serve_live import media_create_acceptance as media
+from tools.serve_realtime import transcription_acceptance as base
+from tools.serve_recovery import profile_acceptance as qualify
+from tools.serve_service import package as pkg
+
+PROFILES = ('primary', 'light')
+SCHEMA = 'q4t-live-primary-light-business-v1'
+
+
+def prepare(out, selection):
+    pkg.require(not out.exists(), 'fresh stage required')
+    out.mkdir(mode=0o700, parents=True)
+    state = out/'state'
+    state.mkdir(mode=0o700)
+    previous = ROOT/'build/service'
+    envelope = pkg.read(previous/'manifest.json')
+    selected = pkg.verify(previous/'engine', envelope['engine_manifest_sha256'])
+    qualified = pkg.read(selection)
+    expected = qualified['observation']['workers']
+    pkg.require(qualified['environment']['status'] == 'PASS' and
+                qualified['observation']['restored'] == 201 and
+                qualified['observation']['same_model'], 'worker business qualification')
+    receipt = out/'identity.json'
+    witness = pkg.read(selection.parent/'plan.json')
+    pkg.require(witness['binary_sha256'] == expected['engine_sha256'] and
+                witness['live_workers'] == expected, 'worker witness binary binding')
+    pkg.save(receipt, dict(engine_sha256=expected['engine_sha256'],
+                          ingress_sha256=witness['ingress_sha256']))
+    ports = []
+    with contextlib.ExitStack() as stack:
+        for _ in range(3 * len(PROFILES)):
+            sock = stack.enter_context(socket.socket())
+            sock.bind(('127.0.0.1', 0))
+            ports.append(sock.getsockname()[1])
+    for index, name in enumerate(PROFILES):
+        phase = out/name
+        live.prepare(phase, receipt)
+        plan = pkg.read(phase/'plan.json')
+        plan['port'], plan['operations_port'], plan['public_port'] = ports[3*index:3*index+3]
+        workers.Stage.prepare_fixture(phase, plan)
+        pkg.require(plan['live_workers'] == expected, 'media/engine qualification drift')
+        package_dir = Path(plan['binary']).parent
+        shutil.copy2(phase/'client-policy.json', package_dir/'client-policy.json')
+        # Preserve accepted model/backend selections and both exact capacities.
+        # Each stage has a fresh client policy and shared private object root.
+        core = selected.copy()
+        pkg.require(not (set(core) & {'mcp_policy','web_policy','access_program_policy',
+                                     'file_input_policy'}), 'additional authorities need isolation')
+        settings = dict(core['settings'], profile=envelope['recovery_profiles']['profiles'][name],
+                        port=plan['port'], operations_port=plan['operations_port'])
+        settings['application_state'] = dict(settings['application_state'], directory='', live_recordings=True)
+        core.update(settings=settings, live_workers=expected)
+        command = pkg.command(package_dir, core, state_directory=state)
+        pkg.require(command[0] == plan['binary'] and '--live-recordings' in command and
+                    '--live-worker-sha256' in command, 'managed model command')
+        plan.update(schema=SCHEMA, limits=Stage.limits, name=name, command=command,
+                    capacity=settings['profile'], selected_sha256=pkg.sha(previous/'manifest.json'),
+                    installed_policy_sha256=pkg.sha(package_dir/'client-policy.json'))
+        pkg.save(phase/'plan.json', plan)
+
+
+class Stage(workers.ice.Stage):
+    limits = dict(starts=1, ingress_starts=1, sdk_posts=1, chats=1,
+                  controls=2000, seconds=300)
+
+    def model_command(self):
+        pkg.require(pkg.sha(Path(self.plan['binary']).parent/'client-policy.json') ==
+                    self.plan['client_policy_sha256'] == self.plan['installed_policy_sha256'],
+                    'client policy drift')
+        return self.plan['command']
+
+    def api(self, method, path, *, client='alpha', body=None):
+        ctx = ssl.create_default_context(cafile=self.plan['tls']['certificate'])
+        conn = http.client.HTTPSConnection('127.0.0.1', self.plan['public_port'],
+                                           context=ctx, timeout=10)
+        try:
+            conn.request(method, path, None if body is None else json.dumps(body),
+                         {'Authorization':'Bearer '+self.keys[client], 'Content-Type':'application/json'})
+            response = conn.getresponse()
+            raw = response.read(65537)
+            pkg.require(len(raw) <= 65536, 'conversation response bound')
+            return response.status, json.loads(raw)
+        finally:
+            conn.close()
+
+    def business(self):
+        name = self.plan['name']
+        status, raw = self.http('/v1/config', label='configuration')
+        cfg = json.loads(raw)
+        cap = self.plan['capacity']
+        pkg.require(status == 200 and cfg['runtime']['mtp_enabled'] is cap['mtp_enabled'] and
+                    cfg['runtime']['media_enabled'] is cap['allow_media'] and
+                    cfg['application_state']['live_recordings'] and
+                    cfg['live_worker_profile'] == 'q4t-live-workers-v1', 'effective Live/MTP config')
+        status, capabilities = self.api('GET', '/v1/capabilities', client='gamma')
+        pkg.save(self.out/'capabilities.json', capabilities)
+        pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
+                    cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        shared = self.out.parent/'conversation.json'
+        if name == 'primary':
+            status, value = self.api('POST', '/v1/conversations',
+                body=dict(metadata=dict(check='managed_live_profiles')))
+            pkg.require(status in (200,201) and value['object'] == 'conversation', 'persistent conversation create')
+            pkg.save(shared, dict(id=value['id'], metadata=value['metadata']))
+        else:
+            previous = pkg.read(shared)
+            target = '/v1/conversations/'+previous['id']
+            status, value = self.api('GET', target)
+            pkg.require(status == 200 and value['metadata'] == previous['metadata'] and
+                        value['id'] == previous['id'], 'persistent conversation after profile change')
+            pkg.require(self.api('GET', target, client='beta')[0] == 404,
+                        'conversation owner separation')
+        media.rtc.Gst.init(None)
+        session = dict(model='qwen3.8-flash-next',
+                       client=dict(data_channel=dict(allowed_client_events=['session.close'])))
+        with media.rtc.peer_offer('OPUS') as (peer, _, _, channel, messages, offer, _):
+            reply = self.create(offer, session, client='beta')
+            pkg.require(reply['status'] == 201, 'SDK WebRTC create: '+str(reply.get('code')))
+            ident = reply['data']['session']['id']
+            media.rtc.accept_answer(peer, reply['data']['transport']['sdp'])
+            def observed(kind):
+                return any(x['type'] == kind and x.get('session', {}).get('id') == ident
+                           for x in map(json.loads, list(messages)))
+            media.rtc.wait_for(lambda: observed('session.started'), 'session start', 15)
+            channel.send_string(json.dumps(dict(type='session.close', event_id='finish')))
+            media.rtc.wait_for(lambda: observed('session.closed'), 'session close', 15)
+        self.core('core-after')
+        self.snapshot('drained')
+        pkg.save(self.out/'observation.json', dict(profile=name, protocol=cfg['protocol_source_sha256'],
+            capacity=cap, mtp_enabled=cfg['runtime']['mtp_enabled'], returned_chat='42',
+            media_created=201, session_closed=True, recordings_enabled=True,
+            conversation='created' if name == 'primary' else 'recovered', worker_files=self.plan['live_workers']['files']))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('action', choices=('prepare','run','finalize'))
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--worker-qualification', type=Path)
+    args = parser.parse_args()
+    out = args.output.resolve()
+    pkg.require(out.is_relative_to(ROOT/'.q4t-work'), 'private evidence directory')
+    if args.action == 'prepare':
+        prepare(out, args.worker_qualification)
+        return
+    plans = [pkg.read(out/name/'plan.json') for name in PROFILES]
+    pkg.require(all(p['schema'] == SCHEMA for p in plans), 'profile plan identity')
+    if args.action == 'run':
+        with base.lifecycle.child_subreaper():
+            for plan in plans:
+                Stage(plan).run()
+        return
+    results = [pkg.read(out/n/'result.json') for n in PROFILES]
+    pkg.require(all(r['status']=='PASS' and r['default_unchanged'] and
+                r['seconds'] <= Stage.limits['seconds'] and
+                all(r['counts'][k] == 1 for k in ('starts','ingress_starts','sdk_posts','chats'))
+                for r in results), 'profile business or resource bound')
+    env = qualify.environment(pkg.read(out/'lease/exit.json'),
+        [json.loads(s) for s in (out/'lease/nvml-queries.jsonl').read_text().splitlines()],
+        [pkg.read(out/n/'cleanup.json') for n in PROFILES])
+    pkg.require(all(pkg.sha(ROOT/n) == h for p in plans for n,h in p['sources'].items()),
+                'verified sources changed')
+    pkg.save(out/'acceptance.json', dict(environment=env, results=results,
+        profiles={n:pkg.read(out/n/'observation.json') for n in PROFILES},
+        engine_sha256=plans[0]['binary_sha256'], ingress_sha256=plans[0]['ingress_sha256']))
+
+
+if __name__ == '__main__':
+    main()

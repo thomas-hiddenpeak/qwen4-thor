@@ -1,0 +1,18 @@
+{
+  "primary": {
+    "configuration.wire": "ac5ab2b2a784d32b61cca6f6c0497a9d2b1758317e1d9794021ef04226d78fbd",
+    "capabilities.json": "2f6cbe362401b535fb8aec47dd3346cbc7e2e33e87aa28b2812fd205743de55d",
+    "model-command.json": "5a7500bd65cac1ce241b5bad89e36b41de438997825be6d18bf116f9c10e8fa2",
+    "observation.json": "23d40c7010e4e81a83d893ccf39a3dbfca89f0a5eebfbf3d7500122165812914",
+    "core-after.wire": "325853b1017dc73aae0079259a36b3f21ea797d792146dadbc97f3d3740d2709",
+    "cleanup.json": "672865f223947dde6231678122382a04a781fe6c94b2057a519deed43aecb9fe"
+  },
+  "light": {
+    "configuration.wire": "0ba020465cca9335ef2c7684be3a84073f4f007ef1980797a40c7874d0e7a9df",
+    "capabilities.json": "d2b8e4d17c7bcfa4b898ea814fd5c62ff9bd89282f14648727696328fc82b6b1",
+    "model-command.json": "96258e5c90690be294a043216b8d916c85b8c76204585d66568f20272877fbe5",
+    "observation.json": "11562d7e50fc57dd1b73274c1f4c0e1ded4de95ceaac538677c8b1bc0990fa86",
+    "core-after.wire": "6ab4945072c5abae787aeffbd6544a46b0bf57d4144b4c67ad680fb600a3c218",
+    "cleanup.json": "0f750bc11c5148ede8f949c17e03a30326d712db70c5beeaa6a72fb8d34f5227"
+  }
+}

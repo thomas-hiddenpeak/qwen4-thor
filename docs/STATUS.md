@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主配置与轻量配置已在同一严格 GPU 租约通过 Live 业务短验。两次启动使用实际托管命令和已固定身份的媒体程序；均完成 WebRTC 创建、数据通道开关及 Chat=42。主配置创建的 Conversation 在轻量配置中仅原客户端可读。正式包的守护器恢复和版本回退仍在推进。[业务与边界](evidence/serve-live-primary-light-20261123/README.md)
+
 托管包已支持选配三个安装后的媒体程序，按引擎与发行验收记录绑定 SHA-256。真实 SDK 使用被改变的 WebRTC 程序收到 503，原模型的 Chat 返回 42；放回合格文件后，同一模型上新会话收到 201 并完成数据通道开关。信令与 RTP 的固定身份 CPU 短验也已通过。继续正式主轻组合的封包、恢复和回退。[验证记录](evidence/serve-managed-worker-binding-20261123/README.md)
 
 托管服务可选配 WebRTC 本机地址和 SIP 中继配置。实际引擎在封包时读取私有文件，启动及恢复时对读取到的同一批字节核验 SHA-256。严格 GPU 租约内，替换为另一份语法有效的中继配置后，SIP 报告一次激活失败，同一模型仍通过 Chat 返回 42。六项 CPU 检查覆盖从 CLI 封包、外部文件消失、非法地址到自动回退授权边界。继续媒体程序身份与主轻恢复。[验证记录](evidence/serve-managed-trunk-binding-20261123/)
