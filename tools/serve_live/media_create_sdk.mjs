@@ -32,9 +32,10 @@ try {
   } else if (args.action === 'hangup') {
     const response = await client.realtime.calls.hangup(args.id).asResponse();
     console.log(JSON.stringify({status:response.status, body:await response.text()}));
-  } else if (args.action === 'attach') {
+  } else if (args.action === 'attach' || args.action === 'credential-session') {
     const {OpenAIRealtimeWS} = await import(pathToFileURL(path.join(sdk,'realtime/ws.mjs')));
-    const observer = new OpenAIRealtimeWS({callID:args.id, options:{handshakeTimeout:5000,
+    const target = args.action === 'attach' ? {callID:args.id} : {model:'qwen3.8-flash-next'};
+    const observer = new OpenAIRealtimeWS({...target, options:{handshakeTimeout:5000,
       perMessageDeflate:false, followRedirects:false, maxPayload:8<<20}},client);
     try {
       const result = await new Promise((resolve,reject)=>{

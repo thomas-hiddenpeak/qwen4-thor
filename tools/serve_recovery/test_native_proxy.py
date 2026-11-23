@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import threading
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -31,6 +32,11 @@ class ProxyTests(unittest.TestCase):
         self.port = fixture.free_port()
         directory = self.stack.directory/'optional-front'
         directory.mkdir(mode=0o700)
+        # Exercise the public deployment recipe with fixture ports.
+        readme = (ROOT/'README.md').read_text()
+        front = readme.split('```nginx\nmap $http_upgrade',1)[1].split('\n```',1)[0]
+        front = ('map $http_upgrade'+front).replace('127.0.0.1:8080', f'127.0.0.1:{self.port}').replace(
+            '127.0.0.1:18161', f'127.0.0.1:{self.stack.value["policy"]["listen_port"]}')
         text = f'''daemon off;
 master_process on;
 worker_processes 1;
@@ -44,19 +50,7 @@ http {{
   fastcgi_temp_path {files.quoted(directory/'fastcgi')};
   uwsgi_temp_path {files.quoted(directory/'uwsgi')};
   scgi_temp_path {files.quoted(directory/'scgi')};
-  server {{
-    listen 127.0.0.1:{self.port};
-    location / {{
-      proxy_pass http://127.0.0.1:{self.stack.value['policy']['listen_port']};
-      proxy_http_version 1.1;
-      proxy_set_header Host $http_host;
-      proxy_set_header Connection close;
-      proxy_buffering off;
-      proxy_request_buffering on;
-      proxy_cache off;
-      proxy_next_upstream off;
-    }}
-  }}
+{front}
 }}
 '''
         path = directory/'nginx.conf'
@@ -99,6 +93,31 @@ http {{
         self.stack.ready = False
         self.assertEqual(self.request(dict(prompt='recovering'))[0], 503)
         self.assertEqual(len(self.stack.requests), 1)
+
+    def test_optional_front_passes_realtime_credentials_and_duplex_frames(self):
+        from tools.serve_realtime.test_upgrade_ingress import (
+            NativeUpgrade, fixture_ticket, frame, read_frame)
+        self.rows, self.bad, self.eof = [], '', threading.Event()
+        NativeUpgrade.install_peer(self)
+        key = fixture_ticket()
+        wire, status, headers = NativeUpgrade.connect(self, key=None, port=self.port,
+            path='/v1/realtime?model=qwen3.8-flash-next',
+            fields='Sec-WebSocket-Protocol: realtime, openai-insecure-api-key.'+key+'\r\n')
+        self.assertEqual(status,101)
+        self.assertEqual(headers['sec-websocket-protocol'],'realtime')
+        self.assertNotIn(key,str(headers))
+        self.assertEqual(read_frame(wire.read),(1,b'cpu-ready'))
+        wire.sock.sendall(frame(b'credential session',masked=True))
+        self.assertEqual(read_frame(wire.read),(1,b'credential session'))
+        wire.sock.sendall(frame(b'\x03\xe8',opcode=8,masked=True))
+        self.assertEqual(read_frame(wire.read),(8,b'\x03\xe8'))
+        wire.sock.close()
+        self.assertEqual(self.rows[-1]['headers']['X-Q4T-Client-Id'],'alpha')
+        self.assertEqual(self.rows[-1]['headers']['Sec-WebSocket-Protocol'],'realtime')
+        bad, status, _ = NativeUpgrade.connect(self,key=fixture_ticket(ttl=-5),port=self.port)
+        self.assertEqual(status,401)
+        bad.sock.close()
+        self.assertEqual(len(self.rows),1)
 
     def test_sse_first_frame_is_delivered_before_backend_finishes(self):
         connection = http.client.HTTPConnection('127.0.0.1', self.port, timeout=2)

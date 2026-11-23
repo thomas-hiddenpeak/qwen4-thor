@@ -365,20 +365,34 @@ Responses生成也接受此字段，以保持计数与生成同源。
 原始持久历史不删除；截断、无法缩短或认证失败均返回具体错误，
 无可压缩项不编造模型用量。入口原生支持这两种模式，无需外部网关。
 
-部署方可自行前置nginx或其他HTTP网关，传递普通Bearer Authorization，
-无需提供q4t内部凭据或准入子请求。nginx前置的最小转发配置如下；
-Host须与原生入口策略的`server_name`一致，TLS/来源限制由部署方按需配置：
+部署方可按需在原生入口之前放置 nginx。下面的片段放在 nginx 的
+`http` 块。本机示例将请求转给 18161 端口的 q4t 原生入口；公开监听
+地址、TLS 和来源限制由部署方配置，Host 应与原生 `server_name` 一致。
+长期 Key 和 Realtime 短期凭据均由 q4t 验证。WebSocket 升级时保留
+握手和子协议，普通 HTTP 与 SSE 使用同一入口。
 
 ```nginx
-location / {
-    proxy_pass http://127.0.0.1:18161;
-    proxy_http_version 1.1;
-    proxy_set_header Host $http_host;
-    proxy_set_header Connection "";
-    proxy_buffering off;
-    proxy_request_buffering on;
-    proxy_cache off;
-    proxy_next_upstream off;
+map $http_upgrade $q4t_upgrade {
+    default   "";
+    websocket websocket;
+}
+map $q4t_upgrade $q4t_connection {
+    default   "";
+    websocket upgrade;
+}
+server {
+    listen 127.0.0.1:8080;
+    location / {
+        proxy_pass http://127.0.0.1:18161;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header Upgrade $q4t_upgrade;
+        proxy_set_header Connection $q4t_connection;
+        proxy_buffering off;
+        proxy_request_buffering on;
+        proxy_cache off;
+        proxy_next_upstream off;
+    }
 }
 ```
 

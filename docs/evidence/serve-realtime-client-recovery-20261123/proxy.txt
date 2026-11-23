@@ -1,0 +1,10 @@
+test_optional_front_passes_realtime_credentials_and_duplex_frames (tools.serve_recovery.test_native_proxy.ProxyTests.test_optional_front_passes_realtime_credentials_and_duplex_frames) ... ok
+test_optional_proxy_exit_does_not_stop_native_entrypoint_or_backend (tools.serve_recovery.test_native_proxy.ProxyTests.test_optional_proxy_exit_does_not_stop_native_entrypoint_or_backend) ... ok
+test_sse_first_frame_is_delivered_before_backend_finishes (tools.serve_recovery.test_native_proxy.ProxyTests.test_sse_first_frame_is_delivered_before_backend_finishes) ... ok
+test_standard_proxy_needs_only_public_bearer_and_preserves_recovery (tools.serve_recovery.test_native_proxy.ProxyTests.test_standard_proxy_needs_only_public_bearer_and_preserves_recovery) ... ok
+test_native_ticket_authenticates_the_issuing_key_before_admission (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_native_ticket_authenticates_the_issuing_key_before_admission) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 6.250s
+
+OK

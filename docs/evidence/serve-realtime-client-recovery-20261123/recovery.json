@@ -1,0 +1,50 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 72,
+    "cleanup_complete": true
+  },
+  "phases": [
+    {
+      "seconds": 37.5463344422169,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 3,
+        "issues": 2,
+        "handshakes": 4,
+        "chats": 1,
+        "controls": 34
+      },
+      "observation": {
+        "revoked_issuer": 401,
+        "other_issuer": 101,
+        "same_model": true,
+        "new_session_after_ingress_exit": true
+      }
+    },
+    {
+      "seconds": 37.53782865591347,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "issues": 1,
+        "handshakes": 2,
+        "chats": 1,
+        "controls": 33
+      },
+      "observation": {
+        "previous_store": 401,
+        "new_store": 101
+      }
+    }
+  ],
+  "core": [
+    "42",
+    "42"
+  ],
+  "identical_binding": true,
+  "managed_supervisor": false,
+  "default_unchanged": true
+}

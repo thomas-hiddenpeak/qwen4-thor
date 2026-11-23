@@ -1,0 +1,13 @@
+F
+======================================================================
+FAIL: test_optional_front_passes_realtime_credentials_and_duplex_frames (tools.serve_recovery.test_native_proxy.ProxyTests.test_optional_front_passes_realtime_credentials_and_duplex_frames)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_native_proxy.py", line 113, in test_optional_front_passes_realtime_credentials_and_duplex_frames
+    self.assertEqual(status,101)
+AssertionError: 400 != 101
+
+----------------------------------------------------------------------
+Ran 1 test in 0.765s
+
+FAILED (failures=1)

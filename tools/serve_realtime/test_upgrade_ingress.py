@@ -21,6 +21,14 @@ KEY = 'dGhlIHNhbXBsZSBub25jZQ=='
 GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
 
 
+def fixture_ticket(owner='alpha', key='A'*40, binding='e'*64, ttl=60):
+    payload = f'ek_q4t1.{owner}.{int(time.time())+ttl}.'+'1'*64
+    digest = hashlib.sha256(key.encode()).hexdigest()
+    mac = hmac.digest(binding.encode(), ('q4t.realtime.client_secret.v1/'+
+                      digest+'/'+payload).encode(), 'sha256')
+    return payload+'.'+base64.urlsafe_b64encode(mac).decode().rstrip('=')
+
+
 def frame(data, opcode=1, masked=False):
     assert len(data) < 126
     if not masked:
@@ -147,9 +155,9 @@ class NativeUpgrade(unittest.TestCase):
 
     def connect(self, *, key='A'*40, path='/v1/realtime?intent=transcription',
                 fields='', version='13', ws_key=KEY, framing='', prefix=b'',
-                context=None):
+                context=None, port=None):
         raw = socket.create_connection(('127.0.0.1',
-            self.stack.value['policy']['listen_port']), timeout=3)
+            port or self.stack.value['policy']['listen_port']), timeout=3)
         if context:
             raw = context.wrap_socket(raw, server_hostname='127.0.0.1')
         self.addCleanup(raw.close)
@@ -226,17 +234,11 @@ class NativeUpgrade(unittest.TestCase):
 
     def test_native_ticket_authenticates_the_issuing_key_before_admission(self):
         self.ready()
-        def ticket(owner='alpha', key='A'*40, binding='e'*64, ttl=60):
-            payload = f'ek_q4t1.{owner}.{int(time.time())+ttl}.'+'1'*64
-            digest = hashlib.sha256(key.encode()).hexdigest()
-            mac = hmac.digest(binding.encode(), ('q4t.realtime.client_secret.v1/'+
-                              digest+'/'+payload).encode(), 'sha256')
-            return payload+'.'+base64.urlsafe_b64encode(mac).decode().rstrip('=')
-        valid = ticket()
-        for key, path in [(ticket(ttl=-1), '/v1/realtime'),
-                          (ticket(binding='f'*64), '/v1/realtime'),
-                          (ticket(key='B'*40), '/v1/realtime'),
-                          (ticket(owner='beta'), '/v1/realtime'),
+        valid = fixture_ticket()
+        for key, path in [(fixture_ticket(ttl=-1), '/v1/realtime'),
+                          (fixture_ticket(binding='f'*64), '/v1/realtime'),
+                          (fixture_ticket(key='B'*40), '/v1/realtime'),
+                          (fixture_ticket(owner='beta'), '/v1/realtime'),
                           (valid, '/v1/realtime?call_id=rtc_other'),
                           (valid, '/v1/models')]:
             client, status, _ = self.connect(key=key, path=path)

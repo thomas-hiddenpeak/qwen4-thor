@@ -10453,7 +10453,7 @@
     }
   ],
   "next_task": "Implement Realtime WebRTC call creation and scoped client secrets, investigate the observed structured tool failure and continue remaining Serve delivery.",
-  "next": "Realtime 凭据的原生 TLS、WSS 与加密 WebRTC 对话和实际转录已验。继续凭据恢复、可选前置贯通，定位历史命名工具 502，再做可回退组合发行。当前默认 rev426。",
+  "next": "Realtime 临时凭据已验原生 TLS、WSS、WebRTC 以及入口/模型换代，标准可选 nginx 前置已验 WSS 握手和双向帧。继续托管服务组合、旧式 nginx 独立鉴权、历史命名工具 502 定位和可回退发行。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16341,6 +16341,7 @@
     "realtime_webrtc_create_business_evidence": "evidence/serve-realtime-webrtc-create-20261123/README.md",
     "realtime_sip_playout_history_evidence": "evidence/serve-realtime-call-playout-20261123/README.md",
     "realtime_client_secret_tls_wss_evidence": "evidence/serve-realtime-client-issuer-20261123/README.md",
-    "realtime_client_secret_webrtc_business_evidence": "evidence/serve-realtime-client-rtc-20261123/README.md"
+    "realtime_client_secret_webrtc_business_evidence": "evidence/serve-realtime-client-rtc-20261123/README.md",
+    "realtime_client_secret_generation_evidence": "evidence/serve-realtime-client-recovery-20261123/README.md"
   }
 }
