@@ -3626,7 +3626,7 @@
     "tools/serve_recovery/profile_mcp_reuse.py": "c1da2ae33277ca9e250bdaabf29c5d4ed4490981a4d3aa297845088207490f3d",
     "tools/serve_recovery/profile_mcp_source.py": "ca8f30b89a355623bc7d2ae8a3d3bb8b63fe797c49699ff5ec8e65746e0efff6",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "d1eb44b899ead65f1e1fc21c3c68fb2aed225bc6c2b797c07e2890605c638f06",
+    "tools/serve_recovery/profile_migration.py": "e02ae0a0d6582dd1d427bf450dbd0fa33c4ccf195933ad692c050ee33ba28bf2",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_primary_review.py": "0d3f063119af8fac2b29e4342f3ff431975b2ffa33795f8a3421d6807bbd8292",
     "tools/serve_recovery/profile_prompt.py": "b4f27fb5f9dc9dcb267638a47d08aa98577886a800e20b2c41ba424987a7bf47",
