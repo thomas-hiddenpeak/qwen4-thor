@@ -19,7 +19,8 @@ const options = { baseURL: base.href, apiKey: plan.key, maxRetries: 0, timeout: 
 const api = new OpenAI(options).beta.responses;
 const betas = ['responses_multi_agent=v1'];
 
-if (plan.mode === 'recover') {
+if (plan.mode === 'recover' || plan.mode === 'recover-drain') {
+  const draining = plan.mode === 'recover-drain';
   let restored;
   const observed = [];
   for (let attempt = 0; attempt < 8; ++attempt) {
@@ -32,19 +33,39 @@ if (plan.mode === 'recover') {
   await assert.rejects(other.retrieve(plan.id, { betas }), error => error.status === 404);
   assert.equal(restored.id, plan.id);
   assert.equal(restored.status, 'failed');
-  assert.equal(restored.error.code, 'background_execution_interrupted');
-  if (plan.items) assert.deepEqual(restored.output, plan.items);
+  assert.equal(restored.error.code, draining ? 'service_draining' : 'background_execution_interrupted');
+  let additional = [];
+  if (draining) {
+    assert.deepEqual(restored.output.slice(0, plan.items.length), plan.items);
+    additional = restored.output.slice(plan.items.length);
+    assert.ok(additional.length <= 1);
+    for (const item of additional) {
+      assert.equal(item.type, 'multi_agent_call');
+      assert.equal(item.action, 'wait_agent');
+      assert.ok(item.call_id && !plan.items.some(old => old.call_id === item.call_id));
+    }
+  } else if (plan.items) {
+    assert.deepEqual(restored.output, plan.items);
+  }
   const replay = [];
   if (Number.isInteger(plan.sequence)) {
     const stream = await api.retrieve(plan.id, { stream: true, starting_after: plan.sequence, betas });
     for await (const event of stream) {
       assert.equal(event.sequence_number, plan.sequence + 1 + replay.length);
       replay.push(event.type);
+      if (draining && event.item) {
+        assert.equal(event.output_index, plan.items.length);
+        assert.deepEqual(event.item, additional[0]);
+      }
       if (event.type === 'response.failed') assert.deepEqual(event.response.output, restored.output);
       assert.ok(replay.length <= 64);
     }
     assert.equal(replay.at(-1), 'response.failed');
     assert.equal(replay.filter(type => type === 'response.failed').length, 1);
+    if (draining) {
+      const committed = additional.length ? ['response.output_item.added', 'response.output_item.done'] : [];
+      assert.deepEqual(replay, [...committed, 'response.failed']);
+    }
   }
   say({ status: restored.status, error: restored.error, id: restored.id, other: 404, observed, replay });
 } else {

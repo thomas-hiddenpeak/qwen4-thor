@@ -22,6 +22,8 @@
 
 ## 当前阶段更新（2026-11-23）
 
+默认已发布 **rev440，STOPPED**。模型骤停后 SDK 保留原代理输出并收到一个中断终态；网关致命退出后注册回退包接管，续读到旧模型排空前提交的 wait_agent，随后 Chat 答 42。用户 24 小时计划已固定。NVML 冷启动通过原包预检，设备仍由相机与 jtop 持有。[交付回执](evidence/serve-responses-agent-interruption-20261123/delivery.json)
+
 主、轻配置各从同一份 rev438 故障原件恢复一次，两次均在首读提交失败终态并保留两项输出，84 次设备采样正常。两份新资格逐层重建旧资格，自动切回有该缺陷的 rev438 已拒绝。待托管主备接管和发行。[主轻资格](evidence/serve-responses-agent-interruption-20261123/profiles.json)
 
 rev438 的后台托管代理在模型退出后卡在 `in_progress`。候选修复已用原故障对象验证：首读返回 `failed`，从断点只收到一个终态事件，已保存的调用和输出一致，另一客户收到 404。8 项 CPU 用例通过；主轻配置及发行继续验收。[故障现场与恢复记录](evidence/serve-responses-agent-interruption-20261123/README.md)

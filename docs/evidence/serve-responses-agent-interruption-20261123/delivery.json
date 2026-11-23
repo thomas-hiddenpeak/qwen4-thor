@@ -1,0 +1,227 @@
+{
+  "pr63": {
+    "merge": "eaffec4b101b09bcb492633dce5c73f03211a92a",
+    "head": "ce837a1e3a29cccf7420457abbf24f644235da0d",
+    "checks": [
+      {
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45150171803/job/137609280673",
+        "result": "SUCCESS"
+      },
+      {
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45150103646/job/137609049961",
+        "result": "SUCCESS"
+      }
+    ]
+  },
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 440,
+    "version_revision": 149,
+    "profile_revision": 39,
+    "previous_profile_revision": 38,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "2927fe4e3cf45a5499b745883e3371110cf9b35a10c5cc9e0e3ce82c42b65314",
+    "fallback": "7914c8d6476be6b10ee20376c375b4a55b455ee8b66c75d5d316cb1cdfe35d58",
+    "engine": "1dfb6691c1248e359adb73286f3c73fefd58de2895799fbce4d90b56a52e2cd5",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "day": {
+    "source_commit": "478e5e82ab73253a101ebe3fcb11597dd696e7b7",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupt-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupt-primary-01/bundle",
+      "manifest_sha256": "2927fe4e3cf45a5499b745883e3371110cf9b35a10c5cc9e0e3ce82c42b65314"
+    },
+    "revision": 440,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupt-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "2a2f518ac947e7f68786ea286d07d7361d5c24b5856c43446cab382fa257d754",
+    "handoff_sha256": "159f4dda7c6f1af5be8728d07cdfd3c8160cbcb6d66871aadfb96234a35f8213",
+    "checked": true,
+    "source_files": 696,
+    "hours_executed": 0
+  },
+  "runs": {
+    "model_exit": {
+      "run": {
+        "status": "PASS",
+        "seconds": 112.19094352610409,
+        "model_starts": 2,
+        "stop_returncode": 0,
+        "supervisor_exit": 0,
+        "remaining": [],
+        "ports_free": true,
+        "unchanged_default": true,
+        "receipt_sha256": "7914c8d6476be6b10ee20376c375b4a55b455ee8b66c75d5d316cb1cdfe35d58"
+      },
+      "lease_status": "COMPLETED",
+      "lease_sha256": "ab063cf7e489f8346629571939ad53c22c7929c1f1f6a071a02724b9b1ed6750",
+      "files_sha256": {
+        "result.json": "36f3e8d0c0a986a82eabb01a31cef5312ba7715eb2bc766fb66388810a23d332",
+        "fault-snapshot.json": "1d0f2ceabebdf3312cf66e59695b211052e1f1eea4b1ff7326b64244959e1fcf",
+        "cancel-events.json": "7cf37d3c42ede1fc205c1bf9c51ae780f0d337d2dcfa1608896eff24adf6230c",
+        "interrupt-events.json": "e05cb20bf868a3ab3b61935927ae0de380f808e10a5348ae87cde3d889ca04ca",
+        "terminal.json": "247766c9b4db616d6370df13c0e5320eaa452a254b6ddad706493cbaface11e9",
+        "recover-events.json": "df4a04da6efaf676e2379fa5aac43627f70f5a3615b3f5163070b4ce388b21b4",
+        "recover-sdk.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "chat-after.wire": "db55788b65427ca8d5baf47d9519cc251bbeb025ea5177f980e3077d92899258"
+      },
+      "sdk": {
+        "status": "failed",
+        "error": {
+          "code": "background_execution_interrupted",
+          "message": "Previous execution process exited; started work is not replayed"
+        },
+        "id": "resp_a80a3d079f200a8f4dc750d39b5cd90e",
+        "other": 404,
+        "observed": [
+          "failed"
+        ],
+        "replay": [
+          "response.failed"
+        ]
+      },
+      "terminal": {
+        "id": "resp_a80a3d079f200a8f4dc750d39b5cd90e",
+        "revision": 6,
+        "terminal_sha256": "fc1ccfe03ef9859bfbac51a07d1f831a070d3eb6d6e2b2985d1509818037a5da",
+        "events": [
+          "response.failed"
+        ],
+        "unchanged_items": true
+      }
+    },
+    "gateway_first": {
+      "run": {
+        "status": "FAIL",
+        "seconds": 121.5900062979199,
+        "model_starts": 2,
+        "stop_returncode": 0,
+        "supervisor_exit": 0,
+        "remaining": [],
+        "ports_free": true,
+        "unchanged_default": true,
+        "receipt_sha256": "2927fe4e3cf45a5499b745883e3371110cf9b35a10c5cc9e0e3ce82c42b65314"
+      },
+      "lease_status": "COMMAND_FAILED",
+      "lease_sha256": "606547db2eac743708281089b2c68541ca497dea03db53b298a4afc43e660a8f",
+      "files_sha256": {
+        "result.json": "30e68dc8ce04153762559250d779af4f5cc531e42dad63985c55085bde9a8c19",
+        "fault-snapshot.json": "6b424cd5f6ccf3dade0f9a4c7a0737e0f276ceabd29b13506c6f140a6557b7e7",
+        "cancel-events.json": "cb17e4f1197c29c29dcbc349018bdf551b571461675515610dfa85b4dace1bda",
+        "interrupt-events.json": "ddedaaae15e03eebfece87c9df340fc16b2fc97c979250a6d418572f0e7eae36",
+        "recover-sdk.log": "546d15a3f77ddbc426d624dfb8d71749042f2719b1cf16536daa38af9bebcc65",
+        "takeover.json": "4fcda8a2dca4e541be98ea41109d04d2e7ab29b3c30d0718340642ab5a130474"
+      },
+      "cause": "native_process_signal",
+      "signal": 6,
+      "probe_count": 1,
+      "target": "7914c8d6476be6b10ee20376c375b4a55b455ee8b66c75d5d316cb1cdfe35d58",
+      "expected_in_original": "background_execution_interrupted",
+      "observed_code": "service_draining",
+      "prefix_preserved": true,
+      "additional_action": "wait_agent"
+    },
+    "gateway_repeat": {
+      "run": {
+        "status": "PASS",
+        "seconds": 122.06160479877144,
+        "model_starts": 2,
+        "stop_returncode": 0,
+        "supervisor_exit": 0,
+        "remaining": [],
+        "ports_free": true,
+        "unchanged_default": true,
+        "receipt_sha256": "2927fe4e3cf45a5499b745883e3371110cf9b35a10c5cc9e0e3ce82c42b65314"
+      },
+      "lease_status": "COMPLETED",
+      "lease_sha256": "56996599bdc78f94b80407e2f0b7db156a7b6a728f27184bd512b217d4101e45",
+      "files_sha256": {
+        "result.json": "894e556e2c68de7e25aa35622e03017dd5fe5c17e6dd64b373d5244bf492d23f",
+        "fault-snapshot.json": "de7ae45d9ad7e0042f712c998bce650fea64ce270e3d9c1a3ded803068cb57d7",
+        "cancel-events.json": "814ba383343f50ae7b885e4ebf944c4ec067d5392c714350ade3e233e9a4fea7",
+        "interrupt-events.json": "3cd786608157d1bdd198ceae9037069ed84ebc7dee674d445dfe545bbb93ca0b",
+        "terminal.json": "b6d9e30cf06be36c826f57f99a7557aef16ad5ccec4d086b8fac199a43ef32d1",
+        "recover-events.json": "d1b56fc3ac0d255d7ed669f5c18c8c367471ec30abeb9229a3fdb2f39d723739",
+        "recover-sdk.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "takeover.json": "8fdc54d99103dd2fae75315d1a1b15f940d4a02f439a75feda4af50f07d9ddda",
+        "chat-after.wire": "74a1383bd30d1056a07ab0629c62e2ed381904e89a7b0a307cfd7188905c153b"
+      },
+      "sdk": {
+        "status": "failed",
+        "error": {
+          "code": "service_draining",
+          "message": "File preparation minute quota unavailable"
+        },
+        "id": "resp_e5e7850e038e9634182ecdf8407b6eda",
+        "other": 404,
+        "observed": [
+          "failed"
+        ],
+        "replay": [
+          "response.output_item.added",
+          "response.output_item.done",
+          "response.failed"
+        ]
+      },
+      "terminal": {
+        "id": "resp_e5e7850e038e9634182ecdf8407b6eda",
+        "revision": 8,
+        "terminal_sha256": "4f3376e293c9472c86665853d15b10acb88e9a1e62c81c49a052bee46055a4e5",
+        "events": [
+          "response.output_item.added",
+          "response.output_item.done",
+          "response.failed"
+        ],
+        "unchanged_items": true,
+        "added": [
+          "wait_agent"
+        ]
+      },
+      "cause": "native_process_signal",
+      "signal": 6,
+      "probe_count": 1,
+      "target": "7914c8d6476be6b10ee20376c375b4a55b455ee8b66c75d5d316cb1cdfe35d58"
+    }
+  },
+  "cold": {
+    "prepare": {
+      "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupt-soak-src/.q4t-work/cold-current/plan.json",
+      "service_id": "b5fef954-d554-406e-bd96-6a2e64767bd1",
+      "limits": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 1,
+        "controls": 2000,
+        "seconds": 600
+      },
+      "manifest_sha256": "2927fe4e3cf45a5499b745883e3371110cf9b35a10c5cc9e0e3ce82c42b65314",
+      "model_actions": false
+    },
+    "check": {
+      "package_verified": true,
+      "device_module": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupt-primary-01/bundle/source/tools/serve_recovery/device_domain.py",
+      "service_id": "b5fef954-d554-406e-bd96-6a2e64767bd1",
+      "model_actions": false
+    },
+    "observation": "BUSY",
+    "reason": "kernel_driver_references",
+    "holders": [
+      "nvargus-daemon",
+      "jtop"
+    ],
+    "hardware_fence_installed": false,
+    "cold_model_starts": 0,
+    "inventory_sha256": "742a05788c3aabd2c31bd0fcbe48b757eeb5bd83a882e00c589ff0abf5c3b0de",
+    "holder_names_sha256": "cbd57fea5e35c0149260db1cccaf81bb15717f0af9a7f3f5deb1eada7d64425d"
+  },
+  "drain_message_followup": {
+    "original_text": "File preparation minute quota unavailable",
+    "corrected_in_default": false,
+    "initial_cpu": "a deliberately refused reservation was reused and returned client_rate_invalid",
+    "cpu_passed": 9,
+    "initial_log_sha256": "d4bce44f28064f57ad3459a10d76c25e80905ddec803abcfb86fec3944853d8b",
+    "cpu_log_sha256": "2c74e5f20801bed42736074071e4db0a22080acf5357963b5db36c2e1c949109"
+  }
+}
