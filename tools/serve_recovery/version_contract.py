@@ -85,10 +85,11 @@ def compatible(first, second, *, fallback_acceptance=None, read_bundle=bundle.ve
         new['recovery_profile_policy'], automatic=True, reviewed_content=reviewed_content)
 
 
-def registered_compatibility(first, second, registration):
+def registered_compatibility(first, second, registration, *, read_bundle=bundle.verify):
     receipt = registration['fallback_acceptance']
     return compatible(first, second,
-        fallback_acceptance=receipt if 'content_report' in receipt else None)
+        fallback_acceptance=receipt if 'content_report' in receipt else None,
+        read_bundle=read_bundle)
 
 
 def accepted_fallback(receipt, selected, *, read_bundle=bundle.verify):

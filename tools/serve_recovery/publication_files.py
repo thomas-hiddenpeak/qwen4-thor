@@ -78,9 +78,9 @@ def bind(root, state, desc, manifest, *, initialize=False):
     return root
 
 
-def accepted(release, package, digest, state, desc, *, decision_copy=None):
+def accepted(release, package, digest, state, desc, *, decision_copy=None, read_bundle=None):
     package = Path(package).resolve(strict=True)
-    manifest = bundle.verify(package, digest)
+    manifest = (read_bundle or bundle.verify)(package, digest)
     base = engine.verify(package/'engine', manifest['engine_manifest_sha256'])
     metadata = engine.read(release)
     engine.require(metadata.get('recovery_accepted') is True and
@@ -151,14 +151,14 @@ def copy_file(source, target, wanted, *, executable=False):
     os.replace(temporary, target);sync(target.parent)
 
 
-def snapshot(root, state, desc, package, digest, release):
+def snapshot(root, state, desc, package, digest, release, *, read_bundle=None):
     """Only qualified bytes become a generation; partial writes are resumable."""
-    manifest, base = accepted(release, package, digest, state, desc)
+    manifest, base = accepted(release, package, digest, state, desc, read_bundle=read_bundle)
     root = bind(root, state, desc, manifest, initialize=True)
     value = manifest_value(root, desc, package, digest, base, release)
     selected = record(value);target = generation(root, selected)
     if (target/'generation.json').exists():
-        verify(root, state, desc, selected)
+        verify(root, state, desc, selected, read_bundle=read_bundle)
         return selected
     if not target.exists():
         ledger.require(len(list(target.parent.iterdir())) < MAX_GENERATIONS,
@@ -182,11 +182,11 @@ def snapshot(root, state, desc, package, digest, release):
                    'generation package link changed')
     immutable_json(target/'generation.json', value)
     sync(target);sync(target.parent)
-    verify(root, state, desc, selected)
+    verify(root, state, desc, selected, read_bundle=read_bundle)
     return selected
 
 
-def verify(root, state, desc, selected):
+def verify(root, state, desc, selected, *, read_bundle=None):
     target = directory(generation(root, selected))
     value = native.private_json(target/'generation.json')
     ledger.require({p.name for p in target.iterdir()} ==
@@ -206,7 +206,8 @@ def verify(root, state, desc, selected):
     ledger.require(link.is_symlink() and os.readlink(link) == selected['package'] and
         link.resolve(strict=True) == Path(selected['package']), 'publication package changed')
     manifest, _ = accepted(target/'service.release.json', selected['package'],
-        selected['manifest_sha256'], state, desc, decision_copy=target/'service.acceptance.json')
+        selected['manifest_sha256'], state, desc, decision_copy=target/'service.acceptance.json',
+        read_bundle=read_bundle)
     bind(root, state, desc, manifest)
     return target
 
@@ -237,10 +238,10 @@ def aliases(root):
         os.readlink(root/name) == DIRECTORY+'/current/'+name for name in ALIASES)
 
 
-def publish(root, state, desc, previous, target, *, fresh=False):
+def publish(root, state, desc, previous, target, *, fresh=False, read_previous=None):
     """Called while deployment is prepared and all model ownership is held."""
     root = Path(root)
-    old = verify(root, state, desc, previous)
+    old = verify(root, state, desc, previous, read_bundle=read_previous)
     verify(root, state, desc, target)
     current = selected(root)
     ledger.require(current in (None, previous['generation_sha256'], target['generation_sha256']),

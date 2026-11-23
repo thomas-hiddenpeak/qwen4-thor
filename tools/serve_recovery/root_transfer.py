@@ -163,45 +163,48 @@ def authorized_store(value):
     return AuthorizedStore
 
 
-def profile_context(value, rows):
+def profile_context(value, rows, read_previous=bundle.verify):
     transfer = value['transfer']
     state = transfer['before']
     source = rows[state['registry']['cycle_id']]['value']['registration']
-    primary = version_contract.payload(source['payloads']['primary']['descriptor'])
+    primary = version_contract.payload(source['payloads']['primary']['descriptor'], read_bundle=read_previous)
     sources = [(primary['descriptor']['package'], primary['manifest'])]
     grants = {}
     if state['switch'] is not None:
-        fallback = version_contract.payload(source['payloads']['fallback']['descriptor'])
+        fallback = version_contract.payload(source['payloads']['fallback']['descriptor'], read_bundle=read_previous)
         sources.append((fallback['descriptor']['package'], fallback['manifest']))
         request = str(uuid.uuid5(uuid.UUID(state['switch']['request_id']),
                                 'version-profile-migration'))
-        grants[request] = [version_contract.registered_compatibility(primary, fallback, source)]
+        grants[request] = [version_contract.registered_compatibility(primary, fallback, source, read_bundle=read_previous)]
     target = rows[transfer['candidate']['registry']['cycle_id']]['value']['registration']
+    if read_previous is not bundle.verify:
+        # A historical proof must never admit a stale target or its fallback.
+        version_contract.verify(target)
     name = version_policy.launch_payload(transfer['candidate'])
     payload = version_contract.payload(target['payloads'][name]['descriptor'])
     return dict(sources=sources, grants=grants, target=payload['manifest'],
                 target_package=payload['descriptor']['package'])
 
 
-def preview(binding, intent, core):
+def preview(binding, intent, core, *, read_previous=bundle.verify):
     ledger.require(core['desired'] == 'STOPPED' and not any(core['active'].values()),
                    'root transfer requires durable stopped ownership')
     if not registration.present(binding['state_directory']): return None
-    rows = records(binding)
+    rows = records(binding, read_bundle=read_previous)
     with version_store.open_bound(binding) as writer:
         value = prepare(binding, intent, writer.head['state']['policy'], rows)
-    return None if value is None else profile_context(value, rows)
+    return None if value is None else profile_context(value, rows, read_previous)
 
 
 @contextmanager
-def transaction(binding, intent, core):
+def transaction(binding, intent, core, *, read_previous=bundle.verify):
     ledger.require(core['desired'] == 'STOPPED' and not any(core['active'].values()),
                    'root transfer requires durable stopped ownership')
     state = binding['state_directory']
     if not registration.present(state):
         yield None
         return
-    rows = records(binding)
+    rows = records(binding, read_bundle=read_previous)
     saved = read_intent(binding, rows)
     replay = saved is not None and saved['transfer']['deployment']['request'] == intent['request']
     if replay:
@@ -222,7 +225,7 @@ def transaction(binding, intent, core):
         save(binding, rows, value)
         checkpoints.write(state, marker(binding, rows[transfer['before']['registry']['cycle_id']]),
                           transfer['before'])
-        context = profile_context(value, rows)
+        context = profile_context(value, rows, read_previous)
         yield context
         # Profile migration succeeded before this change can be made durable.
         writer.contract = authorized_store(value).contract

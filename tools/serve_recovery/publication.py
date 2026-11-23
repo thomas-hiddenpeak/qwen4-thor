@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 from tools.serve_host import native
-from tools.serve_recovery import access_store, bundle, deployment, ledger, lifecycle, store
+from tools.serve_recovery import access_store, bundle, deployment, ledger, lifecycle, model_content, store
 from tools.serve_recovery import publication_files as files, publication_policy as policy
 from tools.serve_recovery import publication_journal as journal
 from tools.serve_service import package as engine
@@ -50,10 +50,14 @@ def intent_path(state, request_id):
 
 
 def validate_intent(value, state, desc):
+    version = value.get('version')
     ledger.keys(value, ('version', 'format', 'request_id', 'binding', 'base',
-                        'target', 'rollback', 'deployment'))
-    ledger.require(type(value['version']) is int and value['version'] == 1 and
-        value['format'] == 'q4t-publication-intent-v1' and
+                        'target', 'rollback', 'deployment',
+                        *(('model_history',) if version == 2 else ())))
+    if version == 2:
+        model_content.publication_proof(value['model_history'])
+    ledger.require(type(version) is int and version in (1, 2) and
+        value['format'] == 'q4t-publication-intent-v'+str(version) and
         ledger.identifier(value['request_id']) and type(value['rollback']) is bool and
         value['binding'] == access_store.binding(state, desc['service_id']),
         'publication intent identity differs')
@@ -86,13 +90,14 @@ def save_intent(state, desc, value):
 
 
 def prepare_intent(state, desc, package, digest, release, root, expected, revision,
-                   request_id, generation=None):
+                   request_id, generation=None, *, history=None, model_history=None):
+    read_previous = history.verify if history else bundle.verify
     ledger.require(policy.revision(revision) and type(expected) is str and
                    ledger.HASH.fullmatch(expected), 'publication predecessor required')
     root = files.directory(root)
     if os.path.lexists(state/Store.marker_name):
         base = lifecycle.read_family(state, desc, Store)
-        ready(state, desc)
+        ready(state, desc, read_bundle=read_previous)
         ledger.require(base['root'] == str(root), 'publication root changed')
     else:
         ledger.require(not os.path.lexists(state/Store.directory_name),
@@ -112,7 +117,7 @@ def prepare_intent(state, desc, package, digest, release, root, expected, revisi
         ledger.require(not fresh or (str(Path(package).resolve()) == desc['package'] and
             digest == desc['manifest_sha256']), 'fresh default must match initialized service')
         current = files.snapshot(root, state, desc, desc['package'], desc['manifest_sha256'],
-                                 release if fresh else root/'service.release.json')
+                                 release if fresh else root/'service.release.json', read_bundle=read_previous)
         if not fresh:
             ledger.require((root/'service').is_symlink() and
                 (root/'service').resolve() == Path(desc['package']) and
@@ -135,10 +140,13 @@ def prepare_intent(state, desc, package, digest, release, root, expected, revisi
                        'rollback generation is not retained publication history')
         target = targets[0];files.verify(root, state, desc, target)
     deployment.check_target(desc, dict(desc, package=target['package'],
-                                      manifest_sha256=target['manifest_sha256']))
+                                      manifest_sha256=target['manifest_sha256']), history=history)
     value = dict(version=1, format='q4t-publication-intent-v1', request_id=request_id,
         binding=access_store.binding(state,desc['service_id']), base=base, target=target,
         rollback=generation is not None, deployment=desc)
+    if model_history is not None:
+        value.update(version=2, format='q4t-publication-intent-v2', model_history=model_history)
+    ledger.require(len(ledger.canonical(value)) <= policy.MAX_BYTES, 'publication intent byte bound')
     save_intent(state, desc, value)
     return value
 
@@ -151,29 +159,31 @@ def target_descriptor(intent):
         deployment_id=intent['request_id'])
 
 
-def selected_files(state, desc, value):
+def selected_files(state, desc, value, *, read_bundle=None):
     root = Path(value['root'])
-    files.verify(root,state,desc,value['current'])
+    files.verify(root,state,desc,value['current'], read_bundle=read_bundle)
     ledger.require(files.selected(root) == value['current']['generation_sha256'] and files.aliases(root),
                    'default generation is not durably selected')
 
 
-def ready(state, desc):
+def ready(state, desc, *, read_bundle=None):
     current = lifecycle.read_family(state, desc, Store)
     ledger.require(current['phase'] == 'stable' and
         current['current']['package'] == desc['package'] and
         current['current']['manifest_sha256'] == desc['manifest_sha256'],
         'default publication needs resume')
-    selected_files(state, desc, current)
+    selected_files(state, desc, current, read_bundle=read_bundle)
     return current
 
 
-def resume_owned(state, desc, intent, core):
+def resume_owned(state, desc, intent, core, history=None):
+    read_previous = history.verify if history else bundle.verify
     binding = intent['binding'];base = intent['base'];target = intent['target']
     request = intent['request_id'];root = Path(base['root'])
     prepared = policy.prepare(base, target, request, intent['rollback'])
     finished = policy.finish(prepared);target_desc = target_descriptor(intent)
-    files.verify(root,state,desc,base['current']);files.verify(root,state,desc,target)
+    files.verify(root,state,desc,base['current'], read_bundle=read_previous)
+    files.verify(root,state,desc,target)
 
     def selected_deployment():
         selected = deployment.read_descriptor(state)
@@ -192,7 +202,7 @@ def resume_owned(state, desc, intent, core):
         if previous['phase'] == 'stable':
             ledger.require(previous['current'] == intent['deployment'],
                            'deployment prepare predecessor differs from intent')
-            old, _ = deployment.check_target(previous['current'], target_desc)
+            old, _ = deployment.check_target(previous['current'], target_desc, history=history)
             candidate = deployment.policy.prepare(previous, target_desc, request,
                                                    deployment.seeds(state,old))
             return candidate, journal.transaction_id(request,'prepare')
@@ -220,19 +230,20 @@ def resume_owned(state, desc, intent, core):
         def select(previous, selected):
             ledger.require(previous == intent['deployment'] and selected == target_desc,
                            'deployment callback differs from publication intent')
-            files.publish(root,state,selected,base['current'],target,fresh=base['fresh'])
+            files.publish(root,state,selected,base['current'],target,fresh=base['fresh'],
+                          read_previous=read_previous)
 
         deployment.switch(state,target['package'],target['manifest_sha256'],
             expected=intent['deployment']['manifest_sha256'],request_id=request,
             rollback=intent['rollback'],_publication=select,
-            _writer=journal.recovering(deployment.Store,deployment_candidate),_locked_core=core)
+            _writer=journal.recovering(deployment.Store,deployment_candidate),_locked_core=core, _history=history)
         selected_deployment()
         current.transact(journal.transaction_id(request,'finish'),prepared['revision'],finished)
         return dict(policy.describe(finished),published=True,replayed=False,durable=True)
 
 
 def execute(state, *, request_id, root=None, package=None, digest=None, release=None,
-            expected=None, revision=None, generation=None, resume=False):
+            expected=None, revision=None, generation=None, resume=False, model_history=None):
     """STOPPED-only transaction; the inherited GPU lease is never unlocked."""
     from tools.serve_recovery import service
     state = Path(state).absolute()
@@ -240,11 +251,23 @@ def execute(state, *, request_id, root=None, package=None, digest=None, release=
     with ExitStack() as locks:
         locks.enter_context(deployment.claim(state,name='publication.lock'))
         desc = deployment.read_descriptor(state)
-        manifest = bundle.verify(desc['package'],desc['manifest_sha256'])
+        intent = (load_intent(state, desc, request_id)
+                  if os.path.lexists(intent_path(state, request_id)) else None)
+        if intent is not None:
+            if not resume or model_history is not None:
+                ledger.require(intent.get('model_history') == model_history,
+                               'publication idempotency model evidence conflict')
+            model_history = intent.get('model_history')
+        history = None
+        if model_history is not None:
+            proof = model_content.publication_proof(model_history)
+            history = model_content.HistoricalModelReader(proof['descriptor'], proof['acceptance'])
+        read_current = (history.verify if history and
+                        (intent is None or desc == intent['deployment']) else bundle.verify)
+        manifest = read_current(desc['package'],desc['manifest_sha256'])
         lease = service.acquire_lease(manifest['lock_path']);locks.callback(os.close,lease)
         with quiescent(state,desc) as core:
-            if os.path.lexists(intent_path(state,request_id)):
-                intent = load_intent(state,desc,request_id)
+            if intent is not None:
                 if not resume:
                     ledger.require(intent['base']['root'] == str(Path(root).absolute()) and
                         intent['base']['revision'] == revision and
@@ -261,7 +284,8 @@ def execute(state, *, request_id, root=None, package=None, digest=None, release=
             else:
                 ledger.require(not resume, 'publication request intent unavailable')
                 intent = prepare_intent(state,desc,package,digest,release,root,expected,
-                                        revision,request_id,generation)
+                                        revision,request_id,generation, history=history,
+                                        model_history=model_history)
             # Bootstrap may need to finish an interrupted initial marker. It is
             # only legal under all ownership locks, before any prepared publish.
             if not os.path.lexists(state/Store.marker_name):
@@ -269,7 +293,7 @@ def execute(state, *, request_id, root=None, package=None, digest=None, release=
                     desc == intent['deployment'] and files.selected(intent['base']['root']) is None,
                                'published journal cannot be recreated')
                 access_store.bootstrap_bound(intent['binding'],intent['base'],Store)
-            return resume_owned(state,desc,intent,core)
+            return resume_owned(state,desc,intent,core,history)
 
 
 def status(state):

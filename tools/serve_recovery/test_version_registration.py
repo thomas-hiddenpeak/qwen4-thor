@@ -78,7 +78,7 @@ class RegistrationTests(unittest.TestCase):
         self.assertEqual(actual['state'],spent)
         self.assertEqual((self.state/'ledger.json').read_bytes(),self.core_before)
 
-    def test_recorded_content_adapter_is_bound_on_registration_and_replay(self):
+    def content_qualified_fallback(self):
         from tools.serve_recovery import model_content
         engine = bundle.engine
         fixture = self.base.fixture
@@ -105,12 +105,19 @@ class RegistrationTests(unittest.TestCase):
             model_content.source_index(index, engine.sha(index), 'test/cpu', revision),
             fixture.directory/'detached')
         self.fallback = {k:adapted[k] for k in ('package', 'manifest_sha256')}
-        package, digest = self.base.prepare('fresh-primary')
-        root = dict(package=str(package), manifest_sha256=digest)
-        with self.assertRaisesRegex(ValueError, 'requires its audit report'):
-            self.prepare(root)
         for key, file in (('upstream_index', index), ('content_report', audit)):
             self.receipt[key] = dict(path=str(file), sha256=engine.sha(file))
+        return audit
+
+    def test_recorded_content_adapter_is_bound_on_registration_and_replay(self):
+        from tools.serve_recovery import model_content
+        engine, fixture = bundle.engine, self.base.fixture
+        audit = self.content_qualified_fallback()
+        package, digest = self.base.prepare('fresh-primary')
+        root = dict(package=str(package), manifest_sha256=digest)
+        with mock.patch.object(self, 'receipt', self.receipts()):
+            with self.assertRaisesRegex(ValueError, 'requires its audit report'):
+                self.prepare(root)
         acceptance_file = fixture.directory/'audited-fallback-acceptance.json'
         engine.save(acceptance_file, self.receipt)
         frozen = (self.state/'version-selection/policy.json').read_bytes()
@@ -140,6 +147,74 @@ class RegistrationTests(unittest.TestCase):
         audit.write_text('{}')
         with self.assertRaisesRegex(ValueError, 'content report identity differs'):
             contract.verify(registration)
+
+    def test_stopped_publication_replays_audited_history_and_rejects_stale_target(self):
+        from tools.serve_recovery import publication, publication_files, service, test_publication
+        engine, fixture = bundle.engine, self.base.fixture
+        root = fixture.directory/'public'
+        root.mkdir(mode=0o700)
+        # The profile fixtures synthesize inner manifests. Supply the real
+        # files that the publication generation must copy and verify.
+        def materialize(package):
+            dest = package/'engine'
+            shutil.copyfile(fixture.binary, dest/'q4t')
+            engine.save(dest/'q4t.release.json', dict(cpu_fixture=True))
+            inner = engine.read(dest/'manifest.json')
+            self.assertEqual(inner['files']['q4t'], engine.sha(dest/'q4t'))
+            inner['files']['q4t.release.json'] = engine.sha(dest/'q4t.release.json')
+            engine.save(dest/'manifest.json', inner)
+
+        materialize(self.base.new)
+        for name in ('q4t', 'q4t.release.json'):
+            shutil.copyfile(self.base.new/'engine'/name, root/name)
+        (root/'service').symlink_to(self.base.new)
+        test_publication.accepted(self.base.new, self.base.new_sha, self.state,
+                                  root/'service.release.json')
+        audit = self.content_qualified_fallback()
+        spent = self.consume()
+        proof = dict(descriptor=self.fallback, acceptance=self.receipt)
+        target, digest = self.base.prepare('fresh-publish')
+        materialize(target)
+        release = test_publication.accepted(target, digest, self.state, fixture.directory/'fresh.json')
+        request = str(uuid.uuid4())
+        args = dict(state=self.state, request_id=request, root=root, package=target,
+                    digest=digest, release=release, expected=self.base.new_sha, revision=0)
+        lease = fixture.directory/'private-cpu-lease'
+        acquire_lease = service.acquire_lease
+        with mock.patch.object(service, 'acquire_lease', side_effect=lambda _: acquire_lease(lease)):
+            with self.assertRaisesRegex(ValueError, 'model asset identity changed'):
+                publication.execute(**args)
+            with self.assertRaisesRegex(ValueError, 'model asset identity changed'):
+                publication.execute(**dict(args, package=self.base.new, digest=self.base.new_sha,
+                    release=root/'service.release.json'), model_history=proof)
+            self.assertFalse(publication.intent_path(self.state, request).exists())
+            original_replace = publication_files.replace_link
+
+            def fail_selection(path, destination):
+                if path.name == 'current':
+                    raise OSError('interrupted publication')
+                original_replace(path, destination)
+            with mock.patch.object(publication_files, 'replace_link', side_effect=fail_selection):
+                with self.assertRaisesRegex(OSError, 'interrupted publication'):
+                    publication.execute(**args, model_history=proof)
+            saved = publication.load_intent(self.state, deployment.read_descriptor(self.state), request)
+            self.assertEqual(saved['model_history'], proof)
+            before = audit.read_bytes()
+            audit.write_text('{}')
+            with self.assertRaisesRegex(ValueError, 'content report identity differs'):
+                publication.execute(self.state, request_id=request, resume=True)
+            audit.write_bytes(before)
+            with self.assertRaisesRegex(ValueError, 'model evidence conflict'):
+                publication.execute(**args)
+            done = publication.execute(self.state, request_id=request, resume=True)
+            self.assertTrue(done['durable'])
+            self.assertTrue(publication.execute(self.state, request_id=request, resume=True)['replayed'])
+        self.assertEqual((root/'service').resolve(), target)
+        self.assertTrue(publication.status(self.state)['ready'])
+        self.assertEqual(self.load(), spent)
+        self.assertEqual((self.state/'ledger.json').read_bytes(), self.core_before)
+        with self.assertRaisesRegex(ValueError, 'model asset identity changed'):
+            bundle.verify(self.base.new, self.base.new_sha)
 
     def test_resigned_failed_service_business_does_not_qualify_old_payload(self):
         decision = bundle.engine.read(self.decision)

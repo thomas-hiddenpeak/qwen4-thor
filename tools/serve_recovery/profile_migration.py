@@ -581,9 +581,13 @@ def permit(previous, target, previous_evidence, target_evidence,
     if before_assets != after_assets:
         # This binding is supplied only after exact accepted-origin, audit,
         # upstream index, changed file and management adapter verification.
-        ledger.require(automatic and reviewed_content is not None and
-            reviewed_content['observed_inventory'] == ledger.digest(before_assets) and
-            reviewed_content['sealed_inventory'] == ledger.digest(after_assets),
+        before = ledger.digest(before_assets)
+        after = ledger.digest(after_assets)
+        ledger.require(reviewed_content is not None and (
+            (before == reviewed_content['observed_inventory'] and
+             after == reviewed_content['sealed_inventory']) or
+            (not automatic and before == reviewed_content['sealed_inventory'] and
+             after == reviewed_content['observed_inventory'])),
             'migration would change fixed model identity')
     for key in ('model_files', 'native_embedding'):
         ledger.require(previous['identity'][key] == target['identity'][key],

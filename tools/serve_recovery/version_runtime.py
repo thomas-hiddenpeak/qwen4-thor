@@ -10,12 +10,12 @@ import copy
 from pathlib import Path
 import uuid
 
-from tools.serve_recovery import access_store, deployment, ledger, profile_manager
+from tools.serve_recovery import access_store, bundle, deployment, ledger, profile_manager
 from tools.serve_recovery import profile_migration, profile_store, version_contract
 from tools.serve_recovery import version_policy, version_registration, version_store
 
 
-def repair_sources(binding, root, core, original):
+def repair_sources(binding, root, core, original, *, read_bundle=bundle.verify):
     """Reconstruct actual profile predecessors under STOPPED operator locks.
 
     A prepared deployment retains its original root even after service.json
@@ -36,17 +36,17 @@ def repair_sources(binding, root, core, original):
         # but preserving that cycle must not prevent explicit repair/upgrade.
         # Launch still requires a matching registration for version recovery.
         return [(root['package'], original)], {}
-    selected = version_registration.for_state(directory, root, head)
+    selected = version_registration.for_state(directory, root, head, read_bundle=read_bundle)
     registration, state = selected['registration'], selected['state']
-    first = version_contract.payload(registration['payloads']['primary']['descriptor'])
+    first = version_contract.payload(registration['payloads']['primary']['descriptor'], read_bundle=read_bundle)
     sources = [(first['descriptor']['package'], first['manifest'])]
     grants = {}
     if state['switch'] is not None:
-        second = version_contract.payload(registration['payloads']['fallback']['descriptor'])
+        second = version_contract.payload(registration['payloads']['fallback']['descriptor'], read_bundle=read_bundle)
         sources.append((second['descriptor']['package'], second['manifest']))
         request = str(uuid.uuid5(uuid.UUID(state['switch']['request_id']),
                                 'version-profile-migration'))
-        grants[request] = [version_contract.registered_compatibility(first, second, registration)]
+        grants[request] = [version_contract.registered_compatibility(first, second, registration, read_bundle=read_bundle)]
     return sources, grants
 
 

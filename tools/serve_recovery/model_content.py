@@ -177,6 +177,22 @@ def prepare(package, digest, report, report_sha, index_sha, rows, output):
                 engine_sha256=engine.sha(target/'engine/q4t'), binding=binding)
 
 
+def publication_proof(value):
+    """Exact immutable inputs frozen into a STOPPED publication request."""
+    from tools.serve_recovery import version_contract, version_policy
+    ledger.keys(value, ('descriptor', 'acceptance'))
+    version_contract.descriptor(value['descriptor'])
+    receipt = value['acceptance']
+    ledger.keys(receipt, ('release', 'decision', 'content_report', 'upstream_index'))
+    for item in receipt.values():
+        ledger.keys(item, ('path', 'sha256'))
+        version_policy.hash_value(item['sha256'])
+        path = item['path']
+        ledger.require(type(path) is str and len(path) <= 4096 and
+                       Path(path).is_absolute(), 'invalid model proof receipt path')
+    return value
+
+
 class HistoricalModelReader:
     """Read archived registrations sharing the exact audited model inventory."""
 

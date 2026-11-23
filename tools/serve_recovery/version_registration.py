@@ -167,7 +167,7 @@ def load(state, root):
     return for_state(state,root,selected)
 
 
-def for_state(state, root, selected):
+def for_state(state, root, selected, *, read_bundle=bundle.verify):
     """Verify retained registration against an already exclusively owned head."""
     state = Path(state).absolute()
     version_policy.validate(selected)
@@ -178,13 +178,13 @@ def for_state(state, root, selected):
         value = native.private_json(files['committed'],MAX_BYTES)
         ledger.require(value['candidate']['revision'] <= selected['revision'],
                        'version registration selection needs resume')
-    registration = for_cycle(state, root, selected['registry']['cycle_id'])
+    registration = for_cycle(state, root, selected['registry']['cycle_id'], read_bundle=read_bundle)
     ledger.require(registration['registry'] == selected['registry'],
                    'selected version registry changed')
     return dict(registration=registration,state=selected)
 
 
-def for_cycle(state, root, cycle):
+def for_cycle(state, root, cycle, *, read_bundle=bundle.verify):
     """Read immutable registration for an authenticated root's live cycle.
 
     Observers never acquire the version writer lock or reconcile its journal.
@@ -196,7 +196,8 @@ def for_cycle(state, root, cycle):
     ledger.require(cycle in entries and all('committed' in files and
         'pending' not in files for files in entries.values()),
         'selected version registration is missing or needs resume')
-    value = intent(native.private_json(entries[cycle]['committed'],MAX_BYTES),binding)
+    value = intent(native.private_json(entries[cycle]['committed'],MAX_BYTES),binding,
+                   read_bundle=read_bundle)
     registration = value['registration']
     ledger.require(registration['registry']['cycle_id'] == cycle and
         registration['root'] == dict(package=root['package'],manifest_sha256=root['manifest_sha256']),

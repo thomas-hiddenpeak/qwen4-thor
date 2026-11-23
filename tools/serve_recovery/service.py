@@ -448,6 +448,8 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
         if name in ('publish','publish-resume','publish-rollback'):
             command.add_argument('--request-id', required=True)
         if name in ('publish','publish-rollback'):
+            command.add_argument('--model-history', type=Path)
+            command.add_argument('--model-history-sha256')
             command.add_argument('--default-root', type=Path, required=True)
             command.add_argument('--expected-manifest-sha256', required=True)
             command.add_argument('--expected-revision', type=int, required=True)
@@ -548,7 +550,12 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 elif args.operation == 'publish-resume':
                     result = publication.execute(args.state,request_id=args.request_id,resume=True)
                 else:
-                    result = publication.execute(args.state,request_id=args.request_id,
+                    from tools.serve_recovery import model_content
+                    ledger.require((args.model_history is None) == (args.model_history_sha256 is None),
+                                   'model history file and digest required together')
+                    proof = None if args.model_history is None else model_content.read_bound(
+                        args.model_history, args.model_history_sha256, 'model history proof')
+                    result = publication.execute(args.state,request_id=args.request_id, model_history=proof,
                         root=args.default_root,package=package,digest=digest,
                         release=getattr(args,'service_release',None),
                         expected=args.expected_manifest_sha256,revision=args.expected_revision,
