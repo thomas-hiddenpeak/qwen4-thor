@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #70 已合入 main（cbbe6fddc）。两个 host-contracts 检查通过，合并树与受检提交相同。主线已包含 rev448 交付记录和会话跟踪实现。[主线回执](evidence/serve-agent-vaults-20261123/oauth-main.json)
+
 执行环境与 Vault 类型图已补入发行包的 SDK 来源说明。当前候选继续托管恢复和可回退封包。[SDK 来源](../third_party/licenses/openai-node/README.md)
 
 主、轻配置已接续同一份保密环境模板和等待回填的工具回合。轻配置读到完全相同的模板和步骤，成功修改并删除模板；工具回填后生成 3 个 span，随后分页读到配额拒绝的错误 span。两配置各启动一次，耗时 46.610 和 119.106 秒。新资格可还原 rev448 的两份记录。继续验证模型退出与网关接管。[主轻资格](evidence/serve-agent-environments-20261124/profiles.json)

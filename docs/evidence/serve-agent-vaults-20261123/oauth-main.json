@@ -1,0 +1,14 @@
+{
+  "merge": "cbbe6fddc020b20443e35198f653fd101fee96f9",
+  "head": "6d4bcac842b93424c177eb9e02c51cfc15885232",
+  "checks": [
+    {
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45227088969/job/137876390139",
+      "result": "SUCCESS"
+    },
+    {
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45227022867/job/137876150443",
+      "result": "SUCCESS"
+    }
+  ]
+}
