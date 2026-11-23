@@ -16360,6 +16360,7 @@
     "historical_publication": "evidence/serve-model-history-publication-20261123/README.md",
     "audited_stopped_retention": "evidence/serve-model-history-maintenance-20261123/README.md",
     "registered_control_startup": "evidence/serve-registered-startup-20261123/README.md",
-    "registered_control_delivery": "evidence/serve-control-delivery-20261123/README.md"
+    "registered_control_delivery": "evidence/serve-control-delivery-20261123/README.md",
+    "registered_control_failover": "evidence/serve-control-fallback-20261123/README.md"
   }
 }

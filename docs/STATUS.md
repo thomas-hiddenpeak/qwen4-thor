@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已用 rev428 同一组真实主包、回退包在私有部署触发主网关 SIGABRT。一次设备探测后，第 2 代模型接管并答 42，可读取第 1 代已存回答；正式部署保持停止。[自动版本回退验收](evidence/serve-control-fallback-20261123/README.md)
+
 正式默认部署已发布到 **rev428**，通过默认 CLI 的 check、发布和版本状态检查。保持 STOPPED，回退包已注册；模型、配额和容量沿用原配置。继续正式 Live 主轻配置封包与恢复验收。[正式部署回执](evidence/serve-control-delivery-20261123/README.md)
 
 已修复注册控制包在模型启动前的超时。真实网关故障恢复后模型保持第 1 代，前后 Chat 均答 42，已存回答可取回。67 项 Python、12 项原生检查通过。继续停止状态默认发布及正式 Live 候选。[启动与恢复验收](evidence/serve-registered-startup-20261123/README.md)
