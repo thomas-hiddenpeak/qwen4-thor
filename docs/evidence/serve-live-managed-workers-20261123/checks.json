@@ -1,0 +1,126 @@
+{
+  "manifest_sha256": "38fcf5c01c9013889d1fa46b1444629359ad71fcf6ce85f22f4da1ecca04596d",
+  "runtime_optional": true,
+  "default_root": "rev428",
+  "recordings_default": false,
+  "enabled": {
+    "seconds": 51.6009852970019,
+    "model_starts": 1,
+    "sdk": "7.47.0",
+    "sdk_session_creates": 2,
+    "data_channel_closes": 2,
+    "chats": [
+      "42",
+      "42"
+    ],
+    "gateway_generations": [
+      1,
+      2
+    ],
+    "model_generations": [
+      1,
+      1
+    ],
+    "stored_chat": true
+  },
+  "degraded": {
+    "seconds": 46.688739099074155,
+    "model_starts": 1,
+    "error": {
+      "status": 503,
+      "code": "live_media_unavailable"
+    },
+    "chats": [
+      "42",
+      "42"
+    ],
+    "isolation": {
+      "continued": true,
+      "model_generation": 1,
+      "same_guardian": true,
+      "same_gateway": true,
+      "stored_chat_read": true
+    }
+  },
+  "installer": {
+    "extracted_exact": true,
+    "root_mode": "0o755",
+    "sha256": "1bf308c01396dc2d9b67688fa96c510eac0223cba8fa1c1b9376d7fc8eccf3c3",
+    "runtime_dependencies": [
+      "gstreamer1.0-nice",
+      "gstreamer1.0-plugins-base",
+      "gstreamer1.0-plugins-good",
+      "gstreamer1.0-plugins-bad",
+      "libsofia-sip-ua0t64",
+      "libsrtp2-1",
+      "libssl3t64",
+      "libstdc++6",
+      "libgcc-s1",
+      "libc6"
+    ],
+    "wrong_decision": "rejected",
+    "bad_worker": "rejected",
+    "new_packages": [
+      "q4t-live-workers",
+      "gstreamer1.0-nice",
+      "libsofia-sip-ua0t64"
+    ],
+    "host_runtime_still_absent": true
+  },
+  "ingress_binding": [
+    [
+      "primary",
+      "b7a1967ba8540dc51ae7187577052bb1273d789d85ed8ab5a2d1cf5b02f21caf",
+      "PASS"
+    ],
+    [
+      "primary",
+      "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935",
+      "REJECT"
+    ],
+    [
+      "primary",
+      null,
+      "REJECT"
+    ],
+    [
+      "light",
+      "b7a1967ba8540dc51ae7187577052bb1273d789d85ed8ab5a2d1cf5b02f21caf",
+      "PASS"
+    ],
+    [
+      "light",
+      "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935",
+      "REJECT"
+    ],
+    [
+      "light",
+      null,
+      "REJECT"
+    ]
+  ],
+  "cpu_cases": 48,
+  "initial_failures": [
+    "gateway config request used public port",
+    "test peer could not load missing NICE plugin",
+    "first degraded request returned service_binding_unavailable before a working control Chat was established; cause unconfirmed",
+    "initial package metadata retained a stale README digest for the OpenAI SDK attribution; candidate uses current verified notice with unchanged LICENSE"
+  ],
+  "source_hashes": {
+    "candidate-04/receipt.json": "686a5cea49efc6c4e280272374995f3acdd2669620e5c571fc9bd2a808545eda",
+    "managed-03/result.json": "18a58b23240569b42afa3d71128a1fabb6b74e79b55f5df03a21b4084d4f27d4",
+    "managed-03/recovery.json": "73307d48df71878d5be9300804f16cdc6af73cdcbf2715c387e0fe63380bf24b",
+    "managed-03/before-data.json": "39c36a1f0d72b7b417fa73bf57a728c0371405dc7095f518b4ace81a73435597",
+    "managed-03/after-data.json": "04a393bda6a17c4c13ca95f93275efca1b35eee604ca0a11a18334914c17e44c",
+    "managed-lease-03/exit.json": "db449c45ed25587dd614ae93f5d251c5b8615e0c967e1c738c0a9e0de7060950",
+    "degraded-02/fault-boundary.json": "e002ec9cd9115c933e273d2468131949855a00a4d65083514eab78be39d5244c",
+    "degraded-02/result.json": "4b463b14d43077ab086d2de59fb58136797b32602075d52bdfd58f1079fca79b",
+    "degraded-lease-02/exit.json": "373edcc94adac086471f775f4123149f46e06a05b8965ca01ad77601e451df00",
+    "degraded-01/degraded-http.json": "51d8d24da1e39af45f9270bc2e63b448c81f26494b40d51770899e24f6b9d5e5",
+    "optional-runtime/packages.json": "2cde8ce262ad0c3c81755a53d889c47cd9275fae8b6ff86d13f5a1d8a784847c",
+    "apt-plan-02.log": "bc9f687ae5c659b254571ad391ba377ba0e97f8ec277594b0ed27639cd9b5313",
+    "bind-cpu.log": "5ab578b9606101ac9cdc506c64852b1f74b0fd57a2eddc7707b264fbb06d2026",
+    "bind-retest.log": "40f2d0471ea98a6457e325db051f197315493372fa26ee9dd0bf6ed226ac3144",
+    "ingress-binding.json": "270e1463c1b614c5f5e4654741ca092896655a528bb57905bc18283e26cae0a2"
+  }
+}

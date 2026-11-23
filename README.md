@@ -963,6 +963,19 @@ WebRTC、NICE 与对应编解码插件。ICE 默认绑定回环，受控内网�
 `cmake --install build --component q4t-live-workers --prefix /absolute/path/to/staging`。
 该组件只安装本次构建生成的 q4t 媒体程序。将其与引擎置于同一目录，由部署环境为启用的功能提供相应运行库和插件。[迁移验证](docs/evidence/serve-live-worker-install-20261123/README.md)
 
+Ubuntu 24.04 arm64 的运维方可从已验收的引擎决定生成可选组件包。用发行决定中固定的
+SHA 运行以下命令，再用 apt 安装生成的本地包。apt 会解析 GStreamer NICE、
+Sofia-SIP 和 SRTP 等运行依赖。安装后的程序位于 `/usr/lib/q4t/live-workers`，
+可传给 `q4t service prepare --live-workers-dir`。普通文本服务独立运行。
+
+```bash
+python3 tools/serve_live/package_workers.py --workers "$WORKER_DIR" \
+  --decision "$ENGINE_DECISION" --decision-sha256 "$DECISION_SHA256" \
+  --version "$PACKAGE_VERSION" --output "$PWD/q4t-live-workers.deb"
+sudo apt install --no-install-recommends ./q4t-live-workers.deb
+```
+
+
 Live 工作分支提供按会话录制。启动 `q4t serve` 或托管 `prepare` 时使用
 `--live-recordings` 开放权限，具名客户端在 `session.start` 中传入
 `store: true` 启用本次录制。收到 `session.closed` 后，同一 API Key 对应的客户端可调用

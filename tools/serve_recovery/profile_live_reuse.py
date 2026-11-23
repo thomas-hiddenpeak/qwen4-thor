@@ -20,6 +20,20 @@ REVIEWED = {
 }
 
 
+# The SDK ran through this native ingress. The acceptance hash is carried in
+# both reviewed profile records. An engine capability cannot qualify a gateway.
+ACCEPTED_INGRESS = {
+    '29c31bf9ef841fe729d2fc3085888153489d398e40c7508a64a726c5a431d019':
+        'b7a1967ba8540dc51ae7187577052bb1273d789d85ed8ab5a2d1cf5b02f21caf',
+}
+
+
+def verify_ingress(live, digest):
+    expected = ACCEPTED_INGRESS.get(live['acceptance_sha256'])
+    ledger.require(expected is not None and digest == expected,
+                   'installed ingress differs from the qualified Live business route')
+
+
 def record_hash(value):
     return hashlib.sha256(ledger.canonical(value) + b'\n').hexdigest()
 

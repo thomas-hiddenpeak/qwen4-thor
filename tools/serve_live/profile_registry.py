@@ -63,7 +63,8 @@ def prepare(source, manifest_sha256, stage, observations, output):
             evidence[name] = dict(record=row, sha256=digest)
         for name in profile_contract.NAMES:
             profile_bundle.verify_record(qualified/(name+'.json'), registry, name,
-                                         dict(live_workers=actual['profiles'][name]['workers']))
+                                         dict(live_workers=actual['profiles'][name]['workers']),
+                                         ingress_sha256=actual['ingress_sha256'])
         config = manifest['recovery_profile_policy']
         permit = profile_migration.permit(previous, registry, prior, evidence, config, config,
             allow_capability_extension=True, reviewed_content=manifest.get('model_ctime_binding'))

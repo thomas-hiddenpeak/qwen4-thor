@@ -10456,7 +10456,7 @@
     }
   ],
   "next_task": "Seal qualified Live primary/light observations into a managed candidate and verify Guardian recovery, rollback, optional standalone ingress and outstanding master tasks.",
-  "next": "使用已封存的 Live 主轻资格准备正式托管包，验收实际应用、守护恢复和同能力回退。",
+  "next": "以已实测的 Live 独立候选为同能力回退，完成带入口绑定的新主包注册、真实切换与停止发布；定位启动初期通用 503。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16363,6 +16363,7 @@
     "registered_control_delivery": "evidence/serve-control-delivery-20261123/README.md",
     "registered_control_failover": "evidence/serve-control-fallback-20261123/README.md",
     "qualified_profile_observations": "evidence/serve-live-profile-observations-20261123/README.md",
-    "sealed_live_profiles": "evidence/serve-live-registry-20261123/README.md"
+    "sealed_live_profiles": "evidence/serve-live-registry-20261123/README.md",
+    "managed_optional_workers": "evidence/serve-live-managed-workers-20261123/README.md"
   }
 }
