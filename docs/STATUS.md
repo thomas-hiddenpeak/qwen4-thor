@@ -7,7 +7,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-默认服务已发布至 **rev436，STOPPED**。主网关致命退出后，注册回退包再次完成父子推理，能按身份回读故障前的完整输出。归档已满的发布意图与版本注册时修复了新旧根交接的维护死角，修复后的工具已在实际部署使用。[发行、恢复与长稳入口](evidence/serve-responses-agents-delivery-20261123/README.md)
+默认 **rev438，STOPPED**。原生维护修复已封包并通过实际入口，rev436 已注册为回退包。PR #62 两项检查通过并合入 main。首笔 WebRTC 在缺少可选组件时得到媒体专属 503，随后 Chat 答 42；历史通用 503 根因待证。[发行与冷启动证据](evidence/serve-native-maintenance-delivery-20261123/README.md)
+
+上一发行已发布至 **rev436，STOPPED**。主网关致命退出后，注册回退包再次完成父子推理，能按身份回读故障前的完整输出。归档已满的发布意图与版本注册时修复了新旧根交接的维护死角，修复后的工具已在实际部署使用。[发行、恢复与长稳入口](evidence/serve-responses-agents-delivery-20261123/README.md)
 
 主轻两套正式配置都已完成父子代理推理、Chat 和 WebRTC。轻量配置按身份读回主配置的代理输出。已修复 rev434 旧资格标签导致的恢复来源拒绝，保留原始失败。继续托管恢复和可回退发行。[主轻验收](evidence/serve-responses-agents-profiles-20261123/README.md)
 

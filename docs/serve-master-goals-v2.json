@@ -1259,7 +1259,8 @@
         "evidence/serve-responses-agent-history-20261123/README.md",
         "evidence/serve-responses-hosted-agents-20261123/README.md",
         "evidence/serve-responses-agents-profiles-20261123/README.md",
-        "evidence/serve-responses-agents-delivery-20261123/README.md"
+        "evidence/serve-responses-agents-delivery-20261123/README.md",
+        "evidence/serve-native-maintenance-delivery-20261123/README.md"
       ],
       "release": {
         "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
@@ -2869,7 +2870,8 @@
         "evidence/serve-asr-package-cpu-20261117/README.md",
         "evidence/serve-speech-http-20261118/README.md",
         "evidence/serve-realtime-transcription-business-20261119/README.md",
-        "evidence/serve-tool-enum-padding-20261123/README.md"
+        "evidence/serve-tool-enum-padding-20261123/README.md",
+        "evidence/serve-native-maintenance-delivery-20261123/README.md"
       ],
       "release": null,
       "findings": [
@@ -8099,7 +8101,8 @@
         "evidence/serve-root-rollback-business-failure-20261116/README.md",
         "evidence/serve-recovery-wait-cpu-20261116/README.md",
         "evidence/serve-root-rollback-business-20261116/README.md",
-        "evidence/serve-responses-agents-delivery-20261123/README.md"
+        "evidence/serve-responses-agents-delivery-20261123/README.md",
+        "evidence/serve-native-maintenance-delivery-20261123/README.md"
       ],
       "release": null,
       "plan": "SERVE_OUTER_RECOVERY_2026-11-12.md",
@@ -9067,7 +9070,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev436_delivered_remaining_deliveries",
+      "state": "rev438_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9086,7 +9089,8 @@
         "evidence/serve-responses-agent-history-20261123/README.md",
         "evidence/serve-responses-hosted-agents-20261123/README.md",
         "evidence/serve-responses-agents-profiles-20261123/README.md",
-        "evidence/serve-responses-agents-delivery-20261123/README.md"
+        "evidence/serve-responses-agents-delivery-20261123/README.md",
+        "evidence/serve-native-maintenance-delivery-20261123/README.md"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -10245,7 +10249,8 @@
       "evidence": [
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-live-stability-handoff-20261123/README.md",
-        "evidence/serve-responses-agents-delivery-20261123/README.md"
+        "evidence/serve-responses-agents-delivery-20261123/README.md",
+        "evidence/serve-native-maintenance-delivery-20261123/README.md"
       ],
       "release": null,
       "surface_prose_audit": {
@@ -10330,18 +10335,18 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "894e569f9d32516a557dc9535097aa9ecd1f467a",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-src",
+        "source_commit": "a03b6dd944b25debad9f6762f19cd69d974da39e",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/maintenance-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/primary-01/bundle",
-          "manifest_sha256": "4112e7d3b21d305f6997451dc9b7fc38e34aeb0ba0c9a3574a5c12c7473670bf"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/maintenance-package-01/bundle",
+          "manifest_sha256": "a4ff80869d40baa23a2ed803c6824de73a8c1d89ba0bf0fbe5cd0c4443eccb06"
         },
-        "revision": 436,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "c3aeff49fbc1c69b73f046114f4da3c8d1388c0d74c4a3a705a6a806a18ef1f1",
-        "handoff_sha256": "f1716af967ec4ab9f58529ac0e0973b4395637d7eae3e6e5674bf248f9aa063a",
+        "revision": 438,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/maintenance-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "bd458aa602b12156e1b0076252d63b649f6d28aebbff1427f18dd7da5331b8db",
+        "handoff_sha256": "b52464ba37ba232044b81602f4e4df2aff09c4fad011b952ce5f8772a0480db5",
         "checked": true,
-        "source_files": 695,
+        "source_files": 696,
         "hours_executed": 0
       },
       "video_affine_detail_20261117": {
@@ -10508,7 +10513,7 @@
     }
   ],
   "next_task": "Integrate the Beta profile and delivery commits; implement named multi-agent capabilities, startup diagnostics and remaining master tasks.",
-  "next": "封入发布维护修复，推进运行中代理恢复、启动期错误定位及余下服务接口。",
+  "next": "验收运行中托管代理的取消与跨代终态，继续其余接口、恢复组合及多模态长稳交接。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16463,6 +16468,8 @@
     ],
     "cross_round": "evidence/serve-responses-hosted-agents-20261123/cross-round.json",
     "profiles": "evidence/serve-responses-agents-profiles-20261123/README.md",
-    "delivery": "evidence/serve-responses-agents-delivery-20261123/README.md"
+    "delivery": "evidence/serve-responses-agents-delivery-20261123/README.md",
+    "maintenance_delivery": "evidence/serve-native-maintenance-delivery-20261123/README.md",
+    "merged_pr": 62
   }
 }
