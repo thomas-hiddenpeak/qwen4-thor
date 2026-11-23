@@ -1988,6 +1988,15 @@
         "tests/server_prompt_registry_test.cpp"
       ]
     },
+    "GET /v1/agents/sessions/{session_id}/traces": {
+      "semantics": "按根回合分页读取此客户的会话 trace；从已提交的模型步骤生成 OTLP JSON。",
+      "boundary": "GET 为控制请求；当前页只返回已发布的数据，游标按本会话的根回合 ID 校验。",
+      "evidence": [
+        "src/server/agent_session_traces.cpp",
+        "src/server/agent_session_http.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
     "GET /v1/agents/sessions/{session_id}/turns/{turn_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
       "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
@@ -2753,8 +2762,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "cdc133ea7c84fbec7fa9622374191ac03298e31d72abcb76bb1eea7d45fd89ae",
-    "cmake/ChatProtocolIdentity.cmake": "e6ee6b1165b26f0303f86a41ff6a8448b2bc0acaf52e77a00e7ec7c8a10c4bf1",
+    "CMakeLists.txt": "9aa4c4f25b3234afed93b6a4a4360fdb672b2e102541f35712d9a70f6157813d",
+    "cmake/ChatProtocolIdentity.cmake": "39310962d0778d56da5595b0ddf459b94a5ea8b468b3b8f1a56164341742d33d",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2831,7 +2840,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "15250f8eb97b736559e9a2bd599ac91180d9283d66d538cf94778b790a741233",
+    "include/q4t/server/application_routes.h": "d059308a97c30b9de434e499796d682dcc740271d301c30927a95a520450d57a",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3272,7 +3281,7 @@
     "src/server/chat_audio_inputs.cpp": "9a9f94790bcf4171a0c65ed6dc6655bcd834ac909ae394573aa6e4850a1d0ba1",
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
-    "src/server/chat_capabilities.cpp": "a22b0519de9c46230c8cfcede86b2597b7a74715c0dbced4f43d6c916d41caed",
+    "src/server/chat_capabilities.cpp": "0bdfe146e00bfc5c6b13e518b8fd8f5a6ad8ce67ccb0073f34dbc0b0a61939cb",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -3748,7 +3757,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "dffe24c07280b63396d1ee1a7360959cc43fefd2e30aaeec5e5cbc06c268ddc2",
+    "tools/serve_gateway/gateway.py": "64838ac7165da3fe184ce9a15aa6f2978d1fd8a7f23886065b3b058bb7a35e6a",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -3963,9 +3972,9 @@
     "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
     "src/server/agent_registration.cpp": "3779a5ca860889e68b771933361eadc3104182e00bf8d3a8c3b7c7d99563e2a3",
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
-    "include/q4t/server/agent_session.h": "58f24716907dccf60c371ad448cee717b7ca03b58eacd3f90d65089cd7eb0c32",
+    "include/q4t/server/agent_session.h": "8c9d15b66f11cd12dabff42c163fb2937f07331ddfa5167d414a8d65fcec3b05",
     "src/server/agent_session.cpp": "e6b21438f13b2add4e8b16d52045fd1d617a9acc6d8083310977a78a7730bf39",
-    "src/server/agent_session_http.cpp": "0dfe803f73a992252b29311bc4aa55ea2a5cf8b49124bce7c939292b0bffd3cc",
+    "src/server/agent_session_http.cpp": "18a6c37a59eda7d925362ddfb5d37eb8a65c49babc9e3df37368ac274dbd2647",
     "src/server/agent_session_turn.cpp": "a47b7dab70876cd0d9506e69e0e0938904622313d8b8dcdb210c10cb2baa9082",
     "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3",
     "src/server/agent_session_events.cpp": "b606ef9ed0e4ecc6c727af12d6c29bfbc4b3bd0dcebc817c24aa2c48234619db",
@@ -3979,7 +3988,8 @@
     "src/server/vault_credential_auth.cpp": "5be915b498ee73be026997a5fc7519feb967b51d8a01f751d855983255211649",
     "src/server/vault_credential_internal.h": "1dc03e11cbbb3f145cdb9378f58c85a01833d8976317badefe891811ceecf470",
     "src/server/agent_session_mcp.cpp": "844732f17782248ffc38b2c92831ca4ed4a19a86577eef63ce5bcbdfbd516fab",
-    "src/server/vault_oauth.cpp": "321f2cd0b2d5eb563f3f0da5308b55b3e5ca74709264dd203d5f77bf34880d36"
+    "src/server/vault_oauth.cpp": "321f2cd0b2d5eb563f3f0da5308b55b3e5ca74709264dd203d5f77bf34880d36",
+    "src/server/agent_session_traces.cpp": "290f7121c85cd09983aebc6c4db54a2e68c48636fc6ffacab86d5a808615e8e2"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6462,6 +6472,15 @@
         "tests/server_prompt_registry_test.cpp"
       ]
     },
+    "GET /v1/agents/sessions/{session_id}/traces": {
+      "semantics": "按根回合分页读取此客户的会话 trace；从已提交的模型步骤生成 OTLP JSON。",
+      "boundary": "GET 为控制请求；当前页只返回已发布的数据，游标按本会话的根回合 ID 校验。",
+      "evidence": [
+        "src/server/agent_session_traces.cpp",
+        "src/server/agent_session_http.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
     "GET /v1/agents/sessions/{session_id}/turns/{turn_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
       "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
@@ -6513,6 +6532,15 @@
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/sessions/{session_id}/traces": {
+      "semantics": "按根回合分页读取此客户的会话 trace；从已提交的模型步骤生成 OTLP JSON。",
+      "boundary": "GET 为控制请求；当前页只返回已发布的数据，游标按本会话的根回合 ID 校验。",
+      "evidence": [
+        "src/server/agent_session_traces.cpp",
+        "src/server/agent_session_http.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
     },

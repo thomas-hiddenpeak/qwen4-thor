@@ -78,7 +78,7 @@ APPLICATION_ROUTES = [
     *((method, '/v1/agents/sessions/{session_id}', 'control')
       for method in ('GET', 'DELETE')),
     *(('GET', '/v1/agents/sessions/{session_id}/' + suffix, 'control')
-      for suffix in ('turns', 'items', 'turns/{turn_id}',
+      for suffix in ('turns', 'items', 'traces', 'turns/{turn_id}',
                      'turns/{turn_id}/items')),
     *((method, '/v1/prompts', 'control' if method == 'GET' else 'data')
       for method in ('GET', 'POST')),

@@ -2485,7 +2485,8 @@
         "evidence/serve-retention-delivery-20261110/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-live-default-20261123/README.md",
-        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
+        "evidence/serve-agent-sessions-20261123/traces.json"
       ],
       "release": {
         "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
@@ -6020,7 +6021,8 @@
         "evidence/serve-responses-agents-delivery-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/delivery.json",
-        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
+        "evidence/serve-agent-sessions-20261123/traces.json"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -8334,7 +8336,8 @@
         "evidence/serve-responses-agents-delivery-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/delivery.json",
-        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
+        "evidence/serve-agent-sessions-20261123/traces.json"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -16541,7 +16544,8 @@
     "delivery": "evidence/serve-agent-sessions-20261123/delivery.json",
     "scope_routes": "evidence/serve-agent-sessions-20261123/scope-routes.json",
     "long_run": "prepared_and_checked_user_runs",
-    "next": "Agent vaults and credential access, other remaining application and reliability contracts"
+    "next": "Agent vaults and credential access, other remaining application and reliability contracts",
+    "traces_candidate": "evidence/serve-agent-sessions-20261123/traces.json"
   },
   "agent_vaults_20261123": {
     "owners": [

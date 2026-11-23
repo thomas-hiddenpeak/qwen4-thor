@@ -54,6 +54,10 @@ ObjectReply ReadAgentSessionTurn(ObjectStore& objects, const std::string& id,
                                  const StateAccess& access,
                                  AgentSessionView* view,
                                  bool all_items = false);
+struct ItemViewOptions;
+ObjectReply ListAgentSessionTraces(ObjectStore& objects, const std::string& id,
+                                   const ItemViewOptions& paging,
+                                   const StateAccess& access);
 // Prepare the next model step from authorized session events. A repeated
 // idempotency key with an identical committed payload returns replay=true.
 ObjectReply PrepareAgentSessionEvents(

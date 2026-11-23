@@ -381,7 +381,7 @@ inline bool AgentRegistrationMethodAllowed(std::string_view method,
          (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/agents");
 }
 
-enum class AgentSessionRouteKind { kNone, kCollection, kSession, kTurns, kTurn, kItems, kTurnItems, kEvents };
+enum class AgentSessionRouteKind { kNone, kCollection, kSession, kTurns, kTurn, kItems, kTurnItems, kEvents, kTraces };
 struct AgentSessionRoute {
   AgentSessionRouteKind kind = AgentSessionRouteKind::kNone;
   std::string_view session, turn;
@@ -404,6 +404,7 @@ inline AgentSessionRoute ParseAgentSessionRoute(std::string_view target) {
   if (path == "events") return {Kind::kEvents, id, {}};
   if (path == "items") return {Kind::kItems, id, {}};
   if (path == "turns") return {Kind::kTurns, id, {}};
+  if (path == "traces") return {Kind::kTraces, id, {}};
   if (!path.starts_with("turns/")) return {};
   path.remove_prefix(6);
   const auto tail = path.find('/');

@@ -551,6 +551,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/vault_credential.cpp
   src/server/agent_session.cpp
   src/server/agent_session_turn.cpp
+  src/server/agent_session_traces.cpp
   src/server/agent_session_mcp.cpp
   src/server/agent_session_http.cpp
   src/server/agent_session_cancel.cpp

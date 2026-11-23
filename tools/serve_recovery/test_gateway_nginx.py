@@ -522,6 +522,19 @@ class NginxTests(unittest.TestCase):
     def ready(self):
         self.stack.wait(lambda: self.stack.bound == self.stack.generation)
 
+    def test_agent_session_traces_preserve_cursor_selector_and_owner(self):
+        self.ready()
+        path = '/v1/agents/sessions/agent_session_1/traces?after=turn_1&limit=2&order=asc'
+        selector = {'OpenAI-Beta': 'agents=v1'}
+        self.assertEqual(self.stack.request(path=path, extra=selector)[0], 200)
+        self.assertEqual(len(self.stack.application_requests), 1)
+        row = self.stack.application_requests[0]
+        self.assertEqual((row['method'], row['path'], row['client'], row.get('openai_beta')),
+                         ('GET', path, 'alpha', 'agents=v1'))
+        self.assertEqual(self.stack.request(path=path, key='invalid')[0], 401)
+        self.assertEqual(self.stack.request({}, path=path, extra=selector)[0], 404)
+        self.assertEqual(len(self.stack.application_requests), 1)
+
     def test_vault_beta_selector_reaches_the_owned_backend(self):
         self.ready()
         self.stack.request(dict(name='Project'), path='/v1/vaults',
