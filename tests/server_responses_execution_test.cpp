@@ -124,6 +124,52 @@ Q4T_TEST(responses_hosted_agents_dispatch_to_child_and_return_owned_events) {
   return true;
 }
 
+Q4T_TEST(responses_hosted_agents_interrupt_and_send_before_child_generation) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  auto config = Config();
+  config.responses_multi_agent = true;
+  ResponsesExecution run(store);
+  Q4T_CHECK(Ok(run.Prepare(Parse(R"({"input":"delegate","multi_agent":{"enabled":true}})"),
+                          config, Access(), 42)));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  int turns = 0, sequence = 0;
+  const auto step = [&](const ResponsesAgentTree::Turn& turn, bool, Json* message, bool* ok) {
+    if (turn.messages.array.size() != 3 ||
+        turn.messages.array[1].GetString("content") != "new task" ||
+        turn.messages.array[2].GetString("content") != "new value")
+      throw std::runtime_error("Stale child prompt");
+    ++turns;
+    *message = Parse(R"({"role":"assistant","content":"new value"})");
+    *ok = true;
+    return ObjectReply{};
+  };
+  const auto round = [&](std::string name, std::string arguments) {
+    ResponseDelta delta;
+    delta.kind = ResponseDelta::Kind::kTool;
+    delta.call = {0, "call_" + std::to_string(++sequence), "multi_agent_" + name, arguments};
+    if (!run.Append(delta, {}, &wire) || !Ok(run.RunAgents(1, step, {}))) return false;
+    ResponsesGenerationPlan next;
+    return Ok(run.ContinueFileSearch(sequence, config, {}, &next));
+  };
+  Q4T_CHECK(round("spawn_agent", R"({"name":"reader","task":"first"})"));
+  Q4T_CHECK(run.QueuedAgents() && turns == 0);
+  Q4T_CHECK(round("interrupt_agent", R"({"target":"root/reader"})"));
+  Q4T_CHECK(!run.QueuedAgents() && turns == 0);
+  Q4T_CHECK(round("followup_task", R"({"target":"root/reader","task":"new task"})"));
+  Q4T_CHECK(run.QueuedAgents() && turns == 0);
+  Q4T_CHECK(round("send_message", R"({"target":"root/reader","message":"new value"})"));
+  Q4T_CHECK(!run.QueuedAgents() && turns == 1);
+  Q4T_CHECK(round("list_agents", "{}"));
+  Q4T_CHECK(round("wait_agent", R"({"target":"root/reader"})"));
+  const auto snapshot = run.PublicResponse();
+  const auto& last = snapshot.GetArray("output")->array.back();
+  Q4T_CHECK(Parse(last.GetArray("output")->array[0].GetString("text")).GetString("output") == "new value");
+  Q4T_CHECK(turns == 1);
+  return true;
+}
+
 Q4T_TEST(responses_hosted_agents_keep_selection_and_budget_after_queue_recovery) {
   Fixture fixture;
   ObjectStore store(fixture.options);

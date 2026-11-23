@@ -228,6 +228,16 @@ std::string ResponsesAgentTree::FirstQueued() const {
     if (agent.state == State::kQueued) return name;
   return {};
 }
+std::vector<std::string> ResponsesAgentTree::QueuedNames() const {
+  std::vector<std::string> names;
+  for (const auto& [name, agent] : agents_)
+    if (agent.state == State::kQueued) names.push_back(name);
+  return names;
+}
+bool ResponsesAgentTree::Queued(const std::string& name) const {
+  const auto found = agents_.find(name);
+  return found != agents_.end() && found->second.state == State::kQueued;
+}
 Status ResponsesAgentTree::RecordExchange(Turn* turn, const Json& messages) {
   const auto found = agents_.find(turn->name);
   if (found == agents_.end() || found->second.state != State::kRunning ||

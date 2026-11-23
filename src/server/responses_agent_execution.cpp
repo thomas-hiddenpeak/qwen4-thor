@@ -242,7 +242,7 @@ ObjectReply ResponsesExecution::RunAgents(
     size_t completed_calls, const AgentModelStep& step,
     const std::function<bool(const std::string&)>& publish) {
   if (!begun_ || plan_.finished || commit_unknown_ || !agents_ || !step ||
-      !PendingAgents())
+      (!PendingAgents() && !QueuedAgents()))
     return Error(500, "response_state_invalid", "No executable agent calls");
   const AgentEmit emit = [&](const Json& item) -> ObjectReply {
     std::string wire;
@@ -271,6 +271,7 @@ ObjectReply ResponsesExecution::RunAgents(
       return Error(502, "agent_call_incomplete", "Incomplete agent arguments");
   }
   auto pending = std::move(agent_pending_);
+  const auto eligible = agents_->QueuedNames();
   agent_pending_.clear();
   agent_argument_bytes_ = 0;
   for (const auto& [index, call] : pending) {
@@ -280,10 +281,17 @@ ObjectReply ResponsesExecution::RunAgents(
         dispatch.Call("root", call.id, call.name, call.arguments, &result);
     if (!reply.ok()) return reply;
   }
-  for (;;) {
-    const auto target = agents_->FirstQueued();
-    if (target.empty()) break;
+  // A spawned task yields one parent model round. A following interrupt or
+  // message can reach it before a GPU slot is claimed. When the root returns
+  // or exhausts tool calls, finish the remaining work within its same budget.
+  const bool drain = pending.empty() || native_tool_calls_ >= limit;
+  for (const auto& target : eligible) {
+    if (!agents_->Queued(target)) continue;
     auto reply = dispatch.Run(target);
+    if (!reply.ok()) return reply;
+  }
+  while (drain && QueuedAgents()) {
+    auto reply = dispatch.Run(agents_->FirstQueued());
     if (!reply.ok()) return reply;
   }
   return {};

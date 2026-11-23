@@ -22,6 +22,8 @@
 
 ## 当前阶段更新（2026-11-23）
 
+六项托管代理操作已通过同一真实多轮请求，含执行前中断、跟进及收信后的唯一一次子模型生成。候选的认证能力声明已可供部署核对。继续两套容量和恢复、回退及主线交付。[跨轮回执](evidence/serve-responses-hosted-agents-20261123/cross-round.json)
+
 PR #61 的具名多代理历史已入主线。托管候选通过父子真实推理、工具回填、流式事件、存储与跨客户隔离。跨轮调度和中断、运行中恢复、主轻发行与接管继续。[托管候选及两次原始失败](evidence/serve-responses-hosted-agents-20261123/README.md)
 
 rev434 已随 PR #60 合入主线。具名 Responses 多代理的调用和结果历史已在候选通过真实 SDK 验收。服务端调度、运行期间的有主输出与事件、共享预算及恢复仍是实现任务。[历史与计数验收](evidence/serve-responses-agent-history-20261123/README.md)

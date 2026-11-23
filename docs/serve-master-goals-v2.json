@@ -10500,7 +10500,7 @@
     }
   ],
   "next_task": "Integrate the Beta profile and delivery commits; implement named multi-agent capabilities, startup diagnostics and remaining master tasks.",
-  "next": "完善子代理跨轮调度与中断、恢复和主轻可回退发行；继续启动期 503 和剩余服务能力。",
+  "next": "验证托管子代理主轻容量、恢复与可回退发行，再继续启动期 503 及剩余服务能力。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16445,12 +16445,13 @@
     "accepted": [
       "root spawn/wait",
       "child inference and attributed SSE",
-      "shared response output budget, client isolation and stored retrieval"
+      "shared response output budget, client isolation and stored retrieval",
+      "All six actions in separate root rounds, pre-execution interruption, single rescheduled child and attributed event replay"
     ],
     "remaining": [
-      "Scheduling and interruption across separate rounds",
-      "Additional real action combinations and takeover",
-      "Primary/light packages, rollback and default delivery"
-    ]
+      "Primary/light qualification, hosted recovery and registered takeover",
+      "Returnable packages and default delivery"
+    ],
+    "cross_round": "evidence/serve-responses-hosted-agents-20261123/cross-round.json"
   }
 }

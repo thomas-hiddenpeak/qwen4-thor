@@ -148,6 +148,7 @@ class ResponsesExecution {
   ObjectReply RunAgents(size_t completed_calls, const AgentModelStep& step,
                         const std::function<bool(const std::string&)>& publish);
   bool PendingAgents() const { return !agent_pending_.empty(); }
+  bool QueuedAgents() const { return agents_ && !agents_->FirstQueued().empty(); }
   ObjectReply RunWebSearches(size_t completed_calls,
                              const std::function<bool(const std::string&)>& publish);
   bool HasFileSearch() const { return !file_search_bindings_.empty(); }

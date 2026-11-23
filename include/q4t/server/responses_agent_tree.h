@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include "q4t/io/json.h"
 #include "q4t/status.h"
@@ -32,6 +33,8 @@ class ResponsesAgentTree {
   size_t StoredText() const { return stored_text_; }
   const io::Json& RootMessages() const { return root_messages_; }
   std::string FirstQueued() const;
+  std::vector<std::string> QueuedNames() const;
+  bool Queued(const std::string& name) const;
   Status Finish(const Turn& turn, std::string answer, bool completed);
 
  private:

@@ -4915,7 +4915,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (stream && !write_stream(citations)) return;
       }
       if (!internal_step && !prewarm && finish_reason != "length" &&
-          responses->PendingNativeCalls()) {
+          (responses->PendingNativeCalls() || responses->QueuedAgents())) {
         // Commit observed primary usage while sequence memory is still live,
         // then release its grammar/slot before the embedding model competes.
         finish_usage_step.Run();
@@ -4980,7 +4980,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           return !stream || write_stream(wire);
         };
         ObjectReply result;
-        if (responses->PendingAgents()) {
+        if (responses->PendingAgents() || responses->QueuedAgents()) {
           const auto run_agent = [&](const ResponsesAgentTree::Turn& turn, bool allow_tools,
                                      io::Json* message, bool* complete) -> ObjectReply {
             using namespace responses_detail;
@@ -5048,7 +5048,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         settle_search.Run();
         if (result.ok()) result = prepare_tool_media();
-        answer = !client_wait &&
+        answer = native_calls != 0 && !client_wait &&
                  native_calls == response_parser.CompletedToolCalls();
         if (!result.ok()) {
           err_guard.ok = false;
