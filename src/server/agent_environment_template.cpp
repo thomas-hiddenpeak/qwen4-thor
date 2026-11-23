@@ -34,22 +34,6 @@ Json Or(const Json& source, const char* key, Json fallback) {
   return value && !value->IsNull() ? *value : std::move(fallback);
 }
 
-// The API reports inline download size without returning or decoding the bytes.
-bool Base64Size(std::string_view text, size_t* bytes) {
-  if (text.size() % 4) return false;
-  const auto first = text.find('=');
-  const auto count = first == text.npos ? text.size() : first;
-  const auto tail = text.substr(count);
-  if (!tail.empty() && tail != "=" && tail != "==") return false;
-  if (text.substr(0, count).find_first_not_of(io::kBase64Alphabet) != text.npos)
-    return false;
-  if (!tail.empty()) {
-    const auto last = io::kBase64Alphabet.find(text[count - 1]);
-    if (last % (tail.size() == 2 ? 16 : 4)) return false;
-  }
-  *bytes = text.size() / 4 * 3 - tail.size();
-  return true;
-}
 
 }  // namespace
 
@@ -79,7 +63,7 @@ ObjectReply environment_detail::PublicTemplate(const Json& config,
       return Invalid("Expected a unique file path inside /workspace", "files");
     if (file.GetString("type") == "inline") {
       size_t size;
-      if (!Base64Size(file.Find("data")->str, &size))
+      if (!io::Base64DecodedSize(file.Find("data")->str, &size))
         return Invalid("Invalid inline file data", "files");
       file = Object({{"type", String("inline")},
                      {"path", String(path)},
@@ -102,7 +86,7 @@ ObjectReply environment_detail::PublicTemplate(const Json& config,
         if (!entry.Has("version")) Set(&entry, "version", {});
       } else {
         size_t size;
-        if (!Base64Size(entry.Find("source")->Find("data")->str, &size) ||
+        if (!io::Base64DecodedSize(entry.Find("source")->Find("data")->str, &size) ||
             !size)
           return Invalid("Invalid inline capability data",
                          entries == &plugins ? "plugins" : "skills");

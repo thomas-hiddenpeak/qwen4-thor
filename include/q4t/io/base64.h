@@ -10,6 +10,23 @@
 namespace q4t::io {
 inline constexpr std::string_view kBase64Alphabet =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+// Validate canonical padding and report decoded bytes without allocating.
+inline bool Base64DecodedSize(std::string_view text, size_t* bytes) {
+  if (!bytes || text.size() % 4) return false;
+  const auto first = text.find('=');
+  const auto count = first == text.npos ? text.size() : first;
+  const auto tail = text.substr(count);
+  if (!tail.empty() && tail != "=" && tail != "==") return false;
+  if (text.substr(0, count).find_first_not_of(kBase64Alphabet) != text.npos)
+    return false;
+  if (!tail.empty()) {
+    const auto last = kBase64Alphabet.find(text[count - 1]);
+    if (last % (tail.size() == 2 ? 16 : 4)) return false;
+  }
+  *bytes = text.size() / 4 * 3 - tail.size();
+  return true;
+}
+
 inline Status EncodeBase64(std::string_view bytes, size_t max_output_bytes,
                            std::string* out) {
   // Divide before multiplying: both the bound and capacity calculation avoid

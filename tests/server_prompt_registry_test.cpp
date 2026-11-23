@@ -412,6 +412,44 @@ Q4T_TEST(environment_template_http_bounds_apply_to_input_and_count_unicode) {
   return true;
 }
 
+Q4T_TEST(environment_template_inline_limits_count_decoded_file_bytes) {
+  constexpr size_t limit = 5 * 1024 * 1024;
+  std::string at_limit;
+  Q4T_CHECK(q4t::io::EncodeBase64(std::string(limit, 'q'), 6990508,
+                                   &at_limit));
+  const auto single = [&](const std::string& encoded) {
+    auto file = Parse(R"({"type":"inline","path":"/workspace/one","data":""})");
+    file.object.back().second.str = encoded;
+    return file;
+  };
+  ChatPlanError error;
+  auto file = single(at_limit);
+  Q4T_CHECK(ValidateEnvironment(file, EnvironmentShape::kFileCreate, &error));
+  // One more byte uses the same base64 string length and removes its padding.
+  auto over = at_limit;
+  Q4T_CHECK(over.back() == '=');
+  over.back() = 'A';
+  Q4T_CHECK(!ValidateEnvironment(single(over), EnvironmentShape::kFileCreate,
+                                 &error) && error.param == "data");
+  auto body = Parse(R"({"files":[]})");
+  auto& files = body.object.front().second.array;
+  files.push_back(file);
+  Set(&file, "path", Parse(R"("/workspace/two")"));
+  files.push_back(std::move(file));
+  for (auto shape : {EnvironmentTemplateShape::kCreate,
+                     EnvironmentTemplateShape::kUpdate})
+    Q4T_CHECK(ValidateEnvironmentTemplate(body, shape, &error));
+  auto third = single("YQ==");
+  Set(&third, "path", Parse(R"("/workspace/three")"));
+  files.push_back(std::move(third));
+  Q4T_CHECK(!ValidateEnvironmentTemplate(body, EnvironmentTemplateShape::kCreate,
+                                         &error) &&
+            error.param == "files[2].data");
+  Q4T_CHECK(ValidateEnvironmentTemplate(
+      body, EnvironmentTemplateShape::kStoredDefinition, &error));
+  return true;
+}
+
 Q4T_TEST(environment_template_max_inline_file_survives_reopen_and_rejects_mixed_parts) {
   Fixture f;
   constexpr size_t file_bytes = 5 * 1024 * 1024;

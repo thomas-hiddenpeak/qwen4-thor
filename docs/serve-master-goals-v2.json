@@ -16642,6 +16642,10 @@
     "payload_retention": "docs/evidence/serve-agent-workspaces-20261124/payload-retention.json",
     "payload_profiles": "docs/evidence/serve-agent-workspaces-20261124/payload-profiles.json",
     "delivery": "docs/evidence/serve-agent-workspaces-20261124/delivery.json",
-    "methods": "docs/evidence/serve-agent-workspaces-20261124/methods.json"
+    "methods": "docs/evidence/serve-agent-workspaces-20261124/methods.json",
+    "inline_upload_limits": {
+      "state": "candidate_verified",
+      "evidence": "docs/evidence/serve-agent-workspaces-20261124/inline-limits.json"
+    }
   }
 }

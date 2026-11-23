@@ -1,0 +1,76 @@
+{
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 41.298,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "file_limit": 5242880,
+    "total_limit": 10485760,
+    "identical_encoded_lengths": true,
+    "create": 400,
+    "update": 400,
+    "warm": 400,
+    "session": 400,
+    "install": 400,
+    "existing_files_unchanged": true
+  },
+  "chat": {
+    "answer": "42"
+  },
+  "engine": "3528eea2c5e1afa0727b892ff848eb3494b265c6cb5b902db6cba2e30fd15c41",
+  "ingress": "3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed",
+  "sdk_driver": "f1dc5cc3175653f9871a361fbc373cd85144c7d0e6ff9d061be1c2c546986ade",
+  "cpu": [
+    "environment_template_http_bounds_apply_to_input_and_count_unicode",
+    "environment_template_inline_limits_count_decoded_file_bytes",
+    "environment_template_max_inline_file_survives_reopen_and_rejects_mixed_parts",
+    "environment_template_seals_private_inputs_and_preserves_patch_semantics",
+    "hosted_workspace_prewarms_once_and_installs_private_bytes",
+    "hosted_workspace_owns_uploaded_bytes_after_source_deletion",
+    "hosted_workspace_session_turn_and_file_commit_share_revision",
+    "hosted_workspace_retention_collects_orphan_after_reopen",
+    "hosted_workspace_two_claims_commit_only_one_session_and_response",
+    "object_retention_hosted_workspace_edges_allow_unrelated_collection"
+  ],
+  "guide": "https://developers.openai.com/api/docs/guides/agents-api/environments/files",
+  "evidence": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/inline-file-environment_template.log",
+      "sha256": "aead1ce1dbc4d12fef5a17bc0db50dff64349f8403bcf2c478d47fba65148197"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/inline-file-hosted_workspace.log",
+      "sha256": "413f61a3968410ccce16e8722700dcac0f844296b8cebbd58f332529fd2468cd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/inline-file-inventory.log",
+      "sha256": "c624ede0298dc773db28dbbfd584394c97113ebfbba0a96beca6ef233beaf893"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/upload-limits-http-01/plan.json",
+      "sha256": "d95ca99433ccfcd0cc72670673e529af5ba2809816b60adf9b711ac26f2b0a4b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/upload-limits-http-01/result.json",
+      "sha256": "e4884d904a36b3c6c033068f077f9f9305fdf0a158439f039193eeba1b58063b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/upload-limits-http-01/create/sdk-result.json",
+      "sha256": "0c6c392208862397d744317aa92068c8649bf4623175446aee77b5dcc076c387"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/upload-limits-http-01/create/chat-result.json",
+      "sha256": "d90747d2a5dfdd61eb8e632c7b9174b35e71deed58065e38465c56e1be8e62f4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/upload-limits-lease-01/exit.json",
+      "sha256": "bd2717d93e0dbd0a35a14978f2df5cee5bbdd0b293254dbec03d678f1c3d115f"
+    }
+  ]
+}
