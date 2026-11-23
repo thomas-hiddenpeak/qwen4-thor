@@ -1,0 +1,122 @@
+{
+  "package_status": "CANDIDATE_REAL_BUSINESS_VERIFIED",
+  "elf_sha256": "96cba508d7d6a87bf62e42b2f1a466dc2828ca1c9189d24936b341d6bddf8fe5",
+  "file_pipeline": "official JS SDK 7.47.0 through native loopback TLS",
+  "http": [
+    {
+      "method": "POST",
+      "operation": "/v1/responses/input_tokens",
+      "query": "",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "operation": "/v1/responses/input_tokens",
+      "query": "?beta=true",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "operation": "/v1/responses",
+      "query": "?beta=true",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "operation": "/v1/responses/{response_id}",
+      "query": "?beta=true&include%5B%5D=message.output_text.logprobs",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "operation": "/v1/responses/{response_id}/input_items",
+      "query": "?beta=true&limit=1&order=asc",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "operation": "/v1/responses/{response_id}",
+      "query": "?beta=true",
+      "status": 404
+    },
+    {
+      "method": "POST",
+      "operation": "/v1/responses/compact",
+      "query": "?beta=true",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "operation": "/v1/responses/{response_id}",
+      "query": "?beta=true",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "operation": "/v1/responses/{response_id}",
+      "query": "?beta=true",
+      "status": 404
+    },
+    {
+      "method": "POST",
+      "operation": "/v1/responses",
+      "query": "?beta=true",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "operation": "/v1/responses/{response_id}/cancel",
+      "query": "?beta=true",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "operation": "/v1/responses/{response_id}",
+      "query": "?beta=true&stream=true&starting_after=0&include_obfuscation=false",
+      "status": 200
+    }
+  ],
+  "answer": "42",
+  "input_tokens": 99,
+  "cancellation": "cancelled",
+  "sse_received_before_disconnect": 6,
+  "sse_replay_count": 17,
+  "window": {
+    "status": "PASS",
+    "seconds": 36.74238743307069,
+    "model_starts": 1,
+    "model_rc": 0,
+    "ports_free": true,
+    "unchanged_default": true
+  },
+  "lease": "COMPLETED",
+  "previous_runs": {
+    "business-01": "FAIL",
+    "business-02": "FAIL",
+    "business-03": "PASS"
+  },
+  "sha256": {
+    "final-01/plan.json": "721c6217fc284151f0765d492a8cd27640779711777e3271a49fc3e05f097fa8",
+    "final-01/result.json": "1fb73f6e014bea8f1ae7ac7ee311f6097a5ef7a74beadc4de57e189acae47fa1",
+    "final-01/sdk-result.json": "e962133dca9e6b5892d5a90a5ba436d48ade6388d01c2f0076ed7b4588a44f5a",
+    "final-01/sdk-requests.json": "6516b77647197a00cdbb25a7142364dfe0c12165b7cf9fc79cea40e186fa8f04",
+    "final-01/compact.json": "13296f7610b2d36fd53b7d66fa70f73d1ad17a348f8234e590ef0fe1e58297ee",
+    "final-01/sse.json": "aa56f8990359661b4e7922a1836383ea0f69a13b9080c5c57d9d7600feddfc7d",
+    "final-01/cancel.json": "5cc032fa16f220ca3463d7a000a4a4b601f39416fd64841e4505a79074de4d96",
+    "final-01/create.json": "d5ce8d6ee206d87b1c30262cfc615fa02c0270b83028b66e09c2a418a4e09b85",
+    "final-01/token-count.json": "621f8e6cc8ecfa477665d651b4d9a82e69914b3fbfda7be9024684e9703c27ba",
+    "final-01/inputs.json": "b4f6e9edd1215249c0841410a15507394cd83668b6ce290d5c02eac105b644e5",
+    "final-lease-01/exit.json": "2ea70a7ff2d23292966d00b72017730d2554f0b814a9844eda25c2fc1331a272",
+    "business-01/sdk-failure.json": "2fa3d5d0b887696f9917ac58196e816619327f05f27ecfa0da55e53d984dd1d2",
+    "business-02/sdk-failure.json": "27553d522b8129f0d4cd4196de8344a1a4aa7833ab9ce8e81d8b1414dd033bb9",
+    "business-03/sdk-result.json": "d45171517b93fd03b01d61b68adfd2129061f5f1631393f1c322302d8cd8c1a5",
+    "cpu-b.log": "a9e600451e691ae80850d74359ba9d424812e49d1d51e71a809f1830cde57d03",
+    "schema-producer.log": "44c22424e1fc454ddab78e75efe3eb646804d53278650bb84bf96850f7785677",
+    "python-retest.log": "c077f5a38f69db1241478ec8ddc17fae4908f6fe3d012ef2688ec1d341e08bd2",
+    "sdk-test-02.log": "71cba9e3b13deb5b52843c13bcd79f850eadf6060b04bbf3c99415a8886c3cd5",
+    "audit.log": "801497b68e77f21ea1301ddc21b2213d71ff595e82ee7883ec8219a31056e385",
+    "final_sdk.mjs": "dd9345620efaa824e8087ccdb6dffabda145b791f549ea071df2dc916619bf99",
+    "final.py": "815ad18ef42d675bf39826392491e7a051f1fa24bbba899049e840a7a70a3dfe"
+  },
+  "private_root": ".q4t-work/serve-responses-beta-20261123"
+}

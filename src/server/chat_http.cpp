@@ -333,6 +333,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     int failure_status = 400;
     const auto admit = [&] {
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
+      NormalizeResponsesPostTarget(method, path);
       const auto kind = ClassifyHttpConnection(method, path);
       if (operations && kind != HttpConnectionClass::kControl &&
           kind != HttpConnectionClass::kObservation) {

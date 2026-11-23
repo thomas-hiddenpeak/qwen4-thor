@@ -23,6 +23,10 @@ struct ResponsesReplay {
   bool terminal = false;
 };
 
+// Resolve the SDK's beta selector before admission and dispatch of a POST
+// command. Other queries retain the endpoint's ordinary rejection behavior.
+void NormalizeResponsesPostTarget(std::string_view method, std::string& target);
+
 // Native read/delete protocol, independently testable without a model.
 ObjectReply PlanResponsesRead(std::string_view method, std::string_view target,
                               std::string_view body, ResponsesReadPlan* plan);

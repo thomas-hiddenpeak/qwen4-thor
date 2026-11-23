@@ -1,0 +1,135 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 432,
+    "version_revision": 145,
+    "profile_revision": 36,
+    "previous_profile_revision": 36,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "3a9ef885ac55cff32426125b7f33c8debc92781997fa8deacc3cd1b302f6a042",
+    "fallback": "10b500bb6037bdf21e60df1edbb91f641ca5f5c2542995c350aafefe10e24cb1",
+    "engine": "e10faacb62aa662908ff567fc28b790478fb4a96d31de8859f532b5245c05766",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "actual_short": {
+    "status": "PASS_NATIVE_SHORT_SOAK",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/observer-01/bundle",
+      "manifest_sha256": "3a9ef885ac55cff32426125b7f33c8debc92781997fa8deacc3cd1b302f6a042"
+    },
+    "profile": "short",
+    "cycles": 3,
+    "business_requests": 15,
+    "tool_executions": 3,
+    "starts": 1,
+    "guard": {
+      "passed": true,
+      "records": 112,
+      "observations": 108,
+      "seconds": 115.36395295336843
+    },
+    "native_cleanup_confirmed": true,
+    "day_scale_stability_proved": false,
+    "new_model_actions": 0,
+    "performance_acceptance": false,
+    "physical_ram_hard_boundary_proved": false
+  },
+  "actual_metrics": {
+    "raw_sha256": "16fbef7e493fd0a344d7c9cd97e46100af3a8ffedd9f1317fbb8122a1d886a4e",
+    "accepted": 113,
+    "omitted": 285,
+    "status": 200,
+    "actual": {
+      "q4t_connection_rejections_total{kind=\"live_sideband\"}": 0,
+      "q4t_operations_connection_rejections_total{kind=\"live_sideband\"}": 0,
+      "q4t_live_sideband_connections": 0
+    },
+    "requests": 6
+  },
+  "day": {
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/observer-src",
+    "source_commit": "0b0dbebcbe3956a61a5a5f1e2f9cc9d2dc0c9019",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/observer-01/bundle",
+      "manifest_sha256": "3a9ef885ac55cff32426125b7f33c8debc92781997fa8deacc3cd1b302f6a042"
+    },
+    "private_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/observer-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "61e7860c6aeee8138b541254746fa186775520adfbed9928c74d4240ea592dfb",
+    "handoff_sha256": "32faa953b71eb92eef1a172c80ecd295d08f8842d3cb0aa1ca6231b2c7b1671b",
+    "pinned_sources": 695,
+    "cycles": 1440,
+    "interval_seconds": 60,
+    "duration_seconds": 86400,
+    "limits": {
+      "starts": 1,
+      "chats": 7201,
+      "probes": 0,
+      "controls": 500000,
+      "seconds": 87900
+    },
+    "owner": "user",
+    "executed": false
+  },
+  "previous_rev430_preparation": {
+    "state": "PREPARED_AND_CHECKED_NO_DAY_EXECUTION",
+    "source_commit": "afe799f4ac438dcfe9a8b0c9f2399281a916ec5b",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/handoff-src",
+    "private_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/handoff-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "1e64b1dda53956fd6b8670ce38e3e12f9151e9f63987a85fe706425da8edfee1",
+    "handoff_sha256": "d4e415ffd3bc467cf36d7dbc85c9c884f9358f46ae8df5b0d1a777e28ddc2bce",
+    "pinned_sources": 695,
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-registry-20261123/candidate-05/bundle",
+      "manifest_sha256": "10b500bb6037bdf21e60df1edbb91f641ca5f5c2542995c350aafefe10e24cb1"
+    },
+    "profile": "day",
+    "cycles": 1440,
+    "interval_seconds": 60,
+    "duration_seconds": 86400,
+    "maxima": {
+      "starts": 1,
+      "chats": 7201,
+      "probes": 0,
+      "controls": 500000,
+      "seconds": 87900
+    },
+    "hours_executed": 0,
+    "owner": "user",
+    "checks": {
+      "soak-frozen-prepare.log": "14d8f3b8741a46198752318a13105786320fa40b0d231d1d476538029bf52352",
+      "soak-frozen-check.log": "0e62663ede7dfff677322a8f9df3ab9998c8a0aa631af07d3466265dc79c7de9",
+      "startup-diagnostic-01/result.json": "f96863b1433c869ddd8ae077a19adf8ac325977167d1eac562618632a4f4be8d",
+      "startup-lease-01/exit.json": "e1d004f082fe1d20cda249a93681db420515d634479893d24e57285a6f3bb749",
+      "startup-lease-02/exit.json": "d8a7713deb471811f24bae1c197d9590d4c167f96cd60dbfa640b88747c3e969",
+      "startup-lease-02/events.jsonl": "94f319b9e121f9e31a4687c9f79d2b11ea4b68b83c43d5512b7e1bd391fb4e12",
+      "startup-diagnostic-02/ingress.private.trace": "778222f6f434a906936fe30e6caa78e0a560e1c4ad84b69822606817cd77705a"
+    },
+    "diagnostic": {
+      "first": "driver could not enumerate children on this kernel; no media request",
+      "second": "ENV_ABORT",
+      "reason": "competing workload during lease",
+      "external_process": "nvargus-daemon",
+      "http_dispatched_by_diagnostic": false,
+      "released_lock": true,
+      "private_ports_closed": true
+    }
+  },
+  "source_sha256": {
+    "observer-short-report.json": "d84f34fd4c6685965dde2dec2b56706ad81ab5f2b110c52e376b1378e183f871",
+    "observer-src/.q4t-work/short-01/run.json": "afe31cefa28a95db363074f1556e3df3a437719722d373d0bf15982c154277af",
+    "observer-src/.q4t-work/short-01/execution/result.json": "5a379fa143f0ef01981548c1099ce858de51d8a991bf272d671a7d9e35aff102",
+    "observer-src/.q4t-work/short-01/lease/exit.json": "4bc9ebd3d1e2d9a8f697e3d2d9f955def3ac9c411956d4153bd3c3edb01b19f3",
+    "observer-day-check.log": "f6ad791138e446b0404df690dab0202667d1accd31031f2aa895a2ae3d78ca09",
+    "observer-delivery/result.json": "39d08290b5f40fbcda4c0acede365b90b830bc1330fe352f3820988fe24ec645",
+    "observer-delivery-lease-01/exit.json": "2601eeedb3ae5a47ed4d7619b9e0c0603b65f837bb85bb54e2eafed1b4996dbc",
+    "observer-delivery/check.stdout": "32e9d90fbda65081fb8a8fd50c32e912f46753f128ac1d2cd10737c47d7eac1f",
+    "observer-delivery/version-status.stdout": "a97b695287e8675ffc5343412155de1e1c2ce8aa734af0a7c916957ad86ef60f",
+    "observer-01/service.release.json": "1a69d6f56548c97488f3670d0b9b475bc450542be11d915972eb2444eee77f6c",
+    "observer-01/service-acceptance.json": "db22ef303cb839a1c890967581799f4db401f88c030e180f07f059b2b24147d3",
+    "metric-wire-replay.json": "6927b129ff164d3d892050838dad0b596f564f1693a3547d0e83a7f4493e4eba",
+    "metric-cpu.log": "a33e230a4f3394cdf27d7375af98e4c28ee1dc6b32655072b392886d5e4aeacb",
+    "handoff-src/.q4t-work/short-01/run.json": "d1727a631202910670edabbc742e3c8abfbdebf5ce854d9c3464b03ef8459be9"
+  }
+}

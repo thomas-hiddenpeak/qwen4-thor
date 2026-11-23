@@ -93,6 +93,37 @@ test('official temporary background JSON survives the submitting request', async
   });
 });
 
+test('beta Responses preserve ownership, pagination, replay and cancellation', async () => {
+  await peer('beta', async (sdk, other) => {
+    const responses = sdk.beta.responses;
+    const accepted = await responses.create(input);
+    const done = await status(sdk.beta, accepted.id, ['completed']);
+    assert.equal(done.output[0].content[0].text, 'CPU background answer');
+    const page = await responses.inputItems.list(done.id, { limit: 1, order: 'asc' });
+    assert.equal(page.data[0].role, 'user');
+    await assert.rejects(other.beta.responses.delete(done.id), error => error.status === 404);
+    await responses.delete(done.id);
+    await assert.rejects(responses.retrieve(done.id), error => error.status === 404);
+
+    const stream = await responses.create({ ...input, stream: true, metadata: { fixture: 'hold' } });
+    let id;
+    const original = [];
+    for await (const event of stream) {
+      original.push(event.sequence_number);
+      if (event.response?.id) id = event.response.id;
+      if (event.type === 'response.output_text.delta') break;
+    }
+    assert.ok(id && original.length > 1);
+    await assert.rejects(other.beta.responses.cancel(id), error => error.status === 404);
+    assert.equal((await responses.cancel(id)).status, 'cancelled');
+    const replay = [];
+    for await (const event of await responses.retrieve(id, { stream: true, starting_after: original[0] })) {
+      replay.push(event.sequence_number);
+    }
+    assert.deepEqual(replay, original.slice(1));
+  });
+});
+
 test('official empty POST cancellation handles queued and running jobs idempotently', async () => {
   await peer('cancel', async (sdk, other, { root }) => {
     const running = await sdk.responses.create({ ...input, metadata: { fixture: 'hold' } });
