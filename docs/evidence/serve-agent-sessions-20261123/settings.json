@@ -1,0 +1,60 @@
+{
+  "outcome": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 34.351,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "plan": {
+    "binary": "89844c339b2cc60e4f0bd13d3214b3f5af32c9eaa5f95761f3a7a2c498a62e17",
+    "ingress": "7598a5f32abf2d13916507d04412397c2637ee6e9b0a9f7dd483848596e1a388",
+    "sdk_driver": "eb5b0596e4723f1da4207799487957b802baec11f0008781285ea9dedf660c2d",
+    "protected": {
+      "build/q4t": "479f87dfa7b2f335fdacf163af8e4cbd7e73c20b11c31ec3e3e39d3b173490d0",
+      "build/service/manifest.json": "c4975edef34a88a17957cb248a2884ad36a50f87f3daa1fff1f88d83675c9f77",
+      "build/service.release.json": "2adfd63ad4c072a96480571ea2c9513a956de4bd8bb3e51e9f10f7281a49e3cc",
+      "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+    },
+    "starts": 1,
+    "seconds": 180
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "answer": "42",
+    "matched": 1,
+    "peer_matches": 0,
+    "peer_update": 404,
+    "review": "auto_review",
+    "effort": "low",
+    "limit": 35,
+    "cleared": true
+  },
+  "path": ".q4t-work/serve-responses-agents-20261123/session-real-admin-01",
+  "lease": "COMPLETED",
+  "monitor_samples": 34,
+  "cpu": [
+    "[PASS] agent_session_turn_shares_queue_receipt_and_reopens_native_output",
+    "[PASS] agent_session_tool_action_requires_a_completed_owned_call",
+    "[PASS] agent_session_settings_use_cas_filtered_pages_and_immutable_step_settings",
+    "[PASS] object_retention_agent_session_follows_typed_dependencies",
+    "4 tests, 4 passed, 0 failed, 0 skipped"
+  ],
+  "gateway_routes": {
+    "native": "PASS",
+    "optional_nginx": "PASS"
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 121,
+    "native_routes": 202,
+    "reviewed_source_anchors": 1218,
+    "mutation_checks": 38,
+    "errors": []
+  }
+}

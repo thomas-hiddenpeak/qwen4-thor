@@ -416,6 +416,63 @@ Q4T_TEST(agent_session_turn_exhausted_object_quota_leaves_no_orphan) {
   return true;
 }
 
+Q4T_TEST(agent_session_settings_use_cas_filtered_pages_and_immutable_step_settings) {
+  Fixture f;
+  ObjectStore store(f.options);
+  auto config = Config();
+  config.structured = true;
+  auto start = Parse(R"({"agent":{"model":"cpu"},"environment":{"type":"none"},
+    "metadata":{"team":"unfiltered"},"input":"hello"})");
+  for (int index = 0; index < 10; ++index) {
+    ResponsesExecution run(store);
+    auto created = PrepareAgentSessionExecution(store, start, config, Access(),
+                                               std::time(nullptr), run);
+    Q4T_CHECK(Ok(created));
+    run.BindBackgroundControl(std::make_shared<RequestControl>(
+        run.Id(), "", Clock::now() + 5s));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
+    Q4T_CHECK(Ok(run.Finish(false, 0, {4, 0, 0, 0}, std::time(nullptr), &wire)));
+    if (index != 0 && index != 9) continue;
+    const auto id = created.value.GetString("id");
+    auto update = Parse(R"({"metadata":{"team":"records"},"review":"auto_review",
+      "spend_control":{"limit":25},"agent":{"reasoning":{"effort":"low"}}})");
+    Q4T_CHECK(UpdateAgentSession(store, id, update, config, Access("client:other")).http_status == 404);
+    auto updated = UpdateAgentSession(store, id, update, config, Access());
+    Q4T_CHECK(Ok(updated) && updated.value.GetString("status") == "idle" &&
+              updated.value.Find("spend_control")->GetInt("limit") == 25 &&
+              updated.value.Find("agent")->Find("reasoning")->GetString("effort") == "low");
+    AgentEventCursor cursor;
+    Json events;
+    bool settled = false;
+    Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor, &events, &settled)));
+    const auto* snapshot = events.array.front().Find("session");
+    Q4T_CHECK(snapshot && snapshot->GetString("review") == "none" &&
+              snapshot->Find("metadata")->GetString("team") == "unfiltered");
+  }
+  auto query = Parse(R"({"metadata[team]":"records","limit":1,"order":"asc"})");
+  auto page = ListAgentSessions(store, query, Access());
+  Q4T_CHECK(Ok(page) && page.value.GetBool("has_more") &&
+            page.value.GetArray("data")->array.size() == 1);
+  const auto first = page.value.GetString("last_id");
+  Set(&query, "after", *page.value.Find("last_id"));
+  page = ListAgentSessions(store, query, Access());
+  Q4T_CHECK(Ok(page) && !page.value.GetBool("has_more") &&
+            page.value.GetArray("data")->array.size() == 1 &&
+            page.value.GetString("last_id") != first);
+  auto peer = ListAgentSessions(store, Parse("{}"), Access("client:other"));
+  Q4T_CHECK(Ok(peer) && peer.value.GetArray("data")->array.empty());
+  auto reset = UpdateAgentSession(store, first,
+      Parse(R"({"metadata":null,"spend_control":{"limit":null},"agent":{"tools":null}})"),
+      config, Access());
+  Q4T_CHECK(Ok(reset) && reset.value.Find("metadata")->object.empty() &&
+            !reset.value.Has("spend_control"));
+  auto invalid = UpdateAgentSession(store, first, Parse(R"({"agent":{"model":"foreign"}})"),
+                                    config, Access());
+  Q4T_CHECK(invalid.http_status == 404);
+  return true;
+}
+
 Q4T_TEST(agent_session_vaults_require_owned_identity_and_spend_limit_null_resets) {
   Fixture f;
   ObjectStore store(f.options);

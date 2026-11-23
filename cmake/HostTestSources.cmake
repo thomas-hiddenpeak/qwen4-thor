@@ -439,6 +439,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_turn.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_settings.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_events.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_storage.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_storage_options.cpp

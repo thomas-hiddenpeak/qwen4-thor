@@ -175,7 +175,12 @@ ObjectReply ResolveSessionAgent(ObjectStore& objects, const Json& request,
   const auto* overrides = request.Find("agent");
   if (!agent_id && (!overrides || !overrides->Has("model")))
     return Invalid("An inline agent needs a model", "agent.model");
-  auto result = Resolve(settings, overrides ? *overrides : Object(), config);
+  return NormalizeSessionAgent(std::move(settings), overrides ? *overrides : Object(), config);
+}
+
+ObjectReply NormalizeSessionAgent(Json settings, const Json& overrides,
+                                  const ChatPlanConfig& config) {
+  auto result = Resolve(settings, overrides, config);
   if (!result.ok()) return result;
 
   // Session resources expose the public HTTP endpoint or stdio launch shape.

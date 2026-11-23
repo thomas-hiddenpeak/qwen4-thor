@@ -176,17 +176,31 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     return Error(404, "route_not_found", "Session route not found");
   if (!ManagedAgentMethodAllowed(method, target)) {
     auto denied = Error(405, "method_not_allowed", "Method not allowed");
-    const auto allowed = route.kind == Kind::kEvents ? "GET, POST" :
-                         route.kind == Kind::kCollection ? "POST" :
-                         route.kind == Kind::kSession ? "GET, DELETE" : "GET";
+    const auto allowed = route.kind == Kind::kEvents       ? "GET, POST"
+                         : route.kind == Kind::kCollection ? "GET, POST"
+                         : route.kind == Kind::kSession    ? "GET, POST, DELETE"
+                                                           : "GET";
     denied.value = Object({{"allow", String(allowed)}});
     return denied;
   }
   const auto split = target.find('?');
+  if (route.kind == Kind::kCollection && method == "GET") {
+    if (!body.empty()) return Invalid("Unexpected body", "body");
+    auto query = ParseApplicationQuery(
+        split == target.npos ? "" : target.substr(split + 1));
+    return query.ok() ? ListAgentSessions(objects, query.value, access) : query;
+  }
   if (split != target.npos &&
       (route.kind == Kind::kCollection || route.kind == Kind::kEvents ||
        route.kind == Kind::kSession || route.kind == Kind::kTurn))
     return Invalid("Unexpected query", "query");
+  if (route.kind == Kind::kSession && method == "POST") {
+    Json request;
+    auto parsed = io::ParseJson(body, &request, true, kSchemaJsonLimits);
+    if (!parsed) return Invalid(parsed.message(), "body");
+    return UpdateAgentSession(objects, std::string(route.session), request,
+                              config, access);
+  }
   if (route.kind == Kind::kEvents && method == "GET") {
     if (!body.empty()) return Invalid("Unexpected body", "body");
     *stream = true;

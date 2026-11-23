@@ -194,7 +194,9 @@ ObjectReply OpenAgentEventSubscription(ObjectStore& objects,
         link.GetString("response_id"), access);
     if (!record.ok()) return record;
     AgentSessionView step;
-    auto projected = ProjectStep(*session, link, record.value, &step);
+    auto settings = SessionSettings(*data, &link);
+    if (!settings.ok()) return settings;
+    auto projected = ProjectStep(settings.value, link, record.value, &step);
     if (!projected.ok()) return projected;
     const auto turn = step.turn.GetString("id");
     if (next.turn_id != turn) {
@@ -237,6 +239,8 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
     return Invalid();
   if (cursor->step == links->array.size()) return {};
   const auto& link = links->array[cursor->step];
+  auto settings = SessionSettings(*data, &link);
+  if (!settings.ok()) return settings;
   const auto response_id = link.GetString("response_id");
   auto record = ResponsesState(objects).ReadRecord(response_id, access);
   if (!record.ok()) return record;
@@ -251,7 +255,7 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
         Object({{"type", String("response." + response.GetString("status"))},
                 {"response", response}});
     bool end = false;
-    auto result = Translate(*session, link, record.value, event, *cursor,
+    auto result = Translate(settings.value, link, record.value, event, *cursor,
                             events, &end, settled);
     if (result.ok() && end) {
       ++cursor->step;
@@ -270,7 +274,7 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
       return Invalid();
     const auto before = events->array.size();
     bool end = false;
-    auto result = Translate(*session, link, record.value, event, *cursor,
+    auto result = Translate(settings.value, link, record.value, event, *cursor,
                             events, &end, settled);
     if (!result.ok()) return result;
     for (auto i = before; i < events->array.size(); ++i)

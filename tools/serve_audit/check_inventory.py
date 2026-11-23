@@ -294,7 +294,8 @@ def current_surface(root):
         raise ValueError("review native session routing")
     session = '/v1/agents/sessions'
     resource = session + '/{session_id}'
-    for method, path in [('POST', session), ('POST', resource + '/events'),
+    for method, path in [('POST', session), ('GET', session), ('POST', resource),
+                         ('POST', resource + '/events'),
                          ('GET', resource + '/events'),
                          ('GET', resource), ('DELETE', resource),
                          *(('GET', resource + suffix) for suffix in

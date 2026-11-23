@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #65 的两项 host-contracts 已通过，受检提交 1d57e0897 与主线合并提交 92eef5137 的文件树一致。rev442 注册配置及交付记录已进入主线。[主线回执](evidence/serve-agent-registration-20261123/main.json)
+
+官方 Node SDK 经原生 TLS 修改会话设置，按 Agent ID 与两个元数据键筛选出一条记录。另一客户列表为空、修改返回 404，清除设置后原筛选同样为空。原回合正常答 42。4 项 CPU 用例覆盖跨存储分页、旧回合快照、回填及保留关系，两种入口的实际转发通过。开销配置的存取已验，费用结算另行验收。[会话设置验收](evidence/serve-agent-sessions-20261123/settings.json)
+
 Managed Agent 流式工具短验通过。首次官方 SDK 在函数参数尚未齐备时就按 item.added 调用本地工具，回填得到 409。修复后只在持久化交接成功后向 SDK 公布可调用项。创建流 26 个事件，工具只执行一次；从空闲会话订阅的下一回合 19 个事件，两次均返回 442，未重复调用旧工具。跨客户订阅 404。继续完善会话管理、取消和恢复。[流式验收](evidence/serve-agent-sessions-20261123/stream.json)
 
 官方 SDK 的真实模型经原生 TLS 调用 read_release_record，从本项目发行回执读出 442，并在同一回合给出正确答案。SDK 重发同一结果得到 202；变更载荷 409、其他客户端 404，只保存一份工具结果。计入两步共 876 tokens。并发 CAS 失败后的重复回执还通过 CPU 验证。下一步继续流式、取消与恢复。[工具闭环](evidence/serve-agent-sessions-20261123/tool-round.json)

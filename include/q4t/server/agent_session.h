@@ -22,6 +22,8 @@ Status ValidateAgentSession(const io::Json& value, AgentSessionShape shape,
 ObjectReply ResolveSessionAgent(ObjectStore& objects, const io::Json& request,
                                 const ChatPlanConfig& config,
                                 const StateAccess& access);
+ObjectReply NormalizeSessionAgent(io::Json settings, const io::Json& overrides,
+                                  const ChatPlanConfig& config);
 struct AgentSessionStart {
   io::Json session;
   io::Json input;
@@ -58,6 +60,12 @@ ObjectReply PrepareAgentSessionEvents(
 ObjectReply ReconcileAgentEventReceipt(
     ObjectStore& objects, const std::string& id, const io::Json& request,
     std::string_view key, const StateAccess& access, ObjectReply result);
+ObjectReply ListAgentSessions(ObjectStore& objects, const io::Json& query,
+                              const StateAccess& access);
+ObjectReply UpdateAgentSession(ObjectStore& objects, const std::string& id,
+                               const io::Json& request,
+                               const ChatPlanConfig& config,
+                               const StateAccess& access);
 struct AgentEventCursor {
   size_t step = 0;
   size_t sequence = 0;

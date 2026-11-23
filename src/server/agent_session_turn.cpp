@@ -11,6 +11,7 @@
 #include "agent_session_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/conversation_state.h"
 #include "q4t/server/responses_execution.h"
 
 namespace q4t::server {
@@ -313,7 +314,9 @@ ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
         link.GetString("response_id"), access);
     if (!record.ok()) return record;
     AgentSessionView step;
-    auto projected = ProjectStep(*session, link, record.value, &step);
+    auto settings = SessionSettings(data, &link);
+    if (!settings.ok()) return settings;
+    auto projected = ProjectStep(settings.value, link, record.value, &step);
     if (!projected.ok()) return projected;
     const auto current = step.turn.GetString("id");
     if (last_turn != current) {
@@ -347,6 +350,15 @@ ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
   }
   if (result.turn.IsNull())
     return Error(404, "object_not_found", "Turn not found");
+  auto latest = SessionSettings(data);
+  if (!latest.ok()) return latest;
+  for (auto key : {"agent", "metadata", "review", "spend_control"}) {
+    if (const auto* value = latest.value.Find(key))
+      Set(&result.session, key, *value);
+    else
+      std::erase_if(result.session.object,
+                    [&](const auto& field) { return field.first == key; });
+  }
   Set(&result.session, "usage", std::move(session_usage));
   if (const auto* pending = data.GetArray("pending_tool_results")) {
     auto& required = Field(result.session, "required_actions").array;
@@ -374,6 +386,104 @@ ObjectReply ReadAgentSessionTurn(ObjectStore& objects, const std::string& id,
                                all_items)
               : InvalidRecord();
 }
+ObjectReply ListAgentSessions(ObjectStore& objects, const Json& query,
+                              const StateAccess& access) {
+  if (!query.IsObject())
+    return Error(400, "invalid_request", "Expected session list options");
+  auto paging = Object(), filters = Object();
+  std::string agent_id;
+  for (const auto& [key, value] : query.object) {
+    if (key == "agent_id") {
+      if (!value.IsString() || !ValidId(value.str))
+        return Error(400, "invalid_request", "Invalid agent filter");
+      agent_id = value.str;
+    } else if (key.starts_with("metadata[") && key.ends_with(']')) {
+      Set(&filters, key.substr(9, key.size() - 10), value);
+    } else if (key == "limit" || key == "after" || key == "order") {
+      Set(&paging, key, value);
+    } else {
+      return Error(400, "invalid_request", "Unknown session list option");
+    }
+  }
+  auto metadata = NormalizeConversationMetadata(filters);
+  if (!metadata.ok()) return metadata;
+  ChatPlanError error;
+  ItemViewOptions options;
+  auto valid = ParseItemViewOptions(paging, &options, &error, true);
+  if (!valid) {
+    auto result = Error(error.http_status, error.code, valid.message());
+    result.value = Object({{"param", String(error.param)}});
+    return result;
+  }
+  ObjectRequest lookup;
+  lookup.operation = ObjectOperation::kList;
+  lookup.kind = ObjectKind::kAgentSession;
+  lookup.scope = access.scope;
+  lookup.descending = options.descending;
+  lookup.after = options.after;
+  lookup.limit = std::min(8, options.limit + 1);
+  auto page = Array();
+  bool more = false;
+  size_t page_bytes = 0;
+  for (;;) {
+    auto listed = objects.Execute(lookup, access.deadline, access.cancelled);
+    if (!listed.ok()) return listed;
+    const auto* rows = listed.value.GetArray("data");
+    if (!rows) return InvalidRecord();
+    for (const auto& row : rows->array) {
+      const auto* data = row.Find("data");
+      if (!data) return InvalidRecord();
+      auto latest = SessionSettings(*data);
+      if (!latest.ok()) return latest;
+      const auto* session = &latest.value;
+      const auto* agent = session->Find("agent");
+      const auto* meta = session->Find("metadata");
+      if (!agent || !meta || !meta->IsObject()) return InvalidRecord();
+      if ((!agent_id.empty() && agent->GetString("id") != agent_id) ||
+          !std::ranges::all_of(metadata.value.object, [&](const auto& pair) {
+            const auto* match = meta->Find(pair.first);
+            return match && match->IsString() && match->str == pair.second.str;
+          }))
+        continue;
+      if (page.array.size() == static_cast<size_t>(options.limit)) {
+        more = true;
+        break;
+      }
+      AgentSessionView view;
+      auto result = ProjectHistory(objects, *data, session->GetString("id"), "",
+                                   access, &view, false);
+      if (!result.ok()) return result;
+      const auto bytes = OutputJson(view.session).size();
+      if (bytes > kChatBodyBytes - page_bytes) {
+        if (page.array.empty())
+          return Error(413, "agent_session_view_limit",
+                       "Session exceeds the list budget");
+        more = true;
+        break;
+      }
+      page_bytes += bytes;
+      page.array.push_back(std::move(view.session));
+    }
+    if (more || !listed.value.GetBool("has_more")) break;
+    const auto after = listed.value.GetString("last_id");
+    if (after.empty() || after == lookup.after) return InvalidRecord();
+    lookup.after = after;
+  }
+  auto edge = [&](bool first) {
+    return page.array.empty()
+               ? Json{}
+               : Copy(first ? page.array.front() : page.array.back(), "id");
+  };
+  auto first = edge(true), last = edge(false);
+  ObjectReply result;
+  result.value = Object({{"object", String("list")},
+                         {"has_more", Boolean(more)},
+                         {"first_id", std::move(first)},
+                         {"last_id", std::move(last)},
+                         {"data", std::move(page)}});
+  return result;
+}
+
 ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
                                       const std::string& id,
                                       const Json& request, std::string_view key,
@@ -494,7 +604,26 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   auto& links = Field(data, "turns");
   if (links.array.size() + 1 >= kMaxTransactionObjects)
     return Error(413, "agent_session_turn_limit", "Session step limit reached");
-  auto native = NativeRequest({view.session, std::move(input)});
+  auto execution_settings = view.session;
+  if (waiting) {
+    auto original = SessionSettings(data, &links.array.back());
+    if (!original.ok()) return original;
+    Set(&execution_settings, "review", Copy(original.value, "review"));
+    auto& current_agent = Field(execution_settings, "agent");
+    const auto& original_agent = *original.value.Find("agent");
+    Set(&current_agent, "model", Copy(original_agent, "model"));
+    const auto live_tool = [](const Json& tool) {
+      const auto type = tool.GetString("type");
+      return type == "function" || type == "mcp";
+    };
+    auto tools = Copy(current_agent, "tools");
+    std::erase_if(tools.array,
+                  [&](const auto& tool) { return !live_tool(tool); });
+    for (const auto& prior : original_agent.GetArray("tools")->array)
+      if (!live_tool(prior)) tools.array.push_back(prior);
+    Set(&current_agent, "tools", std::move(tools));
+  }
+  auto native = NativeRequest({execution_settings, std::move(input)});
   if (!native.ok()) return native;
   Set(&native.value, "previous_response_id",
       Copy(links.array.back(), "response_id"));
@@ -510,7 +639,9 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   }
   auto next = Object({{"id", String(turn)}, {"response_id", String(run.Id())}});
   if (waiting) Set(&next, "tool_results", std::move(pending));
-  links.array.push_back(std::move(next));
+  auto bound = BindSessionSettings(&data, execution_settings, &next);
+  if (!bound.ok()) return bound;
+  Field(data, "turns").array.push_back(std::move(next));
   std::erase_if(data.object, [](const auto& field) {
     return field.first == "pending_tool_results";
   });

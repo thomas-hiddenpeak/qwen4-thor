@@ -426,8 +426,8 @@ inline bool ManagedAgentMethodAllowed(std::string_view method,
   switch (ParseAgentSessionRoute(target).kind) {
     case Kind::kNone: return AgentRegistrationMethodAllowed(method, target);
     case Kind::kEvents: return method == "GET" || method == "POST";
-    case Kind::kCollection: return method == "POST";
-    case Kind::kSession: return method == "GET" || method == "DELETE";
+    case Kind::kCollection: return method == "GET" || method == "POST";
+    case Kind::kSession: return method == "GET" || method == "POST" || method == "DELETE";
     default: return method == "GET";
   }
 }

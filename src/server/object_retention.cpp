@@ -339,6 +339,13 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       inspector.value.uncertain = true;
     } else {
       inspector.AgentTools(agent->GetArray("tools"));
+      if (const auto* versions = data.Find("settings")) {
+        if (!versions->IsObject()) inspector.value.uncertain = true;
+        for (const auto& [_, delta] : versions->object) {
+          if (const auto* changed = delta.Find("agent"); changed && changed->Has("tools"))
+            inspector.AgentTools(changed->GetArray("tools"));
+        }
+      }
       for (const auto& vault : vaults->array) inspector.Reference(&vault);
       for (const auto& turn : turns->array) {
         if (!turn.Has("response_id")) inspector.value.uncertain = true;
