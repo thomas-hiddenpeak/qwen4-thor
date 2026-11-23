@@ -303,12 +303,19 @@ Q4T_TEST(trace_session_storage_repair_flushes_idle_latest_snapshot) {
   f.options.objects.restart_backoff_ms = 10;
   std::ofstream(f.options.objects.directory) << "owned storage outage";
   RealtimeTraceStore store(f.options);
-  RealtimeSessionTrace trace("sess_idle", "conv_idle", [&] { return &store; },
-                             "client:a");
+  // Opening the exporter is opportunistic. Exercise the production idle
+  // tick even when the first configure call cannot obtain a producer.
+  bool exporter_available = false;
+  RealtimeSessionTrace trace("sess_idle", "conv_idle", [&] {
+    return exporter_available ? &store : nullptr;
+  }, "client:a");
   const auto started = RealtimeTraceNow();
   trace.Configure(Object({{"tracing", String("auto")}}), started);
+  exporter_available = true;
   Q4T_CHECK(Wait([&] {
     const auto health = store.Health();
+    if (health.snapshot_available && health.accepted == 0)
+      trace.Tick(RealtimeTraceNow());
     return health.snapshot_available && health.pending == 0 &&
            health.failures > 0;
   }));
