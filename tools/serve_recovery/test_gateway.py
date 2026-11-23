@@ -48,7 +48,9 @@ class RouteInventoryTests(unittest.TestCase):
         stream = event['get']['responses']['200']['content']
         self.assertEqual(set(stream), {'text/event-stream'})
         self.assertTrue(stream['text/event-stream']['x-q4t-event-schema']['$ref'].endswith('/agent_session_event'))
-        create = paths[collection]['post']['responses']['200']['content']
+        responses = paths[collection]['post']['responses']
+        self.assertEqual({code for code in responses if code.startswith('2')}, {'201'})
+        create = responses['201']['content']
         self.assertEqual(set(create), {'text/event-stream', 'application/json'})
         meta = next(p for p in paths[collection]['get']['parameters'] if p['name'] == 'metadata')
         self.assertEqual(meta['style'], 'deepObject')
