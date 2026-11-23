@@ -60,6 +60,7 @@ ObjectReply ResponsesExecution::FreezeInputs(Json* inputs) {
               {"conversation_id", String(plan_.conversation_id)},
               {"conversation_revision", Number(plan_.conversation_revision)},
               {"conversation", plan_.conversation}});
+  if (plan_.multi_agent_beta) Set(inputs, "multi_agent_beta", Boolean(true));
   return {};
 }
 
@@ -111,6 +112,12 @@ ObjectReply ResponsesExecution::RestoreInputs(
     return Error(408, "request_deadline_exceeded", "Queued inputs expired");
   ChatPlanError error;
   auto status = ParseResponsesEnvelope(*request, config, &envelope_, &error);
+  if (const auto* selected = inputs.Find("multi_agent_beta")) {
+    if (!selected->IsBool()) return Invalid();
+    envelope_.multi_agent_beta = selected->boolean;
+  } else {
+    envelope_.multi_agent_beta = false;
+  }
   if (!status) {
     auto reply = Error(error.http_status, error.code, status.message());
     reply.value = Object({{"param", String(error.param)}});
@@ -149,6 +156,7 @@ ObjectReply ResponsesExecution::RestoreInputs(
   plan_.store = store->boolean;
   plan_.ephemeral = ephemeral->boolean;
   plan_.request = *request;
+  plan_.multi_agent_beta = envelope_.multi_agent_beta;
   if (const auto* catalogs = inputs.Find("mcp_catalogs"))
     plan_.mcp_catalogs = *catalogs;
   plan_.history = *history;

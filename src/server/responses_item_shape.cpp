@@ -8,6 +8,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/live_shape.h"
 #include "q4t/server/live_types_data.h"
+#include "q4t/server/multi_agent_types_data.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/responses_item_types_data.h"
 #include "q4t/server/realtime_shape.h"
@@ -195,8 +196,36 @@ Status Validate(const Graph& graph, const Json& item, const char* root,
 }
 }  // namespace
 
+Status ValidateMultiAgentShape(const Json& value, MultiAgentShape shape,
+                               ChatPlanError* error, std::string_view path) {
+  static const Graph graph(multi_agent_types::kData,
+                           "q4t-openai-multi-agent-types-v1");
+  const char* root = "";
+  switch (shape) {
+    case MultiAgentShape::kConfiguration: root = "configuration"; break;
+    case MultiAgentShape::kInputCall: root = "input_call"; break;
+    case MultiAgentShape::kInputResult: root = "input_result"; break;
+    case MultiAgentShape::kOutputCall: root = "output_call"; break;
+    case MultiAgentShape::kOutputResult: root = "output_result"; break;
+  }
+  return Validate(graph, value, root, error, path);
+}
+
 Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
-                                  ChatPlanError* error, std::string_view path) {
+                                  ChatPlanError* error, std::string_view path,
+                                  bool multi_agent) {
+  if (multi_agent && shape != ResponsesItemShape::kConversation) {
+    const auto type = item.GetString("type");
+    const bool input = shape == ResponsesItemShape::kInput;
+    if (type == "multi_agent_call")
+      return ValidateMultiAgentShape(item, input ? MultiAgentShape::kInputCall
+                                                 : MultiAgentShape::kOutputCall,
+                                     error, path);
+    if (type == "multi_agent_call_output")
+      return ValidateMultiAgentShape(item, input ? MultiAgentShape::kInputResult
+                                                 : MultiAgentShape::kOutputResult,
+                                     error, path);
+  }
   const char* root = shape == ResponsesItemShape::kInput    ? "input_item"
                      : shape == ResponsesItemShape::kOutput ? "output_item"
                      : shape == ResponsesItemShape::kConversation

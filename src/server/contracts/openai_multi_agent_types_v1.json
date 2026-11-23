@@ -1,0 +1,695 @@
+{
+  "profile": "q4t-openai-multi-agent-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "configuration": 0,
+    "input_call": 4,
+    "input_result": 18,
+    "output_call": 34,
+    "output_result": 37
+  },
+  "nodes": [
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 1
+        },
+        {
+          "name": "max_concurrent_subagents",
+          "optional": true,
+          "type": 2
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "boolean"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        3
+      ]
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "agent",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "arguments",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "id",
+          "optional": true,
+          "type": 16
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "spawn_agent"
+    },
+    {
+      "kind": "literal",
+      "value": "interrupt_agent"
+    },
+    {
+      "kind": "literal",
+      "value": "list_agents"
+    },
+    {
+      "kind": "literal",
+      "value": "send_message"
+    },
+    {
+      "kind": "literal",
+      "value": "followup_task"
+    },
+    {
+      "kind": "literal",
+      "value": "wait_agent"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        13,
+        14
+      ]
+    },
+    {
+      "kind": "null"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent_name",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        13,
+        15
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "multi_agent_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "agent",
+          "optional": true,
+          "type": 19
+        },
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "id",
+          "optional": true,
+          "type": 16
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 21
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 33
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        13,
+        20
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent_name",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 22
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "annotations",
+          "optional": true,
+          "type": 23
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 32
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        24
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 25
+    },
+    {
+      "kind": "union",
+      "variants": [
+        26,
+        28,
+        30
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "filename",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 27
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "file_citation"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "end_index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "start_index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 29
+        },
+        {
+          "name": "url",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "url_citation"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "container_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "end_index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "filename",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "start_index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 31
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "container_file_citation"
+    },
+    {
+      "kind": "literal",
+      "value": "output_text"
+    },
+    {
+      "kind": "literal",
+      "value": "multi_agent_call_output"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "agent",
+          "optional": true,
+          "type": 35
+        },
+        {
+          "name": "arguments",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        36
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent_name",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "agent",
+          "optional": true,
+          "type": 38
+        },
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 40
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 33
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        39
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent_name",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 41
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "annotations",
+          "optional": false,
+          "type": 42
+        },
+        {
+          "name": "logprobs",
+          "optional": true,
+          "type": 49
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 32
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 43
+    },
+    {
+      "kind": "union",
+      "variants": [
+        44,
+        45,
+        46,
+        47
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "filename",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 27
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "end_index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "start_index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 29
+        },
+        {
+          "name": "url",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "container_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "end_index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "filename",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "start_index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 31
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 48
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "file_path"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        50
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 51
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "bytes",
+          "optional": false,
+          "type": 52
+        },
+        {
+          "name": "logprob",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "token",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "top_logprobs",
+          "optional": false,
+          "type": 53
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 3
+    },
+    {
+      "kind": "array",
+      "element": 54
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "bytes",
+          "optional": false,
+          "type": 52
+        },
+        {
+          "name": "logprob",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "token",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    }
+  ],
+  "sources_sha256": {
+    "src/resources/beta/responses/responses.ts": "9b497c011b35ac9380f7c8fc2694f5a49fc71d115b0a40739b9e92e584bd0a92"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}

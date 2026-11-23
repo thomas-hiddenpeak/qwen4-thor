@@ -255,6 +255,17 @@ def websocket_proxy_headers():
       proxy_set_header Origin $q4t_ws_origin;'''
 
 
+def responses_beta_maps():
+    return r'''  map $http_openai_beta $q4t_multi_agent {
+    default "";
+    "~(^|,)[ \t]*responses_multi_agent=v1[ \t]*(,|$)" responses_multi_agent=v1;
+  }
+  map $uri $q4t_responses_beta {
+    default "";
+    ~^/v1/responses(/|$) $q4t_multi_agent;
+  }'''
+
+
 def tunnel_maps():
     """Optional nginx only: bounded independent lanes and protected headers.
 
@@ -602,6 +613,7 @@ http {{
   limit_req_zone $q4t_data zone=data_rate:1m rate={p['per_client_rps']}r/s;
   limit_req_zone $q4t_control zone=control_rate:1m rate=10r/s;
 {websocket_maps()}
+{responses_beta_maps()}
 {tunnel_maps()}
   server {{
     listen {p['listen_host']}:{p['listen_port']} ssl default_server;
@@ -640,6 +652,7 @@ http {{
       proxy_set_header Host 127.0.0.1;
 {websocket_proxy_headers()}
       proxy_set_header Content-Type $http_content_type;
+      proxy_set_header OpenAI-Beta $q4t_responses_beta;
       proxy_set_header X-Request-Id $http_x_request_id;
 {tunnel_headers()}
       proxy_set_header Authorization $q4t_realtime_issuer;

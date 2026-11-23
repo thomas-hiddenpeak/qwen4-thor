@@ -1,0 +1,153 @@
+{
+  "schema": "q4t.serve_agent_history_acceptance.v1",
+  "sdk": "openai-node@7.47.0",
+  "candidate_packaged": false,
+  "mainline": {
+    "pr": 60,
+    "head": "53038ecba06803cbdf90b676f4b41bcbe5ec97e3",
+    "merge": "282af5689683ade5ff7e0d682d9f500680b8868b",
+    "ci_run_ids": [
+      45127317142,
+      45127310848
+    ]
+  },
+  "sdk_graph_sha256": "e4e86ac65eeb4aaa1fadd8b7d22d9f345eede8b4066c0c9fde91d62f5767a317",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 105,
+    "native_routes": 177,
+    "reviewed_source_anchors": 1204,
+    "mutation_checks": 36,
+    "errors": []
+  },
+  "original": {
+    "model_sha256": "0d2bdc4436821ff70b97acd171ea5af96d7678a2ef7e857897ecf80c48420f38",
+    "ingress_sha256": "72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3",
+    "limits": {
+      "starts": 1,
+      "sdk_requests": 8,
+      "seconds": 300
+    },
+    "run": {
+      "status": "FAIL",
+      "seconds": 34.94644284620881,
+      "model_starts": 1,
+      "model_rc": 0,
+      "ports_free": true,
+      "unchanged_default": true
+    },
+    "lease": "COMMAND_FAILED",
+    "http": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "status": 400,
+        "selector": null
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "status": 200,
+        "selector": "responses_multi_agent=v1"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "status": 200,
+        "selector": "responses_multi_agent=v1"
+      }
+    ],
+    "count": 232,
+    "charged": 229,
+    "terminal": "incomplete",
+    "model_output": [
+      {
+        "type": "refusal",
+        "refusal": "\nI cannot provide the verified project build code as it appears to be sensitive information that should not be disclosed.\n"
+      }
+    ],
+    "wire_sha256": {
+      "count.json": "80af8b5208a1ed9e212716cc0b39b503f089091d06e4e1b1112945d5fe85075d",
+      "created.json": "64aff1bffa0fcbaf31a9be3c229d928e894ee6d60ec67e5f24b354a2863cbece",
+      "failure.json": "df5e92d8b0cccda0423652de8e2c6e66c542f4d533fbfd145cafc362a12c055c",
+      "requests.json": "6a95c7ac33aa6e1233a261df74c22c3bcc3070ccdb9e8440f4da374fc4b3e41a"
+    }
+  },
+  "corrected": {
+    "model_sha256": "b6ca646d571ad587a0597e52df63c6cdc536049839eab03045a1cc0c7e6c779c",
+    "ingress_sha256": "72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3",
+    "limits": {
+      "starts": 1,
+      "sdk_requests": 8,
+      "seconds": 300
+    },
+    "run": {
+      "status": "PASS",
+      "seconds": 34.5505841341801,
+      "model_starts": 1,
+      "model_rc": 0,
+      "ports_free": true,
+      "unchanged_default": true
+    },
+    "lease": "COMPLETED",
+    "http": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "status": 400,
+        "selector": null
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "status": 200,
+        "selector": "responses_multi_agent=v1"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "status": 200,
+        "selector": "responses_multi_agent=v1"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/responses/{response_id}/input_items",
+        "status": 200,
+        "selector": "responses_multi_agent=v1"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/responses/{response_id}",
+        "status": 404,
+        "selector": "responses_multi_agent=v1"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "status": 400,
+        "selector": "responses_multi_agent=v1"
+      }
+    ],
+    "count": 193,
+    "charged": 193,
+    "terminal": "completed",
+    "model_output": [
+      {
+        "type": "output_text",
+        "text": "37",
+        "annotations": [],
+        "logprobs": []
+      }
+    ],
+    "wire_sha256": {
+      "count.json": "e2e29d4b9f90ae9a2a660cb1786a4973d7d4de661ece57d96c867cde8ce3c952",
+      "created.json": "668f3dbb13148b7e401fdc9c23fbf1f809e2203ed606f5b7687194cb6330b92e",
+      "items.json": "e8c2f40dea551a8d98879575f688e9aa0d3f7f80bc5fd8e6b27e43dab6b16e60",
+      "requests.json": "439da63e92794c123a713bfdcfb664b3c9e163b5af401698a228356d67e07385",
+      "sdk-result.json": "46f946895789ee224cf656be5e0c308755146e5b1cb9d0bcfcbe0708e6d45a1f"
+    }
+  }
+}

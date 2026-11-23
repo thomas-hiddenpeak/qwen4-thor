@@ -79,6 +79,32 @@ Json ModerationReport(bool flagged) {
 }
 }  // namespace
 
+Q4T_TEST(responses_multi_agent_history_survives_frozen_and_queued_restore) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  const auto request = Parse(R"({"model":"cpu","background":true,"input":[
+    {"role":"user","content":"List the workers."},
+    {"type":"multi_agent_call","action":"list_agents","arguments":"{}",
+     "call_id":"ac","agent":{"agent_name":"root"}},
+    {"type":"multi_agent_call_output","action":"list_agents","call_id":"ac",
+     "output":[{"type":"output_text","text":"worker-one"}]},
+    {"role":"user","content":"How many workers were returned?"}]})");
+  auto config = Config();
+  config.responses_multi_agent = true;
+  ResponsesExecution source(store);
+  Q4T_CHECK(Ok(source.Prepare(request, config, Access(), 42, true)));
+  Json frozen;
+  Q4T_CHECK(Ok(source.FreezeInputs(&frozen)));
+  Q4T_CHECK(frozen.GetBool("multi_agent_beta"));
+  ResponsesExecution thawed(store);
+  Q4T_CHECK(Ok(thawed.RestoreInputs(frozen, Config(), Access(), 43)));
+  std::string wire;
+  Q4T_CHECK(Ok(source.Begin(&wire)));
+  ResponsesExecution queued(store);
+  Q4T_CHECK(Ok(queued.RestoreQueued(source.Id(), Config(), Access())));
+  return true;
+}
+
 Q4T_TEST(responses_invalid_envelope_fails_before_prompt_state_lookup) {
   Fixture fixture;
   ObjectStore store(fixture.options);

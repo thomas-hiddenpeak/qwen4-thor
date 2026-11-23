@@ -500,6 +500,7 @@ Status ParseResponsesEnvelope(const io::Json& request,
     status = IntegerOption(request, "request_timeout_ms", 1, 10800000,
                            &result.options, error);
   if (!status) return status;
+  result.multi_agent_beta = config.responses_multi_agent;
   *envelope = std::move(result);
   return {};
 }
@@ -609,7 +610,8 @@ Status ValidateResponsesPreparation(const ResponsesEnvelope& envelope,
       request, &input, error, config.count_input_only, true, false,
       envelope.mcp_content.IsNull() ? nullptr : &envelope.mcp_content,
       envelope.prepared_file_media,
-      envelope.web_content.IsNull() ? nullptr : &envelope.web_content);
+      envelope.web_content.IsNull() ? nullptr : &envelope.web_content,
+      envelope.multi_agent_beta);
   if (!status) return status;
   auto options = Object({{"messages", std::move(input.messages)}});
   status = GenerationOptions(envelope, &options, effective_tools, error,
@@ -643,7 +645,8 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
       request, &result.input, error, config.count_input_only, false, false,
       envelope.mcp_content.IsNull() ? nullptr : &envelope.mcp_content,
       envelope.prepared_file_media,
-      envelope.web_content.IsNull() ? nullptr : &envelope.web_content);
+      envelope.web_content.IsNull() ? nullptr : &envelope.web_content,
+      envelope.multi_agent_beta);
   if (!status) return status;
   for (size_t i = 0; i < result.input.items.array.size(); ++i)
     result.input_source_indices.push_back(i);

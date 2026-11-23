@@ -26,6 +26,7 @@ struct ResponseStatePlan {
   bool ephemeral = false;  // Background store=false is retained for polling.
   int64_t execution_deadline_at = 0;  // Unix seconds; restart cannot reset it.
   io::Json execution_owner;
+  bool multi_agent_beta = false;
   std::optional<BatchResponseLink> batch_parent = {};
   ClientRateDomain rate_domain = ClientRateDomain::kOnline;
   io::Json history;    // Full authorized input for this generation.
@@ -56,7 +57,8 @@ class ResponsesState {
                            size_t maximum = 4096,
                            io::Json* input_snapshots = nullptr,
                            io::Json* tool_contracts = nullptr,
-                           io::Json* web_content = nullptr);
+                           io::Json* web_content = nullptr,
+                           bool multi_agent = false);
   ObjectReply Resolve(const ResponsesEnvelope& envelope,
                       const StateAccess& access, ResponseStatePlan* plan);
   // Loads authoritative inputs and revision, without rerunning resolution or

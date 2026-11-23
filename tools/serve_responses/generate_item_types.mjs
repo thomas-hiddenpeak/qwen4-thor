@@ -7,9 +7,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -30,6 +30,7 @@ const realtimeCalls = resolve(sdk, 'src/resources/realtime/calls.ts');
 const realtimeSecrets = resolve(sdk, 'src/resources/realtime/client-secrets.ts');
 const live = resolve(sdk, 'src/resources/live/live.ts');
 const decisions = resolve(sdk, 'src/resources/decisions.ts');
+const beta = resolve(sdk, 'src/resources/beta/responses/responses.ts');
 const liveSessions = resolve(sdk, 'src/resources/live/sessions.ts');
 const liveSideband = resolve(sdk, 'src/resources/live/sideband/sideband.ts');
 const liveForks = resolve(sdk, 'src/resources/live/forks/forks.ts');
@@ -37,6 +38,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--api' ? [conversations, inputItems, inputTokens] : []),
   ...(mode === '--realtime' ? [realtime, realtimeCalls, realtimeSecrets] : []),
   ...(mode === '--decisions' ? [decisions] : []),
+  ...(mode === '--multi-agent' ? [beta] : []),
   ...(mode === '--live' ? [live, liveSessions, liveSideband, liveForks] : [])], {
   target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext,
@@ -129,13 +131,21 @@ function encode(type) {
   return id;
 }
 function exported(file, name) {
-  const module = checker.getSymbolAtLocation(program.getSourceFile(file));
-  const symbol = checker.getExportsOfModule(module).find(x => x.name === name);
-  if (!symbol) throw new Error(`missing export ${name}`);
-  track(symbol);
+  let symbol = checker.getSymbolAtLocation(program.getSourceFile(file));
+  for (const part of name.split('.')) {
+    symbol = checker.getExportsOfModule(symbol).find(x => x.name === part);
+    if (!symbol) throw new Error(`missing export ${name}`);
+    track(symbol);
+  }
   return encode(checker.getDeclaredTypeOfSymbol(symbol));
 }
-const roots = mode === '--decisions' ? {
+const roots = mode === '--multi-agent' ? {
+  configuration: exported(beta, 'ResponseCreateParams.MultiAgent'),
+  input_call: exported(beta, 'BetaResponseInputItem.MultiAgentCall'),
+  input_result: exported(beta, 'BetaResponseInputItem.MultiAgentCallOutput'),
+  output_call: exported(beta, 'BetaResponseOutputItem.MultiAgentCall'),
+  output_result: exported(beta, 'BetaResponseOutputItem.MultiAgentCallOutput'),
+} : mode === '--decisions' ? {
   request: exported(decisions, 'DecisionCreateParams'),
   decision: exported(decisions, 'Decision'),
 } : mode === '--live' ? {
@@ -193,7 +203,8 @@ if (mode === '--api') Object.assign(roots, {
   input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
 });
 const result = {
-  profile: mode === '--decisions' ? 'q4t-openai-decision-types-v1' :
+  profile: mode === '--multi-agent' ? 'q4t-openai-multi-agent-types-v1' :
+    mode === '--decisions' ? 'q4t-openai-decision-types-v1' :
     mode === '--live' ? 'q4t-openai-live-types-v1' : mode === '--realtime' ? 'q4t-openai-realtime-types-v1' :
     mode === '--api' ? 'q4t-openai-application-types-v1' :
       'q4t-openai-item-types-v1',

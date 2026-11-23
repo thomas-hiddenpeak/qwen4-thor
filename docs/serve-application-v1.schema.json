@@ -28148,6 +28148,835 @@
       },
       "required": [],
       "additionalProperties": false
+    },
+    "agent_18": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/agent_5"
+        },
+        "agent": {
+          "$ref": "#/$defs/agent_19"
+        },
+        "call_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "id": {
+          "$ref": "#/$defs/agent_16"
+        },
+        "output": {
+          "$ref": "#/$defs/agent_21"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_33"
+        }
+      },
+      "required": [
+        "action",
+        "call_id",
+        "output",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_33": {
+      "const": "multi_agent_call_output"
+    },
+    "agent_21": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent_22"
+      }
+    },
+    "agent_22": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/agent_23"
+        },
+        "text": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_32"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_32": {
+      "const": "output_text"
+    },
+    "agent_15": {
+      "type": "string"
+    },
+    "agent_23": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_24"
+        }
+      ]
+    },
+    "agent_24": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent_25"
+      }
+    },
+    "agent_25": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_26"
+        },
+        {
+          "$ref": "#/$defs/agent_28"
+        },
+        {
+          "$ref": "#/$defs/agent_30"
+        }
+      ]
+    },
+    "agent_30": {
+      "type": "object",
+      "properties": {
+        "container_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "end_index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "file_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "filename": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "start_index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_31"
+        }
+      },
+      "required": [
+        "container_id",
+        "end_index",
+        "file_id",
+        "filename",
+        "start_index",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_31": {
+      "const": "container_file_citation"
+    },
+    "agent_3": {
+      "type": "number"
+    },
+    "agent_28": {
+      "type": "object",
+      "properties": {
+        "end_index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "start_index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "title": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_29"
+        },
+        "url": {
+          "$ref": "#/$defs/agent_15"
+        }
+      },
+      "required": [
+        "end_index",
+        "start_index",
+        "title",
+        "type",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "agent_29": {
+      "const": "url_citation"
+    },
+    "agent_26": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "filename": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "index": {
+          "$ref": "#/$defs/agent_3"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_27"
+        }
+      },
+      "required": [
+        "file_id",
+        "filename",
+        "index",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_27": {
+      "const": "file_citation"
+    },
+    "agent_16": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_13"
+        },
+        {
+          "$ref": "#/$defs/agent_15"
+        }
+      ]
+    },
+    "agent_13": {
+      "type": "null"
+    },
+    "agent_19": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_13"
+        },
+        {
+          "$ref": "#/$defs/agent_20"
+        }
+      ]
+    },
+    "agent_20": {
+      "type": "object",
+      "properties": {
+        "agent_name": {
+          "$ref": "#/$defs/agent_15"
+        }
+      },
+      "required": [
+        "agent_name"
+      ],
+      "additionalProperties": false
+    },
+    "agent_5": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_6"
+        },
+        {
+          "$ref": "#/$defs/agent_7"
+        },
+        {
+          "$ref": "#/$defs/agent_8"
+        },
+        {
+          "$ref": "#/$defs/agent_9"
+        },
+        {
+          "$ref": "#/$defs/agent_10"
+        },
+        {
+          "$ref": "#/$defs/agent_11"
+        }
+      ]
+    },
+    "agent_11": {
+      "const": "wait_agent"
+    },
+    "agent_10": {
+      "const": "followup_task"
+    },
+    "agent_9": {
+      "const": "send_message"
+    },
+    "agent_8": {
+      "const": "list_agents"
+    },
+    "agent_7": {
+      "const": "interrupt_agent"
+    },
+    "agent_6": {
+      "const": "spawn_agent"
+    },
+    "agent_4": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/agent_5"
+        },
+        "agent": {
+          "$ref": "#/$defs/agent_12"
+        },
+        "arguments": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "call_id": {
+          "$ref": "#/$defs/agent_15"
+        },
+        "id": {
+          "$ref": "#/$defs/agent_16"
+        },
+        "type": {
+          "$ref": "#/$defs/agent_17"
+        }
+      },
+      "required": [
+        "action",
+        "arguments",
+        "call_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "agent_17": {
+      "const": "multi_agent_call"
+    },
+    "agent_12": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/agent_13"
+        },
+        {
+          "$ref": "#/$defs/agent_14"
+        }
+      ]
+    },
+    "agent_14": {
+      "type": "object",
+      "properties": {
+        "agent_name": {
+          "$ref": "#/$defs/agent_15"
+        }
+      },
+      "required": [
+        "agent_name"
+      ],
+      "additionalProperties": false
+    },
+    "agent_input_call": {
+      "$ref": "#/$defs/agent_4"
+    },
+    "agent_input_result": {
+      "$ref": "#/$defs/agent_18"
+    },
+    "agent_history_response_create": {
+      "type": "object",
+      "properties": {
+        "access_programs": {
+          "$ref": "#/$defs/657"
+        },
+        "background": {
+          "$ref": "#/$defs/368"
+        },
+        "context_management": {
+          "$ref": "#/$defs/663"
+        },
+        "conversation": {
+          "$ref": "#/$defs/666"
+        },
+        "include": {
+          "$ref": "#/$defs/668"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/3"
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/0"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_call"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_result"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "instructions": {
+          "$ref": "#/$defs/20"
+        },
+        "max_output_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max_tool_calls": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2147483647
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata": {
+          "anyOf": [
+            {
+              "type": "object",
+              "maxProperties": 16,
+              "propertyNames": {
+                "maxLength": 64
+              },
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 512
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "model": {
+          "$ref": "#/$defs/683"
+        },
+        "moderation": {
+          "$ref": "#/$defs/794"
+        },
+        "parallel_tool_calls": {
+          "$ref": "#/$defs/368"
+        },
+        "previous_response_id": {
+          "$ref": "#/$defs/20"
+        },
+        "prompt": {
+          "$ref": "#/$defs/805"
+        },
+        "prompt_cache_key": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 512
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "prompt_cache_options": {
+          "$ref": "#/$defs/810"
+        },
+        "prompt_cache_retention": {
+          "$ref": "#/$defs/815"
+        },
+        "reasoning": {
+          "$ref": "#/$defs/818",
+          "default": {
+            "effort": "medium"
+          }
+        },
+        "safety_identifier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 128
+        },
+        "service_tier": {
+          "$ref": "#/$defs/828"
+        },
+        "store": {
+          "$ref": "#/$defs/368"
+        },
+        "stream": {
+          "$ref": "#/$defs/368"
+        },
+        "stream_options": {
+          "$ref": "#/$defs/835"
+        },
+        "temperature": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "text": {
+          "$ref": "#/$defs/837"
+        },
+        "tool_choice": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/843"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "enum": [
+                    "web_search",
+                    "web_search_2025_08_26"
+                  ]
+                }
+              },
+              "required": [
+                "type"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "tools": {
+          "$ref": "#/$defs/859"
+        },
+        "top_logprobs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "top_p": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "truncation": {
+          "$ref": "#/$defs/860"
+        },
+        "user": {
+          "$ref": "#/$defs/27"
+        },
+        "personality": {
+          "type": "string",
+          "enum": [
+            "friendly",
+            "pragmatic"
+          ],
+          "maxLength": 64
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -9223372036854775808,
+              "maximum": 9223372036854775807
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "cancel_token": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "request_timeout_ms": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10800000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "dependentRequired": {
+        "request_id": [
+          "cancel_token"
+        ],
+        "cancel_token": [
+          "request_id"
+        ]
+      },
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "previous_response_id",
+              "conversation"
+            ],
+            "properties": {
+              "previous_response_id": {
+                "not": {
+                  "type": "null"
+                }
+              },
+              "conversation": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "stream_options"
+            ],
+            "properties": {
+              "stream_options": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "stream"
+            ],
+            "properties": {
+              "stream": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "agent_history_response_compact": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/21"
+            },
+            {
+              "$ref": "#/$defs/3"
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/0"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_call"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_result"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "instructions": {
+          "$ref": "#/$defs/20"
+        },
+        "model": {
+          "$ref": "#/$defs/1152"
+        },
+        "previous_response_id": {
+          "$ref": "#/$defs/20"
+        },
+        "prompt_cache_key": {
+          "$ref": "#/$defs/20"
+        },
+        "prompt_cache_options": {
+          "$ref": "#/$defs/1153"
+        },
+        "prompt_cache_retention": {
+          "$ref": "#/$defs/815"
+        },
+        "service_tier": {
+          "$ref": "#/$defs/1155"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "additionalProperties": false
+    },
+    "agent_history_input_tokens_request": {
+      "type": "object",
+      "properties": {
+        "conversation": {
+          "$ref": "#/$defs/666"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/21"
+            },
+            {
+              "$ref": "#/$defs/3"
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/0"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_call"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_result"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "instructions": {
+          "$ref": "#/$defs/20"
+        },
+        "model": {
+          "$ref": "#/$defs/20"
+        },
+        "parallel_tool_calls": {
+          "$ref": "#/$defs/368"
+        },
+        "personality": {
+          "type": "string",
+          "enum": [
+            "friendly",
+            "pragmatic"
+          ],
+          "maxLength": 64
+        },
+        "previous_response_id": {
+          "$ref": "#/$defs/20"
+        },
+        "reasoning": {
+          "$ref": "#/$defs/818"
+        },
+        "text": {
+          "$ref": "#/$defs/1162"
+        },
+        "tool_choice": {
+          "$ref": "#/$defs/1164"
+        },
+        "tools": {
+          "$ref": "#/$defs/1166"
+        },
+        "truncation": {
+          "$ref": "#/$defs/1167"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "previous_response_id",
+              "conversation"
+            ],
+            "properties": {
+              "previous_response_id": {
+                "not": {
+                  "type": "null"
+                }
+              },
+              "conversation": {
+                "not": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "agent_history_input_items_list": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/1113"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_call"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_result"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "first_id": {
+          "$ref": "#/$defs/3"
+        },
+        "has_more": {
+          "$ref": "#/$defs/520"
+        },
+        "last_id": {
+          "$ref": "#/$defs/3"
+        },
+        "object": {
+          "$ref": "#/$defs/1134"
+        }
+      },
+      "required": [
+        "data",
+        "first_id",
+        "has_more",
+        "last_id",
+        "object"
+      ],
+      "additionalProperties": false
     }
   },
   "x-q4t": {
@@ -28162,6 +28991,7 @@
       "src/resources/responses/input-tokens.ts": "edf13a3dc0ca452600aeb84c5b22dc0f842c9c2f59b148eb95581dfc1cce35d8",
       "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
       "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455",
+      "src/resources/beta/responses/responses.ts": "9b497c011b35ac9380f7c8fc2694f5a49fc71d115b0a40739b9e92e584bd0a92",
       "src/resources/files.ts": "ca78d34f73bef9a683b5fb2bbeb57af219478027b54ee243b611a1d4a12e04d7",
       "src/resources/uploads/uploads.ts": "53450b5df300f270948be9d9a4b395518da3bc9d1767c1d740ac5cbfa9d7aaf8",
       "src/resources/uploads/parts.ts": "c32650dd5cae8a377915533d12dcbab8835e47e875b6162107664a8887ab3136",

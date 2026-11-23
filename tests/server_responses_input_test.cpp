@@ -21,6 +21,45 @@ bool Input(const std::string& text, ResponsesInputPlan* plan,
            ChatPlanError* error) {
   return NormalizeResponsesInput(Read(text), plan, error).ok();
 }
+
+Q4T_TEST(responses_multi_agent_history_validates_and_renders_typed_pairs) {
+  auto request = Read(R"({"input":[
+    {"type":"multi_agent_call","action":"list_agents","call_id":"ac",
+     "id":null,"arguments":"{}","agent":{"agent_name":"root"}},
+    {"type":"multi_agent_call_output","action":"list_agents","call_id":"ac",
+     "output":[{"type":"output_text","text":"worker-one","annotations":[]}]}
+  ]})");
+  ResponsesInputPlan plan;
+  ChatPlanError error;
+  const auto normalize = [&](bool selected) {
+    return NormalizeResponsesInput(request, &plan, &error, false, false, false,
+                                   nullptr, false, nullptr, selected);
+  };
+  Q4T_CHECK(!normalize(false));
+  Q4T_CHECK(normalize(true));
+  Q4T_CHECK(OutputJson(plan.items) == OutputJson(*request.Find("input")));
+  Q4T_CHECK(plan.messages.array.size() == 2);
+  const auto& call = plan.messages.array[0].GetArray("tool_calls")->array[0];
+  Q4T_CHECK(call.GetString("id") == "ac");
+  Q4T_CHECK(call.Find("function")->GetString("name") == "multi_agent_list_agents");
+  Q4T_CHECK(plan.messages.array[1].GetString("role") == "tool");
+  Q4T_CHECK(plan.messages.array[1].GetString("tool_call_id") == "ac");
+  Q4T_CHECK(plan.messages.array[1].GetString("content").find("worker-one") !=
+            std::string::npos);
+  Q4T_CHECK(Read(plan.messages.array[1].GetString("content"))
+                .Find("call_agent")->GetString("agent_name") == "root");
+  auto& items = request.object.at(0).second.array;
+  const auto messages = OutputJson(plan.messages);
+  items[1].object.emplace_back("id", Read(R"("item_other_id")"));
+  Q4T_CHECK(normalize(true) && OutputJson(plan.messages) == messages);
+  items[1] = Read(R"({"type":"multi_agent_call_output","action":"wait_agent",
+                      "call_id":"ac","output":[]})");
+  Q4T_CHECK(!normalize(true) && error.param == "input[1].call_id");
+  items[0] = Read(R"({"type":"multi_agent_call","action":"bad_action",
+                      "call_id":"ac","arguments":"{}"})");
+  Q4T_CHECK(!normalize(true));
+  return true;
+}
 }  // namespace
 
 Q4T_TEST(responses_input_malformed_tool_type_is_not_unresolved_capability) {

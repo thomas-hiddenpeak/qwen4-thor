@@ -183,6 +183,7 @@ http {{
   limit_req_zone $q4t_data zone=data_rate:1m rate={p['per_client_rps']}r/s;
   limit_req_zone $q4t_control zone=control_rate:1m rate=10r/s;
 {g.websocket_maps()}
+{g.responses_beta_maps()}
 {g.tunnel_maps()}
   server {{
     listen {p['listen_host']}:{p['listen_port']}{ssl} default_server;
@@ -238,6 +239,7 @@ http {{
       proxy_set_header Host 127.0.0.1;
 {g.websocket_proxy_headers()}
       proxy_set_header Content-Type $http_content_type;
+      proxy_set_header OpenAI-Beta $q4t_responses_beta;
       proxy_set_header X-Request-Id $http_x_request_id;
 {g.tunnel_headers()}
       proxy_set_header Authorization $q4t_realtime_issuer;
