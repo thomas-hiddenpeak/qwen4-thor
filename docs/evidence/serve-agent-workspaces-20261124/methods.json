@@ -1,0 +1,40 @@
+{
+  "sources_sha256": {
+    "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+    "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "issued": "8242f0bba5eabffc059a515253ed6d8bf8e23db4385c8b03c077957ad0044a7b"
+  },
+  "required_methods": 232,
+  "declared": 123,
+  "missing_declaration": 109,
+  "exact_success_declarations": 122,
+  "declared_with_different_success": 1,
+  "publication_revision": 452,
+  "manifest": "206126d0d640f0bdc07eb05bacc9faa25bfabf42dbd93fe12738abe015a9b2b4",
+  "added": [
+    "GET /agents/environments",
+    "POST /agents/environments",
+    "GET /agents/environments/{environment_id}",
+    "GET /agents/environments/{environment_id}/files",
+    "POST /agents/environments/{environment_id}/files"
+  ],
+  "missing_by_api": {
+    "agents": 20,
+    "threads": 18,
+    "evals": 12,
+    "skills": 11,
+    "videos": 10,
+    "containers": 9,
+    "webhook_endpoints": 7,
+    "chatkit": 6,
+    "assistants": 5,
+    "images": 3,
+    "realtime": 3,
+    "safety": 2,
+    "audio": 1,
+    "content_provenance_checks": 1,
+    "webhook_event_types": 1
+  },
+  "baseline": "docs/evidence/serve-method-contracts-20261124/rev450-methods.json",
+  "scope_decision": "docs/evidence/serve-scope-decision-20261120/decision.json"
+}

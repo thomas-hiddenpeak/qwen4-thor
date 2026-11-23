@@ -1,0 +1,434 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 452,
+    "version_revision": 155,
+    "profile_revision": 45,
+    "previous_profile_revision": 44,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "206126d0d640f0bdc07eb05bacc9faa25bfabf42dbd93fe12738abe015a9b2b4",
+    "fallback": "f4180dae8ebe27dbbc0d832fc4f6f6f655c516d5db2c4171aee3e71e886634e1",
+    "engine": "4d0855d3e02348601e011714d98518837e251cf765446a50778c046b8e69dff2",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "managed": {
+    "model_loss": {
+      "artifacts": {
+        "vault-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/vault-before.json",
+          "sha256": "8ac855cd6a34c9171ba678e741f74328022d21bff5f7940e000ede75be078607"
+        },
+        "vault-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/vault-after.json",
+          "sha256": "869664ac8a1611ae34138d98c6246078a7fd630a4f1c32bbaf7d472f26d2750d"
+        },
+        "fault-snapshot.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/fault-snapshot.json",
+          "sha256": "2f7cb1b9b5c25daa49937efd42c860f44347f27ee6e88b9ecd561901c401c2f9"
+        },
+        "result.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/result.json",
+          "sha256": "c8019739af334bde2146466a01b334c38397d40f8e3248254ba5a1857dcbd6a9"
+        },
+        "session-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/session-before.json",
+          "sha256": "60c277a7ec214b5c53e07e8fde5197bf212300a18a685312cf0a81d428e88a21"
+        },
+        "session-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/session-after.json",
+          "sha256": "9e3f645f10c404ee6a17d40fc77284aa576f08f9bf45a6ba632a94702e8f6e12"
+        },
+        "recover-events.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/recover-events.json",
+          "sha256": "a46e5e045c58846720512ec2e1b7315f596a7c8a94b1478d748188561684b9cd"
+        },
+        "terminal.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/terminal.json",
+          "sha256": "d70819412e017b871ead5fd41eac6658551129d63a7133eb8b3ce758b9858cad"
+        },
+        "chat-after.wire": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/chat-after.wire",
+          "sha256": "0284fbf7afc090049f28902b548c3a179e4875245e25bad497ea3e6481c7a5b2"
+        },
+        "registration-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/registration-after.json",
+          "sha256": "17cfe9d22840bbcaa15614ef63765222f68c09b6f3c156b69e90c536c4ef3b2e"
+        },
+        "interruption.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/interruption.json",
+          "sha256": "1d757324cf3afbcd95fd1a2e36026cb7f3d2d39d61111441a8623fa26d024a99"
+        },
+        "oauth-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/oauth-before.json",
+          "sha256": "384e9052d7da5d9dbafe93e0fac84a3719a930c15349e50a366b7a28b5538f03"
+        },
+        "oauth-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/oauth-after.json",
+          "sha256": "bf320b04b6d2755c0c2e5c993f55dcc0701e02f3eca2e8f807e7732a299b1a22"
+        },
+        "environment-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/environment-before.json",
+          "sha256": "aa509b748d1ce786b40a6b761df768c5d17ce2c35ff10dac26506a25988fc46a"
+        },
+        "environment-resumed.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/environment-resumed.json",
+          "sha256": "792de0bcb72894552f953451403eeb42b1c2572461bb815cfadcce19f3be0092"
+        },
+        "environment-complete.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/environment-complete.json",
+          "sha256": "549a7f22ec9d63bb731adf9098f92177f1246ccc6bb8c784388c5946530792f9"
+        },
+        "workspace-recovered.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-03/workspace-recovered.json",
+          "sha256": "22ea07c9bd07462d220d6324958264d2cd3bb11f7dab925db99751ee55d90816"
+        },
+        "exclusive_lease": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-lease-03/exit.json",
+          "sha256": "caccc4a35c18ce4717d0040e5b3a06caa8e0d3b3259c8fb36aa1682e660e436e"
+        }
+      },
+      "elapsed_seconds": 120.8707741391845,
+      "starts": 2,
+      "cleanup": {
+        "remaining": [],
+        "ports_free": true,
+        "default_unchanged": true
+      },
+      "recovery": {
+        "guardian_same": true,
+        "old": 1,
+        "new": 2,
+        "cancellation": "cancelled",
+        "fault": "background_execution_interrupted",
+        "other": 404
+      },
+      "pending_lookup": {
+        "id": "agent_session_61fe20d7280724490b03984762b7868e",
+        "action": {
+          "type": "function_call",
+          "turn_id": "turn_e23a2634966eae343971ca2b9109584e",
+          "arguments": {},
+          "name": "read_release_record",
+          "call_id": "call_resp_19ef8452613d8dce680cc392df7208ad_0"
+        },
+        "turns": 1,
+        "results": 1,
+        "answer": "442",
+        "revision": 442,
+        "retries": [
+          202,
+          202
+        ],
+        "foreign": 404
+      },
+      "chat": "42",
+      "monitor_samples": 114,
+      "vault": {
+        "vault": "vault_4fd1bd655151bb09b977a84e6d01ef95",
+        "credential": "cred_ab8a02989126b123587a05c04b905009",
+        "recovered": true,
+        "rotated": true,
+        "archive_revoked": 404,
+        "foreign_delete": 404
+      },
+      "oauth": {
+        "vault": "vault_dec3d1e6be1bfd230ab1400887af0352",
+        "credential": "cred_711e8a092dc2a4ad1b76e6e30a73906e",
+        "retained": true,
+        "rotated": true,
+        "foreign": 404,
+        "issuer_refused": "mcp_target_denied",
+        "issuer_connections": 0
+      },
+      "template_recovery": {
+        "template_id": "environment_template_67331d9e11a398234224066f0fec8beb",
+        "retained": true,
+        "rotated_name": true,
+        "foreign_delete": 404,
+        "deleted": true,
+        "waiting_step": "ba396885e0f34cd5d967718d6ac21ed599188460be991854123a4de79aaaac74"
+      },
+      "completed_trace": {
+        "trace_id": "0c13ed2fcadcc2ec6bbab022676530da",
+        "closed_spans": 3,
+        "actual_tool_response": true,
+        "foreign": 404,
+        "turn_id": "turn_e23a2634966eae343971ca2b9109584e"
+      },
+      "workspace": {
+        "id": "environment_a2b05e6732b2faa422e1e9e59ecc46e8",
+        "session": "agent_session_61fe20d7280724490b03984762b7868e",
+        "file_bytes_before": 393216,
+        "file_bytes_after": 0,
+        "turn_binding": "turn_e23a2634966eae343971ca2b9109584e",
+        "state": "disconnected"
+      }
+    },
+    "gateway_fatal": {
+      "artifacts": {
+        "vault-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/vault-before.json",
+          "sha256": "a3eb767f3d24af3f7ab9a66baab375817523b1b93dbbf3cab5e19db99d27c2d2"
+        },
+        "vault-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/vault-after.json",
+          "sha256": "8747244b26fd500a595940c1602a95bd644878d6916fd42ef097219d4eb73936"
+        },
+        "fault-snapshot.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/fault-snapshot.json",
+          "sha256": "dd6d82e1e3c38d20d927d7661fd1d6fce7732c5ccd26bb6a97a15b53ddd75c52"
+        },
+        "result.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/result.json",
+          "sha256": "896308a77b0500496b7d8e95673582e1c09131c9a45dcb2b8282ea56e02fc38b"
+        },
+        "session-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/session-before.json",
+          "sha256": "54796b4fe96b8318216e83b32dd4ea75b1236c417c87154590347fdef25f0d60"
+        },
+        "session-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/session-after.json",
+          "sha256": "671d0349ad562882418bd14ff8a4594903fb2c54d36afa531cc8bf75cf31b662"
+        },
+        "recover-events.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/recover-events.json",
+          "sha256": "ca4d55ef1c484cd661ef171d8939a9b73a305351c5ebe35d126d02df17fbcc9a"
+        },
+        "terminal.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/terminal.json",
+          "sha256": "43121f69bded7e4244bf4a7c1a39dc7365fa99cce39f17d1ef01e940840cfaca"
+        },
+        "chat-after.wire": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/chat-after.wire",
+          "sha256": "a5b240347906d3072b27392f392ce65f04fd413ba5e62ac797c5563ac862f82d"
+        },
+        "registration-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/registration-after.json",
+          "sha256": "da5bbb71a701ae43819e9e666970f91e111ed4b8c475e2e5580d7207552eee93"
+        },
+        "interruption.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/interruption.json",
+          "sha256": "992eeecc2c297bbd1b95d8c250c837042535fb4e9b4fb927520f7ab950053f4d"
+        },
+        "oauth-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/oauth-before.json",
+          "sha256": "6f27d5f5477ed022689811ea5d89c4ef97616d921cbc4a6a72347e4bcfb3f409"
+        },
+        "oauth-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/oauth-after.json",
+          "sha256": "95dc88b0f0c211d2839178cc476894007e8f5f6905e681c5e26dcd9895857efd"
+        },
+        "environment-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/environment-before.json",
+          "sha256": "f2c5ceb621af73c508a5054d3ccc6eab74b5eaf6d2ea8955eb8cdc3dee65c053"
+        },
+        "environment-resumed.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/environment-resumed.json",
+          "sha256": "26fa5566c914637d9dbbebc64691c0cecf90ac532bfce92ca4cc0029abff41b4"
+        },
+        "environment-complete.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/environment-complete.json",
+          "sha256": "29c945f7ba532855fb8f3ba6dfce4b51791e0ec89b267d0656447fd405ba323a"
+        },
+        "workspace-recovered.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-03/workspace-recovered.json",
+          "sha256": "8bf357504d7cd7ac04113789925e5d3ed5b5c7a6d5749ba0b78ab261668f36b8"
+        },
+        "exclusive_lease": {
+          "path": ".q4t-work/serve-responses-agents-20261123/workspace-takeover-lease-03/exit.json",
+          "sha256": "f305bc068d81254e90973b612f94617e53f05545e07a0fbb440dbf2a3b3c504d"
+        }
+      },
+      "elapsed_seconds": 154.3025378268212,
+      "starts": 2,
+      "cleanup": {
+        "remaining": [],
+        "ports_free": true,
+        "default_unchanged": true
+      },
+      "recovery": {
+        "guardian_same": true,
+        "old": 1,
+        "new": 2,
+        "cancellation": "cancelled",
+        "fault": "service_draining",
+        "other": 404
+      },
+      "pending_lookup": {
+        "id": "agent_session_3880a2160839684d5e0630d6489bde73",
+        "action": {
+          "type": "function_call",
+          "turn_id": "turn_79b7b8679f7a849f9ba53f0a84ba8491",
+          "arguments": {},
+          "name": "read_release_record",
+          "call_id": "call_resp_02dbb899ba09f7b8edfd910b26df568d_0"
+        },
+        "turns": 1,
+        "results": 1,
+        "answer": "442",
+        "revision": 442,
+        "retries": [
+          202,
+          202
+        ],
+        "foreign": 404
+      },
+      "chat": "42",
+      "monitor_samples": 144,
+      "vault": {
+        "vault": "vault_2d5d7532535105d3e4245057c3c27c40",
+        "credential": "cred_3e9e3cc20ed39f10f670080bf5e296b6",
+        "recovered": true,
+        "rotated": true,
+        "archive_revoked": 404,
+        "foreign_delete": 404
+      },
+      "oauth": {
+        "vault": "vault_7f1ce892f4c26f29974ebff2344686f3",
+        "credential": "cred_5e694013f927d0ab475233174bd37cda",
+        "retained": true,
+        "rotated": true,
+        "foreign": 404,
+        "issuer_refused": "mcp_target_denied",
+        "issuer_connections": 0
+      },
+      "template_recovery": {
+        "template_id": "environment_template_7cb07bce3784cc8d7ea32a0e7fc58a7b",
+        "retained": true,
+        "rotated_name": true,
+        "foreign_delete": 404,
+        "deleted": true,
+        "waiting_step": "efc4fdf71161e68a70297c8c9441475c1fc1a507124a669055d5f810a627fbff"
+      },
+      "completed_trace": {
+        "trace_id": "2053f29299ad2c3a89cfd553ead93e8b",
+        "closed_spans": 3,
+        "actual_tool_response": true,
+        "foreign": 404,
+        "turn_id": "turn_79b7b8679f7a849f9ba53f0a84ba8491"
+      },
+      "workspace": {
+        "id": "environment_0235f4265e3c614471fbc3c0679c2484",
+        "session": "agent_session_3880a2160839684d5e0630d6489bde73",
+        "file_bytes_before": 393216,
+        "file_bytes_after": 0,
+        "turn_binding": "turn_79b7b8679f7a849f9ba53f0a84ba8491",
+        "state": "disconnected"
+      },
+      "version_selection": {
+        "selected": "fallback",
+        "probes": 1,
+        "payload": "f4180dae8ebe27dbbc0d832fc4f6f6f655c516d5db2c4171aee3e71e886634e1",
+        "consumed": true,
+        "signal": 6
+      }
+    }
+  },
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "97caa6d0fc980b15a4ba1accddd3a8b3ddaaa4b2c5e9f70b7790b695d1439e82"
+        ],
+        "sha256": "14aaa437ae1de1a5ac341a7551fd39c2c036e57470dc4d5bdf7b207af5de231a",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 16,
+        "archived": [
+          "10bacb4a-be58-416b-9387-c03c3f0a5bac"
+        ],
+        "sha256": "b732ecaffa5f1a782f42714424a6534dbf9b4f6e72eb105bbb768dbccbf91007",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "intents": {
+    "status": "PASS",
+    "pools": {
+      "intents": {
+        "before": 128,
+        "archived": [
+          "72046b1b-5813-4a9e-8042-3c984e3495c4"
+        ],
+        "sha256": "a0591a8b93e0ef791077760943bb413c75fc6eef9ec0cf785c8e8bab971f8262",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "operator_handoff": {
+    "source_commit": "e2b93dfbb4797a9471f7f6d92c35cf1e5fe18ff0",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/workspace-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/workspace-primary-03/bundle",
+      "manifest_sha256": "206126d0d640f0bdc07eb05bacc9faa25bfabf42dbd93fe12738abe015a9b2b4"
+    },
+    "revision": 452,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/workspace-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "94877672fb21c8778d2599b5456d6a8c05a802d7ffaa457ba7b6b83dd62501dc",
+    "handoff_sha256": "c1b163d2737b879edda1f4483f9e5be9304bbe14ab0a33bce3ff2250b24e1873",
+    "checked": true,
+    "source_files": 697,
+    "hours_executed": 0
+  },
+  "qualifications": {
+    "path": "docs/evidence/serve-agent-workspaces-20261124/payload-profiles.json",
+    "sha256": "3b92f228ef21a5e03e57252a6c5a69e1e6b36b2788db8922fe39dc82dc6d5d28"
+  },
+  "publication_receipts": {
+    "workspace-primary-03/service-acceptance.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-primary-03/service-acceptance.json",
+      "sha256": "0ccc5c11bd5fd550a86bfd6ae8c7ed66a86d739ea7bc4f3d2d7e7e3b88cd2bfb"
+    },
+    "workspace-fallback-03/service-acceptance.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-03/service-acceptance.json",
+      "sha256": "508f5c3a3f8ffa4310d8626384ed30e64847f98fc98be550d6937a51fef73096"
+    },
+    "workspace-primary-03/origin.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-primary-03/origin.json",
+      "sha256": "0dad25b185c7284fa908571d6ab0839817fa2259ce85913384304c81e270b664"
+    },
+    "workspace-fallback-03/origin.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-fallback-03/origin.json",
+      "sha256": "2d63a8c24f7fe24d246235927b746f411d8873c8ed5c6cc2129b7bdd3a766e60"
+    },
+    "workspace-delivery/result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-delivery/result.json",
+      "sha256": "f8ee376854b109b5673e123a02d2690139155475da5eb4cd145e04c75b0c6f79"
+    },
+    "workspace-delivery/check.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-delivery/check.stdout",
+      "sha256": "639b9300423da2963eb72f99e594aa93f42afe78657a28168cc3397579ac59f4"
+    },
+    "workspace-delivery/status.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-delivery/status.stdout",
+      "sha256": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b"
+    },
+    "workspace-delivery/version-status.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-delivery/version-status.stdout",
+      "sha256": "ffa4894d96bf49db58c29581e2dc2efff5c6e1eeaf571efc0ea41808f4ee25ad"
+    },
+    "workspace-delivery/publish-status.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-delivery/publish-status.stdout",
+      "sha256": "d27ce36974afeb5a8e088c2aa3891f3d64d5609b840764ec8c3b8704eaabd93b"
+    },
+    "workspace-day.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-day.json",
+      "sha256": "07e335edb8bdcc934abd50ff065bb8ff475995b9c4ae91dcfad6e994c02adc51"
+    },
+    "workspace-maintenance-03/result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-maintenance-03/result.json",
+      "sha256": "ce47da1d3a0413ea6f93de974a3f80edf4a305a4ab3b6c69deb0d0944326681a"
+    }
+  }
+}

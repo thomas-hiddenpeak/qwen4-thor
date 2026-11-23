@@ -9122,7 +9122,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev450_delivered_remaining_deliveries",
+      "state": "rev452_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9147,7 +9147,8 @@
         "evidence/serve-responses-agent-interruption-20261123/delivery.json",
         "evidence/serve-agent-vaults-20261123/delivery.json",
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
-        "evidence/serve-agent-environments-20261124/delivery.json"
+        "evidence/serve-agent-environments-20261124/delivery.json",
+        "evidence/serve-agent-workspaces-20261124/delivery.json"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -16623,7 +16624,7 @@
     "publication": "rev450 default; five 201 fixes verified on candidate"
   },
   "agent_hosted_workspace_20261124": {
-    "state": "externalized_payloads_primary_light_verified",
+    "state": "rev452_delivered",
     "evidence": "docs/evidence/serve-agent-workspaces-20261124/workspace.json",
     "scope": {
       "path_selectors_added": 3,
@@ -16632,13 +16633,15 @@
       "required_methods": 232
     },
     "remaining": [
-      "managed fault acceptance and recoverable publication",
-      "sandbox execution, hosted artifacts, self-hosted providers and remaining application APIs"
+      "inline file decoded input limits and durable hosted session artifacts",
+      "sandbox execution, self-hosted providers and remaining application methods"
     ],
     "profiles": "docs/evidence/serve-agent-workspaces-20261124/profiles.json",
     "retention": "docs/evidence/serve-agent-workspaces-20261124/retention.json",
     "retention_profiles": "docs/evidence/serve-agent-workspaces-20261124/retention-profiles.json",
     "payload_retention": "docs/evidence/serve-agent-workspaces-20261124/payload-retention.json",
-    "payload_profiles": "docs/evidence/serve-agent-workspaces-20261124/payload-profiles.json"
+    "payload_profiles": "docs/evidence/serve-agent-workspaces-20261124/payload-profiles.json",
+    "delivery": "docs/evidence/serve-agent-workspaces-20261124/delivery.json",
+    "methods": "docs/evidence/serve-agent-workspaces-20261124/methods.json"
   }
 }
