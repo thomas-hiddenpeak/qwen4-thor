@@ -78,6 +78,8 @@ class Admission:
         self.retry_at = 0
         self.policy_channel = None
         self.verified_clients = ()
+        self.installed_clients = ()
+        self.policy_failure = 'gateway_client_policy_unavailable'
         self.failure_reason = 'gateway_verifying'
         self.observed_generation = 0
 
@@ -86,6 +88,8 @@ class Admission:
         if self.policy_channel is not None:self.policy_channel.close()
         self.policy_channel = None
         self.verified_clients = ()
+        self.installed_clients = ()
+        self.policy_failure = 'gateway_client_policy_unavailable'
         if self.pidfd is not None:
             os.close(self.pidfd)
             self.pidfd = None
@@ -131,7 +135,7 @@ class Admission:
                     self.channel.bound(snapshot['model_generation'])
                     self.failure_reason = 'gateway_verifying'
                 elif not installed:
-                    self.reject('gateway_client_policy_unavailable')
+                    self.reject(self.policy_failure)
                 return
             self.close()
             if snapshot['stop_requested']:
@@ -182,7 +186,7 @@ class Admission:
                     self.channel.bound(snapshot['model_generation'])
                     self.failure_reason = 'gateway_verifying'
                 else:
-                    self.reject('gateway_client_policy_unavailable')
+                    self.reject(self.policy_failure)
             finally:
                 if fd is not None:
                     os.close(fd)
@@ -210,11 +214,22 @@ class Admission:
             observed = value['observed']
             if observed is not None and not value['error']:
                 ids = tuple(observed['clients'])
-                prefix = self.verified_clients or tuple(c['id'] for c in self.config['backend_policy']['clients'])
-                ledger.require(observed['configured'] and observed['mutable'] and
-                    len(ids) >= len(prefix) and ids[:len(prefix)] == prefix,
-                    'model client slots changed')
+                baseline = tuple(c['id'] for c in self.config['backend_policy']['clients'])
+                if not (observed['configured'] and observed['mutable'] and
+                        ids[:len(baseline)] == baseline):
+                    self.verified_clients = ()
+                    self.policy_failure = 'gateway_client_policy_mismatch'
+                    return False
+                # Retain the installed slot order for this generation. A shorter
+                # observation cannot authorize a replacement in an old slot.
+                for i, (current, installed) in enumerate(zip(ids, self.installed_clients)):
+                    if current != installed:
+                        self.verified_clients = ids[:i]
+                        return bool(self.verified_clients)
+                if len(ids) >= len(self.installed_clients):
+                    self.installed_clients = ids
                 self.verified_clients = ids
+                self.policy_failure = 'gateway_client_policy_unavailable'
         except Exception:
             pass
         # Installed slots cannot be removed/reused within this model. A lost

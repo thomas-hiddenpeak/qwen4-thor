@@ -9,7 +9,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 默认 **rev432，STOPPED**。新管理包修正 Live 旁路指标；15 次业务生成和 3 次项目资料工具调用完成短稳，24 小时计划已冻结并交接。[运行方法与实际回执](evidence/serve-live-stability-handoff-20261123/README.md)
 
-Responses Beta 主轻业务已通过。两次模型启动均完成计数、生成、WebRTC 与 Chat；轻量配置可读回主配置保存的回答，跨客户收到 404。两份正式资格已封存且能逐字节恢复旧记录。托管包注册、同能力回退与发行仍待完成。[主轻记录](evidence/serve-responses-beta-profiles-20261123/README.md) · [官方 SDK 验收](evidence/serve-responses-beta-selector-20261123/README.md)
+Responses Beta 主轻业务已通过。两次模型启动均完成计数、生成、WebRTC 与 Chat；轻量配置可读回主配置保存的回答，跨客户收到 404。两份正式资格已封存且能逐字节恢复旧记录。托管回退候选已通过网关恢复和 Beta 存储；继续主候选实际版本接管与发行。[主轻记录](evidence/serve-responses-beta-profiles-20261123/README.md) · [官方 SDK 验收](evidence/serve-responses-beta-selector-20261123/README.md)
 
 rev430 的实际监控响应增加了三个 Live 旁路指标。验收观测器现支持完整新组并保留旧 v5 回读，首次短稳失败保留；40 项 CPU 检查和首周期原始 HTTP 指标重放通过。继续验证正式短稳工具与当前包的配合。
 

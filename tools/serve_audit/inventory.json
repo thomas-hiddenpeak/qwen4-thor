@@ -3561,7 +3561,7 @@
     "tools/serve_recovery/fixture_gateway.py": "2e6923f1b81e8ea60c362e9c18bccddbb4f17b4bdbc52efe3efa11911ea72896",
     "tools/serve_recovery/fixture_model.py": "a2a23f6871dab8c1f2776d3a7496d1bb4211d30943d1e63f930ed32551645a03",
     "tools/serve_recovery/fixture_production.py": "754ab0720d3eb62de4f4f8d3f9dae10b67af0663b7ea134ef643ccc2c983ff18",
-    "tools/serve_recovery/gateway.py": "5ccb405479f7da707ed91ea5bb1f7ecc2e2c0cd05ffc279de5ba6e7a9238eb3a",
+    "tools/serve_recovery/gateway.py": "67c8ed2e415b900f574b9a3d164b26e387f585fb21738eedb4912bdd75c84127",
     "tools/serve_recovery/gateway_config.py": "cc3c38b5a439b1805989458aea34dc2d0a899e42ae032ed4d1d8c29f58a02289",
     "tools/serve_recovery/host_artifact.py": "692efb1e560dbc1cb4ffde9d37a00a59357611bdbcd79737bc47eb595249cb6e",
     "tools/serve_recovery/host_entry.py": "e930b878c2d7d29621863e4f371884b75f163a0bfdacc641ce0bdc752cc47940",
