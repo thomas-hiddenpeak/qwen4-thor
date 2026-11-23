@@ -245,6 +245,52 @@ Q4T_TEST(agent_session_turn_shares_queue_receipt_and_reopens_native_output) {
   return true;
 }
 
+Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
+  Fixture f;
+  ObjectStore store(f.options);
+  const auto request = Parse(R"({"agent":{"model":"cpu"},
+    "environment":{"type":"none"},"input":"lookup"})");
+  struct Case {
+    int status;
+    const char* native;
+    const char* projected;
+    bool retryable;
+  };
+  const Case cases[] = {
+      {429, "client_rpm_exhausted", "rate_limit_exceeded", true},
+      {429, "client_tpm_exhausted", "rate_limit_exceeded", true},
+      {408, "request_deadline_exceeded", "request_timeout", true},
+      {400, "context_length_exceeded", "context_length_exceeded", false},
+      {503, "service_draining", "server_overloaded", true},
+      {429, "client_capacity_exhausted", "server_overloaded", true},
+      {500, "client_rate_invalid", "server_error", false},
+  };
+  for (const auto& item : cases) {
+    ResponsesExecution run(store);
+    auto prepared = PrepareAgentSessionExecution(store, request, Config(),
+                                                Access(), std::time(nullptr), run);
+    Q4T_CHECK(Ok(prepared));
+    const auto id = prepared.value.GetString("id");
+    run.BindBackgroundControl(std::make_shared<RequestControl>(
+        run.Id(), "", Clock::now() + 5s));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
+    ResponsesExecution::ObserveError(&run, item.status, "original message",
+                                     item.native);
+    Q4T_CHECK(Ok(run.CloseUnfinished()));
+    AgentSessionView view;
+    Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
+    Q4T_CHECK(view.session.GetString("status") ==
+                  (item.retryable ? "idle" : "failed") &&
+              view.session.Find("error")->IsNull() == item.retryable);
+    const auto* error = view.turn.Find("error");
+    Q4T_CHECK(view.turn.GetString("status") == "failed" && error &&
+              error->GetString("code") == item.projected &&
+              error->GetString("message") == "original message");
+  }
+  return true;
+}
+
 Q4T_TEST(agent_session_tool_action_requires_a_completed_owned_call) {
   Fixture f;
   ObjectStore store(f.options);

@@ -22,6 +22,8 @@
 
 ## 当前阶段更新（2026-11-23）
 
+主配置生成的真实工具调用已由轻配置接续。官方 Node SDK 用同一结果回填两次，原回合只保存一份结果并回答 442。保留夹具的 3 RPM 上限后，第 4 笔推理准确返回 rate_limit_exceeded，原回合的失败可回读，会话仍可使用。窗口恢复后续问再答 442。主、轻各启动一次，146 次 NVML 采样；默认 rev442 仍为 STOPPED。[主轻验收](evidence/serve-agent-sessions-20261123/profiles.json)
+
 Managed Agent 流式工具短验通过。首次官方 SDK 在函数参数尚未齐备时就按 item.added 调用本地工具，回填得到 409。修复后只在持久化交接成功后向 SDK 公布可调用项。创建流 26 个事件，工具只执行一次；从空闲会话订阅的下一回合 19 个事件，两次均返回 442，未重复调用旧工具。跨客户订阅 404。继续完善会话管理、取消和恢复。[流式验收](evidence/serve-agent-sessions-20261123/stream.json)
 
 Managed Agent 初始非流式回合已通过官方 Node SDK 和真实模型短验。SDK 经原生 TLS 提交发行记录，模型答 442，回读 112 个输入和 4 个输出 token、分页消息及持久化回合；跨客户读取和删除后回读均为 404。保留两次夹具失败。rev442 默认仍为 STOPPED。继续事件、工具回填及后续回合。[会话短验](evidence/serve-agent-sessions-20261123/README.md)

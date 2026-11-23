@@ -10558,7 +10558,7 @@
     }
   ],
   "next_task": "Implement standard managed Agent sessions, input events and real model turns while continuing the remaining G00 application and recovery work.",
-  "next": "推进标准 Agent 会话、回合与事件流；继续剩余应用范围与恢复工作。",
+  "next": "验证标准 Agent 会话在托管模型异常和版本切换后能接续原工具调用，再完成可回退发布与其余应用服务、恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16521,5 +16521,14 @@
     "interruption_profiles": "evidence/serve-responses-agent-interruption-20261123/profiles.json",
     "interruption_delivery": "evidence/serve-responses-agent-interruption-20261123/delivery.json",
     "draining_message": "evidence/serve-responses-agent-interruption-20261123/draining-message.json"
+  },
+  "agent_session_handoff_20261123": {
+    "evidence": "evidence/serve-agent-sessions-20261123/profiles.json",
+    "state": "primary_light_qualified",
+    "registered_profiles": 2,
+    "selectable_previous_release": "rev442",
+    "managed_takeover": "pending",
+    "profile_start_count": 2,
+    "quota_window_recovery": true
   }
 }

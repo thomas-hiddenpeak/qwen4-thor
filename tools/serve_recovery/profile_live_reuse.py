@@ -13,6 +13,15 @@ AGENT_FORMAT = 'q4t-agent-profile-source-reuse-v1'
 AGENT_REFRESH = 'q4t-agent-profile-requalification-v1'
 REGISTRATION_RECORD = 'q4t-profile-business-v26'
 REGISTRATION_FORMAT = 'q4t-agent-registration-profile-source-v1'
+SESSION_RECORD = 'q4t-profile-business-v27'
+SESSION_FORMAT = 'q4t-agent-session-profile-source-v1'
+SESSION_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents/sessions',
+    environments=['none'], tool_types=['function'], stream=True,
+    idempotent_input_events=True, cancel_turn=True, storage='authenticated_client')
+SESSION_REVIEWED = {
+    'primary': '3d6691759a569a94a7f9aaaa010f6eacc7bf10ca798a220b015139d73248e329',
+    'light': '5c3e6a8a050d64e4da85319ea7bbb23aff80a80a72952c555f348599f151bafe',
+}
 REGISTRATION_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents',
     operations=['create','retrieve','update','list','delete'],
     storage='authenticated_client', retention='until_deleted', tool_list_max_bytes=3145728)
@@ -30,7 +39,8 @@ AGENT_REVIEWED = {
     'light': 'de3a519c4411138d02a6d863704d1c8142a5bb0334257ad35b0a99e81f692f06',
 }
 REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
-                AGENT_RECORD_FORMAT: AGENT_FORMAT, REGISTRATION_RECORD: REGISTRATION_FORMAT}
+                AGENT_RECORD_FORMAT: AGENT_FORMAT, REGISTRATION_RECORD: REGISTRATION_FORMAT,
+                SESSION_RECORD: SESSION_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -52,6 +62,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'f742f4a99411c3f60099d219e1c4959a08c06e9878d34ff9153de1b256a3105c':
+        '96449e96cf5401726e47505e3a816dacd18ad2eeb8d4c09114eb54a24a8dddc8',
     '7014bde675707b1bc3a52765ebbacfe2455a6b0be61b1eee7d4a61c3cb36dd5f':
         '4ef57fba3d32d8a213471f7db499a4e097c82b120da4e2a08dd7878a10f71d3b',
     'da34734b772404e09ed8f7ac1c91f08683a712194c27c97a4c8e69f6501e8b88':
@@ -88,6 +100,10 @@ def format_for(capabilities):
             if 'agent_registration' in capabilities:
                 ledger.require(capabilities['agent_registration'] == REGISTRATION_CAPABILITY,
                                'unknown registered Agent configuration capability')
+                if 'agent_sessions' in capabilities:
+                    ledger.require(capabilities['agent_sessions'] == SESSION_CAPABILITY,
+                                   'unknown qualified Agent session capabilities')
+                    return SESSION_RECORD
                 return REGISTRATION_RECORD
             return AGENT_RECORD_FORMAT
         return BETA_RECORD_FORMAT
@@ -109,7 +125,8 @@ def attach(value, prior):
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and prior['format'] == AGENT_RECORD_FORMAT
     registration = value['format'] == REGISTRATION_RECORD
-    revision = agent or registration or value['format'] == BETA_RECORD_FORMAT
+    session = value['format'] == SESSION_RECORD
+    revision = agent or registration or session or value['format'] == BETA_RECORD_FORMAT
     if registration:
         from tools.serve_recovery import profile_duplex_reuse
         ledger.require(prior['format'] == AGENT_RECORD_FORMAT and
@@ -122,6 +139,15 @@ def attach(value, prior):
                        'registration must extend the qualified recovery and SDK business')
         value['business']['realtime_duplex'] = profile_duplex_reuse.pack_text(
             value['business']['realtime_duplex'])
+    elif session:
+        ledger.require(prior['format'] == REGISTRATION_RECORD and
+                       record_hash(prior) == REGISTRATION_REVIEWED.get(prior['profile']) and
+                       previous['added'] == ['agent_sessions'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256'} and
+                       after['agent_sessions'] == SESSION_CAPABILITY and
+                       {'session-handoff.json','registration.json','interruption.json'} <=
+                       value['business']['live']['evidence_sha256'].keys(),
+                       'session qualification needs retained registration, recovery and a real handoff')
     elif refresh:
         ledger.require(record_hash(prior) == AGENT_REVIEWED.get(prior['profile']) and
                        not previous['added'] and
@@ -149,7 +175,8 @@ def previous_record(value):
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and reuse['format'] == AGENT_REFRESH
     registration = value['format'] == REGISTRATION_RECORD
-    revision = agent or registration or value['format'] == BETA_RECORD_FORMAT
+    session = value['format'] == SESSION_RECORD
+    revision = agent or registration or session or value['format'] == BETA_RECORD_FORMAT
     ledger.require(refresh or reuse['format'] == REUSE_FORMAT.get(value['format']),
                    'incorrect Live qualification source')
     previous = codec.unpack(reuse['previous'])
@@ -178,6 +205,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == SESSION_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == SESSION_REVIEWED.get(name),
+                       'session handoff differs from the reviewed qualification')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == REGISTRATION_REVIEWED.get(name),
+                       'session handoff lost the registered predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == REGISTRATION_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) == REGISTRATION_REVIEWED.get(name),

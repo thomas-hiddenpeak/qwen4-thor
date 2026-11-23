@@ -4,6 +4,7 @@ import os
 import subprocess
 from pathlib import Path
 import re
+import shutil
 import sys
 import time
 
@@ -24,7 +25,15 @@ class Stage(media.Stage):
         # This host's qualified NICE plugin was unpacked for WebRTC validation.
         # Verify the actual packaged/system plugin before allocating the GPU.
         retained = ROOT/'.q4t-work/serve-live-20261123/webrtc-media/deps/root/usr/lib/aarch64-linux-gnu/gstreamer-1.0'
-        env = dict(os.environ, GST_REGISTRY_1_0=str(out/'fixture-registry.bin'))
+        cache = out/'fixture-registry.bin'
+        env = dict(os.environ, GST_REGISTRY_1_0=str(cache))
+        seed = os.environ.get('GST_REGISTRY_1_0')
+        if seed and Path(seed).is_file():
+            # A fresh full registry scan on Thor also probes camera plugins
+            # and can wake nvargus-daemon. Reuse the caller's discovery cache;
+            # gst-inspect and the actual WebRTC handshake still check NICE.
+            shutil.copyfile(seed, cache)
+            env['GST_REGISTRY_UPDATE'] = 'no'
         if not env.get('GST_PLUGIN_PATH_1_0') and (retained/'libgstnice.so').is_file():
             env['GST_PLUGIN_PATH_1_0'] = str(retained)
         inspect = subprocess.run(['gst-inspect-1.0','nicesrc'],env=env,text=True,

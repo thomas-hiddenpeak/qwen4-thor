@@ -28,6 +28,19 @@ Json Copy(const Json& source, const char* key) {
   return value ? *value : Json{};
 }
 
+// Project durable Responses errors, including records from older processes,
+// into the SessionTurnError categories published by the Agents SDK.
+const char* SessionErrorCode(std::string_view code) {
+  if (code == "client_rpm_exhausted" || code == "client_tpm_exhausted")
+    return "rate_limit_exceeded";
+  if (code == "request_deadline_exceeded" || code == "request_timeout")
+    return "request_timeout";
+  if (code == "context_length_exceeded") return "context_length_exceeded";
+  if (code == "service_draining" || code == "client_capacity_exhausted")
+    return "server_overloaded";
+  return "server_error";
+}
+
 ObjectReply NativeRequest(const AgentSessionStart& start) {
   const auto& agent = *start.session.Find("agent");
   auto tools = Array();
@@ -218,12 +231,18 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
     const auto text = cause ? cause->GetString("message") : "";
     const auto* details = response.Find("incomplete_details");
     error = Object(
-        {{"code", String("server_error")},
+        {{"code", String(SessionErrorCode(cause ? cause->GetString("code") : ""))},
          {"message", String(!text.empty() ? text
                             : details     ? details->GetString(
                                             "reason", "Incomplete model output")
                                       : "Model execution failed")}});
   }
+  // A retryable failure ends this turn. The SDK requires the session to
+  // return to idle before it will submit the next turn on the same history.
+  const auto category = error.GetString("code");
+  const bool session_failed =
+      failed && category != "rate_limit_exceeded" &&
+      category != "server_overloaded" && category != "request_timeout";
   const auto usage = Usage(response);
   const auto* agent = session.Find("agent");
   if (!agent) return InvalidRecord();
@@ -244,10 +263,10 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
   Set(&result.session, "required_actions", std::move(actions));
   Set(&result.session, "status",
       String(waiting                                         ? "requires_action"
-             : failed                                        ? "failed"
+             : session_failed                                ? "failed"
              : status == "queued" || status == "in_progress" ? "in_progress"
                                                              : "idle"));
-  Set(&result.session, "error", Copy(error, "message"));
+  Set(&result.session, "error", session_failed ? Copy(error, "message") : Json{});
   Set(&result.session, "usage", usage);
   Set(&result.session, "last_active_at",
       Number(std::max({created, started, finished})));
