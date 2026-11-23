@@ -531,12 +531,14 @@ Q4T_TEST(websocket_session_receiver_wait_observes_peer_eof_without_delivery) {
 Q4T_TEST(websocket_session_client_lane_is_separate_and_exactly_classified) {
   ClientAdmission admission;
   const auto identity = Configure(admission);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/realtime?intent=transcription") ==
+            HttpConnectionClass::kBusiness);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/live/sessions") ==
+            HttpConnectionClass::kRealtime);
   for (const auto path :
        {"/v1/realtime?intent=transcription", "/v1/live/sessions"}) {
     Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
               HttpConnectionClass::kRealtime);
-    Q4T_CHECK(ClassifyHttpConnection("POST", path) ==
-              HttpConnectionClass::kBusiness);
     HttpRequestHeaders headers;
     headers.client_id = "alpha";
     headers.gateway_token = std::string(64, 'a');

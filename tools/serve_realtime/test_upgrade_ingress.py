@@ -14,6 +14,7 @@ import time
 import unittest
 from unittest import mock
 
+from tools.serve_gateway.test_gateway import optional_nginx_binary
 from tools.serve_recovery import test_gateway_nginx as fixture
 
 
@@ -381,8 +382,7 @@ class OptionalNginxUpgrade(unittest.TestCase):
 
     def setUp(self):
         self.rows, self.bad, self.eof = [], '', threading.Event()
-        from tools.serve_gateway.test_gateway import VENDOR
-        self.patch = mock.patch.object(fixture, 'NGINX', Path(json.loads(VENDOR.read_text())['binary']))
+        self.patch = mock.patch.object(fixture, 'NGINX', optional_nginx_binary())
         self.patch.start()
         self.addCleanup(self.patch.stop)
         self.stack = fixture.Stack(self.output)

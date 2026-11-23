@@ -62,7 +62,8 @@
       "evidence": [
         "SERVE_CHAT_INPUT_2026-11-08.md",
         "evidence/serve-chat-input-20261108/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": null,
       "accepted_subsets": [
@@ -622,7 +623,8 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "A02",
@@ -1251,7 +1253,8 @@
         "evidence/serve-input-tokens-business-20261110/README.md",
         "evidence/serve-input-tokens-delivery-20261110/README.md",
         "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": {
         "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
@@ -2454,7 +2457,8 @@
         "revision": 234,
         "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
         "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "A08",
@@ -2471,7 +2475,8 @@
         "evidence/serve-retention-followup-20261110/README.md",
         "evidence/serve-retention-business-20261110/README.md",
         "evidence/serve-retention-delivery-20261110/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": {
         "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
@@ -2595,7 +2600,8 @@
           "/webhook_event_types"
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "A09",
@@ -7894,7 +7900,8 @@
         "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
         "evidence/serve-cold-entry-cpu-20261112/README.md",
         "evidence/serve-cold-watch-cpu-20261112/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": null,
       "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 10 targeted CPU passes including actual subreaper entry. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet. Candidate d53caf4d is prepared; plan-v2 fixes validation-only sealed import ordering (4 affected CPU plus actual package check passed), original refusal retained. Maintenance question for nvargus/jtop pending; no foreign service or host policy action.",
@@ -7966,7 +7973,8 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev366 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev366 or then-current default; pending host/camera maintenance handoff remains required.",
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "R08",
@@ -7996,7 +8004,8 @@
         "evidence/serve-resource-version-cpu-20261112/README.md",
         "evidence/serve-outer-resource-business-20261112/README.md",
         "evidence/serve-outer-resource-delivery-20261112/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": null,
       "plan": "SERVE_RESOURCE_DOMAIN_2026-11-12.md",
@@ -8030,7 +8039,8 @@
       "remaining_required": [
         "Unified physical DRAM/GPU charge hard boundary platform evidence",
         "Cold and pressure composition beyond delivered normal-NVML resource subset"
-      ]
+      ],
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "R09",
@@ -8270,7 +8280,8 @@
       "evidence": [
         "evidence/serve-retrieval-managed-business-20261112/README.md",
         "evidence/serve-managed-vision-delivery-20261116/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -9033,7 +9044,8 @@
           "/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}"
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "Q02",
@@ -9051,7 +9063,8 @@
         "evidence/serve-video-geometry-delivery-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-root-rollback-business-20261116/README.md",
-        "evidence/serve-recovery-recording-option-20261123/README.md"
+        "evidence/serve-recovery-recording-option-20261123/README.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -10196,7 +10209,8 @@
       "native_realtime_mcp_main_20261120": {
         "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
         "evidence": "evidence/serve-pr56-merged-20261120/README.md"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "Q03",
@@ -10455,8 +10469,8 @@
       }
     }
   ],
-  "next_task": "Seal qualified Live primary/light observations into a managed candidate and verify Guardian recovery, rollback, optional standalone ingress and outstanding master tasks.",
-  "next": "以已实测的 Live 独立候选为同能力回退，完成带入口绑定的新主包注册、真实切换与停止发布；定位启动初期通用 503。",
+  "next_task": "Integrate qualified Live delivery after host CI, diagnose the startup 503, and continue the remaining inference, application and recovery tasks.",
+  "next": "核对 Live 主线检查并合入；定位启动期 503；按总计划推进剩余推理与应用服务组合、恢复和交付。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16220,7 +16234,7 @@
     }
   },
   "native_live_20261121": {
-    "state": "primary_client_business_accepted_remaining_live_implementation",
+    "state": "managed_live_primary_and_fallback_delivered_rev430",
     "plan": "SERVE_LIVE_2026-11-21.md",
     "master_active": true,
     "default_revision": 426,
@@ -16364,6 +16378,7 @@
     "registered_control_failover": "evidence/serve-control-fallback-20261123/README.md",
     "qualified_profile_observations": "evidence/serve-live-profile-observations-20261123/README.md",
     "sealed_live_profiles": "evidence/serve-live-registry-20261123/README.md",
-    "managed_optional_workers": "evidence/serve-live-managed-workers-20261123/README.md"
+    "managed_optional_workers": "evidence/serve-live-managed-workers-20261123/README.md",
+    "default_and_registered_failover": "evidence/serve-live-default-20261123/README.md"
   }
 }

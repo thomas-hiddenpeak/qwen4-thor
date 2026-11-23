@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+默认部署 **rev430，STOPPED**。Live 主包和独立回退包已注册，默认 CLI 检查通过。实际网关致命故障后，第二代模型接管，官方 SDK 两次 WebRTC、两次 Chat 和跨代存储回读通过。下一步核对主线 CI、定位启动期通用 503，并推进余下接口和恢复组合。[交付与回退证据](evidence/serve-live-default-20261123/README.md)
+
 Live 托管候选已在可选媒体运行库存在和缺失两种环境完成短验。网关恢复后的官方 SDK 会话、Chat 与存储通过；缺 ICE 时已就绪核心继续服务。一次启动初期通用 503 仍待定位。默认 rev428，下一步注册同能力候选并验收回退。[部署与实测](evidence/serve-live-managed-workers-20261123/README.md)
 
 Live 正式主轻资格已封存。两份新记录均可还原旧版完整业务，显式正向迁移通过，跨能力自动回退被拒绝。恢复包 v28 核对实装媒体程序。默认 rev428；继续真实托管候选。[正式资格与兼容边界](evidence/serve-live-registry-20261123/README.md)

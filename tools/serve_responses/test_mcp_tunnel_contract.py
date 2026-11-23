@@ -9,9 +9,11 @@ import subprocess
 import tempfile
 import time
 import unittest
+from unittest import mock
 
 from jsonschema import Draft202012Validator
 from tools.serve_gateway import gateway
+from tools.serve_gateway.test_gateway import optional_nginx_binary
 from tools.serve_gateway import tls_fixture as strict_pki
 from tools.serve_protocol import build_contract as api
 from tools.serve_responses import build_contract as app
@@ -100,9 +102,9 @@ class TunnelContract(unittest.TestCase):
 
 class OptionalTunnel(native.TunnelIngress):
     def setUp(self):
-        receipt = json.loads((wire.ROOT/'.q4t-work/serve-gateway-20261103/vendor/receipt.json').read_text())
-        fixture.NGINX = Path(receipt['binary']).resolve(strict=True)
-        self.assertEqual(gateway.sha(fixture.NGINX), receipt['binary_sha256'])
+        binding = mock.patch.object(fixture, 'NGINX', optional_nginx_binary())
+        binding.start()
+        self.addCleanup(binding.stop)
         self.ingress = None
         self.stack = self.make_stack()
 

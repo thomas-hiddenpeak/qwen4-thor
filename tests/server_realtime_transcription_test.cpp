@@ -877,7 +877,11 @@ Q4T_TEST(realtime_transcription_capabilities_separate_configured_and_pending) {
             realtime->GetBool("per_turn_client_admission"));
   Q4T_CHECK(realtime->GetString("usage") == "actual_tokens_per_item");
   Q4T_CHECK(!realtime->GetBool("automatic_replay"));
-  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 2);
+  const auto* pending = realtime->GetArray("pending_execution");
+  Q4T_CHECK(pending && pending->array.empty());
+  Q4T_CHECK(realtime->Find("calls")->GetString("create") ==
+            "/v1/realtime/calls");
+  Q4T_CHECK(realtime->Find("client_secrets")->GetBool("owner_scoped"));
   const auto* semantic = realtime->Find("semantic_vad");
   Q4T_CHECK(
       semantic && semantic->GetBool("implemented") &&
