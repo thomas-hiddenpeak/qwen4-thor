@@ -7,6 +7,7 @@ launch permission and never changes live keys, quotas or application objects.
 import copy
 import hashlib
 from pathlib import Path
+from typing import NamedTuple
 
 from tools.serve_recovery import bundle, ledger, profile_contract, profile_manager
 from tools.serve_recovery import profile_compat, profile_migration, store, version_policy
@@ -158,7 +159,21 @@ def accepted_fallback(receipt, selected, *, read_bundle=bundle.verify):
     return copy.deepcopy(receipt)
 
 
+class Qualification(NamedTuple):
+    registration: dict
+    primary: dict
+    fallback: dict
+    permit: dict
+
+
 def prepare(root, primary, fallback, cycle_id, *, fallback_acceptance,
+            bootstrap_boot_id=None, read_bundle=bundle.verify):
+    return qualify(root, primary, fallback, cycle_id,
+        fallback_acceptance=fallback_acceptance, bootstrap_boot_id=bootstrap_boot_id,
+        read_bundle=read_bundle).registration
+
+
+def qualify(root, primary, fallback, cycle_id, *, fallback_acceptance,
             bootstrap_boot_id=None, read_bundle=bundle.verify):
     """Pure registration representation after full package verification.
 
@@ -172,12 +187,14 @@ def prepare(root, primary, fallback, cycle_id, *, fallback_acceptance,
     root_package = Path(root['package'])
     ledger.require(str(root_package.resolve(strict=True)) == root['package'],
                    'version control root must be canonical')
-    manifest = read_bundle(root_package, root['manifest_sha256'])
+    first = payload(primary, read_bundle=read_bundle)
+    manifest = (first['manifest'] if root == primary else
+                read_bundle(root_package, root['manifest_sha256']))
     ledger.require(manifest.get('ingress_mode') == 'native', 'native version control root required')
     ledger.require(all('source/tools/serve_recovery/'+name+'.py' in manifest['files']
         for name in ('version_journal', 'version_store', 'version_policy')),
         'version control root lacks the native isolated selection contract')
-    first, second = (payload(item, read_bundle=read_bundle) for item in (primary, fallback))
+    second = payload(fallback, read_bundle=read_bundle)
     if manifest['version'] >= 17 and 'bin/q4t-device-control' in manifest['files']:
         from tools.serve_recovery import cold_compat
         ledger.require(all(cold_compat.aware(item['descriptor']['package']) for item in (first, second)),
@@ -203,10 +220,14 @@ def prepare(root, primary, fallback, cycle_id, *, fallback_acceptance,
         payloads={name:dict(descriptor=item['descriptor'], binding=item['binding'])
                   for name,item in [('primary',first),('fallback',second)]})
     ledger.require(len(ledger.canonical(value)) <= 16*1024, 'version registration byte bound')
-    return value
+    return Qualification(value, first, second, permit)
 
 
 def verify(value, *, read_bundle=bundle.verify):
+    return verified_qualification(value, read_bundle=read_bundle).registration
+
+
+def verified_qualification(value, *, read_bundle=bundle.verify):
     ledger.keys(value, ('format', 'root', 'registry', 'payloads', 'fallback_acceptance',
                         'bootstrap_boot_id'))
     ledger.require(value['format'] == FORMAT, 'invalid version registration')
@@ -214,9 +235,9 @@ def verify(value, *, read_bundle=bundle.verify):
     ledger.keys(value['payloads'], version_policy.PAYLOADS)
     for item in value['payloads'].values():
         ledger.keys(item, ('descriptor', 'binding'))
-    expected = prepare(value['root'], value['payloads']['primary']['descriptor'],
+    result = qualify(value['root'], value['payloads']['primary']['descriptor'],
         value['payloads']['fallback']['descriptor'], value['registry']['cycle_id'],
         fallback_acceptance=value['fallback_acceptance'],
         bootstrap_boot_id=value['bootstrap_boot_id'], read_bundle=read_bundle)
-    ledger.require(value == expected, 'version registration differs from retained actual packages')
-    return value
+    ledger.require(value == result.registration, 'version registration differs from retained actual packages')
+    return result

@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <array>
 #include <cerrno>
 #include <limits>
@@ -16,6 +17,9 @@
 namespace q4t::service {
 namespace {
 constexpr int64_t kMaxTimeout = 300'000'000'000;
+// Version preparation verifies sealed packages and their full business
+// receipts before it grants launch. Other journal operations only update state.
+constexpr int64_t kVersionPrepareTimeoutNs = 30'000'000'000;
 constexpr uint64_t kMaxInteger = std::numeric_limits<int64_t>::max();
 
 Status TransactionId(std::string* result) {
@@ -112,7 +116,11 @@ Status JournalClient::Submit(const std::string& operation, const io::Json& args,
   if (state_ != JournalState::kReady || reply_ || sequence == nullptr) {
     return Status::Fail("journal not ready for a new transaction");
   }
-  if (now_ns < last_now_ns_ || !ValidTime(now_ns, timeout_ns_) ||
+  const int64_t timeout =
+      domain_ == JournalDomain::kVersion && operation == "prepare"
+          ? std::max(timeout_ns_, kVersionPrepareTimeoutNs)
+          : timeout_ns_;
+  if (now_ns < last_now_ns_ || !ValidTime(now_ns, timeout) ||
       sequence_ == kMaxInteger || revision_ == kMaxInteger) {
     return Freeze("journal clock or sequence overflow");
   }
@@ -144,7 +152,7 @@ Status JournalClient::Submit(const std::string& operation, const io::Json& args,
   }
   *sequence = ++sequence_;
   last_now_ns_ = now_ns;
-  deadline_ns_ = now_ns + timeout_ns_;
+  deadline_ns_ = now_ns + timeout;
   state_ = JournalState::kBusy;
   return Status{};
 }

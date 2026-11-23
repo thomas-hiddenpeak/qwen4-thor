@@ -324,6 +324,23 @@ Q4T_TEST(guardian_version_worker_real_channel_and_fixture_fault_transaction) {
   return true;
 }
 
+Q4T_TEST(guardian_version_prepare_has_a_separate_bounded_deadline) {
+  JournalFixture version(true);
+  Q4T_CHECK(version.Start() && version.Pause());
+  uint64_t sequence = 0;
+  const int64_t submitted = Now();
+  Q4T_CHECK(version.client.Submit("prepare", w::Object({}), submitted,
+                                  &sequence).ok());
+  version.offset = 6'000'000'000;
+  Q4T_CHECK(version.client.Tick(submitted + version.offset).ok());
+  Q4T_CHECK(version.client.State() == s::JournalState::kBusy);
+  version.offset = 31'000'000'000;
+  Q4T_CHECK(!version.client.Tick(submitted + version.offset).ok());
+  Q4T_CHECK(version.client.State() == s::JournalState::kFrozen);
+  Q4T_CHECK(!version.client.TakeReply());
+  return true;
+}
+
 Q4T_TEST(guardian_version_timeout_does_not_freeze_core_authority_channel) {
   JournalFixture core, version(true);
   Q4T_CHECK(core.Start() && version.Start());

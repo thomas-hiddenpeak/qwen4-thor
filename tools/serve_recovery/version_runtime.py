@@ -11,7 +11,7 @@ from pathlib import Path
 import uuid
 
 from tools.serve_recovery import access_store, bundle, deployment, ledger, profile_manager
-from tools.serve_recovery import profile_migration, profile_store, version_contract
+from tools.serve_recovery import profile_migration, profile_store
 from tools.serve_recovery import version_policy, version_registration, version_store
 
 
@@ -36,17 +36,15 @@ def repair_sources(binding, root, core, original, *, read_bundle=bundle.verify):
         # but preserving that cycle must not prevent explicit repair/upgrade.
         # Launch still requires a matching registration for version recovery.
         return [(root['package'], original)], {}
-    selected = version_registration.for_state(directory, root, head, read_bundle=read_bundle)
-    registration, state = selected['registration'], selected['state']
-    first = version_contract.payload(registration['payloads']['primary']['descriptor'], read_bundle=read_bundle)
+    qualified = version_registration.qualification_for_state(directory, root, head, read_bundle=read_bundle)
+    first, second = qualified.primary, qualified.fallback
     sources = [(first['descriptor']['package'], first['manifest'])]
     grants = {}
-    if state['switch'] is not None:
-        second = version_contract.payload(registration['payloads']['fallback']['descriptor'], read_bundle=read_bundle)
+    if head['switch'] is not None:
         sources.append((second['descriptor']['package'], second['manifest']))
-        request = str(uuid.uuid5(uuid.UUID(state['switch']['request_id']),
+        request = str(uuid.uuid5(uuid.UUID(head['switch']['request_id']),
                                 'version-profile-migration'))
-        grants[request] = [version_contract.registered_compatibility(first, second, registration, read_bundle=read_bundle)]
+        grants[request] = [qualified.permit]
     return sources, grants
 
 
@@ -64,11 +62,10 @@ def prepare(binding, selected, args):
     state = Path(binding['state_directory'])
     root = deployment.read_descriptor(state)
     ledger.require(root['service_id'] == binding['service_id'], 'version service changed')
-    registration = version_registration.for_state(state,root,selected)['registration']
-    first,second = [version_contract.payload(registration['payloads'][name]['descriptor'])
-                    for name in version_policy.PAYLOADS]
+    qualified = version_registration.qualification_for_state(state, root, selected)
+    first, second = qualified.primary, qualified.fallback
     target = first if args['payload'] == 'primary' else second
-    authorization = version_contract.registered_compatibility(first, second, registration)
+    authorization = qualified.permit
     # This deterministic ID belongs to the durable switch, not the worker
     # session or its receipt. Retry cannot replenish profile clocks/budgets.
     request = (None if selected['switch'] is None else str(uuid.uuid5(

@@ -92,7 +92,14 @@ def prepare(binding, intent, current, rows):
     target = latest(binding, rows, intent['target'], current)
     if target is None: return None  # Explicit new deployment registers its new cycle separately.
     row, saved = target
-    transfer = policy.prepare(intent, current, saved, row['value']['registration']['registry'])
+    registration_value = row['value']['registration']
+    if current['registry'] == registration_value['registry']:
+        # Returning from an unregistered root can already have the target's
+        # exact live cycle. Recheck launch eligibility and preserve its journal.
+        ledger.require(saved == current, 'retained target differs from its live checkpoint')
+        version_contract.verify(registration_value)
+        return None
+    transfer = policy.prepare(intent, current, saved, registration_value['registry'])
     source = rows.get(current['registry']['cycle_id'])
     ledger.require(source is not None, 'current root registration is missing')
     return validate(dict(format=FORMAT, binding=binding, transfer=transfer,
