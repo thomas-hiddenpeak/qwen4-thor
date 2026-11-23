@@ -164,7 +164,7 @@ size_t ResponsesExecution::RetainedInputBytes() const {
              OutputJson(binding.tool.search.filters).size();
     for (const auto& id : binding.tool.store_ids) bytes += id.size();
   }
-  bytes += mcp_credential_source_sha256_.size() + agent_http_session_.size() +
+  bytes += mcp_credential_source_sha256_.size() + agent_session_id_.size() +
            agent_http_sealed_.size();
   if (!agent_mcp_tools_.IsNull())
     bytes += OutputJson(agent_mcp_tools_).size() + OutputJson(agent_vaults_).size();
@@ -315,6 +315,7 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                 count->number, ResponsesOutput::kMaxItems)) : 3);
   }
   web_policy_ = config.web_policy;
+  envelope_.agent_time_awareness = agent_time_awareness_;
   envelope_.web_content = plan_.web_content;
   cipher_config_.model = config.model;
   cipher_config_.count_input_only = config.count_input_only;
@@ -342,7 +343,7 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
     generation_history_ = std::move(history);
   }
   const auto* declarations = envelope_.request.GetArray("tools");
-  if (!agent_http_session_.empty() && declarations) {
+  if (!agent_session_id_.empty() && declarations) {
     auto bound = agent_detail::ReconcileSessionDiscovery(*declarations,
                                                          &generation_history_);
     if (!bound.ok()) return bound;
@@ -547,7 +548,7 @@ ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
                    "Queued response access program policy changed");
   }
   require_frozen_inputs_ = true;
-  auto result = RestoreAgentMcp();
+  auto result = RestoreAgentSession();
   if (result.ok()) result = RequiredExecutors(true);
   if (result.ok())
     result = PlanGeneration(config, snapshot.GetInt("created_at"));

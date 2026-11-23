@@ -71,8 +71,7 @@ ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
                    "Session tool executor is unavailable");
     tools.array.push_back(tool);
   }
-  if (agent.Find("multi_agent")->GetBool("enabled") ||
-      agent.Find("experimental")->GetBool("time_awareness"))
+  if (agent.Find("multi_agent")->GetBool("enabled"))
     return Error(503, "agent_executor_unavailable",
                  "Requested session execution mode is unavailable");
   auto result = ObjectReply{};
@@ -261,7 +260,7 @@ ObjectReply PrepareAgentSessionExecution(
     auto native = NativeRequest(start.session, std::move(start.input),
                                 start.tool_search);
     if (!native.ok()) return native;
-    run.ConfigureAgentMcp(start.session, start.sealed_http);
+    run.ConfigureAgentSession(start.session, start.sealed_http);
     result = run.Prepare(native.value, config, access, created, true);
     if (!result.ok()) return result;
     auto link = Object({{"id", String("turn_" + nonce.substr(14))},
@@ -787,7 +786,7 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
     previous.results = Copy(last, "saved_tool_results");
   }
   const bool cancelled = view.turn.GetString("status") == "cancelled";
-  run.ConfigureAgentMcp(execution_settings, data.GetString("sealed_http"));
+  run.ConfigureAgentSession(execution_settings, data.GetString("sealed_http"));
   auto prepared = run.Prepare(native.value, config, access, std::time(nullptr),
                               true, cancelled ? &previous : nullptr);
   if (!prepared.ok()) return prepared;

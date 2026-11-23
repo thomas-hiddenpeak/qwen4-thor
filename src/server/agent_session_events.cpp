@@ -18,6 +18,13 @@ Json Member(const Json& value, const char* key) {
   return field ? *field : Json{};
 }
 
+size_t VisibleOutputs(const Json& output, size_t end) {
+  size_t count = 0;
+  for (size_t i = 0; i < end; ++i)
+    if (!IsAgentDiscoveryItem(output.array[i].GetString("type"))) ++count;
+  return count;
+}
+
 bool Emit(Json* events, const std::string& prefix, const char* type,
           Json data) {
   Set(&data, "type", String(type));
@@ -78,6 +85,7 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     const bool first = cursor.turn_id != turn;
     if (first) {
       cursor.turn_id = turn;
+      cursor.turn_output_offset = 0;
       cursor.turn_usage = {};
       cursor.created_at = snapshot.turn.GetInt("created_at");
       cursor.started_at = 0;
@@ -117,7 +125,7 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
         if (item.GetString("type") != "function_call") continue;
         auto call = Object({{"session_id", String(id)},
                             {"turn_id", String(turn)},
-                            {"output_index", Number(index)},
+                            {"output_index", Number(cursor.turn_output_offset + index)},
                             {"item", item}});
         const auto key = prefix + "_call_" + std::to_string(index);
         if (snapshot.turn.GetString("status") == "waiting" &&
@@ -127,6 +135,8 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
         if (!Emit(events, key, "agent.session.turn.item.done", call))
           return Invalid();
       }
+      const auto& output = *response->GetArray("output");
+      cursor.turn_output_offset += VisibleOutputs(output, output.array.size());
       if (state == "completed" &&
           snapshot.turn.GetString("status") == "cancelled") {
         *settled = true;
@@ -163,9 +173,7 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     if (!output || raw < 0 || static_cast<size_t>(raw) >= output->array.size())
       return Invalid();
     if (IsAgentDiscoveryItem(output->array[raw].GetString("type"))) return {};
-    size_t shown = 0;
-    for (int64_t index = 0; index < raw; ++index)
-      if (!IsAgentDiscoveryItem(output->array[index].GetString("type"))) ++shown;
+    const auto shown = cursor.turn_output_offset + VisibleOutputs(*output, raw);
     Set(&loc, "output_index", Number(shown));
   }
   if (type == "response.output_item.added" ||
@@ -243,6 +251,7 @@ ObjectReply OpenAgentEventSubscription(ObjectStore& objects,
     const auto turn = step.turn.GetString("id");
     if (next.turn_id != turn) {
       next.turn_id = turn;
+      next.turn_output_offset = 0;
       next.turn_usage = {};
       next.created_at = step.turn.GetInt("created_at");
       next.started_at = 0;
@@ -253,6 +262,8 @@ ObjectReply OpenAgentEventSubscription(ObjectStore& objects,
       if (&link != &links->array.back()) return Invalid();
       next.sequence = record.value.GetArray("events")->array.size();
     } else {
+      const auto& output = *record.value.Find("response")->GetArray("output");
+      next.turn_output_offset += VisibleOutputs(output, output.array.size());
       const auto& usage = *step.turn.Find("usage");
       if (!AddUsage(&next.session_usage, usage) ||
           !AddUsage(&next.turn_usage, usage))

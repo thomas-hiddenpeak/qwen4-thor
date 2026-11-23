@@ -16691,6 +16691,11 @@
       "state": "short_business_verified",
       "evidence": "docs/evidence/serve-agent-workspaces-20261124/tool-search.json",
       "default_revision": 454
+    },
+    "clock_stream": {
+      "state": "short_business_verified",
+      "evidence": "docs/evidence/serve-agent-workspaces-20261124/session-clock.json",
+      "default_revision": 454
     }
   }
 }
