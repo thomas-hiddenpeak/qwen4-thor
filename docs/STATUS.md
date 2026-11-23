@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+默认发行已切换至 **rev454**，版本登记为 156，服务意图为 STOPPED。模型退出及网关故障接管分别用时 123.2 和 158.3 秒。两次均重新下载到原 384 KiB 产物，摘要一致，原会话工具回合也完成回填，随后独立 Chat 回答 42。发布启动模型 0 次，13 份受保护文件一致。24 小时计划已预检，留给用户实跑。[发行与恢复回执](evidence/serve-agent-workspaces-20261124/artifact-delivery.json)
+
+逐方法核对修正了一处范围计数。157 条保留路径共有 232 个 HTTP 方法；其中 `DELETE /models/{model}` 仅供组织所有者删除微调模型，与推理所需的 GET 共用路径。按用户已确定的平台管理范围，推理与应用必做 231 个，默认包已声明 126 个，成功状态集合均与冻结规范一致。此次新增会话产物的列表、元数据、内容下载和删除。105 个方法仍缺声明，托管执行器生成文件与 Agent 子会话等业务仍待实现。接下来先验证会话延迟加载函数和更新工具后的调用范围。[逐方法对照](evidence/serve-agent-workspaces-20261124/artifact-methods.json)
+
 主、轻配置已接续同一工具回合和 384 KiB 工作区文件。主配置在删除 Files 源对象后进入工具等待，轻配置完成回填和后续回合。两个独立的产物内容都与源文件一致，覆盖工作区文件或删除一个产物后，另一个仍可读取。两配置各启动一次，分别耗时 47.1 秒和 126.2 秒。28 项迁移测试通过，两份新资格均可逐字节还原 rev452 的前驱记录。继续封包并检验模型退出和网关接管后的产物下载。[配置接续回执](evidence/serve-agent-workspaces-20261124/artifact-profiles.json)
 
 PR #73 两项远端 host-contracts 检查均通过，已合入 main（9d5a63543），合并树与受检提交一致。主线包含 rev452 的交付记录和按解码字节检查内联文件上限的修复。会话产物及 50 MiB Files 源文件另见 [PR #74](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/74)。[主线回执](evidence/serve-agent-workspaces-20261124/workspace-main.json)

@@ -17,6 +17,7 @@ def compare(scope, official, issued):
     if set(paths) != {row['path'] for row in scope['endpoints']}:
         raise ValueError('Official specification differs from the frozen catalogue')
     rows = []
+    excluded = []
     for row in scope_routes.compare(scope, issued):
         local = issued['paths'].get(row['issued_path'], {})
         for method, operation in paths[row['path']].items():
@@ -28,13 +29,27 @@ def compare(scope, official, issued):
                 raise ValueError(f'Missing official success response for {verb} {row["path"]}')
             declared = verb in row['issued_methods']
             actual = success_codes(local[method]) if declared else []
-            rows.append(dict(method=verb, path=row['path'], tasks=row['tasks'],
-                             declared=declared, expected_success=required,
-                             issued_success=actual))
+            result = dict(method=verb, path=row['path'], tasks=row['tasks'],
+                          declared=declared, expected_success=required,
+                          issued_success=actual)
+            if (verb, row['path']) == ('DELETE', '/models/{model}'):
+                # GET serves inference clients on this same upstream path.
+                # DELETE is the organization owner's fine-tuned model operation.
+                if (operation.get('operationId') != 'deleteModel' or
+                        operation.get('summary') != 'Delete a fine-tuned model' or
+                        'Owner role in your organization' not in operation.get('description', '')):
+                    raise ValueError('Review changed platform scope for DELETE /models/{model}')
+                excluded.append(dict(**result, operation_id=operation['operationId'],
+                                     scope='excluded_platform_management_by_user',
+                                     reason=operation['description']))
+            else:
+                rows.append(result)
     matches = sum(r['declared'] and r['expected_success'] == r['issued_success']
                   for r in rows)
     declared = sum(r['declared'] for r in rows)
-    return dict(required_methods=len(rows), declared=declared,
+    return dict(methods_on_required_paths=len(rows) + len(excluded),
+                excluded_methods_on_required_paths=excluded,
+                required_methods=len(rows), declared=declared,
                 missing_declaration=len(rows)-declared,
                 declared_with_different_success=declared-matches,
                 exact_success_declarations=matches, rows=rows)
