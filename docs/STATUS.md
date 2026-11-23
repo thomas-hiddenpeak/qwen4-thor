@@ -7,7 +7,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-具名多代理历史候选已在 Thor 通过官方 SDK 短验。历史结果中的存储 ID 曾改变模型输入，现已修正，计数与实扣均为 193，模型答 37；两类入口及后台恢复通过针对性 CPU 检查。继续服务端子代理调度、子代理输出事件和恢复。[验收与首次失败](evidence/serve-responses-agent-history-20261123/README.md)
+具名多代理历史已随 PR #61 合入 main。托管调度候选已在 Thor 完成真实父子推理。父代理创建并等待 reader，两者均答 37，24 个原生 TLS 流式事件及存储回读通过。首次真实业务暴露的跨轮调用 ID 冲突已修复。下一步覆盖独立轮次的中断、其他动作组合、恢复与可回退发行。[调度验收](evidence/serve-responses-hosted-agents-20261123/README.md) · [历史验收](evidence/serve-responses-agent-history-20261123/README.md)
 
 当前默认 **rev434，STOPPED**。Responses Beta 已封入主包与独立回退包，实际网关致命故障后的模型接管、Beta 与 Chat 历史回读和 WebRTC 均通过。24 小时计划已固定到 rev434，由操作员执行。[发行与长稳入口](evidence/serve-responses-beta-delivery-20261123/README.md)
 

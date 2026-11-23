@@ -183,6 +183,10 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
   auto history = generation_history_;
   const auto& output = output_.Snapshot().GetArray("output")->array;
   for (const auto& item : output) {
+    // Child-only exchanges are visible to the client; their transcripts never
+    // impersonate the root. The root receives the authenticated wait result.
+    if (const auto* owner = item.Find("agent");
+        owner && owner->GetString("agent_name") != "root") continue;
     if (item.GetString("type").starts_with("mcp_") &&
         std::any_of(history.array.begin(), history.array.end(),
                     [&](const auto& old) {
@@ -191,6 +195,10 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
                     }))
       continue;  // Exact owned catalog or retried terminal approval result.
     history.array.push_back(item);
+  }
+  if (agents_) {
+    const auto& notices = agents_->RootMessages().array;
+    history.array.insert(history.array.end(), notices.begin(), notices.end());
   }
   const auto catalogs = plan_.mcp_catalogs.array.size();
   auto prepared_mcp = PrepareMcp(config, &history);

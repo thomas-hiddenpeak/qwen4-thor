@@ -1,0 +1,266 @@
+#include "q4t/server/responses_agent_tree.h"
+
+#include <algorithm>
+
+#include "q4t/server/input_contract.h"
+#include "q4t/server/output_schema.h"
+#include "q4t/server/responses_output.h"
+#include "responses_json.h"
+
+namespace q4t::server {
+namespace {
+using namespace responses_detail;
+
+bool ValidLeaf(std::string_view name) {
+  return !name.empty() && name.size() <= 64 &&
+         std::all_of(name.begin(), name.end(), [](char c) {
+           return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+                  (c >= '0' && c <= '9') || c == '_' || c == '-';
+         });
+}
+Json Message(std::string_view role, std::string text) {
+  return Object({{"role", String(std::string(role))},
+                 {"content", String(std::move(text))}});
+}
+bool IsDescendant(std::string_view name, std::string_view ancestor) {
+  return name.size() > ancestor.size() && name.starts_with(ancestor) &&
+         name[ancestor.size()] == '/';
+}
+}  // namespace
+
+const Json& ResponsesAgentTree::ModelTools() {
+  static const Json tools = [] {
+    auto definitions = Array();
+    const auto add = [&](std::string name, std::string description,
+                         std::initializer_list<const char*> fields) {
+      auto properties = Object(), required = Array();
+      for (const auto* field : fields) {
+        Set(&properties, field, Object({{"type", String("string")}}));
+        required.array.push_back(String(field));
+      }
+      auto schema = Object({{"type", String("object")},
+                            {"properties", std::move(properties)},
+                            {"required", std::move(required)},
+                            {"additionalProperties", Boolean(false)}});
+      definitions.array.push_back(Object(
+          {{"type", String("function")},
+           {"function", Object({{"name", String("multi_agent_" + name)},
+                                {"description", String(std::move(description))},
+                                {"parameters", std::move(schema)}})}}));
+    };
+    add("spawn_agent",
+        "Delegate a task to a named child. Returns its canonical target.",
+        {"name", "task"});
+    add("interrupt_agent",
+        "Interrupt an active descendant and its active children.", {"target"});
+    add("list_agents", "List agents in this response and their actual states.",
+        {});
+    add("send_message", "Deliver additional context to a named child.",
+        {"target", "message"});
+    add("followup_task", "Start a new task for an idle descendant.",
+        {"target", "task"});
+    add("wait_agent",
+        "Wait for a named descendant and obtain its actual answer.",
+        {"target"});
+    return definitions;
+  }();
+  return tools;
+}
+
+std::string_view ResponsesAgentTree::ActionName(std::string_view model_name) {
+  constexpr std::string_view prefix = "multi_agent_";
+  if (model_name.starts_with(prefix)) {
+    for (const auto& tool : ModelTools().array) {
+      if (tool.Find("function")->GetString("name") == model_name)
+        return model_name.substr(prefix.size());
+    }
+  }
+  return {};
+}
+
+bool ResponsesAgentTree::Active(const Agent& agent) {
+  return agent.state == State::kQueued || agent.state == State::kRunning;
+}
+bool ResponsesAgentTree::HasSlot() const {
+  return static_cast<uint64_t>(std::count_if(agents_.begin(), agents_.end(),
+                                             [](const auto& entry) {
+                                               return Active(entry.second);
+                                             })) < capacity_;
+}
+io::Json ResponsesAgentTree::Describe(const std::string& name,
+                                      const Agent& agent) {
+  std::string state;
+  switch (agent.state) {
+    case State::kQueued:
+      state = "queued";
+      break;
+    case State::kRunning:
+      state = "running";
+      break;
+    case State::kCompleted:
+      state = "completed";
+      break;
+    case State::kInterrupted:
+      state = "interrupted";
+      break;
+    case State::kIncomplete:
+      state = "incomplete";
+      break;
+  }
+  auto result = Object({{"agent_name", String(name)},
+                        {"parent", String(agent.parent)},
+                        {"status", String(std::move(state))}});
+  if (agent.state == State::kCompleted || agent.state == State::kIncomplete)
+    Set(&result, "output",
+        *agent.messages.array[agent.delivered].Find("content"));
+  return result;
+}
+Status ResponsesAgentTree::Act(std::string_view caller, std::string_view action,
+                               const Json& arguments, Json* result) {
+  *result = {};
+  if (caller != "root") {
+    const auto owner = agents_.find(std::string(caller));
+    if (owner == agents_.end() || owner->second.state != State::kRunning)
+      return Status::Fail("Agent caller has no active turn");
+  }
+  std::string path;
+  const auto fields = [&](std::initializer_list<std::string_view> names) {
+    return InputFields(arguments, names, &path, "arguments");
+  };
+  if (action == "list_agents") {
+    auto status = fields({});
+    if (!status) return status;
+    auto list = Array();
+    for (const auto& [name, agent] : agents_)
+      list.array.push_back(Describe(name, agent));
+    *result = Object({{"agents", std::move(list)}});
+    return {};
+  }
+  if (action == "spawn_agent") {
+    auto status = fields({"name", "task"});
+    if (!status) return status;
+    const auto leaf = arguments.GetString("name"),
+               task = arguments.GetString("task");
+    if (!ValidLeaf(leaf) || task.empty())
+      return Status::Fail("Agent requires a name and task");
+    if (task.size() > ResponsesOutput::kStorageLimit - stored_text_)
+      return Status::Fail("Agent history budget exhausted");
+    const auto name = std::string(caller) + "/" + leaf;
+    if (agents_.contains(name))
+      return Status::Fail("Agent name already exists");
+    if (!HasSlot()) return Status::Fail("Concurrent agent limit reached");
+    if (agents_.size() >= ResponsesOutput::kMaxItems)
+      return Status::Fail("Response item budget exhausted");
+    Agent agent;
+    agent.parent = caller;
+    agent.messages = Array({Message("user", task)});
+    const auto found = agents_.emplace(name, std::move(agent)).first;
+    stored_text_ += task.size();
+    *result = Describe(found->first, found->second);
+    return {};
+  }
+  const bool send = action == "send_message",
+             follow = action == "followup_task";
+  if (!send && !follow && action != "interrupt_agent" && action != "wait_agent")
+    return Status::Fail("Unknown agent action");
+  const auto status = send     ? fields({"target", "message"})
+                      : follow ? fields({"target", "task"})
+                               : fields({"target"});
+  if (!status) return status;
+  const auto target = arguments.GetString("target");
+  if (send && target == "root" && caller != "root") {
+    const auto text = arguments.GetString("message");
+    if (text.empty() ||
+        text.size() > ResponsesOutput::kStorageLimit - stored_text_ ||
+        root_messages_.array.size() >= ResponsesOutput::kMaxItems)
+      return Status::Fail("Invalid root message or history budget exhausted");
+    if (!root_messages_.IsArray()) root_messages_ = Array();
+    const auto notice = Object(
+        {{"sender", String(std::string(caller))}, {"message", String(text)}});
+    root_messages_.array.push_back(
+        Message("user", "[Agent message]\n" + OutputJson(notice)));
+    stored_text_ += text.size();
+    *result =
+        Object({{"target", String(target)}, {"status", String("delivered")}});
+    return {};
+  }
+  const auto found = agents_.find(target);
+  if (found == agents_.end()) return Status::Fail("Unknown agent");
+  auto& agent = found->second;
+  if (send || follow) {
+    const auto content = arguments.GetString(send ? "message" : "task");
+    if (content.empty()) return Status::Fail("Empty agent message or task");
+    if (follow && (!IsDescendant(target, caller) || Active(agent)))
+      return Status::Fail("Follow-up requires an idle descendant");
+    if (follow && !HasSlot())
+      return Status::Fail("Concurrent agent limit reached");
+    if (agent.messages.array.size() >= ResponsesOutput::kMaxItems - 1 ||
+        content.size() > ResponsesOutput::kStorageLimit - stored_text_)
+      return Status::Fail("Agent history budget exhausted");
+    agent.messages.array.push_back(Message("user", content));
+    stored_text_ += content.size();
+    if (follow) agent.state = State::kQueued;
+  } else if (action == "interrupt_agent") {
+    if (!IsDescendant(target, caller))
+      return Status::Fail("Interrupt requires a descendant");
+    for (auto& [name, member] : agents_)
+      if ((name == target || IsDescendant(name, target)) && Active(member))
+        member.state = State::kInterrupted;
+  } else if (!IsDescendant(target, caller)) {
+    return Status::Fail("Wait requires a descendant");
+  }
+  *result = Describe(found->first, agent);
+  return {};
+}
+bool ResponsesAgentTree::Claim(const std::string& name, Turn* turn) {
+  *turn = {};
+  const auto found = agents_.find(name);
+  if (found == agents_.end() || found->second.state != State::kQueued)
+    return false;
+  auto& agent = found->second;
+  agent.state = State::kRunning;
+  agent.delivered = agent.messages.array.size();
+  *turn = {name, ++agent.generation, agent.messages};
+  return true;
+}
+std::string ResponsesAgentTree::FirstQueued() const {
+  for (const auto& [name, agent] : agents_)
+    if (agent.state == State::kQueued) return name;
+  return {};
+}
+Status ResponsesAgentTree::RecordExchange(Turn* turn, const Json& messages) {
+  const auto found = agents_.find(turn->name);
+  if (found == agents_.end() || found->second.state != State::kRunning ||
+      found->second.generation != turn->generation || !messages.IsArray())
+    return Status::Fail("Stale agent exchange");
+  auto& agent = found->second;
+  const auto bytes = OutputJson(messages).size();
+  if (messages.array.size() >=
+          ResponsesOutput::kMaxItems - agent.messages.array.size() ||
+      bytes > ResponsesOutput::kStorageLimit - stored_text_)
+    return Status::Fail("Agent history budget exhausted");
+  agent.messages.array.insert(agent.messages.array.begin() + agent.delivered,
+                              messages.array.begin(), messages.array.end());
+  agent.delivered += messages.array.size();
+  turn->messages.array.insert(turn->messages.array.end(),
+                              messages.array.begin(), messages.array.end());
+  stored_text_ += bytes;
+  return {};
+}
+Status ResponsesAgentTree::Finish(const Turn& turn, std::string answer,
+                                  bool completed) {
+  const auto found = agents_.find(turn.name);
+  if (found == agents_.end() || found->second.state != State::kRunning ||
+      found->second.generation != turn.generation)
+    return Status::Fail("Stale agent result");
+  auto& agent = found->second;
+  if (answer.size() > ResponsesOutput::kStorageLimit - stored_text_)
+    return Status::Fail("Agent history budget exhausted");
+  // Messages delivered during this turn belong after the model's answer.
+  stored_text_ += answer.size();
+  agent.messages.array.insert(agent.messages.array.begin() + agent.delivered,
+                              Message("assistant", std::move(answer)));
+  agent.state = completed ? State::kCompleted : State::kIncomplete;
+  return {};
+}
+}  // namespace q4t::server

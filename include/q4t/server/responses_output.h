@@ -72,6 +72,7 @@ class ResponsesOutput {
   // Private effective identities can grow without rewriting public tools.
   Status BindTools(const io::Json& active);
   Status AppendProgramItems(const io::Json& items, std::string* wire);
+  Status AppendAgentItem(const io::Json& item, std::string* wire);
   // The owner supplies durable MCP identities. Arguments stream as generated;
   // only a validated closing delimiter permits ArgumentsDone and dispatch.
   Status StartMcpItem(const io::Json& item, size_t* index, std::string* wire);

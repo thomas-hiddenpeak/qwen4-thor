@@ -114,6 +114,7 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   }
   bytes += tool_search_argument_bytes_;
   bytes += program_argument_bytes_;
+  bytes += agent_argument_bytes_ + (agents_ ? agents_->StoredText() : 0);
   bytes += mcp_argument_bytes_;
   for (const auto& program : programs_) {
     for (const auto* value : {&program.program, &program.tools,
@@ -250,6 +251,14 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created) {
+  if (const auto* agents = envelope_.request.Find("multi_agent");
+      agents && agents->GetBool("enabled")) {
+    // Beyond one response's item capacity every greater requested slot limit
+    // has the same effect. Keep the original requested value on the wire.
+    const auto* count = agents->Find("max_concurrent_subagents");
+    agents_.emplace(count ? static_cast<size_t>(std::min<double>(
+                                count->number, ResponsesOutput::kMaxItems)) : 3);
+  }
   web_policy_ = config.web_policy;
   envelope_.web_content = plan_.web_content;
   cipher_config_.model = config.model;
@@ -458,10 +467,11 @@ ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
     });
   }
   ChatPlanError error;
-  auto status =
-      ParseResponsesEnvelope(effective_request, config, &envelope_, &error);
+  auto selected_config = config;
+  selected_config.responses_multi_agent = plan_.multi_agent_beta;
+  auto status = ParseResponsesEnvelope(effective_request, selected_config,
+                                       &envelope_, &error);
   if (!status) return Error(error.http_status, error.code, status.message());
-  envelope_.multi_agent_beta = plan_.multi_agent_beta;
   if (legacy_safety) {
     Set(&envelope_.request, "safety_identifier", *prior_safety);
     Set(&envelope_.options, "safety_identifier", *prior_safety);
@@ -661,7 +671,9 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
     return Status::Fail("Response cannot accept execution output");
   }
   bool handled = false;
-  auto status = AppendWebSearch(delta, &handled, wire);
+  auto status = AppendAgent(delta, &handled, wire);
+  if (!status || handled) return status;
+  status = AppendWebSearch(delta, &handled, wire);
   if (!status || handled) return status;
   status = AppendFileSearch(delta, &handled, wire);
   if (!status || handled) return status;

@@ -599,6 +599,8 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_search_execution.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/vector_query_rewrite.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_file_search.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_agent_tree.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_agent_execution.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_search.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_context.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_output.cpp
@@ -632,6 +634,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sampling_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_completion_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_output_test.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_agent_tree_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_input_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_plan_test.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_tokens_test.cpp

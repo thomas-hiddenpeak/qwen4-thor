@@ -145,6 +145,7 @@ const roots = mode === '--multi-agent' ? {
   input_result: exported(beta, 'BetaResponseInputItem.MultiAgentCallOutput'),
   output_call: exported(beta, 'BetaResponseOutputItem.MultiAgentCall'),
   output_result: exported(beta, 'BetaResponseOutputItem.MultiAgentCallOutput'),
+  output_message: exported(beta, 'BetaResponseOutputMessage'),
 } : mode === '--decisions' ? {
   request: exported(decisions, 'DecisionCreateParams'),
   decision: exported(decisions, 'Decision'),

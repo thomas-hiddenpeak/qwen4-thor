@@ -7,7 +7,8 @@
     "input_call": 4,
     "input_result": 18,
     "output_call": 34,
-    "output_result": 37
+    "output_result": 37,
+    "output_message": 55
   },
   "nodes": [
     {
@@ -685,6 +686,140 @@
         }
       ],
       "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent",
+          "optional": true,
+          "type": 56
+        },
+        {
+          "name": "content",
+          "optional": false,
+          "type": 58
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "phase",
+          "optional": true,
+          "type": 62
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 65
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 66
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 70
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        13,
+        57
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent_name",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 59
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        60
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "refusal",
+          "optional": false,
+          "type": 15
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 61
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "refusal"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        13,
+        63,
+        64
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "commentary"
+    },
+    {
+      "kind": "literal",
+      "value": "final_answer"
+    },
+    {
+      "kind": "literal",
+      "value": "assistant"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        67,
+        68,
+        69
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "in_progress"
+    },
+    {
+      "kind": "literal",
+      "value": "completed"
+    },
+    {
+      "kind": "literal",
+      "value": "incomplete"
+    },
+    {
+      "kind": "literal",
+      "value": "message"
     }
   ],
   "sources_sha256": {

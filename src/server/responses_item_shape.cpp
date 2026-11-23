@@ -207,6 +207,7 @@ Status ValidateMultiAgentShape(const Json& value, MultiAgentShape shape,
     case MultiAgentShape::kInputResult: root = "input_result"; break;
     case MultiAgentShape::kOutputCall: root = "output_call"; break;
     case MultiAgentShape::kOutputResult: root = "output_result"; break;
+    case MultiAgentShape::kOutputMessage: root = "output_message"; break;
   }
   return Validate(graph, value, root, error, path);
 }
@@ -216,6 +217,10 @@ Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
                                   bool multi_agent) {
   if (multi_agent && shape != ResponsesItemShape::kConversation) {
     const auto type = item.GetString("type");
+    if (type == "message" && item.GetString("role") == "assistant" &&
+        item.Has("agent"))
+      return ValidateMultiAgentShape(item, MultiAgentShape::kOutputMessage,
+                                     error, path);
     const bool input = shape == ResponsesItemShape::kInput;
     if (type == "multi_agent_call")
       return ValidateMultiAgentShape(item, input ? MultiAgentShape::kInputCall

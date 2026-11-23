@@ -79,6 +79,87 @@ Json ModerationReport(bool flagged) {
 }
 }  // namespace
 
+Q4T_TEST(responses_hosted_agents_dispatch_to_child_and_return_owned_events) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  auto config = Config();
+  config.responses_multi_agent = true;
+  ResponsesExecution run(store);
+  const auto request = Parse(R"({"input":"Delegate to a worker","multi_agent":{"enabled":true,"max_concurrent_subagents":1}})");
+  Q4T_CHECK(Ok(run.Prepare(request, config, Access(), 42)));
+  Q4T_CHECK(run.Generation().generation_request.GetArray("tools")->array.size() == 6);
+  std::string wire, published;
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call = {0, "call_spawn", "multi_agent_spawn_agent", R"({"name":"reader","task":"read data"})"};
+  Q4T_CHECK(run.Append(delta, {}, &wire));
+  delta.call = {1, "call_wait", "multi_agent_wait_agent", R"({"target":"root/reader"})"};
+  Q4T_CHECK(run.Append(delta, {}, &wire));
+  int turns = 0;
+  const auto step = [&](const ResponsesAgentTree::Turn& turn, bool, Json* message, bool* ok) {
+    if (turn.name != "root/reader" || turn.messages.array.front().GetString("content") != "read data")
+      throw std::runtime_error("Wrong child turn");
+    ++turns;
+    *message = Parse(R"({"role":"assistant","content":"37"})");
+    *ok = true;
+    return ObjectReply{};
+  };
+  Q4T_CHECK(Ok(run.RunAgents(2, step, [&](const std::string& part) {
+    published += part;
+    return true;
+  })));
+  Q4T_CHECK(turns == 1 && !run.PendingAgents());
+  Q4T_CHECK(published.find("event: response.output_text.delta") != std::string::npos);
+  auto items = run.PublicResponse().GetArray("output")->array;
+  Q4T_CHECK(items.size() == 5 && items[3].GetString("type") == "message");
+  Q4T_CHECK(items[3].Find("agent")->GetString("agent_name") == "root/reader");
+  const auto& returned = items.back().GetArray("output")->array.front();
+  Q4T_CHECK(Parse(returned.GetString("text")).GetString("output") == "37");
+  ResponsesGenerationPlan next;
+  Q4T_CHECK(Ok(run.ContinueFileSearch(20, config, {}, &next)));
+  Q4T_CHECK(run.Append(Text("37"), {}, &wire));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {40, 0, 21, 0}, 43, &wire)));
+  Q4T_CHECK(Ok(ResponsesState(store).Retrieve(run.Id(), Access())));
+  return true;
+}
+
+Q4T_TEST(responses_hosted_agents_keep_selection_and_budget_after_queue_recovery) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  auto selected = Config();
+  selected.responses_multi_agent = true;
+  const auto request = Parse(R"({"model":"cpu","input":"delegate","background":true,
+    "multi_agent":{"enabled":true},"max_tool_calls":1})");
+  ResponsesExecution original(store), thawed(store), resumed(store);
+  Q4T_CHECK(Ok(original.Prepare(request, selected, Access(), 42, true)));
+  Json frozen;
+  Q4T_CHECK(Ok(original.FreezeInputs(&frozen)));
+  Q4T_CHECK(Ok(thawed.RestoreInputs(frozen, Config(), Access(), 43)));
+  Q4T_CHECK(thawed.Generation().generation_request.GetArray("tools")->array.size() == 6);
+  std::string wire;
+  Q4T_CHECK(Ok(original.Begin(&wire)));
+  Q4T_CHECK(Ok(resumed.RestoreQueued(original.Id(), Config(), Access())));
+  Q4T_CHECK(Ok(resumed.StartRunning(&wire)));
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call = {0, "first", "multi_agent_spawn_agent", R"({"name":"a","task":"read"})"};
+  Q4T_CHECK(resumed.Append(delta, {}, &wire));
+  int turns = 0;
+  auto step = [&](const ResponsesAgentTree::Turn&, bool allow_tools, Json* message, bool* complete) {
+    if (allow_tools) throw std::runtime_error("Child replenished exhausted tool budget");
+    ++turns;
+    *message = Parse(R"({"role":"assistant","content":"partial"})");
+    *complete = false;
+    return ObjectReply{};
+  };
+  Q4T_CHECK(Ok(resumed.RunAgents(1, step, {})) && turns == 1);
+  const auto response = resumed.PublicResponse();
+  Q4T_CHECK(response.GetArray("output")->array.back().GetString("status") == "incomplete");
+  Q4T_CHECK(!resumed.RunAgents(1, step, {}).ok() && turns == 1);
+  return true;
+}
+
 Q4T_TEST(responses_multi_agent_history_survives_frozen_and_queued_restore) {
   Fixture fixture;
   ObjectStore store(fixture.options);

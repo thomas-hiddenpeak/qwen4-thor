@@ -22,6 +22,8 @@
 
 ## 当前阶段更新（2026-11-23）
 
+PR #61 的具名多代理历史已入主线。托管候选通过父子真实推理、工具回填、流式事件、存储与跨客户隔离。跨轮调度和中断、运行中恢复、主轻发行与接管继续。[托管候选及两次原始失败](evidence/serve-responses-hosted-agents-20261123/README.md)
+
 rev434 已随 PR #60 合入主线。具名 Responses 多代理的调用和结果历史已在候选通过真实 SDK 验收。服务端调度、运行期间的有主输出与事件、共享预算及恢复仍是实现任务。[历史与计数验收](evidence/serve-responses-agent-history-20261123/README.md)
 
 Live 与 SDK 默认 Beta 操作已分别合入 PR #58、#59。本机默认 rev434 已验证两套容量、客户隔离及注册版本接管；24 小时计划已固定。具名多代理等剩余应用能力、恢复组合和连续媒体场景继续推进。[交付与范围](evidence/serve-responses-beta-delivery-20261123/README.md)

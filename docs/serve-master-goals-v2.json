@@ -1256,7 +1256,8 @@
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-live-default-20261123/README.md",
         "evidence/serve-responses-beta-selector-20261123/README.md",
-        "evidence/serve-responses-agent-history-20261123/README.md"
+        "evidence/serve-responses-agent-history-20261123/README.md",
+        "evidence/serve-responses-hosted-agents-20261123/README.md"
       ],
       "release": {
         "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
@@ -5995,7 +5996,8 @@
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-speech-http-20261118/README.md",
         "evidence/serve-responses-beta-selector-20261123/README.md",
-        "evidence/serve-responses-agent-history-20261123/README.md"
+        "evidence/serve-responses-agent-history-20261123/README.md",
+        "evidence/serve-responses-hosted-agents-20261123/README.md"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -8289,7 +8291,8 @@
         "evidence/serve-live-default-20261123/README.md",
         "evidence/serve-live-stability-handoff-20261123/README.md",
         "evidence/serve-responses-beta-selector-20261123/README.md",
-        "evidence/serve-responses-agent-history-20261123/README.md"
+        "evidence/serve-responses-agent-history-20261123/README.md",
+        "evidence/serve-responses-hosted-agents-20261123/README.md"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -9074,7 +9077,8 @@
         "evidence/serve-recovery-recording-option-20261123/README.md",
         "evidence/serve-live-default-20261123/README.md",
         "evidence/serve-live-stability-handoff-20261123/README.md",
-        "evidence/serve-responses-agent-history-20261123/README.md"
+        "evidence/serve-responses-agent-history-20261123/README.md",
+        "evidence/serve-responses-hosted-agents-20261123/README.md"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -10496,7 +10500,7 @@
     }
   ],
   "next_task": "Integrate the Beta profile and delivery commits; implement named multi-agent capabilities, startup diagnostics and remaining master tasks.",
-  "next": "接通具名多代理的服务端调度、预算与事件；继续启动期 503 定位、剩余应用能力和恢复组合。",
+  "next": "完善子代理跨轮调度与中断、恢复和主轻可回退发行；继续启动期 503 和剩余服务能力。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16427,10 +16431,26 @@
   },
   "responses_agent_history_20261123": {
     "evidence": "evidence/serve-responses-agent-history-20261123/README.md",
-    "state": "selected_history_sdk_tested_candidate",
+    "state": "selected_history_on_main",
     "default_revision": 434,
     "remaining": [
       "Server-hosted action scheduling, ownership of child output/events and recovery"
+    ],
+    "merged_pr": 61,
+    "merge": "cda3ecaf5ea6524e0249459d44c6d62214f5b47d"
+  },
+  "responses_hosted_agents_20261123": {
+    "evidence": "evidence/serve-responses-hosted-agents-20261123/README.md",
+    "state": "candidate_with_real_nested_model_business",
+    "accepted": [
+      "root spawn/wait",
+      "child inference and attributed SSE",
+      "shared response output budget, client isolation and stored retrieval"
+    ],
+    "remaining": [
+      "Scheduling and interruption across separate rounds",
+      "Additional real action combinations and takeover",
+      "Primary/light packages, rollback and default delivery"
     ]
   }
 }

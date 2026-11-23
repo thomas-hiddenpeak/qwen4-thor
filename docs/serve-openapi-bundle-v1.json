@@ -4341,7 +4341,7 @@
               "type": "string"
             },
             "example": "responses_multi_agent=v1",
-            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 selects hosted multi-agent execution and typed history."
           }
         ],
         "responses": {
@@ -4359,7 +4359,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response"
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response"
                 }
               },
               "text/event-stream": {
@@ -4367,7 +4367,7 @@
                   "type": "string"
                 },
                 "x-q4t-event-schema": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_event"
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response_event"
                 },
                 "x-q4t-stream-contract": "Native sequenced Responses events. No Chat DONE. Persisted original replay with starting_after; background requires original stream=true. Disconnect does not cancel a background job. Cancelled resource retains partial items and ends original events without a fabricated completed/cancelled event."
               }
@@ -4446,7 +4446,7 @@
               "type": "string"
             },
             "example": "responses_multi_agent=v1",
-            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 selects hosted multi-agent execution and typed history."
           }
         ],
         "responses": {
@@ -4542,7 +4542,7 @@
               "type": "string"
             },
             "example": "responses_multi_agent=v1",
-            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 selects hosted multi-agent execution and typed history."
           }
         ],
         "responses": {
@@ -4695,7 +4695,7 @@
               "type": "string"
             },
             "example": "responses_multi_agent=v1",
-            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 selects hosted multi-agent execution and typed history."
           }
         ],
         "responses": {
@@ -4713,7 +4713,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response"
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response"
                 }
               },
               "text/event-stream": {
@@ -4721,7 +4721,7 @@
                   "type": "string"
                 },
                 "x-q4t-event-schema": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_event"
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response_event"
                 },
                 "x-q4t-stream-contract": "Native sequenced Responses events. No Chat DONE. Persisted original replay with starting_after; background requires original stream=true. Disconnect does not cancel a background job. Cancelled resource retains partial items and ends original events without a fabricated completed/cancelled event."
               }
@@ -4782,7 +4782,7 @@
               "type": "string"
             },
             "example": "responses_multi_agent=v1",
-            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 selects hosted multi-agent execution and typed history."
           }
         ],
         "responses": {
@@ -4862,7 +4862,7 @@
               "type": "string"
             },
             "example": "responses_multi_agent=v1",
-            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 selects hosted multi-agent execution and typed history."
           }
         ],
         "responses": {
@@ -4880,7 +4880,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response"
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response"
                 }
               }
             }
@@ -4985,7 +4985,7 @@
               "type": "string"
             },
             "example": "responses_multi_agent=v1",
-            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 selects hosted multi-agent execution and typed history."
           }
         ],
         "responses": {
@@ -44668,6 +44668,146 @@
             "required": [],
             "additionalProperties": false
           },
+          "agent_0": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_1"
+              },
+              "max_concurrent_subagents": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "enabled"
+            ],
+            "additionalProperties": false
+          },
+          "agent_1": {
+            "type": "boolean"
+          },
+          "agent_2": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              }
+            ]
+          },
+          "agent_3": {
+            "type": "number"
+          },
+          "agent_4": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_5"
+              },
+              "agent": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_12"
+              },
+              "arguments": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "call_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_16"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_17"
+              }
+            },
+            "required": [
+              "action",
+              "arguments",
+              "call_id",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_5": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_6"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_7"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_8"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_9"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_10"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_11"
+              }
+            ]
+          },
+          "agent_6": {
+            "const": "spawn_agent"
+          },
+          "agent_7": {
+            "const": "interrupt_agent"
+          },
+          "agent_8": {
+            "const": "list_agents"
+          },
+          "agent_9": {
+            "const": "send_message"
+          },
+          "agent_10": {
+            "const": "followup_task"
+          },
+          "agent_11": {
+            "const": "wait_agent"
+          },
+          "agent_12": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_14"
+              }
+            ]
+          },
+          "agent_13": {
+            "type": "null"
+          },
+          "agent_14": {
+            "type": "object",
+            "properties": {
+              "agent_name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            },
+            "required": [
+              "agent_name"
+            ],
+            "additionalProperties": false
+          },
+          "agent_15": {
+            "type": "string"
+          },
+          "agent_16": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            ]
+          },
+          "agent_17": {
+            "const": "multi_agent_call"
+          },
           "agent_18": {
             "type": "object",
             "properties": {
@@ -44698,8 +44838,27 @@
             ],
             "additionalProperties": false
           },
-          "agent_33": {
-            "const": "multi_agent_call_output"
+          "agent_19": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_20"
+              }
+            ]
+          },
+          "agent_20": {
+            "type": "object",
+            "properties": {
+              "agent_name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            },
+            "required": [
+              "agent_name"
+            ],
+            "additionalProperties": false
           },
           "agent_21": {
             "type": "array",
@@ -44726,12 +44885,6 @@
             ],
             "additionalProperties": false
           },
-          "agent_32": {
-            "const": "output_text"
-          },
-          "agent_15": {
-            "type": "string"
-          },
           "agent_23": {
             "anyOf": [
               {
@@ -44757,6 +44910,64 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_30"
               }
             ]
+          },
+          "agent_26": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "filename": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_27"
+              }
+            },
+            "required": [
+              "file_id",
+              "filename",
+              "index",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_27": {
+            "const": "file_citation"
+          },
+          "agent_28": {
+            "type": "object",
+            "properties": {
+              "end_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "start_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "title": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_29"
+              },
+              "url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            },
+            "required": [
+              "end_index",
+              "start_index",
+              "title",
+              "type",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          "agent_29": {
+            "const": "url_citation"
           },
           "agent_30": {
             "type": "object",
@@ -44793,10 +45004,188 @@
           "agent_31": {
             "const": "container_file_citation"
           },
-          "agent_3": {
-            "type": "number"
+          "agent_32": {
+            "const": "output_text"
           },
-          "agent_28": {
+          "agent_33": {
+            "const": "multi_agent_call_output"
+          },
+          "agent_34": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_5"
+              },
+              "agent": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_35"
+              },
+              "arguments": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "call_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_17"
+              }
+            },
+            "required": [
+              "action",
+              "arguments",
+              "call_id",
+              "id",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_35": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_36"
+              }
+            ]
+          },
+          "agent_36": {
+            "type": "object",
+            "properties": {
+              "agent_name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            },
+            "required": [
+              "agent_name"
+            ],
+            "additionalProperties": false
+          },
+          "agent_37": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_5"
+              },
+              "agent": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_38"
+              },
+              "call_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "output": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_40"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_33"
+              }
+            },
+            "required": [
+              "action",
+              "call_id",
+              "id",
+              "output",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_38": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_39"
+              }
+            ]
+          },
+          "agent_39": {
+            "type": "object",
+            "properties": {
+              "agent_name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            },
+            "required": [
+              "agent_name"
+            ],
+            "additionalProperties": false
+          },
+          "agent_40": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_41"
+            }
+          },
+          "agent_41": {
+            "type": "object",
+            "properties": {
+              "annotations": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_42"
+              },
+              "logprobs": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_49"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_32"
+              }
+            },
+            "required": [
+              "annotations",
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_42": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_43"
+            }
+          },
+          "agent_43": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_44"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_45"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_46"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_47"
+              }
+            ]
+          },
+          "agent_44": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "filename": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_27"
+              }
+            },
+            "required": [
+              "file_id",
+              "filename",
+              "index",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_45": {
             "type": "object",
             "properties": {
               "end_index": {
@@ -44824,155 +45213,175 @@
             ],
             "additionalProperties": false
           },
-          "agent_29": {
-            "const": "url_citation"
-          },
-          "agent_26": {
+          "agent_46": {
             "type": "object",
             "properties": {
+              "container_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "end_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
               "file_id": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
               },
               "filename": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
               },
+              "start_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_31"
+              }
+            },
+            "required": [
+              "container_id",
+              "end_index",
+              "file_id",
+              "filename",
+              "start_index",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_47": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
               "index": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
               },
               "type": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_27"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_48"
               }
             },
             "required": [
               "file_id",
-              "filename",
               "index",
               "type"
             ],
             "additionalProperties": false
           },
-          "agent_27": {
-            "const": "file_citation"
+          "agent_48": {
+            "const": "file_path"
           },
-          "agent_16": {
+          "agent_49": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
-              },
-              {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_50"
               }
             ]
           },
-          "agent_13": {
-            "type": "null"
+          "agent_50": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_51"
+            }
           },
-          "agent_19": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
-              },
-              {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_20"
-              }
-            ]
-          },
-          "agent_20": {
+          "agent_51": {
             "type": "object",
             "properties": {
-              "agent_name": {
+              "bytes": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_52"
+              },
+              "logprob": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "token": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "top_logprobs": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_53"
               }
             },
             "required": [
-              "agent_name"
+              "bytes",
+              "logprob",
+              "token",
+              "top_logprobs"
             ],
             "additionalProperties": false
           },
-          "agent_5": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_6"
-              },
-              {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_7"
-              },
-              {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_8"
-              },
-              {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_9"
-              },
-              {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_10"
-              },
-              {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_11"
-              }
-            ]
+          "agent_52": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+            }
           },
-          "agent_11": {
-            "const": "wait_agent"
+          "agent_53": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_54"
+            }
           },
-          "agent_10": {
-            "const": "followup_task"
-          },
-          "agent_9": {
-            "const": "send_message"
-          },
-          "agent_8": {
-            "const": "list_agents"
-          },
-          "agent_7": {
-            "const": "interrupt_agent"
-          },
-          "agent_6": {
-            "const": "spawn_agent"
-          },
-          "agent_4": {
+          "agent_54": {
             "type": "object",
             "properties": {
-              "action": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_5"
+              "bytes": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_52"
               },
-              "agent": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_12"
+              "logprob": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
               },
-              "arguments": {
+              "token": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
-              },
-              "call_id": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
-              },
-              "id": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_16"
-              },
-              "type": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_17"
               }
             },
             "required": [
-              "action",
-              "arguments",
-              "call_id",
+              "bytes",
+              "logprob",
+              "token"
+            ],
+            "additionalProperties": false
+          },
+          "agent_55": {
+            "type": "object",
+            "properties": {
+              "agent": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_56"
+              },
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_58"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "phase": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_62"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_65"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_66"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_70"
+              }
+            },
+            "required": [
+              "content",
+              "id",
+              "role",
+              "status",
               "type"
             ],
             "additionalProperties": false
           },
-          "agent_17": {
-            "const": "multi_agent_call"
-          },
-          "agent_12": {
+          "agent_56": {
             "anyOf": [
               {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
               },
               {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_14"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_57"
               }
             ]
           },
-          "agent_14": {
+          "agent_57": {
             "type": "object",
             "properties": {
               "agent_name": {
@@ -44983,12 +45392,106 @@
               "agent_name"
             ],
             "additionalProperties": false
+          },
+          "agent_58": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_59"
+            }
+          },
+          "agent_59": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_60"
+              }
+            ]
+          },
+          "agent_60": {
+            "type": "object",
+            "properties": {
+              "refusal": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_61"
+              }
+            },
+            "required": [
+              "refusal",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_61": {
+            "const": "refusal"
+          },
+          "agent_62": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_63"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_64"
+              }
+            ]
+          },
+          "agent_63": {
+            "const": "commentary"
+          },
+          "agent_64": {
+            "const": "final_answer"
+          },
+          "agent_65": {
+            "const": "assistant"
+          },
+          "agent_66": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_67"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_68"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_69"
+              }
+            ]
+          },
+          "agent_67": {
+            "const": "in_progress"
+          },
+          "agent_68": {
+            "const": "completed"
+          },
+          "agent_69": {
+            "const": "incomplete"
+          },
+          "agent_70": {
+            "const": "message"
+          },
+          "agent_configuration": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_0"
           },
           "agent_input_call": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_4"
           },
           "agent_input_result": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_18"
+          },
+          "agent_output_call": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_34"
+          },
+          "agent_output_result": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_37"
+          },
+          "agent_output_message": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_55"
           },
           "agent_history_response_create": {
             "type": "object",
@@ -45025,6 +45528,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
                         }
                       ]
                     }
@@ -45244,6 +45750,16 @@
                     "type": "null"
                   }
                 ]
+              },
+              "multi_agent": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_configuration"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             },
             "required": [],
@@ -45326,6 +45842,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
                         }
                       ]
                     }
@@ -45385,6 +45904,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
                         }
                       ]
                     }
@@ -45469,6 +45991,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
                         }
                       ]
                     }
@@ -45496,6 +46021,996 @@
               "object"
             ],
             "additionalProperties": false
+          },
+          "agent_response": {
+            "type": "object",
+            "properties": {
+              "access_programs": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/862"
+              },
+              "background": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+              },
+              "completed_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/470"
+              },
+              "conversation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/865"
+              },
+              "created_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "error": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/867"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "incomplete_details": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/900"
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/907"
+              },
+              "max_output_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/470"
+              },
+              "max_tool_calls": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/470"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/909"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/910"
+              },
+              "moderation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/911"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/921"
+              },
+              "output": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/output_item"
+                    },
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_call"
+                    },
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_result"
+                    },
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
+                    }
+                  ]
+                }
+              },
+              "output_text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "parallel_tool_calls": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/520"
+              },
+              "previous_response_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "prompt": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/805"
+              },
+              "prompt_cache_diagnostics": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/923"
+              },
+              "prompt_cache_key": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "prompt_cache_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/942"
+              },
+              "prompt_cache_retention": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
+              },
+              "reasoning": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/818"
+              },
+              "safety_identifier": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "service_tier": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/828"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/945"
+              },
+              "temperature": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/587"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/837"
+              },
+              "tool_choice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/948"
+              },
+              "tool_usage": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/950"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/386"
+              },
+              "top_logprobs": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/470"
+              },
+              "top_p": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/587"
+              },
+              "truncation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860"
+              },
+              "usage": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/959"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "user": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+              },
+              "store": {
+                "type": "boolean"
+              },
+              "q4t_moderation_usage": {
+                "type": "object",
+                "properties": {
+                  "input_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "output_tokens": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1024
+                  },
+                  "total_tokens": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "model_steps": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  }
+                },
+                "required": [
+                  "input_tokens",
+                  "output_tokens",
+                  "total_tokens",
+                  "model_steps"
+                ],
+                "additionalProperties": false
+              },
+              "q4t_access_program": {
+                "type": "object",
+                "properties": {
+                  "authority": {
+                    "const": "q4t-local"
+                  },
+                  "policy_sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "backend_model": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "treatment": {
+                    "enum": [
+                      "standard",
+                      "operator_system_instructions"
+                    ]
+                  }
+                },
+                "required": [
+                  "authority",
+                  "policy_sha256",
+                  "backend_model",
+                  "treatment"
+                ],
+                "additionalProperties": false
+              },
+              "personality": {
+                "type": "string",
+                "enum": [
+                  "friendly",
+                  "pragmatic"
+                ],
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "access_programs",
+              "created_at",
+              "error",
+              "id",
+              "incomplete_details",
+              "instructions",
+              "metadata",
+              "model",
+              "object",
+              "output",
+              "parallel_tool_calls",
+              "temperature",
+              "tool_choice",
+              "tools",
+              "top_p"
+            ],
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "if": {
+                  "required": [
+                    "status"
+                  ],
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "completed",
+                        "incomplete"
+                      ]
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "usage"
+                  ],
+                  "properties": {
+                    "usage": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "agent_event_984": {
+            "type": "object",
+            "properties": {
+              "response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/985"
+              }
+            },
+            "required": [
+              "response",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_986": {
+            "type": "object",
+            "properties": {
+              "content_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "item_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "output_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "part": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/987"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/989"
+              },
+              "agent": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "agent_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "agent_name"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "content_index",
+              "item_id",
+              "output_index",
+              "part",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_990": {
+            "type": "object",
+            "properties": {
+              "content_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "item_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "output_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "part": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/991"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/993"
+              },
+              "agent": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "agent_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "agent_name"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "content_index",
+              "item_id",
+              "output_index",
+              "part",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_994": {
+            "type": "object",
+            "properties": {
+              "response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/995"
+              }
+            },
+            "required": [
+              "response",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1023": {
+            "type": "object",
+            "properties": {
+              "response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1024"
+              }
+            },
+            "required": [
+              "response",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1025": {
+            "type": "object",
+            "properties": {
+              "response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1026"
+              }
+            },
+            "required": [
+              "response",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1027": {
+            "type": "object",
+            "properties": {
+              "response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1028"
+              }
+            },
+            "required": [
+              "response",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1029": {
+            "type": "object",
+            "properties": {
+              "item": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/output_item"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_call"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_result"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
+                  }
+                ]
+              },
+              "output_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1030"
+              },
+              "agent": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "agent_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "agent_name"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "item",
+              "output_index",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1031": {
+            "type": "object",
+            "properties": {
+              "item": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/output_item"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_call"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_result"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
+                  }
+                ]
+              },
+              "output_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1032"
+              },
+              "agent": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "agent_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "agent_name"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "item",
+              "output_index",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1048": {
+            "type": "object",
+            "properties": {
+              "content_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "delta": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "item_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "output_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1049"
+              },
+              "obfuscation": {
+                "type": "string"
+              },
+              "agent": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "agent_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "agent_name"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "content_index",
+              "delta",
+              "item_id",
+              "output_index",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1050": {
+            "type": "object",
+            "properties": {
+              "content_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "item_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "output_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "refusal": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1051"
+              },
+              "agent": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "agent_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "agent_name"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "content_index",
+              "item_id",
+              "output_index",
+              "refusal",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1052": {
+            "type": "object",
+            "properties": {
+              "content_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "delta": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "item_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "logprobs": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1053"
+              },
+              "output_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1058"
+              },
+              "obfuscation": {
+                "type": "string"
+              },
+              "agent": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "agent_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "agent_name"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "content_index",
+              "delta",
+              "item_id",
+              "logprobs",
+              "output_index",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1059": {
+            "type": "object",
+            "properties": {
+              "content_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "item_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "logprobs": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1060"
+              },
+              "output_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1065"
+              },
+              "agent": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "agent_name": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "agent_name"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "content_index",
+              "item_id",
+              "logprobs",
+              "output_index",
+              "sequence_number",
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_event_1103": {
+            "type": "object",
+            "properties": {
+              "response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_response"
+              },
+              "sequence_number": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/54"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1104"
+              }
+            },
+            "required": [
+              "response",
+              "sequence_number",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_response_event": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/964"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/966"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/968"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/970"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/972"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/974"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/976"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/978"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/980"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/982"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_984"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_986"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_990"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_994"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/996"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/997"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/999"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1001"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1003"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1005"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1007"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1009"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1011"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1013"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1016"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1023"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1025"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1027"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1029"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1031"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1033"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1036"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1040"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1042"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1044"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1046"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1048"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1050"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1052"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1059"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1066"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1068"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1070"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1072"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1074"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1076"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1078"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1080"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1082"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1084"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1086"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1088"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1090"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1092"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1094"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1096"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_event_1103"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1105"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1107"
+              }
+            ]
           }
         },
         "x-q4t": {

@@ -157,6 +157,12 @@ Status ResponsesOutput::Charge(size_t bytes) {
 
 void ResponsesOutput::Event(std::string_view type, io::Json fields,
                             std::string* wire) {
+  if (const auto* index = fields.Find("output_index"); index && index->IsNumber()) {
+    const auto numbered = static_cast<size_t>(index->AsInt());
+    if (numbered < Items().array.size())
+      if (const auto* owner = Items().array[numbered].Find("agent"))
+        Set(&fields, "agent", *owner);
+  }
   Set(&fields, "type", String(std::string(type)));
   Set(&fields, "sequence_number", Number(sequence_++));
   fields = ResponsesPublicValue(std::move(fields));

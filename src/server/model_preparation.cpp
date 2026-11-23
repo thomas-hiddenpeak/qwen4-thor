@@ -16,10 +16,18 @@ bool ModelPreparation::ContinueReservation(uint64_t admitted_input,
   reserved_ = true;
   return true;
 }
+bool ModelPreparation::ContinuePublicGeneration(uint64_t admitted_input,
+                                               uint64_t completed_output) noexcept {
+  if (!preparation_output_ || preparation_output_ > public_output_ ||
+      !ContinueReservation(admitted_input, completed_output))
+    return false;
+  shared_public_output_ = true;
+  return true;
+}
 ObjectReply ModelPreparation::ReservePrompt(uint64_t tokens) {
   using object_detail::Error;
   if (pending_ || !tokens || !preparation_output_ ||
-      preparation_output_ > kMaxPreparationOutputTokens ||
+      (!shared_public_output_ && preparation_output_ > kMaxPreparationOutputTokens) ||
       auxiliary_output_ > kMaxAuxiliaryOutputTokens ||
       output_ >= preparation_output_ || input_ > UINT64_MAX - prior_input_ ||
       tokens > UINT64_MAX - prior_input_ - input_)

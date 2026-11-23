@@ -25,6 +25,9 @@ class ModelPreparation {
   // RPM/TPM lease. Extend only input, preserving all previously observed work.
   bool ContinueReservation(uint64_t admitted_input,
                            uint64_t completed_output) noexcept;
+  // Child generations spend the remaining public response output reservation.
+  bool ContinuePublicGeneration(uint64_t admitted_input,
+                                uint64_t completed_output) noexcept;
   bool StartStep() noexcept;
   // Cumulative tokens from the current step, including a failed/cancelled one.
   void ObserveOutput(uint64_t tokens) noexcept;
@@ -52,5 +55,6 @@ class ModelPreparation {
   uint64_t input_ = 0, output_ = 0, pending_input_ = 0, step_output_ = 0;
   uint64_t prior_input_ = 0, prior_output_ = 0;
   bool reserved_ = false, pending_ = false, started_ = false;
+  bool shared_public_output_ = false;
 };
 }  // namespace q4t::server

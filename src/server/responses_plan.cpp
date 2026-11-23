@@ -12,6 +12,8 @@
 #include "q4t/server/generation_style.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/model_catalog.h"
+#include "q4t/server/responses_agent_tree.h"
+#include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_file_search.h"
 #include "q4t/server/responses_web_search.h"
 #include "q4t/server/responses_mcp_binding.h"
@@ -293,6 +295,7 @@ Status ParseResponsesEnvelope(const io::Json& request,
                              "metadata",
                              "model",
                              "moderation",
+                             "multi_agent",
                              "parallel_tool_calls",
                              "personality",
                              "previous_response_id",
@@ -337,6 +340,20 @@ Status ParseResponsesEnvelope(const io::Json& request,
                            {"max_tool_calls", {}},
                            {"access_programs", {}},
                            {"top_logprobs", Number(0)}});
+  if (const auto* agents = request.Find("multi_agent")) {
+    if (!config.responses_multi_agent)
+      return Invalid(error, "multi_agent", "Named multi-agent beta required");
+    if (!agents->IsNull()) {
+      status = ValidateMultiAgentShape(*agents, MultiAgentShape::kConfiguration,
+                                       error, "multi_agent");
+      if (!status) return status;
+      const auto* slots = agents->Find("max_concurrent_subagents");
+      if (slots && (!IsInputInteger(*slots) || slots->number < 0))
+        return Invalid(error, "multi_agent.max_concurrent_subagents",
+                       "Expected a nonnegative integer");
+    }
+    Set(&result.options, "multi_agent", *agents);
+  }
   std::string model = config.model;
   if (const auto* value = request.Find("model")) {
     if (!value->IsString() || !ValidModelIdentifier(value->str))
@@ -530,6 +547,23 @@ Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
   auto status = NormalizeResponsesTools(resolved, &tools, &choice, error,
                                         effective_tools, header_tools, &active);
   if (!status) return status;
+  const auto* agents = request.Find("multi_agent");
+  if (agents && agents->GetBool("enabled")) {
+    for (const auto& tool : tools.array) {
+      const auto* function = tool.Find("function");
+      if (function && !ResponsesAgentTree::ActionName(
+                          function->GetString("name")).empty())
+        return Invalid(error, "tools", "Hosted agent tool name is already used");
+    }
+    if (!envelope.native_tools_exhausted &&
+        (choice.IsString() && choice.str != "none")) {
+      const auto& hosted = ResponsesAgentTree::ModelTools().array;
+      tools.array.insert(tools.array.end(), hosted.begin(), hosted.end());
+      if (header_tools && header_tools->IsArray())
+        header_tools->array.insert(header_tools->array.end(),
+                                   hosted.begin(), hosted.end());
+    }
+  }
   if (envelope.native_tools_exhausted) {
     std::vector<ResponsesFileSearchBinding> bindings;
     status = PlanResponsesFileSearchBindings(Object({{"tools", active}}),

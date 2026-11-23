@@ -16,6 +16,7 @@
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/responses_file_search.h"
 #include "q4t/server/responses_web_search.h"
+#include "q4t/server/responses_agent_tree.h"
 #include "q4t/server/responses_tool_search.h"
 #include "q4t/server/responses_program.h"
 #include "q4t/server/responses_mcp_binding.h"
@@ -142,6 +143,11 @@ class ResponsesExecution {
   Status CiteWebSearchSources(std::string* wire);
   bool HasWebSearch() const { return !web_bindings_.empty(); }
   bool PendingWebSearch() const { return !web_pending_.empty(); }
+  using AgentModelStep = std::function<ObjectReply(
+      const ResponsesAgentTree::Turn&, bool allow_tools, io::Json*, bool*)>;
+  ObjectReply RunAgents(size_t completed_calls, const AgentModelStep& step,
+                        const std::function<bool(const std::string&)>& publish);
+  bool PendingAgents() const { return !agent_pending_.empty(); }
   ObjectReply RunWebSearches(size_t completed_calls,
                              const std::function<bool(const std::string&)>& publish);
   bool HasFileSearch() const { return !file_search_bindings_.empty(); }
@@ -164,7 +170,8 @@ class ResponsesExecution {
   bool PendingProgramResume() const;
   size_t PendingNativeCalls() const {
     return file_search_pending_.size() + tool_search_pending_.size() +
-           program_pending_.size() + mcp_pending_.size() + web_pending_.size();
+           program_pending_.size() + mcp_pending_.size() + web_pending_.size() +
+           agent_pending_.size();
   }
   ObjectReply RunPrograms(
       size_t completed_calls, bool* client_wait,
@@ -332,6 +339,10 @@ class ResponsesExecution {
   std::shared_ptr<const WebDeploymentPolicy> web_policy_;
   std::vector<ResponsesWebBinding> web_bindings_;
   std::map<size_t, NativeFileCall> web_pending_;
+  Status AppendAgent(const ResponseDelta& delta, bool* handled, std::string* wire);
+  std::optional<ResponsesAgentTree> agents_;
+  std::map<size_t, ResponseToolCall> agent_pending_;
+  size_t agent_argument_bytes_ = 0;
   size_t web_argument_bytes_ = 0;
   WebExecutionBudget web_budget_;
   std::vector<WebPage> web_sources_;

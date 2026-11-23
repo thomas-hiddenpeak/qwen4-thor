@@ -1160,6 +1160,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       (native_preparation ? native_preparation->OutputTokens() : 0) +
       audio_preparation.output;
   if (internal) {
+    if (prompt_u32.size() > internal->remaining_input) {
+      SendError(fd, 400, "Agent exceeds the client's total prompt limit", {},
+                "client_prompt_limit_exceeded", "multi_agent");
+      return;
+    }
     auto reply = internal->accounting.ReservePrompt(prompt_u32.size());
     if (reply.ok()) reply = internal->before_model();
     if (!reply.ok()) {
@@ -1995,11 +2000,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         plain_greedy ? "greedy" : "target_logits");
     TextStopStream text_stop(step_plan.stops);
     ChatResponseParser response_parser;
+    // Each Responses continuation starts a fresh model tool-call index at 0.
+    // Keep its public IDs distinct from earlier rounds already in history.
+    const auto call_scope = continued_primary
+        ? request_id + "_" + detail::NewRequestId("round_")
+        : sampling.choices == 1 ? request_id
+                                : request_id + "_choice_" + std::to_string(choice_index);
     s = response_parser.Init(
-        req, prompt,
-        sampling.choices == 1
-            ? request_id
-            : request_id + "_choice_" + std::to_string(choice_index),
+        req, prompt, call_scope,
         (collect_chat && !responses) || compaction_step || moderation_step,
         step_plan.legacy_output);
     if (!s.ok()) {
@@ -4756,7 +4764,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     if (internal) {
-      if (response_parser.HasRefusal()) {
+      if (response_parser.HasRefusal() && !internal->agent_message) {
         err_guard.ok = false;
         cleanup();
         SendError(fd, 502, "Preparation model refused its internal task", {},
@@ -4764,6 +4772,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
       internal->content = response_parser.Content();
+      if (internal->agent_message) {
+        auto decoded = io::ParseJson(response_parser.MessageJson(),
+                                     internal->agent_message, true, kSchemaJsonLimits);
+        if (!decoded) {
+          err_guard.ok = false;
+          cleanup();
+          SendError(fd, 502, "Malformed child agent message", {}, "agent_output_invalid");
+          return;
+        }
+      }
       internal->finish_reason = finish_reason;
       internal->input_tokens = T;
       internal->output_tokens = generated.size();
@@ -4962,7 +4980,52 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           return !stream || write_stream(wire);
         };
         ObjectReply result;
-        if (responses->PendingFileSearch())
+        if (responses->PendingAgents()) {
+          const auto run_agent = [&](const ResponsesAgentTree::Turn& turn, bool allow_tools,
+                                     io::Json* message, bool* complete) -> ObjectReply {
+            using namespace responses_detail;
+            const auto remaining = request_output_limit - responses_usage.output_tokens;
+            if (remaining <= 0) {
+              *complete = false;
+              *message = Object({{"role", String("assistant")}, {"content", String("")}});
+              return {};
+            }
+            auto child_request = Object({{"model", String(planning_config.model)},
+                               {"messages", turn.messages},
+                               {"max_completion_tokens", Number(remaining)},
+                               {"enable_thinking", Boolean(false)}});
+            if (allow_tools) Set(&child_request, "tools", ResponsesAgentTree::ModelTools());
+            for (const auto* field : {"temperature", "top_p", "seed"})
+              if (const auto* value = req.Find(field)) Set(&child_request, field, *value);
+            const uint64_t prior_input = prepared_input + responses_usage.input_tokens +
+                                         moderation_usage.input_tokens + query_usage.committed_input;
+            ModelPreparation accounting(clients_, http->Client(), rate_lease,
+                                        request_output_limit, 0, remaining);
+            if (!accounting.ContinuePublicGeneration(prior_input,
+                    prepared_output + completed_tokens()))
+              return object_detail::Error(500, "agent_accounting_invalid",
+                                           "Invalid child generation reservation");
+            ScopeExit settle([&] {
+              responses_usage.input_tokens += accounting.InputTokens();
+              responses_usage.output_tokens += accounting.OutputTokens();
+              rate_lease.StartPrompt(prior_input + accounting.InputTokens());
+              rate_lease.Completion(prepared_output + completed_tokens());
+            });
+            InternalModelStep work{child_request, planning_config, accounting,
+                                   [] { return ObjectReply{}; }, {}, false, {}, {}, 0, 0};
+            work.structured_owner = &structured_lease;
+            work.agent_message = message;
+            if (planning_config.client_limits) {
+              const uint64_t limit = planning_config.client_limits->max_prompt_tokens;
+              work.remaining_input = limit - std::min(limit, prior_input);
+            }
+            auto reply = RunInternalModelStep(fd, &work, control);
+            *complete = reply.ok() && work.finish_reason != "length";
+            return reply;
+          };
+          result = responses->RunAgents(response_parser.CompletedToolCalls(), run_agent, publish);
+        }
+        if (result.ok() && responses->PendingFileSearch())
           result = responses->RunFileSearches(
               response_parser.CompletedToolCalls(), callbacks, &query_usage,
               &answer, publish);

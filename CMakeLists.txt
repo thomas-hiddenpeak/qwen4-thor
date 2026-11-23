@@ -702,6 +702,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/vector_search_execution.cpp
     src/server/vector_query_rewrite.cpp
     src/server/responses_file_search.cpp
+    src/server/responses_agent_tree.cpp
+    src/server/responses_agent_execution.cpp
     src/server/responses_web_search.cpp
     src/server/responses_web_context.cpp
     src/server/responses_web_output.cpp
@@ -1044,6 +1046,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_sampling_test.cpp
     tests/server_completion_test.cpp
     tests/server_responses_output_test.cpp
+    tests/server_responses_agent_tree_test.cpp
     tests/server_responses_input_test.cpp
     tests/server_tool_result_test.cpp
     tests/server_responses_plan_test.cpp
