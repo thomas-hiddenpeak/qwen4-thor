@@ -9,7 +9,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 发行配置 schema 已补齐实际 HTTP 返回的七个顶层字段及追踪启动状态，包括 SIP、TTS、语音注册和追踪健康。两代候选的四份原始主轻响应均通过独立与内嵌 schema。[验证记录](evidence/serve-live-config-schema-20261123/README.md)
 
-默认 rev426 的托管回退校验发现 196 个模型文件 ctime 与原包记录不符，其余文件身份字段一致。原包仍保留，正在只读核验对应上游固定版本的内容摘要，正式切换须先恢复可验证的回退路径。
+rev426 的独立回退包已由真实守护器启动到 READY，经原生网关完成 Chat=42。原包记录中 ctime 变化的 196 个文件已逐个匹配两个固定发布者版本，读取 83,995,035,950 字节。默认入口仍指向停用的原包；继续正式版本注册与切换验收。[模型审计与回退业务](evidence/serve-model-ctime-rollback-20261123/README.md)
 
 认证 `/v1/capabilities` 已修正 Live 和 Realtime 的过期声明。主轻两套实际引擎现在都列出已执行的会话、WebRTC 呼叫、SIP 控制及临时凭据兑换入口。16 项原生能力测试、6 项迁移检查和两套配置的实际 SDK/Chat 均通过。[声明与证据](evidence/serve-live-discovery-20261123/README.md)
 

@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import unittest
 import uuid
 from unittest import mock
@@ -177,6 +178,51 @@ class NativeEntryTests(unittest.TestCase):
         self.assertEqual(value['status'], 'PASS')
         self.assertFalse(value['model_actions']);self.assertFalse(value['state_checked'])
         self.assertTrue((Path(receipt['package'])/'engine/licenses/openai-node/LICENSE').is_file())
+
+    def test_audited_rollback_covers_only_reviewed_stat_and_original_bytes(self):
+        from tools.serve_recovery import model_content as content
+        receipt, args = self.prepare(self.root/'original')
+        package, digest = Path(receipt['package']), receipt['manifest_sha256']
+        model = Path(args[args.index('--model')+1]).resolve()
+        path = model/'weights.safetensors'
+        original = engine.read(package/'manifest.json')['model_assets']
+        path.chmod(path.stat().st_mode ^ 0o100)
+        with self.assertRaisesRegex(ValueError, 'model asset identity changed'):
+            bundle.verify(package, digest)
+        revision = 'b'*40
+        index = self.root/'upstream.json'
+        engine.save(index, dict(id='test/cpu', sha=revision, siblings=[
+            dict(rfilename=path.name, size=path.stat().st_size,
+                 lfs=dict(size=path.stat().st_size, sha256=engine.sha(path)))]))
+        report = self.root/'content.json'
+        spec = [sys.executable, '-B', str(ROOT/'tools/serve_recovery/model_content.py'),
+                'audit','--package',str(package),'--manifest-sha256',digest,
+                '--upstream-index',str(index),'--upstream-sha256',engine.sha(index),
+                '--repository','test/cpu','--revision',revision,'--report',str(report)]
+        proc = subprocess.run(spec, capture_output=True, text=True, timeout=30)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        audit = engine.read(report)
+        self.assertEqual(set(audit['assets']), {path.name})
+        rows = content.source_index(index, engine.sha(index), 'test/cpu', revision)
+        with self.assertRaisesRegex(ValueError, 'content report identity differs'):
+            content.validated_binding(package, digest, report, 'c'*64, engine.sha(index), rows)
+        self.assertEqual(content.content_hash(model, path.name, bundle.file_identity(path)),
+                         engine.sha(path))
+        output = self.root/'rollback'
+        result = content.prepare(package, digest, report, engine.sha(report),
+                                 engine.sha(index), rows, output)
+        check = json.loads(self.invoke(output/'engine/q4t','check','--package',output,
+                           '--manifest-sha256',result['manifest_sha256']).stdout)
+        self.assertTrue(check['package_verified'])
+        bound = engine.read(output/'manifest.json')
+        self.assertEqual(bound['model_assets'], original)
+        self.assertEqual(bound['engine_manifest_sha256'],
+                         engine.read(package/'manifest.json')['engine_manifest_sha256'])
+        path.write_bytes(b'other bytes')
+        with self.assertRaisesRegex(ValueError, 'model changed after content qualification'):
+            bundle.verify(output, result['manifest_sha256'])
+        with self.assertRaisesRegex(ValueError, 'only covers ctime drift'):
+            content.drift(original, bundle.assets(model))
 
     def test_selected_workers_execute_only_the_qualified_image(self):
         args = self.setup_inputs()

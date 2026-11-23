@@ -152,6 +152,27 @@ def assets(model):
     return result
 
 
+def observed_assets(model, manifest, binding=None):
+    """Original qualifications retain their exact logical model identity."""
+    expected = manifest['model_assets']
+    binding = manifest.get('model_ctime_binding') if binding is None else binding
+    if binding is None:
+        return expected
+    ledger.keys(binding, ('format', 'original_manifest', 'sealed_inventory',
+                           'observed_inventory', 'content_report', 'upstream_index'))
+    ledger.require(binding['format'] == 'q4t-model-ctime-content-v1' and
+        all(type(v) is str and len(v) == 64 and
+            all(c in '0123456789abcdef' for c in v)
+            for k,v in binding.items() if k != 'format') and
+        ledger.digest(expected) == binding['sealed_inventory'], 'invalid model content binding')
+    current = assets(model)
+    ledger.require(ledger.digest(current) == binding['observed_inventory'] and
+        current.keys() == expected.keys() and all(
+            all(row[k] == current[n][k] for k in ('dev','ino','size','mtime_ns'))
+            for n,row in expected.items()), 'model changed after content qualification')
+    return current
+
+
 def check_assets(model, expected, *, read_edges=False):
     ledger.require(type(expected) is dict and 1 <= len(expected) <= 256,
                    'invalid model asset inventory')
@@ -359,6 +380,10 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
 
 
 def verify(package, digest):
+    return _verify(package, digest)
+
+
+def _verify(package, digest, *, reviewed_binding=None):
     package = Path(package).resolve(strict=True)
     ledger.require(engine.sha(package/'manifest.json') == digest,
                    'recovery manifest identity changed')
@@ -366,6 +391,7 @@ def verify(package, digest):
     version = value.get('version')
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
+        *(('model_ctime_binding',) if 'model_ctime_binding' in value else ()),
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
         *(('ingress_mode',) if version in range(2, 27) else ()),
         *(('tls_configuration',) if version in range(4, 27) else ()),
@@ -427,5 +453,10 @@ def verify(package, digest):
     ledger.require(value['quota_enforced'] == bool((version >= 8 and native) or
         binding.quota_enforced(gateway['backend_policy'])),
                    'quota gate differs from immutable client limits')
-    check_assets(Path(base['model_dir']), value['model_assets'])
+    model = Path(base['model_dir'])
+    if reviewed_binding is not None:
+        ledger.require('model_ctime_binding' not in value and
+                       reviewed_binding['original_manifest'] == digest,
+                       'content review belongs to another payload')
+    check_assets(model, observed_assets(model, value, reviewed_binding))
     return value
