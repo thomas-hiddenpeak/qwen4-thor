@@ -1,0 +1,109 @@
+{
+  "default_revision": 438,
+  "installed": "a4ff80869d40baa23a2ed803c6824de73a8c1d89ba0bf0fbe5cd0c4443eccb06",
+  "sdk": "openai-node 7.47.0",
+  "candidate_sha256": "1dfb6691c1248e359adb73286f3c73fefd58de2895799fbce4d90b56a52e2cd5",
+  "ingress_sha256": "72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3",
+  "original": {
+    "run": {
+      "status": "FAIL",
+      "seconds": 111.4174824920483,
+      "model_starts": 2,
+      "stop_returncode": 0,
+      "supervisor_exit": 0,
+      "remaining": [],
+      "ports_free": true,
+      "unchanged_default": true,
+      "receipt_sha256": "a4ff80869d40baa23a2ed803c6824de73a8c1d89ba0bf0fbe5cd0c4443eccb06"
+    },
+    "lease": "COMMAND_FAILED",
+    "interrupted_after": {
+      "event": "spawned",
+      "id": "resp_46bc4fd049c03f9120b153a65243a71c",
+      "sequence": 6,
+      "call_id": "call_resp_46bc4fd049c03f9120b153a65243a71c_0"
+    },
+    "cancel": [
+      {
+        "event": "spawned",
+        "id": "resp_df7b5a42e26c375b9e024bcb9a035b95",
+        "sequence": 6,
+        "call_id": "call_resp_df7b5a42e26c375b9e024bcb9a035b95_0"
+      },
+      {
+        "event": "finished",
+        "id": "resp_df7b5a42e26c375b9e024bcb9a035b95",
+        "status": "cancelled",
+        "sequence": 6
+      }
+    ],
+    "actual_owner_read": "in_progress",
+    "record": {
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_46bc4fd049c03f9120b153a65243a71c.json": "f8566bf5cf59b336d85b3763fbaf84a55e267313cf00ac0a3d9379d46ddd0c17",
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_df7b5a42e26c375b9e024bcb9a035b95.json": "92e39ff58795a3b0457bfd5fb361f99c07d0204c4cd7c9dea524cc07c37c2c02"
+    }
+  },
+  "recovery": {
+    "run": {
+      "status": "PASS",
+      "seconds": 33.920902881771326,
+      "model_starts": 1,
+      "model_rc": 0,
+      "ports_free": true,
+      "unchanged_default": true
+    },
+    "lease": "COMPLETED",
+    "sdk": {
+      "status": "failed",
+      "error": {
+        "code": "background_execution_interrupted",
+        "message": "Previous execution process exited; started work is not replayed"
+      },
+      "id": "resp_46bc4fd049c03f9120b153a65243a71c",
+      "other": 404,
+      "observed": [
+        "failed"
+      ],
+      "replay": [
+        "response.failed"
+      ]
+    },
+    "persistence": {
+      "original_sha256": {
+        "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_46bc4fd049c03f9120b153a65243a71c.json": "f8566bf5cf59b336d85b3763fbaf84a55e267313cf00ac0a3d9379d46ddd0c17",
+        "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_df7b5a42e26c375b9e024bcb9a035b95.json": "92e39ff58795a3b0457bfd5fb361f99c07d0204c4cd7c9dea524cc07c37c2c02"
+      },
+      "from_revision": 5,
+      "to_revision": 6,
+      "replayed_calls": 0,
+      "last_event": "response.failed",
+      "cancelled_record_unchanged": true
+    }
+  },
+  "tests": [
+    "responses_hosted_agents_dispatch_to_child_and_return_owned_events",
+    "responses_hosted_agents_interrupt_and_send_before_child_generation",
+    "responses_hosted_agents_keep_selection_and_budget_after_queue_recovery",
+    "responses_background_interrupted_execution_fails_without_replay",
+    "responses_background_batch_origin_survives_restart_without_rebinding",
+    "responses_jobs_http_creation_transfers_owner_and_cancel_is_idempotent",
+    "responses_state_interruption_preserves_committed_agent_items",
+    "responses_state_running_terminal_and_delete_lifecycle"
+  ],
+  "private_evidence_directory": ".q4t-work/serve-responses-agents-20261123",
+  "sha256": {
+    "interrupt-01/interrupt-first.json": "f760b8682c7f7a9b9cc57abdd994ac9a488be3fb061f5e4bfe26969c76c8970c",
+    "interrupt-01/cancel-events.json": "90484e72f9969b0a68f2657fc33870230a30763d7e44ef91db2b1a08b96f2a7d",
+    "interrupt-01/interrupt-events.json": "913855acfdc27e50dbfa5e6e46afc0ca7604586136cd31f9d668a7b1c1d1638a",
+    "interrupt-01/ready.json": "3427e11ed8bcc8865565e0d45e39361e8d1192df61bb9d5b15f5466829a703c9",
+    "interrupt-01/recover-sdk.log": "e3aead970774029d45079ec266c62dfa19f1754085c8314ed5b01e49654608f9",
+    "interrupt-01/result.json": "62a5622d9c4ab65d6a438aec78a3905978c62829dca73d056fc85b7de4eba73b",
+    "interrupt-lease-01/exit.json": "53f25d8b1579bf6f0706b2677d150409ca71fc583ba0a745b5a19850a5269d40",
+    "interrupt-recover-01/plan.json": "eda7a7664e05c6c8d1e8f4915c443c0c6b91b2d37fe7ea957d222bfb97175234",
+    "interrupt-recover-01/record-recovery.json": "8df904259d53839061026f77c8402b453ad6f1250fc9504e48687ea3c92665ed",
+    "interrupt-recover-01/sdk-result.json": "995d245b8aacb0405dd4a3761da69e97da3d47316bdcfbe1cf86fdada380e01c",
+    "interrupt-recover-01/result.json": "e0e13eddc088273eed9d2239d0434e31cdac7557f99490d55ef7aa7509698ee7",
+    "interrupt-recover-lease-01/exit.json": "445e59e78aa848d01162adc860387b270cbd127e9f08929b4859225f2cbc8c52",
+    "interrupt-cpu-final2.log": "1a8f42cbd8ddf0fa7696d2137629294f32286b3af9bfc50269c2e0153ba901d0"
+  }
+}

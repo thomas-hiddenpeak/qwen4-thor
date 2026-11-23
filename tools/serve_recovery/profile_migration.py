@@ -565,6 +565,13 @@ def permit(previous, target, previous_evidence, target_evidence,
                            explicit_extension(old_contract, new_contract))),
         'migration would change application capabilities without an explicit '
         'qualified extension; automatic recovery cannot lose or add features')
+    if automatic:
+        for name in profile_contract.NAMES:
+            prior = previous_evidence[name]['record']['business'].get('live', {})
+            target_live = target_evidence[name]['record']['business'].get('live', {})
+            ledger.require('interruption.json' not in prior.get('evidence_sha256', {}) or
+                           'interruption.json' in target_live.get('evidence_sha256', {}),
+                           'automatic fallback would lose qualified agent interruption recovery')
     old_base, new_base = (registry['identity'].get('native_tts_base')
                           for registry in (previous, target))
     base_capacity = (tts_capacity_change(old_base, new_base, base=True)

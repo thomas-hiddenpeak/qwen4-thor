@@ -22,6 +22,12 @@
 
 ## 当前阶段更新（2026-11-23）
 
+默认已发布 **rev440，STOPPED**。模型骤停后 SDK 保留原代理输出并收到一个中断终态；网关致命退出后注册回退包接管，续读到旧模型排空前提交的 wait_agent，随后 Chat 答 42。用户 24 小时计划已固定。NVML 冷启动通过原包预检，设备仍由相机与 jtop 持有。[交付回执](evidence/serve-responses-agent-interruption-20261123/delivery.json) 模型步骤排空、RPM、TPM 与非法预约现在各有对应说明。9 项针对性 CPU 检查通过。候选经原生 TLS 和真实模型验证。代理创建子任务后，合法父进程通过配额管理通道发起排空；SDK 收到准确的 service_draining 说明，已提交输出及唯一失败终态可回读，另一客户 404。 当前 rev440 的排空错误码正确、提示仍是旧文案。[排空提示检查](evidence/serve-responses-agent-interruption-20261123/draining-message.json)
+
+主、轻配置各从同一份 rev438 故障原件恢复一次，两次均在首读提交失败终态并保留两项输出，84 次设备采样正常。两份新资格逐层重建旧资格，自动切回有该缺陷的 rev438 已拒绝。待托管主备接管和发行。[主轻资格](evidence/serve-responses-agent-interruption-20261123/profiles.json)
+
+rev438 的后台托管代理在模型退出后卡在 `in_progress`。候选修复已用原故障对象验证：首读返回 `failed`，从断点只收到一个终态事件，已保存的调用和输出一致，另一客户收到 404。8 项 CPU 用例通过；主轻配置及发行继续验收。[故障现场与恢复记录](evidence/serve-responses-agent-interruption-20261123/README.md)
+
 默认 **rev438，STOPPED**。原生维护修复已封包并通过实际入口，rev436 已注册为回退包。PR #62 两项检查通过并合入 main。首笔 WebRTC 在缺少可选组件时得到媒体专属 503，随后 Chat 答 42；历史通用 503 根因待证。[回执](evidence/serve-native-maintenance-delivery-20261123/README.md)
 
 默认服务已发布至 **rev436，STOPPED**。主网关致命退出后，注册回退包再次完成父子推理，能按身份回读故障前的完整输出。归档已满的发布意图与版本注册时修复了新旧根交接的维护死角，修复后的工具已在实际部署使用。[发行回执](evidence/serve-responses-agents-delivery-20261123/README.md)
