@@ -1,4 +1,6 @@
+#include "../src/server/agent_environment_internal.h"
 #include "../src/server/schema_string.h"
+#include "q4t/io/base64.h"
 #include "../src/server/mcp_transport_internal.h"
 #include "../src/server/vault_credential_internal.h"
 #include "q4t/server/agent_environment.h"
@@ -140,6 +142,64 @@ Q4T_TEST(environment_template_http_bounds_apply_to_input_and_count_unicode) {
     Q4T_CHECK(ValidateEnvironmentTemplate(
         definition, Shape::kStoredDefinition, &error));
   }
+  return true;
+}
+
+Q4T_TEST(environment_template_max_inline_file_survives_reopen_and_rejects_mixed_parts) {
+  Fixture f;
+  constexpr size_t file_bytes = 5 * 1024 * 1024;
+  std::string encoded;
+  Q4T_CHECK(q4t::io::EncodeBase64(std::string(file_bytes, 'q'), 6990508, &encoded));
+  auto file = Parse(R"({"type":"inline","path":"/workspace/records","data":""})");
+  auto data = *file.Find("data");
+  data.str = encoded;
+  Set(&file, "data", std::move(data));
+  auto definition = Parse(R"({"files":[]})");
+  definition.object.front().second.array.push_back(std::move(file));
+  const auto root = std::string("/v1/agents/environments/templates");
+  const auto access = [] {
+    return StateAccess{"client:large-template", Clock::now() + 60s, {}};
+  };
+  std::string id;
+  {
+    ObjectStore objects(f.options);
+    auto result = HandleEnvironmentTemplate(objects, "POST", root,
+                                            OutputJson(definition), access());
+    Q4T_CHECK(Ok(result) && result.http_status == 201);
+    id = result.value.GetString("id");
+    Q4T_CHECK(result.value.GetArray("files")->array.front().GetInt("size_bytes") ==
+              file_bytes);
+  }
+  ObjectStore objects(f.options);
+  ObjectRequest read;
+  read.scope = access().scope;
+  read.kind = ObjectKind::kEnvironmentTemplate;
+  read.id = id;
+  auto row = objects.Execute(read, access().deadline);
+  Q4T_CHECK(Ok(row));
+  const auto sealed = *row.value.Find("data")->Find("sealed_definition");
+  Q4T_CHECK(sealed.GetArray("parts") && sealed.GetArray("parts")->array.size() == 2);
+  Json opened;
+  auto open = [&](const std::string& target, const Json& envelope) {
+    return environment_detail::OpenDefinition(objects, access(), target, envelope, &opened);
+  };
+  Q4T_CHECK(Ok(open(id, sealed)) &&
+            opened.GetArray("files")->array.front().GetString("data") == encoded);
+  Q4T_CHECK(open(id + "_other", sealed).http_status == 503);
+  auto changed = sealed;
+  auto parts = *changed.GetArray("parts");
+  std::swap(parts.array.front(), parts.array.back());
+  Set(&changed, "parts", parts);
+  Q4T_CHECK(open(id, changed).http_status == 503);
+  parts.array.pop_back();
+  Set(&changed, "parts", parts);
+  Q4T_CHECK(open(id, changed).http_status == 503);
+  const auto path = root + "/" + id;
+  auto updated = HandleEnvironmentTemplate(objects, "POST", path,
+      R"({"files":null,"name":"cleared"})", access());
+  Q4T_CHECK(Ok(updated) && updated.value.GetArray("files")->array.empty());
+  row = objects.Execute(read, access().deadline);
+  Q4T_CHECK(Ok(row) && row.value.Find("data")->Find("sealed_definition")->IsString());
   return true;
 }
 

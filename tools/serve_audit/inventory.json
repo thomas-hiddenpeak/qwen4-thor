@@ -2802,8 +2802,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "ac9607d0fcd4253538ff99ac0072e07bce6669602891925d77658f55797801c5",
-    "cmake/ChatProtocolIdentity.cmake": "4a37111c8eaf96b0018ded90906e457e3158ad096c4d0597abe2658708e9e1bb",
+    "CMakeLists.txt": "ade5be563e410ad5370eac78f12a3405975c5397d7e970361931736c75cce10a",
+    "cmake/ChatProtocolIdentity.cmake": "ad4c7ee8036739b6e0845a7baf185a47c70438393435b612ea5bb431c0f24d01",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3279,7 +3279,9 @@
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "src/server/access_program.cpp": "ff759ca9c3a410e0c35518cd5bdeb45fba589fb4ce9d34261ce3896ff60f7b97",
-    "src/server/agent_environment_template.cpp": "9797c9f225afefc78f2857f0e732f7a728c527c30f783a13f48068639d6e324a",
+    "src/server/agent_environment_definition.cpp": "85a6b773bbb07f972f62e1a329bfb3834e92dd190483542350c4db8849041b68",
+    "src/server/agent_environment_internal.h": "a5f399b2315aa3898803aeaef1e0f7e26d03c33defae0607012924b013edec0b",
+    "src/server/agent_environment_template.cpp": "e92c55f47d9797d74d9160cc4dc51352f51e6d8ae0c2dd2a87f39676b5dbbb91",
     "src/server/agent_registration.cpp": "1b298c5e3977b9d8d950bcd461234de7fb045c45aebf95dde23b09cd5f33aaed",
     "src/server/agent_session.cpp": "e6b21438f13b2add4e8b16d52045fd1d617a9acc6d8083310977a78a7730bf39",
     "src/server/agent_session_cancel.cpp": "7b3ce808f145730f3d38e79c7ae2ec7c13a97aeacbd7d4298294aa3a00b5994f",

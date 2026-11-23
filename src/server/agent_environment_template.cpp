@@ -3,6 +3,7 @@
 #include <ctime>
 #include <set>
 
+#include "agent_environment_internal.h"
 #include "file_fetch_internal.h"
 #include "object_protocol.h"
 #include "q4t/io/base64.h"
@@ -12,7 +13,6 @@
 #include "q4t/server/files.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/request_json.h"
-#include "q4t/server/state_cipher.h"
 
 namespace q4t::server {
 namespace {
@@ -212,7 +212,7 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
   Json changes = Object();
   if (method == "POST") {
     if (!(collection && body.empty()) &&
-        !io::ParseJson(body, &changes, true, kSchemaJsonLimits))
+        !io::ParseJson(body, &changes, true, kApplicationJsonLimits))
       return Invalid("Expected a JSON template object", "body");
     if (collection && changes.IsNull()) changes = Object();
     ChatPlanError error;
@@ -228,8 +228,6 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
                : std::string(path.substr(kEnvironmentTemplatesPath.size() + 1));
   if (req.id.empty())
     return Error(503, "environment_id_unavailable", "No template ID");
-  const StateCipherBinding binding{"q4t.agents", "environment",
-                                   "template_definition", req.id};
   const auto now = std::time(nullptr);
   int64_t created = now;
   Json config = Object();
@@ -252,15 +250,11 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
       return erased;
     }
     created = resource.value.GetInt("created_at");
-    std::string raw;
-    auto opened = StateCipher(objects).Open(data.GetString("sealed_definition"),
-                                            binding, access, &raw);
+    const auto* sealed = data.Find("sealed_definition");
+    if (!sealed) return InvalidRecord();
+    auto opened = environment_detail::OpenDefinition(objects, access, req.id,
+                                                      *sealed, &config);
     if (!opened.ok()) return opened;
-    ChatPlanError error;
-    if (!io::ParseJson(raw, &config, true, kSchemaJsonLimits) ||
-        !ValidateEnvironmentTemplate(config, EnvironmentTemplateShape::kStoredDefinition,
-                                     &error))
-      return InvalidRecord();
   }
   if (const auto* files = changes.GetArray("files")) {
     Files owned(objects);
@@ -275,12 +269,12 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
   for (auto& [key, value] : changes.object) Set(&config, key, std::move(value));
   auto projected = Project(config, req.id, created, now);
   if (!projected.ok()) return projected;
-  std::string sealed;
+  Json sealed;
   auto saved =
-      StateCipher(objects).Seal(OutputJson(config), binding, access, &sealed);
+      environment_detail::SealDefinition(objects, access, req.id, config, &sealed);
   if (!saved.ok()) return saved;
   req.data = Object({{"resource", projected.value},
-                     {"sealed_definition", String(std::move(sealed))}});
+                     {"sealed_definition", std::move(sealed)}});
   req.ttl_seconds = 0;
   req.operation = ObjectOperation::kPut;
   auto committed = execute();
