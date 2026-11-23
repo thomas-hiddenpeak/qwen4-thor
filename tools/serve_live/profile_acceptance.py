@@ -13,7 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_live import responses_acceptance as live
-from tools.serve_live import worker_binding_acceptance as workers
+from tools.serve_live import profile_qualification, worker_binding_acceptance as workers
 from tools.serve_live import media_create_acceptance as media
 from tools.serve_realtime import transcription_acceptance as base
 from tools.serve_recovery import profile_acceptance as qualify
@@ -186,14 +186,27 @@ class Stage(workers.ice.Stage):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('prepare','run','finalize'))
+    parser.add_argument('action', choices=('prepare','run','finalize','qualify'))
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--worker-qualification', type=Path)
     parser.add_argument('--discovery-build', type=Path)
     parser.add_argument('--previous-profiles', type=Path)
+    parser.add_argument('--accepted-sha256')
+    parser.add_argument('--receipt', type=Path)
     args = parser.parse_args()
     out = args.output.resolve()
     pkg.require(out.is_relative_to(ROOT/'.q4t-work'), 'private evidence directory')
+    if args.action == 'qualify':
+        source = out/'acceptance.json'
+        pkg.require(args.receipt is not None and args.accepted_sha256 == pkg.sha(source),
+                    'qualification requires the retained acceptance digest and a new receipt path')
+        destination = args.receipt.resolve()
+        pkg.require(destination.is_relative_to(ROOT/'.q4t-work') and not destination.exists(),
+                    'qualification receipt needs an unused private path')
+        value = profile_qualification.observations(out, pkg.read(source))
+        pkg.require(pkg.sha(source) == args.accepted_sha256, 'acceptance changed during review')
+        pkg.save(destination, dict(value, acceptance_sha256=args.accepted_sha256))
+        return
     if args.action == 'prepare':
         prepare(out, args.worker_qualification, discovery_build=args.discovery_build,
                 previous_profiles=args.previous_profiles)
@@ -226,10 +239,13 @@ def main():
         [pkg.read(out/n/'cleanup.json') for n in PROFILES])
     pkg.require(all(pkg.sha(ROOT/n) == h for p in plans for n,h in p['sources'].items()),
                 'verified sources changed')
-    pkg.save(out/'acceptance.json', dict(environment=env, results=results,
+    accepted = dict(environment=env, results=results,
         profiles={n:pkg.read(out/n/'observation.json') for n in PROFILES},
         engine_sha256=plans[0]['binary_sha256'], ingress_sha256=plans[0]['ingress_sha256'],
-        disclosure_update=plans[0].get('discovery_change')))
+        disclosure_update=plans[0].get('discovery_change'))
+    value = profile_qualification.observations(out, accepted)
+    pkg.save(out/'acceptance.json', accepted)
+    pkg.save(out/'profile-observations.json', dict(value, acceptance_sha256=pkg.sha(out/'acceptance.json')))
 
 
 if __name__ == '__main__':

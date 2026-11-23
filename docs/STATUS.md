@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Live 最新引擎的两套实际 HTTP 容量、内存准入、工作程序与业务回执已绑定到封包输入，旧验收文件可独立重放。两组正例和九个反例通过，继续封入正式托管资格。[主轻输入](evidence/serve-live-profile-observations-20261123/README.md)
+
 已用 rev428 同一组真实主包、回退包在私有部署触发主网关 SIGABRT。一次设备探测后，第 2 代模型接管并答 42，可读取第 1 代已存回答；正式部署保持停止。[自动版本回退验收](evidence/serve-control-fallback-20261123/README.md)
 
 正式默认部署已发布到 **rev428**，通过默认 CLI 的 check、发布和版本状态检查。保持 STOPPED，回退包已注册；模型、配额和容量沿用原配置。继续正式 Live 主轻配置封包与恢复验收。[正式部署回执](evidence/serve-control-delivery-20261123/README.md)
