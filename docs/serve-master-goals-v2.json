@@ -1028,7 +1028,8 @@
         "docs/evidence/serve-legacy-tools-20261108/index.json",
         "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md",
         "docs/evidence/serve-custom-tools-20261108/index.json",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-tool-enum-padding-20261123/README.md"
       ],
       "release": {
         "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
@@ -2856,7 +2857,8 @@
         "evidence/serve-asr-http-20261117/README.md",
         "evidence/serve-asr-package-cpu-20261117/README.md",
         "evidence/serve-speech-http-20261118/README.md",
-        "evidence/serve-realtime-transcription-business-20261119/README.md"
+        "evidence/serve-realtime-transcription-business-20261119/README.md",
+        "evidence/serve-tool-enum-padding-20261123/README.md"
       ],
       "release": null,
       "findings": [
@@ -3034,7 +3036,7 @@
         "Multiple video tracks, presentation canvas/clipping and remaining format combinations",
         "Audio/Realtime/image-generation/video-generation model assets and actual backend execution",
         "Recorded model quality failures remain unresolved; never relabelled by other input/mode successes",
-        "Identify the cause of the observed Realtime SIP named-tool structured_output_invalid response and validate any necessary correction; preserve failure and captured SDK diagnostics in evidence/serve-realtime-call-playout-20261123/README.md."
+        "The historical SIP named-tool 502 lacks its raw arguments and detailed terminal. An independently reproduced XML enum-padding failure is fixed and verified with the original call flow. Compare detailed receipts if the incident recurs."
       ],
       "media_state_cache_plan": {
         "state": "cpu_pass_business_pending",
@@ -10453,7 +10455,7 @@
     }
   ],
   "next_task": "Implement Realtime WebRTC call creation and scoped client secrets, investigate the observed structured tool failure and continue remaining Serve delivery.",
-  "next": "Realtime 临时凭据已验原生 TLS、WSS、WebRTC 以及入口/模型换代，标准可选 nginx 前置已验 WSS 握手和双向帧。继续托管服务组合、旧式 nginx 独立鉴权、历史命名工具 502 定位和可回退发行。默认 rev426。",
+  "next": "完成托管 Live 媒体进程的装包与故障恢复组合、旧式 nginx 独立鉴权以及可回退发行。具名工具 XML 枚举空白缺陷已复现修复，原一次 502 缺少原始字节，保留记录。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16342,6 +16344,7 @@
     "realtime_sip_playout_history_evidence": "evidence/serve-realtime-call-playout-20261123/README.md",
     "realtime_client_secret_tls_wss_evidence": "evidence/serve-realtime-client-issuer-20261123/README.md",
     "realtime_client_secret_webrtc_business_evidence": "evidence/serve-realtime-client-rtc-20261123/README.md",
-    "realtime_client_secret_generation_evidence": "evidence/serve-realtime-client-recovery-20261123/README.md"
+    "realtime_client_secret_generation_evidence": "evidence/serve-realtime-client-recovery-20261123/README.md",
+    "realtime_named_tool_enum_padding_evidence": "evidence/serve-tool-enum-padding-20261123/README.md"
   }
 }
