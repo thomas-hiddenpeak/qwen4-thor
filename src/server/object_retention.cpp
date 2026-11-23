@@ -431,6 +431,7 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     // The container metadata has no content or credential object edges.
   } else if (kind == "environment_template" || kind == "environment") {
     inspector.HostedEnvironment(data, kind == "environment_template", payloads);
+    if (kind == "environment") inspector.Snapshots(data);
   } else if (kind == "agent_session") {
     const auto* session = data.Find("session");
     const auto* agent = session ? session->Find("agent") : nullptr;

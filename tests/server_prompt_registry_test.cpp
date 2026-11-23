@@ -164,9 +164,10 @@ Q4T_TEST(hosted_workspace_prewarms_once_and_installs_private_bytes) {
   auto expired = HandleHostedEnvironment(reopened, "POST", root, input, Access(), "release");
   Q4T_CHECK(Ok(expired) && expired.value.GetString("status") == "expired");
   ObjectRequest claim;
+  std::shared_ptr<environment_detail::WorkspaceCopies> copies;
   auto env = Parse("{\"type\":\"openai_hosted\",\"environment_id\":\"" + id + "\"}");
   Q4T_CHECK(environment_detail::PrepareAttachment(reopened, Access(), env,
-      "agent_session_expired", Parse("[]"), &claim).http_status == 409);
+      "agent_session_expired", Parse("[]"), &claim, &copies).http_status == 409);
   return true;
 }
 
@@ -212,6 +213,83 @@ Q4T_TEST(hosted_workspace_owns_uploaded_bytes_after_source_deletion) {
   Q4T_CHECK(file.GetString("type") == "inline" && file.GetString("data") == "cQB0");
   Q4T_CHECK(!environment_detail::OpenDefinition(
       reopened, Access("client:peer"), environment, envelope, &snapshot).ok());
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_large_files_copy_survives_source_deletion_and_collection) {
+  Fixture f;
+  const std::string root = "/v1/agents/environments";
+  std::string bytes((1 << 20) + 17, 'w');
+  bytes.front() = '\0';
+  bytes.back() = '\xff';
+  std::string workspace, source;
+  const auto cutoff = std::time(nullptr) - 60;
+  StateAccess access{Access().scope, Clock::now() + 45s, {}};
+  {
+    ObjectStore store(f.options);
+    const BinaryAccess io{access.scope, access.deadline, {}};
+    FileUpload upload(store, io, "multipart/form-data; boundary=x");
+    Q4T_CHECK(Ok(upload.Feed("--x\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nuser_data\r\n"
+        "--x\r\nContent-Disposition: form-data; name=\"file\"; filename=\"large.bin\"\r\n\r\n", access.deadline)));
+    Q4T_CHECK(Ok(upload.Feed(std::string_view(bytes).substr(0, 712345), access.deadline)));
+    Q4T_CHECK(Ok(upload.Feed(std::string_view(bytes).substr(712345), access.deadline)));
+    Q4T_CHECK(Ok(upload.Feed("\r\n--x--\r\n", access.deadline)));
+    auto file = upload.Finish();
+    Q4T_CHECK(Ok(file));
+    source = file.value.GetString("id");
+    const auto body = "{\"environment\":{\"type\":\"openai_hosted\",\"files\":["
+      "{\"type\":\"file_id\",\"path\":\"/workspace/outputs/data\",\"file_id\":\"" + source + "\"}]}}";
+    auto created = HandleHostedEnvironment(store, "POST", root, body, access, "");
+    Q4T_CHECK(Ok(created));
+    workspace = created.value.GetString("id");
+    Q4T_CHECK(Ok(Files(store).Erase(io, source)));
+    ObjectRequest orphan;
+    orphan.operation = ObjectOperation::kPut;
+    orphan.kind = ObjectKind::kConversationItem;
+    orphan.scope = access.scope;
+    orphan.id = "item_copy_unrelated";
+    orphan.created_at = cutoff - 1;
+    orphan.ttl_seconds = 0;
+    orphan.data = Parse(R"({"item":{"type":"message","role":"user","content":"old"}})");
+    Q4T_CHECK(Ok(store.Execute(orphan, access.deadline)));
+  }
+  ObjectStore store(f.options);
+  ObjectRequest req;
+  req.kind = ObjectKind::kEnvironment;
+  req.scope = access.scope;
+  req.id = workspace;
+  auto row = store.Execute(req, access.deadline);
+  Q4T_CHECK(Ok(row));
+  const auto& record = *row.value.Find("data");
+  const auto& file = record.Find("resource")->GetArray("files")->array.at(0);
+  Q4T_CHECK(file.GetInt("size_bytes") == static_cast<int64_t>(bytes.size()));
+  const auto* refs = record.GetArray("input_snapshots");
+  Q4T_CHECK(refs && refs->array.size() == 1);
+  auto gc = store.Retention(cutoff, 128, {}, access.deadline);
+  Q4T_CHECK(Ok(gc) && gc.value.GetInt("eligible_objects") == 1 &&
+            gc.value.GetArray("candidates")->array.at(0).GetString("id") == "item_copy_unrelated");
+  auto applied = store.Retention(cutoff, 128, gc.value.GetString("plan_sha256"), access.deadline);
+  Q4T_CHECK(Ok(applied) && applied.value.GetInt("deleted_objects") == 1);
+  std::string got;
+  auto read = [&](const std::string& id, const Json& metadata) {
+    got.clear();
+    return environment_detail::ReadWorkspaceCopy(store, access, id, record, metadata,
+        [&](std::string_view chunk) { got.append(chunk); return ObjectReply{}; });
+  };
+  Q4T_CHECK(Ok(read(workspace, file)) && got == bytes);
+  Q4T_CHECK(!read("environment_other", file).ok() && got.empty());
+  auto changed = file;
+  Set(&changed, "id", Parse("\"file_swap\""));
+  Q4T_CHECK(!read(workspace, changed).ok() && got.empty());
+  InputSnapshotRef ref;
+  Q4T_CHECK(ParseInputSnapshotReference(*refs->array[0].Find("snapshot"), &ref));
+  InputSnapshot private_copy;
+  Q4T_CHECK(Ok(InputSnapshotStore(store).Read(
+      {access.scope,access.deadline,{}}, ref, refs->array[0].GetString("binding_sha256"),
+      InputSnapshotLimits{}, &private_copy)));
+  Q4T_CHECK(private_copy.parts.size() == 2 &&
+            private_copy.parts[0].starts_with("q4t1:") &&
+            private_copy.parts[0].find(std::string(80,'w')) == std::string::npos);
   return true;
 }
 

@@ -26,7 +26,8 @@ class TurnArtifacts {
   void Settle(const ObjectReply& outcome);
 
  private:
-  ObjectReply Stage(const io::Json& file, const io::Json& resource,
+  ObjectReply Stage(const io::Json& file, const io::Json& installed,
+                    const io::Json& workspace, const io::Json& resource,
                     std::vector<ObjectRequest>* writes);
   ObjectStore& objects_;
   BinaryStore binary_;

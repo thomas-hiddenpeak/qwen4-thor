@@ -60,7 +60,8 @@ ObjectReply DeleteSession(ObjectStore& objects, const std::string& id,
     Set(&Field(release.data, "resource"), "status", String("disconnected"));
     // Keep a status receipt after deletion and discard private workspace bytes.
     std::erase_if(release.data.object, [](const auto& field) {
-      return field.first == "sealed_definition" || field.first == "bound_session";
+      return field.first == "sealed_definition" || field.first == "bound_session" ||
+             field.first == "input_snapshots";
     });
     mutations.push_back(std::move(release));
   }

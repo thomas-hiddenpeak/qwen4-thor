@@ -42,33 +42,44 @@ void TurnArtifacts::Settle(const ObjectReply& outcome) {
   if (outcome.ok() || outcome.commit_unknown) stages_.clear();
 }
 
-ObjectReply TurnArtifacts::Stage(const Json& file, const Json& resource,
+ObjectReply TurnArtifacts::Stage(const Json& file, const Json& installed,
+                                 const Json& workspace, const Json& resource,
                                  std::vector<ObjectRequest>* writes) {
-  const auto* data = file.Find("data");
-  if (!data || !data->IsString() || file.GetString("type") != "inline")
-    return Invalid();
-  size_t bytes = 0;
-  if (!io::Base64DecodedSize(data->str, &bytes) ||
-      bytes != static_cast<size_t>(resource.GetInt("size_bytes")))
-    return Invalid();
+  const auto bytes = static_cast<uint64_t>(resource.GetInt("size_bytes"));
   auto& stage = stages_.emplace_back();
   auto access = Access(access_);
   auto result = binary_.Begin(access, bytes, 600, &stage);
   if (!result.ok()) return result;
-  // Interior groups end on complete base64 quartets and fit one binary chunk.
-  constexpr size_t encoded_chunk = kBinaryChunkBytes / 3 * 4;
-  std::string_view encoded(data->str);
-  while (!encoded.empty()) {
-    FileInputSource chunk;
-    chunk.value = encoded.substr(0, encoded_chunk);
-    chunk.param = "outputs";
-    FileInputContent content;
-    FileInputBudget budget;
-    result = ReadLocalFileInput(&objects_, access, chunk, &budget, &content);
+  if (file.GetString("type") == "file_id") {
+    if (installed.GetString("file_id") != file.GetString("file_id"))
+      return Invalid();
+    result = environment_detail::ReadWorkspaceCopy(
+        objects_, access_, resource.GetString("environment_id"), workspace,
+        installed, [&](std::string_view chunk) {
+          return binary_.Append(access, &stage, chunk);
+        });
     if (!result.ok()) return result;
-    result = binary_.Append(access, &stage, content.bytes);
-    if (!result.ok()) return result;
-    encoded.remove_prefix(chunk.value.size());
+  } else {
+    const auto* data = file.Find("data");
+    size_t decoded = 0;
+    if (file.GetString("type") != "inline" || !data || !data->IsString() ||
+        !io::Base64DecodedSize(data->str, &decoded) || decoded != bytes)
+      return Invalid();
+    // Interior groups end on complete base64 quartets and fit one binary chunk.
+    constexpr size_t encoded_chunk = kBinaryChunkBytes / 3 * 4;
+    std::string_view encoded(data->str);
+    while (!encoded.empty()) {
+      FileInputSource chunk;
+      chunk.value = encoded.substr(0, encoded_chunk);
+      chunk.param = "outputs";
+      FileInputContent content;
+      FileInputBudget budget;
+      result = ReadLocalFileInput(&objects_, access, chunk, &budget, &content);
+      if (!result.ok()) return result;
+      result = binary_.Append(access, &stage, content.bytes);
+      if (!result.ok()) return result;
+      encoded.remove_prefix(chunk.value.size());
+    }
   }
   ObjectRequest root;
   root.kind = ObjectKind::kToolRun;
@@ -161,7 +172,7 @@ ObjectReply TurnArtifacts::Prepare(const std::string& session,
                             {"turn_id", *link->Find("id")},
                             {"path", String(path)},
                             {"size_bytes", Number(size)}});
-    auto staged = Stage(*content, resource, writes);
+    auto staged = Stage(*content, file, stored, resource, writes);
     if (!staged.ok()) return staged;
     ids.array.push_back(String(id));
   }

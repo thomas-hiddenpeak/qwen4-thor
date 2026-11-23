@@ -82,10 +82,11 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
   }
 
   std::optional<ObjectRequest> attachment;
+  std::shared_ptr<environment_detail::WorkspaceCopies> copies;
   if (kind == "openai_hosted") {
     auto attached = environment_detail::PrepareAttachment(
         objects, access, *environment, std::string(session_id),
-        *session.Find("vault_ids"), &attachment.emplace());
+        *session.Find("vault_ids"), &attachment.emplace(), &copies);
     if (!attached.ok()) return attached;
     Set(&session, "environment", std::move(attached.value));
   }
@@ -110,7 +111,7 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
   auto secured = agent_detail::SealAgentHttp(objects, access, session_id, private_http, &sealed);
   if (!secured.ok()) return secured;
   *start = {std::move(session), std::move(messages), std::move(sealed),
-            std::move(attachment)};
+            std::move(attachment), std::move(copies)};
   return {};
 }
 }  // namespace q4t::server

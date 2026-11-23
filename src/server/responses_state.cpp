@@ -1,6 +1,7 @@
 #include "q4t/server/responses_state.h"
 
 #include "agent_artifact_internal.h"
+#include "agent_workspace_copy.h"
 
 #include <algorithm>
 #include <array>
@@ -702,6 +703,10 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
       plan->agent_environment_write.reset();
     }
     auto result = objects_.ExecuteBatch(writes, access.deadline, access.cancelled);
+    if (plan->workspace_copies) {
+      plan->workspace_copies->Settle(result);
+      plan->workspace_copies.reset();
+    }
     if (result.ok()) plan->response_revision = 1;
     return result;
   }

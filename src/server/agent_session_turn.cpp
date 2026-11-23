@@ -9,6 +9,7 @@
 #include "q4t/server/input_snapshot_bindings.h"
 
 #include "agent_session_internal.h"
+#include "agent_workspace_copy.h"
 #include "object_protocol.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/conversation_state.h"
@@ -201,6 +202,7 @@ ObjectReply PrepareAgentSessionExecution(
     const ObjectRequest writes[]{std::move(mutation),
                                  std::move(*start.environment_write)};
     result = objects.ExecuteBatch(writes, access.deadline, access.cancelled);
+    if (start.workspace_copies) start.workspace_copies->Settle(result);
     if (result.commit_unknown) result.value = Object({{"id", String(id)}});
   } else {
     auto native = NativeRequest(start);
@@ -214,7 +216,7 @@ ObjectReply PrepareAgentSessionExecution(
       Set(&link, "sealed_http", String(start.sealed_http));
     Field(mutation.data, "turns").array.push_back(std::move(link));
     result = run.BindAgentSession(std::move(mutation),
-                                  std::move(start.environment_write));
+                                  std::move(start.environment_write), std::move(start.workspace_copies));
   }
   if (result.ok()) result.value = std::move(start.session);
   return result;

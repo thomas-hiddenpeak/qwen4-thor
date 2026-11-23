@@ -31,6 +31,7 @@ struct AgentSessionStart {
   io::Json input;
   std::string sealed_http{};
   std::optional<ObjectRequest> environment_write{};
+  std::shared_ptr<environment_detail::WorkspaceCopies> workspace_copies{};
 };
 
 // Prepare the public snapshot and any workspace claim before publication.

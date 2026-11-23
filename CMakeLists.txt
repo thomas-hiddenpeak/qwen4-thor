@@ -558,6 +558,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/agent_environment.cpp
   src/server/agent_environment_files.cpp
   src/server/agent_environment_workspace.cpp
+  src/server/agent_workspace_copy.cpp
   src/server/agent_artifact_capture.cpp
   src/server/agent_artifact_http.cpp
   src/server/agent_session_mcp.cpp

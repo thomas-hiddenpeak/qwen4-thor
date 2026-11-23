@@ -130,7 +130,8 @@ class ResponsesExecution {
   }
   // Trusted service origin. It cannot be changed once execution is published.
   ObjectReply BindAgentSession(ObjectRequest mutation,
-                               std::optional<ObjectRequest> environment = {});
+                               std::optional<ObjectRequest> environment = {},
+                               std::shared_ptr<environment_detail::WorkspaceCopies> workspace_copies = {});
   // Bind only the owned Agent settings for this model step, before preparation.
   void ConfigureAgentMcp(const io::Json& session, std::string sealed_http);
   bool BindRateDomain(ClientRateDomain domain) {

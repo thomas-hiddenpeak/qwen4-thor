@@ -71,15 +71,17 @@ ObjectReply Replay(ObjectStore& objects, const StateAccess& access,
 
 ObjectReply PrepareRecord(ObjectStore& objects, const StateAccess& access,
                           const Json& input, const Json& vaults,
-                          ObjectRequest& resource) {
+                          ObjectRequest& resource,
+                          std::shared_ptr<environment_detail::WorkspaceCopies>* copies) {
   resource.kind = ObjectKind::kEnvironment;
   resource.scope = access.scope;
   resource.id = NewObjectId(resource.kind);
   if (resource.id.empty())
     return Error(503, "environment_id_unavailable", "No environment ID");
   Json config, sealed;
+  *copies = std::make_shared<environment_detail::WorkspaceCopies>(objects, access, resource.id);
   auto prepared = PrepareWorkspace(objects, access, resource.id,
-                                   input, &config);
+                                   input, &config, **copies);
   if (!prepared.ok()) return prepared;
   auto secure = SealDefinition(objects, access, resource.id, config, &sealed);
   if (!secure.ok()) return secure;
@@ -90,6 +92,7 @@ ObjectReply PrepareRecord(ObjectStore& objects, const StateAccess& access,
               {"sealed_definition", std::move(sealed)},
               {"warm_until", Number(std::time(nullptr) + kWarmSeconds)},
               {"vault_ids", vaults}});
+  (*copies)->Bind(&resource.data);
   return prepared;
 }
 
@@ -119,8 +122,9 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
     vaults = *ids;
   }
   ObjectRequest resource;
+  std::shared_ptr<environment_detail::WorkspaceCopies> copies;
   auto prepared = PrepareRecord(objects, access, *body.Find("environment"),
-                                vaults, resource);
+                                vaults, resource, &copies);
   if (!prepared.ok()) return prepared;
   ObjectReply committed;
   if (key.empty()) {
@@ -141,6 +145,7 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
       if (old.http_status != 404) return old;
     }
   }
+  copies->Settle(committed);
   if (committed.commit_unknown)
     committed.value = Object({{"id", *prepared.value.Find("id")}});
   return committed.ok() ? prepared : committed;
@@ -175,7 +180,8 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access, Json query) {
 
 ObjectReply environment_detail::PrepareAttachment(
     ObjectStore& objects, const StateAccess& access, const Json& input,
-    const std::string& session_id, const Json& vaults, ObjectRequest* write) {
+    const std::string& session_id, const Json& vaults, ObjectRequest* write,
+    std::shared_ptr<WorkspaceCopies>* copies) {
   auto& req = *write;
   const auto* existing = input.Find("environment_id");
   if (existing) {
@@ -204,7 +210,7 @@ ObjectReply environment_detail::PrepareAttachment(
     auto checked = CheckAgentVaults(objects, access, *ids);
     if (!checked.ok()) return checked;
   } else {
-    auto prepared = PrepareRecord(objects, access, input, vaults, req);
+    auto prepared = PrepareRecord(objects, access, input, vaults, req, copies);
     if (!prepared.ok()) return prepared;
   }
   const auto* sealed = req.data.Find("sealed_definition");
