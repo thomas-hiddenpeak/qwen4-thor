@@ -1,5 +1,6 @@
 // Development-only extractor. Runtime consumes the generated native type graph;
 // it does not load Node, TypeScript, the SDK, or a network schema service.
+import { addTemplateBounds } from './environment_bounds.mjs';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { readFileSync, realpathSync, writeFileSync } from 'node:fs';
@@ -250,6 +251,7 @@ if (mode === '--api') Object.assign(roots, {
   input_tokens_request: exported(inputTokens, 'InputTokenCountParams'),
   input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
 });
+if (mode === '--environments') addTemplateBounds(nodes, roots);
 const result = {
   profile: mode === '--environments' ? 'q4t-openai-environment-types-v1' :
     mode === '--vault-credentials' ? 'q4t-openai-vault-credential-types-v1' :

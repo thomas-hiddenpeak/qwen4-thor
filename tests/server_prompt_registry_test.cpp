@@ -111,6 +111,38 @@ ObjectReply Api(ObjectStore& store, std::string method, std::string path,
 }
 }  // namespace
 
+Q4T_TEST(environment_template_http_bounds_apply_to_input_and_count_unicode) {
+  using Shape = EnvironmentTemplateShape;
+  auto chinese_name = std::string{};
+  for (int i = 0; i < 256; ++i) chinese_name += "界";
+  for (const auto shape : {Shape::kCreate, Shape::kUpdate}) {
+    ChatPlanError error;
+    const auto accepts = [&](const Json& value) {
+      return ValidateEnvironmentTemplate(value, shape, &error).ok();
+    };
+    auto definition = Parse(R"({"name":null,"setup_commands":[{"command":""}]})");
+    Q4T_CHECK(accepts(definition));
+    Set(&definition, "name", Parse("\"" + chinese_name + "\""));
+    Q4T_CHECK(accepts(definition));
+    Set(&definition, "name", Parse("\"" + chinese_name + "界\""));
+    Q4T_CHECK(!accepts(definition) && error.param == "name");
+    Q4T_CHECK(!accepts(Parse(R"({"name":""})")));
+    Q4T_CHECK(!accepts(Parse(R"({"env":{"":"private"}})")));
+    Q4T_CHECK(accepts(Parse(R"({"env":{"项目":"private"}})")));
+    auto commands = Parse("[]");
+    for (int i = 0; i < 16; ++i) commands.array.push_back(Parse(R"({"command":""})"));
+    Set(&definition, "name", {});
+    Set(&definition, "setup_commands", commands);
+    Q4T_CHECK(accepts(definition));
+    commands.array.push_back(commands.array.front());
+    Set(&definition, "setup_commands", commands);
+    Q4T_CHECK(!accepts(definition) && error.param == "setup_commands");
+    Q4T_CHECK(ValidateEnvironmentTemplate(
+        definition, Shape::kStoredDefinition, &error));
+  }
+  return true;
+}
+
 Q4T_TEST(environment_template_seals_private_inputs_and_preserves_patch_semantics) {
   Fixture f;
   const std::string root = "/v1/agents/environments/templates";
@@ -126,7 +158,7 @@ Q4T_TEST(environment_template_seals_private_inputs_and_preserves_patch_semantics
           "packages":{"python":["pinned-package"]}})", Access());
     Q4T_CHECK(Ok(created));
     id = created.value.GetString("id");
-    Q4T_CHECK(id.starts_with("environment_template_") &&
+    Q4T_CHECK(created.http_status == 201 && id.starts_with("environment_template_") &&
               created.value.GetString("object") == "agent.environment.template");
     auto wire = OutputJson(created.value);
     for (const auto* confidential : {"private-environment-value", "private-setup-token",
@@ -155,7 +187,7 @@ Q4T_TEST(environment_template_seals_private_inputs_and_preserves_patch_semantics
     return HandleEnvironmentTemplate(objects, method, route, body, access);
   };
   auto updated = call("POST", path, R"({"name":"new","desktop":{"enabled":true}})");
-  Q4T_CHECK(Ok(updated) && updated.value.GetString("name") == "new" &&
+  Q4T_CHECK(Ok(updated) && updated.http_status == 200 && updated.value.GetString("name") == "new" &&
             updated.value.GetArray("files")->array.size() == 1 &&
             updated.value.Find("desktop")->GetBool("enabled"));
   for (const char* bad : {
@@ -168,6 +200,15 @@ Q4T_TEST(environment_template_seals_private_inputs_and_preserves_patch_semantics
            R"({"network":{"access":"restricted","allowed_domains":["a.org"],"blocked_domains":["b.org"]}})",
            R"({"packages":{"python":"unexpected"}})"})
     Q4T_CHECK(call("POST", path, bad).http_status == 400);
+  for (const bool reverse : {false, true}) {
+    auto files = Parse(R"([{"type":"inline","data":"","path":"/workspace/a"},
+                           {"type":"inline","data":"","path":"/workspace/a.extra"},
+                           {"type":"inline","data":"","path":"/workspace/a/b"}])");
+    if (reverse) std::reverse(files.array.begin(), files.array.end());
+    auto request = Parse("{}");
+    Set(&request, "files", files);
+    Q4T_CHECK(call("POST", path, OutputJson(request)).http_status == 400);
+  }
   Q4T_CHECK(OutputJson(call("GET", path).value) == OutputJson(updated.value));
   auto reset = call("POST", path, R"({"name":null,"files":null,"desktop":null,"network":null})");
   Q4T_CHECK(Ok(reset) && reset.value.Find("name")->IsNull() &&

@@ -16612,5 +16612,14 @@
     "network_evidence": "evidence/serve-agent-environments-20261124/template-network.json",
     "profiles": "evidence/serve-agent-environments-20261124/profiles.json",
     "delivery": "evidence/serve-agent-environments-20261124/delivery.json"
+  },
+  "method_audit_20261124": {
+    "evidence": "evidence/serve-method-contracts-20261124/README.md",
+    "official_methods_on_scoped_paths": 232,
+    "declared_rev450": 118,
+    "missing_declarations": 114,
+    "exact_success_declarations_rev450": 112,
+    "exact_success_declarations_candidate": 117,
+    "publication": "rev450 default; five 201 fixes verified on candidate"
   }
 }

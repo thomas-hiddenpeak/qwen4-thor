@@ -1,0 +1,3246 @@
+{
+  "sources_sha256": {
+    "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+    "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "issued": "d1b7621e997bfb9654f4f5ca3854a7ffb4dd51d92055e0fe7948a6b3fde78dab"
+  },
+  "measurement": "Declared methods and HTTP success responses only. Runtime behavior requires independent evidence.",
+  "required_methods": 232,
+  "declared": 118,
+  "missing_declaration": 114,
+  "declared_with_different_success": 6,
+  "exact_success_declarations": 112,
+  "rows": [
+    {
+      "method": "GET",
+      "path": "/agents",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents/automations",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/automations",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/automations/{automation_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/agents/automations/{automation_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/agents/automations/{automation_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/agents/automations/{automation_id}/invocations",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/automations/{automation_id}/invocations",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/automations/{automation_id}/invocations/{invocation_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/agents/automations/{automation_id}/pause",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/agents/automations/{automation_id}/resume",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/environments",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/agents/environments",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/environments/templates",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents/environments/templates",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/environments/templates/{environment_template_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents/environments/templates/{environment_template_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/agents/environments/templates/{environment_template_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/environments/{environment_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/environments/{environment_id}/files",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/agents/environments/{environment_id}/files",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents/sessions",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents/sessions/{session_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/agents/sessions/{session_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/artifacts",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/artifacts/{artifact_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/agents/sessions/{session_id}/artifacts/{artifact_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/artifacts/{artifact_id}/content",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/events",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents/sessions/{session_id}/events",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "202"
+      ],
+      "issued_success": [
+        "202"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/items",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/subagents",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/items",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/traces",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/turns",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/turns/{turn_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/sessions/{session_id}/turns/{turn_id}/items",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/agents/{agent_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents/{agent_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/agents/{agent_id}",
+      "tasks": [
+        "A08",
+        "A11",
+        "A12"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/assistants",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/assistants",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/assistants/{assistant_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/assistants/{assistant_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/assistants/{assistant_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/audio/speech",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/audio/transcriptions",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/audio/translations",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/audio/voice_consents",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/audio/voice_consents",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/audio/voice_consents/{consent_id}",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/audio/voice_consents/{consent_id}",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/audio/voice_consents/{consent_id}",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/audio/voices",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/audio/voices/{voice_id}",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/batches",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/batches",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/batches/{batch_id}",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/batches/{batch_id}/cancel",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/chat/completions",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/chat/completions",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/chat/completions/{completion_id}",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/chat/completions/{completion_id}",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/chat/completions/{completion_id}",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/chat/completions/{completion_id}/messages",
+      "tasks": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/chatkit/sessions",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/chatkit/sessions/{session_id}/cancel",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/chatkit/threads",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/chatkit/threads/{thread_id}",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/chatkit/threads/{thread_id}",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/chatkit/threads/{thread_id}/items",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/completions",
+      "tasks": [
+        "A06"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/containers",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/containers",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/containers/{container_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/containers/{container_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/containers/{container_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/containers/{container_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/containers/{container_id}/files/{file_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/containers/{container_id}/files/{file_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/containers/{container_id}/files/{file_id}/content",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/content_provenance_checks",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/conversations",
+      "tasks": [
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/conversations/{conversation_id}",
+      "tasks": [
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/conversations/{conversation_id}",
+      "tasks": [
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/conversations/{conversation_id}",
+      "tasks": [
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/conversations/{conversation_id}/items",
+      "tasks": [
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/conversations/{conversation_id}/items",
+      "tasks": [
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/conversations/{conversation_id}/items/{item_id}",
+      "tasks": [
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/conversations/{conversation_id}/items/{item_id}",
+      "tasks": [
+        "A08"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/decisions",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/embeddings",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/evals",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/evals",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/evals/{eval_id}",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/evals/{eval_id}",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/evals/{eval_id}",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/evals/{eval_id}/runs",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/evals/{eval_id}/runs",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/evals/{eval_id}/runs/{run_id}",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/evals/{eval_id}/runs/{run_id}",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/evals/{eval_id}/runs/{run_id}/cancel",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}",
+      "tasks": [
+        "A10",
+        "Q01"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/files",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/files",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/files/{file_id}",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/files/{file_id}",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/files/{file_id}/content",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/images/edits",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/images/generations",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/images/variations",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/live/sessions",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": [
+        "201"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/live/sessions/{session_id}/accept",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/live/sessions/{session_id}/content",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/live/sessions/{session_id}/fork",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": [
+        "201"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/live/sessions/{session_id}/hangup",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/live/sessions/{session_id}/refer",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/live/sessions/{session_id}/reject",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/models",
+      "tasks": [
+        "A06"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/models/{model}",
+      "tasks": [
+        "A06"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/models/{model}",
+      "tasks": [
+        "A06"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/moderations",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/calls",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": [
+        "201"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/calls/{call_id}/accept",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/calls/{call_id}/hangup",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/calls/{call_id}/refer",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/calls/{call_id}/reject",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/client_secrets",
+      "tasks": [
+        "A10"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/sessions",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/transcription_sessions",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/translations/client_secrets",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/responses",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/responses/compact",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/responses/compact?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/responses/input_tokens",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/responses/input_tokens?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/responses/{response_id}",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/responses/{response_id}",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/responses/{response_id}/cancel",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/responses/{response_id}/cancel?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/responses/{response_id}/input_items",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/responses/{response_id}/input_items?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/responses/{response_id}?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/responses/{response_id}?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/responses?beta=true",
+      "tasks": [
+        "A07",
+        "A08",
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/safety/alerts/{id}",
+      "tasks": [
+        "A10",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/safety/cases/{id}",
+      "tasks": [
+        "A10",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/skills",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/skills",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/skills/{skill_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/skills/{skill_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/skills/{skill_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/skills/{skill_id}/content",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/skills/{skill_id}/versions",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/skills/{skill_id}/versions",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/skills/{skill_id}/versions/{version}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/skills/{skill_id}/versions/{version}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/skills/{skill_id}/versions/{version}/content",
+      "tasks": [
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/threads",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/threads/runs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/threads/{thread_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/threads/{thread_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/threads/{thread_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/threads/{thread_id}/messages",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/threads/{thread_id}/messages",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/threads/{thread_id}/messages/{message_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/threads/{thread_id}/messages/{message_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/threads/{thread_id}/messages/{message_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/threads/{thread_id}/runs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/threads/{thread_id}/runs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/threads/{thread_id}/runs/{run_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/threads/{thread_id}/runs/{run_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/threads/{thread_id}/runs/{run_id}/cancel",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/threads/{thread_id}/runs/{run_id}/steps",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/threads/{thread_id}/runs/{run_id}/steps/{step_id}",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+      "tasks": [
+        "A08",
+        "A11"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/uploads",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/uploads/{upload_id}/cancel",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/uploads/{upload_id}/complete",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/uploads/{upload_id}/parts",
+      "tasks": [
+        "A09"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vaults",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vaults",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vaults/{vault_id}",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vaults/{vault_id}",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/vaults/{vault_id}",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vaults/{vault_id}/credentials",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vaults/{vault_id}/credentials",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "201"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vaults/{vault_id}/credentials/{credential_id}",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vaults/{vault_id}/credentials/{credential_id}",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/vaults/{vault_id}/credentials/{credential_id}",
+      "tasks": [
+        "A11",
+        "N04"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vector_stores",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vector_stores/{vector_store_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/vector_stores/{vector_store_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}/file_batches",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vector_stores/{vector_store_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}/files",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}/content",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}/search",
+      "tasks": [
+        "A11"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/videos",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/videos",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/videos/characters",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/videos/characters/{character_id}",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/videos/edits",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/videos/extensions",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/videos/{video_id}",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/videos/{video_id}",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/videos/{video_id}/content",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/videos/{video_id}/remix",
+      "tasks": [
+        "A10"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/webhook_endpoints",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/webhook_endpoints",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/webhook_endpoints/{webhook_endpoint_id}",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/webhook_endpoints/{webhook_endpoint_id}",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "DELETE",
+      "path": "/webhook_endpoints/{webhook_endpoint_id}",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/webhook_endpoints/{webhook_endpoint_id}/rotate_secret",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "POST",
+      "path": "/webhook_endpoints/{webhook_endpoint_id}/test",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    },
+    {
+      "method": "GET",
+      "path": "/webhook_event_types",
+      "tasks": [
+        "A08",
+        "A12"
+      ],
+      "declared": false,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    }
+  ]
+}

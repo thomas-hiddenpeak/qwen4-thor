@@ -627,7 +627,7 @@ bool WriteAll(int fd, const char* data, size_t len,
 }
 
 bool BeginStreamingResponse(int fd, ResponseState* state,
-                            const WriteOptions& options) {
+                            const WriteOptions& options, StreamStatus status) {
   auto* context = HttpResponseContext::Current(fd);
   if (context && context->CapturesResponses()) {
     if (state != context->State() ||
@@ -644,8 +644,11 @@ bool BeginStreamingResponse(int fd, ResponseState* state,
   }
   if (context && !context->Http11()) context->SetKeepAlive(false, false);
   const bool persistent = context && context->KeepAlive();
-  const std::string header =
-      "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
+  const std::string status_line = status == StreamStatus::kCreated
+                                      ? "HTTP/1.1 201 Created\r\n"
+                                      : "HTTP/1.1 200 OK\r\n";
+  const std::string header = status_line +
+      "Content-Type: text/event-stream\r\n"
       "Cache-Control: no-cache\r\nX-Accel-Buffering: no\r\n" +
       RequestIdHeader(fd) +
       (persistent ? "Connection: keep-alive\r\nTransfer-Encoding: chunked\r\n\r\n"

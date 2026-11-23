@@ -59,6 +59,25 @@ bool Decode(std::string_view wire, std::string* decoded) {
 }
 }  // namespace
 
+Q4T_TEST(http_session_created_and_subscription_streams_keep_distinct_statuses) {
+  for (auto status : {StreamStatus::kCreated, StreamStatus::kOk}) {
+    Pair pair;
+    HttpResponseContext context(pair.fd[0]);
+    context.SetKeepAlive(true);
+    Q4T_CHECK(BeginStreamingResponse(pair.fd[0], context.State(), {}, status));
+    Q4T_CHECK(WriteAll(pair.fd[0], "data: {}\n\n"));
+    *context.State() = ResponseState::kComplete;
+    Q4T_CHECK(context.FinishResponse());
+    const auto wire = pair.Take();
+    Q4T_CHECK(wire.starts_with(status == StreamStatus::kCreated
+                                   ? "HTTP/1.1 201 Created\r\n"
+                                   : "HTTP/1.1 200 OK\r\n"));
+    std::string decoded;
+    Q4T_CHECK(Decode(wire, &decoded) && decoded == "data: {}\n\n");
+  }
+  return true;
+}
+
 Q4T_TEST(http_session_json_error_reuse_has_new_context) {
   Pair pair;
   std::string previous;

@@ -1,0 +1,362 @@
+{
+  "official_revision": {
+    "date": "2026-11-07T19:24:53Z",
+    "sha": "926a7b8133226630bac025350e84b0ca5c31d45a"
+  },
+  "baseline": {
+    "path": "docs/evidence/serve-method-contracts-20261124/rev450-methods.json",
+    "sha256": "f923d5531be97043d67f7ec1bc076d08b2781abb2ee21dc3e1d617f6cace9d50"
+  },
+  "candidate_sources": {
+    "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+    "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "issued": "9d30ad386b0c2dabc35620978f5dab8d0cafd1a86bebd1f14adf2e098d4ca335"
+  },
+  "expected_five_creations": [
+    {
+      "method": "POST",
+      "path": "/agents",
+      "previous": [
+        "200"
+      ],
+      "candidate": [
+        "201"
+      ],
+      "expected": [
+        "201"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents/environments/templates",
+      "previous": [
+        "200"
+      ],
+      "candidate": [
+        "201"
+      ],
+      "expected": [
+        "201"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/agents/sessions",
+      "previous": [
+        "200"
+      ],
+      "candidate": [
+        "201"
+      ],
+      "expected": [
+        "201"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vaults",
+      "previous": [
+        "200"
+      ],
+      "candidate": [
+        "201"
+      ],
+      "expected": [
+        "201"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/vaults/{vault_id}/credentials",
+      "previous": [
+        "200"
+      ],
+      "candidate": [
+        "201"
+      ],
+      "expected": [
+        "201"
+      ]
+    }
+  ],
+  "distinct_remaining_declaration": [
+    {
+      "method": "DELETE",
+      "path": "/models/{model}",
+      "tasks": [
+        "A06"
+      ],
+      "declared": true,
+      "expected_success": [
+        "200"
+      ],
+      "issued_success": []
+    }
+  ],
+  "wire": {
+    "sdk": "7.47.0",
+    "operations": 5,
+    "templates": 2,
+    "pages": 2,
+    "inline_bytes": 57,
+    "owned_file": true,
+    "foreign_file": 404,
+    "private_fields_omitted": true,
+    "foreign_read": 404,
+    "foreign_delete": 404,
+    "deleted_get": 404,
+    "invalid_update": 400,
+    "agent_create": 201,
+    "vault_create": 201,
+    "credential_create": 201,
+    "session_create": 201,
+    "session_stream_create": 201,
+    "session_events": 13,
+    "create_status": 201,
+    "update_status": 200,
+    "rejected_bounds_and_paths": 6,
+    "rejected_network_policies": 3,
+    "exact_blocked_domain": true,
+    "chat": "42"
+  },
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 38.547,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "schema_checks": {
+    "passed": 32,
+    "reference_and_local_match": true,
+    "rows": [
+      {
+        "operation": "create",
+        "example": "null_name",
+        "accepted": true
+      },
+      {
+        "operation": "create",
+        "example": "empty_name",
+        "accepted": false
+      },
+      {
+        "operation": "create",
+        "example": "unicode_at",
+        "accepted": true
+      },
+      {
+        "operation": "create",
+        "example": "unicode_over",
+        "accepted": false
+      },
+      {
+        "operation": "create",
+        "example": "files_at",
+        "accepted": true
+      },
+      {
+        "operation": "create",
+        "example": "files_over",
+        "accepted": false
+      },
+      {
+        "operation": "create",
+        "example": "commands_at",
+        "accepted": true
+      },
+      {
+        "operation": "create",
+        "example": "commands_over",
+        "accepted": false
+      },
+      {
+        "operation": "create",
+        "example": "map_key_empty",
+        "accepted": false
+      },
+      {
+        "operation": "create",
+        "example": "map_at",
+        "accepted": true
+      },
+      {
+        "operation": "create",
+        "example": "map_over",
+        "accepted": false
+      },
+      {
+        "operation": "create",
+        "example": "map_value_over",
+        "accepted": false
+      },
+      {
+        "operation": "create",
+        "example": "blocked_at",
+        "accepted": true
+      },
+      {
+        "operation": "create",
+        "example": "blocked_over",
+        "accepted": false
+      },
+      {
+        "operation": "create",
+        "example": "skill_id_empty",
+        "accepted": false
+      },
+      {
+        "operation": "create",
+        "example": "package_text_over",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "null_name",
+        "accepted": true
+      },
+      {
+        "operation": "update",
+        "example": "empty_name",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "unicode_at",
+        "accepted": true
+      },
+      {
+        "operation": "update",
+        "example": "unicode_over",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "files_at",
+        "accepted": true
+      },
+      {
+        "operation": "update",
+        "example": "files_over",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "commands_at",
+        "accepted": true
+      },
+      {
+        "operation": "update",
+        "example": "commands_over",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "map_key_empty",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "map_at",
+        "accepted": true
+      },
+      {
+        "operation": "update",
+        "example": "map_over",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "map_value_over",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "blocked_at",
+        "accepted": true
+      },
+      {
+        "operation": "update",
+        "example": "blocked_over",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "skill_id_empty",
+        "accepted": false
+      },
+      {
+        "operation": "update",
+        "example": "package_text_over",
+        "accepted": false
+      }
+    ]
+  },
+  "upstream_bounds_fields": 25,
+  "cpu": {
+    "method-status-host-templates.log": {
+      "path": ".q4t-work/serve-responses-agents-20261123/method-status-host-templates.log",
+      "sha256": "e846d3513a47f3328a874950070dc41912aa087217da1b982694764eea3cd4a3"
+    },
+    "method-status-host-stream.log": {
+      "path": ".q4t-work/serve-responses-agents-20261123/method-status-host-stream.log",
+      "sha256": "8da1c17074441411bf90e49212f4124a66c56eb13ef7248302401b4ecabace59"
+    },
+    "method-status-scope-tests.log": {
+      "path": ".q4t-work/serve-responses-agents-20261123/method-status-scope-tests.log",
+      "sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
+    },
+    "method-status-audit.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/method-status-audit.json",
+      "sha256": "f3f0d583c29bfa15ec6fe478a8e29cf241d7c3515c60de749bd3db412a7ff9c7"
+    }
+  },
+  "failures": [
+    {
+      "result": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 37.378,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "source": {
+        "path": ".q4t-work/serve-responses-agents-20261123/method-status-business-01/result.json",
+        "sha256": "60bba4ca1eff778e8ad26abe891c32ae1eac8136045ea63c179aa8adfa5d3fc8"
+      },
+      "cause": "Fixture assumed a flat session_id on session resource events. The SDK distinguishes nested session.id on resource events and direct session_id on turn events. HTTP 201 had already been observed. Corrected fixture and kept its negative evidence."
+    }
+  ],
+  "artifacts": {
+    "method-status-lease-02/exit.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/method-status-lease-02/exit.json",
+      "sha256": "1d07ab3ef5768d263875c5b1e77ae805993c164b21cc8143394e0c5b036e683a"
+    },
+    "method-status-business-02/result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/method-status-business-02/result.json",
+      "sha256": "0f7b8cf65599fec2e476b85b01fe52840fc1e3a99e0e365310bba2094278fb4a"
+    },
+    "method-status-business-02/create/sdk-result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/method-status-business-02/create/sdk-result.json",
+      "sha256": "6bff8aaa1f9807ec49f88a6403bfee89a1d2186bb2c48f6a3876195fae0089ef"
+    },
+    "method-status-business-02/plan.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/method-status-business-02/plan.json",
+      "sha256": "3e3ebfe65e828f5f44a2c0da63d9019ea4884d4a286aad7f90779316360ef10d"
+    },
+    "method-status-schema.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/method-status-schema.json",
+      "sha256": "e238bee27a6746949e0eeb2dbc73b84a90b96389202f53b60caf83a4a1b87c38"
+    },
+    "official-methods/openapi.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/official-methods/openapi.json",
+      "sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+    },
+    "official-methods/candidate.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/official-methods/candidate.json",
+      "sha256": "545e4e964c3dedf388f515c83eccef771da1c58c4b6530e35b29ae4b0426569f"
+    }
+  }
+}

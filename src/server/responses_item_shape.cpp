@@ -69,7 +69,8 @@ struct Failure {
 };
 class Validator {
  public:
-  explicit Validator(const Json& nodes) : nodes_(nodes.array) {}
+  Validator(const Json& nodes, bool field_bounds)
+      : nodes_(nodes.array), field_bounds_(field_bounds) {}
   bool Match(int64_t index, const Json& value, const std::string& path,
              size_t depth, Failure* failure) {
     if (++work_ > 2 * 1024 * 1024 || depth > 64)
@@ -155,6 +156,12 @@ class Validator {
         const auto child = field == fields->array.end()
                                ? additional->AsInt(-1)
                                : field->GetInt("type", -1);
+        if (field_bounds_ && field != fields->array.end()) {
+          const auto* bounds = field->Find("bounds");
+          if (bounds && !WithinBounds(item, *bounds))
+            return Fail(FieldPath(path, name), "Field exceeds its size bounds",
+                        failure);
+        }
         if (!Match(child, item, FieldPath(path, name), depth + 1, failure))
           return false;
       }
@@ -170,6 +177,36 @@ class Validator {
   }
 
  private:
+  static bool TextWithinBounds(std::string_view text, const Json& bounds) {
+    // UTF-8 was validated by the request parser. Schema lengths count scalars.
+    const auto count = std::count_if(text.begin(), text.end(),
+        [](unsigned char byte) { return (byte & 0xc0) != 0x80; });
+    return count >= bounds.GetInt("minLength") &&
+           count <= bounds.GetInt("maxLength");
+  }
+  static bool WithinBounds(const Json& item, const Json& bounds) {
+    if (item.IsString() && bounds.Has("maxLength"))
+      return TextWithinBounds(item.str, bounds);
+    if (item.IsArray()) {
+      if (item.array.size() > static_cast<size_t>(bounds.GetInt("maxItems")))
+        return false;
+      const auto* elements = bounds.Find("items");
+      return !elements || std::ranges::all_of(item.array, [&](const Json& v) {
+        return !v.IsString() || TextWithinBounds(v.str, *elements);
+      });
+    }
+    if (item.IsObject() && bounds.Has("maxProperties")) {
+      if (item.object.size() > static_cast<size_t>(bounds.GetInt("maxProperties")))
+        return false;
+      const auto& names = *bounds.Find("propertyNames");
+      const auto& values = *bounds.Find("additionalProperties");
+      return std::ranges::all_of(item.object, [&](const auto& entry) {
+        return TextWithinBounds(entry.first, names) &&
+               (!entry.second.IsString() || TextWithinBounds(entry.second.str, values));
+      });
+    }
+    return true;  // Nullability and field types are checked by the SDK graph.
+  }
   static bool Fail(const std::string& path, std::string message,
                    Failure* failure, bool resource = false) {
     *failure = {path, std::move(message), resource, false};
@@ -180,17 +217,19 @@ class Validator {
     return false;
   }
   const std::vector<Json>& nodes_;
+  bool field_bounds_;
   size_t work_ = 0;
 };
 Status Validate(const Graph& graph, const Json& item, const char* root,
-                ChatPlanError* error, std::string_view path) {
+                ChatPlanError* error, std::string_view path,
+                bool field_bounds = false) {
   if (!error) return Status::Fail("Missing item validation error owner");
   *error = {};
   if (!graph.status) {
     *error = {"item_contract_unavailable", std::string(path), 503};
     return graph.status;
   }
-  Validator validator(*graph.value.GetArray("nodes"));
+  Validator validator(*graph.value.GetArray("nodes"), field_bounds);
   Failure failure;
   if (validator.Match(graph.value.Find("roots")->GetInt(root, -1), item,
                       std::string(path), 0, &failure))
@@ -224,11 +263,14 @@ Status ValidateEnvironmentTemplate(const Json& value, EnvironmentTemplateShape s
                            "q4t-openai-environment-types-v1");
   const char* root = "";
   switch (shape) {
+    case EnvironmentTemplateShape::kStoredDefinition:
     case EnvironmentTemplateShape::kCreate: root = "template_create"; break;
     case EnvironmentTemplateShape::kUpdate: root = "template_update"; break;
     case EnvironmentTemplateShape::kResource: root = "template_resource"; break;
   }
-  return Validate(graph, value, root, error, "");
+  const bool incoming = shape == EnvironmentTemplateShape::kCreate ||
+                        shape == EnvironmentTemplateShape::kUpdate;
+  return Validate(graph, value, root, error, "", incoming);
 }
 
 Status ValidateAgentSession(const Json& value, AgentSessionShape shape,

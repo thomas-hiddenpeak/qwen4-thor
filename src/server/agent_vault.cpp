@@ -268,7 +268,11 @@ ObjectReply HandleAgentVault(ObjectStore& store, std::string_view method,
   auto saved = execute();
   if (saved.commit_unknown) saved.value = Object({{"id", String(req.id)}});
   if (!saved.ok()) return saved;
-  if (method != "DELETE") return Public(row);
+  if (method != "DELETE") {
+    auto result = Public(row);
+    if (result.ok() && create) result.http_status = 201;
+    return result;
+  }
   saved.value = Object({{"object", String("vault.deleted")},
                         {"id", String(req.id)},
                         {"deleted", Boolean(true)}});

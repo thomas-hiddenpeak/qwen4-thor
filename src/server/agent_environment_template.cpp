@@ -1,7 +1,7 @@
 #include "q4t/server/agent_environment.h"
 
 #include <ctime>
-#include <unordered_set>
+#include <set>
 
 #include "file_fetch_internal.h"
 #include "object_protocol.h"
@@ -69,7 +69,7 @@ bool WorkspaceFile(std::string_view path) {
 ObjectReply Project(const Json& config, const std::string& id, int64_t created,
                     int64_t updated) {
   auto files = Or(config, "files", Array());
-  std::unordered_set<std::string> paths;
+  std::set<std::string> paths;
   for (auto& file : files.array) {
     const auto path = file.GetString("path");
     if (!WorkspaceFile(path) || !paths.insert(path).second)
@@ -82,6 +82,14 @@ ObjectReply Project(const Json& config, const std::string& id, int64_t created,
                      {"path", String(path)},
                      {"size_bytes", Number(size)}});
     }
+  }
+  // A regular file cannot also be an ancestor directory. Check both orders
+  // after collecting all paths so replacing a whole file list is atomic.
+  for (const auto& path : paths) {
+    const std::string prefix = path + '/';
+    const auto child = paths.lower_bound(prefix);
+    if (child != paths.end() && child->starts_with(prefix))
+      return Invalid("A workspace file is also used as a directory", "files");
   }
   auto plugins = Or(config, "plugins", Array());
   auto skills = Or(config, "skills", Array());
@@ -250,7 +258,7 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
     if (!opened.ok()) return opened;
     ChatPlanError error;
     if (!io::ParseJson(raw, &config, true, kSchemaJsonLimits) ||
-        !ValidateEnvironmentTemplate(config, EnvironmentTemplateShape::kCreate,
+        !ValidateEnvironmentTemplate(config, EnvironmentTemplateShape::kStoredDefinition,
                                      &error))
       return InvalidRecord();
   }
@@ -278,6 +286,8 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
   auto committed = execute();
   if (committed.commit_unknown)
     committed.value = Object({{"id", String(req.id)}});
-  return committed.ok() ? projected : committed;
+  if (!committed.ok()) return committed;
+  if (collection) projected.http_status = 201;
+  return projected;
 }
 }  // namespace q4t::server

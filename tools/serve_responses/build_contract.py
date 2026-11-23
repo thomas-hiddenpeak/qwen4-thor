@@ -57,7 +57,7 @@ def graph_definitions(graph, prefix='', roots=None):
             value = dict(type='array', prefixItems=[node_ref(i) for i in node['elements']],
                          minItems=node['required'], maxItems=len(node['elements']))
         elif kind == 'object':
-            value = obj({f['name']: node_ref(f['type']) for f in node['fields']},
+            value = obj({f['name']: {**node_ref(f['type']), **f.get('bounds', {})} for f in node['fields']},
                         [f['name'] for f in node['fields'] if not f['optional']])
             if node['additional'] is not None:
                 value['additionalProperties'] = node_ref(node['additional'])
@@ -563,8 +563,12 @@ def add_openapi(paths, response, error):
             parameters.append(dict(name='Idempotency-Key', **{'in': 'header'}, required=False,
                 schema=dict(type='string', minLength=1, maxLength=255, pattern=r'^[!-+\--~]+$')))
 
+        success_code = '202' if accepted else '200'
+        if body in {'agents_create', 'agent_session_create', 'vault_create',
+                    'credential_create', 'hosted_template_create'}:
+            success_code = '201'
         operation = dict(operationId=method+'_'+path.strip('/').replace('/', '_').replace('{', '').replace('}', ''),
-            parameters=parameters, responses={'202' if accepted else '200': success,
+            parameters=parameters, responses={success_code: success,
                 'default': response(error, 'Native error; unknown/other-client identities return 404')},
             **{'x-q4t-query-contract': query_contract,
                'x-q4t-body-contract': body or 'empty body only'})

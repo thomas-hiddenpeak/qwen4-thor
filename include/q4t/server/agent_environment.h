@@ -4,7 +4,7 @@
 #include "q4t/server/responses_state.h"
 
 namespace q4t::server {
-enum class EnvironmentTemplateShape { kCreate, kUpdate, kResource };
+enum class EnvironmentTemplateShape { kCreate, kUpdate, kResource, kStoredDefinition };
 Status ValidateEnvironmentTemplate(const io::Json& value,
                                    EnvironmentTemplateShape shape,
                                    ChatPlanError* error);

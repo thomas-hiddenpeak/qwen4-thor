@@ -23411,20 +23411,37 @@
       "type": "object",
       "properties": {
         "capability_directories": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         },
         "desktop": {
           "$ref": "#/$defs/hosted_5"
         },
         "env": {
           "$ref": "#/$defs/hosted_8",
+          "additionalProperties": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxProperties": 1024,
+          "propertyNames": {
+            "maxLength": 256,
+            "minLength": 1
+          },
           "writeOnly": true
         },
         "files": {
-          "$ref": "#/$defs/hosted_10"
+          "$ref": "#/$defs/hosted_10",
+          "maxItems": 50
         },
         "name": {
-          "$ref": "#/$defs/hosted_17"
+          "$ref": "#/$defs/hosted_17",
+          "maxLength": 256,
+          "minLength": 1
         },
         "network": {
           "$ref": "#/$defs/hosted_18"
@@ -23433,14 +23450,17 @@
           "$ref": "#/$defs/hosted_24"
         },
         "plugins": {
-          "$ref": "#/$defs/hosted_26"
+          "$ref": "#/$defs/hosted_26",
+          "maxItems": 32
         },
         "setup_commands": {
           "$ref": "#/$defs/hosted_32",
+          "maxItems": 16,
           "writeOnly": true
         },
         "skills": {
-          "$ref": "#/$defs/hosted_35"
+          "$ref": "#/$defs/hosted_35",
+          "maxItems": 200
         }
       },
       "required": [],
@@ -23541,10 +23561,14 @@
       "type": "object",
       "properties": {
         "file_id": {
-          "$ref": "#/$defs/hosted_4"
+          "$ref": "#/$defs/hosted_4",
+          "maxLength": 256,
+          "minLength": 1
         },
         "path": {
-          "$ref": "#/$defs/hosted_4"
+          "$ref": "#/$defs/hosted_4",
+          "maxLength": 4096,
+          "minLength": 1
         },
         "type": {
           "$ref": "#/$defs/hosted_14"
@@ -23565,10 +23589,14 @@
       "properties": {
         "data": {
           "$ref": "#/$defs/hosted_4",
+          "maxLength": 6990508,
+          "minLength": 0,
           "writeOnly": true
         },
         "path": {
-          "$ref": "#/$defs/hosted_4"
+          "$ref": "#/$defs/hosted_4",
+          "maxLength": 4096,
+          "minLength": 1
         },
         "type": {
           "$ref": "#/$defs/hosted_16"
@@ -23611,10 +23639,20 @@
           "$ref": "#/$defs/hosted_20"
         },
         "allowed_domains": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         },
         "blocked_domains": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 100
         }
       },
       "required": [
@@ -23686,13 +23724,28 @@
       "type": "object",
       "properties": {
         "npm": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         },
         "python": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         },
         "system": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         }
       },
       "required": [],
@@ -23718,10 +23771,14 @@
       "type": "object",
       "properties": {
         "description": {
-          "$ref": "#/$defs/hosted_4"
+          "$ref": "#/$defs/hosted_4",
+          "maxLength": 1048576,
+          "minLength": 0
         },
         "name": {
-          "$ref": "#/$defs/hosted_4"
+          "$ref": "#/$defs/hosted_4",
+          "maxLength": 64,
+          "minLength": 1
         },
         "source": {
           "$ref": "#/$defs/hosted_29",
@@ -23744,6 +23801,8 @@
       "properties": {
         "data": {
           "$ref": "#/$defs/hosted_4",
+          "maxLength": 70254592,
+          "minLength": 1,
           "writeOnly": true
         },
         "media_type": {
@@ -23786,10 +23845,14 @@
       "type": "object",
       "properties": {
         "command": {
-          "$ref": "#/$defs/hosted_4"
+          "$ref": "#/$defs/hosted_4",
+          "maxLength": 65536,
+          "minLength": 0
         },
         "cwd": {
-          "$ref": "#/$defs/hosted_17"
+          "$ref": "#/$defs/hosted_17",
+          "maxLength": 4096,
+          "minLength": 0
         }
       },
       "required": [
@@ -23827,13 +23890,17 @@
       "type": "object",
       "properties": {
         "skill_id": {
-          "$ref": "#/$defs/hosted_4"
+          "$ref": "#/$defs/hosted_4",
+          "maxLength": 64,
+          "minLength": 1
         },
         "type": {
           "$ref": "#/$defs/hosted_39"
         },
         "version": {
-          "$ref": "#/$defs/hosted_17"
+          "$ref": "#/$defs/hosted_17",
+          "maxLength": 1048576,
+          "minLength": 0
         }
       },
       "required": [
@@ -23849,10 +23916,14 @@
       "type": "object",
       "properties": {
         "description": {
-          "$ref": "#/$defs/hosted_4"
+          "$ref": "#/$defs/hosted_4",
+          "maxLength": 1048576,
+          "minLength": 0
         },
         "name": {
-          "$ref": "#/$defs/hosted_4"
+          "$ref": "#/$defs/hosted_4",
+          "maxLength": 64,
+          "minLength": 1
         },
         "source": {
           "$ref": "#/$defs/hosted_29",
@@ -23874,20 +23945,37 @@
       "type": "object",
       "properties": {
         "capability_directories": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         },
         "desktop": {
           "$ref": "#/$defs/hosted_42"
         },
         "env": {
           "$ref": "#/$defs/hosted_44",
+          "additionalProperties": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxProperties": 1024,
+          "propertyNames": {
+            "maxLength": 256,
+            "minLength": 1
+          },
           "writeOnly": true
         },
         "files": {
-          "$ref": "#/$defs/hosted_10"
+          "$ref": "#/$defs/hosted_10",
+          "maxItems": 50
         },
         "name": {
-          "$ref": "#/$defs/hosted_17"
+          "$ref": "#/$defs/hosted_17",
+          "maxLength": 256,
+          "minLength": 1
         },
         "network": {
           "$ref": "#/$defs/hosted_46"
@@ -23896,14 +23984,17 @@
           "$ref": "#/$defs/hosted_48"
         },
         "plugins": {
-          "$ref": "#/$defs/hosted_26"
+          "$ref": "#/$defs/hosted_26",
+          "maxItems": 32
         },
         "setup_commands": {
           "$ref": "#/$defs/hosted_32",
+          "maxItems": 16,
           "writeOnly": true
         },
         "skills": {
-          "$ref": "#/$defs/hosted_35"
+          "$ref": "#/$defs/hosted_35",
+          "maxItems": 200
         }
       },
       "required": [],
@@ -23966,10 +24057,20 @@
           "$ref": "#/$defs/hosted_20"
         },
         "allowed_domains": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         },
         "blocked_domains": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 100
         }
       },
       "required": [
@@ -24019,13 +24120,28 @@
       "type": "object",
       "properties": {
         "npm": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         },
         "python": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         },
         "system": {
-          "$ref": "#/$defs/hosted_1"
+          "$ref": "#/$defs/hosted_1",
+          "items": {
+            "maxLength": 1048576,
+            "minLength": 0
+          },
+          "maxItems": 16384
         }
       },
       "required": [],

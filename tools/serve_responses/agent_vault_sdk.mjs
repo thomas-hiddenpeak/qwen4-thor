@@ -25,7 +25,7 @@ assert.equal(vault.name, '发布资料');
 assert.deepEqual(Object.keys(vault).sort(), ['created_at','id','metadata','name','object']);
 const empty = await fetch(new URL('/v1/vaults', base), {method: 'POST', headers: {
   Authorization: 'Bearer ' + plan.key, 'OpenAI-Beta': 'agents=v1'}});
-assert.equal(empty.status, 200);
+assert.equal(empty.status, 201);
 const second = await empty.json();
 assert.equal(second.name, null);
 const ids = [];
