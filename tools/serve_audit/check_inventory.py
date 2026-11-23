@@ -280,6 +280,15 @@ def current_surface(root):
     routes.extend((path, method) for method, path in prompts)
     native_routes.extend((method, path, "true" if method != "POST" else "false")
                          for method, path in prompts)
+    if 'HandleAgentRegistration(*objects_' not in dispatch or (
+            'server::AgentRegistrationMethodAllowed(method, path)' not in native or
+            'server::IsAgentRegistrationObservation(method, path)' not in native):
+        raise ValueError("review native agent registration routing")
+    for path, methods in (('/v1/agents', ('GET', 'POST')),
+                          ('/v1/agents/{agent_id}', ('GET', 'POST', 'DELETE'))):
+        for method in methods:
+            routes.append((path, method))
+            native_routes.append((method, path, 'false' if method == 'POST' else 'true'))
     if 'IsFileTarget(path)' not in dispatch or \
             'file_request->Serve(fd)' not in dispatch or \
             'inline bool FileMethodAllowed' not in application_routes:

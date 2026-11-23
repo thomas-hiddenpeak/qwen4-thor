@@ -1,3 +1,4 @@
+#include "q4t/server/agent_registration.h"
 #include "q4t/server/prompt_registry.h"
 
 #include <cstdlib>
@@ -99,6 +100,57 @@ ObjectReply Api(ObjectStore& store, std::string method, std::string path,
                              access);
 }
 }  // namespace
+
+Q4T_TEST(agent_registration_owned_crud_defaults_and_stored_pagination) {
+  Fixture f;
+  ObjectStore store(f.options);
+  const auto api = [&](std::string method, std::string path, std::string body = "",
+                       StateAccess access = Access()) {
+    return HandleAgentRegistration(store, method, path, body, Config(), access);
+  };
+  auto first = api("POST", "/v1/agents", R"({"model":"cpu","metadata":{"a":"1"},
+    "multi_agent":{"enabled":true},"compaction":{},"tools":[{"type":"function",
+    "name":"lookup","description":"Query","parameters":{}},{"type":"web_search"}]})");
+  Q4T_CHECK(Ok(first));
+  const auto id = first.value.GetString("id");
+  const auto path = "/v1/agents/" + id;
+  Q4T_CHECK(id.starts_with("agent_") && first.value.GetString("object") == "agent");
+  Q4T_CHECK(first.value.Find("compaction")->GetBool("async"));
+  Q4T_CHECK(first.value.Find("multi_agent")->GetInt("max_concurrent_subagents") == 6);
+  Q4T_CHECK(!first.value.GetArray("tools")->array[0].GetBool("defer_loading"));
+  Q4T_CHECK(first.value.GetArray("tools")->array[1].GetString("mode") == "live");
+  Q4T_CHECK(api("GET", path, "", Access("client:foreign")).http_status == 404);
+  auto changed = api("POST", path, R"({"name":"reader","metadata":null})");
+  Q4T_CHECK(Ok(changed) && changed.value.GetString("name") == "reader" &&
+            changed.value.Find("metadata")->object.empty());
+  Q4T_CHECK(changed.value.GetArray("tools")->array.size() == 2);
+  Q4T_CHECK(api("POST", path, R"({"multi_agent":{"enabled":true,"max_concurrent_subagents":0}})").http_status == 400);
+  Q4T_CHECK(api("POST", path, R"({"model":"missing"})").http_status == 404);
+  Q4T_CHECK(api("POST", path, R"({"tools":[{"type":"mcp","server_label":"docs",
+    "transport":{"type":"http","server_url":"https://example.org","headers":{"Authorization":"secret"}}}]})").http_status == 400);
+  Q4T_CHECK(api("GET", "/v1/agents?include=x").http_status == 400);
+  Q4T_CHECK(api("GET", "/v1/agents/agent_").http_status == 404);
+  Q4T_CHECK(api("PUT", path).http_status == 405);
+  Q4T_CHECK(api("DELETE", path, "", Access("client:foreign")).http_status == 404);
+  Q4T_CHECK(api("POST", path, R"({"unknown":true})").http_status == 400);
+  Q4T_CHECK(api("POST", path, R"({"tools":[{"type":"mcp","server_label":"docs",
+    "transport":{"type":"http","server_url":"https://exa mple.org"}}]})").http_status == 400);
+  Q4T_CHECK(api("POST", path, R"({"tools":[{"type":"mcp","server_label":"docs",
+    "transport":{"type":"http","server_url":"https://example.org","headers":{"x-note":"a\u0000b"}}}]})").http_status == 400);
+  auto second = api("POST", "/v1/agents", R"({"model":"cpu"})");
+  Q4T_CHECK(Ok(second));
+  auto page = api("GET", "/v1/agents?order=asc&limit=1");
+  Q4T_CHECK(Ok(page) && page.value.GetBool("has_more"));
+  const auto cursor = page.value.GetString("last_id");
+  auto next = api("GET", "/v1/agents?order=asc&limit=1&after=" + cursor);
+  Q4T_CHECK(Ok(next) && !next.value.GetBool("has_more") &&
+            next.value.GetString("last_id") != cursor);
+  auto removed = api("DELETE", path);
+  Q4T_CHECK(Ok(removed) && removed.value.GetString("object") == "agent.deleted" &&
+            removed.value.GetString("id") == id && removed.value.GetBool("deleted"));
+  Q4T_CHECK(api("GET", path).http_status == 404);
+  return true;
+}
 
 Q4T_TEST(prompt_realtime_actual_business_definitions_follow_native_wire_schema) {
   const auto path = std::filesystem::path(__FILE__).parent_path().parent_path() /

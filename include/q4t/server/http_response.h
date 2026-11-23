@@ -114,6 +114,8 @@ class HttpResponseContext {
   }
   // Handler-thread-only identity, minted by header admission.
   const io::Json* RealtimeStartup() const { return realtime_startup_; }
+  bool AgentsBeta() const { return agents_beta_; }
+  void SetAgentsBeta(bool enabled) { agents_beta_ = enabled; }
   bool ResponsesMultiAgent() const { return responses_multi_agent_; }
   void SetResponsesMultiAgent(bool enabled) { responses_multi_agent_ = enabled; }
   void SetRealtimeStartup(const io::Json* settings) { realtime_startup_ = settings; }
@@ -259,6 +261,7 @@ class HttpResponseContext {
   ClientIdentity client_;
   const io::Json* realtime_startup_ = nullptr;
   bool responses_multi_agent_ = false;
+  bool agents_beta_ = false;
   ClientRateDomain rate_domain_ = ClientRateDomain::kOnline;
   ClientLease* client_lease_ = nullptr;  // Owner outlives this context.
   std::shared_ptr<ClientRateLease> batch_rate_;

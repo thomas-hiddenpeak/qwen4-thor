@@ -9,6 +9,7 @@
 #include <barrier>
 #include <string>
 #include <thread>
+#include <tuple>
 #include <vector>
 
 #include "q4t/server/file_input.h"
@@ -69,13 +70,16 @@ Q4T_TEST(http_transcription_large_fixed_and_chunked_binary_bodies) {
 
 Q4T_TEST(http_beta_header_matches_complete_case_sensitive_selection) {
   using namespace q4t::server;
-  for (const auto& [header, expected] :
-       std::vector<std::pair<std::string, bool>>{
-           {"openai-beta: responses_multi_agent=v1\r\n", true},
-           {"OpenAI-Beta: a=v1,\tresponses_multi_agent=v1 ,b=v2\r\n", true},
-           {"OpenAI-Beta: responses_multi_agent=v10\r\n", false},
-           {"OpenAI-Beta: RESPONSES_MULTI_AGENT=v1\r\n", false},
-           {"", false}}) {
+  for (const auto& [header, responses, agents] :
+       std::vector<std::tuple<std::string, bool, bool>>{
+           {"openai-beta: responses_multi_agent=v1\r\n", true, false},
+           {"OpenAI-Beta: a=v1,\tresponses_multi_agent=v1 ,b=v2\r\n", true, false},
+           {"OpenAI-Beta: responses_multi_agent=v10\r\n", false, false},
+           {"OpenAI-Beta: RESPONSES_MULTI_AGENT=v1\r\n", false, false},
+           {"OpenAI-Beta: agents=v1\r\n", false, true},
+           {"OpenAI-Beta: agents=v1, responses_multi_agent=v1\r\n", true, true},
+           {"OpenAI-Beta: agents=v10\r\n", false, false},
+           {"", false, false}}) {
     int fd[2];
     Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
     const auto wire = "GET /v1/responses/r?beta=true HTTP/1.1\r\nHost: h\r\n" +
@@ -88,7 +92,8 @@ Q4T_TEST(http_beta_header_matches_complete_case_sensitive_selection) {
                                     &status, &headers);
     close(fd[0]);
     close(fd[1]);
-    Q4T_CHECK(ok && headers.responses_multi_agent == expected);
+    Q4T_CHECK(ok && headers.responses_multi_agent == responses &&
+              headers.agents_beta == agents);
   }
   return true;
 }
@@ -177,9 +182,34 @@ Q4T_TEST(http_conversation_routes_are_scoped_business_operations) {
   return true;
 }
 
+Q4T_TEST(agent_registration_metadata_and_writes_use_separate_lanes) {
+  using namespace q4t::server;
+  for (const auto* path : {"/v1/agents", "/v1/agents/agent_x"}) {
+    Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
+              HttpConnectionClass::kObservation);
+    Q4T_CHECK(ClassifyHttpConnection("POST", path) ==
+              HttpConnectionClass::kBusiness);
+  }
+  Q4T_CHECK(ClassifyHttpConnection("DELETE", "/v1/agents/agent_x") ==
+            HttpConnectionClass::kObservation);
+  for (const auto* path : {"/v1/agents", "/v1/agents/agent_x"}) {
+    const bool collection = std::string_view(path) == "/v1/agents";
+    for (const auto method : {"GET", "POST", "DELETE"}) {
+      Q4T_CHECK(!ConversationMethodAllowed(method, path));
+      Q4T_CHECK(AgentRegistrationMethodAllowed(method, path) ==
+                (!collection || std::string_view(method) != "DELETE"));
+    }
+  }
+  for (const auto* path : {"/v1/agents/agent_", "/v1/agents/sessions",
+                           "/v1/agents/agent_x/turns", "/v1/agents#x"})
+    Q4T_CHECK(!IsAgentRegistrationTarget(path));
+  return true;
+}
+
 Q4T_TEST(http_conversation_body_uses_shared_budget_before_reading) {
   using namespace q4t::server;
-  for (const auto path : {"/v1/conversations", "/v1/conversations/conv_1",
+  for (const auto path : {"/v1/agents", "/v1/agents/agent_1",
+                          "/v1/conversations", "/v1/conversations/conv_1",
                           "/v1/conversations/conv_1/items?include%5B%5D=x"}) {
     const auto prefix =
         "POST " + std::string(path) +

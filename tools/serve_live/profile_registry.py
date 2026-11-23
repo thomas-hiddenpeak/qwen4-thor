@@ -76,7 +76,8 @@ def prepare(source, manifest_sha256, stage, observations, output):
             ingress_sha256=actual['ingress_sha256']))
         status = {profile_live_reuse.RECORD_FORMAT: 'ACCEPT_LIVE_PRIMARY_LIGHT',
                   profile_live_reuse.BETA_RECORD_FORMAT: 'ACCEPT_RESPONSES_BETA_PRIMARY_LIGHT',
-                  profile_live_reuse.AGENT_RECORD_FORMAT: 'ACCEPT_HOSTED_AGENTS_PRIMARY_LIGHT'}
+                  profile_live_reuse.AGENT_RECORD_FORMAT: 'ACCEPT_HOSTED_AGENTS_PRIMARY_LIGHT',
+                  profile_live_reuse.REGISTRATION_RECORD: 'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT'}
         primary = evidence['primary']['record']
         label = status[primary['format']]
         if primary['reused_business']['format'] == profile_live_reuse.AGENT_REFRESH:

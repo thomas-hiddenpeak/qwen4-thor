@@ -364,6 +364,29 @@ inline bool IsResponsesTokenCount(std::string_view target) {
   return target.substr(0, target.find('?')) == "/v1/responses/input_tokens";
 }
 
+inline bool IsAgentRegistrationTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  if (target.find('#') != target.npos) return false;
+  if (path == "/v1/agents") return true;
+  constexpr std::string_view prefix = "/v1/agents/";
+  if (!path.starts_with(prefix)) return false;
+  const auto id = path.substr(prefix.size());
+  return id.starts_with("agent_") && id.size() > 6 && ValidApplicationId(id);
+}
+
+inline bool AgentRegistrationMethodAllowed(std::string_view method,
+                                           std::string_view target) {
+  if (!IsAgentRegistrationTarget(target)) return false;
+  return method == "GET" || method == "POST" ||
+         (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/agents");
+}
+
+inline bool IsAgentRegistrationObservation(std::string_view method,
+                                           std::string_view target) {
+  return (method == "GET" || method == "DELETE") &&
+         AgentRegistrationMethodAllowed(method, target);
+}
+
 inline bool IsPromptTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/prompts" || path.starts_with("/v1/prompts/");

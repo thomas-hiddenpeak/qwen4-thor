@@ -58,6 +58,10 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/tunnels/{tunnel_id}', 'control'),
     ('GET', '/v1/tunnels/{tunnel_id}/poll', 'tunnel_poll'),
     ('POST', '/v1/tunnels/{tunnel_id}/response', 'tunnel_response'),
+    *((method, '/v1/agents', 'control' if method == 'GET' else 'data')
+      for method in ('GET', 'POST')),
+    *((method, '/v1/agents/{agent_id}', 'data' if method == 'POST' else 'control')
+      for method in ('GET', 'POST', 'DELETE')),
     *((method, '/v1/prompts', 'control' if method == 'GET' else 'data')
       for method in ('GET', 'POST')),
     *((method, '/v1/prompts/{prompt_id}',
@@ -204,7 +208,8 @@ def route_map():
     # Keep this before the general Realtime primary rule (first regex wins).
     rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
-        pattern = '/'.join('[A-Za-z0-9_-]{1,128}' if part.startswith('{')
+        pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
+                           '[A-Za-z0-9_-]{1,128}' if part.startswith('{')
                            else re.escape(part) for part in path.split('/'))
         rows.append('    "~^'+method+':'+pattern+'(?:[?][^#]*)?$" '+lane+';')
     return '\n'.join(rows)
@@ -260,9 +265,14 @@ def responses_beta_maps():
     default "";
     "~(^|,)[ \t]*responses_multi_agent=v1[ \t]*(,|$)" responses_multi_agent=v1;
   }
+  map $http_openai_beta $q4t_agent_config {
+    default "";
+    "~(^|,)[ \t]*agents=v1[ \t]*(,|$)" agents=v1;
+  }
   map $uri $q4t_responses_beta {
     default "";
     ~^/v1/responses(/|$) $q4t_multi_agent;
+    ~^/v1/agents(/|$) $q4t_agent_config;
   }'''
 
 
