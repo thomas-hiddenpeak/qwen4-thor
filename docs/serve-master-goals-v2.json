@@ -2617,7 +2617,8 @@
       "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json",
       "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json",
       "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
-      "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json"
+      "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
     },
     {
       "id": "A09",
@@ -6878,7 +6879,8 @@
       "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json",
       "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json",
       "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
-      "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json"
+      "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
     },
     {
       "id": "N01",
@@ -7036,7 +7038,8 @@
           "/vaults/{vault_id}/credentials/{credential_id}"
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
-      }
+      },
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
     },
     {
       "id": "N05",
@@ -9098,7 +9101,8 @@
       "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json",
       "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json",
       "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
-      "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json"
+      "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
     },
     {
       "id": "Q02",

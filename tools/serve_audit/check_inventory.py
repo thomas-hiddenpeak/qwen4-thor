@@ -132,7 +132,7 @@ def current_surface(root):
     attachment = '/v1/live/sessions/{session_id}/attach'
     sideband = (root / 'src/server/chat_live_sideband.cpp').read_text()
     if ('HandleLiveSideband(fd, path, headers, initial, accept)' not in realtime or
-            'lease.sideband = method == "GET" && server::IsCallSideband(path)' not in native or
+            'lease.sideband = (method == "GET" && server::IsCallSideband(path))' not in native or
             not all(marker in sideband for marker in
                     ('slot.client == client.Id()', 'slot.session == id', 'stream->Attach(',
                      'stream->Next(', 'stream->Enqueue(', 'RunWebSocketSession('))):
@@ -290,7 +290,9 @@ def current_surface(root):
             routes.append((path, method))
             native_routes.append((method, path, 'false' if method == 'POST' else 'true'))
     if 'ServeAgentSession(fd, *objects_' not in dispatch or (
-            'ParseAgentSessionRoute(target).kind' not in application_routes):
+            'ParseAgentSessionRoute(target).kind' not in application_routes or
+            'server::IsAgentEventStream(method, path)' not in native or
+            'server::IsAgentEventSubmission(method, path)' not in native):
         raise ValueError("review native session routing")
     session = '/v1/agents/sessions'
     resource = session + '/{session_id}'
@@ -301,7 +303,8 @@ def current_surface(root):
                          *(('GET', resource + suffix) for suffix in
                            ('/turns', '/turns/{turn_id}', '/items', '/turns/{turn_id}/items'))]:
         routes.append((path, method))
-        native_routes.append((method, path, 'false' if method == 'POST' else 'true'))
+        operations = method != 'POST' and path != resource + '/events'
+        native_routes.append((method, path, 'true' if operations else 'false'))
     if 'IsFileTarget(path)' not in dispatch or \
             'file_request->Serve(fd)' not in dispatch or \
             'inline bool FileMethodAllowed' not in application_routes:

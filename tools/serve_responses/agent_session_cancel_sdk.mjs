@@ -70,7 +70,9 @@ const items = (await api.turns.items.list(turns[1].id, { session_id: id })).data
 const answer = items.filter(i => i.role === 'assistant').flatMap(i => i.content)
   .map(i => i.text).join('').trim();
 assert.match(answer, /\b42\b/);
-assert.equal((await api.delete(id)).deleted, true);
+const extra = { events: [{ type: 'agent.session.input.message', input: [{role: 'user',
+  content: [{ type: 'input_text', text: 'Reply only with the decimal number 42.' }] }] }],
+  'Idempotency-Key': 'retry-after-data-release' };
 
 const running = (await api.create({ agent, environment, stream: true,
   input: 'Write a long detailed report on the history of mathematics, with at least 25 paragraphs.' }));
@@ -80,6 +82,10 @@ for await (const event of running) {
   if (event.type === 'agent.session.created') activeId = event.session.id;
   if (event.type === 'agent.session.turn.in_progress' && !signalled) {
     assert.ok(activeId);
+    if (plan.single_slot) {
+      await assert.rejects(api.events.create(id, extra),
+        error => expected(429)(error) && error.code === 'client_capacity_exhausted');
+    }
     assert.equal((await api.events.create(activeId, cancel).asResponse()).status, 202);
     signalled = true;
   }
@@ -91,7 +97,15 @@ const final = (await api.turns.list(activeId)).data;
 assert.equal(final.length, 1);
 assert.equal(final[0].status, 'cancelled');
 assert.equal((await api.delete(activeId)).deleted, true);
+if (plan.single_slot) {
+  assert.equal((await api.events.create(id, extra).asResponse()).status, 202);
+  assert.equal((await settled()).status, 'idle');
+  const history = (await api.turns.list(id, { order: 'asc' })).data;
+  assert.deepEqual(history.map(t => t.status), ['cancelled', 'completed', 'completed']);
+}
+assert.equal((await api.delete(id)).deleted, true);
 process.stdout.write(JSON.stringify({ sdk: version, foreign: 404, late_result: 409,
   waiting_terminal: observed[0].turn.status, retry_accepted: 202,
   next_turn: turns[1].status, answer, active_terminal: final[0].status,
-  active_terminal_count: terminal, both_deleted: true }) + '\n');
+  active_terminal_count: terminal, both_deleted: true, saturated_submit: plan.single_slot ? 429 : null,
+  resubmitted_after_release: Boolean(plan.single_slot) }) + '\n');

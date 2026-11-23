@@ -33,7 +33,7 @@ def certificate(directory):
 
 class NativeIngress:
     def __init__(self, directory, binary, port, backend_port, operations_port,
-                 token, clients, tls, backend_alive):
+                 token, clients, tls, backend_alive, *, client_inflight=2):
         self.directory = Path(directory)
         self.directory.mkdir(mode=0o700)
         self.port = port
@@ -50,7 +50,7 @@ class NativeIngress:
             server_name='127.0.0.1', upstream_port=backend_port,
             upstream_operations_port=operations_port, allowed_client_cidrs=['127.0.0.1/32'],
             clients=[dict(id=name, api_key=key) for name,key in clients.items()],
-            per_client_rps=20, burst=20, per_client_inflight=2, global_inflight=8,
+            per_client_rps=20, burst=20, per_client_inflight=client_inflight, global_inflight=8,
             body_bytes=1048576, upstream_idle_seconds=180))
         config = dict(version=2, parent_pid=os.getpid(),
             parent_start_ticks=journal.process_start(os.getpid()), address=address,

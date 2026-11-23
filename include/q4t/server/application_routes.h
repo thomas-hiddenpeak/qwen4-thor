@@ -432,10 +432,17 @@ inline bool ManagedAgentMethodAllowed(std::string_view method,
   }
 }
 
+inline bool IsAgentEventStream(std::string_view method, std::string_view target) {
+  return method == "GET" && ParseAgentSessionRoute(target).kind == AgentSessionRouteKind::kEvents;
+}
+inline bool IsAgentEventSubmission(std::string_view method, std::string_view target) {
+  return method == "POST" && ParseAgentSessionRoute(target).kind == AgentSessionRouteKind::kEvents;
+}
+
 inline bool IsManagedAgentObservation(std::string_view method,
                                       std::string_view target) {
   return (method == "GET" || method == "DELETE") &&
-         ManagedAgentMethodAllowed(method, target);
+         !IsAgentEventStream(method, target) && ManagedAgentMethodAllowed(method, target);
 }
 
 inline bool IsPromptTarget(std::string_view target) {

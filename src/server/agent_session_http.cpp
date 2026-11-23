@@ -168,10 +168,11 @@ void Stream(int fd, ObjectStore& objects, const std::string& id, bool follow,
   }
 }
 
-ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
-                   std::string_view method, std::string_view target,
-                   const std::string& body, const ChatPlanConfig& config,
-                   const StateAccess& access, bool* stream) {
+ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
+                   ResponsesJobs* jobs, std::string_view method,
+                   std::string_view target, const std::string& body,
+                   const ChatPlanConfig& config, const StateAccess& access,
+                   bool* stream) {
   const auto route = ParseAgentSessionRoute(target);
   if (route.kind == Kind::kNone)
     return Error(404, "route_not_found", "Session route not found");
@@ -244,9 +245,19 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     if (!run->BindRateDomain(http->RateDomain()))
       return Error(503, "response_rate_domain_changed",
                    "Session accounting origin changed");
+    // The events endpoint also accepts cancellation while this client's model
+    // slot is occupied. Only an event that starts work acquires a data permit.
+    // Acquire before Begin can publish the new step and idempotency receipt.
+    ClientLease work;
+    if (event && !work.Acquire(clients, http->Client(), ClientLane::kData))
+      return Error(429, "client_capacity_exhausted",
+                   "Client inference capacity exhausted");
     auto result = jobs->Submit(
         std::move(run), http->Client(),
-        [&](ClientLease& lease) { return http->TransferClientLease(lease); },
+        [&](ClientLease& lease) {
+          return event ? work.TransferTo(lease)
+                       : http->TransferClientLease(lease);
+        },
         http->TakeBatchRate());
     if (event)
       result = ReconcileAgentEventReceipt(objects, std::string(route.session),
@@ -295,13 +306,14 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
 }
 }  // namespace
 
-void ServeAgentSession(int fd, ObjectStore& objects, ResponsesJobs* jobs,
-                       std::string_view method, std::string_view target,
-                       const std::string& body, const ChatPlanConfig& config,
+void ServeAgentSession(int fd, ObjectStore& objects, ClientAdmission& clients,
+                       ResponsesJobs* jobs, std::string_view method,
+                       std::string_view target, const std::string& body,
+                       const ChatPlanConfig& config,
                        const StateAccess& access) {
   bool stream = false;
-  auto reply =
-      Handle(fd, objects, jobs, method, target, body, config, access, &stream);
+  auto reply = Handle(fd, objects, clients, jobs, method, target, body, config,
+                      access, &stream);
   if (reply.ok() && stream) {
     Stream(fd, objects, reply.value.GetString("id"), method == "GET", access);
     return;

@@ -65,8 +65,8 @@ APPLICATION_ROUTES = [
     ('POST', '/v1/agents/sessions', 'data'),
     ('GET', '/v1/agents/sessions', 'control'),
     ('POST', '/v1/agents/sessions/{agent_session_id}', 'data'),
-    ('POST', '/v1/agents/sessions/{agent_session_id}/events', 'data'),
-    ('GET', '/v1/agents/sessions/{agent_session_id}/events', 'control'),
+    ('POST', '/v1/agents/sessions/{agent_session_id}/events', 'events'),
+    ('GET', '/v1/agents/sessions/{agent_session_id}/events', 'subscription'),
     *((method, '/v1/agents/sessions/{agent_session_id}', 'control')
       for method in ('GET', 'DELETE')),
     *(('GET', '/v1/agents/sessions/{agent_session_id}/' + suffix, 'control')
@@ -232,8 +232,8 @@ def websocket_maps():
     # Validate the client's upgrade tokens before creating an upstream tunnel.
     return r'''  map $q4t_lane $q4t_ws_client { default ""; realtime $q4t_client; }
   map $q4t_lane $q4t_ws_all { default ""; realtime all; }
-  map $q4t_lane $q4t_side_client { default ""; sideband $q4t_client; }
-  map $q4t_lane $q4t_side_all { default ""; sideband all; }
+  map $q4t_lane $q4t_side_client { default ""; sideband $q4t_client; subscription $q4t_client; }
+  map $q4t_lane $q4t_side_all { default ""; sideband all; subscription all; }
   limit_conn_zone $q4t_side_client zone=side_client:1m;
   limit_conn_zone $q4t_side_all zone=side_all:1m;
   limit_conn_zone $q4t_ws_client zone=ws_client:1m;
@@ -625,9 +625,9 @@ http {{
 {routes}
   }}
   map $q4t_lane $q4t_data {{ default ""; data $q4t_client; }}
-  map $q4t_lane $q4t_control {{ default ""; control $q4t_client; }}
+  map $q4t_lane $q4t_control {{ default ""; control $q4t_client; events $q4t_client; }}
   map $q4t_lane $q4t_all_data {{ default ""; data all; }}
-  map $q4t_lane $q4t_all_control {{ default ""; control all; }}
+  map $q4t_lane $q4t_all_control {{ default ""; control all; events all; }}
   limit_conn_zone $q4t_data zone=data:1m;
   limit_conn_zone $q4t_control zone=control:1m;
   limit_conn_zone $q4t_all_data zone=all_data:1m;

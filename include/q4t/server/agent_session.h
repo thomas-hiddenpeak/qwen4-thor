@@ -95,8 +95,9 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
                                      const StateAccess& access,
                                      AgentEventCursor* cursor, io::Json* events,
                                      bool* settled);
-void ServeAgentSession(int fd, ObjectStore& objects, ResponsesJobs* jobs,
-                       std::string_view method, std::string_view target,
-                       const std::string& body, const ChatPlanConfig& config,
-                       const StateAccess& access);
+class ClientAdmission;
+void ServeAgentSession(int fd, ObjectStore& objects, ClientAdmission& clients,
+                       ResponsesJobs* jobs, std::string_view method,
+                       std::string_view target, const std::string& body,
+                       const ChatPlanConfig& config, const StateAccess& access);
 }  // namespace q4t::server
