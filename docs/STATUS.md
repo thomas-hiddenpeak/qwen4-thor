@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+默认已交付 **rev446，STOPPED**。在隔离托管服务分别终止模型和主网关后，新进程均保留原客户的 Vault 凭据；轮换成功，其他客户删除为 404，归档后禁止新绑定。相同工具结果回填两次只保存一份，随后 Chat 回答 42。发布未启动生产模型，13 份受保护文件保持原字节，独立回退包已注册。24 小时计划已预检，留给用户执行。[发行与交接](evidence/serve-agent-vaults-20261123/delivery.json)
+
 主配置保存的 Vault 凭据已由轻配置实际接续。轻配置只收到原凭据 ID 和服务地址，经 HTTPS 读取项目资料并准确引用第 1–3 行；归档后新绑定、跨租户读取均为 404。两套配置各启动一次，153 次 NVML 采样正常。独立 OpenAPI 已达 2,126,486 字节，封包读取边界已修复，复用了同一批业务原件。默认仍为 rev444、STOPPED；继续托管故障接管与可回退发行。[主轻资格](evidence/serve-agent-vaults-20261123/profiles.json)
 
 PR #67 的两项远端 host-contracts 均已通过。rev444 的托管恢复、独立回退包和长稳交接已进入 main；合并提交 c3a9bd91d 与受检提交 8b3df89ea 的文件树一致。[主线回执](evidence/serve-agent-sessions-20261123/recovery-main.json)
