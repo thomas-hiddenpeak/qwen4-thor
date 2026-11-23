@@ -1,0 +1,83 @@
+{
+  "engine": "34b8efdfcc51d552416fc69f0b0f822437332dc238b1329178315ece4adbbfc4",
+  "ingress": "a201da20bee226df67d1c7c409c0431b587dfe4b648f09d71ae046d6d6ffc5dc",
+  "protocol": "6888477d478f99c28db7d396b77c2f63d77c796a0a87426a643b2c65339ce6c7",
+  "driver": "4f40f42a475bec5014db5db156b95fa95c8347d809c84ff95e41eb41fba6aa88",
+  "default_revision": 454,
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 64.026,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "revision": 454,
+    "phases": {
+      "live": {
+        "answer": "The published Q4T revision is **454** [source](http://127.0.0.1:45189/release).",
+        "actions": [
+          {
+            "type": "search",
+            "queries": [
+              "Q4T publication revision"
+            ],
+            "query": "Q4T publication revision"
+          }
+        ],
+        "foreign": 404
+      },
+      "cached": {
+        "answer": "The published Q4T revision is **454** [source](http://127.0.0.1:45189/release).",
+        "actions": [
+          {
+            "type": "search",
+            "queries": [
+              "Q4T publication revision"
+            ],
+            "query": "Q4T publication revision"
+          }
+        ],
+        "foreign": 404
+      },
+      "disabled": {
+        "answer": "42",
+        "actions": [],
+        "foreign": 404
+      }
+    }
+  },
+  "source": {
+    "connections": 1,
+    "paths": [
+      "/release"
+    ],
+    "source_receipt_sha256": "fdc967fd2b398b95ead11d65a47d099589275b36e9ab0f6229148ee60db222b4"
+  },
+  "cpu": 59,
+  "lease": "COMPLETED",
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 146,
+    "native_routes": 240,
+    "reviewed_source_anchors": 1242,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "capacity_boundary": "Configured source and client-scoped cached index. Disabled mode made no tool call. The empty Agent domain array permits no URLs.",
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/agent-web-http-01/result.json": "50f3d31beea16d9df9dc56375913c90d9caabba0964d13fe3fae19d284327d2d",
+    ".q4t-work/serve-responses-agents-20261123/agent-web-http-01/plan.json": "a2207f6c163e97bfa44c663a313f935f1033baa84b4a72f1db3bf536eb9173b3",
+    ".q4t-work/serve-responses-agents-20261123/agent-web-http-01/create/sdk-result.json": "7d450df0cd7f28c2f0727de7fbe4162904b4804864d8b5e7cde9f1c5b7eb2abd",
+    ".q4t-work/serve-responses-agents-20261123/agent-web-http-01/create/source-receipt.json": "bb34cd030a1807fbbd1c7bafdbb1ffa5bb62fd3e0f731ca9dd9ff28dad286a6e",
+    ".q4t-work/serve-responses-agents-20261123/agent-web-cpu-01/result.log": "31b6dc74bab4ea753f7f460e8f79548ebc4ceba536656f20830b53b2422af6d3",
+    ".q4t-work/serve-responses-agents-20261123/agent-web-cpu-01/required.txt": "dd71c6a2febf439b14c187492c38228020a641937556526f44e20713beaf9ed4",
+    ".q4t-work/serve-responses-agents-20261123/agent-web-lease-01/exit.json": "144d042c0e5b5c9c20e5848ae88cca5c563b0b38cf259e21415b7f659f14c0e4"
+  }
+}

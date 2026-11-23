@@ -18,6 +18,13 @@ Status ResponsesExecution::BindActiveTools(const io::Json& active,
   if (!status) return status;
   status = PlanResponsesWebBindings(request, &web_bindings_, error);
   if (!status) return status;
+  if (!agent_session_id_.empty()) {
+    for (auto& binding : web_bindings_) {
+      const auto* filters = active.array[binding.tool_index].Find("filters");
+      const auto* domains = filters ? filters->GetArray("allowed_domains") : nullptr;
+      binding.options.empty_domain_allowlist = domains && domains->array.empty();
+    }
+  }
   status = PlanResponsesMcpRequestBindings(
       Object({{"tools", active}, {"input", history}}),
       &mcp_bindings_, error);

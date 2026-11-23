@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "../src/server/object_protocol.h"
+#include "q4t/server/agent_session.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/responses_api.h"
 #include "q4t/server/responses_item_shape.h"
@@ -147,6 +148,55 @@ bool Finish(ResponsesExecution& run, const Fixture& fixture,
   if (all) *all += run.PublicWire(wire);
   return Ok(result);
 }
+Q4T_TEST(agent_session_web_search_honors_cached_disabled_and_empty_domains) {
+  Fixture fixture;
+  ObjectStore objects(fixture.objects);
+  Q4T_CHECK(fixture.Seed(objects));
+  for (const std::string mode : {"disabled", "cached", "live"}) {
+    auto request = Read(R"({"agent":{"model":"cpu","tools":[{"type":"web_search",
+        "context_size":"low","location":{"country":"CN"}}]},
+        "environment":{"type":"none"},"input":"Find alpha"})");
+    auto& tool = Field(Field(request, "agent"), "tools").array.front();
+    Set(&tool, "mode", String(mode));
+    if (mode == "live") Set(&tool, "allowed_domains", Array());
+    auto config = fixture.Config();
+    if (mode == "disabled") config.web_policy.reset();
+    ResponsesExecution run(objects);
+    auto created = PrepareAgentSessionExecution(objects, request, config,
+                                                Access(), std::time(nullptr), run);
+    Q4T_CHECK(Ok(created) && run.HasWebSearch() == (mode != "disabled"));
+    if (mode == "disabled") continue;
+    const auto& native = run.Envelope().request.GetArray("tools")->array.at(0);
+    Q4T_CHECK(native.GetString("search_context_size") == "low" &&
+              native.GetBool("external_web_access") == (mode == "live") &&
+              native.Find("user_location")->GetString("country") == "CN");
+    run.BindBackgroundControl(std::make_shared<RequestControl>(
+        run.Id(), "", Clock::now() + 10s));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
+    Q4T_CHECK(run.Append(Call(), "null", &wire));
+    Q4T_CHECK(Ok(run.RunWebSearches(1, [](const auto&) { return true; })));
+    ResponsesGenerationPlan next;
+    Q4T_CHECK(Ok(run.ContinueFileSearch(1, config, {}, &next)));
+    const auto prompt = OutputJson(next.generation_request);
+    Q4T_CHECK((prompt.find(kPassage) != prompt.npos) == (mode == "cached"));
+    Q4T_CHECK(run.Append(Text("complete"), "null", &wire));
+    Q4T_CHECK(Ok(run.Finish(false, 0, {50, 0, 8, 0}, std::time(nullptr), &wire)));
+    AgentSessionView view;
+    const auto id = created.value.GetString("id");
+    Q4T_CHECK(Ok(ReadAgentSessionTurn(objects, id, "", Access(), &view)));
+    Q4T_CHECK(view.items.array.size() == 3 && view.turn.GetString("status") == "completed");
+    const auto& item = view.items.array[1];
+    const auto& action = *item.Find("action");
+    Q4T_CHECK(item.GetString("type") == "web_search_call" &&
+              item.GetString("status") == "completed" && !action.Has("sources") &&
+              action.GetString("query") == "alpha" && action.GetArray("queries"));
+    Q4T_CHECK(ReadAgentSessionTurn(objects, id, "", Access("client:other"), &view)
+                  .http_status == 404);
+  }
+  return true;
+}
+
 Json ResultItem() {
   return Read(R"({"id":"ws_cpu","type":"web_search_call","status":"completed",
     "action":{"type":"search","query":"alpha","queries":["alpha"],

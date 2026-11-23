@@ -51,6 +51,23 @@ ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
                                   {"execution", String("server")}}));
   }
   for (const auto& tool : agent.GetArray("tools")->array) {
+    if (tool.GetString("type") == "web_search") {
+      const auto mode = tool.GetString("mode");
+      if (mode == "disabled") continue;
+      auto native = Object({{"type", String("web_search")},
+                            {"external_web_access", Boolean(mode == "live")},
+                            {"search_context_size", Copy(tool, "context_size")}});
+      if (Nonnull(tool, "allowed_domains"))
+        Set(&native, "filters",
+            Object({{"allowed_domains", Copy(tool, "allowed_domains")}}));
+      if (Nonnull(tool, "location")) {
+        auto location = Copy(tool, "location");
+        Set(&location, "type", String("approximate"));
+        Set(&native, "user_location", std::move(location));
+      }
+      tools.array.push_back(std::move(native));
+      continue;
+    }
     if (tool.GetString("type") == "mcp") {
       const auto& transport = *tool.Find("transport");
       if (tool.GetString("connection_origin") != "service" ||
@@ -183,6 +200,17 @@ ObjectReply ProjectItem(const Json& from, const std::string& turn_id,
     Set(&item, "output", Copy(from, "output"));
     Set(&item, "status",
         String(Nonnull(from, "error") ? "failed" : "completed"));
+  } else if (type == "web_search_call") {
+    const auto status = from.GetString("status");
+    if (status == "searching") Set(&item, "status", String("in_progress"));
+    if (status == "failed") Set(&item, "status", String("incomplete"));
+    auto action = Copy(from, "action");
+    // Sources stay in the native receipt. The Agent search action has only
+    // query and queries, and the open/find actions retain their URL and text.
+    std::erase_if(action.object, [](const auto& field) {
+      return field.first == "sources";
+    });
+    Set(&item, "action", std::move(action));
   } else if (type == "mcp_call") {
     for (const auto* field : {"server_label", "name", "error"})
       Set(&item, field, Copy(from, field));

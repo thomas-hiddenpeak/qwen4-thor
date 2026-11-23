@@ -16,6 +16,8 @@ struct WebSearchOptions {
   size_t max_images = 10;
   std::vector<std::string> allowed_domains, blocked_domains;
   io::Json location;
+  // Agent tools distinguish a null domain restriction from an empty allowlist.
+  bool empty_domain_allowlist = false;
 };
 
 Status ParseWebSearchOptions(const io::Json& value, bool chat,
