@@ -17,8 +17,11 @@ const client = key => new OpenAI({baseURL: base.href, apiKey: key, timeout: 7500
 const owner = client(plan.key), other = client(plan.other);
 const vaults = owner.beta.agents.vaults, sessions = owner.beta.agents.sessions;
 const capability = (await owner.get('/capabilities')).agent_sessions;
+const vaultAuth = ['static_bearer','mcp_oauth_access_token'];
+if (plan.require_grant_renewal || capability.mcp.vault_auth.includes('mcp_oauth_refresh'))
+  vaultAuth.push('mcp_oauth_refresh');
 assert.deepEqual(capability.mcp, {connection_origin:'service',transport:'http',
-  vault_auth:['static_bearer','mcp_oauth_access_token']});
+  vault_auth:vaultAuth});
 const vault = await vaults.create({name: 'project records'});
 const credentials = vaults.credentials;
 const auth = plan.refresh ? {type:'mcp_oauth', mcp_server_url:target.href,

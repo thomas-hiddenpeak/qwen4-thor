@@ -77,7 +77,7 @@ ObjectReply ListCredentials(const Json& entries, std::string_view vault,
 void Archive(Json* row) {
   std::erase_if(row->object, [](const auto& field) {
     return field.first == "sealed" || field.first == "refreshing" ||
-           field.first == "retry_at";
+           field.first == "retry_at" || field.first == "grant_origin";
   });
   Set(row, "archived", Boolean(true));
 }
@@ -193,6 +193,11 @@ ObjectReply CredentialRequest(ObjectStore& store, const VaultRoute& route,
       if (!result.ok()) return result;
       Set(&resource, "auth", std::move(projection));
       Set(&row, "sealed", String(std::move(sealed)));
+      // An owner-supplied auth update starts a new authorization. Only the
+      // issuer's own refresh may continue the previous MCP grant identity.
+      std::erase_if(row.object, [](const auto& field) {
+        return field.first == "grant_origin";
+      });
       if (const auto* refresh = auth->Find("refresh");
           refresh && Nonnull(*refresh, "refresh_token"))
         std::erase_if(row.object, [](const auto& field) {

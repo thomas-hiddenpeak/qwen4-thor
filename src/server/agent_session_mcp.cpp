@@ -81,7 +81,8 @@ ObjectReply ResponsesExecution::AuthorizeAgentMcp(
   bool needs_refresh = false;
   auto resolved = vault_detail::ResolveMcpToken(
       objects_, access_, agent_vaults_, found->GetString("credential_id"),
-      definition->target_id, &endpoint.authorization, nullptr, &needs_refresh);
+      definition->target_id, &endpoint.authorization, nullptr, &needs_refresh,
+      &endpoint.vault_grant);
   if (!resolved.ok()) return resolved;
   if (!agent_http_sealed_.empty()) {
     std::string wire;
@@ -122,6 +123,7 @@ ObjectReply ResponsesExecution::AuthorizeAgentMcp(
   if (!checked.ok()) return checked;
   return vault_detail::ResolveMcpToken(
       objects_, access_, agent_vaults_, found->GetString("credential_id"),
-      definition->target_id, &endpoint.authorization, &mcp_fetch_);
+      definition->target_id, &endpoint.authorization, &mcp_fetch_, nullptr,
+      &endpoint.vault_grant);
 }
 }  // namespace q4t::server

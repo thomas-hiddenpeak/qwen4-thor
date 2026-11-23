@@ -27,6 +27,9 @@ struct McpEndpoint {
   // Agent HTTP credentials are scoped to the entire configured URL.
   bool exact_target = false;
   io::Json request_metadata{};
+  // Private identity of an owner-bound, renewable Vault grant. Each dispatch
+  // still requires a current access token for the exact authorized URL.
+  std::string vault_grant{};
 };
 // Private, authenticated session state. Persist only inside sealed MCP
 // authority, never in public items, model input, metrics or ordinary logs.

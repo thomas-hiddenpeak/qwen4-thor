@@ -1,0 +1,139 @@
+{
+  "stage": "candidate_real_sdk_http_pass",
+  "released_default_revision": 448,
+  "identities": {
+    "binary": "4edde40fd9c68bda7841d26af48d611b77fb9a3c971029a337e7597f4b3e50d0",
+    "ingress": "ce0e75751f4619bdbc2c7abe061e893db5daec29ca104879c0b21c2d1b1f5a62",
+    "sdk_driver": "c6143d6c24f1444ccdc3d16fa3cd3112e40d6fc1e3a763e138de75c1712bb9a2"
+  },
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.223,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "lookup": "read_release_record",
+    "publication_revision": 442,
+    "answer": "The publication revision is **442**.",
+    "turns": 1,
+    "items": 4,
+    "usage": {
+      "input_tokens": 847,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 31,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 878
+    },
+    "replay_status": 202,
+    "conflict_status": 409,
+    "foreign_status": 404,
+    "deleted": true,
+    "traces": {
+      "waiting_spans": 1,
+      "closed_spans": 3,
+      "pages": 2,
+      "stable_parent": true,
+      "foreign": 404,
+      "unknown_cursor": 400
+    }
+  },
+  "coverage": {
+    "scope_snapshot_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+    "issued_openapi_sha256": "1e4a4ac8d53146c89df9f1c172f248c740b6ba14c88332aaa8fcd9dfad343537",
+    "scope_path_selectors": 157,
+    "with_declared_operations": 78,
+    "without_declared_operations": 79,
+    "measurement": "Path templates ignore parameter names. A query selector must be explicitly declared with a matching enum or constant on the listed operation. This measures declarations only; the frozen scope inventory does not list all required methods or their acceptance."
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 132,
+    "native_routes": 218,
+    "reviewed_source_anchors": 1228,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "monitor_samples": 39,
+  "contracts": {
+    "trace_clock_resolution": "second",
+    "wire_time": "decimal-string UNIX nanoseconds",
+    "trace_id": "128 bit hex",
+    "span_id": "64 bit hex",
+    "source": "committed native response steps grouped by the owned root turn",
+    "read_budget": "project only the selected page",
+    "restart": "closed trace identical after reopening the durable store",
+    "privacy": "model text, tool arguments/results, API keys and call ID omitted"
+  },
+  "evidence": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-errors.log",
+      "sha256": "f5e14facf004769113ce1bf2c6cdfe95611068c90e4fdfb48645fa935672e213"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-routes-cpu.log",
+      "sha256": "f9ac9d11ca408a88041b7ef3abfad4d4836dfed259a75dd305e3314381f0199e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-nginx-cpu-r2.log",
+      "sha256": "21e20a92da17410a2f7be2cf8ad9a0b6b82cdb5e5401c8b61c762d221a4fe6d2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-native-cpu-r3.log",
+      "sha256": "7363a517bd383f4a7b2b802213afe386552069a15c9d3fe853d85dd8313a9931"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-audit-final.json",
+      "sha256": "775e3bc76b76cfa0039132eb77b0278cf2f90b167ee6c3a7e19b8134ebeeb278"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-business-01/plan.json",
+      "sha256": "c335b627354279082963a333ea18d2edef680b596b40f9ea5c131977ef1c261c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-business-01/result.json",
+      "sha256": "42a1ffb3912a3417fd20f8cf742b04a8071d1edfc24b60262c34b5b70a0e9c4e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-business-01/create/sdk-result.json",
+      "sha256": "6a8ed7a76f84fbc3635963abcb9320b7f7633a78f848f04b507c0cae67072823"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-lease-01/exit.json",
+      "sha256": "42967699c928c84b06a16aed35fed29d1ad13f353c4792e2731a42b573133e16"
+    }
+  ],
+  "prior_fixture_failures": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-cpu.log",
+      "sha256": "ae44f0649c2fd139065b56e2f5dfe3de79410c6d8188f3b61ab1691d8dcfb8d2",
+      "finding": "Test constructed two concurrent controllers in one storage domain; reopen verified after the first controller actually exited."
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-nginx-cpu.log",
+      "sha256": "3aed33bda8f1bc647dfbcaed2142b782e53f23f7213d2343209085e8b7d99570",
+      "finding": "Fixture called without the required explicit nginx binary."
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-native-cpu.log",
+      "sha256": "d0d5553117c9d94efce31702c3e9695059d6ec8b28b1017dad39a89a23741a04",
+      "finding": "Prior ingress binary predates the traces route."
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/traces-native-cpu-r2.log",
+      "sha256": "1e2a4c6daa993fa7da9af338eb9c0d380a7de9b76fbfbe8296a0f33130ba4d1a",
+      "finding": "Make matched an existing output filename instead of rebuilding the q4t_ingress target."
+    }
+  ]
+}

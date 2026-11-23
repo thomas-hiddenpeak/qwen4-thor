@@ -25,15 +25,16 @@ CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents',
     storage='authenticated_client', retention='until_deleted', tool_list_max_bytes=3145728)
 
 
-def prepare(out, build, original, session_witness=None, qualify_vaults=False):
+def prepare(out, build, original, session_witness=None, qualify_vaults=False, vault_oauth=False):
     receipt = pkg.read(EVIDENCE)
     deployed = ROOT/'build/service'
     delivery = pkg.read(recovery.EVIDENCE.parent/'delivery.json')['publication']
     if session_witness is not None:
         delivery = pkg.read(sessions.PUBLICATION)['publication']
-    if qualify_vaults:
+    if qualify_vaults or vault_oauth:
         pkg.require(session_witness is None, 'select a single candidate source')
-        delivery = pkg.read(vaults.PUBLICATION)['publication']
+        publication = vaults.OAUTH_PUBLICATION if vault_oauth else vaults.PUBLICATION
+        delivery = pkg.read(publication)['publication']
     previous = delivery['primary']
     manifest = bundle.verify(deployed, previous)
     engine = pkg.verify(deployed/'engine', manifest['engine_manifest_sha256'])
@@ -45,7 +46,7 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False):
     change = dict(source_manifest_sha256=previous, previous_protocol=engine['protocol_sha256'],
         sdk_binary=pkg.sha(build/'q4t'), sdk_protocol=protocol(current), protocol=protocol(current))
     session = sessions.candidate(build, session_witness, current) if session_witness else None
-    vault = vaults.candidate(build, current) if qualify_vaults else None
+    vault = vaults.candidate(build, current, vault_oauth) if qualify_vaults or vault_oauth else None
     selection = vault or session
     ingress = selection['ingress'] if selection else receipt['ingress_sha256']
     if session:
@@ -64,7 +65,7 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False):
         protected=protected, beta_change=change, agent_change=dict(
             witness_sha256=pkg.sha(agents.EVIDENCE),
             capabilities=pkg.read(agents.EVIDENCE)['selected']['capabilities']))
-    fixture = vaults.prepare_peer(out) if vault else None
+    fixture = vaults.prepare_peer(out, vault_oauth) if vault else None
     for name in profile_acceptance.PROFILES:
         phase = out/name
         path = phase/'plan.json'
@@ -82,7 +83,10 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False):
         if vault:
             plan['agent_vaults'] = dict(vault, fixture=fixture)
             plan['command'].extend(['--mcp-policy-file',str(out/'mcp/policy.json')])
-            for source in (vaults.SDK, vaults.HELPER, vaults.PEER, str(vaults.PUBLICATION.relative_to(ROOT))):
+            sources = [vaults.SDK, vaults.HELPER, vaults.PEER, str(publication.relative_to(ROOT))]
+            if vault_oauth:
+                sources.append(vaults.OAUTH_ISSUER)
+            for source in sources:
                 plan['sources'][source] = pkg.sha(ROOT/source)
         if selection:
             plan['agent_sessions'] = selection
@@ -139,9 +143,12 @@ if __name__ == '__main__':
     for opt in ('output','build','original'):
         cli.add_argument('--'+opt,type=Path,required=True)
     cli.add_argument('--session-witness', type=Path)
-    cli.add_argument('--vaults', action='store_true')
+    source = cli.add_mutually_exclusive_group()
+    source.add_argument('--vaults', action='store_true')
+    source.add_argument('--vault-oauth', action='store_true')
     args = cli.parse_args()
     out = args.output.resolve()
     pkg.require(out.is_relative_to(ROOT/'.q4t-work'), 'private stage required')
     prepare(out,args.build.resolve(strict=True),args.original.resolve(strict=True),
-            args.session_witness.resolve(strict=True) if args.session_witness else None, args.vaults)
+            args.session_witness.resolve(strict=True) if args.session_witness else None,
+            args.vaults, args.vault_oauth)

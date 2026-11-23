@@ -141,7 +141,13 @@ def schema(graph):
     sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
     assert sessions['profile'] == 'q4t-openai-agent-session-types-v1'
     definitions.update(graph_definitions(sessions, 'agent_session_'))
-    for suffix, member in [('list', 'resource'), ('turn_list', 'turn'), ('item_list', 'item')]:
+    trace = dict(id=dict(type='string'), session_id=dict(type='string'),
+                 object=dict(const='agent.session.trace'), created_at=dict(type='integer'),
+                 otlp=dict(type='object', required=['resourceSpans'],
+                           properties=dict(resourceSpans=dict(type='array', items=dict(type='object')))))
+    definitions['agent_session_trace'] = obj(trace, trace.keys())
+    for suffix, member in [('list', 'resource'), ('turn_list', 'turn'), ('item_list', 'item'),
+                           ('trace_list', 'trace')]:
         page = copy.deepcopy(definitions['agents_list'])
         page['properties']['data']['items'] = ref('agent_session_' + member)
         definitions['agent_session_' + suffix] = page
@@ -473,6 +479,7 @@ def add_openapi(paths, response, error):
         ('/v1/agents/sessions/{session_id}/turns', 'get', None, 'agent_session_turn_list', 'agents_query'),
         ('/v1/agents/sessions/{session_id}/turns/{turn_id}', 'get', None, 'agent_session_turn', None),
         ('/v1/agents/sessions/{session_id}/items', 'get', None, 'agent_session_item_list', 'agents_query'),
+        ('/v1/agents/sessions/{session_id}/traces', 'get', None, 'agent_session_trace_list', 'agents_query'),
         ('/v1/agents/sessions/{session_id}/turns/{turn_id}/items', 'get', None, 'agent_session_item_list', 'agents_query'),
         ('/v1/prompts', 'post', 'prompt_create', 'prompt_resource', None),
         ('/v1/prompts', 'get', None, 'prompt_list', 'prompt_query'),

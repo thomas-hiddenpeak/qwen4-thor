@@ -29,6 +29,17 @@ def bind_records(registry, records):
 
 
 class MigrationTests(unittest.TestCase):
+    def test_vault_oauth_adds_only_renewal_to_qualified_mcp_authority(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(agent_sessions=live.VAULT_SESSION, agent_vaults=live.VAULT_CAPABILITY, storage='owned')
+        new = dict(old, agent_sessions=live.OAUTH_SESSION)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        for change in (dict(storage='shared'), dict(agent_sessions=dict(live.OAUTH_SESSION, cancel_turn=1)),
+                       dict(agent_vaults=dict(live.VAULT_CAPABILITY, lifecycle='delete'))):
+            with self.subTest(change=change):
+                self.assertFalse(migration.explicit_extension(old, dict(new, **change)))
+
     def test_agent_vault_extends_only_the_qualified_function_session(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(agent_sessions=live.SESSION_CAPABILITY)

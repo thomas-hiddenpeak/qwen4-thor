@@ -3371,6 +3371,48 @@ Q4T_TEST(mcp_session_binding_rejects_scope_target_credentials_and_policy) {
   return true;
 }
 
+Q4T_TEST(mcp_vault_renewal_binds_session_to_issuer_grant_and_exact_endpoint) {
+  StatefulMcp remote;
+  auto endpoint = remote.server.Endpoint();
+  endpoint.url.replace(0, 4, "https");
+  endpoint.exact_target = true;
+  endpoint.vault_grant.assign(64, 'a');
+  endpoint.authorization = "first";
+  auto access = Access();
+  // Parent binds the authenticated snapshot before checking cancellation.
+  access.cancelled = [] { return true; };
+  auto check = [&](McpSession& session) {
+    McpTransportReceipt receipt;
+    return InvokeMcp(access, endpoint, remote.server.Options(), "tools/list",
+                     Object(), {}, &receipt, {}, &session);
+  };
+  McpSession session;
+  Q4T_CHECK(check(session).http_status == 499);
+  const auto binding = session.state.GetString("binding");
+  endpoint.authorization = "replacement";
+  Q4T_CHECK(check(session).http_status == 499 &&
+            session.state.GetString("binding") == binding);
+  endpoint.vault_grant.assign(64, 'b');
+  Q4T_CHECK(check(session).code == "mcp_session_binding_changed");
+  endpoint.vault_grant.assign(64, 'a');
+  endpoint.headers["X-Project"] = "changed";
+  Q4T_CHECK(check(session).code == "mcp_session_binding_changed");
+  endpoint.headers.erase("X-Project");
+  endpoint.url += "?other";
+  Q4T_CHECK(check(session).code == "mcp_session_binding_changed");
+  endpoint.vault_grant.clear();
+  McpSession legacy;
+  Q4T_CHECK(check(legacy).http_status == 499);
+  endpoint.vault_grant.assign(64, 'a');
+  Q4T_CHECK(check(legacy).http_status == 499);
+  endpoint.authorization = "new";
+  Q4T_CHECK(check(legacy).code == "mcp_session_binding_changed");
+  endpoint.url.replace(0, 5, "http");
+  Q4T_CHECK(check(session).code == "mcp_credentials_invalid");
+  Q4T_CHECK(remote.server.Requests().empty());
+  return true;
+}
+
 Q4T_TEST(mcp_session_unconfirmed_checkpoint_cannot_dispatch) {
   for (const bool unknown : {false, true}) {
     StatefulMcp remote;

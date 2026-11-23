@@ -158,9 +158,11 @@ ObjectReply ResponsesExecution::ExecuteMcpCall(
         &receipt, {}, &session, cipher_config_.mcp_tunnels);
   };
   auto result = invoke();
-  if (result.code == "mcp_session_binding_changed" && !receipt.call_permitted) {
+  if (result.code == "mcp_session_binding_changed" && !receipt.call_permitted &&
+      agent_http_session_.empty()) {
     // The catalog/target was authenticated above. Newly supplied credentials
     // or deployment policy need a fresh session, never the previous token.
+    // A managed Agent call already belongs to its selected authorization.
     // This preflight error performed no remote I/O or permission mutation.
     session.state = Json();
     result = invoke();

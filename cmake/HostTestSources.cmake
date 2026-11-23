@@ -442,6 +442,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/vault_credential.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_turn.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_traces.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_mcp.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_cancel.cpp

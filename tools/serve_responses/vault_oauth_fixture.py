@@ -9,13 +9,23 @@ import urllib.parse
 
 
 class TokenIssuer:
-    def __init__(self, peer, *, retry_after=None):
+    @staticmethod
+    def credentials():
+        return dict(client_secret=secrets.token_urlsafe(24) + '+',
+                    original=secrets.token_urlsafe(24), replacement=secrets.token_urlsafe(24))
+
+    def __init__(self, peer, *, retry_after=None, live_rotation=False, port=0,
+                 credentials=None):
         self.resource = peer.url
         self.client = 'q4t:fixture reader'
-        self.client_secret = secrets.token_urlsafe(24) + '+'
-        self.original = secrets.token_urlsafe(24)
-        self.replacement = secrets.token_urlsafe(24)
+        private = self.credentials() if credentials is None else credentials
+        self.client_secret = private['client_secret']
+        self.original = private['original']
+        self.replacement = private['replacement']
         self.receipts = []
+        self.issued = []
+        self.methods_at_exchange = []
+        self.next_refresh = self.original
         issuer = self
 
         class Handler(http.server.BaseHTTPRequestHandler):
@@ -34,10 +44,8 @@ class TokenIssuer:
                 basic = 'Basic ' + base64.b64encode(credentials.encode()).decode()
                 form = urllib.parse.parse_qs(self.rfile.read(int(length)).decode(),
                     strict_parsing=True, max_num_fields=5, keep_blank_values=True)
-                token = (issuer.replacement if 'original' in issuer.receipts
-                         else issuer.original)
                 if self.headers.get_all('Authorization') != [basic] or form != {
-                        'refresh_token':[token], 'grant_type':['refresh_token'],
+                        'refresh_token':[issuer.next_refresh], 'grant_type':['refresh_token'],
                         'scope':['records.read'], 'resource':[issuer.resource]}:
                     self.send_error(403)
                     return
@@ -51,22 +59,28 @@ class TokenIssuer:
                     self.end_headers()
                     self.wfile.write(wire)
                     return
-                exchanged = 'original' in issuer.receipts
-                issuer.receipts.append('rotated' if exchanged else 'original')
-                if exchanged:
+                count = len(issuer.issued)
+                issuer.methods_at_exchange.append(peer.snapshot()['methods'])
+                issuer.receipts.append('rotated' if count else 'original')
+                if count == (3 if live_rotation else 1):
                     # Model an issuer that consumed a rotating token before
                     # its connection vanished. No second receipt is available.
                     self.close_connection = True
                     return
+                if count:
+                    peer.secret = secrets.token_urlsafe(32)
+                issuer.issued.append(peer.secret)
+                issuer.next_refresh = issuer.replacement if not count else secrets.token_urlsafe(24)
                 wire = json.dumps(dict(access_token=peer.secret, token_type='Bearer',
-                    expires_in=3600, refresh_token=issuer.replacement)).encode()
+                    expires_in=1 if live_rotation and count < 2 else 3600,
+                    refresh_token=issuer.next_refresh)).encode()
                 self.send_response(200)
                 self.send_header('Content-Type','application/json')
                 self.send_header('Content-Length',str(len(wire)))
                 self.end_headers()
                 self.wfile.write(wire)
 
-        self.server = http.server.HTTPServer(('127.0.0.1', 0), Handler)
+        self.server = http.server.HTTPServer(('127.0.0.1', port), Handler)
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(peer.certificate, peer.key)
         self.server.socket = context.wrap_socket(self.server.socket, server_side=True)

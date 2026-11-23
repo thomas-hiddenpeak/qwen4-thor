@@ -284,13 +284,15 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
   const std::string id(route.session);
   if (method == "DELETE") return DeleteSession(objects, id, access);
   AgentSessionView view;
-  auto result = ReadAgentSessionTurn(objects, id, route.turn, access, &view,
-                                     route.kind == Kind::kItems);
-  if (!result.ok()) return result;
-  if (route.kind == Kind::kSession || route.kind == Kind::kTurn) {
-    result.value = route.kind == Kind::kSession ? std::move(view.session)
-                                                : std::move(view.turn);
-    return result;
+  if (route.kind != Kind::kTraces) {
+    auto result = ReadAgentSessionTurn(objects, id, route.turn, access, &view,
+                                       route.kind == Kind::kItems);
+    if (!result.ok()) return result;
+    if (route.kind == Kind::kSession || route.kind == Kind::kTurn) {
+      result.value = route.kind == Kind::kSession ? std::move(view.session)
+                                                  : std::move(view.turn);
+      return result;
+    }
   }
   auto query = ParseApplicationQuery(
       split == target.npos ? "" : target.substr(split + 1));
@@ -301,6 +303,8 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
   ChatPlanError error;
   auto valid = ParseItemViewOptions(query.value, &options, &error, true);
   if (!valid) return Invalid(valid.message(), error.param);
+  if (route.kind == Kind::kTraces)
+    return ListAgentSessionTraces(objects, id, options, access);
   return PageStoredItems(route.kind == Kind::kTurns ? view.turns : view.items,
                          options, StoredItemView::kAgentSession);
 }

@@ -29833,6 +29833,45 @@
     "agent_session_turn": {
       "$ref": "#/$defs/agent_session_304"
     },
+    "agent_session_trace": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "session_id": {
+          "type": "string"
+        },
+        "object": {
+          "const": "agent.session.trace"
+        },
+        "created_at": {
+          "type": "integer"
+        },
+        "otlp": {
+          "type": "object",
+          "required": [
+            "resourceSpans"
+          ],
+          "properties": {
+            "resourceSpans": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "session_id",
+        "object",
+        "created_at",
+        "otlp"
+      ],
+      "additionalProperties": false
+    },
     "agent_session_list": {
       "type": "object",
       "properties": {
@@ -29933,6 +29972,51 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/agent_session_item"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
+    "agent_session_trace_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/agent_session_trace"
           }
         },
         "has_more": {

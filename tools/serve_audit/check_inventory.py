@@ -311,7 +311,7 @@ def current_surface(root):
                          ('GET', resource + '/events'),
                          ('GET', resource), ('DELETE', resource),
                          *(('GET', resource + suffix) for suffix in
-                           ('/turns', '/turns/{turn_id}', '/items', '/turns/{turn_id}/items'))]:
+                           ('/turns', '/turns/{turn_id}', '/items', '/turns/{turn_id}/items', '/traces'))]:
         routes.append((path, method))
         operations = method != 'POST' and path != resource + '/events'
         native_routes.append((method, path, 'true' if operations else 'false'))

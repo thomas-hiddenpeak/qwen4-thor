@@ -76,10 +76,14 @@ ObjectReply BindSession(const BinaryAccess& access, const McpEndpoint& endpoint,
   auto headers = Object();
   for (const auto& [key, value] : endpoint.headers)
     Set(&headers, key, String(value));
-  auto authority = Object({{"url", String(endpoint.url)},
-                           {"headers", std::move(headers)},
-                           {"authorization", String(endpoint.authorization)},
-                           {"policy", file_detail::OptionsJson(deployment)}});
+  auto authority =
+      Object({{"url", String(endpoint.url)},
+              {"headers", std::move(headers)},
+              {"authorization",
+               endpoint.vault_grant.empty()
+                   ? String(endpoint.authorization)
+                   : Object({{"vault_grant", String(endpoint.vault_grant)}})},
+              {"policy", file_detail::OptionsJson(deployment)}});
   if (!endpoint.tunnel_id.empty()) {
     Set(&authority, "tunnel_id", String(endpoint.tunnel_id));
     Set(&authority, "tunnel_generation", String(endpoint.tunnel_generation));
@@ -95,6 +99,16 @@ ObjectReply BindSession(const BinaryAccess& access, const McpEndpoint& endpoint,
       !InputValueIdentity(authority, &binding))
     return Error(503, "mcp_session_invalid",
                  "MCP session identity unavailable");
+  // Pre-renewal snapshots used the bearer itself in the identity. They
+  // remain usable while that original bearer and all other controls match.
+  if (!endpoint.vault_grant.empty() && session->state.IsObject() &&
+      session->state.GetString("binding") != binding) {
+    Set(&authority, "authorization", String(endpoint.authorization));
+    std::string previous;
+    if (InputValueIdentity(authority, &previous) &&
+        session->state.GetString("binding") == previous)
+      binding = std::move(previous);
+  }
   if (session->state.IsNull()) {
     if (!session->allow_new)
       return Error(409, "mcp_session_lost", "Original MCP session unavailable");

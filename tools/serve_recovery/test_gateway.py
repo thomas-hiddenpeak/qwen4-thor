@@ -30,6 +30,7 @@ class RouteInventoryTests(unittest.TestCase):
             '': ('get', 'post'), '/{session_id}': ('get', 'post', 'delete'),
             '/{session_id}/events': ('get', 'post'),
             '/{session_id}/turns': ('get',), '/{session_id}/items': ('get',),
+            '/{session_id}/traces': ('get',),
             '/{session_id}/turns/{turn_id}': ('get',),
             '/{session_id}/turns/{turn_id}/items': ('get',),
         }

@@ -27,7 +27,8 @@ ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
                             const io::Json& vaults, std::string_view id,
                             const std::string& destination, std::string* token,
                             const FileFetchOptions* deployment = nullptr,
-                            bool* refresh_needed = nullptr);
+                            bool* refresh_needed = nullptr,
+                            std::string* grant_binding = nullptr);
 enum class CredentialShape { kCreate, kAuthCreate, kAuthRotate, kResource };
 Status ValidateCredential(const io::Json& value, CredentialShape shape,
                           ChatPlanError* error);

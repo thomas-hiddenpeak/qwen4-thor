@@ -16,6 +16,7 @@
 #include <thread>
 
 #include "q4t/server/chat_prompt.h"
+#include "q4t/server/conversation_state.h"
 #include "q4t/server/http_connection.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_execution.h"
@@ -207,7 +208,7 @@ Q4T_TEST(agent_session_turn_shares_queue_receipt_and_reopens_native_output) {
   Fixture f;
   const auto request = Parse(R"({"agent":{"model":"cpu"},
     "environment":{"type":"none"},"input":"what is six times seven?"})");
-  std::string id, turn;
+  std::string id, turn, trace_before_restart;
   {
     ObjectStore store(f.options);
     ResponsesExecution run(store);
@@ -233,8 +234,13 @@ Q4T_TEST(agent_session_turn_shares_queue_receipt_and_reopens_native_output) {
     Q4T_CHECK(run.Append(delta, "null", &wire));
     Q4T_CHECK(Ok(run.Finish(false, 0, {12, 1, 2, 0}, std::time(nullptr), &wire)));
     Q4T_CHECK(ResponsesState(store).Erase(run.Id(), Access()).http_status == 409);
+    auto traces = ListAgentSessionTraces(store, id, {}, Access());
+    Q4T_CHECK(Ok(traces) && traces.value.GetString("first_id") == turn);
+    trace_before_restart = OutputJson(traces.value);
   }
   ObjectStore store(f.options);
+  auto traces = ListAgentSessionTraces(store, id, {}, Access());
+  Q4T_CHECK(Ok(traces) && OutputJson(traces.value) == trace_before_restart);
   AgentSessionView view;
   Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, turn, Access(), &view)));
   Q4T_CHECK(view.session.GetString("status") == "idle" &&
@@ -292,6 +298,18 @@ Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
     Q4T_CHECK(view.turn.GetString("status") == "failed" && error &&
               error->GetString("code") == item.projected &&
               error->GetString("message") == "original message");
+    auto traces = ListAgentSessionTraces(store, id, {}, Access());
+    Q4T_CHECK(Ok(traces) && traces.value.GetArray("data")->array.size() == 1);
+    const auto* resources = traces.value.GetArray("data")->array.front()
+                                .Find("otlp")->GetArray("resourceSpans");
+    Q4T_CHECK(resources && resources->array.size() == 1);
+    const auto& spans = resources->array.front().GetArray("scopeSpans")
+                            ->array.front().GetArray("spans")->array;
+    Q4T_CHECK(spans.size() == 2 &&
+              spans.front().Find("status")->GetInt("code") == 2 &&
+              spans.back().Find("status")->GetInt("code") == 2 &&
+              OutputJson(traces.value).find("original message") ==
+                  std::string::npos);
   }
   return true;
 }
@@ -441,6 +459,49 @@ Q4T_TEST(agent_session_tool_action_requires_a_completed_owned_call) {
             events.array.front().GetString("turn_id") != first_turn);
   Q4T_CHECK(view.turns.array.size() == 2 && view.turn.GetString("id") != first_turn &&
             view.items.array.size() == 5);
+  ItemViewOptions paging;
+  paging.limit = 1;
+  auto page = ListAgentSessionTraces(store, id, paging, Access());
+  Q4T_CHECK(Ok(page) && page.value.GetBool("has_more"));
+  const auto pending = page.value.GetArray("data")->array.front();
+  paging.after = pending.GetString("id");
+  Q4T_CHECK(paging.after == view.turn.GetString("id") &&
+            pending.Find("otlp")->GetArray("resourceSpans")->array.empty());
+  page = ListAgentSessionTraces(store, id, paging, Access());
+  Q4T_CHECK(Ok(page) && !page.value.GetBool("has_more") &&
+            page.value.GetString("first_id") == first_turn);
+  const auto& trace = page.value.GetArray("data")->array.front();
+  Q4T_CHECK(trace.GetString("session_id") == id &&
+            trace.GetString("object") == "agent.session.trace");
+  const auto& resources = trace.Find("otlp")->GetArray("resourceSpans")->array;
+  Q4T_CHECK(resources.size() == 1);
+  const auto& spans = resources.front()
+                          .GetArray("scopeSpans")
+                          ->array.front()
+                          .GetArray("spans")
+                          ->array;
+  Q4T_CHECK(spans.size() == 3);
+  const auto& root = spans.back();
+  Q4T_CHECK(root.GetString("traceId").size() == 32 &&
+            root.GetString("spanId").size() == 16 &&
+            root.GetString("name") == "q4t.agent.turn" &&
+            !root.Has("parentSpanId"));
+  for (size_t i = 0; i < 2; ++i)
+    Q4T_CHECK(spans[i].GetString("traceId") == root.GetString("traceId") &&
+              spans[i].GetString("parentSpanId") == root.GetString("spanId") &&
+              spans[i].GetString("endTimeUnixNano") >=
+                  spans[i].GetString("startTimeUnixNano"));
+  Q4T_CHECK(spans[0].GetString("spanId") != spans[1].GetString("spanId") &&
+            OutputJson(trace).find("revision 442") == std::string::npos);
+  paging.descending = false;
+  paging.after = first_turn;
+  Q4T_CHECK(ListAgentSessionTraces(store, id, paging, Access())
+                .value.GetString("last_id") == pending.GetString("id"));
+  paging.after = "turn_unknown";
+  Q4T_CHECK(ListAgentSessionTraces(store, id, paging, Access()).http_status ==
+                400 &&
+            ListAgentSessionTraces(store, id, paging, Access("client:other"))
+                    .http_status == 404);
   Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, first_turn, Access(), &view)) &&
             view.items.array.size() == 4 && view.turn.GetString("status") == "completed");
   Q4T_CHECK(Ok(later.CloseUnfinished()));
@@ -875,6 +936,47 @@ Q4T_TEST(agent_vault_refresh_inspection_and_uncertain_grants_do_not_replay) {
   Q4T_CHECK(Ok(HandleAgentVault(objects, "DELETE", "/v1/vaults/" + vault, "",
                                 Access())));
   Q4T_CHECK(inspect().http_status == 404 && token.empty());
+  return true;
+}
+
+Q4T_TEST(agent_vault_renewable_binding_changes_on_owner_auth_edits_only) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto vault =
+      HandleAgentVault(objects, "POST", "/v1/vaults", "{}", Access())
+          .value.GetString("id");
+  const auto path = "/v1/vaults/" + vault + "/credentials";
+  const auto body =
+      R"({"name":"read","auth":{"type":"mcp_oauth","access_token":"same",
+    "mcp_server_url":"https://records.example/mcp",
+    "refresh":{"token_endpoint":"https://issuer.example/token","client_id":"reader",
+    "refresh_token":"original","token_endpoint_auth":{"type":"none"}}}})";
+  const auto a = HandleAgentVault(objects, "POST", path, body, Access())
+                     .value.GetString("id");
+  const auto b = HandleAgentVault(objects, "POST", path, body, Access())
+                     .value.GetString("id");
+  auto attached = Parse("[\"" + vault + "\"]");
+  std::string token, binding;
+  auto get = [&](const std::string& id, StateAccess access = Access()) {
+    return vault_detail::ResolveMcpToken(objects, access, attached, id,
+                                         "https://records.example/mcp", &token,
+                                         nullptr, nullptr, &binding);
+  };
+  Q4T_CHECK(Ok(get(a)) && binding.size() == 64 && token == "same");
+  const auto first = binding;
+  Q4T_CHECK(Ok(get(b)) && binding != first && token == "same");
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "POST", path + "/" + a,
+                                R"({"metadata":{"x":"1"}})", Access())));
+  Q4T_CHECK(Ok(get(a)) && binding == first);
+  Q4T_CHECK(Ok(HandleAgentVault(
+      objects, "POST", path + "/" + a,
+      R"({"auth":{"type":"mcp_oauth","access_token":"same"}})", Access())));
+  Q4T_CHECK(Ok(get(a)) && binding != first && token == "same");
+  Q4T_CHECK(get(a, Access("client:other")).http_status == 404 &&
+            binding.empty() && token.empty());
+  Q4T_CHECK(
+      Ok(HandleAgentVault(objects, "DELETE", path + "/" + a, "", Access())));
+  Q4T_CHECK(get(a).http_status == 404 && binding.empty() && token.empty());
   return true;
 }
 
