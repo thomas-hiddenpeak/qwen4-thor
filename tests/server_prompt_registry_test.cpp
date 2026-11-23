@@ -282,6 +282,63 @@ Q4T_TEST(agent_session_tool_action_requires_a_completed_owned_call) {
   Q4T_CHECK(actions[0].GetString("call_id") == "call_lookup" &&
             actions[0].Find("arguments")->GetInt("revision") == 442 &&
             actions[0].GetString("turn_id") == view.turn.GetString("id"));
+  auto results = Parse(R"({"events":[{"type":"agent.session.input.tool_result",
+    "turn_id":"unknown","call_id":"call_lookup","success":true,
+    "output":"revision 442"}]})");
+  ResponsesExecution next(store);
+  bool replay = false;
+  auto submit = [&](const Json& events, const char* key, ResponsesExecution& owner) {
+    return PrepareAgentSessionEvents(store, id, events, key, config, Access(),
+                                     owner, &replay);
+  };
+  Q4T_CHECK(submit(results, "lookup-wrong", next).http_status == 409);
+  Set(&results.object[0].second.array[0], "turn_id", *view.turn.Find("id"));
+  Q4T_CHECK(Ok(submit(results, "lookup-1", next)) && next.Prepared() && !replay);
+  ResponsesExecution racing(store);
+  Q4T_CHECK(Ok(submit(results, "lookup-1", racing)) && !replay);
+  racing.BindBackgroundControl(std::make_shared<RequestControl>(
+      racing.Id(), "", Clock::now() + 5s));
+  next.BindBackgroundControl(std::make_shared<RequestControl>(
+      next.Id(), "", Clock::now() + 5s));
+  Q4T_CHECK(Ok(next.Begin(&wire)));
+  auto lost_race = racing.Begin(&wire);
+  Q4T_CHECK(lost_race.code == "object_revision_conflict");
+  Q4T_CHECK(Ok(ReconcileAgentEventReceipt(store, id, results, "lookup-1",
+                                          Access(), lost_race)));
+  Q4T_CHECK(ResponsesState(store).Retrieve(racing.Id(), Access()).http_status == 404);
+  ResponsesExecution retry(store);
+  Q4T_CHECK(Ok(submit(results, "lookup-1", retry)) && replay && !retry.Prepared());
+  auto conflict = results;
+  Set(&conflict.object[0].second.array[0], "output", Parse(R"("different")"));
+  Q4T_CHECK(submit(conflict, "lookup-1", retry).code == "idempotency_key_conflict");
+  Q4T_CHECK(Ok(next.StartRunning(&wire)));
+  delta = {};
+  delta.kind = ResponseDelta::Kind::kContent;
+  delta.text = "442";
+  Q4T_CHECK(next.Append(delta, "null", &wire));
+  Q4T_CHECK(Ok(next.Finish(false, 0, {15, 0, 1, 0}, std::time(nullptr), &wire)));
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
+  Q4T_CHECK(view.turns.array.size() == 1 &&
+            view.turn.GetString("status") == "completed" &&
+            view.items.array.size() == 4 &&
+            view.items.array[2].GetString("type") == "function_call_output" &&
+            view.items.array[2].GetString("output") == "revision 442" &&
+            view.session.GetArray("required_actions")->array.empty() &&
+            view.session.Find("usage")->GetInt("total_tokens") == 33);
+  const auto first_turn = view.turn.GetString("id");
+  const auto follow = Parse(R"({"events":[{"type":"agent.session.input.message",
+    "input":[{"role":"user","content":[{"type":"input_text","text":"again"}]}]}]})");
+  ResponsesExecution later(store);
+  Q4T_CHECK(Ok(submit(follow, "follow-1", later)) && later.Prepared() && !replay);
+  later.BindBackgroundControl(std::make_shared<RequestControl>(
+      later.Id(), "", Clock::now() + 5s));
+  Q4T_CHECK(Ok(later.Begin(&wire)) &&
+            Ok(ReadAgentSessionTurn(store, id, "", Access(), &view, true)));
+  Q4T_CHECK(view.turns.array.size() == 2 && view.turn.GetString("id") != first_turn &&
+            view.items.array.size() == 5);
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, first_turn, Access(), &view)) &&
+            view.items.array.size() == 4 && view.turn.GetString("status") == "completed");
+  Q4T_CHECK(Ok(later.CloseUnfinished()));
   return true;
 }
 

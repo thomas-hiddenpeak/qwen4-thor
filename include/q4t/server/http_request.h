@@ -33,6 +33,7 @@ struct HttpRequestHeaders {
   std::string content_type;
   bool responses_multi_agent = false;
   bool agents_beta = false;
+  std::string agent_event_key;
   std::string client_id;
   std::string gateway_token;
   std::string tunnel_instance;

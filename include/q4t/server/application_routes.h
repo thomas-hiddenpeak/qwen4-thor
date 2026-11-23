@@ -381,7 +381,7 @@ inline bool AgentRegistrationMethodAllowed(std::string_view method,
          (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/agents");
 }
 
-enum class AgentSessionRouteKind { kNone, kCollection, kSession, kTurns, kTurn, kItems, kTurnItems };
+enum class AgentSessionRouteKind { kNone, kCollection, kSession, kTurns, kTurn, kItems, kTurnItems, kEvents };
 struct AgentSessionRoute {
   AgentSessionRouteKind kind = AgentSessionRouteKind::kNone;
   std::string_view session, turn;
@@ -401,6 +401,7 @@ inline AgentSessionRoute ParseAgentSessionRoute(std::string_view target) {
       !ValidApplicationId(id)) return {};
   if (split == path.npos) return {Kind::kSession, id, {}};
   path.remove_prefix(split + 1);
+  if (path == "events") return {Kind::kEvents, id, {}};
   if (path == "items") return {Kind::kItems, id, {}};
   if (path == "turns") return {Kind::kTurns, id, {}};
   if (!path.starts_with("turns/")) return {};
@@ -424,6 +425,7 @@ inline bool ManagedAgentMethodAllowed(std::string_view method,
   using Kind = AgentSessionRouteKind;
   switch (ParseAgentSessionRoute(target).kind) {
     case Kind::kNone: return AgentRegistrationMethodAllowed(method, target);
+    case Kind::kEvents:
     case Kind::kCollection: return method == "POST";
     case Kind::kSession: return method == "GET" || method == "DELETE";
     default: return method == "GET";

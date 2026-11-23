@@ -79,17 +79,19 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
   if (!ManagedAgentMethodAllowed(method, target)) {
     auto denied = Error(405, "method_not_allowed", "Method not allowed");
     denied.value =
-        Object({{"allow", String(route.kind == Kind::kCollection ? "POST"
-                                 : route.kind == Kind::kSession  ? "GET, DELETE"
-                                                                 : "GET")}});
+        Object({{"allow", String(route.kind == Kind::kCollection ||
+                                         route.kind == Kind::kEvents
+                                     ? "POST"
+                                 : route.kind == Kind::kSession ? "GET, DELETE"
+                                                                : "GET")}});
     return denied;
   }
   const auto split = target.find('?');
   if (split != target.npos &&
-      (route.kind == Kind::kCollection || route.kind == Kind::kSession ||
-       route.kind == Kind::kTurn))
+      (route.kind == Kind::kCollection || route.kind == Kind::kEvents ||
+       route.kind == Kind::kSession || route.kind == Kind::kTurn))
     return Invalid("Unexpected query", "query");
-  if (route.kind == Kind::kCollection) {
+  if (route.kind == Kind::kCollection || route.kind == Kind::kEvents) {
     auto* http = detail::HttpResponseContext::Current(fd);
     if (!http || !jobs || !http->Client().Allowed())
       return Error(503, "background_unavailable",
@@ -101,9 +103,20 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
       return Error(503, "agent_session_stream_unavailable",
                    "Session stream unavailable");
     auto run = std::make_unique<ResponsesExecution>(objects, jobs, true);
-    auto session = PrepareAgentSessionExecution(
-        objects, request, config, access, std::time(nullptr), *run);
-    if (!session.ok()) return session;
+    const bool event = route.kind == Kind::kEvents;
+    bool replay = false;
+    auto session =
+        event ? PrepareAgentSessionEvents(objects, std::string(route.session),
+                                          request, http->AgentEventKey(),
+                                          config, access, *run, &replay)
+              : PrepareAgentSessionExecution(objects, request, config, access,
+                                             std::time(nullptr), *run);
+    if (event && !session.ok())
+      return ReconcileAgentEventReceipt(objects, std::string(route.session),
+                                        request, http->AgentEventKey(), access,
+                                        std::move(session));
+    if (!session.ok() || (event && (replay || !run->Prepared())))
+      return session;
     if (!run->BindRateDomain(http->RateDomain()))
       return Error(503, "response_rate_domain_changed",
                    "Session accounting origin changed");
@@ -111,8 +124,13 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
         std::move(run), http->Client(),
         [&](ClientLease& lease) { return http->TransferClientLease(lease); },
         http->TakeBatchRate());
+    if (event)
+      result = ReconcileAgentEventReceipt(objects, std::string(route.session),
+                                          request, http->AgentEventKey(),
+                                          access, std::move(result));
     if (result.ok()) return session;
-    const auto id = session.value.GetString("id");
+    const auto id =
+        event ? std::string(route.session) : session.value.GetString("id");
     if (result.code == "background_admission_lost") {
       // Begin committed before the permit transfer failed. Return the durable
       // session if readable so a client can observe its actual terminal.
@@ -131,7 +149,8 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
   const std::string id(route.session);
   if (method == "DELETE") return DeleteSession(objects, id, access);
   AgentSessionView view;
-  auto result = ReadAgentSessionTurn(objects, id, route.turn, access, &view);
+  auto result = ReadAgentSessionTurn(objects, id, route.turn, access, &view,
+                                     route.kind == Kind::kItems);
   if (!result.ok()) return result;
   if (route.kind == Kind::kSession || route.kind == Kind::kTurn) {
     result.value = route.kind == Kind::kSession ? std::move(view.session)
@@ -147,9 +166,8 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
   ChatPlanError error;
   auto valid = ParseItemViewOptions(query.value, &options, &error, true);
   if (!valid) return Invalid(valid.message(), error.param);
-  return PageStoredItems(
-      route.kind == Kind::kTurns ? Array({std::move(view.turn)}) : view.items,
-      options, StoredItemView::kAgentSession);
+  return PageStoredItems(route.kind == Kind::kTurns ? view.turns : view.items,
+                         options, StoredItemView::kAgentSession);
 }
 }  // namespace
 
@@ -158,7 +176,11 @@ void ServeAgentSession(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                        const std::string& body, const ChatPlanConfig& config,
                        const StateAccess& access) {
   auto reply = Handle(fd, objects, jobs, method, target, body, config, access);
-  if (reply.ok()) {
+  if (reply.ok() && ParseAgentSessionRoute(target).kind == Kind::kEvents &&
+      method == "POST") {
+    detail::SendSimple(fd, 202, "Accepted", "", "application/json",
+                       {access.deadline});
+  } else if (reply.ok()) {
     detail::SendSimple(fd, 200, "OK", OutputJson(reply.value),
                        "application/json", {access.deadline});
   } else {

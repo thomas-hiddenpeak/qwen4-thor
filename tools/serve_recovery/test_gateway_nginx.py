@@ -108,7 +108,7 @@ class Stack:
                 self.close_connection = True
             def application_path(self, method):
                 path = self.path.split('?', 1)[0]
-                roots = ('/v1/prompts', '/v1/conversations', '/v1/responses',
+                roots = ('/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
                          '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/calls', '/v1/live/sessions')
@@ -431,7 +431,8 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(response_id='resp_1', conversation_id='conv_1',
+            identities = dict(agent_id='agent_1', agent_session_id='agent_session_1',
+                              agent_turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',

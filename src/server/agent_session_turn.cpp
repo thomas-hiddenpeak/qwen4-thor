@@ -1,6 +1,12 @@
 #include "q4t/server/agent_session.h"
 
 #include <algorithm>
+#include <ctime>
+#include <limits>
+#include <unordered_set>
+
+#include "q4t/server/request_limits.h"
+#include "q4t/server/input_snapshot_bindings.h"
 
 #include "object_protocol.h"
 #include "q4t/server/request_json.h"
@@ -85,6 +91,12 @@ ObjectReply ProjectItem(const Json& from, const std::string& turn_id,
       });
       actions->array.push_back(std::move(action));
     }
+  } else if (type == "function_call_output") {
+    Set(&item, "call_id", Copy(from, "call_id"));
+    Set(&item, "error", Copy(from, "error"));
+    Set(&item, "output", Copy(from, "output"));
+    Set(&item, "status",
+        String(Nonnull(from, "error") ? "failed" : "completed"));
   } else if (type == "reasoning") {
     Set(&item, "summary", Copy(from, "summary"));
   } else {
@@ -139,53 +151,45 @@ ObjectReply PrepareAgentSessionExecution(
   return result;
 }
 
-ObjectReply ReadAgentSessionTurn(ObjectStore& objects, const std::string& id,
-                                 std::string_view turn_id,
-                                 const StateAccess& access,
-                                 AgentSessionView* view) {
-  ObjectRequest lookup;
-  lookup.kind = ObjectKind::kAgentSession;
-  lookup.id = id;
-  lookup.scope = access.scope;
-  auto saved = objects.Execute(lookup, access.deadline, access.cancelled);
-  if (!saved.ok()) return saved;
-  const auto* data = saved.value.Find("data");
-  const auto* session = data ? data->Find("session") : nullptr;
-  const auto* turns = data ? data->GetArray("turns") : nullptr;
-  if (!session || session->GetString("id") != id || !turns ||
-      turns->array.empty())
+namespace {
+ObjectReply ProjectStep(const Json& session, const Json& link,
+                        const Json& record, AgentSessionView* view) {
+  const auto id = session.GetString("id");
+  const auto token = link.GetString("id");
+  const auto* raw = record.Find("response");
+  if (record.GetString("agent_session_id") != id ||
+      !record.GetArray("own_input") || !raw || !raw->GetArray("output"))
     return InvalidRecord();
-  const Json* link = &turns->array.back();
-  if (!turn_id.empty()) {
-    const auto it = std::ranges::find_if(turns->array, [&](const auto& entry) {
-      return entry.GetString("id") == turn_id;
-    });
-    if (it == turns->array.end())
-      return Error(404, "object_not_found", "Turn not found");
-    link = &*it;
-  }
-  const auto token = link->GetString("id");
-  auto record = ResponsesState(objects).ReadRecord(
-      link->GetString("response_id"), access);
-  if (!record.ok()) return record;
-  if (record.value.GetString("agent_session_id") != id ||
-      !record.value.GetArray("own_input"))
-    return InvalidRecord();
-  const auto& response = *record.value.Find("response");
+  const auto& response = *raw;
   const auto status = response.GetString("status");
-  AgentSessionView result{*session, {}, Array()};
+  AgentSessionView result{session, {}, Array(), Array()};
   auto actions = Array();
   for (const auto* source :
-       {record.value.GetArray("own_input"), response.GetArray("output")}) {
+       {record.GetArray("own_input"), response.GetArray("output")}) {
     for (const auto& entry : source->array) {
-      auto projected = ProjectItem(entry, token, &result.items, &actions,
+      const Json* input = &entry;
+      Json tool_result;
+      if (entry.GetString("type") == "function_call_output") {
+        const auto* results = link.GetArray("tool_results");
+        if (!results) return InvalidRecord();
+        const auto it =
+            std::ranges::find_if(results->array, [&](const auto& row) {
+              return row.GetString("call_id") == entry.GetString("call_id");
+            });
+        if (it == results->array.end()) return InvalidRecord();
+        tool_result = entry;
+        Set(&tool_result, "error", Copy(*it, "error"));
+        Set(&tool_result, "output", Copy(*it, "output"));
+        input = &tool_result;
+      }
+      auto projected = ProjectItem(*input, token, &result.items, &actions,
                                    status == "completed");
       if (!projected.ok()) return projected;
     }
   }
   const bool waiting = !actions.array.empty();
-  const auto finished = record.value.GetInt("agent_turn_finished_at");
-  const auto started = record.value.GetInt("agent_turn_started_at");
+  const auto finished = record.GetInt("agent_turn_finished_at");
+  const auto started = record.GetInt("agent_turn_started_at");
   const auto created = response.GetInt("created_at");
   const bool failed = status == "failed" || status == "incomplete";
   Json error;
@@ -201,7 +205,7 @@ ObjectReply ReadAgentSessionTurn(ObjectStore& objects, const std::string& id,
                                       : "Model execution failed")}});
   }
   const auto usage = Usage(response);
-  const auto* agent = session->Find("agent");
+  const auto* agent = session.Find("agent");
   if (!agent) return InvalidRecord();
   result.turn = Object(
       {{"id", String(token)},
@@ -234,5 +238,289 @@ ObjectReply ReadAgentSessionTurn(ObjectStore& objects, const std::string& id,
     return InvalidRecord();
   *view = std::move(result);
   return {};
+}
+
+bool AddUsage(Json* total, const Json& usage) {
+  if (usage.IsNull()) return true;
+  if (total->IsNull()) {
+    *total = usage;
+    return true;
+  }
+  const auto add = [](Json& target, const Json& part, const char* key) {
+    const auto a = target.GetInt(key, -1), b = part.GetInt(key, -1);
+    if (a < 0 || b < 0 || a > std::numeric_limits<int64_t>::max() - b)
+      return false;
+    Set(&target, key, Number(a + b));
+    return true;
+  };
+  const auto* in = usage.Find("input_tokens_details");
+  const auto* out = usage.Find("output_tokens_details");
+  return in && out && add(*total, usage, "input_tokens") &&
+         add(*total, usage, "output_tokens") &&
+         add(*total, usage, "total_tokens") &&
+         add(Field(*total, "input_tokens_details"), *in, "cached_tokens") &&
+         add(Field(*total, "output_tokens_details"), *out, "reasoning_tokens");
+}
+
+ObjectReply ReadRow(ObjectStore& objects, const std::string& id,
+                    const StateAccess& access) {
+  ObjectRequest lookup;
+  lookup.kind = ObjectKind::kAgentSession;
+  lookup.id = id;
+  lookup.scope = access.scope;
+  return objects.Execute(lookup, access.deadline, access.cancelled);
+}
+
+ObjectReply EventReceipt(const Json& receipts, const std::string& name,
+                         const std::string& digest, bool* replay) {
+  if (!receipts.IsObject()) return InvalidRecord();
+  const auto* seen = receipts.Find(name);
+  *replay = seen != nullptr;
+  if (seen && (!seen->IsString() || seen->str != digest))
+    return Error(409, "idempotency_key_conflict",
+                 "Idempotency key was used for different events");
+  return {};
+}
+
+ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
+                           const std::string& id, std::string_view turn_id,
+                           const StateAccess& access, AgentSessionView* view,
+                           bool all_items) {
+  const auto* session = data.Find("session");
+  const auto* links = data.GetArray("turns");
+  if (!session || session->GetString("id") != id || !links ||
+      links->array.empty() || links->array.size() >= kMaxTransactionObjects)
+    return InvalidRecord();
+  const std::string selected = turn_id.empty()
+                                   ? links->array.back().GetString("id")
+                                   : std::string(turn_id);
+  AgentSessionView result{{}, {}, Array(), Array()};
+  Json session_usage, turn_usage;
+  std::string last_turn;
+  std::unordered_set<std::string> ids;
+  size_t item_bytes = 0;
+  for (const auto& link : links->array) {
+    auto record = ResponsesState(objects).ReadRecord(
+        link.GetString("response_id"), access);
+    if (!record.ok()) return record;
+    AgentSessionView step;
+    auto projected = ProjectStep(*session, link, record.value, &step);
+    if (!projected.ok()) return projected;
+    const auto current = step.turn.GetString("id");
+    if (last_turn != current) {
+      if (!ids.insert(current).second) return InvalidRecord();
+      result.turns.array.push_back(step.turn);
+      last_turn = current;
+      turn_usage = {};
+    }
+    auto& aggregate = result.turns.array.back();
+    const auto created = Copy(aggregate, "created_at");
+    const auto started = Copy(aggregate, "started_at");
+    const auto usage = Copy(step.turn, "usage");
+    if (!AddUsage(&session_usage, usage) || !AddUsage(&turn_usage, usage))
+      return InvalidRecord();
+    aggregate = std::move(step.turn);
+    Set(&aggregate, "created_at", created);
+    if (!started.IsNull()) Set(&aggregate, "started_at", started);
+    Set(&aggregate, "usage", turn_usage);
+    if (current == selected) result.turn = aggregate;
+    if (current == selected || all_items) {
+      for (auto& item : step.items.array) {
+        const auto bytes = OutputJson(item).size();
+        if (bytes > kExpandedApplicationBytes - item_bytes)
+          return Error(413, "agent_session_view_limit",
+                       "Session items exceed the read budget");
+        item_bytes += bytes;
+        result.items.array.push_back(std::move(item));
+      }
+    }
+    result.session = std::move(step.session);
+  }
+  if (result.turn.IsNull())
+    return Error(404, "object_not_found", "Turn not found");
+  Set(&result.session, "usage", std::move(session_usage));
+  if (const auto* pending = data.GetArray("pending_tool_results")) {
+    auto& required = Field(result.session, "required_actions").array;
+    for (const auto& source : pending->array) {
+      const auto removed = std::erase_if(required, [&](const auto& action) {
+        return action.GetString("call_id") == source.GetString("call_id") &&
+               action.GetString("turn_id") == source.GetString("turn_id");
+      });
+      if (removed != 1) return InvalidRecord();
+    }
+  }
+  *view = std::move(result);
+  return {};
+}
+}  // namespace
+
+ObjectReply ReadAgentSessionTurn(ObjectStore& objects, const std::string& id,
+                                 std::string_view turn_id,
+                                 const StateAccess& access,
+                                 AgentSessionView* view, bool all_items) {
+  auto saved = ReadRow(objects, id, access);
+  if (!saved.ok()) return saved;
+  const auto* data = saved.value.Find("data");
+  return data ? ProjectHistory(objects, *data, id, turn_id, access, view,
+                               all_items)
+              : InvalidRecord();
+}
+ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
+                                      const std::string& id,
+                                      const Json& request, std::string_view key,
+                                      const ChatPlanConfig& config,
+                                      const StateAccess& access,
+                                      ResponsesExecution& run, bool* replay) {
+  *replay = false;
+  const auto* events = request.GetArray("events");
+  if (!request.IsObject() || request.object.size() != 1 || !events ||
+      events->array.empty() || events->array.size() > 256)
+    return Error(400, "invalid_request",
+                 "Expected between 1 and 256 input events");
+  for (const auto& event : events->array) {
+    ChatPlanError error;
+    auto valid =
+        ValidateAgentSession(event, AgentSessionShape::kInputEvent, &error);
+    if (!valid) {
+      auto reply = Error(error.http_status, error.code, valid.message());
+      reply.value = Object({{"param", String(error.param)}});
+      return reply;
+    }
+  }
+  auto saved = ReadRow(objects, id, access);
+  if (!saved.ok()) return saved;
+  const auto revision = saved.value.GetInt("revision");
+  auto data = Copy(saved.value, "data");
+  if (!data.IsObject()) return InvalidRecord();
+  if (!key.empty()) {
+    std::string digest;
+    if (!InputValueIdentity(request, &digest))
+      return Error(413, "agent_event_limit",
+                   "Session event payload exceeds the identity budget");
+    const auto name = Digest(key);
+    auto& receipts = Field(data, "event_receipts");
+    if (receipts.IsNull()) receipts = Object();
+    auto known = EventReceipt(receipts, name, digest, replay);
+    if (!known.ok() || *replay) return known;
+    Set(&receipts, name, String(digest));
+  }
+  AgentSessionView view;
+  auto projected = ProjectHistory(objects, data, id, "", access, &view, false);
+  if (!projected.ok()) return projected;
+  const auto state = view.session.GetString("status");
+  if (state == "in_progress")
+    return Error(409, "active_turn_not_steerable",
+                 "The current turn is still running");
+  const bool waiting = state == "requires_action";
+  auto input = Array();
+  auto pending = Copy(data, "pending_tool_results");
+  if (pending.IsNull()) pending = Array();
+  if (!pending.IsArray()) return InvalidRecord();
+  const auto* required = view.session.GetArray("required_actions");
+  std::unordered_set<std::string> received;
+  for (const auto& event : events->array) {
+    const auto type = event.GetString("type");
+    if (type == "agent.session.input.message") {
+      if (waiting)
+        return Error(409, "agent_action_required",
+                     "Resolve the outstanding calls first");
+      const auto* messages = event.GetArray("input");
+      if (!messages || messages->array.empty())
+        return Error(400, "invalid_request", "Expected at least one message");
+      for (auto message : messages->array) {
+        if (message.GetArray("content")->array.empty())
+          return Error(400, "invalid_request", "Expected message content");
+        Set(&message, "type", String("message"));
+        input.array.push_back(std::move(message));
+      }
+      continue;
+    }
+    if (type != "agent.session.input.tool_result")
+      return Error(503, "agent_event_executor_unavailable",
+                   "Requested session event executor is unavailable");
+    const auto call = event.GetString("call_id");
+    if (!waiting || event.GetString("turn_id") != view.turn.GetString("id") ||
+        !received.insert(call).second ||
+        !std::ranges::any_of(required->array, [&](const auto& action) {
+          return action.GetString("type") == "function_call" &&
+                 action.GetString("call_id") == call;
+        }))
+      return Error(409, "agent_action_mismatch",
+                   "Tool result does not match a pending call in this turn");
+    const auto output = Copy(event, "output");
+    const auto error = Copy(event, "error");
+    if (event.GetBool("success") ? output.IsNull() || !error.IsNull()
+                                 : !error.IsString() || error.str.empty())
+      return Error(400, "invalid_request",
+                   "Expected the output of a successful call or the error of a "
+                   "failed call");
+    pending.array.push_back(event);
+  }
+  ObjectRequest mutation;
+  mutation.kind = ObjectKind::kAgentSession;
+  mutation.operation = ObjectOperation::kPut;
+  mutation.scope = access.scope;
+  mutation.id = id;
+  mutation.expected_revision = revision;
+  mutation.ttl_seconds = 0;
+  if (waiting && received.size() < required->array.size()) {
+    Set(&data, "pending_tool_results", std::move(pending));
+    mutation.data = std::move(data);
+    auto written = objects.Execute(mutation, access.deadline, access.cancelled);
+    if (written.commit_unknown) written.value = Object({{"id", String(id)}});
+    return written;
+  }
+  if (waiting) {
+    for (const auto& event : pending.array) {
+      auto output = Copy(event, "output");
+      if (!event.GetBool("success")) {
+        output = String(OutputJson(
+            Object({{"error", Copy(event, "error")}, {"output", output}})));
+      }
+      input.array.push_back(Object({{"type", String("function_call_output")},
+                                    {"call_id", Copy(event, "call_id")},
+                                    {"output", std::move(output)}}));
+    }
+  }
+  auto& links = Field(data, "turns");
+  if (links.array.size() + 1 >= kMaxTransactionObjects)
+    return Error(413, "agent_session_turn_limit", "Session step limit reached");
+  auto native = NativeRequest({view.session, std::move(input)});
+  if (!native.ok()) return native;
+  Set(&native.value, "previous_response_id",
+      Copy(links.array.back(), "response_id"));
+  auto prepared =
+      run.Prepare(native.value, config, access, std::time(nullptr), true);
+  if (!prepared.ok()) return prepared;
+  auto turn = view.turn.GetString("id");
+  if (!waiting) {
+    const auto nonce = NewObjectId(ObjectKind::kAgentSession);
+    if (nonce.empty())
+      return Error(503, "agent_id_unavailable", "No turn identity");
+    turn = "turn_" + nonce.substr(14);
+  }
+  auto next = Object({{"id", String(turn)}, {"response_id", String(run.Id())}});
+  if (waiting) Set(&next, "tool_results", std::move(pending));
+  links.array.push_back(std::move(next));
+  std::erase_if(data.object, [](const auto& field) {
+    return field.first == "pending_tool_results";
+  });
+  mutation.data = std::move(data);
+  return run.BindAgentSession(std::move(mutation));
+}
+ObjectReply ReconcileAgentEventReceipt(
+    ObjectStore& objects, const std::string& id, const Json& request,
+    std::string_view key, const StateAccess& access, ObjectReply result) {
+  if (key.empty() ||
+      (!result.commit_unknown && result.code != "object_revision_conflict"))
+    return result;
+  auto row = ReadRow(objects, id, access);
+  const auto* data = row.ok() ? row.value.Find("data") : nullptr;
+  const auto* receipts = data ? data->Find("event_receipts") : nullptr;
+  std::string digest;
+  if (!receipts || !InputValueIdentity(request, &digest)) return result;
+  bool replay = false;
+  auto known = EventReceipt(*receipts, Digest(key), digest, &replay);
+  return replay ? known : result;
 }
 }  // namespace q4t::server

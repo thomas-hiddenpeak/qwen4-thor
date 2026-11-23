@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 SDK 的真实模型经原生 TLS 调用 read_release_record，从本项目发行回执读出 442，并在同一回合给出正确答案。SDK 重发同一结果得到 202；变更载荷 409、其他客户端 404，只保存一份工具结果。计入两步共 876 tokens。并发 CAS 失败后的重复回执还通过 CPU 验证。下一步继续流式、取消与恢复。[工具闭环](evidence/serve-agent-sessions-20261123/tool-round.json)
+
 Managed Agent 初始非流式回合已通过官方 Node SDK 和真实模型短验。SDK 经原生 TLS 提交发行记录，模型答 442，回读 112 个输入和 4 个输出 token、分页消息及持久化回合；跨客户读取和删除后回读均为 404。保留两次夹具失败。rev442 默认仍为 STOPPED。继续事件、工具回填及后续回合。[会话短验](evidence/serve-agent-sessions-20261123/README.md)
 
 标准 Beta Agents 配置已通过官方 Node SDK 的原生 TLS 短验。两个不同客户端验证了配置隔离，跨模型进程重启后仍可读取和修改七类工具配置。五个 HTTP 操作覆盖 157 条范围内路径中的两条。主轻资格已通过，轻配置可在接管主配置后更新和删除原对象。轻资格文件从 8,385,882 降至 5,451,698 字节，可逐字节还原旧资格。rev442 已发布，默认保持 STOPPED。真实托管接管后旧配置、单终态和 Chat 均可使用。24 小时计划完成预检。[发行与交接](evidence/serve-agent-registration-20261123/delivery.json)[验收与当前边界](evidence/serve-agent-registration-20261123/README.md)

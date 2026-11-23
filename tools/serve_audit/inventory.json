@@ -1954,7 +1954,7 @@
     },
     "DELETE /v1/agents/sessions/{session_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -1963,7 +1963,7 @@
     },
     "GET /v1/agents/sessions/{session_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -1972,7 +1972,7 @@
     },
     "GET /v1/agents/sessions/{session_id}/items": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -1981,7 +1981,7 @@
     },
     "GET /v1/agents/sessions/{session_id}/turns": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -1990,7 +1990,7 @@
     },
     "GET /v1/agents/sessions/{session_id}/turns/{turn_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -1999,7 +1999,7 @@
     },
     "GET /v1/agents/sessions/{session_id}/turns/{turn_id}/items": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -2008,11 +2008,19 @@
     },
     "POST /v1/agents/sessions": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
         "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/sessions/{session_id}/events": {
+      "semantics": "按客户和回合匹配工具结果或提交新的输入消息。提交支持幂等键。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_turn.cpp",
+        "tools/serve_responses/agent_session_tools_sdk.mjs"
       ]
     }
   },
@@ -2706,7 +2714,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "0f51d3391e31bad9e774417c5bdcad509ca37b9d8b044a8fe4483f7c293e891b",
+    "include/q4t/server/application_routes.h": "1fb606cf257d1a1e97213e7aec81d8f56b65be13079d3e992e3610273e0e2ba0",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -2798,8 +2806,8 @@
     "include/q4t/server/http_framing.h": "689fd32f9bf2b042c8f8b59cebd92d70d55f7b950c1f475babfe736420765524",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
-    "include/q4t/server/http_request.h": "0286c17017661ab1e160995ce13686d9aa855072e8bdb56910247d3d6e77e2d5",
-    "include/q4t/server/http_response.h": "7fd3b6ffe5f4e8dae61d09e30b316c759d6835db82ba39935ad523d3884adc25",
+    "include/q4t/server/http_request.h": "ec5b83482a084eb7ac7f9f8c80bbe77280d7bf4dfbc69260a6cf4012e22a8dc4",
+    "include/q4t/server/http_response.h": "5caca8e269329b47d50d23bbc194556695422d59dd0f85f4f6fed89cd4a4cb49",
     "include/q4t/server/input_contract.h": "af0929dfa050a137da35156e2fa4398f3710eee05cc3db0c5538ffa7825c6209",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
     "include/q4t/server/input_snapshot_bindings.h": "d856b9d2be400c9ed24a31a6689ae935c1bbdecb8647d303a6a809db13d96f37",
@@ -3157,7 +3165,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "c111130f7d68f233b0f99805c8fe636dbd7a909e815d6f3c2554f58214820922",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "42963ac617c349f5ca347b17a4dc8166a11d88af44fd8ebe8e77b085ea2dd012",
+    "src/server/chat_http.cpp": "4ae15ab0cd0843a6242ce689d3f1f019a722f612a6ba292dff7c76b9844eba35",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3288,7 +3296,7 @@
     "src/server/grammar_process.cpp": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "6209ced8bea8e13fd2f2f60345a4b8c0be9b1d8251b5bc417b75eed24c31e9e6",
+    "src/server/http_request.cpp": "6009ba261b10e4899b4c6e3e4db4e56efb31e263a7b55a28c4755547b067ae32",
     "src/server/http_response.cpp": "d1bfa111f02f70372f566859049d3fd73886155865b97ab74a2ac9e964cbbe54",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -3593,7 +3601,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "8a848763b99396f0f0f09f07396c8da06e1894e4a98d81ecb57317d55e0c6d40",
+    "src/service/ingress_main.cpp": "e37997f49a14f118635d07d975b75342ff02c9f75e7370c5459781d5e6f9dd55",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -3623,7 +3631,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "2b13d7cd5b98133a75e539dc0c78a75afd2bbe51480aeddebc3ec450ad4b1c98",
+    "tools/serve_gateway/gateway.py": "e0019dba3cc9497e4cdcac455637179b8e157047f3614b6ebeb109d6eca71288",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -3838,10 +3846,10 @@
     "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
     "src/server/agent_registration.cpp": "120f6670c6e654ceb96eb1cbfab3bc866af833e5a76b708f8f301cfa4092de13",
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
-    "include/q4t/server/agent_session.h": "61d936589730e1bca2e48346c9f9ec8cbfb6840a4efb481b68c1ee1691a3f9a7",
+    "include/q4t/server/agent_session.h": "81bb15c8f98e3c7890f88914a69c2756b4624c83cbd6fb04dc54ae086441c7f1",
     "src/server/agent_session.cpp": "0c8b64e96c55b4a7be6fd76d1ec123ad7ad3ece564d86fb05eba373add8254d5",
-    "src/server/agent_session_http.cpp": "410bc69c2f68ab79f659b6c4fb03cbf3c0135c4b0316a5150acddea7a681b58e",
-    "src/server/agent_session_turn.cpp": "cf92e7114bf4e6fa2b6cdb1c8a62b919d1c5f6c7619d36023768119a48d79175",
+    "src/server/agent_session_http.cpp": "a9215e224536fa87945e6332fdb2d847aaf97dc65584630715537b0f26672841",
+    "src/server/agent_session_turn.cpp": "394c268949eccef37ea8a5c0729e23a4478ce8adeda5e75a6c384635a58fe474",
     "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
@@ -6291,7 +6299,7 @@
     },
     "DELETE /v1/agents/sessions/{session_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6300,7 +6308,7 @@
     },
     "GET /v1/agents/sessions/{session_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6309,7 +6317,7 @@
     },
     "GET /v1/agents/sessions/{session_id}/items": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6318,7 +6326,7 @@
     },
     "GET /v1/agents/sessions/{session_id}/turns": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6327,7 +6335,7 @@
     },
     "GET /v1/agents/sessions/{session_id}/turns/{turn_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6336,7 +6344,7 @@
     },
     "GET /v1/agents/sessions/{session_id}/turns/{turn_id}/items": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6345,7 +6353,7 @@
     },
     "OPTIONS /v1/agents/sessions": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6354,7 +6362,7 @@
     },
     "OPTIONS /v1/agents/sessions/{session_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6363,7 +6371,7 @@
     },
     "OPTIONS /v1/agents/sessions/{session_id}/items": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6372,7 +6380,7 @@
     },
     "OPTIONS /v1/agents/sessions/{session_id}/turns": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6381,7 +6389,7 @@
     },
     "OPTIONS /v1/agents/sessions/{session_id}/turns/{turn_id}": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6390,7 +6398,7 @@
     },
     "OPTIONS /v1/agents/sessions/{session_id}/turns/{turn_id}/items": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
@@ -6399,11 +6407,27 @@
     },
     "POST /v1/agents/sessions": {
       "semantics": "本地模型 Agent 会话和回合读取；模型工作与会话状态原子入队。",
-      "boundary": "当前针对无执行环境的非流式初始回合；事件提交和流式执行独立验收。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
       "evidence": [
         "src/server/agent_session_http.cpp",
         "src/server/agent_session_turn.cpp",
         "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/sessions/{session_id}/events": {
+      "semantics": "按客户和回合匹配工具结果或提交新的输入消息。提交支持幂等键。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_turn.cpp",
+        "tools/serve_responses/agent_session_tools_sdk.mjs"
+      ]
+    },
+    "POST /v1/agents/sessions/{session_id}/events": {
+      "semantics": "按客户和回合匹配工具结果或提交新的输入消息。提交支持幂等键。",
+      "boundary": "已验收直接执行、工具回填及回合读取；流式、取消与环境执行分别验证。",
+      "evidence": [
+        "src/server/agent_session_turn.cpp",
+        "tools/serve_responses/agent_session_tools_sdk.mjs"
       ]
     }
   },

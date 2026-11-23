@@ -153,8 +153,7 @@ Q4T_TEST(http_transcription_limits_reject_before_body_read) {
 
 Q4T_TEST(http_conversation_routes_are_scoped_business_operations) {
   using namespace q4t::server;
-  for (const auto path : {"/v1/agents", "/v1/agents/agent_1",
-                          "/v1/conversations", "/v1/conversations/conv_1",
+  for (const auto path : {"/v1/conversations", "/v1/conversations/conv_1",
                           "/v1/conversations/conv_1/items",
                           "/v1/conversations/conv_1/items/item_1"}) {
     for (const auto method : {"GET", "POST", "DELETE"}) {
@@ -193,6 +192,14 @@ Q4T_TEST(agent_registration_metadata_and_writes_use_separate_lanes) {
   }
   Q4T_CHECK(ClassifyHttpConnection("DELETE", "/v1/agents/agent_x") ==
             HttpConnectionClass::kObservation);
+  for (const auto* path : {"/v1/agents", "/v1/agents/agent_x"}) {
+    const bool collection = std::string_view(path) == "/v1/agents";
+    for (const auto method : {"GET", "POST", "DELETE"}) {
+      Q4T_CHECK(!ConversationMethodAllowed(method, path));
+      Q4T_CHECK(AgentRegistrationMethodAllowed(method, path) ==
+                (!collection || std::string_view(method) != "DELETE"));
+    }
+  }
   for (const auto* path : {"/v1/agents/agent_", "/v1/agents/sessions",
                            "/v1/agents/agent_x/turns", "/v1/agents#x"})
     Q4T_CHECK(!IsAgentRegistrationTarget(path));

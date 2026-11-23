@@ -42,11 +42,22 @@ struct AgentSessionView {
   io::Json session;
   io::Json turn;
   io::Json items;
+  io::Json turns;
 };
 ObjectReply ReadAgentSessionTurn(ObjectStore& objects, const std::string& id,
                                  std::string_view turn_id,
                                  const StateAccess& access,
-                                 AgentSessionView* view);
+                                 AgentSessionView* view,
+                                 bool all_items = false);
+// Prepare the next model step from authorized session events. A repeated
+// idempotency key with an identical committed payload returns replay=true.
+ObjectReply PrepareAgentSessionEvents(
+    ObjectStore& objects, const std::string& id, const io::Json& events,
+    std::string_view key, const ChatPlanConfig& config,
+    const StateAccess& access, ResponsesExecution& run, bool* replay);
+ObjectReply ReconcileAgentEventReceipt(
+    ObjectStore& objects, const std::string& id, const io::Json& request,
+    std::string_view key, const StateAccess& access, ObjectReply result);
 class ResponsesJobs;
 void ServeAgentSession(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                        std::string_view method, std::string_view target,

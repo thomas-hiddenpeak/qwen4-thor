@@ -337,6 +337,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
       NormalizeResponsesPostTarget(method, path);
       context.SetAgentsBeta(headers.agents_beta);
+      context.SetAgentEventKey(std::move(headers.agent_event_key));
       context.SetResponsesMultiAgent(headers.responses_multi_agent &&
                                      IsResponsesTarget(path));
       const auto kind = ClassifyHttpConnection(method, path);

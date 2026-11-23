@@ -518,6 +518,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            (headers.content_type.empty()
                 ? ""
                 : "Content-Type: " + headers.content_type + "\r\n") +
+           (headers.agent_event_key.empty() ? "" :
+                "Idempotency-Key: " + headers.agent_event_key + "\r\n") +
            (headers.agents_beta && server::IsManagedAgentTarget(path)
                 ? "OpenAI-Beta: agents=v1\r\n" : "") +
            (headers.responses_multi_agent && server::IsResponsesTarget(path)

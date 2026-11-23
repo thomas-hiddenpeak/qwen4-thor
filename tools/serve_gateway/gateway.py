@@ -63,6 +63,7 @@ APPLICATION_ROUTES = [
     *((method, '/v1/agents/{agent_id}', 'data' if method == 'POST' else 'control')
       for method in ('GET', 'POST', 'DELETE')),
     ('POST', '/v1/agents/sessions', 'data'),
+    ('POST', '/v1/agents/sessions/{agent_session_id}/events', 'data'),
     *((method, '/v1/agents/sessions/{agent_session_id}', 'control')
       for method in ('GET', 'DELETE')),
     *(('GET', '/v1/agents/sessions/{agent_session_id}/' + suffix, 'control')
@@ -671,6 +672,7 @@ http {{
 {websocket_proxy_headers()}
       proxy_set_header Content-Type $http_content_type;
       proxy_set_header OpenAI-Beta $q4t_responses_beta;
+      proxy_set_header Idempotency-Key $http_idempotency_key;
       proxy_set_header X-Request-Id $http_x_request_id;
 {tunnel_headers()}
       proxy_set_header Authorization $q4t_realtime_issuer;
