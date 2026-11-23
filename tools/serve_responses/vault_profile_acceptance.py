@@ -78,11 +78,16 @@ def verify_identity(plan, capabilities):
         pkg.require(renewal, 'template handoff requires the renewable Vault profile')
         evidence = environments.EVIDENCE
         sources = [SDK, HELPER, PEER, *environments.SOURCES]
+        if witness.get('hosted_workspaces'):
+            evidence = environments.WORKSPACE_PROOF
+            sources.extend(environments.WORKSPACE_SOURCES)
     methods = SESSION_MCP
     if renewal:
         sources.append(OAUTH_ISSUER)
         methods = dict(methods, vault_auth=[*methods['vault_auth'], 'mcp_oauth_refresh'])
     sessions = dict(CAPABILITY, tool_types=['function','mcp'], mcp=methods)
+    if witness.get('hosted_workspaces'):
+        sessions = dict(sessions, environments=['none','openai_hosted'])
     pkg.require(witness['receipt_sha256'] == pkg.sha(evidence) and
                 plan['binary_sha256'] == witness['binary'] == pkg.sha(plan['binary']) ==
                 pkg.read(evidence)['engine' if renewal else 'engine_sha256'] and

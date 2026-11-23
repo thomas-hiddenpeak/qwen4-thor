@@ -17,6 +17,15 @@ SESSION_RECORD = 'q4t-profile-business-v27'
 SESSION_FORMAT = 'q4t-agent-session-profile-source-v1'
 VAULT_RECORD = 'q4t-profile-business-v28'
 VAULT_FORMAT = 'q4t-agent-vault-profile-source-v1'
+WORKSPACE_RECORD = 'q4t-profile-business-v31'
+WORKSPACE_FORMAT = 'q4t-agent-workspace-source-v1'
+WORKSPACE_CAPABILITY = dict(selector='agents=v1', prewarm_seconds=300,
+                            idempotency_seconds=86400, workspace_files=True,
+                            network=['disabled'], between_turn_writes=True)
+WORKSPACE_REVIEWED = {
+    'primary': '6e28e44b71aab96b044d30301e8b9aa2a36fe882031e4a35d350efa10bd3f846',
+    'light': '994c7b2df26b9c275feec6ff859995ea50d92113cee096f764ac1cbacb90b9e5',
+}
 ENVIRONMENT_RECORD = 'q4t-profile-business-v30'
 ENVIRONMENT_FORMAT = 'q4t-agent-environment-template-source-v1'
 TEMPLATE_CAPABILITY = dict(selector='agents=v1', operations=['create','retrieve','update','list','delete'],
@@ -41,6 +50,7 @@ VAULT_SESSION = dict(SESSION_CAPABILITY, tool_types=['function', 'mcp'],
              vault_auth=['static_bearer', 'mcp_oauth_access_token']))
 OAUTH_SESSION = dict(VAULT_SESSION, mcp=dict(VAULT_SESSION['mcp'],
     vault_auth=[*VAULT_SESSION['mcp']['vault_auth'], 'mcp_oauth_refresh']))
+WORKSPACE_SESSION = dict(OAUTH_SESSION, environments=['none', 'openai_hosted'])
 OAUTH_REVIEWED = {
     'primary': '1fb036ff722a21719546d1b042298cc91e489ecd9dc30ddcfb8602e546c683ef',
     'light': 'cc67e878110002a8be19fa7fbf61fe32d82b098731e570bf2008e8d0dfa54517',
@@ -73,7 +83,8 @@ AGENT_REVIEWED = {
 REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 AGENT_RECORD_FORMAT: AGENT_FORMAT, REGISTRATION_RECORD: REGISTRATION_FORMAT,
                 SESSION_RECORD: SESSION_FORMAT, VAULT_RECORD: VAULT_FORMAT,
-                OAUTH_RECORD: OAUTH_FORMAT, ENVIRONMENT_RECORD: ENVIRONMENT_FORMAT}
+                OAUTH_RECORD: OAUTH_FORMAT, ENVIRONMENT_RECORD: ENVIRONMENT_FORMAT,
+                WORKSPACE_RECORD: WORKSPACE_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -95,6 +106,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '06022952c38de6d1cebc5a77ab9f254877a73c5eae3796f2259df662b911f658':
+        '3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed',
     '6665a8f7d995806d68572b8c141110538bb689d25c872979a02ddcda5bc8d367':
         '8afa45887db80173df1841d48f11c50a507b6828e861e555018648744a07acb5',
     '3d05f0cc1c99a70f16e4f96291d6e6234a680765facc386c93d59f72ce5a40be':
@@ -127,6 +140,16 @@ def record_hash(value):
 
 
 def format_for(capabilities):
+    if 'agent_environments' in capabilities:
+        previous = dict(capabilities)
+        workspace = previous.pop('agent_environments')
+        ledger.require(ledger.canonical(workspace) == ledger.canonical(WORKSPACE_CAPABILITY) and
+                       ledger.canonical(previous.get('agent_sessions')) == ledger.canonical(WORKSPACE_SESSION),
+                       'invalid hosted workspace capabilities')
+        previous['agent_sessions'] = OAUTH_SESSION
+        ledger.require(format_for(previous) == ENVIRONMENT_RECORD,
+                       'workspace requires published templates and traces')
+        return WORKSPACE_RECORD
     if 'beta_query_selector' in capabilities.get('responses', {}):
         ledger.require(capabilities['responses']['beta_query_selector'] == 'beta=true',
                        'unknown qualified Responses Beta selector')
@@ -185,8 +208,21 @@ def attach(value, prior):
     vault = value['format'] == VAULT_RECORD
     oauth = value['format'] == OAUTH_RECORD
     templates = value['format'] == ENVIRONMENT_RECORD
-    revision = agent or registration or session or vault or oauth or templates or value['format'] == BETA_RECORD_FORMAT
-    if templates:
+    workspace = value['format'] == WORKSPACE_RECORD
+    revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
+    if workspace:
+        proofs = value['business']['live']['evidence_sha256']
+        ledger.require(prior['format'] == ENVIRONMENT_RECORD and
+                       record_hash(prior) == ENVIRONMENT_REVIEWED.get(prior['profile']) and
+                       previous['added'] == ['agent_environments'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256', 'agent_sessions'} and
+                       format_for(after) == WORKSPACE_RECORD and
+                       ledger.canonical(before['agent_sessions']) == ledger.canonical(OAUTH_SESSION) and
+                       {'oauth-handoff.json', 'vault-handoff.json', 'registration.json',
+                        'interruption.json', 'session-handoff.json'} <= proofs.keys() and
+                       proofs['session-handoff.json'] != prior['business']['live']['evidence_sha256']['session-handoff.json'],
+                       'workspace requires the reviewed template predecessor and a new session handoff')
+    elif templates:
         evidence = value['business']['live']['evidence_sha256']
         ledger.require(prior['format'] == OAUTH_RECORD and record_hash(prior) == OAUTH_REVIEWED.get(prior['profile'])
                        and previous['added'] == ['agent_environment_templates', 'agent_session_traces']
@@ -263,7 +299,7 @@ def previous_record(value):
     refresh = agent and reuse['format'] == AGENT_REFRESH
     registration = value['format'] == REGISTRATION_RECORD
     session = value['format'] == SESSION_RECORD
-    revision = agent or registration or session or value['format'] in (BETA_RECORD_FORMAT, VAULT_RECORD, OAUTH_RECORD, ENVIRONMENT_RECORD)
+    revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
     ledger.require(refresh or reuse['format'] == REUSE_FORMAT.get(value['format']),
                    'incorrect Live qualification source')
     previous = codec.unpack(reuse['previous'])
@@ -292,6 +328,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == WORKSPACE_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == WORKSPACE_REVIEWED.get(name),
+                       'workspace differs from the reviewed handoff')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == ENVIRONMENT_REVIEWED.get(name),
+                       'workspace lost the reviewed template predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == ENVIRONMENT_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) == ENVIRONMENT_REVIEWED.get(name),
