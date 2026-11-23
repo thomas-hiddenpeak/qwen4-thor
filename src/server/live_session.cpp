@@ -36,12 +36,7 @@ LiveSession::LiveSession(std::string id, uint64_t expires_at,
                          WebSocketOutput& output,
                          LiveSessionCallbacks callbacks,
                          LiveSessionLimits limits)
-    : LiveSession(std::move(id), expires_at,
-                  {output.Valid() ? output.MessageLimit() : 0,
-                   [&output] { return output.Closed(); },
-                   [&output](std::string_view text) {
-                     return output.TryPush(WebSocketOpcode::kText, text);
-                   }},
+    : LiveSession(std::move(id), expires_at, output.Events(),
                   std::move(callbacks), limits) {}
 
 LiveSession::LiveSession(std::string id, uint64_t expires_at,

@@ -1,0 +1,36 @@
+[
+  {
+    "run": "realtime-call-business-01",
+    "status": "FAIL",
+    "seconds": 49.53810676699504,
+    "binary_sha256": "b8d5e1c888f4ddf24916aa1bbbf351146d9ad2d24c8008b1a49bb88fbfa5cd91",
+    "session_accepted": true,
+    "sideband_attached": true,
+    "raw_transcript": "请查询當前項目版本號。",
+    "actual_result_submitted": false,
+    "decoded_samples": 0,
+    "sdk_failure": "transcript exact writing mismatch",
+    "client_audio_output_token_limit": 64,
+    "remaining_processes": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "default_unchanged": true
+  },
+  {
+    "run": "realtime-call-business-02",
+    "status": "FAIL",
+    "seconds": 69.2739905831404,
+    "binary_sha256": "d41fce4fadb1e43c18ffda4c85d17f595b9e1564b88a4b61a350555da641d5ae",
+    "session_accepted": true,
+    "sideband_attached": true,
+    "raw_transcript": "请查询當前項目版本號。",
+    "actual_result_submitted": true,
+    "decoded_samples": 0,
+    "sdk_failure": "response.done status failed; model log records tts_output_limit",
+    "client_audio_output_token_limit": 64,
+    "remaining_processes": [],
+    "model_exit": 0,
+    "ports_released": true,
+    "default_unchanged": true
+  }
+]

@@ -15,9 +15,11 @@ void ChatServer::HandleLiveSideband(int fd, std::string_view path,
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
   const auto client = http->Client();
-  const auto id = LiveSidebandId(path);
+  const auto call = RealtimeSidebandId(path);
+  const bool realtime = !call.empty();
+  const auto id = realtime ? call : LiveSidebandId(path);
   const auto query_at = path.find('?');
-  if (query_at != path.npos &&
+  if (!realtime && query_at != path.npos &&
       path.substr(query_at + 1) != "graceful_close=true" &&
       path.substr(query_at + 1) != "graceful_close=false") {
     detail::SendError(fd, 400, "Invalid Live attach query", {},
@@ -51,7 +53,9 @@ void ChatServer::HandleLiveSideband(int fd, std::string_view path,
     return;
   }
   uint64_t next = 0;
-  if (auto reply = stream->Attach(&next, LiveSideband::Clock::now());
+  std::shared_ptr<const std::string> snapshot;
+  if (auto reply = realtime ? stream->AttachRealtime(&next, &snapshot)
+                            : stream->Attach(&next, LiveSideband::Clock::now());
       !reply.ok()) {
     detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
                       reply.ClientCode());
@@ -60,6 +64,17 @@ void ChatServer::HandleLiveSideband(int fd, std::string_view path,
   const size_t limit =
       std::min<size_t>(kWebSocketMessageLimit, client.Limits()->max_body_bytes);
   WebSocketOutput output(64ULL << 20, 64, LiveSideband::kReplayBytes);
+  if (snapshot) {
+    const auto initial_event =
+        "{\"type\":\"session.created\",\"event_id\":\"" +
+        detail::NewRequestId("event_") + "\",\"session\":" + *snapshot + "}";
+    if (!output.TryPush(WebSocketOpcode::kText, initial_event)) {
+      detail::SendError(fd, 503, "Current session exceeds output capacity", {},
+                        "realtime_session_unavailable");
+      return;
+    }
+    snapshot.reset();
+  }
   if (!http->BeginWebSocket(
           accept, SelectWebSocketProtocol(path, headers.websocket_protocols)))
     return;

@@ -6,20 +6,30 @@
 #include "q4t/server/live_sideband.h"
 
 namespace q4t::server {
-class LiveMediaCall {
+class IMediaCall {
  public:
   using Clock = std::chrono::steady_clock;
   using Send = std::function<bool(char, std::string_view)>;
+  virtual ~IMediaCall() = default;
+  virtual ObjectReply Start(const io::Json& configuration) = 0;
+  virtual bool Receive(char type, std::string_view payload) = 0;
+  virtual bool Tick(Clock::time_point now) = 0;
+  virtual bool Finished() const = 0;
+  virtual bool EndTransport() = 0;
+};
+
+class LiveMediaCall final : public IMediaCall {
+ public:
   LiveMediaCall(std::string id, uint64_t expires_at, bool expect_channel,
                 LiveSessionCallbacks callbacks, LiveSessionLimits limits,
                 Send send, std::shared_ptr<LiveSideband> sideband = {});
   LiveMediaCall(const LiveMediaCall&) = delete;
   LiveMediaCall& operator=(const LiveMediaCall&) = delete;
-  ObjectReply Start(const io::Json& configuration);
-  bool Receive(char type, std::string_view payload);
-  bool Tick(Clock::time_point now);
-  bool Finished() const;
-  bool EndTransport();
+  ObjectReply Start(const io::Json& configuration) override;
+  bool Receive(char type, std::string_view payload) override;
+  bool Tick(Clock::time_point now) override;
+  bool Finished() const override;
+  bool EndTransport() override;
 
  private:
   bool Publish(std::string_view wire);

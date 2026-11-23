@@ -10452,7 +10452,7 @@
     }
   ],
   "next_task": "Implement authenticated call acceptance with negotiated secure SIP media, in-call controls, recoverable delivery and remaining Serve master tasks.",
-  "next": "Live 与 Realtime 签名来电及共享拒接事务已通过实际 SDK。继续接听、安全媒体、在途通话控制和可回退组合发行。默认 rev426。",
+  "next": "Realtime 独立 SIP 接听、按 call_id 接入、真实语音工具回填与挂断已通过。继续 Realtime WebRTC 建连及凭据、播放打断的历史对齐、恢复与可回退组合发行。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16251,7 +16251,7 @@
       },
       {
         "id": "L05",
-        "state": "webrtc_live_sip_accept_dtmf_dual_hangup_refer_accepted_realtime_accept_remaining",
+        "state": "live_webrtc_and_realtime_sip_accept_business_accepted_realtime_webrtc_remaining",
         "title": "WebRTC/SIP媒体接入"
       },
       {
@@ -16333,6 +16333,7 @@
     "sip_accept_business_evidence": "evidence/serve-live-sip-accept-20261123/README.md",
     "sip_transfer_business_evidence": "evidence/serve-live-sip-transfer-20261123/README.md",
     "sip_dtmf_business_evidence": "evidence/serve-live-sip-dtmf-20261123/README.md",
-    "realtime_sip_control_contract_evidence": "evidence/serve-realtime-sip-control-contract-20261123/README.md"
+    "realtime_sip_control_contract_evidence": "evidence/serve-realtime-sip-control-contract-20261123/README.md",
+    "realtime_sip_accept_business_evidence": "evidence/serve-realtime-sip-accept-20261123/README.md"
   }
 }

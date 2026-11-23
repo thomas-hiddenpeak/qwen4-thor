@@ -405,7 +405,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
     *control = false;
     return true;
   }
-  if (method == "POST" && !server::LiveResourceId(path, "/accept").empty()) {
+  if (method == "POST" && !server::SipControlId(path, "/accept").empty()) {
     *control = false;
     return true;
   }

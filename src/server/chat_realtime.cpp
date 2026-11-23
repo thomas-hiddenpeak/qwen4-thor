@@ -33,7 +33,7 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
                                 std::string_view accept) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
-  if (!LiveSidebandId(path).empty()) {
+  if (IsCallSideband(path)) {
     HandleLiveSideband(fd, path, headers, initial, accept);
     return;
   }

@@ -53,6 +53,17 @@ inline std::string_view LiveRecordingId(std::string_view path) {
 inline std::string_view LiveSidebandId(std::string_view target) {
   return LiveResourceId(target.substr(0, target.find('?')), "/attach");
 }
+inline std::string_view RealtimeSidebandId(std::string_view target) {
+  constexpr std::string_view prefix = "/v1/realtime?call_id=";
+  if (!target.starts_with(prefix)) return {};
+  target.remove_prefix(prefix.size());
+  return target.starts_with("rtc_") && target.size() > 4 &&
+                 ValidApplicationId(target)
+             ? target : std::string_view{};
+}
+inline bool IsCallSideband(std::string_view target) {
+  return !LiveSidebandId(target).empty() || !RealtimeSidebandId(target).empty();
+}
 inline std::string_view LiveForkId(std::string_view path) {
   return LiveResourceId(path, "/fork");
 }
@@ -70,7 +81,7 @@ inline bool IsRealtimeUpgrade(std::string_view method,
 inline bool IsLiveMediaCreate(std::string_view method, std::string_view target) {
   return method == "POST" &&
          (target == "/v1/live/sessions" || !LiveForkId(target).empty() ||
-          !LiveResourceId(target, "/accept").empty());
+          !SipControlId(target, "/accept").empty());
 }
 
 inline bool IsRealtimeTraceTarget(std::string_view target) {

@@ -79,7 +79,8 @@ struct RealtimeConversationCallbacks {
   // Trusted native observer binding; never sourced from JSON metadata/user.
   std::function<RealtimeTraceStore*()> traces = {};
   std::string trace_scope = {};
-
+  // The media owner cuts queued playout only when VAD actually interrupts.
+  std::function<void()> interrupt_playout = {};
 };
 
 class RealtimeConversationSession {
@@ -88,6 +89,13 @@ class RealtimeConversationSession {
                               io::Json settings, WebSocketOutput& output,
                               RealtimeConversationCallbacks callbacks,
                               size_t message_bytes = kWebSocketMessageLimit);
+  RealtimeConversationSession(std::string id, std::string conversation_id,
+                              io::Json settings, SessionEventOutput output,
+                              RealtimeConversationCallbacks callbacks,
+                              size_t message_bytes = kWebSocketMessageLimit);
+  // Apply the complete media-call configuration, including a scoped prompt,
+  // before publishing session.created. A failure is returned to HTTP.
+  ObjectReply StartCall(const io::Json& configuration);
   ~RealtimeConversationSession();
   bool Start();
   bool Message(WebSocketOpcode opcode, std::string_view message);
@@ -126,6 +134,8 @@ class RealtimeConversationSession {
   bool ImportMcp(const RealtimeMcpSelection& selection, Work* work = nullptr);
   io::Json PublicSettings() const;
   RealtimePromptResolver PromptResolver();
+  ObjectReply StartSession(const io::Json* call);
+  ObjectReply ApplySettings(const io::Json& update);
   bool Settings(const io::Json& update, std::string_view event_id);
   bool CreateItem(const io::Json& event);
   bool ItemCommand(const io::Json& event, bool erase);
@@ -145,7 +155,7 @@ class RealtimeConversationSession {
   void Release(Work& work) noexcept;
   const std::string id_, conversation_id_;
   RealtimePromptSettings settings_;
-  WebSocketOutput& output_;
+  const SessionEventOutput output_;
   const RealtimeConversationCallbacks callbacks_;
   const size_t message_bytes_;
   RealtimeConversation history_;

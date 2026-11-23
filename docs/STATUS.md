@@ -7,7 +7,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-Realtime 拒接、转接的运行时输入和公开合同已对齐官方 SDK 自身类型。492 个 SDK 正反例零差异。一次真实来电验证 `reject(id, null)` 得到远端 603，而 `{status_code:null}` 得到 400，通话保持可处置。37.49 秒，普通 Chat 及清理通过。独立 Realtime 接听的扁平输入已经验证，接听媒体和按 call ID 接入的旁路仍待实现。[验收与边界](evidence/serve-realtime-sip-control-contract-20261123/README.md)。
+Realtime 独立接听和按 `call_id` 接入的官方 SDK 旁路已通过 Thor 原生 TLS 验收。一通加密 Opus 来电完成按键、语音查询、真实工具回填及播报 rev426。迟到的同客户旁路拿到当前会话，其他客户接听、挂断与旁路均得到 404。通过轮 68.48 秒，普通 Chat 回答 42，GPU 已释放。前两轮分别因简繁写法和客户端语音输出预算不足失败。接下来补 Realtime WebRTC 建连、临时凭据及打断时的播放历史对齐；默认发行仍为 rev426。[业务证据](evidence/serve-realtime-sip-accept-20261123/README.md)。
+
+Realtime 拒接、转接的运行时输入和公开合同已对齐官方 SDK 自身类型。492 个 SDK 正反例零差异。一次真实来电验证 `reject(id, null)` 得到远端 603，而 `{status_code:null}` 得到 400，通话保持可处置。37.49 秒，普通 Chat 及清理通过。该轮验证了独立 Realtime 接听的扁平输入。[验收与边界](evidence/serve-realtime-sip-control-contract-20261123/README.md)。
 
 Live SIP 双向电话按键已通过 Thor 原生 TLS 短验。电话发送的 `#` 在 SDK 旁路只出现一次，连续发送的两个 `*` 各自在电话对端解密成功；未协商的按键得到关联错误。按键后同一通话继续查询项目资料并播报 rev426，挂断后 Chat=42。45 项针对性检查通过。短验 64.44 秒，GPU 已释放。下一项为 Realtime 独立接听及按 call ID 接入旁路，默认发行仍为 rev426。[业务验收与原失败](evidence/serve-live-sip-dtmf-20261123/README.md)。
 

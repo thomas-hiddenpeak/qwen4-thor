@@ -62,6 +62,12 @@ class VoiceContract(unittest.TestCase):
             self.assertTrue(valid(rejection, value))
         for value in ([], {'status_code':None}, {'status_code':299}, {'status_code':700}, {'extra':True}):
             self.assertFalse(valid(rejection, value))
+        rt_call = self.paths['/v1/realtime/calls/{call_id}/accept']['post']
+        body_call = rt_call['requestBody']['content']['application/json']['schema']
+        self.assertTrue(valid(body_call, {'type':'realtime', 'audio':{'input':{'transcription':None}}}))
+        self.assertFalse(valid(body_call, {'session':{'type':'live'}}))
+        self.assertFalse(valid(body_call, {'type':'realtime', 'id':'sess_other'}))
+        self.assertIn('call_id', {p['name'] for p in self.paths['/v1/realtime']['get']['parameters']})
         fork = self.paths['/v1/live/sessions/{session_id}/fork']
         self.assertEqual(set(fork['get']['responses']), {'101','default'})
         self.assertEqual(set(fork['post']['responses']), {'201','default'})

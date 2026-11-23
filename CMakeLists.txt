@@ -617,6 +617,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/live_configuration.cpp
   src/server/live_media_policy.cpp
   src/server/live_media_call.cpp
+  src/server/realtime_sip_call.cpp
+  src/server/realtime_call_pcm.cpp
   src/server/live_sideband.cpp
   src/server/live_media_process.cpp
   src/server/live_responses_settings.cpp
@@ -1086,6 +1088,8 @@ if(Q4T_BUILD_TESTS)
   src/server/live_configuration.cpp
   src/server/live_media_policy.cpp
   src/server/live_media_call.cpp
+  src/server/realtime_sip_call.cpp
+  src/server/realtime_call_pcm.cpp
   src/server/live_sideband.cpp
   src/server/live_media_process.cpp
   src/server/live_responses_settings.cpp

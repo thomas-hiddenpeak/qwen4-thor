@@ -6643,6 +6643,17 @@
             }
           },
           {
+            "name": "call_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^rtc_[A-Za-z0-9_-]+$",
+              "maxLength": 128
+            },
+            "description": "Attach to the owning Realtime call; mutually exclusive with model and intent."
+          },
+          {
             "name": "model",
             "in": "query",
             "required": false,
@@ -6961,6 +6972,56 @@
                 "schema": {
                   "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/realtime/calls/{call_id}/accept": {
+      "post": {
+        "operationId": "post_v1_realtime_calls_call_id_accept",
+        "parameters": [
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Realtime session ready and SIP answer acknowledged; empty body"
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_call_accept"
               }
             }
           }
@@ -34338,6 +34399,1485 @@
           },
           "realtime_5": {
             "type": "string"
+          },
+          "realtime_464": {
+            "type": "object",
+            "properties": {
+              "audio": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_188"
+              },
+              "include": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_221"
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "max_output_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_105"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_224"
+              },
+              "output_modalities": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_109"
+              },
+              "parallel_tool_calls": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "prompt": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_117"
+              },
+              "reasoning": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_138"
+              },
+              "tool_choice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_244"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_245"
+              },
+              "tracing": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_259"
+              },
+              "truncation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_261"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_267"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_267": {
+            "const": "realtime"
+          },
+          "realtime_261": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_262"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_263"
+              }
+            ]
+          },
+          "realtime_263": {
+            "type": "object",
+            "properties": {
+              "retention_ratio": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_51"
+              },
+              "token_limits": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_264"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_266"
+              }
+            },
+            "required": [
+              "retention_ratio",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_266": {
+            "const": "retention_ratio"
+          },
+          "realtime_264": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_265"
+              }
+            ]
+          },
+          "realtime_265": {
+            "type": "object",
+            "properties": {
+              "post_instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_212"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_262": {
+            "const": "disabled"
+          },
+          "realtime_20": {
+            "const": "auto"
+          },
+          "realtime_259": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_260"
+              }
+            ]
+          },
+          "realtime_260": {
+            "type": "object",
+            "properties": {
+              "group_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_46"
+              },
+              "workflow_name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_4": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              }
+            ]
+          },
+          "realtime_46": {},
+          "realtime_41": {
+            "type": "null"
+          },
+          "realtime_245": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_246"
+              }
+            ]
+          },
+          "realtime_246": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_247"
+            }
+          },
+          "realtime_247": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_153"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_248"
+              }
+            ]
+          },
+          "realtime_248": {
+            "type": "object",
+            "properties": {
+              "allowed_callers": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_156"
+              },
+              "allowed_tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_249"
+              },
+              "authorization": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "connector_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_165"
+              },
+              "defer_loading": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "headers": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_251"
+              },
+              "require_approval": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_253"
+              },
+              "server_description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "server_label": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              },
+              "server_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "tunnel_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_149"
+              }
+            },
+            "required": [
+              "server_label",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_149": {
+            "const": "mcp"
+          },
+          "realtime_253": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_182"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_183"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_254"
+              }
+            ]
+          },
+          "realtime_254": {
+            "type": "object",
+            "properties": {
+              "always": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_255"
+              },
+              "never": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_257"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_257": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_258"
+              }
+            ]
+          },
+          "realtime_258": {
+            "type": "object",
+            "properties": {
+              "read_only": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "tool_names": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_164"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_164": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_162"
+              }
+            ]
+          },
+          "realtime_162": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+            }
+          },
+          "realtime_114": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_115"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_116"
+              }
+            ]
+          },
+          "realtime_116": {
+            "const": true
+          },
+          "realtime_115": {
+            "const": false
+          },
+          "realtime_255": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_256"
+              }
+            ]
+          },
+          "realtime_256": {
+            "type": "object",
+            "properties": {
+              "read_only": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "tool_names": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_164"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_183": {
+            "const": "never"
+          },
+          "realtime_182": {
+            "const": "always"
+          },
+          "realtime_251": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_252"
+              }
+            ]
+          },
+          "realtime_252": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+            }
+          },
+          "realtime_165": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_166"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_167"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_168"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_169"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_170"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_171"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_172"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_173"
+              }
+            ]
+          },
+          "realtime_173": {
+            "const": "connector_sharepoint"
+          },
+          "realtime_172": {
+            "const": "connector_outlookemail"
+          },
+          "realtime_171": {
+            "const": "connector_outlookcalendar"
+          },
+          "realtime_170": {
+            "const": "connector_microsoftteams"
+          },
+          "realtime_169": {
+            "const": "connector_googledrive"
+          },
+          "realtime_168": {
+            "const": "connector_googlecalendar"
+          },
+          "realtime_167": {
+            "const": "connector_gmail"
+          },
+          "realtime_166": {
+            "const": "connector_dropbox"
+          },
+          "realtime_249": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_162"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_250"
+              }
+            ]
+          },
+          "realtime_250": {
+            "type": "object",
+            "properties": {
+              "read_only": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "tool_names": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_164"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_156": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_157"
+              }
+            ]
+          },
+          "realtime_157": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_158"
+            }
+          },
+          "realtime_158": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_159"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_160"
+              }
+            ]
+          },
+          "realtime_160": {
+            "const": "programmatic"
+          },
+          "realtime_159": {
+            "const": "direct"
+          },
+          "realtime_153": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "parameters": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_46"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_154"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_154": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_147"
+              }
+            ]
+          },
+          "realtime_147": {
+            "const": "function"
+          },
+          "realtime_244": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_102"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_145"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_146"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_148"
+              }
+            ]
+          },
+          "realtime_148": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_40"
+              },
+              "server_label": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_149"
+              }
+            },
+            "required": [
+              "server_label",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_40": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              }
+            ]
+          },
+          "realtime_146": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_147"
+              }
+            },
+            "required": [
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_145": {
+            "const": "required"
+          },
+          "realtime_102": {
+            "const": "none"
+          },
+          "realtime_138": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_139"
+              }
+            ]
+          },
+          "realtime_139": {
+            "type": "object",
+            "properties": {
+              "effort": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_140"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_140": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_22"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_141"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_142"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_143"
+              }
+            ]
+          },
+          "realtime_143": {
+            "const": "xhigh"
+          },
+          "realtime_142": {
+            "const": "medium"
+          },
+          "realtime_141": {
+            "const": "minimal"
+          },
+          "realtime_22": {
+            "const": "high"
+          },
+          "realtime_21": {
+            "const": "low"
+          },
+          "realtime_117": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_118"
+              }
+            ]
+          },
+          "realtime_118": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              },
+              "variables": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_119"
+              },
+              "version": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_40"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_119": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_120"
+              }
+            ]
+          },
+          "realtime_120": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_121"
+            }
+          },
+          "realtime_121": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_122"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_129"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_134"
+              }
+            ]
+          },
+          "realtime_134": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_19"
+              },
+              "file_data": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_40"
+              },
+              "file_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "filename": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "prompt_cache_breakpoint": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_135"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_137"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_137": {
+            "const": "input_file"
+          },
+          "realtime_135": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_136"
+              }
+            ]
+          },
+          "realtime_136": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_125"
+              },
+              "ttl": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_126"
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_126": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_127"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_128"
+              }
+            ]
+          },
+          "realtime_128": {
+            "const": "12h"
+          },
+          "realtime_127": {
+            "const": "30m"
+          },
+          "realtime_125": {
+            "const": "explicit"
+          },
+          "realtime_19": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_22"
+              }
+            ]
+          },
+          "realtime_129": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_130"
+              },
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_40"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_40"
+              },
+              "prompt_cache_breakpoint": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_132"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_25"
+              }
+            },
+            "required": [
+              "detail",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_25": {
+            "const": "input_image"
+          },
+          "realtime_132": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_133"
+              }
+            ]
+          },
+          "realtime_133": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_125"
+              },
+              "ttl": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_126"
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_130": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_22"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_131"
+              }
+            ]
+          },
+          "realtime_131": {
+            "const": "original"
+          },
+          "realtime_122": {
+            "type": "object",
+            "properties": {
+              "prompt_cache_breakpoint": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_123"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_7"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_7": {
+            "const": "input_text"
+          },
+          "realtime_123": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_124"
+              }
+            ]
+          },
+          "realtime_124": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_125"
+              },
+              "ttl": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_126"
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_109": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_110"
+              }
+            ]
+          },
+          "realtime_110": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_111"
+            }
+          },
+          "realtime_111": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_112"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_113"
+              }
+            ]
+          },
+          "realtime_113": {
+            "const": "audio"
+          },
+          "realtime_112": {
+            "const": "text"
+          },
+          "realtime_224": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_101"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_225"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_226"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_227"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_228"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_229"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_230"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_231"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_232"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_233"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_234"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_235"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_236"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_237"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_238"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_239"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_240"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_241"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_242"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_243"
+              }
+            ]
+          },
+          "realtime_243": {
+            "const": "gpt-audio-mini-2025-12-15"
+          },
+          "realtime_242": {
+            "const": "gpt-audio-mini-2025-10-06"
+          },
+          "realtime_241": {
+            "const": "gpt-audio-mini"
+          },
+          "realtime_240": {
+            "const": "gpt-audio-1.5"
+          },
+          "realtime_239": {
+            "const": "gpt-realtime-mini-2025-12-15"
+          },
+          "realtime_238": {
+            "const": "gpt-realtime-mini-2025-10-06"
+          },
+          "realtime_237": {
+            "const": "gpt-realtime-mini"
+          },
+          "realtime_236": {
+            "const": "gpt-4o-mini-realtime-preview-2024-12-17"
+          },
+          "realtime_235": {
+            "const": "gpt-4o-mini-realtime-preview"
+          },
+          "realtime_234": {
+            "const": "gpt-4o-realtime-preview-2025-06-03"
+          },
+          "realtime_233": {
+            "const": "gpt-4o-realtime-preview-2024-12-17"
+          },
+          "realtime_232": {
+            "const": "gpt-4o-realtime-preview-2024-10-01"
+          },
+          "realtime_231": {
+            "const": "gpt-4o-realtime-preview"
+          },
+          "realtime_230": {
+            "const": "gpt-realtime-2025-08-28"
+          },
+          "realtime_229": {
+            "const": "gpt-realtime-2.1-mini"
+          },
+          "realtime_228": {
+            "const": "gpt-realtime-2.1"
+          },
+          "realtime_227": {
+            "const": "gpt-realtime-2"
+          },
+          "realtime_226": {
+            "const": "gpt-realtime-1.5"
+          },
+          "realtime_225": {
+            "const": "gpt-realtime"
+          },
+          "realtime_101": {
+            "type": "string"
+          },
+          "realtime_105": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_51"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_106"
+              }
+            ]
+          },
+          "realtime_106": {
+            "const": "inf"
+          },
+          "realtime_221": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_222"
+              }
+            ]
+          },
+          "realtime_222": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_223"
+            }
+          },
+          "realtime_223": {
+            "const": "item.input_audio_transcription.logprobs"
+          },
+          "realtime_188": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_189"
+              }
+            ]
+          },
+          "realtime_189": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_190"
+              },
+              "output": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_217"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_217": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_218"
+              }
+            ]
+          },
+          "realtime_218": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_86"
+              },
+              "speed": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_212"
+              },
+              "voice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_219"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_219": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_220"
+              }
+            ]
+          },
+          "realtime_220": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_5"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_86": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_87"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_92"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_95"
+              }
+            ]
+          },
+          "realtime_95": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_96"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_96": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_97"
+              }
+            ]
+          },
+          "realtime_97": {
+            "const": "audio/pcma"
+          },
+          "realtime_92": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_93"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_93": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_94"
+              }
+            ]
+          },
+          "realtime_94": {
+            "const": "audio/pcmu"
+          },
+          "realtime_87": {
+            "type": "object",
+            "properties": {
+              "rate": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_88"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_90"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_90": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_91"
+              }
+            ]
+          },
+          "realtime_91": {
+            "const": "audio/pcm"
+          },
+          "realtime_88": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_89"
+              }
+            ]
+          },
+          "realtime_89": {
+            "const": 24000
+          },
+          "realtime_190": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_191"
+              }
+            ]
+          },
+          "realtime_191": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_86"
+              },
+              "noise_reduction": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_192"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "transcription": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_197"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "turn_detection": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_209"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_209": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_210"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_214"
+              }
+            ]
+          },
+          "realtime_214": {
+            "type": "object",
+            "properties": {
+              "create_response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "eagerness": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_215"
+              },
+              "interrupt_response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_216"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_216": {
+            "const": "semantic_vad"
+          },
+          "realtime_215": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_22"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_142"
+              }
+            ]
+          },
+          "realtime_210": {
+            "type": "object",
+            "properties": {
+              "create_response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "idle_timeout_ms": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_211"
+              },
+              "interrupt_response": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_114"
+              },
+              "prefix_padding_ms": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_212"
+              },
+              "silence_duration_ms": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_212"
+              },
+              "threshold": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_212"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_213"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "realtime_213": {
+            "const": "server_vad"
+          },
+          "realtime_211": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_51"
+              }
+            ]
+          },
+          "realtime_197": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_198"
+              }
+            ]
+          },
+          "realtime_198": {
+            "type": "object",
+            "properties": {
+              "delay": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_199"
+              },
+              "keywords": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_164"
+              },
+              "language": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              },
+              "languages": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_164"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_200"
+              },
+              "prompt": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_4"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_200": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_101"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_201"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_202"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_203"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_204"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_205"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_206"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_207"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_208"
+              }
+            ]
+          },
+          "realtime_208": {
+            "const": "gpt-realtime-whisper"
+          },
+          "realtime_207": {
+            "const": "gpt-4o-transcribe-diarize"
+          },
+          "realtime_206": {
+            "const": "gpt-4o-transcribe"
+          },
+          "realtime_205": {
+            "const": "gpt-4o-mini-transcribe-2025-12-15"
+          },
+          "realtime_204": {
+            "const": "gpt-4o-mini-transcribe"
+          },
+          "realtime_203": {
+            "const": "gpt-live-transcribe"
+          },
+          "realtime_202": {
+            "const": "gpt-transcribe"
+          },
+          "realtime_201": {
+            "const": "whisper-1"
+          },
+          "realtime_199": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_22"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_141"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_142"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_143"
+              }
+            ]
+          },
+          "realtime_192": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_193"
+              }
+            ]
+          },
+          "realtime_193": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_194"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "realtime_194": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_195"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_196"
+              }
+            ]
+          },
+          "realtime_196": {
+            "const": "far_field"
+          },
+          "realtime_195": {
+            "const": "near_field"
+          },
+          "realtime_call_accept": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_464"
           },
           "realtime_call_refer": {
             "allOf": [

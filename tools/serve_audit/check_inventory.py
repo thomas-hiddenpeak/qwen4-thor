@@ -158,7 +158,9 @@ def current_surface(root):
     for path in (reject, '/v1/realtime/calls/{call_id}/reject'):
         routes.append((path, 'POST'))
         native_routes.append(('POST', path, 'true'))
-    if ('LiveResourceId(path, "/accept")' not in dispatch or
+    if ('SipControlId(path, "/accept")' not in dispatch or
+            'RealtimeSipCall' not in media or
+            'server::SipControlId(path, "/accept")' not in native or
             'sip_service_.Reserve(client.Id(), sip_id' not in media or
             'server::IsSipRefer(method, path)' not in native or
             'sip_service_.Refer(http->Client().Id()' not in media or
@@ -166,6 +168,7 @@ def current_surface(root):
             'sip_service_.Hangup(http->Client().Id()' not in media):
         raise ValueError('review authenticated SIP accept, hangup and routing')
     for path, control in (('/v1/live/sessions/{session_id}/accept', 'false'),
+                          ('/v1/realtime/calls/{call_id}/accept', 'false'),
                           ('/v1/live/sessions/{session_id}/hangup', 'true'),
                           ('/v1/realtime/calls/{call_id}/hangup', 'true'),
                           ('/v1/live/sessions/{session_id}/refer', 'true'),

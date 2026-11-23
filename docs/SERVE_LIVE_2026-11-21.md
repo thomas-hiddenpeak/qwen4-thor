@@ -208,3 +208,24 @@ await client.live.sessions.accept(event.data.session_id, {
 同客户的 SDK 旁路收到 `transport.dtmf.received` 时，从 `event` 字段读取单个按键。发送示例为 `ws.send({type:'transport.dtmf.send', event:'#', event_id:'ivr-menu'})`。多个按键逐个发送。媒体进程将结束报告写入加密 UDP 套接字后，旁路收到 `transport.dtmf.sent`，其 `client_event_id` 与请求对应。接收端的重传会被去重。
 
 可用按键由电话 SDP 中的 `telephone-event`、事件集合及收发方向决定。未协商的按键会单独返回 `sip_dtmf_not_negotiated`。可选 GStreamer 生成器 `rtpdtmfsrc` 缺失时仍可接听语音；只接收按键的方向可独立工作。密钥、键音数据和按键命令均由电话媒体与控制路径处理。验收覆盖按键后继续真实语音查询。[客户与电话对端回执](evidence/serve-live-sip-dtmf-20261123/README.md)。
+
+### 使用 Realtime SDK 接听电话
+
+应用核验 `realtime.call.incoming` 通知签名后，取出 `event.data.call_id`，并使用该中继所属客户的 API Key。接听配置直接传给 `accept`。收到空正文 HTTP 200 后，可由独立的 SDK 连接管理会话。
+
+```js
+import { OpenAIRealtimeWS } from 'openai/realtime/ws';
+
+await client.realtime.calls.accept(callId, {
+  type: 'realtime',
+  model: 'qwen3.8-flash-next',
+  audio: {
+    input: { transcription: { model: 'qwen3-asr-0.6b' } },
+    output: { voice: 'vivian' },
+  },
+});
+const rt = new OpenAIRealtimeWS({ callID: callId }, client);
+rt.on('input_audio_buffer.dtmf_event_received', ({ event }) => handlePhoneKey(event));
+```
+
+旁路收到的首个 `session.created` 含当前会话 ID 和已生效设置。应用可通过同一连接处理函数调用、发送 `function_call_output`、请求语音回答；音频走电话媒体。输出预算包括文本和实际的语音量化码，短版本号的一次实测共用 454 个输出 token。播放的开始和排空事件携带对应的 `response_id`。使用 `client.realtime.calls.hangup(callId)` 挂断。已结束的通话及其他客户的通话对该调用返回 404。[业务记录](evidence/serve-realtime-sip-accept-20261123/README.md)。

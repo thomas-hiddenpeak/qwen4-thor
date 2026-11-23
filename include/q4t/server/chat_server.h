@@ -336,6 +336,7 @@ class ChatServer {
   void HandleRealtime(int fd, std::string_view path,
                        const HttpRequestHeaders& headers,
                        std::string_view initial, std::string_view accept);
+  RealtimeConversationCallbacks MakeRealtimeCallbacks(const ClientIdentity& client);
   void HandleRealtimeConversation(int fd, std::string_view path,
                                    const HttpRequestHeaders& headers,
                                    std::string_view initial,

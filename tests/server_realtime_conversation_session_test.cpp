@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 #include "../src/server/object_protocol.h"
+#include "../src/server/realtime_sip_call.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/schema_graph.h"
@@ -2546,5 +2547,215 @@ Q4T_TEST(realtime_session_trace_owner_exception_does_not_escape_protocol) {
   Q4T_CHECK(f.Start() && f.Create() && f.Finish());
   Q4T_CHECK(f.calls == 1 && f.Count("response.done") == 1 &&
             f.Count("error") == 0);
+  return true;
+}
+
+Q4T_TEST(realtime_call_start_resolves_prompt_before_first_unframed_event) {
+  Fixture f;
+  size_t resolved = 0;
+  f.cb.resolve_prompt = [&](const Json& ref, size_t, const auto&, auto* out) {
+    ++resolved;
+    out->api = PromptApi::kRealtime;
+    out->scope = "client:caller";
+    out->reference = ref;
+    Set(&out->reference, "version", String("7"));
+    out->request = Object({{"instructions", String("from stored prompt")}});
+    return ObjectReply{};
+  };
+  f.cb.validate_prompt = [](const auto& selected) {
+    return selected.prompt && selected.prompt->scope == "client:caller"
+               ? ObjectReply{}
+               : object_detail::Error(403, "prompt_scope_mismatch",
+                                      "Missing scoped prompt");
+  };
+  bool writable = false;
+  SessionEventOutput sink{kWebSocketMaximumLimit, [] { return false; },
+                          [&](std::string_view wire) {
+                            if (!writable) return false;
+                            Json event;
+                            if (!io::ParseJson(std::string(wire), &event))
+                              return false;
+                            f.events.push_back(std::move(event));
+                            return true;
+                          }};
+  RealtimeConversationSession call("sess_call", "conv_call", f.settings,
+                                   std::move(sink), f.cb);
+  Json args = Object({{"type", String("realtime")},
+                      {"prompt", Object({{"id", String("pmpt_lookup")}})}});
+  Q4T_CHECK(call.StartCall(args).ok() && resolved == 1 && f.events.empty());
+  writable = true;
+  Q4T_CHECK(call.Tick() && f.events.size() == 2);
+  Q4T_CHECK(f.events[0].GetString("type") == "session.created" &&
+            f.events[1].GetString("type") == "conversation.created");
+  const auto& actual = Field(f.events[0], "session");
+  Q4T_CHECK(actual.GetString("instructions") == "from stored prompt");
+  Q4T_CHECK(actual.GetString("model") == "q4t-test" &&
+            actual.GetString("id") == "sess_call");
+  Q4T_CHECK(actual.Find("prompt")->GetString("version") == "7");
+  ChatPlanError error;
+  for (const auto& event : f.events)
+    Q4T_CHECK(
+        ValidateRealtimeWireShape(event, RealtimeShape::kServerEvent, &error));
+  Q4T_CHECK(!call.StartCall(args).ok() && f.events.size() == 2);
+  return true;
+}
+
+Q4T_TEST(realtime_call_rejected_configuration_precedes_any_session_event) {
+  Fixture f;
+  RealtimeConversationSession call("sess_call", "conv_call", f.settings,
+                                   f.output, f.cb);
+  auto args = Object(
+      {{"type", String("realtime")}, {"instructions", String("reject")}});
+  auto refused = call.StartCall(args);
+  Q4T_CHECK(refused.http_status == 400 &&
+            refused.code == "fixture_setting_rejected");
+  Q4T_CHECK(f.output.Front().empty() && f.calls == 0);
+  refused = call.StartCall(Object({{"session", args}}));
+  Q4T_CHECK(refused.http_status == 400 && f.output.Front().empty());
+  Set(&args, "instructions", String("valid"));
+  Q4T_CHECK(call.StartCall(args).ok() && f.Read() && f.events.size() == 2);
+  Q4T_CHECK(Field(f.events[0], "session").GetString("instructions") == "valid");
+  return true;
+}
+
+Q4T_TEST(realtime_call_codec_streams_preserve_phase_duration_and_pcm_bytes) {
+  using E = RealtimeAudioEncoding;
+  std::string pcm;
+  for (uint16_t i = 0; i < 2400; ++i) {
+    const uint16_t sample = i * 1999;
+    pcm += char(sample);
+    pcm += char(sample >> 8);
+  }
+  std::string expected, bytes;
+  RealtimeCallPcm direct({}, {});
+  Q4T_CHECK(direct.Convert(pcm, &bytes, true) && bytes == pcm);
+  for (auto law : {E::kMuLaw, E::kALaw}) {
+    RealtimeAudioFormat g711{law, 8000};
+    RealtimeCallPcm whole({}, g711), pieces({}, g711);
+    Q4T_CHECK(!pieces.Convert("x", &bytes));
+    Q4T_CHECK(whole.Convert(pcm, &expected, true) && expected.size() == 800);
+    std::string split;
+    for (size_t at = 0; at < pcm.size(); at += 34) {
+      Q4T_CHECK(pieces.Convert(std::string_view(pcm).substr(at, 34), &bytes));
+      split += bytes;
+    }
+    Q4T_CHECK(pieces.Convert({}, &bytes, true) && split + bytes == expected);
+    RealtimeCallPcm decode(g711, {}), chunked(g711, {});
+    Q4T_CHECK(decode.Convert(expected, &bytes, true));
+    Q4T_CHECK(bytes.size() == pcm.size() &&
+              bytes.find_first_not_of('\0') != bytes.npos);
+    const auto decoded = bytes;
+    split.clear();
+    for (size_t at = 0; at < expected.size(); at += 19) {
+      Q4T_CHECK(
+          chunked.Convert(std::string_view(expected).substr(at, 19), &bytes));
+      split += bytes;
+    }
+    Q4T_CHECK(chunked.Convert({}, &bytes, true) && split + bytes == decoded);
+    Q4T_CHECK(!chunked.Convert("x", &bytes));
+  }
+  return true;
+}
+
+Q4T_TEST(realtime_call_scoped_observer_joins_current_session_and_hears_dtmf) {
+  Fixture f;
+  auto side = std::make_shared<LiveSideband>();
+  RealtimeSipCall call(
+      f.settings, f.cb, kWebSocketMessageLimit, [](char, auto) { return true; },
+      side);
+  std::shared_ptr<const std::string> snapshot;
+  uint64_t cursor = 0;
+  Q4T_CHECK(!side->AttachRealtime(&cursor, &snapshot).ok());
+  Q4T_CHECK(call.Start(Object({{"type", String("realtime")}})).ok());
+  Q4T_CHECK(!call.Receive('K', "#") && call.Receive('V', {}));
+  Q4T_CHECK(side->Enqueue(
+      WebSocketOpcode::kText,
+      R"({"type":"session.update","session":{"type":"realtime","instructions":"changed"}})"));
+  Q4T_CHECK(call.Tick(Clock::now()) &&
+            side->AttachRealtime(&cursor, &snapshot).ok());
+  Json current;
+  Q4T_CHECK(io::ParseJson(*snapshot, &current) &&
+            current.GetString("instructions") == "changed");
+  Q4T_CHECK(side->Next(cursor, &snapshot) == LiveSideband::Read::kPending);
+  Q4T_CHECK(!call.Receive('K', "a") && call.Receive('K', "#"));
+  Q4T_CHECK(side->Next(cursor, &snapshot) == LiveSideband::Read::kEvent);
+  Json key;
+  Q4T_CHECK(io::ParseJson(*snapshot, &key) && key.GetString("event") == "#" &&
+            key.GetString("type") == "input_audio_buffer.dtmf_event_received" &&
+            key.GetInt("received_at") > 0);
+  ChatPlanError error;
+  Q4T_CHECK(
+      ValidateRealtimeWireShape(key, RealtimeShape::kServerEvent, &error));
+  Q4T_CHECK(call.EndTransport() && !call.Receive('K', "1") && call.Finished());
+  return true;
+}
+
+Q4T_TEST(realtime_call_playout_receipts_follow_delivery_and_clear) {
+  for (bool clear : {false, true}) {
+    SpeechFixture f;
+    auto side = std::make_shared<LiveSideband>();
+    size_t delivered = 0;
+    bool writable = false;
+    RealtimeSipCall call(
+        f.settings, f.cb, kWebSocketMessageLimit,
+        [&](char type, std::string_view bytes) {
+          if (type != 'P' || !writable) return false;
+          delivered += bytes.size();
+          return true;
+        },
+        side);
+    Q4T_CHECK(call.Start(Object({{"type", String("realtime")}})).ok());
+    Q4T_CHECK(call.Receive('V', {}));
+    std::shared_ptr<const std::string> wire;
+    uint64_t cursor = 0;
+    Q4T_CHECK(side->AttachRealtime(&cursor, &wire).ok());
+    Q4T_CHECK(side->Enqueue(
+        WebSocketOpcode::kText,
+        OutputJson(Object({{"type", String("conversation.item.create")},
+                           {"item", User("item_test", "say hello")}}))));
+    Q4T_CHECK(
+        side->Enqueue(WebSocketOpcode::kText, R"({"type":"response.create"})"));
+    const auto deadline = Clock::now() + 2s;
+    bool done = false;
+    while (!done && Clock::now() < deadline) {
+      Q4T_CHECK(call.Tick(Clock::now()));
+      while (side->Next(cursor, &wire) == LiveSideband::Read::kEvent) {
+        ++cursor;
+        Json e;
+        Q4T_CHECK(io::ParseJson(*wire, &e));
+        Q4T_CHECK(e.GetString("type") != "output_audio_buffer.started");
+        Q4T_CHECK(e.GetString("type") != "response.output_audio.delta");
+        if (e.GetString("type") == "response.done") {
+          Q4T_CHECK(e.Find("response")->GetString("status") == "completed");
+          done = true;
+        }
+      }
+      std::this_thread::sleep_for(1ms);
+    }
+    Q4T_CHECK(done && delivered == 0);
+    writable = true;
+    auto start = Clock::now();
+    Q4T_CHECK(call.Tick(start) && delivered > 0 && delivered <= 960);
+    Q4T_CHECK(side->Next(cursor++, &wire) == LiveSideband::Read::kEvent);
+    Json started;
+    Q4T_CHECK(io::ParseJson(*wire, &started) &&
+              started.GetString("type") == "output_audio_buffer.started");
+    const auto first = delivered;
+    if (clear)
+      Q4T_CHECK(side->Enqueue(WebSocketOpcode::kText,
+                              R"({"type":"output_audio_buffer.clear"})"));
+    for (int i = 1; i < 30; ++i) Q4T_CHECK(call.Tick(start + i * 20ms));
+    Q4T_CHECK(delivered == (clear ? first : f.samples * 2));
+    Q4T_CHECK(side->Next(cursor++, &wire) == LiveSideband::Read::kEvent);
+    Json terminal;
+    Q4T_CHECK(io::ParseJson(*wire, &terminal));
+    Q4T_CHECK(terminal.GetString("type") ==
+              (clear ? "output_audio_buffer.cleared"
+                     : "output_audio_buffer.stopped"));
+    Q4T_CHECK(terminal.GetString("response_id") ==
+              started.GetString("response_id"));
+    Q4T_CHECK(side->Next(cursor, &wire) == LiveSideband::Read::kPending);
+    Q4T_CHECK(call.EndTransport());
+  }
   return true;
 }

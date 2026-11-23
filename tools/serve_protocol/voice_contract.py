@@ -86,6 +86,8 @@ def add_voice_routes(paths, response, error):
                  'Sec-WebSocket-Accept':dict(schema=text)})}
     operation('get','/v1/realtime',upgrade,parameters=[
         param('intent','query',dict(enum=['realtime','transcription'])),
+        param('call_id','query',dict(type='string',pattern='^rtc_[A-Za-z0-9_-]+$',maxLength=128),
+              description='Attach to the owning Realtime call; mutually exclusive with model and intent.'),
         param('model','query',text,description='Conversation only; transcription uses the exact intent=transcription query.')])
     live = 'serve-application-v1.schema.json#/$defs/live_'
     operation('post','/v1/live/sessions',{'201':response({'$ref':live+'media_created'}, 'Live session created')},
@@ -101,6 +103,9 @@ def add_voice_routes(paths, response, error):
     for path in ('/v1/live/sessions/{session_id}/hangup', '/v1/realtime/calls/{call_id}/hangup'):
         operation('post', path, {'200': {'description': 'Carrier acknowledged hangup; empty body'}})
     realtime = 'serve-application-v1.schema.json#/$defs/realtime_'
+    operation('post', '/v1/realtime/calls/{call_id}/accept',
+              {'200': {'description': 'Realtime session ready and SIP answer acknowledged; empty body'}},
+              body=content('application/json', {'$ref':realtime+'call_accept'}))
     for path, schema in [('/v1/live/sessions/{session_id}/refer', live+'session_refer'),
                          ('/v1/realtime/calls/{call_id}/refer', realtime+'call_refer')]:
         operation('post', path, {'200': {'description': 'Carrier accepted the SIP REFER; empty body'}},

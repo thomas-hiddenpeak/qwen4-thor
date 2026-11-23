@@ -133,10 +133,18 @@ RealtimeConversationSession::RealtimeConversationSession(
     std::string id, std::string conversation_id, Json settings,
     WebSocketOutput& output, RealtimeConversationCallbacks callbacks,
     size_t message_bytes)
+    : RealtimeConversationSession(std::move(id), std::move(conversation_id),
+                                  std::move(settings), output.Events(),
+                                  std::move(callbacks), message_bytes) {}
+
+RealtimeConversationSession::RealtimeConversationSession(
+    std::string id, std::string conversation_id, Json settings,
+    SessionEventOutput output, RealtimeConversationCallbacks callbacks,
+    size_t message_bytes)
     : id_(std::move(id)),
       conversation_id_(std::move(conversation_id)),
       settings_(std::move(settings)),
-      output_(output),
+      output_(std::move(output)),
       callbacks_(std::move(callbacks)),
       message_bytes_(message_bytes),
       history_(id_),
@@ -256,16 +264,16 @@ void RealtimeConversationSession::ConfigureTracing() noexcept {
   }
 }
 ObjectReply RealtimeConversationSession::Emit(Json event) {
-  if (cancelled_ || output_.Closed() ||
+  if (cancelled_ || output_.closed() ||
       (callbacks_.interrupted && callbacks_.interrupted()))
     return object_detail::Error(409, "realtime_connection_closed",
                                 "Realtime connection closed");
   if (trace_) trace_->Observe(event, RealtimeTraceNow());
   auto text = OutputJson(event);
-  if (text.size() > output_.MessageLimit())
+  if (text.size() > output_.message_bytes)
     return object_detail::Error(503, "realtime_event_too_large",
                                 "Output event exceeds its byte limit");
-  if (events_.empty() && output_.TryPush(WebSocketOpcode::kText, text))
+  if (events_.empty() && output_.try_push(text))
     return {};
   if (events_.size() == kEventCount ||
       text.capacity() > kEventBytes - event_bytes_)
@@ -279,8 +287,8 @@ ObjectReply RealtimeConversationSession::Emit(Json event) {
 }
 bool RealtimeConversationSession::Flush() {
   while (!events_.empty()) {
-    if (output_.Closed() || Clock::now() >= event_deadline_) return false;
-    if (!output_.TryPush(WebSocketOpcode::kText, events_.front())) return true;
+    if (output_.closed() || Clock::now() >= event_deadline_) return false;
+    if (!output_.try_push(events_.front())) return true;
     event_bytes_ -= events_.front().capacity();
     events_.pop_front();
   }
@@ -307,6 +315,18 @@ bool RealtimeConversationSession::ErrorEvent(ObjectReply reply,
   return Event("error", Object({{"error", std::move(error)}}));
 }
 bool RealtimeConversationSession::Start() {
+  return Accepted(StartSession(nullptr));
+}
+
+ObjectReply RealtimeConversationSession::StartCall(const Json& configuration) {
+  ChatPlanError error;
+  const auto status = ValidateRealtimeWireShape(
+      configuration, RealtimeShape::kCallAccept, &error, "body");
+  if (!status) return Invalid(error.code, status.message(), error.param);
+  return StartSession(&configuration);
+}
+
+ObjectReply RealtimeConversationSession::StartSession(const Json* call) {
   const auto& settings = settings_.Current().settings;
   size_t storage = 0;
   if (started_ || cancelled_ || !history_.Valid() || !output_.Valid() ||
@@ -316,31 +336,28 @@ bool RealtimeConversationSession::Start() {
       !callbacks_.release || !message_bytes_ ||
       message_bytes_ > kWebSocketMessageLimit ||
       !MeasureRealtimeStorage(settings, kWebSocketMessageLimit, &storage))
-    return false;
-  auto event =
-      Object({{"type", String("session.update")}, {"session", settings}});
-  if (!Accepted(Shape(event, RealtimeShape::kClientEvent)) ||
-      settings.GetString("type") != "realtime")
-    return false;
-  auto selected = settings_.Current();
-  bool commit = false;
-  auto reply = SelectMcp(selected, Object(), true, &mcp_selection_,
-                          &mcp_current_, &commit);
-  if (!Accepted(reply)) return false;
-  selected.mcp = mcp_current_;
-  Set(&selected.settings, "tools", selected.mcp->tools);
-  if (!Accepted(ValidateSelection(selected))) return false;
-  ChatPlanError error;
-  if (commit && !mcp_definitions_.Commit(&mcp_selection_, &error)) return false;
+    return object_detail::Error(503, "realtime_session_unavailable",
+                                "Realtime session initialization failed");
+  if (settings.GetString("type") != "realtime")
+    return Invalid("realtime_session_type_invalid", "Expected realtime session",
+                   "session.type");
+  // Defaults must stay defaults: copying them into overrides would mask a
+  // later stored prompt's instructions, tools and response configuration.
+  auto reply = call ? ApplySettings(*call)
+                    : ApplySettings(Object({{"type", String("realtime")}}));
+  if (!Accepted(reply)) return reply;
   started_ = true;
   ConfigureTracing();
-  return Event("session.created", Object({{"session", PublicSettings()}})) &&
+  const bool published = Event("session.created", Object({{"session", PublicSettings()}})) &&
          Event(
              "conversation.created",
              Object({{"conversation",
                       Object({{"id", String(conversation_id_)},
                               {"object", String("realtime.conversation")}})}})) &&
          ImportMcp(mcp_selection_);
+  return published ? ObjectReply{}
+                   : object_detail::Error(503, "realtime_output_failed",
+                                          "Initial session events unavailable");
 }
 ObjectReply RealtimeConversationSession::CaptureMcp(
     const RealtimeMcpSelection& selection,
@@ -476,7 +493,7 @@ ObjectReply RealtimeConversationSession::ValidateSpeech(
 RealtimePromptResolver RealtimeConversationSession::PromptResolver() {
   return [this](const Json& reference, size_t budget, PromptSnapshot* out) {
     const auto cancelled = [this] {
-      return cancelled_ || output_.Closed() ||
+      return cancelled_ || output_.closed() ||
              (callbacks_.interrupted && callbacks_.interrupted());
     };
     const auto stopped = [] {
@@ -493,32 +510,41 @@ RealtimePromptResolver RealtimeConversationSession::PromptResolver() {
 }
 bool RealtimeConversationSession::Settings(const Json& update,
                                            std::string_view event_id) {
+  auto reply = ApplySettings(update);
+  if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+  ConfigureTracing();
+  return Event("session.updated", Object({{"session", PublicSettings()}})) &&
+         ImportMcp(mcp_selection_);
+}
+
+ObjectReply RealtimeConversationSession::ApplySettings(const Json& update) {
   if (update.GetString("type") != "realtime")
-    return ErrorEvent(Invalid("realtime_session_type_invalid",
-                              "Session type cannot change", "session.type"),
-                      event_id);
+    return Invalid("realtime_session_type_invalid", "Expected realtime session",
+                   "session.type");
   RealtimeMcpSelection mcp;
   std::shared_ptr<const RealtimeMcpContext> context;
   bool commit = false;
   auto reply = settings_.Update(
       update, PromptResolver(),
       [&](const auto& selection) {
-        auto result = SelectMcp(selection, Object(), update.Has("tools"), &mcp,
-                                 &context, &commit);
+        auto result = SelectMcp(selection, Object(),
+                                !started_ || update.Has("tools"), &mcp,
+                                &context, &commit);
         if (!Accepted(result)) return result;
         auto selected = selection;
         selected.mcp = context;
         Set(&selected.settings, "tools", context->tools);
         return ValidateSelection(selected);
       });
-  if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+  if (!Accepted(reply)) return reply;
   ChatPlanError error;
-  if (commit && !mcp_definitions_.Commit(&mcp, &error)) return false;
+  if (commit && !mcp_definitions_.Commit(&mcp, &error)) {
+    Cancel();
+    return object_detail::Error(500, error.code, "MCP definition commit failed");
+  }
   mcp_selection_ = std::move(mcp);
   mcp_current_ = std::move(context);
-  ConfigureTracing();
-  return Event("session.updated", Object({{"session", PublicSettings()}})) &&
-         ImportMcp(mcp_selection_);
+  return {};
 }
 bool RealtimeConversationSession::CreateItem(const Json& event) {
   RealtimeItemTicket ticket;
@@ -982,6 +1008,7 @@ bool RealtimeConversationSession::InputReady() {
 }
 bool RealtimeConversationSession::InputSpeech(bool started, bool interrupt) {
   if (!started || !interrupt) return true;
+  if (callbacks_.interrupt_playout) callbacks_.interrupt_playout();
   if (mcp_calls_) mcp_calls_->CancelResponse({});
   for (auto& work : work_) {
     if (!work->job.in_conversation) continue;
@@ -1046,7 +1073,7 @@ bool RealtimeConversationSession::Message(WebSocketOpcode opcode,
       event_id);
 }
 bool RealtimeConversationSession::Tick() {
-  if (!started_ || cancelled_ || output_.Closed() ||
+  if (!started_ || cancelled_ || output_.closed() ||
       (callbacks_.interrupted && callbacks_.interrupted()) || !Flush())
     return false;
   if (trace_) trace_->Tick(RealtimeTraceNow());

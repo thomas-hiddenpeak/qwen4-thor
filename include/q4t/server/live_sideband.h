@@ -25,11 +25,16 @@ class LiveSideband {
   };
   static constexpr size_t kReplayBytes = 32ULL << 20;
   static constexpr size_t kCommandBytes = kWebSocketMessageLimit;
-  void Publish(std::string_view text, Clock::time_point now) noexcept;
+  void Publish(std::string_view text, Clock::time_point now,
+               std::string_view realtime_session = {}) noexcept;
   void OutputAudio(uint64_t begin_ticks, std::string_view pcm) noexcept;
   void InputAudio(std::string_view base64) noexcept;
   void Finish(bool graceful) noexcept;
   ObjectReply Attach(uint64_t* next, Clock::time_point now);
+  // Bootstrap a Realtime observer from the current session and the exact
+  // cursor after it. Later attachments do not replay old tool calls.
+  ObjectReply AttachRealtime(uint64_t* next,
+                             std::shared_ptr<const std::string>* session);
   Read Next(uint64_t next, std::shared_ptr<const std::string>* text);
   bool Enqueue(WebSocketOpcode opcode, std::string_view message);
   bool HasSpace(size_t size) const;
@@ -43,10 +48,11 @@ class LiveSideband {
   };
   void DropFront();
   void Expire(Clock::time_point now);
-  void Lost(Clock::time_point now) noexcept;
+  void Lost(Clock::time_point now, bool session_changed = false) noexcept;
   const std::unique_ptr<HttpBodyLease> memory_;
   mutable std::mutex mutex_;
   std::deque<Entry> events_;
+  std::shared_ptr<const std::string> realtime_session_;
   std::deque<Command> commands_;
   size_t bytes_ = 0, command_bytes_ = 0;
   uint64_t sequence_ = 0;

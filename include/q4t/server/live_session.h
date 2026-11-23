@@ -50,13 +50,7 @@ struct LiveSessionCallbacks {
   std::function<bool(char)> send_dtmf{};
 };
 
-// Output accepts complete, ordered JSON events. A full transport returns false
-// and the session retains its front event until space or its write deadline.
-struct LiveSessionOutput {
-  size_t message_bytes = 0;
-  std::function<bool()> closed;
-  std::function<bool(std::string_view)> try_push;
-};
+using LiveSessionOutput = SessionEventOutput;
 
 struct LiveSessionLimits {
   size_t message_bytes = kWebSocketMessageLimit;

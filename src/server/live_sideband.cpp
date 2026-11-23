@@ -24,22 +24,28 @@ void LiveSideband::DropFront() {
 void LiveSideband::Expire(Clock::time_point now) {
   while (!events_.empty() && now - events_.front().at > kReplay) DropFront();
 }
-void LiveSideband::Lost(Clock::time_point now) noexcept {
+void LiveSideband::Lost(Clock::time_point now, bool session_changed) noexcept {
   std::lock_guard lock(mutex_);
   if (finished_) return;
   events_.clear();
+  if (session_changed) realtime_session_.reset();
   bytes_ = 0;
   ++sequence_;
   incomplete_until_ = now + kReplay;
 }
 void LiveSideband::Publish(std::string_view text,
-                           Clock::time_point now) noexcept {
-  if (text.empty() || text.size() > kReplayBytes) {
-    Lost(now);
+                           Clock::time_point now,
+                           std::string_view realtime_session) noexcept {
+  if (text.empty() || text.size() > kReplayBytes ||
+      realtime_session.size() > kWebSocketMessageLimit) {
+    Lost(now, !realtime_session.empty());
     return;
   }
   try {
     auto copy = std::make_shared<const std::string>(text);
+    auto snapshot = realtime_session.empty()
+                        ? nullptr
+                        : std::make_shared<const std::string>(realtime_session);
     std::lock_guard lock(mutex_);
     if (finished_) return;
     Expire(now);
@@ -49,10 +55,11 @@ void LiveSideband::Publish(std::string_view text,
       DropFront();
     }
     events_.push_back({sequence_, now, std::move(copy)});
+    if (snapshot) realtime_session_ = std::move(snapshot);
     ++sequence_;
     bytes_ += text.size();
   } catch (...) {
-    Lost(now);
+    Lost(now, !realtime_session.empty());
   }
 }
 void LiveSideband::OutputAudio(uint64_t begin_ticks,
@@ -95,6 +102,17 @@ ObjectReply LiveSideband::Attach(uint64_t* next, Clock::time_point now) {
     return Error(503, "live_replay_unavailable",
                  "Complete Live replay window unavailable");
   *next = events_.empty() ? sequence_ : events_.front().sequence;
+  return {};
+}
+ObjectReply LiveSideband::AttachRealtime(
+    uint64_t* next, std::shared_ptr<const std::string>* session) {
+  std::lock_guard lock(mutex_);
+  if (finished_) return Error(404, "object_not_found", "Call not found");
+  if (!next || !session || !realtime_session_)
+    return Error(503, "realtime_session_unavailable",
+                 "Current call settings unavailable");
+  *session = realtime_session_;
+  *next = sequence_;
   return {};
 }
 LiveSideband::Read LiveSideband::Next(

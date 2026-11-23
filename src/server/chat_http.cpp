@@ -547,8 +547,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       HandleSipControl(fd, SipControlId(path, "/hangup"), body, false);
     else if (IsSipRefer(method, path))
       HandleSipControl(fd, SipControlId(path, "/refer"), body, true);
-    else if (method == "POST" && !LiveResourceId(path, "/accept").empty())
-      HandleLiveMediaCreate(fd, {}, body, admission, LiveResourceId(path, "/accept"));
+    else if (method == "POST" && !SipControlId(path, "/accept").empty())
+      HandleLiveMediaCreate(fd, {}, body, admission, SipControlId(path, "/accept"));
     else if (IsLiveMediaCreate(method, path))
       HandleLiveMediaCreate(fd, LiveForkId(path), body, admission);
     else if (IsRealtimeTarget(path))

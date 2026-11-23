@@ -35,6 +35,14 @@ LIMITS = dict(starts=1, ingress_starts=1, calls=1, sdk_requests=6, sidebands=1,
 SCHEMA = 'q4t-live-sip-accept-business-v1'
 
 
+def phone_query_matches(actual, expected):
+    # The retained zh recording specifies the spoken words, not a writing system.
+    # Compare each position, including the punctuation; do not fold other words.
+    traditional = '請查詢當前項目版本號。'
+    return (expected == '请查询当前项目版本号。' and len(actual) == len(expected)
+            and all(a in (s, t) for a, s, t in zip(actual, expected, traditional)))
+
+
 class Stage(signal.Stage):
     limits = LIMITS
     subscriber_handles_reject = False
@@ -50,7 +58,8 @@ class Stage(signal.Stage):
 
     def client(self, live_id, stack, blocked_media=False, realtime_id=None):
         log = stack.enter_context((self.out/('unready-sdk.log' if blocked_media else 'sdk.log')).open('xb'))
-        proc = subprocess.Popen(['node', ROOT/'tools/serve_live/sip_accept_sdk.mjs'],
+        script = 'realtime_sip_accept_sdk.mjs' if self.plan.get('realtime_accept') else 'sip_accept_sdk.mjs'
+        proc = subprocess.Popen(['node', ROOT/'tools/serve_live'/script],
             stdin=subprocess.PIPE, stdout=log, stderr=log,
             env={**os.environ, 'NODE_EXTRA_CA_CERTS':self.plan['tls']['certificate']})
         def finish():
@@ -82,6 +91,13 @@ class Stage(signal.Stage):
             offset += 1920
             seq += 1
             time.sleep(max(0, start + seq*.020 - time.monotonic()))
+        if self.plan.get('realtime_accept'):
+            save(self.out/'carrier-input-ended', True)
+            self.wait_file(self.out/'sdk-transcript.json', sdk, 35)
+            actual = read(self.out/'sdk-transcript.json')
+            require(phone_query_matches(actual, clip['expected_transcript']), 'spoken project question')
+            save(self.out/'verified-input.json', dict(raw=actual, expected=clip['expected_transcript'],
+                 exact_written_form=actual == clip['expected_transcript']))
         observed = array.array('h')
         deadline = time.monotonic() + 70
         while time.monotonic() < deadline and sdk.poll() is None:
@@ -168,7 +184,7 @@ class Stage(signal.Stage):
             token = secrets.token_hex(8)
             self.budget('calls')
             offer = audio.offer('OPUS')
-            if self.plan.get('dtmf'):
+            if self.plan.get('dtmf') or self.plan.get('realtime_accept'):
                 offer = with_events(offer, 8000, '0-11')
             peer.send('INVITE', token, body=offer.encode(),
                       extra=b'Content-Type: application/sdp\r\n')
@@ -184,12 +200,13 @@ class Stage(signal.Stage):
                         rtc['data']['sip_headers'] == notice['data']['sip_headers'] and
                         rtc['id'] != notice['id'], 'signed Realtime ID for this call')
                 rtc_id = rtc['data']['call_id']
-                self.budget('sdk_requests', 7)
+                if not self.plan.get('realtime_accept'):
+                    self.budget('sdk_requests', 7)
             self.budget('sdk_requests',6)
             sdk = self.client(notice['data']['session_id'], stack, realtime_id=rtc_id)
             require(peer.response(200, 'INVITE', token) == tag, 'accepted invitation')
             answer = audio.read_answer(peer.body)
-            if self.plan.get('dtmf'):
+            if self.plan.get('dtmf') or self.plan.get('realtime_accept'):
                 require('a=rtpmap:101 telephone-event/8000\r\n' in answer and
                         'a=fmtp:101 0-11\r\n' in answer, 'DTMF answer on the carrier')
             contact = re.search(r'(sips:[^> ]+)',peer.headers['contact'])[1]
@@ -198,9 +215,12 @@ class Stage(signal.Stage):
             peer.send('ACK', token, to_tag=tag, branch=token+'ack', target=contact)
             self.budget('sidebands')
             self.wait_file(self.out/'sdk-attached', sdk, 10)
+            if self.plan.get('realtime_accept'):
+                for seq in range(4):
+                    send_key(audio, seq, 32000, 11, end=seq>0, duration=960, source=0x09173344)
             if self.plan.get('dtmf'):
                 self.keypresses(audio, sdk)
-            if self.dual:
+            if self.dual and not self.plan.get('realtime_accept'):
                 self.transfers(peer, token, tag, contact, sdk)
             self.budget('voice_inputs')
             seq = self.speech(audio, codec, sdk)
@@ -230,10 +250,20 @@ class Stage(signal.Stage):
             require(sdk.wait(25) == 0, 'SDK receipt or sideband close failure')
         self.budget('client_results')
         observed = read(self.out/'voice.json')
-        require(observed['input'] == self.plan['retained_query']['expected_transcript'] and
+        kinds = observed['kinds']
+        if self.plan.get('realtime_accept'):
+            lifecycle = (kinds.count('response.done') == 2 and
+                         kinds.count('output_audio_buffer.started') == 1 and
+                         kinds.count('output_audio_buffer.stopped') == 1 and
+                         kinds.count('input_audio_buffer.dtmf_event_received') == 1)
+        else:
+            lifecycle = (kinds.count('session.delegation.created') == 1 and kinds.count('session.closed') == 1)
+        expected_input = self.plan['retained_query']['expected_transcript']
+        input_ok = (phone_query_matches(observed['input'], expected_input) if self.plan.get('realtime_accept')
+                    else observed['input'] == expected_input)
+        require(input_ok and
                 re.sub(r'[^a-z0-9]', '', observed['output'].lower()) == observed['version'] and
-                observed['kinds'].count('session.delegation.created') == 1 and
-                observed['kinds'].count('session.closed') == 1,
+                lifecycle,
                 'model transcription and project lookup quality')
         self.health(self.carrier_calls * (2 if self.dual else 1))
         self.same_model()
@@ -307,7 +337,7 @@ class TransferStage(Stage):
 
 
 def stage_for(plan):
-    if plan.get('dual'):
+    if plan.get('dual') and not plan.get('realtime_accept'):
         return TransferStage
     return ActivationStage if plan.get('unready_media') else Stage
 
@@ -321,6 +351,7 @@ def main():
     mode.add_argument('--unready-media', action='store_true')
     mode.add_argument('--transfer', action='store_true')
     mode.add_argument('--dtmf', action='store_true')
+    mode.add_argument('--realtime-accept', action='store_true')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     out = args.output.resolve()
@@ -330,7 +361,8 @@ def main():
         plan = read(out/'plan.json')
         signal_worker = Path(plan['binary']).with_name('q4t-live-sip')
         audio_worker = signal_worker.with_name('q4t-sip-media')
-        plan.update(unready_media=args.unready_media, dual=args.transfer, dtmf=args.dtmf)
+        plan.update(unready_media=args.unready_media, dual=args.transfer or args.realtime_accept,
+                    realtime_accept=args.realtime_accept, dtmf=args.dtmf)
         plan.update(schema=SCHEMA,limits=stage_for(plan).limits,
                     hangup_tail=args.hangup_tail,port=18821,operations_port=18822,
                     public_port=18823,sip_port=18824,sip_binary=str(signal_worker),
@@ -360,8 +392,8 @@ def main():
             counts=result['counts'],
             dtmf=read(out/'dtmf-carrier.json') if plan.get('dtmf') else None,
             dtmf_sdk=read(out/'dtmf-sdk.json') if plan.get('dtmf') else None,
-            transfers=read(out/'transfer-carrier.json') if plan.get('dual') else None,
-            transfer_sdk=read(out/'transfer-sdk.json') if plan.get('dual') else None,
+            transfers=read(out/'transfer-carrier.json') if plan.get('dual') and not plan.get('realtime_accept') else None,
+            transfer_sdk=read(out/'transfer-sdk.json') if plan.get('dual') and not plan.get('realtime_accept') else None,
             blocked_media=read(out/'unready-media.json') if plan.get('unready_media') else None, sdk=read(out/'sdk-receipts.json'), voice=read(out/'voice.json'),
             playout=read(out/'playout.json'), core='42', default_unchanged=True,
             **{k:plan[k] for k in ('binary_sha256','ingress_sha256','sip_sha256','audio_sha256')}))

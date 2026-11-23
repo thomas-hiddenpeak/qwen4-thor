@@ -875,3 +875,32 @@ Q4T_TEST(websocket_session_completion_slow_reader_and_eof_are_not_success) {
   }
   return true;
 }
+
+
+Q4T_TEST(realtime_call_accept_reserves_the_call_and_attach_uses_a_distinct_lane) {
+  constexpr auto accept = "/v1/realtime/calls/rtc_valid/accept";
+  constexpr auto attach = "/v1/realtime?call_id=rtc_valid";
+  Q4T_CHECK(IsLiveMediaCreate("POST", accept));
+  Q4T_CHECK(ClassifyHttpConnection("POST", accept) == HttpConnectionClass::kRealtime);
+  Q4T_CHECK(RealtimeSidebandId(attach) == "rtc_valid");
+  Q4T_CHECK(ClassifyHttpConnection("GET", attach) == HttpConnectionClass::kSideband);
+  for (auto bad : {"/v1/realtime?call_id=live_x", "/v1/realtime?call_id=rtc_",
+                   "/v1/realtime?call_id=rtc_a&model=x",
+                   "/v1/realtime?call_id=rtc_a&call_id=rtc_b"})
+    Q4T_CHECK(RealtimeSidebandId(bad).empty());
+  ClientAdmission admission;
+  Configure(admission);
+  ClientLease active, observer;
+  ClientIdentity identity;
+  HttpRequestHeaders headers;
+  headers.client_id = "alpha";
+  headers.gateway_token = std::string(64, 'a');
+  int status = 0;
+  Q4T_CHECK(AdmitClientRequest("POST", accept, &headers, admission, &active,
+                               &identity, &status));
+  Q4T_CHECK(AdmitClientRequest("GET", attach, &headers, admission, &observer,
+                               &identity, &status));
+  Q4T_CHECK(admission.Usage(0).realtime_active == 1 &&
+            admission.Usage(0).sideband_active == 1);
+  return true;
+}

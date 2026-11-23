@@ -8,6 +8,8 @@
 #include <future>
 
 #include "object_protocol.h"
+#include "realtime_sip_call.h"
+#include "q4t/server/realtime_chat_plan.h"
 #include "q4t/runtime/system_memory.h"
 #include "q4t/server/live_media_call.h"
 #include "q4t/server/native_crypto.h"
@@ -37,7 +39,7 @@ struct MediaOwner {
   std::unique_ptr<SipInvitation> invitation;
   LiveMediaProcess process;
   std::shared_ptr<LiveSideband> sideband;
-  std::unique_ptr<LiveMediaCall> call;
+  std::unique_ptr<IMediaCall> call;
   ~MediaOwner() {
     if (sideband) sideband->Finish(false);
   }
@@ -155,6 +157,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
   if (!http || !http->Client().Allowed()) return;
   const auto client = http->Client();
   const bool sip = !sip_id.empty();
+  const bool realtime = sip_id.starts_with("rtc_");
   if (sip && (!client.Scoped() || !clients_.OwnsIdentity(client))) {
     detail::SendError(fd, 404, "Call not found", {}, "not_found");
     return;
@@ -179,8 +182,10 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     return;
   }
   ChatPlanError error;
-  if (auto status = ValidateLiveWireShape(
-          request,
+  if (auto status = realtime
+          ? ValidateRealtimeWireShape(request, RealtimeShape::kCallAccept, &error,
+                                      "body")
+          : ValidateLiveWireShape(request,
           sip ? LiveShape::kSessionAccept :
           source.empty() ? LiveShape::kMediaCreate : LiveShape::kSessionFork,
           &error);
@@ -254,29 +259,44 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
   if (client.Scoped()) {
     try {
       auto memory = std::make_unique<HttpBodyLease>(realtime_host_budget_);
-      if (memory->Acquire(journal_budget))
+      if (memory->Acquire(journal_budget + (realtime ? 2 * kWebSocketMessageLimit : 0)))
         owner->sideband = std::make_shared<LiveSideband>(std::move(memory));
     } catch (const std::bad_alloc&) {
       // Only attaching a sideband requires a replay owner.
     }
   }
-  auto callbacks =
-      MakeLiveCallbacks(client, id, message_bytes,
-                        sip ? LiveTransport::kSip : LiveTransport::kWebRtc,
-                        owner->sideband, std::move(state));
-  if (sip) {
-    callbacks.send_dtmf = [process = &owner->process](char key) {
-      return process->Send('K', {&key, 1});
-    };
+  const auto output = [process = &owner->process](char type, auto data) {
+    return process->Send(type, data);
+  };
+  const auto* startup = realtime ? &request : request.Find("session");
+  if (realtime) {
+    auto defaults = DefaultRealtimeChatSettings(PlanningConfig(fd),
+                                                request.GetString("model"));
+    Set(&defaults, "output_modalities", Array({String("audio")}));
+    Set(&Field(defaults, "audio"), "input",
+        Object({{"format", Object({{"type", String("audio/pcm")},
+                                   {"rate", Number(24000)}})},
+                {"transcription", Json()},
+                {"turn_detection", Object({{"type", String("server_vad")}})}}));
+    owner->call = std::make_unique<RealtimeSipCall>(
+        std::move(defaults), MakeRealtimeCallbacks(client), message_bytes,
+        output, owner->sideband);
+  } else {
+    auto callbacks =
+        MakeLiveCallbacks(client, id, message_bytes,
+                          sip ? LiveTransport::kSip : LiveTransport::kWebRtc,
+                          owner->sideband, std::move(state));
+    if (sip) {
+      callbacks.send_dtmf = [process = &owner->process](char key) {
+        return process->Send('K', {&key, 1});
+      };
+    }
+    owner->call = std::make_unique<LiveMediaCall>(
+        id, expires, !sip && answer.find("\nm=application ") != answer.npos,
+        std::move(callbacks), limits,
+        output,
+        owner->sideband);
   }
-  owner->call = std::make_unique<LiveMediaCall>(
-      id, expires, !sip && answer.find("\nm=application ") != answer.npos,
-      std::move(callbacks), limits,
-      [process = &owner->process](char type, auto data) {
-        return process->Send(type, data);
-      },
-      owner->sideband);
-  const auto* startup = request.Find("session");
   if (const auto reply = owner->call->Start(startup ? *startup : Object());
       !reply.ok()) {
     failed(reply);
