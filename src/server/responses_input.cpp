@@ -425,7 +425,7 @@ Status NormalizeResponsesInput(const io::Json& request,
                                bool allow_empty, bool preparing_files,
                                bool preparing_mcp, const Json* mcp_content,
                                bool prepared_file_media,
-                               const Json* web_content) {
+                               const Json* web_content, bool multi_agent) {
   *result = {};
   *error = {};
   ResponsesInputPlan plan;
@@ -510,6 +510,7 @@ Status NormalizeResponsesInput(const io::Json& request,
   std::unordered_map<std::string, std::pair<std::string, std::string>> names;
   std::unordered_set<std::string> returned, call_ids, item_ids, async_ids;
   std::unordered_set<std::string> program_ids, program_results;
+  std::unordered_map<std::string, std::pair<std::string, Json>> agent_actions;
   std::unordered_map<std::string, std::string> program_children;
   std::unordered_set<std::string> program_child_results;
   std::string reasoning, assistant_path;
@@ -544,12 +545,65 @@ Status NormalizeResponsesInput(const io::Json& request,
                           : "input[" + std::to_string(i) + ']';
     if (!item.IsObject())
       return Invalid(error, path, "input item must be object");
-    auto status = ItemMetadata(item, path, error);
-    if (!status) return status;
-    if (item.Has("id") && !item_ids.insert(item.GetString("id")).second)
-      return Invalid(error, path + ".id", "duplicate input item ID");
     const auto type = item.GetString("type", "message");
-    if (type == "mcp_list_tools") {
+    const bool agent_call = type == "multi_agent_call";
+    const bool agent_item =
+        multi_agent && (agent_call || type == "multi_agent_call_output");
+    auto status = agent_item
+        ? ValidateMultiAgentShape(item, agent_call ? MultiAgentShape::kInputCall
+                                                   : MultiAgentShape::kInputResult,
+                                  error, path)
+        : ItemMetadata(item, path, error);
+    if (!status) return status;
+    if (Nonnull(item, "id") && !item_ids.insert(item.GetString("id")).second)
+      return Invalid(error, path + ".id", "duplicate input item ID");
+    if (agent_item) {
+      const auto id = item.GetString("call_id");
+      const auto action = item.GetString("action");
+      if (Nonnull(item, "id") &&
+          (item.GetString("id").empty() || item.GetString("id").size() > 256))
+        return Invalid(error, path + ".id", "Invalid input item ID");
+      if (id.empty() || id.size() > 256)
+        return Invalid(error, path + ".call_id", "Invalid multi-agent call ID");
+      if (agent_call) {
+        if (!results.empty() && calls.array.size() == results.size()) {
+          status = flush();
+          if (!status) return status;
+        }
+        Json arguments;
+        if (!io::ParseJson(item.GetString("arguments"), &arguments, true,
+                           kSchemaJsonLimits) || !arguments.IsObject())
+          return Invalid(error, path + ".arguments", "Invalid action arguments");
+        if (!call_ids.insert(id).second)
+          return Invalid(error, path + ".call_id", "Duplicate multi-agent call");
+        const auto* owner = item.Find("agent");
+        agent_actions.try_emplace(id, action, owner ? *owner : Json());
+        if (assistant_path.empty()) assistant_path = path;
+        calls.array.push_back(Object({
+            {"id", String(id)}, {"type", String("function")},
+            {"function", Object({{"name", String("multi_agent_" + action)},
+                                 {"arguments", *item.Find("arguments")}})}}));
+      } else {
+        const auto match = agent_actions.find(id);
+        if (match == agent_actions.end() || match->second.first != action ||
+            !returned.insert(id).second)
+          return Invalid(error, path + ".call_id",
+                         "Unmatched or duplicate multi-agent result");
+        // Storage assigns fresh item IDs to independent count/create calls.
+        // Only the public action, participants and result enter the prompt.
+        auto record = Object({{"action", String(action)},
+                              {"output", *item.Find("output")}});
+        if (const auto* agent = item.Find("agent"))
+          Set(&record, "agent", *agent);
+        if (!match->second.second.IsNull())
+          Set(&record, "call_agent", match->second.second);
+        results.emplace_back(Object({{"role", String("tool")},
+                                     {"tool_call_id", String(id)},
+                                     {"content", String(OutputJson(record))}}),
+                             path);
+        ++automatic_returns;
+      }
+    } else if (type == "mcp_list_tools") {
       // The request owner authenticates this catalog. The actual definitions
       // are rendered by the model tool adapter, not as a privileged message.
       // Preserve listing failures as data instead of claiming an empty list.

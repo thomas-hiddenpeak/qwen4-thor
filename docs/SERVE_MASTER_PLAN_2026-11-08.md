@@ -22,6 +22,8 @@
 
 ## 当前阶段更新（2026-11-23）
 
+rev434 已随 PR #60 合入主线。具名 Responses 多代理的调用和结果历史已在候选通过真实 SDK 验收。服务端调度、运行期间的有主输出与事件、共享预算及恢复仍是实现任务。[历史与计数验收](evidence/serve-responses-agent-history-20261123/README.md)
+
 Live 与 SDK 默认 Beta 操作已分别合入 PR #58、#59。本机默认 rev434 已验证两套容量、客户隔离及注册版本接管；24 小时计划已固定。具名多代理等剩余应用能力、恢复组合和连续媒体场景继续推进。[交付与范围](evidence/serve-responses-beta-delivery-20261123/README.md)
 
 Realtime 客户端临时凭据已通过原生 TLS、WebSocket、WebRTC 和入口／模型换代的针对性验收，标准可选 nginx 前置已验证双向升级转发。具名工具的字符串枚举已修复语法与解析的空白差异，完成相同电话业务复验。历史 502 的原始参数未保存，保留归因限制。托管组合、旧式 nginx 独立鉴权与可回退发行继续推进。[凭据恢复](evidence/serve-realtime-client-recovery-20261123/README.md) · [工具修复](evidence/serve-tool-enum-padding-20261123/README.md)

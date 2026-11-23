@@ -702,6 +702,8 @@ set(protocol_inputs
   cmake/live_types.h.in
   cmake/decision_types.h.in
   src/server/contracts/openai_decision_types_v1.json
+  src/server/contracts/openai_multi_agent_types_v1.json
+  cmake/multi_agent_types.h.in
   include/q4t/server/decision_plan.h
   include/q4t/server/decision_scoring.h
   src/server/decision_plan.cpp
@@ -976,3 +978,11 @@ if(NOT decision_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/decision_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/decision_types_data.h" @ONLY)
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_multi_agent_types_v1.json"
+  Q4T_MULTI_AGENT_TYPES)
+string(FIND "${Q4T_MULTI_AGENT_TYPES}" ")q4t_types\"" multi_agent_delimiter)
+if(NOT multi_agent_delimiter EQUAL -1)
+  message(FATAL_ERROR "Multi-agent type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/multi_agent_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/multi_agent_types_data.h" @ONLY)

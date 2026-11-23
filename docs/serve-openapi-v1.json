@@ -4332,6 +4332,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4390,7 +4400,22 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "serve-application-v1.schema.json#/$defs/response_create"
+                "anyOf": [
+                  {
+                    "$ref": "serve-application-v1.schema.json#/$defs/response_create"
+                  },
+                  {
+                    "$ref": "serve-application-v1.schema.json#/$defs/agent_history_response_create"
+                  }
+                ]
+              },
+              "x-q4t-selector-schemas": {
+                "default": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/response_create"
+                },
+                "responses_multi_agent=v1": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/agent_history_response_create"
+                }
               }
             }
           }
@@ -4412,6 +4437,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4461,7 +4496,22 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "serve-application-v1.schema.json#/$defs/response_compact"
+                "anyOf": [
+                  {
+                    "$ref": "serve-application-v1.schema.json#/$defs/response_compact"
+                  },
+                  {
+                    "$ref": "serve-application-v1.schema.json#/$defs/agent_history_response_compact"
+                  }
+                ]
+              },
+              "x-q4t-selector-schemas": {
+                "default": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/response_compact"
+                },
+                "responses_multi_agent=v1": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/agent_history_response_compact"
+                }
               }
             }
           }
@@ -4483,6 +4533,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4534,12 +4594,27 @@
               "schema": {
                 "anyOf": [
                   {
-                    "$ref": "serve-application-v1.schema.json#/$defs/input_tokens_request"
+                    "anyOf": [
+                      {
+                        "$ref": "serve-application-v1.schema.json#/$defs/input_tokens_request"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   {
-                    "type": "null"
+                    "$ref": "serve-application-v1.schema.json#/$defs/agent_history_input_tokens_request"
                   }
                 ]
+              },
+              "x-q4t-selector-schemas": {
+                "default": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/input_tokens_request"
+                },
+                "responses_multi_agent=v1": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/agent_history_input_tokens_request"
+                }
               }
             }
           }
@@ -4611,6 +4686,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4688,6 +4773,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4758,6 +4853,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4871,6 +4976,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4888,7 +5003,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-application-v1.schema.json#/$defs/input_items_list"
+                  "$ref": "serve-application-v1.schema.json#/$defs/agent_history_input_items_list"
                 }
               }
             }

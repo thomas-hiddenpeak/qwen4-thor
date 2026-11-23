@@ -98,7 +98,9 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
   Set(&preflight, "input", input);
   ResponsesInputPlan checked_input;
   auto checked = NormalizeResponsesInput(preflight, &checked_input, &error,
-                                         config.count_input_only, true, true);
+                                         config.count_input_only, true, true,
+                                         nullptr, false, nullptr,
+                                         envelope_.multi_agent_beta);
   if (!checked) return PlanError(checked, error);
   ResponsesToolCatalog checked_tools;
   checked = PlanResponsesToolCatalog(definitions, &checked_tools, &error);

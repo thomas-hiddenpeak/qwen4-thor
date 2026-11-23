@@ -257,10 +257,32 @@ def schema(graph):
     from tools.serve_responses.moderations_contract import SDK_MODERATIONS_SHA256
     from tools.serve_responses.embeddings_contract import SDK_SOURCES as EMBEDDING_SOURCES
     from tools.serve_responses.transcriptions_contract import SDK_SOURCES as ASR_SOURCES
+    agents = json.loads((ROOT/'src/server/contracts/openai_multi_agent_types_v1.json').read_text())
+    definitions.update(graph_definitions(agents, 'agent_', ('input_call', 'input_result')))
+    # The SDK selects these extra history variants with an HTTP header.
+    # Copy just the selected request and keep each original array item union.
+    for name in ('response_create', 'response_compact', 'input_tokens_request',
+                 'input_items_list'):
+        body = copy.deepcopy(root(name))
+        field = 'data' if name == 'input_items_list' else 'input'
+        original = body['properties'][field]
+        target = definitions[original['$ref'].split('/')[-1]]
+        variants = target.get('anyOf', [original])
+        selected = []
+        for variant in variants:
+            value = definitions[variant['$ref'].split('/')[-1]]
+            if value.get('type') == 'array':
+                value = dict(value, items={'anyOf': [value['items'],
+                    ref('agent_input_call'), ref('agent_input_result')]})
+            else:
+                value = variant
+            selected.append(value)
+        body['properties'][field] = {'anyOf': selected}
+        definitions['agent_history_'+name] = body
     return {'$schema': DRAFT, 'title': 'Q4T Chat, Responses, Conversations, Files, Uploads and Batches wire contract',
         '$defs': definitions, 'x-q4t': dict(profile='q4t-application-wire-v1',
             sdk_version=graph['sdk_version'], compiler_version=graph['compiler_version'],
-            sources_sha256={**graph['sources_sha256'],
+            sources_sha256={**graph['sources_sha256'], **agents['sources_sha256'],
                             'src/resources/files.ts': SDK_FILES_SHA256, **UPLOAD_SOURCES,
                             'src/resources/batches.ts': SDK_BATCHES_SHA256,
                             'src/resources/moderations.ts': SDK_MODERATIONS_SHA256,
@@ -383,6 +405,11 @@ def add_openapi(paths, response, error):
             parameters.append(dict(name='beta', **{'in': 'query'}, required=False,
                 schema=dict(type='string', enum=['true']),
                 description='Select the beta Responses endpoint.'))
+            parameters.append(dict(name='OpenAI-Beta', **{'in': 'header'},
+                required=False, schema=dict(type='string'),
+                example='responses_multi_agent=v1',
+                description='Comma-separated feature selectors. '
+                            'responses_multi_agent=v1 enables typed agent call/result history.'))
             query_contract = query + ' with optional beta' if query else 'optional beta'
         success = response(external(result))
         operation = dict(operationId=method+'_'+path.strip('/').replace('/', '_').replace('{', '').replace('}', ''),
@@ -395,6 +422,13 @@ def add_openapi(paths, response, error):
             operation['requestBody'] = dict(required=not optional,
                 content={'application/json': dict(schema=nullable(external(body))
                     if optional else external(body))})
+        if body in ('response_create', 'response_compact', 'input_tokens_request'):
+            media = operation['requestBody']['content']['application/json']
+            media['schema'] = dict(anyOf=[media['schema'], external('agent_history_'+body)])
+            media['x-q4t-selector-schemas'] = {
+                'default': external(body), 'responses_multi_agent=v1': external('agent_history_'+body)}
+        if result == 'input_items_list':
+            success['content']['application/json']['schema'] = external('agent_history_'+result)
         if result == 'response' and not path.endswith('/cancel'):
             success['content']['text/event-stream'] = dict(schema=dict(type='string'),
                 **{'x-q4t-event-schema': external('response_event'),

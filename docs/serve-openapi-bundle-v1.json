@@ -4332,6 +4332,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4390,7 +4400,22 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_create"
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_create"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_history_response_create"
+                  }
+                ]
+              },
+              "x-q4t-selector-schemas": {
+                "default": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_create"
+                },
+                "responses_multi_agent=v1": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_history_response_create"
+                }
               }
             }
           }
@@ -4412,6 +4437,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4461,7 +4496,22 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_compact"
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_compact"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_history_response_compact"
+                  }
+                ]
+              },
+              "x-q4t-selector-schemas": {
+                "default": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_compact"
+                },
+                "responses_multi_agent=v1": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_history_response_compact"
+                }
               }
             }
           }
@@ -4483,6 +4533,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4534,12 +4594,27 @@
               "schema": {
                 "anyOf": [
                   {
-                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_tokens_request"
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_tokens_request"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   {
-                    "type": "null"
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_history_input_tokens_request"
                   }
                 ]
+              },
+              "x-q4t-selector-schemas": {
+                "default": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_tokens_request"
+                },
+                "responses_multi_agent=v1": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_history_input_tokens_request"
+                }
               }
             }
           }
@@ -4611,6 +4686,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4688,6 +4773,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4758,6 +4853,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4871,6 +4976,16 @@
               ]
             },
             "description": "Select the beta Responses endpoint."
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "responses_multi_agent=v1",
+            "description": "Comma-separated feature selectors. responses_multi_agent=v1 enables typed agent call/result history."
           }
         ],
         "responses": {
@@ -4888,7 +5003,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_items_list"
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_history_input_items_list"
                 }
               }
             }
@@ -44552,6 +44667,835 @@
             },
             "required": [],
             "additionalProperties": false
+          },
+          "agent_18": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_5"
+              },
+              "agent": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_19"
+              },
+              "call_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_16"
+              },
+              "output": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_21"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_33"
+              }
+            },
+            "required": [
+              "action",
+              "call_id",
+              "output",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_33": {
+            "const": "multi_agent_call_output"
+          },
+          "agent_21": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_22"
+            }
+          },
+          "agent_22": {
+            "type": "object",
+            "properties": {
+              "annotations": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_23"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_32"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_32": {
+            "const": "output_text"
+          },
+          "agent_15": {
+            "type": "string"
+          },
+          "agent_23": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_24"
+              }
+            ]
+          },
+          "agent_24": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_25"
+            }
+          },
+          "agent_25": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_26"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_28"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_30"
+              }
+            ]
+          },
+          "agent_30": {
+            "type": "object",
+            "properties": {
+              "container_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "end_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "filename": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "start_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_31"
+              }
+            },
+            "required": [
+              "container_id",
+              "end_index",
+              "file_id",
+              "filename",
+              "start_index",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_31": {
+            "const": "container_file_citation"
+          },
+          "agent_3": {
+            "type": "number"
+          },
+          "agent_28": {
+            "type": "object",
+            "properties": {
+              "end_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "start_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "title": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_29"
+              },
+              "url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            },
+            "required": [
+              "end_index",
+              "start_index",
+              "title",
+              "type",
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          "agent_29": {
+            "const": "url_citation"
+          },
+          "agent_26": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "filename": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_27"
+              }
+            },
+            "required": [
+              "file_id",
+              "filename",
+              "index",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_27": {
+            "const": "file_citation"
+          },
+          "agent_16": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            ]
+          },
+          "agent_13": {
+            "type": "null"
+          },
+          "agent_19": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_20"
+              }
+            ]
+          },
+          "agent_20": {
+            "type": "object",
+            "properties": {
+              "agent_name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            },
+            "required": [
+              "agent_name"
+            ],
+            "additionalProperties": false
+          },
+          "agent_5": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_6"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_7"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_8"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_9"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_10"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_11"
+              }
+            ]
+          },
+          "agent_11": {
+            "const": "wait_agent"
+          },
+          "agent_10": {
+            "const": "followup_task"
+          },
+          "agent_9": {
+            "const": "send_message"
+          },
+          "agent_8": {
+            "const": "list_agents"
+          },
+          "agent_7": {
+            "const": "interrupt_agent"
+          },
+          "agent_6": {
+            "const": "spawn_agent"
+          },
+          "agent_4": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_5"
+              },
+              "agent": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_12"
+              },
+              "arguments": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "call_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_16"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_17"
+              }
+            },
+            "required": [
+              "action",
+              "arguments",
+              "call_id",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "agent_17": {
+            "const": "multi_agent_call"
+          },
+          "agent_12": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_13"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_14"
+              }
+            ]
+          },
+          "agent_14": {
+            "type": "object",
+            "properties": {
+              "agent_name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_15"
+              }
+            },
+            "required": [
+              "agent_name"
+            ],
+            "additionalProperties": false
+          },
+          "agent_input_call": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_4"
+          },
+          "agent_input_result": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_18"
+          },
+          "agent_history_response_create": {
+            "type": "object",
+            "properties": {
+              "access_programs": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/657"
+              },
+              "background": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+              },
+              "context_management": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/663"
+              },
+              "conversation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/666"
+              },
+              "include": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/668"
+              },
+              "input": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/0"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_call"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "max_output_tokens": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "max_tool_calls": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 2147483647
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/683"
+              },
+              "moderation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/794"
+              },
+              "parallel_tool_calls": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+              },
+              "previous_response_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "prompt": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/805"
+              },
+              "prompt_cache_key": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 512
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "prompt_cache_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/810"
+              },
+              "prompt_cache_retention": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
+              },
+              "reasoning": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/818",
+                "default": {
+                  "effort": "medium"
+                }
+              },
+              "safety_identifier": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 128
+              },
+              "service_tier": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/828"
+              },
+              "store": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+              },
+              "stream": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+              },
+              "stream_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/835"
+              },
+              "temperature": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/837"
+              },
+              "tool_choice": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/843"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "web_search",
+                          "web_search_2025_08_26"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/859"
+              },
+              "top_logprobs": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 20
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "top_p": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "truncation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860"
+              },
+              "user": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+              },
+              "personality": {
+                "type": "string",
+                "enum": [
+                  "friendly",
+                  "pragmatic"
+                ],
+                "maxLength": 64
+              },
+              "seed": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": -9223372036854775808,
+                    "maximum": 9223372036854775807
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "request_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "cancel_token": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "request_timeout_ms": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10800000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [],
+            "additionalProperties": false,
+            "dependentRequired": {
+              "request_id": [
+                "cancel_token"
+              ],
+              "cancel_token": [
+                "request_id"
+              ]
+            },
+            "allOf": [
+              {
+                "not": {
+                  "required": [
+                    "previous_response_id",
+                    "conversation"
+                  ],
+                  "properties": {
+                    "previous_response_id": {
+                      "not": {
+                        "type": "null"
+                      }
+                    },
+                    "conversation": {
+                      "not": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "required": [
+                    "stream_options"
+                  ],
+                  "properties": {
+                    "stream_options": {
+                      "not": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "stream"
+                  ],
+                  "properties": {
+                    "stream": {
+                      "const": true
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "agent_history_response_compact": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/0"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_call"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1152"
+              },
+              "previous_response_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "prompt_cache_key": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "prompt_cache_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1153"
+              },
+              "prompt_cache_retention": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/815"
+              },
+              "service_tier": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1155"
+              }
+            },
+            "required": [
+              "model"
+            ],
+            "additionalProperties": false
+          },
+          "agent_history_input_tokens_request": {
+            "type": "object",
+            "properties": {
+              "conversation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/666"
+              },
+              "input": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
+                  },
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/0"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_call"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "parallel_tool_calls": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+              },
+              "personality": {
+                "type": "string",
+                "enum": [
+                  "friendly",
+                  "pragmatic"
+                ],
+                "maxLength": 64
+              },
+              "previous_response_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "reasoning": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/818"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1162"
+              },
+              "tool_choice": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1164"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1166"
+              },
+              "truncation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1167"
+              }
+            },
+            "required": [],
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "not": {
+                  "required": [
+                    "previous_response_id",
+                    "conversation"
+                  ],
+                  "properties": {
+                    "previous_response_id": {
+                      "not": {
+                        "type": "null"
+                      }
+                    },
+                    "conversation": {
+                      "not": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "agent_history_input_items_list": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1113"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_call"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "first_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "has_more": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/520"
+              },
+              "last_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1134"
+              }
+            },
+            "required": [
+              "data",
+              "first_id",
+              "has_more",
+              "last_id",
+              "object"
+            ],
+            "additionalProperties": false
           }
         },
         "x-q4t": {
@@ -44566,6 +45510,7 @@
             "src/resources/responses/input-tokens.ts": "edf13a3dc0ca452600aeb84c5b22dc0f842c9c2f59b148eb95581dfc1cce35d8",
             "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
             "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455",
+            "src/resources/beta/responses/responses.ts": "9b497c011b35ac9380f7c8fc2694f5a49fc71d115b0a40739b9e92e584bd0a92",
             "src/resources/files.ts": "ca78d34f73bef9a683b5fb2bbeb57af219478027b54ee243b611a1d4a12e04d7",
             "src/resources/uploads/uploads.ts": "53450b5df300f270948be9d9a4b395518da3bc9d1767c1d740ac5cbfa9d7aaf8",
             "src/resources/uploads/parts.ts": "c32650dd5cae8a377915533d12dcbab8835e47e875b6162107664a8887ab3136",

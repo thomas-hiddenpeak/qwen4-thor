@@ -67,6 +67,32 @@ Q4T_TEST(http_transcription_large_fixed_and_chunked_binary_bodies) {
   return true;
 }
 
+Q4T_TEST(http_beta_header_matches_complete_case_sensitive_selection) {
+  using namespace q4t::server;
+  for (const auto& [header, expected] :
+       std::vector<std::pair<std::string, bool>>{
+           {"openai-beta: responses_multi_agent=v1\r\n", true},
+           {"OpenAI-Beta: a=v1,\tresponses_multi_agent=v1 ,b=v2\r\n", true},
+           {"OpenAI-Beta: responses_multi_agent=v10\r\n", false},
+           {"OpenAI-Beta: RESPONSES_MULTI_AGENT=v1\r\n", false},
+           {"", false}}) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    const auto wire = "GET /v1/responses/r?beta=true HTTP/1.1\r\nHost: h\r\n" +
+                      header + "\r\n";
+    Q4T_CHECK(write(fd[0], wire.data(), wire.size()) == ssize_t(wire.size()));
+    std::string method, path, body;
+    HttpRequestHeaders headers;
+    int status = 0;
+    const bool ok = ReadHttpRequest(fd[1], &method, &path, &body, 500, nullptr,
+                                    &status, &headers);
+    close(fd[0]);
+    close(fd[1]);
+    Q4T_CHECK(ok && headers.responses_multi_agent == expected);
+  }
+  return true;
+}
+
 Q4T_TEST(http_transcription_limits_reject_before_body_read) {
   using namespace q4t::server;
   struct Case {

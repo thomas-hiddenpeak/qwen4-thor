@@ -87,6 +87,7 @@ Json SavedResponse(const ResponseStatePlan& plan, const Json& response,
               {"conversation_revision", Number(plan.conversation_revision)}}));
   if (plan.batch_parent)
     Set(&result, "batch_parent", BatchResponseLinkValue(*plan.batch_parent));
+  if (plan.multi_agent_beta) Set(&result, "multi_agent_beta", Boolean(true));
   return result;
 }
 ObjectReply Data(const ObjectReply& stored, std::string_view field) {
@@ -99,10 +100,10 @@ ObjectReply Data(const ObjectReply& stored, std::string_view field) {
   return result;
 }
 ObjectReply Shape(const Json& item, ResponsesItemShape shape,
-                  const std::string& path) {
+                  const std::string& path, bool multi_agent = false) {
   ChatPlanError error;
   const auto status = ValidateResponsesItemShape(
-      ResponsesToolItemDefaults(item), shape, &error, path);
+      ResponsesToolItemDefaults(item), shape, &error, path, multi_agent);
   if (status) return {};
   auto result = Error(error.http_status, error.code, status.message());
   result.value = Object({{"param", String(error.param)}});
@@ -218,7 +219,7 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
                                          const StateAccess& access,
                                          size_t maximum, Json* input_snapshots,
                                          Json* tool_contracts,
-                                         Json* web_content) {
+                                         Json* web_content, bool multi_agent) {
   if (input_snapshots) *input_snapshots = {};
   if (tool_contracts) *tool_contracts = {};
   if (web_content) *web_content = {};
@@ -237,7 +238,7 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
     return Error(400, "input_limit_exceeded", "Input item limit exceeded");
   for (size_t i = 0; i < items.array.size(); ++i) {
     auto valid = Shape(items.array[i], ResponsesItemShape::kInput,
-                       "input[" + std::to_string(i) + ']');
+                       "input[" + std::to_string(i) + ']', multi_agent);
     if (!valid.ok()) return valid;
     if (items.array[i].GetString("type") == "compaction_trigger" &&
         i + 1 != items.array.size())
@@ -381,11 +382,12 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   plan->ephemeral = envelope.background && !envelope.store;
   if (plan->store) plan->execution_owner = CurrentResponseOwner();
   plan->request = envelope.request;
+  plan->multi_agent_beta = envelope.multi_agent_beta;
   plan->history = Array();
   const auto* input = envelope.request.Find("input");
   auto resolved = ResolveItems(input ? *input : Json(), access, 4096,
                                &plan->input_snapshots, &plan->tool_contracts,
-                               &plan->web_content);
+                               &plan->web_content, plan->multi_agent_beta);
   if (!resolved.ok()) return resolved;
   plan->own_input = std::move(resolved.value);
   if (!envelope.previous_response_id.empty()) {
@@ -498,6 +500,10 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
     return StateError("Stored response cannot restore execution state");
   plan->id = id;
   plan->scope = access.scope;
+  if (const auto* selected = data->Find("multi_agent_beta")) {
+    if (!selected->IsBool()) return StateError("Invalid stored Beta selector");
+    plan->multi_agent_beta = selected->boolean;
+  }
   plan->store = true;
   plan->history = *data->Find("history");
   plan->own_input = *data->Find("own_input");

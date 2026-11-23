@@ -461,6 +461,7 @@ ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
   auto status =
       ParseResponsesEnvelope(effective_request, config, &envelope_, &error);
   if (!status) return Error(error.http_status, error.code, status.message());
+  envelope_.multi_agent_beta = plan_.multi_agent_beta;
   if (legacy_safety) {
     Set(&envelope_.request, "safety_identifier", *prior_safety);
     Set(&envelope_.options, "safety_identifier", *prior_safety);

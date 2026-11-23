@@ -357,6 +357,15 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
         field += ',';
       }
       field.append(value);
+    } else if (name == "openai-beta") {
+      auto remaining = value;
+      for (;;) {
+        const auto comma = remaining.find(',');
+        if (Trim(remaining.substr(0, comma)) == "responses_multi_agent=v1")
+          headers->responses_multi_agent = true;
+        if (comma == remaining.npos) break;
+        remaining.remove_prefix(comma + 1);
+      }
     } else if (name == "content-type") {
       if (seen_type) {
         headers->error_code = "duplicate_content_type";

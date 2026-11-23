@@ -63,7 +63,8 @@ ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
           .file_input_policy_sha256 = file_input_policy_sha256_,
           .mcp_policy = mcp_policy_,
           .mcp_tunnels = mcp_tunnels_,
-          .web_policy = web_policy_};
+          .web_policy = web_policy_,
+          .responses_multi_agent = http && http->ResponsesMultiAgent()};
 }
 
 void ChatServer::HandleConfig(int fd) {

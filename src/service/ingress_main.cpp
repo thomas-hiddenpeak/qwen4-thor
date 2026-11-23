@@ -516,6 +516,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            (headers.content_type.empty()
                 ? ""
                 : "Content-Type: " + headers.content_type + "\r\n") +
+           (headers.responses_multi_agent && server::IsResponsesTarget(path)
+                ? "OpenAI-Beta: responses_multi_agent=v1\r\n" : "") +
            (!server::IsMcpTunnelTarget(path) || headers.tunnel_instance.empty()
                 ? ""
                 : "X-Tunnel-Client-Instance-Id: " + headers.tunnel_instance +

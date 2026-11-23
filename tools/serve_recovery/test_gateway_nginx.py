@@ -170,6 +170,8 @@ class Stack:
                     token=self.headers.get('X-Q4T-Gateway-Token'),
                     client=self.headers.get('X-Q4T-Client-Id'),
                     authorization=self.headers.get('Authorization'))
+                if self.headers.get('OpenAI-Beta') is not None:
+                    row['openai_beta'] = self.headers['OpenAI-Beta']
                 if self.path.startswith('/v1/tunnels/'):
                     row.update(tunnel_instance=self.headers.get('X-Tunnel-Client-Instance-Id'),
                                tunnel_shard_token=self.headers.get('X-Tunnel-Shard-Token'))
@@ -517,6 +519,19 @@ class NginxTests(unittest.TestCase):
 
     def ready(self):
         self.stack.wait(lambda: self.stack.bound == self.stack.generation)
+
+    def test_responses_beta_selection_reaches_authenticated_model(self):
+        self.ready()
+        path = '/v1/responses/input_tokens?beta=true'
+        self.stack.request(dict(input='Count this'), path=path,
+                           extra={'OpenAI-Beta': 'other, responses_multi_agent=v1'})
+        row = self.stack.application_requests[-1]
+        self.assertEqual(row['path'], path)
+        self.assertEqual(row['client'], 'alpha')
+        self.assertEqual(row['openai_beta'], 'responses_multi_agent=v1')
+        self.stack.request(dict(input='Count this'), path=path,
+                           extra={'OpenAI-Beta': 'responses_multi_agent=v10'})
+        self.assertNotIn('openai_beta', self.stack.application_requests[-1])
 
     def test_recovery_keeps_auth_and_explicit_503_without_model_forward(self):
         self.ready()

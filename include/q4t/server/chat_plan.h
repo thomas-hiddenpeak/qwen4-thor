@@ -95,6 +95,7 @@ struct ChatPlanConfig {
   std::shared_ptr<const McpDeploymentPolicy> mcp_policy;
   std::shared_ptr<McpTunnelBroker> mcp_tunnels;
   std::shared_ptr<const WebDeploymentPolicy> web_policy;
+  bool responses_multi_agent = false;
 };
 
 struct ChatRequestPlan {

@@ -1255,7 +1255,8 @@
         "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-live-default-20261123/README.md",
-        "evidence/serve-responses-beta-selector-20261123/README.md"
+        "evidence/serve-responses-beta-selector-20261123/README.md",
+        "evidence/serve-responses-agent-history-20261123/README.md"
       ],
       "release": {
         "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
@@ -5993,7 +5994,8 @@
         "evidence/serve-managed-vision-delivery-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-speech-http-20261118/README.md",
-        "evidence/serve-responses-beta-selector-20261123/README.md"
+        "evidence/serve-responses-beta-selector-20261123/README.md",
+        "evidence/serve-responses-agent-history-20261123/README.md"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -8286,7 +8288,8 @@
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-live-default-20261123/README.md",
         "evidence/serve-live-stability-handoff-20261123/README.md",
-        "evidence/serve-responses-beta-selector-20261123/README.md"
+        "evidence/serve-responses-beta-selector-20261123/README.md",
+        "evidence/serve-responses-agent-history-20261123/README.md"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -9055,7 +9058,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev432_delivered_live_main_checks_pending",
+      "state": "rev434_delivered_main_merged_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9070,7 +9073,8 @@
         "evidence/serve-root-rollback-business-20261116/README.md",
         "evidence/serve-recovery-recording-option-20261123/README.md",
         "evidence/serve-live-default-20261123/README.md",
-        "evidence/serve-live-stability-handoff-20261123/README.md"
+        "evidence/serve-live-stability-handoff-20261123/README.md",
+        "evidence/serve-responses-agent-history-20261123/README.md"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -9320,7 +9324,6 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Complete Live main integration on the final checked revision",
         "Delivery of every remaining implementation"
       ],
       "video_geometry_main_merge_20261116": {
@@ -10493,7 +10496,7 @@
     }
   ],
   "next_task": "Integrate the Beta profile and delivery commits; implement named multi-agent capabilities, startup diagnostics and remaining master tasks.",
-  "next": "完成 Live 主线集成；将已通过真实 SDK 的 Responses Beta 候选封入主轻发行，继续具名多代理扩展、启动期 503 和剩余推理应用能力。",
+  "next": "接通具名多代理的服务端调度、预算与事件；继续启动期 503 定位、剩余应用能力和恢复组合。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16417,8 +16420,17 @@
     "actual_http_requests": 12,
     "packaged_as_default": true,
     "remaining": [
-      "Named multi-agent beta and its separate item, tool and event behavior",
-      "Mainline integration of the final profile and delivery commits"
+      "Named multi-agent beta and its separate item, tool and event behavior"
+    ],
+    "merged_pr": 60,
+    "merge_commit": "282af5689683ade5ff7e0d682d9f500680b8868b"
+  },
+  "responses_agent_history_20261123": {
+    "evidence": "evidence/serve-responses-agent-history-20261123/README.md",
+    "state": "selected_history_sdk_tested_candidate",
+    "default_revision": 434,
+    "remaining": [
+      "Server-hosted action scheduling, ownership of child output/events and recovery"
     ]
   }
 }
