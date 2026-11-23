@@ -3,6 +3,9 @@
 #include "q4t/server/agent_session.h"
 
 namespace q4t::server::agent_detail {
+ObjectReply SealAgentHttp(ObjectStore& objects, const StateAccess& access,
+                          std::string_view session_id, const io::Json& settings,
+                          std::string* sealed);
 // Return the immutable public settings bound to a step, or the latest settings
 // when no link is supplied. Never resolve them via a mutable Agent
 // registration.

@@ -1,3 +1,5 @@
+#include "../src/server/schema_string.h"
+#include "../src/server/vault_credential_internal.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/agent_session.h"
 #include "q4t/server/agent_vault.h"
@@ -703,6 +705,65 @@ Q4T_TEST(vault_credentials_cipher_binding_rotation_scope_and_cascade) {
     const std::string content{std::istreambuf_iterator<char>(file), {}};
     Q4T_CHECK(content.find("fixture-bearer-") == std::string::npos);
   }
+  return true;
+}
+
+Q4T_TEST(agent_mcp_resolves_only_attached_active_exact_url_credentials) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto vault = HandleAgentVault(objects, "POST", "/v1/vaults", "{}", Access()).value.GetString("id");
+  const auto path = "/v1/vaults/" + vault + "/credentials";
+  const auto body = R"({"name":"test","auth":{"type":"static_bearer","token":"fixture-only",
+     "mcp_server_url":"https://SERVER.example:443/tools?project=one"}})";
+  const auto first = HandleAgentVault(objects, "POST", path, body, Access()).value.GetString("id");
+  const std::string target = "https://server.example/tools?project=one";
+  const auto attached = Parse("[\"" + vault + "\"]");
+  std::string token;
+  auto get = [&](const std::string& id, const std::string& url) {
+    return vault_detail::ResolveMcpToken(objects, Access(), attached, id, url, &token);
+  };
+  Q4T_CHECK(!first.empty() && Ok(get("", target)) && token == "fixture-only");
+  Q4T_CHECK(Ok(get(first, target)) && token == "fixture-only");
+  for (const auto* url : {"https://server.example/other?project=one",
+                          "https://server.example/tools?project=two",
+                          "https://server.example:444/tools?project=one",
+                          "http://server.example/tools?project=one",
+                          "https://other.example/tools?project=one"}) {
+    Q4T_CHECK(get(first, url).http_status == 404 && token.empty());
+    Q4T_CHECK(Ok(get("", url)) && token.empty());
+  }
+  Q4T_CHECK(get(first, target + "#ignored").http_status == 400 && token.empty());
+  Q4T_CHECK(vault_detail::ResolveMcpToken(objects, Access("client:other"), attached,
+      first, target, &token).http_status == 404 && token.empty());
+  Q4T_CHECK(vault_detail::ResolveMcpToken(objects, Access(), Parse("[]"), first,
+      target, &token).http_status == 404 && token.empty());
+  const auto second = HandleAgentVault(objects, "POST", path, body, Access()).value.GetString("id");
+  Q4T_CHECK(!second.empty() && get("", target).code == "mcp_credential_ambiguous" && token.empty());
+  Q4T_CHECK(Ok(get(first, target)) && token == "fixture-only");
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "DELETE", path + "/" + first, "", Access())));
+  Q4T_CHECK(get(first, target).http_status == 404 && token.empty());
+  Q4T_CHECK(Ok(get("", target)) && token == "fixture-only");
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "DELETE", path + "/" + second, "", Access())));
+  Q4T_CHECK(get("", target).http_status == 404 && token.empty());
+  const auto oauth = HandleAgentVault(objects, "POST", path,
+    R"({"name":"exp","auth":{"type":"mcp_oauth","access_token":"expired",
+    "mcp_server_url":"https://server.example/tools?project=one","expires_at":"2000-01-01T00:00:00Z"}})", Access());
+  Q4T_CHECK(Ok(oauth) && get("", target).code == "mcp_credential_expired" && token.empty());
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "POST", path + "/" + oauth.value.GetString("id"),
+    R"({"auth":{"type":"mcp_oauth","access_token":"current","expires_at":"9999-12-31T23:59:59Z"}})", Access())));
+  Q4T_CHECK(Ok(get("", target)) && token == "current");
+  return true;
+}
+
+Q4T_TEST(agent_vault_oauth_expiry_uses_offset_fraction_and_full_year_range) {
+  using namespace std::chrono;
+  const auto now = sys_days{year{2026}/November/23} + 500ms;
+  Q4T_CHECK(!SchemaDateTimeAfter("2026-11-23T08:00:00.50+08:00", now));
+  Q4T_CHECK(SchemaDateTimeAfter("2026-11-22T19:00:00.5000000001-05:00", now));
+  Q4T_CHECK(!SchemaDateTimeAfter("2026-11-23T00:00:00.499999999Z", now));
+  Q4T_CHECK(SchemaDateTimeAfter("9999-12-31T00:00:00Z", now));
+  Q4T_CHECK(!SchemaDateTimeAfter("0001-01-01T00:00:00Z", now));
+  Q4T_CHECK(!SchemaDateTimeAfter("2026-02-31T00:00:00Z", now));
   return true;
 }
 

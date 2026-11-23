@@ -67,6 +67,8 @@ class Client {
   Client(const McpEndpoint& endpoint, const FileFetchOptions& options,
          Deadline deadline)
       : options_(options), deadline_(deadline) {
+    exact_target_ = endpoint.exact_target;
+    metadata_ = endpoint.request_metadata;
     provider_ = endpoint.provider_id;
     if (!provider_.empty()) provider_endpoint_ = endpoint;
     native_ = !endpoint.tunnel_id.empty();
@@ -112,7 +114,8 @@ class Client {
       if (!reply.ok()) return reply;
       Url post;
       if (kind != "endpoint" || !file_detail::Redirect(url_, data, &post) ||
-          !SameOrigin(url_, post) || !file_detail::AllowedUrl(post, options_))
+          !SameOrigin(url_, post) || (exact_target_ && post.target != url_.target) ||
+          !file_detail::AllowedUrl(post, options_))
         return Error(403, "mcp_endpoint_denied",
                      "MCP endpoint is not permitted");
       url_ = std::move(post);
@@ -219,7 +222,9 @@ class Client {
   void Close() {
     // Native leases are cleaned by the parent. Idle worker collection must
     // never write unsolicited bridge frames into a later invocation's IPC.
-    if (native_ || !provider_.empty()) return;
+    // An idle child has no fresh authorization for session-scoped secrets.
+    // Such sessions expire remotely without resending an archived credential.
+    if (native_ || !provider_.empty() || exact_target_) return;
     if (Legacy() || !headers_.contains("Mcp-Session-Id")) return;
     std::unique_ptr<RemoteHttp> ignored;
     try {
@@ -232,10 +237,12 @@ class Client {
 
  private:
   Json Request(std::string_view method, const Json& params) {
+    auto data = params;
+    if (!metadata_.object.empty()) Set(&data, "_meta", metadata_);
     return Object({{"jsonrpc", String("2.0")},
                    {"id", Number(++id_)},
                    {"method", String(std::string(method))},
-                   {"params", params}});
+                   {"params", std::move(data)}});
   }
   ObjectReply Open(std::string_view method, const Url& url,
                    std::string_view body,
@@ -397,7 +404,8 @@ class Client {
   uint64_t id_ = 0;
   int exchanges_ = 0;
   bool entropy_ = false, tools_ = false, resources_ = false;
-  bool native_ = false;
+  bool native_ = false, exact_target_ = false;
+  Json metadata_;
   std::string instance_;
   std::string provider_;
   McpEndpoint provider_endpoint_;

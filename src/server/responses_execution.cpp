@@ -149,7 +149,10 @@ size_t ResponsesExecution::RetainedInputBytes() const {
              OutputJson(binding.tool.search.filters).size();
     for (const auto& id : binding.tool.store_ids) bytes += id.size();
   }
-  bytes += mcp_credential_source_sha256_.size();
+  bytes += mcp_credential_source_sha256_.size() + agent_http_session_.size() +
+           agent_http_sealed_.size();
+  if (!agent_mcp_tools_.IsNull())
+    bytes += OutputJson(agent_mcp_tools_).size() + OutputJson(agent_vaults_).size();
   for (const auto* definitions : {&mcp_credentials_, &mcp_definitions_})
     for (const auto& definition : *definitions) {
       bytes += OutputJson(definition.declaration).size() +
@@ -232,11 +235,25 @@ ObjectReply ResponsesExecution::RequiredExecutors(
   return {};
 }
 
+bool ResponsesExecution::BeforeModelOutput() const {
+  const auto* output = output_.Snapshot().GetArray("output");
+  if (!output || !mcp_pending_.empty()) return false;
+  if (output->array.empty()) return true;
+  // Background execution publishes its prepared discovery catalogs when the
+  // queue starts. They can precede token measurement and model generation.
+  if (output->array.size() != plan_.mcp_catalogs.array.size()) return false;
+  for (size_t i = 0; i < output->array.size(); ++i) {
+    const auto& item = output->array[i];
+    if (item.GetString("type") != "mcp_list_tools" ||
+        item.GetString("id") != plan_.mcp_catalogs.array[i].GetString("id"))
+      return false;
+  }
+  return true;
+}
+
 ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
                                            const ResponsesContextCheck& check) {
-  const auto* output = output_.Snapshot().GetArray("output");
-  if (!prepared_ || !generation_ready_ || plan_.finished || !output ||
-      !output->array.empty())
+  if (!prepared_ || !generation_ready_ || plan_.finished || !BeforeModelOutput())
     return Error(500, "response_state_invalid",
                  "Context must be selected before model output");
   if (envelope_.truncate && !check)
@@ -510,7 +527,8 @@ ObjectReply ResponsesExecution::RestoreQueued(const std::string& id,
                    "Queued response access program policy changed");
   }
   require_frozen_inputs_ = true;
-  auto result = RequiredExecutors(true);
+  auto result = RestoreAgentMcp();
+  if (result.ok()) result = RequiredExecutors(true);
   if (result.ok())
     result = PlanGeneration(config, snapshot.GetInt("created_at"));
   if (!result.ok()) return result;

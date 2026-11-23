@@ -154,6 +154,19 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     }
     return {};
   }
+  // Agent history omits Responses-only tool discovery. Keep the item, text
+  // and summary events at the same visible output index during live/replay.
+  if (event.Has("output_index")) {
+    const auto* response = record.Find("response");
+    const auto* output = response ? response->GetArray("output") : nullptr;
+    const auto raw = event.GetInt("output_index", -1);
+    if (!output || raw < 0 || static_cast<size_t>(raw) >= output->array.size())
+      return Invalid();
+    size_t shown = 0;
+    for (int64_t index = 0; index < raw; ++index)
+      if (output->array[index].GetString("type") != "mcp_list_tools") ++shown;
+    Set(&loc, "output_index", Number(shown));
+  }
   if (type == "response.output_item.added" ||
       type == "response.output_item.done") {
     const auto* item = event.Find("item");
@@ -162,8 +175,8 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     auto items = Array(), actions = Array();
     auto projected = ProjectItem(*item, turn, &items, &actions, false);
     if (!projected.ok()) return projected;
+    if (items.array.empty()) return {};
     Set(&loc, "item", std::move(items.array.front()));
-    Set(&loc, "output_index", Member(event, "output_index"));
     if (!Emit(events, prefix,
               type.ends_with(".done") ? "agent.session.turn.item.done"
                                       : "agent.session.turn.item.added",
@@ -179,7 +192,7 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
   if (!summary && !suffix.starts_with("content_part.") &&
       !suffix.starts_with("output_text.") && !suffix.starts_with("refusal."))
     return {};
-  for (const auto* key : {"output_index", "item_id", "content_index",
+  for (const auto* key : {"item_id", "content_index",
                           "summary_index", "text", "delta"})
     if (event.Has(key)) Set(&loc, key, Member(event, key));
   if (suffix.starts_with("refusal.")) {

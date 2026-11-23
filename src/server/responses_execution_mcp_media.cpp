@@ -75,6 +75,8 @@ ObjectReply ResponsesExecution::ResolveMcpResource(const std::string& id,
                original.declaration.GetString("server_label");
       });
   auto definition = current == mcp_definitions_.end() ? original : *current;
+  auto authorization = AuthorizeAgentMcp(&definition);
+  if (!authorization.ok()) return authorization;
   auto result = ResolveMcpDeploymentTarget(cipher_config_.mcp_policy.get(),
                                            access_.scope, &definition);
   if (!result.ok()) return result;

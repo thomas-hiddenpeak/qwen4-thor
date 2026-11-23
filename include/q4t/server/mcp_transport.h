@@ -24,6 +24,9 @@ struct McpEndpoint {
   std::string tunnel_channel = "main";
   // Deployment-selected native adapter. Mutually exclusive with URL/tunnel.
   std::string provider_id{};
+  // Agent HTTP credentials are scoped to the entire configured URL.
+  bool exact_target = false;
+  io::Json request_metadata{};
 };
 // Private, authenticated session state. Persist only inside sealed MCP
 // authority, never in public items, model input, metrics or ordinary logs.

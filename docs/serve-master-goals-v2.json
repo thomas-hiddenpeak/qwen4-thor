@@ -16560,10 +16560,18 @@
     },
     "evidence": "evidence/serve-agent-vaults-20261123/acceptance.json",
     "remaining": [
-      "Bind stored credentials to the exact authorized executor destination, OAuth refresh and environment substitution.",
-      "Qualify and deliver the combined Vault capability on the recoverable profiles."
+      "OAuth token endpoint refresh, hosted environment transport and environment credential substitution",
+      "Recoverable primary/light deployment and default promotion",
+      "Complete remaining declared and undeclared application operations"
     ],
     "credential_management": "candidate_real_http_passed",
-    "credential_evidence": "evidence/serve-agent-vaults-20261123/credentials.json"
+    "credential_evidence": "evidence/serve-agent-vaults-20261123/credentials.json",
+    "executor_evidence": "evidence/serve-agent-vaults-20261123/mcp.json",
+    "credential_coverage": {
+      "issued_openapi_sha256": "75232864e4f4269605373237f28da93d4f8eedb369ef284c44e79cf194a19482",
+      "scope_snapshot_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "with_declared_operations": 77,
+      "without_declared_operations": 80
+    }
   }
 }

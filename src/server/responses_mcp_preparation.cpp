@@ -70,6 +70,8 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
         tool, &definition, &error, "tools[" + std::to_string(i) + ']');
     if (!status) return PlanError(status, error);
     BindResponsesMcpCredentials(&definition, mcp_credentials_);
+    auto authorized = AuthorizeAgentMcp(&definition);
+    if (!authorized.ok()) return authorized;
     // Missing/revoked deployment routes do not prevent offline consumption of
     // authenticated frozen history. Any new I/O must resolve again below.
     (void)ResolveMcpDeploymentTarget(config.mcp_policy.get(), access_.scope,
@@ -186,6 +188,9 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
       // proposals keep their own authority; a failed listing cannot poison
       // all later requests, and new policy must match new model bindings.
       if (refresh && (!require_frozen_inputs_ || continuation)) break;
+      if (definition.required && Nonnull(*i, "error"))
+        return Error(502, "agent_mcp_initialization_failed",
+                     "Required MCP server could not initialize");
       available = true;
       break;
     }
@@ -207,6 +212,9 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
       return listed;
     const auto* tools = receipt.result.GetArray("tools");
     const bool success = listed.ok() && receipt.error.IsNull() && tools;
+    if (definition.required && !success)
+      return Error(502, "agent_mcp_initialization_failed",
+                   "Required MCP server could not initialize");
     const auto failure = success        ? ""
                          : !listed.ok() ? listed.code + ": " + listed.message
                                         : "MCP tools/list failed";

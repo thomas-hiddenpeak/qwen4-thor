@@ -190,6 +190,98 @@ ObjectReply SealCredentialAuth(ObjectStore& store, const StateAccess& access,
   return result;
 }
 
+ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
+                            const Json& vaults, std::string_view id,
+                            const std::string& destination,
+                            std::string* token) {
+  CryptoWipe(token);
+  const auto corrupt = [] {
+    return Error(503, "credential_state_invalid", "Invalid stored credential");
+  };
+  const auto missing = [] {
+    return Error(404, "object_not_found", "Attached MCP credential not found");
+  };
+  file_detail::Url target;
+  if (!token || !vaults.IsArray()) return corrupt();
+  if (destination.find('#') != destination.npos ||
+      !file_detail::ParseUrl(destination, &target))
+    return Invalid("transport.server_url");
+  const auto matches = [&](const Json& auth) {
+    file_detail::Url address;
+    const auto url = auth.GetString("mcp_server_url");
+    return target.tls && url.find('#') == url.npos &&
+           file_detail::ParseUrl(url, &address) && address.tls &&
+           target.host == address.host && target.port == address.port &&
+           target.target == address.target;
+  };
+
+  ObjectRequest req;
+  req.kind = ObjectKind::kVault;
+  req.scope = access.scope;
+  std::set<std::string> visited;
+  std::string selected_vault, selected_id, sealed;
+  bool revoked = false;
+  for (const auto& attached : vaults.array) {
+    if (!attached.IsString() || !attached.str.starts_with("vault_") ||
+        !ValidId(attached.str))
+      return missing();
+    if (!visited.insert(attached.str).second) continue;
+    req.id = attached.str;
+    auto record = store.Execute(req, access.deadline, access.cancelled);
+    if (!record.ok()) return record;
+    const auto* vault = record.value.Find("data");
+    if (!vault || vault->GetString("object") != "vault" ||
+        vault->GetString("id") != req.id)
+      return corrupt();
+    const auto* rows = vault->Find("credentials");
+    if (!rows) continue;
+    if (!rows->IsArray()) return corrupt();
+    for (const auto& row : rows->array) {
+      const auto* resource = row.Find("resource");
+      if (!resource || resource->GetString("vault_id") != req.id)
+        return corrupt();
+      const auto key = resource->GetString("id");
+      if (!id.empty() && key != id) continue;
+      const auto* auth = resource->Find("auth");
+      if (!auth || !row.Find("archived") || !row.Find("archived")->IsBool())
+        return corrupt();
+      if (!matches(*auth)) continue;
+      if (vault->GetBool("archived") || row.GetBool("archived")) {
+        revoked = true;
+        continue;
+      }
+      if (!selected_id.empty())
+        return Error(409, "mcp_credential_ambiguous",
+                     "Select one matching attached credential");
+      if (!ValidId(key) || row.GetString("sealed").empty()) return corrupt();
+      selected_vault = req.id;
+      selected_id = key;
+      sealed = row.GetString("sealed");
+    }
+  }
+  if (selected_id.empty())
+    return !id.empty() || revoked ? missing() : ObjectReply{};
+  ProtectedAuth config;
+  auto opened = StateCipher(store).Open(
+      sealed, Binding(selected_vault, selected_id), access, &config.wire);
+  if (!opened.ok()) return opened;
+  ChatPlanError error;
+  if (!io::ParseJson(config.wire, &config.value, true, kSchemaJsonLimits) ||
+      !ValidateCredential(config.value, CredentialShape::kAuthCreate, &error) ||
+      !matches(config.value))
+    return corrupt();
+  const auto type = config.value.GetString("type");
+  if (type != "static_bearer" && type != "mcp_oauth") return corrupt();
+  const auto* expiry = config.value.Find("expires_at");
+  if (expiry && !expiry->IsNull() &&
+      !SchemaDateTimeAfter(expiry->str, std::chrono::system_clock::now()))
+    return Error(409, "mcp_credential_expired", "MCP access token has expired");
+  const auto* field = type == "static_bearer" ? "token" : "access_token";
+  if (!SafeValue(config.value, field)) return corrupt();
+  *token = config.value.Find(field)->str;
+  return {};
+}
+
 ObjectReply RotateCredentialAuth(ObjectStore& store, const StateAccess& access,
                                  const std::string& vault,
                                  const std::string& id,

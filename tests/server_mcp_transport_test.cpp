@@ -21,6 +21,7 @@
 #include <thread>
 
 #include "../src/server/object_protocol.h"
+#include "q4t/server/agent_session.h"
 #include "q4t/server/batch_preparation.h"
 #include "q4t/server/batch_state.h"
 #include "q4t/server/files.h"
@@ -848,6 +849,31 @@ Q4T_TEST(mcp_transport_does_not_forward_auth_to_cross_origin_endpoint) {
                       &receipt)
                 .code == "mcp_endpoint_denied");
   Q4T_CHECK(destination.Requests().empty());
+  return true;
+}
+
+Q4T_TEST(mcp_transport_exact_target_keeps_legacy_post_on_credential_path) {
+  Server source;
+  source.handler = [](const Request& r, int fd, std::stop_token stop) {
+    if (r.verb == "POST") {
+      Send(fd, Http(405));
+    } else {
+      Send(fd, "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
+               "Transfer-Encoding: chunked\r\n\r\n");
+      Chunk(fd, "event: endpoint\ndata: /other?session=fixture\n\n");
+      Stall(stop);
+    }
+    return true;
+  };
+  auto endpoint = source.Endpoint();
+  endpoint.authorization = "fixture-only";
+  endpoint.exact_target = true;
+  McpTransportReceipt receipt;
+  Q4T_CHECK(InvokeMcp(Access(), endpoint, source.Options(), "tools/list", Object(),
+                      {}, &receipt).code == "mcp_endpoint_denied");
+  const auto seen = source.Requests();
+  Q4T_CHECK(seen.size() == 2);
+  for (const auto& req : seen) Q4T_CHECK(req.target == "/mcp");
   return true;
 }
 
@@ -2838,6 +2864,102 @@ Q4T_TEST(responses_mcp_frozen_credential_source_must_match_exact_request) {
                   .code == "mcp_credential_source_changed");
   }
   Q4T_CHECK(server.Requests().size() == requests && !server.calls);
+  return true;
+}
+
+Q4T_TEST(agent_mcp_required_listing_fails_before_session_publication) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto tool = Object({{"type", String("mcp")}, {"required", Boolean(true)},
+                      {"server_label", String("records")},
+                      {"transport", Object({{"type", String("http")},
+                                            {"server_url", String(server.Endpoint().url)}})}});
+  auto request = Object({{"input", String("read")},
+                         {"agent", Object({{"model", String(config.model)},
+                                           {"tools", Array({tool})}})},
+                         {"environment", Object({{"type", String("none")}})}});
+  server.handler = [](const Request&, int fd, std::stop_token) {
+    Send(fd, Http(403));
+    return true;
+  };
+  ResponsesExecution required(objects);
+  Q4T_CHECK(PrepareAgentSessionExecution(objects, request, config, ExecutionAccess(),
+      42, required).code == "agent_mcp_initialization_failed");
+  auto rows = ListAgentSessions(objects, Object(), ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(rows) && rows.value.GetArray("data")->array.empty());
+  auto& tools = Field(Field(request, "agent"), "tools");
+  Set(&tools.array.front(), "required", Boolean(false));
+  ResponsesExecution optional(objects);
+  Q4T_CHECK(ExecutionOk(PrepareAgentSessionExecution(objects, request, config,
+      ExecutionAccess(), 42, optional)));
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(optional.Begin(&wire)) && ExecutionOk(optional.StartRunning(&wire)));
+  Q4T_CHECK(FinishExecution(&optional) && !server.calls);
+  return true;
+}
+
+Q4T_TEST(agent_mcp_queued_restore_uses_original_session_tool_configuration) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto tool = Object({{"type", String("mcp")}, {"required", Boolean(true)},
+                      {"server_label", String("project")},
+                      {"request_metadata", Object({{"step", String("original")}})},
+                      {"transport", Object({{"type", String("http")},
+                                            {"server_url", String(server.Endpoint().url)}})}});
+  auto request = Object({{"input", String("read")},
+                         {"agent", Object({{"model", String(config.model)},
+                                           {"tools", Array({tool})}})},
+                         {"environment", Object({{"type", String("none")}})}});
+  std::string id, session, wire;
+  {
+    ResponsesExecution first(objects);
+    auto created = PrepareAgentSessionExecution(objects, request, config, ExecutionAccess(), 42, first);
+    Q4T_CHECK(ExecutionOk(created) && ExecutionOk(first.Begin(&wire)));
+    id = first.Id();
+    session = created.value.GetString("id");
+  }
+  auto changed = UpdateAgentSession(objects, session,
+      Object({{"agent", Object({{"tools", Array()}})}}), config, ExecutionAccess());
+  Q4T_CHECK(ExecutionOk(changed));
+  const auto initialized = server.Requests().size();
+  ResponsesExecution restored(objects);
+  Q4T_CHECK(ExecutionOk(restored.RestoreQueued(id, config, ExecutionAccess())));
+  Q4T_CHECK(ExecutionOk(restored.StartRunning(&wire)));
+  Q4T_CHECK(server.Requests().size() == initialized && ModelCall(&restored, false, &wire));
+  bool waiting = true;
+  Q4T_CHECK(ExecutionOk(restored.RunMcp(1, &waiting, {})) && !waiting && server.calls == 1);
+  Q4T_CHECK(FinishExecution(&restored, 1));
+  for (const auto& row : server.Requests()) {
+    if (row.rpc.GetString("method") == "tools/call")
+      Q4T_CHECK(row.rpc.Find("params")->Find("_meta")->GetString("step") == "original");
+  }
+  return true;
+}
+
+Q4T_TEST(responses_background_mcp_catalog_precedes_context_and_model_output) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore store(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ExecutionRequest(server);
+  Set(&request, "background", Boolean(true));
+  Set(&request, "truncation", String("auto"));
+  ResponsesExecution run(store);
+  std::string wire;
+  Q4T_CHECK(ExecutionOk(run.Prepare(request, config, ExecutionAccess(), 42, true)));
+  Q4T_CHECK(ExecutionOk(run.Begin(&wire)) && ExecutionOk(run.StartRunning(&wire)));
+  Q4T_CHECK(!OutputItem(run, "mcp_list_tools").IsNull());
+  const auto measure = [](const auto&, auto*) { return q4t::Status{}; };
+  Q4T_CHECK(ExecutionOk(run.FitContext(config, measure)));
+  Q4T_CHECK(ExecutionOk(run.SelectCompaction(32, config)) && !run.CompactionSelected());
+  Q4T_CHECK(ModelCall(&run, true, &wire));
+  Q4T_CHECK(run.SelectCompaction(32, config).code == "response_state_invalid");
+  Q4T_CHECK(run.FitContext(config, measure).code == "response_state_invalid");
+  Q4T_CHECK(ExecutionOk(run.Cancel()));
   return true;
 }
 

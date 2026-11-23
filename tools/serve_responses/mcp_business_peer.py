@@ -55,11 +55,13 @@ def prepare_tls(output):
 
 
 class ProjectMcp:
-    def __init__(self, root, output, port, *, source=None, tls=None):
+    def __init__(self, root, output, port, *, source=None, tls=None,
+                 request_metadata=None, required_headers=None):
         self.source = source if source is not None else DocumentSource(root)
         self.calls, self.reads, self.methods, self.deleted = [], [], [], []
         self.sessions = set()
         self.drop_next = False
+        self.http_requests = 0
         self.lock = threading.Lock()
         self.secret = secrets.token_urlsafe(32)
         material = prepare_tls(output) if tls is None else tls
@@ -111,7 +113,10 @@ class ProjectMcp:
                 self.reply(204 if present else 404)
 
             def do_POST(self):
-                if not self.authorized():
+                with peer.lock:
+                    peer.http_requests += 1
+                if not self.authorized() or any(self.headers.get_all(k) != [v]
+                        for k, v in (required_headers or {}).items()):
                     self.reply(403)
                     return
                 try:
@@ -120,6 +125,9 @@ class ProjectMcp:
                     body = json.loads(self.rfile.read(count))
                     require(isinstance(body, dict) and body.get('jsonrpc') == '2.0', 'RPC version')
                     method = body['method']
+                    if request_metadata is not None and 'id' in body:
+                        require(body['params'].get('_meta') == request_metadata,
+                                'peer requires declared MCP request metadata')
                     session = self.headers.get('MCP-Session-Id')
                     with peer.lock:
                         if method != 'initialize' and session not in peer.sessions:
@@ -155,7 +163,7 @@ class ProjectMcp:
                                 name=peer.source.filename, mimeType=peer.source.mime)],
                             structuredContent=record, isError=False)
                     elif method == 'resources/read':
-                        require(body['params'] == dict(uri=peer.source.uri),
+                        require({k:v for k,v in body['params'].items() if k != '_meta'} == dict(uri=peer.source.uri),
                                 'peer resource denied')
                         record, content = peer.source.read()
                         with peer.lock:
