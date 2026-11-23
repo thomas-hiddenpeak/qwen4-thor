@@ -69,7 +69,7 @@ def prepare(out, selection, *, discovery_build=None, previous_profiles=None):
 
 def prepare_profiles(out, envelope, selected, expected, ingress_sha256, *,
                      discovery_change=None, beta_change=None, agent_change=None,
-                     protected=None):
+                     protected=None, build=None):
     pkg.require(not out.exists(), 'fresh stage required')
     out.mkdir(mode=0o700, parents=True)
     state = out/'state'
@@ -85,7 +85,7 @@ def prepare_profiles(out, envelope, selected, expected, ingress_sha256, *,
             ports.append(sock.getsockname()[1])
     for index, name in enumerate(PROFILES):
         phase = out/name
-        live.prepare(phase, receipt, protected=protected)
+        live.prepare(phase, receipt, protected=protected, build=build)
         plan = pkg.read(phase/'plan.json')
         plan['port'], plan['operations_port'], plan['public_port'] = ports[3*index:3*index+3]
         workers.Stage.prepare_fixture(phase, plan)
@@ -159,6 +159,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if self.plan.get('agent_vaults', {}).get('subagents'):
+            from tools.serve_responses import subagent_profile_acceptance
+            subagent_profile_acceptance.business(self)
         if self.plan.get('discovery_change'):
             pkg.require(cfg['protocol_source_sha256'] == self.plan['discovery_change']['protocol'] and
                         capabilities['live']['sideband'] == '/v1/live/sessions/{session_id}/attach' and

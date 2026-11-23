@@ -88,7 +88,11 @@ def verify(phase, plan, capabilities):
                     row['completed'] == row['idle'] == row['result_count'] == 1 and row['replay'] == 202 and
                     re.search(number, row['answer']) and re.search(number, row['next_answer']),
                     'light failed to finish the original lookup and separate follow-up')
-    return {path.name: pkg.sha(path)}
+    files = {path.name: pkg.sha(path)}
+    if plan.get('agent_vaults', {}).get('subagents') or 'agent_session_subagents' in capabilities:
+        from tools.serve_responses import subagent_profile_acceptance
+        files.update(subagent_profile_acceptance.verify(phase, plan, capabilities))
+    return files
 
 
 def business(stage, capabilities):

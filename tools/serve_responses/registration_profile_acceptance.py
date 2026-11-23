@@ -73,7 +73,7 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
         'q4t','q4t.release.json','service/manifest.json','service.release.json','service-native-state/ledger.json')}
     profile_acceptance.prepare_profiles(out,manifest,engine,
         dict(engine['live_workers'],engine_sha256=pkg.sha(build/'q4t')), ingress,
-        protected=protected, beta_change=change, agent_change=dict(
+        protected=protected, build=build, beta_change=change, agent_change=dict(
             witness_sha256=pkg.sha(agents.EVIDENCE),
             capabilities=pkg.read(agents.EVIDENCE)['selected']['capabilities']))
     fixture = vaults.prepare_peer(out, vault_oauth) if vault else None
@@ -93,6 +93,16 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
             plan['sources'][source] = pkg.sha(ROOT/source)
         if vault:
             plan['agent_vaults'] = dict(vault, fixture=fixture)
+            if vault.get('subagents'):
+                # Keep the original quota/rejection exercise on its own owner.
+                policy = pkg.read(phase/'client-policy.json')
+                gamma = next(client for client in policy['clients'] if client['id'] == 'gamma')
+                gamma.update(requests_per_minute=12, tokens_per_minute=32000, max_prompt_tokens=8192)
+                pkg.save(phase/'client-policy.json', policy)
+                installed = Path(plan['binary']).parent/'client-policy.json'
+                shutil.copy2(phase/'client-policy.json', installed)
+                plan.update(client_policy_sha256=pkg.sha(phase/'client-policy.json'),
+                            installed_policy_sha256=pkg.sha(installed))
             if vault.get('session_tools'):
                 indices = 'tools/serve_responses/agent_session_output_indices.mjs'
                 plan['sources'][indices] = pkg.sha(ROOT/indices)

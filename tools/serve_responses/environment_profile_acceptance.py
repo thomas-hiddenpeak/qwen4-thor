@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 
 from tools.serve_responses.beta_profile_acceptance import protocol
+from tools.serve_responses import subagent_profile_acceptance as subagents
 from tools.serve_service import package as pkg
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -19,7 +20,7 @@ SESSION_WEB_SDK = 'tools/serve_responses/agent_session_web_sdk.mjs'
 EMPTY_CATALOG_PROOF = WORKSPACE_PROOF.with_name('empty-catalog.json')
 DISCOVERY_SDK = 'tools/serve_responses/agent_session_tool_search_sdk.mjs'
 WORKSPACE_PROOFS = (WORKSPACE_PROOF, WORKSPACE_PROOF.with_name('retention.json'),
-                    WORKSPACE_PAYLOAD_PROOF, SOURCE_FILES_PROOF, SESSION_WEB_PROOF, EMPTY_CATALOG_PROOF)
+                    WORKSPACE_PAYLOAD_PROOF, SOURCE_FILES_PROOF, SESSION_WEB_PROOF, EMPTY_CATALOG_PROOF, subagents.PROOF)
 SOURCE_FILES_SDK = 'tools/serve_responses/environment_source_files_sdk.mjs'
 RETENTION_SDK = 'tools/serve_responses/environment_retention_sdk.mjs'
 WORKSPACE_RELEASE = EVIDENCE.with_name('delivery.json')
@@ -39,6 +40,9 @@ def workspace_proof(binary):
 
 
 def workspace_sources(proof):
+    if proof == subagents.PROOF:
+        return (subagents.SDK, subagents.STANDALONE_SDK, subagents.HELPER, str(proof.relative_to(ROOT)),
+                str(subagents.PUBLICATION.relative_to(ROOT)))
     if proof == EMPTY_CATALOG_PROOF:
         return (*workspace_sources(SESSION_WEB_PROOF), DISCOVERY_SDK, str(proof.relative_to(ROOT)))
     if proof == SESSION_WEB_PROOF:
@@ -52,6 +56,8 @@ def workspace_sources(proof):
 
 
 def workspace_release(proof):
+    if proof == subagents.PROOF:
+        return subagents.PUBLICATION
     if proof in (SESSION_WEB_PROOF, EMPTY_CATALOG_PROOF):
         return WORKSPACE_PROOF.with_name('artifact-delivery.json')
     return WORKSPACE_PROOF.with_name('delivery.json') if proof == SOURCE_FILES_PROOF else WORKSPACE_RELEASE
@@ -60,6 +66,8 @@ def workspace_release(proof):
 def candidate(build, current, workspaces=False):
     if workspaces:
         source = workspace_proof(pkg.sha(build/'q4t'))
+        if source == subagents.PROOF:
+            return subagents.candidate(build, protocol(current))
         proof = pkg.read(source)
         if source in (SESSION_WEB_PROOF, EMPTY_CATALOG_PROOF):
             web = pkg.read(SESSION_WEB_PROOF)

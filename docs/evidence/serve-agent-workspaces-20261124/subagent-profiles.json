@@ -1,0 +1,209 @@
+{
+  "engine": "2345539d73d26ea65108849e498045bf746697cfc756084540879808cf6cc221",
+  "protocol": "747fc2cad4764622fb42c5cfd6f90e97dcf1798358baf919ba65478276f26cda",
+  "ingress": "f5ad763378beeec259b3df29aa14a2e39cf7906440a0b6fe5cafb9a61b9b9c37",
+  "profiles": {
+    "primary": {
+      "handoff": {
+        "sdk": "7.47.0",
+        "session": "agent_session_db54f504ed6b641218109399083edcb5",
+        "child": "subagent_261ec770fa7997a9f877bd61acc9e00b",
+        "closed": {
+          "id": "subagent_261ec770fa7997a9f877bd61acc9e00b",
+          "object": "agent.session.subagent",
+          "session_id": "agent_session_db54f504ed6b641218109399083edcb5",
+          "name": "reader",
+          "instructions": [
+            {
+              "type": "output_text",
+              "text": "Read the release record {\"publication_revision\":456}. Report only its publication_revision number."
+            }
+          ],
+          "parent_agent_id": "agent_408ae1a50d7ba4005ec7141b21315fb4",
+          "opened_at": 1795475872,
+          "closed_at": 1795475881,
+          "status": "closed"
+        },
+        "turns": [
+          {
+            "id": "turn_eb00957b19230f37cf372250c1d7f292",
+            "status": "completed",
+            "items_sha256": "0e88aeec6ed22172c9d7baa3036d8e25a0df1f42675e0fe5eaafc109e7979378",
+            "answer": "456"
+          }
+        ],
+        "revision": 456,
+        "foreign": 404
+      },
+      "seconds": 69.57233420712873,
+      "model_starts": 1,
+      "previous_record": "a861225ac8bf4e9216fc7670b152039340237ab83e8f002854c8f92d2cb58cc2",
+      "record": "bc31006134f64f662919accea942c0d675d9ef9e5ad4fee50879eb3c1f66a292",
+      "independent_chat": "42"
+    },
+    "light": {
+      "handoff": {
+        "sdk": "7.47.0",
+        "session": "agent_session_db54f504ed6b641218109399083edcb5",
+        "child": "subagent_261ec770fa7997a9f877bd61acc9e00b",
+        "closed": {
+          "id": "subagent_261ec770fa7997a9f877bd61acc9e00b",
+          "object": "agent.session.subagent",
+          "session_id": "agent_session_db54f504ed6b641218109399083edcb5",
+          "name": "reader",
+          "instructions": [
+            {
+              "type": "output_text",
+              "text": "Read the release record {\"publication_revision\":456}. Report only its publication_revision number."
+            }
+          ],
+          "parent_agent_id": "agent_408ae1a50d7ba4005ec7141b21315fb4",
+          "opened_at": 1795475872,
+          "closed_at": 1795475881,
+          "status": "closed"
+        },
+        "active": {
+          "id": "subagent_261ec770fa7997a9f877bd61acc9e00b",
+          "object": "agent.session.subagent",
+          "session_id": "agent_session_db54f504ed6b641218109399083edcb5",
+          "name": "reader",
+          "instructions": [
+            {
+              "type": "output_text",
+              "text": "Read the release record {\"publication_revision\":456}. Report only its publication_revision number."
+            }
+          ],
+          "parent_agent_id": "agent_408ae1a50d7ba4005ec7141b21315fb4",
+          "opened_at": 1795475872,
+          "closed_at": null,
+          "status": "active"
+        },
+        "turns": [
+          {
+            "id": "turn_eb00957b19230f37cf372250c1d7f292",
+            "status": "completed",
+            "items_sha256": "0e88aeec6ed22172c9d7baa3036d8e25a0df1f42675e0fe5eaafc109e7979378",
+            "answer": "456"
+          },
+          {
+            "id": "turn_89af8a983ab02f571f337109926299df",
+            "status": "completed",
+            "items_sha256": "331c10a29462432f2ec9b470074f1b662b67b623febb1be2edf4dc6a7368062e",
+            "answer": "457"
+          }
+        ],
+        "revision": 456,
+        "foreign": 404
+      },
+      "seconds": 138.22291999217123,
+      "model_starts": 1,
+      "previous_record": "190809a136db0c5f0dec62fc808cd39df9db137470cf374da18640fe9801a13b",
+      "record": "6929d4f5200e4e59e3c4402cc531029c069214c5f581ab318affde4804b67822",
+      "independent_chat": "42"
+    }
+  },
+  "qualification": {
+    "status": "ACCEPT_SUBAGENT_PRIMARY_LIGHT",
+    "registry_sha256": "1ba7908d364c52ca9371108910fe09fe711e7db449821dd697d32b118b2b321d",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 194,
+      "cleanup_complete": true,
+      "lease_result_sha256": "b5deebf8ee71f87baa9667060d31653abe7ea75e37b79d3ca6d3fb7f9e0bf951"
+    },
+    "migration_permit_sha256": "7cd37324dc34097fcd6d52bea5bd9d22c2c93e6b01f859788683436ac79d78bb",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "retained_attempts": [
+    {
+      "lease": {
+        "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-lease-01/exit.json",
+        "sha256": "a5f766b371c2ab70c0c1a1675b258a67a22fa0de9f65360cf887ca62e8e2bc5f"
+      },
+      "status": "COMMAND_FAILED",
+      "results": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-01/primary/result.json",
+          "sha256": "5e359a5ac7b3669e746704d623a2fd221ecb1cc64f36e8671d5ae8a5dc4f718b"
+        }
+      ],
+      "errors": [],
+      "reason": "The first fixture added a fourth fair-queue client to three queue slots. Existing gamma now carries the new workload; the measured queue capacity and alpha quota are unchanged."
+    },
+    {
+      "lease": {
+        "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-lease-02/exit.json",
+        "sha256": "d735f01dad1af160534cd60a4a9f8bdc7ffe444565bbb9c580185452fcf6f2c6"
+      },
+      "status": "COMMAND_FAILED",
+      "results": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-02/light/result.json",
+          "sha256": "2cd327af7b4d5e2c8d1f5c6987055ab49d067f94fdddf044d16af53f60b62463"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-02/primary/result.json",
+          "sha256": "542ffd5f53f0340fb134cc8f9783ff603dc821d17858d896ab3a9c0fa9ca1b16"
+        }
+      ],
+      "errors": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-02/light/session-handoff.stderr",
+          "sha256": "c5a79a054cdfd94d69adab4028efbb2c23c5cd4ccfdba3514aaec96eb1decdba"
+        }
+      ],
+      "reason": "The light model completed the existing clock follow-up at temperature 1 after ten tokens, answering Revision: 442 then Times: without a timestamp. The prompt now requests two concrete lines. The original failed model answer is retained.",
+      "original_model_answer": "Revision: 442\nTimes:"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-03/acceptance.json",
+      "sha256": "1de6946fe64e0d94905bf146bc242b483cb07e9e0a3a83d15b0ab01d94dd57dc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-03/profile-observations.json",
+      "sha256": "cc73949791fba78369f5b841964f4b8da3cfc54b83797aadba53c088d2076398"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-lease-03/exit.json",
+      "sha256": "b5deebf8ee71f87baa9667060d31653abe7ea75e37b79d3ca6d3fb7f9e0bf951"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-03/primary/subagent-handoff.json",
+      "sha256": "3c24dabe506f68c1cfd3dc3136e905e88e0bde78057bffb55e6b86c587b14c39"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-03/primary/result.json",
+      "sha256": "e4f5c6dea86b6ec4f1e765f6bdf47e0fcc4908e2bcc048bde89a6936ce1aa7f0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-compose-03/primary.json",
+      "sha256": "bc31006134f64f662919accea942c0d675d9ef9e5ad4fee50879eb3c1f66a292"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-03/light/subagent-handoff.json",
+      "sha256": "f0abd78d042b82c8c42809222d55bdea0391d99e93c32a1e945563668c201646"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-profiles-03/light/result.json",
+      "sha256": "63e25353516da0dbcdca5cf1e3c981a88ac03446d70936b017ff060cd88ab7df"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-compose-03/light.json",
+      "sha256": "6929d4f5200e4e59e3c4402cc531029c069214c5f581ab318affde4804b67822"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-qualification-03/acceptance.json",
+      "sha256": "3ca498a7f05f2a545b97fce3122bdec11b401a4c101838508cd34f0955cd46d4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-migration-pinned-03.log",
+      "sha256": "466a1e9eecf73dad936dd8000e1ada421bb19c934a388b1799250517fde0feda"
+    }
+  ]
+}

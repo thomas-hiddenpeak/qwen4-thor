@@ -23,6 +23,15 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+SUBAGENT_RECORD = 'q4t-profile-business-v34'
+SUBAGENT_FORMAT = 'q4t-managed-subagent-source-v1'
+SUBAGENT_REVIEWED = {
+    'primary': 'bc31006134f64f662919accea942c0d675d9ef9e5ad4fee50879eb3c1f66a292',
+    'light': '6929d4f5200e4e59e3c4402cc531029c069214c5f581ab318affde4804b67822',
+}
+SUBAGENT_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents/sessions/{session_id}/subagents',
+                           reads=['list','retrieve','items','turns','turn','turn_items'],
+                           lifecycle=['create','interrupt','close','resume'], turn_events=True, session_memory=True)
 MANAGED_TOOL_REVIEWED = {
     'primary': 'a861225ac8bf4e9216fc7670b152039340237ab83e8f002854c8f92d2cb58cc2',
     'light': '190809a136db0c5f0dec62fc808cd39df9db137470cf374da18640fe9801a13b',
@@ -109,7 +118,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 SESSION_RECORD: SESSION_FORMAT, VAULT_RECORD: VAULT_FORMAT,
                 OAUTH_RECORD: OAUTH_FORMAT, ENVIRONMENT_RECORD: ENVIRONMENT_FORMAT,
                 WORKSPACE_RECORD: WORKSPACE_FORMAT, ARTIFACT_RECORD: ARTIFACT_FORMAT,
-                MANAGED_TOOL_RECORD: MANAGED_TOOL_FORMAT}
+                MANAGED_TOOL_RECORD: MANAGED_TOOL_FORMAT, SUBAGENT_RECORD: SUBAGENT_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -131,6 +140,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '1de6946fe64e0d94905bf146bc242b483cb07e9e0a3a83d15b0ab01d94dd57dc':
+        'f5ad763378beeec259b3df29aa14a2e39cf7906440a0b6fe5cafb9a61b9b9c37',
     '555452009732e11ab1859f4e4996b23c69669691396be2d943850b40cb55e4f9':
         'a201da20bee226df67d1c7c409c0431b587dfe4b648f09d71ae046d6d6ffc5dc',
     'a2e3011a39b2d9d2cf8d55dbf93e6119b98b06281d2470d5273c1e1f49bdc37c':
@@ -173,6 +184,13 @@ def record_hash(value):
 
 
 def format_for(capabilities):
+    if 'agent_session_subagents' in capabilities:
+        previous = dict(capabilities)
+        child = previous.pop('agent_session_subagents')
+        ledger.require(ledger.canonical(child) == ledger.canonical(SUBAGENT_CAPABILITY)
+                       and format_for(previous) == MANAGED_TOOL_RECORD,
+                       'incomplete managed subagent or predecessor declaration')
+        return SUBAGENT_RECORD
     sessions = capabilities.get('agent_sessions')
     if isinstance(sessions, dict) and 'time_awareness' in sessions:
         ledger.require(ledger.canonical(sessions) == ledger.canonical(MANAGED_TOOL_SESSION) and
@@ -256,7 +274,18 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] == MANAGED_TOOL_RECORD:
+    if value['format'] == SUBAGENT_RECORD:
+        proofs = value['business']['live']['evidence_sha256']
+        old_proofs = prior['business']['live']['evidence_sha256']
+        ledger.require(prior['format'] == MANAGED_TOOL_RECORD
+                       and record_hash(prior) == MANAGED_TOOL_REVIEWED.get(prior['profile'])
+                       and previous['added'] == ['agent_session_subagents']
+                       and set(previous['capabilities']) == {'protocol_source_sha256'}
+                       and format_for(after) == SUBAGENT_RECORD
+                       and old_proofs.keys() | {'subagent-handoff.json'} == proofs.keys()
+                       and ledger.HASH.fullmatch(proofs['subagent-handoff.json']),
+                       'subagent qualification requires the reviewed tool predecessor and a new child handoff')
+    elif value['format'] == MANAGED_TOOL_RECORD:
         proofs = value['business']['live']['evidence_sha256']
         old_proofs = prior['business']['live']['evidence_sha256']
         ledger.require(prior['format'] == ARTIFACT_RECORD and
@@ -394,6 +423,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == SUBAGENT_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == SUBAGENT_REVIEWED.get(name),
+                       'subagent qualification differs from the reviewed capacity handoff')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == MANAGED_TOOL_REVIEWED.get(name),
+                       'subagent qualification lost the managed tool predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == MANAGED_TOOL_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) == MANAGED_TOOL_REVIEWED.get(name),

@@ -16733,6 +16733,13 @@
         "publish and register rollback",
         "managed subagent execution and remaining scoped application interfaces"
       ]
+    },
+    "managed_subagent_profile_handoff": {
+      "state": "qualified_primary_light_before_default_delivery",
+      "evidence": "evidence/serve-agent-workspaces-20261124/subagent-profiles.json",
+      "actual_starts": 2,
+      "previous_release": 456,
+      "identity_and_turn_history_preserved": true
     }
   }
 }
