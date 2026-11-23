@@ -3531,6 +3531,57 @@
             "retry_after_ms",
             "last_failure"
           ]
+        },
+        "tracing": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "uninitialized",
+                "starting",
+                "backoff",
+                "ready",
+                "stopping"
+              ]
+            },
+            "readiness_dependency": {
+              "const": false
+            },
+            "attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "recoveries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "retry_after_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "last_failure": {
+              "enum": [
+                "none",
+                "host_memory",
+                "thread_or_system",
+                "initialization_exception"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "readiness_dependency",
+            "attempts",
+            "failures",
+            "recoveries",
+            "retry_after_ms",
+            "last_failure"
+          ]
         }
       },
       "required": [
@@ -4366,6 +4417,280 @@
         "max_audio_seconds",
         "workspace_mib"
       ]
+    },
+    "native_tts_health": {
+      "$ref": "#/$defs/tts_health",
+      "properties": {
+        "model": {
+          "const": "qwen3-tts-12hz-1.7b-customvoice"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "native_tts_base_health": {
+      "$ref": "#/$defs/tts_health",
+      "properties": {
+        "model": {
+          "const": "qwen3-tts-12hz-1.7b-base"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "native_voice_health": {
+      "$ref": "#/$defs/tts_health",
+      "properties": {
+        "model": {
+          "const": "qwen3-tts-12hz-1.7b-base-reference"
+        },
+        "reference_encoder": {
+          "const": true
+        }
+      },
+      "unevaluatedProperties": false,
+      "required": [
+        "reference_encoder"
+      ]
+    },
+    "native_tts_limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_text_tokens": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 32768
+        },
+        "max_prefill_tokens": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 32766
+        },
+        "max_frames": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 4096
+        },
+        "workspace_mib": {
+          "type": "integer",
+          "minimum": 128,
+          "maximum": 16384
+        },
+        "max_output_mib": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 128
+        }
+      },
+      "required": [
+        "max_text_tokens",
+        "max_prefill_tokens",
+        "max_frames",
+        "workspace_mib",
+        "max_output_mib"
+      ]
+    },
+    "realtime_trace_health": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "configured": {
+          "type": "boolean"
+        },
+        "readiness_dependency": {
+          "const": false
+        },
+        "model_restart_dependency": {
+          "const": false
+        },
+        "snapshot_available": {
+          "type": "boolean"
+        },
+        "exporter_running": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "pending": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "queued_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "producers": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "accepted_snapshots": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "confirmed_writes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dropped_snapshots": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "controller_failures": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "controller_recoveries": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "durability": {
+          "const": "confirmed_snapshots_only"
+        }
+      },
+      "required": [
+        "configured",
+        "readiness_dependency",
+        "model_restart_dependency",
+        "snapshot_available",
+        "exporter_running",
+        "pending",
+        "queued_bytes",
+        "producers",
+        "accepted_snapshots",
+        "confirmed_writes",
+        "dropped_snapshots",
+        "failures",
+        "controller_failures",
+        "controller_recoveries",
+        "durability"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "snapshot_available": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "exporter_running": {
+                "type": "boolean"
+              },
+              "pending": {
+                "type": "integer"
+              },
+              "queued_bytes": {
+                "type": "integer"
+              },
+              "producers": {
+                "type": "integer"
+              },
+              "controller_failures": {
+                "type": "integer"
+              },
+              "controller_recoveries": {
+                "type": "integer"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "exporter_running": {
+                "type": "null"
+              },
+              "pending": {
+                "type": "null"
+              },
+              "queued_bytes": {
+                "type": "null"
+              },
+              "producers": {
+                "type": "null"
+              },
+              "controller_failures": {
+                "type": "null"
+              },
+              "controller_recoveries": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "sip": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "configured": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "ready": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "activation_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "webhooks_delivered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "transfers_answered": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "transfers_failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "transfers_unknown": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "webhook_failures": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "configured",
+        "ready",
+        "activation_failures",
+        "webhooks_delivered",
+        "transfers_answered",
+        "transfers_failed",
+        "transfers_unknown",
+        "webhook_failures"
+      ]
+    },
+    "live_worker_profile": {
+      "const": "q4t-live-workers-v1"
     }
   },
   "required": [
@@ -4595,5 +4920,77 @@
         ]
       }
     }
-  ]
+  ],
+  "$defs": {
+    "tts_health": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "enum": [
+            "disabled",
+            "configured",
+            "loading",
+            "metadata_ready",
+            "ready",
+            "degraded"
+          ]
+        },
+        "reason": {
+          "enum": [
+            "none",
+            "tts_assets_invalid",
+            "tts_assets_timeout",
+            "tts_worker_unavailable",
+            "tts_resource_exhausted",
+            "gpu_unhealthy",
+            "tts_compute_failed"
+          ]
+        },
+        "core_readiness_dependency": {
+          "const": false
+        },
+        "model": {
+          "type": "string"
+        },
+        "device_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "load_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "recovery": {
+          "const": "request_driven"
+        },
+        "retry_delay_ms": {
+          "const": 5000
+        },
+        "compute_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "asset_cleanup_pending": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "state",
+        "reason",
+        "core_readiness_dependency",
+        "model",
+        "device_bytes",
+        "load_attempts",
+        "load_failures",
+        "recovery",
+        "retry_delay_ms",
+        "compute_failures",
+        "asset_cleanup_pending"
+      ]
+    }
+  }
 }

@@ -10456,7 +10456,7 @@
     }
   ],
   "next_task": "Seal qualified Live primary/light observations into a managed candidate and verify Guardian recovery, rollback, optional standalone ingress and outstanding master tasks.",
-  "next": "主轻容量已通过实际媒体和跨配置状态短验。继续正式托管包、守护器恢复、版本切换与回退，再补齐可选旧式 nginx 的临时凭据兼容。默认 rev426。",
+  "next": "优先核对旧包模型 ctime 变化与实际内容，恢复可验证回退路径，继续正式托管候选、守护器恢复、版本切换及可选旧式 nginx 凭据兼容。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16352,6 +16352,7 @@
     "managed_trunk_binding_evidence": "docs/evidence/serve-managed-trunk-binding-20261123/",
     "managed_worker_binding_evidence": "evidence/serve-managed-worker-binding-20261123/README.md",
     "managed_capacity_business_evidence": "evidence/serve-live-primary-light-20261123/README.md",
-    "live_capability_discovery_evidence": "evidence/serve-live-discovery-20261123/README.md"
+    "live_capability_discovery_evidence": "evidence/serve-live-discovery-20261123/README.md",
+    "http_config_schema_evidence": "evidence/serve-live-config-schema-20261123/README.md"
   }
 }

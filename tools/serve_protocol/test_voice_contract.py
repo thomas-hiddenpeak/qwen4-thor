@@ -159,6 +159,32 @@ class VoiceContract(unittest.TestCase):
         self.assertTrue(validator.is_valid(False))
         self.assertFalse(validator.is_valid(1))
 
+    def test_config_distinguishes_unknown_trace_metrics_and_optional_media_health(self):
+        config = json.loads((ROOT/'docs/serve-config-v1.schema.json').read_text())
+        def validator(field):
+            return Draft202012Validator({'$defs':config['$defs'], **config['properties'][field]})
+        trace = dict(configured=True, readiness_dependency=False, model_restart_dependency=False,
+                     snapshot_available=False, exporter_running=None, pending=None, queued_bytes=None,
+                     producers=None, controller_failures=None, controller_recoveries=None,
+                     accepted_snapshots=1, confirmed_writes=0, dropped_snapshots=0, failures=0,
+                     durability='confirmed_snapshots_only')
+        check = validator('realtime_trace_health')
+        self.assertTrue(check.is_valid(trace))
+        for changed in (dict(snapshot_available=True), dict(readiness_dependency=True),
+                        dict(pending=0), dict(accepted_snapshots=None)):
+            self.assertFalse(check.is_valid(dict(trace, **changed)))
+        health = dict(state='degraded', reason='tts_assets_invalid', core_readiness_dependency=False,
+                      model='qwen3-tts-12hz-1.7b-base-reference', device_bytes=0, load_attempts=1,
+                      load_failures=1, compute_failures=0, recovery='request_driven', retry_delay_ms=5000,
+                      reference_encoder=True, asset_cleanup_pending=False)
+        self.assertTrue(validator('native_voice_health').is_valid(health))
+        self.assertFalse(validator('native_voice_health').is_valid(dict(health, reference_encoder=False)))
+        self.assertFalse(validator('native_tts_health').is_valid(health))
+        sip = dict(configured=0, ready=0, activation_failures=1, webhooks_delivered=0,
+                   transfers_answered=0, transfers_failed=0, transfers_unknown=0, webhook_failures=0)
+        self.assertTrue(validator('sip').is_valid(sip))
+        self.assertFalse(validator('sip').is_valid(dict(sip, ready=9)))
+
     def test_stored_audio_projection_and_dangling_component(self):
         message = dict(id='msg_1', role='user', name=None, content=None,
                        content_parts=[dict(type='input_audio', input_audio=dict(

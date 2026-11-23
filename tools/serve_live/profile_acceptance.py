@@ -205,6 +205,17 @@ def main():
             for plan in plans:
                 Stage(plan).run()
         return
+    # Development-only release validation. Neither the model nor its guardian
+    # imports the schema validator.
+    from jsonschema import Draft202012Validator
+    schema = Draft202012Validator(pkg.read(ROOT/'docs/serve-config-v1.schema.json'))
+    bundle = pkg.read(ROOT/'docs/serve-openapi-bundle-v1.json')
+    bundled = Draft202012Validator({'components':bundle['components'],
+                                   '$ref':'#/components/schemas/serve-config-v1.schema.json'})
+    for name in PROFILES:
+        observed = pkg.read(out/name/'configuration.wire')
+        schema.validate(observed)
+        bundled.validate(observed)
     results = [pkg.read(out/n/'result.json') for n in PROFILES]
     pkg.require(all(r['status']=='PASS' and r['default_unchanged'] and
                 r['seconds'] <= Stage.limits['seconds'] and
