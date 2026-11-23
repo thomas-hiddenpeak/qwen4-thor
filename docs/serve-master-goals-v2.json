@@ -16701,6 +16701,16 @@
       "state": "short_business_verified",
       "evidence": "docs/evidence/serve-agent-workspaces-20261124/session-web.json",
       "default_revision": 454
+    },
+    "empty_discovery_catalog": {
+      "state": "candidate_verified",
+      "receipt": "docs/evidence/serve-agent-workspaces-20261124/empty-catalog.json",
+      "prior_attempt": {
+        "searches": 5,
+        "error": "client_prompt_limit_exceeded"
+      },
+      "corrected_searches_after_revocation": 0,
+      "next": "primary/light continuation and controlled recovery delivery"
     }
   }
 }

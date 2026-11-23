@@ -45,12 +45,18 @@ const char* SessionErrorCode(std::string_view code) {
 
 ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
   const auto& agent = *session.Find("agent");
+  const auto& session_tools = agent.GetArray("tools")->array;
   auto tools = Array();
-  if (tool_search) {
+  // The registration enables discovery, but the session owner can revoke its
+  // last deferred function while the current call is waiting for a result.
+  if (tool_search && std::ranges::any_of(session_tools, [](const Json& tool) {
+        return tool.GetString("type") == "function" &&
+               tool.GetBool("defer_loading");
+      })) {
     tools.array.push_back(Object({{"type", String("tool_search")},
                                   {"execution", String("server")}}));
   }
-  for (const auto& tool : agent.GetArray("tools")->array) {
+  for (const auto& tool : session_tools) {
     if (tool.GetString("type") == "web_search") {
       const auto mode = tool.GetString("mode");
       if (mode == "disabled") continue;

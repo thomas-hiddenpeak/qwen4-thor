@@ -1,0 +1,67 @@
+{
+  "engine": "d2badf70581bdf3439e9034da1b6f3b2f54d229100e29c68935bbef41583f41f",
+  "ingress": "a201da20bee226df67d1c7c409c0431b587dfe4b648f09d71ae046d6d6ffc5dc",
+  "protocol": "7c4b9612bbbfe52fb47d947c88d914097654c8ee6f91a6b7d7af588485bf7115",
+  "driver": "b6269f489a3590a05e1a6ca1493d34385429d3c4f54a0e667e5de9d077e45f70",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 41.456,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "holdback": 454,
+  "lease": "COMPLETED",
+  "sdk": {
+    "sdk": "7.47.0",
+    "session": "agent_session_c7aa17eddbd7a24b0832c89f2693e4f7",
+    "turn": "turn_2ac20f05bc495460bacfb8ea3eacf224",
+    "call": "call_resp_7ec520abc807f27074fb99b695d19d8f_round_55f535ca4ec7e7edef41b419a0687ce6_0",
+    "discovery_switch_visible": false,
+    "public_functions": 1,
+    "revoked_before_result": true,
+    "required_actions": 1,
+    "results": 1,
+    "foreign": 404,
+    "revision": 452,
+    "answer": "I'll discover the tool first, then call it.\n\n452"
+  },
+  "discovery": {
+    "types": [
+      [
+        "message",
+        "tool_search_call",
+        "tool_search_output",
+        "function_call"
+      ],
+      [
+        "message"
+      ]
+    ],
+    "same_function": true,
+    "search_after_revocation": 0
+  },
+  "chat": "42",
+  "previous_source_sha256": "260fd3af4bf59426997251d7592cc7d96c2257aa0d36452c36da2e12e55d754f",
+  "web_witness": "de11a8be69abb0c7af03a76dc2dba5aca3d498c84d07a2cfb1f9b8ae44635a15",
+  "retained_failure": {
+    "searches_after_revocation": 5,
+    "code": "client_prompt_limit_exceeded",
+    "engine": "34b8efdfcc51d552416fc69f0b0f822437332dc238b1329178315ece4adbbfc4"
+  },
+  "cpu": 59,
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/empty-catalog-lease-01/exit.json": "d9dafe6caebd835a342cc889ee6e98fac3bb7f89600d31040128057b3125fcdb",
+    ".q4t-work/serve-responses-agents-20261123/empty-catalog-http-01/plan.json": "3f94164273e2cf0bfd5c33beb9ef7b094b3ca1c9f56e4e995c269582e09758d2",
+    ".q4t-work/serve-responses-agents-20261123/empty-catalog-http-01/result.json": "84d7d7fee53ea3b261be4a108c1192a56e2080342627161dca8c70757ac43b79",
+    ".q4t-work/serve-responses-agents-20261123/empty-catalog-http-01/create/sdk-result.json": "e90aaf4d9971fa08906e2a042b6e59f58e688d184c528fe0fd81ec9c7220aaed",
+    ".q4t-work/serve-responses-agents-20261123/empty-catalog-http-01/create/discovery.json": "6f907ea0cd7124720f4e06286dc373c4ce208f79f7eae57ac86b06b993f574ae",
+    ".q4t-work/serve-responses-agents-20261123/empty-catalog-http-01/create/chat-result.json": "d90747d2a5dfdd61eb8e632c7b9174b35e71deed58065e38465c56e1be8e62f4",
+    ".q4t-work/serve-responses-agents-20261123/empty-catalog-cpu-01/result.log": "31b6dc74bab4ea753f7f460e8f79548ebc4ceba536656f20830b53b2422af6d3",
+    ".q4t-work/serve-responses-agents-20261123/empty-catalog-inventory.json": "9226e04eb02ce2481897f56ccd7debcb2c8e858cdd67aa4e86fcd3d84f68a792",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-04/light/result.json": "4d784ce407ddcfa45df9a18d6f47d7aea810f25ff150084e9d9c1279b1e2e425",
+    ".q4t-work/serve-responses-agents-20261123/session-tools-profiles-lease-04/exit.json": "b8bd44b263fe14fbc0a464d18ed4a004bda055be60f52c1acc877216f7a7b34c"
+  }
+}

@@ -21,6 +21,9 @@ WORKSPACE_RECORD = 'q4t-profile-business-v31'
 WORKSPACE_FORMAT = 'q4t-agent-workspace-source-v1'
 ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
+MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
+MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+MANAGED_TOOL_REVIEWED = {}
 ARTIFACT_CAPABILITY = dict(selector='agents=v1', source='/workspace/outputs/', immutable=True,
                            operations=['list', 'retrieve', 'content', 'delete'])
 ARTIFACT_REVIEWED = {
@@ -67,6 +70,8 @@ VAULT_SESSION = dict(SESSION_CAPABILITY, tool_types=['function', 'mcp'],
 OAUTH_SESSION = dict(VAULT_SESSION, mcp=dict(VAULT_SESSION['mcp'],
     vault_auth=[*VAULT_SESSION['mcp']['vault_auth'], 'mcp_oauth_refresh']))
 WORKSPACE_SESSION = dict(OAUTH_SESSION, environments=['none', 'openai_hosted'])
+MANAGED_TOOL_SESSION = dict(WORKSPACE_SESSION, tool_types=['function', 'mcp', 'tool_search', 'web_search'],
+                            time_awareness='utc_at_each_model_step')
 OAUTH_REVIEWED = {
     'primary': '1fb036ff722a21719546d1b042298cc91e489ecd9dc30ddcfb8602e546c683ef',
     'light': 'cc67e878110002a8be19fa7fbf61fe32d82b098731e570bf2008e8d0dfa54517',
@@ -100,7 +105,8 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 AGENT_RECORD_FORMAT: AGENT_FORMAT, REGISTRATION_RECORD: REGISTRATION_FORMAT,
                 SESSION_RECORD: SESSION_FORMAT, VAULT_RECORD: VAULT_FORMAT,
                 OAUTH_RECORD: OAUTH_FORMAT, ENVIRONMENT_RECORD: ENVIRONMENT_FORMAT,
-                WORKSPACE_RECORD: WORKSPACE_FORMAT, ARTIFACT_RECORD: ARTIFACT_FORMAT}
+                WORKSPACE_RECORD: WORKSPACE_FORMAT, ARTIFACT_RECORD: ARTIFACT_FORMAT,
+                MANAGED_TOOL_RECORD: MANAGED_TOOL_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -162,6 +168,12 @@ def record_hash(value):
 
 
 def format_for(capabilities):
+    sessions = capabilities.get('agent_sessions')
+    if isinstance(sessions, dict) and 'time_awareness' in sessions:
+        ledger.require(ledger.canonical(sessions) == ledger.canonical(MANAGED_TOOL_SESSION) and
+                       format_for(dict(capabilities, agent_sessions=WORKSPACE_SESSION)) == ARTIFACT_RECORD,
+                       'incomplete managed tool or predecessor declaration')
+        return MANAGED_TOOL_RECORD
     if 'agent_session_artifacts' in capabilities:
         previous = dict(capabilities)
         artifacts = previous.pop('agent_session_artifacts')
@@ -239,7 +251,17 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] == ARTIFACT_RECORD:
+    if value['format'] == MANAGED_TOOL_RECORD:
+        proofs = value['business']['live']['evidence_sha256']
+        old_proofs = prior['business']['live']['evidence_sha256']
+        ledger.require(prior['format'] == ARTIFACT_RECORD and
+                       record_hash(prior) == ARTIFACT_REVIEWED.get(prior['profile']) and
+                       not previous['added'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256', 'agent_sessions'} and
+                       format_for(after) == MANAGED_TOOL_RECORD and old_proofs.keys() <= proofs.keys() and
+                       proofs['session-handoff.json'] != old_proofs['session-handoff.json'],
+                       'managed tools require a qualified artifact predecessor and fresh tool handoff')
+    elif value['format'] == ARTIFACT_RECORD:
         proofs = value['business']['live']['evidence_sha256']
         ledger.require(prior['format'] == WORKSPACE_RECORD and
                        record_hash(prior) in WORKSPACE_REVIEWED.get(prior['profile'], ()) and
@@ -367,6 +389,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == MANAGED_TOOL_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == MANAGED_TOOL_REVIEWED.get(name),
+                       'managed tools differ from the reviewed capacity handoff')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == ARTIFACT_REVIEWED.get(name),
+                       'managed tool qualification lost the artifact predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == ARTIFACT_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) == ARTIFACT_REVIEWED.get(name),

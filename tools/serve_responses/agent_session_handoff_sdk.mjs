@@ -4,6 +4,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { setTimeout as delay } from 'node:timers/promises';
 import { loadSdk } from '../serve_protocol/sdk.mjs';
+import { continuationIndices, outputPrefix } from './agent_session_output_indices.mjs';
 
 let input = '';
 for await (const chunk of process.stdin) {
@@ -60,14 +61,21 @@ async function primary() {
     }
     environment = {type:'openai_hosted',environment_id:warm.id};
   }
-  const { id } = await sessions.create({
-    environment,
-    agent: { model: 'qwen3.8-flash-next', reasoning: { effort: 'none' },
-      instructions: 'Call read_release_record for a release query. After receiving the result, answer with the revision number.',
-      tools: [{ type: 'function', name: tool, description: 'Read the q4t publication receipt.',
-        parameters: { type: 'object', properties: {}, required: [], additionalProperties: false } }] },
-    input: 'Call read_release_record now with {} to obtain the actual publication revision. After the tool returns, reply with the number.',
-  });
+  const agent = { model: 'qwen3.8-flash-next', reasoning: { effort: 'none' },
+    instructions: 'Call read_release_record for a release query. After receiving the result, answer with the revision number.',
+    tools: [{ type: 'function', name: tool, description: 'Read the q4t publication receipt.',
+      parameters: { type: 'object', properties: {}, required: [], additionalProperties: false } }] };
+  let selector = { agent };
+  let input = 'Call read_release_record now with {} to obtain the actual publication revision. After the tool returns, reply with the number.';
+  if (plan.session_tools) {
+    agent.tools[0].defer_loading = true;
+    agent.tools.unshift({ type: 'tool_search' });
+    agent.experimental = { time_awareness: true };
+    agent.instructions = 'For a release lookup first use server tool search to discover read_release_record, then call it. After it returns, give the revision.';
+    input = 'Discover read_release_record with tool search, call it with {}, and report its revision.';
+    selector = { agent_id: (await agents.create(agent)).id };
+  }
+  const { id } = await sessions.create({ environment, ...selector, input });
   const waiting = await settled(id);
   assert.equal(waiting.status, 'requires_action');
   assert.equal(waiting.required_actions.length, 1);
@@ -78,6 +86,14 @@ async function primary() {
   assert.equal((await sessions.turns.retrieve(action.turn_id, { session_id: id })).status, 'waiting');
   await assert.rejects(peer.retrieve(id), denied(404));
   const result = { id, action, status: waiting.status, foreign: 404 };
+  if (plan.session_tools) {
+    assert.deepEqual(waiting.agent.tools.map(t => [t.type, t.name, t.defer_loading]),
+      [['function', tool, true]]);
+    assert.deepEqual((await sessions.update(id, { agent: { tools: [] } })).agent.tools, []);
+    assert.equal((await agents.delete(selector.agent_id)).deleted, true);
+    result.session_tools = { deferred: true, hidden: true, revoked: true,
+      prefix: await outputPrefix(sessions, id, action) };
+  }
   if (plan.hosted_workspaces) {
     const env = waiting.environment.id;
     assert.equal(env,environment.environment_id);
@@ -115,6 +131,13 @@ async function light() {
   const restored = await sessions.retrieve(id);
   assert.equal(restored.status, 'requires_action');
   assert.deepEqual(restored.required_actions, [action]);
+  let projected;
+  if (plan.session_tools) {
+    assert.deepEqual(restored.agent.tools, []);
+    const prefix = await outputPrefix(sessions, id, action);
+    assert.deepEqual(prefix, plan.prior.session_tools.prefix);
+    projected = continuationIndices(prefix);
+  }
   const space = plan.prior.workspace;
   if (plan.hosted_workspaces) {
     assert.equal(restored.environment.id,space.id);
@@ -150,8 +173,14 @@ async function light() {
   let completed = 0, idle = 0, text = '';
   for await (const e of stream) {
     assert.notEqual(e.type, 'error');
-    if (e.type === 'agent.session.turn.item.added') assert.notEqual(e.item.type, 'function_call');
-    if (e.type === 'agent.session.turn.output_text.delta') text += e.delta;
+    if (e.type === 'agent.session.turn.failed') throw Error(JSON.stringify(e.turn.error));
+    projected?.observe(e);
+    if (e.type === 'agent.session.turn.item.added') {
+      assert.notEqual(e.item.type, 'function_call');
+    }
+    if (e.type === 'agent.session.turn.output_text.delta') {
+      text += e.delta;
+    }
     if (e.type === 'agent.session.turn.completed') ++completed;
     // GET /events stays open for later turns. Stop this subscriber at the
     // first logical terminal before starting a separate follow-up subscription.
@@ -162,6 +191,7 @@ async function light() {
   }
   assert.equal(completed, 1);
   assert.equal(idle, 1);
+  if (plan.session_tools) assert.ok(projected.indices.length);
   assert.match(text, new RegExp('\\b' + revision + '\\b'));
   const turns = (await sessions.turns.list(id)).data;
   assert.equal(turns.length, 1);
@@ -175,7 +205,8 @@ async function light() {
   assert.equal(results[0].call_id, action.call_id);
   assert.equal(results[0].output, output);
   const follow = () => sessions.stream(id, {
-    input: 'Repeat only the revision number from the tool result. Do not call a tool.',
+    input: 'Repeat the revision number from the tool result. Do not call a tool.' +
+      (plan.session_tools ? ' Then give the current UTC minute from your system reminder as YYYY-MM-DDTHH:MMZ.' : ''),
     toolHandlers: { [tool]() { throw Error('Unexpected tool dispatch during follow-up'); } },
   }).finalResult();
   // The profile deliberately keeps the original 3 RPM limit. Beta, hosted
@@ -189,7 +220,15 @@ async function light() {
   assert.equal(retained.error.code, 'rate_limit_exceeded');
   assert.equal((await sessions.retrieve(id)).status, 'idle');
   await delay(60050);
+  const beforeFollow = new Date();
   const final = await follow();
+  if (plan.session_tools) {
+    const stamp = final.output_text.match(/\d{4}-\d\d-\d\dT\d\d:\d\d(?::\d\d)?Z/)?.[0];
+    assert.ok(stamp, final.output_text);
+    const minute = stamp.slice(0, 16);
+    assert.ok(minute >= beforeFollow.toISOString().slice(0, 16) &&
+      minute <= new Date().toISOString().slice(0, 16), stamp);
+  }
   assert.notEqual(final.turn_id, failedTurn.id);
   assert.notEqual(final.turn_id, action.turn_id);
   assert.match(final.output_text, new RegExp('\\b' + revision + '\\b'));
@@ -239,6 +278,7 @@ async function light() {
     workspace.disconnected = true;
   }
   return { id, action, completed, idle, template_trace:traceResult, workspace, artifacts,
+    ...(plan.session_tools ? { session_tools: { resumed: true, indices: projected.indices, clock_checked: true } } : {}),
     answer: text.trim(), next_answer: final.output_text.trim(),
     next_turn: final.turn_id, rejected_turn: failedTurn.id, quota_error: retained.error.code,
     revision, result_count: results.length, replay: 202, foreign: 404 };

@@ -1113,16 +1113,16 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     bool replay = false;
     Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, results, "fill-release", config,
                                           Access(), resumed, &replay)) &&
-              resumed.HasToolSearch());
+              resumed.HasToolSearch() == replace);
     const auto* active = resumed.Generation().generation_request.GetArray("tools");
-    Q4T_CHECK(active && active->array.size() == (replace ? 2 : 1));
-    const auto catalog = OutputJson(*active);
-    Q4T_CHECK(catalog.find("Read the release") == std::string::npos);
     if (replace) {
-      Q4T_CHECK(catalog.find("Replacement description") != std::string::npos &&
+      Q4T_CHECK(active && active->array.size() == 2);
+      const auto catalog = OutputJson(*active);
+      Q4T_CHECK(catalog.find("Read the release") == std::string::npos &&
+                catalog.find("Replacement description") != std::string::npos &&
                 catalog.find("build") != std::string::npos);
     } else {
-      Q4T_CHECK(catalog.find("read_release") == std::string::npos);
+      Q4T_CHECK(!active || active->array.empty());
     }
     resumed.BindBackgroundControl(std::make_shared<RequestControl>(
         resumed.Id(), "", Clock::now() + 10s));

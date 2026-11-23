@@ -14,8 +14,12 @@ SOURCES = (HELPER, SDK, str(EVIDENCE.relative_to(ROOT)), str(PUBLICATION.relativ
 WORKSPACE_PROOF = ROOT/'docs/evidence/serve-agent-workspaces-20261124/workspace.json'
 WORKSPACE_PAYLOAD_PROOF = WORKSPACE_PROOF.with_name('payload-retention.json')
 SOURCE_FILES_PROOF = WORKSPACE_PROOF.with_name('source-files.json')
+SESSION_WEB_PROOF = WORKSPACE_PROOF.with_name('session-web.json')
+SESSION_WEB_SDK = 'tools/serve_responses/agent_session_web_sdk.mjs'
+EMPTY_CATALOG_PROOF = WORKSPACE_PROOF.with_name('empty-catalog.json')
+DISCOVERY_SDK = 'tools/serve_responses/agent_session_tool_search_sdk.mjs'
 WORKSPACE_PROOFS = (WORKSPACE_PROOF, WORKSPACE_PROOF.with_name('retention.json'),
-                    WORKSPACE_PAYLOAD_PROOF, SOURCE_FILES_PROOF)
+                    WORKSPACE_PAYLOAD_PROOF, SOURCE_FILES_PROOF, SESSION_WEB_PROOF, EMPTY_CATALOG_PROOF)
 SOURCE_FILES_SDK = 'tools/serve_responses/environment_source_files_sdk.mjs'
 RETENTION_SDK = 'tools/serve_responses/environment_retention_sdk.mjs'
 WORKSPACE_RELEASE = EVIDENCE.with_name('delivery.json')
@@ -35,6 +39,11 @@ def workspace_proof(binary):
 
 
 def workspace_sources(proof):
+    if proof == EMPTY_CATALOG_PROOF:
+        return (*workspace_sources(SESSION_WEB_PROOF), DISCOVERY_SDK, str(proof.relative_to(ROOT)))
+    if proof == SESSION_WEB_PROOF:
+        return (SESSION_WEB_SDK, str(proof.relative_to(ROOT)),
+                str(workspace_release(proof).relative_to(ROOT)))
     if proof == SOURCE_FILES_PROOF:
         return (SOURCE_FILES_SDK, str(proof.relative_to(ROOT)),
                 str(workspace_release(proof).relative_to(ROOT)))
@@ -43,6 +52,8 @@ def workspace_sources(proof):
 
 
 def workspace_release(proof):
+    if proof in (SESSION_WEB_PROOF, EMPTY_CATALOG_PROOF):
+        return WORKSPACE_PROOF.with_name('artifact-delivery.json')
     return WORKSPACE_PROOF.with_name('delivery.json') if proof == SOURCE_FILES_PROOF else WORKSPACE_RELEASE
 
 
@@ -50,6 +61,32 @@ def candidate(build, current, workspaces=False):
     if workspaces:
         source = workspace_proof(pkg.sha(build/'q4t'))
         proof = pkg.read(source)
+        if source in (SESSION_WEB_PROOF, EMPTY_CATALOG_PROOF):
+            web = pkg.read(SESSION_WEB_PROOF)
+            modes = web['sdk']['phases']
+            pkg.require(web['business']['status'] == 'PASS' and web['lease'] == 'COMPLETED' and
+                        web['driver'] == pkg.sha(ROOT/SESSION_WEB_SDK) and
+                        web['source']['source_receipt_sha256'] == pkg.sha(workspace_release(source)) and
+                        web['source']['connections'] == 1 and
+                        all(modes[k]['foreign'] == 404 for k in ('live','cached','disabled')) and
+                        modes['live']['actions'] and modes['cached']['actions'] and
+                        modes['disabled']['actions'] == [] and modes['disabled']['answer'] == '42',
+                        'managed session web witness differs')
+            pkg.require(proof['engine'] == pkg.sha(build/'q4t') and proof['protocol'] == protocol(current)
+                        and proof['ingress'] == web['ingress'], 'managed session binary drift')
+            if source == EMPTY_CATALOG_PROOF:
+                name = 'src/server/agent_session_turn.cpp'
+                prior = dict(current, **{name:proof['previous_source_sha256']})
+                pkg.require(proof['business']['status'] == 'PASS' and proof['lease'] == 'COMPLETED' and
+                            proof['driver'] == pkg.sha(ROOT/DISCOVERY_SDK) and
+                            proof['web_witness'] == pkg.sha(SESSION_WEB_PROOF) and
+                            current[name] != prior[name] and protocol(prior) == web['protocol'] and
+                            proof['discovery']['same_function'] and proof['discovery']['search_after_revocation'] == 0
+                            and proof['sdk']['results'] == 1 and proof['sdk']['foreign'] == 404,
+                            'revoked catalog witness or earlier web protocol differs')
+            return dict(receipt_sha256=pkg.sha(source), binary=proof['engine'], ingress=proof['ingress'],
+                        protocol=proof['protocol'], renewal=True, environment_templates=True,
+                        hosted_workspaces=True, session_artifacts=True, session_tools=True)
         if source == SOURCE_FILES_PROOF:
             result = proof['sdk']
             pkg.require(proof['business']['status'] == 'PASS' and proof['lease'] == 'COMPLETED' and
@@ -89,6 +126,22 @@ def candidate(build, current, workspaces=False):
 
 
 def verify(phase, plan, capabilities, row):
+    if plan['agent_vaults'].get('session_tools'):
+        primary = (row if plan['name'] == 'primary' else
+                   pkg.read(phase.parent/'primary/session-handoff.json'))
+        settings = primary['session_tools']
+        prefix = settings['prefix']
+        pkg.require(isinstance(prefix, list) and prefix and all(isinstance(i, str) and i for i in prefix)
+                    and len(set(prefix)) == len(prefix)
+                    and settings == dict(deferred=True, hidden=True, revoked=True, prefix=prefix),
+                    'missing managed tool handoff prefix')
+        if plan['name'] == 'light':
+            settings = row['session_tools']
+            indices = settings['indices']
+            pkg.require(isinstance(indices, list) and indices and all(type(i) is int for i in indices)
+                        and indices == list(range(len(prefix), len(prefix) + len(indices)))
+                        and settings == dict(resumed=True, indices=indices, clock_checked=True),
+                        'resumed stream indices did not follow earlier public outputs')
     if plan['agent_vaults'].get('hosted_workspaces'):
         space = row['workspace']
         sources = workspace_sources(workspace_proof(plan['binary_sha256']))
