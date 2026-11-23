@@ -8,6 +8,7 @@
 #include "q4t/server/request_limits.h"
 #include "q4t/server/input_snapshot_bindings.h"
 
+#include "agent_session_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_execution.h"
@@ -50,6 +51,8 @@ ObjectReply NativeRequest(const AgentSessionStart& start) {
   return result;
 }
 
+}  // namespace
+namespace agent_detail {
 ObjectReply ProjectItem(const Json& from, const std::string& turn_id,
                         Json* items, Json* actions, bool completed) {
   const auto type = from.GetString("type");
@@ -67,9 +70,10 @@ ObjectReply ProjectItem(const Json& from, const std::string& turn_id,
     if (!parts) return InvalidRecord();
     for (const auto& part : parts->array) {
       const auto kind = part.GetString("type");
-      auto entry = Object({{"type", String(kind)}});
+      const bool refusal = kind == "refusal";
+      auto entry = Object({{"type", String(refusal ? "output_text" : kind)}});
       const auto* key = kind == "input_image" ? "image_url" : "text";
-      Set(&entry, key, Copy(part, key));
+      Set(&entry, key, Copy(part, refusal ? "refusal" : key));
       content.array.push_back(std::move(entry));
     }
     Set(&item, "content", std::move(content));
@@ -119,7 +123,9 @@ Json Usage(const Json& response) {
   });
   return usage;
 }
-}  // namespace
+}  // namespace agent_detail
+
+using namespace agent_detail;
 
 ObjectReply PrepareAgentSessionExecution(
     ObjectStore& objects, const Json& request, const ChatPlanConfig& config,
@@ -151,7 +157,7 @@ ObjectReply PrepareAgentSessionExecution(
   return result;
 }
 
-namespace {
+namespace agent_detail {
 ObjectReply ProjectStep(const Json& session, const Json& link,
                         const Json& record, AgentSessionView* view) {
   const auto id = session.GetString("id");
@@ -271,6 +277,9 @@ ObjectReply ReadRow(ObjectStore& objects, const std::string& id,
   return objects.Execute(lookup, access.deadline, access.cancelled);
 }
 
+}  // namespace agent_detail
+
+namespace {
 ObjectReply EventReceipt(const Json& receipts, const std::string& name,
                          const std::string& digest, bool* replay) {
   if (!receipts.IsObject()) return InvalidRecord();

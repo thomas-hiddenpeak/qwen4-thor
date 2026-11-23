@@ -1,6 +1,9 @@
 #include "q4t/server/agent_session.h"
 
 #include <ctime>
+#include <thread>
+
+#include "q4t/server/lifetime.h"
 
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
@@ -69,21 +72,114 @@ ObjectReply DeleteSession(ObjectStore& objects, const std::string& id,
   return deleted;
 }
 
+struct Subscriber {
+  std::string id;
+  int64_t sequence = 0;
+  static std::string ErrorEvent(void* context, int status,
+                                const std::string& message,
+                                std::string_view code, std::string_view param) {
+    const auto& id = static_cast<Subscriber*>(context)->id;
+    const auto error = Object(
+        {{"type",
+          String(status < 500 ? "invalid_request_error" : "server_error")},
+         {"code", String(std::string(code))},
+         {"message", String(message)},
+         {"param", param.empty() ? Json{} : String(std::string(param))}});
+    auto event = Object({{"event_id", String(detail::NewRequestId("evt_"))},
+                         {"session_id", String(id)},
+                         {"type", String("error")},
+                         {"error", error}});
+    return "event: error\r\ndata: " + OutputJson(event) + "\r\n\r\n";
+  }
+};
+
+void Stream(int fd, ObjectStore& objects, const std::string& id, bool follow,
+            const StateAccess& access) {
+  auto* http = detail::HttpResponseContext::Current(fd);
+  if (!http) return;
+  Subscriber subscriber{id};
+  ScopeExit clear([&] { http->SetResponsesStream(nullptr, nullptr, nullptr); });
+  http->SetResponsesStream(&Subscriber::ErrorEvent, &subscriber,
+                           &subscriber.sequence);
+  AgentEventCursor cursor;
+  using Clock = std::chrono::steady_clock;
+  auto heartbeat = Clock::now() + std::chrono::seconds(5);
+  bool started = false;
+  try {
+    if (follow) {
+      auto installed = OpenAgentEventSubscription(objects, id, access, &cursor);
+      if (!installed.ok()) {
+        detail::SendError(fd, installed.http_status, installed.ClientMessage(),
+                          {}, installed.ClientCode());
+        return;
+      }
+      if (!detail::BeginStreamingResponse(fd, http->State(), {access.deadline}))
+        return;
+      started = true;
+    }
+    while (!access.cancelled || !access.cancelled()) {
+      if (Clock::now() >= access.deadline) {
+        detail::SendError(fd, 408, "Session subscription expired", {},
+                          "request_timeout");
+        return;
+      }
+      Json events;
+      bool settled = false;
+      auto replay = ReplayAgentSessionEvents(objects, id, access, &cursor,
+                                             &events, &settled);
+      if (!replay.ok()) {
+        detail::SendError(fd, replay.http_status, replay.ClientMessage(), {},
+                          replay.ClientCode());
+        return;
+      }
+      if (!started &&
+          !detail::BeginStreamingResponse(fd, http->State(), {access.deadline}))
+        return;
+      started = true;
+      for (const auto& event : events.array) {
+        const auto wire = "id: " + event.GetString("event_id") +
+                          "\r\nevent: " + event.GetString("type") +
+                          "\r\ndata: " + OutputJson(event) + "\r\n\r\n";
+        if (!detail::WriteAll(fd, wire, {access.deadline})) return;
+        ++subscriber.sequence;
+      }
+      if (settled && !follow) {
+        http->BeforeTerminal();
+        *http->State() = detail::ResponseState::kComplete;
+        return;
+      }
+      if (!events.array.empty()) {
+        heartbeat = Clock::now() + std::chrono::seconds(5);
+        continue;
+      }
+      if (Clock::now() >= heartbeat) {
+        if (!detail::WriteAll(fd, ": keepalive\r\n\r\n", {access.deadline}))
+          return;
+        heartbeat = Clock::now() + std::chrono::seconds(5);
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+  } catch (const std::bad_alloc&) {
+    detail::SendExceptionResponse(fd, *http->State(),
+                                  detail::ExceptionKind::kHostMemory);
+  } catch (...) {
+    detail::SendExceptionResponse(fd, *http->State());
+  }
+}
+
 ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                    std::string_view method, std::string_view target,
                    const std::string& body, const ChatPlanConfig& config,
-                   const StateAccess& access) {
+                   const StateAccess& access, bool* stream) {
   const auto route = ParseAgentSessionRoute(target);
   if (route.kind == Kind::kNone)
     return Error(404, "route_not_found", "Session route not found");
   if (!ManagedAgentMethodAllowed(method, target)) {
     auto denied = Error(405, "method_not_allowed", "Method not allowed");
-    denied.value =
-        Object({{"allow", String(route.kind == Kind::kCollection ||
-                                         route.kind == Kind::kEvents
-                                     ? "POST"
-                                 : route.kind == Kind::kSession ? "GET, DELETE"
-                                                                : "GET")}});
+    const auto allowed = route.kind == Kind::kEvents ? "GET, POST" :
+                         route.kind == Kind::kCollection ? "POST" :
+                         route.kind == Kind::kSession ? "GET, DELETE" : "GET";
+    denied.value = Object({{"allow", String(allowed)}});
     return denied;
   }
   const auto split = target.find('?');
@@ -91,6 +187,13 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
       (route.kind == Kind::kCollection || route.kind == Kind::kEvents ||
        route.kind == Kind::kSession || route.kind == Kind::kTurn))
     return Invalid("Unexpected query", "query");
+  if (route.kind == Kind::kEvents && method == "GET") {
+    if (!body.empty()) return Invalid("Unexpected body", "body");
+    *stream = true;
+    ObjectReply result;
+    result.value = Object({{"id", String(std::string(route.session))}});
+    return result;
+  }
   if (route.kind == Kind::kCollection || route.kind == Kind::kEvents) {
     auto* http = detail::HttpResponseContext::Current(fd);
     if (!http || !jobs || !http->Client().Allowed())
@@ -99,9 +202,7 @@ ObjectReply Handle(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     Json request;
     auto valid = io::ParseJson(body, &request, true, kSchemaJsonLimits);
     if (!valid) return Invalid(valid.message(), "body");
-    if (request.GetBool("stream"))
-      return Error(503, "agent_session_stream_unavailable",
-                   "Session stream unavailable");
+    *stream = route.kind == Kind::kCollection && request.GetBool("stream");
     auto run = std::make_unique<ResponsesExecution>(objects, jobs, true);
     const bool event = route.kind == Kind::kEvents;
     bool replay = false;
@@ -175,7 +276,13 @@ void ServeAgentSession(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                        std::string_view method, std::string_view target,
                        const std::string& body, const ChatPlanConfig& config,
                        const StateAccess& access) {
-  auto reply = Handle(fd, objects, jobs, method, target, body, config, access);
+  bool stream = false;
+  auto reply =
+      Handle(fd, objects, jobs, method, target, body, config, access, &stream);
+  if (reply.ok() && stream) {
+    Stream(fd, objects, reply.value.GetString("id"), method == "GET", access);
+    return;
+  }
   if (reply.ok() && ParseAgentSessionRoute(target).kind == Kind::kEvents &&
       method == "POST") {
     detail::SendSimple(fd, 202, "Accepted", "", "application/json",

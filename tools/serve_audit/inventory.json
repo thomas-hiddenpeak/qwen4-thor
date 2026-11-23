@@ -2022,6 +2022,14 @@
         "src/server/agent_session_turn.cpp",
         "tools/serve_responses/agent_session_tools_sdk.mjs"
       ]
+    },
+    "GET /v1/agents/sessions/{session_id}/events": {
+      "semantics": "原生实时 Agent 会话订阅。SDK 可从空闲会话订阅下一回合。",
+      "boundary": "事件源是该客户实际持久化的模型步骤。",
+      "evidence": [
+        "src/server/agent_session_events.cpp",
+        "tools/serve_responses/agent_session_stream_sdk.mjs"
+      ]
     }
   },
   "whitelists": {
@@ -2636,8 +2644,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "4b1dacb096a4fb9c2b97c8b9495db1293b8965c42d3a861f3fa192d1a0c8c273",
-    "cmake/ChatProtocolIdentity.cmake": "e1b34737215eb6b2157a2d28c4ce1e641042ddbe427d11a41da1c49247eda367",
+    "CMakeLists.txt": "f83c85238e7214f43c7c1627dc3bdfcc9fb9c58a5fba24648bce311dc34f0adb",
+    "cmake/ChatProtocolIdentity.cmake": "ecf47f482de69db8531a9404f6307bf7e1f16a533364e9132aac258bd3c718f9",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2714,7 +2722,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "1fb606cf257d1a1e97213e7aec81d8f56b65be13079d3e992e3610273e0e2ba0",
+    "include/q4t/server/application_routes.h": "68a97803be4ab95899a80653b799cc4f1d30f6844125482b2911ff2a84449e6e",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3631,7 +3639,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "e0019dba3cc9497e4cdcac455637179b8e157047f3614b6ebeb109d6eca71288",
+    "tools/serve_gateway/gateway.py": "efe0bb7c9af61c1349cacd576958f2b59c00ecfeefc1e8c38746831427103fb0",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -3846,11 +3854,13 @@
     "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
     "src/server/agent_registration.cpp": "120f6670c6e654ceb96eb1cbfab3bc866af833e5a76b708f8f301cfa4092de13",
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
-    "include/q4t/server/agent_session.h": "81bb15c8f98e3c7890f88914a69c2756b4624c83cbd6fb04dc54ae086441c7f1",
+    "include/q4t/server/agent_session.h": "8a935d278b0c8181d8839b55b3e59bb5e6eab43adb8531f63e5a0e0cc243e930",
     "src/server/agent_session.cpp": "0c8b64e96c55b4a7be6fd76d1ec123ad7ad3ece564d86fb05eba373add8254d5",
-    "src/server/agent_session_http.cpp": "a9215e224536fa87945e6332fdb2d847aaf97dc65584630715537b0f26672841",
-    "src/server/agent_session_turn.cpp": "394c268949eccef37ea8a5c0729e23a4478ce8adeda5e75a6c384635a58fe474",
-    "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3"
+    "src/server/agent_session_http.cpp": "323c21746d5e41816ddc24c5c416e9bd8c5e8cc24eef68ac2213b9e0f9e72e00",
+    "src/server/agent_session_turn.cpp": "daa34c90533bc386eab9d1498f9c523cab59a270273fc60d01c8c5c3540efb74",
+    "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3",
+    "src/server/agent_session_events.cpp": "051803be8e7b218b5b3f9f2b401bef9dcdd36dbc2a2bbe227b4582226cc93c72",
+    "src/server/agent_session_internal.h": "9d2fb7b307e49e37e319e301d823ce67401d03a35034a617a98631852092be2b"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6428,6 +6438,14 @@
       "evidence": [
         "src/server/agent_session_turn.cpp",
         "tools/serve_responses/agent_session_tools_sdk.mjs"
+      ]
+    },
+    "GET /v1/agents/sessions/{session_id}/events": {
+      "semantics": "原生实时 Agent 会话订阅。SDK 可从空闲会话订阅下一回合。",
+      "boundary": "事件源是该客户实际持久化的模型步骤。",
+      "evidence": [
+        "src/server/agent_session_events.cpp",
+        "tools/serve_responses/agent_session_stream_sdk.mjs"
       ]
     }
   },

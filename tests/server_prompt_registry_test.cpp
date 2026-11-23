@@ -2,7 +2,9 @@
 #include "q4t/server/agent_session.h"
 #include "q4t/server/prompt_registry.h"
 
+#include <algorithm>
 #include <cstdlib>
+#include <set>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
@@ -273,6 +275,15 @@ Q4T_TEST(agent_session_tool_action_requires_a_completed_owned_call) {
   AgentSessionView view;
   Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
   Q4T_CHECK(view.session.GetArray("required_actions")->array.empty());
+  AgentEventCursor active_cursor;
+  Json active_events;
+  bool active_terminal = false;
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &active_cursor,
+                                        &active_events, &active_terminal)));
+  Q4T_CHECK(!active_terminal);
+  for (const auto& event : active_events.array)
+    Q4T_CHECK(event.GetString("type") != "agent.session.turn.item.added" ||
+              event.Find("item")->GetString("type") != "function_call");
   Q4T_CHECK(Ok(run.Finish(false, 1, {9, 0, 8, 0}, std::time(nullptr), &wire)));
   Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
   const auto& actions = view.session.GetArray("required_actions")->array;
@@ -325,6 +336,46 @@ Q4T_TEST(agent_session_tool_action_requires_a_completed_owned_call) {
             view.items.array[2].GetString("output") == "revision 442" &&
             view.session.GetArray("required_actions")->array.empty() &&
             view.session.Find("usage")->GetInt("total_tokens") == 33);
+  AgentEventCursor cursor;
+  Json events;
+  bool settled = false;
+  std::set<std::string> identities;
+  std::vector<std::string> types;
+  std::string streamed_text;
+  for (int batch = 0; batch < 8 && !settled; ++batch) {
+    Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor,
+                                          &events, &settled)));
+    Q4T_CHECK(!events.array.empty());
+    for (const auto& event : events.array) {
+      ChatPlanError invalid;
+      Q4T_CHECK(ValidateAgentSession(event, AgentSessionShape::kEvent, &invalid));
+      const auto event_id = event.GetString("event_id");
+      Q4T_CHECK(event_id.starts_with("evt_") && event_id.find(run.Id()) == event_id.npos &&
+                identities.insert(event_id).second);
+      types.push_back(event.GetString("type"));
+      if (types.back() == "agent.session.turn.item.added" &&
+          event.Find("item")->GetString("type") == "function_call")
+        Q4T_CHECK(event.Find("item")->Find("arguments")->GetInt("revision") == 442 &&
+                  event.Find("item")->GetString("status") == "completed");
+      if (types.back() == "agent.session.turn.output_text.delta")
+        streamed_text += event.GetString("delta");
+    }
+  }
+  Q4T_CHECK(settled && streamed_text == "442" &&
+            types.front() == "agent.session.created" &&
+            types.back() == "agent.session.idle");
+  for (const auto* once : {"agent.session.turn.created", "agent.session.requires_action",
+                           "agent.session.turn.completed"})
+    Q4T_CHECK(std::count(types.begin(), types.end(), once) == 1);
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor, &events, &settled)) &&
+            events.array.empty() && !settled);
+  AgentEventCursor peer;
+  Q4T_CHECK(ReplayAgentSessionEvents(store, id, Access("client:other"), &peer,
+                                     &events, &settled).http_status == 404);
+  AgentEventCursor subscription;
+  Q4T_CHECK(Ok(OpenAgentEventSubscription(store, id, Access(), &subscription)));
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &subscription, &events, &settled)) &&
+            events.array.empty());
   const auto first_turn = view.turn.GetString("id");
   const auto follow = Parse(R"({"events":[{"type":"agent.session.input.message",
     "input":[{"role":"user","content":[{"type":"input_text","text":"again"}]}]}]})");
@@ -334,6 +385,9 @@ Q4T_TEST(agent_session_tool_action_requires_a_completed_owned_call) {
       later.Id(), "", Clock::now() + 5s));
   Q4T_CHECK(Ok(later.Begin(&wire)) &&
             Ok(ReadAgentSessionTurn(store, id, "", Access(), &view, true)));
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &subscription, &events, &settled)) &&
+            !events.array.empty() && events.array.front().GetString("type") == "agent.session.turn.created" &&
+            events.array.front().GetString("turn_id") != first_turn);
   Q4T_CHECK(view.turns.array.size() == 2 && view.turn.GetString("id") != first_turn &&
             view.items.array.size() == 5);
   Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, first_turn, Access(), &view)) &&

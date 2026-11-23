@@ -716,7 +716,9 @@ set(protocol_inputs
   src/server/agent_registration.cpp
   src/server/agent_session.cpp
   src/server/agent_session_turn.cpp
+  src/server/agent_session_internal.h
   src/server/agent_session_http.cpp
+  src/server/agent_session_events.cpp
   include/q4t/server/decision_plan.h
   include/q4t/server/decision_scoring.h
   src/server/decision_plan.cpp

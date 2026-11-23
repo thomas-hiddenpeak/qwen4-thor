@@ -58,6 +58,27 @@ ObjectReply PrepareAgentSessionEvents(
 ObjectReply ReconcileAgentEventReceipt(
     ObjectStore& objects, const std::string& id, const io::Json& request,
     std::string_view key, const StateAccess& access, ObjectReply result);
+struct AgentEventCursor {
+  size_t step = 0;
+  size_t sequence = 0;
+  std::string turn_id;
+  io::Json session_usage;
+  io::Json turn_usage;
+  int64_t created_at = 0;
+  int64_t started_at = 0;
+};
+// Install the live subscription boundary before acknowledging GET /events.
+ObjectReply OpenAgentEventSubscription(ObjectStore& objects,
+                                       const std::string& id,
+                                       const StateAccess& access,
+                                       AgentEventCursor* cursor);
+// Project the next retained native events. A create subscriber completes at
+// its logical turn terminal. A tool request leaves it attached to the session.
+ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
+                                     const std::string& id,
+                                     const StateAccess& access,
+                                     AgentEventCursor* cursor, io::Json* events,
+                                     bool* settled);
 class ResponsesJobs;
 void ServeAgentSession(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                        std::string_view method, std::string_view target,

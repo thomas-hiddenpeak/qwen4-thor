@@ -64,6 +64,7 @@ APPLICATION_ROUTES = [
       for method in ('GET', 'POST', 'DELETE')),
     ('POST', '/v1/agents/sessions', 'data'),
     ('POST', '/v1/agents/sessions/{agent_session_id}/events', 'data'),
+    ('GET', '/v1/agents/sessions/{agent_session_id}/events', 'control'),
     *((method, '/v1/agents/sessions/{agent_session_id}', 'control')
       for method in ('GET', 'DELETE')),
     *(('GET', '/v1/agents/sessions/{agent_session_id}/' + suffix, 'control')

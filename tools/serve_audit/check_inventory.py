@@ -295,6 +295,7 @@ def current_surface(root):
     session = '/v1/agents/sessions'
     resource = session + '/{session_id}'
     for method, path in [('POST', session), ('POST', resource + '/events'),
+                         ('GET', resource + '/events'),
                          ('GET', resource), ('DELETE', resource),
                          *(('GET', resource + suffix) for suffix in
                            ('/turns', '/turns/{turn_id}', '/items', '/turns/{turn_id}/items'))]:

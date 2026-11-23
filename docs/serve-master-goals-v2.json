@@ -2614,7 +2614,8 @@
       "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json",
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
       "agent_session_initial_turn_evidence_20261123": "docs/evidence/serve-agent-sessions-20261123/checks.json",
-      "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json"
+      "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json",
+      "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json"
     },
     {
       "id": "A09",
@@ -6872,7 +6873,8 @@
       },
       "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json",
       "agent_session_initial_turn_evidence_20261123": "docs/evidence/serve-agent-sessions-20261123/checks.json",
-      "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json"
+      "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json",
+      "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json"
     },
     {
       "id": "N01",
@@ -9089,7 +9091,8 @@
       "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json",
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
       "agent_session_initial_turn_evidence_20261123": "docs/evidence/serve-agent-sessions-20261123/checks.json",
-      "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json"
+      "agent_session_real_tool_round_20261123": "docs/evidence/serve-agent-sessions-20261123/tool-round.json",
+      "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json"
     },
     {
       "id": "Q02",
