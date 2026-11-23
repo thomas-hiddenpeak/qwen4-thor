@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+正式默认部署已发布到 **rev428**，通过默认 CLI 的 check、发布和版本状态检查。保持 STOPPED，回退包已注册；模型、配额和容量沿用原配置。继续正式 Live 主轻配置封包与恢复验收。[正式部署回执](evidence/serve-control-delivery-20261123/README.md)
+
 已修复注册控制包在模型启动前的超时。真实网关故障恢复后模型保持第 1 代，前后 Chat 均答 42，已存回答可取回。67 项 Python、12 项原生检查通过。继续停止状态默认发布及正式 Live 候选。[启动与恢复验收](evidence/serve-registered-startup-20261123/README.md)
 
 真实默认部署的 4 条过期发布请求已移入可恢复归档，现占 124/128；66 项受保护文件摘要一致。控制包首次业务启动另暴露版本日志 prepare 超时，尚未放行模型。继续定位后重验，默认 rev426 保持停止。[维护验收](evidence/serve-model-history-maintenance-20261123/README.md)
