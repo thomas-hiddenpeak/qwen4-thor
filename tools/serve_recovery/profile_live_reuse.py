@@ -19,6 +19,14 @@ VAULT_RECORD = 'q4t-profile-business-v28'
 VAULT_FORMAT = 'q4t-agent-vault-profile-source-v1'
 WORKSPACE_RECORD = 'q4t-profile-business-v31'
 WORKSPACE_FORMAT = 'q4t-agent-workspace-source-v1'
+ARTIFACT_RECORD = 'q4t-profile-business-v32'
+ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
+ARTIFACT_CAPABILITY = dict(selector='agents=v1', source='/workspace/outputs/', immutable=True,
+                           operations=['list', 'retrieve', 'content', 'delete'])
+ARTIFACT_REVIEWED = {
+    'primary': '9134b3c35009291ee215d9d807508c0171001eddc6aa8e01ec2f3111a0fb1f32',
+    'light': '8ef5c5c0378b0c1ffafc830755607e43fbad9679e98bf6a11b66f5cfc09cb0d0',
+}
 WORKSPACE_CAPABILITY = dict(selector='agents=v1', prewarm_seconds=300,
                             idempotency_seconds=86400, workspace_files=True,
                             network=['disabled'], between_turn_writes=True)
@@ -92,7 +100,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 AGENT_RECORD_FORMAT: AGENT_FORMAT, REGISTRATION_RECORD: REGISTRATION_FORMAT,
                 SESSION_RECORD: SESSION_FORMAT, VAULT_RECORD: VAULT_FORMAT,
                 OAUTH_RECORD: OAUTH_FORMAT, ENVIRONMENT_RECORD: ENVIRONMENT_FORMAT,
-                WORKSPACE_RECORD: WORKSPACE_FORMAT}
+                WORKSPACE_RECORD: WORKSPACE_FORMAT, ARTIFACT_RECORD: ARTIFACT_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -114,6 +122,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'a2e3011a39b2d9d2cf8d55dbf93e6119b98b06281d2470d5273c1e1f49bdc37c':
+        'a201da20bee226df67d1c7c409c0431b587dfe4b648f09d71ae046d6d6ffc5dc',
     'a486fc871b0c8c4b3d46e85d1ad092815836bb0f6f38ad34ad8bc4225d670b70':
         '3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed',
     'c4007692ba30e2a42930e73a56b74068fdaa460b869f02a597f86bbf19fe48df':
@@ -152,6 +162,13 @@ def record_hash(value):
 
 
 def format_for(capabilities):
+    if 'agent_session_artifacts' in capabilities:
+        previous = dict(capabilities)
+        artifacts = previous.pop('agent_session_artifacts')
+        ledger.require(ledger.canonical(artifacts) == ledger.canonical(ARTIFACT_CAPABILITY) and
+                       format_for(previous) == WORKSPACE_RECORD,
+                       'artifact qualification requires immutable files and hosted workspaces')
+        return ARTIFACT_RECORD
     if 'agent_environments' in capabilities:
         previous = dict(capabilities)
         workspace = previous.pop('agent_environments')
@@ -222,7 +239,17 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if workspace:
+    if value['format'] == ARTIFACT_RECORD:
+        proofs = value['business']['live']['evidence_sha256']
+        ledger.require(prior['format'] == WORKSPACE_RECORD and
+                       record_hash(prior) in WORKSPACE_REVIEWED.get(prior['profile'], ()) and
+                       previous['added'] == ['agent_session_artifacts'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256'} and
+                       format_for(after) == ARTIFACT_RECORD and
+                       set(prior['business']['live']['evidence_sha256']) <= set(proofs) and
+                       proofs['session-handoff.json'] != prior['business']['live']['evidence_sha256']['session-handoff.json'],
+                       'artifacts require the qualified workspace and a fresh file handoff')
+    elif workspace:
         proofs = value['business']['live']['evidence_sha256']
         ledger.require(prior['format'] == ENVIRONMENT_RECORD and
                        record_hash(prior) == ENVIRONMENT_REVIEWED.get(prior['profile']) and
@@ -340,6 +367,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == ARTIFACT_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == ARTIFACT_REVIEWED.get(name),
+                       'artifact qualification differs from reviewed primary/light evidence')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) in WORKSPACE_REVIEWED.get(name, ()),
+                       'artifact qualification lost the hosted workspace predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == WORKSPACE_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) in WORKSPACE_REVIEWED.get(name, ()),

@@ -341,6 +341,12 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   } else {
     generation_history_ = std::move(history);
   }
+  const auto* declarations = envelope_.request.GetArray("tools");
+  if (!agent_http_session_.empty() && declarations) {
+    auto bound = agent_detail::ReconcileSessionDiscovery(*declarations,
+                                                         &generation_history_);
+    if (!bound.ok()) return bound;
+  }
   if (std::any_of(generation_history_.array.begin(),
                   generation_history_.array.end(), [](const auto& item) {
                     const auto* caller = item.Find("caller");
@@ -372,7 +378,6 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
     reply.value = Object({{"param", String(error.param)}});
     return reply;
   }
-  const auto* declarations = envelope_.request.Find("tools");
   ResponsesToolHistory tools;
   if (HasResponsesToolDiscovery(declarations ? *declarations : Json(),
                                 generation_history_)) {

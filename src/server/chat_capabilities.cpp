@@ -596,7 +596,7 @@ std::string ChatCapabilitiesJson(
          R"("write_only":true,"rotation":true,"archive_cascade":true}},)"
          R"("agent_sessions":{"selector":"agents=v1",)"
          R"("endpoint":"/v1/agents/sessions","environments":["none","openai_hosted"],)"
-         R"("tool_types":["function","mcp"],"stream":true,)"
+         R"("tool_types":["function","mcp","tool_search"],"stream":true,)"
          R"("mcp":{"connection_origin":"service","transport":"http",)"
          R"("vault_auth":["static_bearer","mcp_oauth_access_token","mcp_oauth_refresh"]},)"
          R"("idempotent_input_events":true,"cancel_turn":true,)"

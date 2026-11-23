@@ -15,6 +15,8 @@ ObjectReply BindSessionSettings(io::Json* data, const io::Json& session,
                                 io::Json* link = nullptr);
 io::Json SavedAgentToolResult(const std::string& response_id,
                               const io::Json& event);
+bool IsAgentDiscoveryItem(std::string_view type);
+ObjectReply ReconcileSessionDiscovery(const io::Json& tools, io::Json* history);
 ObjectReply ProjectItem(const io::Json& from, const std::string& turn_id,
                         io::Json* items, io::Json* actions, bool completed);
 ObjectReply ProjectStep(const io::Json& session, const io::Json& link,

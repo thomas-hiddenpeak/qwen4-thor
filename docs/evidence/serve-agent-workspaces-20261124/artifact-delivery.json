@@ -1,0 +1,499 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 454,
+    "version_revision": 156,
+    "profile_revision": 46,
+    "previous_profile_revision": 45,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "9867dc4a9c647e445dca75447a15d501175f40aa24bde80a0a8efb33ea6e313c",
+    "fallback": "262fcfc5cb9cfda4c3ffa4e94134df273bfd30c0ac5fe9e1512033ffb5b9bbfa",
+    "engine": "52a1aa7d6b5a0f827ce3c6a8b2bca565e77624041f99abb2e0975ec393aa5b91",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "managed": {
+    "model_loss": {
+      "artifacts": {
+        "vault-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/vault-before.json",
+          "sha256": "82f83327fe0c5df8b5b058e9267fe458ddac9578148e2173b3c212cfdd46c99f"
+        },
+        "vault-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/vault-after.json",
+          "sha256": "53faf6ca695fd5d5f5a744cd6ba7c3517d13355e00fafb4e3e69328ac8215bf2"
+        },
+        "fault-snapshot.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/fault-snapshot.json",
+          "sha256": "3ed1fc83f72e5ae5d33785de04826d9692af0950920a1708c4463f371528a51c"
+        },
+        "result.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/result.json",
+          "sha256": "7e699c8acba6affcab9bfc4d4e1214dcd2c78573e61ea3a2d23f56d25b9b31f1"
+        },
+        "session-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/session-before.json",
+          "sha256": "7abf3598c02c7053fa5c6ab5090c1f2bd937703370389fe700eaaa46789f94a5"
+        },
+        "session-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/session-after.json",
+          "sha256": "0f7d23550248b2a1b2991e30005b9d8672590e85beb965d7daab9041467e7b34"
+        },
+        "recover-events.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/recover-events.json",
+          "sha256": "b5f42b2f8c8253552ee33849a5a6f823de4fb57f2c462013c76e7417bc25a701"
+        },
+        "terminal.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/terminal.json",
+          "sha256": "fcbccfc0a6991f5cf89b43ac12b748959e10ffe5f33ad4a7fb9610c1fe5e3efa"
+        },
+        "chat-after.wire": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/chat-after.wire",
+          "sha256": "5a8136e1391500a49c7a6ac2db91b8f069bceadc766ec543279fa870ef49626a"
+        },
+        "registration-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/registration-after.json",
+          "sha256": "6b601ba68486c0b162a0437127b21fde9cb95fe05a4d255f94998bc3ca848c0a"
+        },
+        "interruption.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/interruption.json",
+          "sha256": "1d757324cf3afbcd95fd1a2e36026cb7f3d2d39d61111441a8623fa26d024a99"
+        },
+        "oauth-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/oauth-before.json",
+          "sha256": "2d4e2e08be1b461869b8d87fe8f29f89a2c50daab9ecb4f52c0e67162cacad43"
+        },
+        "oauth-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/oauth-after.json",
+          "sha256": "4fc8dafef0c254a37bcccb984a58bb42f24f96bb764fdd4ab990dfc68434580f"
+        },
+        "environment-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/environment-before.json",
+          "sha256": "7e321a52bc4051950b24ec156bcec691f60bfc7ddbd41fc61a375485cb442a1c"
+        },
+        "environment-resumed.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/environment-resumed.json",
+          "sha256": "2170571927cdba934317702f23ce6d64ebe2eb1625e4d5b65a5b14c549df8ec0"
+        },
+        "environment-complete.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/environment-complete.json",
+          "sha256": "d50e7d09553bc74819c1fed2b8e2f1a40c592049f15621ab2f91fa26e1fb7998"
+        },
+        "artifact-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/artifact-before.json",
+          "sha256": "c0ab63f4daa0a9360f876277c5584947c73ffc2405df7b45129f7c1a2f2523ae"
+        },
+        "artifact-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/artifact-after.json",
+          "sha256": "8db20d5d8e32745663eca27d91fa5cb0633bff0c10fda9f9dd8d4967845a431d"
+        },
+        "workspace-recovered.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-business-01/workspace-recovered.json",
+          "sha256": "cac60f3a3560743de127dc8141f26ecce61b195405b50fcf967e02e1be1a6393"
+        },
+        "exclusive_lease": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-lease-01/exit.json",
+          "sha256": "1cbf1da7d80d28d9eff46c2d12db5fbcd83cd3631db5c98f9eb371e4f2f5af83"
+        }
+      },
+      "elapsed_seconds": 123.161672772374,
+      "starts": 2,
+      "cleanup": {
+        "remaining": [],
+        "ports_free": true,
+        "default_unchanged": true
+      },
+      "recovery": {
+        "guardian_same": true,
+        "old": 1,
+        "new": 2,
+        "cancellation": "cancelled",
+        "fault": "background_execution_interrupted",
+        "other": 404
+      },
+      "pending_lookup": {
+        "id": "agent_session_c01a057eff94312aac8e6e555a6d7791",
+        "action": {
+          "type": "function_call",
+          "turn_id": "turn_99dc37c21b18d801b94b8ad7ad3eb1bb",
+          "arguments": {},
+          "name": "read_release_record",
+          "call_id": "call_resp_500f378511184f3afb6cf07368531193_0"
+        },
+        "turns": 1,
+        "results": 1,
+        "answer": "The publication revision is 442.",
+        "revision": 442,
+        "retries": [
+          202,
+          202
+        ],
+        "foreign": 404
+      },
+      "chat": "42",
+      "monitor_samples": 117,
+      "vault": {
+        "vault": "vault_0c2deb864f185c87bfdbf525c76226c9",
+        "credential": "cred_dd17fb434ce9c5bd4eb38e0123fedf72",
+        "recovered": true,
+        "rotated": true,
+        "archive_revoked": 404,
+        "foreign_delete": 404
+      },
+      "oauth": {
+        "vault": "vault_61b38a484259da2c2027cb597471890f",
+        "credential": "cred_ff50c97d9e26d120a81f82135d08287c",
+        "retained": true,
+        "rotated": true,
+        "foreign": 404,
+        "issuer_refused": "mcp_target_denied",
+        "issuer_connections": 0
+      },
+      "template_recovery": {
+        "template_id": "environment_template_3d917664a449021a932cf1cc68d56c6c",
+        "retained": true,
+        "rotated_name": true,
+        "foreign_delete": 404,
+        "deleted": true,
+        "waiting_step": "cb2ab54d4ec2d109f483d1f3aeed0b28ad3e0959ca94b83460e8970dbcfc953f"
+      },
+      "completed_trace": {
+        "trace_id": "d67196b7d1e720befdb7ea472ef3a0a2",
+        "closed_spans": 3,
+        "actual_tool_response": true,
+        "foreign": 404,
+        "turn_id": "turn_99dc37c21b18d801b94b8ad7ad3eb1bb"
+      },
+      "immutable_artifact": {
+        "session": "agent_session_c4763326d2b62cbb8c60df337510fac0",
+        "artifact": "artifact_1880331c2e36d3c040281e4e672fba0a0ad72588b6f3e2fd1496eaf020fb7e2b",
+        "sha256": "a6b62894682411bc7a2a751964880f1e09bda60e1039131249ddf38362fc21b3",
+        "bytes": 393216,
+        "replaced_bytes": 0,
+        "foreign": 404,
+        "deleted": 404
+      },
+      "workspace": {
+        "id": "environment_529c021fc207f1668cfee238e0947fc3",
+        "session": "agent_session_c01a057eff94312aac8e6e555a6d7791",
+        "file_bytes_before": 393216,
+        "file_bytes_after": 0,
+        "turn_binding": "turn_99dc37c21b18d801b94b8ad7ad3eb1bb",
+        "state": "disconnected"
+      }
+    },
+    "gateway_fatal": {
+      "artifacts": {
+        "vault-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/vault-before.json",
+          "sha256": "0209a3038efaa04028f457bed2fb707a3f5b8b288b4034928076e85372c55099"
+        },
+        "vault-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/vault-after.json",
+          "sha256": "8c974e1ebcfe2ad5ed3a85242dbfa04fbca58de70ba0ad2b811e17ff3a9d9ba0"
+        },
+        "fault-snapshot.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/fault-snapshot.json",
+          "sha256": "1a0bd7a7dc80cbe9431e4bc7b024d12baefd3856e979bf9f2daab55a13eb4ace"
+        },
+        "result.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/result.json",
+          "sha256": "d741666c0721f58876c74ec28a459de84ff61943617bebb722d06f459faa22e7"
+        },
+        "session-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/session-before.json",
+          "sha256": "ac8a840b861853486fbb07f09f5ef17afdfb5cba5c2821cf08aeb6d5e53fbaa2"
+        },
+        "session-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/session-after.json",
+          "sha256": "19a0a09f6e2831d9f2f9b18eb0307d19ed6a97c547e320fe75ab71ea090ebeab"
+        },
+        "recover-events.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/recover-events.json",
+          "sha256": "c7006f8e6e01d7956025b61431b0a4800745a23739218c6c8e1f1c80d3f86b96"
+        },
+        "terminal.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/terminal.json",
+          "sha256": "6913b0ce168d7a41b214ee94d437845fe087d4ff033a80d3cd2e2bb0c2ac9c5e"
+        },
+        "chat-after.wire": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/chat-after.wire",
+          "sha256": "86d48977fceec92ef14ab60b65333df6fe88bb89bad0acd8c63305eabd5c833a"
+        },
+        "registration-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/registration-after.json",
+          "sha256": "78fd2d047c20e37c94231a44a0ebde6be73ea716317a5b2846ccba6b9c9e0ffa"
+        },
+        "interruption.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/interruption.json",
+          "sha256": "992eeecc2c297bbd1b95d8c250c837042535fb4e9b4fb927520f7ab950053f4d"
+        },
+        "oauth-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/oauth-before.json",
+          "sha256": "fb5fd8ae67cea3c7118e393ddb1b77b51a25d24f0b1fb17cc284b2d3d9afcee1"
+        },
+        "oauth-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/oauth-after.json",
+          "sha256": "f676b20107f474b5a4073dbc6e4248120ef796a9f521ff4aea5b4184e3ccd032"
+        },
+        "environment-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/environment-before.json",
+          "sha256": "51916316bbb017a6a0ee7391f455fc532062529c69eea7b0df2f227806c0f238"
+        },
+        "environment-resumed.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/environment-resumed.json",
+          "sha256": "55fa55fcb9608ca3d3d37fe6c35d684cf5bf615ab831e1b270fe3780c8db681f"
+        },
+        "environment-complete.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/environment-complete.json",
+          "sha256": "f8761fef251b7a05373bf5b0a8f5c050f8601db6fd74aaf5e25f72e4a4724a89"
+        },
+        "artifact-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/artifact-before.json",
+          "sha256": "60366dbb3d8aaeb1a6f6090e2c9caf7086bad654b9ed233d933291cce90ca918"
+        },
+        "artifact-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/artifact-after.json",
+          "sha256": "25ddcd493a8ffff4af8255164937cb95f1e73bc856d49639eefc156564504d5c"
+        },
+        "workspace-recovered.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-artifact-02/workspace-recovered.json",
+          "sha256": "e720cafdb2f78bdd8e39345b5c86a16cb9288c7be4b383072d3e5fc3d4b0b9d3"
+        },
+        "exclusive_lease": {
+          "path": ".q4t-work/serve-responses-agents-20261123/artifact-takeover-lease-02/exit.json",
+          "sha256": "336ce2d43b575bcb4599f7099e70a8273d86a9a58385de3d1939ae90c90c4965"
+        }
+      },
+      "elapsed_seconds": 158.27355073578656,
+      "starts": 2,
+      "cleanup": {
+        "remaining": [],
+        "ports_free": true,
+        "default_unchanged": true
+      },
+      "recovery": {
+        "guardian_same": true,
+        "old": 1,
+        "new": 2,
+        "cancellation": "cancelled",
+        "fault": "service_draining",
+        "other": 404
+      },
+      "pending_lookup": {
+        "id": "agent_session_8271438ca7b100029cc00e76e8855a54",
+        "action": {
+          "type": "function_call",
+          "turn_id": "turn_76da802f5222048ab883b47f9855ffbf",
+          "arguments": {},
+          "name": "read_release_record",
+          "call_id": "call_resp_b2a6020509c2605692389c76edf5854f_0"
+        },
+        "turns": 1,
+        "results": 1,
+        "answer": "The publication revision is 442.",
+        "revision": 442,
+        "retries": [
+          202,
+          202
+        ],
+        "foreign": 404
+      },
+      "chat": "42",
+      "monitor_samples": 147,
+      "vault": {
+        "vault": "vault_b2a8ec1216b078ee83b0d904b0b2e3bd",
+        "credential": "cred_723215f89c216efd83f6d841874fefd6",
+        "recovered": true,
+        "rotated": true,
+        "archive_revoked": 404,
+        "foreign_delete": 404
+      },
+      "oauth": {
+        "vault": "vault_4a0a480fc138327f6a1c46886888ca13",
+        "credential": "cred_ec64fdaba3b3cb896d8917acb65d85e0",
+        "retained": true,
+        "rotated": true,
+        "foreign": 404,
+        "issuer_refused": "mcp_target_denied",
+        "issuer_connections": 0
+      },
+      "template_recovery": {
+        "template_id": "environment_template_5cd4b1c8ef9ea9956ca491178bf02459",
+        "retained": true,
+        "rotated_name": true,
+        "foreign_delete": 404,
+        "deleted": true,
+        "waiting_step": "52b4cbb8a9692d7beb0db0872fbff7eef3082daeb9a25a6a56c681408bfed5fc"
+      },
+      "completed_trace": {
+        "trace_id": "52bf9fc415c2c668c6a8c8a827c6137e",
+        "closed_spans": 3,
+        "actual_tool_response": true,
+        "foreign": 404,
+        "turn_id": "turn_76da802f5222048ab883b47f9855ffbf"
+      },
+      "immutable_artifact": {
+        "session": "agent_session_dd9fab0a8893e349e015d4c0b34871ac",
+        "artifact": "artifact_72ce0b4cfc3f1e0225c68aeb238216b8ce61f1788a460419b411f1853406ed5b",
+        "sha256": "a6b62894682411bc7a2a751964880f1e09bda60e1039131249ddf38362fc21b3",
+        "bytes": 393216,
+        "replaced_bytes": 0,
+        "foreign": 404,
+        "deleted": 404
+      },
+      "workspace": {
+        "id": "environment_a154ea12138a2e797ad58a669bfce2c6",
+        "session": "agent_session_8271438ca7b100029cc00e76e8855a54",
+        "file_bytes_before": 393216,
+        "file_bytes_after": 0,
+        "turn_binding": "turn_76da802f5222048ab883b47f9855ffbf",
+        "state": "disconnected"
+      },
+      "version_selection": {
+        "selected": "fallback",
+        "probes": 1,
+        "payload": "262fcfc5cb9cfda4c3ffa4e94134df273bfd30c0ac5fe9e1512033ffb5b9bbfa",
+        "consumed": true,
+        "signal": 6
+      }
+    }
+  },
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "bbd132e81985145436e46f7121795596525682acb9507c7311780d0adeb45413"
+        ],
+        "sha256": "867bb8fee90ad77e4c71d009ba7965690d8aee81c9036de73b1ad61e136e7e98",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 16,
+        "archived": [
+          "69da155c-5c9e-4a64-8ea4-dcc237529947"
+        ],
+        "sha256": "c8114503afff884792f860b76030b5ac4bdbe6074acb30a1e2dc618d1d8df32d",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "intents": {
+    "status": "PASS",
+    "pools": {
+      "intents": {
+        "before": 128,
+        "archived": [
+          "b01172ba-b064-4cf2-aaeb-af9060e8e323"
+        ],
+        "sha256": "650b370d1f8c9a65b0a9c16050e9344ea81500070f9d5dab39036b3ed3d302e9",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "operator_handoff": {
+    "source_commit": "61ddc07bbf6019f98e9edf4040366654f5354383",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/artifact-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/artifact-primary-01/bundle",
+      "manifest_sha256": "9867dc4a9c647e445dca75447a15d501175f40aa24bde80a0a8efb33ea6e313c"
+    },
+    "revision": 454,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/artifact-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "ed1b667bdc28dd93916fc5da12f9354360a89c7a5511d6327731ed39b7e81120",
+    "handoff_sha256": "0df7b758064811c284cc15b764cc3bae4499b3d8ee99d5014e397202d0d2b285",
+    "checked": true,
+    "source_files": 697,
+    "hours_executed": 0
+  },
+  "qualifications": {
+    "path": "docs/evidence/serve-agent-workspaces-20261124/artifact-profiles.json",
+    "sha256": "28cb4309132eb920b270ffde5daec03e0008a7dec7fa83e16bb59e2b2558eb1d"
+  },
+  "publication_receipts": {
+    "artifact-primary-01/service-acceptance.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-primary-01/service-acceptance.json",
+      "sha256": "068c4a47b5478700b4dc7ef7d001c70587388494acecc7d7edf7d0da02e077ff"
+    },
+    "artifact-fallback-01/service-acceptance.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-01/service-acceptance.json",
+      "sha256": "cdab4e198dc9d7bd3a52ca54a2fcf6da1d05ea09367b98bf8c3d4d3003684a06"
+    },
+    "artifact-primary-01/origin.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-primary-01/origin.json",
+      "sha256": "5d1f66735d1fe68fb8e83525ba350a0bf6eedc8d99fe134d47022bafc4f9495c"
+    },
+    "artifact-fallback-01/origin.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-fallback-01/origin.json",
+      "sha256": "f4f668ca74d0211381a520566c776a5ffa614649ffa18feef0ae15a7a249af99"
+    },
+    "artifact-delivery/result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-delivery/result.json",
+      "sha256": "8c36979f994c7f9f41e73741b98fe961a657ebf2659a323e237294a9f94daa3a"
+    },
+    "artifact-delivery/check.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-delivery/check.stdout",
+      "sha256": "4f75741b7df2bfc9cc7cd50a4642ca5074cc58f0cc3879ba16e99974ee10955c"
+    },
+    "artifact-delivery/status.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-delivery/status.stdout",
+      "sha256": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b"
+    },
+    "artifact-delivery/version-status.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-delivery/version-status.stdout",
+      "sha256": "3e65b63db87ac3e16a1d6aa4e95d26a3047c5d6dc5a8d6016a41845fba1603e7"
+    },
+    "artifact-delivery/publish-status.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-delivery/publish-status.stdout",
+      "sha256": "29bb9edf8d1b31ed5d84bf2b1df61f82894aa1dc60184ac678d068b73816da55"
+    },
+    "artifact-day.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-day.json",
+      "sha256": "fc35b93eb10aa27f21e7fa1c775a5ae7f2cb77bee36e432c92f7d5f100c90d4e"
+    },
+    "artifact-maintenance-01/result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-maintenance-01/result.json",
+      "sha256": "a89d6813b9ebb789a59c7ce73613a232a30aa47288e2f40313d48cbc0a3b60ef"
+    },
+    "exclusive_lease": {
+      "path": ".q4t-work/serve-responses-agents-20261123/artifact-publication-lease-01/exit.json",
+      "sha256": "dbb12809d5599cda0dc943eb3d3b2ef1f9be3b1c6eb7f4fa63ddd7d02edd646c"
+    }
+  },
+  "retained_attempts": {
+    "takeover_01": {
+      "result": {
+        "status": "FAIL",
+        "seconds": 30.768655414227396,
+        "model_starts": 0,
+        "stop_returncode": null,
+        "supervisor_exit": 1,
+        "remaining": [],
+        "ports_free": true,
+        "unchanged_default": true,
+        "receipt_sha256": "9867dc4a9c647e445dca75447a15d501175f40aa24bde80a0a8efb33ea6e313c"
+      },
+      "evidence": {
+        "path": ".q4t-work/serve-responses-agents-20261123/artifact-takeover-business-01/result.json",
+        "sha256": "dd3107a3238b729df493f3b426dcfe22ba90d59797995899ca53bbdde34fb0be"
+      },
+      "cause": "Fixture required a private directory with the fatal-business- prefix. The supervisor exited before starting a model. Attempt 02 used the accepted directory."
+    },
+    "profiles_prepare_01": {
+      "evidence": {
+        "path": ".q4t-work/serve-responses-agents-20261123/artifact-profiles-prepare-01.log",
+        "sha256": "f73cd97de1bf43f0776e09d215476655bd8c86d1ebb543cc8774e541a06ca968"
+      },
+      "cause": "Missing Q4T_INSTALLED_LIVE_WORKERS during preparation. No runtime started. Attempt 02 bound the sealed installed workers."
+    }
+  }
+}

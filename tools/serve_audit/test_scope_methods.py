@@ -4,6 +4,25 @@ from .scope_methods import compare
 
 
 class ScopedMethodsTest(unittest.TestCase):
+    def test_model_read_and_organization_owner_delete_share_one_path(self):
+        path = '/models/{model}'
+        scope = dict(endpoints=[dict(path=path, tasks=['A06'],
+                                     scope='required_inference_or_application_service')])
+        deletion = dict(operationId='deleteModel', summary='Delete a fine-tuned model',
+                        description='You must have the Owner role in your organization.',
+                        responses={'200': {}})
+        official = dict(paths={path: dict(get=dict(responses={'200': {}}), delete=deletion)})
+        issued = dict(paths={'/v1/models/{id}': dict(delete=dict(responses={'403': {}}))})
+        result = compare(scope, official, issued)
+        self.assertEqual(result['methods_on_required_paths'], 2)
+        self.assertEqual(result['required_methods'], 1)
+        self.assertEqual(result['missing_declaration'], 1)
+        self.assertEqual([r['method'] for r in result['rows']], ['GET'])
+        self.assertEqual(result['excluded_methods_on_required_paths'][0]['issued_success'], [])
+        deletion['summary'] = 'Unload a served model'
+        with self.assertRaisesRegex(ValueError, 'Review changed platform scope'):
+            compare(scope, official, issued)
+
     def test_selector_missing_status_and_excluded_platform(self):
         paths = ['/jobs', '/jobs?beta=true', '/platform']
         scope = dict(endpoints=[dict(path=p, tasks=['A08'],

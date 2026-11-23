@@ -526,6 +526,12 @@ def extends(previous, target):
 
 def explicit_extension(previous, target):
     """Compare qualified semantics when a declared pending capability ships."""
+    if 'agent_session_artifacts' not in previous and 'agent_session_artifacts' in target:
+        from tools.serve_recovery import profile_live_reuse as live
+        if (not package.same_json(previous.get('agent_environments'), live.WORKSPACE_CAPABILITY) or
+                not package.same_json(previous.get('agent_sessions'), live.WORKSPACE_SESSION) or
+                not package.same_json(target['agent_session_artifacts'], live.ARTIFACT_CAPABILITY)):
+            return False
     if 'agent_environments' not in previous and 'agent_environments' in target:
         from tools.serve_recovery import profile_live_reuse as live
         if (package.same_json(previous.get('agent_sessions'), live.OAUTH_SESSION)

@@ -156,7 +156,8 @@ ObjectReply Validate(const Json& value, AgentRegistrationShape shape) {
 
 ObjectReply ResolveSessionAgent(ObjectStore& objects, const Json& request,
                                 const ChatPlanConfig& config,
-                                const StateAccess& access, Json* private_http) {
+                                const StateAccess& access, Json* private_http,
+                                bool* tool_search) {
   const auto* agent_id = request.Find("agent_id");
   Json settings = Object();
   if (agent_id) {
@@ -175,13 +176,26 @@ ObjectReply ResolveSessionAgent(ObjectStore& objects, const Json& request,
   const auto* overrides = request.Find("agent");
   if (!agent_id && (!overrides || !overrides->Has("model")))
     return Invalid("An inline agent needs a model", "agent.model");
-  return NormalizeSessionAgent(std::move(settings), overrides ? *overrides : Object(), config, private_http);
+  return NormalizeSessionAgent(std::move(settings),
+                               overrides ? *overrides : Object(), config,
+                               private_http, tool_search);
 }
 
 ObjectReply NormalizeSessionAgent(Json settings, const Json& overrides,
-                                  const ChatPlanConfig& config, Json* private_http) {
+                                  const ChatPlanConfig& config, Json* private_http,
+                                  bool* tool_search) {
   auto result = Resolve(settings, overrides, config);
   if (!result.ok()) return result;
+
+  // Tool search is a session configuration input. The SDK's session AgentTool
+  // resource contains the discoverable functions, without the search switch.
+  auto& tools = Field(settings, "tools").array;
+  const auto searches = std::erase_if(tools, [](const Json& tool) {
+    return tool.GetString("type") == "tool_search";
+  });
+  if (searches > 1)
+    return Invalid("Expected one tool search declaration", "agent.tools");
+  if (tool_search) *tool_search = searches == 1;
 
   // Session resources expose the public HTTP endpoint or stdio launch shape.
   // Header values, supplied authorization and literal environment values stay

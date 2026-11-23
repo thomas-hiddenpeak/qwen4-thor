@@ -2524,7 +2524,9 @@
       "delivery_evidence": "evidence/serve-retention-delivery-20261110/README.md",
       "chat_storage_evidence": "evidence/serve-chat-storage-20261109/README.md",
       "chat_business_evidence": "evidence/serve-chat-business-20261109/README.md",
-      "remaining_required": [],
+      "remaining_required": [
+        "Hosted environment execution, session subagents, automations and remaining in-scope application methods and behaviors"
+      ],
       "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md",
       "next": "Complete managed agent session, turn, environment and related application state from the G00 scope mapping.",
       "retention_cpu": {
@@ -2622,7 +2624,8 @@
       "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json",
       "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
       "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
-      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json",
+      "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json"
     },
     {
       "id": "A09",
@@ -9122,7 +9125,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev452_delivered_remaining_deliveries",
+      "state": "rev454_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -10297,7 +10300,8 @@
       "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json",
       "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json",
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
-      "agent_registration_main_20261123": "docs/evidence/serve-agent-registration-20261123/main.json"
+      "agent_registration_main_20261123": "docs/evidence/serve-agent-registration-20261123/main.json",
+      "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json"
     },
     {
       "id": "Q03",
@@ -10575,7 +10579,8 @@
         "archive_sha256": "75e08d25918f784894ee91eaf131552ab0ce1b6e24e6b30dffc860e71daef5c0",
         "evidence": "evidence/serve-asr-day-handoff-20261117/README.md"
       },
-      "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
+      "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
+      "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json"
     }
   ],
   "next_task": "Reconcile the frozen HTTP method contracts and implement hosted environment provisioning, workspace access and remaining Serve master tasks.",
@@ -16621,10 +16626,19 @@
     "missing_declarations": 114,
     "exact_success_declarations_rev450": 112,
     "exact_success_declarations_candidate": 117,
-    "publication": "rev450 default; five 201 fixes verified on candidate"
+    "publication": "rev450 default; five 201 fixes verified on candidate",
+    "rev454": {
+      "methods_on_required_paths": 232,
+      "platform_methods_on_shared_paths": 1,
+      "required": 231,
+      "declared": 126,
+      "matching_success_sets": 126,
+      "missing_declaration": 105,
+      "evidence": "docs/evidence/serve-agent-workspaces-20261124/artifact-methods.json"
+    }
   },
   "agent_hosted_workspace_20261124": {
-    "state": "rev452_delivered",
+    "state": "rev454_delivered_hosted_execution_pending",
     "evidence": "docs/evidence/serve-agent-workspaces-20261124/workspace.json",
     "scope": {
       "path_selectors_added": 3,
@@ -16633,8 +16647,8 @@
       "required_methods": 232
     },
     "remaining": [
-      "inline file decoded input limits and durable hosted session artifacts",
-      "sandbox execution, self-hosted providers and remaining application methods"
+      "hosted execution and executor-written files",
+      "self-hosted providers and remaining application methods"
     ],
     "profiles": "docs/evidence/serve-agent-workspaces-20261124/profiles.json",
     "retention": "docs/evidence/serve-agent-workspaces-20261124/retention.json",
@@ -16662,6 +16676,21 @@
         "capacity handoff, managed recovery and release",
         "native executor writes and remaining application API methods"
       ]
+    },
+    "artifact_profiles": {
+      "state": "primary_light_verified",
+      "evidence": "docs/evidence/serve-agent-workspaces-20261124/artifact-profiles.json",
+      "remaining": [
+        "actual managed recovery and publication",
+        "hosted execution"
+      ]
+    },
+    "artifact_delivery": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json",
+    "artifact_methods": "docs/evidence/serve-agent-workspaces-20261124/artifact-methods.json",
+    "session_tool_search": {
+      "state": "short_business_verified",
+      "evidence": "docs/evidence/serve-agent-workspaces-20261124/tool-search.json",
+      "default_revision": 454
     }
   }
 }

@@ -13,7 +13,10 @@ SDK = 'tools/serve_responses/environment_template_sdk.mjs'
 SOURCES = (HELPER, SDK, str(EVIDENCE.relative_to(ROOT)), str(PUBLICATION.relative_to(ROOT)))
 WORKSPACE_PROOF = ROOT/'docs/evidence/serve-agent-workspaces-20261124/workspace.json'
 WORKSPACE_PAYLOAD_PROOF = WORKSPACE_PROOF.with_name('payload-retention.json')
-WORKSPACE_PROOFS = (WORKSPACE_PROOF, WORKSPACE_PROOF.with_name('retention.json'), WORKSPACE_PAYLOAD_PROOF)
+SOURCE_FILES_PROOF = WORKSPACE_PROOF.with_name('source-files.json')
+WORKSPACE_PROOFS = (WORKSPACE_PROOF, WORKSPACE_PROOF.with_name('retention.json'),
+                    WORKSPACE_PAYLOAD_PROOF, SOURCE_FILES_PROOF)
+SOURCE_FILES_SDK = 'tools/serve_responses/environment_source_files_sdk.mjs'
 RETENTION_SDK = 'tools/serve_responses/environment_retention_sdk.mjs'
 WORKSPACE_RELEASE = EVIDENCE.with_name('delivery.json')
 WORKSPACE_SDK = 'tools/serve_responses/environment_workspace_sdk.mjs'
@@ -32,14 +35,34 @@ def workspace_proof(binary):
 
 
 def workspace_sources(proof):
+    if proof == SOURCE_FILES_PROOF:
+        return (SOURCE_FILES_SDK, str(proof.relative_to(ROOT)),
+                str(workspace_release(proof).relative_to(ROOT)))
     sources = (WORKSPACE_SDK, str(proof.relative_to(ROOT)), str(WORKSPACE_RELEASE.relative_to(ROOT)))
     return (*sources, RETENTION_SDK) if proof == WORKSPACE_PAYLOAD_PROOF else sources
+
+
+def workspace_release(proof):
+    return WORKSPACE_PROOF.with_name('delivery.json') if proof == SOURCE_FILES_PROOF else WORKSPACE_RELEASE
 
 
 def candidate(build, current, workspaces=False):
     if workspaces:
         source = workspace_proof(pkg.sha(build/'q4t'))
         proof = pkg.read(source)
+        if source == SOURCE_FILES_PROOF:
+            result = proof['sdk']
+            pkg.require(proof['business']['status'] == 'PASS' and proof['lease'] == 'COMPLETED' and
+                        proof['engine'] == pkg.sha(build/'q4t') and proof['protocol'] == protocol(current) and
+                        proof['driver'] == pkg.sha(ROOT/SOURCE_FILES_SDK) and
+                        result['file_bytes'] == result['download_bytes'] == 50 << 20 and
+                        result['deleted_source'] == result['foreign_source'] == result['deleted_session'] == 404 and
+                        result['connected_rejected'] == result['prewarm_rejected'] == 400 and
+                        result['answer'] == '42' and re.fullmatch('[0-9a-f]{64}',result['download_sha256']),
+                        'large Workspace source and immutable artifact witness differs')
+            return dict(receipt_sha256=pkg.sha(source), binary=proof['engine'], ingress=proof['ingress'],
+                        protocol=proof['protocol'], renewal=True, environment_templates=True,
+                        hosted_workspaces=True, session_artifacts=True)
         pkg.require(proof['business']['status'] == 'PASS' and proof['lease'] == 'COMPLETED' and
                     proof['sdk']['states'] == ['ready', 'connected', 'disconnected'] and
                     proof['sdk']['tenant'] == 404 and proof['sdk']['turn_answer'] == '42' and
@@ -78,6 +101,17 @@ def verify(phase, plan, capabilities, row):
             previous = pkg.read(phase.parent/'primary/session-handoff.json')['workspace']
             pkg.require(space == dict(previous, byte_length=0, disconnected=True),
                         'light did not recover the original workspace')
+        if plan['agent_vaults'].get('session_artifacts'):
+            from tools.serve_recovery.profile_live_reuse import ARTIFACT_CAPABILITY
+            artifacts = row['artifacts']
+            pkg.require(capabilities.get('agent_session_artifacts') == ARTIFACT_CAPABILITY and
+                        artifacts['source_bytes'] == 384 << 10 and artifacts['deleted_source'] == 404 and
+                        artifacts['waiting_count'] == 0 and re.fullmatch('[0-9a-f]{64}', artifacts['sha256']),
+                        'missing encrypted workspace or artifact observation')
+            if plan['name'] == 'light':
+                before = pkg.read(phase.parent/'primary/session-handoff.json')['artifacts']
+                pkg.require(artifacts == dict(before, published=2, distinct=True, matched=2, foreign=404,
+                                              deleted=404), 'immutable artifact handoff differs')
     handoff = row['template_trace']
     pkg.require(capabilities.get('agent_environment_templates') == TEMPLATES and
                 capabilities.get('agent_session_traces') == TRACES and

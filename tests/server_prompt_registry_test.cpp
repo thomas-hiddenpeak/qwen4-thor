@@ -997,6 +997,110 @@ Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
   return true;
 }
 
+Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration) {
+  for (bool replace : {false, true}) {
+    Fixture f;
+    ObjectStore store(f.options);
+    auto config = Config();
+    config.structured = true;
+    const auto definition = Parse(R"({"model":"cpu","tools":[{"type":"tool_search"},
+      {"type":"function","name":"read_release","defer_loading":true,
+       "description":"Read the release","parameters":{"type":"object","properties":{}}}]})");
+    auto saved = HandleAgentRegistration(store, "POST", "/v1/agents",
+                                         OutputJson(definition), config, Access());
+    Q4T_CHECK(Ok(saved) && saved.value.GetArray("tools")->array.size() == 2);
+    auto request = Parse(R"({"agent_id":"unused","environment":{"type":"none"},
+                             "input":"Find and call read_release"})");
+    Set(&request, "agent_id", *saved.value.Find("id"));
+    const auto now = std::time(nullptr);
+    ResponsesExecution run(store);
+    auto session = PrepareAgentSessionExecution(store, request, config, Access(), now, run);
+    Q4T_CHECK(Ok(session) && run.HasToolSearch());
+    const auto& tools = session.value.Find("agent")->GetArray("tools")->array;
+    Q4T_CHECK(tools.size() == 1 && tools[0].GetBool("defer_loading"));
+    const auto id = session.value.GetString("id");
+    run.BindBackgroundControl(std::make_shared<RequestControl>(
+        run.Id(), "", Clock::now() + 10s));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
+    ResponseDelta discovery;
+    discovery.kind = ResponseDelta::Kind::kTool;
+    discovery.tool_start = true;
+    discovery.call = {0, "search_release", std::string(kResponsesToolSearchModelName),
+                      R"({"arguments_json":"{\"paths\":[\"read_release\"]}"})"};
+    Q4T_CHECK(run.Append(discovery, "null", &wire));
+    bool waiting = false;
+    Q4T_CHECK(Ok(run.RunToolSearches(1, &waiting, [](const auto&) { return true; })) &&
+              !waiting);
+    ResponsesGenerationPlan discovered;
+    Q4T_CHECK(Ok(run.ContinueFileSearch(2, config, {}, &discovered)));
+    ResponseDelta lookup;
+    lookup.kind = ResponseDelta::Kind::kTool;
+    lookup.tool_start = true;
+    lookup.call = {0, "call_release", "read_release", "{}"};
+    Q4T_CHECK(run.Append(lookup, "null", &wire) &&
+              Ok(run.Finish(false, 1, {9, 0, 8, 0}, now, &wire)));
+    AgentSessionView view;
+    Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)) &&
+              view.turn.GetString("status") == "waiting" && view.items.array.size() == 2 &&
+              view.items.array.back().GetString("name") == "read_release");
+    AgentEventCursor cursor;
+    Json events;
+    bool settled = false;
+    Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor, &events, &settled)));
+    size_t calls = 0;
+    for (const auto& event : events.array) {
+      if (event.GetString("type") != "agent.session.turn.item.added") continue;
+      Q4T_CHECK(event.GetInt("output_index", -1) == 0 &&
+                event.Find("item")->GetString("name") == "read_release");
+      ++calls;
+    }
+    Q4T_CHECK(calls == 1);
+    const auto update = replace
+        ? Parse(R"({"agent":{"tools":[{"type":"function","name":"read_release",
+               "defer_loading":true,"description":"Replacement description",
+               "parameters":{"type":"object","properties":{"build":{"type":"integer"}}}}]}})")
+        : Parse(R"({"agent":{"tools":[]}})");
+    auto changed = UpdateAgentSession(store, id, update, config, Access());
+    Q4T_CHECK(Ok(changed));
+    auto results = Parse(R"({"events":[{"type":"agent.session.input.tool_result",
+      "turn_id":"turn","call_id":"call_release","success":true,"output":"rev452"}]})");
+    Set(&results.object[0].second.array[0], "turn_id", *view.turn.Find("id"));
+    ResponsesExecution resumed(store);
+    bool replay = false;
+    Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, results, "fill-release", config,
+                                          Access(), resumed, &replay)) &&
+              resumed.HasToolSearch());
+    const auto* active = resumed.Generation().generation_request.GetArray("tools");
+    Q4T_CHECK(active && active->array.size() == (replace ? 2 : 1));
+    const auto catalog = OutputJson(*active);
+    Q4T_CHECK(catalog.find("Read the release") == std::string::npos);
+    if (replace) {
+      Q4T_CHECK(catalog.find("Replacement description") != std::string::npos &&
+                catalog.find("build") != std::string::npos);
+    } else {
+      Q4T_CHECK(catalog.find("read_release") == std::string::npos);
+    }
+    resumed.BindBackgroundControl(std::make_shared<RequestControl>(
+        resumed.Id(), "", Clock::now() + 10s));
+    Q4T_CHECK(Ok(resumed.Begin(&wire)) && Ok(resumed.StartRunning(&wire)));
+    ResponseDelta text;
+    text.kind = ResponseDelta::Kind::kContent;
+    text.text = "rev452";
+    Q4T_CHECK(resumed.Append(text,"null",&wire) &&
+              Ok(resumed.Finish(false, 0, {6, 0, 1, 0}, now, &wire)));
+    auto follow = Parse(R"({"events":[{"type":"agent.session.input.message",
+      "input":[{"role":"user","content":[{"type":"input_text","text":"again"}]}]}]})");
+    ResponsesExecution next(store);
+    Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, follow, "follow-release", config,
+                                          Access(), next, &replay)) &&
+              !next.HasToolSearch());
+    const auto* remaining = next.Generation().generation_request.GetArray("tools");
+    Q4T_CHECK(!remaining || remaining->array.empty());
+  }
+  return true;
+}
+
 Q4T_TEST(agent_session_tool_action_requires_a_completed_owned_call) {
   Fixture f;
   ObjectStore store(f.options);

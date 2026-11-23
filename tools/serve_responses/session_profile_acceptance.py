@@ -98,6 +98,7 @@ def business(stage, capabilities):
                   key=stage.keys['alpha'], other=stage.keys['gamma'],
                   sdk=stage.plan['sdk_directory'], profile=name,
                   hosted_workspaces=stage.plan.get('agent_vaults', {}).get('hosted_workspaces',False),
+                  session_artifacts=stage.plan.get('agent_vaults', {}).get('session_artifacts',False),
                   environment_templates=stage.plan.get('agent_vaults', {}).get('environment_templates',False))
     if name == 'light':
         params['prior'] = pkg.read(stage.out.parent/'primary/session-handoff.json')

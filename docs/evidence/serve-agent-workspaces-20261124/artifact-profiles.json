@@ -1,0 +1,78 @@
+{
+  "profiles": {
+    "primary": {
+      "starts": 1,
+      "seconds": 47.06115201022476,
+      "artifacts": {
+        "source_bytes": 393216,
+        "sha256": "71745c18776cd0686c4f2d52caffa368a5a0599d5976173b20fc7c97a6fdfbf6",
+        "deleted_source": 404,
+        "waiting_count": 0
+      },
+      "workspace": {
+        "id": "environment_f435e0d6c4d5818aa2c0f1f3a6c49b1c",
+        "session": "agent_session_15cefba899dfa93a0131956f022dbc8c",
+        "files_digest": "141828d5fcd550defec5d3dc9e9ccf42432f3df700cf41861f7b644532bedfc4",
+        "active_write": 409
+      },
+      "record": "9134b3c35009291ee215d9d807508c0171001eddc6aa8e01ec2f3111a0fb1f32",
+      "prior": "405210114da0add45510e800d673dff2176f62fd8123e78a0a74ac80c33f65ac"
+    },
+    "light": {
+      "starts": 1,
+      "seconds": 126.24729772284627,
+      "artifacts": {
+        "source_bytes": 393216,
+        "sha256": "71745c18776cd0686c4f2d52caffa368a5a0599d5976173b20fc7c97a6fdfbf6",
+        "deleted_source": 404,
+        "waiting_count": 0,
+        "published": 2,
+        "distinct": true,
+        "matched": 2,
+        "foreign": 404,
+        "deleted": 404
+      },
+      "workspace": {
+        "id": "environment_f435e0d6c4d5818aa2c0f1f3a6c49b1c",
+        "session": "agent_session_15cefba899dfa93a0131956f022dbc8c",
+        "files_digest": "141828d5fcd550defec5d3dc9e9ccf42432f3df700cf41861f7b644532bedfc4",
+        "active_write": 409,
+        "byte_length": 0,
+        "disconnected": true
+      },
+      "record": "8ef5c5c0378b0c1ffafc830755607e43fbad9679e98bf6a11b66f5cfc09cb0d0",
+      "prior": "b2051c6ba5674639ed476bf988487509fc9860aa4561bfc76c27eb12f4629f70"
+    }
+  },
+  "qualification": {
+    "status": "ACCEPT_SESSION_ARTIFACTS_PRIMARY_LIGHT",
+    "registry_sha256": "8ed01d709f78d8513e2aa3cb2d896ca9591fa0318e031eb8757a5d19b3234fed",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 162,
+      "cleanup_complete": true,
+      "lease_result_sha256": "96be83ee96e38dab756f0ce111f23808e268beabec120ffbd07ffe38df9b126a"
+    },
+    "migration_permit_sha256": "ccc66da338894c74df337cfa2d600faae8e71cf6b6a66836f497da8831728264",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "engine": "52a1aa7d6b5a0f827ce3c6a8b2bca565e77624041f99abb2e0975ec393aa5b91",
+  "protocol": "798fcae1cca6db265e39323a26fba7fdca658b25945362f38736daf3a2cbb111",
+  "receipt": {
+    ".q4t-work/serve-responses-agents-20261123/artifact-profiles-02/acceptance.json": "a2e3011a39b2d9d2cf8d55dbf93e6119b98b06281d2470d5273c1e1f49bdc37c",
+    ".q4t-work/serve-responses-agents-20261123/artifact-profiles-02/profile-observations.json": "4ae777cbb73db16c2e21c470dc4e704dd8ac01ffc6797ec6b5a24f49ff130f97",
+    ".q4t-work/serve-responses-agents-20261123/artifact-profiles-lease-02/exit.json": "96be83ee96e38dab756f0ce111f23808e268beabec120ffbd07ffe38df9b126a",
+    ".q4t-work/serve-responses-agents-20261123/artifact-profiles-02/primary/session-handoff.json": "c8b9ba6c2798b0ff71ddbd471cc1e5c40a66319f39e02b73f6614a32eab98006",
+    ".q4t-work/serve-responses-agents-20261123/artifact-profiles-02/primary/result.json": "7e5a0c70e58977236a54fb21627954b3200101eba5fc7dde2177288821df467f",
+    ".q4t-work/serve-responses-agents-20261123/artifact-compose-01/primary.json": "9134b3c35009291ee215d9d807508c0171001eddc6aa8e01ec2f3111a0fb1f32",
+    ".q4t-work/serve-responses-agents-20261123/artifact-profiles-02/light/session-handoff.json": "523f2e74556ebcf1c37089dd95f6368f834f3f8eb8f1e6fc181fd8e46a7c1963",
+    ".q4t-work/serve-responses-agents-20261123/artifact-profiles-02/light/result.json": "c9d79a54ae63b9665c0fddc2acd7dd3d007283d1637b96baee8dfc3dc210734b",
+    ".q4t-work/serve-responses-agents-20261123/artifact-compose-01/light.json": "8ef5c5c0378b0c1ffafc830755607e43fbad9679e98bf6a11b66f5cfc09cb0d0",
+    ".q4t-work/serve-responses-agents-20261123/artifact-qualification-01/acceptance.json": "c33d6bde301a6619ef85d4e2440f68ed2af99651ee2fcc71bbb0956d3cd1c1dc",
+    ".q4t-work/serve-responses-agents-20261123/artifact-proof-migration-01.log": "d011525fc33a3f6ea312313050152930c4c25318e4e918fe550807a57ac2a66d"
+  }
+}

@@ -17,13 +17,16 @@ assert.ok(base.protocol === 'https:' && base.hostname === '127.0.0.1' &&
 const { OpenAI, version } = loadSdk(plan.sdk);
 assert.equal(version, '7.47.0');
 const options = { baseURL: base.href, maxRetries: 0, timeout: 60000 };
-const agents = new OpenAI({ ...options, apiKey: plan.key }).beta.agents;
+const client = new OpenAI({ ...options, apiKey: plan.key });
+const agents = client.beta.agents;
 const other = new OpenAI({ ...options, apiKey: plan.other }).beta.agents;
 const sessions = agents.sessions;
 const peer = other.sessions;
 const denied = status => e => e instanceof OpenAI.APIError && e.status === status;
 const tool = 'read_release_record';
 const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+const filePath = plan.session_artifacts ? '/workspace/outputs/release.json' : '/workspace/release.json';
+const byteDigest = value => createHash('sha256').update(value).digest('hex');
 const spans = trace => trace.otlp.resourceSpans.flatMap(resource =>
   resource.scopeSpans.flatMap(scope => scope.spans));
 async function settled(id) {
@@ -38,11 +41,23 @@ async function settled(id) {
 
 async function primary() {
   let environment = {type:'none'};
+  let artifacts;
   if (plan.hosted_workspaces) {
     const bytes = readFileSync(new URL('../../docs/evidence/serve-agent-environments-20261124/delivery.json', import.meta.url));
-    const warm = await agents.environments.create({environment:{type:'openai_hosted',
-      files:[{type:'inline',path:'/workspace/release.json',data:bytes.toString('base64')}]}});
+    let file = {type:'inline',path:filePath,data:bytes.toString('base64')};
+    if (plan.session_artifacts) {
+      const payload = Buffer.alloc(384*1024,bytes);
+      const uploaded = await client.files.create({file:new File([payload],'release.json'),purpose:'user_data'});
+      file = {type:'file_id',path:filePath,file_id:uploaded.id};
+      artifacts = {source_bytes:payload.length,sha256:byteDigest(payload)};
+    }
+    const warm = await agents.environments.create({environment:{type:'openai_hosted',files:[file]}});
     assert.equal(warm.status,'ready');
+    if (artifacts) {
+      assert.equal((await client.files.delete(file.file_id)).deleted,true);
+      await assert.rejects(client.files.retrieve(file.file_id),denied(404));
+      artifacts.deleted_source = 404;
+    }
     environment = {type:'openai_hosted',environment_id:warm.id};
   }
   const { id } = await sessions.create({
@@ -67,11 +82,15 @@ async function primary() {
     const env = waiting.environment.id;
     assert.equal(env,environment.environment_id);
     const files = await agents.environments.files.list(env);
-    assert.deepEqual(files.data.map(f=>f.path),['/workspace/release.json']);
+    assert.deepEqual(files.data.map(f=>f.path),[filePath]);
     await assert.rejects(agents.environments.files.create(env,{
-      type:'inline',path:'/workspace/release.json',data:''}),denied(409));
+      type:'inline',path:filePath,data:''}),denied(409));
     await assert.rejects(other.environments.files.list(env),denied(404));
     result.workspace = {id:env,session:id,files_digest:digest(files.data),active_write:409};
+    if (artifacts) {
+      assert.deepEqual((await sessions.artifacts.list(id)).data,[]);
+      result.artifacts = {...artifacts,waiting_count:0};
+    }
   }
   if (plan.environment_templates) {
     const secret = randomBytes(24).toString('hex');
@@ -102,7 +121,7 @@ async function light() {
     assert.equal((await agents.environments.retrieve(space.id)).status,'connected');
     assert.equal(digest((await agents.environments.files.list(space.id)).data),space.files_digest);
     await assert.rejects(agents.environments.files.create(space.id,{
-      type:'inline',path:'/workspace/release.json',data:''}),denied(409));
+      type:'inline',path:filePath,data:''}),denied(409));
   }
   const handoff = plan.prior.template_trace;
   if (plan.environment_templates) {
@@ -190,19 +209,36 @@ async function light() {
     await assert.rejects(peer.traces.list(id),denied(404));
     traceResult = {...handoff,closed_spans:3,foreign:404,template_deleted:true};
   }
-  let workspace;
+  let workspace, artifacts;
   if (plan.hosted_workspaces) {
     const replacement = await agents.environments.files.create(space.id,{
-      type:'inline',path:'/workspace/release.json',data:''});
+      type:'inline',path:filePath,data:''});
     assert.equal(replacement.size_bytes,0);
     workspace = {...space,byte_length:replacement.size_bytes};
+  }
+  if (plan.session_artifacts) {
+    const rows = (await sessions.artifacts.list(id)).data;
+    assert.equal(rows.length,2);
+    assert.equal(new Set(rows.map(row=>row.id)).size,2);
+    assert.deepEqual(new Set(rows.map(row=>row.turn_id)),new Set([action.turn_id,final.turn_id]));
+    for (const row of rows) {
+      assert.equal(row.path,filePath);
+      assert.equal(row.size_bytes,plan.prior.artifacts.source_bytes);
+      const download = await sessions.artifacts.content(row.id,{session_id:id});
+      assert.equal(byteDigest(Buffer.from(await download.arrayBuffer())),plan.prior.artifacts.sha256);
+    }
+    await assert.rejects(peer.artifacts.retrieve(rows[0].id,{session_id:id}),denied(404));
+    await sessions.artifacts.delete(rows[0].id,{session_id:id});
+    await assert.rejects(sessions.artifacts.content(rows[0].id,{session_id:id}),denied(404));
+    assert.equal((await sessions.artifacts.retrieve(rows[1].id,{session_id:id})).id,rows[1].id);
+    artifacts = {...plan.prior.artifacts,published:2,distinct:true,matched:2,foreign:404,deleted:404};
   }
   assert.equal((await sessions.delete(id)).deleted, true);
   if (workspace) {
     assert.equal((await agents.environments.retrieve(space.id)).status,'disconnected');
     workspace.disconnected = true;
   }
-  return { id, action, completed, idle, template_trace:traceResult, workspace,
+  return { id, action, completed, idle, template_trace:traceResult, workspace, artifacts,
     answer: text.trim(), next_answer: final.output_text.trim(),
     next_turn: final.turn_id, rejected_turn: failedTurn.id, quota_error: retained.error.code,
     revision, result_count: results.length, replay: 202, foreign: 404 };

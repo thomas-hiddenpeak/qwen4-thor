@@ -22,16 +22,19 @@ Status ValidateAgentSession(const io::Json& value, AgentSessionShape shape,
 ObjectReply ResolveSessionAgent(ObjectStore& objects, const io::Json& request,
                                 const ChatPlanConfig& config,
                                 const StateAccess& access,
-                                io::Json* private_http = nullptr);
+                                io::Json* private_http = nullptr,
+                                bool* tool_search = nullptr);
 ObjectReply NormalizeSessionAgent(io::Json settings, const io::Json& overrides,
                                   const ChatPlanConfig& config,
-                                  io::Json* private_http = nullptr);
+                                  io::Json* private_http = nullptr,
+                                  bool* tool_search = nullptr);
 struct AgentSessionStart {
   io::Json session;
   io::Json input;
   std::string sealed_http{};
   std::optional<ObjectRequest> environment_write{};
   std::shared_ptr<environment_detail::WorkspaceCopies> workspace_copies{};
+  bool tool_search = false;
 };
 
 // Prepare the public snapshot and any workspace claim before publication.
