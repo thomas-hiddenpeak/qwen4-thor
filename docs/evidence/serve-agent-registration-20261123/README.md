@@ -21,3 +21,5 @@ cd .q4t-work/serve-responses-agents-20261123/registration-soak-src
 /usr/bin/python3 -I -B tools/serve_soak/native_stage.py check --plan .q4t-work/day-01/plan.json
 /usr/bin/python3 -I -B tools/serve_soak/native_stage.py run --plan .q4t-work/day-01/plan.json
 ```
+
+PR #65 的首轮 CI 发现 Conversation 用例误包含 Agent 配置路由，网关夹具缺少 Agent ID 和上游路径。已校正分类并单独断言 Agent GET、POST、DELETE 与 Conversation 拒绝结果。两项 C++ 合同、可选 nginx 及已封包原生网关的实际转发检查通过，继续等待两项远端 host-contracts。 首轮失败保留在 GitHub Actions run 45170972653，原始输出及定向复核存于本地同阶段目录的 pr65-* 文件。
