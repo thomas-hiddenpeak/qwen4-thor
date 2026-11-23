@@ -64,14 +64,6 @@ ObjectReply IoError(bool uncertain = false) {
                "Durable object storage is unavailable or inconsistent",
                uncertain);
 }
-bool ApplicationKind(std::string_view kind) {
-  return kind == "chat" || kind == "response" || kind == "conversation" ||
-         kind == "item" || kind == "prompt" || kind == "batch" ||
-         kind == "vector_store" || kind == "vector_store_file" ||
-         kind == "vector_store_batch" || kind == "live_fork_state" ||
-         kind == "agent" || kind == "agent_session" || kind == "vault" ||
-         kind == "environment_template";
-}
 ObjectReply SnapshotConflict() {
   return Error(409, "input_snapshot_reference_conflict",
                "Private input snapshot is absent or its identity changed");
@@ -467,7 +459,7 @@ class DiskStore {
     if (!data || !data->IsObject()) return {};
     const auto kind = record.GetString("kind");
     const bool page = kind == "tool_run" && IsBatchPage(*data);
-    if (!ApplicationKind(kind) && kind != "input_snapshot" && !page)
+    if (!SupportsApplicationPayload(kind) && kind != "input_snapshot" && !page)
       return {};
     struct Dependency {
       InputSnapshotRef reference;
@@ -1586,7 +1578,7 @@ int MaybeRunObjectWorker(int argc, char** argv) {
       if (reply.ok() && lose_application_ack) {
         const auto application = [](const Json& value) {
           const auto kind = value.GetString("kind");
-          return value.GetString("operation") == "put" && ApplicationKind(kind);
+          return value.GetString("operation") == "put" && SupportsApplicationPayload(kind);
         };
         if (application(request))
           for (;;) pause();

@@ -24483,9 +24483,6 @@
     "hosted_76": {
       "type": "object",
       "properties": {
-        "Idempotency-Key": {
-          "$ref": "#/$defs/hosted_71"
-        },
         "environment": {
           "$ref": "#/$defs/hosted_77"
         },
@@ -25062,6 +25059,85 @@
     },
     "hosted_file_query": {
       "$ref": "#/$defs/hosted_114"
+    },
+    "hosted_environment_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hosted_environment_resource"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_file_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hosted_file_resource"
+          }
+        },
+        "next": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "next",
+        "has_more"
+      ],
+      "additionalProperties": false
     },
     "hosted_template_list": {
       "type": "object",

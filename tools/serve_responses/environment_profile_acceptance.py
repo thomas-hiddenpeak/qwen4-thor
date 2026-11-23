@@ -11,13 +11,49 @@ PUBLICATION = ROOT/'docs/evidence/serve-agent-vaults-20261123/oauth-delivery.jso
 HELPER = 'tools/serve_responses/environment_profile_acceptance.py'
 SDK = 'tools/serve_responses/environment_template_sdk.mjs'
 SOURCES = (HELPER, SDK, str(EVIDENCE.relative_to(ROOT)), str(PUBLICATION.relative_to(ROOT)))
+WORKSPACE_PROOF = ROOT/'docs/evidence/serve-agent-workspaces-20261124/workspace.json'
+WORKSPACE_PAYLOAD_PROOF = WORKSPACE_PROOF.with_name('payload-retention.json')
+WORKSPACE_PROOFS = (WORKSPACE_PROOF, WORKSPACE_PROOF.with_name('retention.json'), WORKSPACE_PAYLOAD_PROOF)
+RETENTION_SDK = 'tools/serve_responses/environment_retention_sdk.mjs'
+WORKSPACE_RELEASE = EVIDENCE.with_name('delivery.json')
+WORKSPACE_SDK = 'tools/serve_responses/environment_workspace_sdk.mjs'
+WORKSPACE_CAPABILITY = dict(selector='agents=v1', prewarm_seconds=300, idempotency_seconds=86400,
+                            workspace_files=True, network=['disabled'], between_turn_writes=True)
 TEMPLATES = dict(selector='agents=v1', operations=['create','retrieve','update','list','delete'],
                  confidential_definition='sealed', default_network='disabled')
 TRACES = dict(selector='agents=v1', endpoint='/v1/agents/sessions/{session_id}/traces',
               format='otlp_json', anchor='root_turn_id', published_only=True)
 
 
-def candidate(build, current):
+def workspace_proof(binary):
+    matches = [path for path in WORKSPACE_PROOFS if pkg.read(path)['engine'] == binary]
+    pkg.require(len(matches) == 1, 'workspace binary requires one matching reviewed SDK witness')
+    return matches[0]
+
+
+def workspace_sources(proof):
+    sources = (WORKSPACE_SDK, str(proof.relative_to(ROOT)), str(WORKSPACE_RELEASE.relative_to(ROOT)))
+    return (*sources, RETENTION_SDK) if proof == WORKSPACE_PAYLOAD_PROOF else sources
+
+
+def candidate(build, current, workspaces=False):
+    if workspaces:
+        source = workspace_proof(pkg.sha(build/'q4t'))
+        proof = pkg.read(source)
+        pkg.require(proof['business']['status'] == 'PASS' and proof['lease'] == 'COMPLETED' and
+                    proof['sdk']['states'] == ['ready', 'connected', 'disconnected'] and
+                    proof['sdk']['tenant'] == 404 and proof['sdk']['turn_answer'] == '42' and
+                    proof['engine'] == pkg.sha(build/'q4t') and proof['protocol'] == protocol(current) and
+                    proof['driver'] == pkg.sha(ROOT/WORKSPACE_SDK), 'workspace SDK witness drift')
+        if source == WORKSPACE_PAYLOAD_PROOF:
+            gc = proof['online_collection']
+            pkg.require(gc['sdk'] == pkg.sha(ROOT/RETENTION_SDK) and gc['source_bytes'] == 5 << 20 and
+                        gc['eligible'] == gc['deleted'] == 1 and gc['template_reopened'] and
+                        gc['workspace_reopened'] and gc['disconnected'] and gc['replaced_bytes'] == 3,
+                        'encrypted workspace did not survive the online sweep')
+        return dict(receipt_sha256=pkg.sha(source), binary=proof['engine'],
+                    ingress=proof['ingress'], protocol=proof['protocol'], renewal=True,
+                    environment_templates=True, hosted_workspaces=True)
     proof = pkg.read(EVIDENCE)
     current_protocol = protocol(current)
     pkg.require(proof['business']['status'] == 'PASS' and proof['sdk']['foreign_file'] == 404 and
@@ -30,6 +66,18 @@ def candidate(build, current):
 
 
 def verify(phase, plan, capabilities, row):
+    if plan['agent_vaults'].get('hosted_workspaces'):
+        space = row['workspace']
+        sources = workspace_sources(workspace_proof(plan['binary_sha256']))
+        pkg.require(capabilities.get('agent_environments') == WORKSPACE_CAPABILITY and
+                    all(plan['sources'].get(k) == pkg.sha(ROOT/k) for k in sources) and
+                    space['id'].startswith('environment_') and space['session'] == row['id'] and
+                    re.fullmatch('[0-9a-f]{64}', space['files_digest']) and space['active_write'] == 409,
+                    'incomplete connected workspace evidence')
+        if plan['name'] == 'light':
+            previous = pkg.read(phase.parent/'primary/session-handoff.json')['workspace']
+            pkg.require(space == dict(previous, byte_length=0, disconnected=True),
+                        'light did not recover the original workspace')
     handoff = row['template_trace']
     pkg.require(capabilities.get('agent_environment_templates') == TEMPLATES and
                 capabilities.get('agent_session_traces') == TRACES and

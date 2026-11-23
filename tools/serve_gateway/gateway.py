@@ -70,6 +70,10 @@ APPLICATION_ROUTES = [
        'data' if method == 'POST' else 'control') for method in ('GET', 'POST')),
     *((method, '/v1/vaults/{vault_id}/credentials/{credential_id}',
        'data' if method == 'POST' else 'control') for method in ('GET', 'POST', 'DELETE')),
+    *((method, path, 'data' if method == 'POST' else 'control')
+      for path in ('/v1/agents/environments', '/v1/agents/environments/{environment_id}/files')
+      for method in ('GET', 'POST')),
+    ('GET', '/v1/agents/environments/{environment_id}', 'control'),
     *((method, '/v1/agents/environments/templates', 'data' if method == 'POST' else 'control')
       for method in ('GET', 'POST')),
     *((method, '/v1/agents/environments/templates/{environment_template_id}',
@@ -232,6 +236,7 @@ def route_map():
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
                            'agent_session_[A-Za-z0-9_-]{1,114}' if part == '{session_id}' and path.startswith('/v1/agents/sessions/') else
+                           'environment_(?!template_)[A-Za-z0-9_-]{1,116}' if part == '{environment_id}' else
                            'environment_template_[A-Za-z0-9_-]{1,107}' if part == '{environment_template_id}' else
                            'cred_[A-Za-z0-9_-]{1,123}' if part == '{credential_id}' else
                            'vault_[A-Za-z0-9_-]{1,122}' if part == '{vault_id}' else

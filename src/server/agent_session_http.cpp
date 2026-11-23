@@ -34,12 +34,35 @@ ObjectReply DeleteSession(ObjectStore& objects, const std::string& id,
   if (!row.ok()) return row;
   const auto* data = row.value.Find("data");
   const auto* turns = data ? data->GetArray("turns") : nullptr;
-  if (!turns || turns->array.empty())
+  if (!turns || (turns->array.empty() && !data->GetBool("created_idle")))
     return Error(503, "agent_session_record_invalid", "Invalid session turns");
   session.operation = ObjectOperation::kErase;
   session.expected_revision = row.value.GetInt("revision");
   const auto links = *turns;
   std::vector<ObjectRequest> mutations{session};
+  const auto* stored_session = data->Find("session");
+  const auto* env = stored_session ? stored_session->Find("environment") : nullptr;
+  if (!env) return Error(503, "agent_session_record_invalid", "Missing environment");
+  if (env->GetString("type") == "openai_hosted") {
+    ObjectRequest release;
+    release.kind = ObjectKind::kEnvironment;
+    release.scope = access.scope;
+    release.id = env->GetString("id");
+    auto workspace = objects.Execute(release, access.deadline, access.cancelled);
+    if (!workspace.ok()) return workspace;
+    release.data = std::move(Field(workspace.value, "data"));
+    if (release.data.GetString("bound_session") != id)
+      return Error(503, "environment_record_invalid", "Invalid workspace owner");
+    release.operation = ObjectOperation::kPut;
+    release.expected_revision = workspace.value.GetInt("revision");
+    release.ttl_seconds = 86400;
+    Set(&Field(release.data, "resource"), "status", String("disconnected"));
+    // Keep a status receipt after deletion and discard private workspace bytes.
+    std::erase_if(release.data.object, [](const auto& field) {
+      return field.first == "sealed_definition" || field.first == "bound_session";
+    });
+    mutations.push_back(std::move(release));
+  }
   for (const auto& turn : links.array) {
     ObjectRequest response;
     response.kind = ObjectKind::kResponse;
@@ -218,7 +241,9 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
       return Error(503, "background_unavailable",
                    "Session executor unavailable");
     Json request;
-    auto valid = io::ParseJson(body, &request, true, kSchemaJsonLimits);
+    auto valid = io::ParseJson(body, &request, true,
+                               route.kind == Kind::kCollection
+                                   ? kApplicationJsonLimits : kSchemaJsonLimits);
     if (!valid) return Invalid(valid.message(), "body");
     if (route.kind == Kind::kEvents) {
       const auto* events = request.GetArray("events");
@@ -242,7 +267,7 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
       return ReconcileAgentEventReceipt(objects, std::string(route.session),
                                         request, http->AgentEventKey(), access,
                                         std::move(session));
-    if (!session.ok() || (event && (replay || !run->Prepared())))
+    if (!session.ok() || replay || !run->Prepared())
       return session;
     if (!run->BindRateDomain(http->RateDomain()))
       return Error(503, "response_rate_domain_changed",

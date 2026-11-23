@@ -1,0 +1,161 @@
+{
+  "engine": "4d0855d3e02348601e011714d98518837e251cf765446a50778c046b8e69dff2",
+  "ingress": "3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed",
+  "driver": "16c16f51829cd11cd60fcfe0cdba4e4b241640e6fea6010d4ac4266e40dd7cd7",
+  "protocol": "4c4f54b6de6e3f6509f19d742a1450428dbf9ff4f2e49a7534a41584db11cd45",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 45.147,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "source_bytes": 18135,
+    "states": [
+      "ready",
+      "connected",
+      "disconnected"
+    ],
+    "copied_before_source_deletion": true,
+    "create": 201,
+    "stream_create": 201,
+    "idle_events": [
+      "agent.session.created",
+      "agent.session.idle"
+    ],
+    "file_create": 201,
+    "replaced_bytes": 0,
+    "pages": 2,
+    "tenant": 404,
+    "key_conflict": 409,
+    "second_attach": 409,
+    "turn_answer": "42",
+    "deleted": true
+  },
+  "lease": "COMPLETED",
+  "cpu": [
+    "agent_session_cancel_preserves_saved_results_and_never_retargets_a_retry",
+    "agent_session_prepares_native_input_and_validates_public_snapshot",
+    "agent_session_settings_use_cas_filtered_pages_and_immutable_step_settings",
+    "agent_session_snapshot_owns_settings_and_omits_transport_secrets",
+    "agent_session_tool_action_requires_a_completed_owned_call",
+    "agent_session_turn_exhausted_object_quota_leaves_no_orphan",
+    "agent_session_turn_reports_the_original_failure_category",
+    "agent_session_turn_shares_queue_receipt_and_reopens_native_output",
+    "agent_session_vaults_require_owned_identity_and_spend_limit_null_resets",
+    "agent_session_wire_shapes_follow_the_sdk_transport_fields",
+    "application_payload_actual_unknown_snapshot_write_is_not_replayed",
+    "application_payload_all_targets_validate_before_any_read",
+    "application_payload_changed_strings_get_new_immutable_snapshots",
+    "application_payload_limits_cancel_and_deadline_precede_storage",
+    "application_payload_over_16mib_exact_bytes_dedup_and_restart",
+    "application_payload_plain_values_remain_exact_without_storage_io",
+    "application_payload_reference_paths_are_exact_and_not_request_paths",
+    "application_payload_reuse_pins_root_across_old_parent_deletion",
+    "application_payload_root_pin_validates_owner_binding_and_identity",
+    "application_payload_scope_corruption_and_expansion_budget_fail_closed",
+    "application_payload_staging_budget_is_shared_across_batch_members",
+    "application_payload_unknown_publication_keeps_root_and_blocks_replay",
+    "environment_template_http_bounds_apply_to_input_and_count_unicode",
+    "environment_template_max_inline_file_survives_reopen_and_rejects_mixed_parts",
+    "environment_template_seals_private_inputs_and_preserves_patch_semantics",
+    "hosted_workspace_owns_uploaded_bytes_after_source_deletion",
+    "hosted_workspace_prewarms_once_and_installs_private_bytes",
+    "hosted_workspace_retention_collects_orphan_after_reopen",
+    "hosted_workspace_session_turn_and_file_commit_share_revision",
+    "hosted_workspace_two_claims_commit_only_one_session_and_response",
+    "object_retention_active_roots_preserve_chain_with_owner_isolation",
+    "object_retention_agent_session_follows_typed_dependencies",
+    "object_retention_automatic_expiry_preserves_live_same_owner_reference",
+    "object_retention_batch_limits_and_multiple_owners_require_new_plan",
+    "object_retention_expired_active_cas_can_finish_without_extending_expiry",
+    "object_retention_expired_active_survives_restart_and_recovery_scan",
+    "object_retention_extracts_typed_dependencies_not_user_strings",
+    "object_retention_hosted_workspace_edges_allow_unrelated_collection",
+    "object_retention_inspect_is_readonly_and_stale_plan_cannot_collect",
+    "object_retention_partial_atomic_collection_recovers_without_replay",
+    "object_retention_preserves_externalized_agent_instructions",
+    "object_retention_reference_capacity_preserves_incomplete_owner",
+    "object_retention_referenced_expired_nonactive_cannot_use_active_cas_exception",
+    "object_retention_unknown_owner_protection_and_plan_identity",
+    "object_retention_unknown_state_preserves_owner_without_blocking_reads",
+    "object_retention_unrooted_cycles_and_explicit_permanent_cutoff"
+  ],
+  "changed_compiled_sources": {
+    "include/q4t/server/application_payload.h": [
+      "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
+      "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c"
+    ],
+    "src/server/application_payload.cpp": [
+      "ab6019c92bc45730ba115968550e42f4ce5c2928f109fbed7baaca9f2169725f",
+      "e1d98bbe36bc92d3b61b394b07ed99b33d766959e7f0140ec8106a9872958119"
+    ],
+    "src/server/object_retention.cpp": [
+      "c99191c4e2ac9d037f3a6bb45f83a17f040bbe3b954ecb69c178648b495612d0",
+      "4fd66d18495cd3ffbde87a0f667570bcf2e3a558c5587ede3207719c8bf5cd46"
+    ],
+    "src/server/object_store.cpp": [
+      "3b8f4f718c30d7728c286e090d321a34b8064aec54de0405af412116b2e3a455",
+      "1e387e04285f069e7620f053436d89274afdf61fac3fd79f4fde5c19899a7554"
+    ],
+    "src/server/object_worker.cpp": [
+      "de67f013a2244a57012ae8b4d9a549033746d9239476e2aac9bc8d3a729b1424",
+      "0908e179ba6321c983256c21ef96c684bd6d7c967c5963a24c1b8c36b71cfcce"
+    ]
+  },
+  "prior_http": "b509a5eed9bcbb564708764175fc090a22032020bf7ca852ad482d9a433c681f",
+  "prior_fault_business": {
+    "model_loss": {
+      "engine": "846b4bf533d45112af8946d60dedad5f49c5920e61b9bb95cabf423d26ad53cc",
+      "seconds": 120.78327252017334,
+      "starts": 2,
+      "manifest": "48b6bb6a58ad23c5a4d0d926754561effa4e0c0872998371663866e11ec00e3b",
+      "ports_free": true,
+      "workers_remaining": []
+    },
+    "gateway_fatal": {
+      "engine": "846b4bf533d45112af8946d60dedad5f49c5920e61b9bb95cabf423d26ad53cc",
+      "seconds": 158.0669200718403,
+      "starts": 2,
+      "manifest": "7d6d6911ada3ee731b897a99a0bfb0d5ebd94fb4357c00361829eeb83157b01f",
+      "ports_free": true,
+      "workers_remaining": []
+    }
+  },
+  "online_collection": {
+    "template_reopened": true,
+    "source_bytes": 5242880,
+    "workspace_reopened": true,
+    "replaced_bytes": 3,
+    "disconnected": true,
+    "orphan": "item_d878356a8d948511587559bcebb5a17d",
+    "eligible": 1,
+    "deleted": 1,
+    "plan_sha256": "f32c6d7d7d16b6852ed848b5bf6c0db66903e03a3a264d4889c0028381f160ff",
+    "sdk": "489e6ef23bfaeec82c572374f5f5a446f2efc9db04f7a6b0fd7b280712215bc1"
+  },
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-business-lease-01/exit.json": "60862e66bad182e6ac61b36a187877dc82ea3086a48fb71c7184ebeadad70fb2",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-business-01/result.json": "2e7b877f50c587e845101ede65ff50f5c22cd6789f2aa7acbc9deff700d823be",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-business-01/create/sdk-result.json": "441180503ec0cdf3c0828e26a957448c89f225c4ea45d52e5d914a099cbe9939",
+    "docs/evidence/serve-agent-workspaces-20261124/retention.json": "b509a5eed9bcbb564708764175fc090a22032020bf7ca852ad482d9a433c681f",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-cpu-agent_session.log": "c74b2429922512ecbad61c515ad0ec5793c709f82c132452d07649605cc82736",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-cpu-application_payload.log": "5c6bc525142a1340184bfab6caf431921e0874b009cad25521e8aa4f3d66e644",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-cpu-environment_template.log": "30d8286326a73332062654f7f3c68db4090f4911e06afaa537fc8d366d394381",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-cpu-hosted_workspace.log": "413f61a3968410ccce16e8722700dcac0f844296b8cebbd58f332529fd2468cd",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-cpu-object_retention.log": "4a92b5af934a023ec4c4bc7fae31ed6bdf1c8567c72e6b84994f07982c379dec",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-business-01/create/retention-inspect.json": "4eb71ec7d11a562f4e0fd1effc98e129411e0c546dd7c7a198f25237412653af",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-business-01/create/retention-collect.json": "751ceabd4d412a649978eecc3db9366175d9082ddf9b5b572ac566eef30beb13",
+    ".q4t-work/serve-responses-agents-20261123/workspace-payload-business-01/create/retention-result.json": "d0b683b8d674a8b4a9e69b2110a051843c6eaf6a9e8568c69d4d7acaefbc2734",
+    ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-02/result.json": "13d7d61476ec0addcf682a68daefa65d5546f44cd7a0a12eed864d56d531b1f9",
+    ".q4t-work/serve-responses-agents-20261123/workspace-fallback-lease-02/exit.json": "01b67587ac5db0428f93213d9937a5252e9aef28c2e7b83b9a35f8fda5e59628",
+    ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-02/workspace-recovered.json": "6b3449c81527864ee365a4bcdaf4e8d7f3e2508106734fd1ac7b904573a09c92",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-02/result.json": "0c9418e5581d5c36acc76aa2733dc37c89f0e6f1f5550a2a0eb5fda3849e3188",
+    ".q4t-work/serve-responses-agents-20261123/workspace-takeover-lease-02/exit.json": "cd8a1edbca472cdda76c54ebb32346eb506f0e0dc4693f8d0a7a421d330a7e81",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-02/workspace-recovered.json": "b4ec6cce0ce7d47e81d9c003b9d32df599bf5e1b9e9dcb3d896c8190fd4ee290"
+  }
+}

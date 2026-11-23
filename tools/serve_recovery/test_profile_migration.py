@@ -53,6 +53,20 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "incomplete environment"):
                 live.format_for(dict(new, **{key:dict(new[key], **{field:value})}))
 
+    def test_hosted_workspace_requires_complete_predecessor_and_exact_file_policy(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(agent_sessions=live.OAUTH_SESSION, agent_vaults=live.VAULT_CAPABILITY,
+                   agent_environment_templates=live.TEMPLATE_CAPABILITY,
+                   agent_session_traces=live.SESSION_TRACE_CAPABILITY)
+        new = dict(old, agent_sessions=live.WORKSPACE_SESSION, agent_environments=live.WORKSPACE_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        for change in (dict(prewarm_seconds=0), dict(workspace_files=1), dict(network=['enabled'])):
+            altered = dict(new, agent_environments=dict(new['agent_environments'], **change))
+            self.assertFalse(migration.explicit_extension(old, altered))
+            with self.assertRaises(ValueError):
+                live.format_for(altered)
+
     def test_vault_oauth_adds_only_renewal_to_qualified_mcp_authority(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(agent_sessions=live.VAULT_SESSION, agent_vaults=live.VAULT_CAPABILITY, storage='owned')

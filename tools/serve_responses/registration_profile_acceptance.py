@@ -27,7 +27,8 @@ CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents',
 
 
 def prepare(out, build, original, session_witness=None, qualify_vaults=False, vault_oauth=False,
-            environment_templates=False):
+            environment_templates=False, hosted_workspaces=False):
+    environment_templates = environment_templates or hosted_workspaces
     vault_oauth = vault_oauth or environment_templates
     receipt = pkg.read(EVIDENCE)
     deployed = ROOT/'build/service'
@@ -38,7 +39,7 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
         pkg.require(session_witness is None, 'select a single candidate source')
         publication = vaults.OAUTH_PUBLICATION if vault_oauth else vaults.PUBLICATION
         if environment_templates:
-            publication = environments.PUBLICATION
+            publication = environments.WORKSPACE_RELEASE if hosted_workspaces else environments.PUBLICATION
         delivery = pkg.read(publication)['publication']
     previous = delivery['primary']
     manifest = bundle.verify(deployed, previous)
@@ -53,7 +54,7 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
     session = sessions.candidate(build, session_witness, current) if session_witness else None
     vault = None
     if environment_templates:
-        vault = environments.candidate(build, current)
+        vault = environments.candidate(build, current, hosted_workspaces)
     elif qualify_vaults or vault_oauth:
         vault = vaults.candidate(build, current, vault_oauth)
     selection = vault or session
@@ -97,6 +98,9 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
                 sources.append(vaults.OAUTH_ISSUER)
             if environment_templates:
                 sources.extend(environments.SOURCES)
+                if hosted_workspaces:
+                    proof = environments.workspace_proof(vault['binary'])
+                    sources.extend(environments.workspace_sources(proof))
             for source in sources:
                 plan['sources'][source] = pkg.sha(ROOT/source)
         if selection:
@@ -158,9 +162,10 @@ if __name__ == '__main__':
     source.add_argument('--vaults', action='store_true')
     source.add_argument('--vault-oauth', action='store_true')
     source.add_argument('--environment-templates', action='store_true')
+    source.add_argument('--hosted-workspaces', action='store_true')
     args = cli.parse_args()
     out = args.output.resolve()
     pkg.require(out.is_relative_to(ROOT/'.q4t-work'), 'private stage required')
     prepare(out,args.build.resolve(strict=True),args.original.resolve(strict=True),
             args.session_witness.resolve(strict=True) if args.session_witness else None,
-            args.vaults, args.vault_oauth, args.environment_templates)
+            args.vaults, args.vault_oauth, args.environment_templates, args.hosted_workspaces)

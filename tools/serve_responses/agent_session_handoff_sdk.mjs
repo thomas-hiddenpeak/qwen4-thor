@@ -37,8 +37,16 @@ async function settled(id) {
 }
 
 async function primary() {
+  let environment = {type:'none'};
+  if (plan.hosted_workspaces) {
+    const bytes = readFileSync(new URL('../../docs/evidence/serve-agent-environments-20261124/delivery.json', import.meta.url));
+    const warm = await agents.environments.create({environment:{type:'openai_hosted',
+      files:[{type:'inline',path:'/workspace/release.json',data:bytes.toString('base64')}]}});
+    assert.equal(warm.status,'ready');
+    environment = {type:'openai_hosted',environment_id:warm.id};
+  }
   const { id } = await sessions.create({
-    environment: { type: 'none' },
+    environment,
     agent: { model: 'qwen3.8-flash-next', reasoning: { effort: 'none' },
       instructions: 'Call read_release_record for a release query. After receiving the result, answer with the revision number.',
       tools: [{ type: 'function', name: tool, description: 'Read the q4t publication receipt.',
@@ -55,6 +63,16 @@ async function primary() {
   assert.equal((await sessions.turns.retrieve(action.turn_id, { session_id: id })).status, 'waiting');
   await assert.rejects(peer.retrieve(id), denied(404));
   const result = { id, action, status: waiting.status, foreign: 404 };
+  if (plan.hosted_workspaces) {
+    const env = waiting.environment.id;
+    assert.equal(env,environment.environment_id);
+    const files = await agents.environments.files.list(env);
+    assert.deepEqual(files.data.map(f=>f.path),['/workspace/release.json']);
+    await assert.rejects(agents.environments.files.create(env,{
+      type:'inline',path:'/workspace/release.json',data:''}),denied(409));
+    await assert.rejects(other.environments.files.list(env),denied(404));
+    result.workspace = {id:env,session:id,files_digest:digest(files.data),active_write:409};
+  }
   if (plan.environment_templates) {
     const secret = randomBytes(24).toString('hex');
     const template = await agents.environments.templates.create({name:'Qualification project',
@@ -78,6 +96,14 @@ async function light() {
   const restored = await sessions.retrieve(id);
   assert.equal(restored.status, 'requires_action');
   assert.deepEqual(restored.required_actions, [action]);
+  const space = plan.prior.workspace;
+  if (plan.hosted_workspaces) {
+    assert.equal(restored.environment.id,space.id);
+    assert.equal((await agents.environments.retrieve(space.id)).status,'connected');
+    assert.equal(digest((await agents.environments.files.list(space.id)).data),space.files_digest);
+    await assert.rejects(agents.environments.files.create(space.id,{
+      type:'inline',path:'/workspace/release.json',data:''}),denied(409));
+  }
   const handoff = plan.prior.template_trace;
   if (plan.environment_templates) {
     const saved = await agents.environments.templates.retrieve(handoff.template_id);
@@ -164,8 +190,19 @@ async function light() {
     await assert.rejects(peer.traces.list(id),denied(404));
     traceResult = {...handoff,closed_spans:3,foreign:404,template_deleted:true};
   }
+  let workspace;
+  if (plan.hosted_workspaces) {
+    const replacement = await agents.environments.files.create(space.id,{
+      type:'inline',path:'/workspace/release.json',data:''});
+    assert.equal(replacement.size_bytes,0);
+    workspace = {...space,byte_length:replacement.size_bytes};
+  }
   assert.equal((await sessions.delete(id)).deleted, true);
-  return { id, action, completed, idle, template_trace:traceResult,
+  if (workspace) {
+    assert.equal((await agents.environments.retrieve(space.id)).status,'disconnected');
+    workspace.disconnected = true;
+  }
+  return { id, action, completed, idle, template_trace:traceResult, workspace,
     answer: text.trim(), next_answer: final.output_text.trim(),
     next_turn: final.turn_id, rejected_turn: failedTurn.id, quota_error: retained.error.code,
     revision, result_count: results.length, replay: 202, foreign: 404 };

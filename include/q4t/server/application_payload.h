@@ -21,6 +21,10 @@ struct ApplicationStringRef {
   std::string sha256;
   InputSnapshotRef snapshot;
 };
+// The encoder, worker commit check, and retention graph must agree on which
+// durable record kinds may store private snapshot references for long strings.
+bool SupportsApplicationPayload(std::string_view kind);
+
 // Validate private metadata without loading content, including for retention.
 bool ParseApplicationPayloadReferences(
     const io::Json& data, std::vector<ApplicationStringRef>* references);

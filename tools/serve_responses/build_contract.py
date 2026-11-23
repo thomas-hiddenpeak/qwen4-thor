@@ -154,7 +154,15 @@ def schema(graph):
                 'allowed_domains': dict(maxItems=0),
                 'blocked_domains': dict(items=dict(type='string', minLength=1,
                                                     pattern=r'^[^*]+$'))})
+    # The SDK moves this option to a header before sending the request.
+    creation = 'hosted_' + str(environment['roots']['environment_create'])
+    del environment_types[creation]['properties']['Idempotency-Key']
     definitions.update(environment_types)
+    definitions['hosted_environment_list'] = copy.deepcopy(definitions['agents_list'])
+    definitions['hosted_environment_list']['properties']['data']['items'] = ref('hosted_environment_resource')
+    file_page = dict(object=dict(const='list'), data=dict(type='array', items=ref('hosted_file_resource')),
+                     next=nullable(dict(type='string')), has_more=dict(type='boolean'))
+    definitions['hosted_file_list'] = obj(file_page, file_page)
     definitions['hosted_template_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['hosted_template_list']['properties']['data']['items'] = ref('hosted_template_resource')
     sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
@@ -488,6 +496,11 @@ def add_openapi(paths, response, error):
         ('/v1/agents/{agent_id}', 'get', None, 'agents_resource', None),
         ('/v1/agents/{agent_id}', 'post', 'agents_update', 'agents_resource', None),
         ('/v1/agents/{agent_id}', 'delete', None, 'agents_deleted', None),
+        ('/v1/agents/environments', 'get', None, 'hosted_environment_list', 'hosted_environment_query'),
+        ('/v1/agents/environments', 'post', 'hosted_environment_create', 'hosted_environment_resource', None),
+        ('/v1/agents/environments/{environment_id}', 'get', None, 'hosted_environment_resource', None),
+        ('/v1/agents/environments/{environment_id}/files', 'get', None, 'hosted_file_list', 'hosted_file_query'),
+        ('/v1/agents/environments/{environment_id}/files', 'post', 'hosted_file_create', 'hosted_file_resource', None),
         ('/v1/agents/environments/templates', 'get', None, 'hosted_template_list', 'agents_query'),
         ('/v1/agents/environments/templates', 'post', 'hosted_template_create', 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'get', None, 'hosted_template_resource', None),
@@ -563,9 +576,13 @@ def add_openapi(paths, response, error):
             parameters.append(dict(name='Idempotency-Key', **{'in': 'header'}, required=False,
                 schema=dict(type='string', minLength=1, maxLength=255, pattern=r'^[!-+\--~]+$')))
 
+        if body == 'hosted_environment_create':
+            parameters.append(dict(name='Idempotency-Key', **{'in': 'header'}, required=False,
+                schema=dict(type='string', minLength=1, maxLength=256, pattern=r'^[ -~]+$')))
         success_code = '202' if accepted else '200'
         if body in {'agents_create', 'agent_session_create', 'vault_create',
-                    'credential_create', 'hosted_template_create'}:
+                    'credential_create', 'hosted_template_create',
+                    'hosted_environment_create', 'hosted_file_create'}:
             success_code = '201'
         operation = dict(operationId=method+'_'+path.strip('/').replace('/', '_').replace('{', '').replace('}', ''),
             parameters=parameters, responses={success_code: success,
@@ -584,7 +601,8 @@ def add_openapi(paths, response, error):
                     if optional else external(body))})
         if body == 'agent_session_create':
             operation['description'] = (
-                'Start a model turn with nonempty input and environment.type=none. '
+                'Use a prepared hosted workspace or create one with inline settings. '
+                'Sessions without an environment require initial input. '
                 'Client function results are submitted to the session events endpoint. '
                 'stream=true selects server-sent events.')
         if body in ('response_create', 'response_compact', 'input_tokens_request'):

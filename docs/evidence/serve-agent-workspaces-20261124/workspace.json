@@ -1,0 +1,92 @@
+{
+  "engine": "36cd462b94635ea69434576dcaeb8265a4ef4d30167d313010e4eb464ca2fcf6",
+  "ingress": "3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed",
+  "driver": "16c16f51829cd11cd60fcfe0cdba4e4b241640e6fea6010d4ac4266e40dd7cd7",
+  "protocol": "0794650981aeef60221a11652f2ea7c75e89014ba7cc9c683ea6be25500dd5ab",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 34.454,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "source_bytes": 18135,
+    "states": [
+      "ready",
+      "connected",
+      "disconnected"
+    ],
+    "copied_before_source_deletion": true,
+    "create": 201,
+    "stream_create": 201,
+    "idle_events": [
+      "agent.session.created",
+      "agent.session.idle"
+    ],
+    "file_create": 201,
+    "replaced_bytes": 0,
+    "pages": 2,
+    "tenant": 404,
+    "key_conflict": 409,
+    "second_attach": 409,
+    "turn_answer": "42",
+    "deleted": true
+  },
+  "lease": "COMPLETED",
+  "cpu": {
+    "workspace-cpu-03.log": [
+      "hosted_workspace_prewarms_once_and_installs_private_bytes",
+      "hosted_workspace_owns_uploaded_bytes_after_source_deletion",
+      "hosted_workspace_session_turn_and_file_commit_share_revision",
+      "hosted_workspace_two_claims_commit_only_one_session_and_response"
+    ],
+    "workspace-cpu-02-agent_session.log": [
+      "agent_session_wire_shapes_follow_the_sdk_transport_fields",
+      "agent_session_prepares_native_input_and_validates_public_snapshot",
+      "agent_session_snapshot_owns_settings_and_omits_transport_secrets",
+      "agent_session_turn_shares_queue_receipt_and_reopens_native_output",
+      "agent_session_turn_reports_the_original_failure_category",
+      "agent_session_tool_action_requires_a_completed_owned_call",
+      "agent_session_cancel_preserves_saved_results_and_never_retargets_a_retry",
+      "agent_session_turn_exhausted_object_quota_leaves_no_orphan",
+      "agent_session_settings_use_cas_filtered_pages_and_immutable_step_settings",
+      "agent_session_vaults_require_owned_identity_and_spend_limit_null_resets",
+      "object_retention_agent_session_follows_typed_dependencies"
+    ],
+    "workspace-cpu-02-environment_template.log": [
+      "environment_template_http_bounds_apply_to_input_and_count_unicode",
+      "environment_template_max_inline_file_survives_reopen_and_rejects_mixed_parts",
+      "environment_template_seals_private_inputs_and_preserves_patch_semantics"
+    ]
+  },
+  "prior_cpu_failure": {
+    "receipt": "87499c60d3c8cae8c9e1630dab842360dee0f05cfbe840af1717a2180f906cd2",
+    "failed": 2,
+    "passed": 1,
+    "cause": "Inserting bound_session invalidated the resource reference before status was written. Set connected before inserting the owner."
+  },
+  "coverage": {
+    "declared": 123,
+    "required_methods": 232,
+    "missing_declaration": 109,
+    "exact_success_declarations": 122,
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "issued": "6166fec362c692484f5480b47237ed26ec877263671641da640bcab8bc4de3d7"
+    }
+  },
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/workspace-http-01/result.json": "09a5be08003d6402d71baf286a3f2d7b470b4631b7545c22dc0e432f8f62a370",
+    ".q4t-work/serve-responses-agents-20261123/workspace-http-01/create/sdk-result.json": "441180503ec0cdf3c0828e26a957448c89f225c4ea45d52e5d914a099cbe9939",
+    ".q4t-work/serve-responses-agents-20261123/workspace-http-01/plan.json": "741fc0e37807d8d51c1b947489fb141cf2b4f27d53b14bd82f5ad21e03bc1939",
+    ".q4t-work/serve-responses-agents-20261123/workspace-http-01-lease/exit.json": "54198f7bbc1f42f582016605739fab6a7e5a43540c41b1ad557732eb406eac1c",
+    ".q4t-work/serve-responses-agents-20261123/workspace-cpu-03.log": "571843120760f8f0ac0ca4cc165f61af3ad3ba984c0c338c3cb92e77faab20e8",
+    ".q4t-work/serve-responses-agents-20261123/workspace-cpu-02-agent_session.log": "c74b2429922512ecbad61c515ad0ec5793c709f82c132452d07649605cc82736",
+    ".q4t-work/serve-responses-agents-20261123/workspace-cpu-02-environment_template.log": "30d8286326a73332062654f7f3c68db4090f4911e06afaa537fc8d366d394381"
+  }
+}

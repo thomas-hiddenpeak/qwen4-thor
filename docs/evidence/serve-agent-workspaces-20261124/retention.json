@@ -1,0 +1,118 @@
+{
+  "engine": "846b4bf533d45112af8946d60dedad5f49c5920e61b9bb95cabf423d26ad53cc",
+  "ingress": "3e1b8020a0216da9db599b78b3c64ce1d454fd56019df62c6dc5ecfb567b62ed",
+  "driver": "16c16f51829cd11cd60fcfe0cdba4e4b241640e6fea6010d4ac4266e40dd7cd7",
+  "protocol": "718571f7996d3c9a850a377de834a9b994506e49e353a808ad3a0479459f715f",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 35.191,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "source_bytes": 18135,
+    "states": [
+      "ready",
+      "connected",
+      "disconnected"
+    ],
+    "copied_before_source_deletion": true,
+    "create": 201,
+    "stream_create": 201,
+    "idle_events": [
+      "agent.session.created",
+      "agent.session.idle"
+    ],
+    "file_create": 201,
+    "replaced_bytes": 0,
+    "pages": 2,
+    "tenant": 404,
+    "key_conflict": 409,
+    "second_attach": 409,
+    "turn_answer": "42",
+    "deleted": true
+  },
+  "lease": "COMPLETED",
+  "cpu": [
+    "agent_session_cancel_preserves_saved_results_and_never_retargets_a_retry",
+    "agent_session_prepares_native_input_and_validates_public_snapshot",
+    "agent_session_settings_use_cas_filtered_pages_and_immutable_step_settings",
+    "agent_session_snapshot_owns_settings_and_omits_transport_secrets",
+    "agent_session_tool_action_requires_a_completed_owned_call",
+    "agent_session_turn_exhausted_object_quota_leaves_no_orphan",
+    "agent_session_turn_reports_the_original_failure_category",
+    "agent_session_turn_shares_queue_receipt_and_reopens_native_output",
+    "agent_session_vaults_require_owned_identity_and_spend_limit_null_resets",
+    "agent_session_wire_shapes_follow_the_sdk_transport_fields",
+    "environment_template_http_bounds_apply_to_input_and_count_unicode",
+    "environment_template_max_inline_file_survives_reopen_and_rejects_mixed_parts",
+    "environment_template_seals_private_inputs_and_preserves_patch_semantics",
+    "hosted_workspace_owns_uploaded_bytes_after_source_deletion",
+    "hosted_workspace_prewarms_once_and_installs_private_bytes",
+    "hosted_workspace_retention_collects_orphan_after_reopen",
+    "hosted_workspace_session_turn_and_file_commit_share_revision",
+    "hosted_workspace_two_claims_commit_only_one_session_and_response",
+    "object_retention_active_roots_preserve_chain_with_owner_isolation",
+    "object_retention_agent_session_follows_typed_dependencies",
+    "object_retention_automatic_expiry_preserves_live_same_owner_reference",
+    "object_retention_batch_limits_and_multiple_owners_require_new_plan",
+    "object_retention_expired_active_cas_can_finish_without_extending_expiry",
+    "object_retention_expired_active_survives_restart_and_recovery_scan",
+    "object_retention_extracts_typed_dependencies_not_user_strings",
+    "object_retention_hosted_workspace_edges_allow_unrelated_collection",
+    "object_retention_inspect_is_readonly_and_stale_plan_cannot_collect",
+    "object_retention_partial_atomic_collection_recovers_without_replay",
+    "object_retention_reference_capacity_preserves_incomplete_owner",
+    "object_retention_referenced_expired_nonactive_cannot_use_active_cas_exception",
+    "object_retention_unknown_owner_protection_and_plan_identity",
+    "object_retention_unknown_state_preserves_owner_without_blocking_reads",
+    "object_retention_unrooted_cycles_and_explicit_permanent_cutoff"
+  ],
+  "changed_compiled_sources": {
+    "src/server/object_retention.cpp": [
+      "8a291bd439a04549e1539de70a0546d19d4a8dcf5e464d7138e8df98ce303785",
+      "c99191c4e2ac9d037f3a6bb45f83a17f040bbe3b954ecb69c178648b495612d0"
+    ]
+  },
+  "prior_http": "22e718776e5e30532af92cf88470c93b2f3571c55866743b1818546cc5f45cbd",
+  "prior_fault_business": {
+    "model_loss": {
+      "engine": "36cd462b94635ea69434576dcaeb8265a4ef4d30167d313010e4eb464ca2fcf6",
+      "seconds": 119.53973572794348,
+      "starts": 2,
+      "manifest": "b97f1cfa6feb63ad9bc9e5b3498e55741077198c5346970f6935c152dca113ad",
+      "ports_free": true,
+      "workers_remaining": []
+    },
+    "gateway_fatal": {
+      "engine": "36cd462b94635ea69434576dcaeb8265a4ef4d30167d313010e4eb464ca2fcf6",
+      "seconds": 148.8390762838535,
+      "starts": 2,
+      "manifest": "4b961214ef213fc822f00e0c8aedd541e70b13dadf79b57dcf192187bebd7c9c",
+      "ports_free": true,
+      "workers_remaining": []
+    }
+  },
+  "prior_cpu_failure": "First integrated fixture expected zero protected objects across all scopes. The durable encryption keyring belongs to a separate internal scope. The repaired assertion checks the one exact tenant candidate, committed deletion and subsequent reads.",
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/workspace-http-retention-01-lease/exit.json": "5c9b854f9bb7c31b3d7f3dabce4b489de5e98f2ec2d64acf16369e5230305ac1",
+    ".q4t-work/serve-responses-agents-20261123/workspace-http-retention-01/result.json": "53ee24f035cc4c958bea034ba01757d7b9d06b969f3aa4a0b006f00f459079cf",
+    ".q4t-work/serve-responses-agents-20261123/workspace-http-retention-01/create/sdk-result.json": "441180503ec0cdf3c0828e26a957448c89f225c4ea45d52e5d914a099cbe9939",
+    "docs/evidence/serve-agent-workspaces-20261124/workspace.json": "22e718776e5e30532af92cf88470c93b2f3571c55866743b1818546cc5f45cbd",
+    ".q4t-work/serve-responses-agents-20261123/retention-object_retention-02.log": "c76f064937430d6b5726b78e70e354d8c5ec0e93e48176b4e75afb62da486079",
+    ".q4t-work/serve-responses-agents-20261123/retention-hosted_workspace-03.log": "413f61a3968410ccce16e8722700dcac0f844296b8cebbd58f332529fd2468cd",
+    ".q4t-work/serve-responses-agents-20261123/retention-environment_template-03.log": "30d8286326a73332062654f7f3c68db4090f4911e06afaa537fc8d366d394381",
+    ".q4t-work/serve-responses-agents-20261123/retention-agent_session-03.log": "c74b2429922512ecbad61c515ad0ec5793c709f82c132452d07649605cc82736",
+    ".q4t-work/serve-responses-agents-20261123/retention-hosted_workspace-02.log": "bcc697308b0d3c1c43db897b676928a0fea7e46c9fec4a12e3aa887cbec74ab9",
+    ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-01/result.json": "8486d0c548cbd729a81c70f1a920e2790e2badbde2ea6d1e987389767e7fc3d3",
+    ".q4t-work/serve-responses-agents-20261123/workspace-fallback-lease-01/exit.json": "02a660055509c545e879600265c707e8c703d386da848a1811613b5ecefbd95c",
+    ".q4t-work/serve-responses-agents-20261123/workspace-fallback-business-01/workspace-recovered.json": "0e6122b3a42564ec5be8ddd9fe228a8b78286b52f37ad9cde0a3daa91e36d0b4",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-01/result.json": "a7ec5c90cd5ae6e12cc47ccd6218422529041a6e6285f079a3e5ee870049de32",
+    ".q4t-work/serve-responses-agents-20261123/workspace-takeover-lease-01/exit.json": "9ec6a95740a868d811d41088e12d2335be616f725880ecac3c5121a214e65bd8",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-workspace-01/workspace-recovered.json": "aeaa5c6538dc672da294f0830f491d0a8f1083aee8aa0712851a0f892cc22e3d"
+  }
+}

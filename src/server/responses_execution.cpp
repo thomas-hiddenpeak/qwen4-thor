@@ -50,7 +50,8 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
   return reply;
 }
 
-ObjectReply ResponsesExecution::BindAgentSession(ObjectRequest mutation) {
+ObjectReply ResponsesExecution::BindAgentSession(
+    ObjectRequest mutation, std::optional<ObjectRequest> environment) {
   const auto* session = mutation.data.Find("session");
   const auto* turns = mutation.data.GetArray("turns");
   if (!prepared_ || begun_ || !plan_.store || plan_.ephemeral ||
@@ -64,6 +65,16 @@ ObjectReply ResponsesExecution::BindAgentSession(ObjectRequest mutation) {
       turns->array.empty() || turns->array.back().GetString("response_id") != Id() ||
       mutation.ttl_seconds != 0)
     return Error(500, "agent_session_binding_invalid", "Invalid session handoff");
+  if (environment &&
+      (environment->kind != ObjectKind::kEnvironment ||
+       environment->operation != ObjectOperation::kPut ||
+       environment->scope != mutation.scope ||
+       environment->data.GetString("bound_session") != mutation.id ||
+       !session->Find("environment") ||
+       session->Find("environment")->GetString("id") != environment->id))
+    return Error(500, "agent_environment_binding_invalid",
+                 "Invalid environment handoff");
+  plan_.agent_environment_write = std::move(environment);
   plan_.agent_session_id = mutation.id;
   plan_.agent_session_write = std::move(mutation);
   return {};
@@ -73,6 +84,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   size_t bytes = plan_.agent_session_write
                      ? OutputJson(plan_.agent_session_write->data).size()
                      : 0;
+  if (plan_.agent_environment_write)
+    bytes += OutputJson(plan_.agent_environment_write->data).size();
   for (const auto* value : {&plan_.request,
                             &plan_.history,
                             &plan_.own_input,

@@ -358,10 +358,14 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       }
       field.append(value);
     } else if (name == "idempotency-key" && verb == "POST" &&
-               ParseAgentSessionRoute(target).kind == AgentSessionRouteKind::kEvents) {
+               (ParseAgentSessionRoute(target).kind == AgentSessionRouteKind::kEvents ||
+                target == kHostedEnvironmentsPath)) {
+      const bool environment = target == kHostedEnvironmentsPath;
       if (!headers->agent_event_key.empty() || value.empty() ||
-          value.size() > 255 || !std::ranges::all_of(value, [](unsigned char c) {
-            return c >= 0x21 && c <= 0x7e && c != ',';
+          value.size() > (environment ? 256u : 255u) ||
+          !std::ranges::all_of(value, [environment](unsigned char c) {
+            return environment ? c >= 0x20 && c <= 0x7e
+                               : c >= 0x21 && c <= 0x7e && c != ',';
           })) {
         headers->error_code = "invalid_idempotency_key";
         headers->error_param = "Idempotency-Key";

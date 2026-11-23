@@ -293,7 +293,14 @@ def current_surface(root):
     if ('HandleEnvironmentTemplate(*objects_' not in dispatch or
             'EnvironmentTemplateMethodAllowed(method, target)' not in application_routes):
         raise ValueError("review native environment template routing")
-    for path, methods in (('/v1/agents/environments/templates', ('GET', 'POST')),
+    if ('HandleHostedEnvironment(*objects_' not in dispatch or
+            'ParseHostedRoute(target)' not in application_routes or
+            'environment_detail::WorkspaceFiles(' not in (root/'src/server/agent_environment.cpp').read_text()):
+        raise ValueError("review native hosted workspace routing")
+    for path, methods in (('/v1/agents/environments', ('GET', 'POST')),
+                          ('/v1/agents/environments/{environment_id}', ('GET',)),
+                          ('/v1/agents/environments/{environment_id}/files', ('GET', 'POST')),
+                          ('/v1/agents/environments/templates', ('GET', 'POST')),
                           ('/v1/agents/environments/templates/{environment_template_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/vaults/{vault_id}/credentials', ('GET', 'POST')),
                           ('/v1/vaults/{vault_id}/credentials/{credential_id}', ('GET', 'POST', 'DELETE')),

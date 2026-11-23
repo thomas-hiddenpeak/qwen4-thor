@@ -103,6 +103,80 @@ Q4T_TEST(object_retention_agent_session_follows_typed_dependencies) {
   return true;
 }
 
+Q4T_TEST(object_retention_hosted_workspace_edges_allow_unrelated_collection) {
+  const auto tmpl = InspectObjectRetention("environment_template", Parse(R"({
+    "resource":{"object":"agent.environment.template","id":"environment_template_x",
+      "files":[{"type":"file_id","file_id":"file_source"}],
+      "skills":[{"type":"skill_reference","skill_id":"skill_x"}]},
+    "sealed_definition":"opaque"})"));
+  Q4T_CHECK(!tmpl.uncertain && tmpl.references ==
+            (std::vector<std::string>{"file_source", "skill_x"}));
+  const auto space = InspectObjectRetention("environment", Parse(R"({
+    "resource":{"object":"agent.environment","id":"environment_x","status":"connected",
+      "files":[{"type":"file_id","file_id":"file_copied"}],"skills":[]},
+    "bound_session":"agent_session_x","vault_ids":["vault_x"],"warm_until":9,
+    "sealed_definition":{"format":"q4t.environment.definition.v1","index":"opaque","parts":["opaque"]}})"));
+  Q4T_CHECK(!space.uncertain && space.references ==
+            (std::vector<std::string>{"agent_session_x", "vault_x"}));
+  const auto idle = InspectObjectRetention("agent_session", Parse(R"({
+    "session":{"object":"agent.session","environment":{"type":"openai_hosted","id":"environment_x"},
+      "status":"idle","agent":{"tools":[]},"vault_ids":[]},"turns":[],"created_idle":true})"));
+  Q4T_CHECK(!idle.uncertain && idle.references == std::vector<std::string>{"environment_x"});
+  const auto key = InspectObjectRetention("tool_run", Parse(
+      "{\"format\":\"q4t.environment.creation.v1\",\"environment_id\":\"environment_x\","
+      "\"request_sha256\":\"" + kDigest + "\"}"));
+  Q4T_CHECK(!key.uncertain && key.references == idle.references);
+  ObjectRetentionInfo leaf;
+  std::vector nodes{Node("environment_template_x", tmpl, 0, "environment_template"),
+                    Node("agent_session_x", idle, 0, "agent_session"),
+                    Node("environment_x", space, 10, "environment"),
+                    Node("file_source", leaf, 10, "file"),
+                    Node("file_copied", leaf, 10, "file"),
+                    Node("envkey_x", key, 10, "tool_run")};
+  ObjectRetentionPlan plan;
+  Q4T_CHECK(PlanObjectRetention(nodes, 20, 0, 128, &plan));
+  Q4T_CHECK(!plan.uncertain && plan.eligible == 2 &&
+            std::ranges::find(plan.selected, 4) != plan.selected.end() &&
+            std::ranges::find(plan.selected, 5) != plan.selected.end());
+  const auto closed = InspectObjectRetention("environment", Parse(R"({
+    "resource":{"object":"agent.environment","id":"environment_x","status":"disconnected",
+      "files":[],"skills":[]},"warm_until":10,"vault_ids":["vault_x"]})"));
+  Q4T_CHECK(!closed.uncertain && closed.references.empty());
+  Q4T_CHECK(InspectObjectRetention("tool_run", Parse(R"({
+      "format":"q4t.environment.creation.v1","environment_id":"environment_x"})")).uncertain);
+  Q4T_CHECK(InspectObjectRetention("environment", Parse(R"({
+      "resource":{"object":"agent.environment","id":"environment_x","status":"future",
+        "files":[],"skills":[]},"warm_until":10,"vault_ids":[],"sealed_definition":"s"})")).uncertain);
+  return true;
+}
+
+Q4T_TEST(object_retention_preserves_externalized_agent_instructions) {
+  Fixture f;
+  auto agent = Item("agent_large");
+  agent.kind = ObjectKind::kAgent;
+  agent.data = Parse(R"({"object":"agent","tools":[],"instructions":""})");
+  const std::string instructions(384 * 1024, 'x');
+  agent.data.object.back().second.str = instructions;
+  auto orphan = Item("item_orphan");
+  const auto cutoff = std::time(nullptr);
+  {
+    ObjectStore store(f.options);
+    Q4T_CHECK(Ok(Run(store, agent)) && Ok(Run(store, orphan)));
+  }
+  ObjectStore reopened(f.options);
+  auto plan = Inspect(reopened, cutoff);
+  Q4T_CHECK(Ok(plan) && plan.value.GetInt("eligible_objects") == 1 &&
+            plan.value.GetArray("candidates")->array.at(0).GetString("id") ==
+                orphan.id);
+  auto applied = Inspect(reopened, cutoff, plan.value.GetString("plan_sha256"));
+  Q4T_CHECK(Ok(applied) && applied.value.GetInt("deleted_objects") == 1);
+  const auto read = Read(reopened, agent);
+  Q4T_CHECK(Ok(read) && read.value.Find("data")->GetString("instructions") ==
+                            instructions &&
+            Read(reopened, orphan).http_status == 404);
+  return true;
+}
+
 Q4T_TEST(object_retention_expired_active_cas_can_finish_without_extending_expiry) {
   Fixture f;
   ObjectStore objects(f.options);

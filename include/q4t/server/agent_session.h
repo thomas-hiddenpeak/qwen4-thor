@@ -30,10 +30,10 @@ struct AgentSessionStart {
   io::Json session;
   io::Json input;
   std::string sealed_http{};
+  std::optional<ObjectRequest> environment_write{};
 };
 
-// Prepare a session that uses the native model directly (environment "none").
-// The result is not published until its initial turn has a durable owner.
+// Prepare the public snapshot and any workspace claim before publication.
 ObjectReply PrepareDirectAgentSession(
     ObjectStore& objects, const io::Json& request, const ChatPlanConfig& config,
     const StateAccess& access, std::string_view session_id, int64_t created,
@@ -82,6 +82,7 @@ struct AgentEventCursor {
   // A native step finished with outstanding client actions. A later session
   // cancellation can still produce a logical terminal for this step.
   bool waiting = false;
+  bool created_seen = false;
   size_t step = 0;
   size_t sequence = 0;
   std::string turn_id;

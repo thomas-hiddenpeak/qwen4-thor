@@ -186,26 +186,36 @@ ObjectReply PrepareAgentSessionExecution(
   auto result = PrepareDirectAgentSession(objects, request, config, access, id,
                                           created, &start);
   if (!result.ok()) return result;
-  auto native = NativeRequest(start);
-  if (!native.ok()) return native;
-  run.ConfigureAgentMcp(start.session, start.sealed_http);
-  result = run.Prepare(native.value, config, access, created, true);
-  if (!result.ok()) return result;
   ObjectRequest mutation;
   mutation.operation = ObjectOperation::kPut;
   mutation.kind = ObjectKind::kAgentSession;
   mutation.id = id;
   mutation.scope = access.scope;
   mutation.ttl_seconds = 0;
-  mutation.data = Object(
-      {{"session", start.session},
-       {"turns", Array({Object({{"id", String("turn_" + nonce.substr(14))},
-                                {"response_id", String(run.Id())}})})}});
-  if (!start.sealed_http.empty()) {
+  mutation.data = Object({{"session", start.session}, {"turns", Array()}});
+  if (!start.sealed_http.empty())
     Set(&mutation.data, "sealed_http", String(start.sealed_http));
-    Set(&Field(mutation.data, "turns").array.back(), "sealed_http", String(start.sealed_http));
+  if (start.input.array.empty()) {
+    if (!start.environment_write) return InvalidRecord();
+    Set(&mutation.data, "created_idle", Boolean(true));
+    const ObjectRequest writes[]{std::move(mutation),
+                                 std::move(*start.environment_write)};
+    result = objects.ExecuteBatch(writes, access.deadline, access.cancelled);
+    if (result.commit_unknown) result.value = Object({{"id", String(id)}});
+  } else {
+    auto native = NativeRequest(start);
+    if (!native.ok()) return native;
+    run.ConfigureAgentMcp(start.session, start.sealed_http);
+    result = run.Prepare(native.value, config, access, created, true);
+    if (!result.ok()) return result;
+    auto link = Object({{"id", String("turn_" + nonce.substr(14))},
+                        {"response_id", String(run.Id())}});
+    if (!start.sealed_http.empty())
+      Set(&link, "sealed_http", String(start.sealed_http));
+    Field(mutation.data, "turns").array.push_back(std::move(link));
+    result = run.BindAgentSession(std::move(mutation),
+                                  std::move(start.environment_write));
   }
-  result = run.BindAgentSession(std::move(mutation));
   if (result.ok()) result.value = std::move(start.session);
   return result;
 }
@@ -373,8 +383,16 @@ ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
   const auto* session = data.Find("session");
   const auto* links = data.GetArray("turns");
   if (!session || session->GetString("id") != id || !links ||
-      links->array.empty() || links->array.size() >= kMaxTransactionObjects)
+      links->array.size() >= kMaxTransactionObjects)
     return InvalidRecord();
+  if (links->array.empty()) {
+    if (!data.GetBool("created_idle")) return InvalidRecord();
+    if (!turn_id.empty()) return Error(404, "object_not_found", "Turn not found");
+    auto settings = SessionSettings(data);
+    if (!settings.ok()) return settings;
+    *view = {std::move(settings.value), {}, Array(), Array()};
+    return {};
+  }
   const std::string selected = turn_id.empty()
                                    ? links->array.back().GetString("id")
                                    : std::string(turn_id);
@@ -426,7 +444,7 @@ ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
     return Error(404, "object_not_found", "Turn not found");
   auto latest = SessionSettings(data);
   if (!latest.ok()) return latest;
-  for (auto key : {"agent", "metadata", "review", "spend_control"}) {
+  for (auto key : {"agent", "metadata", "review", "spend_control", "environment"}) {
     if (const auto* value = latest.value.Find(key))
       Set(&result.session, key, *value);
     else
@@ -676,7 +694,9 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
     }
   }
   auto& links = Field(data, "turns");
-  if (links.array.size() + 1 >= kMaxTransactionObjects)
+  // Deletion also commits the session and its attached environment.
+  const size_t owners = view.session.Find("environment")->Has("id") ? 2 : 1;
+  if (links.array.size() + owners + 1 > kMaxTransactionObjects)
     return Error(413, "agent_session_turn_limit", "Session step limit reached");
   auto execution_settings = view.session;
   if (waiting) {
@@ -699,11 +719,13 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   }
   auto native = NativeRequest({execution_settings, std::move(input)});
   if (!native.ok()) return native;
-  Set(&native.value, "previous_response_id",
-      Copy(links.array.back(), "response_id"));
-  const auto& last = links.array.back();
+  CancelledAgentHistory previous{id, {}};
+  if (!links.array.empty()) {
+    const auto& last = links.array.back();
+    Set(&native.value, "previous_response_id", Copy(last, "response_id"));
+    previous.results = Copy(last, "saved_tool_results");
+  }
   const bool cancelled = view.turn.GetString("status") == "cancelled";
-  CancelledAgentHistory previous{id, Copy(last, "saved_tool_results")};
   run.ConfigureAgentMcp(execution_settings, data.GetString("sealed_http"));
   auto prepared = run.Prepare(native.value, config, access, std::time(nullptr),
                               true, cancelled ? &previous : nullptr);

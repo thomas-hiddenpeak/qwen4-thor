@@ -34,6 +34,7 @@ struct ResponseStatePlan {
   int64_t agent_turn_started_at = 0;
   int64_t agent_turn_finished_at = 0;
   std::optional<ObjectRequest> agent_session_write;
+  std::optional<ObjectRequest> agent_environment_write;
   ClientRateDomain rate_domain = ClientRateDomain::kOnline;
   io::Json history;    // Full authorized input for this generation.
   io::Json own_input;  // New input, without inherited context/instructions.

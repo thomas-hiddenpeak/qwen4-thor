@@ -1,0 +1,44 @@
+{
+  "profiles": {
+    "primary": {
+      "seconds": 46.397788513917476,
+      "starts": 1,
+      "workspace": {
+        "id": "environment_fc505e472a71677bb64fb17d230be234",
+        "session": "agent_session_b555f99616946d7563b1beb23de43851",
+        "files_digest": "2fb3ca7cd5e5105b9b18129ce25d28c6dd26598f30c95d0fef18a6e1bd89bdbc",
+        "active_write": 409
+      },
+      "status": "requires_action",
+      "profile_sha256": "6e28e44b71aab96b044d30301e8b9aa2a36fe882031e4a35d350efa10bd3f846",
+      "predecessor": "2dfe88998e517324a5cb71f02a3cc6d3135157caca3ae49d076755aa196a453f",
+      "sdk": "0f2ae725d2b13cf85a00443dec33ba839cefb2b1eace12ec328c5e7e4aaae198"
+    },
+    "light": {
+      "seconds": 118.74561143107712,
+      "starts": 1,
+      "workspace": {
+        "id": "environment_fc505e472a71677bb64fb17d230be234",
+        "session": "agent_session_b555f99616946d7563b1beb23de43851",
+        "files_digest": "2fb3ca7cd5e5105b9b18129ce25d28c6dd26598f30c95d0fef18a6e1bd89bdbc",
+        "active_write": 409,
+        "byte_length": 0,
+        "disconnected": true
+      },
+      "status": "idle",
+      "profile_sha256": "994c7b2df26b9c275feec6ff859995ea50d92113cee096f764ac1cbacb90b9e5",
+      "predecessor": "608e130e4026322b69666b27572caee1c53d7558bf279771ee700c19f95f5125",
+      "sdk": "301f68fb4731df1761c0abaf7d69331a8ea0ae4947c295393e117ce2f049fe4f"
+    }
+  },
+  "qualification": "ACCEPT_HOSTED_WORKSPACES_PRIMARY_LIGHT",
+  "additional_starts": 0,
+  "registry": "1784783aa1cad7f44964600e238fd8672aaff923bf8bb5df1d9e0b8ef832b7dd",
+  "proofs": {
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-01/acceptance.json": "06022952c38de6d1cebc5a77ab9f254877a73c5eae3796f2259df662b911f658",
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-01/profile-observations.json": "a527c765b78fe752abc5c9b782cf99f388b3495c21fe8cdfa11b603e084b7de5",
+    ".q4t-work/serve-responses-agents-20261123/workspace-profiles-01/lease/exit.json": "ded7e213f172bb9f418a805fe6640e167e1c6e81f736f5bcb53f9a7d55f1f97c",
+    ".q4t-work/serve-responses-agents-20261123/workspace-registry-01/acceptance.json": "9fd8e3521b06c564a26061dcfbfa6fd8c8a6cba04d0438567d93ee7a28a7a984"
+  },
+  "original_registry_failure": "Unknown acceptance-to-ingress digest before registration of the reviewed native ingress. Retried offline with the same two model runs."
+}

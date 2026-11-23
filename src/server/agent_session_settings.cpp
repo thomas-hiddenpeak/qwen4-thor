@@ -67,7 +67,7 @@ ObjectReply BindSessionSettings(Json* data, const Json& session, Json* link) {
       Set(&agent, key, value);
   }
   if (!agent.object.empty()) Set(&delta, "agent", std::move(agent));
-  for (const auto* key : {"metadata", "review", "spend_control"}) {
+  for (const auto* key : {"metadata", "review", "spend_control", "environment"}) {
     const auto* value = session.Find(key);
     if (changed(value, seed->Find(key)))
       Set(&delta, key, value ? *value : Json{});

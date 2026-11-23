@@ -690,9 +690,15 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
                         SavedResponse(*plan, snapshot, events),
                         !plan->conversation_id.empty(), plan->ephemeral);
   if (plan->agent_session_write) {
-    std::array writes{std::move(mutation),
-                      std::move(*plan->agent_session_write)};
+    std::vector<ObjectRequest> writes;
+    writes.reserve(plan->agent_environment_write ? 3 : 2);
+    writes.push_back(std::move(mutation));
+    writes.push_back(std::move(*plan->agent_session_write));
     plan->agent_session_write.reset();
+    if (plan->agent_environment_write) {
+      writes.push_back(std::move(*plan->agent_environment_write));
+      plan->agent_environment_write.reset();
+    }
     auto result = objects_.ExecuteBatch(writes, access.deadline, access.cancelled);
     if (result.ok()) plan->response_revision = 1;
     return result;

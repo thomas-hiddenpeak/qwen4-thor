@@ -186,6 +186,15 @@ ObjectReply Read(ObjectStore& objects, const BinaryAccess& access,
 }
 }  // namespace
 
+bool SupportsApplicationPayload(std::string_view kind) {
+  return kind == "chat" || kind == "response" || kind == "conversation" ||
+         kind == "item" || kind == "prompt" || kind == "batch" ||
+         kind == "vector_store" || kind == "vector_store_file" ||
+         kind == "vector_store_batch" || kind == "live_fork_state" ||
+         kind == "agent" || kind == "agent_session" || kind == "vault" ||
+         kind == "environment_template" || kind == "environment";
+}
+
 bool ParseApplicationPayloadReferences(
     const Json& data, std::vector<ApplicationStringRef>* references) {
   if (!references || !data.IsObject()) return false;

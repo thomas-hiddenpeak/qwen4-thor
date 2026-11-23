@@ -96,7 +96,7 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     Set(&loc, "turn", snapshot.turn);
     auto resource = Object({{"session", snapshot.session}});
     if (type == "response.created") {
-      if (!cursor.step &&
+      if (!cursor.step && !cursor.created_seen &&
           !Emit(events, prefix, "agent.session.created", resource))
         return Invalid();
       if (first && !Emit(events, prefix, "agent.session.turn.created", loc))
@@ -226,9 +226,10 @@ ObjectReply OpenAgentEventSubscription(ObjectStore& objects,
   const auto* session = data ? data->Find("session") : nullptr;
   const auto* links = data ? data->GetArray("turns") : nullptr;
   if (!session || session->GetString("id") != id || !links ||
-      links->array.empty())
+      (links->array.empty() && !data->GetBool("created_idle")))
     return Invalid();
   AgentEventCursor next;
+  next.created_seen = true;
   for (const auto& link : links->array) {
     auto record = ResponsesState(objects).ReadRecord(
         link.GetString("response_id"), access);
@@ -282,6 +283,15 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
   if (!session || session->GetString("id") != id || !links ||
       cursor->step > links->array.size())
     return Invalid();
+  if (data->GetBool("created_idle") && !cursor->created_seen) {
+    const auto at_creation = Object({{"session", *session}});
+    if (!Emit(events, id, "agent.session.created", at_creation) ||
+        !Emit(events, id, "agent.session.idle", at_creation))
+      return Invalid();
+    cursor->created_seen = true;
+    *settled = true;
+    return {};
+  }
   if (cursor->step == links->array.size()) return {};
   if (cursor->waiting) {
     const auto& pending = links->array[cursor->step];

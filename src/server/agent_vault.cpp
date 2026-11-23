@@ -166,6 +166,30 @@ ObjectReply ListPage(Json rows, bool more) {
 }
 }  // namespace vault_detail
 
+ObjectReply CheckAgentVaults(ObjectStore& objects, const StateAccess& access,
+                             const io::Json& vaults) {
+  using namespace vault_detail;
+  if (!vaults.IsArray() || vaults.array.size() > 10)
+    return Invalid("Expected up to ten Vault IDs", "vault_ids");
+  ObjectRequest lookup;
+  lookup.kind = ObjectKind::kVault;
+  lookup.scope = access.scope;
+  for (const auto& id : vaults.array) {
+    if (!id.str.starts_with("vault_") || !ValidId(id.str))
+      return Error(404, "object_not_found", "Vault not found");
+    lookup.id = id.str;
+    auto found = objects.Execute(lookup, access.deadline, access.cancelled);
+    if (!found.ok()) return found;
+    const auto* data = found.value.Find("data");
+    if (!data || data->GetString("id") != id.str ||
+        data->GetString("object") != "vault")
+      return Error(503, "vault_record_invalid", "Invalid vault record");
+    if (data->GetBool("archived"))
+      return Error(404, "object_not_found", "Vault not found");
+  }
+  return {};
+}
+
 ObjectReply HandleAgentVault(ObjectStore& store, std::string_view method,
                              std::string_view target, const std::string& body,
                              const StateAccess& access) {

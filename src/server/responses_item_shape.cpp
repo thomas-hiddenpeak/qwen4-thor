@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <unordered_set>
 
+#include "q4t/io/base64.h"
 #include "q4t/server/decision_plan.h"
 #include "q4t/server/decision_types_data.h"
 #include "q4t/server/input_contract.h"
@@ -50,6 +51,11 @@ const Graph& Types() {
 const Graph& RealtimeTypes() {
   static const Graph graph(realtime_types::kData,
                             "q4t-openai-realtime-types-v1");
+  return graph;
+}
+const Graph& EnvironmentTypes() {
+  static const Graph graph(environment_types::kData,
+                           "q4t-openai-environment-types-v1");
   return graph;
 }
 const Graph& LiveTypes() {
@@ -241,6 +247,28 @@ Status Validate(const Graph& graph, const Json& item, const char* root,
             failure.internal || failure.resource ? 503 : 400};
   return Status::Fail(std::move(failure.message));
 }
+// Creation limits apply to uploaded bytes. Stored workspace copies and
+// previous files retained by a metadata-only update are outside this request.
+Status CheckInlineFile(const Json& file, const std::string& param,
+                       size_t* total, ChatPlanError* error) {
+  if (file.GetString("type") != "inline") return {};
+  const auto* data = file.Find("data");
+  size_t size = 0;
+  constexpr size_t kPerFile = 5 * 1024 * 1024;
+  constexpr size_t kPerRequest = 2 * kPerFile;
+  if (!data || !data->IsString() || !io::Base64DecodedSize(data->str, &size)) {
+    *error = {"invalid_request", param, 400};
+    return Status::Fail("Expected canonical base64 file data");
+  }
+  if (size > kPerFile || size > kPerRequest - *total) {
+    *error = {"invalid_request", param, 400};
+    return Status::Fail(size > kPerFile ? "Inline file exceeds 5 MiB"
+                                       : "Inline files exceed 10 MiB per request");
+  }
+  *total += size;
+  return {};
+}
+
 }  // namespace
 
 Status vault_detail::ValidateCredential(const Json& value, CredentialShape shape,
@@ -259,8 +287,6 @@ Status vault_detail::ValidateCredential(const Json& value, CredentialShape shape
 
 Status ValidateEnvironmentTemplate(const Json& value, EnvironmentTemplateShape shape,
                                    ChatPlanError* error) {
-  static const Graph graph(environment_types::kData,
-                           "q4t-openai-environment-types-v1");
   const char* root = "";
   switch (shape) {
     case EnvironmentTemplateShape::kStoredDefinition:
@@ -270,7 +296,34 @@ Status ValidateEnvironmentTemplate(const Json& value, EnvironmentTemplateShape s
   }
   const bool incoming = shape == EnvironmentTemplateShape::kCreate ||
                         shape == EnvironmentTemplateShape::kUpdate;
-  return Validate(graph, value, root, error, "", incoming);
+  const auto valid = Validate(EnvironmentTypes(), value, root, error, "", incoming);
+  const auto* files = value.GetArray("files");
+  if (!valid || !incoming || !files) return valid;
+  size_t total = 0;
+  for (size_t i = 0; i < files->array.size(); ++i) {
+    auto bytes = CheckInlineFile(files->array[i],
+                                 "files[" + std::to_string(i) + "].data",
+                                 &total, error);
+    if (!bytes) return bytes;
+  }
+  return {};
+}
+
+Status ValidateEnvironment(const Json& value, EnvironmentShape shape,
+                           ChatPlanError* error) {
+  const char* root = "";
+  switch (shape) {
+    case EnvironmentShape::kCreate: root = "environment_create"; break;
+    case EnvironmentShape::kResource: root = "environment_resource"; break;
+    case EnvironmentShape::kQuery: root = "environment_query"; break;
+    case EnvironmentShape::kFileCreate: root = "file_create"; break;
+    case EnvironmentShape::kFileResource: root = "file_resource"; break;
+    case EnvironmentShape::kFileQuery: root = "file_query"; break;
+  }
+  auto valid = Validate(EnvironmentTypes(), value, root, error, "");
+  if (!valid || shape != EnvironmentShape::kFileCreate) return valid;
+  size_t total = 0;
+  return CheckInlineFile(value, "data", &total, error);
 }
 
 Status ValidateAgentSession(const Json& value, AgentSessionShape shape,

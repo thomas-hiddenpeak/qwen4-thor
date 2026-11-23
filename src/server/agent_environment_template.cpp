@@ -34,24 +34,10 @@ Json Or(const Json& source, const char* key, Json fallback) {
   return value && !value->IsNull() ? *value : std::move(fallback);
 }
 
-// The API reports inline download size without returning or decoding the bytes.
-bool Base64Size(std::string_view text, size_t* bytes) {
-  if (text.size() % 4) return false;
-  const auto first = text.find('=');
-  const auto count = first == text.npos ? text.size() : first;
-  const auto tail = text.substr(count);
-  if (!tail.empty() && tail != "=" && tail != "==") return false;
-  if (text.substr(0, count).find_first_not_of(io::kBase64Alphabet) != text.npos)
-    return false;
-  if (!tail.empty()) {
-    const auto last = io::kBase64Alphabet.find(text[count - 1]);
-    if (last % (tail.size() == 2 ? 16 : 4)) return false;
-  }
-  *bytes = text.size() / 4 * 3 - tail.size();
-  return true;
-}
 
-bool WorkspaceFile(std::string_view path) {
+}  // namespace
+
+bool environment_detail::ValidWorkspaceFile(std::string_view path) {
   if (!path.starts_with("/workspace/") || path.ends_with('/') ||
       path.find('\0') != path.npos)
     return false;
@@ -66,17 +52,18 @@ bool WorkspaceFile(std::string_view path) {
   return true;
 }
 
-ObjectReply Project(const Json& config, const std::string& id, int64_t created,
-                    int64_t updated) {
+ObjectReply environment_detail::PublicTemplate(const Json& config,
+                                              const std::string& id,
+                                              int64_t created, int64_t updated) {
   auto files = Or(config, "files", Array());
   std::set<std::string> paths;
   for (auto& file : files.array) {
     const auto path = file.GetString("path");
-    if (!WorkspaceFile(path) || !paths.insert(path).second)
+    if (!ValidWorkspaceFile(path) || !paths.insert(path).second)
       return Invalid("Expected a unique file path inside /workspace", "files");
     if (file.GetString("type") == "inline") {
       size_t size;
-      if (!Base64Size(file.Find("data")->str, &size))
+      if (!io::Base64DecodedSize(file.Find("data")->str, &size))
         return Invalid("Invalid inline file data", "files");
       file = Object({{"type", String("inline")},
                      {"path", String(path)},
@@ -99,7 +86,7 @@ ObjectReply Project(const Json& config, const std::string& id, int64_t created,
         if (!entry.Has("version")) Set(&entry, "version", {});
       } else {
         size_t size;
-        if (!Base64Size(entry.Find("source")->Find("data")->str, &size) ||
+        if (!io::Base64DecodedSize(entry.Find("source")->Find("data")->str, &size) ||
             !size)
           return Invalid("Invalid inline capability data",
                          entries == &plugins ? "plugins" : "skills");
@@ -153,6 +140,7 @@ ObjectReply Project(const Json& config, const std::string& id, int64_t created,
   return result;
 }
 
+namespace {
 ObjectReply Public(const Json& data, const std::string& id) {
   const auto* row = data.Find("resource");
   ChatPlanError error;
@@ -267,7 +255,7 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
     }
   }
   for (auto& [key, value] : changes.object) Set(&config, key, std::move(value));
-  auto projected = Project(config, req.id, created, now);
+  auto projected = environment_detail::PublicTemplate(config, req.id, created, now);
   if (!projected.ok()) return projected;
   Json sealed;
   auto saved =

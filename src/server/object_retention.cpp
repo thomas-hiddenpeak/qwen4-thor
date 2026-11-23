@@ -83,6 +83,96 @@ class Inspector {
     }
   }
 
+  void RequiredId(const Json& record, const char* field,
+                  std::string_view prefix, bool pinned = true) {
+    const auto* id = record.Find(field);
+    if (!id || !id->IsString() || !id->str.starts_with(prefix) ||
+        id->str.size() == prefix.size() || !ValidApplicationId(id->str)) {
+      value.uncertain = true;
+      return;
+    }
+    if (pinned) Reference(id);
+  }
+
+  bool StoredString(const Json* slot, const std::vector<std::string>& path,
+                    const std::vector<ApplicationStringRef>& payloads) {
+    if (!slot) return false;
+    if (slot->IsString()) return !slot->str.empty();
+    return slot->IsNull() && std::ranges::any_of(payloads, [&](const auto& ref) {
+      return ref.path == path;
+    });
+  }
+
+  void HostedEnvironment(const Json& data, bool is_template,
+                         const std::vector<ApplicationStringRef>& payloads) {
+    const auto* resource = data.Find("resource");
+    const auto* files = resource ? resource->GetArray("files") : nullptr;
+    const auto* skills = resource ? resource->GetArray("skills") : nullptr;
+    const auto* sealed = data.Find("sealed_definition");
+    const auto object =
+        is_template ? "agent.environment.template" : "agent.environment";
+    const auto id = resource ? resource->GetString("id") : "";
+    if (!files || !skills || resource->GetString("object") != object ||
+        !ValidApplicationId(id) || !id.starts_with("environment_") ||
+        is_template != id.starts_with("environment_template_")) {
+      value.uncertain = true;
+      return;
+    }
+    const auto status = resource->GetString("status");
+    if (!is_template && status == "disconnected") {
+      value.uncertain = sealed || data.Has("bound_session");
+      return;
+    }
+    if (sealed && sealed->IsObject()) {
+      const auto* parts = sealed->GetArray("parts");
+      if (sealed->GetString("format") != "q4t.environment.definition.v1" ||
+          !StoredString(sealed->Find("index"), {"sealed_definition", "index"},
+                        payloads) ||
+          !parts || parts->array.empty()) {
+        value.uncertain = true;
+        return;
+      }
+      for (size_t i = 0; i < parts->array.size(); ++i)
+        if (!StoredString(&parts->array[i],
+                          {"sealed_definition", "parts", std::to_string(i)},
+                          payloads))
+          value.uncertain = true;
+    } else if (!StoredString(sealed, {"sealed_definition"}, payloads)) {
+      value.uncertain = true;
+    }
+    for (const auto& file : files->array) {
+      const auto type = file.GetString("type");
+      if (type == "file_id") {
+        // Templates resolve the source later. Installed files already own a
+        // private copy, including after the original Files object is deleted.
+        RequiredId(file, "file_id", "file_", is_template);
+      } else if (type != "inline") {
+        value.uncertain = true;
+      }
+    }
+    for (const auto& skill : skills->array) {
+      if (skill.GetString("type") == "skill_reference")
+        RequiredId(skill, "skill_id", "");
+      else if (skill.GetString("type") != "inline")
+        value.uncertain = true;
+    }
+    if (is_template) return;
+    const auto* vaults = data.GetArray("vault_ids");
+    if (!vaults || data.GetInt("warm_until") <= 0) {
+      value.uncertain = true;
+      return;
+    }
+    if (status == "connected")
+      RequiredId(data, "bound_session", "agent_session_");
+    else if (status != "ready")
+      value.uncertain = true;
+    for (const auto& vault : vaults->array) {
+      if (!vault.IsString() || !vault.str.starts_with("vault_"))
+        value.uncertain = true;
+      Reference(&vault);
+    }
+  }
+
   void Request(const Json* request) {
     if (!request || request->IsNull()) return;
     if (!request->IsObject()) {
@@ -129,12 +219,7 @@ class Inspector {
     }
   }
 
-  void Payloads(const Json& data) {
-    std::vector<ApplicationStringRef> references;
-    if (!ParseApplicationPayloadReferences(data, &references)) {
-      value.uncertain = true;
-      return;
-    }
+  void Payloads(const std::vector<ApplicationStringRef>& references) {
     for (const auto& ref : references) {
       Json id;
       id.type = Json::Type::kString;
@@ -179,6 +264,10 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.value.uncertain = true;
     return inspector.Finish();
   }
+  const bool application = SupportsApplicationPayload(kind);
+  std::vector<ApplicationStringRef> payloads;
+  const bool valid_payloads =
+      !application || ParseApplicationPayloadReferences(data, &payloads);
   if (kind == "response") {
     if (const auto* response = data.Find("response");
         response && response->IsObject()) {
@@ -329,15 +418,23 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.AgentTools(data.GetArray("tools"));
   } else if (kind == "vault" && data.GetString("object") == "vault") {
     // The container metadata has no content or credential object edges.
+  } else if (kind == "environment_template" || kind == "environment") {
+    inspector.HostedEnvironment(data, kind == "environment_template", payloads);
   } else if (kind == "agent_session") {
     const auto* session = data.Find("session");
     const auto* agent = session ? session->Find("agent") : nullptr;
     const auto* vaults = session ? session->GetArray("vault_ids") : nullptr;
     const auto* turns = data.GetArray("turns");
+    const auto* env = session ? session->Find("environment") : nullptr;
+    const bool hosted = env && env->GetString("type") == "openai_hosted";
+    const bool idle = hosted && session->GetString("status") == "idle" &&
+                      data.GetBool("created_idle");
     if (!session || session->GetString("object") != "agent.session" ||
-        !agent || !vaults || !turns || turns->array.empty()) {
+        !agent || !vaults || !turns ||
+        (turns->array.empty() && !idle)) {
       inspector.value.uncertain = true;
     } else {
+      if (hosted) inspector.RequiredId(*env, "id", "environment_");
       inspector.AgentTools(agent->GetArray("tools"));
       if (const auto* versions = data.Find("settings")) {
         if (!versions->IsObject()) inspector.value.uncertain = true;
@@ -360,7 +457,6 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.Reference(data.Find("fork_state_id"));
   } else if (kind == "live_fork_state" &&
              data.GetString("format") == "q4t.live_fork.v1") {
-    inspector.Payloads(data);
     inspector.value.collect_when_unreferenced = true;
   } else if (kind == "file" && data.GetString("format") == "q4t.file.v1") {
     inspector.Blob(data);
@@ -371,7 +467,13 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.value.collect_when_unreferenced = true;
   } else if (kind == "tool_run") {
     const auto format = data.GetString("format");
-    if (format == "q4t.web.index.v1") {
+    if (format == "q4t.environment.creation.v1") {
+      inspector.RequiredId(data, "environment_id", "environment_");
+      const auto digest = data.GetString("request_sha256");
+      if (digest.size() != 64 ||
+          digest.find_first_not_of("0123456789abcdef") != digest.npos)
+        inspector.value.uncertain = true;
+    } else if (format == "q4t.web.index.v1") {
       // Complete inline page snapshots have no application-object edges.
       // URLs, page text and image metadata are data, never retention IDs.
       const auto* pages = data.GetArray("pages");
@@ -487,11 +589,10 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   }
   // Snapshot validation adds uncertainty; ordinary shape checks above must
   // never overwrite a malformed private dependency's conservative protection.
-  if (kind == "response" || kind == "conversation" || kind == "item" ||
-      kind == "chat" || kind == "prompt" || kind == "batch" ||
-      kind == "vector_store" || kind == "vector_store_file") {
+  if (application) {
     inspector.Snapshots(data);
-    inspector.Payloads(data);
+    inspector.Payloads(payloads);
+    if (!valid_payloads) inspector.value.uncertain = true;
   }
   return inspector.Finish();
 }

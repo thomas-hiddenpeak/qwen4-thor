@@ -97,6 +97,7 @@ def business(stage, capabilities):
     params = dict(base='https://127.0.0.1:'+str(stage.plan['public_port'])+'/v1',
                   key=stage.keys['alpha'], other=stage.keys['gamma'],
                   sdk=stage.plan['sdk_directory'], profile=name,
+                  hosted_workspaces=stage.plan.get('agent_vaults', {}).get('hosted_workspaces',False),
                   environment_templates=stage.plan.get('agent_vaults', {}).get('environment_templates',False))
     if name == 'light':
         params['prior'] = pkg.read(stage.out.parent/'primary/session-handoff.json')
