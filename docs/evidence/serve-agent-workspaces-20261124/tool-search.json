@@ -1,0 +1,68 @@
+{
+  "default_revision": 454,
+  "candidate_engine": "7af56ddedd1e1075cdac7a3f27cbe2080e66a7244ed4105478103e9c8d5eb70c",
+  "ingress": "a201da20bee226df67d1c7c409c0431b587dfe4b648f09d71ae046d6d6ffc5dc",
+  "sdk_driver": "b6269f489a3590a05e1a6ca1493d34385429d3c4f54a0e667e5de9d077e45f70",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 41.543,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "public_sdk": {
+    "sdk": "7.47.0",
+    "session": "agent_session_1aabd04ac409f8b76074df3df5ac5b6a",
+    "turn": "turn_da08a18ea79bf4a1c8f17b0ee1d03d0f",
+    "call": "call_resp_368458e7f2e173338a494ffe79e2a681_round_240dd037d55b28e303266d8e4b2cd3ad_0",
+    "discovery_switch_visible": false,
+    "public_functions": 1,
+    "revoked_before_result": true,
+    "required_actions": 1,
+    "results": 1,
+    "foreign": 404,
+    "revision": 452,
+    "answer": "452"
+  },
+  "native_discovery": {
+    "types": [
+      "tool_search_call",
+      "tool_search_output",
+      "function_call"
+    ],
+    "paths": [
+      "read_release_record"
+    ],
+    "same_function": true
+  },
+  "independent_chat": {
+    "answer": "42"
+  },
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 146,
+    "native_routes": 240,
+    "reviewed_source_anchors": 1242,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "cpu": {
+    "tests": 49,
+    "description": "Removal and replacement on the next model call, pending result under its original contract, built-ins at next logical turn, native Responses history, session projection and replay"
+  },
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/agent-search-http-01/plan.json": "044a0d531b172750fbec9d5d6ea5706b5628472339e8cb4128e0e69a2f32173a",
+    ".q4t-work/serve-responses-agents-20261123/agent-search-http-01/result.json": "1ff20a3716e820d8f21700b975212a795be6e08813ef71059ca852fd0884bac5",
+    ".q4t-work/serve-responses-agents-20261123/agent-search-http-01/create/sdk-result.json": "0cf497235128e0656035571f103b14b88431b66c6c96de833b0adc7b1bf0b3cd",
+    ".q4t-work/serve-responses-agents-20261123/agent-search-http-01/create/discovery.json": "029c0e83682cc2b5965c2d5e349830e80ed47e0083a5f7285f4a7479359995be",
+    ".q4t-work/serve-responses-agents-20261123/agent-search-http-01/create/chat-result.json": "d90747d2a5dfdd61eb8e632c7b9174b35e71deed58065e38465c56e1be8e62f4",
+    ".q4t-work/serve-responses-agents-20261123/agent-search-cpu-01/result.log": "2cd6b1a60a9958b0647ac9bcdd3d784767fe74cf4c6608a31beca1355f4e13bf",
+    ".q4t-work/serve-responses-agents-20261123/agent-search-cpu-01/required.txt": "f4cb12e9bca8e8aac624276a1db2d293f5545cf4da37ffe15872ab1fcc437b68",
+    ".q4t-work/serve-responses-agents-20261123/agent-search-lease-01/exit.json": "cbf5bcb5f0acd23b8dd07aa4a3ad5f9f54b550830b92b94a0f799aa9e3d1a916"
+  }
+}

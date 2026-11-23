@@ -162,9 +162,10 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     const auto raw = event.GetInt("output_index", -1);
     if (!output || raw < 0 || static_cast<size_t>(raw) >= output->array.size())
       return Invalid();
+    if (IsAgentDiscoveryItem(output->array[raw].GetString("type"))) return {};
     size_t shown = 0;
     for (int64_t index = 0; index < raw; ++index)
-      if (output->array[index].GetString("type") != "mcp_list_tools") ++shown;
+      if (!IsAgentDiscoveryItem(output->array[index].GetString("type"))) ++shown;
     Set(&loc, "output_index", Number(shown));
   }
   if (type == "response.output_item.added" ||

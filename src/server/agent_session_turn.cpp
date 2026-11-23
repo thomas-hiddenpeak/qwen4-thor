@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <ctime>
 #include <limits>
+#include <unordered_map>
 #include <unordered_set>
 
 #include "q4t/server/request_limits.h"
@@ -42,9 +43,13 @@ const char* SessionErrorCode(std::string_view code) {
   return "server_error";
 }
 
-ObjectReply NativeRequest(const AgentSessionStart& start) {
-  const auto& agent = *start.session.Find("agent");
+ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
+  const auto& agent = *session.Find("agent");
   auto tools = Array();
+  if (tool_search) {
+    tools.array.push_back(Object({{"type", String("tool_search")},
+                                  {"execution", String("server")}}));
+  }
   for (const auto& tool : agent.GetArray("tools")->array) {
     if (tool.GetString("type") == "mcp") {
       const auto& transport = *tool.Find("transport");
@@ -73,7 +78,7 @@ ObjectReply NativeRequest(const AgentSessionStart& start) {
   auto result = ObjectReply{};
   result.value = Object({{"background", Boolean(true)},
                          {"store", Boolean(true)},
-                         {"input", start.input},
+                         {"input", std::move(input)},
                          {"tools", std::move(tools)}});
   for (const auto* key :
        {"model", "instructions", "text", "reasoning", "service_tier"})
@@ -83,10 +88,57 @@ ObjectReply NativeRequest(const AgentSessionStart& start) {
 
 }  // namespace
 namespace agent_detail {
+// A session may replace functions between model calls. Rebind only the
+// model's view of previously loaded functions. The stored Responses records
+// and the output contract of a pending function call keep their originals.
+ObjectReply ReconcileSessionDiscovery(const Json& tools, Json* history) {
+  bool search = false;
+  std::unordered_map<std::string, const Json*> deferred;
+  for (const auto& tool : tools.array) {
+    const auto type = tool.GetString("type");
+    if (type == "tool_search") search = true;
+    if (type == "function" && tool.GetBool("defer_loading"))
+      deferred.emplace(tool.GetString("name"), &tool);
+  }
+  if (!search || deferred.empty()) {
+    std::erase_if(history->array, [](const Json& item) {
+      const auto type = item.GetString("type");
+      return type == "tool_search_call" || type == "tool_search_output";
+    });
+    return {};
+  }
+  // Each current definition need only be activated once in this projection.
+  // This bounds replacement schemas by the size of the current catalog even
+  // if the same small historical definition was discovered many times.
+  for (auto& item : history->array) {
+    if (item.GetString("type") != "tool_search_output") continue;
+    auto selected = Array();
+    const auto* prior = item.GetArray("tools");
+    if (!prior) return InvalidRecord();
+    for (const auto& old : prior->array) {
+      if (old.GetString("type") != "function") continue;
+      const auto found = deferred.find(old.GetString("name"));
+      if (found == deferred.end()) continue;
+      if (item.GetString("status", "completed") == "completed") {
+        selected.array.push_back(*found->second);
+        deferred.erase(found);
+      }
+    }
+    Set(&item, "tools", std::move(selected));
+  }
+  return {};
+}
+
+bool IsAgentDiscoveryItem(std::string_view type) {
+  return type == "mcp_list_tools" || type == "tool_search_call" ||
+         type == "tool_search_output";
+}
 ObjectReply ProjectItem(const Json& from, const std::string& turn_id,
                         Json* items, Json* actions, bool completed) {
   const auto type = from.GetString("type");
-  if (type == "mcp_list_tools") return {};  // Internal discovery has no Agent SDK item.
+  // Server-side discovery has no public AgentSessionItem. Its durable
+  // Responses items remain available to the next model step.
+  if (IsAgentDiscoveryItem(type)) return {};
   Json item = Object({{"type", String(type)},
                       {"turn_id", String(turn_id)},
                       {"id", Copy(from, "id")},
@@ -194,6 +246,7 @@ ObjectReply PrepareAgentSessionExecution(
   mutation.scope = access.scope;
   mutation.ttl_seconds = 0;
   mutation.data = Object({{"session", start.session}, {"turns", Array()}});
+  if (start.tool_search) Set(&mutation.data, "tool_search", Boolean(true));
   if (!start.sealed_http.empty())
     Set(&mutation.data, "sealed_http", String(start.sealed_http));
   if (start.input.array.empty()) {
@@ -205,13 +258,15 @@ ObjectReply PrepareAgentSessionExecution(
     if (start.workspace_copies) start.workspace_copies->Settle(result);
     if (result.commit_unknown) result.value = Object({{"id", String(id)}});
   } else {
-    auto native = NativeRequest(start);
+    auto native = NativeRequest(start.session, std::move(start.input),
+                                start.tool_search);
     if (!native.ok()) return native;
     run.ConfigureAgentMcp(start.session, start.sealed_http);
     result = run.Prepare(native.value, config, access, created, true);
     if (!result.ok()) return result;
     auto link = Object({{"id", String("turn_" + nonce.substr(14))},
                         {"response_id", String(run.Id())}});
+    if (start.tool_search) Set(&link, "tool_search", Boolean(true));
     if (!start.sealed_http.empty())
       Set(&link, "sealed_http", String(start.sealed_http));
     Field(mutation.data, "turns").array.push_back(std::move(link));
@@ -719,7 +774,11 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
       if (!live_tool(prior)) tools.array.push_back(prior);
     Set(&current_agent, "tools", std::move(tools));
   }
-  auto native = NativeRequest({execution_settings, std::move(input)});
+  // Changes to built-ins take effect on the next logical turn. Older links
+  // predate session tool search and therefore carry its disabled default.
+  const bool tool_search =
+      (waiting ? links.array.back() : data).GetBool("tool_search");
+  auto native = NativeRequest(execution_settings, std::move(input), tool_search);
   if (!native.ok()) return native;
   CancelledAgentHistory previous{id, {}};
   if (!links.array.empty()) {
@@ -740,6 +799,7 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
     turn = "turn_" + nonce.substr(14);
   }
   auto next = Object({{"id", String(turn)}, {"response_id", String(run.Id())}});
+  if (tool_search) Set(&next, "tool_search", Boolean(true));
   if (waiting) Set(&next, "tool_results", std::move(pending));
   if (data.Has("sealed_http")) Set(&next, "sealed_http", Copy(data, "sealed_http"));
   auto bound = BindSessionSettings(&data, execution_settings, &next);

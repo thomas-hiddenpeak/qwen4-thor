@@ -16686,6 +16686,11 @@
       ]
     },
     "artifact_delivery": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json",
-    "artifact_methods": "docs/evidence/serve-agent-workspaces-20261124/artifact-methods.json"
+    "artifact_methods": "docs/evidence/serve-agent-workspaces-20261124/artifact-methods.json",
+    "session_tool_search": {
+      "state": "short_business_verified",
+      "evidence": "docs/evidence/serve-agent-workspaces-20261124/tool-search.json",
+      "default_revision": 454
+    }
   }
 }

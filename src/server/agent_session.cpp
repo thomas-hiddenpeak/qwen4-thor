@@ -46,7 +46,9 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
                    "input");
 
   Json private_http;
-  auto agent = ResolveSessionAgent(objects, request, config, access, &private_http);
+  bool tool_search = false;
+  auto agent = ResolveSessionAgent(objects, request, config, access,
+                                   &private_http, &tool_search);
   if (!agent.ok()) return agent;
   const auto* metadata = request.Find("metadata");
   auto normalized =
@@ -111,7 +113,7 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
   auto secured = agent_detail::SealAgentHttp(objects, access, session_id, private_http, &sealed);
   if (!secured.ok()) return secured;
   *start = {std::move(session), std::move(messages), std::move(sealed),
-            std::move(attachment), std::move(copies)};
+            std::move(attachment), std::move(copies), tool_search};
   return {};
 }
 }  // namespace q4t::server
