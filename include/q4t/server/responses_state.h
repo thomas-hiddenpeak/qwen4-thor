@@ -33,6 +33,11 @@ struct ResponseStatePlan {
   // The first durable queue receipt publishes the session CAS in the same
   // transaction. Later checkpoints retain just the ID in the private record.
   std::string agent_session_id;
+  // Recorded with the native item checkpoint. Session subagent resources use
+  // the actual dispatch time even when queried after a process replacement.
+  io::Json agent_item_times;
+  io::Json agent_claim_times;
+  io::Json agent_tree;
   int64_t agent_turn_started_at = 0;
   int64_t agent_turn_finished_at = 0;
   std::optional<ObjectRequest> agent_session_write;
@@ -81,7 +86,8 @@ class ResponsesState {
                            bool multi_agent = false);
   ObjectReply Resolve(const ResponsesEnvelope& envelope,
                       const StateAccess& access, ResponseStatePlan* plan,
-                      const CancelledAgentHistory* cancelled = nullptr);
+                      const CancelledAgentHistory* cancelled = nullptr,
+                      std::string_view agent_session = {});
   // Loads authoritative inputs and revision, without rerunning resolution or
   // any tool/model. The result is the internal stored record, never an API
   // body.

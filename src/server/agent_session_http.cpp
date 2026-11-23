@@ -7,6 +7,7 @@
 #include "q4t/server/lifetime.h"
 
 #include "agent_artifact_internal.h"
+#include "agent_subagent_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/conversation_state.h"
@@ -233,7 +234,8 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
   }
   if (split != target.npos &&
       (route.kind == Kind::kCollection || route.kind == Kind::kEvents ||
-       route.kind == Kind::kSession || route.kind == Kind::kTurn))
+       route.kind == Kind::kSession || route.kind == Kind::kTurn ||
+       route.kind == Kind::kSubagent || route.kind == Kind::kSubagentTurn))
     return Invalid("Unexpected query", "query");
   if (route.kind == Kind::kSession && method == "POST") {
     Json request;
@@ -325,7 +327,8 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
   const std::string id(route.session);
   if (method == "DELETE") return DeleteSession(objects, id, access);
   AgentSessionView view;
-  if (route.kind != Kind::kTraces) {
+  const bool subagents = route.kind == Kind::kSubagents || !route.subagent.empty();
+  if (route.kind != Kind::kTraces && !subagents) {
     auto result = ReadAgentSessionTurn(objects, id, route.turn, access, &view,
                                        route.kind == Kind::kItems);
     if (!result.ok()) return result;
@@ -344,6 +347,7 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
   ChatPlanError error;
   auto valid = ParseItemViewOptions(query.value, &options, &error, true);
   if (!valid) return Invalid(valid.message(), error.param);
+  if (subagents) return agent_detail::ReadSessionSubagents(objects, route, options, access);
   if (route.kind == Kind::kTraces)
     return ListAgentSessionTraces(objects, id, options, access);
   return PageStoredItems(route.kind == Kind::kTurns ? view.turns : view.items,

@@ -1,6 +1,8 @@
 // Native wire shapes derived from the pinned Managed Agents SDK.
 #pragma once
 
+#include <set>
+
 #include "q4t/server/responses_state.h"
 
 namespace q4t::server {
@@ -13,7 +15,8 @@ enum class AgentSessionShape {
   kInputEvent,
   kEvent,
   kItem,
-  kTurn
+  kTurn,
+  kSubagent
 };
 Status ValidateAgentSession(const io::Json& value, AgentSessionShape shape,
                             ChatPlanError* error);
@@ -89,6 +92,7 @@ struct AgentEventCursor {
   bool created_seen = false;
   size_t step = 0;
   size_t sequence = 0;
+  std::set<std::string> emitted_child_claims;
   // Visible output items already emitted by earlier steps of this logical turn.
   size_t turn_output_offset = 0;
   std::string turn_id;

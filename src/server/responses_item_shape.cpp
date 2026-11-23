@@ -341,6 +341,7 @@ Status ValidateAgentSession(const Json& value, AgentSessionShape shape,
     case AgentSessionShape::kEvent: root = "event"; break;
     case AgentSessionShape::kItem: root = "item"; break;
     case AgentSessionShape::kTurn: root = "turn"; break;
+    case AgentSessionShape::kSubagent: root = "subagent"; break;
   }
   return Validate(graph, value, root, error, "");
 }

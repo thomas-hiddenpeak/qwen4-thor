@@ -31671,6 +31671,25 @@
       "required": [],
       "additionalProperties": false
     },
+    "agent_session_492": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/agent_session_14"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "order": {
+          "$ref": "#/$defs/agent_session_252"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
     "agent_session_create": {
       "$ref": "#/$defs/agent_session_0"
     },
@@ -31706,6 +31725,12 @@
     },
     "agent_session_artifact_query": {
       "$ref": "#/$defs/agent_session_491"
+    },
+    "agent_session_subagent": {
+      "$ref": "#/$defs/agent_session_445"
+    },
+    "agent_session_subagent_query": {
+      "$ref": "#/$defs/agent_session_492"
     },
     "agent_session_trace": {
       "type": "object",
@@ -31936,6 +31961,51 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/agent_session_artifact"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
+    "agent_session_subagent_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/agent_session_subagent"
           }
         },
         "has_more": {
