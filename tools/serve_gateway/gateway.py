@@ -66,6 +66,10 @@ APPLICATION_ROUTES = [
       for method in ('GET', 'POST')),
     *((method, '/v1/vaults/{vault_id}', 'data' if method == 'POST' else 'control')
       for method in ('GET', 'POST', 'DELETE')),
+    *((method, '/v1/vaults/{vault_id}/credentials',
+       'data' if method == 'POST' else 'control') for method in ('GET', 'POST')),
+    *((method, '/v1/vaults/{vault_id}/credentials/{credential_id}',
+       'data' if method == 'POST' else 'control') for method in ('GET', 'POST', 'DELETE')),
     ('POST', '/v1/agents/sessions', 'data'),
     ('GET', '/v1/agents/sessions', 'control'),
     ('POST', '/v1/agents/sessions/{session_id}', 'data'),
@@ -224,6 +228,7 @@ def route_map():
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
                            'agent_session_[A-Za-z0-9_-]{1,114}' if part == '{session_id}' and path.startswith('/v1/agents/sessions/') else
+                           'cred_[A-Za-z0-9_-]{1,123}' if part == '{credential_id}' else
                            'vault_[A-Za-z0-9_-]{1,122}' if part == '{vault_id}' else
                            'turn_[A-Za-z0-9_-]{1,123}' if part == '{turn_id}' else
                            '[A-Za-z0-9_-]{1,128}' if part.startswith('{')

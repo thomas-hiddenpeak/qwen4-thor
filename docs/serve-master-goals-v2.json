@@ -16560,8 +16560,10 @@
     },
     "evidence": "evidence/serve-agent-vaults-20261123/acceptance.json",
     "remaining": [
-      "Credential management, protected secret storage and authorized executor use.",
+      "Bind stored credentials to the exact authorized executor destination, OAuth refresh and environment substitution.",
       "Qualify and deliver the combined Vault capability on the recoverable profiles."
-    ]
+    ],
+    "credential_management": "candidate_real_http_passed",
+    "credential_evidence": "evidence/serve-agent-vaults-20261123/credentials.json"
   }
 }

@@ -127,6 +127,17 @@ def schema(graph):
     status = dict(enum=['active', 'archived'])
     definitions['vault_query']['properties'].update(metadata=vault_meta, status=dict(
         anyOf=[status, dict(type='array', items=status)]))
+    credential = json.loads((ROOT/'src/server/contracts/openai_vault_credential_types_v1.json').read_text())
+    assert credential['profile'] == 'q4t-openai-vault-credential-types-v1'
+    credential_types = graph_definitions(credential, 'credential_')
+    for definition in credential_types.values():
+        for name, field in definition.get('properties', {}).items():
+            if name in {'token', 'access_token', 'refresh_token', 'client_secret', 'secret_value'}:
+                field['writeOnly'] = True
+    definitions.update(credential_types)
+    definitions['credential_update'] = obj(dict(auth=ref('credential_auth_rotate'), metadata=vault_meta))
+    definitions['credential_list'] = copy.deepcopy(definitions['agents_list'])
+    definitions['credential_list']['properties']['data']['items'] = ref('credential_resource')
     sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
     assert sessions['profile'] == 'q4t-openai-agent-session-types-v1'
     definitions.update(graph_definitions(sessions, 'agent_session_'))
@@ -437,6 +448,11 @@ def add_openapi(paths, response, error):
         return result
 
     endpoints = [
+        ('/v1/vaults/{vault_id}/credentials', 'get', None, 'credential_list', 'vault_query'),
+        ('/v1/vaults/{vault_id}/credentials', 'post', 'credential_create', 'credential_resource', None),
+        ('/v1/vaults/{vault_id}/credentials/{credential_id}', 'get', None, 'credential_resource', None),
+        ('/v1/vaults/{vault_id}/credentials/{credential_id}', 'post', 'credential_update', 'credential_resource', None),
+        ('/v1/vaults/{vault_id}/credentials/{credential_id}', 'delete', None, 'credential_deleted', None),
         ('/v1/vaults', 'get', None, 'vault_list', 'vault_query'),
         ('/v1/vaults', 'post', 'vault_create', 'vault', None),
         ('/v1/vaults/{vault_id}', 'get', None, 'vault', None),

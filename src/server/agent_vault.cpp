@@ -4,13 +4,14 @@
 #include <chrono>
 
 #include "object_protocol.h"
+#include "vault_credential_internal.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
 
 namespace q4t::server {
-namespace {
+namespace vault_detail {
 using namespace object_detail;
 constexpr std::string_view kRoot = "/v1/vaults";
 
@@ -65,8 +66,7 @@ ObjectReply Public(const Json& stored) {
   return out;
 }
 
-ObjectReply List(ObjectStore& store, std::string_view raw,
-                 const StateAccess& access) {
+ObjectReply ParseListOptions(std::string_view raw, ListOptions* options) {
   auto query = ParseApplicationQuery(raw, true);
   if (!query.ok()) return query;
   auto paging = Object(), filters = Object();
@@ -94,18 +94,35 @@ ObjectReply List(ObjectStore& store, std::string_view raw,
   }
   auto metadata = NormalizeConversationMetadata(filters);
   if (!metadata.ok()) return metadata;
-  ItemViewOptions options;
   ChatPlanError error;
-  auto valid = ParseItemViewOptions(paging, &options, &error, true);
+  auto valid = ParseItemViewOptions(paging, &options->paging, &error, true);
   if (!valid) return Invalid(valid.message(), error.param);
+  options->active = active;
+  options->archived = archived;
+  options->metadata = std::move(metadata.value);
+  return {};
+}
 
+bool ListOptions::Matches(bool is_archived, const Json& meta) const {
+  if (is_archived ? !archived : !active) return false;
+  return std::ranges::all_of(metadata.object, [&](const auto& pair) {
+    const auto* value = meta.Find(pair.first);
+    return value && value->IsString() && value->str == pair.second.str;
+  });
+}
+
+ObjectReply List(ObjectStore& store, std::string_view raw,
+                 const StateAccess& access) {
+  ListOptions options;
+  auto valid = ParseListOptions(raw, &options);
+  if (!valid.ok()) return valid;
   ObjectRequest req;
   req.kind = ObjectKind::kVault;
   req.scope = access.scope;
   req.operation = ObjectOperation::kList;
-  req.descending = options.descending;
-  req.after = options.after;
-  req.limit = std::min(16, options.limit + 1);
+  req.descending = options.paging.descending;
+  req.after = options.paging.after;
+  req.limit = std::min(16, options.paging.limit + 1);
   auto rows = Array();
   bool more = false;
   for (;;) {
@@ -118,14 +135,10 @@ ObjectReply List(ObjectStore& store, std::string_view raw,
       if (!vault) return Error(503, "vault_record_invalid", "Missing vault");
       auto item = Public(*vault);
       if (!item.ok()) return item;
-      if (vault->GetBool("archived") ? !archived : !active) continue;
-      const auto& meta = *item.value.Find("metadata");
-      if (!std::ranges::all_of(filters.object, [&](const auto& pair) {
-            const auto* value = meta.Find(pair.first);
-            return value && value->IsString() && value->str == pair.second.str;
-          }))
+      if (!options.Matches(vault->GetBool("archived"),
+                           *item.value.Find("metadata")))
         continue;
-      if (rows.array.size() == static_cast<size_t>(options.limit)) {
+      if (rows.array.size() == static_cast<size_t>(options.paging.limit)) {
         more = true;
         break;
       }
@@ -137,6 +150,10 @@ ObjectReply List(ObjectStore& store, std::string_view raw,
       return Error(503, "vault_record_invalid", "Invalid vault page cursor");
     req.after = cursor;
   }
+  return ListPage(std::move(rows), more);
+}
+
+ObjectReply ListPage(Json rows, bool more) {
   auto first = rows.array.empty() ? Json{} : *rows.array.front().Find("id");
   auto last = rows.array.empty() ? Json{} : *rows.array.back().Find("id");
   ObjectReply out;
@@ -147,24 +164,36 @@ ObjectReply List(ObjectStore& store, std::string_view raw,
                       {"last_id", last}});
   return out;
 }
-}  // namespace
+}  // namespace vault_detail
 
 ObjectReply HandleAgentVault(ObjectStore& store, std::string_view method,
                              std::string_view target, const std::string& body,
                              const StateAccess& access) {
   const auto split = target.find('?');
   const auto path = target.substr(0, split);
+  using namespace vault_detail;
+  const auto route = ParseVaultRoute(target);
+  const bool collection = route.kind == VaultRouteKind::kCredentials ||
+                          route.kind == VaultRouteKind::kCollection;
   const bool create = path == kRoot;
   if (!IsVaultTarget(target))
     return Error(404, "route_not_found", "No vault route");
   if (!ManagedAgentMethodAllowed(method, target)) {
     auto error = Error(405, "method_not_allowed", "Method not allowed");
-    error.value =
-        Object({{"allow", String(create ? "GET, POST" : "GET, POST, DELETE")}});
+    error.value = Object(
+        {{"allow", String(collection ? "GET, POST" : "GET, POST, DELETE")}});
     return error;
   }
   if (method != "POST" && !body.empty())
     return Invalid("Unexpected body", "body");
+  if (route.kind == VaultRouteKind::kCredentials ||
+      route.kind == VaultRouteKind::kCredential) {
+    if (split != target.npos && !(collection && method == "GET"))
+      return Invalid("Unexpected query", "query");
+    return CredentialRequest(
+        store, route, method,
+        split == target.npos ? "" : target.substr(split + 1), body, access);
+  }
   if (create && method == "GET")
     return List(store, split == target.npos ? "" : target.substr(split + 1),
                 access);
@@ -228,7 +257,11 @@ ObjectReply HandleAgentVault(ObjectStore& store, std::string_view method,
     if (!valid.ok()) return valid;
     Set(&row, "metadata", std::move(valid.value));
   }
-  if (method == "DELETE") Set(&row, "archived", Boolean(true));
+  if (method == "DELETE") {
+    auto archived = ArchiveCredentials(&row);
+    if (!archived.ok()) return archived;
+    Set(&row, "archived", Boolean(true));
+  }
   req.operation = ObjectOperation::kPut;
   req.data = row;
   req.ttl_seconds = 0;

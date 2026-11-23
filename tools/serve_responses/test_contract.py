@@ -227,6 +227,29 @@ class ApplicationContract(unittest.TestCase):
             self.assertFalse(validator.is_valid(bad))
 
 
+class VaultCredentialSchema(unittest.TestCase):
+    def test_public_resource_excludes_secrets_and_inputs_mark_them_write_only(self):
+        auth = dict(type='static_bearer', mcp_server_url='https://records.example.test/mcp')
+        row = dict(id='cred_1', vault_id='vault_1', object='vault.credential',
+                   name='project', metadata={}, created_at=1, updated_at=1, auth=auth)
+        self.assertFalse(errors(row, 'credential_resource'))
+        self.assertTrue(errors(dict(row, auth=dict(auth, token='synthetic')), 'credential_resource'))
+        self.assertFalse(errors(dict(name='project', auth=dict(auth, token='synthetic')), 'credential_create'))
+        self.assertTrue(errors(dict(name='project', auth=auth), 'credential_create'))
+        self.assertFalse(errors(dict(auth=dict(type='static_bearer', token='synthetic')), 'credential_update'))
+        self.assertTrue(errors(dict(auth=dict(type='static_bearer', mcp_server_url='different')),
+                               'credential_update'))
+        secret_fields = {'access_token', 'refresh_token', 'client_secret', 'secret_value', 'token'}
+        marked = set()
+        for name, schema in SCHEMA['$defs'].items():
+            if name.startswith('credential_'):
+                for key, value in schema.get('properties', {}).items():
+                    if key in secret_fields:
+                        self.assertTrue(value.get('writeOnly'))
+                        marked.add(key)
+        self.assertEqual(marked, secret_fields)
+
+
 class DeliveredRefusalSchema(unittest.TestCase):
     def test_existing_real_json_refusal_uses_unified_application_shape(self):
         path = ROOT/'docs/evidence/serve-refusal-business-20261112/chat-refusal.wire'

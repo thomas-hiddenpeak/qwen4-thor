@@ -2094,6 +2094,51 @@
         "src/server/agent_vault.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
+    },
+    "DELETE /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}/credentials": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}/credentials": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -2708,8 +2753,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "abaa3c46a498a0601ccadceba334eed620458999f78dad4525ba38518011964c",
-    "cmake/ChatProtocolIdentity.cmake": "42285f9a63a465ad6ee77c743dceff6e655be2b7f045a53051344088c000c3dc",
+    "CMakeLists.txt": "dad9de7f7c9fa1821d7027183db5a99bb4a12b97288f5dcc0ae4ec061f6d30cb",
+    "cmake/ChatProtocolIdentity.cmake": "afccdd3d967f9f7d0023a3e1ec31215fe4a418a5a21741067449e976f4c737db",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2786,7 +2831,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "791d91adae96e6a861f6c26cba6c65da5a62caae0b6fed746d679f816bb0dfae",
+    "include/q4t/server/application_routes.h": "15250f8eb97b736559e9a2bd599ac91180d9283d66d538cf94778b790a741233",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3227,7 +3272,7 @@
     "src/server/chat_audio_inputs.cpp": "9a9f94790bcf4171a0c65ed6dc6655bcd834ac909ae394573aa6e4850a1d0ba1",
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
-    "src/server/chat_capabilities.cpp": "8831f4112468023c48319e1103ca04517462ac5134bd544fa00ffcd66b2b6ddd",
+    "src/server/chat_capabilities.cpp": "6c6818f89309176bcfe571095d61c93643a1872eb33d895b3d5186600abdbee3",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -3538,7 +3583,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "2fb783afdb0d4478647b9b1231db474835697971203966bd8cb1c5a696e85940",
-    "src/server/responses_item_shape.cpp": "4c4d11131cc8a30ea366df11af7514003c14883c2678031f1a6ce6c513464a41",
+    "src/server/responses_item_shape.cpp": "a1fa7d37223352571f690d77148a2fd2d299f12e0374e6e3bcc394beb5891038",
     "src/server/responses_jobs.cpp": "02ba0eb00df0e814216696c04000c848f2b8aa88ca89509b4cbd9bb7e508a5b8",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -3703,7 +3748,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "c7b3f2bf06f858eb5252190aaaaaa3bbd3a4e3ccdcfbd84f1039ead3a3737dc0",
+    "tools/serve_gateway/gateway.py": "dffe24c07280b63396d1ee1a7360959cc43fefd2e30aaeec5e5cbc06c268ddc2",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -3928,7 +3973,11 @@
     "src/server/agent_session_settings.cpp": "e42cc36e71cb89d8b89ac43bff0d1c7bf55314dd123ed8012cfc6e7bc65dc70a",
     "src/server/agent_session_cancel.cpp": "7b3ce808f145730f3d38e79c7ae2ec7c13a97aeacbd7d4298294aa3a00b5994f",
     "include/q4t/server/agent_vault.h": "3e4bb28fb1074e81a67af9f517eb9bf73be66bf93c621771841cf339963d62a0",
-    "src/server/agent_vault.cpp": "6d82bb29d4a2f65d82a20de6fc19ac7fb9c6268dc66027d8faad60ca25114592"
+    "src/server/agent_vault.cpp": "50e97c50c0b5309769e434c066a002b1a662dcb7b1154b0d44901be0f3862c5a",
+    "src/server/contracts/openai_vault_credential_types_v1.json": "f3c5a9a4be6e274325fd214d4e2ea7094f1fa0408f91107384abcfcec72456a2",
+    "src/server/vault_credential.cpp": "1f982807ac2a5cc57b8fb6ebf086c4f661a3d2a1dd365abb7cdb90587a3cd01c",
+    "src/server/vault_credential_auth.cpp": "7014dad3a8197196ecd3e9aa5ca8a933deb59f4b4dcde5ede963999366850dd8",
+    "src/server/vault_credential_internal.h": "5b7235ccae45f3c3a541c4868883dc4e2b36f00b69a19ec27603f396cc8d89f7"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6597,6 +6646,71 @@
       "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
       "evidence": [
         "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "DELETE /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}/credentials": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/vaults/{vault_id}/credentials": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}/credentials": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
     }

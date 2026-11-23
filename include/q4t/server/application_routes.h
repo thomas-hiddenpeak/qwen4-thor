@@ -415,14 +415,36 @@ inline AgentSessionRoute ParseAgentSessionRoute(std::string_view target) {
   return {};
 }
 
+enum class VaultRouteKind { kNone, kCollection, kVault, kCredentials, kCredential };
+struct VaultRoute {
+  VaultRouteKind kind = VaultRouteKind::kNone;
+  std::string_view vault;
+  std::string_view credential;
+};
+
+inline VaultRoute ParseVaultRoute(std::string_view target) {
+  constexpr std::string_view root = "/v1/vaults";
+  auto path = target.substr(0, target.find('?'));
+  if (target.find('#') != target.npos || !path.starts_with(root)) return {};
+  path.remove_prefix(root.size());
+  if (path.empty()) return {VaultRouteKind::kCollection, {}, {}};
+  if (path.front() != '/') return {};
+  path.remove_prefix(1);
+  const auto vault = path.substr(0, path.find('/'));
+  if (!vault.starts_with("vault_") || vault.size() <= 6 || !ValidApplicationId(vault))
+    return {};
+  path.remove_prefix(vault.size());
+  if (path.empty()) return {VaultRouteKind::kVault, vault, {}};
+  constexpr std::string_view collection = "/credentials";
+  if (path == collection) return {VaultRouteKind::kCredentials, vault, {}};
+  if (!path.starts_with("/credentials/")) return {};
+  const auto id = path.substr(collection.size() + 1);
+  if (!id.starts_with("cred_") || id.size() <= 5 || !ValidApplicationId(id)) return {};
+  return {VaultRouteKind::kCredential, vault, id};
+}
+
 inline bool IsVaultTarget(std::string_view target) {
-  constexpr std::string_view prefix = "/v1/vaults/";
-  const auto path = target.substr(0, target.find('?'));
-  if (target.find('#') != target.npos) return false;
-  if (path == "/v1/vaults") return true;
-  if (!path.starts_with(prefix)) return false;
-  const auto id = path.substr(prefix.size());
-  return id.starts_with("vault_") && id.size() > 6 && ValidApplicationId(id);
+  return ParseVaultRoute(target).kind != VaultRouteKind::kNone;
 }
 
 inline bool IsManagedAgentTarget(std::string_view target) {
@@ -433,9 +455,11 @@ inline bool IsManagedAgentTarget(std::string_view target) {
 inline bool ManagedAgentMethodAllowed(std::string_view method,
                                       std::string_view target) {
   using Kind = AgentSessionRouteKind;
-  if (IsVaultTarget(target))
+  const auto vault = ParseVaultRoute(target).kind;
+  if (vault != VaultRouteKind::kNone)
     return method == "GET" || method == "POST" ||
-           (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/vaults");
+           (method == "DELETE" && (vault == VaultRouteKind::kVault ||
+                                   vault == VaultRouteKind::kCredential));
   switch (ParseAgentSessionRoute(target).kind) {
     case Kind::kNone: return AgentRegistrationMethodAllowed(method, target);
     case Kind::kEvents: return method == "GET" || method == "POST";

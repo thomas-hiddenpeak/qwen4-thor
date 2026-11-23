@@ -12,6 +12,8 @@
 #include "q4t/server/agent_session.h"
 #include "q4t/server/agent_session_types_data.h"
 #include "q4t/server/agent_registration.h"
+#include "q4t/server/vault_credential_types_data.h"
+#include "vault_credential_internal.h"
 #include "q4t/server/agent_registration_types_data.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/responses_item_types_data.h"
@@ -199,6 +201,20 @@ Status Validate(const Graph& graph, const Json& item, const char* root,
   return Status::Fail(std::move(failure.message));
 }
 }  // namespace
+
+Status vault_detail::ValidateCredential(const Json& value, CredentialShape shape,
+                                      ChatPlanError* error) {
+  static const Graph graph(vault_credential_types::kData,
+                           "q4t-openai-vault-credential-types-v1");
+  const char* root = "";
+  switch (shape) {
+    case CredentialShape::kCreate: root = "create"; break;
+    case CredentialShape::kAuthCreate: root = "auth_create"; break;
+    case CredentialShape::kAuthRotate: root = "auth_rotate"; break;
+    case CredentialShape::kResource: root = "resource"; break;
+  }
+  return Validate(graph, value, root, error, "");
+}
 
 Status ValidateAgentSession(const Json& value, AgentSessionShape shape,
                             ChatPlanError* error) {
