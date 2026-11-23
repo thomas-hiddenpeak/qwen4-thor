@@ -56,14 +56,14 @@ def prepare_tls(output):
 
 class ProjectMcp:
     def __init__(self, root, output, port, *, source=None, tls=None,
-                 request_metadata=None, required_headers=None):
+                 request_metadata=None, required_headers=None, bearer=None):
         self.source = source if source is not None else DocumentSource(root)
         self.calls, self.reads, self.methods, self.deleted = [], [], [], []
         self.sessions = set()
         self.drop_next = False
         self.http_requests = 0
         self.lock = threading.Lock()
-        self.secret = secrets.token_urlsafe(32)
+        self.secret = secrets.token_urlsafe(32) if bearer is None else bearer
         material = prepare_tls(output) if tls is None else tls
         require(set(material) == {'ca_certificate', 'ca_key', 'certificate', 'key'},
                 'exact private fixture PKI required')

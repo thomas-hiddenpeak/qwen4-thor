@@ -1,4 +1,4 @@
-# 当前状态（2026-11-23）
+# 当前状态（2026-11-24）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)完成全部33项任务；阶段验证、
@@ -6,6 +6,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 验证与必要业务短验，长稳实跑与已延期听感由用户负责。
 
 ## 正在推进
+
+主配置保存的 Vault 凭据已由轻配置实际接续。轻配置只收到原凭据 ID 和服务地址，经 HTTPS 读取项目资料并准确引用第 1–3 行；归档后新绑定、跨租户读取均为 404。两套配置各启动一次，153 次 NVML 采样正常。独立 OpenAPI 已达 2,126,486 字节，封包读取边界已修复，复用了同一批业务原件。默认仍为 rev444、STOPPED；继续托管故障接管与可回退发行。[主轻资格](evidence/serve-agent-vaults-20261123/profiles.json)
 
 PR #67 的两项远端 host-contracts 均已通过。rev444 的托管恢复、独立回退包和长稳交接已进入 main；合并提交 c3a9bd91d 与受检提交 8b3df89ea 的文件树一致。[主线回执](evidence/serve-agent-sessions-20261123/recovery-main.json)
 

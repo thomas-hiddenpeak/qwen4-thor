@@ -209,6 +209,9 @@ class Stage(workers.ice.Stage):
             media.rtc.wait_for(lambda: observed('session.started'), 'session start', 15)
             channel.send_string(json.dumps(dict(type='session.close', event_id='finish')))
             media.rtc.wait_for(lambda: observed('session.closed'), 'session close', 15)
+        if 'agent_vaults' in self.plan:
+            from tools.serve_responses import vault_profile_acceptance
+            vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
         pkg.save(self.out/'observation.json', dict(profile=name, protocol=cfg['protocol_source_sha256'],
@@ -258,7 +261,7 @@ def main():
     # imports the schema validator.
     from jsonschema import Draft202012Validator
     schema = Draft202012Validator(pkg.read(ROOT/'docs/serve-config-v1.schema.json'))
-    bundle = pkg.read(ROOT/'docs/serve-openapi-bundle-v1.json')
+    bundle = pkg.read_openapi(ROOT/'docs/serve-openapi-bundle-v1.json')
     bundled = Draft202012Validator({'components':bundle['components'],
                                    '$ref':'#/components/schemas/serve-config-v1.schema.json'})
     for name in PROFILES:

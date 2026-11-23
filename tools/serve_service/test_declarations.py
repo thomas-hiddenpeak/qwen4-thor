@@ -114,7 +114,23 @@ class Declarations(unittest.TestCase):
             pkg.verify(receipt['package'], receipt['manifest_sha256'])
         package = Path(receipt['package'])/'declarations/schemas'
         self.assertEqual(pkg.read(package/'application.json')['x-q4t']['sdk_version'], '7.47.0')
-        self.assertIn('/v1/responses/{response_id}/cancel', pkg.read(package/'openapi.json')['paths'])
+        self.assertIn('/v1/responses/{response_id}/cancel',
+                      pkg.read_openapi(package/'openapi.json')['paths'])
+
+    def test_openapi_bound_and_strict_json(self):
+        from tools.serve_ops.contracts import InvalidObservation
+        path = self.root/'schema.json'
+        path.write_bytes(b'{}' + b' '*(8*1024**2-2))
+        self.assertEqual(pkg.read_openapi(path), {})
+        with self.assertRaisesRegex(RuntimeError, 'metadata size limit'):
+            pkg.read(path)
+        with path.open('ab') as stream:
+            stream.write(b' ')
+        with self.assertRaises(InvalidObservation):
+            pkg.read_openapi(path)
+        path.write_text('{"paths": {}, "paths": {}}')
+        with self.assertRaisesRegex(RuntimeError, 'duplicate'):
+            pkg.read_openapi(path)
 
     def test_application_schema_tampering_and_old_completion_profile(self):
         binary, release, model = self.application_declaration_fixture()

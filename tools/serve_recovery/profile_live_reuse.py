@@ -15,12 +15,26 @@ REGISTRATION_RECORD = 'q4t-profile-business-v26'
 REGISTRATION_FORMAT = 'q4t-agent-registration-profile-source-v1'
 SESSION_RECORD = 'q4t-profile-business-v27'
 SESSION_FORMAT = 'q4t-agent-session-profile-source-v1'
+VAULT_RECORD = 'q4t-profile-business-v28'
+VAULT_FORMAT = 'q4t-agent-vault-profile-source-v1'
 SESSION_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents/sessions',
     environments=['none'], tool_types=['function'], stream=True,
     idempotent_input_events=True, cancel_turn=True, storage='authenticated_client')
 SESSION_REVIEWED = {
     'primary': '3d6691759a569a94a7f9aaaa010f6eacc7bf10ca798a220b015139d73248e329',
     'light': '5c3e6a8a050d64e4da85319ea7bbb23aff80a80a72952c555f348599f151bafe',
+}
+VAULT_SESSION = dict(SESSION_CAPABILITY, tool_types=['function', 'mcp'],
+    mcp=dict(connection_origin='service', transport='http',
+             vault_auth=['static_bearer', 'mcp_oauth_access_token']))
+VAULT_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/vaults',
+    operations=['create', 'retrieve', 'update', 'list', 'delete'],
+    storage='authenticated_client', lifecycle='archive',
+    credentials=dict(auth=['mcp_oauth', 'static_bearer', 'environment_variable'],
+                     write_only=True, rotation=True, archive_cascade=True))
+VAULT_REVIEWED = {
+    'primary': '2849d28c117d197f0ceb0bc6f3a6a43d63f2a5f0173766f82eae0399bb75e939',
+    'light': 'e76621fdd0353aee0007baf9d55ae55c6c256b121be9ec0194757bf7e95a9c69',
 }
 REGISTRATION_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents',
     operations=['create','retrieve','update','list','delete'],
@@ -40,7 +54,7 @@ AGENT_REVIEWED = {
 }
 REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 AGENT_RECORD_FORMAT: AGENT_FORMAT, REGISTRATION_RECORD: REGISTRATION_FORMAT,
-                SESSION_RECORD: SESSION_FORMAT}
+                SESSION_RECORD: SESSION_FORMAT, VAULT_RECORD: VAULT_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -62,6 +76,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '26dab53af96b229e3b653e983828f7b4ef3979e4237a564c9518eeffc307dc33':
+        '1e71f9b806763a77a7dce8923ed9585f3d678b2105acfbdf9c9fa98be6e16593',
     'f742f4a99411c3f60099d219e1c4959a08c06e9878d34ff9153de1b256a3105c':
         '96449e96cf5401726e47505e3a816dacd18ad2eeb8d4c09114eb54a24a8dddc8',
     '7014bde675707b1bc3a52765ebbacfe2455a6b0be61b1eee7d4a61c3cb36dd5f':
@@ -101,6 +117,13 @@ def format_for(capabilities):
                 ledger.require(capabilities['agent_registration'] == REGISTRATION_CAPABILITY,
                                'unknown registered Agent configuration capability')
                 if 'agent_sessions' in capabilities:
+                    if 'agent_vaults' in capabilities:
+                        ledger.require(ledger.canonical(capabilities['agent_vaults']) ==
+                                       ledger.canonical(VAULT_CAPABILITY) and
+                                       ledger.canonical(capabilities['agent_sessions']) ==
+                                       ledger.canonical(VAULT_SESSION),
+                                       'unknown Agent Vault or MCP session capabilities')
+                        return VAULT_RECORD
                     ledger.require(capabilities['agent_sessions'] == SESSION_CAPABILITY,
                                    'unknown qualified Agent session capabilities')
                     return SESSION_RECORD
@@ -126,8 +149,18 @@ def attach(value, prior):
     refresh = agent and prior['format'] == AGENT_RECORD_FORMAT
     registration = value['format'] == REGISTRATION_RECORD
     session = value['format'] == SESSION_RECORD
-    revision = agent or registration or session or value['format'] == BETA_RECORD_FORMAT
-    if registration:
+    vault = value['format'] == VAULT_RECORD
+    revision = agent or registration or session or vault or value['format'] == BETA_RECORD_FORMAT
+    if vault:
+        ledger.require(prior['format'] == SESSION_RECORD and
+                       record_hash(prior) == SESSION_REVIEWED.get(prior['profile']) and
+                       previous['added'] == ['agent_vaults'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256', 'agent_sessions'} and
+                       format_for(after) == VAULT_RECORD and
+                       {'vault-handoff.json', 'session-handoff.json', 'registration.json',
+                        'interruption.json'} <= value['business']['live']['evidence_sha256'].keys(),
+                       'Vault qualification needs the accepted session and real credential handoff')
+    elif registration:
         from tools.serve_recovery import profile_duplex_reuse
         ledger.require(prior['format'] == AGENT_RECORD_FORMAT and
                        record_hash(prior) == REFRESH_REVIEWED.get(prior['profile']) and
@@ -176,7 +209,7 @@ def previous_record(value):
     refresh = agent and reuse['format'] == AGENT_REFRESH
     registration = value['format'] == REGISTRATION_RECORD
     session = value['format'] == SESSION_RECORD
-    revision = agent or registration or session or value['format'] == BETA_RECORD_FORMAT
+    revision = agent or registration or session or value['format'] in (BETA_RECORD_FORMAT, VAULT_RECORD)
     ledger.require(refresh or reuse['format'] == REUSE_FORMAT.get(value['format']),
                    'incorrect Live qualification source')
     previous = codec.unpack(reuse['previous'])
@@ -205,6 +238,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == VAULT_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == VAULT_REVIEWED.get(name),
+                       'Vault handoff differs from the reviewed run')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == SESSION_REVIEWED.get(name),
+                       'Vault qualification lost the session predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == SESSION_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) == SESSION_REVIEWED.get(name),

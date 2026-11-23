@@ -13,6 +13,7 @@ from tools.serve_live import profile_acceptance
 from tools.serve_recovery import bundle
 from tools.serve_responses import agent_profile_acceptance as agents
 from tools.serve_responses import session_profile_acceptance as sessions
+from tools.serve_responses import vault_profile_acceptance as vaults
 from tools.serve_responses import interruption_profile_acceptance as recovery
 from tools.serve_responses.beta_profile_acceptance import protocol
 from tools.serve_service import package as pkg
@@ -24,12 +25,15 @@ CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents',
     storage='authenticated_client', retention='until_deleted', tool_list_max_bytes=3145728)
 
 
-def prepare(out, build, original, session_witness=None):
+def prepare(out, build, original, session_witness=None, qualify_vaults=False):
     receipt = pkg.read(EVIDENCE)
     deployed = ROOT/'build/service'
     delivery = pkg.read(recovery.EVIDENCE.parent/'delivery.json')['publication']
     if session_witness is not None:
         delivery = pkg.read(sessions.PUBLICATION)['publication']
+    if qualify_vaults:
+        pkg.require(session_witness is None, 'select a single candidate source')
+        delivery = pkg.read(vaults.PUBLICATION)['publication']
     previous = delivery['primary']
     manifest = bundle.verify(deployed, previous)
     engine = pkg.verify(deployed/'engine', manifest['engine_manifest_sha256'])
@@ -41,10 +45,12 @@ def prepare(out, build, original, session_witness=None):
     change = dict(source_manifest_sha256=previous, previous_protocol=engine['protocol_sha256'],
         sdk_binary=pkg.sha(build/'q4t'), sdk_protocol=protocol(current), protocol=protocol(current))
     session = sessions.candidate(build, session_witness, current) if session_witness else None
-    ingress = session['ingress'] if session else receipt['ingress_sha256']
+    vault = vaults.candidate(build, current) if qualify_vaults else None
+    selection = vault or session
+    ingress = selection['ingress'] if selection else receipt['ingress_sha256']
     if session:
         change.update(sdk_binary=pkg.sha(session_witness/'q4t'), sdk_protocol=session['tested_protocol'])
-    else:
+    elif not vault:
         pkg.require(change['sdk_binary'] == receipt['engine_sha256'], 'registration SDK binary drift')
     pkg.require(protocol({n:old[n] for n in current if n in old}) == engine['protocol_sha256'] and
                 all(pkg.sha(ROOT/n) == digest for n,digest in current.items()) and
@@ -58,6 +64,7 @@ def prepare(out, build, original, session_witness=None):
         protected=protected, beta_change=change, agent_change=dict(
             witness_sha256=pkg.sha(agents.EVIDENCE),
             capabilities=pkg.read(agents.EVIDENCE)['selected']['capabilities']))
+    fixture = vaults.prepare_peer(out) if vault else None
     for name in profile_acceptance.PROFILES:
         phase = out/name
         path = phase/'plan.json'
@@ -72,8 +79,13 @@ def prepare(out, build, original, session_witness=None):
         for source in (recovery.SDK, SDK, 'tools/serve_responses/interruption_profile_acceptance.py',
                        'tools/serve_responses/registration_profile_acceptance.py'):
             plan['sources'][source] = pkg.sha(ROOT/source)
-        if session:
-            plan['agent_sessions'] = session
+        if vault:
+            plan['agent_vaults'] = dict(vault, fixture=fixture)
+            plan['command'].extend(['--mcp-policy-file',str(out/'mcp/policy.json')])
+            for source in (vaults.SDK, vaults.HELPER, vaults.PEER, str(vaults.PUBLICATION.relative_to(ROOT))):
+                plan['sources'][source] = pkg.sha(ROOT/source)
+        if selection:
+            plan['agent_sessions'] = selection
             for source in (sessions.SDK, sessions.HELPER, str(sessions.PUBLICATION.relative_to(ROOT))):
                 plan['sources'][source] = pkg.sha(ROOT/source)
         pkg.save(path,plan)
@@ -127,8 +139,9 @@ if __name__ == '__main__':
     for opt in ('output','build','original'):
         cli.add_argument('--'+opt,type=Path,required=True)
     cli.add_argument('--session-witness', type=Path)
+    cli.add_argument('--vaults', action='store_true')
     args = cli.parse_args()
     out = args.output.resolve()
     pkg.require(out.is_relative_to(ROOT/'.q4t-work'), 'private stage required')
     prepare(out,args.build.resolve(strict=True),args.original.resolve(strict=True),
-            args.session_witness.resolve(strict=True) if args.session_witness else None)
+            args.session_witness.resolve(strict=True) if args.session_witness else None, args.vaults)
