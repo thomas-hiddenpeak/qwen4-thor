@@ -52,7 +52,16 @@ assert.equal(patch.desktop.enabled,true);
 assert.deepEqual(patch.files,result.files);
 safe(await templates.retrieve(result.id));
 await assert.rejects(templates.update(result.id,{files:[{type:'inline',path:'/outside',data:inline}]}),fails(400));
+for (const network of [
+  {access:'restricted',allowed_domains:['example.org'],blocked_domains:['private.example']},
+  {access:'enabled',blocked_domains:['example.org']},
+  {access:'restricted',blocked_domains:['*.example.org']},
+]) await assert.rejects(templates.update(result.id,{network}), fails(400));
 assert.deepEqual(await templates.retrieve(result.id),patch);
+const blocked = await templates.update(result.id,{network:{
+  access:'restricted',blocked_domains:['private.example']}});
+assert.deepEqual(blocked.network,{access:'restricted',allowed_domains:[]});
+safe(blocked);
 const cleared = await templates.update(result.id,{files:null,env:null,setup_commands:null,network:null});
 assert.equal(cleared.network.access,'disabled');
 assert.deepEqual(cleared.files,[]);
@@ -66,4 +75,5 @@ const chat = await owner.chat.completions.create({model:'qwen3.8-flash-next',
 assert.equal(chat.choices[0].message.content.trim(),'42');
 process.stdout.write(JSON.stringify({sdk:version,operations:5,templates:2,pages:2,
   inline_bytes:Buffer.byteLength(text),owned_file:true,foreign_file:404,private_fields_omitted:true,
-  foreign_read:404,foreign_delete:404,deleted_get:404,invalid_update:400,chat:'42'})+'\n');
+  foreign_read:404,foreign_delete:404,deleted_get:404,invalid_update:400,
+  rejected_network_policies:3,exact_blocked_domain:true,chat:'42'})+'\n');

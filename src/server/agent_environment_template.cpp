@@ -3,12 +3,14 @@
 #include <ctime>
 #include <unordered_set>
 
+#include "file_fetch_internal.h"
 #include "object_protocol.h"
 #include "q4t/io/base64.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/application_routes.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/files.h"
+#include "q4t/server/http_framing.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/state_cipher.h"
 
@@ -102,6 +104,22 @@ ObjectReply Project(const Json& config, const std::string& id, int64_t created,
   for (const auto* key : {"npm", "python", "system"})
     if (!Nonnull(packages, key)) Set(&packages, key, Array());
   const auto network = Or(config, "network", Object());
+  const auto* blocked = network.GetArray("blocked_domains");
+  if (blocked && !blocked->array.empty()) {
+    const auto* allowed = network.GetArray("allowed_domains");
+    if (network.GetString("access") != "restricted" ||
+        (allowed && !allowed->array.empty()))
+      return Invalid(
+          "Blocked domains require restricted access and an empty "
+          "allowlist",
+          "network.blocked_domains");
+    for (const auto& domain : blocked->array) {
+      FileFetchDomainPolicy policy;
+      policy.blocked.push_back(http::Lower(domain.str));
+      if (!file_detail::ValidDomains(policy))
+        return Invalid("Expected an exact domain", "network.blocked_domains");
+    }
+  }
   ObjectReply result;
   result.value = Object(
       {{"id", String(id)},

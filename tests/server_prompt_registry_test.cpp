@@ -121,7 +121,7 @@ Q4T_TEST(environment_template_seals_private_inputs_and_preserves_patch_semantics
         R"({"name":"docs","env":{"API_TOKEN":"private-environment-value"},
           "setup_commands":[{"command":"private-setup-token"}],
           "files":[{"type":"inline","path":"/workspace/record","data":"SGVsbG8="}],
-          "network":{"access":"restricted","allowed_domains":["example.org"],
+          "network":{"access":"restricted","allowed_domains":[],
                      "blocked_domains":["private.example"]},
           "packages":{"python":["pinned-package"]}})", Access());
     Q4T_CHECK(Ok(created));
@@ -162,6 +162,10 @@ Q4T_TEST(environment_template_seals_private_inputs_and_preserves_patch_semantics
            R"({"files":[{"type":"inline","path":"/workspace/record","data":"SB=="}]})",
            R"({"files":[{"type":"inline","path":"/record","data":""}]})",
            R"({"files":[{"type":"inline","path":"/workspace/../record","data":""}]})",
+           R"({"network":{"access":"enabled","blocked_domains":["example.org"]}})",
+           R"({"network":{"access":"disabled","blocked_domains":["example.org"]}})",
+           R"({"network":{"access":"restricted","blocked_domains":["*.example.org"]}})",
+           R"({"network":{"access":"restricted","allowed_domains":["a.org"],"blocked_domains":["b.org"]}})",
            R"({"packages":{"python":"unexpected"}})"})
     Q4T_CHECK(call("POST", path, bad).http_status == 400);
   Q4T_CHECK(OutputJson(call("GET", path).value) == OutputJson(updated.value));

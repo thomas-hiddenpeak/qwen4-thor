@@ -23620,7 +23620,35 @@
       "required": [
         "access"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "if": {
+        "required": [
+          "blocked_domains"
+        ],
+        "properties": {
+          "blocked_domains": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "access": {
+            "const": "restricted"
+          },
+          "allowed_domains": {
+            "maxItems": 0
+          },
+          "blocked_domains": {
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[^*]+$"
+            }
+          }
+        }
+      }
     },
     "hosted_20": {
       "anyOf": [
@@ -23947,7 +23975,35 @@
       "required": [
         "access"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "if": {
+        "required": [
+          "blocked_domains"
+        ],
+        "properties": {
+          "blocked_domains": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "access": {
+            "const": "restricted"
+          },
+          "allowed_domains": {
+            "maxItems": 0
+          },
+          "blocked_domains": {
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[^*]+$"
+            }
+          }
+        }
+      }
     },
     "hosted_48": {
       "anyOf": [
@@ -24436,7 +24492,35 @@
       "required": [
         "access"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "if": {
+        "required": [
+          "blocked_domains"
+        ],
+        "properties": {
+          "blocked_domains": {
+            "type": "array",
+            "minItems": 1
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "access": {
+            "const": "restricted"
+          },
+          "allowed_domains": {
+            "maxItems": 0
+          },
+          "blocked_domains": {
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[^*]+$"
+            }
+          }
+        }
+      }
     },
     "hosted_84": {
       "anyOf": [

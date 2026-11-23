@@ -16602,6 +16602,7 @@
     "pending": [
       "managed capacity handoff and rollback release",
       "environment provisioning, files and Agent session execution"
-    ]
+    ],
+    "network_evidence": "evidence/serve-agent-environments-20261124/template-network.json"
   }
 }

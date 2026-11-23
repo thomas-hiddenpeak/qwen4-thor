@@ -142,9 +142,18 @@ def schema(graph):
     assert environment['profile'] == 'q4t-openai-environment-types-v1'
     environment_types = graph_definitions(environment, 'hosted_')
     for definition in environment_types.values():
-        for name, field in definition.get('properties', {}).items():
+        fields = definition.get('properties', {})
+        for name, field in fields.items():
             if name in {'env', 'setup_commands', 'source', 'data'}:
                 field['writeOnly'] = True
+        if 'blocked_domains' in fields:
+            definition['if'] = dict(required=['blocked_domains'], properties={
+                'blocked_domains': dict(type='array', minItems=1)})
+            definition['then'] = dict(properties={
+                'access': dict(const='restricted'),
+                'allowed_domains': dict(maxItems=0),
+                'blocked_domains': dict(items=dict(type='string', minLength=1,
+                                                    pattern=r'^[^*]+$'))})
     definitions.update(environment_types)
     definitions['hosted_template_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['hosted_template_list']['properties']['data']['items'] = ref('hosted_template_resource')

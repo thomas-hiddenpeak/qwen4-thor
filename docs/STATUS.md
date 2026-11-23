@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+模板网络策略已补验。先前候选接受了同时非空的允许列表和阻止列表；修复后同一模板上的三笔非法更新均返回 400，原配置仍可读取。受限网络下的精确阻止域名可保存。创建、更新的 OpenAPI 合同共验证 12 个例子，真实 SDK 回归用时 34.925 秒，Chat 答 42。[网络合同与原失败](evidence/serve-agent-environments-20261124/template-network.json)
+
 执行环境模板的五项操作已通过官方 SDK 及原生 TLS 短验。客户上传真实 Files 对象、引入 57 字节内联文件、更新模板并分页读取两条记录。其他客户引用该文件、读取或删除模板均为 404。公开响应隐藏环境值、设置命令和文件内容；存储重开后可更新，跨模板解密被拒绝。单次模型启动 33.952 秒，随后 Chat 回答 42。候选公开声明为 80/157 项，默认 rev448 为 77/157 项。继续实现环境实例和工作区文件。[模板验收](evidence/serve-agent-environments-20261124/templates.json)
 
 PR #69 已合入 main（30c537220）。两个 host-contracts 均通过，合并树与受检提交 e8132e951 相同。主线包含 rev446 交付及 OAuth 签发端临时故障处理。[主线回执](evidence/serve-agent-vaults-20261123/recovery-main.json)
