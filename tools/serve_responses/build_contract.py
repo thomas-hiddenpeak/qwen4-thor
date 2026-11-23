@@ -101,6 +101,15 @@ def schema(graph):
             name = family + operation
             definitions[name] = {'allOf':[definitions[name], {'properties':fields}]}
     definitions['realtime_call_reject'] = nullable(definitions['realtime_call_reject'])
+    agents = json.loads((ROOT/'src/server/contracts/openai_agent_registration_types_v1.json').read_text())
+    assert agents['profile'] == 'q4t-openai-agent-registration-types-v1'
+    definitions.update(graph_definitions(agents, 'agents_'))
+    definitions['agents_list'] = obj(dict(object=dict(const='list'),
+        data=dict(type='array', items=ref('agents_resource')), has_more=dict(type='boolean'),
+        first_id=nullable(dict(type='string')), last_id=nullable(dict(type='string'))),
+        ('object', 'data', 'has_more', 'first_id', 'last_id'))
+    definitions['agents_query'] = obj(dict(limit=dict(type='integer', minimum=1, maximum=100),
+        after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
     decisions = json.loads((ROOT/'src/server/contracts/openai_decision_types_v1.json').read_text())
     assert decisions['profile'] == 'q4t-openai-decision-types-v1'
     definitions.update(graph_definitions(decisions, 'decisions_'))
@@ -401,6 +410,11 @@ def add_openapi(paths, response, error):
         return result
 
     endpoints = [
+        ('/v1/agents', 'post', 'agents_create', 'agents_resource', None),
+        ('/v1/agents', 'get', None, 'agents_list', 'agents_query'),
+        ('/v1/agents/{agent_id}', 'get', None, 'agents_resource', None),
+        ('/v1/agents/{agent_id}', 'post', 'agents_update', 'agents_resource', None),
+        ('/v1/agents/{agent_id}', 'delete', None, 'agents_deleted', None),
         ('/v1/prompts', 'post', 'prompt_create', 'prompt_resource', None),
         ('/v1/prompts', 'get', None, 'prompt_list', 'prompt_query'),
         ('/v1/prompts/{prompt_id}', 'get', None, 'prompt_resource', None),
@@ -451,6 +465,10 @@ def add_openapi(paths, response, error):
                 'default': response(error, 'Native error; unknown/other-client identities return 404')},
             **{'x-q4t-query-contract': query_contract,
                'x-q4t-body-contract': body or 'empty body only'})
+        if path.startswith('/v1/agents'):
+            operation.setdefault('parameters', []).append(dict(name='OpenAI-Beta',
+                **{'in':'header'}, required=True, schema=dict(type='string',
+                    pattern=r'(^|,)[ \t]*agents=v1[ \t]*(,|$)'), example='agents=v1'))
         if body:
             optional = path in ('/v1/conversations', '/v1/responses/input_tokens')
             operation['requestBody'] = dict(required=not optional,

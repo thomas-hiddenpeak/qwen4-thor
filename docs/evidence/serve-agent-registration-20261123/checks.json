@@ -1,0 +1,67 @@
+{
+  "schema": "q4t-agent-registration-acceptance-v1",
+  "date": "2026-11-23",
+  "status": "PASS_TARGETED",
+  "source_graph": {
+    "sdk": "openai-node 7.47.0",
+    "nodes": 137,
+    "sha256": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0"
+  },
+  "engine_sha256": "479f87dfa7b2f335fdacf163af8e4cbd7e73c20b11c31ec3e3e39d3b173490d0",
+  "ingress_sha256": "4ef57fba3d32d8a213471f7db499a4e097c82b120da4e2a08dd7878a10f71d3b",
+  "sdk_driver_sha256": "c41c917b141324442cb35a64f79c4d5bd020e0e651fdfcac348213163005fe54",
+  "cpu_required": [
+    "agent_registration_owned_crud_defaults_and_stored_pagination",
+    "agent_registration_metadata_and_writes_use_separate_lanes",
+    "http_beta_header_matches_complete_case_sensitive_selection",
+    "http_conversation_body_uses_shared_budget_before_reading",
+    "http_stored_chat_routes_and_body_budget",
+    "chat_capabilities_identity",
+    "prompt_realtime_credentials_cannot_be_persisted_in_tools_or_prefix"
+  ],
+  "cpu_output_sha256": "93478effdf027362252deacf3e233ba6e49e4e2e262dc6ce4145ff9fa4122fdf",
+  "gateway_contract_and_optional_nginx_parse": 2,
+  "inventory_negative_checks": 36,
+  "sdk": {
+    "version": "7.47.0",
+    "tools": [
+      "function",
+      "web_search",
+      "tool_search",
+      "computer_use",
+      "automations",
+      "programmatic_tool_calling",
+      "mcp"
+    ],
+    "pages": 2,
+    "selector_required": true,
+    "foreign_read_delete": 404,
+    "persisted_after_restart": true,
+    "sibling_preserved": true
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 2,
+    "seconds": 65.119,
+    "unchanged_default": true,
+    "phases": [
+      "create",
+      "resume"
+    ]
+  },
+  "lease": {
+    "status": "COMPLETED",
+    "nvml_samples": 62,
+    "model_starts": 2
+  },
+  "retained": {
+    "agent-reg-http-01/plan.json": "f27d956125822c99036be68f9aac9140b6aa9642f0cd6c0ef0f32b18f1111ddc",
+    "agent-reg-http-01/result.json": "c852bb3dc0724b76997fdf48ca9451c5c72877a046846d94876793beb427c61c",
+    "agent-reg-http-01/create/sdk-result.json": "30e3084bd12173ca7c298b438eb8406d3a2c262a43d0469cb1ac5ecc64c40681",
+    "agent-reg-http-01/resume/sdk-result.json": "50931de4200a1a439062c35ae8d00a505b104e0413b85f7b1b3400de0aa0b4af",
+    "agent-reg-lease-01/exit.json": "321974a3470a3c6a6373fdedd1124a8a0c4f17f90a34c4c11cd3b6d0a9b822be",
+    "agent-reg-lease-01/nvml-queries.jsonl": "6e5761001c10faeeb17cbec0768b73e707a0787e9a54bf1f0c9b8e60039d2551",
+    "agent_registry_business.py": "44f2fd9e33f98752e70a849e8e3645dcf17f8f1f733ef781209effb978d73394"
+  },
+  "delivery": "candidate; deployed rev440 STOPPED"
+}

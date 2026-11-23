@@ -2471,7 +2471,7 @@
     {
       "id": "A08",
       "required": true,
-      "state": "delivered",
+      "state": "object_store_delivered_agent_application_resources_in_progress",
       "implementation": "Chat/Responses持久对象、store/metadata、previous_response_id、Conversations及background/cancel",
       "acceptance": "客户端隔离、增删查/分页、重启恢复、过期治理；不重放已执行工具；后台状态与取消真实有效",
       "depends_on": [
@@ -2522,7 +2522,7 @@
       "chat_business_evidence": "evidence/serve-chat-business-20261109/README.md",
       "remaining_required": [],
       "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md",
-      "next": "Continue A09 and all remaining master tasks; A08 completion is not the master endpoint.",
+      "next": "Complete managed agent session, turn, environment and related application state from the G00 scope mapping.",
       "retention_cpu": {
         "cpp": 28,
         "driver_distinct": 4
@@ -2609,7 +2609,8 @@
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       },
-      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
+      "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json"
     },
     {
       "id": "A09",
@@ -5976,7 +5977,8 @@
       "native_realtime_mcp_main_20261120": {
         "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
         "evidence": "evidence/serve-pr56-merged-20261120/README.md"
-      }
+      },
+      "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json"
     },
     {
       "id": "A12",
@@ -6863,7 +6865,8 @@
       "native_realtime_mcp_main_20261120": {
         "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
         "evidence": "evidence/serve-pr56-merged-20261120/README.md"
-      }
+      },
+      "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json"
     },
     {
       "id": "N01",
@@ -9074,7 +9077,8 @@
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       },
-      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
+      "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json"
     },
     {
       "id": "Q02",
@@ -10246,7 +10250,8 @@
         "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
         "evidence": "evidence/serve-pr56-merged-20261120/README.md"
       },
-      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
+      "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json"
     },
     {
       "id": "Q03",
@@ -10524,8 +10529,8 @@
       }
     }
   ],
-  "next_task": "Integrate the Beta profile and delivery commits; implement named multi-agent capabilities, startup diagnostics and remaining master tasks.",
-  "next": "验收运行中托管代理的取消与跨代终态，继续其余接口、恢复组合及多模态长稳交接。",
+  "next_task": "Qualify the native Agent configuration endpoints on both capacities and continue managed Agent sessions and turns.",
+  "next": "完成配置候选的主轻资格与发行，推进 Agent 会话、回合及其余 G00 应用路径和恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

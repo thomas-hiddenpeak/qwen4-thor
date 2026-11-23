@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+标准 Beta Agents 配置已通过官方 Node SDK 的原生 TLS 短验。两个不同客户端验证了配置隔离，跨模型进程重启后仍可读取和修改七类工具配置。五个 HTTP 操作覆盖 157 条范围内路径中的两条。候选待主轻资格及可回退发布，默认 rev440 仍为 STOPPED。[验收与当前边界](evidence/serve-agent-registration-20261123/README.md)
+
 PR #64 的 CI 发现自动回退在拒绝跨能力切换前读取了不相关的中断证据。已调整检查顺序，双工迁移针对性回归通过，等待两项远端 host-contracts。
 
 默认已发布 **rev440，STOPPED**。模型骤停后 SDK 保留原代理输出并收到一个中断终态；网关致命退出后注册回退包接管，续读到旧模型排空前提交的 wait_agent，随后 Chat 答 42。用户 24 小时计划已固定。NVML 冷启动通过原包预检，设备仍由相机与 jtop 持有。[交付回执](evidence/serve-responses-agent-interruption-20261123/delivery.json) 模型步骤排空、RPM、TPM 与非法预约现在各有对应说明。9 项针对性 CPU 检查通过。候选经原生 TLS 和真实模型验证。代理创建子任务后，合法父进程通过配额管理通道发起排空；SDK 收到准确的 service_draining 说明，已提交输出及唯一失败终态可回读，另一客户 404。 当前 rev440 的排空错误码正确、提示仍是旧文案。[排空提示检查](evidence/serve-responses-agent-interruption-20261123/draining-message.json)

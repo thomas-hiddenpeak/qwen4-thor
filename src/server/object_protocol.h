@@ -66,13 +66,15 @@ inline std::string Kind(ObjectKind kind) {
       return "trace";
     case ObjectKind::kLiveRecording:
       return "live_recording";
+    case ObjectKind::kAgent:
+      return "agent";
     case ObjectKind::kLiveForkState:
       return "live_fork_state";
   }
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kLiveForkState); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kAgent); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

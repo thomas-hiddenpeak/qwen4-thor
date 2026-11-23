@@ -1911,6 +1911,46 @@
         "src/server/realtime_client_secrets.cpp",
         "src/service/ingress_main.cpp"
       ]
+    },
+    "DELETE /v1/agents/{agent_id}": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/{agent_id}": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/{agent_id}": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -2525,8 +2565,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "a4eacb8b06b8d82cf2b5c8eeb8fb53b5dbe2b80224e88172f4191bae115b0c8b",
-    "cmake/ChatProtocolIdentity.cmake": "bcd53eeb80612ce5539002e8a5ea130caba26e0a3e680e713691be204345f225",
+    "CMakeLists.txt": "4bfc4f8c87f143d0e059f60dd86943a3462e6099dee73c3aa83a092aa96e9edf",
+    "cmake/ChatProtocolIdentity.cmake": "d707d16e44e62ba437118ad5c67a288adcd054300690240b2a5ce9d956215bd2",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2603,7 +2643,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "e2dba7099a60e163ef4f037ecfc728f015977fd8a19b992d7e82f0fba056fb6b",
+    "include/q4t/server/application_routes.h": "610b9a3aa7c8eb4faf8e73a6d4c20d488111a9d15ef5d17ff13d59f923cd7ca1",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -2691,12 +2731,12 @@
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
     "include/q4t/server/grammar_process.h": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447",
-    "include/q4t/server/http_connection.h": "c930a97bb26ba40d9ccfd6a2c5b027efbea5e1ffd01546198a7a6711c9540c48",
+    "include/q4t/server/http_connection.h": "7f70394ab29cc4a2cfafb6c5c88328670f3c2a0f7c7e31ea0441648c85b9d2e0",
     "include/q4t/server/http_framing.h": "689fd32f9bf2b042c8f8b59cebd92d70d55f7b950c1f475babfe736420765524",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
-    "include/q4t/server/http_request.h": "c61ff2e9c6b50914a21e037246c38a34a21c32fe558ba578829415538f379ed4",
-    "include/q4t/server/http_response.h": "4a4bdc1a2680f55b02743f115aa879809fea63778ce7c460d506fae303494ed8",
+    "include/q4t/server/http_request.h": "0286c17017661ab1e160995ce13686d9aa855072e8bdb56910247d3d6e77e2d5",
+    "include/q4t/server/http_response.h": "7fd3b6ffe5f4e8dae61d09e30b316c759d6835db82ba39935ad523d3884adc25",
     "include/q4t/server/input_contract.h": "af0929dfa050a137da35156e2fa4398f3710eee05cc3db0c5538ffa7825c6209",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
     "include/q4t/server/input_snapshot_bindings.h": "d856b9d2be400c9ed24a31a6689ae935c1bbdecb8647d303a6a809db13d96f37",
@@ -2750,7 +2790,7 @@
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
-    "include/q4t/server/object_store.h": "a36e4aaa9d406d9d96ea156df0fce3a7045af58a3759940a8c08ca2b86254a81",
+    "include/q4t/server/object_store.h": "67ac341d9379ac1e568b5dd7e886bbc8b17059d8de6615d4eb3554f0e1852501",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -3044,7 +3084,7 @@
     "src/server/chat_audio_inputs.cpp": "9a9f94790bcf4171a0c65ed6dc6655bcd834ac909ae394573aa6e4850a1d0ba1",
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
-    "src/server/chat_capabilities.cpp": "4b022927ae122406d73165d5d1bb7fd01d025117cd4329c68c229ed007a9be5e",
+    "src/server/chat_capabilities.cpp": "bf7e64db8fdf9aa3e2b800f68ebff6cd547aff56cc657d8f2088b24fde7df7f2",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -3054,7 +3094,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "c111130f7d68f233b0f99805c8fe636dbd7a909e815d6f3c2554f58214820922",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "1ae084c90b30e79f9d9eb55738af49c813868a235816c829e867b4d761a9e2bb",
+    "src/server/chat_http.cpp": "1d3321a60f2333281caee8481f9afc1dbb530cbd45dc181d96e41d36ee79b94b",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3102,7 +3142,7 @@
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "f26f62933fcdd54d5b232918f906af690196c0e84cefce5b9f59754da0faf9ef",
+    "src/server/client_request.cpp": "e47c1f3afbdb7396698035e4e4cae1e2d054762f53300900a360142d4c5c0c56",
     "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
@@ -3185,7 +3225,7 @@
     "src/server/grammar_process.cpp": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "225d8927b3b19b8259acc5abf66fec1bc473da219254c449737abb861a96a576",
+    "src/server/http_request.cpp": "8f79f7075f2f1a160301bbdd4d7c199c8d9975729d71171cb37deeac37236d75",
     "src/server/http_response.cpp": "d1bfa111f02f70372f566859049d3fd73886155865b97ab74a2ac9e964cbbe54",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -3264,11 +3304,11 @@
     "src/server/native_chat_generation.cpp": "4f223e5f912d2382df67a5258aba6dec0328e4199bf04621da8012fbdd5b183b",
     "src/server/native_crypto.cpp": "9da39bb1de51c80b9a028e4e748a77266a5d145a24173ab5d0fdc192bccde92a",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "115c608efbbfbb870c2a5839b5fcf318a4af2bc0ff999f0e02f4dfe2b74b3c69",
+    "src/server/object_protocol.h": "7cda7d9110dd5375262220d8dd659a476bb85765ef333c61bfd189d5312acbe2",
     "src/server/object_retention.cpp": "e78f6d460848f8f24f53d9be0a9ab68f0ff7f7e9aaca3c3a2a37d53826034524",
-    "src/server/object_store.cpp": "400714c5c8db152219429e966f56b0c99785d9d2d077171415893bbee6104257",
+    "src/server/object_store.cpp": "48b5bb9a3a6f0e03489f2eb8fa6ea6febdef43af5fe704542f4b7fb64a04aadd",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
-    "src/server/object_worker.cpp": "9d58e075820a0a8b1050c561da5e101cd8240f0138f27a1a0b8e2a8cf50bf92c",
+    "src/server/object_worker.cpp": "68bb06959fe9e695e73092094cc0bed04056e6a5845312f6fc279f3bc3cabd28",
     "src/server/output_constraints.cpp": "add0daef3ba87df074329f1ed554220023ab0db4211667f27ea723e23c4cacd9",
     "src/server/output_schema.cpp": "f74cd72e27af2095859c1d6f2f2eb51ab2d8d6317f268c15de571c70fba0a358",
     "src/server/overlapping_output.cpp": "bbc75868fc9be368ced28d5000404e86ee9391b071e4f90465b6c681540a9302",
@@ -3355,7 +3395,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "2fb783afdb0d4478647b9b1231db474835697971203966bd8cb1c5a696e85940",
-    "src/server/responses_item_shape.cpp": "8649e8119c6587a0c4fd55334c62daf06a7e4ff341cb5b42c0e18ef3af7613f9",
+    "src/server/responses_item_shape.cpp": "44219a2b79d4d68842e101bd48dfc7124f06af4c8c52a7ff2703c7ea0849fdfb",
     "src/server/responses_jobs.cpp": "beef025cec7cd4b5736594d771015fa2ea0ef123d21910dee2df77312f928e47",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -3490,7 +3530,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "934014cda6b85ae0d2381f051f1c431faa123a66c26fec7e940b235843acd3d1",
+    "src/service/ingress_main.cpp": "9b6b802f6616cb4844df2ed4ee537d7e91f793a12ebe7bc6f6a3a6c33ec07432",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -3520,7 +3560,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "e497b5af0d79deeb5fbdeda026cae7fd91bd9a02775ab6e82a4c0d4adf207265",
+    "tools/serve_gateway/gateway.py": "35ce7940939a31a2e7fee82fc8e7df877f438a83b80874cb438c541294b80278",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -3626,7 +3666,7 @@
     "tools/serve_recovery/profile_mcp_reuse.py": "c1da2ae33277ca9e250bdaabf29c5d4ed4490981a4d3aa297845088207490f3d",
     "tools/serve_recovery/profile_mcp_source.py": "ca8f30b89a355623bc7d2ae8a3d3bb8b63fe797c49699ff5ec8e65746e0efff6",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "d1eb44b899ead65f1e1fc21c3c68fb2aed225bc6c2b797c07e2890605c638f06",
+    "tools/serve_recovery/profile_migration.py": "e02ae0a0d6582dd1d427bf450dbd0fa33c4ccf195933ad692c050ee33ba28bf2",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_primary_review.py": "0d3f063119af8fac2b29e4342f3ff431975b2ffa33795f8a3421d6807bbd8292",
     "tools/serve_recovery/profile_prompt.py": "b4f27fb5f9dc9dcb267638a47d08aa98577886a800e20b2c41ba424987a7bf47",
@@ -3731,7 +3771,10 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
+    "src/server/agent_registration.cpp": "d5f0a231ff92c4dcffbce182d445c8c3e6ece6006fd1389d287a367ce6b3718e",
+    "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6116,6 +6159,66 @@
       "evidence": [
         "src/service/ingress_cors.cpp",
         "src/service/ingress_main.cpp"
+      ]
+    },
+    "DELETE /v1/agents/{agent_id}": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/{agent_id}": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/agents/{agent_id}": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "POST /v1/agents": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/{agent_id}": {
+      "semantics": "经 agents=v1 选择的本地 Agent 配置持久化、分页和按所有者更新删除。",
+      "boundary": "注册配置与会话执行分别验收。",
+      "evidence": [
+        "src/server/agent_registration.cpp",
+        "tests/server_prompt_registry_test.cpp"
       ]
     }
   },

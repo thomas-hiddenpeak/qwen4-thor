@@ -9,6 +9,8 @@
 #include "q4t/server/live_shape.h"
 #include "q4t/server/live_types_data.h"
 #include "q4t/server/multi_agent_types_data.h"
+#include "q4t/server/agent_registration.h"
+#include "q4t/server/agent_registration_types_data.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/responses_item_types_data.h"
 #include "q4t/server/realtime_shape.h"
@@ -195,6 +197,20 @@ Status Validate(const Graph& graph, const Json& item, const char* root,
   return Status::Fail(std::move(failure.message));
 }
 }  // namespace
+
+Status ValidateAgentRegistration(const Json& value, AgentRegistrationShape shape,
+                                 ChatPlanError* error) {
+  static const Graph graph(agent_registration_types::kData,
+                           "q4t-openai-agent-registration-types-v1");
+  const char* root = "";
+  switch (shape) {
+    case AgentRegistrationShape::kCreate: root = "create"; break;
+    case AgentRegistrationShape::kUpdate: root = "update"; break;
+    case AgentRegistrationShape::kResource: root = "resource"; break;
+    case AgentRegistrationShape::kDeleted: root = "deleted"; break;
+  }
+  return Validate(graph, value, root, error, "");
+}
 
 Status ValidateMultiAgentShape(const Json& value, MultiAgentShape shape,
                                ChatPlanError* error, std::string_view path) {

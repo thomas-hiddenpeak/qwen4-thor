@@ -361,7 +361,9 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       auto remaining = value;
       for (;;) {
         const auto comma = remaining.find(',');
-        if (Trim(remaining.substr(0, comma)) == "responses_multi_agent=v1")
+        const auto beta = Trim(remaining.substr(0, comma));
+        if (beta == "agents=v1") headers->agents_beta = true;
+        if (beta == "responses_multi_agent=v1")
           headers->responses_multi_agent = true;
         if (comma == remaining.npos) break;
         remaining.remove_prefix(comma + 1);
@@ -432,7 +434,8 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      *path == "/v1/decisions" ||
                      *path == "/v1/embeddings" || *path == "/v1/audio/speech" ||
                      IsResponsesTarget(*path) || IsConversationTarget(*path) ||
-                     IsPromptTarget(*path) || IsUploadTarget(*path)
+                     IsAgentRegistrationTarget(*path) || IsPromptTarget(*path) ||
+                     IsUploadTarget(*path)
                  ? kChatBodyBytes
                  : 4096);
   const size_t body_limit = std::min(route_limit, headers->body_limit);
