@@ -178,6 +178,44 @@ class NativeEntryTests(unittest.TestCase):
         self.assertFalse(value['model_actions']);self.assertFalse(value['state_checked'])
         self.assertTrue((Path(receipt['package'])/'engine/licenses/openai-node/LICENSE').is_file())
 
+    def test_live_transport_is_pinned_and_optional_during_service_check(self):
+        args = self.setup_inputs()
+        path = self.root/'private-trunks.json'
+        row = dict(client_id='alpha', listen_ip='127.0.0.1', port=5061,
+                   certificate_dir='/private/carrier', peer_subject='carrier')
+        engine.save(path, dict(trunks=[row]))
+        path.chmod(0o600)
+        receipt, _ = self.prepare(self.root/'parent', args=args,
+            extra=('--sip-trunks-file', path, '--live-webrtc-address', '127.0.0.2'))
+        package = Path(receipt['package'])
+        outer = bundle.verify(package, receipt['manifest_sha256'])
+        inner = engine.verify(package/'engine', outer['engine_manifest_sha256'])
+        self.assertEqual(inner['live_transport'], dict(profile='q4t-live-transport-v1',
+            webrtc_address='127.0.0.2', sip_trunks_file=str(path), sip_trunks_sha256=engine.sha(path)))
+        launch = engine.command(package/'engine', inner, state_directory=self.root/'state')
+        for option, expected in [('--live-webrtc-address','127.0.0.2'),
+                                 ('--sip-trunks-file',str(path)), ('--sip-trunks-sha256',engine.sha(path))]:
+            self.assertEqual(launch[launch.index(option)+1], expected)
+        path.unlink()
+        self.invoke(package/'engine/q4t', 'check', '--package', package,
+                    '--manifest-sha256', receipt['manifest_sha256'])
+        self.assertFalse(any(p.name == path.name for p in package.rglob('*')))
+
+    def test_live_transport_rejects_invalid_options_offline(self):
+        path = self.root/'private-trunks.json'
+        engine.save(path, dict(trunks=[]))
+        path.chmod(0o600)
+        with self.assertRaisesRegex(RuntimeError, 'native Live transport'):
+            engine.live_transport_binding(CLI, None, path)
+        for invalid in ('0.0.0.0', '255.255.255.255', '239.1.2.3', 'localhost', ''):
+            with self.subTest(address=invalid), self.assertRaisesRegex(RuntimeError, 'WebRTC address'):
+                engine.live_transport_binding(CLI, invalid, None)
+            check = subprocess.run([CLI, 'live-transport-check', invalid], capture_output=True)
+            self.assertNotEqual(check.returncode, 0)
+        selected = engine.live_transport_binding(CLI, '127.0.0.2', None)
+        self.assertEqual(selected, dict(profile='q4t-live-transport-v1', webrtc_address='127.0.0.2'))
+        self.assertIsNone(engine.live_transport_binding(CLI, None, None))
+
     def test_recording_opt_in_survives_sealed_parent_prepare(self):
         args = self.setup_inputs()
         release = args[args.index('--release')+1]

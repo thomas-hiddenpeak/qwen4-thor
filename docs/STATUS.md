@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+托管服务可选配 WebRTC 本机地址和 SIP 中继配置。实际引擎在封包时读取私有文件，启动及恢复时对读取到的同一批字节核验 SHA-256。严格 GPU 租约内，替换为另一份语法有效的中继配置后，SIP 报告一次激活失败，同一模型仍通过 Chat 返回 42。六项 CPU 检查覆盖从 CLI 封包、外部文件消失、非法地址到自动回退授权边界。继续媒体程序身份与主轻恢复。[验证记录](evidence/serve-managed-trunk-binding-20261123/)
+
 原生 `q4t service prepare` 已补齐 Live 录制开关，并修复管理工具快照缺少原生来源、无法首次封包的问题。实际 CLI 的首次封包、父包生成子包、启用或省略录制、来源不符拒绝，以及离线回退共 11 项检查通过。继续媒体程序身份绑定、可选中继配置和主轻恢复，默认 rev426。[封包及回退](evidence/serve-recovery-recording-option-20261123/README.md)
 
 WebRTC、SIP 信令与 SIP 媒体已有显式 CMake 安装组件。三个可执行文件迁移至新目录后通过 CPU 的 WebRTC/Opus 和 SIP/SRTP 回环，安装产物不含开发目录搜索路径。下一步将安装后身份和可选中继配置绑定到托管包，验证组合恢复及可回退发行。默认 rev426。[安装与回环证据](evidence/serve-live-worker-install-20261123/README.md)

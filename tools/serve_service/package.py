@@ -1,6 +1,7 @@
 """Snapshot the accepted text release and its operational dependencies."""
 import copy
 import hashlib
+import ipaddress
 import json
 import os
 from pathlib import Path
@@ -142,6 +143,8 @@ def private_directory(path, repository=ROOT):
 def add_application_options(parser):
     parser.add_argument('--object-store-dir')
     parser.add_argument('--live-recordings', action='store_true')
+    parser.add_argument('--sip-trunks-file', type=Path)
+    parser.add_argument('--live-webrtc-address')
     for key in APPLICATION_LIMITS:
         parser.add_argument('--object-'+key.replace('_', '-'), type=int)
 
@@ -609,6 +612,55 @@ def _native_policy_binding(binary, path, raw, command, profile, label,
     return value
 
 
+def validate_live_transport(value):
+    require(type(value) is dict and value.get('profile') == 'q4t-live-transport-v1'
+            and value.keys() in ({'profile', 'webrtc_address'},
+                                 {'profile', 'webrtc_address', 'sip_trunks_file', 'sip_trunks_sha256'}),
+            'invalid Live transport receipt')
+    ip = value['webrtc_address']
+    try:
+        address = ipaddress.IPv4Address(ip)
+    except ValueError as error:
+        raise RuntimeError('invalid Live WebRTC address') from error
+    require(type(ip) is str and str(address) == ip and not address.is_multicast
+            and int(address) not in (0, 0xffffffff), 'invalid Live WebRTC address')
+    if 'sip_trunks_file' in value:
+        path, digest = value['sip_trunks_file'], value['sip_trunks_sha256']
+        require(type(path) is str and path.startswith('/') and '\0' not in path
+                and os.path.normpath(path) == path and len(os.fsencode(path)) <= 4096
+                and type(digest) is str and len(digest) == 64
+                and all(c in '0123456789abcdef' for c in digest),
+                'invalid SIP trunk binding')
+
+
+def live_transport_binding(binary, address, trunks):
+    if address is None and trunks is None:
+        return None
+    # A sealed package pins the external private file. An absent or changed
+    # file degrades only SIP when the engine starts or recovers.
+    value = dict(profile='q4t-live-transport-v1',
+                 webrtc_address='127.0.0.1' if address is None else address)
+    validate_live_transport(value)
+    args = [str(binary), 'live-transport-check', value['webrtc_address']]
+    digest = ''
+    if trunks is not None:
+        from tools.serve_gateway import client_policy as cp
+        path = Path(trunks)
+        path = path.parent.resolve(strict=True) / path.name
+        digest = hashlib.sha256(cp.read_private(path)).hexdigest()
+        value.update(sip_trunks_file=str(path), sip_trunks_sha256=digest)
+        validate_live_transport(value)
+        args.append(str(path))
+    environment = {k: v for k, v in os.environ.items()
+                   if k not in ('LD_PRELOAD', 'LD_LIBRARY_PATH', 'PYTHONPATH', 'PYTHONHOME')}
+    check = subprocess.run(args, capture_output=True, timeout=10, env=environment)
+    require(check.returncode == 0 and len(check.stdout) <= 1024 and
+            json.loads(check.stdout) == dict(profile=value['profile'],
+                webrtc_address=value['webrtc_address'], sip_trunks_sha256=digest),
+            'accepted engine failed native Live transport validation')
+    return value
+
+
 def file_input_policy_binding(binary, path, raw):
     return _native_policy_binding(binary, path, raw, 'file-input-policy-check',
         'q4t-file-input-policy-v1', 'file input policy')
@@ -632,7 +684,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             access_program_policy=None, file_input_policy=None,
             embedding_model_dir=None, mcp_policy=None, web_policy=None,
             asr_model_dir=None, asr_limits=None, asr_auxiliary=None,
-            tts_model_dir=None, tts_limits=None, tts_base_model_dir=None):
+            tts_model_dir=None, tts_limits=None, tts_base_model_dir=None,
+            sip_trunks_file=None, live_webrtc_address=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
@@ -711,6 +764,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
     declarations = verify_declarations(metadata, required=True)
+    live = live_transport_binding(binary, live_webrtc_address, sip_trunks_file)
     check_media_declaration(metadata, config['profile'])
     if 'native_embedding' in config:
         check_embedding_declaration(metadata)
@@ -820,6 +874,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},
         weight_shards_rehashed=False, managed_service_accepted=False)
+    if live is not None:
+        manifest['live_transport'] = live
     if access_binding is not None:
         manifest['access_program_policy'] = access_binding
     if file_binding is not None:
@@ -855,6 +911,8 @@ def verify(package, digest):
     manifest = read(package/'manifest.json')
     require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
             'unsupported package version')
+    if 'live_transport' in manifest:
+        validate_live_transport(manifest['live_transport'])
     config = manifest['settings']
     wanted = settings(config['port'], config['restart_limit'],
                       config.get('critical_memory_mib', 1024),
@@ -1141,6 +1199,17 @@ def check_media_declaration(metadata, profile):
                 'accepted engine does not declare enabled media')
 
 
+def live_transport_args(manifest):
+    args = []
+    if 'live_transport' in manifest:
+        live = manifest['live_transport']
+        args += ['--live-webrtc-address', live['webrtc_address']]
+        if 'sip_trunks_file' in live:
+            args += ['--sip-trunks-file', live['sip_trunks_file'],
+                     '--sip-trunks-sha256', live['sip_trunks_sha256']]
+    return args
+
+
 def command(package, manifest, *, state_directory=None):
     cfg = manifest['settings']
     args = [str(Path(package)/'q4t'), 'serve', '--model-dir', manifest['model_dir'],
@@ -1151,6 +1220,7 @@ def command(package, manifest, *, state_directory=None):
             args += ['--'+key.replace('_', '-'), str(value)]
     if cfg['profile'].get('allow_media', False):
         args += ['--allow-media']
+    args += live_transport_args(manifest)
     if 'client_policy' in manifest:
         args += ['--client-policy-file', str(Path(package)/'client-policy.json')]
     if 'access_program_policy' in manifest:

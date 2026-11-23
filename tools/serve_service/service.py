@@ -265,6 +265,8 @@ def main():
                              file_input_policy=args.file_input_policy,
                              mcp_policy=args.mcp_policy,
                              web_policy=args.web_policy,
+                             sip_trunks_file=args.sip_trunks_file,
+                             live_webrtc_address=args.live_webrtc_address,
                              embedding_model_dir=args.embedding_model_dir,
                              tts_model_dir=args.tts_model_dir,
                              tts_base_model_dir=args.tts_base_model_dir,

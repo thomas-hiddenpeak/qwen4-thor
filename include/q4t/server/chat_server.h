@@ -472,6 +472,7 @@ class ChatServer {
   std::string live_webrtc_address_;
   bool live_recordings_ = false;
   std::string sip_trunks_file_;
+  std::string sip_trunks_sha256_;
   SipService sip_service_;
   ApplicationOwner<RealtimeTraceStore> realtime_traces_;
   RealtimeTraceStoreOptions realtime_trace_options_;

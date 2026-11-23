@@ -10,6 +10,7 @@
 #include <array>
 #include <charconv>
 #include <condition_variable>
+#include <cstdio>
 #include <filesystem>
 #include <map>
 #include <mutex>
@@ -22,6 +23,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/mcp_policy.h"
 #include "q4t/server/native_crypto.h"
+#include "q4t/server/server_options.h"
 #include "sip_child.h"
 
 namespace q4t::server {
@@ -54,9 +56,16 @@ bool MediaAddress(const std::string& ip, int* family) {
          !IN6_IS_ADDR_V4MAPPED(&v6);
 }
 
-bool Load(const std::string& file, std::vector<Config>* configs) {
+bool Load(const std::string& file, std::string_view expected,
+          std::vector<Config>* configs, std::string* observed = nullptr) {
   std::string raw;
   if (!ReadMcpPrivateConfig(file, &raw)) return false;
+  const auto digest = Digest(raw);
+  if (!expected.empty() && expected != digest) {
+    CryptoWipe(&raw);
+    return false;
+  }
+  if (observed) *observed = digest;
   Json j;
   const bool parsed =
       io::ParseJson(raw, &j, false, {12, 4000, 262144, true}).ok();
@@ -129,6 +138,20 @@ ObjectReply Unknown() {
                "Carrier receipt unavailable before the call deadline");
 }
 }  // namespace
+
+int RunLiveTransportCheck(int argc, char** argv) {
+  if ((argc != 3 && argc != 4) || !ValidLiveWebRtcAddress(argv[2])) return 2;
+  std::vector<Config> configs;
+  std::string digest;
+  const bool ok = argc == 3 || Load(argv[3], {}, &configs, &digest);
+  for (auto& config : configs) CryptoWipe(&config.webhook);
+  if (!ok) return 1;
+  // Both interpolated fields have fixed alphabets after native validation.
+  std::printf("{\"profile\":\"q4t-live-transport-v1\","
+              "\"webrtc_address\":\"%s\",\"sip_trunks_sha256\":\"%s\"}\n",
+              argv[2], digest.c_str());
+  return 0;
+}
 
 SipInvitation::~SipInvitation() { CryptoWipe(&offer); }
 
@@ -615,15 +638,16 @@ void SipService::Stop() {
 }
 
 void SipService::Start(const std::string& config,
-                       std::function<bool(std::string_view)> current_scope) {
+                       std::function<bool(std::string_view)> current_scope,
+                       const std::string& expected_sha256) {
   if (config.empty()) return;
-  auto run = [this, config,
+  auto run = [this, config, expected_sha256,
               current_scope = std::move(current_scope)](std::stop_token stop) {
     try {
       std::error_code ec;
       auto engine = std::filesystem::read_symlink("/proc/self/exe", ec);
       std::vector<Config> configs;
-      if (ec || !engine.is_absolute() || !Load(config, &configs)) {
+      if (ec || !engine.is_absolute() || !Load(config, expected_sha256, &configs)) {
         ++activation_failures_;
         return;
       }

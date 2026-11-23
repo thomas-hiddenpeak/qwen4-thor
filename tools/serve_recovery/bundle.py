@@ -237,7 +237,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             device_control=None, mcp_policy=None, web_policy=None,
             asr_model_dir=None, asr_limits=None, asr_auxiliary=None,
             tts_model_dir=None, tts_limits=None, tts_base_model_dir=None,
-            parent_native_sources=None):
+            parent_native_sources=None, sip_trunks_file=None,
+            live_webrtc_address=None):
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
@@ -300,7 +301,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         tts_model_dir=tts_model_dir, tts_limits=tts_limits,
         tts_base_model_dir=tts_base_model_dir,
         asr_auxiliary=asr_auxiliary,
-        mcp_policy=mcp_policy, web_policy=web_policy)
+        mcp_policy=mcp_policy, web_policy=web_policy,
+        sip_trunks_file=sip_trunks_file, live_webrtc_address=live_webrtc_address)
     (target/'bin').mkdir(mode=0o700)
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
     programs = list(zip(executables, (guardian, cuda_probe, executable)))

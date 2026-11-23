@@ -1,0 +1,37 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 37,
+    "cleanup_complete": true
+  },
+  "result": {
+    "status": "PASS",
+    "default_unchanged": true,
+    "counts": {
+      "starts": 1,
+      "ingress_starts": 1,
+      "chats": 1,
+      "controls": 32
+    },
+    "seconds": 37.42838236829266,
+    "binary_sha256": "d5f3c3d7cfae72ed6232fcbf27de4aca9418992886ac4357a39a9bb3bb073631"
+  },
+  "business": {
+    "sip": {
+      "configured": 0,
+      "ready": 0,
+      "activation_failures": 1,
+      "webhooks_delivered": 0,
+      "transfers_answered": 0,
+      "transfers_failed": 0,
+      "transfers_unknown": 0,
+      "webhook_failures": 0
+    },
+    "chat": "42",
+    "same_model": true
+  },
+  "changed_sha256": "8b4a4fc8e57420cba0409290c861e8983170fdddc0a784426a41259bf8eeed5f",
+  "pinned_sha256": "460eac58dddb80cc856425c4ca7b51c75cf632892d70da8c6422c8597ac33afa"
+}

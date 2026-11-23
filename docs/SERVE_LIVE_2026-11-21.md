@@ -264,3 +264,7 @@ const grant = await client.realtime.clientSecrets.create({
 ```
 
 `expires_at` 为新连接的最晚使用时间（Unix 秒）。同一客户的长期和短期凭据共享业务准入。需要文本或语音对话时使用 `type: 'realtime'`；WebRTC 的显式 `session` 可覆盖该对话的配置。模型进程保存签发记录，重启后应用须重新签发凭据。已通过本机原生 TLS 实测的范围见 [WSS 及到期行为](evidence/serve-realtime-client-issuer-20261123/README.md) 和 [WebRTC 音轨与配置覆盖](evidence/serve-realtime-client-rtc-20261123/README.md)。
+
+### 托管部署的中继配置
+
+在 `q4t service prepare` 及轻量托管入口中，`--live-webrtc-address IPV4` 选择本机媒体地址。`--sip-trunks-file FILE` 选择归部署账号所有的私有常规文件，封包机与服务机须能访问同一绝对路径。文件包含中继授权和可选 webhook 凭据，包内只记录规范路径和 SHA-256。需要轮换时用新文件准备后继包并显式部署。自动回退要求地址、路径和摘要一致。实际服务打开文件后复核同一批字节，文件缺失、权限不合格或内容变化会增加 `/v1/config` 的 `sip.activation_failures`，Chat 可继续服务。运行 `q4t live-transport-check IPV4 [FILE]` 可离线复核地址和中继配置格式。完整信令还依赖媒体程序、证书和授权的客户端。

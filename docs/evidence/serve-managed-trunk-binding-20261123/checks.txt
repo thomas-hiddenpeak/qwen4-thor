@@ -1,0 +1,11 @@
+test_live_transport_is_pinned_and_optional_during_service_check (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_live_transport_is_pinned_and_optional_during_service_check) ... ok
+test_live_transport_rejects_invalid_options_offline (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_live_transport_rejects_invalid_options_offline) ... ok
+test_fresh_build_entry_really_prepares_and_checks_a_package (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_fresh_build_entry_really_prepares_and_checks_a_package) ... ok
+test_recording_opt_in_survives_sealed_parent_prepare (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_recording_opt_in_survives_sealed_parent_prepare) ... ok
+test_managed_cli_carries_application_options (tools.serve_service.test_declarations.Declarations.test_managed_cli_carries_application_options) ... ok
+test_sealed_authority_cannot_change_or_disappear_on_automatic_recovery (tools.serve_recovery.test_mcp_recovery_contract.PrivatePolicyRecoveryTests.test_sealed_authority_cannot_change_or_disappear_on_automatic_recovery) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 7.857s
+
+OK

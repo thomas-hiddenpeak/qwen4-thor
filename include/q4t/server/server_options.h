@@ -66,6 +66,7 @@ struct ServerOptions {
   // Durable application state, independent of model assets and KV caches.
   // Empty resolves to XDG_STATE_HOME or HOME in the startup owner, without I/O.
   std::string sip_trunks_file;
+  std::string sip_trunks_sha256;
   bool live_recordings = false;
   std::string live_webrtc_address = "127.0.0.1";
   std::string object_store_dir;
@@ -160,6 +161,7 @@ struct ServerCapabilities {
 };
 
 ServerCapabilities CapabilitiesFor(const ServerOptions& options);
+bool ValidLiveWebRtcAddress(const std::string& ip);
 Status ValidateServerOptions(const ServerOptions& options);
 // Resolve only after the startup memory budget has fixed effective slots.
 // Failure leaves output unchanged. Does not reserve RAM or connections.
