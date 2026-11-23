@@ -9,7 +9,7 @@ import urllib.parse
 
 
 class TokenIssuer:
-    def __init__(self, peer):
+    def __init__(self, peer, *, retry_after=None):
         self.resource = peer.url
         self.client = 'q4t:fixture reader'
         self.client_secret = secrets.token_urlsafe(24) + '+'
@@ -34,14 +34,26 @@ class TokenIssuer:
                 basic = 'Basic ' + base64.b64encode(credentials.encode()).decode()
                 form = urllib.parse.parse_qs(self.rfile.read(int(length)).decode(),
                     strict_parsing=True, max_num_fields=5, keep_blank_values=True)
-                token = issuer.original if not issuer.receipts else issuer.replacement
+                token = (issuer.replacement if 'original' in issuer.receipts
+                         else issuer.original)
                 if self.headers.get_all('Authorization') != [basic] or form != {
                         'refresh_token':[token], 'grant_type':['refresh_token'],
                         'scope':['records.read'], 'resource':[issuer.resource]}:
                     self.send_error(403)
                     return
-                issuer.receipts.append('original' if len(issuer.receipts) == 0 else 'rotated')
-                if len(issuer.receipts) == 2:
+                if retry_after is not None and not issuer.receipts:
+                    issuer.receipts.append('temporary')
+                    wire = b'{"error":"temporarily_unavailable"}'
+                    self.send_response(503)
+                    self.send_header('Retry-After', str(retry_after))
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Content-Length', str(len(wire)))
+                    self.end_headers()
+                    self.wfile.write(wire)
+                    return
+                exchanged = 'original' in issuer.receipts
+                issuer.receipts.append('rotated' if exchanged else 'original')
+                if exchanged:
                     # Model an issuer that consumed a rotating token before
                     # its connection vanished. No second receipt is available.
                     self.close_connection = True

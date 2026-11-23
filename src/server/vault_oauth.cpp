@@ -1,6 +1,7 @@
 #include "mcp_transport_internal.h"
 
 #include <algorithm>
+#include <charconv>
 #include <ctime>
 
 #include "object_protocol.h"
@@ -43,6 +44,39 @@ bool Text(const Json& obj, const char* key) {
 ObjectReply InvalidResponse() {
   return Error(502, "oauth_refresh_response_invalid",
                "Invalid token endpoint response");
+}
+
+int64_t RetryAt(std::string_view value, int64_t now) {
+  // Cap at the last representable contract timestamp. The caller returns to
+  // its client immediately; a later exchange observes the persisted deadline.
+  constexpr int64_t limit = 253402300799;
+  now = std::clamp<int64_t>(now, 0, limit - 1);
+  uint64_t seconds = 0;
+  if (!value.empty()) {
+    auto [end, error] =
+        std::from_chars(value.data(), value.data() + value.size(), seconds);
+    if (end == value.data() + value.size()) {
+      if (error == std::errc::result_out_of_range) return limit;
+      if (error == std::errc{})
+        return now +
+               std::max<int64_t>(1, std::min<uint64_t>(seconds, limit - now));
+    }
+    if (value.size() < 128) {
+      std::tm calendar{};
+      std::string date(value);
+      auto* tail =
+          strptime(date.c_str(), "%a, %d %b %Y %H:%M:%S GMT", &calendar);
+      if (tail && !*tail) {
+        const auto at = timegm(&calendar);
+        char canonical[64]{};
+        if (std::strftime(canonical, sizeof(canonical),
+                          "%a, %d %b %Y %H:%M:%S GMT", &calendar) &&
+            value == canonical)
+          return std::clamp<int64_t>(at, now + 1, limit);
+      }
+    }
+  }
+  return std::min(now + 5, limit);
 }
 }  // namespace
 
@@ -133,6 +167,26 @@ ObjectReply DecodeGrant(const std::string& response, std::time_t now,
   return {};
 }
 
+ObjectReply DecodeGrantRefusal(int status, const std::string& response,
+                               std::string_view retry_after, std::time_t now,
+                               McpTransportReceipt* receipt) {
+  Json error;
+  std::string param;
+  if ((status != 400 && status != 429 && status != 503) ||
+      !Parse(response, &error) ||
+      !InputFields(error, {"error", "error_description", "error_uri"},
+                   &param) ||
+      error.GetString("error") != "temporarily_unavailable" ||
+      (error.Has("error_description") &&
+       !error.Find("error_description")->IsString()) ||
+      (error.Has("error_uri") && !error.Find("error_uri")->IsString()))
+    return InvalidResponse();
+  receipt->result = Object({{"retry_at", Number(RetryAt(retry_after, now))}});
+  receipt->outcome_unknown = false;
+  return Error(503, "oauth_refresh_unavailable",
+               "Token issuer temporarily unavailable");
+}
+
 ObjectReply RefreshGrant(const McpEndpoint& endpoint,
                          const FileFetchOptions& deployment, const Json& grant,
                          std::chrono::steady_clock::time_point deadline,
@@ -163,9 +217,12 @@ ObjectReply RefreshGrant(const McpEndpoint& endpoint,
                          return receipt->call_permitted;
                        });
   if (!opened.ok()) return opened;
-  if (http->Status() != 200 || http->Mime() != "application/json" ||
-      !http->ReadAll(&response).ok())
+  if (http->Mime() != "application/json" || !http->ReadAll(&response).ok())
     return InvalidResponse();
+  if (http->Status() != 200)
+    return DecodeGrantRefusal(http->Status(), response,
+                              http->Header("retry-after"), std::time(nullptr),
+                              receipt);
   auto parsed = DecodeGrant(response, std::time(nullptr), &receipt->result);
   if (!parsed.ok()) return parsed;
   receipt->outcome_unknown = false;

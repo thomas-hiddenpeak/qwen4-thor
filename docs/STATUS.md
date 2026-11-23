@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+OAuth 刷新候选已验证临时故障恢复。HTTPS 签发端要求等待 4 秒，两次 SDK 请求均收到 503，签发端只收到一次请求；等待期过后，原凭据成功续期，模型读回项目文档。随后丢失一次轮换回执，下一次请求得到 409，Chat 仍正常。16 项 CPU 检查通过，模型启动一次，短验用时 49.949 秒。继续验证执行中的续期和受管配置。[短验回执](evidence/serve-agent-vaults-20261123/oauth-temporary.json)
+
 PR #68 已合入主线。两项远端 host-contracts 通过；合并提交 `004153a4d` 与受检提交文件树相同，包含 Vault 的创建、归档、凭据轮换和主、轻配置业务接续。[主线回执](evidence/serve-agent-vaults-20261123/main.json)
 
 OAuth 自动刷新候选通过官方 SDK 业务短验。隔离的 HTTPS 令牌端点签发新访问令牌和轮换令牌，模型用新授权读取项目文档，准确引用第 1–3 行。第二次交换消耗了轮换令牌并丢失回执，重试收到 409，对端观察到总共两次交换，随后 Chat 正常回答 42。15 项 CPU 检查通过，单次模型启动 46.885 秒。继续验证临时错误重试和执行中令牌续期；默认 rev446。[OAuth 验收](evidence/serve-agent-vaults-20261123/oauth.json)

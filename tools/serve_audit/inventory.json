@@ -3467,7 +3467,7 @@
     "src/server/mcp_provider_time.cpp": "fa775232eecf42d5ffb18d1b441b880ff731446f65e547ff8a740b549f24c421",
     "src/server/mcp_sse_internal.h": "daadf5676840661a4735a7146663886144c5891b0f04db3176508641eb781e87",
     "src/server/mcp_transport.cpp": "3366db9c3d3e028d04001f0a30c8113a470d1b14d98130da6fb58bb8b206bf13",
-    "src/server/mcp_transport_internal.h": "0f69896a519ed579f3cf2fc6dd38e34f31ee68331b872bdbcaade558e6be74d1",
+    "src/server/mcp_transport_internal.h": "2b29c050ba567a44c715e75642e583080499d92ba5c524fc1862c2a4c2c6439c",
     "src/server/mcp_tunnel.cpp": "5035671dcbdda13f7a05efa5f3cac05f9777fbbfdb247d1049b4b9aafd43a668",
     "src/server/mcp_tunnel_agent.cpp": "768679d8af4badc04b938495bb6012be52cc8c2727b87c50ab17a8cb22f11a1d",
     "src/server/mcp_tunnel_agent_config.cpp": "963c95681fa094fb1baff761a2313033e2940aab0a01fa0e28b9a763f0e806f9",
@@ -3975,11 +3975,11 @@
     "include/q4t/server/agent_vault.h": "3e4bb28fb1074e81a67af9f517eb9bf73be66bf93c621771841cf339963d62a0",
     "src/server/agent_vault.cpp": "50e97c50c0b5309769e434c066a002b1a662dcb7b1154b0d44901be0f3862c5a",
     "src/server/contracts/openai_vault_credential_types_v1.json": "f3c5a9a4be6e274325fd214d4e2ea7094f1fa0408f91107384abcfcec72456a2",
-    "src/server/vault_credential.cpp": "13213244041ad0804ddd10720e22ee33b637f856d1fca0e0107db83a4a67f524",
-    "src/server/vault_credential_auth.cpp": "a17bc52b32a217e03a9d5c0f3183200949f0610953dbb2cb75e3298fd0d08181",
+    "src/server/vault_credential.cpp": "d80fedc0e349d102be4fb91b64584007746af87cda8efd1083b2da0d76f5c7a8",
+    "src/server/vault_credential_auth.cpp": "ee4fd4b5bf17f485060af7675e0e4341e19816dda5df9814d575bd6838a6f85d",
     "src/server/vault_credential_internal.h": "77929dfbbdb988815e40f0cca0b00bcdfceded4c95189272e9383e2cb472dc34",
     "src/server/agent_session_mcp.cpp": "da04351d76ae880595ca3808e3eb7ae84f761b7d573b4e3abf5cec208b61571c",
-    "src/server/vault_oauth.cpp": "85696e963041313aa18b08a5070e5e6836b1af60acb70b1e1e9483027fb47dad"
+    "src/server/vault_oauth.cpp": "321f2cd0b2d5eb563f3f0da5308b55b3e5ca74709264dd203d5f77bf34880d36"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

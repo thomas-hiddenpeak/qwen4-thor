@@ -7,6 +7,7 @@
 #include "mcp_transport_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/http_framing.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/state_cipher.h"
 #include "schema_string.h"
@@ -171,6 +172,23 @@ ObjectReply Patch(Json& current, const Json& changes) {
   return {};
 }
 
+bool ValidRetryTime(const Json* value) {
+  return value && IsInputInteger(*value) && value->number > 0 &&
+         value->number <= 253402300799LL;
+}
+
+bool ValidRefreshState(const Json& row) {
+  const auto* pending = row.Find("refreshing");
+  const auto* retry = row.Find("retry_at");
+  return (!pending || (pending->IsBool() && row.GetBool("refreshing"))) &&
+         (!retry || (!pending && ValidRetryTime(retry)));
+}
+
+ObjectReply Unavailable() {
+  return Error(503, "oauth_refresh_unavailable",
+               "Token issuer temporarily unavailable");
+}
+
 // The grant server may invalidate a refresh token before acknowledging it.
 // Persist dispatch permission after TLS verification and before the first
 // request byte. An unknown outcome leaves the grant pending across restart.
@@ -182,14 +200,16 @@ ObjectReply Refresh(ObjectStore& store, const StateAccess& access,
   McpEndpoint endpoint;
   endpoint.url = grant.GetString("token_endpoint");
   endpoint.exact_target = true;
-  const auto write = [&](bool finish, const Json& projection,
+  enum class Action { kBegin, kDefer, kFinish };
+  const auto write = [&](const StateAccess& local, Action action,
+                         const Json& value,
                          const std::string& replacement) -> ObjectReply {
     for (int attempt = 0; attempt != 3; ++attempt) {
       ObjectRequest req;
       req.scope = access.scope;
       req.kind = ObjectKind::kVault;
       req.id = vault_id;
-      auto read = store.Execute(req, access.deadline, access.cancelled);
+      auto read = store.Execute(req, local.deadline, local.cancelled);
       if (!read.ok()) return read;
       auto& vault = Field(read.value, "data");
       if (vault.GetBool("archived") || !vault.GetArray("credentials"))
@@ -202,19 +222,28 @@ ObjectReply Refresh(ObjectStore& store, const StateAccess& access,
       });
       if (it == rows.end() || it->GetBool("archived"))
         return Error(404, "object_not_found", "Vault credential unavailable");
+      if (!ValidRefreshState(*it))
+        return Error(503, "credential_state_invalid",
+                     "Invalid stored credential");
       if (it->GetString("sealed") != sealed ||
-          it->GetBool("refreshing") != finish)
+          it->GetBool("refreshing") != (action != Action::kBegin))
         return Error(409, "oauth_refresh_conflict",
                      "Credential changed or refresh is pending");
-      if (finish) {
-        std::erase_if(it->object,
-                      [](const auto& f) { return f.first == "refreshing"; });
+      if (action == Action::kBegin &&
+          it->GetInt("retry_at") > std::time(nullptr))
+        return Unavailable();
+      std::erase_if(it->object, [](const auto& f) {
+        return f.first == "refreshing" || f.first == "retry_at";
+      });
+      if (action == Action::kFinish) {
         Set(&*it, "sealed", String(replacement));
         auto& resource = Field(*it, "resource");
-        Set(&resource, "auth", projection);
+        Set(&resource, "auth", value);
         Set(&resource, "updated_at",
             Number(std::max<int64_t>(resource.GetInt("updated_at"),
                                      std::time(nullptr))));
+      } else if (action == Action::kDefer) {
+        Set(&*it, "retry_at", value);
       } else {
         Set(&*it, "refreshing", Boolean(true));
       }
@@ -222,7 +251,7 @@ ObjectReply Refresh(ObjectStore& store, const StateAccess& access,
       req.operation = ObjectOperation::kPut;
       req.ttl_seconds = 0;
       req.data = std::move(vault);
-      auto saved = store.Execute(req, access.deadline, access.cancelled);
+      auto saved = store.Execute(req, local.deadline, local.cancelled);
       if (!saved.commit_unknown && saved.code == "object_revision_conflict")
         continue;
       saved.value = {};
@@ -234,10 +263,24 @@ ObjectReply Refresh(ObjectStore& store, const StateAccess& access,
   McpTransportReceipt receipt;
   auto exchanged = InvokeMcp(
       {access.scope, access.deadline, access.cancelled}, endpoint, deployment,
-      mcp_detail::kRefreshGrant, grant, [&] { return write(false, {}, {}); },
-      &receipt);
+      mcp_detail::kRefreshGrant, grant,
+      [&] { return write(access, Action::kBegin, {}, {}); }, &receipt);
   ProtectedAuth response;
   response.value = std::move(receipt.result);
+  // The issuer may already have rotated the token. Settle its observed reply
+  // under a bounded local deadline even if the initiating request timed out.
+  const StateAccess settle{
+      access.scope,
+      std::chrono::steady_clock::now() + std::chrono::seconds(2),
+      {}};
+  if (!exchanged.commit_unknown &&
+      exchanged.code == "oauth_refresh_unavailable" && receipt.call_permitted &&
+      !receipt.outcome_unknown &&
+      ValidRetryTime(response.value.Find("retry_at"))) {
+    auto deferred =
+        write(settle, Action::kDefer, *response.value.Find("retry_at"), {});
+    return deferred.ok() && !deferred.commit_unknown ? exchanged : deferred;
+  }
   if (!exchanged.ok() || exchanged.commit_unknown) return exchanged;
   ChatPlanError error;
   if (!receipt.call_permitted || receipt.outcome_unknown ||
@@ -248,10 +291,10 @@ ObjectReply Refresh(ObjectStore& store, const StateAccess& access,
   Json projection;
   std::string replacement;
   if (result.ok())
-    result = SealCredentialAuth(store, access, vault_id, id, config.value,
+    result = SealCredentialAuth(store, settle, vault_id, id, config.value,
                                 &projection, &replacement);
   if (!result.ok() || result.commit_unknown) return result;
-  result = write(true, projection, replacement);
+  result = write(settle, Action::kFinish, projection, replacement);
   if (result.ok() && !result.commit_unknown)
     *token = config.value.Find("access_token")->str;
   return result;
@@ -310,6 +353,7 @@ ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
   std::set<std::string> visited;
   std::string selected_vault, selected_id, sealed;
   bool refreshing = false;
+  int64_t retry_at = 0;
   bool revoked = false;
   for (const auto& attached : vaults.array) {
     if (!attached.IsString() || !attached.str.starts_with("vault_") ||
@@ -343,11 +387,14 @@ ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
       if (!selected_id.empty())
         return Error(409, "mcp_credential_ambiguous",
                      "Select one matching attached credential");
-      if (!ValidId(key) || row.GetString("sealed").empty()) return corrupt();
+      if (!ValidId(key) || row.GetString("sealed").empty() ||
+          !ValidRefreshState(row))
+        return corrupt();
       selected_vault = req.id;
       selected_id = key;
       sealed = row.GetString("sealed");
       refreshing = row.GetBool("refreshing");
+      retry_at = row.GetInt("retry_at");
     }
   }
   if (selected_id.empty())
@@ -372,6 +419,7 @@ ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
     if (refreshing)
       return Error(409, "oauth_refresh_pending",
                    "Token exchange awaits settlement or credential rotation");
+    if (retry_at > std::time(nullptr)) return Unavailable();
     if (deployment)
       return Refresh(store, access, selected_vault, selected_id, sealed, config,
                      *deployment, token);

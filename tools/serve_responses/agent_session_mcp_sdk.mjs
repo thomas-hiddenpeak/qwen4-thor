@@ -43,6 +43,13 @@ await failure(() => sessions.create(req({...tool, credential_id:credential.id,
 const duplicate = await credentials.create(vault.id, {name:'duplicate',auth});
 await failure(() => sessions.create(req(tool)), 409);
 await credentials.delete(duplicate.id, {vault_id:vault.id});
+if (plan.retry_after !== undefined) {
+  assert.ok(plan.refresh && Number.isInteger(plan.retry_after) &&
+            plan.retry_after > 0 && plan.retry_after <= 8);
+  await failure(() => sessions.create(req(tool)), 503);
+  await failure(() => sessions.create(req(tool)), 503);
+  await new Promise(resolve => setTimeout(resolve, plan.retry_after * 1000 + 100));
+}
 const stream = (await sessions.create({...req(tool), stream:true})).withResultCollection();
 const events = [];
 for await (const event of stream) {

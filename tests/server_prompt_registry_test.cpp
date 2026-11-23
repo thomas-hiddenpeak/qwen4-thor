@@ -763,6 +763,47 @@ Q4T_TEST(agent_vault_refresh_validates_bearer_expiry_and_rotated_grant) {
   return true;
 }
 
+Q4T_TEST(agent_vault_refresh_defers_only_explicit_issuer_refusal) {
+  const std::string retry = R"({"error":"temporarily_unavailable"})";
+  for (const auto& [header, expected] :
+       std::vector<std::pair<std::string, int64_t>>{
+           {"0", 101},
+           {"20", 120},
+           {"", 105},
+           {"invalid", 105},
+           {"Thu, 01 Jan 1970 00:03:20 GMT", 200},
+           {"Thu, 01 Jan 1970 00:00:00 GMT", 101},
+           {"123456789012345678901234567890", 253402300799LL}}) {
+    for (const auto status : {400, 429, 503}) {
+      McpTransportReceipt receipt;
+      receipt.outcome_unknown = true;
+      auto result =
+          mcp_detail::DecodeGrantRefusal(status, retry, header, 100, &receipt);
+      Q4T_CHECK(result.http_status == 503 && !receipt.outcome_unknown &&
+                receipt.result.GetInt("retry_at") == expected);
+    }
+  }
+  for (
+      const auto& [status, body] : std::vector<std::pair<int, std::string>>{
+          {502, retry},
+          {401, retry},
+          {503, "{"},
+          {400, R"({"error":"invalid_grant"})"},
+          {503,
+           R"({"error":"temporarily_unavailable","access_token":"issued"})"},
+          {429,
+           R"({"error":"temporarily_unavailable","error":"invalid_grant"})"},
+          {503,
+           R"({"error":"temporarily_unavailable","error_description":false})"}}) {
+    McpTransportReceipt receipt;
+    receipt.outcome_unknown = true;
+    Q4T_CHECK(mcp_detail::DecodeGrantRefusal(status, body, "5", 100, &receipt)
+                      .http_status == 502 &&
+              receipt.outcome_unknown && !receipt.result.Has("retry_at"));
+  }
+  return true;
+}
+
 Q4T_TEST(agent_vault_refresh_inspection_and_uncertain_grants_do_not_replay) {
   Fixture fixture;
   ObjectStore objects(fixture.options);
@@ -791,17 +832,37 @@ Q4T_TEST(agent_vault_refresh_inspection_and_uncertain_grants_do_not_replay) {
   req.kind = ObjectKind::kVault;
   req.scope = Access().scope;
   req.id = vault;
-  auto saved = objects.Execute(req, Access().deadline, {});
-  Q4T_CHECK(Ok(saved));
-  auto record = *saved.value.Find("data");
-  auto entries = *record.Find("credentials");
-  Set(&entries.array[0], "refreshing", Parse("true"));
-  Set(&record, "credentials", entries);
-  req.operation = ObjectOperation::kPut;
-  req.expected_revision = saved.value.GetInt("revision");
-  req.data = record;
-  req.ttl_seconds = 0;
-  Q4T_CHECK(Ok(objects.Execute(req, Access().deadline, {})));
+  auto marker = [&](const char* name, const Json& value) {
+    auto saved = objects.Execute(req, Access().deadline, {});
+    if (!saved.ok()) return false;
+    auto write = req;
+    write.data = *saved.value.Find("data");
+    auto entries = *write.data.Find("credentials");
+    auto& row = entries.array.front();
+    std::erase_if(row.object, [](const auto& field) {
+      return field.first == "refreshing" || field.first == "retry_at";
+    });
+    Set(&row, name, value);
+    Set(&write.data, "credentials", std::move(entries));
+    write.operation = ObjectOperation::kPut;
+    write.expected_revision = saved.value.GetInt("revision");
+    write.ttl_seconds = 0;
+    return Ok(objects.Execute(write, Access().deadline, {}));
+  };
+  for (const auto* malformed :
+       {"0", "1.5", "253402300800", "null", "\"123\""}) {
+    Q4T_CHECK(marker("retry_at", Parse(malformed)) &&
+              inspect().code == "credential_state_invalid" && token.empty());
+  }
+  Q4T_CHECK(marker("refreshing", Parse("false")) &&
+            inspect().code == "credential_state_invalid");
+  Q4T_CHECK(marker("retry_at", Parse("253402300799")) &&
+            inspect().code == "oauth_refresh_unavailable" && token.empty());
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "POST", path + "/" + cred,
+                                R"({"metadata":{"a":"b"}})", Access())));
+  Q4T_CHECK(inspect().code == "oauth_refresh_unavailable");
+  Q4T_CHECK(marker("retry_at", Parse("1")) && Ok(inspect()) && needs_refresh);
+  Q4T_CHECK(marker("refreshing", Parse("true")));
   Q4T_CHECK(inspect().code == "oauth_refresh_pending" && token.empty());
   Q4T_CHECK(Ok(HandleAgentVault(objects, "POST", path + "/" + cred,
                                 R"({"metadata":{"a":"b"}})", Access())));

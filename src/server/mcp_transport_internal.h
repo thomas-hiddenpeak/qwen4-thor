@@ -12,6 +12,9 @@ ObjectReply BuildGrant(const io::Json& grant,
                        std::string* body);
 ObjectReply DecodeGrant(const std::string& response, std::time_t now,
                         io::Json* destination);
+ObjectReply DecodeGrantRefusal(int status, const std::string& response,
+                               std::string_view retry_after, std::time_t now,
+                               McpTransportReceipt* receipt);
 ObjectReply RefreshGrant(const McpEndpoint& endpoint,
                          const FileFetchOptions& deployment,
                          const io::Json& grant,
