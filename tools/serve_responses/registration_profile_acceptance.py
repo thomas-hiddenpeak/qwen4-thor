@@ -99,7 +99,8 @@ def prepare(out, build, original, session_witness=None, qualify_vaults=False, va
             if environment_templates:
                 sources.extend(environments.SOURCES)
                 if hosted_workspaces:
-                    sources.extend(environments.WORKSPACE_SOURCES)
+                    proof = environments.workspace_proof(vault['binary'])
+                    sources.extend(environments.workspace_sources(proof))
             for source in sources:
                 plan['sources'][source] = pkg.sha(ROOT/source)
         if selection:

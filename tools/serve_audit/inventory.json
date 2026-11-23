@@ -3609,7 +3609,7 @@
     "src/server/native_crypto.cpp": "9da39bb1de51c80b9a028e4e748a77266a5d145a24173ab5d0fdc192bccde92a",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
     "src/server/object_protocol.h": "7a096d9f43104f00e8e2df9d2441ac273f9a4930bce9f79cc7bf4bd0a601b48d",
-    "src/server/object_retention.cpp": "8a291bd439a04549e1539de70a0546d19d4a8dcf5e464d7138e8df98ce303785",
+    "src/server/object_retention.cpp": "c99191c4e2ac9d037f3a6bb45f83a17f040bbe3b954ecb69c178648b495612d0",
     "src/server/object_store.cpp": "3b8f4f718c30d7728c286e090d321a34b8064aec54de0405af412116b2e3a455",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "de67f013a2244a57012ae8b4d9a549033746d9239476e2aac9bc8d3a729b1424",

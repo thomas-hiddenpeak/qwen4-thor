@@ -79,8 +79,8 @@ def verify_identity(plan, capabilities):
         evidence = environments.EVIDENCE
         sources = [SDK, HELPER, PEER, *environments.SOURCES]
         if witness.get('hosted_workspaces'):
-            evidence = environments.WORKSPACE_PROOF
-            sources.extend(environments.WORKSPACE_SOURCES)
+            evidence = environments.workspace_proof(witness['binary'])
+            sources.extend(environments.workspace_sources(evidence))
     methods = SESSION_MCP
     if renewal:
         sources.append(OAUTH_ISSUER)

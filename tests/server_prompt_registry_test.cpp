@@ -287,6 +287,68 @@ Q4T_TEST(hosted_workspace_session_turn_and_file_commit_share_revision) {
   return true;
 }
 
+Q4T_TEST(hosted_workspace_retention_collects_orphan_after_reopen) {
+  Fixture f;
+  const std::string root = "/v1/agents/environments";
+  const auto templates = root + "/templates";
+  const auto cutoff = std::time(nullptr) - 30;
+  ObjectRequest orphan;
+  orphan.kind = ObjectKind::kConversationItem;
+  orphan.id = "item_orphan";
+  orphan.scope = Access().scope;
+  std::string template_id, workspace_id, session_id;
+  {
+    ObjectStore store(f.options);
+    auto item = orphan;
+    item.operation = ObjectOperation::kPut;
+    item.created_at = cutoff - 1;
+    item.ttl_seconds = 0;
+    item.data = Parse(R"({"item":{"type":"message","role":"user","content":"old"}})");
+    Q4T_CHECK(Ok(store.Execute(item, Access().deadline)));
+    auto tmpl = HandleEnvironmentTemplate(store, "POST", templates,
+        R"({"files":[{"type":"inline","path":"/workspace/record","data":"cTR0"}]})",
+        Access());
+    Q4T_CHECK(Ok(tmpl));
+    template_id = tmpl.value.GetString("id");
+    const auto setup = "{\"environment\":{\"type\":\"openai_hosted\","
+                       "\"environment_template_id\":\"" + template_id + "\"}}";
+    auto warm = HandleHostedEnvironment(store, "POST", root, setup,
+                                        Access(), "gc-replay");
+    Q4T_CHECK(Ok(warm));
+    workspace_id = warm.value.GetString("id");
+    auto request = Parse("{\"agent\":{\"model\":\"cpu\"},\"environment\":{"
+                         "\"type\":\"openai_hosted\",\"environment_id\":\"" +
+                         workspace_id + "\"}}");
+    ResponsesExecution idle(store);
+    auto session = PrepareAgentSessionExecution(store, request, Config(),
+                                                Access(), cutoff + 30, idle);
+    Q4T_CHECK(Ok(session) && !idle.Prepared());
+    session_id = session.value.GetString("id");
+  }
+  ObjectStore reopened(f.options);
+  auto plan = reopened.Retention(cutoff, 128, {}, Access().deadline);
+  // The encryption keyring has its own internal scope. Only the tenant
+  // orphan should appear in the collection plan.
+  Q4T_CHECK(Ok(plan) && plan.value.GetInt("eligible_objects") == 1 &&
+            plan.value.GetArray("candidates") &&
+            plan.value.GetArray("candidates")->array.size() == 1 &&
+            plan.value.GetArray("candidates")->array.front().GetString("id") == orphan.id);
+  auto apply = reopened.Retention(cutoff, 128, plan.value.GetString("plan_sha256"),
+                                  Access().deadline);
+  Q4T_CHECK(Ok(apply) && apply.value.GetInt("deleted_objects") == 1 &&
+            reopened.Execute(orphan, Access().deadline).http_status == 404);
+  AgentSessionView view;
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(reopened, session_id, "", Access(), &view)) &&
+            view.session.GetString("status") == "idle" && view.turns.array.empty());
+  Q4T_CHECK(Ok(HandleEnvironmentTemplate(reopened, "GET",
+      templates + "/" + template_id, "", Access())));
+  auto files = HandleHostedEnvironment(reopened, "GET",
+      root + "/" + workspace_id + "/files", "", Access(), "");
+  Q4T_CHECK(Ok(files) && files.value.GetArray("data")->array.size() == 1 &&
+            files.value.GetArray("data")->array.front().GetInt("size_bytes") == 3);
+  return true;
+}
+
 Q4T_TEST(hosted_workspace_two_claims_commit_only_one_session_and_response) {
   Fixture f;
   ObjectStore store(f.options);

@@ -16623,7 +16623,7 @@
     "publication": "rev450 default; five 201 fixes verified on candidate"
   },
   "agent_hosted_workspace_20261124": {
-    "state": "candidate_primary_light_qualified",
+    "state": "retention_fixed_http_verified",
     "evidence": "docs/evidence/serve-agent-workspaces-20261124/workspace.json",
     "scope": {
       "path_selectors_added": 3,
@@ -16635,6 +16635,7 @@
       "managed fault acceptance and recoverable publication",
       "sandbox execution, hosted artifacts, self-hosted providers and remaining application APIs"
     ],
-    "profiles": "docs/evidence/serve-agent-workspaces-20261124/profiles.json"
+    "profiles": "docs/evidence/serve-agent-workspaces-20261124/profiles.json",
+    "retention": "docs/evidence/serve-agent-workspaces-20261124/retention.json"
   }
 }
