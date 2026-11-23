@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 from tools.serve_host import native
-from tools.serve_recovery import access_store, deployment, ledger, publication_files
+from tools.serve_recovery import access_store, bundle, deployment, ledger, publication_files
 from tools.serve_recovery import store, version_contract, version_policy, version_store
 
 DIRECTORY = 'version-registrations'
@@ -42,11 +42,11 @@ def intents(state):
     return result
 
 
-def intent(value, binding):
+def intent(value, binding, *, read_bundle=bundle.verify):
     ledger.keys(value, ('format', 'binding', 'registration', 'previous', 'candidate'))
     ledger.require(value['format'] == FORMAT and value['binding'] == binding,
                    'version registration intent identity differs')
-    registration = version_contract.verify(value['registration'])
+    registration = version_contract.verify(value['registration'], read_bundle=read_bundle)
     previous = value['previous']
     expected = version_policy.initial(registration['registry'], registration['bootstrap_boot_id'])
     if previous is not None:

@@ -12,7 +12,7 @@ from pathlib import Path
 import uuid
 
 from tools.serve_host import native
-from tools.serve_recovery import access_store, deployment_policy, ledger
+from tools.serve_recovery import access_store, bundle, deployment_policy, ledger
 from tools.serve_recovery import publication_files as files, root_checkpoints as checkpoints
 from tools.serve_recovery import root_version_policy as policy, store, version_contract
 from tools.serve_recovery import version_policy, version_registration as registration, version_store
@@ -23,12 +23,13 @@ FORMAT = 'q4t-root-version-transaction-v1'
 MAX_BYTES = policy.MAX_BYTES+4096
 
 
-def records(binding):
+def records(binding, *, read_bundle=bundle.verify):
     result = {}
     for cycle, paths in registration.intents(binding['state_directory']).items():
         ledger.require(set(paths) == {'committed'}, 'version registration needs resume')
         path = paths['committed']
-        value = registration.intent(native.private_json(path, registration.MAX_BYTES), binding)
+        value = registration.intent(native.private_json(path, registration.MAX_BYTES), binding,
+                                    read_bundle=read_bundle)
         ledger.require(value['registration']['registry']['cycle_id'] == cycle,
                        'registration filename differs')
         result[cycle] = dict(value=value, sha256=engine.sha(path))

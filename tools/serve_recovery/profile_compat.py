@@ -28,11 +28,11 @@ def retained_origin(history, target, target_sha):
     return None
 
 
-def verify(original, original_sha, target, target_sha):
+def verify(original, original_sha, target, target_sha, *, read_bundle=bundle.verify):
     original = Path(original).resolve(strict=True)
     target = Path(target).resolve(strict=True)
-    first = bundle.verify(original, original_sha)
-    second = bundle.verify(target, target_sha)
+    first = read_bundle(original, original_sha)
+    second = read_bundle(target, target_sha)
     ledger.require(first['version'] >= 12 and first.get('recovery_profiles') is not None,
                    'profile adapter requires a qualified original payload')
     adapter_sha = engine.sha(Path(profile_policy.__file__))

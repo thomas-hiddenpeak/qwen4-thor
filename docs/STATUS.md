@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已用封存的管理工具完整重放停止部署的 12 条版本注册，涉及 12 份历史包，共用同一份已审计的模型资产清单。原始发布、业务凭据、兼容性与注册绑定均通过；普通运行选择继续拒绝过期包。待接入停止状态的发布事务并验证正式 Live 候选的恢复和切换。[历史与验证边界](evidence/serve-model-rollback-history-20261123/README.md)
+
 版本选择器可使用发布决定、实际业务验收、模型内容报告和上游索引四份固定凭据识别 rev426 的独立回退包。主机安装选择器现按 v18 至 v27 各自的源码清单校验。65 项 CPU 检查及真实封包来源复核通过。默认部署仍为停用的原包，下一步处理该状态的事务修复及 Live 正式候选。[注册与主机选择验收](evidence/serve-model-rollback-registration-20261123/README.md)
 
 发行配置 schema 已补齐实际 HTTP 返回的七个顶层字段及追踪启动状态，包括 SIP、TTS、语音注册和追踪健康。两代候选的四份原始主轻响应均通过独立与内嵌 schema。[验证记录](evidence/serve-live-config-schema-20261123/README.md)

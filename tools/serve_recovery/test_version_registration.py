@@ -82,6 +82,7 @@ class RegistrationTests(unittest.TestCase):
         from tools.serve_recovery import model_content
         engine = bundle.engine
         fixture = self.base.fixture
+        self.install()
         path = fixture.model/'weights.safetensors'
         original = engine.read(self.base.old/'manifest.json')['model_assets']
         (self.base.old/'engine/q4t').write_bytes(b'cpu engine')
@@ -110,6 +111,17 @@ class RegistrationTests(unittest.TestCase):
             self.prepare(root)
         for key, file in (('upstream_index', index), ('content_report', audit)):
             self.receipt[key] = dict(path=str(file), sha256=engine.sha(file))
+        acceptance_file = fixture.directory/'audited-fallback-acceptance.json'
+        engine.save(acceptance_file, self.receipt)
+        frozen = (self.state/'version-selection/policy.json').read_bytes()
+        history = model_content.audit_history(self.state, self.fallback, acceptance_file,
+                                              engine.sha(acceptance_file))
+        self.assertEqual(history['archived_manifests'],
+                         sorted([self.base.old_sha, self.base.new_sha]))
+        self.assertEqual(history['registrations'], 1)
+        self.assertEqual((self.state/'version-selection/policy.json').read_bytes(), frozen)
+        with self.assertRaisesRegex(ValueError, 'model asset identity changed'):
+            contract.verify(self.registration)
         registration = self.prepare(root)
         contract.verify(registration)
         primary, fallback = map(contract.payload, (root, self.fallback))

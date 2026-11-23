@@ -177,7 +177,68 @@ def prepare(package, digest, report, report_sha, index_sha, rows, output):
                 engine_sha256=engine.sha(target/'engine/q4t'), binding=binding)
 
 
+class HistoricalModelReader:
+    """Read archived registrations sharing the exact audited model inventory."""
+
+    def __init__(self, descriptor, acceptance):
+        from tools.serve_recovery import version_contract
+        selected = version_contract.payload(descriptor)
+        version_contract.accepted_fallback(acceptance, selected)
+        ledger.require('content_report' in acceptance and 'upstream_index' in acceptance,
+                       'historical model review requires a content-qualified origin')
+        self.binding = selected['manifest']['model_ctime_binding']
+        self.assets = selected['manifest']['model_assets']
+        self.model_dir = selected['engine']['model_dir']
+        self.reviewed = set()
+
+    def verify(self, package, digest):
+        package = Path(package).resolve(strict=True)
+        manifest = read_bound(package/'manifest.json', digest, 'archived manifest')
+        if 'model_ctime_binding' in manifest or manifest['model_assets'] != self.assets:
+            return bundle.verify(package, digest)
+        base = engine.verify(package/'engine', manifest['engine_manifest_sha256'])
+        ledger.require(base['model_dir'] == self.model_dir,
+                       'historical model directory differs from audited origin')
+        checked = bundle._verify(package, digest, reviewed_binding=dict(
+            self.binding, original_manifest=digest))
+        self.reviewed.add(digest)
+        return checked
+
+
+def audit_history(state, descriptor, receipt_path, receipt_sha):
+    from tools.serve_recovery import access_store, deployment, root_transfer
+    state = Path(state).resolve(strict=True)
+    receipt = read_bound(receipt_path, receipt_sha, 'retained model acceptance')
+    reader = HistoricalModelReader(descriptor, receipt)
+    with deployment.claim(state, shared=True, create=False):
+        desc = deployment.read_descriptor(state)
+        bound = access_store.binding(state, desc['service_id'])
+        rows = root_transfer.records(bound, read_bundle=reader.verify)
+    return dict(status='PASS_HISTORICAL_MODEL_REVIEW', registrations=len(rows),
+        archived_manifests=sorted(reader.reviewed), receipt_sha256=receipt_sha,
+        sealed_inventory=reader.binding['sealed_inventory'],
+        observed_inventory=reader.binding['observed_inventory'],
+        deployment_changed=False, model_starts=0)
+
+
+def history_cli(arguments):
+    parser = argparse.ArgumentParser(description='Read and verify retained version registrations')
+    parser.add_argument('--state', type=Path, required=True)
+    parser.add_argument('--package', type=Path, required=True)
+    parser.add_argument('--manifest-sha256', required=True)
+    parser.add_argument('--acceptance-file', type=Path, required=True)
+    parser.add_argument('--acceptance-sha256', required=True)
+    args = parser.parse_args(arguments)
+    descriptor = dict(package=str(args.package.resolve(strict=True)),
+                      manifest_sha256=args.manifest_sha256)
+    result = audit_history(args.state, descriptor, args.acceptance_file,
+                           args.acceptance_sha256)
+    print(ledger.canonical(result).decode())
+
+
 def main():
+    if sys.argv[1:2] == ['history']:
+        return history_cli(sys.argv[2:])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=('audit','prepare'))
     parser.add_argument('--package', type=Path, required=True)
