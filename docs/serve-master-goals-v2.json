@@ -16711,6 +16711,16 @@
       },
       "corrected_searches_after_revocation": 0,
       "next": "primary/light continuation and controlled recovery delivery"
+    },
+    "managed_tools_profile_handoff": {
+      "state": "primary_light_qualified",
+      "receipt": "docs/evidence/serve-agent-workspaces-20261124/session-tools-profiles.json",
+      "previous_publication": 454,
+      "next": [
+        "managed model loss and gateway takeover",
+        "publish and register rollback",
+        "managed subagent execution and remaining scoped application interfaces"
+      ]
     }
   }
 }

@@ -23,7 +23,10 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
-MANAGED_TOOL_REVIEWED = {}
+MANAGED_TOOL_REVIEWED = {
+    'primary': 'a861225ac8bf4e9216fc7670b152039340237ab83e8f002854c8f92d2cb58cc2',
+    'light': '190809a136db0c5f0dec62fc808cd39df9db137470cf374da18640fe9801a13b',
+}
 ARTIFACT_CAPABILITY = dict(selector='agents=v1', source='/workspace/outputs/', immutable=True,
                            operations=['list', 'retrieve', 'content', 'delete'])
 ARTIFACT_REVIEWED = {
@@ -128,6 +131,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '555452009732e11ab1859f4e4996b23c69669691396be2d943850b40cb55e4f9':
+        'a201da20bee226df67d1c7c409c0431b587dfe4b648f09d71ae046d6d6ffc5dc',
     'a2e3011a39b2d9d2cf8d55dbf93e6119b98b06281d2470d5273c1e1f49bdc37c':
         'a201da20bee226df67d1c7c409c0431b587dfe4b648f09d71ae046d6d6ffc5dc',
     'a486fc871b0c8c4b3d46e85d1ad092815836bb0f6f38ad34ad8bc4225d670b70':
