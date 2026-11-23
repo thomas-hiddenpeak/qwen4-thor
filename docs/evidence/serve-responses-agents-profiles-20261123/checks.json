@@ -1,0 +1,133 @@
+{
+  "primary": [
+    "current raw digest",
+    "exact v24 predecessor",
+    "exact v23 predecessor",
+    "exact v22 predecessor",
+    "native ingress and workers",
+    "rejected changed evidence",
+    "rejected missing history",
+    "rejected wrong ingress",
+    "rejected wrong worker"
+  ],
+  "light": [
+    "current raw digest",
+    "exact v24 predecessor",
+    "exact v23 predecessor",
+    "exact v22 predecessor",
+    "native ingress and workers",
+    "rejected changed evidence",
+    "rejected missing history",
+    "rejected wrong ingress",
+    "rejected wrong worker"
+  ],
+  "automatic_to_rev434": "rejected: migration would change application capabilities without an explicit qualified extension; automatic recovery cannot lose or add features",
+  "successor_acceptance": {
+    "status": "ACCEPT_HOSTED_AGENTS_PRIMARY_LIGHT",
+    "registry_sha256": "6f23270c36993be7efe0ce621a9207b20f9981aaedc940539703f19f9d64cb3f",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 82,
+      "cleanup_complete": true,
+      "lease_result_sha256": "ff6d6fccacc5da7f00979919239abe0f5e53b11a481f54f30a1fcd772088a7ec"
+    },
+    "migration_permit_sha256": "92b1ffcd929597fe70d868002a1beb7234191c7039e1553caf61a974cdec2a5d",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "pins": {
+    "records": {
+      "primary": {
+        "previous": "e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a",
+        "selected": "fa7353fa12ef7aef3514e25cb97ecff0bffa49e260267296ceb4ff6ee179cbad"
+      },
+      "light": {
+        "previous": "19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c",
+        "selected": "de3a519c4411138d02a6d863704d1c8142a5bb0334257ad35b0a99e81f692f06"
+      }
+    },
+    "bytes": {
+      "primary": 5674402,
+      "light": 8382588
+    },
+    "registry": "6f23270c36993be7efe0ce621a9207b20f9981aaedc940539703f19f9d64cb3f"
+  },
+  "engine": "642b2619c866021b3a9cee21cc208379fc873e64d0c39c2c1699055300df1629",
+  "ingress": "72e916a3571768d7b256c3c12ff8710333ae03933ebc8d713f9b3f1ff467eec3",
+  "profile_receipt_sha256": "0c2bb7554043ff66e2d59113a666b5233ac7a2a52d1042f5c0f2f1d48417ba0b",
+  "profiles": {
+    "primary": {
+      "seconds": 43.670355129987,
+      "model_starts": 1,
+      "mtp": true,
+      "answers": [
+        [
+          "root/reader",
+          "37"
+        ],
+        [
+          "root",
+          "37"
+        ]
+      ],
+      "usage": {
+        "input_tokens": 3384,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 95,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 3479
+      },
+      "agent_sha256": "6480e3dabeeb2efebe8bcd1597703bf97ab5ede2fd6b6d97a2f34ca0bfdfecd5",
+      "webRTC": 201,
+      "chat": "42"
+    },
+    "light": {
+      "seconds": 43.09871586598456,
+      "model_starts": 1,
+      "mtp": false,
+      "answers": [
+        [
+          "root/reader",
+          "37"
+        ],
+        [
+          "root",
+          "37"
+        ]
+      ],
+      "usage": {
+        "input_tokens": 3384,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 95,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 3479
+      },
+      "agent_sha256": "8da1cbcfee60cf4c590a4f664fa88b392e87dfeb68e417bce46202f79a364610",
+      "webRTC": 201,
+      "chat": "42",
+      "cross_profile": {
+        "same_output": true,
+        "other_status": 404,
+        "sha256": "0598aff5c1e5e42cc4c66e4ddafc6979552456bb464ab89cc7122254369657cd"
+      }
+    }
+  },
+  "regressions": {
+    "cpu_tests": 29,
+    "old_source_error": "tools.serve_recovery.ledger.LedgerError: managed acceptance does not describe the retained evidence format",
+    "old_source_error_sha256": "b0823e17e885a0cd6ab79b741deb6734e2a7d72fa412205acab522089475cd59"
+  }
+}

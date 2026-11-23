@@ -34,7 +34,9 @@ def shape(value, size):
              (value.get('format') == 'q4t-profile-business-v23' and
               value['reused_business'].get('format') == 'q4t-live-profile-source-reuse-v1') or
              (value.get('format') == 'q4t-profile-business-v24' and
-              value['reused_business'].get('format') == 'q4t-live-beta-profile-source-reuse-v1')),
+              value['reused_business'].get('format') == 'q4t-live-beta-profile-source-reuse-v1') or
+             (value.get('format') == 'q4t-profile-business-v25' and
+              value['reused_business'].get('format') == 'q4t-agent-profile-source-reuse-v1')),
             'only explicit reviewed source records have the larger evidence bound')
 
 
@@ -94,6 +96,8 @@ def accepted_source(plan_path, manifest, primary, payload):
             'q4t-duplex-composed-source-reuse-v1',
         'ACCEPT_MCP_PRIMARY_LIGHT': 'q4t-mcp-profile-source-reuse-v1',
         'ACCEPT_LIVE_PRIMARY_LIGHT': 'q4t-live-profile-source-reuse-v1',
+        'ACCEPT_RESPONSES_BETA_PRIMARY_LIGHT': 'q4t-live-beta-profile-source-reuse-v1',
+        'ACCEPT_HOSTED_AGENTS_PRIMARY_LIGHT': 'q4t-agent-profile-source-reuse-v1',
         'ACCEPT_TRACING_PRIMARY_LIGHT': 'q4t-tracing-profile-source-reuse-v1',
     }
     status = accepted.get('status')
@@ -107,6 +111,13 @@ def accepted_source(plan_path, manifest, primary, payload):
         value = read(path)
         profile_evidence.validate(value, registry, name, package.sha(path))
         expected = formats[status]
+        # The original v24 publisher used the v23 label. Only the exact two
+        # registered records have this historical interpretation.
+        if status == 'ACCEPT_LIVE_PRIMARY_LIGHT' and value.get('format') == 'q4t-profile-business-v24':
+            from tools.serve_recovery import profile_live_reuse
+            ledger.require(package.sha(path) == profile_live_reuse.BETA_REVIEWED.get(name),
+                           'unrecognized historical Beta qualification')
+            expected = profile_live_reuse.BETA_FORMAT
         ledger.require(expected is None or
             value.get('reused_business', {}).get('format') == expected,
             'managed acceptance does not describe the retained evidence format')

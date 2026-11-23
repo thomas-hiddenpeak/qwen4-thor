@@ -675,7 +675,7 @@
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "c55f33589d3b8acacb7b9b4dfb699c0d4e0782c2686c08a8011b82b55905a12d",
+    "src/server/chat_generation.cpp": "c111130f7d68f233b0f99805c8fe636dbd7a909e815d6f3c2554f58214820922",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "1ae084c90b30e79f9d9eb55738af49c813868a235816c829e867b4d761a9e2bb",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
