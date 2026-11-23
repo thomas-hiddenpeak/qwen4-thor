@@ -52,6 +52,11 @@ const Graph& RealtimeTypes() {
                             "q4t-openai-realtime-types-v1");
   return graph;
 }
+const Graph& EnvironmentTypes() {
+  static const Graph graph(environment_types::kData,
+                           "q4t-openai-environment-types-v1");
+  return graph;
+}
 const Graph& LiveTypes() {
   static const Graph graph(live_types::kData, "q4t-openai-live-types-v1");
   return graph;
@@ -259,8 +264,6 @@ Status vault_detail::ValidateCredential(const Json& value, CredentialShape shape
 
 Status ValidateEnvironmentTemplate(const Json& value, EnvironmentTemplateShape shape,
                                    ChatPlanError* error) {
-  static const Graph graph(environment_types::kData,
-                           "q4t-openai-environment-types-v1");
   const char* root = "";
   switch (shape) {
     case EnvironmentTemplateShape::kStoredDefinition:
@@ -270,7 +273,21 @@ Status ValidateEnvironmentTemplate(const Json& value, EnvironmentTemplateShape s
   }
   const bool incoming = shape == EnvironmentTemplateShape::kCreate ||
                         shape == EnvironmentTemplateShape::kUpdate;
-  return Validate(graph, value, root, error, "", incoming);
+  return Validate(EnvironmentTypes(), value, root, error, "", incoming);
+}
+
+Status ValidateEnvironment(const Json& value, EnvironmentShape shape,
+                           ChatPlanError* error) {
+  const char* root = "";
+  switch (shape) {
+    case EnvironmentShape::kCreate: root = "environment_create"; break;
+    case EnvironmentShape::kResource: root = "environment_resource"; break;
+    case EnvironmentShape::kQuery: root = "environment_query"; break;
+    case EnvironmentShape::kFileCreate: root = "file_create"; break;
+    case EnvironmentShape::kFileResource: root = "file_resource"; break;
+    case EnvironmentShape::kFileQuery: root = "file_query"; break;
+  }
+  return Validate(EnvironmentTypes(), value, root, error, "");
 }
 
 Status ValidateAgentSession(const Json& value, AgentSessionShape shape,

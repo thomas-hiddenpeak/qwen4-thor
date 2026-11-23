@@ -16621,5 +16621,19 @@
     "exact_success_declarations_rev450": 112,
     "exact_success_declarations_candidate": 117,
     "publication": "rev450 default; five 201 fixes verified on candidate"
+  },
+  "agent_hosted_workspace_20261124": {
+    "state": "candidate_http_passed",
+    "evidence": "docs/evidence/serve-agent-workspaces-20261124/workspace.json",
+    "scope": {
+      "path_selectors_added": 3,
+      "methods_added": 5,
+      "candidate_methods_declared": 123,
+      "required_methods": 232
+    },
+    "remaining": [
+      "cross-profile workspace handoff and recoverable publication",
+      "sandbox execution, hosted artifacts, self-hosted providers and remaining application APIs"
+    ]
   }
 }

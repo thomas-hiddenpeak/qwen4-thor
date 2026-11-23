@@ -8,6 +8,14 @@ enum class EnvironmentTemplateShape { kCreate, kUpdate, kResource, kStoredDefini
 Status ValidateEnvironmentTemplate(const io::Json& value,
                                    EnvironmentTemplateShape shape,
                                    ChatPlanError* error);
+enum class EnvironmentShape {
+  kCreate, kResource, kQuery, kFileCreate, kFileResource, kFileQuery
+};
+Status ValidateEnvironment(const io::Json& value, EnvironmentShape shape,
+                           ChatPlanError* error);
+ObjectReply HandleHostedEnvironment(ObjectStore& objects, std::string_view method,
+                                    std::string_view target, const std::string& body,
+                                    const StateAccess& access, std::string_view key);
 ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
                                       std::string_view method,
                                       std::string_view target,

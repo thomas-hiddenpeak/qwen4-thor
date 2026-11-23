@@ -51,7 +51,9 @@ bool Base64Size(std::string_view text, size_t* bytes) {
   return true;
 }
 
-bool WorkspaceFile(std::string_view path) {
+}  // namespace
+
+bool environment_detail::ValidWorkspaceFile(std::string_view path) {
   if (!path.starts_with("/workspace/") || path.ends_with('/') ||
       path.find('\0') != path.npos)
     return false;
@@ -66,13 +68,14 @@ bool WorkspaceFile(std::string_view path) {
   return true;
 }
 
-ObjectReply Project(const Json& config, const std::string& id, int64_t created,
-                    int64_t updated) {
+ObjectReply environment_detail::PublicTemplate(const Json& config,
+                                              const std::string& id,
+                                              int64_t created, int64_t updated) {
   auto files = Or(config, "files", Array());
   std::set<std::string> paths;
   for (auto& file : files.array) {
     const auto path = file.GetString("path");
-    if (!WorkspaceFile(path) || !paths.insert(path).second)
+    if (!ValidWorkspaceFile(path) || !paths.insert(path).second)
       return Invalid("Expected a unique file path inside /workspace", "files");
     if (file.GetString("type") == "inline") {
       size_t size;
@@ -153,6 +156,7 @@ ObjectReply Project(const Json& config, const std::string& id, int64_t created,
   return result;
 }
 
+namespace {
 ObjectReply Public(const Json& data, const std::string& id) {
   const auto* row = data.Find("resource");
   ChatPlanError error;
@@ -267,7 +271,7 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
     }
   }
   for (auto& [key, value] : changes.object) Set(&config, key, std::move(value));
-  auto projected = Project(config, req.id, created, now);
+  auto projected = environment_detail::PublicTemplate(config, req.id, created, now);
   if (!projected.ok()) return projected;
   Json sealed;
   auto saved =

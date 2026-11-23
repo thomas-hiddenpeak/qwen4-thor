@@ -714,6 +714,10 @@ set(protocol_inputs
   include/q4t/server/agent_environment.h
   src/server/agent_environment_template.cpp
   src/server/agent_environment_definition.cpp
+  src/server/agent_environment_config.cpp
+  src/server/agent_environment.cpp
+  src/server/agent_environment_files.cpp
+  src/server/agent_environment_workspace.cpp
   src/server/agent_environment_internal.h
   src/server/vault_credential_internal.h
   src/server/contracts/openai_agent_registration_types_v1.json

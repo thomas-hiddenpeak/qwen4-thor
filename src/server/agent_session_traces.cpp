@@ -127,7 +127,7 @@ ObjectReply ListAgentSessionTraces(ObjectStore& objects, const std::string& id,
   const auto* session = data ? data->Find("session") : nullptr;
   const auto* links = data ? data->GetArray("turns") : nullptr;
   if (!session || session->GetString("id") != id || !links ||
-      links->array.empty() || links->array.size() >= kMaxTransactionObjects)
+      (links->array.empty() && !data->GetBool("created_idle")) || links->array.size() >= kMaxTransactionObjects)
     return InvalidTrace();
   std::unordered_map<std::string, std::span<const Json>> groups;
   auto roots = Array();

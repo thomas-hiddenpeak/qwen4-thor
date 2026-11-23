@@ -37,7 +37,8 @@ enum class ObjectKind {
   kAgent,
   kAgentSession,
   kVault,
-  kEnvironmentTemplate
+  kEnvironmentTemplate,
+  kEnvironment
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

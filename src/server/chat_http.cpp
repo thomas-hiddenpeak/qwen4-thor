@@ -810,6 +810,9 @@ void ChatServer::Dispatch(int fd, const std::string& method,
             ? HandleBatchRequest(
                   *objects_, batches_.Get(), method, path, body, client,
                   {access.scope, access.deadline, access.cancelled})
+        : ParseHostedRoute(path).kind != HostedRouteKind::kNone
+            ? HandleHostedEnvironment(*objects_, method, path, body, access,
+                                      context->AgentEventKey())
         : IsEnvironmentTemplateTarget(path)
             ? HandleEnvironmentTemplate(*objects_, method, path, body, access)
         : IsVaultTarget(path)

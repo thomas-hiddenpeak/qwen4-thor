@@ -469,8 +469,31 @@ inline bool EnvironmentTemplateMethodAllowed(std::string_view method,
            target.substr(0, target.find('?')) != kEnvironmentTemplatesPath));
 }
 
+inline constexpr std::string_view kHostedEnvironmentsPath = "/v1/agents/environments";
+enum class HostedRouteKind { kNone, kCollection, kResource, kFiles };
+struct HostedRoute {
+  HostedRouteKind kind = HostedRouteKind::kNone;
+  std::string_view id;
+};
+inline HostedRoute ParseHostedRoute(std::string_view target) {
+  if (target.find('#') != target.npos) return {};
+  auto path = target.substr(0, target.find('?'));
+  if (path == kHostedEnvironmentsPath) return {HostedRouteKind::kCollection, {}};
+  if (!path.starts_with("/v1/agents/environments/")) return {};
+  path.remove_prefix(kHostedEnvironmentsPath.size() + 1);
+  const auto slash = path.find('/');
+  const auto id = path.substr(0, slash);
+  if (!id.starts_with("environment_") || id.size() <= 12 ||
+      id.starts_with("environment_template_") || !ValidApplicationId(id))
+    return {};
+  if (slash == path.npos) return {HostedRouteKind::kResource, id};
+  if (path.substr(slash) == "/files") return {HostedRouteKind::kFiles, id};
+  return {};
+}
+
 inline bool IsManagedAgentTarget(std::string_view target) {
-  return IsVaultTarget(target) || IsEnvironmentTemplateTarget(target) ||
+  return ParseHostedRoute(target).kind != HostedRouteKind::kNone ||
+         IsVaultTarget(target) || IsEnvironmentTemplateTarget(target) ||
          IsAgentRegistrationTarget(target) ||
          ParseAgentSessionRoute(target).kind != AgentSessionRouteKind::kNone;
 }
@@ -478,6 +501,9 @@ inline bool IsManagedAgentTarget(std::string_view target) {
 inline bool ManagedAgentMethodAllowed(std::string_view method,
                                       std::string_view target) {
   using Kind = AgentSessionRouteKind;
+  const auto hosted = ParseHostedRoute(target).kind;
+  if (hosted != HostedRouteKind::kNone)
+    return method == "GET" || (method == "POST" && hosted != HostedRouteKind::kResource);
   if (IsEnvironmentTemplateTarget(target))
     return EnvironmentTemplateMethodAllowed(method, target);
   const auto vault = ParseVaultRoute(target).kind;

@@ -145,9 +145,10 @@ ObjectReply CancelAgentSessionTurn(ObjectStore& objects, ResponsesJobs* jobs,
   if (!projected.ok()) return projected;
   const auto state = view.turn.GetString("status");
   auto& links = Field(modified, "turns");
-  auto& link = links.array.back();
   std::string target;
   if (state == "waiting" || state == "in_progress" || state == "queued") {
+    if (links.array.empty()) return Invalid();
+    auto& link = links.array.back();
     target = link.GetString("response_id");
     if (!link.Has("cancel_requested_at"))
       Set(&link, "cancel_requested_at", Number(std::time(nullptr)));

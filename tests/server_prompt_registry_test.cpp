@@ -7,6 +7,7 @@
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/agent_session.h"
 #include "q4t/server/agent_vault.h"
+#include "q4t/server/files.h"
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/state_cipher.h"
 
@@ -112,6 +113,210 @@ ObjectReply Api(ObjectStore& store, std::string method, std::string path,
                              access);
 }
 }  // namespace
+
+Q4T_TEST(hosted_workspace_prewarms_once_and_installs_private_bytes) {
+  Fixture f;
+  const std::string root = "/v1/agents/environments";
+  const std::string input = R"({"environment":{"type":"openai_hosted","files":[
+    {"type":"inline","data":"cTR0","path":"/workspace/project"}]}})";
+  std::string id;
+  {
+    ObjectStore store(f.options);
+    auto prewarm = [&](std::string body, StateAccess access = Access()) {
+      return HandleHostedEnvironment(store, "POST", root, body, access, "release");
+    };
+    auto first = prewarm(input);
+    Q4T_CHECK(Ok(first) && first.http_status == 201);
+    id = first.value.GetString("id");
+    Q4T_CHECK(first.value.GetString("status") == "ready");
+    auto file = first.value.GetArray("files")->array.at(0);
+    Q4T_CHECK(file.GetString("id").starts_with("file_") &&
+              file.GetInt("size_bytes") == 3 && !file.Has("data"));
+    auto again = prewarm(R"({"environment":{"files":[{"path":"/workspace/project",
+      "data":"cTR0","type":"inline"}],"type":"openai_hosted"}})");
+    Q4T_CHECK(Ok(again) && OutputJson(again.value) == OutputJson(first.value));
+    Q4T_CHECK(prewarm(R"({"environment":{"type":"openai_hosted"}})").http_status == 409);
+    auto other = prewarm(input, Access("client:peer"));
+    Q4T_CHECK(Ok(other) && other.value.GetString("id") != id);
+    Q4T_CHECK(HandleHostedEnvironment(store, "GET", root + "/" + id, "",
+                                      Access("client:peer"), "").http_status == 404);
+    Q4T_CHECK(HandleHostedEnvironment(store, "GET", root + "/" + id + "/files",
+                                      "", Access(), "").http_status == 409);
+  }
+  ObjectStore reopened(f.options);
+  ObjectRequest record;
+  record.kind = ObjectKind::kEnvironment;
+  record.scope = Access().scope;
+  record.id = id;
+  auto row = reopened.Execute(record, Access().deadline);
+  Q4T_CHECK(Ok(row));
+  auto data = *row.value.Find("data");
+  Json definition;
+  Q4T_CHECK(Ok(environment_detail::OpenDefinition(
+      reopened, Access(), id, *data.Find("sealed_definition"), &definition)));
+  Q4T_CHECK(definition.GetArray("files")->array.at(0).GetString("data") == "cTR0");
+  record.expected_revision = row.value.GetInt("revision");
+  record.operation = ObjectOperation::kPut;
+  Set(&data, "warm_until", Parse("1"));
+  record.data = std::move(data);
+  Q4T_CHECK(Ok(reopened.Execute(record, Access().deadline)));
+  auto expired = HandleHostedEnvironment(reopened, "POST", root, input, Access(), "release");
+  Q4T_CHECK(Ok(expired) && expired.value.GetString("status") == "expired");
+  ObjectRequest claim;
+  auto env = Parse("{\"type\":\"openai_hosted\",\"environment_id\":\"" + id + "\"}");
+  Q4T_CHECK(environment_detail::PrepareAttachment(reopened, Access(), env,
+      "agent_session_expired", Parse("[]"), &claim).http_status == 409);
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_owns_uploaded_bytes_after_source_deletion) {
+  Fixture f;
+  const std::string root = "/v1/agents/environments";
+  std::string environment, uploaded;
+  {
+    ObjectStore store(f.options);
+    const BinaryAccess access{Access().scope, Access().deadline, {}};
+    FileUpload upload(store, access, "multipart/form-data; boundary=f");
+    Q4T_CHECK(Ok(upload.Feed(
+        "--f\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nuser_data\r\n"
+        "--f\r\nContent-Disposition: form-data; name=\"file\"; filename=\"record\"\r\n\r\n",
+        access.deadline)));
+    Q4T_CHECK(Ok(upload.Feed(std::string_view("q\0t", 3), access.deadline)));
+    Q4T_CHECK(Ok(upload.Feed("\r\n--f--\r\n", access.deadline)));
+    auto file = upload.Finish();
+    Q4T_CHECK(Ok(file));
+    uploaded = file.value.GetString("id");
+    const auto body = "{\"environment\":{\"type\":\"openai_hosted\",\"files\":["
+        "{\"type\":\"file_id\",\"path\":\"/workspace/record\",\"file_id\":\"" + uploaded + "\"}]}}";
+    Q4T_CHECK(HandleHostedEnvironment(store, "POST", root, body,
+                                      Access("client:peer"), "").http_status == 404);
+    auto warm = HandleHostedEnvironment(store, "POST", root, body, Access(), "");
+    Q4T_CHECK(Ok(warm));
+    environment = warm.value.GetString("id");
+    Q4T_CHECK(warm.value.GetArray("files")->array.front().GetString("file_id") == uploaded);
+    Q4T_CHECK(Ok(Files(store).Erase(access, uploaded)));
+  }
+  ObjectStore reopened(f.options);
+  ObjectRequest read;
+  read.kind = ObjectKind::kEnvironment;
+  read.id = environment;
+  read.scope = Access().scope;
+  auto row = reopened.Execute(read, Access().deadline);
+  Q4T_CHECK(Ok(row));
+  Json snapshot;
+  const auto& envelope = *row.value.Find("data")->Find("sealed_definition");
+  Q4T_CHECK(Ok(environment_detail::OpenDefinition(
+      reopened, Access(), environment, envelope, &snapshot)));
+  const auto& file = snapshot.GetArray("files")->array.at(0);
+  Q4T_CHECK(file.GetString("type") == "inline" && file.GetString("data") == "cQB0");
+  Q4T_CHECK(!environment_detail::OpenDefinition(
+      reopened, Access("client:peer"), environment, envelope, &snapshot).ok());
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_session_turn_and_file_commit_share_revision) {
+  Fixture f;
+  ObjectStore store(f.options);
+  const std::string root = "/v1/agents/environments";
+  ResponsesExecution idle(store);
+  auto request = Parse(R"({"agent":{"model":"cpu"},"environment":{"type":"openai_hosted"}})");
+  auto opened = PrepareAgentSessionExecution(store, request, Config(), Access(),
+                                             std::time(nullptr), idle);
+  Q4T_CHECK(Ok(opened) && !idle.Prepared());
+  const auto id = opened.value.GetString("id");
+  const auto env = opened.value.Find("environment")->GetString("id");
+  const auto files = root + "/" + env + "/files";
+  auto change = [&](std::string path, std::string data = "YQ==") {
+    auto body = "{\"type\":\"inline\",\"path\":\"/workspace/" + path +
+                "\",\"data\":\"" + data + "\"}";
+    return HandleHostedEnvironment(store, "POST", files, body, Access(), "");
+  };
+  AgentSessionView view;
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
+  Q4T_CHECK(view.session.GetString("status") == "idle" && view.turns.array.empty());
+  Q4T_CHECK(ReadAgentSessionTurn(store, id, "turn_unknown", Access(), &view).http_status == 404);
+  AgentEventCursor cursor;
+  Json events;
+  bool settled = false;
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor, &events, &settled)) &&
+            settled && events.array.size() == 2 &&
+            events.array.front().GetString("type") == "agent.session.created" &&
+            events.array.back().GetString("type") == "agent.session.idle");
+  Q4T_CHECK(Ok(change("a/z")) && Ok(change("a.x")) && Ok(change("a/b", "")));
+  Q4T_CHECK(change("a").http_status == 400);
+  auto page = [&](std::string query) {
+    return HandleHostedEnvironment(store, "GET", files + query, "", Access(), "");
+  };
+  auto first = page("?order=asc&limit=2");
+  Q4T_CHECK(Ok(first) && first.value.GetBool("has_more"));
+  auto rows = first.value.GetArray("data");
+  Q4T_CHECK(rows->array.at(0).GetString("path") == "/workspace/a/b" &&
+            rows->array.at(1).GetString("path") == "/workspace/a/z");
+  auto token = first.value.GetString("next");
+  auto next = page("?order=asc&limit=2&page=" + token);
+  Q4T_CHECK(Ok(next) && !next.value.GetBool("has_more") &&
+            next.value.GetArray("data")->array.at(0).GetString("path") == "/workspace/a.x");
+  Q4T_CHECK(page("?limit=2&page=" + token).http_status == 400);
+  const auto message = Parse(R"({"events":[{"type":"agent.session.input.message",
+      "input":[{"role":"user","content":[{"type":"input_text","text":"records"}]}]}]})");
+  bool replay = false;
+  auto prepare = [&](ResponsesExecution& run) {
+    return PrepareAgentSessionEvents(store, id, message, "first-turn", Config(),
+                                     Access(), run, &replay);
+  };
+  auto begin = [&](ResponsesExecution& run) {
+    run.BindBackgroundControl(std::make_shared<RequestControl>(
+        run.Id(), "", Clock::now() + 5s));
+    std::string wire;
+    return run.Begin(&wire);
+  };
+  ResponsesExecution stale(store);
+  Q4T_CHECK(Ok(prepare(stale)) && !replay);
+  Q4T_CHECK(Ok(change("a/b", "YWJj")));
+  Q4T_CHECK(begin(stale).http_status == 409 &&
+            ResponsesState(store).Retrieve(stale.Id(), Access()).http_status == 404);
+  ResponsesExecution first_turn(store);
+  Q4T_CHECK(Ok(prepare(first_turn)) && Ok(begin(first_turn)));
+  Q4T_CHECK(change("racing").http_status == 409 && Ok(page("")));
+  std::string wire;
+  Q4T_CHECK(Ok(first_turn.StartRunning(&wire)) &&
+            Ok(first_turn.Finish(false, 0, {2, 0, 0, 0}, std::time(nullptr), &wire)));
+  Q4T_CHECK(Ok(change("after", "")));
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, "", Access(), &view)));
+  Q4T_CHECK(view.session.Find("environment")->GetArray("files")->array.size() == 4);
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_two_claims_commit_only_one_session_and_response) {
+  Fixture f;
+  ObjectStore store(f.options);
+  const std::string root = "/v1/agents/environments";
+  auto created = HandleHostedEnvironment(store, "POST", root,
+      R"({"environment":{"type":"openai_hosted"}})", Access(), "claim");
+  Q4T_CHECK(Ok(created));
+  const auto env = created.value.GetString("id");
+  auto request = Parse("{\"agent\":{\"model\":\"cpu\"},\"input\":\"hello\","
+      "\"environment\":{\"type\":\"openai_hosted\",\"environment_id\":\"" + env + "\"}}");
+  ResponsesExecution one(store), two(store);
+  auto prepare = [&](ResponsesExecution& run) {
+    return PrepareAgentSessionExecution(store, request, Config(), Access(),
+                                        std::time(nullptr), run);
+  };
+  auto first = prepare(one), second = prepare(two);
+  Q4T_CHECK(Ok(first) && Ok(second));
+  std::string wire;
+  for (auto* run : {&one, &two})
+    run->BindBackgroundControl(std::make_shared<RequestControl>(
+        run->Id(), "", Clock::now() + 5s));
+  Q4T_CHECK(Ok(one.Begin(&wire)) && two.Begin(&wire).http_status == 409);
+  AgentSessionView view;
+  Q4T_CHECK(ReadAgentSessionTurn(store, second.value.GetString("id"), "", Access(), &view).http_status == 404);
+  Q4T_CHECK(ResponsesState(store).Retrieve(two.Id(), Access()).http_status == 404);
+  auto retry = HandleHostedEnvironment(store, "POST", root,
+      R"({"environment":{"type":"openai_hosted"}})", Access(), "claim");
+  Q4T_CHECK(Ok(retry) && retry.value.GetString("status") == "connected");
+  return true;
+}
 
 Q4T_TEST(environment_template_http_bounds_apply_to_input_and_count_unicode) {
   using Shape = EnvironmentTemplateShape;

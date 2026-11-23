@@ -70,7 +70,7 @@ bool ApplicationKind(std::string_view kind) {
          kind == "vector_store" || kind == "vector_store_file" ||
          kind == "vector_store_batch" || kind == "live_fork_state" ||
          kind == "agent" || kind == "agent_session" || kind == "vault" ||
-         kind == "environment_template";
+         kind == "environment_template" || kind == "environment";
 }
 ObjectReply SnapshotConflict() {
   return Error(409, "input_snapshot_reference_conflict",

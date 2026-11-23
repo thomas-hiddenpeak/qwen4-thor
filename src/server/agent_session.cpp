@@ -1,7 +1,9 @@
 #include "q4t/server/agent_session.h"
+#include "q4t/server/agent_vault.h"
 
 #include "object_protocol.h"
 #include "agent_session_internal.h"
+#include "agent_environment_internal.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/input_contract.h"
 
@@ -31,12 +33,15 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
     return reply;
   }
   const auto* environment = request.Find("environment");
-  if (environment->GetString("type") != "none")
-    return Error(500, "agent_environment_mismatch",
-                 "Incorrect session executor");
+  const auto kind = environment->GetString("type");
+  if (kind != "none" && kind != "openai_hosted")
+    return Error(503, "agent_environment_executor_unavailable",
+                 "Session requires a connected self-hosted executor");
   const auto* input = request.Find("input");
-  if (!input || (input->IsString() && input->str.empty()) ||
-      (!input->IsString() && (!input->IsArray() || input->array.empty())))
+  const bool idle = !input || input->IsNull() ||
+                    (input->IsString() && input->str.empty()) ||
+                    (input->IsArray() && input->array.empty());
+  if (kind == "none" && idle)
     return Invalid("A session without an environment needs initial input",
                    "input");
 
@@ -58,26 +63,12 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
               {"usage", {}},
               {"metadata", std::move(normalized.value)},
               {"required_actions", Array()},
-              {"status", String("in_progress")},
+              {"status", String(idle ? "idle" : "in_progress")},
               {"vault_ids", Array()},
               {"review", String(request.GetString("review", "none"))}});
   if (const auto* vaults = request.GetArray("vault_ids")) {
-    ObjectRequest lookup;
-    lookup.kind = ObjectKind::kVault;
-    lookup.scope = access.scope;
-    for (const auto& id : vaults->array) {
-      if (!id.str.starts_with("vault_") || !ValidId(id.str))
-        return Error(404, "object_not_found", "Vault not found");
-      lookup.id = id.str;
-      auto found = objects.Execute(lookup, access.deadline, access.cancelled);
-      if (!found.ok()) return found;
-      const auto* data = found.value.Find("data");
-      if (!data || data->GetString("id") != id.str ||
-          data->GetString("object") != "vault")
-        return Error(503, "vault_record_invalid", "Invalid vault record");
-      if (data->GetBool("archived"))
-        return Error(404, "object_not_found", "Vault not found");
-    }
+    auto checked = CheckAgentVaults(objects, access, *vaults);
+    if (!checked.ok()) return checked;
     Set(&session, "vault_ids", *vaults);
   }
   if (const auto* spending = request.Find("spend_control");
@@ -90,12 +81,20 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
         Object({{"limit", *limit}, {"consumed", {}}}));
   }
 
+  std::optional<ObjectRequest> attachment;
+  if (kind == "openai_hosted") {
+    auto attached = environment_detail::PrepareAttachment(
+        objects, access, *environment, std::string(session_id),
+        *session.Find("vault_ids"), &attachment.emplace());
+    if (!attached.ok()) return attached;
+    Set(&session, "environment", std::move(attached.value));
+  }
   valid = ValidateAgentSession(session, AgentSessionShape::kResource, &error);
   if (!valid)
     return Error(500, "invalid_agent_session",
                  "Invalid public session resource");
   auto messages =
-      input->IsString()
+      idle ? Array() : input->IsString()
           ? Array({Object(
                 {{"role", String("user")},
                  {"type", String("message")},
@@ -110,7 +109,8 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
   std::string sealed;
   auto secured = agent_detail::SealAgentHttp(objects, access, session_id, private_http, &sealed);
   if (!secured.ok()) return secured;
-  *start = {std::move(session), std::move(messages), std::move(sealed)};
+  *start = {std::move(session), std::move(messages), std::move(sealed),
+            std::move(attachment)};
   return {};
 }
 }  // namespace q4t::server
