@@ -5,6 +5,7 @@
 #include <limits>
 
 #include "object_protocol.h"
+#include "agent_subagent_internal.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_item_shape.h"
@@ -17,12 +18,13 @@ Status ResponsesOutput::AppendAgentItem(const io::Json& item,
   wire->clear();
   const auto* agent = item.Find("agent");
   const auto type = item.GetString("type");
+  const bool managed = agent_detail::IsManagedAgentOperation(item);
   if (!started_ || terminal_ ||
       response_.GetString("status") != "in_progress" ||
-      Items().array.size() >= kMaxItems || !agent ||
-      agent->GetString("agent_name").empty() ||
-      (type != "multi_agent_call" && type != "multi_agent_call_output" &&
-       type != "message"))
+      Items().array.size() >= kMaxItems ||
+      (!managed && (!agent || agent->GetString("agent_name").empty() ||
+                    (type != "multi_agent_call" &&
+                     type != "multi_agent_call_output" && type != "message"))))
     return Status::Fail("Invalid hosted agent item");
   ChatPlanError error;
   auto status = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
@@ -61,8 +63,8 @@ Status ResponsesOutput::AppendAgentItem(const io::Json& item,
     CloseItem(index, item.GetString("status") == "incomplete", wire);
     return {};
   }
-  auto fields = Object(
-      {{"output_index", Number(index)}, {"item", item}, {"agent", *agent}});
+  auto fields = Object({{"output_index", Number(index)}, {"item", item}});
+  if (agent) Set(&fields, "agent", *agent);
   Event("response.output_item.added", fields, wire);
   Event("response.output_item.done", std::move(fields), wire);
   closed_items_.insert(index);
@@ -75,7 +77,9 @@ Status ResponsesExecution::AppendAgent(const ResponseDelta& delta,
   if (!agents_ || delta.kind != ResponseDelta::Kind::kTool) return {};
   const auto& call = delta.call;
   auto found = agent_pending_.find(call.index);
-  if (delta.tool_start && ResponsesAgentTree::ActionName(call.name).empty())
+  if (delta.tool_start &&
+      ResponsesAgentTree::ActionName(call.name, !agent_session_id_.empty())
+          .empty())
     return found == agent_pending_.end()
                ? Status{}
                : Status::Fail("Agent call changed identity");
@@ -106,6 +110,9 @@ Status ResponsesExecution::AppendAgent(const ResponseDelta& delta,
 
 namespace {
 using AgentEmit = std::function<ObjectReply(const Json&)>;
+using LifecycleCall = std::function<ObjectReply(
+    const std::string&, const std::string&, std::string_view, const Json&,
+    const std::string&, bool, Json*)>;
 using AgentClaim = std::function<ObjectReply(const std::string&)>;
 
 // The model runner returns after releasing its GPU sequence. Dispatching a
@@ -114,12 +121,14 @@ class AgentDispatch {
  public:
   AgentDispatch(ResponsesAgentTree& tree,
                 const ResponsesExecution::AgentModelStep& step,
-                const AgentEmit& emit, const AgentClaim& claim, const StateAccess& access, size_t* used,
-                size_t limit)
+                const AgentEmit& emit, const AgentClaim& claim,
+                const LifecycleCall& lifecycle, const StateAccess& access,
+                size_t* used, size_t limit)
       : tree_(tree),
         step_(step),
         emit_(emit),
         claim_(claim),
+        lifecycle_(lifecycle),
         access_(access),
         used_(*used),
         limit_(limit) {}
@@ -127,7 +136,7 @@ class AgentDispatch {
   ObjectReply Call(const std::string& owner, const std::string& id,
                    std::string_view name, const std::string& bytes,
                    Json* result) {
-    const auto action = ResponsesAgentTree::ActionName(name);
+    const auto action = ResponsesAgentTree::ActionName(name, bool(lifecycle_));
     Json args;
     if (id.empty() || action.empty() ||
         !io::ParseJson(bytes, &args, true, kSchemaJsonLimits) ||
@@ -136,6 +145,11 @@ class AgentDispatch {
                    "Malformed generated agent call");
     auto check = Check();
     if (!check.ok()) return check;
+    if (action == "close_subagent" || action == "resume_subagent") {
+      const bool available = used_ < limit_;
+      if (available) ++used_;
+      return lifecycle_(owner, id, action, args, bytes, available, result);
+    }
     auto item = Object({{"agent", Object({{"agent_name", String(owner)}})},
                         {"action", String(std::string(action))},
                         {"call_id", String(id)}});
@@ -238,11 +252,93 @@ class AgentDispatch {
   const ResponsesExecution::AgentModelStep& step_;
   const AgentEmit& emit_;
   const AgentClaim& claim_;
+  const LifecycleCall& lifecycle_;
   const StateAccess& access_;
   size_t& used_;
   size_t limit_;
 };
 }  // namespace
+
+void ResponsesExecution::ConfigureAgentModelStep(
+    const ResponsesAgentTree::Turn& turn, bool allow_tools,
+    Json* request) const {
+  auto messages = turn.messages;
+  if (!agent_session_id_.empty()) {
+    auto instructions = Object(
+        {{"role", String("system")},
+         {"content",
+          String("You are the delegated agent " + turn.name +
+                 ". Complete the assigned task and return your answer to your "
+                 "parent. Use a tool only when the task needs one.")}});
+    messages.array.insert(messages.array.begin(), std::move(instructions));
+  }
+  Set(request, "messages", std::move(messages));
+  if (allow_tools)
+    Set(request, "tools",
+        agent_session_id_.empty() ? ResponsesAgentTree::ModelTools()
+                                  : agents_->ChildTools(turn.name));
+}
+
+ObjectReply ResponsesExecution::RunAgentLifecycle(
+    const std::string& owner, const std::string& call_id,
+    std::string_view action, const Json& args, const std::string& arguments,
+    bool available, Json* result,
+    const std::function<bool(const std::string&)>& publish) {
+  auto tree = *agents_;
+  if (available) {
+    int64_t opened = 0;
+    const auto target = args.GetString("target");
+    if (tree.OpenedAt(target) == 0) {
+      auto old = agent_detail::ReadSubagentOpening(
+          objects_, plan_.agent_session_id, target, access_, &opened);
+      if (!old.ok()) return old;
+    }
+    auto changed =
+        tree.SetClosed(owner, action == "close_subagent", args, result, opened);
+    if (!changed) *result = Object({{"error", String(changed.message())}});
+  } else {
+    *result = Object({{"error", String("tool_call_budget_exhausted")}});
+  }
+  const char* prefix = owner == "root" ? "agentop_root_" : "agentop_child_";
+  auto call = Object({{"name", String("multi_agent_" + std::string(action))},
+                      {"type", String("function_call")},
+                      {"id", String(detail::NewRequestId(prefix))},
+                      {"call_id", String(call_id)},
+                      {"status", String("completed")},
+                      {"arguments", String(arguments)}});
+  auto receipt =
+      Object({{"name", *call.Find("name")},
+              {"type", String("function_call_output")},
+              {"id", String(detail::NewRequestId(prefix))},
+              {"call_id", String(call_id)},
+              {"status", String("completed")},
+              {"output", String(OutputJson(Object({{"owner", String(owner)},
+                                                   {"result", *result}})))}});
+  // Both standard Responses items and the actual tree change share a single
+  // checkpoint.
+  auto candidate = output_;
+  std::string first, last;
+  auto status = candidate.AppendAgentItem(call, &first);
+  if (status) status = candidate.AppendAgentItem(receipt, &last);
+  if (!status)
+    return Error(503, "response_storage_exhausted", status.message());
+  output_ = std::move(candidate);
+  *agents_ = std::move(tree);
+  plan_.agent_tree = agents_->SaveSession();
+  if (!plan_.agent_item_times.IsObject()) plan_.agent_item_times = Object();
+  const auto at = Number(std::time(nullptr));
+  for (const auto* item : {&call, &receipt})
+    Set(&plan_.agent_item_times, item->GetString("id"), at);
+  first += last;
+  status = RecordOutput(status, &first);
+  if (!status)
+    return Error(503, "response_storage_exhausted", status.message());
+  auto saved = Checkpoint();
+  if (!saved.ok()) return saved;
+  if (publish && !publish(first))
+    return Error(499, "request_cancelled", "Agent subscriber cancelled");
+  return ObjectReply{};
+}
 
 ObjectReply ResponsesExecution::RunAgents(
     size_t completed_calls, const AgentModelStep& step,
@@ -257,18 +353,24 @@ ObjectReply ResponsesExecution::RunAgents(
       return Error(503, "response_storage_exhausted", status.message());
     if (!plan_.agent_session_id.empty()) {
       const auto action = item.GetString("action");
+      auto at = std::time(nullptr);
       if (item.GetString("type") == "multi_agent_call_output" &&
           (action == "spawn_agent" || action == "followup_task")) {
         Json result;
         const auto& text = item.GetArray("output")->array.front();
-        if (!io::ParseJson(text.GetString("text"), &result, true, kSchemaJsonLimits))
-          return Error(503, "agent_state_invalid", "Invalid native dispatch result");
-        if (result.GetString("status") == "queued")
-          agent_queued_items_[result.GetString("agent_name")] = item.GetString("id");
+        if (!io::ParseJson(text.GetString("text"), &result, true,
+                           kSchemaJsonLimits))
+          return Error(503, "agent_state_invalid",
+                       "Invalid native dispatch result");
+        if (result.GetString("status") == "queued") {
+          const auto target = result.GetString("agent_name");
+          agent_queued_items_[target] = item.GetString("id");
+          if (action == "spawn_agent") at = agents_->OpenedAt(target);
+        }
       }
       plan_.agent_tree = agents_->SaveSession();
       if (!plan_.agent_item_times.IsObject()) plan_.agent_item_times = Object();
-      Set(&plan_.agent_item_times, item.GetString("id"), Number(std::time(nullptr)));
+      Set(&plan_.agent_item_times, item.GetString("id"), Number(at));
     }
     status = RecordOutput(status, &wire);
     if (!status)
@@ -295,8 +397,18 @@ ObjectReply ResponsesExecution::RunAgents(
     plan_.agent_tree = agents_->SaveSession();
     return Checkpoint();
   };
-  AgentDispatch dispatch(*agents_, step, emit, claim, access_, &native_tool_calls_,
-                         limit);
+  LifecycleCall lifecycle;
+  if (!plan_.agent_session_id.empty()) {
+    lifecycle = [&](const std::string& owner, const std::string& call_id,
+                    std::string_view action, const Json& args,
+                    const std::string& arguments, bool available,
+                    Json* result) {
+      return RunAgentLifecycle(owner, call_id, action, args, arguments,
+                               available, result, publish);
+    };
+  }
+  AgentDispatch dispatch(*agents_, step, emit, claim, lifecycle, access_,
+                         &native_tool_calls_, limit);
   for (const auto& [index, call] : agent_pending_) {
     Json arguments;
     if (index >= completed_calls ||

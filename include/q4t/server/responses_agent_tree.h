@@ -17,8 +17,10 @@ class ResponsesAgentTree {
  public:
   explicit ResponsesAgentTree(uint64_t capacity) : capacity_(capacity) {}
 
-  static const io::Json& ModelTools();
-  static std::string_view ActionName(std::string_view model_name);
+  static const io::Json& ModelTools(bool managed = false);
+  io::Json ChildTools(std::string_view owner) const;
+  static std::string_view ActionName(std::string_view model_name,
+                                     bool managed = false);
 
   struct Turn {
     std::string name;
@@ -26,6 +28,11 @@ class ResponsesAgentTree {
     io::Json messages;
   };
 
+  // Only managed Agent sessions publish close/resume. The Responses beta
+  // retains its original six named actions.
+  int64_t OpenedAt(const std::string& name) const;
+  Status SetClosed(std::string_view caller, bool close, const io::Json& args,
+                   io::Json* result, int64_t legacy_opened_at = 0);
   Status Act(std::string_view caller, std::string_view action,
              const io::Json& arguments, io::Json* result);
   bool Claim(const std::string& name, Turn* turn);
@@ -46,6 +53,8 @@ class ResponsesAgentTree {
   struct Agent {
     State state = State::kQueued;
     std::string parent;
+    int64_t opened_at = 0;
+    int64_t closed_at = 0;
     io::Json messages;
     uint64_t generation = 0;
     size_t delivered = 0;

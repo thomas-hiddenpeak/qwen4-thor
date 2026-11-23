@@ -1,5 +1,6 @@
 #include "q4t/server/responses_agent_tree.h"
 
+#include <algorithm>
 #include <stdexcept>
 #include "q4t/test.h"
 
@@ -70,6 +71,74 @@ Q4T_TEST(responses_agent_tree_orders_messages_received_during_a_model_turn) {
   Action(tree, "root", "spawn_agent", R"({"name":"../a","task":"outside"})",
          false);
   Action(tree, "root", "list_agents", R"({"caller":"other"})", false);
+  return true;
+}
+
+Q4T_TEST(
+    managed_subagent_close_and_resume_preserve_task_and_fence_stale_claims) {
+  ResponsesAgentTree tree(2);
+  const std::string target = R"({"target":"root/a"})";
+  Action(tree, "root", "spawn_agent", R"({"name":"a","task":"record 456"})");
+  ResponsesAgentTree::Turn first, nested, later;
+  Q4T_CHECK(tree.Claim("root/a", &first));
+  Action(tree, first.name, "spawn_agent", R"({"name":"b","task":"child"})");
+  Q4T_CHECK(tree.Claim("root/a/b", &nested));
+  Json args, result;
+  Q4T_CHECK(q4t::io::ParseJson(target, &args));
+  const auto reader = tree.ChildTools(nested.name);
+  Q4T_CHECK(reader.array.size() == 2);
+  for (const auto& t : reader.array) {
+    const auto name = t.Find("function")->GetString("name");
+    Q4T_CHECK(name == "multi_agent_list_agents" ||
+              name == "multi_agent_send_message");
+  }
+  const auto can_interrupt = tree.ChildTools(first.name);
+  Q4T_CHECK(std::any_of(can_interrupt.array.begin(), can_interrupt.array.end(),
+                        [](const Json& t) {
+                          return t.Find("function")->GetString("name") ==
+                                 "multi_agent_interrupt_agent";
+                        }));
+  auto legacy = tree.SaveSession();
+  for (auto& row : legacy.array) {
+    std::erase_if(row.object,
+                  [](const auto& key) { return key.first == "opened_at"; });
+  }
+  ResponsesAgentTree old(2);
+  Q4T_CHECK(old.RestoreSession(legacy));
+  Q4T_CHECK(!old.SetClosed("root", true, args, &result));
+  Q4T_CHECK(old.SetClosed("root", true, args, &result, 123456));
+  Q4T_CHECK(result.GetInt("opened_at") == 123456);
+  Q4T_CHECK(!tree.SetClosed(nested.name, true, args, &result));
+  Q4T_CHECK(tree.SetClosed("root", true, args, &result));
+  const auto original = result.GetInt("opened_at");
+  Q4T_CHECK(original > 0 && result.GetInt("closed_at") >= original);
+  Q4T_CHECK(!tree.Finish(first, "late", true) &&
+            !tree.Finish(nested, "late", true));
+  Action(tree, "root", "followup_task",
+         R"({"target":"root/a","task":"invalid"})", false);
+  Q4T_CHECK(!tree.SetClosed("root", true, args, &result));
+  ResponsesAgentTree restored(2);
+  Q4T_CHECK(restored.RestoreSession(tree.SaveSession()));
+  Q4T_CHECK(!restored.Claim(first.name, &later));
+  Q4T_CHECK(restored.SetClosed("root", false, args, &result));
+  Q4T_CHECK(result.GetString("status") == "active" &&
+            result.Find("closed_at")->IsNull() &&
+            result.GetInt("opened_at") == original &&
+            !result.Has("instructions"));
+  Q4T_CHECK(!restored.SetClosed("root", false, args, &result));
+  Action(restored, "root", "followup_task",
+         R"({"target":"root/a","task":"add one"})");
+  Q4T_CHECK(restored.Claim(first.name, &later) &&
+            later.messages.array.size() == 2 &&
+            later.messages.array.front().GetString("content") == "record 456");
+  Q4T_CHECK(!restored.Finish(first, "stale", true));
+  Q4T_CHECK(restored.Finish(later, "457", true));
+  Q4T_CHECK(ResponsesAgentTree::ModelTools().array.size() == 6 &&
+            ResponsesAgentTree::ModelTools(true).array.size() == 8);
+  Q4T_CHECK(
+      ResponsesAgentTree::ActionName("multi_agent_close_subagent").empty() &&
+      ResponsesAgentTree::ActionName("multi_agent_close_subagent", true) ==
+          "close_subagent");
   return true;
 }
 }  // namespace

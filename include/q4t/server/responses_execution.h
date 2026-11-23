@@ -153,6 +153,8 @@ class ResponsesExecution {
       const ResponsesAgentTree::Turn&, bool allow_tools, io::Json*, bool*)>;
   ObjectReply RunAgents(size_t completed_calls, const AgentModelStep& step,
                         const std::function<bool(const std::string&)>& publish);
+  void ConfigureAgentModelStep(const ResponsesAgentTree::Turn& turn, bool allow_tools,
+                               io::Json* request) const;
   bool PendingAgents() const { return !agent_pending_.empty(); }
   bool QueuedAgents() const { return agents_ && !agents_->FirstQueued().empty(); }
   ObjectReply RunWebSearches(size_t completed_calls,
@@ -256,6 +258,10 @@ class ResponsesExecution {
                            const std::optional<ActualUsage>& usage) noexcept;
 
  private:
+  ObjectReply RunAgentLifecycle(
+    const std::string& owner, const std::string& call_id, std::string_view action,
+    const io::Json& args, const std::string& arguments, bool available, io::Json* result,
+    const std::function<bool(const std::string&)>& publish);
   Status Capture(std::string_view wire, io::Json* events, size_t* bytes) const;
   ObjectReply BindMutationResult(ObjectReply reply);
   ObjectReply RequiredExecutors(bool background_executor) const;

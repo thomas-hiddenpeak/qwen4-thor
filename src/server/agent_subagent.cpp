@@ -23,6 +23,14 @@ ObjectReply Missing() {
 }
 
 std::string Owner(const Json& item) {
+  if (IsManagedAgentOperation(item) &&
+      item.GetString("type") == "function_call_output") {
+    Json receipt;
+    if (!io::ParseJson(item.GetString("output"), &receipt, true,
+                       kSchemaJsonLimits))
+      return {};
+    return receipt.GetString("owner");
+  }
   const auto* agent = item.Find("agent");
   return agent ? agent->GetString("agent_name") : "root";
 }
@@ -37,25 +45,48 @@ Json Text(const std::string& value, const char* type = "output_text") {
 
 struct Call {
   const Json* source = nullptr;
+  std::string owner, action;
   Json args;
   Json result;
 };
 ObjectReply Decode(const Json& output, const Json& response, Call* call) {
   const auto* items = response.GetArray("output");
   const auto id = output.GetString("call_id");
-  const auto* content = output.GetArray("output");
-  if (id.empty() || !items || !content || content->array.size() != 1 ||
-      !io::ParseJson(content->array[0].GetString("text"), &call->result, true,
-                     kSchemaJsonLimits) ||
-      !call->result.IsObject())
-    return Invalid();
+  if (id.empty() || !items) return Invalid();
+  const bool managed = IsManagedAgentOperation(output);
+  call->owner = Owner(output);
+  if (managed) {
+    Json receipt;
+    if (call->owner.empty() ||
+        !io::ParseJson(output.GetString("output"), &receipt, true,
+                       kSchemaJsonLimits) ||
+        !receipt.Find("result") || !receipt.Find("result")->IsObject())
+      return Invalid();
+    call->result = *receipt.Find("result");
+    call->action = output.GetString("name").substr(
+        std::string_view("multi_agent_").size());
+    if (IsChildAgentOutput(output) != (call->owner != "root")) return Invalid();
+  } else {
+    const auto* content = output.GetArray("output");
+    if (!content || content->array.size() != 1 ||
+        !io::ParseJson(content->array[0].GetString("text"), &call->result, true,
+                       kSchemaJsonLimits) ||
+        !call->result.IsObject())
+      return Invalid();
+    call->action = output.GetString("action");
+  }
   for (const auto& row : items->array) {
     if (row.GetString("id") == output.GetString("id")) break;
-    if (row.GetString("type") != "multi_agent_call" ||
+    if (row.GetString("type") !=
+            (managed ? "function_call" : "multi_agent_call") ||
         row.GetString("call_id") != id)
       continue;
-    if (call->source || Owner(row) != Owner(output) ||
-        row.GetString("action") != output.GetString("action") ||
+    if (call->source ||
+        (managed ? (!IsManagedAgentOperation(row) ||
+                    IsChildAgentOutput(row) != IsChildAgentOutput(output) ||
+                    row.GetString("name") != output.GetString("name"))
+                 : (Owner(row) != call->owner ||
+                    row.GetString("action") != call->action)) ||
         !io::ParseJson(row.GetString("arguments"), &call->args, true,
                        kSchemaJsonLimits) ||
         !call->args.IsObject())
@@ -67,8 +98,8 @@ ObjectReply Decode(const Json& output, const Json& response, Call* call) {
 
 ObjectReply Action(const Json& session, const std::string& turn,
                    const Call& call, Json* result) {
-  const auto action = call.source->GetString("action"),
-             owner = Owner(*call.source);
+  const auto& action = call.action;
+  const auto& owner = call.owner;
   if (action == "list_agents") return {};
   const auto id = [&](const std::string& path) {
     return String(PublicId(session, path));
@@ -97,6 +128,8 @@ ObjectReply Action(const Json& session, const std::string& turn,
         Set(&item, "content",
             Text(call.args.GetString(action == "send_message" ? "message"
                                                               : "task")));
+      } else if (action == "close_subagent" || action == "resume_subagent") {
+        Set(&item, "type", String(action + "_call"));
       } else if (action == "interrupt_agent") {
         Set(&item, "type", String("interrupt_subagent_call"));
       } else
@@ -145,6 +178,20 @@ class HistoryPage {
   std::deque<Json> rows_;
   bool matched_ = false;
 };
+
+Json ChildResource(const Json& session, const std::string& path,
+                   const std::string& parent, const std::string& task,
+                   int64_t opened, int64_t closed) {
+  return Object({{"id", String(PublicId(session, path))},
+                 {"object", String("agent.session.subagent")},
+                 {"session_id", *session.Find("id")},
+                 {"name", String(path.substr(parent.size() + 1))},
+                 {"instructions", Text(task)},
+                 {"parent_agent_id", String(PublicId(session, parent))},
+                 {"opened_at", Number(opened)},
+                 {"closed_at", closed ? Number(closed) : Json{}},
+                 {"status", String(closed ? "closed" : "active")}});
+}
 
 struct Member {
   std::string path;
@@ -230,7 +277,7 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
   for (size_t index = 0; index < output->array.size(); ++index) {
     const auto& item = output->array[index];
     const auto type = item.GetString("type");
-    if (type != "multi_agent_call_output" &&
+    if (!IsAgentOperationResult(item) &&
         !(type == "message" && Owner(item) != "root"))
       continue;
     const auto at = times ? times->GetInt(item.GetString("id"), 0) : 0;
@@ -265,7 +312,7 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
     Call call;
     auto decoded = Decode(item, *response, &call);
     if (!decoded.ok()) return decoded;
-    const auto action = item.GetString("action");
+    const auto& action = call.action;
     if (actor && action != "list_agents") {
       if (actor->turns.array.empty()) return Invalid();
       auto& turn = actor->turns.array.back();
@@ -289,15 +336,7 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
         return Invalid();
       Member child;
       child.path = path;
-      child.resource = Object({{"id", String(id)},
-                               {"object", String("agent.session.subagent")},
-                               {"session_id", *session.Find("id")},
-                               {"name", String(name)},
-                               {"instructions", Text(task)},
-                               {"parent_agent_id", String(owner)},
-                               {"opened_at", Number(at)},
-                               {"closed_at", {}},
-                               {"status", String("active")}});
+      child.resource = ChildResource(session, path, Owner(item), task, at, 0);
       if (events)
         events->item_done[index].push_back(
             Object({{"type", String("agent.session.subagent.created")},
@@ -319,9 +358,44 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
       }
       if (!child) return Invalid();
       StartRecorded(child, session, call, at, claim, index, events);
-    } else if (action == "interrupt_agent") {
+    } else if (action == "interrupt_agent" || action == "close_subagent" ||
+               action == "resume_subagent") {
       const auto target = call.args.GetString("target");
-      if (!events && !family->Find(PublicId(session, target))) return Invalid();
+      auto* member = family->Find(PublicId(session, target));
+      if (!events && !member) return Invalid();
+      if (action != "interrupt_agent") {
+        const auto parent = call.result.GetString("parent");
+        const auto opened = call.result.GetInt("opened_at");
+        const auto closed = call.result.GetInt("closed_at");
+        if (call.result.GetString("agent_name") != target ||
+            !target.starts_with(parent + "/") || opened <= 0 ||
+            (action == "close_subagent") != (closed > 0))
+          return Invalid();
+        const auto* members = record.GetArray("agent_tree");
+        if (!members || members->array.size() > ResponsesOutput::kMaxItems)
+          return Invalid();
+        const auto original =
+            std::ranges::find_if(members->array, [&](const Json& entry) {
+              return entry.GetString("name") == target &&
+                     entry.GetString("parent") == parent;
+            });
+        if (original == members->array.end()) return Invalid();
+        const auto* transcript = original->GetArray("messages");
+        if (!transcript || transcript->array.empty() ||
+            transcript->array.front().GetString("role") != "user")
+          return Invalid();
+        const auto* task = transcript->array.front().Find("content");
+        if (!task || !task->IsString()) return Invalid();
+        auto resource =
+            ChildResource(session, target, parent, task->str, opened, closed);
+        if (member) member->resource = resource;
+        if (events)
+          events->item_done[index].push_back(Object(
+              {{"type", String(closed ? "agent.session.subagent.closed"
+                                      : "agent.session.subagent.active")},
+               {"subagent", std::move(resource)}}));
+        if (!closed) continue;
+      }
       for (auto& member : family->entries) {
         if (member.path != target && !member.path.starts_with(target + "/"))
           continue;
@@ -361,9 +435,46 @@ ObjectReply IndexSubagentEvents(const Json& session, const Json& record,
   return ProjectFamily(session, record, &family, events);
 }
 
+ObjectReply ReadSubagentOpening(ObjectStore& objects,
+                                const std::string& session,
+                                const std::string& path,
+                                const StateAccess& access, int64_t* opened) {
+  const auto id = "subagent_" + Digest(session + "/" + path).substr(0, 32);
+  const auto route = "/v1/agents/sessions/" + session + "/subagents/" + id;
+  auto resource =
+      ReadSessionSubagents(objects, ParseAgentSessionRoute(route), {}, access);
+  if (resource.ok()) *opened = resource.value.GetInt("opened_at");
+  return resource;
+}
+
+bool IsManagedAgentOperation(const Json& item) {
+  const auto type = item.GetString("type");
+  if (type != "function_call" && type != "function_call_output") return false;
+  const auto name = item.GetString("name");
+  if (name != "multi_agent_close_subagent" &&
+      name != "multi_agent_resume_subagent")
+    return false;
+  const auto id = item.GetString("id");
+  return id.starts_with("agentop_root_") || id.starts_with("agentop_child_");
+}
+
+bool IsChildAgentOutput(const Json& item) {
+  if (IsManagedAgentOperation(item))
+    return item.GetString("id").starts_with("agentop_child_");
+  const auto* owner = item.Find("agent");
+  return owner && owner->GetString("agent_name") != "root";
+}
+
+bool IsAgentOperationResult(const Json& item) {
+  const auto type = item.GetString("type");
+  return type == "multi_agent_call_output" ||
+         (type == "function_call_output" && IsManagedAgentOperation(item));
+}
+
 bool IsPrivateAgentOutput(const Json& item) {
   const auto type = item.GetString("type");
-  return IsAgentDiscoveryItem(type) || Owner(item) != "root" ||
+  return IsAgentDiscoveryItem(type) || IsChildAgentOutput(item) ||
+         (type == "function_call" && IsManagedAgentOperation(item)) ||
          type == "multi_agent_call" ||
          (type == "multi_agent_call_output" &&
           item.GetString("action") == "list_agents");

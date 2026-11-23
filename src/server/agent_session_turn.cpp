@@ -330,7 +330,7 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
        {record.GetArray("own_input"), response.GetArray("output")}) {
     for (const auto& entry : source->array) {
       if (IsPrivateAgentOutput(entry)) continue;
-      if (entry.GetString("type") == "multi_agent_call_output") {
+      if (IsAgentOperationResult(entry)) {
         auto action = ParentActionItem(entry, response, session, token, &result.items);
         if (!action.ok()) return action;
         continue;

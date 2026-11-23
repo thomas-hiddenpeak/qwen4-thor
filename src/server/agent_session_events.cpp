@@ -217,7 +217,7 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     if (!item) return Invalid();
     if (item->GetString("type") == "function_call") return {};
     auto items = Array(), actions = Array();
-    auto projected = item->GetString("type") == "multi_agent_call_output"
+    auto projected = IsAgentOperationResult(*item)
                          ? ParentActionItem(*item, *record.Find("response"),
                                             session, turn, &items)
                          : ProjectItem(*item, turn, &items, &actions, false);

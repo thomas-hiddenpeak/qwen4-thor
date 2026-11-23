@@ -1,0 +1,182 @@
+{
+  "engine": "2345539d73d26ea65108849e498045bf746697cfc756084540879808cf6cc221",
+  "ingress": "f5ad763378beeec259b3df29aa14a2e39cf7906440a0b6fe5cafb9a61b9b9c37",
+  "protocol": "747fc2cad4764622fb42c5cfd6f90e97dcf1798358baf919ba65478276f26cda",
+  "driver": "b9aa3e7add9a7fbf683e3ac2f4ac0c76db3d63c31f745c751839d3b32b041a2d",
+  "previous_release_sha256": "ac97f46b0386889a0fe4df710ecca86bce0be7572ee8005eea8a0eeb113c3922",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 67.203,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "session": "agent_session_5bb215e64a72001a3cf55767944eb4b7",
+    "child": "subagent_c7896f0ec1c81b6a3b9837f5f64cc89c",
+    "turns": [
+      "turn_7a774e8b4575e0eb838ff234320a0357",
+      "turn_dfa21b0fab3c6a6a008eab5be30dc41a"
+    ],
+    "firstAnswer": "456",
+    "secondAnswer": "457",
+    "revision": 456,
+    "parentAnswer": "I'll delegate this to reader.\n\n456",
+    "transitions": [
+      {
+        "state": "closed",
+        "item": "agentop_root_8a1ddddd7c7a19e4897f3589b60be85a",
+        "opened_at": 1795475139,
+        "closed_at": 1795475149
+      },
+      {
+        "state": "active",
+        "item": "agentop_root_adc171ee5ae937f2c964521e0767635f",
+        "opened_at": 1795475139,
+        "closed_at": null
+      }
+    ],
+    "childEvents": [
+      {
+        "edges": [
+          "queued",
+          "in_progress",
+          "completed"
+        ],
+        "deltas": 1,
+        "item": "msg_9b48921a5805b5d42aae28873bcb4c5f",
+        "outputIndex": 0
+      },
+      {
+        "edges": [
+          "queued",
+          "in_progress",
+          "completed"
+        ],
+        "deltas": 1,
+        "item": "msg_8ec2b5020eb1dab9c6ce5abebff3a5cb",
+        "outputIndex": 0
+      }
+    ],
+    "invalidEmptyHostedStream": 400,
+    "sdk": "7.47.0",
+    "foreign": 404,
+    "queryMethods": 6
+  },
+  "lease": "COMPLETED",
+  "independent_chat": {
+    "answer": "42"
+  },
+  "cpu": [
+    "[PASS] hosted_workspace_session_turn_and_file_commit_share_revision",
+    "[PASS] agent_session_prepares_native_input_and_validates_public_snapshot",
+    "[PASS] agent_session_snapshot_owns_settings_and_omits_transport_secrets",
+    "[PASS] agent_session_turn_shares_queue_receipt_and_reopens_native_output",
+    "[PASS] agent_session_turn_reports_the_original_failure_category",
+    "[PASS] agent_session_deferred_function_discovery_survives_turn_reconfiguration",
+    "[PASS] agent_session_tool_action_requires_a_completed_owned_call",
+    "[PASS] agent_session_cancel_preserves_saved_results_and_never_retargets_a_retry",
+    "[PASS] agent_session_turn_exhausted_object_quota_leaves_no_orphan",
+    "[PASS] agent_session_settings_use_cas_filtered_pages_and_immutable_step_settings",
+    "[PASS] agent_session_subagent_owned_history_survives_another_turn",
+    "[PASS] responses_hosted_agents_dispatch_to_child_and_return_owned_events",
+    "[PASS] responses_hosted_agents_interrupt_and_send_before_child_generation",
+    "[PASS] responses_hosted_agents_keep_selection_and_budget_after_queue_recovery",
+    "[PASS] chat_capabilities_native_responses_state_and_recovery",
+    "[PASS] responses_agent_tree_capacity_covers_descendants_and_fences_late_work",
+    "[PASS] responses_agent_tree_orders_messages_received_during_a_model_turn",
+    "[PASS] managed_subagent_close_and_resume_preserve_task_and_fence_stale_claims",
+    "18 tests, 18 passed, 0 failed, 0 skipped"
+  ],
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 152,
+    "native_routes": 252,
+    "reviewed_source_anchors": 1244,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "declared_methods": {
+    "required_methods": 231,
+    "declared": 132,
+    "missing_declaration": 99,
+    "exact_success_declarations": 132
+  },
+  "retained_failures": [
+    "CPU 01: null optional agent metadata in standard function SSE fixed after native backtrace",
+    "CPU 02: a fixture tried to update multi_agent on a session, which the pinned SDK allows only at creation. Kept the 400 as a negative case.",
+    "GPU 01: the first child repeatedly attempted unavailable spawns under a one-slot policy, exhausting its generation. Conditional owned-child tool availability and an explicit delegated role fixed this in GPU 02."
+  ],
+  "pending": [
+    "cross-capacity close/resume",
+    "default bundle and rollback",
+    "remaining master scope"
+  ],
+  "artifacts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-business-02/plan.json",
+      "sha256": "20bb92a1d3724fed6541fc64a2ef35dc19ec76299a0ee986784c5d4eabf14fab"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-business-02/result.json",
+      "sha256": "7ae13c16d36135cf4b85c5180ab273a9e6e32b9668425f74ae411463303619dc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-business-02/create/sdk-result.json",
+      "sha256": "2ee51f9832642e25a139baaba22dc106a4cf476ddbfbb4fe8794a954b1aa2d31"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-business-02/create/chat-result.json",
+      "sha256": "d90747d2a5dfdd61eb8e632c7b9174b35e71deed58065e38465c56e1be8e62f4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-business-02/create/subagent-history.json",
+      "sha256": "0a2193c84e1202d1e9bef419f2455c02ad7db939a9f6aec779f1b226c7a9dab3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-lease-02/exit.json",
+      "sha256": "ca8838ce76eb3ad5c2d04b69011ac919653d7a11ce7dcbe959b2243e3e12f605"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-business-01/result.json",
+      "sha256": "e82f612a0ea5ebec007acd69e6d5171bd7e64070f611f015aaf213861b4dad14"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-lease-01/exit.json",
+      "sha256": "42d31d6f8abf309ef3cd60be6ccc2a6d2fb819919307e5ee248158f93353e147"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-audit04.json",
+      "sha256": "dcc0834c0da4b24bcd8eca1c472ca6c1b08b4b990c7981f9b6877075549e82f5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-methods04.json",
+      "sha256": "e81d241e5a0aeb71bd10a0fd7e0be4207fa40a89645ea83e32aa987e6e0324e0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-backtrace01.log",
+      "sha256": "4749ee38d4b378422771c7e00df3f6f6c0752e3af446c1ef7830a17115152aa9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-cpu01.log",
+      "sha256": "471d7d084ebe96a43a2bb9e00bbe0bb02e26784b7f71743c210028d9b3156718"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-cpu02.log",
+      "sha256": "0f681edc40ad2f47931a39b4fb877aecb104fb93855e28b3afd27bb9f07f9e3c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-cpu03.log",
+      "sha256": "96ffa4f7e6a499e75e49019cb031b0a94f56ce8db7e81fd55fa78a37855a2d97"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/subagent-lifecycle-cpu04.log",
+      "sha256": "7ecf7d4e0ec9df82a5aa228fe20bc99ff7a4b3c114e0b782dee3e61390151de0"
+    }
+  ]
+}

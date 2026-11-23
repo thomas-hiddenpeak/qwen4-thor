@@ -7,6 +7,7 @@
 #include <ctime>
 
 #include "agent_session_internal.h"
+#include "agent_subagent_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/input_contract.h"
@@ -306,6 +307,7 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created) {
+  envelope_.managed_agent_tools = !agent_session_id_.empty();
   if (const auto* agents = envelope_.request.Find("multi_agent");
       agents && agents->GetBool("enabled")) {
     // Beyond one response's item capacity every greater requested slot limit
@@ -328,10 +330,7 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
     // A child may answer between the root's wait call and its result. Only
     // the owner's wait result belongs in the root model's tool exchange.
     // Preserve every native item in the independently queryable record.
-    std::erase_if(history.array, [](const auto& item) {
-      const auto* owner = item.Find("agent");
-      return owner && owner->IsObject() && owner->GetString("agent_name") != "root";
-    });
+    std::erase_if(history.array, agent_detail::IsChildAgentOutput);
   }
   compaction_trigger_ =
       !plan_.own_input.array.empty() &&
