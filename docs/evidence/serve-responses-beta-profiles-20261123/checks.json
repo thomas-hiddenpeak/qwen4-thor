@@ -1,0 +1,68 @@
+{
+  "status": "PASS_PRIMARY_LIGHT_BETA_BUSINESS",
+  "default_revision": 432,
+  "compiled_protocols": {
+    "source_manifest_sha256": "3a9ef885ac55cff32426125b7f33c8debc92781997fa8deacc3cd1b302f6a042",
+    "previous_protocol": "8903a36879ec49c48710d84602620e540cb85144479a917750ac5d3f25263caa",
+    "sdk_binary": "96cba508d7d6a87bf62e42b2f1a466dc2828ca1c9189d24936b341d6bddf8fe5",
+    "sdk_protocol": "ef163d568ba97a44e009e7773bb73eb1c126ea47c1f3a700c22d14270a50e961",
+    "protocol": "4c83bb5d134bfe8aafd0d1661522e3769751b0e9c17e86d9d92ea162a86a2d44"
+  },
+  "engine_sha256": "ecd5bdf043261c9381ac3fd48d5822a49a6b8f0253693cb9c8bf1b026747928f",
+  "ingress_sha256": "b7a1967ba8540dc51ae7187577052bb1273d789d85ed8ab5a2d1cf5b02f21caf",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 71,
+    "cleanup_complete": true
+  },
+  "results": {
+    "primary": {
+      "seconds": 38.36475332407281,
+      "starts": 1,
+      "chat": "42",
+      "beta_answer": "42",
+      "count": 99,
+      "charged": 99,
+      "webrtc_status": 201,
+      "closed": true,
+      "mtp": true,
+      "stored_after_switch": false,
+      "other_client_status": null
+    },
+    "light": {
+      "seconds": 35.841100616846234,
+      "starts": 1,
+      "chat": "42",
+      "beta_answer": "42",
+      "count": 99,
+      "charged": 99,
+      "webrtc_status": 201,
+      "closed": true,
+      "mtp": false,
+      "stored_after_switch": true,
+      "other_client_status": 404
+    }
+  },
+  "source_files": {
+    "acceptance.json": "1e744c78e3c8fc9600add6ac99c800ff58c69bb4a6acf1218104fc7bd85205d6",
+    "profile-observations.json": "17724727bfcc50f822964155ee61c9df536b7e0e9c490bf0e85efb902d6c48f9",
+    "lease/exit.json": "78b0d6b0c4be7ab9c23e35d2b6a9438f689ad2b7b788720de6255f2c2b7dbbd7",
+    "primary/plan.json": "bf03208a31399e96ba3663e8a197a66ae96a0a55b69ec281bc069d57fcff09f8",
+    "light/plan.json": "2799f705b498aa576933e4094e9745b4f3344da0ec9c1593a9075c2290f55d3d",
+    "primary/beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+    "light/beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+    "primary/beta-response.json": "75d91dfc876aee5ca483859d9668c52bcb016b2aa53d7ad9083cb4a1b31e5ce6",
+    "light/beta-response.json": "a5f29d9f906f0543189ffe753307af476602117c2968bd0427d49d1a6ce82358",
+    "light/beta-restored.json": "0a7c8aaa5265f50f2af053a305adaa328b1d97e464756b164e667060bf69ae5a",
+    "primary/result.json": "e6cb4d2892ac84815707ee1664c4c896788832bf278d8ae4ac4daa24e05ed668",
+    "light/result.json": "110c36dfdeaac9c9282425a8893727b22c2041206233481ce854ab0c89bd1dac"
+  },
+  "prior_sdk": "serve-responses-beta-selector-20261123",
+  "default_changed": false,
+  "preparation_failures": [
+    "Wrapper invoked without bash: non-executable retained script; no model started",
+    "Original SDK plan uses repository-relative protected paths; fixed lookup before any model started"
+  ]
+}

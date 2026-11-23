@@ -103,6 +103,17 @@ class MigrationTests(unittest.TestCase):
             migration.permit(self.new, self.old, evidence, self.first, self.config,
                              self.config, allow_capability_extension=True)
 
+    def test_beta_selector_requires_explicit_upgrade_and_blocks_automatic_loss(self):
+        records = {name: copy.deepcopy(row['record']) for name, row in self.second.items()}
+        for row in records.values():
+            row['capabilities'].setdefault('responses', {})['beta_query_selector'] = 'beta=true'
+        qualified = bind_records(self.new, records)
+        grant = self.extended_permit(self.new, qualified, allow_capability_extension=True)
+        self.assertEqual(grant['format'], migration.EXTENSION_FORMAT)
+        with self.assertRaisesRegex(ValueError, 'application capabilities'):
+            migration.permit(self.new, self.old, qualified, self.first, self.config,
+                             self.config, automatic=True, allow_capability_extension=True)
+
     def test_search_output_enum_rejects_unknown_duplicate_type_and_missing_implementation(self):
         records, _ = self.search_extension()
         valid = records['primary']['capabilities']

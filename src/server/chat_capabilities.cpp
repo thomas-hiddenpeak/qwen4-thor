@@ -254,6 +254,7 @@ std::string ChatCapabilitiesJson(
          R"("usage_includes_unreturned_candidates":true})"
          R"(,"responses":{"profile":"q4t-responses-v1",)"
          R"("endpoint":"/v1/responses","shared_native_generation":true,)"
+         R"("beta_query_selector":"beta=true",)"
          R"("json":true,"stream":true,"chat_done_sentinel":false,)"
          R"("tool_identity":{"profile":"q4t-tool-identity-v1",)"
          R"("namespaces":true,"public_call_namespace":true,)"

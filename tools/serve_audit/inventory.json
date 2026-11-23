@@ -3042,7 +3042,7 @@
     "src/server/chat_audio_inputs.cpp": "9a9f94790bcf4171a0c65ed6dc6655bcd834ac909ae394573aa6e4850a1d0ba1",
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
-    "src/server/chat_capabilities.cpp": "39ffa1045848cac6d39e915dabe1fd112945f6a0b193604bbab65af1657a2723",
+    "src/server/chat_capabilities.cpp": "cd89905a4232c7cfc4fbc8b11d6c6c6f4431fd2d79069fa11dc18410c37214de",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
