@@ -10455,7 +10455,7 @@
     }
   ],
   "next_task": "Implement Realtime WebRTC call creation and scoped client secrets, investigate the observed structured tool failure and continue remaining Serve delivery.",
-  "next": "完成托管 Live 媒体进程的装包与故障恢复组合、旧式 nginx 独立鉴权以及可回退发行。具名工具 XML 枚举空白缺陷已复现修复，原一次 502 缺少原始字节，保留记录。默认 rev426。",
+  "next": "将 Live 媒体安装产物身份和可选 SIP 中继配置绑定到托管包，验证主轻配置与恢复，继续旧式 nginx 独立鉴权和可回退发行。原一次 502 的原始字节缺失，枚举空白缺陷已修复。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16345,6 +16345,7 @@
     "realtime_client_secret_tls_wss_evidence": "evidence/serve-realtime-client-issuer-20261123/README.md",
     "realtime_client_secret_webrtc_business_evidence": "evidence/serve-realtime-client-rtc-20261123/README.md",
     "realtime_client_secret_generation_evidence": "evidence/serve-realtime-client-recovery-20261123/README.md",
-    "realtime_named_tool_enum_padding_evidence": "evidence/serve-tool-enum-padding-20261123/README.md"
+    "realtime_named_tool_enum_padding_evidence": "evidence/serve-tool-enum-padding-20261123/README.md",
+    "media_worker_install_evidence": "evidence/serve-live-worker-install-20261123/README.md"
   }
 }

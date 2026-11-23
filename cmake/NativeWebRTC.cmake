@@ -20,4 +20,6 @@ if(Q4T_RTC_BASE_FOUND AND Q4T_WEBRTC_INCLUDE_DIR AND Q4T_WEBRTC_LIBRARY)
   target_compile_options(q4t_live_webrtc PRIVATE -Wall -Wextra)
   target_link_libraries(q4t_live_webrtc PRIVATE PkgConfig::Q4T_RTC_BASE
                         ${Q4T_WEBRTC_LIBRARY})
+  install(TARGETS q4t_live_webrtc RUNTIME DESTINATION .
+          COMPONENT q4t-live-workers EXCLUDE_FROM_ALL)
 endif()

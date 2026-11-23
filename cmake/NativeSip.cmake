@@ -14,6 +14,8 @@ if(Q4T_SOFIA_INCLUDE_DIR AND Q4T_SOFIA_LIBRARY)
   target_compile_options(q4t_live_sip PRIVATE -Wall -Wextra -Werror)
   target_link_libraries(q4t_live_sip PRIVATE ${Q4T_SOFIA_LIBRARY}
     ${Q4T_SYSTEM_FETCH_SSL_LIBRARY} ${Q4T_SYSTEM_CRYPTO_LIBRARY})
+  install(TARGETS q4t_live_sip RUNTIME DESTINATION .
+          COMPONENT q4t-live-workers EXCLUDE_FROM_ALL)
 endif()
 
 # The SIP audio process shares the WebRTC worker's existing GStreamer base.
@@ -32,4 +34,6 @@ if(Q4T_RTC_BASE_FOUND AND Q4T_SRTP_INCLUDE_DIR AND Q4T_SRTP_LIBRARY)
   target_compile_options(q4t_sip_media PRIVATE -Wall -Wextra -Werror)
   target_include_directories(q4t_sip_media SYSTEM PRIVATE ${Q4T_SRTP_INCLUDE_DIR})
   target_link_libraries(q4t_sip_media PRIVATE PkgConfig::Q4T_RTC_BASE ${Q4T_SRTP_LIBRARY})
+  install(TARGETS q4t_sip_media RUNTIME DESTINATION .
+          COMPONENT q4t-live-workers EXCLUDE_FROM_ALL)
 endif()

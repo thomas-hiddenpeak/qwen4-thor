@@ -957,7 +957,11 @@ WebRTC、NICE 与对应编解码插件。ICE 默认绑定回环，受控内网�
 应将这项凭据保存在服务端。每个客户端最多两个旁路连接，实例最多四个。旁路断开后浏览器仍可通话。
 [接入、回放及资源实测](docs/evidence/serve-live-sideband-20261123/README.md)。
 
-工作分支的 SIP 来电信令进程使用可选的 Sofia-SIP（LGPL-2.1-or-later）。构建环境提供开发包时生成 `q4t-live-sip`，仅该进程需要运行库。当前已验证中继证书、来电、拒接和取消；公开电话控制及媒体接入见[阶段记录](docs/evidence/serve-live-sip-trunk-20261123/README.md)。
+工作分支的 SIP 来电信令进程 `q4t-live-sip` 使用可选的 Sofia-SIP（LGPL-2.1-or-later）。电话媒体进程 `q4t-sip-media` 使用系统 libSRTP2 和 GStreamer。真实通话已覆盖接听、工具回填、版本播报和挂断。[电话验收](docs/evidence/serve-tool-enum-padding-20261123/README.md)
+
+从源码准备发行目录时，编译启用的媒体目标后，运行
+`cmake --install build --component q4t-live-workers --prefix /absolute/path/to/staging`。
+该组件只安装本次构建生成的 q4t 媒体程序。将其与引擎置于同一目录，由部署环境为启用的功能提供相应运行库和插件。[迁移验证](docs/evidence/serve-live-worker-install-20261123/README.md)
 
 Live 工作分支提供按会话录制。启动 `q4t serve` 或托管 `prepare` 时使用
 `--live-recordings` 开放权限，具名客户端在 `session.start` 中传入

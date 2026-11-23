@@ -1,0 +1,17 @@
+{
+  "q4t-live-sip": {
+    "sha256": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+    "runtime_search_paths": [],
+    "executable": true
+  },
+  "q4t-live-webrtc": {
+    "sha256": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+    "runtime_search_paths": [],
+    "executable": true
+  },
+  "q4t-sip-media": {
+    "sha256": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299",
+    "runtime_search_paths": [],
+    "executable": true
+  }
+}

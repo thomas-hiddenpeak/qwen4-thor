@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+WebRTC、SIP 信令与 SIP 媒体已有显式 CMake 安装组件。三个可执行文件迁移至新目录后通过 CPU 的 WebRTC/Opus 和 SIP/SRTP 回环，安装产物不含开发目录搜索路径。下一步将安装后身份和可选中继配置绑定到托管包，验证组合恢复及可回退发行。默认 rev426。[安装与回环证据](evidence/serve-live-worker-install-20261123/README.md)
+
 具名工具的字符串枚举已修复一处可复现的 502 路径。约束解码器允许的参数值两侧空白现在能正确解析，枚举值自身带空白仍可精确区分。12 项 CPU 检查通过；同一电话场景完成实际工具回填和 rev426 播报，挂断后 Chat=42，GPU 已释放。原先那次 502 缺少原始参数，仍保留。继续托管组合与可回退发行，默认 rev426。[复现与业务验收](evidence/serve-tool-enum-padding-20261123/README.md)
 
 Realtime 临时凭据已验证入口与模型的换代边界。入口异常退出后，同一凭据在原模型上可新建会话；撤销一个签发 Key 后，另一客户仍可连接。即使 TLS、客户 Key 和私有绑定都相同，新模型仍拒绝旧凭据，新签发可用。两代普通 Chat 均返回 42。README 的可选 nginx 前置示例已修复 WebSocket 升级，5 项进程回环通过。继续托管组合、旧式 nginx 独立鉴权模式及发行，默认 rev426。[恢复与前置记录](evidence/serve-realtime-client-recovery-20261123/README.md)。
