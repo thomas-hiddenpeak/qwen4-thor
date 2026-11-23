@@ -132,7 +132,7 @@ def current_surface(root):
     attachment = '/v1/live/sessions/{session_id}/attach'
     sideband = (root / 'src/server/chat_live_sideband.cpp').read_text()
     if ('HandleLiveSideband(fd, path, headers, initial, accept)' not in realtime or
-            'server::LiveSidebandId(path)' not in native or
+            'lease.sideband = method == "GET" && server::IsCallSideband(path)' not in native or
             not all(marker in sideband for marker in
                     ('slot.client == client.Id()', 'slot.session == id', 'stream->Attach(',
                      'stream->Next(', 'stream->Enqueue(', 'RunWebSocketSession('))):

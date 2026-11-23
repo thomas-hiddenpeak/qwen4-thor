@@ -276,6 +276,27 @@ class NativeUpgrade(unittest.TestCase):
             self.close_session(observer)
         self.close_session(primary)
 
+    def test_realtime_call_observers_do_not_consume_primary_capacity(self):
+        self.ready()
+        primary, status, _ = self.connect(path='/v1/realtime')
+        self.assertEqual(status, 101)
+        path = '/v1/realtime?call_id=rtc_cpu'
+        fields = 'Sec-WebSocket-Protocol: realtime\r\n'
+        for target in ('/v1/realtime?call_id=rtc_', path+'&model=extra',
+                       path+'&call_id=rtc_other'):
+            _, status, _ = self.connect(path=target)
+            self.assertEqual(status,429)
+        observers = []
+        for expected in (101, 101, 429):
+            observer, status, headers = self.connect(path=path,fields=fields)
+            self.assertEqual(status, expected)
+            if status == 101:
+                self.assertEqual(headers['sec-websocket-protocol'], 'realtime')
+                observers.append(observer)
+        self.assertEqual([row['path'] for row in self.rows], ['/v1/realtime',path,path])
+        for peer in [*observers,primary]:
+            self.close_session(peer)
+
     def test_binding_rotation_closes_existing_session_without_reconnect(self):
         self.ready()
         client, status, _ = self.connect()
@@ -322,6 +343,10 @@ class OptionalNginxUpgrade(unittest.TestCase):
     tearDown = fixture.NginxTests.tearDown
     connect = NativeUpgrade.connect
     install_peer = NativeUpgrade.install_peer
+
+    close_session = NativeUpgrade.close_session
+    test_realtime_call_observers_do_not_consume_primary_capacity = (
+        NativeUpgrade.test_realtime_call_observers_do_not_consume_primary_capacity)
 
     def setUp(self):
         self.rows, self.bad, self.eof = [], '', threading.Event()

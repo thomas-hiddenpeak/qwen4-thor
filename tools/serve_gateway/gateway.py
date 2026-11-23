@@ -199,6 +199,9 @@ def route_map():
     # Static POST operations are reserved names, not retrievable Response IDs.
     rows.append('    "~^(GET|DELETE):/v1/responses/(compact|input_tokens)'
                 '(?:[?][^#]*)?$" "";')
+    # The exact call_id query attaches an observer under a separate capacity.
+    # Keep this before the general Realtime primary rule (first regex wins).
+    rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('[A-Za-z0-9_-]{1,128}' if part.startswith('{')
                            else re.escape(part) for part in path.split('/'))
