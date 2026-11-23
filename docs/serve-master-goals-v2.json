@@ -2625,7 +2625,8 @@
       "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
       "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
       "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json",
-      "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json"
+      "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json",
+      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json"
     },
     {
       "id": "A09",
@@ -9125,7 +9126,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev454_delivered_remaining_deliveries",
+      "state": "rev456_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -10301,7 +10302,8 @@
       "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json",
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
       "agent_registration_main_20261123": "docs/evidence/serve-agent-registration-20261123/main.json",
-      "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json"
+      "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json",
+      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json"
     },
     {
       "id": "Q03",
@@ -10580,7 +10582,8 @@
         "evidence": "evidence/serve-asr-day-handoff-20261117/README.md"
       },
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
-      "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json"
+      "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json",
+      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json"
     }
   ],
   "next_task": "Reconcile the frozen HTTP method contracts and implement hosted environment provisioning, workspace access and remaining Serve master tasks.",
