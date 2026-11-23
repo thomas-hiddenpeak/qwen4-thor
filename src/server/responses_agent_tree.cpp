@@ -1,6 +1,7 @@
 #include "q4t/server/responses_agent_tree.h"
 
 #include <algorithm>
+#include <ctime>
 
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
@@ -28,8 +29,8 @@ bool IsDescendant(std::string_view name, std::string_view ancestor) {
 }
 }  // namespace
 
-const Json& ResponsesAgentTree::ModelTools() {
-  static const Json tools = [] {
+const Json& ResponsesAgentTree::ModelTools(bool managed) {
+  const auto build = [](bool with_lifecycle) {
     auto definitions = Array();
     const auto add = [&](std::string name, std::string description,
                          std::initializer_list<const char*> fields) {
@@ -62,15 +63,53 @@ const Json& ResponsesAgentTree::ModelTools() {
     add("wait_agent",
         "Wait for a named descendant and obtain its actual answer.",
         {"target"});
+    if (with_lifecycle) {
+      add("close_subagent",
+          "Close the named descendant and interrupt its current task. Its "
+          "history remains accessible.",
+          {"target"});
+      add("resume_subagent",
+          "Reopen the named closed descendant. Use followup_task to start new "
+          "work.",
+          {"target"});
+    }
     return definitions;
-  }();
+  };
+  static const Json standard = build(false), sessions = build(true);
+  return managed ? sessions : standard;
+}
+
+Json ResponsesAgentTree::ChildTools(std::string_view owner) const {
+  bool active = false, idle = false, closed = false;
+  for (const auto& [name, agent] : agents_) {
+    if (!IsDescendant(name, owner)) continue;
+    if (agent.closed_at)
+      closed = true;
+    else if (Active(agent))
+      active = true;
+    else
+      idle = true;
+  }
+  const bool slot = HasSlot();
+  auto tools = ModelTools(true);
+  std::erase_if(tools.array, [&](const Json& tool) {
+    const auto name = tool.Find("function")->GetString("name");
+    if (name == "multi_agent_spawn_agent") return !slot;
+    if (name == "multi_agent_followup_task") return !slot || !idle;
+    if (name == "multi_agent_interrupt_agent") return !active;
+    if (name == "multi_agent_close_subagent") return !active && !idle;
+    if (name == "multi_agent_resume_subagent") return !closed;
+    if (name == "multi_agent_wait_agent") return !active && !idle && !closed;
+    return false;
+  });
   return tools;
 }
 
-std::string_view ResponsesAgentTree::ActionName(std::string_view model_name) {
+std::string_view ResponsesAgentTree::ActionName(std::string_view model_name,
+                                                bool managed) {
   constexpr std::string_view prefix = "multi_agent_";
   if (model_name.starts_with(prefix)) {
-    for (const auto& tool : ModelTools().array) {
+    for (const auto& tool : ModelTools(managed).array) {
       if (tool.Find("function")->GetString("name") == model_name)
         return model_name.substr(prefix.size());
     }
@@ -79,7 +118,8 @@ std::string_view ResponsesAgentTree::ActionName(std::string_view model_name) {
 }
 
 bool ResponsesAgentTree::Active(const Agent& agent) {
-  return agent.state == State::kQueued || agent.state == State::kRunning;
+  return !agent.closed_at &&
+         (agent.state == State::kQueued || agent.state == State::kRunning);
 }
 bool ResponsesAgentTree::HasSlot() const {
   return static_cast<uint64_t>(std::count_if(agents_.begin(), agents_.end(),
@@ -107,10 +147,12 @@ io::Json ResponsesAgentTree::Describe(const std::string& name,
       state = "incomplete";
       break;
   }
-  auto result = Object({{"agent_name", String(name)},
-                        {"parent", String(agent.parent)},
-                        {"status", String(std::move(state))}});
-  if (agent.state == State::kCompleted || agent.state == State::kIncomplete)
+  auto result = Object(
+      {{"agent_name", String(name)},
+       {"parent", String(agent.parent)},
+       {"status", String(agent.closed_at ? "closed" : std::move(state))}});
+  if (!agent.closed_at &&
+      (agent.state == State::kCompleted || agent.state == State::kIncomplete))
     Set(&result, "output",
         *agent.messages.array[agent.delivered].Find("content"));
   return result;
@@ -153,6 +195,7 @@ Status ResponsesAgentTree::Act(std::string_view caller, std::string_view action,
       return Status::Fail("Response item budget exhausted");
     Agent agent;
     agent.parent = caller;
+    agent.opened_at = std::time(nullptr);
     agent.messages = Array({Message("user", task)});
     const auto found = agents_.emplace(name, std::move(agent)).first;
     stored_text_ += task.size();
@@ -187,6 +230,8 @@ Status ResponsesAgentTree::Act(std::string_view caller, std::string_view action,
   const auto found = agents_.find(target);
   if (found == agents_.end()) return Status::Fail("Unknown agent");
   auto& agent = found->second;
+  if (agent.closed_at && (send || follow || action == "interrupt_agent"))
+    return Status::Fail("Agent is closed");
   if (send || follow) {
     const auto content = arguments.GetString(send ? "message" : "task");
     if (content.empty()) return Status::Fail("Empty agent message or task");
@@ -212,14 +257,69 @@ Status ResponsesAgentTree::Act(std::string_view caller, std::string_view action,
   *result = Describe(found->first, agent);
   return {};
 }
+int64_t ResponsesAgentTree::OpenedAt(const std::string& name) const {
+  const auto found = agents_.find(name);
+  return found == agents_.end() ? -1 : found->second.opened_at;
+}
+Status ResponsesAgentTree::SetClosed(std::string_view caller, bool close,
+                                     const Json& args, Json* result,
+                                     int64_t legacy_opened_at) {
+  std::string bad;
+  auto fields = InputFields(args, {"target"}, &bad, "arguments");
+  if (!fields) return fields;
+  const auto path = args.GetString("target");
+  if (!IsDescendant(path, caller))
+    return Status::Fail("Lifecycle action requires a descendant");
+  if (caller != "root") {
+    const auto owner = agents_.find(std::string(caller));
+    if (owner == agents_.end() || owner->second.state != State::kRunning ||
+        owner->second.closed_at)
+      return Status::Fail("Agent caller has no active turn");
+  }
+  const auto found = agents_.find(path);
+  if (found == agents_.end()) return Status::Fail("Unknown agent");
+  auto& agent = found->second;
+  if (bool(agent.closed_at) == close)
+    return Status::Fail(close ? "Agent is already closed"
+                              : "Agent is already active");
+  if (!agent.opened_at) {
+    if (legacy_opened_at <= 0)
+      return Status::Fail("Missing original subagent creation time");
+    agent.opened_at = legacy_opened_at;
+  }
+  if (close) {
+    for (auto& [name, member] : agents_)
+      if ((name == path || IsDescendant(name, path)) && Active(member))
+        member.state = State::kInterrupted;
+  }
+  agent.closed_at =
+      close ? std::max<int64_t>(std::time(nullptr), agent.opened_at) : 0;
+  *result =
+      Object({{"agent_name", String(path)},
+              {"parent", String(agent.parent)},
+              {"opened_at", Number(agent.opened_at)},
+              {"closed_at", agent.closed_at ? Number(agent.closed_at) : Json{}},
+              {"status", String(close ? "closed" : "active")}});
+  return {};
+}
+
 Json ResponsesAgentTree::SaveSession() const {
   auto members = Array();
   for (const auto& [name, agent] : agents_) {
-    auto row = Object({{"name", String(name)}, {"parent", String(agent.parent)},
+    auto row = Object({{"name", String(name)},
+                       {"parent", String(agent.parent)},
                        {"messages", agent.messages},
                        {"delivered", Number(agent.delivered)},
                        {"generation", Number(agent.generation)},
                        {"status", *Describe(name, agent).Find("status")}});
+    if (agent.opened_at) Set(&row, "opened_at", Number(agent.opened_at));
+    if (agent.closed_at) {
+      Set(&row, "closed_at", Number(agent.closed_at));
+      Set(&row, "status",
+          String(agent.state == State::kCompleted    ? "completed"
+                 : agent.state == State::kIncomplete ? "incomplete"
+                                                     : "interrupted"));
+    }
     members.array.push_back(std::move(row));
   }
   return members;
@@ -235,34 +335,51 @@ Status ResponsesAgentTree::RestoreSession(const Json& saved) {
     const auto* messages = row.GetArray("messages");
     const auto* delivered = row.Find("delivered");
     const auto* generation = row.Find("generation");
-    if (row.object.size() != 6 || !IsDescendant(name, parent) ||
+    const auto* opened = row.Find("opened_at");
+    const auto* closed = row.Find("closed_at");
+    if (row.object.size() != 6U + (opened != nullptr) + (closed != nullptr) ||
+        (opened && (!IsInputInteger(*opened) || opened->number <= 0)) ||
+        (closed && (!IsInputInteger(*closed) || closed->number <= 0 ||
+                    (opened && closed->number < opened->number))) ||
+        !IsDescendant(name, parent) ||
         !ValidLeaf(std::string_view(name).substr(parent.size() + 1)) ||
-        (parent != "root" && !restored.contains(parent)) ||
-        !messages || messages->array.empty() ||
-        messages->array.size() > ResponsesOutput::kMaxItems ||
-        !delivered || !IsInputInteger(*delivered) || delivered->number < 0 ||
-        delivered->number > messages->array.size() ||
-        !generation || !IsInputInteger(*generation) || generation->number < 0 ||
+        (parent != "root" && !restored.contains(parent)) || !messages ||
+        messages->array.empty() ||
+        messages->array.size() > ResponsesOutput::kMaxItems || !delivered ||
+        !IsInputInteger(*delivered) || delivered->number < 0 ||
+        delivered->number > messages->array.size() || !generation ||
+        !IsInputInteger(*generation) || generation->number < 0 ||
         generation->number >= 9007199254740991.0)
       return Status::Fail("Invalid stored session agent");
+    if (messages->array.front().GetString("role") != "user" ||
+        !messages->array.front().Find("content") ||
+        !messages->array.front().Find("content")->IsString())
+      return Status::Fail("Missing initial session agent task");
     const auto size = OutputJson(*messages).size();
     if (size > ResponsesOutput::kStorageLimit - bytes)
       return Status::Fail("Stored session agents exceed the history budget");
     bytes += size;
     Agent agent;
     agent.parent = parent;
+    agent.opened_at = row.GetInt("opened_at");
+    agent.closed_at = row.GetInt("closed_at");
     agent.messages = *messages;
     agent.delivered = delivered->AsInt();
     agent.generation = generation->AsInt();
     const auto state = row.GetString("status");
+    if (agent.closed_at && state != "completed" && state != "incomplete" &&
+        state != "interrupted")
+      return Status::Fail("Closed subagent has an active stored task");
     if (state == "completed" || state == "incomplete") {
       if (agent.delivered >= messages->array.size() ||
           messages->array[agent.delivered].GetString("role") != "assistant" ||
           !messages->array[agent.delivered].Find("content") ||
           !messages->array[agent.delivered].Find("content")->IsString())
         return Status::Fail("Missing stored session agent answer");
-      agent.state = state == "completed" ? State::kCompleted : State::kIncomplete;
-    } else if (state == "interrupted" || state == "running" || state == "queued") {
+      agent.state =
+          state == "completed" ? State::kCompleted : State::kIncomplete;
+    } else if (state == "interrupted" || state == "running" ||
+               state == "queued") {
       agent.state = State::kInterrupted;
     } else {
       return Status::Fail("Invalid stored session agent status");
@@ -279,7 +396,8 @@ Status ResponsesAgentTree::RestoreSession(const Json& saved) {
 bool ResponsesAgentTree::Claim(const std::string& name, Turn* turn) {
   *turn = {};
   const auto found = agents_.find(name);
-  if (found == agents_.end() || found->second.state != State::kQueued)
+  if (found == agents_.end() || found->second.closed_at ||
+      found->second.state != State::kQueued)
     return false;
   auto& agent = found->second;
   agent.state = State::kRunning;

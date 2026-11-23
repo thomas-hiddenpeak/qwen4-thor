@@ -554,12 +554,12 @@ Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
     for (const auto& tool : tools.array) {
       const auto* function = tool.Find("function");
       if (function && !ResponsesAgentTree::ActionName(
-                          function->GetString("name")).empty())
+                          function->GetString("name"), envelope.managed_agent_tools).empty())
         return Invalid(error, "tools", "Hosted agent tool name is already used");
     }
     if (!envelope.native_tools_exhausted &&
         (choice.IsString() && choice.str != "none")) {
-      const auto& hosted = ResponsesAgentTree::ModelTools().array;
+      const auto& hosted = ResponsesAgentTree::ModelTools(envelope.managed_agent_tools).array;
       tools.array.insert(tools.array.end(), hosted.begin(), hosted.end());
       if (header_tools && header_tools->IsArray())
         header_tools->array.insert(header_tools->array.end(),

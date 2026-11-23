@@ -4992,10 +4992,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               return {};
             }
             auto child_request = Object({{"model", String(planning_config.model)},
-                               {"messages", turn.messages},
                                {"max_completion_tokens", Number(remaining)},
                                {"enable_thinking", Boolean(false)}});
-            if (allow_tools) Set(&child_request, "tools", ResponsesAgentTree::ModelTools());
+            responses->ConfigureAgentModelStep(turn, allow_tools, &child_request);
             for (const auto* field : {"temperature", "top_p", "seed"})
               if (const auto* value = req.Find(field)) Set(&child_request, field, *value);
             const uint64_t prior_input = prepared_input + responses_usage.input_tokens +

@@ -19,6 +19,14 @@ struct SubagentStepEvents {
 };
 ObjectReply IndexSubagentEvents(const io::Json& session, const io::Json& record,
                                 SubagentStepEvents* events);
+// Canonical native function pairs produced by the managed lifecycle runner.
+ObjectReply ReadSubagentOpening(ObjectStore& objects,
+                                const std::string& session,
+                                const std::string& path,
+                                const StateAccess& access, int64_t* opened);
+bool IsManagedAgentOperation(const io::Json& item);
+bool IsChildAgentOutput(const io::Json& item);
+bool IsAgentOperationResult(const io::Json& item);
 bool IsPrivateAgentOutput(const io::Json& item);
 ObjectReply ParentActionItem(const io::Json& native, const io::Json& response,
                              const io::Json& session, const std::string& turn,
