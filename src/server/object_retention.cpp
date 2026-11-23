@@ -94,7 +94,17 @@ class Inspector {
     if (pinned) Reference(id);
   }
 
-  void HostedEnvironment(const Json& data, bool is_template) {
+  bool StoredString(const Json* slot, const std::vector<std::string>& path,
+                    const std::vector<ApplicationStringRef>& payloads) {
+    if (!slot) return false;
+    if (slot->IsString()) return !slot->str.empty();
+    return slot->IsNull() && std::ranges::any_of(payloads, [&](const auto& ref) {
+      return ref.path == path;
+    });
+  }
+
+  void HostedEnvironment(const Json& data, bool is_template,
+                         const std::vector<ApplicationStringRef>& payloads) {
     const auto* resource = data.Find("resource");
     const auto* files = resource ? resource->GetArray("files") : nullptr;
     const auto* skills = resource ? resource->GetArray("skills") : nullptr;
@@ -113,19 +123,21 @@ class Inspector {
       value.uncertain = sealed || data.Has("bound_session");
       return;
     }
-    if (!sealed) {
-      value.uncertain = true;
-      return;
-    }
-    if (!sealed->IsString()) {
+    if (sealed && sealed->IsObject()) {
       const auto* parts = sealed->GetArray("parts");
       if (sealed->GetString("format") != "q4t.environment.definition.v1" ||
-          sealed->GetString("index").empty() || !parts || parts->array.empty() ||
-          !std::ranges::all_of(parts->array, [](const Json& part) {
-            return part.IsString() && !part.str.empty();
-          }))
+          !StoredString(sealed->Find("index"), {"sealed_definition", "index"},
+                        payloads) ||
+          !parts || parts->array.empty()) {
         value.uncertain = true;
-    } else if (sealed->str.empty()) {
+        return;
+      }
+      for (size_t i = 0; i < parts->array.size(); ++i)
+        if (!StoredString(&parts->array[i],
+                          {"sealed_definition", "parts", std::to_string(i)},
+                          payloads))
+          value.uncertain = true;
+    } else if (!StoredString(sealed, {"sealed_definition"}, payloads)) {
       value.uncertain = true;
     }
     for (const auto& file : files->array) {
@@ -207,12 +219,7 @@ class Inspector {
     }
   }
 
-  void Payloads(const Json& data) {
-    std::vector<ApplicationStringRef> references;
-    if (!ParseApplicationPayloadReferences(data, &references)) {
-      value.uncertain = true;
-      return;
-    }
+  void Payloads(const std::vector<ApplicationStringRef>& references) {
     for (const auto& ref : references) {
       Json id;
       id.type = Json::Type::kString;
@@ -257,6 +264,10 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.value.uncertain = true;
     return inspector.Finish();
   }
+  const bool application = SupportsApplicationPayload(kind);
+  std::vector<ApplicationStringRef> payloads;
+  const bool valid_payloads =
+      !application || ParseApplicationPayloadReferences(data, &payloads);
   if (kind == "response") {
     if (const auto* response = data.Find("response");
         response && response->IsObject()) {
@@ -408,7 +419,7 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   } else if (kind == "vault" && data.GetString("object") == "vault") {
     // The container metadata has no content or credential object edges.
   } else if (kind == "environment_template" || kind == "environment") {
-    inspector.HostedEnvironment(data, kind == "environment_template");
+    inspector.HostedEnvironment(data, kind == "environment_template", payloads);
   } else if (kind == "agent_session") {
     const auto* session = data.Find("session");
     const auto* agent = session ? session->Find("agent") : nullptr;
@@ -446,7 +457,6 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.Reference(data.Find("fork_state_id"));
   } else if (kind == "live_fork_state" &&
              data.GetString("format") == "q4t.live_fork.v1") {
-    inspector.Payloads(data);
     inspector.value.collect_when_unreferenced = true;
   } else if (kind == "file" && data.GetString("format") == "q4t.file.v1") {
     inspector.Blob(data);
@@ -579,11 +589,10 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   }
   // Snapshot validation adds uncertainty; ordinary shape checks above must
   // never overwrite a malformed private dependency's conservative protection.
-  if (kind == "response" || kind == "conversation" || kind == "item" ||
-      kind == "chat" || kind == "prompt" || kind == "batch" ||
-      kind == "vector_store" || kind == "vector_store_file") {
+  if (application) {
     inspector.Snapshots(data);
-    inspector.Payloads(data);
+    inspector.Payloads(payloads);
+    if (!valid_payloads) inspector.value.uncertain = true;
   }
   return inspector.Finish();
 }

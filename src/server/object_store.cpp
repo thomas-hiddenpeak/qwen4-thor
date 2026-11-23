@@ -106,20 +106,9 @@ Json RequestWire(const ObjectRequest& request, const Json* data = nullptr) {
                  {"file_metadata_only", Boolean(request.file_metadata_only)},
                  {"mutate_before", Number(request.mutate_before)}});
 }
-bool ApplicationObject(ObjectKind kind) {
-  return kind == ObjectKind::kChat || kind == ObjectKind::kResponse ||
-         kind == ObjectKind::kConversation ||
-         kind == ObjectKind::kConversationItem || kind == ObjectKind::kPrompt ||
-         kind == ObjectKind::kBatch || kind == ObjectKind::kVectorStore ||
-         kind == ObjectKind::kVectorStoreFile ||
-         kind == ObjectKind::kVectorStoreBatch ||
-         kind == ObjectKind::kLiveForkState || kind == ObjectKind::kAgent ||
-         kind == ObjectKind::kAgentSession || kind == ObjectKind::kVault ||
-         kind == ObjectKind::kEnvironmentTemplate || kind == ObjectKind::kEnvironment;
-}
 bool PreparePayload(const ObjectRequest& request) {
   return request.operation == ObjectOperation::kPut &&
-         ApplicationObject(request.kind) && request.data.IsObject() &&
+         SupportsApplicationPayload(Kind(request.kind)) && request.data.IsObject() &&
          NeedsApplicationPayload(request.data);
 }
 BinaryAccess ApplicationAccess(const std::string& scope,
@@ -529,7 +518,7 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
       if (!reply.value.IsObject()) reply.value = Object();
       Set(&reply.value, "id", String(request.id));
     }
-  } else if (reply.ok() && ApplicationObject(request.kind) &&
+  } else if (reply.ok() && SupportsApplicationPayload(Kind(request.kind)) &&
              (operation == "get" || operation == "list")) {
     auto restored = RestoreApplicationObjects(
         *this, access, operation == "list", &reply.value);
@@ -622,7 +611,7 @@ ObjectReply ObjectStore::ExecuteBatch(std::span<const ObjectRequest> requests,
         !targets.emplace(request.kind, request.id).second)
       return Error(400, "invalid_object_request",
                    "Invalid transaction mutation");
-    if (!ApplicationObject(request.kind) ||
+    if (!SupportsApplicationPayload(Kind(request.kind)) ||
         request.operation != ObjectOperation::kPut)
       continue;
     uint64_t logical_bytes = 0;

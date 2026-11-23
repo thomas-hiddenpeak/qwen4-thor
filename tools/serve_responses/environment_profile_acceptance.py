@@ -12,7 +12,9 @@ HELPER = 'tools/serve_responses/environment_profile_acceptance.py'
 SDK = 'tools/serve_responses/environment_template_sdk.mjs'
 SOURCES = (HELPER, SDK, str(EVIDENCE.relative_to(ROOT)), str(PUBLICATION.relative_to(ROOT)))
 WORKSPACE_PROOF = ROOT/'docs/evidence/serve-agent-workspaces-20261124/workspace.json'
-WORKSPACE_PROOFS = (WORKSPACE_PROOF, WORKSPACE_PROOF.with_name('retention.json'))
+WORKSPACE_PAYLOAD_PROOF = WORKSPACE_PROOF.with_name('payload-retention.json')
+WORKSPACE_PROOFS = (WORKSPACE_PROOF, WORKSPACE_PROOF.with_name('retention.json'), WORKSPACE_PAYLOAD_PROOF)
+RETENTION_SDK = 'tools/serve_responses/environment_retention_sdk.mjs'
 WORKSPACE_RELEASE = EVIDENCE.with_name('delivery.json')
 WORKSPACE_SDK = 'tools/serve_responses/environment_workspace_sdk.mjs'
 WORKSPACE_CAPABILITY = dict(selector='agents=v1', prewarm_seconds=300, idempotency_seconds=86400,
@@ -30,7 +32,8 @@ def workspace_proof(binary):
 
 
 def workspace_sources(proof):
-    return (WORKSPACE_SDK, str(proof.relative_to(ROOT)), str(WORKSPACE_RELEASE.relative_to(ROOT)))
+    sources = (WORKSPACE_SDK, str(proof.relative_to(ROOT)), str(WORKSPACE_RELEASE.relative_to(ROOT)))
+    return (*sources, RETENTION_SDK) if proof == WORKSPACE_PAYLOAD_PROOF else sources
 
 
 def candidate(build, current, workspaces=False):
@@ -42,6 +45,12 @@ def candidate(build, current, workspaces=False):
                     proof['sdk']['tenant'] == 404 and proof['sdk']['turn_answer'] == '42' and
                     proof['engine'] == pkg.sha(build/'q4t') and proof['protocol'] == protocol(current) and
                     proof['driver'] == pkg.sha(ROOT/WORKSPACE_SDK), 'workspace SDK witness drift')
+        if source == WORKSPACE_PAYLOAD_PROOF:
+            gc = proof['online_collection']
+            pkg.require(gc['sdk'] == pkg.sha(ROOT/RETENTION_SDK) and gc['source_bytes'] == 5 << 20 and
+                        gc['eligible'] == gc['deleted'] == 1 and gc['template_reopened'] and
+                        gc['workspace_reopened'] and gc['disconnected'] and gc['replaced_bytes'] == 3,
+                        'encrypted workspace did not survive the online sweep')
         return dict(receipt_sha256=pkg.sha(source), binary=proof['engine'],
                     ingress=proof['ingress'], protocol=proof['protocol'], renewal=True,
                     environment_templates=True, hosted_workspaces=True)

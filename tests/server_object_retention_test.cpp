@@ -150,6 +150,33 @@ Q4T_TEST(object_retention_hosted_workspace_edges_allow_unrelated_collection) {
   return true;
 }
 
+Q4T_TEST(object_retention_preserves_externalized_agent_instructions) {
+  Fixture f;
+  auto agent = Item("agent_large");
+  agent.kind = ObjectKind::kAgent;
+  agent.data = Parse(R"({"object":"agent","tools":[],"instructions":""})");
+  const std::string instructions(384 * 1024, 'x');
+  agent.data.object.back().second.str = instructions;
+  auto orphan = Item("item_orphan");
+  const auto cutoff = std::time(nullptr);
+  {
+    ObjectStore store(f.options);
+    Q4T_CHECK(Ok(Run(store, agent)) && Ok(Run(store, orphan)));
+  }
+  ObjectStore reopened(f.options);
+  auto plan = Inspect(reopened, cutoff);
+  Q4T_CHECK(Ok(plan) && plan.value.GetInt("eligible_objects") == 1 &&
+            plan.value.GetArray("candidates")->array.at(0).GetString("id") ==
+                orphan.id);
+  auto applied = Inspect(reopened, cutoff, plan.value.GetString("plan_sha256"));
+  Q4T_CHECK(Ok(applied) && applied.value.GetInt("deleted_objects") == 1);
+  const auto read = Read(reopened, agent);
+  Q4T_CHECK(Ok(read) && read.value.Find("data")->GetString("instructions") ==
+                            instructions &&
+            Read(reopened, orphan).http_status == 404);
+  return true;
+}
+
 Q4T_TEST(object_retention_expired_active_cas_can_finish_without_extending_expiry) {
   Fixture f;
   ObjectStore objects(f.options);

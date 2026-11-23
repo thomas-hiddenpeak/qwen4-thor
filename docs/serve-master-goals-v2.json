@@ -16623,7 +16623,7 @@
     "publication": "rev450 default; five 201 fixes verified on candidate"
   },
   "agent_hosted_workspace_20261124": {
-    "state": "retention_fixed_primary_light_verified",
+    "state": "externalized_payloads_native_online_sweep_verified",
     "evidence": "docs/evidence/serve-agent-workspaces-20261124/workspace.json",
     "scope": {
       "path_selectors_added": 3,
@@ -16637,6 +16637,7 @@
     ],
     "profiles": "docs/evidence/serve-agent-workspaces-20261124/profiles.json",
     "retention": "docs/evidence/serve-agent-workspaces-20261124/retention.json",
-    "retention_profiles": "docs/evidence/serve-agent-workspaces-20261124/retention-profiles.json"
+    "retention_profiles": "docs/evidence/serve-agent-workspaces-20261124/retention-profiles.json",
+    "payload_retention": "docs/evidence/serve-agent-workspaces-20261124/payload-retention.json"
   }
 }

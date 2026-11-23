@@ -428,8 +428,19 @@ Q4T_TEST(environment_template_max_inline_file_survives_reopen_and_rejects_mixed_
     return StateAccess{"client:large-template", Clock::now() + 60s, {}};
   };
   std::string id;
+  ObjectRequest orphan;
+  orphan.kind = ObjectKind::kConversationItem;
+  orphan.id = "item_unrelated";
+  orphan.scope = access().scope;
+  const auto cutoff = std::time(nullptr) - 30;
   {
     ObjectStore objects(f.options);
+    auto put = orphan;
+    put.operation = ObjectOperation::kPut;
+    put.created_at = cutoff - 1;
+    put.ttl_seconds = 0;
+    put.data = Parse(R"({"item":{"type":"message","role":"user","content":"old"}})");
+    Q4T_CHECK(Ok(objects.Execute(put, access().deadline)));
     auto result = HandleEnvironmentTemplate(objects, "POST", root,
                                             OutputJson(definition), access());
     Q4T_CHECK(Ok(result) && result.http_status == 201);
@@ -438,6 +449,14 @@ Q4T_TEST(environment_template_max_inline_file_survives_reopen_and_rejects_mixed_
               file_bytes);
   }
   ObjectStore objects(f.options);
+  auto plan = objects.Retention(cutoff, 128, {}, access().deadline);
+  Q4T_CHECK(Ok(plan) && plan.value.GetInt("eligible_objects") == 1 &&
+            plan.value.GetArray("candidates")->array.at(0).GetString("id") ==
+                orphan.id);
+  auto collected = objects.Retention(cutoff, 128, plan.value.GetString("plan_sha256"),
+                                     access().deadline);
+  Q4T_CHECK(Ok(collected) && collected.value.GetInt("deleted_objects") == 1 &&
+            objects.Execute(orphan, access().deadline).http_status == 404);
   ObjectRequest read;
   read.scope = access().scope;
   read.kind = ObjectKind::kEnvironmentTemplate;
