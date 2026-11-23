@@ -58,6 +58,12 @@ class BinaryStore {
   ObjectReply Publish(const BinaryAccess& access, BinaryStage* stage,
                       ObjectRequest root,
                       std::span<const ObjectRequest> parents = {});
+  // Add a root and the matching stage removal to an enclosing atomic write.
+  // The caller consumes the stage only on confirmed commit and keeps the
+  // expiring lease untouched if the enclosing commit outcome is unknown.
+  ObjectReply PreparePublish(const BinaryAccess& access,
+                             const BinaryStage& stage, ObjectRequest root,
+                             std::vector<ObjectRequest>* writes);
   ObjectReply Abort(const BinaryAccess& access, BinaryStage* stage);
   // Pin a durable root's exact manifest while it is read. Deletion of the
   // public file after Open cannot invalidate an active bounded download.

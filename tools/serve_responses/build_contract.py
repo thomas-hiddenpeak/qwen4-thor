@@ -168,13 +168,15 @@ def schema(graph):
     sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
     assert sessions['profile'] == 'q4t-openai-agent-session-types-v1'
     definitions.update(graph_definitions(sessions, 'agent_session_'))
+    artifact_query = definitions['agent_session_'+str(sessions['roots']['artifact_query'])]
+    artifact_query['properties']['limit'] = dict(type='integer', minimum=1, maximum=100, default=20)
     trace = dict(id=dict(type='string'), session_id=dict(type='string'),
                  object=dict(const='agent.session.trace'), created_at=dict(type='integer'),
                  otlp=dict(type='object', required=['resourceSpans'],
                            properties=dict(resourceSpans=dict(type='array', items=dict(type='object')))))
     definitions['agent_session_trace'] = obj(trace, trace.keys())
     for suffix, member in [('list', 'resource'), ('turn_list', 'turn'), ('item_list', 'item'),
-                           ('trace_list', 'trace')]:
+                           ('trace_list', 'trace'), ('artifact_list', 'artifact')]:
         page = copy.deepcopy(definitions['agents_list'])
         page['properties']['data']['items'] = ref('agent_session_' + member)
         definitions['agent_session_' + suffix] = page
@@ -516,6 +518,10 @@ def add_openapi(paths, response, error):
         ('/v1/agents/sessions/{session_id}/turns', 'get', None, 'agent_session_turn_list', 'agents_query'),
         ('/v1/agents/sessions/{session_id}/turns/{turn_id}', 'get', None, 'agent_session_turn', None),
         ('/v1/agents/sessions/{session_id}/items', 'get', None, 'agent_session_item_list', 'agents_query'),
+        ('/v1/agents/sessions/{session_id}/artifacts', 'get', None, 'agent_session_artifact_list', 'agent_session_artifact_query'),
+        ('/v1/agents/sessions/{session_id}/artifacts/{artifact_id}', 'get', None, 'agent_session_artifact', None),
+        ('/v1/agents/sessions/{session_id}/artifacts/{artifact_id}', 'delete', None, 'agent_session_artifact_deleted', None),
+        ('/v1/agents/sessions/{session_id}/artifacts/{artifact_id}/content', 'get', None, None, None),
         ('/v1/agents/sessions/{session_id}/traces', 'get', None, 'agent_session_trace_list', 'agents_query'),
         ('/v1/agents/sessions/{session_id}/turns/{turn_id}/items', 'get', None, 'agent_session_item_list', 'agents_query'),
         ('/v1/prompts', 'post', 'prompt_create', 'prompt_resource', None),
@@ -564,7 +570,10 @@ def add_openapi(paths, response, error):
             query_contract = query + ' with optional beta' if query else 'optional beta'
         event_stream = path.endswith('/events') and method == 'get'
         accepted = body == 'agent_session_event_batch'
-        if event_stream or accepted:
+        if path.endswith('/artifacts/{artifact_id}/content'):
+            success = dict(description='Immutable artifact contents', content={
+                'application/octet-stream': dict(schema=dict(type='string', format='binary'))})
+        elif event_stream or accepted:
             success = response({}, 'Live session events' if event_stream else 'Events accepted')
             success.pop('content')
         else:

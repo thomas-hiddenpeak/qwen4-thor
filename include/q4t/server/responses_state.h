@@ -4,6 +4,7 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <memory>
 
 #include "q4t/server/client_policy.h"
 #include "q4t/server/batch_response_link.h"
@@ -11,6 +12,7 @@
 #include "q4t/server/responses_plan.h"
 
 namespace q4t::server {
+namespace environment_detail { class WorkspaceCopies; }
 
 // Request-local authority. Never derived from user/metadata/opaque item IDs.
 struct StateAccess {
@@ -35,6 +37,7 @@ struct ResponseStatePlan {
   int64_t agent_turn_finished_at = 0;
   std::optional<ObjectRequest> agent_session_write;
   std::optional<ObjectRequest> agent_environment_write;
+  std::shared_ptr<environment_detail::WorkspaceCopies> workspace_copies;
   ClientRateDomain rate_domain = ClientRateDomain::kOnline;
   io::Json history;    // Full authorized input for this generation.
   io::Json own_input;  // New input, without inherited context/instructions.

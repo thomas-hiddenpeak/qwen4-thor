@@ -87,7 +87,9 @@ APPLICATION_ROUTES = [
       for method in ('GET', 'DELETE')),
     *(('GET', '/v1/agents/sessions/{session_id}/' + suffix, 'control')
       for suffix in ('turns', 'items', 'traces', 'turns/{turn_id}',
-                     'turns/{turn_id}/items')),
+                     'turns/{turn_id}/items', 'artifacts', 'artifacts/{artifact_id}')),
+    ('DELETE', '/v1/agents/sessions/{session_id}/artifacts/{artifact_id}', 'control'),
+    ('GET', '/v1/agents/sessions/{session_id}/artifacts/{artifact_id}/content', 'data'),
     *((method, '/v1/prompts', 'control' if method == 'GET' else 'data')
       for method in ('GET', 'POST')),
     *((method, '/v1/prompts/{prompt_id}',
@@ -240,6 +242,7 @@ def route_map():
                            'environment_template_[A-Za-z0-9_-]{1,107}' if part == '{environment_template_id}' else
                            'cred_[A-Za-z0-9_-]{1,123}' if part == '{credential_id}' else
                            'vault_[A-Za-z0-9_-]{1,122}' if part == '{vault_id}' else
+                           'artifact_[A-Za-z0-9_-]{1,119}' if part == '{artifact_id}' else
                            'turn_[A-Za-z0-9_-]{1,123}' if part == '{turn_id}' else
                            '[A-Za-z0-9_-]{1,128}' if part.startswith('{')
                            else re.escape(part) for part in path.split('/'))

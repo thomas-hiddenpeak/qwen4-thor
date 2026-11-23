@@ -274,9 +274,13 @@ void FileHttpRequest::Content(int fd) {
     Reply(fd, opened, access_);
     return;
   }
+  SendPinnedBinary(fd, binary, access_, read);
+}
+void SendPinnedBinary(int fd, BinaryStore& binary, const BinaryAccess& owner,
+                      BinaryRead& read) {
   ScopeExit cleanup([&] {
     try {
-      auto access = access_;
+      auto access = owner;
       access.deadline = Clock::now() + 200ms;
       access.cancelled = {};
       binary.Close(access, &read);
@@ -286,9 +290,9 @@ void FileHttpRequest::Content(int fd) {
   });
   std::string first;
   if (!read.manifest.chunks.empty()) {
-    auto checked = binary.Read(access_, read, 0, &first);
+    auto checked = binary.Read(owner, read, 0, &first);
     if (!checked.ok()) {
-      Reply(fd, checked, access_);
+      Reply(fd, checked, owner);
       return;
     }
   }
@@ -300,13 +304,13 @@ void FileHttpRequest::Content(int fd) {
           *output = std::move(first);
           return true;
         }
-        auto checked = binary.Read(access_, read, index - 1, output);
+        auto checked = binary.Read(owner, read, index - 1, output);
         if (!checked.ok())
           if (auto* context = detail::HttpResponseContext::Current(fd))
             context->ObserveError(checked.http_status, checked.ClientMessage(),
                                   checked.ClientCode());
         return checked.ok();
       },
-      {access_.deadline});
+      {owner.deadline});
 }
 }  // namespace q4t::server

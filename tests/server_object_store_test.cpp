@@ -297,6 +297,50 @@ Q4T_TEST(object_store_corruption_is_not_missing_or_success) {
   return true;
 }
 
+Q4T_TEST(object_store_bulk_erase_verifies_current_bytes_before_commit) {
+  Fixture f;
+  ObjectStore store(f.options);
+  const auto keep = Request(ObjectOperation::kPut, "resp_healthy");
+  Q4T_CHECK(Ok(Run(store, Request())));
+  const auto path = f.Record();
+  Q4T_CHECK(Ok(Run(store, keep)));
+  std::ifstream file(path);
+  std::string original((std::istreambuf_iterator<char>(file)), {});
+  auto altered = original;
+  const auto offset = altered.find("9007199254740993");
+  Q4T_CHECK(offset != std::string::npos);
+  altered[offset] = '8';
+  std::ofstream(path) << altered;
+  std::array erases{Request(ObjectOperation::kErase, keep.id),
+                    Request(ObjectOperation::kErase)};
+  const auto denied = store.ExecuteBatch(erases, Clock::now() + 5s);
+  Q4T_CHECK(denied.code == "object_io_error" && !denied.commit_unknown &&
+            fs::exists(path) &&
+            !fs::exists(fs::path(f.options.directory) / ".q4t-transaction"));
+  std::ofstream(path) << original;
+  Q4T_CHECK(Ok(Run(store, Request(ObjectOperation::kGet, keep.id))));
+  Q4T_CHECK(Ok(store.ExecuteBatch(erases, Clock::now() + 5s)));
+  Q4T_CHECK(!fs::exists(path) &&
+            Run(store, Request(ObjectOperation::kGet, keep.id)).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(object_store_bulk_erase_accepts_valid_older_envelope) {
+  Fixture f;
+  {
+    ObjectStore store(f.options);
+    Q4T_CHECK(Ok(Run(store, Request())));
+  }
+  const auto path = f.Record();
+  std::ofstream(path, std::ios::app) << '\n';
+  ObjectStore reopened(f.options);
+  Q4T_CHECK(Ok(Run(reopened, Request(ObjectOperation::kGet))));
+  std::array erases{Request(ObjectOperation::kErase)};
+  Q4T_CHECK(Ok(reopened.ExecuteBatch(erases, Clock::now() + 5s)) &&
+            !fs::exists(path));
+  return true;
+}
+
 Q4T_TEST(object_store_fifo_tampering_is_bounded) {
   Fixture f;
   ObjectStore store(f.options);

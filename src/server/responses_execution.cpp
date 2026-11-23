@@ -51,7 +51,8 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
 }
 
 ObjectReply ResponsesExecution::BindAgentSession(
-    ObjectRequest mutation, std::optional<ObjectRequest> environment) {
+    ObjectRequest mutation, std::optional<ObjectRequest> environment,
+    std::shared_ptr<environment_detail::WorkspaceCopies> workspace_copies) {
   const auto* session = mutation.data.Find("session");
   const auto* turns = mutation.data.GetArray("turns");
   if (!prepared_ || begun_ || !plan_.store || plan_.ephemeral ||
@@ -74,6 +75,7 @@ ObjectReply ResponsesExecution::BindAgentSession(
        session->Find("environment")->GetString("id") != environment->id))
     return Error(500, "agent_environment_binding_invalid",
                  "Invalid environment handoff");
+  plan_.workspace_copies = std::move(workspace_copies);
   plan_.agent_environment_write = std::move(environment);
   plan_.agent_session_id = mutation.id;
   plan_.agent_session_write = std::move(mutation);

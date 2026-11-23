@@ -31583,6 +31583,94 @@
     "agent_session_486": {
       "const": "agent.session.turn.reasoning_summary_text.done"
     },
+    "agent_session_487": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/agent_session_19"
+        },
+        "environment_id": {
+          "$ref": "#/$defs/agent_session_13"
+        },
+        "id": {
+          "$ref": "#/$defs/agent_session_13"
+        },
+        "object": {
+          "$ref": "#/$defs/agent_session_488"
+        },
+        "path": {
+          "$ref": "#/$defs/agent_session_13"
+        },
+        "session_id": {
+          "$ref": "#/$defs/agent_session_13"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/agent_session_19"
+        },
+        "turn_id": {
+          "$ref": "#/$defs/agent_session_13"
+        }
+      },
+      "required": [
+        "created_at",
+        "environment_id",
+        "id",
+        "object",
+        "path",
+        "session_id",
+        "size_bytes",
+        "turn_id"
+      ],
+      "additionalProperties": false
+    },
+    "agent_session_488": {
+      "const": "agent.session.artifact"
+    },
+    "agent_session_489": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/agent_session_17"
+        },
+        "id": {
+          "$ref": "#/$defs/agent_session_13"
+        },
+        "object": {
+          "$ref": "#/$defs/agent_session_490"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "agent_session_490": {
+      "const": "agent.session.artifact.deleted"
+    },
+    "agent_session_491": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/agent_session_14"
+        },
+        "environment_id": {
+          "$ref": "#/$defs/agent_session_12"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "order": {
+          "$ref": "#/$defs/agent_session_252"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
     "agent_session_create": {
       "$ref": "#/$defs/agent_session_0"
     },
@@ -31609,6 +31697,15 @@
     },
     "agent_session_turn": {
       "$ref": "#/$defs/agent_session_304"
+    },
+    "agent_session_artifact": {
+      "$ref": "#/$defs/agent_session_487"
+    },
+    "agent_session_artifact_deleted": {
+      "$ref": "#/$defs/agent_session_489"
+    },
+    "agent_session_artifact_query": {
+      "$ref": "#/$defs/agent_session_491"
     },
     "agent_session_trace": {
       "type": "object",
@@ -31794,6 +31891,51 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/agent_session_trace"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
+    "agent_session_artifact_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/agent_session_artifact"
           }
         },
         "has_more": {

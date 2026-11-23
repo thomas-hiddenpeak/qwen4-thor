@@ -133,10 +133,10 @@ ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
   Json definition;
   auto opened = OpenDefinition(objects, access, id, *sealed, &definition);
   if (!opened.ok()) return opened;
-  FileInputBudget budget;
+  WorkspaceCopies copies(objects, access, id);
   Json installed, content;
   auto copy =
-      SnapshotFile(objects, access, input, &budget, &installed, &content);
+      SnapshotFile(input, copies, "file_id", &installed, &content);
   if (!copy.ok()) return copy;
   Install(&Field(definition, "files"), std::move(content));
   auto checked = PublicTemplate(definition, id, 0, 0);
@@ -145,6 +145,7 @@ ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
   auto secured = SealDefinition(objects, access, id, definition, &encoded);
   if (!secured.ok()) return secured;
   auto view = Entry(id, installed);
+  copies.Bind(&data, input.GetString("path"));
   Set(&data, "sealed_definition", std::move(encoded));
   Install(&Field(Field(data, "resource"), "files"), std::move(installed));
   ObjectRequest update;
@@ -170,6 +171,7 @@ ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
   owner_write.data = std::move(session_data);
   const ObjectRequest writes[]{std::move(update), std::move(owner_write)};
   auto result = objects.ExecuteBatch(writes, access.deadline, access.cancelled);
+  copies.Settle(result);
   if (result.ok()) {
     result.http_status = 201;
     result.value = std::move(view);

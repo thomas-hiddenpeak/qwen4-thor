@@ -8,45 +8,37 @@
 namespace q4t::server::environment_detail {
 using namespace object_detail;
 
-ObjectReply SnapshotFile(ObjectStore& objects, const StateAccess& access,
-                         const Json& source, FileInputBudget* budget,
-                         Json* installed, Json* content) {
-  FileInputSource input;
+ObjectReply SnapshotFile(const Json& source, WorkspaceCopies& copies,
+                         std::string param, Json* installed, Json* content) {
   const bool stored = source.GetString("type") == "file_id";
-  const auto* value = source.Find(stored ? "file_id" : "data");
-  if (!value || !value->IsString())
-    return Error(400, "invalid_request", "Invalid environment file");
-  input.kind =
-      stored ? FileInputSource::Kind::kStored : FileInputSource::Kind::kInline;
-  input.value = value->str;
-  input.param = "files";
-  FileInputContent file;
-  auto result = ReadLocalFileInput(
-      &objects, {access.scope, access.deadline, access.cancelled}, input,
-      budget, &file);
-  if (!result.ok()) return result;
-  std::string encoded;
-  if (stored && !io::EncodeBase64(file.bytes, kChatBodyBytes, &encoded))
-    return Error(413, "environment_file_capacity",
-                 "Environment file exceeds byte budget");
-  auto id = NewObjectId(ObjectKind::kFile);
+  const auto id = NewObjectId(ObjectKind::kFile);
   if (id.empty())
     return Error(503, "environment_file_id_unavailable", "No file ID");
-  auto metadata = Object({{"type", String(stored ? "file_id" : "inline")},
-                          {"id", String(std::move(id))},
-                          {"path", *source.Find("path")},
-                          {"size_bytes", Number(file.bytes.size())}});
-  if (stored) Set(&metadata, "file_id", *value);
-  *installed = std::move(metadata);
-  *content = Object({{"type", String("inline")},
-                     {"path", *source.Find("path")},
-                     {"data", stored ? String(std::move(encoded)) : *value}});
+  uint64_t bytes = 0;
+  if (stored) {
+    auto result =
+        copies.CopyFile(source, id, std::move(param), &bytes, content);
+    if (!result.ok()) return result;
+  } else {
+    const auto* data = source.Find("data");
+    size_t count = 0;
+    if (!data || !data->IsString() || !io::Base64DecodedSize(data->str, &count))
+      return Error(400, "invalid_request", "Invalid inline environment file");
+    bytes = count;
+    *content = source;
+  }
+  *installed = Object({{"type", String(stored ? "file_id" : "inline")},
+                       {"id", String(id)},
+                       {"path", *source.Find("path")},
+                       {"size_bytes", Number(bytes)}});
+  if (stored) Set(installed, "file_id", *source.Find("file_id"));
   return {};
 }
 
 ObjectReply PrepareWorkspace(ObjectStore& objects, const StateAccess& access,
                              const std::string& id, const Json& input,
-                             Json* private_definition) {
+                             Json* private_definition,
+                             WorkspaceCopies& copies) {
   Json definition;
   auto result = ResolveDefinition(objects, access, input, &definition);
   if (!result.ok()) return result;
@@ -69,13 +61,19 @@ ObjectReply PrepareWorkspace(ObjectStore& objects, const StateAccess& access,
         503, "environment_executor_unavailable",
         "Requested environment features require a provisioned executor");
   auto metadata = Array(), snapshots = Array();
-  FileInputBudget budget;
-  budget.max_files = 50;
   if (const auto* files = definition.GetArray("files")) {
+    if (files->array.size() > 50) {
+      auto failure = Error(400, "invalid_request", "Expected at most 50 workspace files");
+      failure.value = Object({{"param",String("environment.files")}});
+      return failure;
+    }
     for (const auto& file : files->array) {
       Json installed, content;
       auto copy =
-          SnapshotFile(objects, access, file, &budget, &installed, &content);
+          SnapshotFile(file, copies,
+                       "environment.files[" +
+                           std::to_string(metadata.array.size()) + "].file_id",
+                       &installed, &content);
       if (!copy.ok()) return copy;
       metadata.array.push_back(std::move(installed));
       snapshots.array.push_back(std::move(content));

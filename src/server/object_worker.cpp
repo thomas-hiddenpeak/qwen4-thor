@@ -410,12 +410,12 @@ class DiskStore {
       if (!exists && errno != ENOENT) return false;
       Json current;
       Metadata metadata;
-      if (exists && !Load(name, &current, &metadata)) return false;
       if (record->IsNull()) {
-        if (exists &&
-            (metadata.digest != old || unlinkat(root_.Get(), name.c_str(), 0)))
+        if (exists && (!MatchesErase(name, old) ||
+                       unlinkat(root_.Get(), name.c_str(), 0)))
           return false;
       } else {
+        if (exists && !Load(name, &current, &metadata)) return false;
         const auto digest = Digest(OutputJson(*record));
         if (!exists || metadata.digest != digest) {
           if ((exists && (old.empty() || metadata.digest != old)) ||
@@ -712,8 +712,12 @@ class DiskStore {
         return Error(409, "object_revision_conflict",
                      "Object revision changed");
       Json previous;
-      if (exists && !ReadKnown(name, found->second, &previous))
-        return IoError();
+      if (exists) {
+        const bool verified = operation == "erase"
+                                  ? MatchesErase(name, found->second.digest)
+                                  : ReadKnown(name, found->second, &previous);
+        if (!verified) return IoError();
+      }
       struct stat info {};
       if (!exists &&
           (!fstatat(root_.Get(), name.c_str(), &info, AT_SYMLINK_NOFOLLOW) ||
@@ -939,6 +943,34 @@ class DiskStore {
     Metadata actual;
     return Load(name, record, &actual) && actual.digest == expected.digest &&
            actual.bytes == expected.bytes;
+  }
+  bool MatchesErase(const std::string& name, const std::string& digest) {
+    Fd file(openat(root_.Get(), name.c_str(),
+                   O_RDONLY | O_CLOEXEC | O_NOFOLLOW | O_NONBLOCK));
+    std::string text;
+    if (!file || !ReadAll(file.Get(), kMaxFrame / 2, &text)) return false;
+    // An indexed digest already binds this filename to a validated record.
+    // Hash the exact serialized record directly while reclaiming binary
+    // chunks. Parsing and reserializing every payload twice can exhaust the
+    // worker deadline before the unrelated request that triggered collection.
+    const auto known = records_.find(name);
+    if (known != records_.end() && known->second.bytes != text.size())
+      return false;
+    constexpr std::string_view prefix = "{\"record\":";
+    const std::string suffix = ",\"sha256\":\"" + digest + "\"}";
+    std::string_view record(text);
+    if (known != records_.end() && known->second.digest == digest &&
+        record.starts_with(prefix) && record.ends_with(suffix)) {
+      record.remove_prefix(prefix.size());
+      record.remove_suffix(suffix.size());
+      if (Digest(record) == digest) return true;
+    }
+    // Cold journal replay has no trusted index. Also accept older, valid
+    // encodings whose whitespace or field order differs from our writer.
+    Json value;
+    Metadata metadata;
+    return DecodeRecord(name, text, &value, &metadata) &&
+           metadata.digest == digest;
   }
   void Add(const std::string& name, Metadata metadata) {
     batch_quota_.Add(metadata.owner, metadata.batch_charge);

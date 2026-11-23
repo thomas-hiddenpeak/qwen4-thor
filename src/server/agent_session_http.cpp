@@ -6,6 +6,7 @@
 
 #include "q4t/server/lifetime.h"
 
+#include "agent_artifact_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/conversation_state.h"
@@ -59,7 +60,8 @@ ObjectReply DeleteSession(ObjectStore& objects, const std::string& id,
     Set(&Field(release.data, "resource"), "status", String("disconnected"));
     // Keep a status receipt after deletion and discard private workspace bytes.
     std::erase_if(release.data.object, [](const auto& field) {
-      return field.first == "sealed_definition" || field.first == "bound_session";
+      return field.first == "sealed_definition" || field.first == "bound_session" ||
+             field.first == "input_snapshots";
     });
     mutations.push_back(std::move(release));
   }
@@ -197,7 +199,7 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
                    ResponsesJobs* jobs, std::string_view method,
                    std::string_view target, const std::string& body,
                    const ChatPlanConfig& config, const StateAccess& access,
-                   bool* stream) {
+                   bool* stream, bool* sent) {
   const auto route = ParseAgentSessionRoute(target);
   if (route.kind == Kind::kNone)
     return Error(404, "route_not_found", "Session route not found");
@@ -205,12 +207,24 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
     auto denied = Error(405, "method_not_allowed", "Method not allowed");
     const auto allowed = route.kind == Kind::kEvents       ? "GET, POST"
                          : route.kind == Kind::kCollection ? "GET, POST"
+                         : route.kind == Kind::kArtifact   ? "GET, DELETE"
                          : route.kind == Kind::kSession    ? "GET, POST, DELETE"
                                                            : "GET";
     denied.value = Object({{"allow", String(allowed)}});
     return denied;
   }
   const auto split = target.find('?');
+  if (route.kind == Kind::kArtifacts || route.kind == Kind::kArtifact ||
+      route.kind == Kind::kArtifactContent) {
+    if (!body.empty()) return Invalid("Unexpected body", "body");
+    if (split != target.npos && route.kind != Kind::kArtifacts)
+      return Invalid("Unexpected query", "query");
+    auto query = ParseApplicationQuery(
+        split == target.npos ? "" : target.substr(split + 1));
+    if (!query.ok()) return query;
+    return agent_detail::HandleArtifacts(objects, access, route, method,
+                                         query.value, fd, sent);
+  }
   if (route.kind == Kind::kCollection && method == "GET") {
     if (!body.empty()) return Invalid("Unexpected body", "body");
     auto query = ParseApplicationQuery(
@@ -343,8 +357,10 @@ void ServeAgentSession(int fd, ObjectStore& objects, ClientAdmission& clients,
                        const ChatPlanConfig& config,
                        const StateAccess& access) {
   bool stream = false;
+  bool sent = false;
   auto reply = Handle(fd, objects, clients, jobs, method, target, body, config,
-                      access, &stream);
+                      access, &stream, &sent);
+  if (sent) return;
   if (reply.ok() && stream) {
     Stream(fd, objects, reply.value.GetString("id"), method == "GET", access);
     return;

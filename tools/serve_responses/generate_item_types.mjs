@@ -37,6 +37,7 @@ const environments = resolve(sdk, 'src/resources/beta/agents/environments/enviro
 const environmentFiles = resolve(sdk, 'src/resources/beta/agents/environments/files.ts');
 const templates = resolve(sdk, 'src/resources/beta/agents/environments/templates.ts');
 const agentSessions = resolve(sdk, 'src/resources/beta/agents/sessions/sessions.ts');
+const artifacts = resolve(sdk, 'src/resources/beta/agents/sessions/artifacts.ts');
 const agentTurns = resolve(sdk, 'src/resources/beta/agents/sessions/turns/turns.ts');
 const beta = resolve(sdk, 'src/resources/beta/responses/responses.ts');
 const liveSessions = resolve(sdk, 'src/resources/live/sessions.ts');
@@ -50,7 +51,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--agents' ? [agents] : []),
   ...(mode === '--vault-credentials' ? [credentials] : []),
   ...(mode === '--environments' ? [environments, environmentFiles, templates] : []),
-  ...(mode === '--agent-sessions' ? [agents, agentSessions, agentTurns] : []),
+  ...(mode === '--agent-sessions' ? [agents, agentSessions, agentTurns, artifacts] : []),
   ...(mode === '--live' ? [live, liveSessions, liveSideband, liveForks] : [])], {
   target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext,
@@ -182,6 +183,9 @@ const roots = mode === '--environments' ? {
   event: exported(agents, 'AgentSessionEvent'),
   item: exported(agents, 'AgentSessionItem'),
   turn: exported(agentTurns, 'Turn'),
+  artifact: exported(artifacts, 'SessionArtifact'),
+  artifact_deleted: exported(artifacts, 'SessionArtifactDeleted'),
+  artifact_query: exported(artifacts, 'ArtifactListParams'),
 } : mode === '--agents' ? {
   create: exported(agents, 'AgentCreateParams'),
   update: exported(agents, 'AgentUpdateParams'),
