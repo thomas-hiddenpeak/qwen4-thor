@@ -1,0 +1,142 @@
+{
+  "status": "ACCEPT_VAULT_OAUTH_PRIMARY_LIGHT",
+  "engine": "f8af31fe07dfeba0a2738b5ce7ba9b23b2aff8c6e5c33c59b2abc5ce242fee90",
+  "ingress": "1e71f9b806763a77a7dce8923ed9585f3d678b2105acfbdf9c9fa98be6e16593",
+  "profiles": {
+    "primary": {
+      "record": "1fb036ff722a21719546d1b042298cc91e489ecd9dc30ddcfb8602e546c683ef",
+      "prior": "2849d28c117d197f0ceb0bc6f3a6a43d63f2a5f0173766f82eae0399bb75e939",
+      "bytes": 4061163,
+      "seconds": 46.41978645697236,
+      "starts": 1,
+      "capacity_mtp": true,
+      "checks": {
+        "agent-response.json": "ebdd0038bb8d58d506e0a35593bcc68cf47d4386ee22e6aa1ca84ce4326b9e8c",
+        "beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+        "beta-response.json": "69ad6b64a0ad3ef7fcbac1ab622e2306d2da9e331b71a2cf26d6b9db55ae070e",
+        "capabilities.json": "48dbee3413fa86eadccd6aeecee6a12269694a427ce40715e926f9269e6fa636",
+        "cleanup.json": "6fd605782d28cfbd60be69692fc5b29109c3d4c4d3d2f696f7dc99eef77c392a",
+        "configuration.wire": "e95d3a9e5e3c94611373cc6be6803f4b9392777250b21805273d422235d28eae",
+        "core-after.wire": "2e4d943d9a97d847ce6f203f4ebdd85dbf15e2f7424cf580c61e439fc1cfed7d",
+        "interruption.json": "60023f1b74287e4386485a14e3ab5979033ada0770b72fb72e2c8ba2367ccb28",
+        "oauth-handoff.json": "5202f78615351399aed1b961efd085703f73ffa7843c17cbe6f1e4917f40de1e",
+        "observation.json": "b4f9f91da6c20df0d4c992fb186a49a2f44097ad7f568dee56afb59ee1d55dc4",
+        "plan.json": "8bf1349bcd2f2fea6286ad9c65b5c67870c1668aa1f388aced1089c6a09aaf0c",
+        "registration.json": "1c4c2d732cf15b9e019cc0860ba8a6a3f78c317e6eb067ebad67f8ed84ab2e67",
+        "result.json": "0d2d122a7be28d4fc459b64373eb0d99c2e442e19904edc7866c1285d07a53a1",
+        "session-handoff.json": "5024dc42303ca5e4bc4abb03dc47714ef1e247bcd3a022ee09066b4b0096317c",
+        "vault-handoff.json": "6c636b50afc10fb0d4c0a0e70a264c5f5e5ee67b0cc5fee34b5b473495cf8486"
+      }
+    },
+    "light": {
+      "record": "cc67e878110002a8be19fa7fbf61fe32d82b098731e570bf2008e8d0dfa54517",
+      "prior": "e76621fdd0353aee0007baf9d55ae55c6c256b121be9ec0194757bf7e95a9c69",
+      "bytes": 5463875,
+      "seconds": 119.06427964009345,
+      "starts": 1,
+      "capacity_mtp": false,
+      "checks": {
+        "agent-response.json": "18f761041fda944a230f8dcc21fd7ccc96b022a2b28c149666057a583f479ffb",
+        "agent-restored.json": "7e0b855e1d8d514f26a1a9ea16b8efff6db1dcf39bc7616287019a6322c3d47e",
+        "beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+        "beta-response.json": "11777b5394f4e9425d481e9e98172ce5b3c25eb17498ae62cd2c8b8fb25d7886",
+        "beta-restored.json": "527ac9a5afc1099e40f2d6cea57b9d449321e2bd36deb9a828ed3a5d57650d54",
+        "capabilities.json": "3707723e9dd6cd9d16048f50d1bf209624d465a172eb0605d772c92f6747d798",
+        "cleanup.json": "268052b156b6c671160d1b54b99335582ab2726a8221db343db2abbb40ca1f6f",
+        "configuration.wire": "e1021c51e43a611ed8d2e1e456f0e5359d65f8d07ea8b3c4472cdb3b46fd9a7f",
+        "core-after.wire": "34d5a0cc14c1e4ce46f9f7756ebedda4af4b0e3b5149b5659b2b8ec205157cbd",
+        "interruption.json": "55ab893a53ddb3b2ea793ae6c52dade275aaedb79e7b42abba613e9aa885ced4",
+        "oauth-handoff.json": "b551a13e77d1e736fe9c0e3a88b9a273f6e875cd097f19f8599b4bf622b84212",
+        "observation.json": "a0f6bf0758616b2892622c1c29c5825683ece95d9aa6aa2cc5f9bacdffc7d292",
+        "plan.json": "00fa2a714a3cacdc190918c756ae79d82070c8c66d2589e288c330be7a4a676d",
+        "registration.json": "b56b10dba7280302ff290b0b576d6658be94b0d5f575b8b7f3262ecc447ae81e",
+        "result.json": "929e1f8e65c29d5650a00d6be49abfcb5aefd8a4af24365d120a31ec7d4dccd4",
+        "session-handoff.json": "0f9eea1f6e65c27a502d04ce7585f0bd2bf202678df7d8a37231a92b69a333d5",
+        "vault-handoff.json": "438ce3c05fa399650678646ae355377e166c89c65bc2577c1bc8f91b4fdb1e47"
+      }
+    }
+  },
+  "qualification": {
+    "path": ".q4t-work/serve-responses-agents-20261123/oauth-registry-01/acceptance.json",
+    "sha256": "d434fe78dbe4058151f3bc70217b72e502a866300925fb9a6f141643f2519e8c"
+  },
+  "run": {
+    "path": ".q4t-work/serve-responses-agents-20261123/oauth-profiles-02/acceptance.json",
+    "sha256": "3d05f0cc1c99a70f16e4f96291d6e6234a680765facc386c93d59f72ce5a40be"
+  },
+  "lease": {
+    "path": ".q4t-work/serve-responses-agents-20261123/oauth-profiles-02/lease/exit.json",
+    "sha256": "8c0a7125bf5f80f2ca7ebe274c76c27664360d174530abdf0a49b4599b44e1a4"
+  },
+  "samples": 155,
+  "negative_checks": 7,
+  "primary": {
+    "sdk": "7.47.0",
+    "vault": "vault_856925da0103bdd1ff25bce35a9d6164",
+    "credential": "cred_09d64403137bd3debe4210fcd20a8f7c",
+    "created": true,
+    "foreign": 404,
+    "http_requests": 0
+  },
+  "light": {
+    "sdk": "7.47.0",
+    "vault": "vault_856925da0103bdd1ff25bce35a9d6164",
+    "credential": "cred_09d64403137bd3debe4210fcd20a8f7c",
+    "session": "agent_session_0bb5571f1757c7514e7653d2e12b1c7b",
+    "call": "mcp_5368b88c74498d37c52664e52a61ef05",
+    "citation": "[docs/MODEL.md:L1-L3]",
+    "archived_bind": 404,
+    "foreign": 404,
+    "http_requests": 5,
+    "methods": [
+      "initialize",
+      "notifications/initialized",
+      "tools/list",
+      "tools/call",
+      "resources/read"
+    ],
+    "source_sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c"
+  },
+  "renewal": {
+    "primary": {
+      "distinct_bearers": 0,
+      "methods_at_exchange": [],
+      "receipts": []
+    },
+    "light": {
+      "distinct_bearers": 3,
+      "methods_at_exchange": [
+        [],
+        [
+          "initialize",
+          "notifications/initialized",
+          "tools/list"
+        ],
+        [
+          "initialize",
+          "notifications/initialized",
+          "tools/list",
+          "tools/call"
+        ]
+      ],
+      "receipts": [
+        "original",
+        "rotated",
+        "rotated"
+      ]
+    }
+  },
+  "default_at_qualification": "rev446 STOPPED",
+  "original_offline_prepare": {
+    "error": "required installed workers directory missing from the environment; reused the previously verified installation",
+    "source": {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-profiles-prepare-01.log",
+      "sha256": "ec8f9221977b80dfbeeb2fd5bacc637d96312dc8c9fd166a54cb472c73bf36b7"
+    },
+    "model_starts": 0
+  },
+  "cpu_migration": {
+    "path": ".q4t-work/serve-responses-agents-20261123/oauth-migration-cpu.log",
+    "sha256": "4c5d04e9527de370f915efdf6bba3596284a07f8a644323817a4b9ef2d6c716c"
+  }
+}

@@ -9,12 +9,19 @@ import urllib.parse
 
 
 class TokenIssuer:
-    def __init__(self, peer, *, retry_after=None, live_rotation=False):
+    @staticmethod
+    def credentials():
+        return dict(client_secret=secrets.token_urlsafe(24) + '+',
+                    original=secrets.token_urlsafe(24), replacement=secrets.token_urlsafe(24))
+
+    def __init__(self, peer, *, retry_after=None, live_rotation=False, port=0,
+                 credentials=None):
         self.resource = peer.url
         self.client = 'q4t:fixture reader'
-        self.client_secret = secrets.token_urlsafe(24) + '+'
-        self.original = secrets.token_urlsafe(24)
-        self.replacement = secrets.token_urlsafe(24)
+        private = self.credentials() if credentials is None else credentials
+        self.client_secret = private['client_secret']
+        self.original = private['original']
+        self.replacement = private['replacement']
         self.receipts = []
         self.issued = []
         self.methods_at_exchange = []
@@ -73,7 +80,7 @@ class TokenIssuer:
                 self.end_headers()
                 self.wfile.write(wire)
 
-        self.server = http.server.HTTPServer(('127.0.0.1', 0), Handler)
+        self.server = http.server.HTTPServer(('127.0.0.1', port), Handler)
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(peer.certificate, peer.key)
         self.server.socket = context.wrap_socket(self.server.socket, server_side=True)

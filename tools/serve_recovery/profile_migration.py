@@ -526,6 +526,13 @@ def extends(previous, target):
 
 def explicit_extension(previous, target):
     """Compare qualified semantics when a declared pending capability ships."""
+    if 'agent_vaults' in previous and 'agent_vaults' in target:
+        from tools.serve_recovery import profile_live_reuse as live
+        if (package.same_json(previous['agent_vaults'], live.VAULT_CAPABILITY)
+                and package.same_json(target['agent_vaults'], live.VAULT_CAPABILITY)
+                and package.same_json(previous.get('agent_sessions'), live.VAULT_SESSION)
+                and package.same_json(target.get('agent_sessions'), live.OAUTH_SESSION)):
+            previous = dict(previous, agent_sessions=live.OAUTH_SESSION)
     if 'agent_vaults' not in previous and 'agent_vaults' in target:
         from tools.serve_recovery import profile_live_reuse as live
         if (package.same_json(previous.get('agent_sessions'), live.SESSION_CAPABILITY)

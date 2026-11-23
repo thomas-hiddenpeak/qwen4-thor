@@ -19,19 +19,27 @@ const denied = e => e instanceof OpenAI.APIError && e.status === 404;
 let result;
 if (plan.profile === 'primary') {
   const vault = await vaults.create({name:'Profile handoff',metadata:{project:'q4t'}});
-  const saved = await credentials.create(vault.id,{name:'records',auth:{
-    type:'mcp_oauth',access_token:plan.secret,expires_at:'2099-01-01T00:00:00Z',mcp_server_url:target.href}});
+  const auth = {type:'mcp_oauth',access_token:plan.secret,
+    expires_at:plan.refresh ? '2000-01-01T00:00:00Z' : '2099-01-01T00:00:00Z',mcp_server_url:target.href};
+  if (plan.refresh) auth.refresh = plan.refresh;
+  const saved = await credentials.create(vault.id,{name:'records',auth});
   assert.ok(!JSON.stringify(saved).includes(plan.secret));
+  if (plan.refresh) {
+    assert.equal(saved.auth.refresh.token_endpoint,plan.refresh.token_endpoint);
+    for (const secret of [plan.refresh.refresh_token,plan.refresh.token_endpoint_auth.client_secret])
+      assert.ok(!JSON.stringify(saved).includes(secret));
+  }
   await assert.rejects(other.vaults.credentials.retrieve(saved.id,{vault_id:vault.id}),denied);
   result = {vault:vault.id,credential:saved.id,created:true,foreign:404};
 } else {
   assert.equal(plan.profile,'light');
-  assert.ok(!('secret' in plan));
+  assert.ok(!('secret' in plan) && !('refresh' in plan));
   const {vault,credential} = plan.prior;
   const saved = await credentials.retrieve(credential,{vault_id:vault});
   assert.equal(saved.auth.type,'mcp_oauth');
   assert.equal(saved.auth.mcp_server_url,target.href);
   assert.equal(saved.vault_id,vault);
+  if (plan.renewal) assert.ok(Date.parse(saved.auth.expires_at) < Date.now());
   const tool = {type:'mcp',credential_id:credential,server_label:'project',connection_origin:'service',
     required:true,allowed_tools:['read_project_record'],transport:{type:'http',server_url:target.href}};
   const request = {environment:{type:'none'},vault_ids:[vault],agent:{model:'qwen3.8-flash-next',
@@ -47,6 +55,11 @@ if (plan.profile === 'primary') {
   assert.equal(calls[0].status,'completed');
   assert.equal(calls[0].output.structuredContent.source.citation,plan.citation);
   assert.ok(final.output_text.includes(plan.citation));
+  if (plan.renewal) {
+    const renewed = await credentials.retrieve(credential,{vault_id:vault});
+    assert.ok(Date.parse(renewed.auth.expires_at) > Date.now());
+    assert.deepEqual(renewed.auth.refresh,saved.auth.refresh);
+  }
   assert.equal((await vaults.delete(vault)).deleted,true);
   await assert.rejects(async()=>await owner.sessions.create(request),denied);
   await assert.rejects(other.sessions.retrieve(final.session_id),denied);

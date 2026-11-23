@@ -79,7 +79,8 @@ def prepare(source, manifest_sha256, stage, observations, output):
                   profile_live_reuse.AGENT_RECORD_FORMAT: 'ACCEPT_HOSTED_AGENTS_PRIMARY_LIGHT',
                   profile_live_reuse.REGISTRATION_RECORD: 'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT',
                   profile_live_reuse.SESSION_RECORD: 'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT',
-                  profile_live_reuse.VAULT_RECORD: 'ACCEPT_AGENT_VAULTS_PRIMARY_LIGHT'}
+                  profile_live_reuse.VAULT_RECORD: 'ACCEPT_AGENT_VAULTS_PRIMARY_LIGHT',
+                  profile_live_reuse.OAUTH_RECORD: 'ACCEPT_VAULT_OAUTH_PRIMARY_LIGHT'}
         primary = evidence['primary']['record']
         label = status[primary['format']]
         if primary['reused_business']['format'] == profile_live_reuse.AGENT_REFRESH:
