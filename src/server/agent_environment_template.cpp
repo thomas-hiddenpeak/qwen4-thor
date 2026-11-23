@@ -1,8 +1,9 @@
 #include "q4t/server/agent_environment.h"
 
 #include <ctime>
-#include <unordered_set>
+#include <set>
 
+#include "agent_environment_internal.h"
 #include "file_fetch_internal.h"
 #include "object_protocol.h"
 #include "q4t/io/base64.h"
@@ -12,7 +13,6 @@
 #include "q4t/server/files.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/request_json.h"
-#include "q4t/server/state_cipher.h"
 
 namespace q4t::server {
 namespace {
@@ -69,7 +69,7 @@ bool WorkspaceFile(std::string_view path) {
 ObjectReply Project(const Json& config, const std::string& id, int64_t created,
                     int64_t updated) {
   auto files = Or(config, "files", Array());
-  std::unordered_set<std::string> paths;
+  std::set<std::string> paths;
   for (auto& file : files.array) {
     const auto path = file.GetString("path");
     if (!WorkspaceFile(path) || !paths.insert(path).second)
@@ -82,6 +82,14 @@ ObjectReply Project(const Json& config, const std::string& id, int64_t created,
                      {"path", String(path)},
                      {"size_bytes", Number(size)}});
     }
+  }
+  // A regular file cannot also be an ancestor directory. Check both orders
+  // after collecting all paths so replacing a whole file list is atomic.
+  for (const auto& path : paths) {
+    const std::string prefix = path + '/';
+    const auto child = paths.lower_bound(prefix);
+    if (child != paths.end() && child->starts_with(prefix))
+      return Invalid("A workspace file is also used as a directory", "files");
   }
   auto plugins = Or(config, "plugins", Array());
   auto skills = Or(config, "skills", Array());
@@ -204,7 +212,7 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
   Json changes = Object();
   if (method == "POST") {
     if (!(collection && body.empty()) &&
-        !io::ParseJson(body, &changes, true, kSchemaJsonLimits))
+        !io::ParseJson(body, &changes, true, kApplicationJsonLimits))
       return Invalid("Expected a JSON template object", "body");
     if (collection && changes.IsNull()) changes = Object();
     ChatPlanError error;
@@ -220,8 +228,6 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
                : std::string(path.substr(kEnvironmentTemplatesPath.size() + 1));
   if (req.id.empty())
     return Error(503, "environment_id_unavailable", "No template ID");
-  const StateCipherBinding binding{"q4t.agents", "environment",
-                                   "template_definition", req.id};
   const auto now = std::time(nullptr);
   int64_t created = now;
   Json config = Object();
@@ -244,15 +250,11 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
       return erased;
     }
     created = resource.value.GetInt("created_at");
-    std::string raw;
-    auto opened = StateCipher(objects).Open(data.GetString("sealed_definition"),
-                                            binding, access, &raw);
+    const auto* sealed = data.Find("sealed_definition");
+    if (!sealed) return InvalidRecord();
+    auto opened = environment_detail::OpenDefinition(objects, access, req.id,
+                                                      *sealed, &config);
     if (!opened.ok()) return opened;
-    ChatPlanError error;
-    if (!io::ParseJson(raw, &config, true, kSchemaJsonLimits) ||
-        !ValidateEnvironmentTemplate(config, EnvironmentTemplateShape::kCreate,
-                                     &error))
-      return InvalidRecord();
   }
   if (const auto* files = changes.GetArray("files")) {
     Files owned(objects);
@@ -267,17 +269,19 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
   for (auto& [key, value] : changes.object) Set(&config, key, std::move(value));
   auto projected = Project(config, req.id, created, now);
   if (!projected.ok()) return projected;
-  std::string sealed;
+  Json sealed;
   auto saved =
-      StateCipher(objects).Seal(OutputJson(config), binding, access, &sealed);
+      environment_detail::SealDefinition(objects, access, req.id, config, &sealed);
   if (!saved.ok()) return saved;
   req.data = Object({{"resource", projected.value},
-                     {"sealed_definition", String(std::move(sealed))}});
+                     {"sealed_definition", std::move(sealed)}});
   req.ttl_seconds = 0;
   req.operation = ObjectOperation::kPut;
   auto committed = execute();
   if (committed.commit_unknown)
     committed.value = Object({{"id", String(req.id)}});
-  return committed.ok() ? projected : committed;
+  if (!committed.ok()) return committed;
+  if (collection) projected.http_status = 201;
+  return projected;
 }
 }  // namespace q4t::server

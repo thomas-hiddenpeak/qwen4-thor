@@ -1,0 +1,73 @@
+{
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 41.32,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "size_bytes": 5242880,
+    "encoded_bytes": 6990508,
+    "source_sha256": "3fd8036f9e526af2ca4a70cbe0783689020ea31c7f025eb88ecda4199c16c6e1",
+    "created": 201,
+    "patched": 200,
+    "foreign": 404,
+    "over_limit": 400,
+    "old_files_retained": true,
+    "cleared": true,
+    "deleted": true,
+    "chat": "42"
+  },
+  "lease": {
+    "status": "COMPLETED",
+    "strict_backend": "nvml",
+    "samples": 40
+  },
+  "cpu": {
+    "passed": 3,
+    "reopened_bytes_verified": true,
+    "foreign_binding": 503,
+    "reordered_parts": 503,
+    "truncated_indexed_content": 503,
+    "small_format_retained": true
+  },
+  "prior": {
+    "status": "ENV_ABORT",
+    "reason": "competing workload during lease",
+    "correlation": "The strict process monitor saw our host-only environment_template test and its worker. The host checks finished, then the same strict lease protocol ran serially.",
+    "result": {
+      "path": ".q4t-work/serve-responses-agents-20261123/large-template-lease-01/exit.json",
+      "sha256": "20b71be5bb76a0b6ffe1f6b77e37697ab17fbbe71bdd56ba527b3a72bbd4fd26"
+    }
+  },
+  "artifacts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/large-template-business-02/plan.json",
+      "sha256": "af768b54f3271d6b77c4582aedc491222d8b3751b2cec97833ebf1a610d79274"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/large-template-business-02/result.json",
+      "sha256": "627636df4f88d7553b802925c270a7c2c5e0172f1316d88b9134b22844a1911d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/large-template-business-02/create/sdk-result.json",
+      "sha256": "9cc8720edb8ccc09ac66ffc292f573360812e927b257bc799f17409b77e7c00f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/large-template-lease-02/exit.json",
+      "sha256": "d1225b7078b6c4c16036e97471c5e4f63a7f2a6b4bbc66dfc9c0065d9dc8ba8d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/large-template-host-final.log",
+      "sha256": "30d8286326a73332062654f7f3c68db4090f4911e06afaa537fc8d366d394381"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/large-template-audit.json",
+      "sha256": "ae16dda9f3f20da8e754c83239ca49893ad8bd499cd52793168b9e6de2d276e7"
+    }
+  ]
+}

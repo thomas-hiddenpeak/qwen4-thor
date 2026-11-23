@@ -713,6 +713,8 @@ set(protocol_inputs
   cmake/environment_types.h.in
   include/q4t/server/agent_environment.h
   src/server/agent_environment_template.cpp
+  src/server/agent_environment_definition.cpp
+  src/server/agent_environment_internal.h
   src/server/vault_credential_internal.h
   src/server/contracts/openai_agent_registration_types_v1.json
   cmake/agent_registration_types.h.in

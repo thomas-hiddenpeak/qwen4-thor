@@ -298,8 +298,10 @@ class HttpResponseContext {
 };
 // State tracks successful socket writes, including partial headers;
 // incomplete headers cannot be followed by another HTTP or SSE response.
+enum class StreamStatus { kOk, kCreated };
 bool BeginStreamingResponse(int fd, ResponseState* state,
-                            const WriteOptions& options = {});
+                            const WriteOptions& options = {},
+                            StreamStatus status = StreamStatus::kOk);
 // Leaves state at kHeadersStarted until the owner confirms all production
 // and cleanup. Errors then close the incomplete frame without appended JSON.
 // HTTP/1.0 callers must use a completed finite body with Content-Length.

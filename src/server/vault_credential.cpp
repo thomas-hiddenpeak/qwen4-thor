@@ -226,6 +226,7 @@ ObjectReply CredentialRequest(ObjectStore& store, const VaultRoute& route,
   auto result = store.Execute(req, access.deadline, access.cancelled);
   if (result.commit_unknown) result.value = Object({{"id", String(id)}});
   if (!result.ok()) return result;
+  if (collection) result.http_status = 201;
   result.value = method == "DELETE"
                      ? Object({{"id", String(id)},
                                {"object", String("vault.credential.deleted")},

@@ -1,0 +1,127 @@
+{
+  "fields": {
+    "capability_directories": {
+      "items": {
+        "maxLength": 1048576,
+        "minLength": 0
+      },
+      "maxItems": 16384
+    },
+    "env": {
+      "additionalProperties": {
+        "maxLength": 1048576,
+        "minLength": 0
+      },
+      "maxProperties": 1024,
+      "propertyNames": {
+        "maxLength": 256,
+        "minLength": 1
+      }
+    },
+    "files": {
+      "maxItems": 50
+    },
+    "files.data": {
+      "maxLength": 6990508,
+      "minLength": 0
+    },
+    "files.file_id": {
+      "maxLength": 256,
+      "minLength": 1
+    },
+    "files.path": {
+      "maxLength": 4096,
+      "minLength": 1
+    },
+    "name": {
+      "maxLength": 256,
+      "minLength": 1
+    },
+    "network.allowed_domains": {
+      "items": {
+        "maxLength": 1048576,
+        "minLength": 0
+      },
+      "maxItems": 16384
+    },
+    "network.blocked_domains": {
+      "items": {
+        "maxLength": 1048576,
+        "minLength": 0
+      },
+      "maxItems": 100
+    },
+    "packages.npm": {
+      "items": {
+        "maxLength": 1048576,
+        "minLength": 0
+      },
+      "maxItems": 16384
+    },
+    "packages.python": {
+      "items": {
+        "maxLength": 1048576,
+        "minLength": 0
+      },
+      "maxItems": 16384
+    },
+    "packages.system": {
+      "items": {
+        "maxLength": 1048576,
+        "minLength": 0
+      },
+      "maxItems": 16384
+    },
+    "plugins": {
+      "maxItems": 32
+    },
+    "plugins.description": {
+      "maxLength": 1048576,
+      "minLength": 0
+    },
+    "plugins.name": {
+      "maxLength": 64,
+      "minLength": 1
+    },
+    "plugins.source.data": {
+      "maxLength": 70254592,
+      "minLength": 1
+    },
+    "setup_commands": {
+      "maxItems": 16
+    },
+    "setup_commands.command": {
+      "maxLength": 65536,
+      "minLength": 0
+    },
+    "setup_commands.cwd": {
+      "maxLength": 4096,
+      "minLength": 0
+    },
+    "skills": {
+      "maxItems": 200
+    },
+    "skills.description": {
+      "maxLength": 1048576,
+      "minLength": 0
+    },
+    "skills.name": {
+      "maxLength": 64,
+      "minLength": 1
+    },
+    "skills.skill_id": {
+      "maxLength": 64,
+      "minLength": 1
+    },
+    "skills.source.data": {
+      "maxLength": 70254592,
+      "minLength": 1
+    },
+    "skills.version": {
+      "maxLength": 1048576,
+      "minLength": 0
+    }
+  },
+  "sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "source": "https://github.com/openai/openai-openapi/blob/926a7b8133226630bac025350e84b0ca5c31d45a/openapi.json"
+}

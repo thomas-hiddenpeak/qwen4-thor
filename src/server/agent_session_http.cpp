@@ -105,6 +105,8 @@ void Stream(int fd, ObjectStore& objects, const std::string& id, bool follow,
   AgentEventCursor cursor;
   using Clock = std::chrono::steady_clock;
   auto heartbeat = Clock::now() + std::chrono::seconds(5);
+  const auto status = follow ? detail::StreamStatus::kOk
+                             : detail::StreamStatus::kCreated;
   bool started = false;
   try {
     if (follow) {
@@ -114,7 +116,7 @@ void Stream(int fd, ObjectStore& objects, const std::string& id, bool follow,
                           {}, installed.ClientCode());
         return;
       }
-      if (!detail::BeginStreamingResponse(fd, http->State(), {access.deadline}))
+      if (!detail::BeginStreamingResponse(fd, http->State(), {access.deadline}, status))
         return;
       started = true;
     }
@@ -134,7 +136,7 @@ void Stream(int fd, ObjectStore& objects, const std::string& id, bool follow,
         return;
       }
       if (!started &&
-          !detail::BeginStreamingResponse(fd, http->State(), {access.deadline}))
+          !detail::BeginStreamingResponse(fd, http->State(), {access.deadline}, status))
         return;
       started = true;
       for (const auto& event : events.array) {
@@ -322,12 +324,15 @@ void ServeAgentSession(int fd, ObjectStore& objects, ClientAdmission& clients,
     Stream(fd, objects, reply.value.GetString("id"), method == "GET", access);
     return;
   }
-  if (reply.ok() && ParseAgentSessionRoute(target).kind == Kind::kEvents &&
+  const auto kind = ParseAgentSessionRoute(target).kind;
+  if (reply.ok() && kind == Kind::kEvents &&
       method == "POST") {
     detail::SendSimple(fd, 202, "Accepted", "", "application/json",
                        {access.deadline});
   } else if (reply.ok()) {
-    detail::SendSimple(fd, 200, "OK", OutputJson(reply.value),
+    const bool created = kind == Kind::kCollection && method == "POST";
+    detail::SendSimple(fd, created ? 201 : 200, created ? "Created" : "OK",
+                       OutputJson(reply.value),
                        "application/json", {access.deadline});
   } else {
     detail::SendError(fd, reply.http_status, reply.ClientMessage(),

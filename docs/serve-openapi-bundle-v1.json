@@ -4014,7 +4014,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "JSON response",
             "headers": {
               "X-Request-Id": {
@@ -4457,7 +4457,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "JSON response",
             "headers": {
               "X-Request-Id": {
@@ -4743,7 +4743,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "JSON response",
             "headers": {
               "X-Request-Id": {
@@ -5206,7 +5206,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "JSON response",
             "headers": {
               "X-Request-Id": {
@@ -5492,7 +5492,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "JSON response",
             "headers": {
               "X-Request-Id": {
@@ -42607,20 +42607,37 @@
             "type": "object",
             "properties": {
               "capability_directories": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               },
               "desktop": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_5"
               },
               "env": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_8",
+                "additionalProperties": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxProperties": 1024,
+                "propertyNames": {
+                  "maxLength": 256,
+                  "minLength": 1
+                },
                 "writeOnly": true
               },
               "files": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_10"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_10",
+                "maxItems": 50
               },
               "name": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_17"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_17",
+                "maxLength": 256,
+                "minLength": 1
               },
               "network": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_18"
@@ -42629,14 +42646,17 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_24"
               },
               "plugins": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_26"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_26",
+                "maxItems": 32
               },
               "setup_commands": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_32",
+                "maxItems": 16,
                 "writeOnly": true
               },
               "skills": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_35"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_35",
+                "maxItems": 200
               }
             },
             "required": [],
@@ -42737,10 +42757,14 @@
             "type": "object",
             "properties": {
               "file_id": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 256,
+                "minLength": 1
               },
               "path": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 4096,
+                "minLength": 1
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_14"
@@ -42761,10 +42785,14 @@
             "properties": {
               "data": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 6990508,
+                "minLength": 0,
                 "writeOnly": true
               },
               "path": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 4096,
+                "minLength": 1
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_16"
@@ -42807,10 +42835,20 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_20"
               },
               "allowed_domains": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               },
               "blocked_domains": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 100
               }
             },
             "required": [
@@ -42882,13 +42920,28 @@
             "type": "object",
             "properties": {
               "npm": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               },
               "python": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               },
               "system": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               }
             },
             "required": [],
@@ -42914,10 +42967,14 @@
             "type": "object",
             "properties": {
               "description": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 1048576,
+                "minLength": 0
               },
               "name": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 64,
+                "minLength": 1
               },
               "source": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_29",
@@ -42940,6 +42997,8 @@
             "properties": {
               "data": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 70254592,
+                "minLength": 1,
                 "writeOnly": true
               },
               "media_type": {
@@ -42982,10 +43041,14 @@
             "type": "object",
             "properties": {
               "command": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 65536,
+                "minLength": 0
               },
               "cwd": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_17"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_17",
+                "maxLength": 4096,
+                "minLength": 0
               }
             },
             "required": [
@@ -43023,13 +43086,17 @@
             "type": "object",
             "properties": {
               "skill_id": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 64,
+                "minLength": 1
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_39"
               },
               "version": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_17"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_17",
+                "maxLength": 1048576,
+                "minLength": 0
               }
             },
             "required": [
@@ -43045,10 +43112,14 @@
             "type": "object",
             "properties": {
               "description": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 1048576,
+                "minLength": 0
               },
               "name": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_4",
+                "maxLength": 64,
+                "minLength": 1
               },
               "source": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_29",
@@ -43070,20 +43141,37 @@
             "type": "object",
             "properties": {
               "capability_directories": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               },
               "desktop": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_42"
               },
               "env": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_44",
+                "additionalProperties": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxProperties": 1024,
+                "propertyNames": {
+                  "maxLength": 256,
+                  "minLength": 1
+                },
                 "writeOnly": true
               },
               "files": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_10"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_10",
+                "maxItems": 50
               },
               "name": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_17"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_17",
+                "maxLength": 256,
+                "minLength": 1
               },
               "network": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_46"
@@ -43092,14 +43180,17 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_48"
               },
               "plugins": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_26"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_26",
+                "maxItems": 32
               },
               "setup_commands": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_32",
+                "maxItems": 16,
                 "writeOnly": true
               },
               "skills": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_35"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_35",
+                "maxItems": 200
               }
             },
             "required": [],
@@ -43162,10 +43253,20 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_20"
               },
               "allowed_domains": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               },
               "blocked_domains": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 100
               }
             },
             "required": [
@@ -43215,13 +43316,28 @@
             "type": "object",
             "properties": {
               "npm": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               },
               "python": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               },
               "system": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_1",
+                "items": {
+                  "maxLength": 1048576,
+                  "minLength": 0
+                },
+                "maxItems": 16384
               }
             },
             "required": [],

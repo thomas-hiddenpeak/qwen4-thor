@@ -22,7 +22,14 @@
         {
           "name": "capability_directories",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         },
         {
           "name": "desktop",
@@ -32,17 +39,35 @@
         {
           "name": "env",
           "optional": true,
-          "type": 8
+          "type": 8,
+          "bounds": {
+            "additionalProperties": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxProperties": 1024,
+            "propertyNames": {
+              "maxLength": 256,
+              "minLength": 1
+            }
+          }
         },
         {
           "name": "files",
           "optional": true,
-          "type": 10
+          "type": 10,
+          "bounds": {
+            "maxItems": 50
+          }
         },
         {
           "name": "name",
           "optional": true,
-          "type": 17
+          "type": 17,
+          "bounds": {
+            "maxLength": 256,
+            "minLength": 1
+          }
         },
         {
           "name": "network",
@@ -57,17 +82,26 @@
         {
           "name": "plugins",
           "optional": true,
-          "type": 26
+          "type": 26,
+          "bounds": {
+            "maxItems": 32
+          }
         },
         {
           "name": "setup_commands",
           "optional": true,
-          "type": 32
+          "type": 32,
+          "bounds": {
+            "maxItems": 16
+          }
         },
         {
           "name": "skills",
           "optional": true,
-          "type": 35
+          "type": 35,
+          "bounds": {
+            "maxItems": 200
+          }
         }
       ],
       "additional": null
@@ -146,12 +180,20 @@
         {
           "name": "file_id",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 256,
+            "minLength": 1
+          }
         },
         {
           "name": "path",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 4096,
+            "minLength": 1
+          }
         },
         {
           "name": "type",
@@ -171,12 +213,20 @@
         {
           "name": "data",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 6990508,
+            "minLength": 0
+          }
         },
         {
           "name": "path",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 4096,
+            "minLength": 1
+          }
         },
         {
           "name": "type",
@@ -215,12 +265,26 @@
         {
           "name": "allowed_domains",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         },
         {
           "name": "blocked_domains",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 100
+          }
         }
       ],
       "additional": null
@@ -258,17 +322,38 @@
         {
           "name": "npm",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         },
         {
           "name": "python",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         },
         {
           "name": "system",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         }
       ],
       "additional": null
@@ -290,12 +375,20 @@
         {
           "name": "description",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 1048576,
+            "minLength": 0
+          }
         },
         {
           "name": "name",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 64,
+            "minLength": 1
+          }
         },
         {
           "name": "source",
@@ -316,7 +409,11 @@
         {
           "name": "data",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 70254592,
+            "minLength": 1
+          }
         },
         {
           "name": "media_type",
@@ -356,12 +453,20 @@
         {
           "name": "command",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 65536,
+            "minLength": 0
+          }
         },
         {
           "name": "cwd",
           "optional": true,
-          "type": 17
+          "type": 17,
+          "bounds": {
+            "maxLength": 4096,
+            "minLength": 0
+          }
         }
       ],
       "additional": null
@@ -390,7 +495,11 @@
         {
           "name": "skill_id",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 64,
+            "minLength": 1
+          }
         },
         {
           "name": "type",
@@ -400,7 +509,11 @@
         {
           "name": "version",
           "optional": true,
-          "type": 17
+          "type": 17,
+          "bounds": {
+            "maxLength": 1048576,
+            "minLength": 0
+          }
         }
       ],
       "additional": null
@@ -415,12 +528,20 @@
         {
           "name": "description",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 1048576,
+            "minLength": 0
+          }
         },
         {
           "name": "name",
           "optional": false,
-          "type": 4
+          "type": 4,
+          "bounds": {
+            "maxLength": 64,
+            "minLength": 1
+          }
         },
         {
           "name": "source",
@@ -441,7 +562,14 @@
         {
           "name": "capability_directories",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         },
         {
           "name": "desktop",
@@ -451,17 +579,35 @@
         {
           "name": "env",
           "optional": true,
-          "type": 44
+          "type": 44,
+          "bounds": {
+            "additionalProperties": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxProperties": 1024,
+            "propertyNames": {
+              "maxLength": 256,
+              "minLength": 1
+            }
+          }
         },
         {
           "name": "files",
           "optional": true,
-          "type": 10
+          "type": 10,
+          "bounds": {
+            "maxItems": 50
+          }
         },
         {
           "name": "name",
           "optional": true,
-          "type": 17
+          "type": 17,
+          "bounds": {
+            "maxLength": 256,
+            "minLength": 1
+          }
         },
         {
           "name": "network",
@@ -476,17 +622,26 @@
         {
           "name": "plugins",
           "optional": true,
-          "type": 26
+          "type": 26,
+          "bounds": {
+            "maxItems": 32
+          }
         },
         {
           "name": "setup_commands",
           "optional": true,
-          "type": 32
+          "type": 32,
+          "bounds": {
+            "maxItems": 16
+          }
         },
         {
           "name": "skills",
           "optional": true,
-          "type": 35
+          "type": 35,
+          "bounds": {
+            "maxItems": 200
+          }
         }
       ],
       "additional": null
@@ -539,12 +694,26 @@
         {
           "name": "allowed_domains",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         },
         {
           "name": "blocked_domains",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 100
+          }
         }
       ],
       "additional": null
@@ -562,17 +731,38 @@
         {
           "name": "npm",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         },
         {
           "name": "python",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         },
         {
           "name": "system",
           "optional": true,
-          "type": 1
+          "type": 1,
+          "bounds": {
+            "items": {
+              "maxLength": 1048576,
+              "minLength": 0
+            },
+            "maxItems": 16384
+          }
         }
       ],
       "additional": null

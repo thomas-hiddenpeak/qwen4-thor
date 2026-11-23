@@ -824,7 +824,8 @@ void ChatServer::Dispatch(int fd, const std::string& method,
             ? HandleStoredChatRequest(*objects_, method, path, body, access)
             : HandleConversationRequest(*objects_, method, path, body, access);
     if (reply.ok())
-      SendSimple(fd, 200, "OK", OutputJson(reply.value), "application/json",
+      SendSimple(fd, reply.http_status, reply.http_status == 201 ? "Created" : "OK",
+                 OutputJson(reply.value), "application/json",
                  {access.deadline});
     else
       SendError(fd, reply.http_status, reply.ClientMessage(),

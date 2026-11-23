@@ -309,6 +309,7 @@ ObjectReply HandleAgentRegistration(ObjectStore& objects,
   if (result.commit_unknown)
     result.value = Object({{"id", String(request.id)}});
   if (result.ok()) {
+    if (collection) result.http_status = 201;
     result.value = method == "DELETE"
                        ? Object({{"id", String(request.id)},
                                  {"object", String("agent.deleted")},
