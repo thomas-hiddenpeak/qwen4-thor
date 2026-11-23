@@ -2489,7 +2489,8 @@
         "evidence/serve-agent-sessions-20261123/traces.json",
         "evidence/serve-agent-environments-20261124/templates.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-queries.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-stream.json"
       ],
       "release": {
         "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
@@ -5331,7 +5332,8 @@
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
         "evidence/serve-agent-environments-20261124/templates.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-queries.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-stream.json"
       ],
       "release": null,
       "security_requirements": [
@@ -8352,7 +8354,8 @@
         "evidence/serve-agent-sessions-20261123/traces.json",
         "evidence/serve-agent-environments-20261124/templates.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-queries.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-stream.json"
       ],
       "release": null,
       "mcp_business_progress": {

@@ -2770,6 +2770,7 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
     return Ok(run.ContinueFileSearch(12, config, {}, &next)) && run.Append(text, {}, &wire) &&
            Ok(run.Finish(false, 0, {27, 0, 16, 0}, now + 2, &wire));
   };
+  std::function<bool()> inspect_claim;
   const auto dispatch = [&](ResponsesExecution& run, bool followup) {
     ResponseDelta call;
     call.kind = ResponseDelta::Kind::kTool;
@@ -2788,6 +2789,7 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
                        turn.messages.array[1].GetString("content") != "452" ||
                        turn.messages.array[2].GetString("content") != "recall")))
         throw std::runtime_error("Child did not recover its own transcript");
+      if (inspect_claim && !inspect_claim()) throw std::runtime_error("Incorrect live child claim boundary");
       ++invoked;
       *assistant = Parse(R"({"role":"assistant","content":"452"})");
       *done = true;
@@ -2796,6 +2798,18 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
     return Ok(run.RunAgents(2, step, {})) && invoked == 1;
   };
   std::string id, parent;
+  AgentEventCursor from_create, late;
+  Json early_events = Parse("[]");
+  const auto drain = [&](ObjectStore& store, AgentEventCursor& cursor, Json* out, bool terminal) {
+    for (size_t i = 0; i < 16; ++i) {
+      bool settled = false;
+      Json batch;
+      if (!Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor, &batch, &settled))) return false;
+      out->array.insert(out->array.end(), batch.array.begin(), batch.array.end());
+      if (settled || batch.array.empty()) return settled == terminal;
+    }
+    return false;
+  };
   {
     ObjectStore objects(fixture.options);
     ResponsesExecution first(objects);
@@ -2803,7 +2817,18 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
     Q4T_CHECK(Ok(created));
     id = created.value.GetString("id");
     parent = created.value.Find("agent")->GetString("id");
+    inspect_claim = [&] {
+      if (!drain(objects, from_create, &early_events, false) ||
+          !Ok(OpenAgentEventSubscription(objects, id, Access(), &late))) return false;
+      Json now = Parse("[]");
+      return drain(objects, late, &now, false) && now.array.empty() &&
+             std::count_if(early_events.array.begin(), early_events.array.end(), [](const Json& e) {
+               return e.GetString("type") == "agent.session.turn.in_progress" &&
+                      e.Find("turn")->Find("subagent_id")->IsString();
+             }) == 1;
+    };
     Q4T_CHECK(begin(first) && dispatch(first, false) && end(first));
+    inspect_claim = {};
   }
   const auto base = "/v1/agents/sessions/" + id + "/subagents";
   // Reopen the journal for every reader and for the following inference.
@@ -2830,6 +2855,29 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
             detail.value.GetInt("started_at") >= now &&
             detail.value.GetInt("completed_at") >= detail.value.GetInt("started_at") &&
             ValidateAgentSession(detail.value, AgentSessionShape::kTurn, &error));
+  Q4T_CHECK(drain(reopened, from_create, &early_events, true));
+  Json late_events = Parse("[]");
+  Q4T_CHECK(drain(reopened, late, &late_events, true));
+  const auto verify_stream = [&](const Json& events, bool subscribed_late) {
+    std::vector<std::string> edges;
+    std::set<std::string> ids;
+    std::string child_text;
+    for (const auto& e : events.array) {
+      if (!ids.insert(e.GetString("event_id")).second) return false;
+      if (e.GetString("type") == "agent.session.subagent.created" &&
+          e.Find("subagent")->GetString("id") == child) edges.emplace_back("created_child");
+      if (e.GetString("turn_id") != turn) continue;
+      const auto kind = e.GetString("type").substr(std::string("agent.session.turn.").size());
+      if (kind == "created" || kind == "in_progress" || kind == "completed") edges.push_back(kind);
+      if (e.Has("output_index") && e.GetInt("output_index", -1) != 0) return false;
+      if (kind == "output_text.delta") child_text += e.GetString("delta");
+      if (kind == "completed" && OutputJson(*e.Find("turn")) != OutputJson(detail.value)) return false;
+    }
+    return child_text == "452" &&
+        edges == (subscribed_late ? std::vector<std::string>{"completed"}
+                                  : std::vector<std::string>{"created_child", "created", "in_progress", "completed"});
+  };
+  Q4T_CHECK(verify_stream(early_events, false) && verify_stream(late_events, true));
   auto items = read(resource+"/turns/"+turn+"/items");
   Q4T_CHECK(Ok(items) && items.value.GetArray("data")->array.size() == 2 &&
             read(resource+"/items").value.GetString("first_id") == items.value.GetString("first_id"));

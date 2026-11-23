@@ -288,7 +288,9 @@ ObjectReply ResponsesExecution::RunAgents(
     if (found == agent_queued_items_.end())
       return Error(503, "agent_state_invalid", "Missing queued child dispatch");
     if (!plan_.agent_claim_times.IsObject()) plan_.agent_claim_times = Object();
-    Set(&plan_.agent_claim_times, found->second, Number(std::time(nullptr)));
+    Set(&plan_.agent_claim_times, found->second,
+        Object({{"at", Number(std::time(nullptr))},
+                {"sequence", Number(events_.array.size())}}));
     agent_queued_items_.erase(found);
     plan_.agent_tree = agents_->SaveSession();
     return Checkpoint();

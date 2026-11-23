@@ -37,6 +37,29 @@ bool Emit(Json* events, const std::string& prefix, const char* type,
   return true;
 }
 
+ObjectReply EmitChildEvents(const std::vector<Json>& rows,
+                            const std::string& prefix, Json* events,
+                            std::set<std::string>* delivered = nullptr) {
+  for (const auto& row : rows) {
+    const auto* child = row.Find("subagent");
+    const auto id = child ? child->GetString("id") : row.GetString("turn_id");
+    if (delivered && delivered->contains(id)) continue;
+    if (!Emit(events, prefix + "_" + id, row.GetString("type").c_str(), row))
+      return Invalid();
+    if (delivered) delivered->insert(id);
+  }
+  return {};
+}
+
+ObjectReply EmitChildClaims(const SubagentStepEvents& children,
+                            const std::string& response_id,
+                            AgentEventCursor* cursor, Json* events) {
+  const auto claims = children.claims.find(cursor->sequence);
+  if (claims == children.claims.end()) return {};
+  return EmitChildEvents(claims->second, response_id + "_claim", events,
+                         &cursor->emitted_child_claims);
+}
+
 ObjectReply CloseWaiting(AgentSessionView snapshot, const Json& link,
                          const AgentEventCursor& cursor, Json* events) {
   if (snapshot.turn.GetString("status") != "cancelled") return Invalid();
@@ -58,10 +81,11 @@ ObjectReply CloseWaiting(AgentSessionView snapshot, const Json& link,
 }
 
 ObjectReply Translate(const Json& session, const Json& link, const Json& record,
-                      const Json& event, AgentEventCursor& cursor, Json* events,
-                      bool* end_step, bool* settled) {
+                      const Json& event, const SubagentStepEvents& children,
+                      AgentEventCursor& cursor, Json* events, bool* end_step,
+                      bool* settled) {
   const auto type = event.GetString("type");
-  const auto turn = link.GetString("id");
+  auto turn = link.GetString("id");
   const auto id = session.GetString("id");
   const auto response_id = link.GetString("response_id");
   const auto prefix =
@@ -115,6 +139,8 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
           !Emit(events, prefix, "agent.session.turn.in_progress", loc))
         return Invalid();
     } else if (terminal) {
+      auto flushed = EmitChildEvents(children.terminal, prefix, events);
+      if (!flushed.ok()) return flushed;
       cursor.session_usage = std::move(total);
       cursor.turn_usage = usage;
       *end_step = true;
@@ -124,10 +150,11 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
       for (size_t index = 0; index < snapshot.items.array.size(); ++index) {
         const auto& item = snapshot.items.array[index];
         if (item.GetString("type") != "function_call") continue;
-        auto call = Object({{"session_id", String(id)},
-                            {"turn_id", String(turn)},
-                            {"output_index", Number(cursor.turn_output_offset + index)},
-                            {"item", item}});
+        auto call =
+            Object({{"session_id", String(id)},
+                    {"turn_id", String(turn)},
+                    {"output_index", Number(cursor.turn_output_offset + index)},
+                    {"item", item}});
         const auto key = prefix + "_call_" + std::to_string(index);
         if (snapshot.turn.GetString("status") == "waiting" &&
             item.GetString("status") == "completed" &&
@@ -173,9 +200,16 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     const auto raw = event.GetInt("output_index", -1);
     if (!output || raw < 0 || static_cast<size_t>(raw) >= output->array.size())
       return Invalid();
-    if (IsPrivateAgentOutput(output->array[raw])) return {};
-    const auto shown = cursor.turn_output_offset + VisibleOutputs(*output, raw);
-    Set(&loc, "output_index", Number(shown));
+    const auto child = children.outputs.find(raw);
+    if (child != children.outputs.end()) {
+      turn = child->second.turn;
+      Set(&loc, "turn_id", String(turn));
+      Set(&loc, "output_index", Number(child->second.index));
+    } else {
+      if (IsPrivateAgentOutput(output->array[raw])) return {};
+      Set(&loc, "output_index",
+          Number(cursor.turn_output_offset + VisibleOutputs(*output, raw)));
+    }
   }
   if (type == "response.output_item.added" ||
       type == "response.output_item.done") {
@@ -184,7 +218,8 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     if (item->GetString("type") == "function_call") return {};
     auto items = Array(), actions = Array();
     auto projected = item->GetString("type") == "multi_agent_call_output"
-                         ? ParentActionItem(*item, *record.Find("response"), session, turn, &items)
+                         ? ParentActionItem(*item, *record.Find("response"),
+                                            session, turn, &items)
                          : ProjectItem(*item, turn, &items, &actions, false);
     if (!projected.ok()) return projected;
     if (items.array.empty()) return {};
@@ -194,6 +229,11 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
                                       : "agent.session.turn.item.added",
               loc))
       return Invalid();
+    if (type == "response.output_item.done") {
+      const auto edges = children.item_done.find(event.GetInt("output_index"));
+      if (edges != children.item_done.end())
+        return EmitChildEvents(edges->second, prefix, events);
+    }
     return {};
   }
   // Raw chain-of-thought, probability fields and Responses-only tool argument
@@ -204,8 +244,8 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
   if (!summary && !suffix.starts_with("content_part.") &&
       !suffix.starts_with("output_text.") && !suffix.starts_with("refusal."))
     return {};
-  for (const auto* key : {"item_id", "content_index",
-                          "summary_index", "text", "delta"})
+  for (const auto* key :
+       {"item_id", "content_index", "summary_index", "text", "delta"})
     if (event.Has(key)) Set(&loc, key, Member(event, key));
   if (suffix.starts_with("refusal.")) {
     suffix = "output_text." + suffix.substr(8);
@@ -264,6 +304,14 @@ ObjectReply OpenAgentEventSubscription(ObjectStore& objects,
     if (status == "queued" || status == "in_progress") {
       if (&link != &links->array.back()) return Invalid();
       next.sequence = record.value.GetArray("events")->array.size();
+      SubagentStepEvents children;
+      auto indexed =
+          IndexSubagentEvents(settings.value, record.value, &children);
+      if (!indexed.ok()) return indexed;
+      if (auto boundary = children.claims.find(next.sequence);
+          boundary != children.claims.end())
+        for (const auto& claim : boundary->second)
+          next.emitted_child_claims.insert(claim.GetString("turn_id"));
     } else {
       const auto& output = *record.value.Find("response")->GetArray("output");
       next.turn_output_offset += VisibleOutputs(output, output.array.size());
@@ -329,6 +377,7 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
     cursor->waiting = false;
     ++cursor->step;
     cursor->sequence = 0;
+    cursor->emitted_child_claims.clear();
     if (*settled) return {};
   }
   const auto& link = links->array[cursor->step];
@@ -338,12 +387,19 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
   auto record = ResponsesState(objects).ReadRecord(response_id, access);
   if (!record.ok()) return record;
   if (record.value.GetString("agent_session_id") != id) return Invalid();
+  SubagentStepEvents children;
+  auto indexed = IndexSubagentEvents(settings.value, record.value, &children);
+  if (!indexed.ok()) return indexed;
   const auto& journal = *record.value.GetArray("events");
   const auto& response = *record.value.Find("response");
   // Native Responses keeps the cancelled snapshot and its committed prefix.
   // There is no native response.cancelled SSE record. Emit the Agent terminal
   // after that prefix, including when storage reserved only the final snapshot.
   const auto status = response.GetString("status");
+  if (cursor->sequence == journal.array.size()) {
+    auto claims = EmitChildClaims(children, response_id, cursor, events);
+    if (!claims.ok()) return claims;
+  }
   if (cursor->sequence == journal.array.size() &&
       (status == "cancelled" ||
        (journal.array.empty() && status == "failed"))) {
@@ -351,11 +407,12 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
         Object({{"type", String("response." + response.GetString("status"))},
                 {"response", response}});
     bool end = false;
-    auto result = Translate(settings.value, link, record.value, event, *cursor,
-                            events, &end, settled);
+    auto result = Translate(settings.value, link, record.value, event, children,
+                            *cursor, events, &end, settled);
     if (result.ok() && end) {
       ++cursor->step;
       cursor->sequence = 0;
+      cursor->emitted_child_claims.clear();
     }
     return result;
   }
@@ -369,9 +426,11 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
         static_cast<int64_t>(cursor->sequence))
       return Invalid();
     const auto before = events->array.size();
+    auto claims = EmitChildClaims(children, response_id, cursor, events);
+    if (!claims.ok()) return claims;
     bool end = false;
-    auto result = Translate(settings.value, link, record.value, event, *cursor,
-                            events, &end, settled);
+    auto result = Translate(settings.value, link, record.value, event, children,
+                            *cursor, events, &end, settled);
     if (!result.ok()) return result;
     for (auto i = before; i < events->array.size(); ++i)
       bytes += OutputJson(events->array[i]).size();
@@ -381,6 +440,7 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
       if (!cursor->waiting) {
         ++cursor->step;
         cursor->sequence = 0;
+        cursor->emitted_child_claims.clear();
       }
       break;
     }

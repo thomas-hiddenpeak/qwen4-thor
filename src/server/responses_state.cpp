@@ -545,9 +545,18 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
       if (!times) continue;
       if (!times->IsObject() || times->object.size() > ResponsesOutput::kMaxItems)
         return StateError("Invalid stored subagent clock");
-      for (const auto& [key, value] : times->object)
-        if (!ValidApplicationId(key) || !IsInputInteger(value) || value.number <= 0)
+      for (const auto& [key, value] : times->object) {
+        const Json* at = &value;
+        if (target == &plan->agent_claim_times && value.IsObject()) {
+          const auto* seq = value.Find("sequence");
+          if (value.object.size() != 2 || !seq || !IsInputInteger(*seq) ||
+              seq->number < 0 || seq->number > ResponsesOutput::kStorageLimit)
+            return StateError("Invalid stored subagent event position");
+          at = value.Find("at");
+        }
+        if (!ValidApplicationId(key) || !at || !IsInputInteger(*at) || at->number <= 0)
           return StateError("Invalid stored subagent clock");
+      }
       *target = *times;
     }
     plan->agent_turn_started_at = data->GetInt("agent_turn_started_at");

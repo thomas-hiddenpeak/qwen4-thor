@@ -147,6 +147,8 @@ class HistoryPage {
 };
 
 struct Member {
+  std::string path;
+  size_t output_count = 0;
   Json resource, turns = Array(), items = Array();
 };
 struct Family {
@@ -186,15 +188,47 @@ void Start(Member* member, const Json& session, const Json& call,
               {"content", Text(input, "input_text")}}));
 }
 
+Json TurnEvent(const Json& turn) {
+  const auto status = turn.GetString("status");
+  auto event =
+      Object({{"type", String("agent.session.turn." +
+                              (status == "queued" ? "created" : status))},
+              {"session_id", *turn.Find("session_id")},
+              {"turn_id", *turn.Find("id")},
+              {"turn", turn}});
+  if (status != "queued" && status != "in_progress") Set(&event, "usage", {});
+  return event;
+}
+
+void StartRecorded(Member* child, const Json& session, const Call& call,
+                   int64_t at, const Json* claim, size_t index,
+                   SubagentStepEvents* events) {
+  const auto started = !claim              ? 0
+                       : claim->IsObject() ? claim->GetInt("at")
+                                           : claim->AsInt();
+  Start(child, session, *call.source, call.args.GetString("task"), at, started);
+  child->output_count = 0;
+  if (!events) return;
+  const auto& turn = child->turns.array.back();
+  auto queued = turn;
+  Set(&queued, "status", String("queued"));
+  Set(&queued, "started_at", {});
+  events->item_done[index].push_back(TurnEvent(queued));
+  if (claim && claim->IsObject())
+    events->claims[claim->GetInt("sequence")].push_back(TurnEvent(turn));
+}
+
 ObjectReply ProjectFamily(const Json& session, const Json& record,
-                          Family* family) {
+                          Family* family,
+                          SubagentStepEvents* events = nullptr) {
   const auto* response = record.Find("response");
   const auto* output = response ? response->GetArray("output") : nullptr;
   if (!output || output->array.size() > ResponsesOutput::kMaxItems)
     return Invalid();
   const auto* times = record.Find("agent_item_times");
   const auto* claims = record.Find("agent_claim_times");
-  for (const auto& item : output->array) {
+  for (size_t index = 0; index < output->array.size(); ++index) {
+    const auto& item = output->array[index];
     const auto type = item.GetString("type");
     if (type != "multi_agent_call_output" &&
         !(type == "message" && Owner(item) != "root"))
@@ -204,6 +238,12 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
     const auto owner = PublicId(session, Owner(item));
     auto* actor = family->Find(owner);
     if (Owner(item) != "root" && !actor) return Invalid();
+    if (events && actor &&
+        (type == "message" || item.GetString("action") != "list_agents")) {
+      if (actor->turns.array.empty()) return Invalid();
+      events->outputs[index] = {actor->turns.array.back().GetString("id"),
+                                actor->output_count++};
+    }
     if (type == "message") {
       if (!actor || actor->turns.array.empty()) return Invalid();
       auto& turn = actor->turns.array.back();
@@ -215,6 +255,11 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
       Set(&turn, "status",
           String(item.GetString("status") == "completed" ? "completed"
                                                          : "failed"));
+      if (turn.GetString("status") == "failed")
+        Set(&turn, "error",
+            Object({{"code", String("server_error")},
+                    {"message", String("Incomplete subagent output")}}));
+      if (events) events->item_done[index].push_back(TurnEvent(turn));
       continue;
     }
     Call call;
@@ -230,6 +275,7 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
       actor->items.array.push_back(std::move(operation));
     }
     if (call.result.Has("error")) continue;
+    const auto* claim = claims ? claims->Find(item.GetString("id")) : nullptr;
     if (action == "spawn_agent") {
       const auto name = call.args.GetString("name"),
                  task = call.args.GetString("task");
@@ -242,6 +288,7 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
           !family->index.emplace(id, family->entries.size()).second)
         return Invalid();
       Member child;
+      child.path = path;
       child.resource = Object({{"id", String(id)},
                                {"object", String("agent.session.subagent")},
                                {"session_id", *session.Find("id")},
@@ -251,34 +298,40 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
                                {"opened_at", Number(at)},
                                {"closed_at", {}},
                                {"status", String("active")}});
-      Start(&child, session, *call.source, task, at,
-            claims ? claims->GetInt(item.GetString("id")) : 0);
+      if (events)
+        events->item_done[index].push_back(
+            Object({{"type", String("agent.session.subagent.created")},
+                    {"subagent", child.resource}}));
+      StartRecorded(&child, session, call, at, claim, index, events);
       family->entries.push_back(std::move(child));
     } else if (action == "followup_task") {
-      auto* child =
-          family->Find(PublicId(session, call.args.GetString("target")));
+      const auto path = call.args.GetString("target");
+      const auto id = PublicId(session, path);
+      if (call.result.GetString("agent_name") != path) return Invalid();
+      auto* child = family->Find(id);
+      // A replay page indexes one native step. An existing idle child's first
+      // action here can be a follow-up to a task in an older step.
+      if (!child && events) {
+        family->index.emplace(id, family->entries.size());
+        child = &family->entries.emplace_back();
+        child->path = path;
+        child->resource = Object({{"id", String(id)}});
+      }
       if (!child) return Invalid();
-      Start(child, session, *call.source, call.args.GetString("task"), at,
-            claims ? claims->GetInt(item.GetString("id")) : 0);
+      StartRecorded(child, session, call, at, claim, index, events);
     } else if (action == "interrupt_agent") {
       const auto target = call.args.GetString("target");
-      const auto interrupted = PublicId(session, target);
-      auto* child = family->Find(interrupted);
-      if (!child) return Invalid();
+      if (!events && !family->Find(PublicId(session, target))) return Invalid();
       for (auto& member : family->entries) {
+        if (member.path != target && !member.path.starts_with(target + "/"))
+          continue;
         if (member.turns.array.empty()) return Invalid();
-        auto id = member.resource.GetString("id");
-        while (id != interrupted) {
-          auto* parent = family->Find(id);
-          if (!parent) break;
-          id = parent->resource.GetString("parent_agent_id");
-        }
-        if (id != interrupted) continue;
         auto& turn = member.turns.array.back();
         const auto status = turn.GetString("status");
         if (status == "queued" || status == "in_progress") {
           Set(&turn, "status", String("cancelled"));
           Set(&turn, "completed_at", Number(at));
+          if (events) events->item_done[index].push_back(TurnEvent(turn));
         }
       }
     }
@@ -293,12 +346,20 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
           turn.GetString("status") == "in_progress") {
         Set(&turn, "status", String("cancelled"));
         Set(&turn, "completed_at", Number(ended));
+        if (events) events->terminal.push_back(TurnEvent(turn));
       }
     }
   }
   return {};
 }
 }  // namespace
+
+ObjectReply IndexSubagentEvents(const Json& session, const Json& record,
+                                SubagentStepEvents* events) {
+  if (!record.Has("agent_item_times")) return {};
+  Family family;
+  return ProjectFamily(session, record, &family, events);
+}
 
 bool IsPrivateAgentOutput(const Json& item) {
   const auto type = item.GetString("type");
