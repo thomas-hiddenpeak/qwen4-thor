@@ -479,13 +479,11 @@ ObjectReply RemoteHttp::Buffered(int status, const RemoteHeaders& headers,
   return {};
 }
 
-ObjectReply RemoteHttp::Open(const Url& url, const FileFetchOptions& options,
-                             std::string_view method,
-                             const RemoteHeaders& headers,
-                             std::string_view body, uint64_t max_bytes,
-                             Deadline deadline,
-                             std::unique_ptr<RemoteHttp>* output,
-                             uint64_t max_request_bytes) {
+ObjectReply RemoteHttp::Open(
+    const Url& url, const FileFetchOptions& options, std::string_view method,
+    const RemoteHeaders& headers, std::string_view body, uint64_t max_bytes,
+    Deadline deadline, std::unique_ptr<RemoteHttp>* output,
+    uint64_t max_request_bytes, const std::function<bool()>& before_send) {
   if (!output) return Error(500, "remote_http_state", "Missing output");
   output->reset();
   if ((method != "POST" && method != "GET" && method != "DELETE") ||
@@ -518,6 +516,9 @@ ObjectReply RemoteHttp::Open(const Url& url, const FileFetchOptions& options,
   auto impl = std::make_unique<Impl>(deadline);
   auto reply = Connect(url, options, deadline, &impl->stream);
   if (!reply.ok()) return reply;
+  if (before_send && !before_send())
+    return Error(409, "remote_dispatch_denied",
+                 "Request is no longer authorized");
   // A write can succeed remotely even if its reply is lost. No replay here.
   if (!impl->stream.Write(request, deadline) ||
       !impl->stream.Write(body, deadline))

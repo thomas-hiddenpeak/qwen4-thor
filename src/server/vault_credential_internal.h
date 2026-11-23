@@ -3,6 +3,7 @@
 #include "q4t/server/agent_vault.h"
 #include "q4t/server/application_routes.h"
 #include "q4t/server/conversation_state.h"
+#include "q4t/server/file_fetch.h"
 
 namespace q4t::server::vault_detail {
 struct ListOptions {
@@ -24,7 +25,9 @@ ObjectReply ArchiveCredentials(io::Json* vault);
 // this function; the returned token is never a field of the public resource.
 ObjectReply ResolveMcpToken(ObjectStore& store, const StateAccess& access,
                             const io::Json& vaults, std::string_view id,
-                            const std::string& destination, std::string* token);
+                            const std::string& destination, std::string* token,
+                            const FileFetchOptions* deployment = nullptr,
+                            bool* refresh_needed = nullptr);
 enum class CredentialShape { kCreate, kAuthCreate, kAuthRotate, kResource };
 Status ValidateCredential(const io::Json& value, CredentialShape shape,
                           ChatPlanError* error);

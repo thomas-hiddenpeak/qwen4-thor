@@ -70,7 +70,7 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
         tool, &definition, &error, "tools[" + std::to_string(i) + ']');
     if (!status) return PlanError(status, error);
     BindResponsesMcpCredentials(&definition, mcp_credentials_);
-    auto authorized = AuthorizeAgentMcp(&definition);
+    auto authorized = AuthorizeAgentMcp(&definition, false);
     if (!authorized.ok()) return authorized;
     // Missing/revoked deployment routes do not prevent offline consumption of
     // authenticated frozen history. Any new I/O must resolve again below.
@@ -181,6 +181,7 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
                      "Queued catalog must retain its original policy");
       if (opened.value.GetBool("credentials_required") &&
           !ResponsesMcpHasCredentials(definition) &&
+          !definition.credentials.exact_target &&
           (require_frozen_inputs_ || refresh) && !config.count_input_only)
         return Error(400, "mcp_credentials_required",
                      "Resupply request credentials for this MCP server");
@@ -201,6 +202,8 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
     auto resolved = ResolveMcpDeploymentTarget(config.mcp_policy.get(),
                                                access_.scope, &definition);
     if (!resolved.ok()) return resolved;
+    auto authorized = AuthorizeAgentMcp(&definition);
+    if (!authorized.ok() || authorized.commit_unknown) return authorized;
     McpTransportReceipt receipt;
     McpSession session;
     auto listed =

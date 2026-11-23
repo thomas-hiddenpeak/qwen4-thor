@@ -75,8 +75,10 @@ ObjectReply ListCredentials(const Json& entries, std::string_view vault,
 }
 
 void Archive(Json* row) {
-  std::erase_if(row->object,
-                [](const auto& field) { return field.first == "sealed"; });
+  std::erase_if(row->object, [](const auto& field) {
+    return field.first == "sealed" || field.first == "refreshing" ||
+           field.first == "retry_at";
+  });
   Set(row, "archived", Boolean(true));
 }
 
@@ -191,6 +193,11 @@ ObjectReply CredentialRequest(ObjectStore& store, const VaultRoute& route,
       if (!result.ok()) return result;
       Set(&resource, "auth", std::move(projection));
       Set(&row, "sealed", String(std::move(sealed)));
+      if (const auto* refresh = auth->Find("refresh");
+          refresh && Nonnull(*refresh, "refresh_token"))
+        std::erase_if(row.object, [](const auto& field) {
+          return field.first == "refreshing" || field.first == "retry_at";
+        });
     }
     if (const auto* meta = input.Find("metadata"))
       Set(&resource, "metadata", *meta);

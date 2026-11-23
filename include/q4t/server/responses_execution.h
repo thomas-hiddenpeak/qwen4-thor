@@ -282,7 +282,8 @@ class ResponsesExecution {
   Status BindActiveTools(const io::Json& active, ChatPlanError* error,
                          const io::Json* history = nullptr);
   ObjectReply RestoreAgentMcp();
-  ObjectReply AuthorizeAgentMcp(ResponsesMcpDefinition* definition);
+  ObjectReply AuthorizeAgentMcp(ResponsesMcpDefinition* definition,
+                                bool dispatch = true);
   bool BeforeModelOutput() const;
   ObjectReply CaptureMcpCredentials();
   ObjectReply CloseMcpExecution(const StateAccess& access);

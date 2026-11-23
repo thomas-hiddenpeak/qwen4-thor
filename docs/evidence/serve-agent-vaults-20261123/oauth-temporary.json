@@ -1,0 +1,95 @@
+{
+  "engine": "1587c288b3c129299da7026bd05ef112fedae014f4da70584ed218b23c46e2a3",
+  "ingress": "1e71f9b806763a77a7dce8923ed9585f3d678b2105acfbdf9c9fa98be6e16593",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 49.949,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "issuer": {
+    "seen": [
+      "temporary",
+      "original",
+      "rotated"
+    ],
+    "no_replay": true,
+    "issuer_tls": true
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "calls": 1,
+    "citation": "[docs/MODEL.md:L1-L3]",
+    "events": 24,
+    "public_index": 0,
+    "wrong_tenant": 404,
+    "wrong_target": 404,
+    "ambiguous": 409,
+    "revoked": 404,
+    "chat_choices": [
+      0,
+      1
+    ],
+    "chat": "42"
+  },
+  "mcp": {
+    "methods": [
+      "initialize",
+      "notifications/initialized",
+      "tools/list",
+      "tools/call",
+      "resources/read"
+    ],
+    "http_requests": 5,
+    "source_sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "credential_scan": true
+  },
+  "cooldown_seconds": 4,
+  "client_status_during_cooldown": [
+    503,
+    503
+  ],
+  "unknown_then_repeat": [
+    502,
+    409
+  ],
+  "cpu_cases": 16,
+  "evidence": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-02/result.json",
+      "sha256": "d71f94d5a00ef200d25a9e63153c75ce320d3690fbea1de6f5eb4e458889dd52"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-02/create/refresh.json",
+      "sha256": "5ca610f3e993f8100592d1ef32bce3abf78e0447e75efd9066d0321943e3e63c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-02/create/sdk-result.json",
+      "sha256": "60973e828f1064b4d0946d5a35a93059871bcc7f4de7ddce891344c9c77f1989"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-business-02/create/peer-receipt.json",
+      "sha256": "d49e1502dcb9f0b6e3ff64927a2b9c43397191c457ea22d522fb5aa2b6ad5ef5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-lease-02/exit.json",
+      "sha256": "af3a0cdda79dbfa1ceb78c11a4cefa116c0143141aefc219f93a423b9785a442"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-r2-required.txt",
+      "sha256": "8060a26adede5c2eccd82895fb3d2eb7e29c81a57f037491ca1318407b9e903f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth-r2-cpu.log",
+      "sha256": "2f1662cb58646df98ecd28604631bab271ddfceabba6d5269c37e2f74130932e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/oauth_business_r2.py",
+      "sha256": "deb05a196ab9f8af3d48632f6e3fe97eab0d9939e278024839ae069c63f031ed"
+    }
+  ],
+  "default_at_test": "rev446 STOPPED"
+}

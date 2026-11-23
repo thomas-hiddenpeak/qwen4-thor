@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+OAuth 刷新候选已验证临时故障恢复。HTTPS 签发端要求等待 4 秒，两次 SDK 请求均收到 503，签发端只收到一次请求；等待期过后，原凭据成功续期，模型读回项目文档。随后丢失一次轮换回执，下一次请求得到 409，Chat 仍正常。16 项 CPU 检查通过，模型启动一次，短验用时 49.949 秒。继续验证执行中的续期和受管配置。[短验回执](evidence/serve-agent-vaults-20261123/oauth-temporary.json)
+
+PR #68 已合入主线。两项远端 host-contracts 通过；合并提交 `004153a4d` 与受检提交文件树相同，包含 Vault 的创建、归档、凭据轮换和主、轻配置业务接续。[主线回执](evidence/serve-agent-vaults-20261123/main.json)
+
+OAuth 自动刷新候选通过官方 SDK 业务短验。隔离的 HTTPS 令牌端点签发新访问令牌和轮换令牌，模型用新授权读取项目文档，准确引用第 1–3 行。第二次交换消耗了轮换令牌并丢失回执，重试收到 409，对端观察到总共两次交换，随后 Chat 正常回答 42。15 项 CPU 检查通过，单次模型启动 46.885 秒。继续验证临时错误重试和执行中令牌续期；默认 rev446。[OAuth 验收](evidence/serve-agent-vaults-20261123/oauth.json)
+
+默认已交付 **rev446，STOPPED**。在隔离托管服务分别终止模型和主网关后，新进程均保留原客户的 Vault 凭据；轮换成功，其他客户删除为 404，归档后禁止新绑定。相同工具结果回填两次只保存一份，随后 Chat 回答 42。发布未启动生产模型，13 份受保护文件保持原字节，独立回退包已注册。24 小时计划已预检，留给用户执行。[发行与交接](evidence/serve-agent-vaults-20261123/delivery.json)
+
 主配置保存的 Vault 凭据已由轻配置实际接续。轻配置只收到原凭据 ID 和服务地址，经 HTTPS 读取项目资料并准确引用第 1–3 行；归档后新绑定、跨租户读取均为 404。两套配置各启动一次，153 次 NVML 采样正常。独立 OpenAPI 已达 2,126,486 字节，封包读取边界已修复，复用了同一批业务原件。默认仍为 rev444、STOPPED；继续托管故障接管与可回退发行。[主轻资格](evidence/serve-agent-vaults-20261123/profiles.json)
 
 PR #67 的两项远端 host-contracts 均已通过。rev444 的托管恢复、独立回退包和长稳交接已进入 main；合并提交 c3a9bd91d 与受检提交 8b3df89ea 的文件树一致。[主线回执](evidence/serve-agent-sessions-20261123/recovery-main.json)

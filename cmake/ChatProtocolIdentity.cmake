@@ -720,6 +720,7 @@ set(protocol_inputs
   src/server/agent_registration.cpp
   src/server/agent_vault.cpp
   src/server/vault_credential_auth.cpp
+  src/server/vault_oauth.cpp
   src/server/vault_credential.cpp
   src/server/agent_session.cpp
   src/server/agent_session_turn.cpp

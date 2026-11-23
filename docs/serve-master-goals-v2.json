@@ -9107,7 +9107,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev442_delivered_remaining_deliveries",
+      "state": "rev446_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9129,7 +9129,8 @@
         "evidence/serve-responses-agents-delivery-20261123/README.md",
         "evidence/serve-native-maintenance-delivery-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/README.md",
-        "evidence/serve-responses-agent-interruption-20261123/delivery.json"
+        "evidence/serve-responses-agent-interruption-20261123/delivery.json",
+        "evidence/serve-agent-vaults-20261123/delivery.json"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -10557,7 +10558,7 @@
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
     }
   ],
-  "next_task": "Deliver recoverable Vault credentials, complete OAuth refresh and continue the remaining in-scope inference and application operations.",
+  "next_task": "Complete OAuth refresh and eligible environment execution, then continue the remaining in-scope inference, application and recovery tasks.",
   "next": "验证标准 Agent 会话在托管模型异常和版本切换后能接续原工具调用，再完成可回退发布与其余应用服务、恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -16543,7 +16544,7 @@
       "A12",
       "Q01"
     ],
-    "state": "primary_light_business_qualified",
+    "state": "rev446_delivered",
     "operations": [
       "create",
       "list",
@@ -16560,8 +16561,7 @@
     },
     "evidence": "evidence/serve-agent-vaults-20261123/acceptance.json",
     "remaining": [
-      "OAuth token endpoint refresh, hosted environment transport and environment credential substitution",
-      "Recoverable primary/light deployment and default promotion",
+      "Qualify and deliver OAuth renewal, complete transient failure recovery and active-session continuity; implement hosted environment transport and environment credential substitution.",
       "Complete remaining declared and undeclared application operations"
     ],
     "credential_management": "candidate_real_http_passed",
@@ -16573,6 +16573,8 @@
       "with_declared_operations": 77,
       "without_declared_operations": 80
     },
-    "profile_evidence": "evidence/serve-agent-vaults-20261123/profiles.json"
+    "profile_evidence": "evidence/serve-agent-vaults-20261123/profiles.json",
+    "delivery": "evidence/serve-agent-vaults-20261123/delivery.json",
+    "oauth_refresh_candidate": "evidence/serve-agent-vaults-20261123/oauth.json"
   }
 }

@@ -1,0 +1,346 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 446,
+    "version_revision": 152,
+    "profile_revision": 42,
+    "previous_profile_revision": 41,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "f9609cadbd91f2b8c97b61b1d63bc37254c101c77ab3637e38e3cf4a7d46c0df",
+    "fallback": "c58b8baffc63d6fcc05b2419e268023716bc9ad0203bb976fbdd1309dc0877c4",
+    "engine": "1ce1b873c66fd353f29ede9c824f80e02380fecc6aa2950e0286211909a3d398",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "managed": {
+    "model_loss": {
+      "artifacts": {
+        "vault-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/vault-before.json",
+          "sha256": "c89964e1b982cca32046c63153f580b1a8390083c0818cbc8fb892debdde3f1f"
+        },
+        "vault-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/vault-after.json",
+          "sha256": "36e55e0d8911e7a941e679895d582fb4916c76a98a81e697bafec4c3ee7d59f7"
+        },
+        "fault-snapshot.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/fault-snapshot.json",
+          "sha256": "368521df2020f3100291378c946059b500c773c99426357e9d26cea4274271c3"
+        },
+        "result.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/result.json",
+          "sha256": "35467bb8c3b4e0bbfbd08a3ae00ce19b4ff1270a2d4f8b19fd64123fe0d865ae"
+        },
+        "session-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/session-before.json",
+          "sha256": "47a9fad0dec362aa88d30ddc3a9e13be4630ea8e3dbc3c8325ea584a7ae61b45"
+        },
+        "session-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/session-after.json",
+          "sha256": "80d0e60180f88e4f88a45a59166e9f2761db46e3029c232c740e6415e16c28ac"
+        },
+        "recover-events.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/recover-events.json",
+          "sha256": "78641a0e078a93a2ce78037beb5d17c38769f0a527f39f0201086bee91399675"
+        },
+        "terminal.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/terminal.json",
+          "sha256": "523f41140da43faf912e9e96f5b310d9e5e798fdc6feb35285cb195f2e65919e"
+        },
+        "chat-after.wire": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/chat-after.wire",
+          "sha256": "087e63948e338cdd19492713aa89b97b53c539c5824c8ef67b24b649bbb9491c"
+        },
+        "registration-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/registration-after.json",
+          "sha256": "a7cdeb35bc5b43110973386eb14c7c9f7f7ca4deb00f6553b15b347eec12c30e"
+        },
+        "interruption.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-03/interruption.json",
+          "sha256": "1d757324cf3afbcd95fd1a2e36026cb7f3d2d39d61111441a8623fa26d024a99"
+        },
+        "exclusive_lease": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-lease-03/exit.json",
+          "sha256": "2e1fd27cd52b2e942e765f1d214847fdd726114791bc04ba9cafe270c6d2f383"
+        }
+      },
+      "elapsed_seconds": 117.55730832228437,
+      "starts": 2,
+      "cleanup": {
+        "remaining": [],
+        "ports_free": true,
+        "default_unchanged": true
+      },
+      "recovery": {
+        "guardian_same": true,
+        "old": 1,
+        "new": 2,
+        "cancellation": "cancelled",
+        "fault": "background_execution_interrupted",
+        "other": 404
+      },
+      "pending_lookup": {
+        "id": "agent_session_06348d35cd183d032492b2f04f97e34b",
+        "action": {
+          "type": "function_call",
+          "turn_id": "turn_2f890968d77ccd221a434850629cabad",
+          "arguments": {},
+          "name": "read_release_record",
+          "call_id": "call_resp_656c1a0033cdf14b24ad2bb8cf303deb_0"
+        },
+        "turns": 1,
+        "results": 1,
+        "answer": "442",
+        "revision": 442,
+        "retries": [
+          202,
+          202
+        ],
+        "foreign": 404
+      },
+      "chat": "42",
+      "monitor_samples": 111,
+      "vault": {
+        "vault": "vault_767ee96fb85132d2e0c30d57a6ec7e88",
+        "credential": "cred_1a7a405b24cdec900aaf228866366e01",
+        "recovered": true,
+        "rotated": true,
+        "archive_revoked": 404,
+        "foreign_delete": 404
+      }
+    },
+    "gateway_fatal": {
+      "artifacts": {
+        "vault-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/vault-before.json",
+          "sha256": "5f2e12c6f84a14f5598d858b3158620716250957d800a4b3ef48b04efd9bb6e3"
+        },
+        "vault-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/vault-after.json",
+          "sha256": "c5b0951700219a83d7308815b161bdc74ed24de71c7d3e8f02fa4fd10e94c73b"
+        },
+        "fault-snapshot.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/fault-snapshot.json",
+          "sha256": "67787c875e52a51f94f5c8c0001574da4fda8f401f303153727f6ff466631eea"
+        },
+        "result.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/result.json",
+          "sha256": "3387e0b289897900c40be46c242a65717e8f518d22a72f3e9f1bd88414bd9a11"
+        },
+        "session-before.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/session-before.json",
+          "sha256": "58520839c63f4ac1eb3380049d7cff3c2b4bf65701a1ab4eddadbd3c91188809"
+        },
+        "session-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/session-after.json",
+          "sha256": "b57759b2c8bf9a52fed6a9e2753633d2613cf7dfb852683028e2cfe49a454e00"
+        },
+        "recover-events.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/recover-events.json",
+          "sha256": "8a1d67b04058ee769d7b00fd400c32302f879b5202a0cc71afa961d808b7dbbc"
+        },
+        "terminal.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/terminal.json",
+          "sha256": "ce44c7688a446567f96472fb4102cba7cfb75abdddc1e8c266914050815a0d27"
+        },
+        "chat-after.wire": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/chat-after.wire",
+          "sha256": "aab061a6b507f85383a60f648de5186c08821e289eeece38ea383a0dad7e79b8"
+        },
+        "registration-after.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/registration-after.json",
+          "sha256": "0dd0ebc7481522600fdb6d899c937ddcf74607cbd0946275c83d33edfb20840b"
+        },
+        "interruption.json": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-vault-01/interruption.json",
+          "sha256": "992eeecc2c297bbd1b95d8c250c837042535fb4e9b4fb927520f7ab950053f4d"
+        },
+        "exclusive_lease": {
+          "path": ".q4t-work/serve-responses-agents-20261123/vault-takeover-lease-01/exit.json",
+          "sha256": "1228b1b17b628b2504eb30ec238e379949f84f2dace3e3ca9b41202892b13612"
+        }
+      },
+      "elapsed_seconds": 137.99036401323974,
+      "starts": 2,
+      "cleanup": {
+        "remaining": [],
+        "ports_free": true,
+        "default_unchanged": true
+      },
+      "recovery": {
+        "guardian_same": true,
+        "old": 1,
+        "new": 2,
+        "cancellation": "cancelled",
+        "fault": "service_draining",
+        "other": 404
+      },
+      "pending_lookup": {
+        "id": "agent_session_e046a8008b70d3bf94e31c9efaa5fd60",
+        "action": {
+          "type": "function_call",
+          "turn_id": "turn_d57b906c431861e4b9a273839dadb419",
+          "arguments": {},
+          "name": "read_release_record",
+          "call_id": "call_resp_6aaf6dc3956d1ce6e83184c165926e4a_0"
+        },
+        "turns": 1,
+        "results": 1,
+        "answer": "The publication revision is 442.",
+        "revision": 442,
+        "retries": [
+          202,
+          202
+        ],
+        "foreign": 404
+      },
+      "chat": "42",
+      "monitor_samples": 129,
+      "vault": {
+        "vault": "vault_dd3ccdea3297a57deb1a864e6b33db50",
+        "credential": "cred_c680414cef339e322201661c16d79adb",
+        "recovered": true,
+        "rotated": true,
+        "archive_revoked": 404,
+        "foreign_delete": 404
+      },
+      "version_selection": {
+        "selected": "fallback",
+        "probes": 1,
+        "payload": "c58b8baffc63d6fcc05b2419e268023716bc9ad0203bb976fbdd1309dc0877c4",
+        "consumed": true,
+        "signal": 6
+      }
+    }
+  },
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "f668a05b9cb84cb19ef9d6d12a4e8791a650608205ef8c48cded2597f34e2da1"
+        ],
+        "sha256": "3bde0de576abc70f555164fd0d7550418ad891a3622d525e816b2022ef7fc627",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 16,
+        "archived": [
+          "144bf3d2-91e0-46d1-be7b-469335144b86"
+        ],
+        "sha256": "d34f4386e1ce27b6339a114895d1ca498dc2971079d4cd3f6e1d8725e02f95b4",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "intents": {
+    "status": "PASS",
+    "pools": {
+      "intents": {
+        "before": 128,
+        "archived": [
+          "052d366d-30a8-4831-b041-4b1b9c5060dd"
+        ],
+        "sha256": "70809358ddbd129ab11244ba33e7523271eb18e0cb98d2dbf65e893c3400a8e4",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "operator_handoff": {
+    "source_commit": "182fa7fa4777c5e7a07d48e6b2d2670419cf18bd",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vault-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vault-primary-01/bundle",
+      "manifest_sha256": "f9609cadbd91f2b8c97b61b1d63bc37254c101c77ab3637e38e3cf4a7d46c0df"
+    },
+    "revision": 446,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vault-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "39e1a5e6d9304a3eead9ac6951ec019535f55b01d342b534a6258a128f6ab97b",
+    "handoff_sha256": "3dc4c8c328f271dbd14c5570ad5c0f407b350d56206c2d9a47f559f98a0d150b",
+    "checked": true,
+    "source_files": 697,
+    "hours_executed": 0
+  },
+  "original_fixture_attempts": [
+    {
+      "reason": "The first fixture expected GET on archived public metadata to return 404; owner metadata remains readable.",
+      "run": {
+        "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-01/result.json",
+        "sha256": "978dcf1fa2e7e0a7f0ba8467698ca54d7d5c07c2eae293d7ad5e1feab9d03527"
+      },
+      "lease": {
+        "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-lease-01/exit.json",
+        "sha256": "8d1e5c97601b50743e8d18ccd70f1b3c0f441cf97f1c1689ee77ed959c9ee0e6"
+      }
+    },
+    {
+      "reason": "The revised harness supplied the same Beta header twice before sending its final binding probe.",
+      "run": {
+        "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-business-02/result.json",
+        "sha256": "229f1112c29dba0c0f1905b2a7a043b1625ccdb0187c5a12a3d38262accc00aa"
+      },
+      "lease": {
+        "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-lease-02/exit.json",
+        "sha256": "3813152bdd58dcf0fc815b5380b0805b2cd26c28704f6e563b93ae7f2471c5eb"
+      }
+    }
+  ],
+  "qualifications": {
+    "path": "docs/evidence/serve-agent-vaults-20261123/profiles.json",
+    "sha256": "b828d7da6a365af909e1ad8b194d20a3de5af25901acafccee75358b3bf3fdfc"
+  },
+  "publication_receipts": {
+    "vault-primary-01/service-acceptance.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-primary-01/service-acceptance.json",
+      "sha256": "51673beb6df3099c5e62b0bc7fe26494fd3cb07a60c2a949fb4efca51ecee505"
+    },
+    "vault-fallback-01/service-acceptance.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-01/service-acceptance.json",
+      "sha256": "f4ab46ead761f93fb35f05633b0719a5959063ab0abb62b0251fe060298ec8ce"
+    },
+    "vault-primary-01/origin.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-primary-01/origin.json",
+      "sha256": "0d5b1078b151743134e7c36875dc7675e6599782621f041b9cd1e29e80dd6daf"
+    },
+    "vault-fallback-01/origin.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-fallback-01/origin.json",
+      "sha256": "20c7226e1acc80cccc2781adc1defd734e764133a6fbd2ec6221776baaabd82f"
+    },
+    "vault-delivery/result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-delivery/result.json",
+      "sha256": "a2877c214fbb40a9b2f763d8acc0ea879406e07f1ff8166874e8a3d03790234b"
+    },
+    "vault-delivery/check.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-delivery/check.stdout",
+      "sha256": "7bcd0916804e6a21098695b9404125b947e2ea0242d954858031f96d044bb2fd"
+    },
+    "vault-delivery/status.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-delivery/status.stdout",
+      "sha256": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b"
+    },
+    "vault-delivery/version-status.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-delivery/version-status.stdout",
+      "sha256": "ba0abfbae67c504e7950498ed87870d3ad962702f22fa0824b6c75c1d910e831"
+    },
+    "vault-delivery/publish-status.stdout": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-delivery/publish-status.stdout",
+      "sha256": "18ae96878954446b664a159abc5e4cb64f4f923b04c2f92156cb883ed3df25d8"
+    },
+    "vault-day.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-day.json",
+      "sha256": "9c1b208a41dd9badef0fee5af6f5bcf72ab9db2103c9619734865de9747e443f"
+    },
+    "vault-maintenance-01/result.json": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-maintenance-01/result.json",
+      "sha256": "4ee0fe670e464ddd8258b0601649355d756a84b7b0d276e6928b9959fe838bc7"
+    }
+  }
+}

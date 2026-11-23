@@ -22,7 +22,8 @@ class RemoteHttp {
                           std::string_view body, uint64_t max_bytes,
                           std::chrono::steady_clock::time_point deadline,
                           std::unique_ptr<RemoteHttp>* output,
-                          uint64_t max_request_bytes = 1U << 20);
+                          uint64_t max_request_bytes = 1U << 20,
+                          const std::function<bool()>& before_send = {});
   // A bounded native tunnel completion reuses the same MCP JSON/SSE reader.
   // This creates no socket, performs no DNS and accepts no redirects.
   static ObjectReply Buffered(int status, const RemoteHeaders& headers,

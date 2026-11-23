@@ -63,7 +63,7 @@ ObjectReply ResponsesExecution::RestoreAgentMcp() {
 }
 
 ObjectReply ResponsesExecution::AuthorizeAgentMcp(
-    ResponsesMcpDefinition* definition) {
+    ResponsesMcpDefinition* definition, bool dispatch) {
   if (agent_http_session_.empty()) return {};
   const auto label = definition->declaration.GetString("server_label");
   const auto found =
@@ -78,9 +78,10 @@ ObjectReply ResponsesExecution::AuthorizeAgentMcp(
                  "MCP server is outside this session");
   auto& endpoint = definition->credentials;
   endpoint.headers.clear();
+  bool needs_refresh = false;
   auto resolved = vault_detail::ResolveMcpToken(
       objects_, access_, agent_vaults_, found->GetString("credential_id"),
-      definition->target_id, &endpoint.authorization);
+      definition->target_id, &endpoint.authorization, nullptr, &needs_refresh);
   if (!resolved.ok()) return resolved;
   if (!agent_http_sealed_.empty()) {
     std::string wire;
@@ -97,7 +98,7 @@ ObjectReply ResponsesExecution::AuthorizeAgentMcp(
         return InvalidSettings();
       if (const auto* auth = transport->Find("authorization");
           auth && !auth->IsNull()) {
-        if (!endpoint.authorization.empty())
+        if (!endpoint.authorization.empty() || needs_refresh)
           return Error(
               400, "mcp_credential_conflict",
               "Choose either inline authorization or a Vault credential");
@@ -108,13 +109,19 @@ ObjectReply ResponsesExecution::AuthorizeAgentMcp(
           endpoint.headers.emplace(key, val.str);
     }
   }
-  endpoint.exact_target =
-      !endpoint.authorization.empty() || !endpoint.headers.empty();
+  endpoint.exact_target = needs_refresh || !endpoint.authorization.empty() ||
+                          !endpoint.headers.empty();
   if (endpoint.exact_target && !definition->target_id.starts_with("https://"))
     return Error(400, "mcp_credentials_require_tls",
                  "Authenticated MCP requires HTTPS");
   endpoint.request_metadata = *found->Find("request_metadata");
   definition->required = found->GetBool("required");
-  return mcp_detail::CheckHeaders(endpoint);
+  auto checked = mcp_detail::CheckHeaders(endpoint);
+  if (!checked.ok() || !needs_refresh || !dispatch) return checked;
+  checked = mcp_detail::CheckEndpoint(endpoint, mcp_fetch_);
+  if (!checked.ok()) return checked;
+  return vault_detail::ResolveMcpToken(
+      objects_, access_, agent_vaults_, found->GetString("credential_id"),
+      definition->target_id, &endpoint.authorization, &mcp_fetch_);
 }
 }  // namespace q4t::server
