@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #65 的首轮 CI 发现 Conversation 用例误包含 Agent 配置路由，网关夹具缺少 Agent ID 和上游路径。已校正分类并单独断言 Agent GET、POST、DELETE 与 Conversation 拒绝结果。两项 C++ 合同、可选 nginx 及已封包原生网关的实际转发检查通过，继续等待两项远端 host-contracts。
+
 标准 Beta Agents 配置已通过官方 Node SDK 的原生 TLS 短验。两个不同客户端验证了配置隔离，跨模型进程重启后仍可读取和修改七类工具配置。五个 HTTP 操作覆盖 157 条范围内路径中的两条。主轻资格已通过，轻配置可在接管主配置后更新和删除原对象。轻资格文件从 8,385,882 降至 5,451,698 字节，可逐字节还原旧资格。rev442 已发布，默认保持 STOPPED。真实托管接管后旧配置、单终态和 Chat 均可使用。24 小时计划完成预检。[发行与交接](evidence/serve-agent-registration-20261123/delivery.json)[验收与当前边界](evidence/serve-agent-registration-20261123/README.md)
 
 PR #64 的 CI 发现自动回退在拒绝跨能力切换前读取了不相关的中断证据。已调整检查顺序，双工迁移针对性回归通过，等待两项远端 host-contracts。
