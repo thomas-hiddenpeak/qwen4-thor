@@ -290,7 +290,12 @@ def current_surface(root):
             not re.search(r'\breturn CredentialRequest\(\s*store, route,',
                           (root/'src/server/agent_vault.cpp').read_text())):
         raise ValueError("review bounded credential routing")
-    for path, methods in (('/v1/vaults/{vault_id}/credentials', ('GET', 'POST')),
+    if ('HandleEnvironmentTemplate(*objects_' not in dispatch or
+            'EnvironmentTemplateMethodAllowed(method, target)' not in application_routes):
+        raise ValueError("review native environment template routing")
+    for path, methods in (('/v1/agents/environments/templates', ('GET', 'POST')),
+                          ('/v1/agents/environments/templates/{environment_template_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/vaults/{vault_id}/credentials', ('GET', 'POST')),
                           ('/v1/vaults/{vault_id}/credentials/{credential_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/vaults', ('GET', 'POST')),
                           ('/v1/vaults/{vault_id}', ('GET', 'POST', 'DELETE')),

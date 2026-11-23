@@ -2486,7 +2486,8 @@
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
         "evidence/serve-live-default-20261123/README.md",
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
-        "evidence/serve-agent-sessions-20261123/traces.json"
+        "evidence/serve-agent-sessions-20261123/traces.json",
+        "evidence/serve-agent-environments-20261124/templates.json"
       ],
       "release": {
         "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
@@ -5321,7 +5322,8 @@
         "evidence/serve-retrieval-delivery-20261112/README.md",
         "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "evidence/serve-agent-vaults-20261123/oauth-delivery.json"
+        "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
+        "evidence/serve-agent-environments-20261124/templates.json"
       ],
       "release": null,
       "security_requirements": [
@@ -6022,7 +6024,8 @@
         "evidence/serve-responses-agent-interruption-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/delivery.json",
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
-        "evidence/serve-agent-sessions-20261123/traces.json"
+        "evidence/serve-agent-sessions-20261123/traces.json",
+        "evidence/serve-agent-environments-20261124/templates.json"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -8337,7 +8340,8 @@
         "evidence/serve-responses-agent-interruption-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/delivery.json",
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
-        "evidence/serve-agent-sessions-20261123/traces.json"
+        "evidence/serve-agent-sessions-20261123/traces.json",
+        "evidence/serve-agent-environments-20261124/templates.json"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -16590,5 +16594,14 @@
     "oauth_temporary": "evidence/serve-agent-vaults-20261123/oauth-temporary.json",
     "oauth_session": "evidence/serve-agent-vaults-20261123/oauth-session.json",
     "oauth_profiles": "evidence/serve-agent-vaults-20261123/oauth-profiles.json"
+  },
+  "agent_environment_templates_20261124": {
+    "state": "candidate_real_sdk_http_pass",
+    "evidence": "evidence/serve-agent-environments-20261124/templates.json",
+    "declared_scope_paths": 80,
+    "pending": [
+      "managed capacity handoff and rollback release",
+      "environment provisioning, files and Agent session execution"
+    ]
   }
 }

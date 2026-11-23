@@ -1,0 +1,1471 @@
+{
+  "profile": "q4t-openai-environment-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "template_create": 0,
+    "template_update": 41,
+    "template_resource": 50,
+    "template_deleted": 68,
+    "template_query": 70,
+    "environment_create": 76,
+    "environment_resource": 87,
+    "environment_query": 107,
+    "file_create": 109,
+    "file_resource": 112,
+    "file_query": 114
+  },
+  "nodes": [
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "desktop",
+          "optional": true,
+          "type": 5
+        },
+        {
+          "name": "env",
+          "optional": true,
+          "type": 8
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": 10
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "network",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "packages",
+          "optional": true,
+          "type": 24
+        },
+        {
+          "name": "plugins",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "setup_commands",
+          "optional": true,
+          "type": 32
+        },
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 35
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "null"
+    },
+    {
+      "kind": "array",
+      "element": 4
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        6
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "boolean"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        9
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 4
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        11
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 12
+    },
+    {
+      "kind": "union",
+      "variants": [
+        13,
+        15
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 14
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "file_id"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "inline"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        4
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        19
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "access",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "blocked_domains",
+          "optional": true,
+          "type": 1
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        21,
+        22,
+        23
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "enabled"
+    },
+    {
+      "kind": "literal",
+      "value": "disabled"
+    },
+    {
+      "kind": "literal",
+      "value": "restricted"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        25
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "npm",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "python",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "system",
+          "optional": true,
+          "type": 1
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        27
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 28
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 29
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "media_type",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 31
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "application/zip"
+    },
+    {
+      "kind": "literal",
+      "value": "base64"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        33
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 34
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "command",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "cwd",
+          "optional": true,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        36
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 37
+    },
+    {
+      "kind": "union",
+      "variants": [
+        38,
+        40
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        },
+        {
+          "name": "version",
+          "optional": true,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "skill_reference"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 29
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "desktop",
+          "optional": true,
+          "type": 42
+        },
+        {
+          "name": "env",
+          "optional": true,
+          "type": 44
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": 10
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "network",
+          "optional": true,
+          "type": 46
+        },
+        {
+          "name": "packages",
+          "optional": true,
+          "type": 48
+        },
+        {
+          "name": "plugins",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "setup_commands",
+          "optional": true,
+          "type": 32
+        },
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 35
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        43
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        45
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 4
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        47
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "access",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "blocked_domains",
+          "optional": true,
+          "type": 1
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        49
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "npm",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "python",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "system",
+          "optional": true,
+          "type": 1
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 51
+        },
+        {
+          "name": "desktop",
+          "optional": true,
+          "type": 52
+        },
+        {
+          "name": "files",
+          "optional": false,
+          "type": 54
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 58
+        },
+        {
+          "name": "network",
+          "optional": false,
+          "type": 59
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 60
+        },
+        {
+          "name": "packages",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "plugins",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "skills",
+          "optional": false,
+          "type": 64
+        },
+        {
+          "name": "updated_at",
+          "optional": false,
+          "type": 51
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        53
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 55
+    },
+    {
+      "kind": "union",
+      "variants": [
+        56,
+        57
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 14
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "path",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "size_bytes",
+          "optional": false,
+          "type": 51
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        4
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "access",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "allowed_domains",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.environment.template"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "npm",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "python",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "system",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 63
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 65
+    },
+    {
+      "kind": "union",
+      "variants": [
+        66,
+        67
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        },
+        {
+          "name": "version",
+          "optional": false,
+          "type": 58
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 69
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.environment.template.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 71
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 72
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 73
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        51
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        74,
+        75
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "asc"
+    },
+    {
+      "kind": "literal",
+      "value": "desc"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "Idempotency-Key",
+          "optional": true,
+          "type": 71
+        },
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 77
+        },
+        {
+          "name": "vault_ids",
+          "optional": true,
+          "type": 1
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "desktop",
+          "optional": true,
+          "type": 78
+        },
+        {
+          "name": "env",
+          "optional": true,
+          "type": 80
+        },
+        {
+          "name": "environment_template_id",
+          "optional": true,
+          "type": 71
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": 10
+        },
+        {
+          "name": "network",
+          "optional": true,
+          "type": 82
+        },
+        {
+          "name": "packages",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "plugins",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "setup_commands",
+          "optional": true,
+          "type": 32
+        },
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 35
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 86
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        79
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        81
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 4
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        83
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "access",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "blocked_domains",
+          "optional": true,
+          "type": 1
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        85
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "npm",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "python",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "system",
+          "optional": true,
+          "type": 1
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "openai_hosted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "files",
+          "optional": false,
+          "type": 88
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 92
+        },
+        {
+          "name": "plugins",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "skills",
+          "optional": false,
+          "type": 93
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 97
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 105
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 89
+    },
+    {
+      "kind": "union",
+      "variants": [
+        90,
+        91
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "size_bytes",
+          "optional": false,
+          "type": 51
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 14
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "size_bytes",
+          "optional": false,
+          "type": 51
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.environment"
+    },
+    {
+      "kind": "array",
+      "element": 94
+    },
+    {
+      "kind": "union",
+      "variants": [
+        95,
+        96
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        },
+        {
+          "name": "version",
+          "optional": false,
+          "type": 4
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "pending"
+    },
+    {
+      "kind": "literal",
+      "value": "ready"
+    },
+    {
+      "kind": "literal",
+      "value": "connected"
+    },
+    {
+      "kind": "literal",
+      "value": "disconnected"
+    },
+    {
+      "kind": "literal",
+      "value": "suspended"
+    },
+    {
+      "kind": "literal",
+      "value": "expired"
+    },
+    {
+      "kind": "literal",
+      "value": "failed"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        86,
+        106
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "self_hosted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 71
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 72
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 73
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 108
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        86
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        110,
+        111
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 14
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment_id",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 113
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "size_bytes",
+          "optional": false,
+          "type": 51
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.environment.file"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 115
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 73
+        },
+        {
+          "name": "page",
+          "optional": true,
+          "type": 71
+        },
+        {
+          "name": "path",
+          "optional": true,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        51
+      ]
+    }
+  ],
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/beta/agents/agents.ts": "03d26f89be2ce0137ef1326e8e196138c8a5a882af3c845cb05d6f6303dc19a2",
+    "src/resources/beta/agents/environments/environments.ts": "eef84545debc7175199b5c3b06360d0dfab7464892a4ee3214a4e6e88ca69e1b",
+    "src/resources/beta/agents/environments/files.ts": "d2df8e0badf14e2e6fbd3fc96ff646be9871a359bc5d487d0483168885921b12",
+    "src/resources/beta/agents/environments/templates.ts": "c1fa821c2d056f8a9c6347610538785146afc84d2d42187b81d84fea329ca6da"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}

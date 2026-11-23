@@ -23407,6 +23407,1507 @@
       ],
       "additionalProperties": false
     },
+    "hosted_0": {
+      "type": "object",
+      "properties": {
+        "capability_directories": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "desktop": {
+          "$ref": "#/$defs/hosted_5"
+        },
+        "env": {
+          "$ref": "#/$defs/hosted_8",
+          "writeOnly": true
+        },
+        "files": {
+          "$ref": "#/$defs/hosted_10"
+        },
+        "name": {
+          "$ref": "#/$defs/hosted_17"
+        },
+        "network": {
+          "$ref": "#/$defs/hosted_18"
+        },
+        "packages": {
+          "$ref": "#/$defs/hosted_24"
+        },
+        "plugins": {
+          "$ref": "#/$defs/hosted_26"
+        },
+        "setup_commands": {
+          "$ref": "#/$defs/hosted_32",
+          "writeOnly": true
+        },
+        "skills": {
+          "$ref": "#/$defs/hosted_35"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "hosted_1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_3"
+        }
+      ]
+    },
+    "hosted_2": {
+      "type": "null"
+    },
+    "hosted_3": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_4"
+      }
+    },
+    "hosted_4": {
+      "type": "string"
+    },
+    "hosted_5": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_6"
+        }
+      ]
+    },
+    "hosted_6": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/hosted_7"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_7": {
+      "type": "boolean"
+    },
+    "hosted_8": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_9"
+        }
+      ]
+    },
+    "hosted_9": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/hosted_4"
+      }
+    },
+    "hosted_10": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_11"
+        }
+      ]
+    },
+    "hosted_11": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_12"
+      }
+    },
+    "hosted_12": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_13"
+        },
+        {
+          "$ref": "#/$defs/hosted_15"
+        }
+      ]
+    },
+    "hosted_13": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "path": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_14"
+        }
+      },
+      "required": [
+        "file_id",
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_14": {
+      "const": "file_id"
+    },
+    "hosted_15": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/hosted_4",
+          "writeOnly": true
+        },
+        "path": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_16"
+        }
+      },
+      "required": [
+        "data",
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_16": {
+      "const": "inline"
+    },
+    "hosted_17": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_4"
+        }
+      ]
+    },
+    "hosted_18": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_19"
+        }
+      ]
+    },
+    "hosted_19": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/hosted_20"
+        },
+        "allowed_domains": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "blocked_domains": {
+          "$ref": "#/$defs/hosted_1"
+        }
+      },
+      "required": [
+        "access"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_20": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_21"
+        },
+        {
+          "$ref": "#/$defs/hosted_22"
+        },
+        {
+          "$ref": "#/$defs/hosted_23"
+        }
+      ]
+    },
+    "hosted_21": {
+      "const": "enabled"
+    },
+    "hosted_22": {
+      "const": "disabled"
+    },
+    "hosted_23": {
+      "const": "restricted"
+    },
+    "hosted_24": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_25"
+        }
+      ]
+    },
+    "hosted_25": {
+      "type": "object",
+      "properties": {
+        "npm": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "python": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "system": {
+          "$ref": "#/$defs/hosted_1"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "hosted_26": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_27"
+        }
+      ]
+    },
+    "hosted_27": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_28"
+      }
+    },
+    "hosted_28": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "name": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "source": {
+          "$ref": "#/$defs/hosted_29",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_16"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_29": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/hosted_4",
+          "writeOnly": true
+        },
+        "media_type": {
+          "$ref": "#/$defs/hosted_30"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_31"
+        }
+      },
+      "required": [
+        "data",
+        "media_type",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_30": {
+      "const": "application/zip"
+    },
+    "hosted_31": {
+      "const": "base64"
+    },
+    "hosted_32": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_33"
+        }
+      ]
+    },
+    "hosted_33": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_34"
+      }
+    },
+    "hosted_34": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "cwd": {
+          "$ref": "#/$defs/hosted_17"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_35": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_36"
+        }
+      ]
+    },
+    "hosted_36": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_37"
+      }
+    },
+    "hosted_37": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_38"
+        },
+        {
+          "$ref": "#/$defs/hosted_40"
+        }
+      ]
+    },
+    "hosted_38": {
+      "type": "object",
+      "properties": {
+        "skill_id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_39"
+        },
+        "version": {
+          "$ref": "#/$defs/hosted_17"
+        }
+      },
+      "required": [
+        "skill_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_39": {
+      "const": "skill_reference"
+    },
+    "hosted_40": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "name": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "source": {
+          "$ref": "#/$defs/hosted_29",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_16"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_41": {
+      "type": "object",
+      "properties": {
+        "capability_directories": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "desktop": {
+          "$ref": "#/$defs/hosted_42"
+        },
+        "env": {
+          "$ref": "#/$defs/hosted_44",
+          "writeOnly": true
+        },
+        "files": {
+          "$ref": "#/$defs/hosted_10"
+        },
+        "name": {
+          "$ref": "#/$defs/hosted_17"
+        },
+        "network": {
+          "$ref": "#/$defs/hosted_46"
+        },
+        "packages": {
+          "$ref": "#/$defs/hosted_48"
+        },
+        "plugins": {
+          "$ref": "#/$defs/hosted_26"
+        },
+        "setup_commands": {
+          "$ref": "#/$defs/hosted_32",
+          "writeOnly": true
+        },
+        "skills": {
+          "$ref": "#/$defs/hosted_35"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "hosted_42": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_43"
+        }
+      ]
+    },
+    "hosted_43": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/hosted_7"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_44": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_45"
+        }
+      ]
+    },
+    "hosted_45": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/hosted_4"
+      }
+    },
+    "hosted_46": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_47"
+        }
+      ]
+    },
+    "hosted_47": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/hosted_20"
+        },
+        "allowed_domains": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "blocked_domains": {
+          "$ref": "#/$defs/hosted_1"
+        }
+      },
+      "required": [
+        "access"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_48": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_49"
+        }
+      ]
+    },
+    "hosted_49": {
+      "type": "object",
+      "properties": {
+        "npm": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "python": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "system": {
+          "$ref": "#/$defs/hosted_1"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "hosted_50": {
+      "type": "object",
+      "properties": {
+        "capability_directories": {
+          "$ref": "#/$defs/hosted_3"
+        },
+        "created_at": {
+          "$ref": "#/$defs/hosted_51"
+        },
+        "desktop": {
+          "$ref": "#/$defs/hosted_52"
+        },
+        "files": {
+          "$ref": "#/$defs/hosted_54"
+        },
+        "id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "name": {
+          "$ref": "#/$defs/hosted_58"
+        },
+        "network": {
+          "$ref": "#/$defs/hosted_59"
+        },
+        "object": {
+          "$ref": "#/$defs/hosted_60"
+        },
+        "packages": {
+          "$ref": "#/$defs/hosted_61"
+        },
+        "plugins": {
+          "$ref": "#/$defs/hosted_62"
+        },
+        "skills": {
+          "$ref": "#/$defs/hosted_64"
+        },
+        "updated_at": {
+          "$ref": "#/$defs/hosted_51"
+        }
+      },
+      "required": [
+        "capability_directories",
+        "created_at",
+        "files",
+        "id",
+        "name",
+        "network",
+        "object",
+        "packages",
+        "plugins",
+        "skills",
+        "updated_at"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_51": {
+      "type": "number"
+    },
+    "hosted_52": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_53"
+        }
+      ]
+    },
+    "hosted_53": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/hosted_7"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_54": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_55"
+      }
+    },
+    "hosted_55": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_56"
+        },
+        {
+          "$ref": "#/$defs/hosted_57"
+        }
+      ]
+    },
+    "hosted_56": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "path": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_14"
+        }
+      },
+      "required": [
+        "file_id",
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_57": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/hosted_51"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_16"
+        }
+      },
+      "required": [
+        "path",
+        "size_bytes",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_58": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_4"
+        }
+      ]
+    },
+    "hosted_59": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/hosted_20"
+        },
+        "allowed_domains": {
+          "$ref": "#/$defs/hosted_3"
+        }
+      },
+      "required": [
+        "access",
+        "allowed_domains"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_60": {
+      "const": "agent.environment.template"
+    },
+    "hosted_61": {
+      "type": "object",
+      "properties": {
+        "npm": {
+          "$ref": "#/$defs/hosted_3"
+        },
+        "python": {
+          "$ref": "#/$defs/hosted_3"
+        },
+        "system": {
+          "$ref": "#/$defs/hosted_3"
+        }
+      },
+      "required": [
+        "npm",
+        "python",
+        "system"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_62": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_63"
+      }
+    },
+    "hosted_63": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "name": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_16"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_64": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_65"
+      }
+    },
+    "hosted_65": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_66"
+        },
+        {
+          "$ref": "#/$defs/hosted_67"
+        }
+      ]
+    },
+    "hosted_66": {
+      "type": "object",
+      "properties": {
+        "skill_id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_39"
+        },
+        "version": {
+          "$ref": "#/$defs/hosted_58"
+        }
+      },
+      "required": [
+        "skill_id",
+        "type",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_67": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "name": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_16"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_68": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/hosted_7"
+        },
+        "id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "object": {
+          "$ref": "#/$defs/hosted_69"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_69": {
+      "const": "agent.environment.template.deleted"
+    },
+    "hosted_70": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/hosted_71"
+        },
+        "limit": {
+          "$ref": "#/$defs/hosted_72"
+        },
+        "order": {
+          "$ref": "#/$defs/hosted_73"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "hosted_71": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_4"
+        }
+      ]
+    },
+    "hosted_72": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_51"
+        }
+      ]
+    },
+    "hosted_73": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_74"
+        },
+        {
+          "$ref": "#/$defs/hosted_75"
+        }
+      ]
+    },
+    "hosted_74": {
+      "const": "asc"
+    },
+    "hosted_75": {
+      "const": "desc"
+    },
+    "hosted_76": {
+      "type": "object",
+      "properties": {
+        "Idempotency-Key": {
+          "$ref": "#/$defs/hosted_71"
+        },
+        "environment": {
+          "$ref": "#/$defs/hosted_77"
+        },
+        "vault_ids": {
+          "$ref": "#/$defs/hosted_1"
+        }
+      },
+      "required": [
+        "environment"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_77": {
+      "type": "object",
+      "properties": {
+        "capability_directories": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "desktop": {
+          "$ref": "#/$defs/hosted_78"
+        },
+        "env": {
+          "$ref": "#/$defs/hosted_80",
+          "writeOnly": true
+        },
+        "environment_template_id": {
+          "$ref": "#/$defs/hosted_71"
+        },
+        "files": {
+          "$ref": "#/$defs/hosted_10"
+        },
+        "network": {
+          "$ref": "#/$defs/hosted_82"
+        },
+        "packages": {
+          "$ref": "#/$defs/hosted_84"
+        },
+        "plugins": {
+          "$ref": "#/$defs/hosted_26"
+        },
+        "setup_commands": {
+          "$ref": "#/$defs/hosted_32",
+          "writeOnly": true
+        },
+        "skills": {
+          "$ref": "#/$defs/hosted_35"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_86"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_78": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_79"
+        }
+      ]
+    },
+    "hosted_79": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/hosted_7"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_80": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_81"
+        }
+      ]
+    },
+    "hosted_81": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/hosted_4"
+      }
+    },
+    "hosted_82": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_83"
+        }
+      ]
+    },
+    "hosted_83": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/hosted_20"
+        },
+        "allowed_domains": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "blocked_domains": {
+          "$ref": "#/$defs/hosted_1"
+        }
+      },
+      "required": [
+        "access"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_84": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_85"
+        }
+      ]
+    },
+    "hosted_85": {
+      "type": "object",
+      "properties": {
+        "npm": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "python": {
+          "$ref": "#/$defs/hosted_1"
+        },
+        "system": {
+          "$ref": "#/$defs/hosted_1"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "hosted_86": {
+      "const": "openai_hosted"
+    },
+    "hosted_87": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "$ref": "#/$defs/hosted_88"
+        },
+        "id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "object": {
+          "$ref": "#/$defs/hosted_92"
+        },
+        "plugins": {
+          "$ref": "#/$defs/hosted_62"
+        },
+        "skills": {
+          "$ref": "#/$defs/hosted_93"
+        },
+        "status": {
+          "$ref": "#/$defs/hosted_97"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_105"
+        }
+      },
+      "required": [
+        "files",
+        "id",
+        "object",
+        "plugins",
+        "skills",
+        "status",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_88": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_89"
+      }
+    },
+    "hosted_89": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_90"
+        },
+        {
+          "$ref": "#/$defs/hosted_91"
+        }
+      ]
+    },
+    "hosted_90": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "path": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/hosted_51"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_14"
+        }
+      },
+      "required": [
+        "file_id",
+        "id",
+        "path",
+        "size_bytes",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_91": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "path": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/hosted_51"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_16"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "size_bytes",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_92": {
+      "const": "agent.environment"
+    },
+    "hosted_93": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hosted_94"
+      }
+    },
+    "hosted_94": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_95"
+        },
+        {
+          "$ref": "#/$defs/hosted_96"
+        }
+      ]
+    },
+    "hosted_95": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "name": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "skill_id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_39"
+        },
+        "version": {
+          "$ref": "#/$defs/hosted_4"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "skill_id",
+        "type",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_96": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "name": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_16"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_97": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_98"
+        },
+        {
+          "$ref": "#/$defs/hosted_99"
+        },
+        {
+          "$ref": "#/$defs/hosted_100"
+        },
+        {
+          "$ref": "#/$defs/hosted_101"
+        },
+        {
+          "$ref": "#/$defs/hosted_102"
+        },
+        {
+          "$ref": "#/$defs/hosted_103"
+        },
+        {
+          "$ref": "#/$defs/hosted_104"
+        }
+      ]
+    },
+    "hosted_98": {
+      "const": "pending"
+    },
+    "hosted_99": {
+      "const": "ready"
+    },
+    "hosted_100": {
+      "const": "connected"
+    },
+    "hosted_101": {
+      "const": "disconnected"
+    },
+    "hosted_102": {
+      "const": "suspended"
+    },
+    "hosted_103": {
+      "const": "expired"
+    },
+    "hosted_104": {
+      "const": "failed"
+    },
+    "hosted_105": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_86"
+        },
+        {
+          "$ref": "#/$defs/hosted_106"
+        }
+      ]
+    },
+    "hosted_106": {
+      "const": "self_hosted"
+    },
+    "hosted_107": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/hosted_71"
+        },
+        "limit": {
+          "$ref": "#/$defs/hosted_72"
+        },
+        "order": {
+          "$ref": "#/$defs/hosted_73"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_108"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "hosted_108": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_86"
+        }
+      ]
+    },
+    "hosted_109": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_110"
+        },
+        {
+          "$ref": "#/$defs/hosted_111"
+        }
+      ]
+    },
+    "hosted_110": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "path": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_14"
+        }
+      },
+      "required": [
+        "file_id",
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_111": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/hosted_4",
+          "writeOnly": true
+        },
+        "path": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "type": {
+          "$ref": "#/$defs/hosted_16"
+        }
+      },
+      "required": [
+        "data",
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_112": {
+      "type": "object",
+      "properties": {
+        "environment_id": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "object": {
+          "$ref": "#/$defs/hosted_113"
+        },
+        "path": {
+          "$ref": "#/$defs/hosted_4"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/hosted_51"
+        }
+      },
+      "required": [
+        "environment_id",
+        "object",
+        "path",
+        "size_bytes"
+      ],
+      "additionalProperties": false
+    },
+    "hosted_113": {
+      "const": "agent.environment.file"
+    },
+    "hosted_114": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "$ref": "#/$defs/hosted_115"
+        },
+        "order": {
+          "$ref": "#/$defs/hosted_73"
+        },
+        "page": {
+          "$ref": "#/$defs/hosted_71"
+        },
+        "path": {
+          "$ref": "#/$defs/hosted_17"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "hosted_115": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/hosted_2"
+        },
+        {
+          "$ref": "#/$defs/hosted_51"
+        }
+      ]
+    },
+    "hosted_template_create": {
+      "$ref": "#/$defs/hosted_0"
+    },
+    "hosted_template_update": {
+      "$ref": "#/$defs/hosted_41"
+    },
+    "hosted_template_resource": {
+      "$ref": "#/$defs/hosted_50"
+    },
+    "hosted_template_deleted": {
+      "$ref": "#/$defs/hosted_68"
+    },
+    "hosted_template_query": {
+      "$ref": "#/$defs/hosted_70"
+    },
+    "hosted_environment_create": {
+      "$ref": "#/$defs/hosted_76"
+    },
+    "hosted_environment_resource": {
+      "$ref": "#/$defs/hosted_87"
+    },
+    "hosted_environment_query": {
+      "$ref": "#/$defs/hosted_107"
+    },
+    "hosted_file_create": {
+      "$ref": "#/$defs/hosted_109"
+    },
+    "hosted_file_resource": {
+      "$ref": "#/$defs/hosted_112"
+    },
+    "hosted_file_query": {
+      "$ref": "#/$defs/hosted_114"
+    },
+    "hosted_template_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hosted_template_resource"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
     "agent_session_0": {
       "type": "object",
       "properties": {

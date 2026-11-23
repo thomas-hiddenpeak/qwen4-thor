@@ -2148,6 +2148,46 @@
         "src/server/vault_credential_auth.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
+    },
+    "DELETE /v1/agents/environments/templates/{environment_template_id}": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/environments/templates": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/environments/templates/{environment_template_id}": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/environments/templates": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/environments/templates/{environment_template_id}": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -2762,8 +2802,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "9aa4c4f25b3234afed93b6a4a4360fdb672b2e102541f35712d9a70f6157813d",
-    "cmake/ChatProtocolIdentity.cmake": "39310962d0778d56da5595b0ddf459b94a5ea8b468b3b8f1a56164341742d33d",
+    "CMakeLists.txt": "ac9607d0fcd4253538ff99ac0072e07bce6669602891925d77658f55797801c5",
+    "cmake/ChatProtocolIdentity.cmake": "4a37111c8eaf96b0018ded90906e457e3158ad096c4d0597abe2658708e9e1bb",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2835,12 +2875,16 @@
     "include/q4t/server/access_program.h": "389d4e152faf16fbfd626e1c1b7045acb28a72822e4968a14f02dc06b096614e",
     "include/q4t/server/actual_usage.h": "8eb8a2ca44a418184b1d6248e9859cd9962b127a23305fa19544771d1be6a61b",
     "include/q4t/server/actual_usage_step.h": "8acae1e5d8d0343a22ae1363b69bf0b6d76564cd447ef112cf5f788a8b9af3f3",
+    "include/q4t/server/agent_environment.h": "2468ff33e68cb32db4813743cf871f82b8ef690c969f99e38eadd3599d536646",
+    "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
+    "include/q4t/server/agent_session.h": "8c9d15b66f11cd12dabff42c163fb2937f07331ddfa5167d414a8d65fcec3b05",
+    "include/q4t/server/agent_vault.h": "3e4bb28fb1074e81a67af9f517eb9bf73be66bf93c621771841cf339963d62a0",
     "include/q4t/server/aligner_assets.h": "183daf183416a4a2d73c39ccb43e9e2c308db30220e68108163511744ec30443",
     "include/q4t/server/aligner_service.h": "6e3bd5218668a6ea21c52963743be5da8d488e02ae0d77d8d29114a34876c017",
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "d059308a97c30b9de434e499796d682dcc740271d301c30927a95a520450d57a",
+    "include/q4t/server/application_routes.h": "4b5b30d070473e5808d11007c94a0049b2047ec891bbfc0416a82213ae0e1fa8",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -2987,7 +3031,7 @@
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
-    "include/q4t/server/object_store.h": "6c82f4c4527629537f17a0ce3cbfec97690f0c657871dd919fb11361afd72c43",
+    "include/q4t/server/object_store.h": "ac4caea573745d61e3e719fc3da3ccfb35a2400d5ed663af85c279aa2147f941",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -3235,6 +3279,18 @@
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "src/server/access_program.cpp": "ff759ca9c3a410e0c35518cd5bdeb45fba589fb4ce9d34261ce3896ff60f7b97",
+    "src/server/agent_environment_template.cpp": "eab1938f55b9926f5886490f7da784df974f1458ef6ef29e02eda030e9068eef",
+    "src/server/agent_registration.cpp": "3779a5ca860889e68b771933361eadc3104182e00bf8d3a8c3b7c7d99563e2a3",
+    "src/server/agent_session.cpp": "e6b21438f13b2add4e8b16d52045fd1d617a9acc6d8083310977a78a7730bf39",
+    "src/server/agent_session_cancel.cpp": "7b3ce808f145730f3d38e79c7ae2ec7c13a97aeacbd7d4298294aa3a00b5994f",
+    "src/server/agent_session_events.cpp": "b606ef9ed0e4ecc6c727af12d6c29bfbc4b3bd0dcebc817c24aa2c48234619db",
+    "src/server/agent_session_http.cpp": "18a6c37a59eda7d925362ddfb5d37eb8a65c49babc9e3df37368ac274dbd2647",
+    "src/server/agent_session_internal.h": "155029a456bc779d3dcdeaa931a5d1dbbe3ef6e4dd2562bcafe9d93040fde4bc",
+    "src/server/agent_session_mcp.cpp": "844732f17782248ffc38b2c92831ca4ed4a19a86577eef63ce5bcbdfbd516fab",
+    "src/server/agent_session_settings.cpp": "030f1d2a84a8fd01ae8326d2a01151e32bb94feb975e2b8768b48498e675f46a",
+    "src/server/agent_session_traces.cpp": "290f7121c85cd09983aebc6c4db54a2e68c48636fc6ffacab86d5a808615e8e2",
+    "src/server/agent_session_turn.cpp": "a47b7dab70876cd0d9506e69e0e0938904622313d8b8dcdb210c10cb2baa9082",
+    "src/server/agent_vault.cpp": "50e97c50c0b5309769e434c066a002b1a662dcb7b1154b0d44901be0f3862c5a",
     "src/server/aligner_assets.cpp": "80fdb6af8262fe6d1ef86318915941cc319a507eb1a33c37db86bd16b3df1a9b",
     "src/server/aligner_service.cpp": "5f971cb849b343934b620d7966994807484d765b0ba2bdcc8402e55bd7c56bba",
     "src/server/application_owner.cpp": "15796bb55a96ae0f74e7b271d21f3e734e5d251903fd00d5f3155294ba8cfdf1",
@@ -3281,7 +3337,7 @@
     "src/server/chat_audio_inputs.cpp": "9a9f94790bcf4171a0c65ed6dc6655bcd834ac909ae394573aa6e4850a1d0ba1",
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
-    "src/server/chat_capabilities.cpp": "0bdfe146e00bfc5c6b13e518b8fd8f5a6ad8ce67ccb0073f34dbc0b0a61939cb",
+    "src/server/chat_capabilities.cpp": "213b22a8df0c12e8adabe00453f6c6de713d1e40ebaeada6187f77fa757fd80d",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -3291,7 +3347,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "8e0648b5798e32da58cb5abdf7f932b63153ff0d4436cc4bb57e08656633ab0b",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "2d3bf54aa949be86d4ddb21b075ca40ce0077cdc320aa28ebd60115acd870d37",
+    "src/server/chat_http.cpp": "2a45e96f595d85a4e259bde5f3cf55319fa1a408236809e867d8cb694723e0c5",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3342,11 +3398,15 @@
     "src/server/client_request.cpp": "ac56a7e035a60ee4906e0ed4d8a3643143aed75d0ac3b3d9cbf6d9a460913ff2",
     "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
+    "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
+    "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3",
     "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
+    "src/server/contracts/openai_environment_types_v1.json": "f7de8eb40560027d9b144e0dea8598d814c1ea971b45b213b476ae6d426779ae",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
     "src/server/contracts/openai_live_types_v1.json": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
     "src/server/contracts/openai_multi_agent_types_v1.json": "2c07ee92deacfb8c247d6fdd48f6eed1b073c75235065eb6ded5ca23f82f19e6",
     "src/server/contracts/openai_realtime_types_v1.json": "4055c325fca57d6de987aa4f9e93bca1fe2f3740d5e65eec23156b23ebfe0d0c",
+    "src/server/contracts/openai_vault_credential_types_v1.json": "f3c5a9a4be6e274325fd214d4e2ea7094f1fa0408f91107384abcfcec72456a2",
     "src/server/conversation_api.cpp": "3c8196c30809f764da5cc714b1f89ec7deefab8ecd86942d7f300bac67e96f41",
     "src/server/conversation_state.cpp": "e974516e7ae4f3c7a65de603794d784a5797e489a3891a788e7746586ab2cfca",
     "src/server/cuda_memory_backend.h": "aabc6d78d2925ec5280e270964d79d3164ce706732a674b88215554a34d0e6a5",
@@ -3501,11 +3561,11 @@
     "src/server/native_chat_generation.cpp": "4f223e5f912d2382df67a5258aba6dec0328e4199bf04621da8012fbdd5b183b",
     "src/server/native_crypto.cpp": "9da39bb1de51c80b9a028e4e748a77266a5d145a24173ab5d0fdc192bccde92a",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "70f1079ff33ebbc7eeaf98a2e238b6a772ef351638e6a34e21cbbb08ff0a11d2",
+    "src/server/object_protocol.h": "1a74bec7d167c63fe7a1aa36e2c8101d6427a33862b391efcc79de59f481986d",
     "src/server/object_retention.cpp": "8a291bd439a04549e1539de70a0546d19d4a8dcf5e464d7138e8df98ce303785",
-    "src/server/object_store.cpp": "e46481f6df495224edce3ce1f53cabd46fdc14aba45cba51cd2ae5f2a31111a2",
+    "src/server/object_store.cpp": "e63578cdd0ad93ff311873fdce4f2834b4a9a3dca5c4cec583e1d13778bacf2b",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
-    "src/server/object_worker.cpp": "c568e41d67c5723851c88953b6813dc5c58fa97329ad602daef2fef754329dba",
+    "src/server/object_worker.cpp": "3b52e92e76efca267327f76f2fc936b97e0ccf8f7262ae31b30717914bddb102",
     "src/server/output_constraints.cpp": "add0daef3ba87df074329f1ed554220023ab0db4211667f27ea723e23c4cacd9",
     "src/server/output_schema.cpp": "f74cd72e27af2095859c1d6f2f2eb51ab2d8d6317f268c15de571c70fba0a358",
     "src/server/overlapping_output.cpp": "bbc75868fc9be368ced28d5000404e86ee9391b071e4f90465b6c681540a9302",
@@ -3592,7 +3652,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "2fb783afdb0d4478647b9b1231db474835697971203966bd8cb1c5a696e85940",
-    "src/server/responses_item_shape.cpp": "a1fa7d37223352571f690d77148a2fd2d299f12e0374e6e3bcc394beb5891038",
+    "src/server/responses_item_shape.cpp": "e2a97e9210ea1c0f0abc10d503a861c45cae9c28bfbf8ec154e17e94b0890583",
     "src/server/responses_jobs.cpp": "02ba0eb00df0e814216696c04000c848f2b8aa88ca89509b4cbd9bb7e508a5b8",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -3674,6 +3734,10 @@
     "src/server/tts_upload.cpp": "2e6134b5607f814f1ec1dc2fda179169ec3e2a7c5415052a067aa5a505436ba4",
     "src/server/uploads.cpp": "b36af1ee4e8a011e2be968e2e1e613699812d856cbbf205720fb9022ed1897c7",
     "src/server/vad_assets.cpp": "33e06d9f82f6155ecfac7b193f9559514ba1af354f73c44bb1e9515066e15471",
+    "src/server/vault_credential.cpp": "d1aa90d14ba45e0d8a5443e57f3a1ca68348b024078bc0ab43c0aefc134741dc",
+    "src/server/vault_credential_auth.cpp": "5be915b498ee73be026997a5fc7519feb967b51d8a01f751d855983255211649",
+    "src/server/vault_credential_internal.h": "1dc03e11cbbb3f145cdb9378f58c85a01833d8976317badefe891811ceecf470",
+    "src/server/vault_oauth.cpp": "321f2cd0b2d5eb563f3f0da5308b55b3e5ca74709264dd203d5f77bf34880d36",
     "src/server/vector_embedding_execution.cpp": "ed03247ac90022d8f421e3cfdbba594d29e33bc48296486fd217aad0db5e05bf",
     "src/server/vector_file_page.cpp": "d263b72769290aa4aee209f5d9cc124653f1ec9fff60c527ee07aedab2028802",
     "src/server/vector_index.cpp": "7d4c4a481bd26dc9558aee7d34167740255a6cbb5d936c0d5cc635939357432b",
@@ -3757,7 +3821,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "64838ac7165da3fe184ce9a15aa6f2978d1fd8a7f23886065b3b058bb7a35e6a",
+    "tools/serve_gateway/gateway.py": "08218e3aeec50c683d6ee10be15648e4c99c82e913c8d9bc1e251f0ff9cbed21",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -3968,28 +4032,7 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
-    "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
-    "src/server/agent_registration.cpp": "3779a5ca860889e68b771933361eadc3104182e00bf8d3a8c3b7c7d99563e2a3",
-    "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
-    "include/q4t/server/agent_session.h": "8c9d15b66f11cd12dabff42c163fb2937f07331ddfa5167d414a8d65fcec3b05",
-    "src/server/agent_session.cpp": "e6b21438f13b2add4e8b16d52045fd1d617a9acc6d8083310977a78a7730bf39",
-    "src/server/agent_session_http.cpp": "18a6c37a59eda7d925362ddfb5d37eb8a65c49babc9e3df37368ac274dbd2647",
-    "src/server/agent_session_turn.cpp": "a47b7dab70876cd0d9506e69e0e0938904622313d8b8dcdb210c10cb2baa9082",
-    "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3",
-    "src/server/agent_session_events.cpp": "b606ef9ed0e4ecc6c727af12d6c29bfbc4b3bd0dcebc817c24aa2c48234619db",
-    "src/server/agent_session_internal.h": "155029a456bc779d3dcdeaa931a5d1dbbe3ef6e4dd2562bcafe9d93040fde4bc",
-    "src/server/agent_session_settings.cpp": "030f1d2a84a8fd01ae8326d2a01151e32bb94feb975e2b8768b48498e675f46a",
-    "src/server/agent_session_cancel.cpp": "7b3ce808f145730f3d38e79c7ae2ec7c13a97aeacbd7d4298294aa3a00b5994f",
-    "include/q4t/server/agent_vault.h": "3e4bb28fb1074e81a67af9f517eb9bf73be66bf93c621771841cf339963d62a0",
-    "src/server/agent_vault.cpp": "50e97c50c0b5309769e434c066a002b1a662dcb7b1154b0d44901be0f3862c5a",
-    "src/server/contracts/openai_vault_credential_types_v1.json": "f3c5a9a4be6e274325fd214d4e2ea7094f1fa0408f91107384abcfcec72456a2",
-    "src/server/vault_credential.cpp": "d1aa90d14ba45e0d8a5443e57f3a1ca68348b024078bc0ab43c0aefc134741dc",
-    "src/server/vault_credential_auth.cpp": "5be915b498ee73be026997a5fc7519feb967b51d8a01f751d855983255211649",
-    "src/server/vault_credential_internal.h": "1dc03e11cbbb3f145cdb9378f58c85a01833d8976317badefe891811ceecf470",
-    "src/server/agent_session_mcp.cpp": "844732f17782248ffc38b2c92831ca4ed4a19a86577eef63ce5bcbdfbd516fab",
-    "src/server/vault_oauth.cpp": "321f2cd0b2d5eb563f3f0da5308b55b3e5ca74709264dd203d5f77bf34880d36",
-    "src/server/agent_session_traces.cpp": "290f7121c85cd09983aebc6c4db54a2e68c48636fc6ffacab86d5a808615e8e2"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6741,6 +6784,62 @@
       "evidence": [
         "src/server/vault_credential.cpp",
         "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "DELETE /v1/agents/environments/templates/{environment_template_id}": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/environments/templates": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/agents/environments/templates/{environment_template_id}": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/environments/templates": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/environments/templates/{environment_template_id}": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/environments/templates": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/agents/environments/templates/{environment_template_id}": {
+      "semantics": "按调用者创建、分页、读取、更新和删除环境模板。",
+      "boundary": "环境变量、设置命令和内联文件内容只保存在绑定调用者与模板的加密定义中。",
+      "evidence": [
+        "src/server/agent_environment_template.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
     }

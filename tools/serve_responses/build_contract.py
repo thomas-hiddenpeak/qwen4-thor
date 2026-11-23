@@ -138,6 +138,16 @@ def schema(graph):
     definitions['credential_update'] = obj(dict(auth=ref('credential_auth_rotate'), metadata=vault_meta))
     definitions['credential_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['credential_list']['properties']['data']['items'] = ref('credential_resource')
+    environment = json.loads((ROOT/'src/server/contracts/openai_environment_types_v1.json').read_text())
+    assert environment['profile'] == 'q4t-openai-environment-types-v1'
+    environment_types = graph_definitions(environment, 'hosted_')
+    for definition in environment_types.values():
+        for name, field in definition.get('properties', {}).items():
+            if name in {'env', 'setup_commands', 'source', 'data'}:
+                field['writeOnly'] = True
+    definitions.update(environment_types)
+    definitions['hosted_template_list'] = copy.deepcopy(definitions['agents_list'])
+    definitions['hosted_template_list']['properties']['data']['items'] = ref('hosted_template_resource')
     sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
     assert sessions['profile'] == 'q4t-openai-agent-session-types-v1'
     definitions.update(graph_definitions(sessions, 'agent_session_'))
@@ -469,6 +479,11 @@ def add_openapi(paths, response, error):
         ('/v1/agents/{agent_id}', 'get', None, 'agents_resource', None),
         ('/v1/agents/{agent_id}', 'post', 'agents_update', 'agents_resource', None),
         ('/v1/agents/{agent_id}', 'delete', None, 'agents_deleted', None),
+        ('/v1/agents/environments/templates', 'get', None, 'hosted_template_list', 'agents_query'),
+        ('/v1/agents/environments/templates', 'post', 'hosted_template_create', 'hosted_template_resource', None),
+        ('/v1/agents/environments/templates/{environment_template_id}', 'get', None, 'hosted_template_resource', None),
+        ('/v1/agents/environments/templates/{environment_template_id}', 'post', 'hosted_template_update', 'hosted_template_resource', None),
+        ('/v1/agents/environments/templates/{environment_template_id}', 'delete', None, 'hosted_template_deleted', None),
         ('/v1/agents/sessions', 'post', 'agent_session_create', 'agent_session_resource', None),
         ('/v1/agents/sessions', 'get', None, 'agent_session_list', 'agent_session_query'),
         ('/v1/agents/sessions/{session_id}', 'get', None, 'agent_session_resource', None),
@@ -549,7 +564,8 @@ def add_openapi(paths, response, error):
                 **{'in':'header'}, required=True, schema=dict(type='string',
                     pattern=r'(^|,)[ \t]*agents=v1[ \t]*(,|$)'), example='agents=v1'))
         if body:
-            optional = path in ('/v1/conversations', '/v1/responses/input_tokens', '/v1/vaults')
+            optional = path in ('/v1/conversations', '/v1/responses/input_tokens', '/v1/vaults',
+                                '/v1/agents/environments/templates')
             operation['requestBody'] = dict(required=not optional,
                 content={'application/json': dict(schema=nullable(external(body))
                     if optional else external(body))})

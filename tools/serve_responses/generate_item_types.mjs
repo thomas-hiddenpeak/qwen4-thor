@@ -7,9 +7,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--agent-sessions', '--vault-credentials'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--agent-sessions', '--vault-credentials', '--environments'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--agent-sessions|--vault-credentials]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--agent-sessions|--vault-credentials|--environments]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -32,6 +32,9 @@ const live = resolve(sdk, 'src/resources/live/live.ts');
 const decisions = resolve(sdk, 'src/resources/decisions.ts');
 const agents = resolve(sdk, 'src/resources/beta/agents/agents.ts');
 const credentials = resolve(sdk, 'src/resources/beta/agents/vaults/credentials.ts');
+const environments = resolve(sdk, 'src/resources/beta/agents/environments/environments.ts');
+const environmentFiles = resolve(sdk, 'src/resources/beta/agents/environments/files.ts');
+const templates = resolve(sdk, 'src/resources/beta/agents/environments/templates.ts');
 const agentSessions = resolve(sdk, 'src/resources/beta/agents/sessions/sessions.ts');
 const agentTurns = resolve(sdk, 'src/resources/beta/agents/sessions/turns/turns.ts');
 const beta = resolve(sdk, 'src/resources/beta/responses/responses.ts');
@@ -45,6 +48,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--multi-agent' ? [beta] : []),
   ...(mode === '--agents' ? [agents] : []),
   ...(mode === '--vault-credentials' ? [credentials] : []),
+  ...(mode === '--environments' ? [environments, environmentFiles, templates] : []),
   ...(mode === '--agent-sessions' ? [agents, agentSessions, agentTurns] : []),
   ...(mode === '--live' ? [live, liveSessions, liveSideband, liveForks] : [])], {
   target: ts.ScriptTarget.ES2022,
@@ -149,7 +153,19 @@ function exported(file, name) {
   }
   return encode(checker.getDeclaredTypeOfSymbol(symbol));
 }
-const roots = mode === '--vault-credentials' ? {
+const roots = mode === '--environments' ? {
+  template_create: exported(templates, 'TemplateCreateParams'),
+  template_update: exported(templates, 'TemplateUpdateParams'),
+  template_resource: exported(templates, 'EnvironmentTemplate'),
+  template_deleted: exported(templates, 'EnvironmentTemplateDeleted'),
+  template_query: exported(templates, 'TemplateListParams'),
+  environment_create: exported(environments, 'EnvironmentCreateParams'),
+  environment_resource: exported(environments, 'EnvironmentInfo'),
+  environment_query: exported(environments, 'EnvironmentListParams'),
+  file_create: exported(environmentFiles, 'FileCreateParams'),
+  file_resource: exported(environmentFiles, 'EnvironmentFile'),
+  file_query: exported(environmentFiles, 'FileListParams'),
+} : mode === '--vault-credentials' ? {
   create: exported(credentials, 'CredentialCreateParams'),
   auth_create: exported(credentials, 'CredentialAuthCreateParam'),
   auth_rotate: exported(credentials, 'CredentialAuthRotateParam'),
@@ -235,7 +251,8 @@ if (mode === '--api') Object.assign(roots, {
   input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
 });
 const result = {
-  profile: mode === '--vault-credentials' ? 'q4t-openai-vault-credential-types-v1' :
+  profile: mode === '--environments' ? 'q4t-openai-environment-types-v1' :
+    mode === '--vault-credentials' ? 'q4t-openai-vault-credential-types-v1' :
     mode === '--agent-sessions' ? 'q4t-openai-agent-session-types-v1' :
     mode === '--agents' ? 'q4t-openai-agent-registration-types-v1' :
     mode === '--multi-agent' ? 'q4t-openai-multi-agent-types-v1' :

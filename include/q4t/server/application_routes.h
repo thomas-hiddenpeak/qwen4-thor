@@ -448,14 +448,38 @@ inline bool IsVaultTarget(std::string_view target) {
   return ParseVaultRoute(target).kind != VaultRouteKind::kNone;
 }
 
+inline constexpr std::string_view kEnvironmentTemplatesPath =
+    "/v1/agents/environments/templates";
+
+inline bool IsEnvironmentTemplateTarget(std::string_view target) {
+  if (target.find('#') != target.npos) return false;
+  const auto path = target.substr(0, target.find('?'));
+  if (path == kEnvironmentTemplatesPath) return true;
+  if (!path.starts_with("/v1/agents/environments/templates/")) return false;
+  const auto id = path.substr(kEnvironmentTemplatesPath.size() + 1);
+  return id.starts_with("environment_template_") && id.size() > 21 &&
+         ValidApplicationId(id);
+}
+
+inline bool EnvironmentTemplateMethodAllowed(std::string_view method,
+                                             std::string_view target) {
+  return IsEnvironmentTemplateTarget(target) &&
+         (method == "GET" || method == "POST" ||
+          (method == "DELETE" &&
+           target.substr(0, target.find('?')) != kEnvironmentTemplatesPath));
+}
+
 inline bool IsManagedAgentTarget(std::string_view target) {
-  return IsVaultTarget(target) || IsAgentRegistrationTarget(target) ||
+  return IsVaultTarget(target) || IsEnvironmentTemplateTarget(target) ||
+         IsAgentRegistrationTarget(target) ||
          ParseAgentSessionRoute(target).kind != AgentSessionRouteKind::kNone;
 }
 
 inline bool ManagedAgentMethodAllowed(std::string_view method,
                                       std::string_view target) {
   using Kind = AgentSessionRouteKind;
+  if (IsEnvironmentTemplateTarget(target))
+    return EnvironmentTemplateMethodAllowed(method, target);
   const auto vault = ParseVaultRoute(target).kind;
   if (vault != VaultRouteKind::kNone)
     return method == "GET" || method == "POST" ||

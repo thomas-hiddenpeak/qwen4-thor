@@ -1,0 +1,70 @@
+{
+  "stage": "candidate_real_sdk_http_pass",
+  "engine": "5ad8675940bbf837e42c65658557211dfb268ad5c9011078b8d937c58a9e7f4f",
+  "ingress": "8afa45887db80173df1841d48f11c50a507b6828e861e555018648744a07acb5",
+  "protocol": "f7fc3b668346d0c08e4f2e5f4d4722e455de7a6eda615cf20c82e572109c8a06",
+  "sdk_driver_sha256": "cfe0466ee83833f997764b5992edf44251cf933c65e5f8bfc12e777655721557",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 33.952,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "operations": 5,
+    "templates": 2,
+    "pages": 2,
+    "inline_bytes": 57,
+    "owned_file": true,
+    "foreign_file": 404,
+    "private_fields_omitted": true,
+    "foreign_read": 404,
+    "foreign_delete": 404,
+    "deleted_get": 404,
+    "invalid_update": 400,
+    "chat": "42"
+  },
+  "coverage": {
+    "scope_snapshot_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+    "issued_openapi_sha256": "cc02f7be8ab120dff7bdfb29681509998719b01372d083534bea10e9ea14cdb8",
+    "scope_path_selectors": 157,
+    "with_declared_operations": 80,
+    "without_declared_operations": 77,
+    "measurement": "Path templates ignore parameter names. A query selector must be explicitly declared with a matching enum or constant on the listed operation. This measures declarations only; the frozen scope inventory does not list all required methods or their acceptance."
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 137,
+    "native_routes": 225,
+    "reviewed_source_anchors": 1231,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "defaults": {
+    "network": "disabled",
+    "desktop": false
+  },
+  "readback_after_store_restart": true,
+  "definition_sealed": true,
+  "cross_template_open_rejected": true,
+  "release_default": 448,
+  "receipts": {
+    ".q4t-work/serve-responses-agents-20261123/environment-template-business-01/plan.json": "a8159effa71eca184ef36377c5b32ca815713906a90dc304e25ea952ee369096",
+    ".q4t-work/serve-responses-agents-20261123/environment-template-business-01/create/sdk-result.json": "00d64dfa703fb14a4e1a1722858c30563a850a616311075ef219a57db292b35d",
+    ".q4t-work/serve-responses-agents-20261123/environment-template-business-01/result.json": "df9cd59ce028618686a04feb54fffc08227c60995734b317ac9ec772945bfd06",
+    ".q4t-work/serve-responses-agents-20261123/environment-template-lease-01/exit.json": "d2d109703f503c1742a940c600e6e82ac740b99f7cbef1b4f8ae3e199472d4f5",
+    ".q4t-work/serve-responses-agents-20261123/environment-tests.txt": "67ad1aca8849ab15df66c53e1e1caab408289b435582d6620f20bc785c687489",
+    ".q4t-work/serve-responses-agents-20261123/environment-cpu-final.log": "c14360e780a580adf34ae6d28b5fb73a41c8c1e381aa4d6bafc396de52bc47e9",
+    ".q4t-work/serve-responses-agents-20261123/environment-native-route.log": "c5379fb43dbf9241312162b85d8ab3896bb5198ea4adb23b1035027a6b024e5e",
+    ".q4t-work/serve-responses-agents-20261123/environment-nginx-route.log": "c5379fb43dbf9241312162b85d8ab3896bb5198ea4adb23b1035027a6b024e5e",
+    ".q4t-work/serve-responses-agents-20261123/environment-route-tests.log": "dae97527feaa5f4404b7cf8a367c36b5834935509ab9babacf648b1bb8476a3b",
+    ".q4t-work/serve-responses-agents-20261123/environment-audit.json": "f3f0d583c29bfa15ec6fe478a8e29cf241d7c3515c60de749bd3db412a7ff9c7"
+  }
+}

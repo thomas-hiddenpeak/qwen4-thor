@@ -32,6 +32,7 @@
 #include "q4t/server/conversation_api.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/agent_vault.h"
+#include "q4t/server/agent_environment.h"
 #include "q4t/server/agent_session.h"
 #include "q4t/server/files_http.h"
 #include "q4t/server/live_recording_store.h"
@@ -544,7 +545,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && path != "/v1/realtime/calls" && !((path == "/v1/realtime/client_secrets" || path == "/v1/vaults" || IsResponseCancellation(method, path) ||
+      if (method == "POST" && path != "/v1/realtime/calls" && !((path == "/v1/realtime/client_secrets" || path == "/v1/vaults" ||
+                                 path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||
                                  IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
                                  IsBatchCancellation(method, path) ||
@@ -808,6 +810,8 @@ void ChatServer::Dispatch(int fd, const std::string& method,
             ? HandleBatchRequest(
                   *objects_, batches_.Get(), method, path, body, client,
                   {access.scope, access.deadline, access.cancelled})
+        : IsEnvironmentTemplateTarget(path)
+            ? HandleEnvironmentTemplate(*objects_, method, path, body, access)
         : IsVaultTarget(path)
             ? HandleAgentVault(*objects_, method, path, body, access)
         : IsAgentRegistrationTarget(path)

@@ -1,6 +1,7 @@
 #include "../src/server/schema_string.h"
 #include "../src/server/mcp_transport_internal.h"
 #include "../src/server/vault_credential_internal.h"
+#include "q4t/server/agent_environment.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/agent_session.h"
 #include "q4t/server/agent_vault.h"
@@ -109,6 +110,79 @@ ObjectReply Api(ObjectStore& store, std::string method, std::string path,
                              access);
 }
 }  // namespace
+
+Q4T_TEST(environment_template_seals_private_inputs_and_preserves_patch_semantics) {
+  Fixture f;
+  const std::string root = "/v1/agents/environments/templates";
+  std::string id;
+  {
+    ObjectStore objects(f.options);
+    auto created = HandleEnvironmentTemplate(objects, "POST", root,
+        R"({"name":"docs","env":{"API_TOKEN":"private-environment-value"},
+          "setup_commands":[{"command":"private-setup-token"}],
+          "files":[{"type":"inline","path":"/workspace/record","data":"SGVsbG8="}],
+          "network":{"access":"restricted","allowed_domains":["example.org"],
+                     "blocked_domains":["private.example"]},
+          "packages":{"python":["pinned-package"]}})", Access());
+    Q4T_CHECK(Ok(created));
+    id = created.value.GetString("id");
+    Q4T_CHECK(id.starts_with("environment_template_") &&
+              created.value.GetString("object") == "agent.environment.template");
+    auto wire = OutputJson(created.value);
+    for (const auto* confidential : {"private-environment-value", "private-setup-token",
+                                      "SGVsbG8=", "private.example"})
+      Q4T_CHECK(wire.find(confidential) == std::string::npos);
+    Q4T_CHECK(created.value.GetArray("files")->array.front().GetInt("size_bytes") == 5);
+    Q4T_CHECK(created.value.Find("packages")->GetArray("system")->array.empty());
+    ObjectRequest read;
+    read.kind = ObjectKind::kEnvironmentTemplate;
+    read.scope = Access().scope;
+    read.id = id;
+    auto row = objects.Execute(read, Access().deadline);
+    Q4T_CHECK(Ok(row) && OutputJson(row.value).find("private-setup-token") == std::string::npos);
+    std::string plain;
+    StateCipherBinding binding{"q4t.agents", "environment", "template_definition", id};
+    const auto sealed = row.value.Find("data")->GetString("sealed_definition");
+    Q4T_CHECK(Ok(StateCipher(objects).Open(sealed, binding, Access(), &plain)) &&
+              Parse(plain).Find("env")->GetString("API_TOKEN") == "private-environment-value");
+    binding.item_id += "_other";
+    Q4T_CHECK(!StateCipher(objects).Open(sealed, binding, Access(), &plain).ok());
+  }
+  ObjectStore objects(f.options);
+  const auto path = root + "/" + id;
+  const auto call = [&](const char* method, const std::string& route,
+                        const std::string& body = "", StateAccess access = Access()) {
+    return HandleEnvironmentTemplate(objects, method, route, body, access);
+  };
+  auto updated = call("POST", path, R"({"name":"new","desktop":{"enabled":true}})");
+  Q4T_CHECK(Ok(updated) && updated.value.GetString("name") == "new" &&
+            updated.value.GetArray("files")->array.size() == 1 &&
+            updated.value.Find("desktop")->GetBool("enabled"));
+  for (const char* bad : {
+           R"({"files":[{"type":"inline","path":"/workspace/record","data":"SB=="}]})",
+           R"({"files":[{"type":"inline","path":"/record","data":""}]})",
+           R"({"files":[{"type":"inline","path":"/workspace/../record","data":""}]})",
+           R"({"packages":{"python":"unexpected"}})"})
+    Q4T_CHECK(call("POST", path, bad).http_status == 400);
+  Q4T_CHECK(OutputJson(call("GET", path).value) == OutputJson(updated.value));
+  auto reset = call("POST", path, R"({"name":null,"files":null,"desktop":null,"network":null})");
+  Q4T_CHECK(Ok(reset) && reset.value.Find("name")->IsNull() &&
+            reset.value.GetArray("files")->array.empty() &&
+            reset.value.Find("network")->GetString("access") == "disabled" &&
+            !reset.value.Find("desktop")->GetBool("enabled"));
+  auto second = call("POST", root);
+  Q4T_CHECK(Ok(second));
+  auto page = call("GET", root+"?limit=1&order=asc");
+  Q4T_CHECK(Ok(page) && page.value.GetBool("has_more"));
+  auto after = call("GET", root+"?after="+page.value.GetString("last_id")+"&order=asc");
+  Q4T_CHECK(Ok(after) && !after.value.GetBool("has_more") &&
+            page.value.GetString("last_id") != after.value.GetString("last_id"));
+  for (const auto* method : {"GET", "DELETE"})
+    Q4T_CHECK(call(method, path, "", Access("client:other")).http_status == 404);
+  Q4T_CHECK(call("GET", root, "", Access("client:other")).value.GetArray("data")->array.empty());
+  Q4T_CHECK(Ok(call("DELETE", path)) && call("GET", path).http_status == 404);
+  return true;
+}
 
 Q4T_TEST(agent_session_wire_shapes_follow_the_sdk_transport_fields) {
   ChatPlanError error;

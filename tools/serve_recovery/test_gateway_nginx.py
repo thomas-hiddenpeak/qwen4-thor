@@ -431,7 +431,7 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
+            identities = dict(environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
@@ -521,6 +521,19 @@ class NginxTests(unittest.TestCase):
 
     def ready(self):
         self.stack.wait(lambda: self.stack.bound == self.stack.generation)
+
+    def test_environment_templates_preserve_identity_and_sdk_selector(self):
+        self.ready()
+        root = '/v1/agents/environments/templates'
+        selector = {'OpenAI-Beta': 'agents=v1'}
+        for body, path in [({}, root), (None, root+'?order=asc&limit=1'),
+                           ({'name': 'updated'}, root+'/environment_template_1')]:
+            self.assertEqual(self.stack.request(body, path=path, extra=selector)[0], 200)
+            row = self.stack.application_requests[-1]
+            self.assertEqual((row['path'], row['client'], row.get('openai_beta')),
+                             (path, 'alpha', 'agents=v1'))
+        self.assertEqual(self.stack.request(path=root+'/other_1', extra=selector)[0], 404)
+        self.assertEqual(len(self.stack.application_requests), 3)
 
     def test_agent_session_traces_preserve_cursor_selector_and_owner(self):
         self.ready()
