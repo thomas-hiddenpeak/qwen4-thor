@@ -83,6 +83,9 @@ ObjectReply BindSession(const BinaryAccess& access, const McpEndpoint& endpoint,
   }
   if (!endpoint.provider_id.empty())
     Set(&authority, "provider_id", String(endpoint.provider_id));
+  if (endpoint.exact_target) Set(&authority, "exact_target", Boolean(true));
+  if (!endpoint.request_metadata.object.empty())
+    Set(&authority, "request_metadata", endpoint.request_metadata);
   std::string binding, scope;
   if (!InputValueIdentity(String(access.scope), &scope) ||
       !InputValueIdentity(authority, &binding))
@@ -214,6 +217,8 @@ ObjectReply InvokeMcp(const BinaryAccess& access, const McpEndpoint& endpoint,
               {"tunnel_channel", String(endpoint.tunnel_channel)},
               {"provider_id", String(endpoint.provider_id)},
               {"headers", std::move(headers)},
+              {"exact_target", Boolean(endpoint.exact_target)},
+              {"request_metadata", endpoint.request_metadata},
               {"authorization", String(endpoint.authorization)},
               {"options", file_detail::OptionsJson(deployment)},
               {"method", String(std::string(method))},
@@ -430,6 +435,8 @@ int MaybeRunMcpWorker(int argc, char** argv) {
       endpoint.tunnel_channel = request.GetString("tunnel_channel", "main");
       endpoint.provider_id = request.GetString("provider_id");
       endpoint.authorization = request.GetString("authorization");
+      endpoint.exact_target = request.GetBool("exact_target");
+      if (const auto* meta = request.Find("request_metadata")) endpoint.request_metadata = *meta;
       const auto* headers = request.Find("headers");
       const auto* options = request.Find("options");
       const auto* params = request.Find("params");

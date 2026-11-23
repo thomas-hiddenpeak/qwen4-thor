@@ -1639,7 +1639,8 @@ def validate(value, registry, name, digest):
     ledger.require(actual == registry['qualifications'][name],
                    'profile receipt does not match retained observations')
     observed = value['business']
-    if value['format'] in ('q4t-profile-business-v26', 'q4t-profile-business-v27'):
+    if value['format'] in ('q4t-profile-business-v26', 'q4t-profile-business-v27',
+                           'q4t-profile-business-v28'):
         from tools.serve_recovery import profile_duplex_reuse
         observed = dict(observed, realtime_duplex=profile_duplex_reuse.unpack_text(
             observed['realtime_duplex']))

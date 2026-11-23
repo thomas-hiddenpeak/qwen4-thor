@@ -235,6 +235,33 @@ bool SchemaFormatValid(std::string_view format, std::string_view value) {
   return false;
 }
 
+bool SchemaDateTimeAfter(std::string_view value,
+                         std::chrono::system_clock::time_point now) {
+  using namespace std::chrono;
+  year_month_day date;
+  ClockTime time;
+  if (value.size() < 20 || Upper(value[10]) != 'T' ||
+      !Date(value.substr(0, 10), &date) || !Time(value.substr(11), &time))
+    return false;
+  const auto minute = sys_days(date) + minutes(time.minute - time.offset);
+  if (time.leap && !LeapDate(year_month_day(floor<days>(minute))))
+    return false;
+  const auto stamp = minute + seconds(Number(value.substr(17, 2)));
+  const auto second = floor<seconds>(now);
+  if (stamp != second) return stamp > second;
+  if (value[19] != '.') return false;
+  auto remaining = duration_cast<nanoseconds>(now - second).count();
+  long divisor = 100000000;
+  for (size_t i = 20; i < value.size() && Digit(value[i]); ++i) {
+    const int target = value[i] - '0';
+    const int current = divisor ? remaining / divisor : 0;
+    if (target != current) return target > current;
+    if (divisor) remaining %= divisor;
+    divisor /= 10;
+  }
+  return false;
+}
+
 Status CheckSchemaString(const io::Json& schema, std::string_view value,
                          size_t* work_remaining, bool* accepted) {
   *accepted = false;

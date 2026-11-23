@@ -43,11 +43,11 @@ bool Decode(std::string_view encoded, std::string* result) {
 }
 }  // namespace
 
-ObjectReply ParseApplicationQuery(std::string_view raw) {
+ObjectReply ParseApplicationQuery(std::string_view raw, bool allow_status_list) {
   auto value = Object();
   if (raw.size() > 8192) return Invalid("Query exceeds byte limit", "query");
   std::unordered_set<std::string> seen;
-  std::string include_key;
+  std::string include_key, status_key;
   while (!raw.empty()) {
     const auto end = raw.find('&');
     const auto part = raw.substr(0, end);
@@ -56,14 +56,16 @@ ObjectReply ParseApplicationQuery(std::string_view raw) {
     if (equal == part.npos || !Decode(part.substr(0, equal), &key) ||
         !Decode(part.substr(equal + 1), &text))
       return Invalid("Invalid query encoding", "query");
-    if (key == "include" || key == "include[]") {
-      if (!include_key.empty() && include_key != key)
-        return Invalid("Mixed include encodings", "include");
-      include_key = key;
-      if (!value.Has("include")) Set(&value, "include", Array());
-      auto& items = Field(value, "include").array;
-      if (items.size() >= 8)
-        return Invalid("Too many include values", "include");
+    const bool status = allow_status_list && (key == "status" || key == "status[]");
+    if (status || key == "include" || key == "include[]") {
+      const auto field = status ? "status" : "include";
+      auto& encoding = status ? status_key : include_key;
+      if (!encoding.empty() && encoding != key)
+        return Invalid("Mixed array encodings", field);
+      encoding = key;
+      if (!value.Has(field)) Set(&value, field, Array());
+      auto& items = Field(value, field).array;
+      if (items.size() >= 8) return Invalid("Too many array values", field);
       items.push_back(String(text));
     } else {
       if (!seen.insert(key).second) return Invalid("Repeated query field", key);

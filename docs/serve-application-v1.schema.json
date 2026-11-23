@@ -22370,6 +22370,1043 @@
       "required": [],
       "additionalProperties": false
     },
+    "vault": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "object": {
+          "const": "vault"
+        },
+        "created_at": {
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "created_at",
+        "name",
+        "metadata"
+      ],
+      "additionalProperties": false
+    },
+    "vault_create": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes."
+        },
+        "metadata": {
+          "anyOf": [
+            {
+              "type": "object",
+              "maxProperties": 16,
+              "propertyNames": {
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 512
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "vault_update": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "vault_deleted": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "object": {
+          "const": "vault.deleted"
+        },
+        "deleted": {
+          "const": true
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "deleted"
+      ],
+      "additionalProperties": false
+    },
+    "vault_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/vault"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
+    "vault_query": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "after": {
+          "type": "string"
+        },
+        "order": {
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 512
+          }
+        },
+        "status": {
+          "anyOf": [
+            {
+              "enum": [
+                "active",
+                "archived"
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "active",
+                  "archived"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "credential_0": {
+      "type": "object",
+      "properties": {
+        "auth": {
+          "$ref": "#/$defs/credential_1"
+        },
+        "metadata": {
+          "$ref": "#/$defs/credential_26"
+        },
+        "name": {
+          "$ref": "#/$defs/credential_3"
+        }
+      },
+      "required": [
+        "auth",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "credential_1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_2"
+        },
+        {
+          "$ref": "#/$defs/credential_16"
+        },
+        {
+          "$ref": "#/$defs/credential_18"
+        }
+      ]
+    },
+    "credential_2": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "$ref": "#/$defs/credential_3",
+          "writeOnly": true
+        },
+        "expires_at": {
+          "$ref": "#/$defs/credential_4"
+        },
+        "mcp_server_url": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "refresh": {
+          "$ref": "#/$defs/credential_6"
+        },
+        "type": {
+          "$ref": "#/$defs/credential_15"
+        }
+      },
+      "required": [
+        "access_token",
+        "mcp_server_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_3": {
+      "type": "string"
+    },
+    "credential_4": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_5"
+        },
+        {
+          "$ref": "#/$defs/credential_3"
+        }
+      ]
+    },
+    "credential_5": {
+      "type": "null"
+    },
+    "credential_6": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_5"
+        },
+        {
+          "$ref": "#/$defs/credential_7"
+        }
+      ]
+    },
+    "credential_7": {
+      "type": "object",
+      "properties": {
+        "client_id": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "refresh_token": {
+          "$ref": "#/$defs/credential_3",
+          "writeOnly": true
+        },
+        "resource": {
+          "$ref": "#/$defs/credential_4"
+        },
+        "scope": {
+          "$ref": "#/$defs/credential_4"
+        },
+        "token_endpoint": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "token_endpoint_auth": {
+          "$ref": "#/$defs/credential_8"
+        }
+      },
+      "required": [
+        "client_id",
+        "refresh_token",
+        "token_endpoint",
+        "token_endpoint_auth"
+      ],
+      "additionalProperties": false
+    },
+    "credential_8": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_9"
+        },
+        {
+          "$ref": "#/$defs/credential_11"
+        },
+        {
+          "$ref": "#/$defs/credential_13"
+        }
+      ]
+    },
+    "credential_9": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/credential_10"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_10": {
+      "const": "none"
+    },
+    "credential_11": {
+      "type": "object",
+      "properties": {
+        "client_secret": {
+          "$ref": "#/$defs/credential_3",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/credential_12"
+        }
+      },
+      "required": [
+        "client_secret",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_12": {
+      "const": "client_secret_basic"
+    },
+    "credential_13": {
+      "type": "object",
+      "properties": {
+        "client_secret": {
+          "$ref": "#/$defs/credential_3",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/credential_14"
+        }
+      },
+      "required": [
+        "client_secret",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_14": {
+      "const": "client_secret_post"
+    },
+    "credential_15": {
+      "const": "mcp_oauth"
+    },
+    "credential_16": {
+      "type": "object",
+      "properties": {
+        "mcp_server_url": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "token": {
+          "$ref": "#/$defs/credential_3",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/credential_17"
+        }
+      },
+      "required": [
+        "mcp_server_url",
+        "token",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_17": {
+      "const": "static_bearer"
+    },
+    "credential_18": {
+      "type": "object",
+      "properties": {
+        "networking": {
+          "$ref": "#/$defs/credential_19"
+        },
+        "secret_name": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "secret_value": {
+          "$ref": "#/$defs/credential_3",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/credential_25"
+        }
+      },
+      "required": [
+        "networking",
+        "secret_name",
+        "secret_value",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_19": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_20"
+        },
+        {
+          "$ref": "#/$defs/credential_22"
+        }
+      ]
+    },
+    "credential_20": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/credential_21"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_21": {
+      "const": "unrestricted"
+    },
+    "credential_22": {
+      "type": "object",
+      "properties": {
+        "allowed_hosts": {
+          "$ref": "#/$defs/credential_23"
+        },
+        "type": {
+          "$ref": "#/$defs/credential_24"
+        }
+      },
+      "required": [
+        "allowed_hosts",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_23": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/credential_3"
+      }
+    },
+    "credential_24": {
+      "const": "limited"
+    },
+    "credential_25": {
+      "const": "environment_variable"
+    },
+    "credential_26": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_27"
+        }
+      ]
+    },
+    "credential_27": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/credential_3"
+      }
+    },
+    "credential_28": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_29"
+        },
+        {
+          "$ref": "#/$defs/credential_35"
+        },
+        {
+          "$ref": "#/$defs/credential_36"
+        }
+      ]
+    },
+    "credential_29": {
+      "type": "object",
+      "properties": {
+        "access_token": {
+          "$ref": "#/$defs/credential_4",
+          "writeOnly": true
+        },
+        "expires_at": {
+          "$ref": "#/$defs/credential_4"
+        },
+        "refresh": {
+          "$ref": "#/$defs/credential_30"
+        },
+        "type": {
+          "$ref": "#/$defs/credential_15"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_30": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_5"
+        },
+        {
+          "$ref": "#/$defs/credential_31"
+        }
+      ]
+    },
+    "credential_31": {
+      "type": "object",
+      "properties": {
+        "refresh_token": {
+          "$ref": "#/$defs/credential_4",
+          "writeOnly": true
+        },
+        "scope": {
+          "$ref": "#/$defs/credential_4"
+        },
+        "token_endpoint_auth": {
+          "$ref": "#/$defs/credential_32"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "credential_32": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_5"
+        },
+        {
+          "$ref": "#/$defs/credential_33"
+        },
+        {
+          "$ref": "#/$defs/credential_34"
+        }
+      ]
+    },
+    "credential_33": {
+      "type": "object",
+      "properties": {
+        "client_secret": {
+          "$ref": "#/$defs/credential_4",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/credential_12"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_34": {
+      "type": "object",
+      "properties": {
+        "client_secret": {
+          "$ref": "#/$defs/credential_4",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/credential_14"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_35": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "$ref": "#/$defs/credential_3",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/credential_17"
+        }
+      },
+      "required": [
+        "token",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_36": {
+      "type": "object",
+      "properties": {
+        "secret_value": {
+          "$ref": "#/$defs/credential_3",
+          "writeOnly": true
+        },
+        "type": {
+          "$ref": "#/$defs/credential_25"
+        }
+      },
+      "required": [
+        "secret_value",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_37": {
+      "type": "object",
+      "properties": {
+        "auth": {
+          "$ref": "#/$defs/credential_38"
+        },
+        "created_at": {
+          "$ref": "#/$defs/credential_52"
+        },
+        "id": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "metadata": {
+          "$ref": "#/$defs/credential_53"
+        },
+        "name": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "object": {
+          "$ref": "#/$defs/credential_54"
+        },
+        "updated_at": {
+          "$ref": "#/$defs/credential_52"
+        },
+        "vault_id": {
+          "$ref": "#/$defs/credential_3"
+        }
+      },
+      "required": [
+        "auth",
+        "created_at",
+        "id",
+        "metadata",
+        "name",
+        "object",
+        "updated_at",
+        "vault_id"
+      ],
+      "additionalProperties": false
+    },
+    "credential_38": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_39"
+        },
+        {
+          "$ref": "#/$defs/credential_47"
+        },
+        {
+          "$ref": "#/$defs/credential_48"
+        }
+      ]
+    },
+    "credential_39": {
+      "type": "object",
+      "properties": {
+        "expires_at": {
+          "$ref": "#/$defs/credential_40"
+        },
+        "mcp_server_url": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "refresh": {
+          "$ref": "#/$defs/credential_41"
+        },
+        "type": {
+          "$ref": "#/$defs/credential_15"
+        }
+      },
+      "required": [
+        "expires_at",
+        "mcp_server_url",
+        "refresh",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_40": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_5"
+        },
+        {
+          "$ref": "#/$defs/credential_3"
+        }
+      ]
+    },
+    "credential_41": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_5"
+        },
+        {
+          "$ref": "#/$defs/credential_42"
+        }
+      ]
+    },
+    "credential_42": {
+      "type": "object",
+      "properties": {
+        "client_id": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "resource": {
+          "$ref": "#/$defs/credential_40"
+        },
+        "scope": {
+          "$ref": "#/$defs/credential_40"
+        },
+        "token_endpoint": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "token_endpoint_auth": {
+          "$ref": "#/$defs/credential_43"
+        }
+      },
+      "required": [
+        "client_id",
+        "resource",
+        "scope",
+        "token_endpoint",
+        "token_endpoint_auth"
+      ],
+      "additionalProperties": false
+    },
+    "credential_43": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_44"
+        },
+        {
+          "$ref": "#/$defs/credential_45"
+        },
+        {
+          "$ref": "#/$defs/credential_46"
+        }
+      ]
+    },
+    "credential_44": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/credential_10"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_45": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/credential_12"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_46": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/credential_14"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_47": {
+      "type": "object",
+      "properties": {
+        "mcp_server_url": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "type": {
+          "$ref": "#/$defs/credential_17"
+        }
+      },
+      "required": [
+        "mcp_server_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_48": {
+      "type": "object",
+      "properties": {
+        "networking": {
+          "$ref": "#/$defs/credential_49"
+        },
+        "secret_name": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "type": {
+          "$ref": "#/$defs/credential_25"
+        }
+      },
+      "required": [
+        "networking",
+        "secret_name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_49": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/credential_50"
+        },
+        {
+          "$ref": "#/$defs/credential_51"
+        }
+      ]
+    },
+    "credential_50": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/credential_21"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_51": {
+      "type": "object",
+      "properties": {
+        "allowed_hosts": {
+          "$ref": "#/$defs/credential_23"
+        },
+        "type": {
+          "$ref": "#/$defs/credential_24"
+        }
+      },
+      "required": [
+        "allowed_hosts",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "credential_52": {
+      "type": "number"
+    },
+    "credential_53": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/credential_3"
+      }
+    },
+    "credential_54": {
+      "const": "vault.credential"
+    },
+    "credential_55": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/credential_56"
+        },
+        "id": {
+          "$ref": "#/$defs/credential_3"
+        },
+        "object": {
+          "$ref": "#/$defs/credential_57"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "credential_56": {
+      "type": "boolean"
+    },
+    "credential_57": {
+      "const": "vault.credential.deleted"
+    },
+    "credential_create": {
+      "$ref": "#/$defs/credential_0"
+    },
+    "credential_auth_create": {
+      "$ref": "#/$defs/credential_1"
+    },
+    "credential_auth_rotate": {
+      "$ref": "#/$defs/credential_28"
+    },
+    "credential_resource": {
+      "$ref": "#/$defs/credential_37"
+    },
+    "credential_deleted": {
+      "$ref": "#/$defs/credential_55"
+    },
+    "credential_update": {
+      "type": "object",
+      "properties": {
+        "auth": {
+          "$ref": "#/$defs/credential_auth_rotate"
+        },
+        "metadata": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "credential_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/credential_resource"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
     "agent_session_0": {
       "type": "object",
       "properties": {

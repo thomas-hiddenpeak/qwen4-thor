@@ -3843,6 +3843,890 @@
         "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
       }
     },
+    "/v1/vaults/{vault_id}/credentials": {
+      "get": {
+        "operationId": "get_v1_vaults_vault_id_credentials",
+        "parameters": [
+          {
+            "name": "vault_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "maxProperties": 16,
+              "propertyNames": {
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 512
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "active",
+                    "archived"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "active",
+                      "archived"
+                    ]
+                  }
+                }
+              ]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "vault_query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_vaults_vault_id_credentials",
+        "parameters": [
+          {
+            "name": "vault_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "credential_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_create"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "get": {
+        "operationId": "get_v1_vaults_vault_id_credentials_credential_id",
+        "parameters": [
+          {
+            "name": "vault_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "credential_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_vaults_vault_id_credentials_credential_id",
+        "parameters": [
+          {
+            "name": "vault_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "credential_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "credential_update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_vaults_vault_id_credentials_credential_id",
+        "parameters": [
+          {
+            "name": "vault_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "credential_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/vaults": {
+      "get": {
+        "operationId": "get_v1_vaults",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "metadata",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "maxProperties": 16,
+              "propertyNames": {
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "additionalProperties": {
+                "type": "string",
+                "maxLength": 512
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "active",
+                    "archived"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "enum": [
+                      "active",
+                      "archived"
+                    ]
+                  }
+                }
+              ]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vault_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "vault_query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_vaults",
+        "parameters": [
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vault"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "vault_create",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vault_create"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/vaults/{vault_id}": {
+      "get": {
+        "operationId": "get_v1_vaults_vault_id",
+        "parameters": [
+          {
+            "name": "vault_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vault"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_vaults_vault_id",
+        "parameters": [
+          {
+            "name": "vault_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vault"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "vault_update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vault_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_vaults_vault_id",
+        "parameters": [
+          {
+            "name": "vault_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*agents=v1[ \\t]*(,|$)"
+            },
+            "example": "agents=v1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vault_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
     "/v1/agents": {
       "post": {
         "operationId": "post_v1_agents",
@@ -40199,6 +41083,1043 @@
               }
             },
             "required": [],
+            "additionalProperties": false
+          },
+          "vault": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "object": {
+                "const": "vault"
+              },
+              "created_at": {
+                "type": "integer"
+              },
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "description": "Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes."
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "metadata": {
+                "type": "object",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 512
+                }
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "created_at",
+              "name",
+              "metadata"
+            ],
+            "additionalProperties": false
+          },
+          "vault_create": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes."
+              },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "maxProperties": 16,
+                    "propertyNames": {
+                      "minLength": 1,
+                      "maxLength": 64
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 512
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "vault_update": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "description": "Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes."
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "metadata": {
+                "type": "object",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 512
+                }
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "vault_deleted": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "object": {
+                "const": "vault.deleted"
+              },
+              "deleted": {
+                "const": true
+              }
+            },
+            "required": [
+              "id",
+              "object",
+              "deleted"
+            ],
+            "additionalProperties": false
+          },
+          "vault_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/vault"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "has_more",
+              "first_id",
+              "last_id"
+            ],
+            "additionalProperties": false
+          },
+          "vault_query": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "after": {
+                "type": "string"
+              },
+              "order": {
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              },
+              "metadata": {
+                "type": "object",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 512
+                }
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "active",
+                      "archived"
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "active",
+                        "archived"
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "credential_0": {
+            "type": "object",
+            "properties": {
+              "auth": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_1"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_26"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              }
+            },
+            "required": [
+              "auth",
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "credential_1": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_16"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_18"
+              }
+            ]
+          },
+          "credential_2": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3",
+                "writeOnly": true
+              },
+              "expires_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_4"
+              },
+              "mcp_server_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "refresh": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_6"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_15"
+              }
+            },
+            "required": [
+              "access_token",
+              "mcp_server_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_3": {
+            "type": "string"
+          },
+          "credential_4": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_5"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              }
+            ]
+          },
+          "credential_5": {
+            "type": "null"
+          },
+          "credential_6": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_5"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_7"
+              }
+            ]
+          },
+          "credential_7": {
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "refresh_token": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3",
+                "writeOnly": true
+              },
+              "resource": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_4"
+              },
+              "scope": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_4"
+              },
+              "token_endpoint": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "token_endpoint_auth": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_8"
+              }
+            },
+            "required": [
+              "client_id",
+              "refresh_token",
+              "token_endpoint",
+              "token_endpoint_auth"
+            ],
+            "additionalProperties": false
+          },
+          "credential_8": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_9"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_13"
+              }
+            ]
+          },
+          "credential_9": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_10"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_10": {
+            "const": "none"
+          },
+          "credential_11": {
+            "type": "object",
+            "properties": {
+              "client_secret": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3",
+                "writeOnly": true
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_12"
+              }
+            },
+            "required": [
+              "client_secret",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_12": {
+            "const": "client_secret_basic"
+          },
+          "credential_13": {
+            "type": "object",
+            "properties": {
+              "client_secret": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3",
+                "writeOnly": true
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_14"
+              }
+            },
+            "required": [
+              "client_secret",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_14": {
+            "const": "client_secret_post"
+          },
+          "credential_15": {
+            "const": "mcp_oauth"
+          },
+          "credential_16": {
+            "type": "object",
+            "properties": {
+              "mcp_server_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "token": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3",
+                "writeOnly": true
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_17"
+              }
+            },
+            "required": [
+              "mcp_server_url",
+              "token",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_17": {
+            "const": "static_bearer"
+          },
+          "credential_18": {
+            "type": "object",
+            "properties": {
+              "networking": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_19"
+              },
+              "secret_name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "secret_value": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3",
+                "writeOnly": true
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_25"
+              }
+            },
+            "required": [
+              "networking",
+              "secret_name",
+              "secret_value",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_19": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_22"
+              }
+            ]
+          },
+          "credential_20": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_21"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_21": {
+            "const": "unrestricted"
+          },
+          "credential_22": {
+            "type": "object",
+            "properties": {
+              "allowed_hosts": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_23"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_24"
+              }
+            },
+            "required": [
+              "allowed_hosts",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_23": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+            }
+          },
+          "credential_24": {
+            "const": "limited"
+          },
+          "credential_25": {
+            "const": "environment_variable"
+          },
+          "credential_26": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_27"
+              }
+            ]
+          },
+          "credential_27": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+            }
+          },
+          "credential_28": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_29"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_35"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_36"
+              }
+            ]
+          },
+          "credential_29": {
+            "type": "object",
+            "properties": {
+              "access_token": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_4",
+                "writeOnly": true
+              },
+              "expires_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_4"
+              },
+              "refresh": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_30"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_15"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_30": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_5"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_31"
+              }
+            ]
+          },
+          "credential_31": {
+            "type": "object",
+            "properties": {
+              "refresh_token": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_4",
+                "writeOnly": true
+              },
+              "scope": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_4"
+              },
+              "token_endpoint_auth": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_32"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "credential_32": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_5"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_33"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_34"
+              }
+            ]
+          },
+          "credential_33": {
+            "type": "object",
+            "properties": {
+              "client_secret": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_4",
+                "writeOnly": true
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_12"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_34": {
+            "type": "object",
+            "properties": {
+              "client_secret": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_4",
+                "writeOnly": true
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_14"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_35": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3",
+                "writeOnly": true
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_17"
+              }
+            },
+            "required": [
+              "token",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_36": {
+            "type": "object",
+            "properties": {
+              "secret_value": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3",
+                "writeOnly": true
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_25"
+              }
+            },
+            "required": [
+              "secret_value",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_37": {
+            "type": "object",
+            "properties": {
+              "auth": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_38"
+              },
+              "created_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_52"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_53"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_54"
+              },
+              "updated_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_52"
+              },
+              "vault_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              }
+            },
+            "required": [
+              "auth",
+              "created_at",
+              "id",
+              "metadata",
+              "name",
+              "object",
+              "updated_at",
+              "vault_id"
+            ],
+            "additionalProperties": false
+          },
+          "credential_38": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_39"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_47"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_48"
+              }
+            ]
+          },
+          "credential_39": {
+            "type": "object",
+            "properties": {
+              "expires_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_40"
+              },
+              "mcp_server_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "refresh": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_41"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_15"
+              }
+            },
+            "required": [
+              "expires_at",
+              "mcp_server_url",
+              "refresh",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_40": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_5"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              }
+            ]
+          },
+          "credential_41": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_5"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_42"
+              }
+            ]
+          },
+          "credential_42": {
+            "type": "object",
+            "properties": {
+              "client_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "resource": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_40"
+              },
+              "scope": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_40"
+              },
+              "token_endpoint": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "token_endpoint_auth": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_43"
+              }
+            },
+            "required": [
+              "client_id",
+              "resource",
+              "scope",
+              "token_endpoint",
+              "token_endpoint_auth"
+            ],
+            "additionalProperties": false
+          },
+          "credential_43": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_44"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_45"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_46"
+              }
+            ]
+          },
+          "credential_44": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_10"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_45": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_12"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_46": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_14"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_47": {
+            "type": "object",
+            "properties": {
+              "mcp_server_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_17"
+              }
+            },
+            "required": [
+              "mcp_server_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_48": {
+            "type": "object",
+            "properties": {
+              "networking": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_49"
+              },
+              "secret_name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_25"
+              }
+            },
+            "required": [
+              "networking",
+              "secret_name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_49": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_50"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_51"
+              }
+            ]
+          },
+          "credential_50": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_21"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_51": {
+            "type": "object",
+            "properties": {
+              "allowed_hosts": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_23"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_24"
+              }
+            },
+            "required": [
+              "allowed_hosts",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "credential_52": {
+            "type": "number"
+          },
+          "credential_53": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+            }
+          },
+          "credential_54": {
+            "const": "vault.credential"
+          },
+          "credential_55": {
+            "type": "object",
+            "properties": {
+              "deleted": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_56"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_3"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_57"
+              }
+            },
+            "required": [
+              "deleted",
+              "id",
+              "object"
+            ],
+            "additionalProperties": false
+          },
+          "credential_56": {
+            "type": "boolean"
+          },
+          "credential_57": {
+            "const": "vault.credential.deleted"
+          },
+          "credential_create": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_0"
+          },
+          "credential_auth_create": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_1"
+          },
+          "credential_auth_rotate": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_28"
+          },
+          "credential_resource": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_37"
+          },
+          "credential_deleted": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_55"
+          },
+          "credential_update": {
+            "type": "object",
+            "properties": {
+              "auth": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_auth_rotate"
+              },
+              "metadata": {
+                "type": "object",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "minLength": 1,
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 512
+                }
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "credential_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/credential_resource"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "has_more",
+              "first_id",
+              "last_id"
+            ],
             "additionalProperties": false
           },
           "agent_session_0": {

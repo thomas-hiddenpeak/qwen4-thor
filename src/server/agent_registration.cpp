@@ -156,7 +156,7 @@ ObjectReply Validate(const Json& value, AgentRegistrationShape shape) {
 
 ObjectReply ResolveSessionAgent(ObjectStore& objects, const Json& request,
                                 const ChatPlanConfig& config,
-                                const StateAccess& access) {
+                                const StateAccess& access, Json* private_http) {
   const auto* agent_id = request.Find("agent_id");
   Json settings = Object();
   if (agent_id) {
@@ -175,11 +175,11 @@ ObjectReply ResolveSessionAgent(ObjectStore& objects, const Json& request,
   const auto* overrides = request.Find("agent");
   if (!agent_id && (!overrides || !overrides->Has("model")))
     return Invalid("An inline agent needs a model", "agent.model");
-  return NormalizeSessionAgent(std::move(settings), overrides ? *overrides : Object(), config);
+  return NormalizeSessionAgent(std::move(settings), overrides ? *overrides : Object(), config, private_http);
 }
 
 ObjectReply NormalizeSessionAgent(Json settings, const Json& overrides,
-                                  const ChatPlanConfig& config) {
+                                  const ChatPlanConfig& config, Json* private_http) {
   auto result = Resolve(settings, overrides, config);
   if (!result.ok()) return result;
 
@@ -189,6 +189,12 @@ ObjectReply NormalizeSessionAgent(Json settings, const Json& overrides,
   for (auto& tool : Field(settings, "tools").array) {
     if (tool.GetString("type") != "mcp") continue;
     auto& transport = Field(tool, "transport");
+    if (private_http && transport.GetString("type") == "http" &&
+        (Nonnull(transport, "authorization") ||
+         (transport.Find("headers") && !transport.Find("headers")->object.empty()))) {
+      if (!private_http->IsObject()) *private_http = Object();
+      Set(private_http, tool.GetString("server_label"), transport);
+    }
     std::erase_if(transport.object, [](const auto& field) {
       return field.first == "authorization" || field.first == "headers" ||
              field.first == "env";

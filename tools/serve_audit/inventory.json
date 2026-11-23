@@ -2054,6 +2054,91 @@
         "tests/server_prompt_registry_test.cpp",
         "tools/serve_responses/agent_session_settings_sdk.mjs"
       ]
+    },
+    "DELETE /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "DELETE /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}/credentials": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}/credentials": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -2668,8 +2753,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "7eee2f06f41ac71b964bc67c7287f25c92d3d4d146db8b668936698007819aef",
-    "cmake/ChatProtocolIdentity.cmake": "3d29000aa19394ff9aa856ab2c2345c1f6e980c94e3e9cd59f3f74edc397c558",
+    "CMakeLists.txt": "8737233f226e3df2897003d8f4cf17260068746af07aa0c788bb917d4414a8c8",
+    "cmake/ChatProtocolIdentity.cmake": "7f63f2e390df20535ab97d436ba4798505ed83d7a0835477d3e1a3edcf9fb07d",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -2745,8 +2830,8 @@
     "include/q4t/server/aligner_service.h": "6e3bd5218668a6ea21c52963743be5da8d488e02ae0d77d8d29114a34876c017",
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "0eb7946535293f2d84439e3bfc2b39ae25f2fa006a9c91392411f8e46863a898",
-    "include/q4t/server/application_query.h": "8331a32ad43b1e4eb059a25f1e2d318c351fdda0fbf4555f7bfafd310a9d2c36",
-    "include/q4t/server/application_routes.h": "6d2afe996265e8d9076d05ff07404fcb13e350769ad329e05b551453c7756c16",
+    "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
+    "include/q4t/server/application_routes.h": "15250f8eb97b736559e9a2bd599ac91180d9283d66d538cf94778b790a741233",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -2873,7 +2958,7 @@
     "include/q4t/server/live_worker.h": "a20af0bf95e56615146b3e9767e162f87f7f52c298301ed7f3ef93e9a6936636",
     "include/q4t/server/mcp_content.h": "80f421825338d9b8574be9e8beb54e2d84ebe7a4303c8471dcab40744a21a223",
     "include/q4t/server/mcp_policy.h": "8b8c26f3af1ba647d6d263321c7be2c74ffd7d454d6771c4d93a9955de4115b6",
-    "include/q4t/server/mcp_transport.h": "39d9d9dcf89bbd4dad8b741ddc7d875a72d393f80adc931cd91817e7443fd41f",
+    "include/q4t/server/mcp_transport.h": "a5c13a276ea84397edb589875eafaf11499761e91518ac564e561a201e1809e9",
     "include/q4t/server/mcp_tunnel.h": "1d8b7fa51d220209b7b5fc003d555eeef52adb0ba80dd9eef4494bd7ced310e5",
     "include/q4t/server/mcp_tunnel_agent.h": "a106be5294c3d2236f439a010968a5083f3ec673a6ac4b14a1291b2a66cd7069",
     "include/q4t/server/media_admission.h": "08fdd3453746652ab6c270ecf0a0a16bdfc7dc37232bc14037fddebbd8e255aa",
@@ -2961,12 +3046,12 @@
     "include/q4t/server/responses_api.h": "d8e3a8d4f8f25e3cbd3e5ff06c0bd5f19812488c60396d34e8b60689a664021d",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "d06e6eefe688f8a889f68d013ed621f4a16e773973c827ff1139f270e35a2e97",
+    "include/q4t/server/responses_execution.h": "5d603d65b7fc36dfcd5580b260aab5a9271e63f0b853c58d184489250613fb38",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
     "include/q4t/server/responses_input.h": "9456da1ef5673dd4de669cd80b2f532690815193d466ec5ab97bd4a097b3fc3b",
     "include/q4t/server/responses_item_shape.h": "0d60c4985b05e0cdbf25da8140fd98ec1b176509425be6ca6dbd6c748aa6d5e6",
     "include/q4t/server/responses_jobs.h": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff",
-    "include/q4t/server/responses_mcp.h": "d77c65af504a2bbc6978e416bcc614a39f42f6ad4aa1b9ea44dcc41ccdbd6ebe",
+    "include/q4t/server/responses_mcp.h": "f1fc1e4d33f0fb310b352362d5c19a0fed8c596d84e04652320a64f6ba2d9b9f",
     "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
     "include/q4t/server/responses_mcp_media.h": "49f332687353cbb07141081409e8236ef15033768564efaea25b3008aefc5c4c",
     "include/q4t/server/responses_mcp_state.h": "aeaf5e0ff66e98fde9e3676c5793a3fb9629889abe67a4ee8db6a9643abb94b8",
@@ -3145,7 +3230,7 @@
     "src/server/aligner_service.cpp": "5f971cb849b343934b620d7966994807484d765b0ba2bdcc8402e55bd7c56bba",
     "src/server/application_owner.cpp": "15796bb55a96ae0f74e7b271d21f3e734e5d251903fd00d5f3155294ba8cfdf1",
     "src/server/application_payload.cpp": "ab6019c92bc45730ba115968550e42f4ce5c2928f109fbed7baaca9f2169725f",
-    "src/server/application_query.cpp": "7a006ba7839d707cd6da13d9cc6b59d0844795e077009f0fd06ba6e387a388c2",
+    "src/server/application_query.cpp": "ad98565f23796c3c6f5995d4b969be8b915328b4cc69f67422456ef10a7932c9",
     "src/server/asr_alignment_output.cpp": "66d495f012519ac93a39d16d0fd92b69e1345a921ee81a900079f246ca191d51",
     "src/server/asr_assets.cpp": "a42df736701e1a063f9747c3bc92718707804272b06122358451efffc4144648",
     "src/server/asr_chunk_output.cpp": "80b0a2b938c2c4d8a42853d465a5b35748c09700d488eaf2f998282a366643a5",
@@ -3187,7 +3272,7 @@
     "src/server/chat_audio_inputs.cpp": "9a9f94790bcf4171a0c65ed6dc6655bcd834ac909ae394573aa6e4850a1d0ba1",
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
-    "src/server/chat_capabilities.cpp": "4b330a06d004ba69933d564cadf30d2f0898f66f8fdbfb34b6643d62cc258911",
+    "src/server/chat_capabilities.cpp": "fe4eb068a8508957988f3b9a907b7f01724a7d1d3ddc8baf38b7f88be857aafc",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -3195,9 +3280,9 @@
     "src/server/chat_embedding_backend.cpp": "4b2eb26755abee7b46fb4e49d37749e54bc5889f76560a00e14b1fcc30b849d9",
     "src/server/chat_embeddings.cpp": "6ad262dc65bea07262db6eb1be6240cd67ce7f980b9f0135ab1935044d976916",
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
-    "src/server/chat_generation.cpp": "c111130f7d68f233b0f99805c8fe636dbd7a909e815d6f3c2554f58214820922",
+    "src/server/chat_generation.cpp": "8e0648b5798e32da58cb5abdf7f932b63153ff0d4436cc4bb57e08656633ab0b",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "0c29ae767daff02dbf9fccfd93670c586a1410ab6169f5e50ff1e8960e982d72",
+    "src/server/chat_http.cpp": "2d3bf54aa949be86d4ddb21b075ca40ce0077cdc320aa28ebd60115acd870d37",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3359,7 +3444,7 @@
     "src/server/live_session_pump.cpp": "05237a65bd191f950ff094e6ec77dfe03d2898d9ed67db46b7fca63398938d71",
     "src/server/live_sideband.cpp": "531a7f30f2768fd68628e640c5a3b2aefb78cce545ed9eeafc6943df1a3daf6d",
     "src/server/mcp_content.cpp": "421599723f7af3d2c805e407803e44926777c666c77b372f9920343f211d3965",
-    "src/server/mcp_http.cpp": "f647ab1ff780a1eed27c67fc267f1951219b6586e35a830dfffce79e7e4ebf7d",
+    "src/server/mcp_http.cpp": "827b9be1c50ec26165c9c18ee314a0cd47145fee73c6cc52c5a6b8632743cc6b",
     "src/server/mcp_policy.cpp": "4f3485e0055f89fe0bbf1c8b77656697431017bec1740ef137e8a6ed0fbbe467",
     "src/server/mcp_projection.cpp": "55802e5b59e2ecd77ccf416d4e04bcd80e96adae45beae862c6b9809148c9592",
     "src/server/mcp_provider.cpp": "afc4e376d9b68b658f76daab039f17cbd1e91fc7616c9cd1a173a6cf70c0141f",
@@ -3381,7 +3466,7 @@
     "src/server/mcp_provider_teams.cpp": "2d0bdcc8091eb691b2d70f7210e66690dd6da08dd62455354d7d532a17eadf0d",
     "src/server/mcp_provider_time.cpp": "fa775232eecf42d5ffb18d1b441b880ff731446f65e547ff8a740b549f24c421",
     "src/server/mcp_sse_internal.h": "daadf5676840661a4735a7146663886144c5891b0f04db3176508641eb781e87",
-    "src/server/mcp_transport.cpp": "7499d77f2ba98dc7d55ee8b2143522ffaeb5e61751fcdd7f7f7dcbbf9ccda99a",
+    "src/server/mcp_transport.cpp": "150719f0e341a6491a4fe02c34345e7e922dfd0ff879a3154de90e28847cff8e",
     "src/server/mcp_transport_internal.h": "25cc9333819afb84206e80d28ee3b2e57d1d6c6a7dc4b2caae15ae7d91032bc7",
     "src/server/mcp_tunnel.cpp": "5035671dcbdda13f7a05efa5f3cac05f9777fbbfdb247d1049b4b9aafd43a668",
     "src/server/mcp_tunnel_agent.cpp": "768679d8af4badc04b938495bb6012be52cc8c2727b87c50ab17a8cb22f11a1d",
@@ -3486,11 +3571,11 @@
     "src/server/responses_api.cpp": "a05a5cd8ee8724f874d68a6f8cd9d14e6db5836313c6494baa0f0a0aa4a015ae",
     "src/server/responses_compaction.cpp": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "fa128f7fae08c2c6a93c521de6fb953eed1f9054b0cf209112c24d4655f0bde4",
-    "src/server/responses_execution_compaction.cpp": "7b9fcb2c171311a358c34a5782eea6132a3c23a48b7172cc19b976ea964d2bb3",
+    "src/server/responses_execution.cpp": "32c69548db804e5a0529f068e8706565a0c5208f7c8d7fdc6c69e3765e315c6f",
+    "src/server/responses_execution_compaction.cpp": "90e519f59a6c00f1e2fdffc1b8c7c261ab139c1646252802ca41b9edb74fb8e1",
     "src/server/responses_execution_files.cpp": "8e2030adeb168b3d8672fee4ad58410f5a21989563d7f788f43ab9b7662ad33b",
     "src/server/responses_execution_inputs.cpp": "c163dd2db6f672d9e18cd6f05f8a219c4f527bb5bbbab45432eaad0dbcb0c885",
-    "src/server/responses_execution_mcp_media.cpp": "af306604efccf0844b8f6c50938eb0568c7cf53984ab67b33381f1b9e7d3d47b",
+    "src/server/responses_execution_mcp_media.cpp": "a7fdf508d409de5c0eae4882b3f4eadd364559dab7f38321e92ade859c52271e",
     "src/server/responses_execution_moderation.cpp": "6b235c9d2956f752d8c5ddb76aa9bc16f152ad6bdf90a1ecbf5a874f5fa86732",
     "src/server/responses_file_citations.cpp": "f92a247c59646a9abea6f540359473ceb5755cbab2f0b869e5e74656adf392e9",
     "src/server/responses_file_search.cpp": "aa433f9d77245a6947b07b080a1da72058e1710ad882c59f0298199380cee239",
@@ -3498,15 +3583,15 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "2fb783afdb0d4478647b9b1231db474835697971203966bd8cb1c5a696e85940",
-    "src/server/responses_item_shape.cpp": "4c4d11131cc8a30ea366df11af7514003c14883c2678031f1a6ce6c513464a41",
+    "src/server/responses_item_shape.cpp": "a1fa7d37223352571f690d77148a2fd2d299f12e0374e6e3bcc394beb5891038",
     "src/server/responses_jobs.cpp": "02ba0eb00df0e814216696c04000c848f2b8aa88ca89509b4cbd9bb7e508a5b8",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
     "src/server/responses_mcp_binding.cpp": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded",
-    "src/server/responses_mcp_execution.cpp": "783f75791e81d4770f5116e09d424b43cfe3e808dee6e021c455884a93e41acf",
+    "src/server/responses_mcp_execution.cpp": "7b2548409fa87ed2be396fba7335b9ece03a298c0151ac2bca473c7713a1c4f8",
     "src/server/responses_mcp_media.cpp": "14fcc770921cc7eda3add6fafba068c3d9465d3e35052b3c27e6d4c2dec064b6",
     "src/server/responses_mcp_output.cpp": "bfa34595df96c00a98fc0322077796604cd86c6934adf2ddeeae525dbdbc76de",
-    "src/server/responses_mcp_preparation.cpp": "78b30bdb89bb6ef612293ad66e2deae0c045b746689abb6559938134f361440d",
+    "src/server/responses_mcp_preparation.cpp": "6ff4ea649866d345142d8a4e22654be24ff181a8009498b08b6022e574a8aee5",
     "src/server/responses_mcp_state.cpp": "cae74a7b7ffa4c380f2a2b8d524edf8dca78bb80da06cd02eed345f1c0c70451",
     "src/server/responses_output.cpp": "a1bcb6f1cc87d28f1b8452c7d9aa720202b2818ab1deb57caaee8e28d57b1bc6",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
@@ -3538,8 +3623,8 @@
     "src/server/schema_number_grammar.h": "288d1f0c6dbf6f070fb39c9944b0162a96aaced01dbe936144dc8d47027ef4ba",
     "src/server/schema_prefix.cpp": "c7b87318a264d3b1501dbae2c2ef41f1bab6b8360436fc1385cf87d7372124e0",
     "src/server/schema_receipt.cpp": "14d9eaffc89238dcc7f46b7a237ceb342b65d9d98a74403d940f8c6694d521d8",
-    "src/server/schema_string.cpp": "8c8e04f94307af5b6f2b7c4993cb88d5eaac18124f2e07e002e5495663e2d791",
-    "src/server/schema_string.h": "477bb526c6ce60ebbd64b66e41369c9146422619d178fcfee02a91d8ad3dab1c",
+    "src/server/schema_string.cpp": "25c30718abc2336fc4a5aa4e32949f8580690c53742b08bb86fb807a20be2ee7",
+    "src/server/schema_string.h": "e40faf3bf1e24fc0ad2775c0007c96683519eb6689363354f05e91efdb05e4fc",
     "src/server/schema_string_grammar.cpp": "42f04be864d6f86125bc1bc0909bbbc893888210601486e3dbc89f6ba0b0859a",
     "src/server/schema_string_grammar.h": "16f4700fcc6c720c0521482b97de034b9b269d41065695da29d0951b72940405",
     "src/server/schema_token_guard.cpp": "a08e932fe0d67acc7d18427b15f15a5417bddc10295ced2a3a3f92d385295e2f",
@@ -3663,7 +3748,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "53e672b8fc08ea899263515852c7fed5fd1b7b9c205e24073535b66299faab69",
+    "tools/serve_gateway/gateway.py": "dffe24c07280b63396d1ee1a7360959cc43fefd2e30aaeec5e5cbc06c268ddc2",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -3759,9 +3844,9 @@
     "tools/serve_recovery/profile_duplex_reuse.py": "bc859bb6d52dcd06b2ce4dd00474dd1edd9a93c504944f4f64333c3f7eda0361",
     "tools/serve_recovery/profile_duplex_source.py": "b05094553f2aa4db55da549e5c08e3cb3a038726fa101610745ecd3b26d8da13",
     "tools/serve_recovery/profile_duplex_targeted.py": "5e50d2fbd64f411d8e7f80c706ad72dcf6a342b94bd3fbfb4c68f36ed75e091a",
-    "tools/serve_recovery/profile_evidence.py": "5e2925b6e03c7a5884ea7f98226438823e92283ed36a99f9153e4c939b994ec4",
+    "tools/serve_recovery/profile_evidence.py": "3e46d2fe2d898ddf93a448012d2b9255fcededdc016dd9fb7cd5bb51f3264f3f",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
-    "tools/serve_recovery/profile_live_reuse.py": "76aa8a1ff27170f78ed001ad4e03a415ce56537d360ed40a6b4cd221c0cf071b",
+    "tools/serve_recovery/profile_live_reuse.py": "a919fdbb94647fde5f6a8e6af3d274054d21929904a712e2ee3c5d1eea10e72d",
     "tools/serve_recovery/profile_managed_acceptance.py": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7",
     "tools/serve_recovery/profile_manager.py": "e25ff91dcfca63dcd1a8afaf211813a14e0684ebccbd9d9f65546480fefdff92",
     "tools/serve_recovery/profile_mcp_codec.py": "7e15a4c46f22822e1b22f85d49756f4f486e42b701c2b7ff90ec7a84674ea722",
@@ -3769,7 +3854,7 @@
     "tools/serve_recovery/profile_mcp_reuse.py": "c1da2ae33277ca9e250bdaabf29c5d4ed4490981a4d3aa297845088207490f3d",
     "tools/serve_recovery/profile_mcp_source.py": "ca8f30b89a355623bc7d2ae8a3d3bb8b63fe797c49699ff5ec8e65746e0efff6",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "e02ae0a0d6582dd1d427bf450dbd0fa33c4ccf195933ad692c050ee33ba28bf2",
+    "tools/serve_recovery/profile_migration.py": "e66251c828cd1190d7134cddc043d3128ab5889f48afeb5a653f67f19c8afc7f",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_primary_review.py": "0d3f063119af8fac2b29e4342f3ff431975b2ffa33795f8a3421d6807bbd8292",
     "tools/serve_recovery/profile_prompt.py": "b4f27fb5f9dc9dcb267638a47d08aa98577886a800e20b2c41ba424987a7bf47",
@@ -3778,7 +3863,7 @@
     "tools/serve_recovery/profile_prompt_reuse.py": "20362a6f84e671ebbfa9b301d704957991320d08dbd0087f34ae402ff31c9739",
     "tools/serve_recovery/profile_prompt_targeted.py": "b337f06f2411e7c196600096318d5a99fc5d7d0130e17b2707100f6563c4c78f",
     "tools/serve_recovery/profile_realtime.py": "e291929d1455ea9a3dac41458e7b5c0aba6594c44eb0abf1453d390e1a93b879",
-    "tools/serve_recovery/profile_record.py": "d61aed6c59cddb99bc0e63115fa10ac77a32b4986438fd6a16e4ae61064e7b91",
+    "tools/serve_recovery/profile_record.py": "8663eec3a5e5424a31d421e3b83bd7418ccc5e67309cb283baa1be699f885d54",
     "tools/serve_recovery/profile_refusal_reuse.py": "712e0014726be188bb677e9d65238898a1b7e2700d892fc52a770dbc3c984e78",
     "tools/serve_recovery/profile_refusal_targeted.py": "989b21a6910c570a7ee00fad67a77896ef6329f58a4d160408a79d694716e1ac",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
@@ -3858,7 +3943,7 @@
     "tools/serve_service/monitor_control.py": "4dbf6bc178df8dac83fbb9ed801ecf7d63ecc0bd28360f8b92c9a8555ca37788",
     "tools/serve_service/nvml_acceptance.py": "8db02e4ed57a83f13c8b69d91d1176934fb686895f990ad91eabc75400338e5c",
     "tools/serve_service/nvml_policy.py": "817b2500044cd2eeed4277ad95d2686bf11f4785282ea1149beb63d62b0ef9a6",
-    "tools/serve_service/package.py": "d301b5cfdcde6741dbf19b31b99632dc60de8afcce2af51e470cf5e7ee71fbe4",
+    "tools/serve_service/package.py": "d4f9561acb7e92492020f13a2d9fa74c4db018bd5d9352c13d6a1e4542b37636",
     "tools/serve_service/resource_cpu.py": "429be87556272388bf3a4f163b8f77f590da25187f8e7f2a4bfbf7752fd205e1",
     "tools/serve_service/resource_driver_cpu.py": "92830ecaff6f6f9403659127e4ded50d524a84db87af8b47644092f37203855c",
     "tools/serve_service/resource_kernel.py": "6ccf288aebf24c4a7ea3646898cc05d4ba03618c53dc738e026490ef6e1bdd34",
@@ -3876,17 +3961,24 @@
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
     "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
     "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
-    "src/server/agent_registration.cpp": "04930651a2e0744e394f84852aede73c2fa8d1790e6beb7da2dae54f8b459bea",
+    "src/server/agent_registration.cpp": "3779a5ca860889e68b771933361eadc3104182e00bf8d3a8c3b7c7d99563e2a3",
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
-    "include/q4t/server/agent_session.h": "5de400ebf0d49cb478f5f9bb8a0e0cddc971d6077d206932eef189937d9ecdfa",
-    "src/server/agent_session.cpp": "0c8b64e96c55b4a7be6fd76d1ec123ad7ad3ece564d86fb05eba373add8254d5",
+    "include/q4t/server/agent_session.h": "58f24716907dccf60c371ad448cee717b7ca03b58eacd3f90d65089cd7eb0c32",
+    "src/server/agent_session.cpp": "e6b21438f13b2add4e8b16d52045fd1d617a9acc6d8083310977a78a7730bf39",
     "src/server/agent_session_http.cpp": "0dfe803f73a992252b29311bc4aa55ea2a5cf8b49124bce7c939292b0bffd3cc",
-    "src/server/agent_session_turn.cpp": "3040f1048fd5568565129a71f8f96d195a1f5c36beff52a075d47b6c626e9451",
+    "src/server/agent_session_turn.cpp": "a47b7dab70876cd0d9506e69e0e0938904622313d8b8dcdb210c10cb2baa9082",
     "src/server/contracts/openai_agent_session_types_v1.json": "fd66e6cd11b028842f6c9d05ecfd7e8e74b1d5e09e769b24a864feaf82dd39a3",
-    "src/server/agent_session_events.cpp": "1e3fe269ec6f3a8e25632c85617c73eff52ae3a6566446c485b5cf803a6af5b1",
-    "src/server/agent_session_internal.h": "f7608e2cb672bfb5d5eaf3b8cd82301be486a7b00739a312931edc0c9c658d44",
-    "src/server/agent_session_settings.cpp": "e42cc36e71cb89d8b89ac43bff0d1c7bf55314dd123ed8012cfc6e7bc65dc70a",
-    "src/server/agent_session_cancel.cpp": "7b3ce808f145730f3d38e79c7ae2ec7c13a97aeacbd7d4298294aa3a00b5994f"
+    "src/server/agent_session_events.cpp": "b606ef9ed0e4ecc6c727af12d6c29bfbc4b3bd0dcebc817c24aa2c48234619db",
+    "src/server/agent_session_internal.h": "155029a456bc779d3dcdeaa931a5d1dbbe3ef6e4dd2562bcafe9d93040fde4bc",
+    "src/server/agent_session_settings.cpp": "030f1d2a84a8fd01ae8326d2a01151e32bb94feb975e2b8768b48498e675f46a",
+    "src/server/agent_session_cancel.cpp": "7b3ce808f145730f3d38e79c7ae2ec7c13a97aeacbd7d4298294aa3a00b5994f",
+    "include/q4t/server/agent_vault.h": "3e4bb28fb1074e81a67af9f517eb9bf73be66bf93c621771841cf339963d62a0",
+    "src/server/agent_vault.cpp": "50e97c50c0b5309769e434c066a002b1a662dcb7b1154b0d44901be0f3862c5a",
+    "src/server/contracts/openai_vault_credential_types_v1.json": "f3c5a9a4be6e274325fd214d4e2ea7094f1fa0408f91107384abcfcec72456a2",
+    "src/server/vault_credential.cpp": "1f982807ac2a5cc57b8fb6ebf086c4f661a3d2a1dd365abb7cdb90587a3cd01c",
+    "src/server/vault_credential_auth.cpp": "642bf5fc77236c14c60d690ffca39fc7b81039db2e0c0d9078a6bb4c3e35193f",
+    "src/server/vault_credential_internal.h": "5f162675078cd6c2bf6b497182062631fb234c41b535bd8dff98aebf72aca4e9",
+    "src/server/agent_session_mcp.cpp": "9241a920ab1d46accf78a278c166fcfeb27c1c870e1822c26e6024d897dfae9d"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -6496,6 +6588,131 @@
         "src/server/agent_session_turn.cpp",
         "tests/server_prompt_registry_test.cpp",
         "tools/serve_responses/agent_session_settings_sdk.mjs"
+      ]
+    },
+    "DELETE /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/vaults": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/vaults/{vault_id}": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "POST /v1/vaults": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}": {
+      "semantics": "按调用者创建、读取、更新、归档和筛选 Vault 集合。",
+      "boundary": "归档后拒绝编辑和新会话绑定；凭据子资源单独实现。",
+      "evidence": [
+        "src/server/agent_vault.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "DELETE /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}/credentials": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/vaults/{vault_id}/credentials": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}/credentials": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/vaults/{vault_id}/credentials/{credential_id}": {
+      "semantics": "客户隔离的凭据创建、轮换、元数据读取、筛选与归档。",
+      "boundary": "公开资源仅返回配置；静态、OAuth 与环境凭据的实际执行单独验收。",
+      "evidence": [
+        "src/server/vault_credential.cpp",
+        "src/server/vault_credential_auth.cpp",
+        "tests/server_prompt_registry_test.cpp"
       ]
     }
   },

@@ -1737,9 +1737,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                      responses->HasPrograms() || responses->HasMcp())
            ? 1
            : 0);
-  for (int choice_index = 0;
-       choice_index < (responses ? response_steps : sampling.choices);
-       ++choice_index) {
+  const int iterations = responses ? response_steps : sampling.choices;
+  for (int iteration = 0; iteration < iterations; ++iteration) {
+    // A tool continuation is another model step in the same Response choice.
+    const int choice_index = responses ? 0 : iteration;
     if (responses && response_step == ResponseStep::kFinish) {
       finish_response();
       return;
@@ -1910,7 +1911,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     std::string prefix_scope = cacheable_step ? request_prefix_scope : "";
     SessionLease summary_session;
     auto& session = internal_step ? summary_session : request_session;
-    if (responses && choice_index > 0) {
+    if (responses && iteration > 0) {
       err_guard.ok = false;
       diagnostic.Stage("encode");
       const char* param = moderation_step            ? "moderation"
@@ -2550,7 +2551,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                    request_id.c_str(), seq_id, request_capacity,
                    required_capacity);
     diagnostic.Stage("encode");
-    if (choice_index == 0)
+    if (iteration == 0)
       metrics_.queue_seconds.Observe(
           std::chrono::duration<double>(std::chrono::steady_clock::now() -
                                         t_arrive)
@@ -3775,7 +3776,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     } else if (max_tokens > 0) {
       next_token = select_token(h_logits.data());
     }
-    if (choice_index == 0)
+    if (iteration == 0)
       metrics_.target_ready_seconds.Observe(
           std::chrono::duration<double>(std::chrono::steady_clock::now() -
                                         t_arrive)

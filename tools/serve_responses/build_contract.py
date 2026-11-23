@@ -110,6 +110,34 @@ def schema(graph):
         ('object', 'data', 'has_more', 'first_id', 'last_id'))
     definitions['agents_query'] = obj(dict(limit=dict(type='integer', minimum=1, maximum=100),
         after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
+    vault_meta = dict(type='object', maxProperties=16,
+                      propertyNames=dict(minLength=1, maxLength=64),
+                      additionalProperties=dict(type='string', maxLength=512))
+    vault_name = dict(type='string', description='Trim whitespace; resulting name must contain 1 to 256 UTF-8 bytes.')
+    vault = dict(id=dict(type='string'), object=dict(const='vault'),
+                 created_at=dict(type='integer'), name=nullable(vault_name), metadata=vault_meta)
+    definitions['vault'] = obj(vault, vault.keys())
+    definitions['vault_create'] = obj(dict(name=vault_name, metadata=nullable(vault_meta)))
+    definitions['vault_update'] = obj(dict(name=nullable(vault_name), metadata=vault_meta))
+    definitions['vault_deleted'] = obj(dict(id=dict(type='string'), object=dict(const='vault.deleted'),
+                                           deleted=dict(const=True)), ['id', 'object', 'deleted'])
+    definitions['vault_list'] = copy.deepcopy(definitions['agents_list'])
+    definitions['vault_list']['properties']['data']['items'] = ref('vault')
+    definitions['vault_query'] = copy.deepcopy(definitions['agents_query'])
+    status = dict(enum=['active', 'archived'])
+    definitions['vault_query']['properties'].update(metadata=vault_meta, status=dict(
+        anyOf=[status, dict(type='array', items=status)]))
+    credential = json.loads((ROOT/'src/server/contracts/openai_vault_credential_types_v1.json').read_text())
+    assert credential['profile'] == 'q4t-openai-vault-credential-types-v1'
+    credential_types = graph_definitions(credential, 'credential_')
+    for definition in credential_types.values():
+        for name, field in definition.get('properties', {}).items():
+            if name in {'token', 'access_token', 'refresh_token', 'client_secret', 'secret_value'}:
+                field['writeOnly'] = True
+    definitions.update(credential_types)
+    definitions['credential_update'] = obj(dict(auth=ref('credential_auth_rotate'), metadata=vault_meta))
+    definitions['credential_list'] = copy.deepcopy(definitions['agents_list'])
+    definitions['credential_list']['properties']['data']['items'] = ref('credential_resource')
     sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
     assert sessions['profile'] == 'q4t-openai-agent-session-types-v1'
     definitions.update(graph_definitions(sessions, 'agent_session_'))
@@ -420,6 +448,16 @@ def add_openapi(paths, response, error):
         return result
 
     endpoints = [
+        ('/v1/vaults/{vault_id}/credentials', 'get', None, 'credential_list', 'vault_query'),
+        ('/v1/vaults/{vault_id}/credentials', 'post', 'credential_create', 'credential_resource', None),
+        ('/v1/vaults/{vault_id}/credentials/{credential_id}', 'get', None, 'credential_resource', None),
+        ('/v1/vaults/{vault_id}/credentials/{credential_id}', 'post', 'credential_update', 'credential_resource', None),
+        ('/v1/vaults/{vault_id}/credentials/{credential_id}', 'delete', None, 'credential_deleted', None),
+        ('/v1/vaults', 'get', None, 'vault_list', 'vault_query'),
+        ('/v1/vaults', 'post', 'vault_create', 'vault', None),
+        ('/v1/vaults/{vault_id}', 'get', None, 'vault', None),
+        ('/v1/vaults/{vault_id}', 'post', 'vault_update', 'vault', None),
+        ('/v1/vaults/{vault_id}', 'delete', None, 'vault_deleted', None),
         ('/v1/agents', 'post', 'agents_create', 'agents_resource', None),
         ('/v1/agents', 'get', None, 'agents_list', 'agents_query'),
         ('/v1/agents/{agent_id}', 'get', None, 'agents_resource', None),
@@ -499,12 +537,12 @@ def add_openapi(paths, response, error):
                 'default': response(error, 'Native error; unknown/other-client identities return 404')},
             **{'x-q4t-query-contract': query_contract,
                'x-q4t-body-contract': body or 'empty body only'})
-        if path.startswith('/v1/agents'):
+        if path.startswith(('/v1/agents', '/v1/vaults')):
             operation.setdefault('parameters', []).append(dict(name='OpenAI-Beta',
                 **{'in':'header'}, required=True, schema=dict(type='string',
                     pattern=r'(^|,)[ \t]*agents=v1[ \t]*(,|$)'), example='agents=v1'))
         if body:
-            optional = path in ('/v1/conversations', '/v1/responses/input_tokens')
+            optional = path in ('/v1/conversations', '/v1/responses/input_tokens', '/v1/vaults')
             operation['requestBody'] = dict(required=not optional,
                 content={'application/json': dict(schema=nullable(external(body))
                     if optional else external(body))})

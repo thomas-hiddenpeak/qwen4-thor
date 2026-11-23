@@ -21,12 +21,15 @@ Status ValidateAgentSession(const io::Json& value, AgentSessionShape shape,
 // snapshot. Input validation uses the session schema before this step.
 ObjectReply ResolveSessionAgent(ObjectStore& objects, const io::Json& request,
                                 const ChatPlanConfig& config,
-                                const StateAccess& access);
+                                const StateAccess& access,
+                                io::Json* private_http = nullptr);
 ObjectReply NormalizeSessionAgent(io::Json settings, const io::Json& overrides,
-                                  const ChatPlanConfig& config);
+                                  const ChatPlanConfig& config,
+                                  io::Json* private_http = nullptr);
 struct AgentSessionStart {
   io::Json session;
   io::Json input;
+  std::string sealed_http{};
 };
 
 // Prepare a session that uses the native model directly (environment "none").

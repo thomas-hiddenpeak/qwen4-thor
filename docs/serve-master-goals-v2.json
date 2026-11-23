@@ -10557,7 +10557,7 @@
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
     }
   ],
-  "next_task": "Implement standard managed Agent sessions, input events and real model turns while continuing the remaining G00 application and recovery work.",
+  "next_task": "Deliver recoverable Vault credentials, complete OAuth refresh and continue the remaining in-scope inference and application operations.",
   "next": "验证标准 Agent 会话在托管模型异常和版本切换后能接续原工具调用，再完成可回退发布与其余应用服务、恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
@@ -16535,5 +16535,44 @@
     "scope_routes": "evidence/serve-agent-sessions-20261123/scope-routes.json",
     "long_run": "prepared_and_checked_user_runs",
     "next": "Agent vaults and credential access, other remaining application and reliability contracts"
+  },
+  "agent_vaults_20261123": {
+    "owners": [
+      "A08",
+      "A11",
+      "A12",
+      "Q01"
+    ],
+    "state": "primary_light_business_qualified",
+    "operations": [
+      "create",
+      "list",
+      "retrieve",
+      "update",
+      "delete"
+    ],
+    "coverage": {
+      "scope_snapshot_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "issued_openapi_sha256": "e24c2a862a9321512f1fbd05966efa99a4ec303351ceedc292c949d9b74eb31e",
+      "scope_path_selectors": 157,
+      "with_declared_operations": 75,
+      "without_declared_operations": 82
+    },
+    "evidence": "evidence/serve-agent-vaults-20261123/acceptance.json",
+    "remaining": [
+      "OAuth token endpoint refresh, hosted environment transport and environment credential substitution",
+      "Recoverable primary/light deployment and default promotion",
+      "Complete remaining declared and undeclared application operations"
+    ],
+    "credential_management": "candidate_real_http_passed",
+    "credential_evidence": "evidence/serve-agent-vaults-20261123/credentials.json",
+    "executor_evidence": "evidence/serve-agent-vaults-20261123/mcp.json",
+    "credential_coverage": {
+      "issued_openapi_sha256": "75232864e4f4269605373237f28da93d4f8eedb369ef284c44e79cf194a19482",
+      "scope_snapshot_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "with_declared_operations": 77,
+      "without_declared_operations": 80
+    },
+    "profile_evidence": "evidence/serve-agent-vaults-20261123/profiles.json"
   }
 }

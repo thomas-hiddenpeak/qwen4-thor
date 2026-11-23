@@ -9,7 +9,7 @@ from tools.serve_service import package
 
 def observations(directory, accepted):
     """Recheck both actual HTTP observations and the accepted deployment actors."""
-    directory = Path(directory)
+    directory = Path(directory).resolve(strict=True)
     environment = profile_acceptance.environment(package.read(directory/'lease/exit.json'),
         [json.loads(line) for line in (directory/'lease/nvml-queries.jsonl').read_text().splitlines()],
         [package.read(directory/name/'cleanup.json') for name in profile_contract.NAMES])
@@ -87,6 +87,10 @@ def observations(directory, accepted):
             from tools.serve_responses import session_profile_acceptance
             profiles[name]['evidence_sha256'].update(
                 session_profile_acceptance.verify(phase, plan, declared))
+        if 'agent_vaults' in declared or 'agent_vaults' in plan:
+            from tools.serve_responses import vault_profile_acceptance
+            profiles[name]['evidence_sha256'].update(
+                vault_profile_acceptance.verify(phase, plan, declared))
     profile_contract.capability_pair(*capabilities)
     package.require(profiles['primary']['workers'] == profiles['light']['workers'] and
                     profiles['primary']['protocol_sha256'] == profiles['light']['protocol_sha256'],

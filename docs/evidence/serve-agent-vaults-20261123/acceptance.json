@@ -1,0 +1,108 @@
+{
+  "sdk_source": {
+    "path": ".q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/beta/agents/vaults/vaults.ts",
+    "sha256": "342b28ab2da423d110f3f1ee43f6b59e06f81dc1eb6ae5bb3db645f89b955470"
+  },
+  "binary": "c6affc03b297b72b8f5c1802bb1cdccaf0cb663ea5054b55c1033b96a9866677",
+  "ingress": "2537742b32c0b704a8af341f07def931bddb12e7b3d94f34904747dc5fdf693b",
+  "driver": "9a189470b8cb59de3062e7e27fe628ea7796a0451e9903db700878f53d717b1d",
+  "business": {
+    "sdk": "7.47.0",
+    "pages": 2,
+    "foreign_read": 404,
+    "foreign_bind": 404,
+    "archived_update": 409,
+    "archived_bind": 404,
+    "history_preserved": true,
+    "answer": "42"
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 34.449,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "monitor_samples": 34,
+  "lease": "COMPLETED",
+  "cpu": 7,
+  "protocol": 8,
+  "native_forwarding": 2,
+  "optional_nginx_forwarding": 2,
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 126,
+    "native_routes": 209,
+    "reviewed_source_anchors": 1221,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "candidate_only": true,
+  "prior_failures": [
+    "The mock backend did not recognize /v1/vaults as application traffic. All five new routes reached it, but did not produce the required fake upstream response. Routing fixture corrected, with an additional Beta forwarding check on both fronts.",
+    "Previously the reference test missed the Realtime intent query operation and rejected boolean JSON schemas. The published generator and the assertion now share the same runtime route mapping; both original test results are retained."
+  ],
+  "route_coverage": {
+    "scope_snapshot_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+    "issued_openapi_sha256": "e24c2a862a9321512f1fbd05966efa99a4ec303351ceedc292c949d9b74eb31e",
+    "scope_path_selectors": 157,
+    "with_declared_operations": 75,
+    "without_declared_operations": 82
+  },
+  "default_rev": 444,
+  "artifacts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-business-01/result.json",
+      "sha256": "60661c8832f5736e094627a47d90c7559503e0b21bbe0b5a5b4e17c589538dae"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-business-01/create/sdk-result.json",
+      "sha256": "a0f5555baee80895119dfeb67aab9fc0c15c3c6224a5c0ca7a2f36b8bf136acc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-business-lease-01/exit.json",
+      "sha256": "16f039ddaf35d6f341e963ac87b0e36e48aea6e283d308074e326fc8a075f134"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-cpu-targeted.log",
+      "sha256": "8be081378c0ae0eca13aa241f059ae6250a5e5d79ab0be00387e3e8749aacca8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-contracts-03.log",
+      "sha256": "1fb116638fbcee5b507d1aa8cf2052bca4979a849ae7fdca28b642ecd6998fa3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-audit.json",
+      "sha256": "a35545c6dccc158659d820361c695aa585de5cec9f066dfb62c3de0cdf1a413d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-native-02.log",
+      "sha256": "bf6c31fd1bcadf2ec4163a0cf1f21f658b8551fd778909b2bc192f9943db313f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-nginx-02.log",
+      "sha256": "19c1bcce460df36fffb30c315a8c421e2582b79637bb48b6ccd2ed533f3d9eed"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-native.log",
+      "sha256": "b691aeb9322e28dc427c1665d6e118a4ee8a7199025ed14dc10e5583da4c43ab"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-nginx.log",
+      "sha256": "90613294890a8142b795582cf5cb06e30e460132e22a81d59bcc42bf328b031e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-contracts.log",
+      "sha256": "8de4e79c849686ac668685ae57e06f194364c4fff299dd71ecd006b4a4bccab3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-contracts-02.log",
+      "sha256": "46ffd4d558764f3c661cffec07574961d2020750fb3246cfe25debb87b2b521e"
+    }
+  ]
+}

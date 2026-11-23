@@ -132,9 +132,17 @@ ObjectReply UpdateAgentSession(ObjectStore& objects, const std::string& id,
         Set(&reasoning, "effort", *change->Find("effort"));
       Set(&patch, "reasoning", std::move(reasoning));
     }
+    Json private_http;
     auto normalized =
-        NormalizeSessionAgent(*session.Find("agent"), patch, config);
+        NormalizeSessionAgent(*session.Find("agent"), patch, config, &private_http);
     if (!normalized.ok()) return normalized;
+    if (patch.Has("tools")) {
+      std::string sealed;
+      auto secured = agent_detail::SealAgentHttp(objects, access, id, private_http, &sealed);
+      if (!secured.ok()) return secured;
+      Remove(&data, "sealed_http");
+      if (!sealed.empty()) Set(&data, "sealed_http", String(std::move(sealed)));
+    }
     Set(&session, "agent", std::move(normalized.value));
   }
   if (const auto* meta = request.Find("metadata")) {

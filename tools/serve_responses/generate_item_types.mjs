@@ -7,9 +7,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--agent-sessions'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--agent-sessions', '--vault-credentials'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--agent-sessions]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--agent-sessions|--vault-credentials]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -31,6 +31,7 @@ const realtimeSecrets = resolve(sdk, 'src/resources/realtime/client-secrets.ts')
 const live = resolve(sdk, 'src/resources/live/live.ts');
 const decisions = resolve(sdk, 'src/resources/decisions.ts');
 const agents = resolve(sdk, 'src/resources/beta/agents/agents.ts');
+const credentials = resolve(sdk, 'src/resources/beta/agents/vaults/credentials.ts');
 const agentSessions = resolve(sdk, 'src/resources/beta/agents/sessions/sessions.ts');
 const agentTurns = resolve(sdk, 'src/resources/beta/agents/sessions/turns/turns.ts');
 const beta = resolve(sdk, 'src/resources/beta/responses/responses.ts');
@@ -43,6 +44,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--multi-agent' ? [beta] : []),
   ...(mode === '--agents' ? [agents] : []),
+  ...(mode === '--vault-credentials' ? [credentials] : []),
   ...(mode === '--agent-sessions' ? [agents, agentSessions, agentTurns] : []),
   ...(mode === '--live' ? [live, liveSessions, liveSideband, liveForks] : [])], {
   target: ts.ScriptTarget.ES2022,
@@ -147,7 +149,13 @@ function exported(file, name) {
   }
   return encode(checker.getDeclaredTypeOfSymbol(symbol));
 }
-const roots = mode === '--agent-sessions' ? {
+const roots = mode === '--vault-credentials' ? {
+  create: exported(credentials, 'CredentialCreateParams'),
+  auth_create: exported(credentials, 'CredentialAuthCreateParam'),
+  auth_rotate: exported(credentials, 'CredentialAuthRotateParam'),
+  resource: exported(credentials, 'Credential'),
+  deleted: exported(credentials, 'CredentialDeleted'),
+} : mode === '--agent-sessions' ? {
   create: exported(agentSessions, 'SessionCreateParamsBase'),
   update: exported(agentSessions, 'SessionUpdateParams'),
   resource: exported(agents, 'AgentSession'),
@@ -227,7 +235,8 @@ if (mode === '--api') Object.assign(roots, {
   input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
 });
 const result = {
-  profile: mode === '--agent-sessions' ? 'q4t-openai-agent-session-types-v1' :
+  profile: mode === '--vault-credentials' ? 'q4t-openai-vault-credential-types-v1' :
+    mode === '--agent-sessions' ? 'q4t-openai-agent-session-types-v1' :
     mode === '--agents' ? 'q4t-openai-agent-registration-types-v1' :
     mode === '--multi-agent' ? 'q4t-openai-multi-agent-types-v1' :
     mode === '--decisions' ? 'q4t-openai-decision-types-v1' :

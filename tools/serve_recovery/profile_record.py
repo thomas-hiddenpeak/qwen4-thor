@@ -41,7 +41,9 @@ def shape(value, size):
              (value.get('format') == 'q4t-profile-business-v26' and
               value['reused_business'].get('format') == 'q4t-agent-registration-profile-source-v1') or
              (value.get('format') == 'q4t-profile-business-v27' and
-              value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1')),
+              value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v28' and
+              value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1')),
             'only explicit reviewed source records have the larger evidence bound')
 
 

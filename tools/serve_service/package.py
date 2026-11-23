@@ -108,6 +108,12 @@ def read(path):
     return decode_metadata(Path(path).read_text())
 
 
+def read_openapi(path):
+    """Read the standalone contract, which embeds every application schema."""
+    from tools.serve_ops.identity import bounded_file
+    return decode_metadata(bounded_file(path, 8*1024**2))
+
+
 def save(path, value):
     """Replace our private metadata, including file and directory durability."""
     path = Path(path)
@@ -539,7 +545,8 @@ def verify_declarations(metadata, directory=None, *, required=False):
         require(protocol.get(name+'_schema') == str(original/relative) and
                 protocol.get(name+'_schema_sha256') == files[relative],
                 'declaration schema differs: '+name)
-        require(type(read(root/relative)) is dict,
+        reader = read_openapi if name == 'openapi' else read
+        require(type(reader(root/relative)) is dict,
                 'declaration schema must be an object')
     return root
 

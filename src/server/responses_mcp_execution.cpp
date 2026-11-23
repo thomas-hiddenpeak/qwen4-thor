@@ -108,6 +108,8 @@ ObjectReply ResponsesExecution::ExecuteMcpCall(
     const Json& call, const ResponsesMcpDefinition& requested, size_t index,
     const std::function<bool(const std::string&)>& publish) {
   auto definition = requested;
+  auto authorization = AuthorizeAgentMcp(&definition);
+  if (!authorization.ok()) return authorization;
   auto resolved = ResolveMcpDeploymentTarget(cipher_config_.mcp_policy.get(),
                                              access_.scope, &definition);
   if (!resolved.ok()) return resolved;

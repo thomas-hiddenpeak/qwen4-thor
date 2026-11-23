@@ -860,6 +860,17 @@ def openapi():
             streaming_response_schema_scope="envelopes; sequencing and tool semantics require client validation")})
 
 
+def runtime_routes(spec):
+    declared = {method.upper()+" "+path for path, operations in spec["paths"].items()
+                for method in operations}
+    # OpenAPI paths exclude queries. The runtime inventory also tracks the
+    # distinct transcription protocol selected by this exact upgrade target.
+    if 'transcription' in next(p['schema']['enum'] for p in
+            spec['paths']['/v1/realtime']['get']['parameters'] if p['name']=='intent'):
+        declared.add('GET /v1/realtime?intent=transcription')
+    return declared
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--check", action="store_true")
@@ -874,13 +885,7 @@ def main():
     publish(ROOT / "docs/serve-message-profile-v3.schema.json", message_schema(), args.check)
     publish(ROOT / "docs/serve-input-semantics-v1.json", semantics(), args.check)
     spec = openapi()
-    declared = {method.upper()+" "+path for path, operations in spec["paths"].items()
-                for method in operations}
-    # OpenAPI paths exclude queries. The runtime inventory also tracks the
-    # distinct transcription protocol selected by this exact upgrade target.
-    if 'transcription' in next(p['schema']['enum'] for p in
-            spec['paths']['/v1/realtime']['get']['parameters'] if p['name']=='intent'):
-        declared.add('GET /v1/realtime?intent=transcription')
+    declared = runtime_routes(spec)
     assert declared == set(inventory["routes"]), declared ^ set(inventory["routes"])
     publish(ROOT / "docs/serve-openapi-v1.json", spec, args.check)
     from tools.serve_responses.build_contract import standalone_openapi

@@ -707,15 +707,23 @@ set(protocol_inputs
   src/server/contracts/openai_decision_types_v1.json
   src/server/contracts/openai_multi_agent_types_v1.json
   cmake/multi_agent_types.h.in
+  src/server/contracts/openai_vault_credential_types_v1.json
+  cmake/vault_credential_types.h.in
+  src/server/vault_credential_internal.h
   src/server/contracts/openai_agent_registration_types_v1.json
   cmake/agent_registration_types.h.in
   src/server/contracts/openai_agent_session_types_v1.json
   cmake/agent_session_types.h.in
   include/q4t/server/agent_session.h
   include/q4t/server/agent_registration.h
+  include/q4t/server/agent_vault.h
   src/server/agent_registration.cpp
+  src/server/agent_vault.cpp
+  src/server/vault_credential_auth.cpp
+  src/server/vault_credential.cpp
   src/server/agent_session.cpp
   src/server/agent_session_turn.cpp
+  src/server/agent_session_mcp.cpp
   src/server/agent_session_internal.h
   src/server/agent_session_http.cpp
   src/server/agent_session_cancel.cpp
@@ -1003,6 +1011,15 @@ if(NOT multi_agent_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/multi_agent_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/multi_agent_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_vault_credential_types_v1.json"
+  Q4T_VAULT_CREDENTIAL_TYPES)
+string(FIND "${Q4T_VAULT_CREDENTIAL_TYPES}" ")q4t_types\"" vault_credential_delimiter)
+if(NOT vault_credential_delimiter EQUAL -1)
+  message(FATAL_ERROR "Vault credential type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/vault_credential_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/vault_credential_types_data.h" @ONLY)
 
 file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_agent_registration_types_v1.json"
   Q4T_AGENT_REGISTRATION_TYPES)

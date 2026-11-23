@@ -1,0 +1,116 @@
+{
+  "status": "ACCEPT_AGENT_VAULTS_PRIMARY_LIGHT",
+  "engine": "1ce1b873c66fd353f29ede9c824f80e02380fecc6aa2950e0286211909a3d398",
+  "ingress": "1e71f9b806763a77a7dce8923ed9585f3d678b2105acfbdf9c9fa98be6e16593",
+  "profiles": {
+    "primary": {
+      "record": "2849d28c117d197f0ceb0bc6f3a6a43d63f2a5f0173766f82eae0399bb75e939",
+      "prior": "3d6691759a569a94a7f9aaaa010f6eacc7bf10ca798a220b015139d73248e329",
+      "bytes": 4057243,
+      "seconds": 46.9512113831006,
+      "starts": 1,
+      "capacity_mtp": true,
+      "checks": {
+        "agent-response.json": "46690b08bec71ad88669487c6e131a36d4b2cd7855b7931b5fc59598dbeb24bc",
+        "beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+        "beta-response.json": "7e8fc42380808b6384e4116d46f0f27170a299486ca7017b68027cbfda41c212",
+        "capabilities.json": "0d92e2ad711ffb25f435af1f28debfacbb34e00891c6f18f95699664e8388f0e",
+        "cleanup.json": "49076db9426ecb8b6eec54d38bfff18b9ee93f92289db434ac4dc88fa88e38a1",
+        "configuration.wire": "d545d8df82a82717e1285c5862598a6d092421c7a4951b71e2187ae8ae4f2530",
+        "core-after.wire": "0214b24de4c89b79272123d048afa4a7f7f7d00694c57232c431792f2487fcfb",
+        "interruption.json": "920c20c9cea602983270324fd86fb5d0054ea985194c6bc429df48909bb426c0",
+        "observation.json": "ce273a480b613cb7ceb7f4c8f88468e0215498f1624e09fda867b66b734945da",
+        "plan.json": "4232a7848e0406f39e348fea399c500e20cb997f086fe22626d271e08bb95a74",
+        "registration.json": "a70cbb38aee2081a29fb1d74343863055cc039c4323b5c9c92346f677023ad13",
+        "result.json": "b1841dba86d052186392406d0f98c6d187214a3f4225c0deeb9034b2eff45956",
+        "session-handoff.json": "3eca3769e4ffead9a44a1701544afaac889de165745827b4decf31386f2a34ee",
+        "vault-handoff.json": "486e98464a70d102cbbf1b005bd9b23623b8a323c7a153dbeeadde31b012cf16"
+      }
+    },
+    "light": {
+      "record": "e76621fdd0353aee0007baf9d55ae55c6c256b121be9ec0194757bf7e95a9c69",
+      "prior": "5c3e6a8a050d64e4da85319ea7bbb23aff80a80a72952c555f348599f151bafe",
+      "bytes": 5459803,
+      "seconds": 116.60304137971252,
+      "starts": 1,
+      "capacity_mtp": false,
+      "checks": {
+        "agent-response.json": "73b6c36205457650b53261250742a53d8b14817383da4054d5c2fae03ad307dd",
+        "agent-restored.json": "8aba72128a6e3e0f067bce9620afb87e8f2498ca78f1654b235d74bde85b5092",
+        "beta-count.json": "5af848c1f289666a1f8e786cb2f1c3618d2a7e58c6c117bf85613a68371cebf0",
+        "beta-response.json": "f7976e1176c94246400c3af08e7b701e86ee09ddc102fcc17c489798e5efaed1",
+        "beta-restored.json": "f15a63c7f8323ee33d718d9b5189c55c0809807e84b17f3802f7f21c6d5363c4",
+        "capabilities.json": "709fc6532ec5a728a3717a6a73272fb52ac02406256325e3316c2c9359a98b2d",
+        "cleanup.json": "2f749b8084e2b769ff6fa3c42709964f8187073f470da12a0200ea2487b542e7",
+        "configuration.wire": "4d370322f8c73e0461e3af7b6e7235b6a3226474b863fd4e79525a3a4a8a4d75",
+        "core-after.wire": "057afb090646073dcece8ec372524851ae2a33fc7ffa30db779c5fa6b46cf283",
+        "interruption.json": "82d8398a43e7225c663123e4514425b1457d17d6eae78b3b6d72914854889916",
+        "observation.json": "3d43e593e7ac6a31d1cc019aea31c5dae57d882728058bd3d6f26b4bb50ae8fb",
+        "plan.json": "d46da7fc872c86ff5fa1b8b12f5376e234b84a9868bc8fbf6a68645b29c16469",
+        "registration.json": "44d344370620557b26cbe720439467b1cdc0c25495ba0085a5e889dcc3d067ca",
+        "result.json": "d301e80252a02208de9fcbc0677629cd06e08889c923cedd9ae5fc3d50ae0f0f",
+        "session-handoff.json": "93650ea65329bf7726d37788ae4f25fe2b88ce94ecc4e3f51695f3382b84a670",
+        "vault-handoff.json": "7b1c010054d33f8d9831c1b0727c1002e35f98317d5a0a5100fc3349910b8289"
+      }
+    }
+  },
+  "qualification": {
+    "path": ".q4t-work/serve-responses-agents-20261123/vault-registry-01/acceptance.json",
+    "sha256": "8ae399357871c165df163218c0c15afae070884415a0017677237bedf5251289"
+  },
+  "run": {
+    "path": ".q4t-work/serve-responses-agents-20261123/vault-profiles-01/acceptance.json",
+    "sha256": "26dab53af96b229e3b653e983828f7b4ef3979e4237a564c9518eeffc307dc33"
+  },
+  "lease": {
+    "path": ".q4t-work/serve-responses-agents-20261123/vault-profiles-01/lease/exit.json",
+    "sha256": "2a66a48b39e7c929b31daee2302ce3ea057589029f17b8af59566b00ee2ed04f"
+  },
+  "samples": 153,
+  "negative_checks": 7,
+  "primary": {
+    "sdk": "7.47.0",
+    "vault": "vault_b6e6b6f15e3b30e89c5e8d569b5d610d",
+    "credential": "cred_b3da041b784cff98e63b3b955814d5ae",
+    "created": true,
+    "foreign": 404,
+    "http_requests": 0
+  },
+  "light": {
+    "sdk": "7.47.0",
+    "vault": "vault_b6e6b6f15e3b30e89c5e8d569b5d610d",
+    "credential": "cred_b3da041b784cff98e63b3b955814d5ae",
+    "session": "agent_session_87d6e76a4ea5104de7938bfe605fc54e",
+    "call": "mcp_e1051bede05991635abeb4888938a28e",
+    "citation": "[docs/MODEL.md:L1-L3]",
+    "archived_bind": 404,
+    "foreign": 404,
+    "http_requests": 5,
+    "methods": [
+      "initialize",
+      "notifications/initialized",
+      "tools/list",
+      "tools/call",
+      "resources/read"
+    ],
+    "source_sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c"
+  },
+  "default_at_qualification": "rev444, STOPPED",
+  "original_offline_failure": {
+    "error": "metadata size limit",
+    "bytes": 2126486,
+    "original": {
+      "path": ".q4t-work/serve-responses-agents-20261123/vault-profiles-finalize.log",
+      "sha256": "23895146e73984e1b09ed92100ac57a01120f489f33916b88af1e29d2283da2e"
+    },
+    "corrected_finalizer": {
+      "path": ".q4t-work/serve-responses-agents-20261123/finalize_vault_profiles.py",
+      "sha256": "e6b3d9968fb220cddda4604262ad7be4aa4e2d8ae31b87d709c545cdd3ea8c12"
+    },
+    "review": "Only standalone OpenAPI loading changed: strict bounded read of the same artifact up to 8 MiB. Both 1904-source manifests were checked before changing packaged reader or runtime qualification files. Both original model runs and lease are reused."
+  },
+  "declarations_cpu": {
+    "path": ".q4t-work/serve-responses-agents-20261123/vault-schema-cpu.log",
+    "sha256": "d36c549b8bfb2a2a57b192274facb01095cdc557187cba8784e1be7d43e3b6a4"
+  }
+}

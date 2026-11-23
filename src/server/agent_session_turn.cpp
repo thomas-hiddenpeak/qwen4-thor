@@ -45,6 +45,21 @@ ObjectReply NativeRequest(const AgentSessionStart& start) {
   const auto& agent = *start.session.Find("agent");
   auto tools = Array();
   for (const auto& tool : agent.GetArray("tools")->array) {
+    if (tool.GetString("type") == "mcp") {
+      const auto& transport = *tool.Find("transport");
+      if (tool.GetString("connection_origin") != "service" ||
+          transport.GetString("type") != "http")
+        return Error(503, "agent_environment_executor_unavailable",
+                     "MCP tool needs an execution environment");
+      auto native = Object({{"type", String("mcp")},
+                            {"server_label", Copy(tool, "server_label")},
+                            {"server_url", Copy(transport, "server_url")},
+                            {"require_approval", String("never")}});
+      if (Nonnull(tool, "allowed_tools"))
+        Set(&native, "allowed_tools", Copy(tool, "allowed_tools"));
+      tools.array.push_back(std::move(native));
+      continue;
+    }
     if (tool.GetString("type") != "function")
       return Error(503, "agent_tool_executor_unavailable",
                    "Session tool executor is unavailable");
@@ -70,6 +85,7 @@ namespace agent_detail {
 ObjectReply ProjectItem(const Json& from, const std::string& turn_id,
                         Json* items, Json* actions, bool completed) {
   const auto type = from.GetString("type");
+  if (type == "mcp_list_tools") return {};  // Internal discovery has no Agent SDK item.
   Json item = Object({{"type", String(type)},
                       {"turn_id", String(turn_id)},
                       {"id", Copy(from, "id")},
@@ -115,6 +131,24 @@ ObjectReply ProjectItem(const Json& from, const std::string& turn_id,
     Set(&item, "output", Copy(from, "output"));
     Set(&item, "status",
         String(Nonnull(from, "error") ? "failed" : "completed"));
+  } else if (type == "mcp_call") {
+    for (const auto* field : {"server_label", "name", "error"})
+      Set(&item, field, Copy(from, field));
+    const auto status = from.GetString("status");
+    if (status == "calling") Set(&item, "status", String("in_progress"));
+    for (const auto* field : {"arguments", "output"}) {
+      auto value = Copy(from, field);
+      if (value.IsString()) {
+        Json parsed;
+        if (io::ParseJson(value.str, &parsed, true, kSchemaJsonLimits)) {
+          value = std::move(parsed);
+        } else if (std::string_view(field) == "arguments") {
+          if (status == "completed") return InvalidRecord();
+          value = {};
+        }
+      }
+      Set(&item, field, std::move(value));
+    }
   } else if (type == "reasoning") {
     Set(&item, "summary", Copy(from, "summary"));
   } else {
@@ -154,6 +188,7 @@ ObjectReply PrepareAgentSessionExecution(
   if (!result.ok()) return result;
   auto native = NativeRequest(start);
   if (!native.ok()) return native;
+  run.ConfigureAgentMcp(start.session, start.sealed_http);
   result = run.Prepare(native.value, config, access, created, true);
   if (!result.ok()) return result;
   ObjectRequest mutation;
@@ -166,6 +201,10 @@ ObjectReply PrepareAgentSessionExecution(
       {{"session", start.session},
        {"turns", Array({Object({{"id", String("turn_" + nonce.substr(14))},
                                 {"response_id", String(run.Id())}})})}});
+  if (!start.sealed_http.empty()) {
+    Set(&mutation.data, "sealed_http", String(start.sealed_http));
+    Set(&Field(mutation.data, "turns").array.back(), "sealed_http", String(start.sealed_http));
+  }
   result = run.BindAgentSession(std::move(mutation));
   if (result.ok()) result.value = std::move(start.session);
   return result;
@@ -665,6 +704,7 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   const auto& last = links.array.back();
   const bool cancelled = view.turn.GetString("status") == "cancelled";
   CancelledAgentHistory previous{id, Copy(last, "saved_tool_results")};
+  run.ConfigureAgentMcp(execution_settings, data.GetString("sealed_http"));
   auto prepared = run.Prepare(native.value, config, access, std::time(nullptr),
                               true, cancelled ? &previous : nullptr);
   if (!prepared.ok()) return prepared;
@@ -677,6 +717,7 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   }
   auto next = Object({{"id", String(turn)}, {"response_id", String(run.Id())}});
   if (waiting) Set(&next, "tool_results", std::move(pending));
+  if (data.Has("sealed_http")) Set(&next, "sealed_http", Copy(data, "sealed_http"));
   auto bound = BindSessionSettings(&data, execution_settings, &next);
   if (!bound.ok()) return bound;
   Field(data, "turns").array.push_back(std::move(next));

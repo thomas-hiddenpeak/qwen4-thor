@@ -1,6 +1,7 @@
 #include "q4t/server/agent_session.h"
 
 #include "object_protocol.h"
+#include "agent_session_internal.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/input_contract.h"
 
@@ -39,7 +40,8 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
     return Invalid("A session without an environment needs initial input",
                    "input");
 
-  auto agent = ResolveSessionAgent(objects, request, config, access);
+  Json private_http;
+  auto agent = ResolveSessionAgent(objects, request, config, access, &private_http);
   if (!agent.ok()) return agent;
   const auto* metadata = request.Find("metadata");
   auto normalized =
@@ -73,6 +75,8 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
       if (!data || data->GetString("id") != id.str ||
           data->GetString("object") != "vault")
         return Error(503, "vault_record_invalid", "Invalid vault record");
+      if (data->GetBool("archived"))
+        return Error(404, "object_not_found", "Vault not found");
     }
     Set(&session, "vault_ids", *vaults);
   }
@@ -103,7 +107,10 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
       return Invalid("Expected message content", "input");
     Set(&message, "type", String("message"));
   }
-  *start = {std::move(session), std::move(messages)};
+  std::string sealed;
+  auto secured = agent_detail::SealAgentHttp(objects, access, session_id, private_http, &sealed);
+  if (!secured.ok()) return secured;
+  *start = {std::move(session), std::move(messages), std::move(sealed)};
   return {};
 }
 }  // namespace q4t::server

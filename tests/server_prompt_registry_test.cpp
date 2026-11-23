@@ -1,6 +1,10 @@
+#include "../src/server/schema_string.h"
+#include "../src/server/vault_credential_internal.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/agent_session.h"
+#include "q4t/server/agent_vault.h"
 #include "q4t/server/prompt_registry.h"
+#include "q4t/server/state_cipher.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -638,6 +642,219 @@ Q4T_TEST(agent_session_settings_use_cas_filtered_pages_and_immutable_step_settin
   auto invalid = UpdateAgentSession(store, first, Parse(R"({"agent":{"model":"foreign"}})"),
                                     config, Access());
   Q4T_CHECK(invalid.http_status == 404);
+  return true;
+}
+
+Q4T_TEST(vault_credentials_cipher_binding_rotation_scope_and_cascade) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto api = [&](std::string method, std::string path, std::string body = "",
+                 StateAccess access = Access()) {
+    return HandleAgentVault(objects, method, path, body, access);
+  };
+  const auto vault = api("POST", "/v1/vaults", "{}").value.GetString("id");
+  const auto path = "/v1/vaults/" + vault;
+  const auto credentials = path + "/credentials";
+  auto entry = api("POST", credentials,
+      R"({"name":" bearer ","auth":{"type":"static_bearer","token":"fixture-bearer-original","mcp_server_url":"https://records.example.test/mcp"},"metadata":{"project":"q4t"}})");
+  Q4T_CHECK(Ok(entry));
+  const auto id = entry.value.GetString("id");
+  const auto resource = credentials + "/" + id;
+  Q4T_CHECK(id.starts_with("cred_") && entry.value.GetString("name") == "bearer" &&
+            !entry.value.Find("auth")->Has("token"));
+  auto raw = [&] {
+    ObjectRequest r;
+    r.kind = ObjectKind::kVault;
+    r.id = vault;
+    r.scope = Access().scope;
+    return objects.Execute(r, Access().deadline).value;
+  };
+  Json saved = raw();
+  Q4T_CHECK(OutputJson(saved).find("fixture-bearer-original") == std::string::npos);
+  auto sealed = saved.Find("data")->GetArray("credentials")->array.front().GetString("sealed");
+  std::string plain;
+  const StateCipherBinding binding{"q4t-vault", vault, "credential-auth", id};
+  Q4T_CHECK(Ok(StateCipher(objects).Open(sealed, binding, Access(), &plain)) &&
+            Parse(plain).GetString("token") == "fixture-bearer-original");
+  auto wrong = binding;
+  wrong.template_id = "vault_wrong";
+  Q4T_CHECK(!StateCipher(objects).Open(sealed, wrong, Access(), &plain).ok());
+  wrong = binding;
+  wrong.item_id = "cred_other";
+  Q4T_CHECK(!StateCipher(objects).Open(sealed, wrong, Access(), &plain).ok());
+  Q4T_CHECK(!StateCipher(objects).Open(sealed, binding, Access("client:peer"), &plain).ok());
+  Q4T_CHECK(api("POST", resource,
+      R"({"auth":{"type":"environment_variable","secret_value":"different-method"}})").http_status == 400);
+  auto rotated = api("POST", resource,
+      R"({"auth":{"type":"static_bearer","token":"fixture-bearer-next"},"metadata":{}})");
+  Q4T_CHECK(Ok(rotated) && rotated.value.Find("metadata")->object.empty());
+  Q4T_CHECK(api("GET", resource, "", Access("client:peer")).http_status == 404);
+  saved = raw();
+  sealed = saved.Find("data")->GetArray("credentials")->array.front().GetString("sealed");
+  Q4T_CHECK(Ok(StateCipher(objects).Open(sealed, binding, Access(), &plain)) &&
+            Parse(plain).GetString("token") == "fixture-bearer-next");
+  Q4T_CHECK(Ok(api("DELETE", path)));
+  saved = raw();
+  Q4T_CHECK(!saved.Find("data")->GetArray("credentials")->array.front().Has("sealed"));
+  auto archived = api("GET", credentials + "?status=archived");
+  Q4T_CHECK(Ok(archived) && archived.value.GetString("last_id") == id);
+  Q4T_CHECK(api("POST", resource, R"({"metadata":{}})").http_status == 409);
+  for (const auto& p : std::filesystem::recursive_directory_iterator(f.options.directory)) {
+    if (!p.is_regular_file()) continue;
+    std::ifstream file(p.path(), std::ios::binary);
+    const std::string content{std::istreambuf_iterator<char>(file), {}};
+    Q4T_CHECK(content.find("fixture-bearer-") == std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(agent_mcp_resolves_only_attached_active_exact_url_credentials) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto vault = HandleAgentVault(objects, "POST", "/v1/vaults", "{}", Access()).value.GetString("id");
+  const auto path = "/v1/vaults/" + vault + "/credentials";
+  const auto body = R"({"name":"test","auth":{"type":"static_bearer","token":"fixture-only",
+     "mcp_server_url":"https://SERVER.example:443/tools?project=one"}})";
+  const auto first = HandleAgentVault(objects, "POST", path, body, Access()).value.GetString("id");
+  const std::string target = "https://server.example/tools?project=one";
+  const auto attached = Parse("[\"" + vault + "\"]");
+  std::string token;
+  auto get = [&](const std::string& id, const std::string& url) {
+    return vault_detail::ResolveMcpToken(objects, Access(), attached, id, url, &token);
+  };
+  Q4T_CHECK(!first.empty() && Ok(get("", target)) && token == "fixture-only");
+  Q4T_CHECK(Ok(get(first, target)) && token == "fixture-only");
+  for (const auto* url : {"https://server.example/other?project=one",
+                          "https://server.example/tools?project=two",
+                          "https://server.example:444/tools?project=one",
+                          "http://server.example/tools?project=one",
+                          "https://other.example/tools?project=one"}) {
+    Q4T_CHECK(get(first, url).http_status == 404 && token.empty());
+    Q4T_CHECK(Ok(get("", url)) && token.empty());
+  }
+  Q4T_CHECK(get(first, target + "#ignored").http_status == 400 && token.empty());
+  Q4T_CHECK(vault_detail::ResolveMcpToken(objects, Access("client:other"), attached,
+      first, target, &token).http_status == 404 && token.empty());
+  Q4T_CHECK(vault_detail::ResolveMcpToken(objects, Access(), Parse("[]"), first,
+      target, &token).http_status == 404 && token.empty());
+  const auto second = HandleAgentVault(objects, "POST", path, body, Access()).value.GetString("id");
+  Q4T_CHECK(!second.empty() && get("", target).code == "mcp_credential_ambiguous" && token.empty());
+  Q4T_CHECK(Ok(get(first, target)) && token == "fixture-only");
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "DELETE", path + "/" + first, "", Access())));
+  Q4T_CHECK(get(first, target).http_status == 404 && token.empty());
+  Q4T_CHECK(Ok(get("", target)) && token == "fixture-only");
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "DELETE", path + "/" + second, "", Access())));
+  Q4T_CHECK(get("", target).http_status == 404 && token.empty());
+  const auto oauth = HandleAgentVault(objects, "POST", path,
+    R"({"name":"exp","auth":{"type":"mcp_oauth","access_token":"expired",
+    "mcp_server_url":"https://server.example/tools?project=one","expires_at":"2000-01-01T00:00:00Z"}})", Access());
+  Q4T_CHECK(Ok(oauth) && get("", target).code == "mcp_credential_expired" && token.empty());
+  Q4T_CHECK(Ok(HandleAgentVault(objects, "POST", path + "/" + oauth.value.GetString("id"),
+    R"({"auth":{"type":"mcp_oauth","access_token":"current","expires_at":"9999-12-31T23:59:59Z"}})", Access())));
+  Q4T_CHECK(Ok(get("", target)) && token == "current");
+  return true;
+}
+
+Q4T_TEST(agent_vault_oauth_expiry_uses_offset_fraction_and_full_year_range) {
+  using namespace std::chrono;
+  const auto now = sys_days{year{2026}/November/23} + 500ms;
+  Q4T_CHECK(!SchemaDateTimeAfter("2026-11-23T08:00:00.50+08:00", now));
+  Q4T_CHECK(SchemaDateTimeAfter("2026-11-22T19:00:00.5000000001-05:00", now));
+  Q4T_CHECK(!SchemaDateTimeAfter("2026-11-23T00:00:00.499999999Z", now));
+  Q4T_CHECK(SchemaDateTimeAfter("9999-12-31T00:00:00Z", now));
+  Q4T_CHECK(!SchemaDateTimeAfter("0001-01-01T00:00:00Z", now));
+  Q4T_CHECK(!SchemaDateTimeAfter("2026-02-31T00:00:00Z", now));
+  return true;
+}
+
+Q4T_TEST(vault_credentials_oauth_environment_projection_and_negative_inputs) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto api = [&](std::string method, std::string path, std::string body = "") {
+    return HandleAgentVault(objects, method, path, body, Access());
+  };
+  auto vault = api("POST", "/v1/vaults", "{}").value.GetString("id");
+  const auto path = "/v1/vaults/" + vault + "/credentials";
+  auto oauth = api("POST", path, R"({"name":"OAuth","auth":{"type":"mcp_oauth",
+    "mcp_server_url":"https://m.example.test","access_token":"fixture-access-1",
+    "expires_at":"2027-01-01T00:00:00Z","refresh":{"client_id":"client",
+    "refresh_token":"fixture-refresh-1","token_endpoint":"https://i.example.test/token",
+    "token_endpoint_auth":{"type":"client_secret_basic","client_secret":"fixture-secret-1"}}}})");
+  Q4T_CHECK(Ok(oauth) && OutputJson(oauth.value).find("fixture-") == std::string::npos);
+  const auto id = oauth.value.GetString("id");
+  auto rotated = api("POST", path + "/" + id,
+      R"({"auth":{"type":"mcp_oauth","access_token":"fixture-access-2","refresh":{"refresh_token":null,"scope":"read","token_endpoint_auth":{"type":"client_secret_basic","client_secret":"fixture-secret-2"}}}})");
+  Q4T_CHECK(Ok(rotated));
+  auto auth = rotated.value.Find("auth");
+  Q4T_CHECK(auth->Find("expires_at")->IsNull() &&
+            auth->Find("refresh")->GetString("scope") == "read" &&
+            !auth->Find("refresh")->Has("refresh_token"));
+  auto bad = [&](const char* text) { return api("POST", path, text).http_status == 400; };
+  Q4T_CHECK(bad(R"({"name":"bad","auth":{"type":"static_bearer","token":"x","mcp_server_url":"http://a.example.test"}})"));
+  Q4T_CHECK(bad(R"({"name":"bad","auth":{"type":"static_bearer","token":"x","mcp_server_url":"https://a@b.example.test"}})"));
+  Q4T_CHECK(bad(R"({"name":"bad","auth":{"type":"environment_variable","secret_name":"CODEX_HOME","secret_value":"x","networking":{"type":"unrestricted"}}})"));
+  Q4T_CHECK(bad(R"({"name":"bad","auth":{"type":"environment_variable","secret_name":"VALID","secret_value":"line\nfeed","networking":{"type":"unrestricted"}}})"));
+  auto env = api("POST", path,R"({"name":"env","auth":{"type":"environment_variable",
+    "secret_name":"PROJECT_KEY","secret_value":"fixture-env-1",
+    "networking":{"type":"limited","allowed_hosts":["EXAMPLE.COM"]}}})");
+  Q4T_CHECK(Ok(env) && !env.value.Find("auth")->Has("secret_value") &&
+            env.value.Find("auth")->Find("networking")->GetArray("allowed_hosts")->array.front().str == "example.com");
+  auto env_path = path + "/" + env.value.GetString("id");
+  Q4T_CHECK(Ok(api("POST", env_path, R"({"auth":{"type":"environment_variable","secret_value":"fixture-env-2"}})")));
+  Q4T_CHECK(Ok(api("DELETE", env_path)));
+  auto remaining = api("GET", path + "?status=active");
+  Q4T_CHECK(Ok(remaining) && remaining.value.GetArray("data")->array.size() == 1 &&
+            remaining.value.GetString("first_id") == id);
+  return true;
+}
+
+Q4T_TEST(agent_vault_sdk_fields_owner_archive_and_session_binding) {
+  Fixture f;
+  ObjectStore store(f.options);
+  const std::string base = "/v1/vaults";
+  auto api = [&](std::string method, std::string path, std::string body = "",
+                 StateAccess access = Access()) {
+    return HandleAgentVault(store, method, path, body, access);
+  };
+  auto first = api("POST", base,
+      R"({"name":"　 项目资料　","metadata":{"team":"资料","a":"1"}})");
+  Q4T_CHECK(Ok(first));
+  const auto id = first.value.GetString("id");
+  const auto path = base + "/" + id;
+  Q4T_CHECK(first.value.GetString("name") == "项目资料" && first.value.object.size() == 5);
+  Q4T_CHECK(api("GET", path, "", Access("client:peer")).http_status == 404);
+  auto blank = api("POST", base, "null");
+  Q4T_CHECK(Ok(blank) && blank.value.Find("name")->IsNull());
+  Q4T_CHECK(api("POST", base, R"({"name":null})").http_status == 400);
+  Q4T_CHECK(api("POST", base, R"({"name":" \t "})").http_status == 400);
+  Q4T_CHECK(api("POST", base, "{\"name\":\"" + std::string(257, 'x') + "\"}").http_status == 400);
+  Q4T_CHECK(api("POST", path, R"({"metadata":null})").http_status == 400);
+  Q4T_CHECK(api("POST", path, R"({"metadata":{"":"bad"}})").http_status == 400);
+  Q4T_CHECK(api("POST", path, R"({"secret":"value"})").http_status == 400);
+  auto update = api("POST", path, R"({"name":null})");
+  Q4T_CHECK(Ok(update) && update.value.Find("name")->IsNull());
+  auto matching = api("GET", base + "?metadata%5Bteam%5D=资料&metadata%5Ba%5D=1&status=active");
+  Q4T_CHECK(Ok(matching) && matching.value.GetArray("data")->array.size() == 1);
+  auto request = Parse(R"({"agent":{"model":"cpu"},"environment":{"type":"none"},"input":"lookup"})");
+  Set(&request, "vault_ids", Parse("[\"" + id + "\"]"));
+  AgentSessionStart start;
+  Q4T_CHECK(Ok(PrepareDirectAgentSession(store, request, Config(), Access(), "s", 1, &start)));
+  auto deleted = api("DELETE", path);
+  Q4T_CHECK(Ok(deleted) && deleted.value.GetBool("deleted"));
+  Q4T_CHECK(api("POST", path, "{}").http_status == 409);
+  auto recovered = api("GET", path);
+  Q4T_CHECK(Ok(recovered) && !recovered.value.Has("archived"));
+  Q4T_CHECK(PrepareDirectAgentSession(store, request, Config(), Access(), "s", 1, &start).http_status == 404);
+  auto archived = api("GET", base + "?status%5B%5D=archived");
+  Q4T_CHECK(Ok(archived) && archived.value.GetString("first_id") == id);
+  auto both = api("GET", base + "?status[]=active&status[]=archived&limit=1&order=asc");
+  Q4T_CHECK(Ok(both) && both.value.GetBool("has_more"));
+  auto next = api("GET", base + "?order=asc&after=" + both.value.GetString("last_id"));
+  Q4T_CHECK(Ok(next) && next.value.GetArray("data")->array.size() == 1 &&
+            next.value.GetString("first_id") != both.value.GetString("first_id"));
+  Q4T_CHECK(api("GET", base + "?status=other").http_status == 400);
+  Q4T_CHECK(api("GET", base + "?status=active&status[]=archived").http_status == 400);
+  Q4T_CHECK(api("GET", base + "?metadata%5B%5D=x").http_status == 400);
   return true;
 }
 

@@ -39,6 +39,14 @@ def candidate(build, witness, current):
 
 
 def verify_identity(plan, capabilities):
+    if 'agent_vaults' in plan:
+        from tools.serve_responses import vault_profile_acceptance
+        vault_profile_acceptance.verify_identity(plan, capabilities)
+        pkg.require(plan['agent_sessions']['binary'] == plan['agent_vaults']['binary'] and
+                    plan['sources'][SDK] == pkg.sha(ROOT/SDK) and
+                    plan['sources'][str(PUBLICATION.relative_to(ROOT))] == pkg.sha(PUBLICATION),
+                    'original session and publication witness drift')
+        return
     selection = plan['agent_sessions']
     witness = Path(selection['witness'])
     binary = Path(plan['binary'])

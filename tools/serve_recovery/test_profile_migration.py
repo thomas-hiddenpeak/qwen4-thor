@@ -29,6 +29,21 @@ def bind_records(registry, records):
 
 
 class MigrationTests(unittest.TestCase):
+    def test_agent_vault_extends_only_the_qualified_function_session(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(agent_sessions=live.SESSION_CAPABILITY)
+        new = dict(agent_sessions=live.VAULT_SESSION, agent_vaults=live.VAULT_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        for change in (dict(tool_types=['mcp']), dict(cancel_turn=False),
+                       dict(storage='shared')):
+            with self.subTest(change=change):
+                altered = dict(new, agent_sessions=dict(live.VAULT_SESSION, **change))
+                self.assertFalse(migration.explicit_extension(old, altered))
+        modified = dict(new, agent_vaults=dict(live.VAULT_CAPABILITY,
+                        credentials=dict(live.VAULT_CAPABILITY['credentials'], write_only=1)))
+        self.assertFalse(migration.explicit_extension(old, modified))
+
     def setUp(self):
         self.fixture = test_native_bundle.BundleTests(); self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)

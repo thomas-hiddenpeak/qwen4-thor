@@ -1,0 +1,113 @@
+{
+  "state": "candidate_agent_mcp_tls_sdk_passed",
+  "capability": "Managed Agents, service-origin HTTP MCP and attached Vault credential selection",
+  "business": {
+    "sdk": "7.47.0",
+    "calls": 1,
+    "citation": "[docs/MODEL.md:L1-L3]",
+    "events": 24,
+    "public_index": 0,
+    "wrong_tenant": 404,
+    "wrong_target": 404,
+    "ambiguous": 409,
+    "revoked": 404,
+    "chat_choices": [
+      0,
+      1
+    ],
+    "chat": "42"
+  },
+  "peer": {
+    "methods": [
+      "initialize",
+      "notifications/initialized",
+      "tools/list",
+      "tools/call",
+      "resources/read"
+    ],
+    "http_requests": 5,
+    "source_sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "credential_scan": true
+  },
+  "accepted": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 46.75,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "engine_sha256": "1ce1b873c66fd353f29ede9c824f80e02380fecc6aa2950e0286211909a3d398",
+  "ingress_sha256": "1e71f9b806763a77a7dce8923ed9585f3d678b2105acfbdf9c9fa98be6e16593",
+  "driver_sha256": "a92be52cc39403d2eb3264efd7091a819b9ec8aa88c045af91065557e21a7b56",
+  "lease_sha256": "e558ba0aec3aac71d6a03c7a64be6aab8ed2024e6d627a0fe1a74192443693ba",
+  "nvml_queries": 45,
+  "original_failures": [
+    {
+      "run": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 33.866,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "reason": "Queued discovery catalog incorrectly blocked pre-generation compaction selection.",
+      "protected": true,
+      "lease_sha256": "3c1d0ea4fbd9c7086445b98cfd75df2d69f7c508d73e8d773a510b5262e73998",
+      "result_sha256": "e04cd6c0041168c52f4ad83e1299b6c1ce6a45a4ba9c3f6b0cbb8dd9903a6efa"
+    },
+    {
+      "run": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 41.979,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "reason": "MCP call completed. Continuation passed the second model step as choice index 1 of one choice to the sampler.",
+      "protected": true,
+      "lease_sha256": "487b2410009ed05b2dea50bdf573729b53d61c97da87df4787220ff801648527",
+      "result_sha256": "e123d5f9d7782352c1d67b8ad16d6a049dc839a99e9663a954e253741a8313c2"
+    }
+  ],
+  "cpu": [
+    {
+      "receipt": ".q4t-work/serve-responses-agents-20261123/mcp-host-01.log",
+      "sha256": "9812223ea83668303dbc871e612d34b2f7ab1b29800241fdc54cedc0c47ba8d3",
+      "passed": 20
+    },
+    {
+      "receipt": ".q4t-work/serve-responses-agents-20261123/mcp-context-cpu.log",
+      "sha256": "33c8e51aa4099e6af4175bf544c7a829cad7398344a308e6d08e7efb56077d5b",
+      "passed": 4
+    },
+    {
+      "receipt": ".q4t-work/serve-responses-agents-20261123/mcp-queue-r2-cpu.log",
+      "sha256": "33638a980c772e0fd0b97cb11c034f92758bdfe06e83207bc2578969ac0ad0b7",
+      "passed": 2
+    },
+    {
+      "receipt": ".q4t-work/serve-responses-agents-20261123/mcp-sampler-cpu.log",
+      "sha256": "27726478d009a471939c31c718c0d7d23546229599ae99f759ea7bfedf008c4f",
+      "passed": 3
+    }
+  ],
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 131,
+    "native_routes": 216,
+    "reviewed_source_anchors": 1226,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "default_revision": 444,
+  "remaining": [
+    "OAuth token endpoint refresh, hosted environment transport and environment credential substitution",
+    "Recoverable primary/light deployment and default promotion",
+    "Complete remaining declared and undeclared application operations"
+  ]
+}
