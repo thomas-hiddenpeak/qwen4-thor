@@ -1,0 +1,102 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 63,
+    "cleanup_complete": true
+  },
+  "observation": {
+    "protocol": "PASS",
+    "version": "rev426",
+    "backend": "rev426",
+    "spoken": "rev426",
+    "quality": true,
+    "pcm_bytes": 107520,
+    "pcm_sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c",
+    "settled_tokens": 1279.0,
+    "requests": 3,
+    "listener_heard": false
+  },
+  "seconds": 61.92956413514912,
+  "default_unchanged": true,
+  "real_core_reply": "42",
+  "schema": "q4t-live-responses-wss-evidence-v1",
+  "source_commit": "fccd380d5d6600237342475d1e8c03a434e14504",
+  "engine_sha256": "fd6875bf7fe3ba7154bad0865f01dd95eb58ee683adccfc3a073f6fa20b7586f",
+  "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935",
+  "driver_sha256": "f625d98577918f442301a8c2e2c8194631a8cfab4cb89b5e4ae9c8f40aee69d4",
+  "sdk_actor_sha256": "e890b4da0f56527ef669a658c57665ca4746ff588cba66db5d9801f916710026",
+  "sdk_version": "7.47.0",
+  "record": {
+    "path": "docs/STATUS.md",
+    "sha256": "f5363a0ccb773d4e97b0667f0f772bb31ef9d94444ab8d52488bc857c4c9cfdf",
+    "version": "rev426"
+  },
+  "limits": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "responses": 2,
+    "spoken": 1,
+    "chats": 1,
+    "controls": 2000,
+    "seconds": 480
+  },
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "responses": 2,
+    "spoken": 1,
+    "chats": 1,
+    "controls": 40
+  },
+  "close_code": 1000,
+  "sources": {
+    "acceptance.json": "d700c15549b2691b371e8cc44094ce60d7654bf545966c5ca2a753e7a5c9ec3b",
+    "before.json": "3e30beafca91f47559c3cb19cfa9f3c724309ff270d6dbda2263507f96ce8cbf",
+    "cleanup.json": "87e00f0ce673a7be96b572a459f275741e9179fb698a419c7c7f7aa9e3574929",
+    "core-after.wire": "d9a86c0549014f0a16b7105e446e344ff13e6caeac4bbe8c4dc60aedb885932c",
+    "events.jsonl": "546d303ebed56ab398bf942406c5a2bde152e4cfa25824e15cf0e4913097304e",
+    "final-drained.json": "b3aaaa2fc8113f14584ad3247a983591f413d293878b2fa6ffd835ec383603e9",
+    "lease/events.jsonl": "146afab0d2836ab824a78b9c6c7a539bf945a4cd65464e79097934f8b25d6bb9",
+    "lease/exit.json": "54caf07ae2948c6d8d98019d4c9742122a2ee29d43766f79e0cc95525b24b7dd",
+    "lease/nvml-queries.jsonl": "96334fc3a4d395b735b125284701df67df59c931620a1679c2640c9ba7e5dc7d",
+    "live-drained.json": "adcf7470b114192ff3032e2a7af4e74e51c0aa22132e8213aaf437263c4237c7",
+    "model.log": "aa083cb554d691f38d70b52e1e1a164d055d5fba21da82d843eb7f99bba52d67",
+    "observation.json": "ed26a1d791cad6f7f5225262bd70db1a34d39289ea35fee65ae3db30a52e4104",
+    "plan.json": "c9d729f699d0c2bd8784c1d17ae86d151c716ae47d6a48096124341211e56a92",
+    "result.json": "011d4c75f2fb6f32de5422158becc5f5a56abfcd5bbccc48ad01d4dc8767a499",
+    "sdk.json": "bb3a15466f120cea0ed07aae4d024dc5348dd238e7b0c14d6a557d7ea4a01ef8"
+  },
+  "earlier_attempts": [
+    {
+      "stage": "business-01",
+      "result": "COMMAND_FAILED",
+      "model_starts": 0,
+      "asset_inventory": 223,
+      "only_ctime_changed": 196,
+      "exit_sha256": "379e843fec03acdafbe90588a64a70251a200af9a3a2bb57805581ce528a8e4f"
+    },
+    {
+      "stage": "business-02",
+      "result": "ENV_ABORT",
+      "model_starts": 1,
+      "nvml_ok": 55,
+      "monitor_status": "CLEANUP_FAILED",
+      "last_worker_api": "init",
+      "worker_gone_at_review": true,
+      "backend_text": "rev426",
+      "voice_and_drain_unverified": true,
+      "seconds": 82.54688417026773,
+      "sources": {
+        "cleanup.json": "2a9c2b90d26283010b251dab17ee59054ac1a4e2a8b5e7b694c6e34e4577807e",
+        "events.jsonl": "1b39c269f8855edf3876847580067ad0053d88bf4d5029336cda4e2e1f914b4c",
+        "lease/exit.json": "3e6c772244be817ab5a8127d1dd7886ff5d03edfdc558593868f82dd815bad9e",
+        "lease/nvml-queries.jsonl": "1b6df393c5b26caa1d0d62094e5dfdd605dd63f8b11d1dc467ed9d24248c1191",
+        "result.json": "f431546a568a4c0a9ab6267cba9916dd366231889403f8271f47c5dd952b723a"
+      }
+    }
+  ]
+}

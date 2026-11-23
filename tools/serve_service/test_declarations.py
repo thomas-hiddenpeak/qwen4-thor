@@ -178,13 +178,22 @@ class Declarations(unittest.TestCase):
         for changes in [dict(directory='/'), dict(directory='/a/../b'),
             dict(directory='relative'), dict(max_object_mib=33),
             dict(max_client_mib=1), dict(max_total_objects=999),
-            dict(io_timeout_ms=30001), dict(max_client_objects=True)]:
+            dict(io_timeout_ms=30001), dict(max_client_objects=True), dict(live_recordings=1)]:
             with self.subTest(changes=changes), self.assertRaises(RuntimeError):
                 pkg.application_settings(dict(value, **changes))
         manifest = dict(settings=pkg.settings(8080, 0, application_state=dict(
             value, directory='/persistent/objects')), model_dir='/model')
         args = pkg.command(self.root, manifest)
         self.assertEqual(args[args.index('--object-store-dir')+1], '/persistent/objects')
+        self.assertNotIn('--live-recordings', args)
+        manifest['settings']['application_state']['live_recordings'] = True
+        self.assertIn('--live-recordings', pkg.command(self.root, manifest))
+
+    def test_recording_opt_in_rejects_unqualified_package(self):
+        binary, release, model = self.application_fixture()
+        with self.assertRaisesRegex(RuntimeError, 'does not declare Live recording'):
+            pkg.prepare(binary, release, model, self.root/'old-package',
+                        application_state=dict(live_recordings=True))
 
     def test_notices_are_copied_verified_and_do_not_need_repository_at_runtime(self):
         binary, release, model = self.fixture()
@@ -206,13 +215,13 @@ class Declarations(unittest.TestCase):
     def test_managed_cli_carries_application_options(self):
         from tools.serve_service import service
         args = ['q4t-managed', 'prepare', '--model-dir', '/model', '--output', '/out',
-                '--object-store-dir', '/persistent', '--object-max-total-mib', '512']
+                '--object-store-dir', '/persistent', '--object-max-total-mib', '512', '--live-recordings']
         with mock.patch.object(service.sys, 'argv', args), \
              mock.patch.object(service.pkg, 'prepare', return_value={}) as prepare, \
              contextlib.redirect_stdout(io.StringIO()):
             service.main()
         self.assertEqual(prepare.call_args.kwargs['application_state'],
-                         dict(directory='/persistent', max_total_mib=512))
+                         dict(directory='/persistent', max_total_mib=512, live_recordings=True))
 
     def test_completion_schemas_travel_with_optional_registry_and_verify_offline(self):
         binary, release, model = self.fixture()

@@ -1,0 +1,13 @@
+F
+======================================================================
+FAIL: test_application_routes_preserve_methods_queries_and_identity (__main__.NativeTests.test_application_routes_preserve_methods_queries_and_identity) (method='POST', path='/v1/realtime/calls')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_recovery/test_gateway_nginx.py", line 465, in test_application_routes_preserve_methods_queries_and_identity
+    self.assertEqual(response.status, 201 if create_call else 200, wire)
+AssertionError: 404 != 201 : b'{"error":{"message":"Service entrypoint rejected request","type":"gateway_error","param":null,"code":"gateway_route_not_found"}}'
+
+----------------------------------------------------------------------
+Ran 1 test in 5.232s
+
+FAILED (failures=1)

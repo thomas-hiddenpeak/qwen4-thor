@@ -1,6 +1,8 @@
 // One native conversation owner; model work receives immutable snapshots.
 #pragma once
 
+#include "q4t/server/realtime_shape.h"
+
 #include <deque>
 #include <map>
 #include <thread>
@@ -79,7 +81,8 @@ struct RealtimeConversationCallbacks {
   // Trusted native observer binding; never sourced from JSON metadata/user.
   std::function<RealtimeTraceStore*()> traces = {};
   std::string trace_scope = {};
-
+  // The media owner cuts queued playout only when VAD actually interrupts.
+  std::function<void()> interrupt_playout = {};
 };
 
 class RealtimeConversationSession {
@@ -88,10 +91,24 @@ class RealtimeConversationSession {
                               io::Json settings, WebSocketOutput& output,
                               RealtimeConversationCallbacks callbacks,
                               size_t message_bytes = kWebSocketMessageLimit);
+  RealtimeConversationSession(std::string id, std::string conversation_id,
+                              io::Json settings, SessionEventOutput output,
+                              RealtimeConversationCallbacks callbacks,
+                              size_t message_bytes = kWebSocketMessageLimit);
+  // Apply the complete media-call configuration, including a scoped prompt,
+  // before publishing session.created. A failure is returned to HTTP.
+  ObjectReply PreviewCredential(const io::Json& configuration, io::Json* resource);
+  ObjectReply StartConfigured(const io::Json& configuration) {
+    return StartCall(configuration, RealtimeShape::kSession);
+  }
+  ObjectReply StartCall(const io::Json& configuration,
+                        RealtimeShape shape = RealtimeShape::kCallAccept);
   ~RealtimeConversationSession();
   bool Start();
   bool Message(WebSocketOpcode opcode, std::string_view message);
   bool Tick();
+  // The native media clock commits mono 24 kHz samples to its paced sender.
+  bool TruncatePlayout(const std::string& item_id, uint64_t submitted_samples);
   // All methods belong to the session owner, never the socket reader. The
   // socket pump signals its own stop flag, then joins the session worker.
   void Cancel() noexcept;
@@ -126,10 +143,14 @@ class RealtimeConversationSession {
   bool ImportMcp(const RealtimeMcpSelection& selection, Work* work = nullptr);
   io::Json PublicSettings() const;
   RealtimePromptResolver PromptResolver();
+  ObjectReply StartSession(const io::Json* call, io::Json* preview = nullptr);
+  ObjectReply ApplySettings(const io::Json& update);
   bool Settings(const io::Json& update, std::string_view event_id);
   bool CreateItem(const io::Json& event);
   bool ItemCommand(const io::Json& event, bool erase);
   bool TruncateItem(const io::Json& event);
+  bool TruncateStoredAudio(const RealtimeItemTicket& ticket, uint64_t end_ms,
+                           std::string_view event_id);
   ObjectReply ValidateSpeech(const RealtimeSpeechOptions& speech) const;
   bool CreateResponse(const io::Json& event,
                       RealtimeInputCommit* automatic = nullptr);
@@ -145,7 +166,7 @@ class RealtimeConversationSession {
   void Release(Work& work) noexcept;
   const std::string id_, conversation_id_;
   RealtimePromptSettings settings_;
-  WebSocketOutput& output_;
+  const SessionEventOutput output_;
   const RealtimeConversationCallbacks callbacks_;
   const size_t message_bytes_;
   RealtimeConversation history_;

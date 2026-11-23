@@ -1,0 +1,50 @@
+{
+  "accepted/tools/serve_live/checks.py": {
+    "sha256": "30c47981d8088999c0cd846be014995932ef8065592e6df76adea87d55112a86",
+    "bytes": 7494
+  },
+  "accepted/tools/serve_live/client_acceptance.py": {
+    "sha256": "f1c369daca1924883550edca3544a5b7abedfafd5e10eb29a6f4e94ab9ca23ff",
+    "bytes": 13109
+  },
+  "accepted/tools/serve_live/client_sdk.mjs": {
+    "sha256": "c48fddeea184786f0cd8bce5e4a8b8336a536304a731d49c889bb2237c561781",
+    "bytes": 6684
+  },
+  "accepted/tools/serve_live/client_wait.mjs": {
+    "sha256": "874d3d58e72e391aced1dfd79acad1c9f9eaa67c9e3b0730bbbab7a32097ba52",
+    "bytes": 742
+  },
+  "accepted/tools/serve_live/test_checks.py": {
+    "sha256": "1d2903fcb5908c8353a8d69575aecfe555ad1142bfcd1ad873f0c13b88eb12a9",
+    "bytes": 5596
+  },
+  "accepted/tools/serve_live/test_client_wait.mjs": {
+    "sha256": "e03b5f71ce4e5157cb1aa922faa3e5cbeedc08e271a914c1cd284a652001a2ad",
+    "bytes": 1078
+  },
+  "client-driver-cpu-03/0.log": {
+    "sha256": "558fdbb3a6bc0c4a93727087805c4dd3cba4e59340ebacd2a7126a2ceec14f15",
+    "bytes": 757
+  },
+  "client-driver-cpu-03/1.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "client-driver-cpu-03/2.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "client-driver-cpu-03/plan.json": {
+    "sha256": "94de58f023ca1cc2c65af637f2f59a1846b268873a8fc155cf32d090affb79d8",
+    "bytes": 1724
+  },
+  "client-driver-cpu-03/result.json": {
+    "sha256": "5999d0a1f61ee6e9c0542889168e02a0a39d07a01370a874c0a50d0c96abb02d",
+    "bytes": 994
+  },
+  "driver/client_driver_cpu_03.py": {
+    "sha256": "4ab9277aff1932645061d9ec9a61ac3ece7562ca45c3056d230cf8e47f14b01f",
+    "bytes": 2168
+  }
+}

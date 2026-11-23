@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "commands": [
+    {
+      "index": 0,
+      "returncode": 0
+    },
+    {
+      "index": 1,
+      "returncode": 0
+    },
+    {
+      "index": 2,
+      "returncode": 0
+    }
+  ],
+  "seconds": 0.20954800304025412,
+  "sources": {
+    "tools/serve_live/checks.py": "5c5d1f96f28aaf44a37d61e9fb75e154690dc496e72439ea35b783f1b36c03c5",
+    "tools/serve_live/client_acceptance.py": "beebf784063639616f433dc310f53287eec1ea1faf270183d58e8e311744ac71",
+    "tools/serve_live/client_sdk.mjs": "c48fddeea184786f0cd8bce5e4a8b8336a536304a731d49c889bb2237c561781",
+    "tools/serve_live/client_wait.mjs": "874d3d58e72e391aced1dfd79acad1c9f9eaa67c9e3b0730bbbab7a32097ba52",
+    "tools/serve_live/test_checks.py": "334216bc558b2c076a47aa2a4dfeae22ae9290ce87e3c79a7089ac61a4a16fb4",
+    "tools/serve_live/test_client_wait.mjs": "e03b5f71ce4e5157cb1aa922faa3e5cbeedc08e271a914c1cd284a652001a2ad"
+  },
+  "sources_unchanged": true,
+  "tests": 4,
+  "reused_tests": 10,
+  "reused_sources": {
+    "tools/serve_live/checks.py": "5c5d1f96f28aaf44a37d61e9fb75e154690dc496e72439ea35b783f1b36c03c5",
+    "tools/serve_live/test_checks.py": "334216bc558b2c076a47aa2a4dfeae22ae9290ce87e3c79a7089ac61a4a16fb4"
+  },
+  "gpu_actions": 0,
+  "archive_sha256": "721cb18aa9a698ba73d036d0661fd5711bcdf1b0dab0fab29076fa7c075a7998",
+  "real_business_accepted": false
+}

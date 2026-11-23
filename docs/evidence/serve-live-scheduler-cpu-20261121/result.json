@@ -1,0 +1,35 @@
+{
+  "status": "PASS_NATIVE_LIVE_SCHEDULER_CPU_PREPARATION",
+  "returncode": 0,
+  "build_seconds": 35.77505569998175,
+  "cpu_seconds": 0.16380788898095489,
+  "tests": 10,
+  "commands": [
+    {
+      "command": 0,
+      "returncode": 0
+    },
+    {
+      "command": 1,
+      "returncode": 0
+    }
+  ],
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/host/q4t_host_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-live-20261121/scheduler-plan-01/required-01.txt"
+  ],
+  "binary_sha256": "231adf9dbce01820abdecfc278add19c62b57d1da5ceed79fe024159e597d8d8",
+  "sources_unchanged": true,
+  "protected_unchanged": true,
+  "gpu_actions": 0,
+  "distinct_tests": 10,
+  "inventory_reviewed_sources": 5,
+  "inventory_mutation_checks": 22,
+  "real_model_business_accepted": false,
+  "new_gpu_starts": 0,
+  "default_revision": 426,
+  "default_changed": false,
+  "master_active": true,
+  "archive_sha256": "87f3d8ebaf9c337543f7257ba2b42fd298568309910205687d2c1462cc1ff113"
+}

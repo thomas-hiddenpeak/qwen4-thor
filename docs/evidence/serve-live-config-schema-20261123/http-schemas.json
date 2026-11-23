@@ -1,0 +1,30 @@
+[
+  {
+    "profile": "primary",
+    "stage": "serve-live-discovery-20261123",
+    "configuration_sha256": "35e149faecce2d78af4f03a9233da1e431692d9b3647189fd165b2c3995f0fab",
+    "schema": true,
+    "bundled_openapi": true
+  },
+  {
+    "profile": "primary",
+    "stage": "serve-live-profiles-20261123",
+    "configuration_sha256": "ac5ab2b2a784d32b61cca6f6c0497a9d2b1758317e1d9794021ef04226d78fbd",
+    "schema": true,
+    "bundled_openapi": true
+  },
+  {
+    "profile": "light",
+    "stage": "serve-live-discovery-20261123",
+    "configuration_sha256": "2aca947ec8b6085c30960d3e3a610ddf0757739f679fb0b99c807bb0e68e296f",
+    "schema": true,
+    "bundled_openapi": true
+  },
+  {
+    "profile": "light",
+    "stage": "serve-live-profiles-20261123",
+    "configuration_sha256": "0ba020465cca9335ef2c7684be3a84073f4f007ef1980797a40c7874d0e7a9df",
+    "schema": true,
+    "bundled_openapi": true
+  }
+]

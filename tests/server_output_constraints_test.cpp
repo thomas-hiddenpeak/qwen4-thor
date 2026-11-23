@@ -356,6 +356,45 @@ Q4T_TEST(output_constraints_all_chunk_splits_and_tool_errors) {
   return true;
 }
 
+Q4T_TEST(output_constraints_enum_padding_limits_and_advisory_strings) {
+  auto request = Request(R"("tool_choice":"required")");
+  const auto parse = [&](std::string raw, bool valid) {
+    const auto call =
+        Call("read", "<parameter=path>" + raw +
+                         "</parameter><parameter=line>1</parameter>");
+    for (const bool incremental : {false, true}) {
+      ChatResponseParser parser;
+      std::vector<ResponseDelta> deltas;
+      Q4T_CHECK(parser.Init(request, kClosed, "enum", true));
+      q4t::Status status;
+      if (incremental) {
+        for (const char c : call) {
+          status = parser.Append({&c, 1}, &deltas);
+          if (!status) break;
+        }
+      } else {
+        status = parser.Append(call, &deltas);
+      }
+      if (status) status = parser.Finish(false, &deltas);
+      Q4T_CHECK(status.ok() == valid);
+      if (valid) {
+        const auto message = Parse(parser.MessageJson());
+        const auto& tool = message.GetArray("tool_calls")->array.at(0);
+        const auto args = Parse(tool.Find("function")->GetString("arguments"));
+        Q4T_CHECK(args.GetString("path") == raw);
+      }
+    }
+    return true;
+  };
+  Q4T_CHECK(parse(std::string(17, ' ') + "docs/STATUS.md", false));
+  Q4T_CHECK(parse("docs/STATUS.md" + std::string(17, '\t'), false));
+  Q4T_CHECK(parse("docs/ STATUS.md", false));
+  Q4T_CHECK(parse(" \r\nother\t", false));
+  request = Request();  // Advisory values retain their exact bytes.
+  Q4T_CHECK(parse("  docs/STATUS.md\t", true));
+  return true;
+}
+
 Q4T_TEST(output_constraints_none_required_and_length_terminals) {
   for (const auto* choice : {"none", "required"}) {
     const auto request =

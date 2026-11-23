@@ -45,6 +45,7 @@ class Library {
       // Optional checksum symbols must not disable authenticated encryption.
 #define Q4T_MD_LOAD(name) \
   name = reinterpret_cast<decltype(name)>(dlsym(handle_, #name))
+      Q4T_MD_LOAD(EVP_Q_mac);
       Q4T_MD_LOAD(EVP_MD_fetch);
       Q4T_MD_LOAD(EVP_MD_free);
       Q4T_MD_LOAD(EVP_MD_CTX_new);
@@ -77,6 +78,7 @@ class Library {
   Q4T_CRYPTO_FUNCTION(EVP_DecryptInit_ex2);
   Q4T_CRYPTO_FUNCTION(EVP_DecryptUpdate);
   Q4T_CRYPTO_FUNCTION(EVP_DecryptFinal_ex);
+  Q4T_CRYPTO_FUNCTION(EVP_Q_mac);
   Q4T_CRYPTO_FUNCTION(EVP_MD_fetch);
   Q4T_CRYPTO_FUNCTION(EVP_MD_free);
   Q4T_CRYPTO_FUNCTION(EVP_MD_CTX_new);
@@ -146,6 +148,28 @@ bool Bounds(std::string_view aad, std::string_view text) {
   return aad.size() <= kCryptoAadLimit && text.size() <= kCryptoPlaintextLimit;
 }
 }  // namespace
+
+CryptoResult CryptoHmacSha256(std::string_view key, std::string_view message,
+                             std::string* base64) {
+  if (!base64 || key.empty() || key.size() > 4096 ||
+      message.size() > kCryptoPlaintextLimit)
+    return CryptoResult::kInvalid;
+  const auto* api = Api();
+  if (!api || !api->EVP_Q_mac) return CryptoResult::kUnavailable;
+  auto* ctx = api->OSSL_LIB_CTX_new();
+  if (!ctx) return CryptoResult::kUnavailable;
+  std::array<unsigned char, 32> digest{};
+  size_t size = 0;
+  const bool ok = api->EVP_Q_mac(
+      ctx, "HMAC", "provider=default", "SHA256", nullptr, key.data(),
+      key.size(), reinterpret_cast<const unsigned char*>(message.data()),
+      message.size(), digest.data(), digest.size(), &size) != nullptr;
+  api->OPENSSL_thread_stop_ex(ctx);
+  api->OSSL_LIB_CTX_free(ctx);
+  if (!ok || size != digest.size()) return CryptoResult::kFailure;
+  return io::EncodeBase64({reinterpret_cast<const char*>(digest.data()), size},
+                          44, base64) ? CryptoResult::kOk : CryptoResult::kFailure;
+}
 
 struct CryptoMd5::State {
   explicit State(const Library& library) : api(library) {

@@ -26,6 +26,8 @@ inline constexpr size_t kCryptoAadLimit = 64ULL << 10;
 CryptoResult CryptoRandom(std::span<uint8_t> out) noexcept;
 void CryptoWipe(std::span<uint8_t> out) noexcept;
 void CryptoWipe(std::string* text) noexcept;
+CryptoResult CryptoHmacSha256(std::string_view key, std::string_view message,
+                             std::string* base64);
 CryptoResult CryptoAvailable() noexcept;
 // Fixed AES-256-GCM, 96-bit nonce and 128-bit tag. The owner must supply a
 // fresh nonce for every seal under a given key. Outputs change only on success;

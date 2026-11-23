@@ -1,0 +1,34 @@
+{
+  "tests": 14,
+  "passed": 14,
+  "new_tests": 7,
+  "nodes": 109,
+  "roots": [
+    "request",
+    "decision"
+  ],
+  "graph_sha256": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
+  "sdk_version": "7.47.0",
+  "compiler": "5.9.3",
+  "sources": {
+    "CMakeLists.txt": "e3fdfbd3f00ca0cacd9384e96e3d1a69c7093d55b6913504448e192b0af321c7",
+    "cmake/ChatProtocolIdentity.cmake": "8f09146954c375f277ba57c797810a3cce164ceaf6b7a5a144f79e19cc941325",
+    "cmake/HostTestSources.cmake": "add44fcc97f92d19c59afcdcf39833654403e45f4504982c4bc153eaba3cb49b",
+    "cmake/decision_types.h.in": "4bca2cba9a229b0d45862f87d0798169ed8805ed1bd167539c6f74d27f4773ef",
+    "include/q4t/server/decision_plan.h": "4716840cd1d1162ba14aa80d5484540b52b5ec6552c8914c5293d31fd57971fb",
+    "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
+    "src/server/decision_plan.cpp": "78d84e70f3af471d6a251ea72f99fb62669b883090edf41e7665e7d2aca81439",
+    "src/server/live_decision_items.cpp": "d4ade6d7973dd89b62c700c18edb3ab260b90eb6e80f89846e827334dce7f27b",
+    "src/server/responses_item_shape.cpp": "4955b54d91452bf0bc212cf43df2555bec7233378e9ab6ef4eda4fc7fca7ef75",
+    "tests/server_decision_plan_test.cpp": "b63ceb7ede7af07809532595059484aa82e3b37c976829f8fd27406d2c980361",
+    "tools/serve_responses/generate_item_types.mjs": "cbd502488ee62d99a2a67a2fb941a39bf4ebe7bb30e1b0b9f42684207a8bd00a"
+  },
+  "engine_sha256": "9da6ba6af9962a89b9ba6abdf0a4dab3bdbff9d3b4c7686cc8d802e0c6f080d5",
+  "cpu_binary_sha256": "38dfc44bff3f2a8555d874a44f989de19327df62952fd5c84dfb10f7aef29e73",
+  "log_sha256": {
+    "cpu-final.log": "52a838d368e2ea85265c22a643ab1bd7c59381e9b42a92372a24f6181c39a112",
+    "build-04.log": "753b90bec197ef1f62ccec6cd397ccbbc33ea6225343a3b9ce3a305e37e3c046",
+    "engine.log": "3f82025798cfe332fee3eaf7f5eda7eb2c5347f20c9386791e80d5eb7050861c"
+  },
+  "new_gpu_starts": 0
+}

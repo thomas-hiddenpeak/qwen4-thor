@@ -233,10 +233,8 @@ def main():
     p.add_argument('--web-policy', type=Path)
     p.add_argument('--served-model-name')
     p.add_argument('--model-alias', action='append', default=[])
-    p.add_argument('--object-store-dir')
+    pkg.add_application_options(p)
     p.add_argument('--capacity-config', type=Path)
-    for option in pkg.APPLICATION_LIMITS:
-        p.add_argument('--object-'+option.replace('_', '-'), type=int)
     p.add_argument('--host-memory-high-mib', type=int)
     p.add_argument('--host-memory-max-mib', type=int)
     p.add_argument('--host-tasks-max', type=int)
@@ -267,6 +265,9 @@ def main():
                              file_input_policy=args.file_input_policy,
                              mcp_policy=args.mcp_policy,
                              web_policy=args.web_policy,
+                             sip_trunks_file=args.sip_trunks_file,
+                             live_webrtc_address=args.live_webrtc_address,
+                             live_workers_dir=args.live_workers_dir,
                              embedding_model_dir=args.embedding_model_dir,
                              tts_model_dir=args.tts_model_dir,
                              tts_base_model_dir=args.tts_base_model_dir,
@@ -278,10 +279,7 @@ def main():
                                  if getattr(args, 'asr_'+k) is not None} or None),
                              capacity_config=pkg.read(args.capacity_config)
                                  if args.capacity_config is not None else None,
-                             application_state=({**({'directory': args.object_store_dir}
-                                 if args.object_store_dir is not None else {}),
-                                 **{k: getattr(args, 'object_'+k) for k in pkg.APPLICATION_LIMITS
-                                    if getattr(args, 'object_'+k) is not None}} or None))
+                             application_state=pkg.application_cli(args))
     elif args.action == 'run':
         manifest = pkg.verify(args.package, args.manifest_sha256)
         entry = args.package.resolve()/'source/tools/serve_service/service.py'

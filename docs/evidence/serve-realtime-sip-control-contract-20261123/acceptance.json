@@ -1,0 +1,72 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 37,
+    "cleanup_complete": true
+  },
+  "business": {
+    "sip": [
+      180,
+      603,
+      "ACK"
+    ],
+    "controls": {
+      "foreign": 404,
+      "invalid": 400,
+      "owner": 200,
+      "empty": true,
+      "retired": 404,
+      "null_status": 400,
+      "invalid_refer": 400,
+      "pending_refer": 409
+    },
+    "webhooks": [
+      {
+        "type": "live.transport.incoming",
+        "id": "evt_f687f90bd5cab29c01db71e19ebab6a0",
+        "sha256": "e0b58b54131395905bfddd4db8e8377610912ac5c762822189be4f2c754ee2dc"
+      },
+      {
+        "type": "realtime.call.incoming",
+        "id": "evt_1d45251e34571a95cdfb7b2d987e1fa6",
+        "sha256": "1ea08e4e1d5b393c61116f662e335c325fa80ccbfd857db36a987708ec0cbdd7"
+      }
+    ],
+    "core": "42",
+    "before": {
+      "configured": 1,
+      "ready": 1,
+      "activation_failures": 0,
+      "webhooks_delivered": 0,
+      "transfers_answered": 0,
+      "transfers_failed": 0,
+      "transfers_unknown": 0,
+      "webhook_failures": 0
+    },
+    "after": {
+      "configured": 1,
+      "ready": 1,
+      "activation_failures": 0,
+      "webhooks_delivered": 2,
+      "transfers_answered": 0,
+      "transfers_failed": 0,
+      "transfers_unknown": 0,
+      "webhook_failures": 0
+    }
+  },
+  "seconds": 37.49201386421919,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "calls": 1,
+    "sdk_requests": 7,
+    "chats": 1,
+    "controls": 36
+  },
+  "default_unchanged": true,
+  "engine_sha256": "652809d253c157260112871e0a1cf046bf5117c1a8fbde306b9a2b9c41d00e12",
+  "ingress_sha256": "61228f6fda7827ae96ea2b774d141417bdc87441e49497b92a0264ab737500b3",
+  "sip_sha256": "970963826247fe14ad690f746a13f49183a0c6b378604ca91c8a6fd8248b5efb"
+}

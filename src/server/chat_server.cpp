@@ -67,6 +67,7 @@ ChatServer::~ChatServer() {
   // d_sched_logits_ under model_mu_, so it must be joined before those are
   // freed).
   StopScheduler();
+  JoinLiveMedia();
   batches_.Join();
   vector_jobs_.Join();
   background_.Join();
@@ -201,6 +202,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
   file_inputs_ = std::move(file_inputs);
   file_input_policy_sha256_ = std::move(file_policy.sha256);
   objects_ = std::make_unique<ObjectStore>(object_options);
+  sip_trunks_file_ = opts.sip_trunks_file;
+  sip_trunks_sha256_ = opts.sip_trunks_sha256;
+  live_worker_pins_ = opts.live_worker_pins;
+  live_recordings_ = opts.live_recordings;
+  live_webrtc_address_ = opts.live_webrtc_address;
   realtime_trace_options_ =
       ResolveRealtimeTraceStoreOptions(object_options.directory);
   state_key_admin_ = StateKeyAdmin::Start(*objects_, object_options.directory);

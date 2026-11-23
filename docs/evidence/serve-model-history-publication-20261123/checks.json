@@ -1,0 +1,17 @@
+{
+  "status": "PASS_PREDECESSOR_AND_STRICT_TARGET",
+  "published": false,
+  "gpu_starts": 0,
+  "source_kit": "9d34a805ae906bf8f332c18d7ea324a70ba1362245e9ffcfd3b7308fe884a4ba",
+  "current": "41760222c76714a23e5753e53ef9e86b3b91e9c0a4f42373f04bf845d3b34afe",
+  "current_revision": 426,
+  "detached": "47aa555a39c06a04e4858324f2d3d92db8bbc436376b1dd07539ccb8efd33dfa",
+  "inner_engine_preserved": true,
+  "stale_target_rejected": true,
+  "state_unchanged": true,
+  "intents": 128,
+  "intent_limit": 128,
+  "history_proof_sha256": "d8ace3b9f1333c0c339d536e6f4d1e64ffb95397122a30a1ecaced11e753760f",
+  "cpu_tests": 48,
+  "cpu_log_sha256": "292964cb08bf398415970a41646ba1f6f40b91be781cbbcccac9ed9fd0a2510c"
+}

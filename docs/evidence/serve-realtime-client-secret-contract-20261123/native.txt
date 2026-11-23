@@ -1,0 +1,9 @@
+Realtime SDK vectors: 508, differences: 0
+[PASS] realtime_shape_matches_actual_sdk_type_oracle
+[PASS] realtime_shape_sip_call_controls_preserve_their_own_contract
+[PASS] realtime_shape_duplicate_keys_and_bounded_error_path
+[PASS] realtime_client_secret_issue_redeem_and_expire_at_either_clock
+[PASS] realtime_client_secret_rejects_invalid_ttls_and_private_resource_fields
+[PASS] realtime_client_secret_capacity_is_scoped_and_expiry_releases_it
+[PASS] realtime_webrtc_offer_accepts_sdk_and_browser_encodings_atomically
+7 tests, 7 passed, 0 failed, 0 skipped

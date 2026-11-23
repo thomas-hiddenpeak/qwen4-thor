@@ -204,7 +204,7 @@ Q4T_TEST(realtime_speech_cancel_before_during_and_at_eof_preserves_failure) {
 
 Q4T_TEST(realtime_speech_invalid_config_and_final_state_never_emit) {
   for (const auto format :
-       {RealtimeAudioFormat{RealtimeAudioEncoding::kPcm16, 16000},
+       {RealtimeAudioFormat{RealtimeAudioEncoding::kPcm16, 48000},
         RealtimeAudioFormat{RealtimeAudioEncoding::kMuLaw, 24000},
         RealtimeAudioFormat{RealtimeAudioEncoding::kALaw, 0},
         RealtimeAudioFormat{RealtimeAudioEncoding::kFloat32, 24000}}) {
@@ -237,5 +237,89 @@ Q4T_TEST(realtime_speech_invalid_config_and_final_state_never_emit) {
   Q4T_CHECK(!encoder.Finish(sink, &receipt).ok());
   Q4T_CHECK(!encoder.Append(Pcm(1), sink).ok());
   Q4T_CHECK(calls == prior && encoder.Finished());
+  return true;
+}
+
+Q4T_TEST(live_speech_pcm16k_keeps_phase_and_exact_unpadded_tail) {
+  const auto input = Pcm(24017);
+  const RealtimeAudioFormat format{RealtimeAudioEncoding::kPcm16, 16000};
+  std::string reference;
+  Q4T_CHECK(Encode(input, format, input.size(), &reference));
+  Q4T_CHECK(reference.size() == 16011 * 2);
+  for (const size_t chunk : {1, 3, 17, 2047}) {
+    std::string output;
+    Q4T_CHECK(Encode(input, format, chunk, &output));
+    Q4T_CHECK(output == reference);
+  }
+  return true;
+}
+
+Q4T_TEST(live_speech_pcm16k_preserves_dc_voice_and_rejects_alias) {
+  const RealtimeAudioFormat format{RealtimeAudioEncoding::kPcm16, 16000};
+  for (const double frequency : {0., 1000., 11000.}) {
+    std::string input;
+    for (size_t i = 0; i < 24000; ++i) {
+      const auto linear =
+          int16_t(frequency == 0
+                      ? 8192
+                      : std::lround(16384 * std::sin(2 * std::numbers::pi *
+                                                     frequency * i / 24000)));
+      input.push_back(char(uint16_t(linear) & 255));
+      input.push_back(char(uint16_t(linear) >> 8));
+    }
+    std::string output;
+    Q4T_CHECK(Encode(input, format, 373, &output));
+    Q4T_CHECK(output.size() == 32000);
+    double energy = 0;
+    for (size_t i = 128; i + 128 < 16000; ++i) {
+      const auto sample = DecodeRealtimeSample(
+          RealtimeAudioEncoding::kPcm16, output[i * 2], output[i * 2 + 1]);
+      if (frequency == 0) Q4T_CHECK(sample == .25f);
+      energy += double(sample) * sample;
+    }
+    const auto rms = std::sqrt(energy / (16000 - 256));
+    if (frequency == 1000) Q4T_CHECK(std::abs(rms - std::sqrt(.125)) < .001);
+    if (frequency == 11000) Q4T_CHECK(rms < .0001);
+  }
+  return true;
+}
+
+Q4T_TEST(live_speech_pcm16k_budget_and_cancelled_tail_never_complete) {
+  const auto input = Pcm(4097);
+  const RealtimeAudioFormat format{RealtimeAudioEncoding::kPcm16, 16000};
+  for (const size_t budget : {5461, 5462}) {
+    RealtimeSpeechEncoder encoder(format, 4097, budget);
+    std::string output;
+    const auto sink = [&](std::string_view bytes) {
+      output += bytes;
+      return ObjectReply{};
+    };
+    const auto reply = encoder.Append(input, sink);
+    RealtimeSpeechReceipt receipt{91, 92, 93};
+    if (budget == 5461) {
+      Q4T_CHECK(!reply.ok() && output.empty());
+      Q4T_CHECK(!encoder.Finish(sink, &receipt).ok());
+      Q4T_CHECK(receipt.bytes == 93);
+    } else {
+      Q4T_CHECK(reply.ok() && encoder.Finish(sink, &receipt).ok());
+      Q4T_CHECK(receipt.input_samples == 4097 &&
+                receipt.output_samples == 2731);
+      Q4T_CHECK(receipt.bytes == 5462 && output.size() == 5462);
+    }
+  }
+  bool cancelled = false;
+  RealtimeSpeechEncoder encoder(format, 4097, 5462, [&] { return cancelled; });
+  size_t bytes = 0;
+  const auto sink = [&](std::string_view part) {
+    bytes += part.size();
+    return ObjectReply{};
+  };
+  Q4T_CHECK(encoder.Append(input, sink).ok());
+  Q4T_CHECK(bytes > 0 && bytes < 5462);
+  const auto accepted = bytes;
+  cancelled = true;
+  RealtimeSpeechReceipt receipt{91, 92, 93};
+  Q4T_CHECK(!encoder.Finish(sink, &receipt).ok());
+  Q4T_CHECK(!encoder.Finished() && bytes == accepted && receipt.bytes == 93);
   return true;
 }

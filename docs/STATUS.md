@@ -1,4 +1,4 @@
-# 当前状态（2026-11-21）
+# 当前状态（2026-11-23）
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)完成全部33项任务；阶段验证、
@@ -6,6 +6,157 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 验证与必要业务短验，长稳实跑与已延期听感由用户负责。
 
 ## 正在推进
+
+rev430 的实际监控响应增加了三个 Live 旁路指标。验收观测器现支持完整新组并保留旧 v5 回读，首次短稳失败保留；40 项 CPU 检查和首周期原始 HTTP 指标重放通过。继续验证正式短稳工具与当前包的配合。
+
+默认部署 **rev430，STOPPED**。Live 主包和独立回退包已注册，默认 CLI 检查通过。实际网关致命故障后，第二代模型接管，官方 SDK 两次 WebRTC、两次 Chat 和跨代存储回读通过。下一步核对主线 CI、定位启动期通用 503，并推进余下接口和恢复组合。[交付与回退证据](evidence/serve-live-default-20261123/README.md)
+
+Live 托管候选已在可选媒体运行库存在和缺失两种环境完成短验。网关恢复后的官方 SDK 会话、Chat 与存储通过；缺 ICE 时已就绪核心继续服务。一次启动初期通用 503 仍待定位。默认 rev428，下一步注册同能力候选并验收回退。[部署与实测](evidence/serve-live-managed-workers-20261123/README.md)
+
+Live 正式主轻资格已封存。两份新记录均可还原旧版完整业务，显式正向迁移通过，跨能力自动回退被拒绝。恢复包 v28 核对实装媒体程序。默认 rev428；继续真实托管候选。[正式资格与兼容边界](evidence/serve-live-registry-20261123/README.md)
+
+Live 最新引擎的两套实际 HTTP 容量、内存准入、工作程序与业务回执已绑定到封包输入，旧验收文件可独立重放。两组正例和九个反例通过，继续封入正式托管资格。[主轻输入](evidence/serve-live-profile-observations-20261123/README.md)
+
+已用 rev428 同一组真实主包、回退包在私有部署触发主网关 SIGABRT。一次设备探测后，第 2 代模型接管并答 42，可读取第 1 代已存回答；正式部署保持停止。[自动版本回退验收](evidence/serve-control-fallback-20261123/README.md)
+
+正式默认部署已发布到 **rev428**，通过默认 CLI 的 check、发布和版本状态检查。保持 STOPPED，回退包已注册；模型、配额和容量沿用原配置。继续正式 Live 主轻配置封包与恢复验收。[正式部署回执](evidence/serve-control-delivery-20261123/README.md)
+
+已修复注册控制包在模型启动前的超时。真实网关故障恢复后模型保持第 1 代，前后 Chat 均答 42，已存回答可取回。67 项 Python、12 项原生检查通过。继续停止状态默认发布及正式 Live 候选。[启动与恢复验收](evidence/serve-registered-startup-20261123/README.md)
+
+真实默认部署的 4 条过期发布请求已移入可恢复归档，现占 124/128；66 项受保护文件摘要一致。控制包首次业务启动另暴露版本日志 prepare 超时，尚未放行模型。继续定位后重验，默认 rev426 保持停止。[维护验收](evidence/serve-model-history-maintenance-20261123/README.md)
+
+STOPPED 发布已支持把模型历史凭据固定在原事务中。48 项 CPU 检查覆盖指针切换中断后的重试、过期目标拒绝和既有回退预算。真实 rev426 的发布前任与回退包已通过只读预检，发布请求目录占用 128/128，继续可恢复归档与真实管理版本交付。[事务验收](evidence/serve-model-history-publication-20261123/README.md)
+
+已用封存的管理工具完整重放停止部署的 12 条版本注册，涉及 12 份历史包，共用同一份已审计的模型资产清单。原始发布、业务凭据、兼容性与注册绑定均通过；普通运行选择继续拒绝过期包。待接入停止状态的发布事务并验证正式 Live 候选的恢复和切换。[历史与验证边界](evidence/serve-model-rollback-history-20261123/README.md)
+
+版本选择器可使用发布决定、实际业务验收、模型内容报告和上游索引四份固定凭据识别 rev426 的独立回退包。主机安装选择器现按 v18 至 v27 各自的源码清单校验。65 项 CPU 检查及真实封包来源复核通过。默认部署仍为停用的原包，下一步处理该状态的事务修复及 Live 正式候选。[注册与主机选择验收](evidence/serve-model-rollback-registration-20261123/README.md)
+
+发行配置 schema 已补齐实际 HTTP 返回的七个顶层字段及追踪启动状态，包括 SIP、TTS、语音注册和追踪健康。两代候选的四份原始主轻响应均通过独立与内嵌 schema。[验证记录](evidence/serve-live-config-schema-20261123/README.md)
+
+rev426 的独立回退包已由真实守护器启动到 READY，经原生网关完成 Chat=42。原包记录中 ctime 变化的 196 个文件已逐个匹配两个固定发布者版本，读取 83,995,035,950 字节。默认入口仍指向停用的原包；继续正式版本注册与切换验收。[模型审计与回退业务](evidence/serve-model-ctime-rollback-20261123/README.md)
+
+认证 `/v1/capabilities` 已修正 Live 和 Realtime 的过期声明。主轻两套实际引擎现在都列出已执行的会话、WebRTC 呼叫、SIP 控制及临时凭据兑换入口。16 项原生能力测试、6 项迁移检查和两套配置的实际 SDK/Chat 均通过。[声明与证据](evidence/serve-live-discovery-20261123/README.md)
+
+主配置与轻量配置已在同一严格 GPU 租约通过 Live 业务短验。两次启动使用实际托管命令和已固定身份的媒体程序；均完成 WebRTC 创建、数据通道开关及 Chat=42。主配置创建的 Conversation 在轻量配置中仅原客户端可读。正式包的守护器恢复和版本回退仍在推进。[业务与边界](evidence/serve-live-primary-light-20261123/README.md)
+
+托管包已支持选配三个安装后的媒体程序，按引擎与发行验收记录绑定 SHA-256。真实 SDK 使用被改变的 WebRTC 程序收到 503，原模型的 Chat 返回 42；放回合格文件后，同一模型上新会话收到 201 并完成数据通道开关。信令与 RTP 的固定身份 CPU 短验也已通过。继续正式主轻组合的封包、恢复和回退。[验证记录](evidence/serve-managed-worker-binding-20261123/README.md)
+
+托管服务可选配 WebRTC 本机地址和 SIP 中继配置。实际引擎在封包时读取私有文件，启动及恢复时对读取到的同一批字节核验 SHA-256。严格 GPU 租约内，替换为另一份语法有效的中继配置后，SIP 报告一次激活失败，同一模型仍通过 Chat 返回 42。六项 CPU 检查覆盖从 CLI 封包、外部文件消失、非法地址到自动回退授权边界。继续媒体程序身份与主轻恢复。[验证记录](evidence/serve-managed-trunk-binding-20261123/)
+
+原生 `q4t service prepare` 已补齐 Live 录制开关，并修复管理工具快照缺少原生来源、无法首次封包的问题。实际 CLI 的首次封包、父包生成子包、启用或省略录制、来源不符拒绝，以及离线回退共 11 项检查通过。继续媒体程序身份绑定、可选中继配置和主轻恢复，默认 rev426。[封包及回退](evidence/serve-recovery-recording-option-20261123/README.md)
+
+WebRTC、SIP 信令与 SIP 媒体已有显式 CMake 安装组件。三个可执行文件迁移至新目录后通过 CPU 的 WebRTC/Opus 和 SIP/SRTP 回环，安装产物不含开发目录搜索路径。下一步将安装后身份和可选中继配置绑定到托管包，验证组合恢复及可回退发行。默认 rev426。[安装与回环证据](evidence/serve-live-worker-install-20261123/README.md)
+
+具名工具的字符串枚举已修复一处可复现的 502 路径。约束解码器允许的参数值两侧空白现在能正确解析，枚举值自身带空白仍可精确区分。12 项 CPU 检查通过；同一电话场景完成实际工具回填和 rev426 播报，挂断后 Chat=42，GPU 已释放。原先那次 502 缺少原始参数，仍保留。继续托管组合与可回退发行，默认 rev426。[复现与业务验收](evidence/serve-tool-enum-padding-20261123/README.md)
+
+Realtime 临时凭据已验证入口与模型的换代边界。入口异常退出后，同一凭据在原模型上可新建会话；撤销一个签发 Key 后，另一客户仍可连接。即使 TLS、客户 Key 和私有绑定都相同，新模型仍拒绝旧凭据，新签发可用。两代普通 Chat 均返回 42。README 的可选 nginx 前置示例已修复 WebSocket 升级，5 项进程回环通过。继续托管组合、旧式 nginx 独立鉴权模式及发行，默认 rev426。[恢复与前置记录](evidence/serve-realtime-client-recovery-20261123/README.md)。
+
+Realtime 临时凭据已通过两个真实 WebRTC 业务场景。对话调用保留文本模态和手动音频设置，按连接覆盖指令并回答 42。仅转录的凭据在独立 Opus 音轨上识别出“请查询当前项目版本号。”，切换为对话类型得到 400。通过轮 47.60 秒、同模型 Chat=42，GPU 已释放。下一步为凭据恢复、可选前置组合及发行，默认 rev426。[配置与媒体证据](evidence/serve-realtime-client-rtc-20261123/README.md)。
+
+Realtime 临时凭据已通过原生 TLS 和官方 SDK 的对话与转录验收。相同客户的长期 Key 与临时凭据共享准入；到期的新连接返回 401，已建立会话继续回答 42。真实录音转录为“请查询当前项目版本号。”。1 次启动，51.89 秒，GPU 已释放。继续 WebRTC 临时凭据、组合恢复及发行，默认 rev426。[签发和兑换证据](evidence/serve-realtime-client-issuer-20261123/README.md)。
+
+Realtime 短期凭据的本机签发与兑换组件、对话及转录类型已通过 7 项原生和 7 项公开合同检查，508 个 SDK 样例零差异。并发签发、客户隔离、到期回收及继续持有已兑换的配置均已验证。公开 HTTP 签发、原生入口兑换和实际客户端业务待接通。[凭据合同](evidence/serve-realtime-client-secret-contract-20261123/README.md)。
+
+已修复两种入口对 Realtime 旁路连接的误限流。持有主 WebSocket 的客户现在还能同时接入两个合法旁路，第三个收到 429。原生与可选 nginx 各保留一条原始失败，4 项进程回环通过。[容量回归](evidence/serve-realtime-sideband-capacity-20261123/README.md)。
+
+Realtime WebRTC 创建与挂断已通过 Thor 本机原生 TLS 和官方 JS SDK 短验。裸 SDP 及带配置的 multipart 均返回 201，所属客户端的旁路与音轨操作同一会话，其他客户得到 404。一通 Opus 语音查询完成工具回填并播报 rev426，挂断后 Chat=42。67.30 秒，GPU 已释放。接下来补临时客户端凭据及组合恢复、发行，默认 rev426。[真实通话和入口回归](evidence/serve-realtime-webrtc-create-20261123/README.md)。
+
+Realtime 电话打断已通过默认对话的真实业务短验。应用手动停播及来电方实际插话后，同一语音项分别保留 985 和 1,702 毫秒，取回字节均为原 PCM 的精确前缀，转录清空。两次挂断后 Chat 正常、GPU 释放。一次 NVML 环境中断和一次命名工具返回 502 均保留；工具调用失败的根因仍需定位。下一步是 Realtime WebRTC 建连、临时凭据和剩余组合交付，默认 rev426。[打断验收](evidence/serve-realtime-call-playout-20261123/README.md)。
+
+Realtime 独立接听和按 `call_id` 接入的官方 SDK 旁路已通过 Thor 原生 TLS 验收。一通加密 Opus 来电完成按键、语音查询、真实工具回填及播报 rev426。迟到的同客户旁路拿到当前会话，其他客户接听、挂断与旁路均得到 404。通过轮 68.48 秒，普通 Chat 回答 42，GPU 已释放。前两轮分别因简繁写法和客户端语音输出预算不足失败。本轮默认发行仍为 rev426。[业务证据](evidence/serve-realtime-sip-accept-20261123/README.md)。
+
+Realtime 拒接、转接的运行时输入和公开合同已对齐官方 SDK 自身类型。492 个 SDK 正反例零差异。一次真实来电验证 `reject(id, null)` 得到远端 603，而 `{status_code:null}` 得到 400，通话保持可处置。37.49 秒，普通 Chat 及清理通过。该轮验证了独立 Realtime 接听的扁平输入。[验收与边界](evidence/serve-realtime-sip-control-contract-20261123/README.md)。
+
+Live SIP 双向电话按键已通过 Thor 原生 TLS 短验。电话发送的 `#` 在 SDK 旁路只出现一次，连续发送的两个 `*` 各自在电话对端解密成功；未协商的按键得到关联错误。按键后同一通话继续查询项目资料并播报 rev426，挂断后 Chat=42。45 项针对性检查通过。短验 64.44 秒，GPU 已释放。下一项为 Realtime 独立接听及按 call ID 接入旁路，默认发行仍为 rev426。[业务验收与原失败](evidence/serve-live-sip-dtmf-20261123/README.md)。
+
+官方 Live 和 Realtime SDK 的电话转接已在 Thor 原生 TLS 上通过。一次模型启动、同一通电话的三次转接分别验证了中继拒绝、受理后目标忙线、受理后目标接通。随后原通话仍完成真实项目资料查询并播报 rev426，挂断和普通 Chat 均正常。63.14 秒，GPU 租约已释放。电话部分继续 DTMF 和 Realtime 独立接听。[转接验收](evidence/serve-live-sip-transfer-20261123/README.md)。
+
+官方 Live SDK 已通过原生 TLS 接听电话。最终候选一次启动完成两通电话：第一通的媒体进程在 ACK 前被暂停，HTTP 返回 503，中继主动挂断并释放资源；第二通由同一模型从加密 Opus 语音识别“请查询当前项目版本号。”，客户端回填真实记录后播报 rev426。主动挂断、旁路终态和普通 Chat=42 均通过，65.96 秒。之前一次与本项目 CPU 夹具重叠的 ENV_ABORT 单独保留。下一步是转接、DTMF 与 Realtime 独立接听。默认 rev426。[验收与回执](evidence/serve-live-sip-accept-20261123/README.md)。
+
+原生电话中继在一通真实本机电话中完成接听应答、远端 ACK、G.711 加密传音和双方挂断。组合回环 24 项通过。主动挂断能区分远端 200、481 和连接丢失。下一步将接听、媒体所有权与 HTTP 客户绑定，验证语音业务。[电话对话记录](evidence/serve-sip-dialog-20261123/README.md)。
+
+独立电话媒体进程已在 Thor 上完成 Opus、PCMU、PCMA 双向加密语音和加密 RTCP 回执。9 项回环检查通过，修复关闭竞态后三种编码器共 24 次排空通过。接下来把安全媒体连接到中继接听、远端 ACK、挂断和应用会话。[验收与原失败](evidence/serve-sip-secure-media-20261123/README.md)。
+
+同一入站电话现可按部署订阅 Live、Realtime 或两种签名通知。两个独立操作 ID 共用最终回执；官方 Realtime SDK 省略拒接参数时，SIP 对端实收 603、ACK 后 HTTP 200，随后使用原 Live ID 得到 404。36.08 秒短验、后续 Chat=42 及资源回收通过。下一项接听、双向安全媒体和已接通电话控制。[真实 SDK 和 CPU 竞争验收](evidence/serve-realtime-sip-reject-20261123/README.md)。
+
+原生 serve 已接入按客户绑定的电话中继。签名回调通过官方 SDK 发出拒接，另一客户得到 404，所属客户在电话对端确认 486 后得到空正文 200。首轮暴露通知进程随启动线程退出的问题，CPU 复现修复后，第二轮 GPU 短验 37.54 秒通过，随后 Chat 返回 42。默认 rev426，后续继续 Realtime 电话控制、接听与安全媒体及组合发行。[实测与原失败](evidence/serve-live-sip-reject-20261123/README.md)。
+
+Live 来电签名 webhook 已通过实际 SIP 和 HTTPS 两个对端。官方 SDK 对真实 POST 验签，307、503、错误 CA、发送进程退出及慢接收端均已覆盖。正式候选的专用进程通过 14 项回环，拒接/ACK 可在通知挂起期间完成。下一步接入 serve 部署与客户 HTTP 操作。[真实验收](evidence/serve-live-sip-webhook-20261123/README.md)。
+
+SIP 私有来电通知已保留原始有序头字段，过滤鉴权字段；SDP 仅可由同身份所有者读取。模拟通知接收端积压时，新来电收到 503，积压前的通话仍能完成拒接和 ACK。9 项回环通过。下一步接入签名业务通知、公开操作及 SRTP。[元数据与背压验收](evidence/serve-live-sip-invite-20261123/README.md)。
+
+独立 SIP 中继已能在双向 TLS 上接收多路来电、校验客户身份、处理取消和拒接，并用远端 ACK 确认最终答复。Thor 上 6 项真实回环检查通过，含同 CA 错误中继和 30 秒超时。后续需将来电通知、HTTP 接听和 SRTP 媒体连到 Live 会话。[信令实测](evidence/serve-live-sip-trunk-20261123/README.md)。
+
+SIP 接听配置已经接入原生会话所有者，HTTP 包装中的 `session.type=live` 校验后才进入通用启动配置。拒接码、转接 URI 和旁路 DTMF 按电话合同校验。15 项针对性 CPU 用例通过，公开电话入口仍待接入真实 SIP 对话与 SRTP 媒体。[验收与待办](evidence/serve-live-sip-contract-20261123/README.md)。
+
+Live 已能从已完成的录制会话创建独立 WebSocket 或 WebRTC 子会话。官方 SDK 通过原生 TLS 实测两种入口，其他客户端均收到 404。子会话逐项继承 9 条前端历史和有效指令，没有重跑原查询，收到新请求后用语音回答 rev426。先前一次只播报 rev，保留质量失败。WebRTC 权限、后续 Chat=42 和资源回收通过；工作分支尚待组合发行。下一项是 SIP 电话接入。[测试记录](evidence/serve-live-fork-http-20261123/README.md)。
+
+显式录制的 Live 会话已在正常关闭时原子保存录音与私有对话状态。一次真实资料查询留下 9 条前端历史、1 对委派调用与结果、关联音频消息的识别文本及最终回答 rev426。首轮驱动误按裸字符串比较转录，保留 FAIL；原件复核及 6 个反例通过。下一步将这些状态接到 WebSocket 和 WebRTC fork 启动路径。[存储与验收](evidence/serve-live-fork-state-20261123/README.md)。
+
+同身份的官方 SDK 已能旁路接入进行中的 Live WebRTC 通话，断开期间主端可继续控制，重连按原 ID 回放最近三秒的事件。修复了旁路关闭时主端可能丢失终态的问题。修复后的短验为 38.89 秒，主端收到终态，旁路正常关闭，随后 Chat 返回 42，资源已回收。另行校正媒体创建成功状态码，官方 SDK 通过原生 TLS 实收 201 Created，46.38 秒。下一项是已存储会话的 fork，其后继续 SIP 和可回退发行。[两轮实测](evidence/serve-live-sideband-20261123/README.md)。
+
+Live WebRTC HTTP 创建已通过真实 SDK、受限前端与项目资料语音闭环。一次 GPU 启动 66.40 秒，原生 TLS 接收 SDP，通话中同客户端再次创建收到 429，模型转录正确、回填后播报 rev426，关闭后普通 Chat=42。已释放客户端名额、主机预算和 GPU 租约。继续同身份旁路、fork 和 SIP 控制。[验收与边界](evidence/serve-live-media-create-20261123/README.md)。
+
+Live 增加 WebRTC 前端事件权限校验及原生 PCM 规划。验证了空名单、精确嵌套 Responses 选择、256 项边界，以及协商格式和公开会话字段的区别。13 项针对性 CPU 检查通过；服务端 HTTP 创建、实际通话的权限执行和旁路仍在接入。[权限与格式验收](evidence/serve-live-media-policy-20261123/README.md)。
+
+修复原生网关与模型对 Live 显式 WebSocket 子协议选择不一致的问题。两个进程使用共同函数选择 `live` 或 `realtime`。8 项 HTTP 检查、9 项实际入口进程检查和 1 项打包来源检查通过。真实模型和原生 TLS 验证了三种 101 握手，Live 正常启动和关闭，Chat=42。单次启动 36.60 秒，已释放 GPU。[握手与验收](evidence/serve-live-subprotocol-20261123/README.md)。
+
+WebRTC 独立媒体进程已在 Thor 上完成回环 ICE、DTLS 证书绑定、SRTP 双向音频和 SCTP 命令验证。Opus、PCMU、PCMA 均在关闭数据通道后继续传音；无插件、错误证书和启动超时均已验证。此阶段还未接入 Live HTTP 创建及模型。[传输实测](evidence/serve-live-webrtc-media-20261123/README.md)。
+
+已补齐语音、追踪、Decisions 和录音的公开协议。90 个 OpenAPI 操作覆盖运行时 91 项路由，转录由同一路径的查询参数选择。原生及可选 nginx 入口均已核对 73 个 HTTP 模板，三种 WebSocket 握手通过可选前置。修复了已存储 Chat 音频与缓存标记的悬空引用。[协议与入口验证](evidence/serve-voice-public-contract-20261123/README.md)。
+
+Live 录制已通过真实 SDK 和项目资料语音闭环。下载 655,107 帧 WAV，双声道逐样本与原始输入和线上输出吻合。发布前及跨客户端均为 404，正常关闭后 Chat=42，GPU、端口和锁已释放。接下来是媒体会话旁路、fork 和原生传输。[真实录音验收](evidence/serve-live-recording-http-20261123/README.md)。
+
+Live 会话的显式录制、隔离存储和同身份 WAV 下载已接到原生入口。16 项原生 CPU 检查、4 项部署配置检查通过，存储写入失败后已有会话继续完成语音。[存储与故障边界](evidence/serve-live-recording-store-20261123/README.md)。
+
+录制链路的双声道 WAV 编排已通过 6 项 CPU 检查，支持 PCM 与 G.711。正在接入持久化和下载。[波形验证](evidence/serve-live-recording-wave-20261123/README.md)。
+
+Live 显式与语音委派、双向转录触发已通过真实 SDK 短验，四次分类和两次语音模型执行共用同一客户端的单个数据名额。项目查询、语音 rev426、正常关闭及后续 Chat=42 均通过。继续可选录制、内容下载、旁路与 fork。[主连接验收](evidence/serve-live-decisions-20261123/README.md)。
+
+原生 `POST /v1/decisions` 已通过真实 OpenAI SDK 多题、正反判断、缓存与计量短验。第二次请求命中 1,454 个共享 tokens，三个请求结算 3,660 tokens，后续 Chat 回答 42。27 项 CPU 检查通过，默认仍为 rev426。[业务证据与原失败](evidence/serve-decisions-http-20261123/README.md)。
+
+Decisions 标准请求与答案合同通过 14 项 CPU 检查，包含工具输入归属、强类型选择、有序评分、单题拒答和真实用量字段。模型取分、HTTP 执行及 Live 自动触发继续。[合同与验证](evidence/serve-decision-plan-cpu-20261123/README.md)。
+
+Live Decisions 已接入会话条目的追加、删除和快照。7 项针对性 CPU 检查通过，实际引擎零警告构建，新增 GPU 启动 0。模型评估和转录触发器待接通。[条目合同与证据](evidence/serve-live-decision-items-cpu-20261123/README.md)。
+
+Live 服务端 Responses 已通过真实原生 TLS/WSS 工具闭环。客户端实际读取项目资料并回填，后台文本和前台语音转录均为 rev426，收到 107,520 字节 PCM，正常关闭后普通 Chat=42。三次查询客户端准入，结算 1,279 tokens。一次独占短验 61.930 秒，63 次 NVML 正常并释放资源。前一轮 NVML 中止的原始记录保留。此前 70 项 CPU 验证仍有效；听感待验，默认发行保持 rev426。继续 Decisions 和其他计划项。
+[真实业务验收](evidence/serve-live-responses-http-20261123/README.md) · [CPU 检查](evidence/serve-live-responses-execution-cpu-20261123/README.md)。
+
+Live 委派的事件包装与工具回填通过 13 项 CPU 检查。真实 Responses 输出器的逐项
+完成事件决定可回填的调用；程序父调用、MCP 审批 ID 和客户端工具结果分别核对。
+提前续接须等工作线程退出，后来出现新调用则需要补结果并再次续接。
+正在绑定原生请求执行入口。[续接记录](evidence/serve-live-responses-continuation-cpu-20261123/README.md)。
+
+Live 服务端 Responses 委派配置通过 27 项针对性 CPU 用例。客户端收到的会话
+快照移除 MCP 凭据；无效配置在确认后报告并关联原命令，修正后同会话可继续。
+旧校验无法放行新设置。实际模型委派、工具回填与语音回传仍待接入和短验。
+[配置与验证记录](evidence/serve-live-responses-settings-cpu-20261123/README.md)。
+
+原生 Responses 执行器事件通道通过14项针对性CPU检查，覆盖文本、工具、
+用量、背压与错误终态。服务端委派继续接入配置和工具结果续接。
+[原始记录](evidence/serve-live-responses-stream-cpu-20261123/README.md)。
+
+[Live音频播放与业务恢复短验通过](evidence/serve-live-fixture-http-20261121/README.md)：
+1启动/1片段/4工作/68.022秒，65次NVML正常且资源释放。实际播放逐字节
+一致，播放中/显式静音输入未引发额外工作；解除静音后完成正确ASR、
+资料读取/回填、语音rev426、正常关闭和Chat=42。原RPM3保持，1717 tokens
+结算且预留归零。已有21项CPU与5项驱动反例。累计4启动/14工作/323.305秒，
+旧失败保留；听感未验。默认未改，继续Responses/Decisions及全部master。
+
+[Live主WSS客户端真实闭环已验](evidence/serve-live-client-http-20261121/README.md)：
+正确ASR、真实资料委派/回填、语音rev426、正常closed/1000及后续Chat=42。
+1启动/4工作/64.040秒，原RPM3下无额外ASR，1730 tokens结算/预留归零，
+62次NVML正常且清理完成。最后的旧健康断言错误要求ASR同时常驻；
+原FAIL保持，5项反例与独立原件复核通过，复核新增GPU0。累计三轮
+3启动/10实际工作/255.282秒。继续fixture、服务端委派及其余Live/master
+任务；默认rev426保持STOPPED，尚未发行本候选。
+
+主连接及关闭修复已有118项不同原生CPU场景；[主连接绑定](evidence/serve-live-binding-cpu-20261121/README.md)
+与[关闭尾部18项针对性验证](evidence/serve-live-close-tail-cpu-20261121/README.md)
+通过，实际引擎68bcc25e构建零警告。SDK合同、生命周期、连续输入、
+输出/工作线程、调度及客户端上下文的逐组原件见
+[Live阶段计划](SERVE_LIVE_2026-11-21.md)。早期夹具/业务失败均保留；
+本次只接受主连接客户端资料闭环，未验其他委派、录制/媒体或完整兼容。
 
 [原生Realtime追踪](SERVE_REALTIME_TRACING_2026-11-20.md)已通过
 [主轻实际TLS/SDK业务](evidence/serve-realtime-tracing-http-20261121/README.md)：
@@ -19,8 +170,9 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 主轻资格已签发；六个资格/封包来源经语义复核，22项清单反例通过。
 [rev426已可回退交付](evidence/serve-realtime-tracing-delivery-20261121/README.md)：
 19条原生命令通过/422.580秒，实际整根回退和再前进、客户状态及预算保持。
-当前STOPPED；[PR #57](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/57)
-检查中，随后合入main并继续Live及全部任务。未扩展性能/全模型质量矩阵。
+当前STOPPED；[PR #57已合入main](evidence/serve-pr57-merged-20261121/README.md)，
+合并提交`22669a162`，最终两条检查通过。继续Live及全部任务，
+未扩展性能/全模型质量矩阵。
 
 PR #56的CI容量回归及旧版封包清单已修复，
 [24项针对性CPU](evidence/serve-realtime-mcp-ci-capacity-20261120/README.md)、
@@ -129,7 +281,7 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 | R01—R06/R10 | 辅助故障隔离、自监护和已验恢复已交付；新增能力的恢复组合继续 |
 | R07—R09 | 冷准入、物理DRAM边界及压力/宿主组合仍需完成；未获维护交接不干预其他服务 |
 | Q01 | 项目资料查询真实闭环已交付，新增后端/客户端/故障组合继续 |
-| Q02/Q03 | rev426已可回退交付，追踪PR #57检查中；最终矩阵和长稳交接继续 |
+| Q02/Q03 | rev426已可回退交付，追踪PR #57已合main；最终矩阵和长稳交接继续 |
 
 辅助依赖失能不能连带停止健康核心业务；监控恢复不自动重启模型，
 真正设备故障仍保留保护。真实云账户验证依赖部署方配置，不能把
@@ -138,8 +290,9 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 工作区、证据与保留候选
 
-有效工作分支仍为`codex/serve-resilience-cd`，已快进对齐PR #56合并
-提交，并继续承载原生追踪的私有准备与后续实现，因此本阶段保留。仅在独有提交、未提交内容、活动PR和证据
+有效工作分支仍为`codex/serve-resilience-cd`，已快进对齐PR #57合并
+提交；Live合同/配置、生命周期/传输及连续输入已分组提交推送，
+输出/工作线程继续形成独立提交，工作分支仍承载Live实现。仅在独有提交、未提交内容、活动PR和证据
 路径均核对后整理重复分支，不删除其他任务内容或已发表回退包。
 
 为当前构建恢复了591个host对象，未覆盖后续更新的runtime库；旧
@@ -159,6 +312,10 @@ CPU夹具和退役构建库的可逆归档、SHA和恢复脚本保留在
 保留全部原路径和SHA，释放4362113024字节。原权限/时间、独立恢复
 脚本及一次实际恢复/再共享记录见上述输入组合证据；原路径仍可读取，
 若需写入须先独立恢复。当前host/runtime/default、模型和reference未改。
+
+Live阶段另可逆压缩37份本任务退役交付快照，释放347293682字节。
+原SHA、路径、权限与恢复脚本保留于
+`.q4t-work/serve-live-20261121/retired-previous-01/`；当前默认/服务包未动。
 
 视觉行最大值候选及原环境阻断继续保留，见
 [视觉补验结果](VISION_ROWMAX_COMPLETION_RESULT_2026-11-07.md)；

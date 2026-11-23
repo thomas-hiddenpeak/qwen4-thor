@@ -1,0 +1,42 @@
+{
+  "accepted/tools/serve_live/checks.py": {
+    "sha256": "5c5d1f96f28aaf44a37d61e9fb75e154690dc496e72439ea35b783f1b36c03c5",
+    "bytes": 6490
+  },
+  "accepted/tools/serve_live/client_acceptance.py": {
+    "sha256": "abeea643b31a19e9c222777219f562585d871c5013fef730753203477cd18faf",
+    "bytes": 10506
+  },
+  "accepted/tools/serve_live/client_sdk.mjs": {
+    "sha256": "df8d0b96b06aae1a81fa2870c72836315bf89085dcaa8d22b52fdecad626d0b6",
+    "bytes": 6553
+  },
+  "accepted/tools/serve_live/test_checks.py": {
+    "sha256": "334216bc558b2c076a47aa2a4dfeae22ae9290ce87e3c79a7089ac61a4a16fb4",
+    "bytes": 4877
+  },
+  "client-driver-cpu-01/0.log": {
+    "sha256": "8d95405131eac7b166be464055744e69ecb8e63b41cfede70b74bf22fdf6b8a8",
+    "bytes": 1273
+  },
+  "client-driver-cpu-01/1.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "client-driver-cpu-01/2.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "client-driver-cpu-01/plan.json": {
+    "sha256": "968d65456a74187f066c11f969c1aba1fea5539b959e2844bec7e48a87bbe31c",
+    "bytes": 997
+  },
+  "client-driver-cpu-01/result.json": {
+    "sha256": "7d5d749574aca3dba756173851d702e00e85f0da3a6eb42d62de1016759b7abc",
+    "bytes": 748
+  },
+  "driver/client_driver_cpu_01.py": {
+    "sha256": "14f4cf88703058e32f3e21c3a86c7f51990554e66217ac1fbadd8a5d961c61c9",
+    "bytes": 1564
+  }
+}

@@ -69,6 +69,8 @@ def check(package, digest, state=None):
     value = dict(status='PASS',package_verified=True,capacity=base['settings']['profile'],
         state_checked=state is not None, credentials_checked=False,
         model_actions=False, gpu_queries=False, automatic_start=False)
+    if 'live_workers' in base:
+        value['live_worker_files'] = engine.live_worker_health(package/'engine', base)
     if manifest.get('tls_configuration') is not None:
         scratch = Path(manifest['repository'])/'.q4t-work/service-checks'
         scratch.mkdir(mode=0o700, exist_ok=True)

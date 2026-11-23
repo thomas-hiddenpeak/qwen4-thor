@@ -4,6 +4,7 @@
 #include <cstring>
 
 #include "q4t/server/websocket.h"
+#include "q4t/server/websocket_protocol.h"
 #include "q4t/test.h"
 
 namespace {
@@ -162,5 +163,19 @@ Q4T_TEST(http_upgrade_rejection_never_reuses_socket_for_frame_as_http) {
             ordinary.headers.keep_alive);
   Q4T_CHECK(old.Run("GET /v1/models HTTP/1.0\r\n"
                     "Connection: keep-alive\r\n\r\n") && old.headers.keep_alive);
+  return true;
+}
+
+Q4T_TEST(http_upgrade_selects_only_the_offered_route_protocol) {
+  const std::vector<std::string> all = {"realtime", "openai-insecure-api-key.test",
+                                        "live", "unknown"};
+  Q4T_CHECK(SelectWebSocketProtocol("/v1/live/sessions", all) == "live");
+  Q4T_CHECK(SelectWebSocketProtocol("/v1/realtime", all) == "realtime");
+  Q4T_CHECK(SelectWebSocketProtocol("/v1/realtime?intent=transcription", all) ==
+            "realtime");
+  Q4T_CHECK(SelectWebSocketProtocol("/v1/decisions", all).empty());
+  Q4T_CHECK(SelectWebSocketProtocol("/v1/live/sessions", {}).empty());
+  const std::vector<std::string> other = {"realtime", "LIVE", "openai-insecure-api-key.test"};
+  Q4T_CHECK(SelectWebSocketProtocol("/v1/live/sessions", other).empty());
   return true;
 }

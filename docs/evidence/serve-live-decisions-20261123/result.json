@@ -1,0 +1,99 @@
+{
+  "sdk": "OpenAI JS 7.47.0",
+  "cpu": {
+    "engine_sha256": "2bb6ffb3188b02c5a42ade933b09f4ec1a59befbff697ff016ed697a797cbf36",
+    "ingress_sha256": "134109824bedd28db7da31d4fef3f61b498d8d3a9ebcac0123f039b25f6f4012",
+    "test_sha256": "5da997a6f833b2e92101c6683ccb3830673b4de0545225bf19b388c34dc0bd2a",
+    "tests": 25,
+    "passed": 25,
+    "logs": {
+      "cpu-final.log": "dc4e7de9948b09295e2dde29401af3abc98e70e332a803f2d1e2b185c55ff108",
+      "host-final.log": "00bacb80b38aa77edcef9a96bdb56fb897364176788b37f2fee36b937104a2d3",
+      "engine-final.log": "a33744fc19c3d20b398afd69a58339d890af4c534cc060aa9cfe5c0e1aaae9aa",
+      "required.txt": "6afecfb9597bf27d7ca7d3fa71df334aef58d3856a954d6b8b00eec2cc3d9e1b"
+    }
+  },
+  "driver_counterexamples": {
+    "duplicate_trigger_id": "actual trigger source and direction",
+    "foreign_source": "'foreign'",
+    "remove_final_input": "final input and linked spoken answer evaluated",
+    "cross_delegation": "actual decision used for commentary",
+    "inflated_used_tokens": "one actual model question",
+    "extra_admission": "ASR, voice and Decisions fully settled",
+    "wrong_release_answer": "quality gate rejected",
+    "abnormal_close": "single normal close"
+  },
+  "actual": {
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 63,
+      "cleanup_complete": true
+    },
+    "observation": {
+      "manual": "rev426",
+      "automatic": "rev426",
+      "input": "请查询当前项目版本号。",
+      "spoken": "rev426",
+      "expected": "rev426",
+      "input_probability": 0.9961553874360636,
+      "output_probability": 0.9796138931934677,
+      "input_deltas": 7,
+      "triggers": 2,
+      "evaluations": 4,
+      "decision_tokens": 1073,
+      "client_requests": 7.0,
+      "settled_tokens": 2582.0,
+      "pcm_bytes": 107520,
+      "pcm_sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c",
+      "listener_heard": false,
+      "quality": true
+    },
+    "seconds": 65.60146202892065,
+    "default_unchanged": true,
+    "core": "42"
+  },
+  "quota": {
+    "max_inflight": 1,
+    "rpm": 8,
+    "accepted": 7
+  },
+  "sdk_actor": "18ecfc8b02830869e0693df1cfa9586585a92e93a9fddb3b5ce639308542b0c1",
+  "verified_sources": {
+    "CMakeLists.txt": "0865042c4ef9ef472834f2028e2ca76893d4906b95f30b50f8aa8c2e2658e141",
+    "cmake/ChatProtocolIdentity.cmake": "5964e9a6372ca674e1484de54a0fc01af93262308544f5b5c1d24ffadd9bfc1d",
+    "cmake/HostTestSources.cmake": "236fa9f73375c2702bd4b92fdf4551a0cbe0dabe951e68fb0bfbef7f64272bfc",
+    "include/q4t/server/live_client_context.h": "b9fd3d53ed0249995a31d58cf0ebc521165afb0127b5b06f67498acb780dcd8a",
+    "include/q4t/server/live_decision_delegate.h": "7d46a2f116e9bc7dfb7114c476f44e1ff1ed0840e474e9ccc9e74adb56f33ed7",
+    "include/q4t/server/live_decision_execution.h": "3c4f33a20f0a413bd0b7167bc5923ee42607eab2d317210720e5bebfef53ece8",
+    "include/q4t/server/live_frontend.h": "35f050bf1aa85382120aecc99a68f24a5a10d59ea9165ca1d644bebc4569b59a",
+    "include/q4t/server/live_native_backend.h": "4089e72084881ac18cd6499638ca6dc757f17b7c2010b93e7003f3bcd491a01b",
+    "include/q4t/server/live_session.h": "986cb5ffae6f17c30ac195d35eac7d6e47acff9ed230990f560a8e56c7a979c0",
+    "src/server/chat_live.cpp": "b713519a6bb632b48769b1806797281b29dee600ad12cdd3ee707b2dfe6de64c",
+    "src/server/live_client_context.cpp": "14eab20ff58b444609361f7e8d720802fbd38fad8290329a09e55a1c9d65c6dd",
+    "src/server/live_decision_delegate.cpp": "bc9a25fab4680c64670155d0cbf9dd7b01863970875f582ab17769e24226926a",
+    "src/server/live_decision_execution.cpp": "e138871ef1017ccf071a0707d12f6ad4fd744df4680381bf11f1a8d12ae347c7",
+    "src/server/live_frontend.cpp": "a2b9feccc28a81985fa830e17dba94600a30ceafc20f52f952624a23e4fb6871",
+    "src/server/live_native_backend.cpp": "1c73277bd0a19fc8e7a3e083aa8e345f6a812bf22469b1dbfbcb99e3dd51cf95",
+    "src/server/live_session.cpp": "447fdb66d5d48ed951d80e7627255cee0d42f09701905ab65b94589e1518633b",
+    "tests/server_live_decision_execution_test.cpp": "8c1bf46ad1be8e175f260212e6ce50f8187c23c23bf68c1babaaf36c2b3d1319",
+    "tests/server_live_frontend_test.cpp": "4b29edfaa2d75205f543911a5a397e3f7886d4692189d6b228aa1551b2971f8b",
+    "tools/serve_live/decision_session_acceptance.py": "de76988c94528f0b3d6aba1170a5a6b0bac437cdc7ab2d7e3fa9f86ee2e63bfa"
+  },
+  "raw_sha256": {
+    "plan.json": "9d70491a111934ba22954e088838fbadb7ad1c2ded869073aac2c9b0353cd359",
+    "events.jsonl": "06647017e4a5502ce64849fc3a63cfd9c0f178480cd0bd08713d9cd201cfdc47",
+    "sdk.json": "f90cfe507aeb8b8213e3746174ee8f597a341d2a51b5fe14da52c5c596c68ed9",
+    "observation.json": "ae25b4f4f694d8af6ad45bd61234b14597ffe4ab3d65f3d6b4949a353f5a38b3",
+    "result.json": "178cee7ba703ef123e0acb6819423e6caf3ae03bf5e0403f740ff289f45c1169",
+    "cleanup.json": "fc28ca1869cf34e2de1bc7a6fb07a5f39d3b9b76d6576a46addd1daf0f13cb7c",
+    "lease/exit.json": "7e74fd7efdd73a790ccaec84cd633dcde1ad71048a43f3880cccb0083f78c528",
+    "lease/nvml-queries.jsonl": "3b377453339ac979c868f33a8d3d0a3d93e82640197d179a0c43325e756366ba",
+    "before.json": "6a4fe5e1e0b41906f94e436fc37d19846df2d986729e366205ee070e10a1178a",
+    "live-drained.json": "a3a1f54a63d047438e0b7bf8b2b140dd75f3189acfb74d20742df5ddd40a9995",
+    "final-drained.json": "920870180d0075f451e29912e34d32aa2a343d056ff19725ef62cd6cbdd07895",
+    "core-after.wire": "5a5a2ce78a1e2b1bf6bcd24e730ccc5baf3f525fcb0a7e617d2e27056586ff49",
+    "model.log": "ebe3f838a5a6e0508b0ce7a54cc8264bfdc99335ebe96497604b1b9f1567ee6f"
+  }
+}

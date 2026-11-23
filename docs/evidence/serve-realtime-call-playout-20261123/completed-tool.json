@@ -1,0 +1,19 @@
+{
+  "status": "completed",
+  "usage": {
+    "input_tokens": 435,
+    "output_tokens": 29,
+    "total_tokens": 464,
+    "input_token_details": {
+      "cached_tokens": 0
+    },
+    "output_token_details": {}
+  },
+  "calls": [
+    {
+      "name": "lookup_project_record",
+      "status": "completed",
+      "arguments": "{\"record_key\":\"release\"}"
+    }
+  ]
+}

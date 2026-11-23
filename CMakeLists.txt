@@ -66,6 +66,8 @@ add_compile_options(-Wall -Wextra)
 # The service Guardian's process control remains independently CPU-buildable.
 include(cmake/GuardianProcess.cmake)
 include(cmake/NativeIngress.cmake)
+include(cmake/NativeWebRTC.cmake)
+include(cmake/NativeSip.cmake)
 
 # CUDA toolkit headers/libraries for C++ sources that include CUDA runtime.
 find_package(CUDAToolkit REQUIRED)
@@ -390,7 +392,11 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_asr_alignment.cpp
   src/server/chat_asr.cpp
   src/server/chat_realtime.cpp
+  src/server/chat_realtime_secrets.cpp
   src/server/chat_realtime_conversation.cpp
+  src/server/chat_live.cpp
+  src/server/chat_live_media.cpp
+  src/server/chat_live_sideband.cpp
   src/server/chat_realtime_stream.cpp
   src/server/chat_asr_execution.cpp
   src/server/chat_asr_backend.cpp
@@ -457,6 +463,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/web_execution.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
+  src/server/sip_webhook.cpp
+  src/server/sip_service.cpp
+  src/server/sip_child.cpp
   src/server/mcp_http.cpp
   src/server/mcp_policy.cpp
   src/server/mcp_provider.cpp
@@ -553,6 +562,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_http.cpp
   src/server/http_response.cpp
   src/server/finite_response.cpp
+  src/server/native_responses_stream.cpp
   src/server/chat_response_parser.cpp
   src/server/thinking_budget.cpp
   src/server/text_stop.cpp
@@ -586,6 +596,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_generation.cpp
   src/server/chat_responses.cpp
   src/server/chat_moderations.cpp
+  src/server/chat_decisions.cpp
   src/server/chat_embeddings.cpp
   src/server/chat_embedding_backend.cpp
   src/server/chat_vector_ingestion.cpp
@@ -604,6 +615,37 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/realtime_session_pump.cpp
   src/server/realtime_conversation_pump.cpp
   src/server/realtime_chat_plan.cpp
+  src/server/live_configuration.cpp
+  src/server/live_media_policy.cpp
+  src/server/live_media_call.cpp
+  src/server/realtime_media_call.cpp
+  src/server/realtime_client_ticket.cpp
+  src/server/realtime_client_secrets.cpp
+  src/server/realtime_webrtc_request.cpp
+  src/server/realtime_call_pcm.cpp
+  src/server/live_sideband.cpp
+  src/server/live_media_process.cpp
+  src/server/live_responses_settings.cpp
+  src/server/live_responses_validation.cpp
+  src/server/live_responses_turn.cpp
+  src/server/live_responses_execution.cpp
+  src/server/live_responses_delegate.cpp
+  src/server/live_decision_items.cpp
+  src/server/live_decision_execution.cpp
+  src/server/live_decision_delegate.cpp
+  src/server/live_recording.cpp
+  src/server/live_recording_store.cpp
+  src/server/decision_plan.cpp
+  src/server/decision_scoring.cpp
+  src/server/live_session.cpp
+  src/server/live_session_pump.cpp
+  src/server/live_audio_input.cpp
+  src/server/live_audio_output.cpp
+  src/server/live_audio_fixture.cpp
+  src/server/live_frontend_work.cpp
+  src/server/live_frontend.cpp
+  src/server/live_client_context.cpp
+  src/server/live_native_backend.cpp
   src/server/realtime_mcp_definitions.cpp
   src/server/realtime_mcp_catalog.cpp
   src/server/realtime_mcp_imports.cpp
@@ -723,7 +765,7 @@ target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
 # q4t — CLI executable
 # ---------------------------------------------------------------------------
 include(cmake/ServiceCLI.cmake)
-add_executable(q4t src/main.cpp)
+add_executable(q4t src/main.cpp src/service/live_worker_exec.cpp)
 q4t_link_structured_output(q4t)
 target_include_directories(q4t PRIVATE include)
 target_link_libraries(q4t PRIVATE q4t_model q4t_text q4t_ple q4t_quant
@@ -1036,6 +1078,7 @@ if(Q4T_BUILD_TESTS)
     src/server/object_store_options.cpp
     src/server/http_response.cpp
   src/server/finite_response.cpp
+  src/server/native_responses_stream.cpp
     tests/server_http_response_test.cpp
     src/server/http_request.cpp
     src/server/websocket.cpp
@@ -1046,6 +1089,37 @@ if(Q4T_BUILD_TESTS)
   src/server/realtime_session_pump.cpp
   src/server/realtime_conversation_pump.cpp
   src/server/realtime_chat_plan.cpp
+  src/server/live_configuration.cpp
+  src/server/live_media_policy.cpp
+  src/server/live_media_call.cpp
+  src/server/realtime_media_call.cpp
+  src/server/realtime_client_ticket.cpp
+  src/server/realtime_client_secrets.cpp
+  src/server/realtime_webrtc_request.cpp
+  src/server/realtime_call_pcm.cpp
+  src/server/live_sideband.cpp
+  src/server/live_media_process.cpp
+  src/server/live_responses_settings.cpp
+  src/server/live_responses_validation.cpp
+  src/server/live_responses_turn.cpp
+  src/server/live_responses_execution.cpp
+  src/server/live_responses_delegate.cpp
+  src/server/live_decision_items.cpp
+  src/server/live_decision_execution.cpp
+  src/server/live_decision_delegate.cpp
+  src/server/live_recording.cpp
+  src/server/live_recording_store.cpp
+  src/server/decision_plan.cpp
+  src/server/decision_scoring.cpp
+  src/server/live_session.cpp
+  src/server/live_session_pump.cpp
+  src/server/live_audio_input.cpp
+  src/server/live_audio_output.cpp
+  src/server/live_audio_fixture.cpp
+  src/server/live_frontend_work.cpp
+  src/server/live_frontend.cpp
+  src/server/live_client_context.cpp
+  src/server/live_native_backend.cpp
   src/server/realtime_mcp_definitions.cpp
   src/server/realtime_mcp_catalog.cpp
   src/server/realtime_mcp_imports.cpp

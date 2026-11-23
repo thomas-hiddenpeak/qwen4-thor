@@ -1,0 +1,95 @@
+{
+  "status": "FAIL_CLIENT_HANDOFF_BUSINESS_NOT_ACCEPTED",
+  "source_commit": "55ba074650d5604f3c790054433caafba71530b9",
+  "binary_sha256": "43683066aa79cbd70504eb1acbb63b8347d82a49f095866bd65593446d7506bf",
+  "plan_sha256": "ca245e4f30301181515715d167ca6afd1d816b05324474beba3e03c3bc409414",
+  "record": {
+    "path": "docs/STATUS.md",
+    "sha256": "c7ef6297ec2ec3d1514495b55d6838d9d32a5f1cdf10692a1fc77917626da791",
+    "version": "rev426"
+  },
+  "actual_model_starts": 1,
+  "actual_admitted_work": 2.0,
+  "actual_settled_tokens": 822.0,
+  "original_counts_are_reserved_budget_not_actual_generations": true,
+  "seconds": 113.32063404517248,
+  "transcripts": [
+    {
+      "type": "session.input_transcript.delta",
+      "delta": "甚至",
+      "start_ms": 244,
+      "end_ms": 3976,
+      "event_id": "live_eceb9835bc740481c86fe2da35fb397b_event_9"
+    },
+    {
+      "type": "session.input_transcript.delta",
+      "delta": "出现",
+      "start_ms": 244,
+      "end_ms": 3976,
+      "event_id": "live_eceb9835bc740481c86fe2da35fb397b_event_10"
+    },
+    {
+      "type": "session.input_transcript.delta",
+      "delta": "交易",
+      "start_ms": 244,
+      "end_ms": 3976,
+      "event_id": "live_eceb9835bc740481c86fe2da35fb397b_event_11"
+    },
+    {
+      "type": "session.input_transcript.delta",
+      "delta": "几乎",
+      "start_ms": 244,
+      "end_ms": 3976,
+      "event_id": "live_eceb9835bc740481c86fe2da35fb397b_event_12"
+    },
+    {
+      "type": "session.input_transcript.delta",
+      "delta": "停滞",
+      "start_ms": 244,
+      "end_ms": 3976,
+      "event_id": "live_eceb9835bc740481c86fe2da35fb397b_event_13"
+    },
+    {
+      "type": "session.input_transcript.delta",
+      "delta": "的情况",
+      "start_ms": 244,
+      "end_ms": 3976,
+      "event_id": "live_eceb9835bc740481c86fe2da35fb397b_event_14"
+    },
+    {
+      "type": "session.input_transcript.delta",
+      "delta": "。",
+      "start_ms": 244,
+      "end_ms": 3976,
+      "event_id": "live_eceb9835bc740481c86fe2da35fb397b_event_15"
+    },
+    {
+      "type": "session.output_transcript.delta",
+      "delta": "明白。",
+      "start_ms": 17840,
+      "end_ms": 18320,
+      "event_id": "live_eceb9835bc740481c86fe2da35fb397b_event_29"
+    }
+  ],
+  "original_answer": "明白。",
+  "missing_client_delegation": true,
+  "operator_stop_reason": {
+    "reason": "Observed completed native output transcript 明白。 with no requested client delegation; stop only owned actor instead of waiting for full SDK timeout",
+    "actual_model_answer_preserved": true,
+    "actor": {
+      "pid": 1163172,
+      "start_ticks": 339292988
+    },
+    "signal": "SIGTERM",
+    "default_not_modified": true
+  },
+  "empty_sdk_receipt_after_actor_termination": true,
+  "default_unchanged": true,
+  "environment_abort": false,
+  "nvml_queries": 107,
+  "all_nvml_queries_ok": true,
+  "cleanup_confirmed": true,
+  "main_not_delivered": true,
+  "master_active": true,
+  "archive_sha256": "65a0475a6a6d8697fb3acade858656171e221eae663fff5c1093d7b03dbebe39"
+}

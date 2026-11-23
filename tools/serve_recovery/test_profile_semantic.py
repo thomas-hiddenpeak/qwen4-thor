@@ -298,6 +298,32 @@ class SemanticMigration(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'capabilities'):
                     self.pending_permit(a,x,b,y,**flags)
 
+    def test_live_discovery_preserves_new_capabilities_and_rejects_partial_claims(self):
+        value = dict(live=dict(sessions='/v1/live/sessions', transports=['websocket','webrtc','sip'],
+                              media_readiness_dependency=False),
+            realtime=dict(semantic_vad=dict(implemented=True,profile='q4t-native-semantic-turn-v1'),
+                conversation=dict(implemented=True), pending_execution=[],
+                calls=dict(create='/v1/realtime/calls'),
+                client_secrets=dict(issue='/v1/realtime/client_secrets',owner_scoped=True)))
+        result = copy.deepcopy(value)
+        migration.realtime_pending_capabilities(result)
+        self.assertEqual(result, value)
+        old = copy.deepcopy(value)
+        del old['live'], old['realtime']['calls'], old['realtime']['client_secrets']
+        old['realtime']['pending_execution'] = ['conversation', 'live']
+        self.assertTrue(migration.explicit_extension(old, value))
+        self.assertFalse(migration.explicit_extension(value, old))
+        old['preserved_route'] = True
+        self.assertFalse(migration.explicit_extension(old, value))
+        for mutate in (lambda v:v.pop('live'), lambda v:v['realtime'].pop('calls'),
+                       lambda v:v['realtime'].pop('client_secrets'),
+                       lambda v:v['realtime'].update(pending_execution=['live']),
+                       lambda v:v['realtime'].update(conversation=None)):
+            changed = copy.deepcopy(value)
+            mutate(changed)
+            with self.assertRaisesRegex(ValueError, 'pending Realtime'):
+                migration.realtime_pending_capabilities(changed)
+
     def test_pending_metadata_cannot_hide_missing_or_unknown_work(self):
         for declared,correct in ((False,['semantic_vad','conversation','live']),
                                  (True,['conversation','live'])):

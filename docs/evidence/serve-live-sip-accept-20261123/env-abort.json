@@ -1,0 +1,26 @@
+{
+  "status": "ENV_ABORT",
+  "reason": "competing workload during lease",
+  "model_result": "FAIL",
+  "observed_conflicts": [
+    {
+      "pid": 2043791,
+      "program": "q4t_host_tests",
+      "fixture": "--sip-owner-fixture",
+      "gpu_context": false
+    },
+    {
+      "pid": 2043793,
+      "program": "q4t_host_tests",
+      "fixture": "--sip-webhook-worker",
+      "gpu_context": false
+    }
+  ],
+  "failed_run_dir": ".q4t-work/serve-live-20261123/sip-accept-business-03",
+  "media_receipt": {
+    "http_status": 503,
+    "code": "live_media_unavailable"
+  },
+  "cleanup_present": true,
+  "rerun_condition": "CPU owner fixture exited; same frozen native binaries and exclusive GPU checks"
+}

@@ -57,7 +57,8 @@ io::Json Parameters(const io::Json& function) {
 std::string SchemaFormat(const io::Json& schema, bool xml) {
   return R"({"type":"json_schema","json_schema":)" + OutputJson(schema) +
          R"(,"style":)" + Quote(xml ? "qwen_xml" : "json") +
-         R"(,"any_order":false,"max_whitespace_cnt":16)" +
+         R"(,"any_order":false,"max_whitespace_cnt":)" +
+         std::to_string(kSchemaWhitespaceLimit) +
          (xml ? R"(,"excludes":["<tool_call>","</tool_call>",)"
                 R"("</parameter>","</function>"])"
               : "") +

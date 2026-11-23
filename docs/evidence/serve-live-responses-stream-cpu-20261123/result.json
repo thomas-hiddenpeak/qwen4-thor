@@ -1,0 +1,20 @@
+{
+  "tests": 14,
+  "new_tests": 8,
+  "passed": 14,
+  "source_sha256": {
+    "CMakeLists.txt": "68cb05b247ce6db194512426b5b4f9a6656c9460c83b00c26c67ef6b16f01574",
+    "cmake/ChatProtocolIdentity.cmake": "1bbfafaaf1a8d4ab87aeb6665a943ebe6a8b4e9158b15085be646cc76e23c64b",
+    "cmake/HostTestSources.cmake": "1cef1965faf70794aef9a76faf7412897f11f91d3a970e9901e76bfd5c0b4bbd",
+    "src/server/http_response.cpp": "eba0095486be6867925430b939869a6752931a1db411c97e5933bbc637a75601",
+    "include/q4t/server/http_response.h": "dc52bc32ca4989203fb6aeafe563d13a0c5c867d61205360b84d9a1fea5c352c",
+    "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
+    "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
+    "tests/server_native_responses_stream_test.cpp": "26ac422e02c55d3b828977a34be190a2dddbe60949c423f253d6727402c9e588"
+  },
+  "build_log_sha256": "3017b544f4ba651b1b085130fd20639558123a1b2f95fa6bb6885f25d20ff0d5",
+  "cpu_log_sha256": "141fe4f577dd0387014709634b1a9830dfcbb42849e5642b40591e288025307c",
+  "test_binary_sha256": "c16bdc396cbf50025c85352a1b93f3c7e9c1c1dbe3a09207d63855e9e3be99e4",
+  "warnings": 0,
+  "gpu_starts": 0
+}

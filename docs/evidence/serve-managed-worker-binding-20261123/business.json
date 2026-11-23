@@ -1,0 +1,33 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 39,
+    "cleanup_complete": true
+  },
+  "observation": {
+    "corrupt": {
+      "status": 503,
+      "code": "live_media_unavailable"
+    },
+    "restored": 201,
+    "data_channel": [
+      "session.started",
+      "session.closed"
+    ],
+    "same_model": true,
+    "workers": {
+      "profile": "q4t-live-workers-v1",
+      "engine_sha256": "240eb3dec5f8d91e4586be340c5e7bca19f4b7afa1af653433e4eb9bb84f26be",
+      "files": {
+        "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+        "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+        "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+      }
+    }
+  },
+  "seconds": 39.06625190516934,
+  "default_unchanged": true,
+  "core": "42"
+}

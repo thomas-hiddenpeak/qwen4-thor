@@ -1,0 +1,43 @@
+{
+  "seconds": 100.91742576472461,
+  "starts": 2,
+  "before_sha256": "8c3aad4cc2b5993062b1db7041351456d22d6b338ca4887a2333f4cc7abcaa54",
+  "after_sha256": "47aa555a39c06a04e4858324f2d3d92db8bbc436376b1dd07539ccb8efd33dfa",
+  "fault": {
+    "role": "gateway",
+    "kind": "native_process_signal",
+    "signal": 6
+  },
+  "guardian_continued": true,
+  "model_generation": [
+    1,
+    2
+  ],
+  "controller_replaced": true,
+  "probe_count": 1,
+  "fallback_consumed": true,
+  "actual_chat": [
+    "42",
+    "42"
+  ],
+  "stored_answer": "42",
+  "stop": 0,
+  "owned_remaining": [],
+  "ports_free": true,
+  "production_unchanged": true,
+  "default_desired": "STOPPED",
+  "strict_lease": "COMPLETED",
+  "source_sha256": {
+    "fatal-business-01/result.json": "1eef3088255fae57b09d41448d473b332f96c581b524e8b7d6c4cfe12dfe1ade",
+    "fatal-business-01/recovery.json": "4efbda51701150597d5d06becfb113b3b4e3fc65ed8d505a81e1451982a9b015",
+    "fatal-business-01/fixture.json": "582174901cc62282e2523170eec8aa72962d2385309880624d2e7d0624289e9a",
+    "fatal-business-01/chat-before.wire": "883364805e6f54a92f139779280211b08702a12dcc80c8eec47518b5eaaa9f09",
+    "fatal-business-01/chat-after.wire": "8b32bcbac23b37acc26aab71a225ed639d737ca40a77f0d0b303d7d75f1437a8",
+    "fatal-business-01/stored.wire": "883364805e6f54a92f139779280211b08702a12dcc80c8eec47518b5eaaa9f09",
+    "fatal-business-01/registration.json": "2a3568b194fe006a6220619cebe9047a1264c87a67e201cf3364cd128736a58d",
+    "fatal-business-01/launcher-result.json": "d027e247137935eaf55c0e2eec05edf0ce71c3ad936ae3af2b17a479c2f57ae6",
+    "fatal-lease-01/exit.json": "f47cbd51004bea5a9e32d0c5ce32f2dcf9a15a8f5759979b3c252afbb478d039",
+    "fatal_actor.py": "6f3bbd8353435d2e80625de467d40d61d246cebc82c56854e3b90509f86f9f17",
+    "fatal_business.py": "7fcaf8d2e8d556ae4888cb7f4252c545f5dfe199d087e0a523af5e80d6273611"
+  }
+}

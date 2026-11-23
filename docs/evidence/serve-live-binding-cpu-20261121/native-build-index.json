@@ -1,0 +1,34 @@
+{
+  "native-build-01/0.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "native-build-01/0.stdout": {
+    "sha256": "5a9c8092b7af507ae1537b5b4f037017d12354c206a5042f24d0257c1b93cb9e",
+    "bytes": 153
+  },
+  "native-build-01/1.stderr": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "native-build-01/1.stdout": {
+    "sha256": "8756b668fc1d6da348f0cc344b727ecc5d687266aa1aaa723e7c850b54ea81d7",
+    "bytes": 8182
+  },
+  "native-build-01/plan.json": {
+    "sha256": "45ecffe95a72ac460c656479b1acf255fdecddd897bbb6a8199dae3a98291c06",
+    "bytes": 125164
+  },
+  "native-build-01/result.json": {
+    "sha256": "79bec600dc61dde269133690283b88c8a9066f3b1a9fc300070b9073a0417110",
+    "bytes": 485
+  },
+  "driver/build_native_01.py": {
+    "sha256": "ce88fd585e3d49328d0c0e06a5c856d1b770e5a5b64bd992c53f5dcb49337e5e",
+    "bytes": 2843
+  },
+  "generated/chat_protocol_sources.json": {
+    "sha256": "df22f7cf82dc10a4100c193a6704bc4244dbb21dd2e51b157c101fa750a5acb3",
+    "bytes": 91417
+  }
+}

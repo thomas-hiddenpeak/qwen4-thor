@@ -1,0 +1,107 @@
+{
+  "attempts": [
+    {
+      "stage": "fork-child-business-01",
+      "status": "FAIL",
+      "seconds": 36.13621527515352,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "websocket_sessions": 1,
+        "sdk_posts": 0,
+        "recalls": 0,
+        "chats": 0,
+        "controls": 32
+      },
+      "default_unchanged": true,
+      "lease_status": "COMMAND_FAILED",
+      "ports_released": true,
+      "remaining": [],
+      "result_sha256": "2a86081db80e8825e479b405f8e9c3a3a607c026a1b5bb87bb887704d1472645",
+      "error": "gi.repository.GLib.GError: gst_parse_error: could not link rtpopuspay0 to rtc, rtc can't handle caps application/x-rtp, media=(string)audio, encoding-name=(string)OPUS, payload=(int)111, clock-rate=(int)48000 (3)"
+    },
+    {
+      "stage": "fork-child-business-02",
+      "status": "FAIL",
+      "seconds": 54.10065100109205,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "websocket_sessions": 2,
+        "sdk_posts": 2,
+        "recalls": 1,
+        "chats": 1,
+        "controls": 85
+      },
+      "default_unchanged": true,
+      "lease_status": "COMMAND_FAILED",
+      "ports_released": true,
+      "remaining": [],
+      "result_sha256": "c4cc6dbce0afb59114765611f01db73d5e30ee860cccb11d8204cb284a410b89",
+      "error": "RuntimeError: real spoken version from source only",
+      "transcript": "rev",
+      "journal_sha256": "19694885ff4c4c3e61053e78715a31dece5efaec3b72de5b76893a01a85e6776"
+    },
+    {
+      "stage": "fork-child-business-03",
+      "status": "PASS",
+      "seconds": 55.42829651059583,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "websocket_sessions": 2,
+        "sdk_posts": 2,
+        "recalls": 1,
+        "chats": 1,
+        "controls": 86
+      },
+      "default_unchanged": true,
+      "lease_status": "COMPLETED",
+      "ports_released": true,
+      "remaining": [],
+      "result_sha256": "1061722459776c63942bed64efa0525f71877d7d234d17a504f03e843b17a771",
+      "transcript": "rev426",
+      "journal_sha256": "506948ecb21a3ec4986cef251758f6f2c1ae71a3ef1939a3a6a3a02978660924"
+    }
+  ],
+  "accepted": {
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 54,
+      "cleanup_complete": true
+    },
+    "seconds": 55.42829651059583,
+    "observation": {
+      "ws": {
+        "opens": 1,
+        "close_code": 1000,
+        "id": "live_3dc3eb3db3626fcc5ac474ca5afaf959"
+      },
+      "media": {
+        "id": "live_694d1490ecc1e77841e82826149d54a6",
+        "status": 201,
+        "close": true,
+        "denied": "live_client_event_forbidden"
+      },
+      "foreign": {
+        "websocket": 404,
+        "webrtc": {
+          "status": 404,
+          "code": "object_not_found"
+        }
+      },
+      "source": "live_6348609ad8919b21a6ee9bb3686e9333",
+      "spoken": "rev426",
+      "pcm_bytes": 107520,
+      "pcm_sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c",
+      "source_lookups_replayed": 0,
+      "explicit_generations": 1,
+      "restored_items": 9,
+      "stored_child_items": 11
+    },
+    "default_unchanged": true,
+    "core": "42"
+  }
+}

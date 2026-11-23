@@ -1,0 +1,16 @@
+[PASS] realtime_client_secret_issue_redeem_and_expire_at_either_clock
+[PASS] realtime_client_secret_rejects_invalid_ttls_and_private_resource_fields
+[PASS] realtime_client_secret_capacity_is_scoped_and_expiry_releases_it
+Fixture received {"error":{"type":"invalid_request_error","code":"invalid_request","message":"Value is outside the item enum","param":"event.session.type"},"type":"error","event_id":"event_d68aeec79cae013318c76ca164a337a3"}
+Fixture received {"error":{"type":"invalid_request_error","code":"invalid_request","message":"Unknown item field","param":"event.session.object"},"type":"error","event_id":"event_fd4a290ae0204265d97a47ec4526070c"}
+[PASS] realtime_session_public_identity_is_stable_and_not_client_settings
+[PASS] realtime_call_start_resolves_prompt_before_first_unframed_event
+[PASS] realtime_call_rejected_configuration_precedes_any_session_event
+[PASS] realtime_call_codec_streams_preserve_phase_duration_and_pcm_bytes
+[PASS] realtime_call_scoped_observer_joins_current_session_and_hears_dtmf
+[PASS] realtime_call_playout_receipts_follow_delivery_and_clear
+[PASS] realtime_webrtc_offer_accepts_sdk_and_browser_encodings_atomically
+[PASS] realtime_webrtc_verified_sctp_and_sideband_share_one_conversation
+[PASS] realtime_transcription_call_owns_input_and_excludes_chat_output
+[PASS] realtime_call_accept_reserves_the_call_and_attach_uses_a_distinct_lane
+13 tests, 13 passed, 0 failed, 0 skipped

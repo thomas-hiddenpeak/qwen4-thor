@@ -32,6 +32,8 @@
 #include "q4t/server/object_store.h"
 #include "q4t/server/tool_result_schema.h"
 #include "q4t/server/file_fetch.h"
+#include "q4t/server/sip_webhook.h"
+#include "q4t/server/sip_service.h"
 #include "q4t/server/web_search.h"
 #include "q4t/server/mcp_transport.h"
 #include "q4t/server/mcp_tunnel_agent.h"
@@ -85,6 +87,7 @@ void PrintUsage(const char* prog) {
       "  state-retention  Inspect/collect protected application state\n"
       "              (q4t state-retention --help)\n"
       "  mcp-policy-check FILE  Validate MCP deployment without a model\n"
+      "  live-transport-check IPV4 [FILE]  Validate media settings offline\n"
       "  web-policy-check FILE  Validate web search sources without a model\n"
       "  mcp-tunnel-agent (check|run) FILE  Native private MCP agent\n"
       "  file-input-policy-check FILE  Validate file policy without a model\n"
@@ -119,7 +122,8 @@ void PrintUsage(const char* prog) {
       "[--web-policy-file FILE] "
       "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
       "[--session-cache-dir DIR] [--prefix-cache-dir DIR] "
-      "[--object-store-dir DIR] [--object-max-object-mib N] "
+      "[--sip-trunks-file PATH] [--live-webrtc-address IPv4] [--live-recordings] [--object-store-dir DIR] [--object-max-object-mib "
+      "N] "
       "[--object-max-client-mib N] [--object-max-total-mib N] "
       "[--object-max-client-objects N] [--object-max-total-objects N] "
       "[--object-io-timeout-ms N] "
@@ -945,6 +949,10 @@ int main(int argc, char** argv) {
   if (tunnel_agent >= 0) return tunnel_agent;
   if (argc > 1 && std::strcmp(argv[1], "mcp-policy-check") == 0)
     return q4t::server::RunMcpDeploymentPolicyCheck(argc, argv);
+  if (argc > 1 && std::strcmp(argv[1], "--live-worker-exec") == 0)
+    return q4t::server::RunPinnedLiveWorker(argc, argv);
+  if (argc > 1 && std::strcmp(argv[1], "live-transport-check") == 0)
+    return q4t::server::RunLiveTransportCheck(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "web-policy-check") == 0)
     return q4t::server::RunWebDeploymentPolicyCheck(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "file-input-policy-check") == 0)
@@ -967,6 +975,8 @@ int main(int argc, char** argv) {
   if (mcp_worker >= 0) return mcp_worker;
   const int web_page = q4t::server::MaybeRunWebPageWorker(argc, argv);
   if (web_page >= 0) return web_page;
+  const int sip_webhook = q4t::server::MaybeRunSipWebhookWorker(argc, argv);
+  if (sip_webhook >= 0) return sip_webhook;
   const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
   if (fetch_worker >= 0) return fetch_worker;
   const int document_worker =

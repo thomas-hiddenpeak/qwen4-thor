@@ -110,10 +110,13 @@ bool Root(const ObjectRequest& root) {
   return (root.kind == ObjectKind::kVoiceConsent &&
           format == "q4t.voice_consent.v1") ||
          (root.kind == ObjectKind::kVoice && format == "q4t.voice.v1") ||
+         (root.kind == ObjectKind::kLiveRecording &&
+          format == "q4t.live_recording.v1") ||
          (root.kind == ObjectKind::kFile && format == "q4t.file.v1") ||
          (root.kind == ObjectKind::kBatch && format == "q4t.batch.v1") ||
          (root.kind == ObjectKind::kToolRun &&
-          (format == "q4t.upload_part.v1" || format == "q4t.batch_result.v1")) ||
+          (format == "q4t.upload_part.v1" ||
+           format == "q4t.batch_result.v1")) ||
          (root.kind == ObjectKind::kInputSnapshot &&
           format == "q4t.input_snapshot.v1");
 }
@@ -263,8 +266,8 @@ ObjectReply BinaryStore::Open(const BinaryAccess& access, ObjectKind kind,
   if (!read || !read->id.empty() || lifetime_seconds < 1 ||
       lifetime_seconds > 3600 ||
       (kind != ObjectKind::kFile && kind != ObjectKind::kToolRun &&
-       kind != ObjectKind::kBatch &&
-       kind != ObjectKind::kInputSnapshot &&
+       kind != ObjectKind::kBatch && kind != ObjectKind::kInputSnapshot &&
+       kind != ObjectKind::kLiveRecording &&
        kind != ObjectKind::kVoiceConsent && kind != ObjectKind::kVoice))
     return Invalid("Invalid binary read capacity or lifetime");
   auto request = Request(access, id, ObjectOperation::kGet);

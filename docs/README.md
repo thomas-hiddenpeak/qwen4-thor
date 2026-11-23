@@ -709,8 +709,14 @@
 - [双向音频原生恢复](evidence/serve-realtime-duplex-managed-recovery-20261120/README.md)：入口/控制器/整包，错误回答独立保留。
 - [双向音频rev386交付](evidence/serve-realtime-duplex-delivery-20261120/README.md)：STOPPED升级、回退、预算保持与可逆归档。
 - [初始凭据重新签发与rev396交付](evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)：公共证据更正、候选/回退凭据替换和来源复用。
-- [Realtime原生追踪实现与验证](SERVE_REALTIME_TRACING_2026-11-20.md)：独立采集/存储、删除与故障隔离，源码接入中。
+- [Realtime原生追踪实现与验证](SERVE_REALTIME_TRACING_2026-11-20.md)：独立采集/存储、删除与故障隔离，rev426已可回退交付。
 - [Realtime MCP实现计划](SERVE_REALTIME_MCP_2026-11-20.md)：会话定义、目录、审批执行及恢复交付。
 - [PR #56已合入main](evidence/serve-pr56-merged-20261120/README.md)：两条检查通过，默认rev416保持。
 - [Realtime MCP容量修复交付](evidence/serve-realtime-mcp-binding-delivery-20261120/README.md)：确切主轻资格、rev416整根回退与状态保持。
 - [Realtime MCP实际目录CPU](evidence/serve-realtime-mcp-catalog-cpu-20261120/README.md)：原生网络导入、私有授权与公开SDK投影。
+
+- [Live原生应用服务计划](SERVE_LIVE_2026-11-21.md)：合同、主WSS、委派、旁路/存储和媒体传输持续推进。
+- [Live合同与正式构建CPU](evidence/serve-live-contract-cpu-20261121/README.md)：SDK独立正反例、来源重建和原失败，尚不宣称业务完成。
+
+- [PR #57已合main](evidence/serve-pr57-merged-20261121/README.md)：追踪最终检查通过与22669a162祖先核实。
+- [Live配置与16k PCM CPU](evidence/serve-live-configuration-pcm-cpu-20261121/README.md)：21项针对性边界，实际路由与模型绑定继续。

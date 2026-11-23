@@ -1,0 +1,31 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 46,
+    "cleanup_complete": true
+  },
+  "observation": {
+    "conversation": {
+      "answer": "42",
+      "modalities": [
+        "text"
+      ],
+      "status": 201
+    },
+    "wrong_type": {
+      "status": 400,
+      "code": "realtime_session_type_invalid"
+    },
+    "transcription": {
+      "transcript": "\u8bf7\u67e5\u8be2\u5f53\u524d\u9879\u76ee\u7248\u672c\u53f7\u3002",
+      "language": "zh",
+      "codec": "opus",
+      "status": 201
+    }
+  },
+  "seconds": 47.600607336033136,
+  "default_unchanged": true,
+  "core": "42"
+}

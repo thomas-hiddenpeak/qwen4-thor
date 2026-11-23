@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "q4t/io/json.h"
+#include "q4t/server/realtime_client_ticket.h"
 #include "q4t/status.h"
 
 namespace q4t::service::ingress {
@@ -46,12 +47,16 @@ class AccessIdentity {
   std::string_view Id() const {
     return policy_ ? policy_->clients[index_].id : std::string_view{};
   }
+  std::string_view IssuerDigest() const {
+    return policy_ ? std::string_view(policy_->clients[index_].key_sha256[key_])
+                   : std::string_view{};
+  }
   uint64_t Revision() const { return policy_ ? policy_->revision : 0; }
 
  private:
   friend class ClientAccess;
   std::shared_ptr<const AccessPolicy> policy_;
-  size_t index_ = kAccessClients;
+  size_t index_ = kAccessClients, key_ = 0;
 };
 
 // No filesystem, model or quota authority. The durable control plane must
@@ -65,6 +70,9 @@ class ClientAccess {
   Status Synchronize(AccessPolicy policy, uint64_t expected_revision);
   bool Configured() const { return current_.load() != nullptr; }
   AccessIdentity Authenticate(std::string_view authorization) const;
+  AccessIdentity AuthenticateRealtime(const server::RealtimeClientTicket& ticket,
+                                      std::string_view binding, int64_t now) const;
+  bool StillActive(const AccessIdentity& identity) const;
   io::Json Describe() const;
 
  private:

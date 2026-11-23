@@ -3,9 +3,9 @@
   "sdk_version": "7.47.0",
   "compiler_version": "5.9.3",
   "validation_mode": "concrete-sdk-union-members",
-  "graph_sha256": "802bd77ff3c9650052a8239c3ef530b50710909b12bf822f7632de92dbbf0aac",
-  "fixture_sha256": "d1ccab31de5e6d8f3312d3b4f147eadaf2f29b3645d6cd86a6456e010802f74b",
-  "concrete_fixture_sha256": "5f54e5c481caa35209c0d3af79aa06483d260253b3ec75a165689d23d5cb31d0",
+  "graph_sha256": "4055c325fca57d6de987aa4f9e93bca1fe2f3740d5e65eec23156b23ebfe0d0c",
+  "fixture_sha256": "890ba9594787b38e0dc7ad398ef041ba8bee467b098833929adecb2b1c3a36fe",
+  "concrete_fixture_sha256": "90b744d30c9ce3bcc4cd74a558b9b9a7426c16b558a59c2f9f377cb4365ea440",
   "member_names": {
     "conversation_item": [
       {
@@ -294,9 +294,39 @@
         "name": "RealtimeResponse",
         "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeResponse"
       }
+    ],
+    "call_accept": [
+      {
+        "name": "CallAcceptParams",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/calls.ts\").CallAcceptParams"
+      }
+    ],
+    "call_refer": [
+      {
+        "name": "CallReferParams",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/calls.ts\").CallReferParams"
+      }
+    ],
+    "call_reject": [
+      {
+        "name": "CallRejectParams",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/calls.ts\").CallRejectParams"
+      }
+    ],
+    "client_secret_create": [
+      {
+        "name": "ClientSecretCreateParams",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/client-secrets.ts\").ClientSecretCreateParams"
+      }
+    ],
+    "client_secret_created": [
+      {
+        "name": "ClientSecretCreateResponse",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/client-secrets.ts\").ClientSecretCreateResponse"
+      }
     ]
   },
-  "concrete_checks": 2416,
+  "concrete_checks": 2428,
   "vectors": [
     {
       "name": "conversation_item_0_valid",
@@ -8880,6 +8910,402 @@
       "accepted": false
     },
     {
+      "name": "call_accept_0_valid",
+      "shape": "call_accept",
+      "input": {
+        "type": "realtime"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallAcceptParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_accept_0_extra",
+      "shape": "call_accept",
+      "input": {
+        "type": "realtime",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'CallAcceptParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_accept_0_wrong_root",
+      "shape": "call_accept",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'CallAcceptParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_accept_0_missing_type",
+      "shape": "call_accept",
+      "input": {},
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'type' is missing in type '{}' but required in type 'CallAcceptParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_refer_0_valid",
+      "shape": "call_refer",
+      "input": {
+        "target_uri": "fixture"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallReferParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_refer_0_extra",
+      "shape": "call_refer",
+      "input": {
+        "target_uri": "fixture",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'CallReferParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_refer_0_wrong_root",
+      "shape": "call_refer",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'CallReferParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_refer_0_missing_target_uri",
+      "shape": "call_refer",
+      "input": {},
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'target_uri' is missing in type '{}' but required in type 'CallReferParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_reject_0_valid",
+      "shape": "call_reject",
+      "input": {},
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallRejectParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_reject_0_extra",
+      "shape": "call_reject",
+      "input": {
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'CallRejectParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_reject_0_wrong_root",
+      "shape": "call_reject",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2559,
+          "message": "Type '\"not-an-item\"' has no properties in common with type 'CallRejectParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_create_0_valid",
+      "shape": "client_secret_create",
+      "input": {},
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "client_secret_create_0_extra",
+      "shape": "client_secret_create",
+      "input": {
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'ClientSecretCreateParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_create_0_wrong_root",
+      "shape": "client_secret_create",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2559,
+          "message": "Type '\"not-an-item\"' has no properties in common with type 'ClientSecretCreateParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_valid",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 1,
+        "session": {
+          "id": "fixture",
+          "object": "realtime.session",
+          "type": "realtime"
+        },
+        "value": "fixture"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateResponse"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "client_secret_created_0_extra",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 1,
+        "session": {
+          "id": "fixture",
+          "object": "realtime.session",
+          "type": "realtime"
+        },
+        "value": "fixture",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_wrong_root",
+      "shape": "client_secret_created",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_missing_expires_at",
+      "shape": "client_secret_created",
+      "input": {
+        "session": {
+          "id": "fixture",
+          "object": "realtime.session",
+          "type": "realtime"
+        },
+        "value": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'expires_at' is missing in type '{ session: { id: string; object: \"realtime.session\"; type: \"realtime\"; }; value: string; }' but required in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_missing_session",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 1,
+        "value": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'session' is missing in type '{ expires_at: number; value: string; }' but required in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "client_secret_created_0_missing_value",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 1,
+        "session": {
+          "id": "fixture",
+          "object": "realtime.session",
+          "type": "realtime"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'value' is missing in type '{ expires_at: number; session: { id: string; object: \"realtime.session\"; type: \"realtime\"; }; }' but required in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_accept_flat",
+      "shape": "call_accept",
+      "input": {
+        "type": "realtime",
+        "output_modalities": [
+          "audio"
+        ],
+        "instructions": "Answer the caller"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallAcceptParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_accept_live_wrapper",
+      "shape": "call_accept",
+      "input": {
+        "session": {
+          "type": "live"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"session\"' does not exist in type 'CallAcceptParams'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_reject_without_status",
+      "shape": "call_reject",
+      "input": {},
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallRejectParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "call_reject_status_null",
+      "shape": "call_reject",
+      "input": {
+        "status_code": null
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'null' is not assignable to type 'number | undefined'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "call_refer_sips",
+      "shape": "call_refer",
+      "input": {
+        "target_uri": "sips:help@desk.invalid"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "CallReferParams"
+      ],
+      "accepted": true
+    },
+    {
       "name": "manual_empty_tool_output",
       "shape": "conversation_item",
       "input": {
@@ -9088,6 +9514,140 @@
         "ResponseFunctionCallArgumentsDeltaEvent"
       ],
       "accepted": true
+    },
+    {
+      "name": "secret_default",
+      "shape": "client_secret_create",
+      "positive": true,
+      "input": {},
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "secret_transcription",
+      "shape": "client_secret_create",
+      "positive": true,
+      "input": {
+        "expires_after": {
+          "anchor": "created_at",
+          "seconds": 10
+        },
+        "session": {
+          "type": "transcription",
+          "audio": {
+            "input": {
+              "transcription": {
+                "model": "qwen3-asr-0.6b"
+              }
+            }
+          }
+        }
+      },
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "secret_realtime",
+      "shape": "client_secret_create",
+      "positive": true,
+      "input": {
+        "session": {
+          "type": "realtime",
+          "instructions": "look up the project record"
+        }
+      },
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateParams"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "secret_unknown_anchor",
+      "shape": "client_secret_create",
+      "input": {
+        "expires_after": {
+          "anchor": "last_use"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '\"last_use\"' is not assignable to type '\"created_at\"'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "secret_wrong_session",
+      "shape": "client_secret_create",
+      "input": {
+        "session": {
+          "type": "live"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '\"live\"' is not assignable to type '\"realtime\" | \"transcription\"'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "secret_reply_has_distinct_expiries",
+      "shape": "client_secret_created",
+      "positive": true,
+      "input": {
+        "value": "ek_fixture",
+        "expires_at": 100,
+        "session": {
+          "id": "sess_fixture",
+          "type": "realtime",
+          "object": "realtime.session",
+          "expires_at": 500
+        }
+      },
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "ClientSecretCreateResponse"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "secret_reply_requires_value",
+      "shape": "client_secret_created",
+      "input": {
+        "expires_at": 100,
+        "session": {
+          "id": "sess_fixture",
+          "type": "transcription",
+          "object": "realtime.transcription_session"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'value' is missing in type '{ expires_at: number; session: { id: string; type: \"transcription\"; object: string; }; }' but required in type 'ClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
     }
   ]
 }

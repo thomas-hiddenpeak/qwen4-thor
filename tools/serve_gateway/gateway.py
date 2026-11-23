@@ -28,6 +28,33 @@ DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
 # These route declarations are shared by standalone and supervised nginx modes.
 APPLICATION_ROUTES = [
     ('POST', '/v1/audio/transcriptions', 'data'),
+    ('POST', '/v1/audio/speech', 'data'),
+    ('POST', '/v1/decisions', 'data'),
+    ('POST', '/v1/audio/voices', 'data'),
+    ('DELETE', '/v1/audio/voices/{voice_id}', 'control'),
+    ('GET', '/v1/audio/voice_consents', 'control'),
+    ('POST', '/v1/audio/voice_consents', 'data'),
+    *((method, '/v1/audio/voice_consents/{consent_id}', 'control')
+      for method in ('GET','POST','DELETE')),
+    ('GET', '/v1/realtime', 'realtime'),
+    ('GET', '/v1/live/sessions', 'realtime'),
+    ('GET', '/v1/live/sessions/{session_id}/attach', 'sideband'),
+    ('POST', '/v1/live/sessions', 'data'),
+    ('POST', '/v1/realtime/client_secrets', 'data'),
+    ('POST', '/v1/realtime/calls', 'data'),
+    ('POST', '/v1/live/sessions/{session_id}/accept', 'data'),
+    ('POST', '/v1/realtime/calls/{call_id}/accept', 'data'),
+    ('POST', '/v1/live/sessions/{session_id}/hangup', 'control'),
+    ('POST', '/v1/realtime/calls/{call_id}/hangup', 'control'),
+    ('POST', '/v1/live/sessions/{session_id}/refer', 'control'),
+    ('POST', '/v1/realtime/calls/{call_id}/refer', 'control'),
+    ('POST', '/v1/live/sessions/{session_id}/reject', 'control'),
+    ('POST', '/v1/realtime/calls/{call_id}/reject', 'control'),
+    ('GET', '/v1/live/sessions/{session_id}/fork', 'realtime'),
+    ('POST', '/v1/live/sessions/{session_id}/fork', 'data'),
+    ('GET', '/v1/live/sessions/{session_id}/content', 'data'),
+    ('GET', '/v1/realtime/traces', 'control'),
+    *((method, '/v1/realtime/traces/{trace_id}', 'control') for method in ('GET','DELETE')),
     ('GET', '/v1/tunnels/{tunnel_id}', 'control'),
     ('GET', '/v1/tunnels/{tunnel_id}/poll', 'tunnel_poll'),
     ('POST', '/v1/tunnels/{tunnel_id}/response', 'tunnel_response'),
@@ -173,11 +200,59 @@ def route_map():
     # Static POST operations are reserved names, not retrievable Response IDs.
     rows.append('    "~^(GET|DELETE):/v1/responses/(compact|input_tokens)'
                 '(?:[?][^#]*)?$" "";')
+    # The exact call_id query attaches an observer under a separate capacity.
+    # Keep this before the general Realtime primary rule (first regex wins).
+    rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('[A-Za-z0-9_-]{1,128}' if part.startswith('{')
                            else re.escape(part) for part in path.split('/'))
         rows.append('    "~^'+method+':'+pattern+'(?:[?][^#]*)?$" '+lane+';')
     return '\n'.join(rows)
+
+
+def websocket_maps():
+    # Only the two authenticated upgrade routes can carry WebSocket headers.
+    # Validate the client's upgrade tokens before creating an upstream tunnel.
+    return r'''  map $q4t_lane $q4t_ws_client { default ""; realtime $q4t_client; }
+  map $q4t_lane $q4t_ws_all { default ""; realtime all; }
+  map $q4t_lane $q4t_side_client { default ""; sideband $q4t_client; }
+  map $q4t_lane $q4t_side_all { default ""; sideband all; }
+  limit_conn_zone $q4t_side_client zone=side_client:1m;
+  limit_conn_zone $q4t_side_all zone=side_all:1m;
+  limit_conn_zone $q4t_ws_client zone=ws_client:1m;
+  limit_conn_zone $q4t_ws_all zone=ws_all:1m;
+  map $http_connection $q4t_ws_token {
+    default 0;
+    "~*(^|,)[ \t]*upgrade[ \t]*(,|$)" 1;
+  }
+  map "$q4t_lane:$q4t_ws_token:$http_upgrade" $q4t_ws_upgrade {
+    default ""; "realtime:1:websocket" websocket; "sideband:1:websocket" websocket;
+  }
+  map $q4t_ws_upgrade $q4t_ws_connection { default close; websocket upgrade; }
+  map $q4t_ws_upgrade $q4t_ws_key { default ""; websocket $http_sec_websocket_key; }
+  map $q4t_ws_upgrade $q4t_ws_version { default ""; websocket $http_sec_websocket_version; }
+  map $http_sec_websocket_protocol $q4t_ws_realtime {
+    default ""; "~(^|,)[ \t]*realtime[ \t]*(,|$)" realtime;
+  }
+  map $http_sec_websocket_protocol $q4t_ws_live {
+    default ""; "~(^|,)[ \t]*live[ \t]*(,|$)" live;
+  }
+  map "$q4t_ws_upgrade:$uri" $q4t_ws_protocol {
+    default "";
+    "websocket:/v1/realtime" $q4t_ws_realtime;
+    "websocket:/v1/live/sessions" $q4t_ws_live;
+    "~^websocket:/v1/live/sessions/live_[A-Za-z0-9_-]+/(attach|fork)$" $q4t_ws_live;
+  }
+  map $q4t_ws_upgrade $q4t_ws_origin { default ""; websocket $http_origin; }'''
+
+
+def websocket_proxy_headers():
+    return '''      proxy_set_header Connection $q4t_ws_connection;
+      proxy_set_header Upgrade $q4t_ws_upgrade;
+      proxy_set_header Sec-WebSocket-Key $q4t_ws_key;
+      proxy_set_header Sec-WebSocket-Version $q4t_ws_version;
+      proxy_set_header Sec-WebSocket-Protocol $q4t_ws_protocol;
+      proxy_set_header Origin $q4t_ws_origin;'''
 
 
 def tunnel_maps():
@@ -222,6 +297,16 @@ def tunnel_limits():
       limit_conn all_tunnel_response 4;
       limit_req zone=tunnel_poll_rate burst=20 nodelay;
       limit_req zone=tunnel_response_rate burst=64 nodelay;'''
+
+
+def realtime_issuer_maps(clients):
+    # Only the digest of the authenticated issuing key goes to the model.
+    rows = '\n'.join('    "~^[Bb][Ee][Aa][Rr][Ee][Rr] '+c['api_key']+'$" '+
+                     hashlib.sha256(c['api_key'].encode('ascii')).hexdigest()+';'
+                     for c in clients)
+    return ('  map $http_authorization $q4t_issuer_digest {\n    default "";\n'+rows+
+            '\n  }\n  map "$request_method:$request_uri" $q4t_realtime_issuer {\n'
+            '    default "";\n    "POST:/v1/realtime/client_secrets" "Q4T-Issuer $q4t_issuer_digest";\n  }')
 
 
 def tunnel_headers():
@@ -497,6 +582,7 @@ http {{
   scgi_temp_path {q('runtime/scgi')};
   log_format q4t escape=json '{{"gateway_id":"$request_id","client":"$q4t_client","lane":"$q4t_lane","status":$status,"bytes":$body_bytes_sent,"seconds":$request_time,"upstream_status":"$upstream_status","connection_limit":"$limit_conn_status","rate_limit":"$limit_req_status"{source_log}}}';
   access_log /dev/stdout q4t;
+{realtime_issuer_maps(p['clients'])}
 {source_map}{upstream_map}  map $http_authorization $q4t_client {{
     default "";
 {clients}
@@ -515,6 +601,7 @@ http {{
   limit_conn_zone $q4t_all_control zone=all_control:1m;
   limit_req_zone $q4t_data zone=data_rate:1m rate={p['per_client_rps']}r/s;
   limit_req_zone $q4t_control zone=control_rate:1m rate=10r/s;
+{websocket_maps()}
 {tunnel_maps()}
   server {{
     listen {p['listen_host']}:{p['listen_port']} ssl default_server;
@@ -534,6 +621,10 @@ http {{
 {tunnel_checks()}
 {chr(10).join(locations)}
     location / {{
+      limit_conn side_client 2;
+      limit_conn side_all 4;
+      limit_conn ws_client 1;
+      limit_conn ws_all 4;
       limit_conn data {p['per_client_inflight']};
       limit_conn all_data {p['global_inflight']};
       limit_conn control 4;
@@ -547,10 +638,11 @@ http {{
       proxy_http_version 1.1;
       proxy_pass_request_headers off;
       proxy_set_header Host 127.0.0.1;
-      proxy_set_header Connection close;
+{websocket_proxy_headers()}
       proxy_set_header Content-Type $http_content_type;
       proxy_set_header X-Request-Id $http_x_request_id;
 {tunnel_headers()}
+      proxy_set_header Authorization $q4t_realtime_issuer;
       {identity_headers}
       proxy_buffering off;
       proxy_request_buffering on;

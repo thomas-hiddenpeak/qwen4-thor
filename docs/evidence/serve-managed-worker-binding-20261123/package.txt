@@ -1,0 +1,8 @@
+test_selected_workers_execute_only_the_qualified_image (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_selected_workers_execute_only_the_qualified_image) ... ok
+test_live_transport_is_pinned_and_optional_during_service_check (tools.serve_recovery.test_lifecycle.NativeEntryTests.test_live_transport_is_pinned_and_optional_during_service_check) ... ok
+test_sealed_authority_cannot_change_or_disappear_on_automatic_recovery (tools.serve_recovery.test_mcp_recovery_contract.PrivatePolicyRecoveryTests.test_sealed_authority_cannot_change_or_disappear_on_automatic_recovery) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 5.349s
+
+OK

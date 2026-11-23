@@ -306,9 +306,9 @@ def aware(package):
     except (OSError, ValueError, UnicodeError): return False
 
 
-def verify(original, original_sha, target, target_sha):
+def verify(original, original_sha, target, target_sha, *, read_bundle=bundle.verify):
     original, target = Path(original).resolve(strict=True), Path(target).resolve(strict=True)
-    first = bundle.verify(original, original_sha); second = bundle.verify(target, target_sha)
+    first = read_bundle(original, original_sha); second = read_bundle(target, target_sha)
     ledger.require(12 <= first['version'] <= 16, 'resource adapter needs a retained qualified service')
     profile_history = first['files'][profile_compat.SOURCE] != second['files'].get(profile_compat.SOURCE)
     replacements = changes(original, profile_history=profile_history)

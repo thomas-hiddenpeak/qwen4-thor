@@ -11,7 +11,7 @@ from unittest import mock
 
 from tools.serve_recovery import access_store, deployment, ledger, profile_store, service
 from tools.serve_recovery import test_version_registration, version_journal, version_launch
-from tools.serve_recovery import version_policy, version_runtime, version_store
+from tools.serve_recovery import version_contract, version_policy, version_runtime, version_store
 
 
 class RuntimeTests(unittest.TestCase):
@@ -47,6 +47,17 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(version_runtime.prepare(self.binding,selected,self.args()),result)
         self.assertEqual(self.profiles(),after)
         self.preserve()
+
+    def test_prepare_requalifies_each_request_and_verifies_receipt_once(self):
+        selected = self.base.consume()
+        with mock.patch.object(version_contract, 'accepted_fallback',
+                               wraps=version_contract.accepted_fallback) as check:
+            version_runtime.prepare(self.binding, selected, self.args())
+            self.assertEqual(check.call_count, 1)
+            Path(self.base.receipt['decision']['path']).write_bytes(b'{}')
+            with self.assertRaises(ValueError):
+                version_runtime.prepare(self.binding, selected, self.args())
+            self.assertEqual(check.call_count, 2)
 
     def test_cleanup_retirement_and_registered_selection_required_before_migration(self):
         selected = self.base.consume();before = self.profiles()

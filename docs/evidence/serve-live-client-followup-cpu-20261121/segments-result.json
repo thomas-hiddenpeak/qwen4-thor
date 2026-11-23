@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "commands": [
+    {
+      "index": 0,
+      "returncode": 0
+    },
+    {
+      "index": 1,
+      "returncode": 0
+    },
+    {
+      "index": 2,
+      "returncode": 0
+    }
+  ],
+  "seconds": 0.20940516097471118,
+  "sources": {
+    "tools/serve_live/checks.py": "30c47981d8088999c0cd846be014995932ef8065592e6df76adea87d55112a86",
+    "tools/serve_live/client_acceptance.py": "f1c369daca1924883550edca3544a5b7abedfafd5e10eb29a6f4e94ab9ca23ff",
+    "tools/serve_live/client_sdk.mjs": "c48fddeea184786f0cd8bce5e4a8b8336a536304a731d49c889bb2237c561781",
+    "tools/serve_live/client_wait.mjs": "874d3d58e72e391aced1dfd79acad1c9f9eaa67c9e3b0730bbbab7a32097ba52",
+    "tools/serve_live/test_checks.py": "1d2903fcb5908c8353a8d69575aecfe555ad1142bfcd1ad873f0c13b88eb12a9",
+    "tools/serve_live/test_client_wait.mjs": "e03b5f71ce4e5157cb1aa922faa3e5cbeedc08e271a914c1cd284a652001a2ad"
+  },
+  "sources_unchanged": true,
+  "tests": 5,
+  "reused_node_tests": 4,
+  "gpu_actions": 0,
+  "archive_sha256": "d695c8500637803bfd49a7883f91931bdf1bb5ced464f07436bf6e185d8f6489"
+}

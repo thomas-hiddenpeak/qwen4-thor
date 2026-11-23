@@ -1,0 +1,78 @@
+{
+  "status": "PASS_LIVE_FIXTURE_AND_CLIENT_PROTOCOL",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 65,
+    "cleanup_complete": true
+  },
+  "observation": {
+    "protocol": "PASS",
+    "quality": [
+      {
+        "label": "input_transcription",
+        "actual": "请查询当前项目版本号。",
+        "expected": "请查询当前项目版本号。",
+        "status": "PASS"
+      },
+      {
+        "label": "project_version",
+        "actual": "rev426",
+        "expected": "rev426",
+        "status": "PASS"
+      }
+    ],
+    "admitted": 3.0,
+    "settled_tokens": 1717.0,
+    "private_token_breakdown_not_exposed": true,
+    "activity_seconds": 26.549182609,
+    "speech_segments": [
+      {
+        "transcript": "rev426",
+        "bytes": 107520,
+        "sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c",
+        "client_event_id": "project_answer"
+      }
+    ],
+    "waveform_bytes": 107520,
+    "waveform_sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c",
+    "listener_heard_audio": false,
+    "session_id": "live_7a0623b30ed51cb197fd3a8f91e417d7",
+    "fixture": {
+      "bytes": 138240,
+      "sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483",
+      "source_equal": true,
+      "new_model_work": 0,
+      "listener_heard": false,
+      "receive_interval_ns": 2883514864
+    }
+  },
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "fixture_plays": 1,
+    "audio_inputs": 1,
+    "responses": 2,
+    "chats": 1,
+    "controls": 35
+  },
+  "seconds": 68.02240299992263,
+  "quality": "PASS",
+  "default_unchanged": true,
+  "listener_validation": false,
+  "managed_recovery": false,
+  "master_complete": false,
+  "source_commit": "b9f286cdd59c3778061f671a1c98b08fa45b8768",
+  "binary_sha256": "8bba3d11d617931043bc3894623bea08d579914add78d93b52c8f158274d5b93",
+  "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935",
+  "plan_sha256": "2dd817c19741dc827e5a7a7261842f6768f1f0b13a18b6b20c957887a37c9082",
+  "cumulative_live": {
+    "starts": 4,
+    "actual_work": 14,
+    "seconds": 323.3045244219226,
+    "prior_failures_retained": true
+  },
+  "archive_sha256": "b61ef4a913e4cd27e1d510f1c4cc574842ae881ecb399c9445179f5469412338"
+}

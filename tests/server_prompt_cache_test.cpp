@@ -550,3 +550,36 @@ Q4T_TEST(chat_cache_latest_eighty_unique_boundaries_and_four_writes) {
             plan.writes.back().tokens == 2114);
   return true;
 }
+
+Q4T_TEST(
+    decision_cache_layout_excludes_question_and_preserves_last_shared_message) {
+  auto body = Read(
+      "{\"model\":\"cpu\",\"messages\":[{\"role\":\"user\",\"content\":\"" +
+      std::string(1150, 'a') +
+      "\"},{\"role\":\"assistant\",\"content\":\"last shared\"},"
+      "{\"role\":\"user\",\"content\":\"new question\"}]}");
+  ChatPlanConfig config;
+  config.model = "cpu";
+  ChatRequestPlan request;
+  ChatPlanError error;
+  Q4T_CHECK(PlanChatRequest(body, config, &request, &error));
+  ChatPromptLayout layout;
+  std::string prompt, param;
+  std::vector<VisionItem> media;
+  Q4T_CHECK(
+      PrepareChatPrompt(body, {}, &prompt, &media, &param, nullptr, &layout));
+  std::vector<size_t> offsets(prompt.size());
+  std::iota(offsets.begin(), offsets.end(), 0);
+  PromptCachePlan shared, ordinary;
+  Q4T_CHECK(PlanPromptCacheLayout(request.cache, *body.Find("messages"), layout,
+                                  {}, offsets, prompt.size(), &shared, 2));
+  Q4T_CHECK(PlanPromptCacheLayout(request.cache, *body.Find("messages"), layout,
+                                  {}, offsets, prompt.size(), &ordinary));
+  Q4T_CHECK(!shared.writes.empty() && !ordinary.writes.empty());
+  Q4T_CHECK(shared.writes.back().tokens == int(layout.messages[1].prompt_end) &&
+            shared.writes.back().tokens < ordinary.writes.back().tokens);
+  Q4T_CHECK(!PlanPromptCacheLayout(request.cache, *body.Find("messages"),
+                                   layout, {}, offsets, prompt.size(), &shared,
+                                   4));
+  return true;
+}

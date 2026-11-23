@@ -1,0 +1,70 @@
+{
+  "media": [
+    {
+      "codec": "OPUS",
+      "payload": 111,
+      "inbound_samples": 28768,
+      "outbound_samples": 28288,
+      "amplitudes": [
+        9000,
+        9018
+      ],
+      "loopback_ice_candidates": 1,
+      "data_messages": 2,
+      "audio_after_data_channel_close": true
+    },
+    {
+      "codec": "PCMU",
+      "payload": 0,
+      "inbound_samples": 29065,
+      "outbound_samples": 28606,
+      "amplitudes": [
+        8885,
+        8972
+      ],
+      "loopback_ice_candidates": 1,
+      "data_messages": 2,
+      "audio_after_data_channel_close": true
+    },
+    {
+      "codec": "PCMA",
+      "payload": 8,
+      "inbound_samples": 29041,
+      "outbound_samples": 28606,
+      "amplitudes": [
+        8673,
+        9021
+      ],
+      "loopback_ice_candidates": 1,
+      "data_messages": 2,
+      "audio_after_data_channel_close": true
+    }
+  ],
+  "rejected": 4,
+  "rejected_wrong_pin": true,
+  "isolated_missing_plugins": true,
+  "invalid_bindings": 4,
+  "owner_eof_cleanup": true,
+  "startup_timeout_seconds": 15.013,
+  "new_model_starts": 0,
+  "worker_sha256": "73f474c81858863385c86947d19cd036015553013eecb930d93dede73c53bd33",
+  "dev_packages": {
+    "gstreamer1.0-nice_0.1.21-2build3_arm64.deb": "1e82a7173412ea0ddfb990de76b94066021c2d15e6ff7a41b106a942b06dbbc4",
+    "libgstreamer-plugins-bad1.0-dev_1.24.2-1ubuntu4_arm64.deb": "e13974e15f3d10ba25b11a543bb95f84532c22a1208ea853280b8f10b8503a37"
+  },
+  "published_http": false,
+  "core_linked_gstreamer": false,
+  "prior_attempt_logs": {
+    "media-01.log": "e543675b38a7e4b8fa234fdbad529d4dc6316eb96566baa8095a5450799ebab6",
+    "media-02.log": "0647caf4d0a68308b0f16dd55648ef1a64dac3a2e28ac80ec0d653e980db6d63",
+    "media-03.log": "0c8ad155ec8226e7b031630b883d9b7bd8edd40ea7ffde49d2998af4d346a59d",
+    "media-04.log": "d086abd8528a30d823e3ca64d25e4769abfc75652ef46cb6afae2b160adf111a",
+    "media-05.log": "a2ebf5871c2abe103fab903fe07b4f157a773e8c7f96c6946c9e435c16d2381b",
+    "opus-01.log": "70e5bdb45e1b98ac0fb272a2a058e3166f8e2b7b34cacb86cff246bf15d6e6e8",
+    "opus-02.log": "44b489445a3b13cae8233dc1823546280e1fa297286e10136c0f96808e30d0a8",
+    "opus-03.log": "92f44a7cc0d9fbafb9624dd65ddc1f2378c14b90e34f3c8975d3c951c8213eae",
+    "opus-04.log": "eb1e04471e86273674eacf0bcb6d58d7ccf29793732768199b689c878138dd23",
+    "opus-05.log": "f2d04ac4d2082909ef29707496ea6a358855d2749b859ca7ea7e1a51e75bbde1"
+  },
+  "scope": "loopback ICE, DTLS fingerprint, SRTP and SCTP; CPU generated PCM"
+}

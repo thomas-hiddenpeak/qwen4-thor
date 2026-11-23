@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "transcript": "rev426",
+  "usage": {
+    "input_tokens": 316,
+    "output_tokens": 454,
+    "total_tokens": 770,
+    "input_token_details": {
+      "cached_tokens": 0
+    },
+    "output_token_details": {
+      "text_tokens": 5,
+      "audio_tokens": 449
+    }
+  }
+}

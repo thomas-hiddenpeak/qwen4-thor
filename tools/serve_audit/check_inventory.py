@@ -21,6 +21,25 @@ def native_token_observer(generation):
         raise ValueError('native output skipped token observation')
 
 
+def native_live_binding(realtime, live):
+    """Review concrete primary ownership; wire shapes alone are not execution."""
+    if 'HandleLive(fd, path, headers, initial, accept)' not in realtime or \
+            'path.substr(0, path.find(\'?\')) == "/v1/live/sessions"' not in realtime or \
+            not all(marker in live for marker in (
+                'path != "/v1/live/sessions"', 'PrepareRealtimeInput(client)',
+                'clients_.RecoveryIdentity(client.Index())',
+                'clients_.OwnsIdentity(client)', 'identity->Limits()',
+                'LockUnlessCancelled(tok_mu_, cancelled)', 'tok_->Encode(',
+                'MapLiveStartupHistory(', 'PrepareChatPrompt(',
+                'PlanNativeLiveClient(', 'requests_.Register(',
+                'requests_.Remove(control)',
+                'RunRealtimeConversation(client, job, control, delta, speech)',
+                'std::make_unique<NativeLiveClientBackend>',
+                'clients_.Authenticate(headers.client_id, headers.gateway_token)',
+                'return session.Finalized()', 'session.Join()')):
+        raise ValueError('review native Live primary execution and ownership')
+
+
 def missing_protocol_sources(root, manifest=None):
     if manifest is None:
         manifest = (root / "cmake/ChatProtocolIdentity.cmake").read_text()
@@ -84,6 +103,10 @@ def current_surface(root):
                     'ClientRateDomain::kBatch' in execution:
                 raise ValueError('review Realtime conversation native ownership')
             routes.append(("/v1/realtime", "GET"))
+        if 'HandleLive(fd, path, headers, initial, accept)' in realtime:
+            live = (root / 'src/server/chat_live.cpp').read_text()
+            native_live_binding(realtime, live)
+            routes.append(("/v1/live/sessions", "GET"))
     native = (root / "src/service/ingress_main.cpp").read_text()
     native_routes = re.findall(
         r'\{\s*"(GET|POST)"\s*,\s*"([^"]+)"\s*,\s*(true|false)\s*\}', native)
@@ -100,6 +123,73 @@ def current_surface(root):
             'server::RealtimeTraceMethodAllowed(method, path)' not in native or \
             'inline bool RealtimeTraceMethodAllowed' not in application_routes:
         raise ValueError('review native trace transport and authenticated scope')
+    if 'SendLiveRecording(fd, *objects_, access, std::string(id))' not in dispatch or \
+            'server::LiveRecordingId(path)' not in native or 'inline std::string_view LiveRecordingId' not in application_routes:
+        raise ValueError('review authenticated binary Live content routing')
+    content = '/v1/live/sessions/{session_id}/content'
+    routes.append((content, 'GET'))
+    native_routes.append(('GET', content, 'false'))
+    attachment = '/v1/live/sessions/{session_id}/attach'
+    sideband = (root / 'src/server/chat_live_sideband.cpp').read_text()
+    if ('HandleLiveSideband(fd, path, headers, initial, accept)' not in realtime or
+            'lease.sideband = method == "GET" && server::IsCallSideband(path)' not in native or
+            not all(marker in sideband for marker in
+                    ('slot.client == client.Id()', 'slot.session == id', 'stream->Attach(',
+                     'stream->Next(', 'stream->Enqueue(', 'RunWebSocketSession('))):
+        raise ValueError('review Live attach authorization, replay and command ownership')
+    routes.append((attachment, 'GET'))
+    native_routes.append(('GET', attachment, 'false'))
+    media = (root / 'src/server/chat_live_media.cpp').read_text()
+    if ('HandleLiveMediaCreate(fd, LiveForkId(path), body, admission)' not in dispatch or
+            '!server::LiveForkId(path).empty()' not in native or
+            'ReadLiveForkState(*objects_, access, std::string(source))' not in live or
+            not all('LoadLiveFork(fd, client, source, &state)' in unit for unit in (live, media))):
+        raise ValueError('review owner-scoped fork dispatch and checkpoint loading')
+    if ('HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type)' not in dispatch or
+            'ParseRealtimeWebRtcOffer(*offer_type, body, &offer)' not in media or
+            'slot.session != id || slot.client != http->Client().Id()' not in media or
+            'RealtimeCarrier::kWebRtcData' not in media):
+        raise ValueError('review SDP negotiation, data channel and call ownership')
+    issuer = (root / 'src/server/chat_realtime_secrets.cpp').read_text()
+    if ('IssueRealtimeSecret(fd, headers, body)' not in dispatch or
+            'grant.owner != client.Id()' not in dispatch or
+            'realtime_secrets_.Resolve(' not in dispatch or
+            'PreviewCredential(startup, &resource)' not in issuer or
+            'realtime_secrets_.Issue({client.Id(), headers.gateway_token, issuer}' not in issuer or
+            'access.AuthenticateRealtime(ticket, binding.token, now)' not in native or
+            'access.StillActive(identity)' not in native):
+        raise ValueError('review Realtime credential issuing key, verified owner and allowed targets')
+    routes.append(('/v1/realtime/calls', 'POST'))
+    routes.append(('/v1/live/sessions', 'POST'))
+    fork = '/v1/live/sessions/{session_id}/fork'
+    for method in ('GET', 'POST'):
+        routes.append((fork, method))
+        native_routes.append((method, fork, 'false'))
+    reject = '/v1/live/sessions/{session_id}/reject'
+    if ('HandleSipReject(fd, SipRejectId(path), body)' not in dispatch or
+            'server::IsSipReject(method, path)' not in native or
+            'sip_service_.Reject(http->Client().Id()' not in media):
+        raise ValueError('review scoped SIP rejection and native routing')
+    for path in (reject, '/v1/realtime/calls/{call_id}/reject'):
+        routes.append((path, 'POST'))
+        native_routes.append(('POST', path, 'true'))
+    if ('SipControlId(path, "/accept")' not in dispatch or
+            'RealtimeMediaCall' not in media or
+            'server::SipControlId(path, "/accept")' not in native or
+            'sip_service_.Reserve(client.Id(), sip_id' not in media or
+            'server::IsSipRefer(method, path)' not in native or
+            'sip_service_.Refer(http->Client().Id()' not in media or
+            'server::IsSipHangup(method, path)' not in native or
+            'sip_service_.Hangup(http->Client().Id()' not in media):
+        raise ValueError('review authenticated SIP accept, hangup and routing')
+    for path, control in (('/v1/live/sessions/{session_id}/accept', 'false'),
+                          ('/v1/realtime/calls/{call_id}/accept', 'false'),
+                          ('/v1/live/sessions/{session_id}/hangup', 'true'),
+                          ('/v1/realtime/calls/{call_id}/hangup', 'true'),
+                          ('/v1/live/sessions/{session_id}/refer', 'true'),
+                          ('/v1/realtime/calls/{call_id}/refer', 'true')):
+        routes.append((path, 'POST'))
+        native_routes.append(('POST', path, control))
     traces = [("GET", "/v1/realtime/traces"),
               ("GET", "/v1/realtime/traces/{trace_id}"),
               ("DELETE", "/v1/realtime/traces/{trace_id}")]
@@ -311,6 +401,8 @@ def current_surface(root):
                    set(root.glob("src/text/**/*.cpp")) |
                    set(root.glob("include/q4t/text/**/*.h")) |
                    set(root.glob("src/service/**/*.cpp")) |
+                   set(root.glob("src/service/**/*.h")) |
+                   {root / "cmake/NativeSip.cmake", root / "cmake/NativeWebRTC.cmake"} |
                    set(root.glob("include/q4t/service/**/*.h")) |
                    set(root.glob("src/audio/**/*.cpp")) |
                    set(root.glob("src/audio/**/*.cu")) |
@@ -441,6 +533,24 @@ def mutation_checks(inventory, actual):
             raise ValueError("trace deletion escaped extraction")
         cases.append(dict(actual, **{group: [route for route in actual[group]
                                             if route != trace]}))
+        content = "GET /v1/live/sessions/{session_id}/content"
+        if content not in actual[group]:
+            raise ValueError("Live download escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group] if route != content]}))
+        for method in ("GET", "POST"):
+            fork = method + " /v1/live/sessions/{session_id}/fork"
+            if fork not in actual[group]:
+                raise ValueError("Live fork routing escaped extraction")
+            cases.append(dict(actual, **{group: [r for r in actual[group] if r != fork]}))
+        media = "POST /v1/live/sessions"
+        if media not in actual[group]:
+            raise ValueError("Live HTTP creation escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group] if route != media]}))
+        live = "GET /v1/live/sessions"
+        if live not in actual[group]:
+            raise ValueError("Live primary route escaped extraction")
+        cases.append(dict(actual, **{group: [route for route in actual[group]
+                                            if route != live]}))
     for case in cases:
         if not check(inventory, case):
             raise ValueError("inventory mutation escaped detection")
@@ -480,7 +590,18 @@ def mutation_checks(inventory, actual):
             pass
         else:
             raise ValueError('native output omission escaped review')
-    return len(cases) + 4 + len(private_headers) + len(text_paths)
+    realtime = (ROOT / 'src/server/chat_realtime.cpp').read_text()
+    live = (ROOT / 'src/server/chat_live.cpp').read_text()
+    for marker in ('RunRealtimeConversation(client, job, control, delta, speech)',
+                   'clients_.OwnsIdentity(client)', 'tok_->Encode(',
+                   'return session.Finalized()'):
+        try:
+            native_live_binding(realtime, live.replace(marker, 'omitted'))
+        except ValueError:
+            pass
+        else:
+            raise ValueError('native Live binding omission escaped review')
+    return len(cases) + 8 + len(private_headers) + len(text_paths)
 
 
 def main():

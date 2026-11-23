@@ -109,6 +109,48 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_wire_shape.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_conversation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_shape_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_shape_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_configuration.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_media_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_media_call.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_media_call.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_client_ticket.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_client_secrets.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_webrtc_request.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_call_pcm.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_sideband.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_media_process.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_settings.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_validation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_turn.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_responses_delegate.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_decision_items.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_decision_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_decision_delegate.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_recording.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_recording_store.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/decision_plan.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/decision_scoring.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_configuration_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_decision_plan_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_decision_execution_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_recording_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_session.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_session_pump.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_audio_input.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_audio_output.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_audio_fixture.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_frontend_work.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_frontend.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_client_context.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_native_backend.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_frontend_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_frontend_work_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_audio_input_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_audio_fixture_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_session_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_session_pump_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_response_output_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_conversation_session_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_conversation_pump_test.cpp
@@ -267,6 +309,10 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_webhook.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_service.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_child.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sip_owner_fixture.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/mcp_provider.cpp
@@ -439,6 +485,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_finite_response_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_response.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/finite_response.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_responses_stream.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_native_responses_stream_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_contract_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_message_profile_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_tool_history.cpp

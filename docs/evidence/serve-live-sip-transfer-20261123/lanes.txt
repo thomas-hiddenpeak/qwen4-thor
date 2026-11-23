@@ -1,0 +1,5 @@
+[PASS] live_sip_wire_control_semantics
+[PASS] live_sip_accept_uses_dedicated_startup_contract_before_owner_creation
+[PASS] live_sip_reject_preserves_control_admission
+[PASS] live_sip_accept_holds_realtime_lane_while_hangup_uses_control
+4 tests, 4 passed, 0 failed, 0 skipped

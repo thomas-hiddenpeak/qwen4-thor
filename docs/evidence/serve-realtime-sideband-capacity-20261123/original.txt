@@ -1,0 +1,21 @@
+FF
+======================================================================
+FAIL: test_realtime_call_observers_do_not_consume_primary_capacity (tools.serve_realtime.test_upgrade_ingress.NativeUpgrade.test_realtime_call_observers_do_not_consume_primary_capacity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_upgrade_ingress.py", line 288, in test_realtime_call_observers_do_not_consume_primary_capacity
+    self.assertEqual(status, expected)
+AssertionError: 429 != 101
+
+======================================================================
+FAIL: test_realtime_call_observers_do_not_consume_primary_capacity (tools.serve_realtime.test_upgrade_ingress.OptionalNginxUpgrade.test_realtime_call_observers_do_not_consume_primary_capacity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_realtime/test_upgrade_ingress.py", line 288, in test_realtime_call_observers_do_not_consume_primary_capacity
+    self.assertEqual(status, expected)
+AssertionError: 429 != 101
+
+----------------------------------------------------------------------
+Ran 2 tests in 2.483s
+
+FAILED (failures=2)

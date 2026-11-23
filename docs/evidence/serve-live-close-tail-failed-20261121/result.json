@@ -1,0 +1,27 @@
+{
+  "status": "FAIL_LIVE_CLOSE_TAIL_EXTRA_ASR",
+  "source_commit": "bd54131f32cc9255001be759356d218763b04a9b",
+  "binary_sha256": "43683066aa79cbd70504eb1acbb63b8347d82a49f095866bd65593446d7506bf",
+  "plan_sha256": "4dcc90af84d3c2364b13c980fd1e17386b1185b681f0bba22b21570dc27a183e",
+  "actual_model_starts": 1,
+  "actual_admitted_work": 4,
+  "alpha_asr_frontend_admitted": 3,
+  "beta_fixture_admitted": 1,
+  "extra_tail_asr_rejected": true,
+  "seconds": 77.92148964898661,
+  "quality": "ASR_QUERY_AND_PROJECT_VERSION_PASS",
+  "client_delegation": true,
+  "real_record_read_and_returned": {
+    "path": "docs/STATUS.md",
+    "sha256": "0204e025fbf37385cde771ca1bd324a270537d892abd394263778be297147e25",
+    "version": "rev426"
+  },
+  "default_unchanged": true,
+  "environment_abort": false,
+  "nvml_queries": 74,
+  "all_nvml_queries_ok": true,
+  "cleanup_confirmed": true,
+  "main_not_delivered": true,
+  "master_active": true,
+  "archive_sha256": "151e9e7a2feb4125aa9bac96b45d8d21db29f56d4a6a6772966d28a22caec8dc"
+}

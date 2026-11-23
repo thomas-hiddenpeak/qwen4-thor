@@ -12,7 +12,7 @@ from pathlib import Path
 import uuid
 
 from tools.serve_host import native
-from tools.serve_recovery import access_store, deployment_policy, ledger
+from tools.serve_recovery import access_store, bundle, deployment_policy, ledger
 from tools.serve_recovery import publication_files as files, root_checkpoints as checkpoints
 from tools.serve_recovery import root_version_policy as policy, store, version_contract
 from tools.serve_recovery import version_policy, version_registration as registration, version_store
@@ -23,12 +23,13 @@ FORMAT = 'q4t-root-version-transaction-v1'
 MAX_BYTES = policy.MAX_BYTES+4096
 
 
-def records(binding):
+def records(binding, *, read_bundle=bundle.verify):
     result = {}
     for cycle, paths in registration.intents(binding['state_directory']).items():
         ledger.require(set(paths) == {'committed'}, 'version registration needs resume')
         path = paths['committed']
-        value = registration.intent(native.private_json(path, registration.MAX_BYTES), binding)
+        value = registration.intent(native.private_json(path, registration.MAX_BYTES), binding,
+                                    read_bundle=read_bundle)
         ledger.require(value['registration']['registry']['cycle_id'] == cycle,
                        'registration filename differs')
         result[cycle] = dict(value=value, sha256=engine.sha(path))
@@ -91,7 +92,14 @@ def prepare(binding, intent, current, rows):
     target = latest(binding, rows, intent['target'], current)
     if target is None: return None  # Explicit new deployment registers its new cycle separately.
     row, saved = target
-    transfer = policy.prepare(intent, current, saved, row['value']['registration']['registry'])
+    registration_value = row['value']['registration']
+    if current['registry'] == registration_value['registry']:
+        # Returning from an unregistered root can already have the target's
+        # exact live cycle. Recheck launch eligibility and preserve its journal.
+        ledger.require(saved == current, 'retained target differs from its live checkpoint')
+        version_contract.verify(registration_value)
+        return None
+    transfer = policy.prepare(intent, current, saved, registration_value['registry'])
     source = rows.get(current['registry']['cycle_id'])
     ledger.require(source is not None, 'current root registration is missing')
     return validate(dict(format=FORMAT, binding=binding, transfer=transfer,
@@ -162,45 +170,48 @@ def authorized_store(value):
     return AuthorizedStore
 
 
-def profile_context(value, rows):
+def profile_context(value, rows, read_previous=bundle.verify):
     transfer = value['transfer']
     state = transfer['before']
     source = rows[state['registry']['cycle_id']]['value']['registration']
-    primary = version_contract.payload(source['payloads']['primary']['descriptor'])
+    primary = version_contract.payload(source['payloads']['primary']['descriptor'], read_bundle=read_previous)
     sources = [(primary['descriptor']['package'], primary['manifest'])]
     grants = {}
     if state['switch'] is not None:
-        fallback = version_contract.payload(source['payloads']['fallback']['descriptor'])
+        fallback = version_contract.payload(source['payloads']['fallback']['descriptor'], read_bundle=read_previous)
         sources.append((fallback['descriptor']['package'], fallback['manifest']))
         request = str(uuid.uuid5(uuid.UUID(state['switch']['request_id']),
                                 'version-profile-migration'))
-        grants[request] = [version_contract.compatible(primary, fallback)]
+        grants[request] = [version_contract.registered_compatibility(primary, fallback, source, read_bundle=read_previous)]
     target = rows[transfer['candidate']['registry']['cycle_id']]['value']['registration']
+    if read_previous is not bundle.verify:
+        # A historical proof must never admit a stale target or its fallback.
+        version_contract.verify(target)
     name = version_policy.launch_payload(transfer['candidate'])
     payload = version_contract.payload(target['payloads'][name]['descriptor'])
     return dict(sources=sources, grants=grants, target=payload['manifest'],
                 target_package=payload['descriptor']['package'])
 
 
-def preview(binding, intent, core):
+def preview(binding, intent, core, *, read_previous=bundle.verify):
     ledger.require(core['desired'] == 'STOPPED' and not any(core['active'].values()),
                    'root transfer requires durable stopped ownership')
     if not registration.present(binding['state_directory']): return None
-    rows = records(binding)
+    rows = records(binding, read_bundle=read_previous)
     with version_store.open_bound(binding) as writer:
         value = prepare(binding, intent, writer.head['state']['policy'], rows)
-    return None if value is None else profile_context(value, rows)
+    return None if value is None else profile_context(value, rows, read_previous)
 
 
 @contextmanager
-def transaction(binding, intent, core):
+def transaction(binding, intent, core, *, read_previous=bundle.verify):
     ledger.require(core['desired'] == 'STOPPED' and not any(core['active'].values()),
                    'root transfer requires durable stopped ownership')
     state = binding['state_directory']
     if not registration.present(state):
         yield None
         return
-    rows = records(binding)
+    rows = records(binding, read_bundle=read_previous)
     saved = read_intent(binding, rows)
     replay = saved is not None and saved['transfer']['deployment']['request'] == intent['request']
     if replay:
@@ -221,7 +232,7 @@ def transaction(binding, intent, core):
         save(binding, rows, value)
         checkpoints.write(state, marker(binding, rows[transfer['before']['registry']['cycle_id']]),
                           transfer['before'])
-        context = profile_context(value, rows)
+        context = profile_context(value, rows, read_previous)
         yield context
         # Profile migration succeeded before this change can be made durable.
         writer.contract = authorized_store(value).contract

@@ -1,0 +1,73 @@
+{
+  "review": "PASS",
+  "original_status": "FAIL",
+  "lease_status": "COMMAND_FAILED",
+  "original_error": "RuntimeError: spoken input and real tool data",
+  "seconds": 67.12028776714578,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 1,
+    "fixture_plays": 1,
+    "audio_inputs": 1,
+    "responses": 2,
+    "chats": 1,
+    "downloads": 3,
+    "controls": 33
+  },
+  "nvml_queries": 65,
+  "cleanup_complete": true,
+  "default_unchanged": true,
+  "core": "42",
+  "additional_model_starts": 0,
+  "fork": {
+    "frontend_items": 9,
+    "handoff_pairs": 1,
+    "scoped": true,
+    "input": "\u8bf7\u67e5\u8be2\u5f53\u524d\u9879\u76ee\u7248\u672c\u53f7\u3002",
+    "answer": "rev426",
+    "source_and_fork_expire_together": true
+  },
+  "wave_frames": 654640,
+  "input_track": [
+    {
+      "start_frame": 93120,
+      "frames": 69120,
+      "sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483"
+    }
+  ],
+  "output_track": [
+    {
+      "start_frame": 1657,
+      "frames": 69120,
+      "sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483"
+    },
+    {
+      "start_frame": 600879,
+      "frames": 53760,
+      "sha256": "0e08da7a2c89702efb1d2a6222e947e01ee8cbc8a5bb2bfd4b0fa11918c5310c"
+    }
+  ],
+  "counterexamples": [
+    "wrong_source",
+    "wrong_transcript",
+    "missing_result",
+    "foreign_result",
+    "incorrect_project",
+    "missing_answer"
+  ],
+  "raw_sha256": {
+    "result.json": "f8be78faa0ee564e9821b163ead14cd4b234515963c15b9e67122c4127571c75",
+    "plan.json": "b80693d86d819d551800b0b7160f41115712bfcc8fdd886308cb23d4575165bd",
+    "sdk.json": "d8af6711af95bb997b25e6f4de53eed7807c7f5b27b388a727dca10e6f2cdb78",
+    "events.jsonl": "03050ea0c86e3993f4790b55c5011db8a3018989c11bfdbc69d6660f3c9c0e08",
+    "core-after.wire": "204f9e3f1f6dbfec135892b4f26db6f233fe2c9d7af9ca9d48cf135b321d8245",
+    "recording.wav": "90f9643a87c600ff424aa8294619011fb0ec4dc3d3f6919101f834bef335d0cf",
+    "lease/exit.json": "c811dd00c221f90ef2baac9958c21e5f8794e8e8a23a01d9d774cafd6c3f14c5",
+    "lease/nvml-queries.jsonl": "ce22a64f74103fbf38cddcdec9777594503244babbc8354d8e0ead368a3e6afb",
+    "cleanup.json": "4f0a6567a7fddce89462c234568598f768706c0da71a834b5e7f66c8ae184f6a",
+    "live-drained.json": "b90c1e858d8d36473506b0e818067cdb61f335bedf21fce1a0790d0d5f0f7286",
+    "final-drained.json": "047017f9a04dba068b39448f0446e3a964ad872132f409e26abdbb3b609788ae",
+    "objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.live_fork_state.fork_ebfd401a2f282a3846b1f549d46a477a32ad154442a5b614ef0c449702ed0b45.json": "c7c3ce80749d74bede66b9eb10a9098330ffb422d60824f7bfa4c3d246e13681"
+  }
+}

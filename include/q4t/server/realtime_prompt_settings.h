@@ -6,6 +6,8 @@
 #include "q4t/server/prompt_registry.h"
 
 namespace q4t::server {
+// Per-connection settings override the credential's private startup options.
+io::Json MergeRealtimeStartup(io::Json settings, const io::Json& overrides);
 struct RealtimeMcpContext;
 struct RealtimePromptSelection {
   io::Json settings;

@@ -1,0 +1,39 @@
+{
+  "status": "PASS_RECORDING_STORAGE_TARGETED_CPU",
+  "tests": [
+    "live_recording_interleaves_overlaps_and_silence_on_the_sample_clock",
+    "live_recording_decodes_g711_exactly_and_allows_empty_or_silent_sessions",
+    "live_recording_streams_large_spans_and_reads_each_chunk_once",
+    "live_recording_rejects_partial_overlapping_or_unconfirmed_writes",
+    "live_recording_corrupt_chunk_map_or_stream_fails_before_false_completion",
+    "live_recording_store_publishes_atomically_and_scopes_download_after_restart",
+    "live_recording_abort_revocation_and_backpressure_preserve_privacy",
+    "live_recording_download_exact_route_and_opt_in_cli",
+    "live_native_unconnected_selection_never_starts_or_publishes",
+    "live_native_concrete_session_runs_input_speech_mute_and_close",
+    "live_native_disconnect_joins_the_active_borrower_without_completion",
+    "live_fixture_drops_input_preserves_user_mute_and_resumes",
+    "live_fixture_native_wire_formats_and_normal_close_are_real",
+    "live_recording_storage_failure_keeps_voice_and_normal_close",
+    "live_recording_permission_without_session_opt_in_never_opens_storage",
+    "binary_durable_chunks_exact_bytes_private_files_and_restart"
+  ],
+  "unique_native_passed": 16,
+  "deployment_tests": 4,
+  "driver_mutations": 5,
+  "first_cli_fixture_failure": "missing required model directory; CLI-only fixture corrected",
+  "engine_sha256": "1bf7fea3ec11d543a6d4a7af68063553350992bb4c363a0a6213d0a9ce29ba96",
+  "ingress_sha256": "9c3ad2183f46912709bb458e15a843b350870a52fee19abf13a6c2882a642817",
+  "host_tests_sha256": "d84e35abc3549d27e533095b36baeb9c648b431a25cdbdb920ebbfe26b267cd2",
+  "logs": {
+    "host-final.log": "693b428f8d9877456103f061c7e1ea999bb99e8ec3a56213340d4b829e6297c0",
+    "engine-qualified.log": "a6ac2d051a99893b9c47655b7a7d398f171d73ef8e861a63691234e4132a66ed",
+    "host-fixture.log": "5b5ceb058adf1e91a32d93d83238070e54159f74e91554e51b6da5fc35f519f9",
+    "cpu-initial.log": "61823535f765b842c556b37e751067238e7804a1204d5e976ada875f5a866b27",
+    "cpu-cli.log": "cd98b93faae27fcc00dc3282edd5cd7c6bca78eb0353e8efd76775cf424c0ff5",
+    "package-tests.log": "d606de2c8feeb55869c4314faa3e37e8481a7705fa9001ddc307c4f85fceb85a",
+    "inventory.json": "29a1e5cfac52ee3159a1e8d910e186a241a5cb6bcc83f5facce13b53bb97455c",
+    "driver-cpu.json": "20c0fb38334feb9665f64fd29acc71f90420f1a89dfa646e17e1688b79a8ad20"
+  },
+  "gpu_starts": 0
+}

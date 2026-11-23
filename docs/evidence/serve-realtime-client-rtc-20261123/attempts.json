@@ -1,0 +1,34 @@
+{
+  "first": {
+    "status": "FAIL",
+    "seconds": 36.22300221817568,
+    "counts": {
+      "starts": 1,
+      "ingress_starts": 1,
+      "sdk_posts": 0,
+      "issuances": 0,
+      "voice_inputs": 0,
+      "responses": 0,
+      "chats": 0,
+      "controls": 32
+    },
+    "reason": "gi.repository.GLib.GError: gst_parse_error: could not link rtpopuspay0 to rtc, rtc can't handle caps application/x-rtp, media=(string)audio, encoding-name=(string)OPUS, payload=(int)111, clock-rate=(int)48000 (3)",
+    "default_unchanged": true,
+    "ports_released": true
+  },
+  "accepted": {
+    "status": "PASS",
+    "seconds": 47.600607336033136,
+    "counts": {
+      "starts": 1,
+      "ingress_starts": 1,
+      "sdk_posts": 5,
+      "issuances": 3,
+      "voice_inputs": 1,
+      "responses": 1,
+      "chats": 1,
+      "controls": 35
+    },
+    "ice_plugin_sha256": "a8b993f1273568281e66479f42a247a862b9e05fe2179b895dd60279efa91d42"
+  }
+}

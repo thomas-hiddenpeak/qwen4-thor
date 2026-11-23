@@ -1,6 +1,7 @@
 """Real native HTTP/TLS upgrades with explicit CPU WebSocket backend peers."""
 import base64
 import hashlib
+import hmac
 import json
 import os
 from pathlib import Path
@@ -11,12 +12,22 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest import mock
 
+from tools.serve_gateway.test_gateway import optional_nginx_binary
 from tools.serve_recovery import test_gateway_nginx as fixture
 
 
 KEY = 'dGhlIHNhbXBsZSBub25jZQ=='
 GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
+
+
+def fixture_ticket(owner='alpha', key='A'*40, binding='e'*64, ttl=60):
+    payload = f'ek_q4t1.{owner}.{int(time.time())+ttl}.'+'1'*64
+    digest = hashlib.sha256(key.encode()).hexdigest()
+    mac = hmac.digest(binding.encode(), ('q4t.realtime.client_secret.v1/'+
+                      digest+'/'+payload).encode(), 'sha256')
+    return payload+'.'+base64.urlsafe_b64encode(mac).decode().rstrip('=')
 
 
 def frame(data, opcode=1, masked=False):
@@ -92,7 +103,8 @@ class NativeUpgrade(unittest.TestCase):
         handler = self.stack.servers[0].RequestHandlerClass
         original = handler.do_GET
         def get(peer):
-            if peer.path.split('?', 1)[0] not in ('/v1/realtime', '/v1/live/sessions'):
+            if peer.path.split('?', 1)[0] not in ('/v1/realtime', '/v1/live/sessions',
+                                                  '/v1/live/sessions/live_cpu/attach', '/v1/live/sessions/live_cpu/fork'):
                 return original(peer)
             owner.rows.append(dict(path=peer.path, headers=dict(peer.headers)))
             peer.close_connection = True
@@ -144,9 +156,9 @@ class NativeUpgrade(unittest.TestCase):
 
     def connect(self, *, key='A'*40, path='/v1/realtime?intent=transcription',
                 fields='', version='13', ws_key=KEY, framing='', prefix=b'',
-                context=None):
+                context=None, port=None):
         raw = socket.create_connection(('127.0.0.1',
-            self.stack.value['policy']['listen_port']), timeout=3)
+            port or self.stack.value['policy']['listen_port']), timeout=3)
         if context:
             raw = context.wrap_socket(raw, server_hostname='127.0.0.1')
         self.addCleanup(raw.close)
@@ -221,6 +233,28 @@ class NativeUpgrade(unittest.TestCase):
         _, status, _ = self.connect(key=None, fields=fields.replace(key, key.lower()))
         self.assertEqual(status, 401)
 
+    def test_native_ticket_authenticates_the_issuing_key_before_admission(self):
+        self.ready()
+        valid = fixture_ticket()
+        for key, path in [(fixture_ticket(ttl=-1), '/v1/realtime'),
+                          (fixture_ticket(binding='f'*64), '/v1/realtime'),
+                          (fixture_ticket(key='B'*40), '/v1/realtime'),
+                          (fixture_ticket(owner='beta'), '/v1/realtime'),
+                          (valid, '/v1/realtime?call_id=rtc_other'),
+                          (valid, '/v1/models')]:
+            client, status, _ = self.connect(key=key, path=path)
+            self.assertEqual(status, 401)
+            client.sock.close()
+        self.assertEqual(self.rows, [])
+        client, status, headers = self.connect(key=None, path='/v1/realtime?model=qwen3.8-flash-next',
+            fields='Sec-WebSocket-Protocol: realtime, openai-insecure-api-key.'+valid+'\r\n')
+        self.assertEqual(status, 101)
+        self.assertNotIn(valid, str(headers))
+        self.assertEqual(self.rows[-1]['headers']['X-Q4T-Client-Id'], 'alpha')
+        self.assertEqual(self.rows[-1]['headers']['Authorization'], 'Bearer '+valid)
+        self.assertEqual(self.connect(key='A'*40)[1], 429)
+        self.close_session(client)
+
     def test_invalid_upstream_101_never_publishes_upgrade(self):
         self.ready()
         for mode in ('challenge', 'duplicate', 'length', 'extension', 'protocol', 'hop', 'status'):
@@ -257,6 +291,43 @@ class NativeUpgrade(unittest.TestCase):
         self.assertEqual(self.stack.request(dict(prompt='ordinary HTTP'))[0], 200)
         self.close_session(first)
         self.close_session(second)
+
+    def test_live_attachment_has_independent_capacity_and_selected_protocol(self):
+        self.ready()
+        primary, status, _ = self.connect(path='/v1/live/sessions')
+        self.assertEqual(status, 101)
+        peers = []
+        for expected in (101, 101, 429):
+            observer, status, headers = self.connect(path='/v1/live/sessions/live_cpu/attach',
+                fields='Sec-WebSocket-Protocol: live\r\n')
+            self.assertEqual(status, expected)
+            if status == 101:
+                self.assertEqual(headers['sec-websocket-protocol'], 'live')
+                peers.append(observer)
+        for observer in peers:
+            self.close_session(observer)
+        self.close_session(primary)
+
+    def test_realtime_call_observers_do_not_consume_primary_capacity(self):
+        self.ready()
+        primary, status, _ = self.connect(path='/v1/realtime')
+        self.assertEqual(status, 101)
+        path = '/v1/realtime?call_id=rtc_cpu'
+        fields = 'Sec-WebSocket-Protocol: realtime\r\n'
+        for target in ('/v1/realtime?call_id=rtc_', path+'&model=extra',
+                       path+'&call_id=rtc_other'):
+            _, status, _ = self.connect(path=target)
+            self.assertEqual(status,429)
+        observers = []
+        for expected in (101, 101, 429):
+            observer, status, headers = self.connect(path=path,fields=fields)
+            self.assertEqual(status, expected)
+            if status == 101:
+                self.assertEqual(headers['sec-websocket-protocol'], 'realtime')
+                observers.append(observer)
+        self.assertEqual([row['path'] for row in self.rows], ['/v1/realtime',path,path])
+        for peer in [*observers,primary]:
+            self.close_session(peer)
 
     def test_binding_rotation_closes_existing_session_without_reconnect(self):
         self.ready()
@@ -295,6 +366,51 @@ class NativeUpgrade(unittest.TestCase):
         self.assertEqual(read_frame(client.read),(2,b'\x00\xff\x01'))
         client.sock.sendall(frame(b'\x03\xe8',opcode=8,masked=True))
         self.assertEqual(read_frame(client.read),(8,b'\x03\xe8'))
+
+
+class OptionalNginxUpgrade(unittest.TestCase):
+    setUpClass = classmethod(fixture.NginxTests.setUpClass.__func__)
+    tearDownClass = classmethod(fixture.NginxTests.tearDownClass.__func__)
+    ready = fixture.NginxTests.ready
+    tearDown = fixture.NginxTests.tearDown
+    connect = NativeUpgrade.connect
+    install_peer = NativeUpgrade.install_peer
+
+    close_session = NativeUpgrade.close_session
+    test_realtime_call_observers_do_not_consume_primary_capacity = (
+        NativeUpgrade.test_realtime_call_observers_do_not_consume_primary_capacity)
+
+    def setUp(self):
+        self.rows, self.bad, self.eof = [], '', threading.Event()
+        self.patch = mock.patch.object(fixture, 'NGINX', optional_nginx_binary())
+        self.patch.start()
+        self.addCleanup(self.patch.stop)
+        self.stack = fixture.Stack(self.output)
+        self.install_peer()
+
+    def test_scoped_primary_upgrades_relay_commands_events_and_normal_close(self):
+        self.ready()
+        for path in ('/v1/realtime?intent=transcription','/v1/realtime','/v1/live/sessions',
+                     '/v1/live/sessions/live_cpu/attach?graceful_close=true', '/v1/live/sessions/live_cpu/fork'):
+            protocol = 'live' if path.startswith('/v1/live/') else 'realtime'
+            fields = ('Sec-WebSocket-Protocol: live, realtime, '
+                      'openai-insecure-api-key.test-only\r\n')
+            client, status, head = self.connect(path=path, fields=fields)
+            self.assertEqual(status,101)
+            self.assertEqual(head['sec-websocket-accept'],'s3pPLMBiTxaQ9kYGzzhZRbK+xOo=')
+            self.assertEqual(head['sec-websocket-protocol'], protocol)
+            self.assertEqual(read_frame(client.read),(1,b'cpu-ready'))
+            client.sock.sendall(frame(b'session control',masked=True))
+            self.assertEqual(read_frame(client.read),(1,b'session control'))
+            client.sock.sendall(frame(bytes([3,232]),opcode=8,masked=True))
+            self.assertEqual(read_frame(client.read),(8,bytes([3,232])))
+            client.sock.close()
+            headers = {k.lower():v for k,v in self.rows[-1]['headers'].items()}
+            self.assertEqual(headers['x-q4t-client-id'],'alpha')
+            self.assertEqual(headers['x-q4t-gateway-token'],self.stack.token)
+            self.assertEqual(headers['sec-websocket-protocol'], protocol)
+            self.assertTrue(all('test-only' not in value for value in headers.values()))
+            self.assertNotIn('authorization', headers)
 
 
 if __name__ == '__main__':

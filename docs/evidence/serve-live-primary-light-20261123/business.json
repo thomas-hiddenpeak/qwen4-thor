@@ -1,0 +1,105 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 71,
+    "cleanup_complete": true
+  },
+  "results": [
+    {
+      "status": "PASS",
+      "default_unchanged": true,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 72
+      },
+      "seconds": 38.311253493186086,
+      "binary_sha256": "240eb3dec5f8d91e4586be340c5e7bca19f4b7afa1af653433e4eb9bb84f26be"
+    },
+    {
+      "status": "PASS",
+      "default_unchanged": true,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 70
+      },
+      "seconds": 35.40598175628111,
+      "binary_sha256": "240eb3dec5f8d91e4586be340c5e7bca19f4b7afa1af653433e4eb9bb84f26be"
+    }
+  ],
+  "profiles": {
+    "primary": {
+      "profile": "primary",
+      "protocol": "b6388f69550685f42b8b1ee6a1a40adb83258d1ac86f9ea1211153d17cc1141f",
+      "capacity": {
+        "name": "native-managed-capacity-v2",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": true,
+        "request_deadline_ms": 1200000,
+        "allow_media": true
+      },
+      "mtp_enabled": true,
+      "returned_chat": "42",
+      "media_created": 201,
+      "session_closed": true,
+      "recordings_enabled": true,
+      "conversation": "created",
+      "worker_files": {
+        "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+        "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+        "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+      }
+    },
+    "light": {
+      "profile": "light",
+      "protocol": "b6388f69550685f42b8b1ee6a1a40adb83258d1ac86f9ea1211153d17cc1141f",
+      "capacity": {
+        "name": "native-managed-capacity-v2",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": false,
+        "request_deadline_ms": 1200000,
+        "allow_media": true
+      },
+      "mtp_enabled": false,
+      "returned_chat": "42",
+      "media_created": 201,
+      "session_closed": true,
+      "recordings_enabled": true,
+      "conversation": "recovered",
+      "worker_files": {
+        "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+        "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+        "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+      }
+    }
+  },
+  "engine_sha256": "240eb3dec5f8d91e4586be340c5e7bca19f4b7afa1af653433e4eb9bb84f26be",
+  "ingress_sha256": "b7a1967ba8540dc51ae7187577052bb1273d789d85ed8ab5a2d1cf5b02f21caf"
+}

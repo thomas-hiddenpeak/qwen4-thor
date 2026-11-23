@@ -1,0 +1,14 @@
+{
+  "before.json": {
+    "sha256": "f97257ab4edf09be041a87f2453c87fab69ffe7daa2dfdd403621b2f9c621e9d",
+    "bytes": 1173
+  },
+  "after.json": {
+    "sha256": "3efc6bbc984cacc67e027973fd34970efbc65306cd74fac69f2e5136fbe94577",
+    "bytes": 1141
+  },
+  "result.json": {
+    "sha256": "05cc9b18a035af86cc0b447effc6da4b6ad7a304b79985d35ff1bc1acca011ab",
+    "bytes": 421
+  }
+}

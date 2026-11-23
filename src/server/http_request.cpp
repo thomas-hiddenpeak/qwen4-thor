@@ -420,6 +420,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
           ? 4U << 20
           : (IsStoredChatTarget(*path) || *path == "/v1/chat/preflight" ||
                      *path == "/v1/completions" || *path == "/v1/moderations" ||
+                     *path == "/v1/decisions" ||
                      *path == "/v1/embeddings" || *path == "/v1/audio/speech" ||
                      IsResponsesTarget(*path) || IsConversationTarget(*path) ||
                      IsPromptTarget(*path) || IsUploadTarget(*path)

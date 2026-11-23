@@ -1,0 +1,55 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 64,
+    "cleanup_complete": true
+  },
+  "observation": {
+    "sdk_status": 200,
+    "invalid": {
+      "status": 400,
+      "code": "live_invalid_sdp"
+    },
+    "capacity": {
+      "status": 429,
+      "code": "client_capacity_exhausted"
+    },
+    "denied": "live_client_event_forbidden",
+    "session": "live_e39919c2d8a627a84f10ebce20e92e3f",
+    "codec": "opus",
+    "input": "请查询当前项目版本号。",
+    "output": "rev426",
+    "version": "rev426",
+    "decoded_samples": 22048,
+    "peak": 14011,
+    "audio_base64_events": 0
+  },
+  "seconds": 66.40290005411953,
+  "default_unchanged": true,
+  "core": "42",
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "sdk_posts": 3,
+    "voice_inputs": 1,
+    "client_results": 1,
+    "chats": 1,
+    "controls": 68
+  },
+  "settled_tokens": 1752.0,
+  "model_admissions": 3.0,
+  "reserved_tokens_after": 0.0,
+  "host_bytes_after": 0.0,
+  "sessions_after": 0.0,
+  "listener_heard": false,
+  "evidence_sha256": {
+    "events.json": "490fcca92be6b0637890cd7d0fba0247a10fdef178435b2dd1cda6bfd4166460",
+    "core-after.wire": "69914d1f912b25a8435c3f669c4810a54f198be72f0d731d9d8c1c6f14a25d14",
+    "result.json": "41378bcb8b1ca036d4541e3e73b0f346ed799111326912de9e6597726b4d380e",
+    "cleanup.json": "70a3032b749e8083eb745b21b24366b3cf94461af06b9212a6e66d6fd5284fd5",
+    "lease/exit.json": "08027fc2e1f95d2865cb0df69b9e87f473e2486cfae5690ee9d32032c2156296",
+    "lease/nvml-queries.jsonl": "cbb5c88f35029c41767a828b368141420f8cef2ee1ae638fc720e8791e4240e1"
+  }
+}

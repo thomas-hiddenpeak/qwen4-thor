@@ -19,6 +19,10 @@
 #include "q4t/server/http_observation.h"
 #include "q4t/server/finite_response.h"
 
+namespace q4t::io { struct Json; }
+namespace q4t::server {
+class IResponsesStreamCapture;
+}
 namespace q4t::server::detail {
 
 enum class ResponseState {
@@ -80,6 +84,7 @@ class HttpResponseContext {
     // checks. All response writes remain detached, including error paths.
     int borrowed_fd = -1;
     FiniteResponse* output = nullptr;
+    IResponsesStreamCapture* responses = nullptr;
   };
   // Native background execution observes errors/admission without a socket,
   // transport worker, heartbeat or loopback request.
@@ -89,13 +94,11 @@ class HttpResponseContext {
   HttpResponseContext& operator=(const HttpResponseContext&) = delete;
   static HttpResponseContext* Current(int fd);
   bool CapturesJson() const { return captured_ != nullptr; }
+  bool CapturesResponses() const { return responses_capture_ != nullptr; }
+  bool BeginCapturedResponses();
   bool CaptureJson(int status, std::string_view content_type,
-                   std::string_view body) {
-    return captured_ && captured_->Record(status, content_type, body);
-  }
-  void RejectCapturedJson() noexcept {
-    if (captured_) captured_->Reject();
-  }
+                   std::string_view body);
+  void RejectCapturedJson() noexcept;
   const std::string& TraceId() const { return trace_id_; }
   bool SetTraceId(std::string_view id);
   struct PreparationUsage {
@@ -110,6 +113,8 @@ class HttpResponseContext {
     return preparation_usage_;
   }
   // Handler-thread-only identity, minted by header admission.
+  const io::Json* RealtimeStartup() const { return realtime_startup_; }
+  void SetRealtimeStartup(const io::Json* settings) { realtime_startup_ = settings; }
   const ClientIdentity& Client() const { return client_; }
   ClientRateDomain RateDomain() const { return rate_domain_; }
   // Trusted native execution only. The context settles on destruction unless
@@ -239,6 +244,7 @@ class HttpResponseContext {
   bool detached_ = false;
   bool websocket_ = false;
   FiniteResponse* captured_ = nullptr;
+  IResponsesStreamCapture* responses_capture_ = nullptr;
   bool keep_alive_ = false;
   bool http11_ = true;
   bool chunked_ = false;
@@ -249,6 +255,7 @@ class HttpResponseContext {
   std::string trace_id_;
   PreparationUsage preparation_usage_;
   ClientIdentity client_;
+  const io::Json* realtime_startup_ = nullptr;
   ClientRateDomain rate_domain_ = ClientRateDomain::kOnline;
   ClientLease* client_lease_ = nullptr;  // Owner outlives this context.
   std::shared_ptr<ClientRateLease> batch_rate_;
@@ -295,7 +302,8 @@ bool WriteAll(int fd, const char* data, size_t len,
 bool WriteAll(int fd, const std::string& s, const WriteOptions& options = {});
 bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type,
-                const WriteOptions& options = {}, std::string_view allow = {});
+                const WriteOptions& options = {}, std::string_view allow = {},
+                std::string_view location = {}, bool no_store = false);
 // Fixed-length response from bounded chunks (<=1 MiB). A failed or
 // short source closes the frame; never append JSON/SSE or reuse the connection.
 bool SendBinaryResponse(int fd, uint64_t length,

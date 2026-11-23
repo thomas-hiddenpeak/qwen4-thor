@@ -54,7 +54,7 @@ def definitions():
             return [message_rewrite(child) for child in value]
         return value
     for name in ('message', 'textPart', 'refusalPart', 'historyCall',
-                 'imagePart', 'videoPart', 'filePart'):
+                 'imagePart', 'videoPart', 'filePart', 'audioPart', 'cacheBreakpoint'):
         shape = message['$defs'][name]
         result['chat_input_'+name] = message_rewrite(shape)
     props = copy.deepcopy(message['$defs']['message']['properties'])
@@ -63,7 +63,7 @@ def definitions():
                  content=dict(type=['string', 'null']),
                  content_parts=dict(anyOf=[dict(type='null'), dict(type='array',
                      items=dict(oneOf=[ref('chat_input_'+name) for name in
-                         ('textPart', 'refusalPart', 'imagePart', 'videoPart', 'filePart')]))]))
+                         ('textPart', 'refusalPart', 'imagePart', 'videoPart', 'filePart', 'audioPart')]))]))
     result['stored_chat_message'] = obj(props, ('id', 'role', 'content', 'name'))
     for name, item in [('stored_chat_list', 'stored_chat'),
                        ('stored_chat_messages', 'stored_chat_message')]:

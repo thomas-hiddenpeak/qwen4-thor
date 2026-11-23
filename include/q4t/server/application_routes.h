@@ -4,16 +4,6 @@
 
 namespace q4t::server {
 
-// Exact WebSocket targets; adapters validate their own query semantics.
-inline bool IsRealtimeTarget(std::string_view target) {
-  const auto path = target.substr(0, target.find('?'));
-  return path == "/v1/realtime" || path == "/v1/live/sessions";
-}
-inline bool IsRealtimeUpgrade(std::string_view method,
-                              std::string_view target) {
-  return method == "GET" && IsRealtimeTarget(target);
-}
-
 inline bool ValidApplicationId(std::string_view id) {
   if (id.empty() || id.size() > 128) return false;
   for (const char c : id)
@@ -21,6 +11,78 @@ inline bool ValidApplicationId(std::string_view id) {
           (c >= '0' && c <= '9') || c == '_' || c == '-'))
       return false;
   return true;
+}
+
+inline std::string_view LiveResourceId(std::string_view path, std::string_view suffix) {
+  constexpr std::string_view prefix = "/v1/live/sessions/";
+  if (!path.starts_with(prefix) || !path.ends_with(suffix) ||
+      path.size() <= prefix.size() + suffix.size())
+    return {};
+  const auto id =
+      path.substr(prefix.size(), path.size() - prefix.size() - suffix.size());
+  return id.starts_with("live_") && id.size() > 5 && ValidApplicationId(id)
+             ? id
+             : std::string_view{};
+}
+
+inline std::string_view SipControlId(std::string_view path, std::string_view suffix) {
+  constexpr std::string_view prefix = "/v1/realtime/calls/";
+  if (!path.starts_with(prefix)) return LiveResourceId(path, suffix);
+  path.remove_prefix(prefix.size());
+  if (!path.ends_with(suffix)) return {};
+  path.remove_suffix(suffix.size());
+  return path.starts_with("rtc_") && path.size() > 4 && ValidApplicationId(path)
+             ? path : std::string_view{};
+}
+inline std::string_view SipRejectId(std::string_view path) {
+  return SipControlId(path, "/reject");
+}
+inline bool IsSipHangup(std::string_view method, std::string_view path) {
+  return method == "POST" && !SipControlId(path, "/hangup").empty();
+}
+inline bool IsSipRefer(std::string_view method, std::string_view path) {
+  return method == "POST" && !SipControlId(path, "/refer").empty();
+}
+inline bool IsSipReject(std::string_view method, std::string_view path) {
+  return method == "POST" && !SipRejectId(path).empty();
+}
+
+inline std::string_view LiveRecordingId(std::string_view path) {
+  return LiveResourceId(path, "/content");
+}
+inline std::string_view LiveSidebandId(std::string_view target) {
+  return LiveResourceId(target.substr(0, target.find('?')), "/attach");
+}
+inline std::string_view RealtimeSidebandId(std::string_view target) {
+  constexpr std::string_view prefix = "/v1/realtime?call_id=";
+  if (!target.starts_with(prefix)) return {};
+  target.remove_prefix(prefix.size());
+  return target.starts_with("rtc_") && target.size() > 4 &&
+                 ValidApplicationId(target)
+             ? target : std::string_view{};
+}
+inline bool IsCallSideband(std::string_view target) {
+  return !LiveSidebandId(target).empty() || !RealtimeSidebandId(target).empty();
+}
+inline std::string_view LiveForkId(std::string_view path) {
+  return LiveResourceId(path, "/fork");
+}
+// Exact WebSocket targets; adapters validate their own query semantics.
+inline bool IsRealtimeTarget(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/realtime" || path == "/v1/live/sessions" ||
+         !LiveSidebandId(target).empty() || !LiveForkId(target).empty();
+}
+inline bool IsRealtimeUpgrade(std::string_view method,
+                              std::string_view target) {
+  return method == "GET" && IsRealtimeTarget(target);
+}
+
+inline bool IsLiveMediaCreate(std::string_view method, std::string_view target) {
+  return method == "POST" &&
+         (target == "/v1/realtime/calls" || target == "/v1/live/sessions" ||
+          !LiveForkId(target).empty() ||
+          !SipControlId(target, "/accept").empty());
 }
 
 inline bool IsRealtimeTraceTarget(std::string_view target) {

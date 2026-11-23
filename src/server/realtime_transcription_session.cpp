@@ -303,15 +303,26 @@ bool RealtimeTranscriptionSession::ErrorEvent(ObjectReply reply,
   Set(&event, "error", std::move(error));
   return Emit(std::move(event));
 }
-bool RealtimeTranscriptionSession::SettingsEvent(bool legacy, bool created) {
+io::Json RealtimeTranscriptionSession::SessionResource(bool legacy) const {
   auto session = RealtimeTranscriptionSettingsJson(settings_, legacy);
   Set(&session, "id", String(id_));
   Set(&session, "object", String("realtime.transcription_session"));
+  return session;
+}
+bool RealtimeTranscriptionSession::SettingsEvent(bool legacy, bool created) {
   auto event =
       Event(std::string(legacy ? "transcription_session." : "session.") +
             (created ? "created" : "updated"));
-  Set(&event, "session", std::move(session));
+  Set(&event, "session", SessionResource(legacy));
   return Emit(std::move(event));
+}
+ObjectReply RealtimeTranscriptionSession::StartConfigured(const Json& configuration) {
+  if (started_ || cancelled_) return Error(409, "realtime_session_started", "Session already started");
+  RealtimeTranscriptionSettings settings;
+  auto reply = UpdateRealtimeTranscriptionSettings(configuration, false, settings_, &settings);
+  if (reply.ok()) reply = Configure(std::move(settings));
+  if (!reply.ok() || reply.commit_unknown) return reply;
+  return Start() ? ObjectReply{} : Error(503, "realtime_session_unavailable", "Session startup failed");
 }
 bool RealtimeTranscriptionSession::Start() {
   if (started_ || cancelled_ || !queue_.Valid() || !history_.Valid() ||
@@ -565,6 +576,37 @@ void RealtimeTranscriptionSession::ResetVad() {
       RealtimeVadOptions{options.threshold, uint32_t(options.prefix_padding_ms),
                          silence},
       callbacks_.vad_step);
+}
+RealtimeInputTail RealtimeTranscriptionSession::UncommittedTail() const {
+  using Tail = RealtimeInputTail;
+  if (!queue_.PendingBytes()) return Tail::kSilence;
+  if (!vad_ || noise_input_ || semantic_ || cancelled_ ||
+      settings_.turn != RealtimeTranscriptionSettings::Turn::kServerVad)
+    return Tail::kMayContainSpeech;
+  if (!vad_caught_up_ || vad_->CursorTicks() != queue_.AcceptedTicks())
+    return Tail::kAnalyzing;
+  if (vad_->Active() || !vad_->HasAnalyzedFrame())
+    return Tail::kMayContainSpeech;
+  const auto format = queue_.Format();
+  using Encoding = RealtimeAudioEncoding;
+  if (format.encoding == Encoding::kFloat32) return Tail::kMayContainSpeech;
+  const auto step = kRealtimeTicksPerSecond / format.rate;
+  const auto begin = queue_.PendingBeginTicks();
+  const auto analyzed = std::max(begin, vad_->AnalyzedTicks());
+  const auto suffix = std::min(queue_.AcceptedTicks(),
+                              begin + (analyzed - begin) / step * step);
+  // Only the bounded, unscored remainder is inspected here. Do not classify
+  // arbitrary sound as silence merely because no complete VAD frame remains.
+  for (auto bytes : queue_.PendingFrom(suffix)) {
+    for (const auto byte : bytes) {
+      const bool quiet = format.encoding == Encoding::kPcm16 ? byte == 0
+                         : format.encoding == Encoding::kMuLaw
+                             ? (byte == 0xff || byte == 0x7f)
+                             : (byte == 0xd5 || byte == 0x55);
+      if (!quiet) return Tail::kMayContainSpeech;
+    }
+  }
+  return Tail::kSilence;
 }
 bool RealtimeTranscriptionSession::SpeechEvent(bool started, uint64_t ticks,
                                                bool deferred) {
@@ -1038,7 +1080,7 @@ bool RealtimeTranscriptionSession::StreamMessage(
   return true;
 }
 
-bool RealtimeTranscriptionSession::Tick() {
+bool RealtimeTranscriptionSession::Tick(bool allow_work) {
   if (!started_ || cancelled_ ||
       (callbacks_.interrupted && callbacks_.interrupted()))
     return false;
@@ -1059,7 +1101,7 @@ bool RealtimeTranscriptionSession::Tick() {
     Release();
     if (!DropFrontJob()) return false;
   }
-  if (!AdvanceVad()) return false;
+  if (allow_work && !AdvanceVad()) return false;
   if (!FlushVadEvents()) return false;
   if (!vad_events_.empty()) return true;
   if (control_ && done_.load(std::memory_order_acquire)) {
@@ -1138,7 +1180,9 @@ bool RealtimeTranscriptionSession::Tick() {
     terminal_.clear();
     if (!DropFrontJob()) return false;
   }
-  if (worker_.joinable() || jobs_.empty() || jobs_.front().deleted) return true;
+  if (!allow_work || worker_.joinable() || jobs_.empty() ||
+      jobs_.front().deleted)
+    return true;
   if (!jobs_.front().stream && !jobs_.front().Finite()) {
     const auto* audio = queue_.Front();
     if (!audio || *audio != jobs_.front().audio) return false;

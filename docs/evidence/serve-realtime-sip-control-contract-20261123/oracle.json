@@ -1,0 +1,8 @@
+{
+  "total": 492,
+  "accepted": 83,
+  "rejected": 409,
+  "union_only": 0,
+  "concrete_checks": 2422,
+  "graph_sha256": "90654ce5a77094d472223bdf5fe44cdb43362ef08e8054f61ad8d3780cd07898"
+}

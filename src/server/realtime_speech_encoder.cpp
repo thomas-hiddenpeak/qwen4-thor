@@ -21,7 +21,8 @@ RealtimeSpeechEncoder::RealtimeSpeechEncoder(RealtimeAudioFormat format,
   const bool pcm = format.encoding == RealtimeAudioEncoding::kPcm16;
   const bool g711 = format.encoding == RealtimeAudioEncoding::kMuLaw ||
                     format.encoding == RealtimeAudioEncoding::kALaw;
-  valid_ = (pcm ? format.rate == 24000 : g711 && format.rate == 8000) &&
+  valid_ = (pcm ? format.rate == 16000 || format.rate == 24000
+                : g711 && format.rate == 8000) &&
            maximum_samples && maximum_samples <= 600ULL * 24000 &&
            maximum_bytes && maximum_bytes <= kRealtimeAudioBytes &&
            resampler_.Valid();

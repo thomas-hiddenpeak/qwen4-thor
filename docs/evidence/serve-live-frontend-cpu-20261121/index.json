@@ -1,0 +1,174 @@
+{
+  "accepted/CMakeLists.txt": {
+    "sha256": "730865f47939eaf6e3c0e946c05388c2020f924599e7dc0571e05e8e5cd175ff",
+    "bytes": 64265
+  },
+  "accepted/cmake/ChatProtocolIdentity.cmake": {
+    "sha256": "24825fe8a6554e4a12661029b420a13efb9e4d2f11d083fd139fa2e71fc5c963",
+    "bytes": 33359
+  },
+  "accepted/cmake/HostTestSources.cmake": {
+    "sha256": "220a00a7a862730a3c87d3c4b30b5a29633c96856ed3d2dec15ae349bda59361",
+    "bytes": 41854
+  },
+  "accepted/include/q4t/server/live_audio_output.h": {
+    "sha256": "4be98b9b2438526058af26111373c127909fe85fe58c5b30d4f2821352b89a28",
+    "bytes": 1325
+  },
+  "accepted/include/q4t/server/live_frontend_work.h": {
+    "sha256": "dce523c4b969a43db09489a287d145019803849054e028c008788e5884a98ca0",
+    "bytes": 2792
+  },
+  "accepted/include/q4t/server/request_control.h": {
+    "sha256": "0d67e522678ff38ad843f44334f31a259d092fd6499c59761356a88b97d1d25d",
+    "bytes": 5929
+  },
+  "accepted/src/server/contracts/openai_live_types_v1.json": {
+    "sha256": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
+    "bytes": 205679
+  },
+  "accepted/src/server/live_audio_output.cpp": {
+    "sha256": "534f8fb669d57a01c3aa1b3d051699ee673430a161ec53228310653028ed0a01",
+    "bytes": 5484
+  },
+  "accepted/src/server/live_frontend_work.cpp": {
+    "sha256": "687184fbd311cf01cec2215d5b4fb8348d89ea019f10bb56683c93621b0895b4",
+    "bytes": 11612
+  },
+  "accepted/src/server/realtime_conversation.cpp": {
+    "sha256": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8",
+    "bytes": 33883
+  },
+  "accepted/src/server/realtime_response_output.cpp": {
+    "sha256": "cbe344926dd1ced6d2d3e6f453238f5185affa7bd4583081a76bf6eb3b9699f0",
+    "bytes": 27922
+  },
+  "accepted/src/server/realtime_speech_encoder.cpp": {
+    "sha256": "157b991895135cf15db83eeb0da4a41837cfe3dbf257f447865dab6eae0bc440",
+    "bytes": 6964
+  },
+  "accepted/src/server/realtime_speech_execution.cpp": {
+    "sha256": "cf4a323cb3d790dd16c56a42fdf28e4ccc8f8eb7ae8af076d78ccdae004a8f14",
+    "bytes": 8184
+  },
+  "accepted/src/server/realtime_speech_history.cpp": {
+    "sha256": "8bfc45f741ac4f9b8265255895360dee2919856a41e846fec9baabc82a6690d8",
+    "bytes": 6453
+  },
+  "accepted/src/server/responses_item_shape.cpp": {
+    "sha256": "2b823dcb5c0043073444926674ed54d49ee6dc885a9543ff5c84914343fb82af",
+    "bytes": 10613
+  },
+  "accepted/tests/server_live_frontend_work_test.cpp": {
+    "sha256": "dee329531382bd7958576716cdb1951affdc56e920415095f9705b64f7997600",
+    "bytes": 18882
+  },
+  "driver/archive_frontend_01.py": {
+    "sha256": "2691dc80f934e92c13f11a4ba9b7f0e082b3c5ea1f6e8f64bf93d9b4a5d01ab7",
+    "bytes": 4190
+  },
+  "driver/frontend-inventory-before.json": {
+    "sha256": "74e4a254a4296e6b59bd202cdd45ddcecce987555be6684f146857a15db5cfb1",
+    "bytes": 544
+  },
+  "driver/frontend-inventory-reviewed.json": {
+    "sha256": "f608049155187068d217e83f2f884a4954cd671ce6deee5b4ae9a1b1a5545535",
+    "bytes": 223
+  },
+  "driver/frontend_cpu_01.py": {
+    "sha256": "85979219735206c43bdf88605ca3a7a462edab6d48ab1b4ac24fd8f37e5e38d1",
+    "bytes": 3142
+  },
+  "driver/frontend_cpu_02.py": {
+    "sha256": "6d9d00db7508efb0c34a6efb71c34203cc51c5c39d0b9ccb0d1cbde974fe5043",
+    "bytes": 3142
+  },
+  "driver/frontend_cpu_03.py": {
+    "sha256": "95d82db1c09dedf59f7f98935b6c1f1f3bd2e6afcf90e2f2a686ac5580d479bf",
+    "bytes": 3141
+  },
+  "frontend-cpu-01/0-build.log": {
+    "sha256": "7366deaab8d48d9212399771bf08c4363fcae38897577e84fa1dda243f0dd89f",
+    "bytes": 459
+  },
+  "frontend-cpu-01/1-build.log": {
+    "sha256": "8308355baee98c1d28c10b367f838865893d8db62169dd1d72237f4de554960b",
+    "bytes": 2302
+  },
+  "frontend-cpu-01/failed-source.tar.gz": {
+    "sha256": "91cc9311da1a3df640788175cf44fdecd0c13a04d3fece6e52799435bf6a959b",
+    "bytes": 64886
+  },
+  "frontend-cpu-01/plan.json": {
+    "sha256": "be5413ca5b82386f84845f97284cc112bc0911c3f6008dcce2b5d2c791c122a8",
+    "bytes": 2994
+  },
+  "frontend-cpu-01/result.json": {
+    "sha256": "bed31807d14fb2a75613f7f6eecdc6ae93dd3ca862506e5f82f20968ce2228ca",
+    "bytes": 233
+  },
+  "frontend-cpu-02/0-build.log": {
+    "sha256": "7366deaab8d48d9212399771bf08c4363fcae38897577e84fa1dda243f0dd89f",
+    "bytes": 459
+  },
+  "frontend-cpu-02/1-build.log": {
+    "sha256": "b4e602168aad772f7579bfc41a74296952dc8202189344750294cb1521fd4d9f",
+    "bytes": 1449
+  },
+  "frontend-cpu-02/cpu.log": {
+    "sha256": "64d88212f7699e4a4b43ea006e16272221f3cfe0d0bce24b9f411d1d0dd6c7f2",
+    "bytes": 982
+  },
+  "frontend-cpu-02/failed-source.tar.gz": {
+    "sha256": "bb13c53f67bbc7b3eff4212e25688e06b87d044a91f4e370bca151557f53df55",
+    "bytes": 64892
+  },
+  "frontend-cpu-02/plan.json": {
+    "sha256": "df35f2164728f8eae704e8c7a2ef432d9093ab9935d5592a09647deb13bb8154",
+    "bytes": 2994
+  },
+  "frontend-cpu-02/result.json": {
+    "sha256": "df5a5a0bcdd7b9b3d4f344cc3c98dbc2e19aaa61ff8bf1cd38eeccd333abe869",
+    "bytes": 672
+  },
+  "frontend-cpu-03/0-build.log": {
+    "sha256": "7366deaab8d48d9212399771bf08c4363fcae38897577e84fa1dda243f0dd89f",
+    "bytes": 459
+  },
+  "frontend-cpu-03/1-build.log": {
+    "sha256": "4c33e257020abb11204af85507ad74f9321ffcea34228d93252a447bdaa5ff54",
+    "bytes": 320
+  },
+  "frontend-cpu-03/cpu.log": {
+    "sha256": "426c18b7b0c92a22ffae22a68f8d14a4aa94bbdb94154df7143b52db32578ae6",
+    "bytes": 305
+  },
+  "frontend-cpu-03/plan.json": {
+    "sha256": "9787871ea160ea8407731ee4e36431c3bc383314122246758909442130065bc7",
+    "bytes": 2994
+  },
+  "frontend-cpu-03/result.json": {
+    "sha256": "7f41e4b05021e19503a275110a5bef4a8d80cea88fd58b2bedf6e7045d9b3e03",
+    "bytes": 671
+  },
+  "frontend-plan-01/failure-analysis.json": {
+    "sha256": "a4ee1e823ae52dd39a5fac379499fa1c1a6547f693b6bb56f16650af4f9248f7",
+    "bytes": 1582
+  },
+  "frontend-plan-01/plan.json": {
+    "sha256": "828d9b464b914e2a2b795a2be153a2796eece5766a48fc6f98d841ec7b58be2e",
+    "bytes": 1600
+  },
+  "frontend-plan-01/required-01.txt": {
+    "sha256": "08692c32d08b0f3b65acb4aefa08fa9feddc7b51647bf6fa111f279a90911da5",
+    "bytes": 603
+  },
+  "frontend-plan-01/required-03.txt": {
+    "sha256": "8a2fd9b3db9dc1d05fe1eebd5e40144fa7c0ac8501b63ef2c8093273e381e1c5",
+    "bytes": 238
+  },
+  "frontend-plan-01/sources.json": {
+    "sha256": "79188d85571a3f7dc5ce3bfb6c333c7065bd00e88982c8b8144f9c2e18cdd8f6",
+    "bytes": 384
+  }
+}

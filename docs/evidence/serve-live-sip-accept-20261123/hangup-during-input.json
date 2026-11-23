@@ -1,0 +1,53 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 61,
+    "cleanup_complete": true
+  },
+  "seconds": 62.99496239097789,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "calls": 1,
+    "sdk_requests": 6,
+    "sidebands": 1,
+    "voice_inputs": 1,
+    "client_results": 1,
+    "chats": 1,
+    "controls": 36
+  },
+  "sdk": {
+    "foreign_accept": 404,
+    "invalid": 400,
+    "accepted": 200,
+    "foreign_hangup": 404,
+    "hangup": 200,
+    "retired": 404,
+    "sideband_close": 1000
+  },
+  "voice": {
+    "version": "rev426",
+    "input": "请查询当前项目版本号。",
+    "output": "rev426"
+  },
+  "playout": {
+    "codec": "Opus",
+    "frames_sent": 239,
+    "decoded_samples": 24000,
+    "peak": 14023,
+    "source_sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483"
+  },
+  "core": "42",
+  "default_unchanged": true,
+  "binary_sha256": "2ae2a2fef829cb02bfbb94b091ad1145b5cb2c4676154a11554afa7bf360903a",
+  "ingress_sha256": "8989d2e1d0d79516e38613d7d9c51eab32e6181aa4e4cbc819b90460bc3e93bc",
+  "sip_sha256": "83ab637d185827a3921e2c71bfe29c4674c0672cceef193893a655640298512f",
+  "audio_sha256": "8733022910a465c3fb70643ba6a62c751d6aae1dfad62f8124ea8f99a1118a69",
+  "hangup_tail": {
+    "codec": "Opus",
+    "frames": 32,
+    "sdk_hangup_during_input": true
+  }
+}

@@ -2,6 +2,7 @@
 #include "chat_server_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/chat_storage.h"
+#include "q4t/server/realtime_client_ticket.h"
 #include "q4t/server/realtime_trace_api.h"
 #include "q4t/server/mcp_transport.h"
 
@@ -30,6 +31,7 @@
 #include "q4t/server/client_request.h"
 #include "q4t/server/conversation_api.h"
 #include "q4t/server/files_http.h"
+#include "q4t/server/live_recording_store.h"
 #include "q4t/server/batch_api.h"
 #include "q4t/server/vector_store_api.h"
 #include "q4t/server/prompt_registry.h"
@@ -115,7 +117,7 @@ void ChatServer::StartConnection(int fd, bool operations) {
       operations
           ? kOperationsConnections
           : conn_cap_ + kControlConnections + kObservationConnections +
-                kRealtimeConnections +
+                kRealtimeConnections + kSidebandConnections +
                 (mcp_tunnels_enabled_
                      ? kTunnelPollConnections + kTunnelResponseConnections
                      : 0);
@@ -187,6 +189,12 @@ Status ChatServer::Run() {
   if (!model_ready_.load() || listen_fd < 0 ||
       (operations_port_ != 0 && operations_fd < 0))
     return Status::Fail("server startup not complete");
+  sip_service_.Start(sip_trunks_file_, [this](std::string_view scope) {
+    const auto policy = clients_.Snapshot();
+    return !stop_requested_.load() && policy &&
+           std::any_of(policy->clients.begin(), policy->clients.end(),
+                       [&](const auto& client) { return client.id == scope; });
+  }, sip_trunks_sha256_, live_worker_pins_.sip);
   detail::ServeFaultPoint("connection.before_publish");
   operations_listen_fd_.store(operations_fd);
   listen_fd_.store(listen_fd);
@@ -287,6 +295,8 @@ Status ChatServer::Run() {
   background_.Join();
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  JoinLiveMedia();
+  sip_service_.Stop();
   realtime_traces_.RequestStop();
   realtime_traces_.Join();
   close_listener.Run();
@@ -304,6 +314,7 @@ void ChatServer::HandleClient(int fd, bool operations) {
 
 bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                               bool allow_keep_alive) {
+  RealtimeSecretGrant grant;
   ClientLease client_lease;  // Outlives response and heartbeat cleanup.
   detail::HttpResponseContext context(fd, &metrics_.http_transport);
   bool dispatch_started = false;
@@ -330,12 +341,29 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         headers.failure = HttpReceiveFailure::kRoute;
         return false;
       }
+      const auto credential = BearerCredential(headers.authorization);
+      if (credential.starts_with("ek_")) {
+        const auto client =
+            clients_.Authenticate(headers.client_id, headers.gateway_token);
+        if (!RealtimeGrantTarget(method, path) || !client.Allowed() ||
+            !realtime_secrets_.Resolve(credential, &grant).ok() ||
+            grant.owner != client.Id()) {
+          failure_status = 401;
+          headers.error_code = "invalid_api_key";
+          headers.failure = HttpReceiveFailure::kAdmission;
+          return false;
+        }
+        context.SetRealtimeStartup(&grant.session);
+      }
       ClientIdentity identity;
       if (!AdmitClientRequest(method, path, &headers, clients_, &client_lease,
                               &identity, &failure_status))
         return false;
       context.SetClient(identity, &client_lease);
-      if (IsRealtimeTarget(path)) {
+      if (method == "POST" && path == "/v1/realtime/client_secrets")
+        headers.body_limit = std::min<uint64_t>(headers.body_limit,
+                                                kWebSocketMessageLimit);
+      if (IsRealtimeTarget(path) && !IsLiveMediaCreate(method, path)) {
         if (!headers.origin.empty()) {
           // The optional ingress validates browser origins before forwarding.
           // Direct backend access has no configured browser-origin policy.
@@ -359,12 +387,16 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       }
       if (IsTranscriptionTarget(path))
         headers.body_limit = std::min(headers.body_limit, kAsrFormBytes);
+      if (IsSipRefer(method, path))
+        headers.body_limit = std::min<uint64_t>(headers.body_limit, 65536);
+      if (IsSipReject(method, path) || IsSipHangup(method, path))
+        headers.body_limit = std::min<uint64_t>(headers.body_limit, 4096);
       if (IsCancellationRequest(method, path))
         lease.SelectBudget(cancel_body_budget_);
       if (IsMcpTunnelPoll(method, path) || IsMcpTunnelResponse(method, path))
         lease.SelectBudget(tunnel_body_budget_);
       if ((kind == HttpConnectionClass::kBusiness ||
-           kind == HttpConnectionClass::kRealtime ||
+           kind == HttpConnectionClass::kRealtime || kind == HttpConnectionClass::kSideband ||
            kind == HttpConnectionClass::kTunnelPoll ||
            kind == HttpConnectionClass::kTunnelResponse) &&
           stop_requested_.load()) {
@@ -377,7 +409,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       auto& observation =
           operations ? operations_observation_conns_ : observation_conns_;
       auto& counter =
-          kind == HttpConnectionClass::kRealtime     ? realtime_conns_
+          kind == HttpConnectionClass::kSideband ? sideband_conns_
+          : kind == HttpConnectionClass::kRealtime     ? realtime_conns_
           : kind == HttpConnectionClass::kTunnelPoll ? tunnel_poll_conns_
           : kind == HttpConnectionClass::kTunnelResponse
               ? tunnel_response_conns_
@@ -385,7 +418,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           : kind == HttpConnectionClass::kObservation ? observation
                                                       : business_conns_;
       const int cap =
-          kind == HttpConnectionClass::kRealtime ? kRealtimeConnections
+          kind == HttpConnectionClass::kSideband ? kSidebandConnections
+          : kind == HttpConnectionClass::kRealtime ? kRealtimeConnections
           : kind == HttpConnectionClass::kTunnelPoll
               ? (mcp_tunnels_enabled_ ? kTunnelPollConnections : 0)
           : kind == HttpConnectionClass::kTunnelResponse
@@ -408,12 +442,13 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       if ((method == "POST" && !IsCancellationRequest(method, path) &&
            (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
             path == "/v1/completions" || path == "/v1/moderations" ||
-            path == "/v1/embeddings" || path == "/v1/audio/speech" ||
-            path == "/v1/audio/transcriptions" ||
+            path == "/v1/decisions" || path == "/v1/embeddings" ||
+            path == "/v1/audio/speech" || path == "/v1/audio/transcriptions" ||
             IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
             IsFileTarget(path) || IsUploadTarget(path))) ||
+          (method == "GET" && !LiveRecordingId(path).empty()) ||
           (method == "GET" && IsVectorStoreTarget(path) &&
            !IsVectorStoreObservation(method, path)) ||
           (method == "GET" && IsFileTarget(path) &&
@@ -485,17 +520,28 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                     headers.error_param);
       return false;
     }
-    if (IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
-        path == "/v1/completions" || path == "/v1/moderations" ||
+    if (context.RealtimeStartup()) {
+      const auto reply =
+          realtime_secrets_.Resolve(BearerCredential(headers.authorization), &grant);
+      if (!reply.ok()) {
+        SendError(fd, reply.http_status, reply.ClientMessage(), {}, reply.ClientCode());
+        return false;
+      }
+    }
+    if (path == "/v1/realtime/client_secrets" || IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
+        path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
         IsConversationTarget(path) || IsPromptTarget(path) ||
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && !((IsResponseCancellation(method, path) ||
+      if (method == "POST" && path != "/v1/realtime/calls" && !((path == "/v1/realtime/client_secrets" || IsResponseCancellation(method, path) ||
+                                 IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
                                  IsBatchCancellation(method, path) ||
-                                 IsVectorStoreCancellation(method, path)) &&
+                                 IsVectorStoreCancellation(method, path) ||
+                                 (IsSipReject(method, path) &&
+                                  SipRejectId(path).starts_with("rtc_"))) &&
                                 body.empty() && headers.content_type.empty())) {
         std::string type = headers.content_type;
         for (char& c : type)
@@ -522,7 +568,21 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     context.SetKeepAlive(headers.keep_alive && allow_keep_alive &&
                             !stop_requested_.load(), headers.http11);
     dispatch_started = true;
-    if (IsRealtimeTarget(path))
+    if (IsSipReject(method, path))
+      HandleSipReject(fd, SipRejectId(path), body);
+    else if (IsSipHangup(method, path))
+      HandleSipControl(fd, SipControlId(path, "/hangup"), body, false);
+    else if (IsSipRefer(method, path))
+      HandleSipControl(fd, SipControlId(path, "/refer"), body, true);
+    else if (method == "POST" && !SipControlId(path, "/accept").empty())
+      HandleLiveMediaCreate(fd, {}, body, admission, SipControlId(path, "/accept"));
+    else if (path == "/v1/realtime/client_secrets" && method == "POST")
+      IssueRealtimeSecret(fd, headers, body);
+    else if (method == "POST" && path == "/v1/realtime/calls") {
+      HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type);
+    } else if (IsLiveMediaCreate(method, path))
+      HandleLiveMediaCreate(fd, LiveForkId(path), body, admission);
+    else if (IsRealtimeTarget(path))
       HandleRealtime(fd, path, headers, state->pending, websocket_accept);
     else if (file_request)
       file_request->Serve(fd);
@@ -596,6 +656,46 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
   };
+  if (const auto id = LiveRecordingId(path); !id.empty()) {
+    if (method != "GET") {
+      SendError(fd, 405, "Recording downloads require GET", {},
+                "method_not_allowed", {}, "GET");
+      return;
+    }
+    if (!body.empty()) {
+      SendError(fd, 400, "Recording download takes no body", {},
+                "invalid_request");
+      return;
+    }
+    if (!live_recordings_ || !objects_) {
+      SendError(fd, 404, "Recording not found", {}, "object_not_found");
+      return;
+    }
+    const auto* context = detail::HttpResponseContext::Current(fd);
+    if (!context || !context->Client().Allowed() ||
+        !context->Client().Scoped()) {
+      SendError(fd, 401, "Authentication required", {},
+                "client_authentication_failed");
+      return;
+    }
+    HttpBodyLease working(body_budget_);
+    if (!working.Acquire(kLiveRecordingHostBytes)) {
+      SendError(fd, 503, "Recording download capacity exhausted", {},
+                "capacity_exhausted");
+      return;
+    }
+    const auto client = context->Client();
+    BinaryAccess access{"client:" + std::string(client.Id()),
+                        std::chrono::steady_clock::now() +
+                            std::chrono::milliseconds(request_deadline_ms_),
+                        [this, fd, client] {
+                          return stop_requested_.load() ||
+                                 !clients_.OwnsIdentity(client) ||
+                                 detail::ClientConnectionFailed(fd);
+                        }};
+    SendLiveRecording(fd, *objects_, access, std::string(id));
+    return;
+  }
   if (IsRealtimeTraceTarget(path)) {
     const auto* context = detail::HttpResponseContext::Current(fd);
     if (!context || !context->Client().Allowed() || !realtime_traces_) {
@@ -732,7 +832,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     expected = "GET";
   else if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
            path == "/v1/completions" || path == "/v1/responses" ||
-           path == "/v1/moderations" || path == "/v1/embeddings" ||
+           path == "/v1/moderations" || path == "/v1/decisions" || path == "/v1/embeddings" ||
            path == "/v1/audio/speech" || path == "/v1/requests/cancel")
     expected = "POST";
   if (!expected.empty() && method != expected) {
@@ -817,8 +917,12 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     HandleEmbeddings(fd, body);
     return;
   }
+  if (path == "/v1/decisions" && method == "POST") {
+    HandleClassification(fd, body, ClassificationApi::kDecisions);
+    return;
+  }
   if (path == "/v1/moderations" && method == "POST") {
-    HandleModerations(fd, body);
+    HandleClassification(fd, body, ClassificationApi::kModerations);
     return;
   }
   if (path == "/v1/responses" && method == "POST") {

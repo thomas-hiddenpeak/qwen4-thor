@@ -182,7 +182,7 @@ BatchRowResult ChatServer::RunBatchRequest(
                               "batch_prepared_input_invalid");
             return;
           }
-          HandleModerations(-1, body, control);
+          HandleClassification(-1, body, ClassificationApi::kModerations, control);
           return;
         }
         const auto api = endpoint == "/v1/responses" ? GenerationApi::kResponse

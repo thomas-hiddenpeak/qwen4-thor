@@ -40,6 +40,14 @@ Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
   return Status();
 }
 
+bool ValidLiveWebRtcAddress(const std::string& ip) {
+  in_addr address{};
+  return ip.find('\0') == ip.npos &&
+         inet_pton(AF_INET, ip.c_str(), &address) == 1 &&
+         address.s_addr != INADDR_ANY && address.s_addr != INADDR_BROADCAST &&
+         !IN_MULTICAST(ntohl(address.s_addr));
+}
+
 Status ValidateServerOptions(const ServerOptions& options) {
   const auto objects = ValidateObjectStoreOptions(options);
   if (!objects) return objects;
@@ -106,6 +114,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
   in_addr address{};
   if (inet_pton(AF_INET, options.host.c_str(), &address) != 1)
     return Status::Fail("host must be a numeric IPv4 address");
+  if (!ValidLiveWebRtcAddress(options.live_webrtc_address))
+    return Status::Fail("live-webrtc-address must be a local unicast IPv4 address");
   if (!options.client_policy_file.empty() && options.host != "127.0.0.1")
     return Status::Fail("client-policy-file requires loopback serving");
   if (options.port < 1 || options.port > 65535)
@@ -204,6 +214,14 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (options.mcp_policy_file.size() > 4096 ||
       options.mcp_policy_file.find('\0') != std::string::npos)
     return Status::Fail("invalid mcp-policy-file path");
+  if (!options.sip_trunks_sha256.empty() &&
+      (options.sip_trunks_file.empty() || options.sip_trunks_sha256.size() != 64 ||
+       options.sip_trunks_sha256.find_first_not_of("0123456789abcdef") !=
+           std::string::npos))
+    return Status::Fail("Invalid SIP trunks digest or missing configuration path");
+  if (options.sip_trunks_file.size() > 4096 ||
+      options.sip_trunks_file.find('\0') != std::string::npos)
+    return Status::Fail("Invalid SIP trunks configuration path");
   if (options.web_policy_file.size() > 4096 ||
       options.web_policy_file.find('\0') != std::string::npos)
     return Status::Fail("invalid web-policy-file path");
@@ -288,6 +306,10 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     }
     if (key == "--allow-media") {
       parsed.allow_media = true;
+      continue;
+    }
+    if (key == "--live-recordings") {
+      parsed.live_recordings = true;
       continue;
     }
     if (key == "--no-budget") {
@@ -381,7 +403,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--object-max-total-objects")
       integer = &parsed.object_max_total_objects;
     if (key == "--object-io-timeout-ms") integer = &parsed.object_io_timeout_ms;
-    if (!integer && !wide && key != "--host" && key != "--model-dir" &&
+    if (!integer && !wide && key != "--host" && key != "--live-webrtc-address" && key != "--model-dir" &&
         key != "--embedding-model-dir" && key != "--asr-model-dir" &&
         key != "--tts-model-dir" && key != "--tts-base-model-dir" &&
         key != "--aligner-model-dir" &&
@@ -394,7 +416,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--prefix-cache-checkpoints" && key != "--client-policy-file" &&
         key != "--access-program-policy-file" &&
         key != "--file-input-policy-file" && key != "--mcp-policy-file" &&
-        key != "--web-policy-file" && key != "--served-model-name" &&
+        key != "--sip-trunks-file" && key != "--sip-trunks-sha256" &&
+        key != "--live-worker-sha256" && key != "--web-policy-file" && key != "--served-model-name" &&
         key != "--model-alias" && key != "--object-store-dir")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
@@ -445,6 +468,14 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.mtp_subset_head = value;
     } else if (key == "--access-program-policy-file") {
       parsed.access_program_policy_file = value;
+    } else if (key == "--live-worker-sha256") {
+      if (!parsed.live_worker_pins.Parse(value))
+        return Status::Fail("Invalid Live worker digest list");
+    } else if (key == "--sip-trunks-sha256") {
+      if (value.empty()) return Status::Fail("Empty SIP trunks digest");
+      parsed.sip_trunks_sha256 = value;
+    } else if (key == "--sip-trunks-file") {
+      parsed.sip_trunks_file = value;
     } else if (key == "--web-policy-file") {
       parsed.web_policy_file = value;
     } else if (key == "--mcp-policy-file") {
@@ -453,6 +484,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.file_input_policy_file = value;
     } else if (key == "--client-policy-file") {
       parsed.client_policy_file = value;
+    } else if (key == "--live-webrtc-address") {
+      parsed.live_webrtc_address = value;
     } else if (key == "--host") {
       parsed.host = value;
     } else if (key == "--moe-trace-dir") {

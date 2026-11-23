@@ -18,6 +18,19 @@ def compatible(base, assets, registry):
         'qualified profiles do not belong to this engine/assets/capacity')
 
 
+def verify_record(path, registry, name, base, *, ingress_sha256, require_live=True):
+    value = profile_record.read(path)
+    digest = engine.sha(path)
+    profile_evidence.validate(value, registry, name, digest)
+    live = value['business'].get('live')
+    if live is not None or (require_live and base.get('live_workers') is not None):
+        ledger.require(live is not None and base.get('live_workers') == live['workers'],
+                       'installed Live workers differ from the qualified profile')
+        from tools.serve_recovery import profile_live_reuse
+        profile_live_reuse.verify_ingress(live, ingress_sha256)
+    return digest
+
+
 def prepare(target, base, assets, path, configuration):
     if path is None:
         ledger.require(configuration is None, 'profile policy needs qualified profiles')
@@ -28,10 +41,10 @@ def prepare(target, base, assets, path, configuration):
     configuration = profile_policy.configuration(
         profile_policy.DEFAULTS if configuration is None else configuration)
     names = []
+    ingress_sha256 = engine.sha(Path(target)/'bin/q4t-ingress') if base.get('live_workers') else None
     for name in profile_contract.NAMES:
         source = path.parent/(name+'.json')
-        digest = engine.sha(source)
-        profile_evidence.validate(profile_record.read(source), registry, name, digest)
+        digest = verify_record(source, registry, name, base, ingress_sha256=ingress_sha256)
         filename = 'profile-'+name+'.json'
         destination = Path(target)/filename
         shutil.copyfile(source, destination)
@@ -53,4 +66,5 @@ def verify(package, manifest, base):
     profile_policy.configuration(configuration)
     for name in profile_contract.NAMES:
         path = Path(package)/('profile-'+name+'.json')
-        profile_evidence.validate(profile_record.read(path), registry, name, engine.sha(path))
+        verify_record(path, registry, name, base, ingress_sha256=manifest['files'].get('bin/q4t-ingress'),
+                      require_live=manifest['version'] >= 28)

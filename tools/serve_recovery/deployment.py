@@ -46,12 +46,12 @@ def read_descriptor(state):
     return value
 
 
-def ready(state, desc):
+def ready(state, desc, *, read_bundle=None):
     if (os.path.lexists(Path(state)/'service-publication.json') or
             os.path.lexists(Path(state)/'service-publication') or
             os.path.lexists(Path(state)/'service-publication-intents')):
         from tools.serve_recovery import publication
-        publication.ready(state, desc)
+        publication.ready(state, desc, read_bundle=read_bundle)
     if desc['version'] == 1 and not os.path.lexists(Path(state)/Store.marker_name):
         return
     with access_store.open_bound(access_store.binding(state, desc['service_id']), Store) as current:
@@ -60,8 +60,9 @@ def ready(state, desc):
                        'deployment needs resume')
 
 
-def check_target(current, target):
-    old = bundle.verify(current['package'], current['manifest_sha256'])
+def check_target(current, target, *, history=None):
+    read_previous = history.verify if history else bundle.verify
+    old = read_previous(current['package'], current['manifest_sha256'])
     new = bundle.verify(target['package'], target['manifest_sha256'])
     ledger.require(old.get('ingress_mode') == 'native' and new.get('ingress_mode') == 'native' and
         new['version'] >= 8 and 'source/tools/serve_recovery/deployment.py' in new['files'],
@@ -73,6 +74,8 @@ def check_target(current, target):
     ledger.require(old_core['model_dir'] == new_core['model_dir'] and
         all(old_core['settings'].get(k) == new_core['settings'].get(k)
             for k in ('application_state', 'model_names')), 'deployment application identity changed')
+    if old_core.get('live_workers', {}).get('files'):
+        ledger.require(new_core.get('live_workers', {}).get('files'), 'deployment would remove qualified media workers')
     embedding = old_core['settings'].get('native_embedding')
     if embedding is not None:
         selected = new_core['settings'].get('native_embedding', {})
@@ -100,7 +103,7 @@ def check_target(current, target):
                     all(selected[name].get(k) == asr[name][k] for k in fixed),
                     'deployment would remove or change accepted audio auxiliary')
     from tools.serve_recovery import profile_manager
-    profile_manager.compatible(old, new, current['package'], target['package'])
+    profile_manager.compatible(old, new, current['package'], target['package'], history=history)
     return old, new
 
 
@@ -177,7 +180,7 @@ def consistent_clients(access, limits, target):
 
 
 def switch(state, package, digest, *, expected, request_id, rollback=False,
-           _publication=None, _writer=None, _locked_core=None):
+           _publication=None, _writer=None, _locked_core=None, _history=None):
     ledger.require(ledger.identifier(request_id) and type(expected) is str and
                    ledger.HASH.fullmatch(expected), 'deployment request identity')
     state = Path(state).absolute()
@@ -219,7 +222,7 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
             ledger.require(desc['version'] == 1 and desc['manifest_sha256'] == expected,
                            'missing established deployment journal')
             # Verify the new package before creating a durable transaction.
-            check_target(desc, dict(desc, package=target_path, manifest_sha256=digest))
+            check_target(desc, dict(desc, package=target_path, manifest_sha256=digest), history=_history)
             access_store.bootstrap_bound(binding, policy.initial(desc), writer)
         journal = stack.enter_context(access_store.open_bound(binding, writer))
         value = journal.head['state']['policy']
@@ -247,7 +250,7 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
             target = dict(version=2, service_id=desc['service_id'], package=target_path,
                 manifest_sha256=digest, deployment_revision=desc.get('deployment_revision', 0)+1,
                 deployment_id=request_id)
-            old, selected = check_target(desc, target)
+            old, selected = check_target(desc, target, history=_history)
             preserve_outer(state, selected)
             bootstrap = seeds(state, old)
             checked = {}
@@ -259,17 +262,18 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
             consistent_clients(checked['access'], checked['limits'], target)
             candidate = policy.prepare(value, target, request_id, bootstrap)
             from tools.serve_recovery import profile_manager, root_transfer
-            version_context = root_transfer.preview(binding, candidate, core.state)
+            version_context = root_transfer.preview(binding, candidate, core.state,
+                read_previous=_history.verify if _history else bundle.verify)
             preserve_outer(state, selected, migration=version_context is not None)
             profile_manager.preflight(binding, old, selected, root=desc, core=core.state,
-                                      version_context=version_context)
+                                      version_context=version_context, history=_history)
             journal.transact(str(uuid.uuid5(uuid.UUID(request_id), 'prepare')), value['revision'], candidate)
             value = candidate
         else:
             ledger.require(value['request'] == request_id and value['current']['manifest_sha256'] == expected and
                 value['target']['package'] == target_path and value['target']['manifest_sha256'] == digest and
                 desc in (value['current'], value['target']), 'deployment resume identity changed')
-            check_target(value['current'], value['target'])
+            check_target(value['current'], value['target'], history=_history)
         # Fence is durable before migration, so a stale old package cannot
         # restore static keys even if this operator dies after migration.
         core.require_service_contract()
@@ -280,12 +284,13 @@ def switch(state, package, digest, *, expected, request_id, rollback=False,
         consistent_clients(journals['access'].head['state']['policy'],
                            journals['limits'].head['state']['policy'], value['target'])
         from tools.serve_recovery import profile_manager, root_transfer
-        old, selected = check_target(value['current'], value['target'])
+        old, selected = check_target(value['current'], value['target'], history=_history)
         preserve_outer(state, selected)
-        with root_transfer.transaction(binding, value, core.state) as version_context:
+        with root_transfer.transaction(binding, value, core.state,
+                read_previous=_history.verify if _history else bundle.verify) as version_context:
             preserve_outer(state, selected, migration=version_context is not None)
             profile_manager.deploy(binding, value, old, selected, core.state,
-                                   version_context=version_context)
+                                   version_context=version_context, history=_history)
         write_descriptor(state, value['target'])
         # All launchers that understand v8/v9 already reject this prepared
         # phase. Publish the coherent default generation before finalizing it.

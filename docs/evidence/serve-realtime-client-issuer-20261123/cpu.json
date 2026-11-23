@@ -1,0 +1,19 @@
+{
+  "native": "18 tests, 18 passed, 0 failed, 0 skipped",
+  "access": "8 tests, 8 passed, 0 failed, 0 skipped",
+  "sdk_vectors": 508,
+  "contract_checks": 7,
+  "issuer_forwarding": [
+    "native",
+    "managed_nginx"
+  ],
+  "native_browser_ticket_check": true,
+  "cpu_process_checks": 3,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "sdk_workflows": 1,
+    "chats": 1,
+    "controls": 34
+  }
+}

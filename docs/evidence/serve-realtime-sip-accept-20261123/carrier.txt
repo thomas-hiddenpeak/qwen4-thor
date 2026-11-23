@@ -1,0 +1,7 @@
+[PASS] realtime_call_start_resolves_prompt_before_first_unframed_event
+[PASS] realtime_call_rejected_configuration_precedes_any_session_event
+[PASS] realtime_call_codec_streams_preserve_phase_duration_and_pcm_bytes
+[PASS] realtime_call_scoped_observer_joins_current_session_and_hears_dtmf
+[PASS] realtime_call_playout_receipts_follow_delivery_and_clear
+[PASS] realtime_call_accept_reserves_the_call_and_attach_uses_a_distinct_lane
+6 tests, 6 passed, 0 failed, 0 skipped

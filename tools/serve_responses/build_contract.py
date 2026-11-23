@@ -25,10 +25,21 @@ def nullable(value):
     return dict(anyOf=[value, dict(type='null')])
 
 
-def schema(graph):
-    assert graph['profile'] == 'q4t-openai-application-types-v1'
+def graph_definitions(graph, prefix='', roots=None):
+    selected = graph['roots'] if roots is None else {name: graph['roots'][name] for name in roots}
+    pending = list(reversed(range(len(graph['nodes'])))) if roots is None else list(selected.values())
     definitions = {}
-    for index, node in enumerate(graph['nodes']):
+
+    def node_ref(index):
+        if roots is not None and prefix+str(index) not in definitions:
+            pending.append(index)
+        return ref(prefix+str(index))
+
+    while pending:
+        index = pending.pop()
+        if prefix+str(index) in definitions:
+            continue
+        node = graph['nodes'][index]
         kind = node['kind']
         if kind in ('string', 'number', 'boolean', 'null'):
             value = dict(type=kind)
@@ -39,22 +50,65 @@ def schema(graph):
         elif kind == 'literal':
             value = dict(const=node['value'])
         elif kind == 'union':
-            value = dict(anyOf=[ref(i) for i in node['variants']])
+            value = dict(anyOf=[node_ref(i) for i in node['variants']])
         elif kind == 'array':
-            value = dict(type='array', items=ref(node['element']))
+            value = dict(type='array', items=node_ref(node['element']))
         elif kind == 'tuple':
-            value = dict(type='array', prefixItems=[ref(i) for i in node['elements']],
+            value = dict(type='array', prefixItems=[node_ref(i) for i in node['elements']],
                          minItems=node['required'], maxItems=len(node['elements']))
         elif kind == 'object':
-            value = obj({f['name']: ref(f['type']) for f in node['fields']},
+            value = obj({f['name']: node_ref(f['type']) for f in node['fields']},
                         [f['name'] for f in node['fields'] if not f['optional']])
             if node['additional'] is not None:
-                value['additionalProperties'] = ref(node['additional'])
+                value['additionalProperties'] = node_ref(node['additional'])
         else:
             raise ValueError('unhandled SDK type: '+kind)
-        definitions[str(index)] = value
-    for name, index in graph['roots'].items():
-        definitions[name] = ref(index)
+        definitions[prefix+str(index)] = value
+    for name, index in selected.items():
+        definitions[prefix+name] = ref(prefix+str(index))
+    return definitions
+
+
+def schema(graph):
+    assert graph['profile'] == 'q4t-openai-application-types-v1'
+    definitions = graph_definitions(graph)
+    live = json.loads((ROOT/'src/server/contracts/openai_live_types_v1.json').read_text())
+    assert live['profile'] == 'q4t-openai-live-types-v1'
+    definitions.update(graph_definitions(live, 'live_', ('session_accept', 'session_refer', 'session_reject', 'session_fork', 'session_forked', 'media_create', 'media_created')))
+    realtime = json.loads((ROOT/'src/server/contracts/openai_realtime_types_v1.json').read_text())
+    assert realtime['profile'] == 'q4t-openai-realtime-types-v1'
+    definitions.update(graph_definitions(realtime, 'realtime_', (
+        'session', 'call_accept', 'call_refer', 'call_reject',
+        'client_secret_create', 'client_secret_created')))
+    request = 'realtime_client_secret_create'
+    definitions[request] = {'allOf':[definitions[request], {'properties':{
+        'expires_after':{'properties':{'seconds':dict(type='integer', minimum=10,
+                                                      maximum=7200, default=600)}}}}]}
+    # Realtime wire settings allow explicitly clearing these processors.
+    for index, node in enumerate(realtime['nodes']):
+        if node.get('kind') != 'object':
+            continue
+        fields = definitions.get('realtime_'+str(index), {}).get('properties', {})
+        if {'format','turn_detection','noise_reduction','transcription'} <= fields.keys():
+            for key in ('transcription','noise_reduction'):
+                fields[key] = nullable(fields[key])
+    status_code = dict(type='integer', minimum=300, maximum=699)
+    target_uri = {'maxLength':8192,
+                  'pattern':r"^[A-Za-z][A-Za-z0-9+.\-]*:(?:[A-Za-z0-9._~:/?#\[\]@!$&'()*+,;=\-]|%[0-9A-Fa-f]{2})+(?![\s\S])"}
+    for family in ('live_session_', 'realtime_call_'):
+        status = dict(status_code, default=603) if family == 'realtime_call_' else status_code
+        for operation, fields in [('refer', {'target_uri':target_uri}), ('reject', {'status_code':status})]:
+            name = family + operation
+            definitions[name] = {'allOf':[definitions[name], {'properties':fields}]}
+    definitions['realtime_call_reject'] = nullable(definitions['realtime_call_reject'])
+    decisions = json.loads((ROOT/'src/server/contracts/openai_decision_types_v1.json').read_text())
+    assert decisions['profile'] == 'q4t-openai-decision-types-v1'
+    definitions.update(graph_definitions(decisions, 'decisions_'))
+    for index, node in enumerate(decisions['nodes']):
+        fields = definitions['decisions_'+str(index)].get('properties', {})
+        for name, upper in [('questions', 400), ('choices', 255), ('levels', 10)]:
+            if name in fields:
+                fields[name].update(minItems=1 if name == 'questions' else 2, maxItems=upper)
     from tools.serve_responses.files_contract import definitions as file_definitions
     definitions.update(file_definitions())
     from tools.serve_responses.uploads_contract import definitions as upload_definitions
@@ -349,6 +403,7 @@ def add_openapi(paths, response, error):
 def standalone_openapi(spec):
     """Make the shipped OpenAPI self-contained, without fetching schemas."""
     components = {}
+    references = set()
 
     def rewrite(value, owner=None):
         if isinstance(value, dict):
@@ -370,6 +425,7 @@ def standalone_openapi(spec):
                     if not target or (sep and fragment and not fragment.startswith('/')):
                         raise ValueError('unresolved reference '+child)
                     result[key] = '#/components/schemas/'+target+fragment
+                    references.add(result[key])
                 else:
                     result[key] = rewrite(child, owner)
             return result
@@ -379,6 +435,14 @@ def standalone_openapi(spec):
 
     bundled = rewrite(spec)
     bundled['components'] = dict(schemas=components)
+    for pointer in sorted(references):
+        node = bundled
+        try:
+            for part in pointer[2:].split('/'):
+                key = part.replace('~1', '/').replace('~0', '~')
+                node = node[int(key)] if isinstance(node, list) else node[key]
+        except (KeyError, IndexError, ValueError, TypeError) as error:
+            raise ValueError('unresolved bundled reference '+pointer) from error
     return bundled
 
 

@@ -1,0 +1,20 @@
+{
+  "status": "PASS_NATIVE_LIVE_LIFECYCLE_TRANSPORT_CPU",
+  "lifecycle_tests": 10,
+  "transport_tests": 24,
+  "distinct_tests": 31,
+  "total_live_phase_distinct_tests": 58,
+  "lifecycle_seconds": 0.03161576483398676,
+  "transport_seconds": 0.36403747322037816,
+  "host_binary_sha256": "637e96b893e2e4ce7a7a756be70b252349c7f962a79c62b7bdc2b7d55d15ec21",
+  "source_snapshots_match_each_original_plan": true,
+  "inventory_mutation_checks": 22,
+  "controlled_model_callbacks": true,
+  "actual_native_socket_pair": true,
+  "model_business_accepted": false,
+  "default_changed": false,
+  "default_revision": 426,
+  "new_gpu_starts": 0,
+  "master_active": true,
+  "archive_sha256": "526ef6a5f997c36e4fefa3eaac33f1ad6625e6f26454540c4fb2cfc014d2f99d"
+}

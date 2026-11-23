@@ -54,9 +54,9 @@ def aware(package):
     except ValueError: return False
 
 
-def verify(original, original_sha, target, target_sha):
+def verify(original, original_sha, target, target_sha, *, read_bundle=bundle.verify):
     original, target = Path(original).resolve(strict=True), Path(target).resolve(strict=True)
-    first = bundle.verify(original, original_sha); second = bundle.verify(target, target_sha)
+    first = read_bundle(original, original_sha); second = read_bundle(target, target_sha)
     ledger.require(12 <= first['version'] <= 16, 'cold adapter needs a retained legacy service')
     expected = copy.deepcopy(first)
     expected_bytes = adapted((original/SOURCE).read_bytes())

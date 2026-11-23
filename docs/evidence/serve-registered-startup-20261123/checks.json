@@ -1,0 +1,62 @@
+{
+  "control_manifest": "8c3aad4cc2b5993062b1db7041351456d22d6b338ca4887a2333f4cc7abcaa54",
+  "oracle": "same retained primary/fallback/business receipts; a new isolated registration each timing pair",
+  "previous_prepare_seconds": [
+    5.7546,
+    5.7227
+  ],
+  "current_prepare_seconds": [
+    2.6312,
+    2.6047
+  ],
+  "slow_operation_deadline_seconds": 30,
+  "default_guardian_journal_seconds": 5,
+  "python_cases": 67,
+  "native_cases": 12,
+  "first_python_run_failures": 2,
+  "isolated": {
+    "model_starts": 1,
+    "chat_answers": [
+      "42",
+      "42"
+    ],
+    "stored_answer": "42",
+    "gateway_generations": [
+      1,
+      2
+    ],
+    "model_generations": [
+      1,
+      1
+    ],
+    "seconds": 65.57277283957228,
+    "external_lease": "COMPLETED",
+    "clean_stop": true,
+    "owned_remaining": []
+  },
+  "prior_attempts": [
+    "registered start timed out before model load",
+    "beta quota returned HTTP 429 after gateway recovery"
+  ],
+  "source_digests": {
+    "control-business-01/result.json": "92420300919365ae6e04fe52c316818e388f4756b78a6655ff0a67f5228c6661",
+    "control-business-02/result.json": "1df36172222ac55d0996ee0eae513e92107171967078b0cd10dfa995175cff44",
+    "control-business-02/chat-after.wire": "18a33729d6b54507be223b99852dcb130b507788b228314a63f701eb9323d88b",
+    "control-business-03/result.json": "98f7059f814041c93d9dedb3a6636c437a011b4701b86af878fea8243aad82f2",
+    "control-business-03/recovery.json": "a0e356a89dee49adb17808c6bb4bb2c11943d1a4401f441f6324684f94735751",
+    "control-business-03/chat-before.wire": "61c7a4f0c5ccca3734f1949416929f186a1feca00da3e6531116bee4c52cf9b2",
+    "control-business-03/chat-after.wire": "8729105e5a590a2075cedb0fbbbf46ecf9ff292947299a9a7dc649d4f65790d8",
+    "control-business-03/stored.wire": "61c7a4f0c5ccca3734f1949416929f186a1feca00da3e6531116bee4c52cf9b2",
+    "control-lease-03/exit.json": "8820a9a58baa1c3c528af620020478db3099face1b7106f6e823f4fd02bbd116",
+    "deadline-cpu.log": "f4bb2396ebcb0361ac105b00adef059598508c49a489eb0af5a5c1f07265de79",
+    "deadline-retest.log": "86f7b952b80352ba930c9ef10e7f882f59f758c0767fd89c5a32613c59f02d84",
+    "root-regression.log": "725af20bb104e682b60f7aea69b5262f88cd917350e645c4d32f7107ece8e7a8",
+    "native-tests.log": "fdb41de81ea6232b9a5060736525986207499a13aa07c565a15c576ea74e499a",
+    "timing-01/timings.json": "98de5c00c1b5c2a7585540196f42a1df89c0968a148b9a50691c2e514282030d",
+    "timing-02/timings.json": "80e83add5a4e5cce89676f118879de39bd4d912a2a6d42ce2d343d071eb23e77",
+    "control-02.json": "3e839b23b3ef4cf258f407c311fa8953805713ca68d581ef385f700c790f80b1",
+    "control-02/native-build.json": "753418138c06216261ec19f8ca2e01da5132e2188e1ebdd0837913abc93f222d",
+    "control-02/manifest.json": "8c3aad4cc2b5993062b1db7041351456d22d6b338ca4887a2333f4cc7abcaa54",
+    "audit-02.log": "47c1e689b1c57bff310d3f67771fafa39f783b787fb4ebfcdb42be50a12c6938"
+  }
+}

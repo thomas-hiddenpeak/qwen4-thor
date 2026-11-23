@@ -37,7 +37,7 @@ struct RealtimeTranscriptionJob {
   std::shared_ptr<RealtimeAudioRecord> processed_audio;
   std::shared_ptr<RealtimeSemanticTurn> semantic;
   RealtimeTranscriptTicket transcript;
-  bool idle_timeout = false;  // Native timer provenance, never client JSON.
+  bool idle_timeout = false;   // Native timer provenance, never client JSON.
   std::string source_item_id;  // Finite part; empty for the input buffer.
   size_t content_index = 0;
   bool Finite() const { return !source_item_id.empty(); }
@@ -89,6 +89,8 @@ struct RealtimeTranscriptionCallbacks {
   IRealtimeTranscriptionOwner* owner = nullptr;
 };
 
+enum class RealtimeInputTail { kAnalyzing, kSilence, kMayContainSpeech };
+
 class RealtimeTranscriptionSession {
  public:
   RealtimeTranscriptionSession(std::string id, WebSocketOutput& output,
@@ -98,6 +100,7 @@ class RealtimeTranscriptionSession {
                                uint64_t lifetime_ticks = kRealtimeSessionTicks);
   ~RealtimeTranscriptionSession();
   bool Start();
+  ObjectReply StartConfigured(const io::Json& configuration);
   // Session-owner transaction for a composed conversation. Validates the
   // actual processor and pending audio before committing; emits no separate
   // session acknowledgement and never starts an ASR worker. The by-value
@@ -108,7 +111,9 @@ class RealtimeTranscriptionSession {
   // the actual worker join, exactly as for the standalone wire command.
   ObjectReply EraseInput(const RealtimeTranscriptTicket& ticket);
   bool Message(WebSocketOpcode opcode, std::string_view message);
-  bool Tick();
+  // A composed playback owner may pause new VAD/admission while continuing
+  // to reap real borrowers and drain their output. Ordinary callers run work.
+  bool Tick(bool allow_work = true);
   // Session-owner only. The separate socket owner signals the pump to cancel.
   void Cancel() noexcept;
   void Join() noexcept;
@@ -118,12 +123,24 @@ class RealtimeTranscriptionSession {
   // Preserves transcript/audio history, budgets, IDs and the absolute clock;
   // never reloads a model, replays audio, or repeats session.created.
   ObjectReply Recover(RealtimeTranscriptionSettings settings);
+  io::Json SessionResource(bool legacy = false) const;
+  RealtimeAudioFormat InputFormat() const { return settings_.format; }
   size_t QueuedItems() const { return jobs_.size(); }
   // Session-owner only; a completed worker still owns admission until join.
   bool Executing() const { return worker_.joinable(); }
   size_t AudioBytes() const { return queue_.UsedBytes() + stream_storage_; }
   size_t RetainedAudioBytes() const { return audio_history_.ChargedBytes(); }
   uint64_t AcceptedTicks() const;
+  // Typed composition only. A caller that has stopped appending must drain
+  // both actual borrowers and protocol output, not only observe an idle worker.
+  size_t UncommittedBytes() const { return queue_.PendingBytes(); }
+  // Same-owner inspection only, without changing explicit wire commits.
+  // Silence requires caught-up, inactive server VAD and a digital-quiet
+  // unscored suffix. Unknown/short signals retain their real ASR waveform.
+  RealtimeInputTail UncommittedTail() const;
+  bool PendingOutput() const {
+    return !vad_events_.empty() || !terminal_.empty() || output_.Bytes() != 0;
+  }
   // Owner-only idle capture. Silence stays in the existing bounded ring;
   // speech and ordinary commits cancel it. No invented input samples.
   void BeginIdleCapture();

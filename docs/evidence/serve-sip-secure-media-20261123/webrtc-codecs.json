@@ -1,0 +1,41 @@
+[
+  {
+    "codec": "OPUS",
+    "payload": 111,
+    "inbound_samples": 28768,
+    "outbound_samples": 28288,
+    "amplitudes": [
+      9000,
+      9018
+    ],
+    "loopback_ice_candidates": 1,
+    "data_messages": 2,
+    "audio_after_data_channel_close": true
+  },
+  {
+    "codec": "PCMU",
+    "payload": 0,
+    "inbound_samples": 29065,
+    "outbound_samples": 28606,
+    "amplitudes": [
+      8885,
+      8972
+    ],
+    "loopback_ice_candidates": 1,
+    "data_messages": 2,
+    "audio_after_data_channel_close": true
+  },
+  {
+    "codec": "PCMA",
+    "payload": 8,
+    "inbound_samples": 29053,
+    "outbound_samples": 28606,
+    "amplitudes": [
+      8903,
+      9021
+    ],
+    "loopback_ice_candidates": 1,
+    "data_messages": 2,
+    "audio_after_data_channel_close": true
+  }
+]

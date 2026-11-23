@@ -134,14 +134,14 @@ Q4T_TEST(websocket_output_explicit_large_message_keeps_byte_and_frame_bounds) {
   output.Acknowledge();
   Q4T_CHECK(output.Bytes() == 0);
   Q4T_CHECK(!output.TryPush(WebSocketOpcode::kBinary,
-                           std::string((2ULL << 20) + 1, 'x')));
+                            std::string((2ULL << 20) + 1, 'x')));
   Q4T_CHECK(output.Bytes() == 0 && output.Front().empty());
   return true;
 }
 
 Q4T_TEST(websocket_output_explicit_limits_reject_without_allocating_queue) {
   WebSocketOutput full(kWebSocketOutputMaximumBytes, 64,
-                        kWebSocketMaximumLimit);
+                       kWebSocketMaximumLimit);
   Q4T_CHECK(full.Valid() && !full.Bytes());
   Q4T_CHECK(!WebSocketOutput(kWebSocketOutputMaximumBytes + 1).Valid());
   Q4T_CHECK(!WebSocketOutput(1024, 0, 1024).Valid());
@@ -151,8 +151,8 @@ Q4T_TEST(websocket_output_explicit_limits_reject_without_allocating_queue) {
   // A small mailbox may use the unchanged larger default message limit;
   // the actual encoded frame still must fit its own smaller byte budget.
   WebSocketOutput small(256);
-  Q4T_CHECK(small.Valid() && !small.TryPush(WebSocketOpcode::kBinary,
-                                          std::string(256, 'x')));
+  Q4T_CHECK(small.Valid() &&
+            !small.TryPush(WebSocketOpcode::kBinary, std::string(256, 'x')));
   Q4T_CHECK(!small.Bytes());
   return true;
 }
@@ -531,12 +531,14 @@ Q4T_TEST(websocket_session_receiver_wait_observes_peer_eof_without_delivery) {
 Q4T_TEST(websocket_session_client_lane_is_separate_and_exactly_classified) {
   ClientAdmission admission;
   const auto identity = Configure(admission);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/realtime?intent=transcription") ==
+            HttpConnectionClass::kBusiness);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/live/sessions") ==
+            HttpConnectionClass::kRealtime);
   for (const auto path :
        {"/v1/realtime?intent=transcription", "/v1/live/sessions"}) {
     Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
               HttpConnectionClass::kRealtime);
-    Q4T_CHECK(ClassifyHttpConnection("POST", path) ==
-              HttpConnectionClass::kBusiness);
     HttpRequestHeaders headers;
     headers.client_id = "alpha";
     headers.gateway_token = std::string(64, 'a');
@@ -559,6 +561,77 @@ Q4T_TEST(websocket_session_client_lane_is_separate_and_exactly_classified) {
        {"/v1/realtime/x", "/v1/live/sessions/x", "/v1/realtime#x"})
     Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
               HttpConnectionClass::kBusiness);
+  return true;
+}
+
+Q4T_TEST(live_sip_reject_preserves_control_admission) {
+  constexpr auto path = "/v1/live/sessions/live_abc/reject";
+  ClientAdmission admission;
+  const auto identity = Configure(admission);
+  ClientLease data, request;
+  Q4T_CHECK(data.Acquire(admission, identity, ClientLane::kData));
+  Q4T_CHECK(ClassifyHttpConnection("POST", path) ==
+            HttpConnectionClass::kControl);
+  Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
+            HttpConnectionClass::kBusiness);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/realtime/calls/rtc_abc/reject") ==
+            HttpConnectionClass::kControl);
+  for (const auto bad : {"/v1/realtime/calls/live_a/reject",
+                         "/v1/live/sessions/rtc_a/reject",
+                         "/v1/realtime/calls/rtc_/reject",
+                         "/v1/live/sessions/live_/reject",
+                         "/v1/live/sessions/live_a/b/reject",
+                         "/v1/live/sessions/live_a/reject/"})
+    Q4T_CHECK(ClassifyHttpConnection("POST", bad) ==
+              HttpConnectionClass::kBusiness);
+  HttpRequestHeaders headers;
+  headers.client_id = "alpha";
+  headers.gateway_token = std::string(64, 'a');
+  ClientIdentity owner;
+  int status = 0;
+  Q4T_CHECK(AdmitClientRequest("POST", path, &headers, admission, &request,
+                               &owner, &status));
+  const auto usage = admission.Usage(0);
+  Q4T_CHECK(usage.control_active == 1 && usage.data_active == 1);
+  return true;
+}
+
+Q4T_TEST(live_sip_accept_holds_realtime_lane_while_hangup_uses_control) {
+  constexpr auto accept = "/v1/live/sessions/live_abc/accept";
+  constexpr auto hangup = "/v1/live/sessions/live_abc/hangup";
+  ClientAdmission admission;
+  Configure(admission);
+  HttpRequestHeaders headers;
+  headers.client_id = "alpha";
+  headers.gateway_token = std::string(64, 'a');
+  ClientIdentity owner;
+  int status = 0;
+  ClientLease media, control;
+  Q4T_CHECK(ClassifyHttpConnection("POST", accept) ==
+            HttpConnectionClass::kRealtime);
+  Q4T_CHECK(AdmitClientRequest("POST", accept, &headers, admission, &media,
+                               &owner, &status));
+  Q4T_CHECK(ClassifyHttpConnection("POST", hangup) ==
+            HttpConnectionClass::kControl);
+  Q4T_CHECK(AdmitClientRequest("POST", hangup, &headers, admission, &control,
+                               &owner, &status));
+  Q4T_CHECK(admission.Usage(0).realtime_active == 1 &&
+            admission.Usage(0).control_active == 1);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/realtime/calls/rtc_abc/hangup") ==
+            HttpConnectionClass::kControl);
+  for (auto path : {"/v1/live/sessions/live_abc/refer",
+                    "/v1/realtime/calls/rtc_abc/refer"}) {
+    Q4T_CHECK(ClassifyHttpConnection("POST", path) ==
+              HttpConnectionClass::kControl);
+  }
+  for (auto bad : {"/v1/live/sessions/live_/accept",
+                   "/v1/live/sessions/rtc_other/accept",
+                   "/v1/realtime/calls/live_other/hangup",
+                   "/v1/realtime/calls/live_other/refer",
+                   "/v1/live/sessions/live_id/accept?x=1"}) {
+    Q4T_CHECK(ClassifyHttpConnection("POST", bad) ==
+              HttpConnectionClass::kBusiness);
+  }
   return true;
 }
 
@@ -698,5 +771,142 @@ Q4T_TEST(
                    Frame("ready", WebSocketOpcode::kText, false).size()) ==
               Frame("ready", WebSocketOpcode::kText, false));
   }
+  return true;
+}
+
+Q4T_TEST(websocket_session_completion_drains_all_frames_before_normal_close) {
+  Sockets sockets;
+  sockets.Small();
+  WebSocketOutput output;
+  const std::string audio(128 * 1024, 'a');
+  Q4T_CHECK(output.TryPush(WebSocketOpcode::kBinary, audio));
+  Q4T_CHECK(output.TryPush(WebSocketOpcode::kText, "session.closed"));
+  int calls = 0, cancels = 0;
+  WebSocketSessionCallbacks cb;
+  cb.message = [&](auto, auto) {
+    ++calls;
+    return true;
+  };
+  cb.cancel = [&] { ++cancels; };
+  cb.completed = [] { return true; };
+  auto task = std::async(std::launch::async, [&] {
+    return RunWebSocketSession(sockets.f[0], Frame("too late"), output, cb,
+                               Limits());
+  });
+  const auto expected = Frame(audio, WebSocketOpcode::kBinary, false) +
+                        Frame("session.closed", WebSocketOpcode::kText, false) +
+                        Frame("\x03\xe8", WebSocketOpcode::kClose, false);
+  Q4T_CHECK(Read(sockets.f[1], expected.size()) == expected);
+  const auto result = task.get();
+  Q4T_CHECK(result.end == WebSocketSessionEnd::kCompleted &&
+            result.close_code == 1000 && result.sent_bytes == expected.size());
+  Q4T_CHECK(calls == 0 && cancels == 1 && output.Closed() && !output.Bytes());
+  return true;
+}
+
+Q4T_TEST(websocket_session_completion_in_message_stops_same_batch_dispatch) {
+  Sockets sockets;
+  WebSocketOutput output;
+  bool completed = false;
+  int calls = 0;
+  WebSocketSessionCallbacks cb;
+  cb.message = [&](auto, auto) {
+    ++calls;
+    completed = true;
+    return output.TryPush(WebSocketOpcode::kText, "session.closed");
+  };
+  cb.completed = [&] { return completed; };
+  const auto result = RunWebSocketSession(
+      sockets.f[0], Frame("close") + Frame("must not execute"), output, cb,
+      Limits());
+  const auto expected = Frame("session.closed", WebSocketOpcode::kText, false) +
+                        Frame("\x03\xe8", WebSocketOpcode::kClose, false);
+  Q4T_CHECK(result.end == WebSocketSessionEnd::kCompleted && calls == 1);
+  Q4T_CHECK(Read(sockets.f[1], expected.size()) == expected);
+  return true;
+}
+
+Q4T_TEST(websocket_session_completion_does_not_override_failure_or_revocation) {
+  for (int kind = 0; kind < 4; ++kind) {
+    Sockets sockets;
+    WebSocketOutput output;
+    Q4T_CHECK(output.TryPush(WebSocketOpcode::kText, "must not leak"));
+    int cancels = 0;
+    WebSocketSessionCallbacks cb;
+    cb.message = [](auto, auto) { return true; };
+    cb.stopped = [=] { return kind == 0; };
+    cb.authorized = [=] { return kind != 1; };
+    cb.tick = [=] { return kind != 2; };
+    cb.completed = [=] {
+      if (kind == 3) throw std::runtime_error("completion fixture");
+      return true;
+    };
+    cb.cancel = [&] { ++cancels; };
+    const auto result =
+        RunWebSocketSession(sockets.f[0], {}, output, cb, Limits());
+    const auto expected = kind == 0   ? WebSocketSessionEnd::kShutdown
+                          : kind == 1 ? WebSocketSessionEnd::kRevoked
+                                      : WebSocketSessionEnd::kApplication;
+    Q4T_CHECK(result.end == expected && cancels == 1 && output.Closed());
+    Q4T_CHECK(result.sent_bytes <= 4 && !output.Bytes());
+  }
+  return true;
+}
+
+Q4T_TEST(websocket_session_completion_slow_reader_and_eof_are_not_success) {
+  for (bool eof : {false, true}) {
+    Sockets sockets;
+    sockets.Small();
+    WebSocketOutput output;
+    Q4T_CHECK(
+        output.TryPush(WebSocketOpcode::kBinary, std::string(1ULL << 20, 'a')));
+    Q4T_CHECK(output.TryPush(WebSocketOpcode::kText, "session.closed"));
+    WebSocketSessionCallbacks cb;
+    cb.message = [](auto, auto) { return true; };
+    cb.completed = [] { return true; };
+    auto limits = Limits();
+    limits.write = 60ms;
+    if (eof) Q4T_CHECK(shutdown(sockets.f[1], SHUT_WR) == 0);
+    const auto start = Clock::now();
+    const auto result =
+        RunWebSocketSession(sockets.f[0], {}, output, cb, limits);
+    Q4T_CHECK(result.end == (eof ? WebSocketSessionEnd::kPeerEof
+                                 : WebSocketSessionEnd::kWriteDeadline));
+    Q4T_CHECK(result.sent_bytes < (1ULL << 20) && Clock::now() - start < 1s);
+    Q4T_CHECK(output.Closed() && !output.Bytes());
+  }
+  return true;
+}
+
+
+Q4T_TEST(realtime_call_accept_reserves_the_call_and_attach_uses_a_distinct_lane) {
+  constexpr auto accept = "/v1/realtime/calls/rtc_valid/accept";
+  constexpr auto attach = "/v1/realtime?call_id=rtc_valid";
+  constexpr auto create = "/v1/realtime/calls";
+  Q4T_CHECK(IsLiveMediaCreate("POST", create));
+  Q4T_CHECK(!IsLiveMediaCreate("GET", create));
+  Q4T_CHECK(ClassifyHttpConnection("POST", create) == HttpConnectionClass::kRealtime);
+  Q4T_CHECK(IsLiveMediaCreate("POST", accept));
+  Q4T_CHECK(ClassifyHttpConnection("POST", accept) == HttpConnectionClass::kRealtime);
+  Q4T_CHECK(RealtimeSidebandId(attach) == "rtc_valid");
+  Q4T_CHECK(ClassifyHttpConnection("GET", attach) == HttpConnectionClass::kSideband);
+  for (auto bad : {"/v1/realtime?call_id=live_x", "/v1/realtime?call_id=rtc_",
+                   "/v1/realtime?call_id=rtc_a&model=x",
+                   "/v1/realtime?call_id=rtc_a&call_id=rtc_b"})
+    Q4T_CHECK(RealtimeSidebandId(bad).empty());
+  ClientAdmission admission;
+  Configure(admission);
+  ClientLease active, observer;
+  ClientIdentity identity;
+  HttpRequestHeaders headers;
+  headers.client_id = "alpha";
+  headers.gateway_token = std::string(64, 'a');
+  int status = 0;
+  Q4T_CHECK(AdmitClientRequest("POST", accept, &headers, admission, &active,
+                               &identity, &status));
+  Q4T_CHECK(AdmitClientRequest("GET", attach, &headers, admission, &observer,
+                               &identity, &status));
+  Q4T_CHECK(admission.Usage(0).realtime_active == 1 &&
+            admission.Usage(0).sideband_active == 1);
   return true;
 }

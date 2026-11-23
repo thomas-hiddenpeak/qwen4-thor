@@ -20,6 +20,7 @@
 #include "q4t/server/object_store.h"
 #include "q4t/server/tool_result_schema.h"
 #include "q4t/server/file_fetch.h"
+#include "q4t/server/sip_webhook.h"
 #include "q4t/server/web_search.h"
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/program_worker.h"
@@ -34,6 +35,7 @@
 #include "q4t/server/asr_statistics.h"
 #include "q4t/server/file_legacy.h"
 #include "q4t/server/state_key_admin.h"
+int SipOwnerFixture(int argc, char** argv);
 int CacheIoFixture(int argc, char** argv);
 int GrammarProcessFixture(int argc, char** argv);
 int ConversationApiFixture(int argc, char** argv);
@@ -90,6 +92,10 @@ int main(int argc, char** argv) {
   if (web_sandbox >= 0) return web_sandbox;
   const int web_page = q4t::server::MaybeRunWebPageWorker(argc, argv);
   if (web_page >= 0) return web_page;
+  const int sip_owner = SipOwnerFixture(argc, argv);
+  if (sip_owner >= 0) return sip_owner;
+  const int sip_webhook = q4t::server::MaybeRunSipWebhookWorker(argc, argv);
+  if (sip_webhook >= 0) return sip_webhook;
   const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
   if (fetch_worker >= 0) return fetch_worker;
   const int document_worker = q4t::server::MaybeRunFileDocumentWorker(argc, argv);

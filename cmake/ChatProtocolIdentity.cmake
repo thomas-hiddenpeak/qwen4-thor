@@ -212,6 +212,7 @@ set(protocol_inputs
   src/server/moderations_plan.cpp
   src/server/moderations_execution.cpp
   src/server/chat_moderations.cpp
+  src/server/chat_decisions.cpp
   include/q4t/server/embeddings_plan.h
   include/q4t/server/vector_search.h
   include/q4t/server/vector_search_execution.h
@@ -487,6 +488,15 @@ set(protocol_inputs
   src/server/file_fetch.cpp
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
+  src/server/sip_webhook.cpp
+  include/q4t/server/live_worker.h
+  src/service/live_worker_exec.cpp
+  src/server/sip_service.cpp
+  src/server/sip_child.cpp
+  src/server/sip_child.h
+  include/q4t/server/sip_refer_target.h
+  include/q4t/server/sip_service.h
+  include/q4t/server/sip_webhook.h
   include/q4t/server/mcp_transport.h
   include/q4t/server/mcp_policy.h
   include/q4t/server/mcp_tunnel.h
@@ -628,6 +638,74 @@ set(protocol_inputs
   include/q4t/server/realtime_shape.h
   src/server/contracts/openai_realtime_types_v1.json
   cmake/realtime_types.h.in
+  include/q4t/server/live_shape.h
+  include/q4t/server/live_configuration.h
+  include/q4t/server/live_media_policy.h
+  include/q4t/server/live_media_call.h
+  include/q4t/server/live_sideband.h
+  include/q4t/server/live_media_process.h
+  include/q4t/server/live_responses_settings.h
+  include/q4t/server/live_responses_validation.h
+  include/q4t/server/live_responses_turn.h
+  include/q4t/server/live_responses_execution.h
+  include/q4t/server/live_responses_delegate.h
+  include/q4t/server/live_decision_items.h
+  include/q4t/server/live_decision_execution.h
+  include/q4t/server/live_decision_delegate.h
+  include/q4t/server/live_recording.h
+  include/q4t/server/live_recording_store.h
+  src/server/live_configuration.cpp
+  src/server/live_media_policy.cpp
+  src/server/live_media_call.cpp
+  src/server/realtime_media_call.cpp
+  src/server/realtime_client_ticket.cpp
+  src/server/realtime_client_secrets.cpp
+  src/server/realtime_webrtc_request.cpp
+  src/server/realtime_call_pcm.cpp
+  src/server/realtime_media_call.h
+  include/q4t/server/realtime_client_ticket.h
+  include/q4t/server/realtime_client_secrets.h
+  src/server/realtime_webrtc_request.h
+  src/server/realtime_call_pcm.h
+  src/server/live_sideband.cpp
+  src/server/live_media_process.cpp
+  src/server/live_responses_settings.cpp
+  src/server/sip_control_contract.h
+  src/server/live_responses_validation.cpp
+  src/server/live_responses_turn.cpp
+  src/server/live_responses_execution.cpp
+  src/server/live_responses_delegate.cpp
+  src/server/live_decision_items.cpp
+  src/server/live_decision_execution.cpp
+  src/server/live_decision_delegate.cpp
+  src/server/live_recording.cpp
+  src/server/live_recording_store.cpp
+  include/q4t/server/live_session.h
+  src/server/live_session.cpp
+  include/q4t/server/live_session_pump.h
+  src/server/live_session_pump.cpp
+  include/q4t/server/live_audio_input.h
+  src/server/live_audio_input.cpp
+  include/q4t/server/live_audio_output.h
+  src/server/live_audio_output.cpp
+  include/q4t/server/live_audio_fixture.h
+  src/server/live_audio_fixture.cpp
+  include/q4t/server/live_frontend_work.h
+  src/server/live_frontend_work.cpp
+  include/q4t/server/live_frontend.h
+  src/server/live_frontend.cpp
+  include/q4t/server/live_client_context.h
+  src/server/live_client_context.cpp
+  include/q4t/server/live_native_backend.h
+  src/server/live_native_backend.cpp
+  src/server/contracts/openai_live_types_v1.json
+  cmake/live_types.h.in
+  cmake/decision_types.h.in
+  src/server/contracts/openai_decision_types_v1.json
+  include/q4t/server/decision_plan.h
+  include/q4t/server/decision_scoring.h
+  src/server/decision_plan.cpp
+  src/server/decision_scoring.cpp
   src/server/grammar_worker.cpp
   src/server/grammar_worker_internal.h
   include/q4t/server/abort_reason.h
@@ -657,8 +735,11 @@ set(protocol_inputs
   include/q4t/server/chat_tool_history.h
   include/q4t/server/http_response.h
   include/q4t/server/finite_response.h
+  include/q4t/server/native_responses_stream.h
+  src/server/native_responses_stream.cpp
   include/q4t/server/http_request.h
   include/q4t/server/websocket.h
+  include/q4t/server/websocket_protocol.h
   include/q4t/server/realtime_duplex_input.h
   src/server/realtime_duplex_input.cpp
   include/q4t/server/realtime_conversation_input.h
@@ -769,7 +850,11 @@ set(protocol_inputs
   src/server/realtime_chat_plan.cpp
   include/q4t/server/realtime_chat_execution.h
   src/server/realtime_chat_execution.cpp
+  src/server/chat_realtime_secrets.cpp
   src/server/chat_realtime_conversation.cpp
+  src/server/chat_live.cpp
+  src/server/chat_live_media.cpp
+  src/server/chat_live_sideband.cpp
   src/server/realtime_noise_input.cpp
   src/server/realtime_transcription_session.cpp
   src/server/realtime_semantic_vad.cpp
@@ -873,3 +958,21 @@ if(NOT realtime_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/realtime_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/realtime_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_live_types_v1.json"
+  Q4T_LIVE_TYPES)
+string(FIND "${Q4T_LIVE_TYPES}" ")q4t_types\"" live_delimiter)
+if(NOT live_delimiter EQUAL -1)
+  message(FATAL_ERROR "live type graph contains its C++ literal delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/live_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/live_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_decision_types_v1.json"
+  Q4T_DECISION_TYPES)
+string(FIND "${Q4T_DECISION_TYPES}" ")q4t_types\"" decision_delimiter)
+if(NOT decision_delimiter EQUAL -1)
+  message(FATAL_ERROR "decision type graph contains its C++ literal delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/decision_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/decision_types_data.h" @ONLY)

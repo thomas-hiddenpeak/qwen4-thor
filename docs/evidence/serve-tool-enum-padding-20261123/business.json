@@ -1,0 +1,78 @@
+{
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "calls": 1,
+    "sdk_requests": 6,
+    "sidebands": 1,
+    "voice_inputs": 1,
+    "client_results": 1,
+    "chats": 1,
+    "controls": 35
+  },
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 64,
+    "cleanup_complete": true
+  },
+  "seconds": 66.36973163625225,
+  "core": "42",
+  "binary_sha256": "15b0d414888595d8c65432ff1309112d65c404d5d0ce196c1a2b89510b30be7a",
+  "ingress_sha256": "b7a1967ba8540dc51ae7187577052bb1273d789d85ed8ab5a2d1cf5b02f21caf",
+  "sip_sha256": "970963826247fe14ad690f746a13f49183a0c6b378604ca91c8a6fd8248b5efb",
+  "audio_sha256": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299",
+  "default_unchanged": true,
+  "tool": {
+    "status": "completed",
+    "usage": {
+      "input_tokens": 432,
+      "output_tokens": 29,
+      "total_tokens": 461,
+      "input_token_details": {
+        "cached_tokens": 0
+      },
+      "output_token_details": {}
+    },
+    "calls": [
+      {
+        "name": "lookup_project_record",
+        "status": "completed",
+        "arguments": "{\"record_key\":\"release\"}"
+      }
+    ]
+  },
+  "speech": {
+    "status": "completed",
+    "transcript": "rev426",
+    "usage": {
+      "input_tokens": 314,
+      "output_tokens": 454,
+      "total_tokens": 768,
+      "input_token_details": {
+        "cached_tokens": 0
+      },
+      "output_token_details": {
+        "text_tokens": 5,
+        "audio_tokens": 449
+      }
+    }
+  },
+  "call": {
+    "accepted": 200,
+    "hangup": 200,
+    "sideband_close": 1000
+  },
+  "input_transcript": "请查询當前項目版本號。",
+  "argument_delta_events": 4,
+  "truncation": {
+    "generated_pcm_bytes": 107520,
+    "retained_pcm_bytes": 47136,
+    "audio_end_ms": 982,
+    "exact_prefix": true,
+    "retained_transcript": ""
+  },
+  "lease_status": "COMPLETED",
+  "remaining": []
+}

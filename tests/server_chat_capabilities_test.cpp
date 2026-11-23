@@ -22,6 +22,25 @@ bool Hash(const std::string& text) {
 }
 }  // namespace
 
+Q4T_TEST(chat_capabilities_reports_live_calls_and_credential_scope) {
+  using namespace q4t::server;
+  q4t::io::Json value;
+  Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson("cpu", false, false), &value));
+  const auto* live = value.Find("live");
+  Q4T_CHECK(live && live->GetString("sideband") ==
+                        "/v1/live/sessions/{session_id}/attach");
+  Q4T_CHECK(!live->GetBool("media_readiness_dependency", true));
+  const auto* realtime = value.Find("realtime");
+  Q4T_CHECK(realtime && realtime->GetArray("pending_execution") &&
+            realtime->GetArray("pending_execution")->array.empty());
+  const auto* calls = realtime->Find("calls");
+  Q4T_CHECK(calls && calls->GetString("create") == "/v1/realtime/calls");
+  const auto* secrets = realtime->Find("client_secrets");
+  Q4T_CHECK(secrets && secrets->GetBool("owner_scoped") &&
+            !secrets->GetBool("survives_model_restart", true));
+  return true;
+}
+
 Q4T_TEST(chat_capabilities_vector_management_and_execution_configuration) {
   using namespace q4t::server;
   for (bool enabled : {false, true}) {

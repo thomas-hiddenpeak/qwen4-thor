@@ -20,6 +20,12 @@
 6. **只有用户可以缩减最终范围。** 新发现的问题入表；确需调整范围，
    保留原问题、原因和用户决定。不得靠改命名/改完成条件把缺口消失。
 
+## 当前阶段更新（2026-11-23）
+
+Realtime 客户端临时凭据已通过原生 TLS、WebSocket、WebRTC 和入口／模型换代的针对性验收，标准可选 nginx 前置已验证双向升级转发。具名工具的字符串枚举已修复语法与解析的空白差异，完成相同电话业务复验。历史 502 的原始参数未保存，保留归因限制。托管组合、旧式 nginx 独立鉴权与可回退发行继续推进。[凭据恢复](evidence/serve-realtime-client-recovery-20261123/README.md) · [工具修复](evidence/serve-tool-enum-padding-20261123/README.md)
+
+工作分支已完成 Realtime SIP 独立接听、按 call ID 接入、工具回填和播报，以及手动停播和真实来电插话后的会话历史截断。Realtime WebRTC 两种建连方式、HTTP 挂断和真实语音工具回填已通过[原生 TLS 实测](evidence/serve-realtime-webrtc-create-20261123/README.md)。默认发行 rev426。继续临时凭据、组合恢复与可回退交付。另有一次命名工具生成返回 502，已登记到 A10，保留实际失败终态与后续排查入口。[接听](evidence/serve-realtime-sip-accept-20261123/README.md)、[播放与历史](evidence/serve-realtime-call-playout-20261123/README.md)。
+
 ## 当前阶段更新（2026-11-21）
 
 [PR #55已进入main](evidence/serve-pr55-merged-20261120/README.md)，包含
@@ -32,8 +38,10 @@
 未变恢复行为复用原身份记录；[PR #56已合入main](evidence/serve-pr56-merged-20261120/README.md)，
 提交`60f5ae908`，两条最终检查通过。原生追踪的主轻业务、辅助故障
 恢复和资格已验，[rev426可回退交付](evidence/serve-realtime-tracing-delivery-20261121/README.md)
-完成19条管理命令，状态/预算保持，STOPPED。PR #57检查/合入继续；
-随后实现Live及全部剩余任务。
+完成19条管理命令，状态/预算保持，STOPPED。[PR #57已合main](evidence/serve-pr57-merged-20261121/README.md)，
+提交22669a162，最终两条检查通过。Live合同、配置与16k输出已有
+27项针对性CPU；独立生命周期/正常传输又有31项去重CPU通过，
+实际模型绑定与全部剩余任务继续。
 以下原始审计及各阶段证据保留，不能替代当前逐项剩余状态。
 
 ## 本轮审计发现

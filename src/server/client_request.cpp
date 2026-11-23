@@ -38,7 +38,8 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
   if (identity->Scoped() && headers->content_length > headers->body_limit)
     return fail(413, "client_body_limit_exceeded");
   const auto lane =
-      IsRealtimeUpgrade(method, path)       ? ClientLane::kRealtime
+      (method == "GET" && IsCallSideband(path)) ? ClientLane::kSideband :
+      (IsRealtimeUpgrade(method, path) || IsLiveMediaCreate(method, path)) ? ClientLane::kRealtime
       : IsMcpTunnelPoll(method, path)       ? ClientLane::kTunnelPoll
       : IsMcpTunnelResponse(method, path)   ? ClientLane::kTunnelResponse
       : IsCancellationRequest(method, path) ? ClientLane::kCancel
@@ -49,7 +50,7 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
          IsResponsesObservation(method, path) ||
          IsVectorStoreObservation(method, path) ||
          IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
-         IsVoiceMetadata(method, path) || IsPromptObservation(method, path) ||
+         (IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path)) || IsVoiceMetadata(method, path) || IsPromptObservation(method, path) ||
          IsStoredChatManagement(method, path) ||
          RealtimeTraceMethodAllowed(method, path))
           ? ClientLane::kControl

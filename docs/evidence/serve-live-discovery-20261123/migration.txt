@@ -1,0 +1,11 @@
+test_actual_pending_transition_preserves_raw_receipts_and_budgets (tools.serve_recovery.test_profile_semantic.SemanticMigration.test_actual_pending_transition_preserves_raw_receipts_and_budgets) ... ok
+test_live_discovery_preserves_new_capabilities_and_rejects_partial_claims (tools.serve_recovery.test_profile_semantic.SemanticMigration.test_live_discovery_preserves_new_capabilities_and_rejects_partial_claims) ... ok
+test_pending_metadata_cannot_hide_missing_or_unknown_work (tools.serve_recovery.test_profile_semantic.SemanticMigration.test_pending_metadata_cannot_hide_missing_or_unknown_work) ... ok
+test_pending_transition_cannot_authorize_automatic_feature_change (tools.serve_recovery.test_profile_semantic.SemanticMigration.test_pending_transition_cannot_authorize_automatic_feature_change) ... ok
+test_same_semantic_registry_keeps_automatic_permit_identity (tools.serve_recovery.test_profile_semantic.SemanticMigration.test_same_semantic_registry_keeps_automatic_permit_identity) ... ok
+test_semantic_upgrade_requires_actual_business_and_cannot_auto_drop_it (tools.serve_recovery.test_profile_semantic.SemanticMigration.test_semantic_upgrade_requires_actual_business_and_cannot_auto_drop_it) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.730s
+
+OK

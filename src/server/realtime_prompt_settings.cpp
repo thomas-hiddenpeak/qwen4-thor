@@ -74,6 +74,12 @@ ObjectReply Bounded(const Json& defaults, const Json& overrides,
 }
 }  // namespace
 
+Json MergeRealtimeStartup(Json settings, const Json& overrides) {
+  MergeSettings(&settings, overrides);
+  if (const auto* prompt = overrides.Find("prompt")) Set(&settings, "prompt", *prompt);
+  return settings;
+}
+
 ObjectReply ResolveRealtimePrompt(ObjectStore* objects, const Json& reference,
                                   StateAccess access, size_t maximum_bytes,
                                   PromptSnapshot* snapshot) {

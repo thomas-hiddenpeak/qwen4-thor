@@ -1,0 +1,37 @@
+{
+  "live": {
+    "sessions": "/v1/live/sessions",
+    "transports": [
+      "websocket",
+      "webrtc",
+      "sip"
+    ],
+    "sideband": "/v1/live/sessions/{session_id}/attach",
+    "fork": "/v1/live/sessions/{session_id}/fork",
+    "media_worker_profile": "q4t-live-workers-v1",
+    "sip_requires_trunks": true,
+    "media_readiness_dependency": false
+  },
+  "calls": {
+    "create": "/v1/realtime/calls",
+    "transport": "webrtc",
+    "sideband": "/v1/realtime?call_id={call_id}",
+    "sip_controls": [
+      "accept",
+      "reject",
+      "hangup",
+      "refer"
+    ]
+  },
+  "client_secrets": {
+    "issue": "/v1/realtime/client_secrets",
+    "redeem": [
+      "realtime_websocket",
+      "transcription_websocket",
+      "webrtc_create"
+    ],
+    "owner_scoped": true,
+    "survives_model_restart": false
+  },
+  "pending_execution": []
+}

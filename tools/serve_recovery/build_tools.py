@@ -14,6 +14,8 @@ sys.path.insert(0, str(ROOT))
 from tools.serve_recovery import bundle
 from tools.serve_service import package as engine
 
+BUILDER_SOURCES = sorted(set(bundle.SOURCES) | bundle.NATIVE_SOURCES)
+
 
 def check_runtime():
     engine.check_python_runtime()
@@ -26,7 +28,7 @@ def prepare(output):
         for p in ('build', '.q4t-work')), 'tools output outside workspace build/work')
     output.mkdir(mode=0o700, parents=True, exist_ok=True)
     python = Path(sys.executable).resolve()
-    sources = {ROOT/n: 'source/'+n for n in bundle.SOURCES}
+    sources = {ROOT/n: 'source/'+n for n in BUILDER_SOURCES}
     sources.update({engine.NOTICE_ROOT/n: 'source/third_party/licenses/'+n
                     for n in engine.NOTICE_FILES})
     value = dict(version=1, profile='q4t-service-tools-v1', repository=str(ROOT),
@@ -65,7 +67,7 @@ def main():
     args = parser.parse_args()
     if args.check_runtime:
         check_runtime();print('PASS_SERVICE_PYTHON')
-    elif args.list:print(';'.join([*(str(ROOT/n) for n in bundle.SOURCES),
+    elif args.list:print(';'.join([*(str(ROOT/n) for n in BUILDER_SOURCES),
                                 *(str(engine.NOTICE_ROOT/n) for n in engine.NOTICE_FILES)]))
     else:
         parser.error('--output is required') if args.output is None else None

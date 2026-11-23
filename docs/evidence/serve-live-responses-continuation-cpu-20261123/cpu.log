@@ -1,0 +1,18 @@
+[PASS] native_responses_actual_output_uses_no_socket_and_waits_for_seal
+[q4t][http] trace_id=req-bb76eacffb0d90e45fbb1d590d5a2d46 error=host_memory_exhausted
+[q4t][http] trace_id=req-bb76eacffb0d90e45fbb1d590d5a2d46 error=internal_error
+[PASS] native_responses_failed_incomplete_and_exception_keep_real_outcomes
+[q4t][http] trace_id=req-3195cc2d1f28d8743dfc9f8e2c93c1e2 status=429 error=rate_limit_exceeded
+[q4t][http] trace_id=req-7fb572c0d368e9c7248f1cc1d80eace0 error=internal_error
+[PASS] native_responses_finite_errors_keep_status_without_fake_events
+[PASS] native_responses_rejects_sequence_replay_malformed_and_foreign_owner
+[PASS] native_responses_lost_sink_receipt_and_throw_never_replay
+[PASS] native_responses_exact_byte_bounds_and_owned_terminal
+[PASS] native_responses_cancel_deadline_and_unfinished_never_complete
+[PASS] native_responses_raw_binary_and_duplicate_owners_are_rejected
+[PASS] live_responses_turn_wraps_actual_stream_and_continues_once_after_join
+[PASS] live_responses_turn_later_calls_invalidate_only_queued_continuation
+[PASS] live_responses_turn_binds_program_parent_and_mcp_approval_separately
+[PASS] live_responses_turn_rejects_unconfirmed_terminal_or_delivery
+[PASS] live_responses_turn_distinguishes_hosted_tools_and_matching_checks
+13 tests, 13 passed, 0 failed, 0 skipped

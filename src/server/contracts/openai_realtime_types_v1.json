@@ -8,7 +8,12 @@
     "server_event": 280,
     "response_create": 438,
     "session": 187,
-    "response": 350
+    "response": 350,
+    "call_accept": 464,
+    "call_refer": 465,
+    "call_reject": 466,
+    "client_secret_create": 467,
+    "client_secret_created": 473
   },
   "nodes": [
     {
@@ -5600,10 +5605,808 @@
         }
       ],
       "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "audio",
+          "optional": true,
+          "type": 188
+        },
+        {
+          "name": "include",
+          "optional": true,
+          "type": 221
+        },
+        {
+          "name": "instructions",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "max_output_tokens",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 224
+        },
+        {
+          "name": "output_modalities",
+          "optional": true,
+          "type": 109
+        },
+        {
+          "name": "parallel_tool_calls",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "prompt",
+          "optional": true,
+          "type": 117
+        },
+        {
+          "name": "reasoning",
+          "optional": true,
+          "type": 138
+        },
+        {
+          "name": "tool_choice",
+          "optional": true,
+          "type": 244
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 245
+        },
+        {
+          "name": "tracing",
+          "optional": true,
+          "type": 259
+        },
+        {
+          "name": "truncation",
+          "optional": true,
+          "type": 261
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 267
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "target_uri",
+          "optional": false,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "status_code",
+          "optional": true,
+          "type": 212
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "expires_after",
+          "optional": true,
+          "type": 468
+        },
+        {
+          "name": "session",
+          "optional": true,
+          "type": 472
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        469
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "anchor",
+          "optional": true,
+          "type": 470
+        },
+        {
+          "name": "seconds",
+          "optional": true,
+          "type": 212
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        471
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "created_at"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        187,
+        268
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "expires_at",
+          "optional": false,
+          "type": 51
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 474
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        475,
+        504
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "audio",
+          "optional": true,
+          "type": 476
+        },
+        {
+          "name": "expires_at",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "include",
+          "optional": true,
+          "type": 221
+        },
+        {
+          "name": "instructions",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "max_output_tokens",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 224
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 487
+        },
+        {
+          "name": "output_modalities",
+          "optional": true,
+          "type": 109
+        },
+        {
+          "name": "prompt",
+          "optional": true,
+          "type": 117
+        },
+        {
+          "name": "reasoning",
+          "optional": true,
+          "type": 138
+        },
+        {
+          "name": "tool_choice",
+          "optional": true,
+          "type": 144
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 488
+        },
+        {
+          "name": "tracing",
+          "optional": true,
+          "type": 502
+        },
+        {
+          "name": "truncation",
+          "optional": true,
+          "type": 261
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 267
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        477
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": true,
+          "type": 478
+        },
+        {
+          "name": "output",
+          "optional": true,
+          "type": 485
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        479
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "format",
+          "optional": true,
+          "type": 86
+        },
+        {
+          "name": "noise_reduction",
+          "optional": true,
+          "type": 480
+        },
+        {
+          "name": "transcription",
+          "optional": true,
+          "type": 197
+        },
+        {
+          "name": "turn_detection",
+          "optional": true,
+          "type": 482
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        481
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": true,
+          "type": 194
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        483,
+        484
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "create_response",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "idle_timeout_ms",
+          "optional": true,
+          "type": 211
+        },
+        {
+          "name": "interrupt_response",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "prefix_padding_ms",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "silence_duration_ms",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "threshold",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 213
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "create_response",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "eagerness",
+          "optional": true,
+          "type": 215
+        },
+        {
+          "name": "interrupt_response",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 216
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        486
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "format",
+          "optional": true,
+          "type": 86
+        },
+        {
+          "name": "speed",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "voice",
+          "optional": true,
+          "type": 355
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "realtime.session"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        489
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 490
+    },
+    {
+      "kind": "union",
+      "variants": [
+        153,
+        491
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_callers",
+          "optional": true,
+          "type": 156
+        },
+        {
+          "name": "allowed_tools",
+          "optional": true,
+          "type": 492
+        },
+        {
+          "name": "authorization",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "connector_id",
+          "optional": true,
+          "type": 165
+        },
+        {
+          "name": "defer_loading",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "headers",
+          "optional": true,
+          "type": 494
+        },
+        {
+          "name": "require_approval",
+          "optional": true,
+          "type": 496
+        },
+        {
+          "name": "server_description",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "server_label",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "server_url",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "tunnel_id",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 149
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        162,
+        493
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "read_only",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "tool_names",
+          "optional": true,
+          "type": 164
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        495
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 5
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        182,
+        183,
+        497
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "always",
+          "optional": true,
+          "type": 498
+        },
+        {
+          "name": "never",
+          "optional": true,
+          "type": 500
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        499
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "read_only",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "tool_names",
+          "optional": true,
+          "type": 164
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        501
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "read_only",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "tool_names",
+          "optional": true,
+          "type": 164
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        20,
+        503
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "group_id",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 46
+        },
+        {
+          "name": "workflow_name",
+          "optional": true,
+          "type": 4
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "audio",
+          "optional": true,
+          "type": 505
+        },
+        {
+          "name": "expires_at",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "include",
+          "optional": true,
+          "type": 221
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 278
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        506
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": true,
+          "type": 507
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        508
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "format",
+          "optional": true,
+          "type": 86
+        },
+        {
+          "name": "noise_reduction",
+          "optional": true,
+          "type": 509
+        },
+        {
+          "name": "transcription",
+          "optional": true,
+          "type": 197
+        },
+        {
+          "name": "turn_detection",
+          "optional": true,
+          "type": 511
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        510
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": true,
+          "type": 194
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        512
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "prefix_padding_ms",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "silence_duration_ms",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "threshold",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 4
+        }
+      ],
+      "additional": null
     }
   ],
   "sources_sha256": {
     "src/resources/audio/transcriptions.ts": "8a81d4cb4c975cf027f78b8d86feb2fb39e7860b265433a91ebf13bef9f61d80",
+    "src/resources/realtime/calls.ts": "84b09f99bf6f894788cc251e12e613a47a180447ae443a1c6132ed1db0ac9c26",
+    "src/resources/realtime/client-secrets.ts": "03c530f31e0766e1daddb814d4f88ccc162b177320759dbfa4bf0e0ee08ecda5",
     "src/resources/realtime/realtime.ts": "487b535d66091309e6b071c40ea4479becba83b93043fb03035d97d78591b9f3",
     "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
     "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"

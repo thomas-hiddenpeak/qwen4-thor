@@ -1,0 +1,55 @@
+{
+  "result": {
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 46,
+      "cleanup_complete": true
+    },
+    "observation": {
+      "sdk": {
+        "opens": 2,
+        "codes": [
+          1000,
+          1000
+        ],
+        "replayed_event_id": "live_b95e7d353f200a647c6eabe965e67b59_event_2",
+        "replay_occurrences": 1,
+        "input_bytes": 22976,
+        "output_bytes": 9600,
+        "output_frames": 10,
+        "output_begin_ms": 1048.6875,
+        "output_end_ms": 1248.6875,
+        "ended_session": "live_b95e7d353f200a647c6eabe965e67b59"
+      },
+      "create_http_status": 201,
+      "foreign_status": 404,
+      "unknown_status": 404,
+      "primary_during_detach": true,
+      "reflected_input_400hz_amplitude": 9000,
+      "decoded_opus_samples": 4288
+    },
+    "seconds": 46.37924391590059,
+    "default_unchanged": true,
+    "core": "42"
+  },
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "sdk_posts": 1,
+    "observer_handshakes": 4,
+    "fixture_plays": 1,
+    "chats": 1,
+    "controls": 40
+  },
+  "binaries": {
+    "engine_sha256": "e5d4d5997856eb5f5af0d4af0202d235a3d33437b72749208175a4272425dd09",
+    "ingress_sha256": "56112a066a8bad3dc105fa30a1002f6ba1b7d0c7329c5005a9a57a379f919049",
+    "worker_sha256": "8b1b7c7f2ee08c54f34826e0db9c25065472b3ff964c47c928b16ab3204a84d4",
+    "matched_protocol_sources": 888
+  },
+  "wire_result_sha256": "03d0ee11630c097a8b76ef11971a1e94d62d16778a53d821b783ffd181cfd0a0",
+  "raw_acceptance_sha256": "c65c1109cb5885caf4a6edb91436b9a283b1def00a517e8ec94f7b207c121e61",
+  "official_reference": "https://developers.openai.com/api/reference/resources/live/methods/create"
+}

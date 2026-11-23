@@ -1,0 +1,17 @@
+{
+  "driver": "realtime-clear-business-02",
+  "status": "COMMAND_FAILED",
+  "business_status": "FAIL",
+  "seconds": 52.31752799637616,
+  "response_error": "structured_output_invalid",
+  "http_status": 502,
+  "tool_executed": false,
+  "function_argument_delta_events": 6,
+  "first_response_details_captured": false,
+  "raw_transcript": "请查询當前項目版本號。",
+  "reached_playout": false,
+  "model_exit": 0,
+  "remaining": [],
+  "ports_released": true,
+  "binary_sha256": "1e16f8d3717da01ceddbdd948559e5a4d3078d749cc8993fa42a030572ce72a3"
+}

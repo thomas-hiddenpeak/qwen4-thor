@@ -1,0 +1,24 @@
+{
+  "media": [
+    {
+      "codec": "OPUS",
+      "payload": 111,
+      "inbound_samples": 28768,
+      "outbound_samples": 28288,
+      "amplitudes": [
+        9001,
+        9018
+      ],
+      "loopback_ice_candidates": 1,
+      "data_messages": 2,
+      "audio_after_data_channel_close": true
+    }
+  ],
+  "rejected": 4,
+  "rejected_wrong_pin": true,
+  "isolated_missing_plugins": true,
+  "invalid_bindings": 4,
+  "owner_eof_cleanup": true,
+  "startup_timeout_seconds": 15.019,
+  "new_model_starts": 0
+}

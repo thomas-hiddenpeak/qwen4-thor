@@ -1,0 +1,13 @@
+test_invalid_media_address_releases_reservation_for_reject (tools.serve_live.test_sip_owner.OwnerTest.test_invalid_media_address_releases_reservation_for_reject) ... ok
+test_late_accept_ack_hangs_up_abandoned_media (tools.serve_live.test_sip_owner.OwnerTest.test_late_accept_ack_hangs_up_abandoned_media) ... ok
+test_missing_ack_is_unknown_and_duplicate_cannot_resubmit (tools.serve_live.test_sip_owner.OwnerTest.test_missing_ack_is_unknown_and_duplicate_cannot_resubmit) ... ok
+test_realtime_only_subscription (tools.serve_live.test_sip_owner.OwnerTest.test_realtime_only_subscription) ... ok
+test_scoped_answer_waits_for_ack_and_cleans_up_on_remote_bye (tools.serve_live.test_sip_owner.OwnerTest.test_scoped_answer_waits_for_ack_and_cleans_up_on_remote_bye) ... ok
+test_signed_notice_outlives_activation_and_rejection_waits_for_ack (tools.serve_live.test_sip_owner.OwnerTest.test_signed_notice_outlives_activation_and_rejection_waits_for_ack) ... ok
+test_transfer_timeout_late_receipt_and_retry (tools.serve_live.test_sip_owner.OwnerTest.test_transfer_timeout_late_receipt_and_retry) ... ok
+test_two_signed_events_share_one_carrier_disposition (tools.serve_live.test_sip_owner.OwnerTest.test_two_signed_events_share_one_carrier_disposition) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 3.720s
+
+OK

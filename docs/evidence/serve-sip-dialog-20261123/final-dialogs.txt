@@ -1,0 +1,13 @@
+test_bye_after_answer_before_ack_does_not_activate_media (tools.serve_live.test_sip_dialog.DialogTest.test_bye_after_answer_before_ack_does_not_activate_media) ... ok
+test_call_answer_ack_secure_audio_and_carrier_hangup (tools.serve_live.test_sip_dialog.DialogTest.test_call_answer_ack_secure_audio_and_carrier_hangup) ... /home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_media.py:65: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  import audioop
+ok
+test_cancel_before_answer_keeps_cancel_disposition (tools.serve_live.test_sip_dialog.DialogTest.test_cancel_before_answer_keeps_cancel_disposition) ... ok
+test_carrier_disconnect_during_hangup_has_no_success_receipt (tools.serve_live.test_sip_dialog.DialogTest.test_carrier_disconnect_during_hangup_has_no_success_receipt) ... ok
+test_local_hangup_waits_for_final_carrier_response (tools.serve_live.test_sip_dialog.DialogTest.test_local_hangup_waits_for_final_carrier_response) ... ok
+test_remote_failure_is_preserved_on_local_hangup (tools.serve_live.test_sip_dialog.DialogTest.test_remote_failure_is_preserved_on_local_hangup) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.785s
+
+OK

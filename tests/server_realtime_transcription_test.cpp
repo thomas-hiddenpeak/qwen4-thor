@@ -877,7 +877,11 @@ Q4T_TEST(realtime_transcription_capabilities_separate_configured_and_pending) {
             realtime->GetBool("per_turn_client_admission"));
   Q4T_CHECK(realtime->GetString("usage") == "actual_tokens_per_item");
   Q4T_CHECK(!realtime->GetBool("automatic_replay"));
-  Q4T_CHECK(realtime->GetArray("pending_execution")->array.size() == 2);
+  const auto* pending = realtime->GetArray("pending_execution");
+  Q4T_CHECK(pending && pending->array.empty());
+  Q4T_CHECK(realtime->Find("calls")->GetString("create") ==
+            "/v1/realtime/calls");
+  Q4T_CHECK(realtime->Find("client_secrets")->GetBool("owner_scoped"));
   const auto* semantic = realtime->Find("semantic_vad");
   Q4T_CHECK(
       semantic && semantic->GetBool("implemented") &&
@@ -2400,5 +2404,29 @@ Q4T_TEST(realtime_finite_input_lifetime_survives_local_recovery) {
   Q4T_CHECK(Events(rejected, "error") == 1 && s.AudioBytes() == 0 &&
             s.AcceptedTicks() == 4 && s.LifetimeTicks() == 100 &&
             f.calls == 3 && f.released == 3);
+  return true;
+}
+
+Q4T_TEST(realtime_transcription_paused_tick_drains_without_new_admission) {
+  Fixture f;
+  RealtimeTranscriptionSession session("sess_pause", f.output, f.callbacks, 30);
+  Q4T_CHECK(session.Start());
+  for (int i = 0; i < 2; ++i)
+    Q4T_CHECK(Send(session, kAppend) && Send(session, kCommit));
+  Drain(f.output);
+  Q4T_CHECK(session.Tick());
+  const auto deadline = Clock::now() + 1s;
+  while (f.released == 0 && Clock::now() < deadline) {
+    Q4T_CHECK(session.Tick(false));
+    Drain(f.output);
+    std::this_thread::sleep_for(1ms);
+  }
+  Q4T_CHECK(f.calls == 1 && f.released == 1 && !session.Executing());
+  Q4T_CHECK(session.QueuedItems() == 1 && session.AudioBytes() == 4);
+  for (int i = 0; i < 20; ++i) Q4T_CHECK(session.Tick(false));
+  Q4T_CHECK(f.calls == 1 && f.released == 1 && session.QueuedItems() == 1);
+  std::vector<Json> events;
+  Q4T_CHECK(Finish(session, f.output, &events));
+  Q4T_CHECK(f.calls == 2 && f.released == 2 && session.AudioBytes() == 0);
   return true;
 }

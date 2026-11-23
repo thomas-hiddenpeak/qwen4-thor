@@ -1,0 +1,23 @@
+{
+  "tests": 7,
+  "passed": 7,
+  "new_tests": 4,
+  "model_starts": 0,
+  "sources": {
+    "CMakeLists.txt": "aab9a6939a2d3deb40bf2ebf3f6ba1439330dec00ec668ba3077e25131875c2f",
+    "cmake/ChatProtocolIdentity.cmake": "960e8bd67998edc87aa8af9a943896dc7d5845a5e7be1e87ebd103fd76fc1331",
+    "include/q4t/server/live_decision_items.h": "814c4a7cff0b99f4515cd6b22531add4dbe8d05dbc8d4faf6f48a1eef81837e0",
+    "include/q4t/server/live_native_backend.h": "b036b66003e76b893c8c751bf3a581ae3715dd7731929f34e78758958dcbd652",
+    "src/server/live_decision_items.cpp": "a409a68e46e66f738941f4eeecabc57647d989c1e23cf528890a1046f1833b5d",
+    "src/server/live_native_backend.cpp": "f73a458bf4277b501a5694b3b09d1d93dbed1dcc7f010d21bdf30da83fe12c58",
+    "cmake/HostTestSources.cmake": "0c291bb719ffe2f5e85a4caf419cb07dec907a5316dd77febb7901f2cc12285b",
+    "tests/server_live_frontend_test.cpp": "af8b6369d384f4ea2c97f0b8daa5309ab2ee133e6e62d8f3b36ea5d7ba0eeba2"
+  },
+  "engine_sha256": "6fd60bd0d044a9f4f1f6cb6460d1e2bf3e9b445ce69d7f1a3d9079629c758a93",
+  "test_binary_sha256": "73467cff90a74205a9069e0aa3fc4fdf1353c9e96ece0eb3859d1bbd942945e3",
+  "logs": {
+    "build-02.log": "78759f7d1bdf5062692b54f8cf25a878abd7469a5f128032a650670fe0905f49",
+    "engine.log": "eb9a64f74bf31c5d2a80fd337cbdc91cd871b5c03da251095d389a9c2386173b",
+    "cpu-02.log": "0470730d66096bd3f8093c4d980560ec4ec5fbcfac856f0cc94b403e4fa2bdb8"
+  }
+}

@@ -14,6 +14,18 @@ from tools.serve_gateway import gateway as g
 VENDOR = g.ROOT/'.q4t-work/serve-gateway-20261103/vendor/receipt.json'
 
 
+def optional_nginx_binary():
+    override = os.environ.get('Q4T_TEST_NGINX')
+    if override is not None:
+        return Path(override).resolve(strict=True)
+    if not VENDOR.exists():
+        raise unittest.SkipTest('optional nginx integration requires Q4T_TEST_NGINX')
+    receipt = json.loads(VENDOR.read_text())
+    binary = Path(receipt['binary']).resolve(strict=True)
+    g.require(g.sha(binary) == receipt['binary_sha256'], 'nginx fixture changed')
+    return binary
+
+
 def certificate(directory, name='q4t.internal.test'):
     cert, key = directory/'certificate.pem', directory/'key.pem'
     result = subprocess.run(['/usr/bin/openssl','req','-x509','-newkey','rsa:2048',
@@ -39,7 +51,6 @@ class GatewayTests(unittest.TestCase):
         # Preserve private original nginx diagnostics even on failure.
         cls.root=Path(tempfile.mkdtemp(dir=parent))
         cls.cert,cls.key=certificate(cls.root)
-        cls.nginx=json.loads(VENDOR.read_text())['binary']
 
     @classmethod
     def tearDownClass(cls):
@@ -49,6 +60,10 @@ class GatewayTests(unittest.TestCase):
         self.folder=self.root/secrets.token_hex(6)
         self.folder.mkdir(mode=0o700)
         self.p=example()
+
+    @property
+    def nginx(self):
+        return optional_nginx_binary()
 
     def prepare(self):
         policy=self.folder/'policy.json'
@@ -148,7 +163,12 @@ class GatewayTests(unittest.TestCase):
         self.assertIn('limit_conn all_control 8;',text)
         self.assertIn('proxy_next_upstream off;',text)
         self.assertIn('proxy_pass_request_headers off;',text)
-        self.assertNotIn('proxy_set_header Authorization',text)
+        forwarded = [line.strip() for line in text.splitlines()
+                     if line.strip().startswith('proxy_set_header Authorization')]
+        self.assertEqual(forwarded, ['proxy_set_header Authorization $q4t_realtime_issuer;'])
+        self.assertIn('map "$request_method:$request_uri" $q4t_realtime_issuer {\n'
+                      '    default "";\n    "POST:/v1/realtime/client_secrets" '
+                      '"Q4T-Issuer $q4t_issuer_digest";\n  }', text)
         self.assertNotIn('$request_body',text)
         self.assertNotIn('location /metrics',text)
         self.assertIn('"~^POST:/v1/completions$" data;', text)

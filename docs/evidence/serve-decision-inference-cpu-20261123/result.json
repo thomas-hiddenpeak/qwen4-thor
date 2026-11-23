@@ -1,0 +1,38 @@
+{
+  "tests": 25,
+  "passed": 25,
+  "engine_sha256": "b7e92c53877755d6a589e4724bc729094c30119ea9b7c62dd69127e1cfc303a6",
+  "ingress_sha256": "134109824bedd28db7da31d4fef3f61b498d8d3a9ebcac0123f039b25f6f4012",
+  "test_sha256": "b15750e291a5fc624dfb54a6f9d18fbd909a8a96e579604b1a04f8f708ee0469",
+  "sources": {
+    "CMakeLists.txt": "c9575bb663bf58104e7df8e38fb6acb49893c02399465c57283a5147b5c55cea",
+    "cmake/ChatProtocolIdentity.cmake": "7f5ae6af2a5bf2136a016e4a071de1fe82ebd75409da9681df2c15a84fdf43c5",
+    "cmake/HostTestSources.cmake": "5b44bf5b817cec13511726ae665b17fe661c31d21125c99ea00147a7582eeccb",
+    "include/q4t/server/chat_server.h": "9907e9b2bd7ff9795c77af42097352a08d5b1abe718c718ab6a559d72cc25f14",
+    "include/q4t/server/decision_scoring.h": "43f2c72da05d078b5c53d1cb8f464704e3086020c440e0bce449b3db87c63ef2",
+    "include/q4t/server/prompt_cache_policy.h": "b6a175587473df0e8c6e67fdd1bbec1de748c88e7fdddf49ee1d1677548a5215",
+    "src/server/chat_capabilities.cpp": "5175085139b5000c127270320ee2ca0e17c332a63f130e7cf457778fd7850bc7",
+    "src/server/chat_decisions.cpp": "b880ff8e65e858814d55093f1df12db2ee047c72ad291eb85c351a6a08a7f967",
+    "src/server/chat_generation.cpp": "8f44fe36bb1caf0a7d4053b56d5a301bf7529c4f691dbc3957406ccba24022da",
+    "src/server/chat_http.cpp": "447139100427fb9bc266accb9e17c6139048dc7bc681a7ad7512a64cc0dd3dc7",
+    "src/server/chat_model_step.h": "b0a314d629be732d260b0bc23b66bf307d65bb9ea7668e64db193108252f04cf",
+    "src/server/chat_moderations.cpp": "8f8b89dbfa7503b618e96083e2a6867a6a53c057360ea04030dc46d10da3c455",
+    "src/server/chat_responses.cpp": "1e0d42b60014d1a4bbb8bb7da70c8a9643890161c7b11171bed3615f4d83ca6a",
+    "src/server/decision_scoring.cpp": "f09db7e76f24d7728c27ee57dec946bb8bdccacf98f328cd41901262b27f8be7",
+    "src/server/http_request.cpp": "593cd1752cb1d70b760d9d23520edfd8029dfe80eff1c697a19c43aac66f600a",
+    "src/server/prompt_cache_policy.cpp": "65137806080a1237a249577e278987159784c8a2e550e3140712cd19b2e83017",
+    "src/service/ingress_main.cpp": "8fae87be1086b418bccb0cc8b4b103a954ed8187e6d126bfade9dc83c5e3f911",
+    "tests/server_decision_plan_test.cpp": "b4bdd259dbb484574d184d829747ca805691679bc7590402964f229e3aeae232",
+    "tests/server_prompt_cache_test.cpp": "5c8e0ab2f79f85e996ecd6f7ca1e0f2bf4c0849b7e8816f37649fce6e4ce2419",
+    "tools/serve_live/decisions_acceptance.py": "a5368f40aabe337ac9eb164db915a6524f24993d1f96e3d373f058fce630653c",
+    "tools/serve_live/decisions_sdk.mjs": "f27a8151c3b646d74ff4503eb860a282574ff6a2c98d2bb4611b65ef82ed8873",
+    "tools/serve_live/responses_acceptance.py": "a94a61349f926959710707d16f1c8f789fc7c17bc2a2dc51fa1af35055485a56"
+  },
+  "logs": {
+    "cpu.log": "26e263640f77ad066b6c54d597d549f885c4ce11e95a59595a8684fe10742999",
+    "engine-final.log": "4d155f0a82dc6ee0613bb26c9b679c6289c2aff00a0aa38fd65b08a8de4d9e91",
+    "host-final.log": "e5221193a22e03941e0f57c54c6d9bb9c79226d220d83177a61609d06b5e087b",
+    "engine-01.log": "783c1ced52999b2f68859494960b62ce6a757383610055968662bb7c534828d9",
+    "host-01.log": "bbecb0899fcd8d5775dc52f4b75ee944603bf2b1b23b65b7cb88359d087b96a9"
+  }
+}

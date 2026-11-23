@@ -1,0 +1,41 @@
+{
+  "tests": 70,
+  "passed": 70,
+  "new_tests": 6,
+  "sources_sha256": {
+    "include/q4t/server/live_responses_delegate.h": "3151fb9149f7fc016408daa4759fe71e9c41e2e98b1efc2be3848b4df169cb8b",
+    "include/q4t/server/live_responses_execution.h": "2178cfa22412dd5177678b61d85af32122e406a0605d873f7016b5a2c0ba85bb",
+    "src/server/live_responses_delegate.cpp": "146bd08a3f5f847cc03676d77348de3a94eb601504bd13a82a8af9285675ceee",
+    "src/server/live_responses_execution.cpp": "438c86d749a5c9d1e0da120aedceee244781246c58770968379eb64d1b9ce88b",
+    "tools/serve_live/responses_acceptance.py": "38448821339984a129a4005e08f931e9aa9c7b3be16c8f605ae6d55cdd0fa80b",
+    "tools/serve_live/responses_sdk.mjs": "e890b4da0f56527ef669a658c57665ca4746ff588cba66db5d9801f916710026",
+    "CMakeLists.txt": "b7623c47041b9be27d4f60a147043e5491a077ff184a32004d28494eda3e7fa1",
+    "cmake/ChatProtocolIdentity.cmake": "72d41df40f1585cd2b524395c21a85976ad410e5c90db58cd4f8ed2f7f4c7525",
+    "cmake/HostTestSources.cmake": "a49afdab5859dbcf272a06a1c33f9ad5cb53262a27c4807e5c634fec7e227f3f",
+    "include/q4t/server/live_client_context.h": "c5e4517c74d51a06a9ec85e667dcb26aa2320508c60be4fb6141656af586b96f",
+    "include/q4t/server/live_frontend.h": "cd1ba4e7c83cc9a3888dc0d3e3accff084a51b7d9c2c955fac495a268c96c615",
+    "include/q4t/server/live_native_backend.h": "277fd4357178426bbb6ff6032f91ce64b6095b97f91fd889c76ec5e86e3df79f",
+    "include/q4t/server/live_responses_turn.h": "a716e91f19a1739754c431d4de08e78e161c77a937119eb86b35222cad5812bb",
+    "include/q4t/server/live_session.h": "0461070f62881eb4691ad0bd8d4b98dcf4f978b3a4cdc9558b7b67e45f51dd0a",
+    "src/server/chat_generation.cpp": "4dd3f94a9c6a91052e1ab96a4945c8b3cd82c2d651c37ab8cb8bf44ec9b52fcb",
+    "src/server/chat_live.cpp": "0619623b1c077091477e10e70f864db6bf765478892545a511399a68e223891e",
+    "src/server/live_client_context.cpp": "c01d466f54106ce0f7a4a39b5f9d20ae526698ba7a6450544c55d1ae2d385e44",
+    "src/server/live_frontend.cpp": "6b821233d930bf051d60e7e9ad136ce3e8f36c13a26fca4da3496c0057ecc02f",
+    "src/server/live_native_backend.cpp": "ed736b184c09330aa618deae42d90a363dbbe428cb1afc8ce85c1086deade5f1",
+    "src/server/live_session.cpp": "5defda0330a14cd563b7264fd057fed4d04d1c0b966a382d2c7187f744181ddc",
+    "tests/server_live_frontend_test.cpp": "0fbf784a949a44d26366af48f287885245dc336074d0ffcc78c6ec7bd3ef5db3",
+    "tests/server_live_session_test.cpp": "99d685ac5a0a912818e082ded7e20df84da0dbbdadb7a4ec2700edae83f5d738",
+    "tests/server_native_responses_stream_test.cpp": "e20d5613b85fa1a2b7b825a6caee2efeb87682cebd915d26769302e6aed4f03d"
+  },
+  "build_logs_sha256": {
+    "build-03.log": "fee235ce6400757221bf265aed2e77f0ae2c11eb6f2faa6e422f0dd9824f37d6",
+    "engine-build-02.log": "cd8aa737be8ab16c3c9c5e9f054bca7396bb9a5971d77110a11259acd26c9aee",
+    "ingress-build.log": "639b8ff78b67126909287c795b29f1f59bb46de722044dce8c6496448cb06cff"
+  },
+  "cpu_log_sha256": "f39201e4336a56da57920812b90472fc711514b06d9fedcecc18961b72076880",
+  "host_tests_sha256": "f822789a8b6d0aa32d59ce96d1cfbe11af4792ec20107725a6af77c180148222",
+  "engine_sha256": "fd6875bf7fe3ba7154bad0865f01dd95eb58ee683adccfc3a073f6fa20b7586f",
+  "ingress_sha256": "8bd79b7a2c998138934541e6e2813d1d778d908cc84c86abec65ba843f954935",
+  "warnings": 0,
+  "gpu_starts": 0
+}

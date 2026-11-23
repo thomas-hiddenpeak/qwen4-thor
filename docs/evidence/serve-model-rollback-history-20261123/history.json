@@ -1,0 +1,42 @@
+{
+  "archived_manifests": [
+    "17fc1464a6bb19068521e8b6515d581a5a9d2efbeebfe177077b29f9f64127bc",
+    "1fbaf0cb3cf106cc6b165810559697f9085d463499ead41e2af445b5fbfb12b8",
+    "20871e8a81691446dda42b49429fffff44b12322088f290c5f92333f27870015",
+    "25ebd972797652541284794ba4cb1fb3e0ad558f86dbed82f7008a48b41c560c",
+    "2fc04b4767f7b3cc7750442af253c80147c323fe1fcdd9b2d953f75713db94d3",
+    "41760222c76714a23e5753e53ef9e86b3b91e9c0a4f42373f04bf845d3b34afe",
+    "4ca02574aca05e98081f3db5fde79ca40ef5549f051c03af2684139df84a5568",
+    "68345e1781eebda59d530bcad2d235e9fe08365f64929a0caa97f0cecd6a84dd",
+    "77b25732b6a04471a080fadb73fdc9be2de7f33be34ec3b844a6b151fe3a9d30",
+    "a53986ce688a6ae3a9c62695cb01518854ad1ad1f2a39998af9fe366303364e9",
+    "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f",
+    "d98f1fa0fa7dbfc9566846ad8760db77a1a78e0d3b174fcd88808b8a37f8521f"
+  ],
+  "deployment_changed": false,
+  "model_starts": 0,
+  "observed_inventory": "677e896a9f4c1dbdc52bf865f1a9b7d834888ba6dd86ffafd4917fd6297af607",
+  "receipt_sha256": "a12bf32ee38aa5d2fdc78148babca609d96d875d677b94953a9b01057fead43d",
+  "registrations": 12,
+  "sealed_inventory": "6b5aca099b410dc56a4590719d92d598bbcbb0abe612f64f98253c6dfff730f6",
+  "status": "PASS_HISTORICAL_MODEL_REVIEW",
+  "released_kit": "5bdb34483712a049f004a034b98ee3ad95c8b68d3ad457765e6746ea5c2b1b72",
+  "protected_state_unchanged_in_diagnostic": true,
+  "checks": {
+    "history-cpu": {
+      "tests": 20,
+      "ok": true,
+      "log_sha256": "41c2d9becee2ee6abc3302a7c47a1bf176a12fe6839221e08f95c547f59cb867"
+    },
+    "history-adapters-targeted": {
+      "tests": 17,
+      "ok": true,
+      "log_sha256": "22183746cab1b1927f5636bdcaaeda0b97cb87a59dd768a9589668b50323ee2c"
+    },
+    "history-adapters-cpu": {
+      "tests": 34,
+      "ok": false,
+      "log_sha256": "bd4e871ce614ffdb894cd81df5e8fbd8efdd7997811e7aa801f00983231c0a0e"
+    }
+  }
+}

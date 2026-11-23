@@ -1,0 +1,13 @@
+[PASS] chat_response_json_arguments_stream_exact_object_without_wrapper
+[PASS] chat_response_json_arguments_rejects_bad_payload_and_framing
+[PASS] chat_response_tool_fragments_wait_for_validated_terminal
+[PASS] chat_response_string_arguments_stream_before_parameter_close
+[PASS] output_constraints_tool_choice_plan
+[PASS] output_constraints_batch_barrier_and_named_choice
+[PASS] output_constraints_all_chunk_splits_and_tool_errors
+[PASS] output_constraints_enum_padding_limits_and_advisory_strings
+[PASS] output_constraints_open_advisory_keeps_schema_and_strict_neighbour
+[PASS] schema_named_tool_xml_enum_padding_round_trip
+[PASS] schema_named_tool_enum_distinct_whitespace_values
+[PASS] schema_request_worker_parser_mixed_tools_and_content_round_trip
+12 tests, 12 passed, 0 failed, 0 skipped

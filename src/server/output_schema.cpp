@@ -111,6 +111,12 @@ Status Schema(const io::Json& schema, bool strict, bool xml, size_t depth,
       std::unordered_set<std::string> seen;
       for (size_t index = 0; index < item.array.size(); ++index) {
         const auto& value = item.array[index];
+        // A raw XML enum has optional whitespace on each side of its
+        // literal. Encode significant edge whitespace inside JSON quotes.
+        if (xml && depth == 1 && value.IsString() && !value.str.empty() &&
+            (std::string_view(" \t\r\n").contains(value.str.front()) ||
+             std::string_view(" \t\r\n").contains(value.str.back())))
+          return invalid(location, "enum value requires JSON string framing");
         if (!(value.IsString() || value.IsBool() || value.IsNull()) ||
             (value.IsString() &&
              (value.str.size() > 256 || (xml && XmlMarker(value.str)))) ||

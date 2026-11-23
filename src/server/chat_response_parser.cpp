@@ -98,7 +98,7 @@ bool Matches(const io::Json& value, const std::string& type) {
 }
 
 // Type conversion, not full JSON Schema validation/constrained decoding.
-Status Argument(std::string_view raw, const io::Json* schema,
+Status Argument(std::string_view raw, const io::Json* schema, bool constrained,
                 std::string* output) {
   std::vector<std::string> types;
   const auto* type = schema ? schema->Find("type") : nullptr;
@@ -106,6 +106,23 @@ Status Argument(std::string_view raw, const io::Json* schema,
   if (type && type->IsArray()) {
     for (const auto& item : type->array)
       if (item.IsString()) types.push_back(item.str);
+  }
+  if (constrained && types.size() == 1 && types[0] == "string" &&
+      schema->Has("enum")) {
+    // The XML grammar surrounds enum literals with bounded JSON whitespace.
+    // Literals with significant edge whitespace use the JSON envelope.
+    const auto value = Trim(raw);
+    if (value.empty()) {
+      if (raw.size() > 2 * kSchemaWhitespaceLimit)
+        return Status::Fail("excess tool enum whitespace");
+    } else {
+      const auto before = static_cast<size_t>(value.data() - raw.data());
+      if (before > kSchemaWhitespaceLimit ||
+          raw.size() - before - value.size() > kSchemaWhitespaceLimit)
+        return Status::Fail("excess tool enum whitespace");
+    }
+    *output = Quote(value);
+    return {};
   }
   // Strings in Qwen XML are not JSON quoted. Trim only the newline framing
   // emitted by the chat template; preserve user-significant spaces/quotes.
@@ -370,7 +387,8 @@ Status ChatResponseParser::ParseTool(std::string_view block,
     std::string value;
     auto status =
         Argument(block.substr(0, close),
-                 properties ? properties->Find(name) : nullptr, &value);
+                 properties ? properties->Find(name) : nullptr,
+                 constraints_.active, &value);
     if (!status) return status;
     if (seen.size() > 1) call->arguments += ',';
     call->arguments += Quote(name) + ':' + value;
@@ -621,10 +639,13 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
           parameters ? parameters->Find("properties") : nullptr;
       const auto* schema = properties ? properties->Find(name) : nullptr;
       const auto* type = schema ? schema->Find("type") : nullptr;
-      tool_string_ = type && ((type->IsString() && type->str == "string") ||
-                              (type->IsArray() && type->array.size() == 1 &&
-                               type->array[0].IsString() &&
-                               type->array[0].str == "string"));
+      // For constrained enums, emit the complete JSON literal once its XML
+      // padding is known. Other strings retain incremental byte streaming.
+      tool_string_ = type && !(constraints_.active && schema->Has("enum")) &&
+                     ((type->IsString() && type->str == "string") ||
+                      (type->IsArray() && type->array.size() == 1 &&
+                       type->array[0].IsString() &&
+                       type->array[0].str == "string"));
       tool_value_begin_ = tool_parse_offset_ + end + 1;
       tool_value_scan_ = tool_value_begin_;
       tool_value_sent_ = tool_value_begin_;
@@ -687,7 +708,7 @@ Status ChatResponseParser::StreamTool(size_t available, bool complete,
       auto status = Argument(
           block.substr(tool_value_begin_, close - tool_value_begin_),
           properties ? properties->Find(tool_parameter_name_) : nullptr,
-          &value);
+          constraints_.active, &value);
       if (!status) return status;
       ToolFragment(std::move(value), false, deltas);
     }

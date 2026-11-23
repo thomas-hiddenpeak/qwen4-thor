@@ -1,4 +1,4 @@
-// Continuous native TTS PCM -> the negotiated Realtime wire audio format.
+// Continuous native TTS PCM -> the negotiated Realtime/Live audio format.
 #pragma once
 
 #include <functional>
@@ -15,6 +15,8 @@ struct RealtimeSpeechReceipt {
 
 // One worker owns this converter. Input is actual 24kHz mono S16LE output
 // from native speech synthesis. Odd chunks retain one byte, never pad a sample.
+// PCM output is 24kHz (bit-exact bypass) or Live's 16kHz; G.711 is 8kHz.
+// Public protocol adapters independently validate their own accepted formats.
 // The sink synchronously accepts each bounded binary chunk. Any failure ends
 // this stream; partially accepted output must not be replayed or marked done.
 class RealtimeSpeechEncoder {

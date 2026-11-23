@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 
 from tools.serve_host import native
-from tools.serve_recovery import access_store, bundle, ledger, service
+from tools.serve_recovery import access_store, bundle, ledger, model_content, service
 from tools.serve_recovery import publication_archive as generations
 from tools.serve_recovery import publication_intent_archive as intents
 from tools.serve_recovery import version_archive as versions
@@ -16,10 +16,10 @@ from tools.serve_service import package as engine
 KINDS = {'intents': intents, 'generations': generations, 'versions': versions}
 
 
-def authority(state, package, digest):
+def authority(state, package, digest, *, read_bundle=None):
     """Capture the caller's selected identity, then recheck it while locked."""
     state = Path(state).absolute()
-    bundle.verify(package, digest)
+    (read_bundle or bundle.verify)(package, digest)
     expected = service.descriptor(state, package, digest)
     identity = native.inode(state)
 
@@ -39,9 +39,9 @@ def pool(ids, keep, capacity, *, initialized=True):
         candidates_require_plan=True, initialized=initialized)
 
 
-def status(state, package, digest):
-    check = authority(state, package, digest)
-    with generations.locked(state, authority=check) as (state, desc, _, current):
+def status(state, package, digest, *, read_bundle=None):
+    check = authority(state, package, digest, read_bundle=read_bundle)
+    with generations.locked(state, authority=check, read_bundle=read_bundle) as (state, desc, _, current):
         records = generations.intents(state, desc)
         publication = pool([r['request_id'] for r in records],
             intents.protected(current, records), intents.publication.MAX_INTENTS)
@@ -62,8 +62,8 @@ def status(state, package, digest):
             binding = access_store.binding(state, desc['service_id'])
             with versions.version_store.open_bound(binding) as writer:
                 selected = writer.head['state']['policy']
-                registration.for_state(state, desc, selected)
-                entries = versions.entries(state, binding, selected)
+                registration.for_state(state, desc, selected, read_bundle=read_bundle or bundle.verify)
+                entries = versions.entries(state, binding, selected, read_bundle=read_bundle)
                 registered = pool(entries, versions.protected(
                     state, desc, current, selected, entries), registration.MAX_CYCLES)
         return dict(format='q4t-service-maintenance-v1', state=str(state),
@@ -74,30 +74,33 @@ def status(state, package, digest):
             model_actions=False, deleted_files=0)
 
 
-def prepare(state, package, digest, kind, output, selected):
+def prepare(state, package, digest, kind, output, selected, *, read_bundle=None):
     ledger.require(kind in KINDS, 'unknown maintenance pool')
     return KINDS[kind].prepare(state, output, selected,
-        authority=authority(state, package, digest))
+        authority=authority(state, package, digest, read_bundle=read_bundle), read_bundle=read_bundle)
 
 
-def apply(state, package, digest, kind, plan, expected, *, restore=False):
+def apply(state, package, digest, kind, plan, expected, *, restore=False, read_bundle=None):
     ledger.require(kind in KINDS, 'unknown maintenance pool')
-    check = authority(state, package, digest)
+    check = authority(state, package, digest, read_bundle=read_bundle)
     ledger.require(engine.sha(plan) == expected, 'reviewed archive plan changed')
     value = native.private_json(plan)
     ledger.require(value.get('state') == str(Path(state).absolute()) and
         value.get('format') == KINDS[kind].FORMAT,
         'maintenance plan service or pool differs')
-    return KINDS[kind].apply(plan, expected, restore=restore, authority=check)
+    return KINDS[kind].apply(plan, expected, restore=restore, authority=check, read_bundle=read_bundle)
 
 
 def execute(args, package, digest):
     os.umask(0o077)
+    proof = model_content.cli_publication_proof(args)
+    read_bundle = (model_content.HistoricalModelReader(proof['descriptor'], proof['acceptance']).verify
+                   if proof else None)
     if args.operation == 'maintenance-status':
-        return status(args.state, package, digest)
+        return status(args.state, package, digest, read_bundle=read_bundle)
     if args.operation == 'maintenance-plan':
-        return prepare(args.state, package, digest, args.kind, args.output, args.select)
+        return prepare(args.state, package, digest, args.kind, args.output, args.select, read_bundle=read_bundle)
     ledger.require(args.operation in ('maintenance-apply', 'maintenance-restore'),
                    'unknown maintenance operation')
     return apply(args.state, package, digest, args.kind, args.plan, args.plan_sha256,
-                 restore=args.operation == 'maintenance-restore')
+                 restore=args.operation == 'maintenance-restore', read_bundle=read_bundle)

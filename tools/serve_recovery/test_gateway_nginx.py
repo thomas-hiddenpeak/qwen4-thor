@@ -110,11 +110,12 @@ class Stack:
                 path = self.path.split('?', 1)[0]
                 roots = ('/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
-                         '/v1/vector_stores', '/v1/tunnels')
+                         '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
+                         '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/calls', '/v1/live/sessions')
                 return (any(path == root or path.startswith(root+'/')
                             for root in roots) or
                         (method == 'POST' and
-                         path == '/v1/audio/transcriptions') or
+                         path in ('/v1/audio/transcriptions', '/v1/audio/speech', '/v1/decisions')) or
                         path.startswith('/v1/chat/completions/') or
                         (method != 'POST' and path == '/v1/chat/completions'))
             def do_GET(self):
@@ -175,6 +176,17 @@ class Stack:
                 stack.application_requests.append(row)
                 if row['token'] != stack.token:
                     self.response(403, dict(error=dict(code='invalid_gateway_credentials')))
+                    return
+                if self.path == '/v1/realtime/calls' and method == 'POST':
+                    if self.headers.get('Content-Type') != 'application/sdp':
+                        self.response(415, dict(error='invalid content type'))
+                        return
+                    self.send_response(201)
+                    self.send_header('Content-Type', 'application/sdp')
+                    self.send_header('Location', '/v1/realtime/calls/rtc_fixture')
+                    self.send_header('Content-Length', str(len(raw)))
+                    self.end_headers()
+                    self.wfile.write(raw)
                     return
                 # Transport oracle only. Native endpoint/SDK semantics are
                 # exercised separately by the Conversations/Responses SDK fixtures.
@@ -411,19 +423,22 @@ class NginxTests(unittest.TestCase):
         from tools.serve_gateway.gateway import APPLICATION_ROUTES
         self.ready()
         for method, template, lane in APPLICATION_ROUTES:
-            if not self.stack.native_ingress and lane == 'control':
-                # The optional frontend's real 10 r/s control budget remains
-                # enabled. Route coverage must not exceed that separate gate.
+            if lane in ('realtime','sideband'):
+                # RFC 6455 switching and duplex frames have their own wire test.
+                continue
+            if lane == 'control':
+                # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
             identities = dict(response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
-                              vector_store_id='vs_1', tunnel_id='tunnel_local')
+                              vector_store_id='vs_1', tunnel_id='tunnel_local', consent_id='cons_1',
+                              voice_id='voice_1', trace_id='trace_1', session_id='live_1', call_id='rtc_1')
             self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
                                  identities.keys())
             path = template.format(**identities)
-            if method == 'GET':
+            if method == 'GET' and template != '/v1/live/sessions/{session_id}/content':
                 path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'
             body = '{"cpu_fixture":true}' if method == 'POST' else ''
             content_type = 'application/json'
@@ -435,6 +450,9 @@ class NginxTests(unittest.TestCase):
                         'name="file"; filename="fixture.txt"\r\n'
                         'Content-Type: text/plain\r\n\r\nactual CPU bytes'
                         '\r\n--cpu-route--\r\n')
+            create_call = method == 'POST' and template == '/v1/realtime/calls'
+            if create_call:
+                content_type, body = 'application/sdp', 'v=0\r\ns=fixture\r\n'
             with self.subTest(method=method, path=path):
                 connection = http.client.HTTPConnection('127.0.0.1',
                     self.stack.value['policy']['listen_port'], timeout=4)
@@ -443,7 +461,12 @@ class NginxTests(unittest.TestCase):
                         'Authorization': 'Bearer '+'A'*40,
                         'Content-Type': content_type})
                     response = connection.getresponse()
-                    self.assertEqual(response.status, 200, response.read())
+                    wire = response.read()
+                    self.assertEqual(response.status, 201 if create_call else 200, wire)
+                    if create_call:
+                        self.assertEqual(response.getheader('Content-Type'), 'application/sdp')
+                        self.assertEqual(response.getheader('Location'), '/v1/realtime/calls/rtc_fixture')
+                        self.assertEqual(wire, body.encode())
                     row = self.stack.application_requests[-1]
                     self.assertEqual((row['method'], row['path'], row['body']),
                                      (method, path, body))
@@ -452,7 +475,11 @@ class NginxTests(unittest.TestCase):
                     self.assertEqual(row['upstream_port'],
                         self.stack.value['policy']['upstream_operations_port'
                             if lane == 'control' else 'upstream_port'])
-                    self.assertIsNone(row['authorization'])
+                    if path == '/v1/realtime/client_secrets':
+                        self.assertEqual(row['authorization'], 'Q4T-Issuer ' +
+                                         hashlib.sha256(b'A'*40).hexdigest())
+                    else:
+                        self.assertIsNone(row['authorization'])
                 finally:
                     connection.close()
 

@@ -349,6 +349,20 @@ def realtime_pending_capabilities(value):
         semantic.get('implemented') is True and
         semantic.get('profile') == 'q4t-native-semantic-turn-v1'),
         'pending Realtime metadata lacks semantic implementation')
+    if 'live' in value or 'calls' in realtime or 'client_secrets' in realtime:
+        live, calls, secrets = value.get('live'), realtime.get('calls'), realtime.get('client_secrets')
+        ledger.require(declared and type(realtime.get('conversation')) is dict
+            and realtime['conversation'].get('implemented') is True
+            and type(live) is dict and live.get('sessions') == '/v1/live/sessions'
+            and live.get('transports') == ['websocket', 'webrtc', 'sip']
+            and live.get('media_readiness_dependency') is False and
+            type(calls) is dict and calls.get('create') == '/v1/realtime/calls'
+            and type(secrets) is dict and secrets.get('issue') == '/v1/realtime/client_secrets'
+            and secrets.get('owner_scoped') is True and
+            realtime['pending_execution'] == [], 'pending Realtime media declarations differ')
+        # Preserve the supplied capabilities in the permit identity. Historical
+        # profiles below retain the original compatibility normalization.
+        return
     expected = ['conversation', 'live']
     ledger.require(realtime['pending_execution'] ==
         (expected if declared else ['semantic_vad', *expected]),
@@ -510,6 +524,20 @@ def extends(previous, target):
     return previous == target
 
 
+def explicit_extension(previous, target):
+    """Compare qualified semantics when a declared pending capability ships."""
+    old, new = previous.get('realtime', {}), target.get('realtime', {})
+    if ('live' not in previous and 'live' in target and
+            type(old) is dict and type(new) is dict and
+            old.get('pending_execution') == ['conversation', 'live'] and
+            new.get('pending_execution') == []):
+        # semantic_capabilities verified the actual Live/calls/secret declarations.
+        # Preserve both raw observations for permit hashes and compare every
+        # unrelated field with the usual additive-only rule.
+        previous = dict(previous, realtime=dict(old, pending_execution=[]))
+    return extends(previous, target)
+
+
 def observations(registry, evidence):
     profile_contract.validate(registry)
     ledger.keys(evidence, profile_contract.NAMES)
@@ -526,14 +554,15 @@ def observations(registry, evidence):
 
 def permit(previous, target, previous_evidence, target_evidence,
            previous_config, target_config, *, automatic=False,
-           allow_capacity_change=False, allow_capability_extension=False):
+           allow_capacity_change=False, allow_capability_extension=False,
+           reviewed_content=None):
     first = observations(previous, previous_evidence)
     second = observations(target, target_evidence)
     old_contract, new_contract = map(semantic_capabilities, (first, second))
     extension = old_contract != new_contract
     ledger.require(type(allow_capability_extension) is bool and
         (not extension or (allow_capability_extension and not automatic and
-                           extends(old_contract, new_contract))),
+                           explicit_extension(old_contract, new_contract))),
         'migration would change application capabilities without an explicit '
         'qualified extension; automatic recovery cannot lose or add features')
     old_base, new_base = (registry['identity'].get('native_tts_base')
@@ -561,7 +590,20 @@ def permit(previous, target, previous_evidence, target_evidence,
         (not (changed or asr_capacity or tts_capacity or base_capacity) or
          (allow_capacity_change and not automatic)),
         'capacity change requires explicit historical-qualification migration')
-    for key in ('model_files', 'model_assets', 'native_embedding'):
+    before_assets = previous['identity']['model_assets']
+    after_assets = target['identity']['model_assets']
+    if before_assets != after_assets:
+        # This binding is supplied only after exact accepted-origin, audit,
+        # upstream index, changed file and management adapter verification.
+        before = ledger.digest(before_assets)
+        after = ledger.digest(after_assets)
+        ledger.require(reviewed_content is not None and (
+            (before == reviewed_content['observed_inventory'] and
+             after == reviewed_content['sealed_inventory']) or
+            (not automatic and before == reviewed_content['sealed_inventory'] and
+             after == reviewed_content['observed_inventory'])),
+            'migration would change fixed model identity')
+    for key in ('model_files', 'native_embedding'):
         ledger.require(previous['identity'][key] == target['identity'][key],
                        'migration would change fixed model identity')
     ledger.require(old_asr == new_asr or (asr_capacity and not audio_extension) or

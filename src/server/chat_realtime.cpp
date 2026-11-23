@@ -1,4 +1,5 @@
 #include "chat_server_internal.h"
+#include "q4t/server/websocket_protocol.h"
 
 #include <algorithm>
 
@@ -32,7 +33,24 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
                                 std::string_view accept) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
-  if (path != "/v1/realtime?intent=transcription") {
+  if (IsCallSideband(path)) {
+    HandleLiveSideband(fd, path, headers, initial, accept);
+    return;
+  }
+  if (path.substr(0, path.find('?')) == "/v1/live/sessions" ||
+      !LiveForkId(path).empty()) {
+    HandleLive(fd, path, headers, initial, accept);
+    return;
+  }
+  const auto* startup = http->RealtimeStartup();
+  const bool transcription = path == "/v1/realtime?intent=transcription" ||
+      (startup && path == "/v1/realtime" && startup->GetString("type") == "transcription");
+  if (startup && (startup->GetString("type") == "transcription") != transcription) {
+    detail::SendError(fd, 400, "Realtime intent conflicts with credential", {},
+                      "realtime_session_type_invalid", "intent");
+    return;
+  }
+  if (!transcription) {
     HandleRealtimeConversation(fd, path, headers, initial, accept);
     return;
   }
@@ -63,16 +81,13 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
   RealtimeTranscriptionPump session(
       detail::NewRequestId("sess_"), output, std::move(callbacks),
       asr_limits_.max_audio_seconds, message_bytes);
-  if (!session.Start()) {
-    detail::SendError(fd, 503, "Realtime session initialization failed", {},
-                      "realtime_session_unavailable");
+  if (const auto reply = session.Start(startup); !reply.ok()) {
+    detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                      reply.ClientCode(), reply.value.GetString("param"));
     return;
   }
-  std::string protocol;
-  if (std::find(headers.websocket_protocols.begin(),
-                headers.websocket_protocols.end(),
-                "realtime") != headers.websocket_protocols.end())
-    protocol = "realtime";
+  const auto protocol =
+      SelectWebSocketProtocol(path, headers.websocket_protocols);
   if (!http->BeginWebSocket(accept, protocol)) return;
   WebSocketSessionCallbacks connection;
   connection.message = [&](auto opcode, auto message) {

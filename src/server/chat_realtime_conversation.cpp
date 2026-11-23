@@ -1,4 +1,5 @@
 #include "chat_server_internal.h"
+#include "q4t/server/websocket_protocol.h"
 
 #include <algorithm>
 
@@ -24,45 +25,10 @@ ObjectReply Failure(const Status& status, const ChatPlanError& error) {
 }
 }  // namespace
 
-void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
-                                            const HttpRequestHeaders& headers,
-                                            std::string_view initial,
-                                            std::string_view accept) {
-  auto* http = detail::HttpResponseContext::Current(fd);
-  if (!http || !http->Client().Allowed()) return;
-  const auto client = http->Client();
-  auto config = PlanningConfig(fd);
-  Json settings;
-  ChatPlanError error;
-  auto checked = ParseRealtimeChatTarget(path, config, &settings, &error);
-  RealtimeChatPlan prepared;
-  if (checked)
-    checked = PlanRealtimeChat(settings, Object(), Array(), config, &prepared,
-                               &error);
-  if (!checked) {
-    detail::SendError(fd, error.http_status, checked.message(), {}, error.code,
-                      error.param);
-    return;
-  }
-  if (RejectUnhealthy(fd) ||
-      !CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare))
-    return;
+RealtimeConversationCallbacks ChatServer::MakeRealtimeCallbacks(
+    const ClientIdentity& client) {
   const bool native_input = !asr_model_dir_.empty();
-  const auto host_bytes =
-      kRealtimeConversationHostBytes +
-      (native_input ? kRealtimeConversationInputHostBytes : 0);
-  HttpBodyLease memory(realtime_host_budget_);
-  if (!memory.Acquire(host_bytes) ||
-      !runtime::ReadSystemMemory().CanAllocate(host_bytes + (512ULL << 20))) {
-    detail::SendError(fd, 503, "Realtime host memory unavailable", {},
-                      "memory_pressure");
-    return;
-  }
-  const size_t message_bytes =
-      client.Scoped() ? std::min<size_t>(kWebSocketMessageLimit,
-                                         client.Limits()->max_body_bytes)
-                      : kWebSocketMessageLimit;
-  const auto prepare = [&](const Json& current_settings, const Json& response,
+  const auto prepare = [this, client, native_input](const Json& current_settings, const Json& response,
                            const Json& items, const PromptSnapshot* prompt,
                            const RealtimeMcpContext* mcp,
                            bool definitions_only) {
@@ -98,28 +64,21 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
   if (native_input) {
     callbacks.input = PrepareRealtimeInput(client);
     callbacks.max_audio_seconds = asr_limits_.max_audio_seconds;
-    // Manual input is usable even if the optional VAD assets are unavailable.
-    // VAD is selected explicitly and validated by the actual shared backend.
-    Set(&Field(settings, "audio"), "input",
-        Object({{"format", Object({{"type", String("audio/pcm")},
-                                   {"rate", Number(24000)}})},
-                {"transcription", Json()},
-                {"turn_detection", Json()}}));
   }
-  callbacks.interrupted = [&] { return stop_requested_.load(); };
-  callbacks.validate_prompt = [&](const RealtimePromptSelection& selected) {
+  callbacks.interrupted = [this] { return stop_requested_.load(); };
+  callbacks.validate_prompt = [prepare](const RealtimePromptSelection& selected) {
     return prepare(selected.settings, Object(), Array(),
                    selected.prompt ? &*selected.prompt : nullptr,
                    selected.mcp.get(), true);
   };
-  callbacks.prepare = [&](const RealtimeConversationJob& job) {
+  callbacks.prepare = [prepare](const RealtimeConversationJob& job) {
     return prepare(job.settings, job.response, job.snapshot.items,
                    job.prompt ? &*job.prompt : nullptr, job.mcp.get(),
                    job.mcp_definitions_only);
   };
   callbacks.mcp_import.emplace();
   callbacks.mcp_import->import =
-      [&](const ResponsesMcpDefinition& definition, std::string id,
+      [this, client](const ResponsesMcpDefinition& definition, std::string id,
           Clock::time_point deadline, const std::function<bool()>& cancelled,
           RealtimeMcpCatalog* catalog) {
         const auto current = clients_.RecoveryIdentity(client.Index());
@@ -143,7 +102,7 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
       };
   callbacks.mcp_call.emplace();
   callbacks.mcp_call->run =
-      [&](const RealtimeMcpCallJob& job, Clock::time_point deadline,
+      [this, client](const RealtimeMcpCallJob& job, Clock::time_point deadline,
           const std::function<bool()>& cancelled, RealtimeMcpExecution* result) {
         const bool cleanup = job.action == RealtimeMcpAction::kAbandon;
         const auto current = clients_.RecoveryIdentity(client.Index());
@@ -184,7 +143,7 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
         }
         return Error(500, "realtime_mcp_action_invalid", "Invalid MCP action");
       };
-  callbacks.resolve_prompt = [&](const Json& reference, size_t budget,
+  callbacks.resolve_prompt = [this, client](const Json& reference, size_t budget,
                                  const std::function<bool()>& cancelled,
                                  PromptSnapshot* snapshot) {
     const auto current = clients_.RecoveryIdentity(client.Index());
@@ -212,30 +171,87 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
     *snapshot = std::move(selected);
     return reply;
   };
-  callbacks.acquire = [&](const std::string& id) {
+  callbacks.acquire = [this, client](const std::string& id) {
     return requests_.Register(
         id, "", Clock::now() + std::chrono::milliseconds(request_deadline_ms_),
         client.Id());
   };
-  callbacks.release = [&](const auto& control) { requests_.Remove(control); };
-  callbacks.execute = [&](const auto& job, const auto& control,
+  callbacks.release = [this](const auto& control) { requests_.Remove(control); };
+  callbacks.execute = [this, client](const auto& job, const auto& control,
                           const auto& emit, const auto& speech) {
     return RunRealtimeConversation(client, job, control, emit, speech);
   };
+  return callbacks;
+}
+
+void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
+                                            const HttpRequestHeaders& headers,
+                                            std::string_view initial,
+                                            std::string_view accept) {
+  auto* http = detail::HttpResponseContext::Current(fd);
+  if (!http || !http->Client().Allowed()) return;
+  const auto client = http->Client();
+  auto config = PlanningConfig(fd);
+  Json settings;
+  ChatPlanError error;
+  auto checked = ParseRealtimeChatTarget(path, config, &settings, &error);
+  RealtimeChatPlan prepared;
+  if (checked)
+    checked = PlanRealtimeChat(settings, Object(), Array(), config, &prepared,
+                               &error);
+  if (!checked) {
+    detail::SendError(fd, error.http_status, checked.message(), {}, error.code,
+                      error.param);
+    return;
+  }
+  if (RejectUnhealthy(fd) ||
+      !CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare))
+    return;
+  const bool native_input = !asr_model_dir_.empty();
+  const auto host_bytes =
+      kRealtimeConversationHostBytes +
+      (native_input ? kRealtimeConversationInputHostBytes : 0);
+  HttpBodyLease memory(realtime_host_budget_);
+  if (!memory.Acquire(host_bytes) ||
+      !runtime::ReadSystemMemory().CanAllocate(host_bytes + (512ULL << 20))) {
+    detail::SendError(fd, 503, "Realtime host memory unavailable", {},
+                      "memory_pressure");
+    return;
+  }
+  const size_t message_bytes =
+      client.Scoped() ? std::min<size_t>(kWebSocketMessageLimit,
+                                         client.Limits()->max_body_bytes)
+                      : kWebSocketMessageLimit;
+  if (native_input) {
+    // Manual input is usable even if the optional VAD assets are unavailable.
+    // VAD is selected explicitly and validated by the actual shared backend.
+    Set(&Field(settings, "audio"), "input",
+        Object({{"format", Object({{"type", String("audio/pcm")},
+                                   {"rate", Number(24000)}})},
+                {"transcription", Json()},
+                {"turn_detection", Json()}}));
+  }
+  const auto* startup = http->RealtimeStartup();
+  Json selected;
+  if (startup) {
+    selected = *startup;
+    if (path.find("model=") != path.npos)
+      Set(&selected, "model", Field(settings, "model"));
+    settings = RealtimeClientDefaults(fd, selected.GetString("model"));
+  }
+  auto callbacks = MakeRealtimeCallbacks(client);
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
   RealtimeConversationPump session(
       detail::NewRequestId("sess_"), detail::NewRequestId("conv_"),
       std::move(settings), output, std::move(callbacks), message_bytes);
-  if (!session.Start()) {
-    detail::SendError(fd, 503, "Realtime session initialization failed", {},
-                      "realtime_session_unavailable");
+  if (const auto reply = session.Start(startup ? &selected : nullptr); !reply.ok()) {
+    detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                      reply.ClientCode(), reply.value.GetString("param"));
     return;
   }
-  std::string protocol;
-  if (std::ranges::find(headers.websocket_protocols, "realtime") !=
-      headers.websocket_protocols.end())
-    protocol = "realtime";
+  const auto protocol =
+      SelectWebSocketProtocol(path, headers.websocket_protocols);
   if (!http->BeginWebSocket(accept, protocol)) return;
   WebSocketSessionCallbacks connection;
   connection.message = [&](auto opcode, auto message) {

@@ -1,0 +1,152 @@
+{
+  "format": "q4t-live-profile-observations-v1",
+  "engine_sha256": "e10faacb62aa662908ff567fc28b790478fb4a96d31de8859f532b5245c05766",
+  "ingress_sha256": "b7a1967ba8540dc51ae7187577052bb1273d789d85ed8ab5a2d1cf5b02f21caf",
+  "profiles": {
+    "primary": {
+      "capacity": {
+        "name": "native-managed-capacity-v2",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": true,
+        "request_deadline_ms": 1200000,
+        "allow_media": true
+      },
+      "configuration": {
+        "protocol_sha256": "8903a36879ec49c48710d84602620e540cb85144479a917750ac5d3f25263caa",
+        "max_context_tokens": 8192,
+        "max_sequences": 1,
+        "prefill_chunk_tokens": 2048,
+        "request_deadline_ms": 1200000,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "memory_floor_mib": 2048,
+        "memory_recovery_mib": 2560,
+        "memory_enabled": true,
+        "whole_server_ram_limit": false,
+        "mtp_enabled": true,
+        "structured_backend": true,
+        "media_enabled": true,
+        "default_output_tokens": 256,
+        "mtp_k": 3,
+        "startup_memory_headroom_mib": 2048,
+        "business_connections": 128,
+        "observation_connections": 4,
+        "control_connections": 4,
+        "connection_handlers": 144,
+        "public_port": 47517,
+        "operations_port": 36189,
+        "public_host": "127.0.0.1"
+      },
+      "startup_memory": {
+        "state": "admitted",
+        "estimate_bytes": 118635525036,
+        "headroom_bytes": 2147483648,
+        "required_bytes": 120783008684,
+        "observed_total_bytes": 131920637952,
+        "observed_available_bytes": 123619667968
+      },
+      "workers": {
+        "profile": "q4t-live-workers-v1",
+        "engine_sha256": "e10faacb62aa662908ff567fc28b790478fb4a96d31de8859f532b5245c05766",
+        "files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      },
+      "protocol_sha256": "8903a36879ec49c48710d84602620e540cb85144479a917750ac5d3f25263caa",
+      "evidence_sha256": {
+        "configuration.wire": "35e149faecce2d78af4f03a9233da1e431692d9b3647189fd165b2c3995f0fab",
+        "capabilities.json": "7ef1b9d7cfaa97e38d5aa392f59ae7b29af3e2f8eac76e423d0f25aed1bdf4d2",
+        "core-after.wire": "f9e0f071bb7ba4783bb99d2da3147423108681b84ae0100877194cb95a4a4365",
+        "observation.json": "159270fcb6f01b5b463f80616dc61d0a9edba79b629eb224b570d8296dbf2d73",
+        "result.json": "f1d22cd19887d9a8275238a48bc57afb6ce8c7620165ad5f4b263441f95d1ef2",
+        "cleanup.json": "a9bfa9a5e8dd96c0bf9f7feed626241607a80c43cd3f0a93e961561618e749b5",
+        "plan.json": "3faa578475e76cbf55db3e33d9b3ba3b63927230679213e98605a374437dbccb"
+      }
+    },
+    "light": {
+      "capacity": {
+        "name": "native-managed-capacity-v2",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": false,
+        "request_deadline_ms": 1200000,
+        "allow_media": true
+      },
+      "configuration": {
+        "protocol_sha256": "8903a36879ec49c48710d84602620e540cb85144479a917750ac5d3f25263caa",
+        "max_context_tokens": 8192,
+        "max_sequences": 1,
+        "prefill_chunk_tokens": 2048,
+        "request_deadline_ms": 1200000,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "memory_floor_mib": 2048,
+        "memory_recovery_mib": 2560,
+        "memory_enabled": true,
+        "whole_server_ram_limit": false,
+        "mtp_enabled": false,
+        "structured_backend": true,
+        "media_enabled": true,
+        "default_output_tokens": 256,
+        "mtp_k": null,
+        "startup_memory_headroom_mib": 2048,
+        "business_connections": 128,
+        "observation_connections": 4,
+        "control_connections": 4,
+        "connection_handlers": 144,
+        "public_port": 50147,
+        "operations_port": 44141,
+        "public_host": "127.0.0.1"
+      },
+      "startup_memory": {
+        "state": "admitted",
+        "estimate_bytes": 112086532404,
+        "headroom_bytes": 2147483648,
+        "required_bytes": 114234016052,
+        "observed_total_bytes": 131920637952,
+        "observed_available_bytes": 122093891584
+      },
+      "workers": {
+        "profile": "q4t-live-workers-v1",
+        "engine_sha256": "e10faacb62aa662908ff567fc28b790478fb4a96d31de8859f532b5245c05766",
+        "files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      },
+      "protocol_sha256": "8903a36879ec49c48710d84602620e540cb85144479a917750ac5d3f25263caa",
+      "evidence_sha256": {
+        "configuration.wire": "2aca947ec8b6085c30960d3e3a610ddf0757739f679fb0b99c807bb0e68e296f",
+        "capabilities.json": "0666a5fc13c9b06fb8ec765f09251a8b9a9a821649f09b4cfc9c9bea59c9f703",
+        "core-after.wire": "601aba3a6cf600b2c90d044c9b55e71e2beb19722303aa173a16a410a1ade01e",
+        "observation.json": "8fda7af92367c1149b362865b5b74c6bc9de5d963bee8711679a3a387b19f8d6",
+        "result.json": "9570be5bfe81272a1a666294bc15f84900d9ef7e0936a16345cc5e1c58120868",
+        "cleanup.json": "86075ea729ec83c511be82f2dbd309a94fb372e7c6fc8ee8f19637f46684ad3f",
+        "plan.json": "a8711dbe882c5652d9e56bb764ddf949a4caceb81d3daaa196a788b7a0da1d0c"
+      }
+    }
+  },
+  "acceptance_sha256": "29c31bf9ef841fe729d2fc3085888153489d398e40c7508a64a726c5a431d019"
+}

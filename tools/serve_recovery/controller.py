@@ -258,7 +258,8 @@ class Controller:
                 return None
             if self.profiles is not None and not self.profiles.prepare_launch(self, observed_memory):
                 return None
-            bundle.check_assets(Path(self.base['model_dir']), self.manifest['model_assets'], read_edges=True)
+            model = Path(self.base['model_dir'])
+            bundle.check_assets(model, bundle.observed_assets(model, self.manifest), read_edges=True)
             supervisor.preflight_ports(self.settings)
         except OSError:
             self.reason = 'dependency_unavailable'

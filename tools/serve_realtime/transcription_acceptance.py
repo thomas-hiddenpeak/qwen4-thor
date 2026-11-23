@@ -157,9 +157,7 @@ class Stage(lifecycle.Stage):
         self.counts[kind] += amount
         save(self.out/'counts.json', self.counts)
 
-    def start(self):
-        for port in (self.plan['port'], self.plan['operations_port']):
-            with socket.socket() as sock: sock.bind(('127.0.0.1', port))
+    def model_command(self):
         args = [self.plan['binary'], 'serve', '--model-dir', self.plan['model'],
             '--host', '127.0.0.1', '--port', str(self.plan['port']),
             '--operations-port', str(self.plan['operations_port']), '--mtp',
@@ -167,7 +165,12 @@ class Stage(lifecycle.Stage):
             '--max-tokens', '64', '--max-inflight-requests', '8',
             '--max-queued-requests', '3', '--asr-model-dir', self.plan['asr_directory'],
             '--asr-max-output-tokens', '128', '--client-policy-file', str(self.out/'client-policy.json')]
-        args += self.extra_model_args()
+        return args + self.extra_model_args()
+
+    def start(self):
+        for port in (self.plan['port'], self.plan['operations_port']):
+            with socket.socket() as sock: sock.bind(('127.0.0.1', port))
+        args = self.model_command()
         save(self.out/'model-command.json', args)
         self.budget('starts')
         with (self.out/'model.log').open('xb', buffering=0) as log:

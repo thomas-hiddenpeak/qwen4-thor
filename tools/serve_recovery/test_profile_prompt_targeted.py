@@ -47,7 +47,7 @@ class Targeted(unittest.TestCase):
         self.assertEqual(profile_record.read(path), {})
 
     def test_packaging_and_migration_use_profile_reader_and_keep_digest_gate(self):
-        value = dict(format='q4t-profile-business-v18',
+        value = dict(format='q4t-profile-business-v18', business={},
             reused_business=dict(format='q4t-prompt-profile-source-reuse-v1', record='x' * (3 << 20)))
         manifest = dict(files={})
         target = self.directory / 'package'; target.mkdir()

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <string>
 #include <string_view>
 
@@ -11,6 +12,7 @@ namespace q4t::server {
 // Official structured-output schema graph. Unknown keywords remain errors;
 // constraints are never silently handed to a compiler that ignores them.
 inline constexpr char kOutputSchemaProfile[] = "q4t-json-schema-v2";
+inline constexpr std::size_t kSchemaWhitespaceLimit = 16;
 Status ValidateOutputSchema(const io::Json& schema, bool strict,
                             bool xml_parameters = false,
                             std::string* error_param = nullptr,

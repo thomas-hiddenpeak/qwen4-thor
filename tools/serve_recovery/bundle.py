@@ -88,10 +88,18 @@ V25_SOURCES = tuple(sorted(set(V24_SOURCES) | {
     *('tools/serve_recovery/'+name+'.py' for name in
       ('profile_mcp_codec', 'profile_mcp_evidence', 'profile_mcp_reuse',
        'profile_mcp_source'))}))
-SOURCES = tuple(sorted(set(V25_SOURCES) | {
+V26_SOURCES = tuple(sorted(set(V25_SOURCES) | {
     'tools/serve_realtime/tracing_checks.py',
     *('tools/serve_recovery/'+name+'.py' for name in
       ('profile_trace_evidence', 'profile_trace_reuse', 'profile_trace_source'))}))
+V27_SOURCES = tuple(sorted((*V26_SOURCES, 'tools/serve_recovery/model_content.py')))
+SOURCES = tuple(sorted((*V27_SOURCES, 'tools/serve_recovery/profile_live_reuse.py')))
+SOURCES_BY_VERSION = (
+    (), LEGACY_SOURCES, V2_SOURCES, V3_SOURCES, V4_SOURCES, V5_SOURCES,
+    V6_SOURCES, V7_SOURCES, V8_SOURCES, V9_SOURCES, V10_SOURCES, V11_SOURCES,
+    V12_SOURCES, V13_SOURCES, V14_SOURCES, V15_SOURCES, V16_SOURCES,
+    V17_SOURCES, V18_SOURCES, V19_SOURCES, V20_SOURCES, V21_SOURCES,
+    V22_SOURCES, V23_SOURCES, V24_SOURCES, V25_SOURCES, V26_SOURCES, V27_SOURCES, SOURCES)
 LEGACY_EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'nginx')
 EXECUTABLES = ('q4t-guardian', 'q4t-cuda-probe', 'q4t-ingress')
 NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
@@ -111,7 +119,8 @@ NATIVE_SOURCES = frozenset(('CMakeLists.txt', 'tests/host/CMakeLists.txt',
     'src/service/ingress_main.cpp',
     'include/q4t/io/base64.h', 'include/q4t/server/chat_plan_error.h',
     'include/q4t/server/voice_request.h',
-    *('include/q4t/server/'+name+'.h' for name in ('native_crypto', 'websocket')),
+    *('include/q4t/server/'+name+'.h' for name in
+      ('native_crypto', 'websocket', 'websocket_protocol')),
     *('src/server/'+name+'.cpp' for name in ('native_crypto', 'websocket')),
     *('include/q4t/service/ingress_'+name+'.h' for name in ('duplex', 'websocket')),
     *('src/service/ingress_'+name+'.cpp' for name in ('duplex', 'websocket')),
@@ -149,6 +158,27 @@ def assets(model):
                    and any(name.startswith('ple/') for name in result),
                    'incomplete native model asset inventory')
     return result
+
+
+def observed_assets(model, manifest, binding=None):
+    """Original qualifications retain their exact logical model identity."""
+    expected = manifest['model_assets']
+    binding = manifest.get('model_ctime_binding') if binding is None else binding
+    if binding is None:
+        return expected
+    ledger.keys(binding, ('format', 'original_manifest', 'sealed_inventory',
+                           'observed_inventory', 'content_report', 'upstream_index'))
+    ledger.require(binding['format'] == 'q4t-model-ctime-content-v1' and
+        all(type(v) is str and len(v) == 64 and
+            all(c in '0123456789abcdef' for c in v)
+            for k,v in binding.items() if k != 'format') and
+        ledger.digest(expected) == binding['sealed_inventory'], 'invalid model content binding')
+    current = assets(model)
+    ledger.require(ledger.digest(current) == binding['observed_inventory'] and
+        current.keys() == expected.keys() and all(
+            all(row[k] == current[n][k] for k in ('dev','ino','size','mtime_ns'))
+            for n,row in expected.items()), 'model changed after content qualification')
+    return current
 
 
 def check_assets(model, expected, *, read_edges=False):
@@ -220,6 +250,13 @@ def gateway_config_for(package, manifest, directory, *, access=None):
            if manifest.get('recovery_profiles') is not None else {})))
 
 
+def verified_native_sources(package, manifest):
+    raw = ingress.read_file(Path(package)/'native-build.json', maximum=2 * 1024**2)
+    ledger.require(hashlib.sha256(raw).hexdigest() == manifest['files']['native-build.json'],
+                   'parent native receipt changed')
+    return engine.decode_metadata(raw.decode('utf-8'))['source_files']
+
+
 def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             backend_policy_path, output, *, native_receipt, certificate=None, key=None,
             native_ingress=None, ingress_mode='native', client_ca=None, client_crl=None,
@@ -228,7 +265,9 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             embedding_model_dir=None, recovery_profiles=None, recovery_profile_policy=None,
             device_control=None, mcp_policy=None, web_policy=None,
             asr_model_dir=None, asr_limits=None, asr_auxiliary=None,
-            tts_model_dir=None, tts_limits=None, tts_base_model_dir=None):
+            tts_model_dir=None, tts_limits=None, tts_base_model_dir=None,
+            parent_native_sources=None, sip_trunks_file=None,
+            live_webrtc_address=None, live_workers_dir=None):
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
@@ -263,8 +302,9 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             require_client_certificate=client_ca is not None)
     elif certificate is not None:
         ingress.certificate_check(certificate, key, policy['server_name'])
-    build = engine.read(native_receipt)
-    ledger.require(type(build.get('version')) is int and build['version'] == 1 and
+    native_bytes = ingress.read_file(native_receipt, maximum=2 * 1024**2)
+    build = engine.decode_metadata(native_bytes.decode('utf-8'))
+    ledger.require(type(build) is dict and type(build.get('version')) is int and build['version'] == 1 and
         type(build.get('source_files')) is dict and
         build['source_files'].keys() == NATIVE_SOURCES and
         build.get('guardian_sha256') == engine.sha(guardian) and
@@ -272,11 +312,11 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         (not native or build.get('ingress_sha256') == engine.sha(native_ingress)) and
         (device_control is None or build.get('device_control_sha256') == engine.sha(device_control)),
         'native build receipt mismatch')
-    for name, digest in build['source_files'].items():
-        # Sources are copied from this builder's ROOT below. The explicit
-        # repository selects deployment paths and its cooperative lease.
-        ledger.require(not Path(name).is_absolute() and '..' not in Path(name).parts and
-                       engine.sha(ROOT/name) == digest, 'native source changed since build')
+    # A fresh builder snapshots the source bytes. A sealed parent carries the
+    # same verified digests in its own build receipt and can build offline.
+    expected_sources = (parent_native_sources if parent_native_sources is not None
+                        else {name: engine.sha(ROOT/name) for name in NATIVE_SOURCES})
+    ledger.require(build['source_files'] == expected_sources, 'native source changed since build')
     if tls is not None:
         tls_control.check(native_ingress, policy, tls, Path(output).parent)
     target = engine.private_directory(output, repository)
@@ -290,7 +330,9 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         tts_model_dir=tts_model_dir, tts_limits=tts_limits,
         tts_base_model_dir=tts_base_model_dir,
         asr_auxiliary=asr_auxiliary,
-        mcp_policy=mcp_policy, web_policy=web_policy)
+        mcp_policy=mcp_policy, web_policy=web_policy,
+        sip_trunks_file=sip_trunks_file, live_webrtc_address=live_webrtc_address,
+        live_workers_dir=live_workers_dir)
     (target/'bin').mkdir(mode=0o700)
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
     programs = list(zip(executables, (guardian, cuda_probe, executable)))
@@ -306,7 +348,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         shutil.copyfile(ROOT/name, destination)
         destination.chmod(0o400)
     ingress.save(target/'gateway-policy.json', ledger.canonical(policy)+b'\n')
-    shutil.copyfile(native_receipt, target/'native-build.json')
+    ingress.save(target/'native-build.json', native_bytes)
     (target/'native-build.json').chmod(0o400)
     names = [*('bin/'+name for name in executables),
              *('source/'+name for name in SOURCES), 'gateway-policy.json', 'native-build.json']
@@ -326,7 +368,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
     import subprocess
     common = Path(subprocess.check_output(['git', 'rev-parse', '--path-format=absolute',
         '--git-common-dir'], cwd=repository, text=True).strip())
-    value = dict(version=26, profile='q4t-service-recovery-v26', repository=str(repository),
+    value = dict(version=28, profile='q4t-service-recovery-v28', repository=str(repository),
         ingress_mode=ingress_mode,
         engine_manifest_sha256=receipt['manifest_sha256'],
         files={name: engine.sha(target/name) for name in names}, python=base['python'],
@@ -346,6 +388,10 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
 
 
 def verify(package, digest):
+    return _verify(package, digest)
+
+
+def _verify(package, digest, *, reviewed_binding=None):
     package = Path(package).resolve(strict=True)
     ledger.require(engine.sha(package/'manifest.json') == digest,
                    'recovery manifest identity changed')
@@ -353,11 +399,12 @@ def verify(package, digest):
     version = value.get('version')
     ledger.keys(value, ('version', 'profile', 'repository', 'engine_manifest_sha256',
         'files', 'python', 'model_assets', 'weight_shards_rehashed', 'resource_mode',
+        *(('model_ctime_binding',) if 'model_ctime_binding' in value else ()),
         'require_hard_memory_limit', 'lock_path', 'quota_enforced', 'tls',
-        *(('ingress_mode',) if version in range(2, 27) else ()),
-        *(('tls_configuration',) if version in range(4, 27) else ()),
-        *(('recovery_profiles', 'recovery_profile_policy') if version in range(12, 27) else ())))
-    ledger.require(type(version) is int and version in range(1, 27) and
+        *(('ingress_mode',) if version in range(2, len(SOURCES_BY_VERSION)) else ()),
+        *(('tls_configuration',) if version in range(4, len(SOURCES_BY_VERSION)) else ()),
+        *(('recovery_profiles', 'recovery_profile_policy') if version in range(12, len(SOURCES_BY_VERSION)) else ())))
+    ledger.require(type(version) is int and version in range(1, len(SOURCES_BY_VERSION)) and
         value['profile'] == 'q4t-service-recovery-v'+str(version) and
         value.get('ingress_mode', 'nginx') in ('native', 'nginx') and
         value['resource_mode'] == 'process' and
@@ -368,23 +415,15 @@ def verify(package, digest):
     executables = EXECUTABLES if native else LEGACY_EXECUTABLES
     if version >= 17 and type(value['files']) is dict and 'bin/q4t-device-control' in value['files']:
         executables = (*executables, 'q4t-device-control')
-    sources = (SOURCES if version == 26 else V25_SOURCES if version == 25 else V24_SOURCES if version == 24 else V23_SOURCES if version == 23 else V22_SOURCES if version == 22 else V21_SOURCES if version == 21 else V20_SOURCES if version == 20 else V19_SOURCES if version == 19 else V18_SOURCES if version == 18 else V17_SOURCES if version == 17 else V16_SOURCES if version == 16 else V15_SOURCES if version == 15 else V14_SOURCES if version == 14 else V13_SOURCES if version == 13 else V12_SOURCES if version == 12 else
-               V11_SOURCES if version == 11 else
-               V10_SOURCES if version == 10 else
-               V9_SOURCES if version == 9 else
-               V8_SOURCES if version == 8 else
-               V7_SOURCES if version == 7 else V6_SOURCES if version == 6 else
-               V5_SOURCES if version == 5 else V4_SOURCES if version == 4 else
-               V3_SOURCES if version == 3 else
-               V2_SOURCES if version == 2 else LEGACY_SOURCES)
+    sources = SOURCES_BY_VERSION[version]
     names = {*('bin/'+name for name in executables), *('source/'+name for name in sources),
              'gateway-policy.json', 'native-build.json'}
     if value.get('recovery_profiles') is not None:
         names |= {'profile-primary.json', 'profile-light.json'}
-    if version in range(4, 27):
+    if version in range(4, len(SOURCES_BY_VERSION)):
         ledger.require((value['tls_configuration'] is not None) == (native and value['tls']),
                        'TLS configuration and native mode differ')
-    if value['tls'] and not (version in range(4, 27) and native):
+    if value['tls'] and not (version in range(4, len(SOURCES_BY_VERSION)) and native):
         names |= {'certificate.pem', 'private-key.pem'}
     ledger.require(type(value['files']) is dict and value['files'].keys() == names,
                    'recovery source inventory changed')
@@ -414,5 +453,10 @@ def verify(package, digest):
     ledger.require(value['quota_enforced'] == bool((version >= 8 and native) or
         binding.quota_enforced(gateway['backend_policy'])),
                    'quota gate differs from immutable client limits')
-    check_assets(Path(base['model_dir']), value['model_assets'])
+    model = Path(base['model_dir'])
+    if reviewed_binding is not None:
+        ledger.require('model_ctime_binding' not in value and
+                       reviewed_binding['original_manifest'] == digest,
+                       'content review belongs to another payload')
+    check_assets(model, observed_assets(model, value, reviewed_binding))
     return value

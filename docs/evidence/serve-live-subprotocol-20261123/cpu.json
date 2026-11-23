@@ -1,0 +1,14 @@
+{
+  "engine_sha256": "bb57f2aba84bf2667ed3ca74567d899af75be460941c63bebe5446c10b3cd591",
+  "ingress_sha256": "5687f4bd366116544e222c81452fbf5155f1ba0270736a388c25ba43ff637adb",
+  "cpu": 8,
+  "real_frontend_cpu": 9,
+  "package_sources": 1,
+  "logs": {
+    "cpu.log": "c1655d57b33baaf03f4bae4fdb0031f78414b742e3a13da76b9c2f4c5a07f0e2",
+    "upgrade.log": "532e0f55dfb304b6ee7bb4253c6e9628dcf03f4af59d179f2fad879a9e2ba28a",
+    "host-build.log": "756109162e7f2a9579255de4a28d617267e0807f18de959ee1d8b2b11a64e4af",
+    "host-final.log": "530864dfdf7f33a3acf129f7edb2510644a7d98f931d0915018f4be14797fe8b",
+    "engine-build.log": "f5bb2754796571f3243cd875554a6ae1b8fdfa277f97a2450e296de7b2c6ceeb"
+  }
+}

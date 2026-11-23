@@ -1,5 +1,6 @@
 #pragma once
 #include "q4t/server/asr_service.h"
+#include "q4t/server/live_worker.h"
 #include "q4t/server/tts_service.h"
 #include "q4t/server/aligner_service.h"
 #include "q4t/server/speaker_service.h"
@@ -65,6 +66,11 @@ struct ServerOptions {
   std::vector<std::string> model_aliases;
   // Durable application state, independent of model assets and KV caches.
   // Empty resolves to XDG_STATE_HOME or HOME in the startup owner, without I/O.
+  std::string sip_trunks_file;
+  std::string sip_trunks_sha256;
+  LiveWorkerPins live_worker_pins;
+  bool live_recordings = false;
+  std::string live_webrtc_address = "127.0.0.1";
   std::string object_store_dir;
   int object_max_object_mib = 16;
   int object_max_client_mib = 64;
@@ -157,6 +163,7 @@ struct ServerCapabilities {
 };
 
 ServerCapabilities CapabilitiesFor(const ServerOptions& options);
+bool ValidLiveWebRtcAddress(const std::string& ip);
 Status ValidateServerOptions(const ServerOptions& options);
 // Resolve only after the startup memory budget has fixed effective slots.
 // Failure leaves output unchanged. Does not reserve RAM or connections.

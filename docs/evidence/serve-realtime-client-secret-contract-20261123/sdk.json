@@ -1,0 +1,27 @@
+{
+  "oracle": {
+    "total": 508,
+    "accepted": 89,
+    "rejected": 419,
+    "union_only": 0,
+    "concrete_checks": 2428
+  },
+  "graph": {
+    "nodes": 513,
+    "sources": 6,
+    "roots": {
+      "conversation_item": 0,
+      "client_event": 60,
+      "server_event": 280,
+      "response_create": 438,
+      "session": 187,
+      "response": 350,
+      "call_accept": 464,
+      "call_refer": 465,
+      "call_reject": 466,
+      "client_secret_create": 467,
+      "client_secret_created": 473
+    },
+    "sha256": "4055c325fca57d6de987aa4f9e93bca1fe2f3740d5e65eec23156b23ebfe0d0c"
+  }
+}

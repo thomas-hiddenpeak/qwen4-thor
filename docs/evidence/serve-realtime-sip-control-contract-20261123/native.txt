@@ -1,0 +1,5 @@
+Realtime SDK vectors: 492, differences: 0
+[PASS] realtime_shape_matches_actual_sdk_type_oracle
+[PASS] realtime_shape_sip_call_controls_preserve_their_own_contract
+[PASS] realtime_shape_duplicate_keys_and_bounded_error_path
+3 tests, 3 passed, 0 failed, 0 skipped

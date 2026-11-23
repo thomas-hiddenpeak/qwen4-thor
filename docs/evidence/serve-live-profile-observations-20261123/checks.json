@@ -1,0 +1,66 @@
+[
+  {
+    "case": "serve-live-profiles-20261123/business-03",
+    "positive": true,
+    "pass_check": true
+  },
+  {
+    "case": "serve-live-discovery-20261123/business-01",
+    "positive": true,
+    "pass_check": true
+  },
+  {
+    "case": "clipped",
+    "positive": false,
+    "pass_check": true,
+    "message": "qualified effective capacity differs"
+  },
+  {
+    "case": "admission",
+    "positive": false,
+    "pass_check": true,
+    "message": "invalid qualified memory admission"
+  },
+  {
+    "case": "worker",
+    "positive": false,
+    "pass_check": true,
+    "message": "Live profile observation differs"
+  },
+  {
+    "case": "ingress",
+    "positive": false,
+    "pass_check": true,
+    "message": "Live profile run or binary identity differs"
+  },
+  {
+    "case": "chat",
+    "positive": false,
+    "pass_check": true,
+    "message": "Live SDK, stored conversation or Chat result differs"
+  },
+  {
+    "case": "capabilities",
+    "positive": false,
+    "pass_check": true,
+    "message": "Live profile observation differs"
+  },
+  {
+    "case": "pair",
+    "positive": false,
+    "pass_check": true,
+    "message": "light profile changes declared application capabilities"
+  },
+  {
+    "case": "cleanup",
+    "positive": false,
+    "pass_check": true,
+    "message": "model cleanup not accepted"
+  },
+  {
+    "case": "observation",
+    "positive": false,
+    "pass_check": true,
+    "message": "Live profile observation differs"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 50,
+    "cleanup_complete": true
+  },
+  "observation": {
+    "issued": 2,
+    "scoped_capacity": 429,
+    "after_expiry": 401,
+    "recursive_issue": 401,
+    "models": 401,
+    "existing_session_reply": "42",
+    "actual_tokens": 108,
+    "transcript": "\u8bf7\u67e5\u8be2\u5f53\u524d\u9879\u76ee\u7248\u672c\u53f7\u3002"
+  },
+  "seconds": 51.88671828014776,
+  "default_unchanged": true,
+  "core": "42"
+}

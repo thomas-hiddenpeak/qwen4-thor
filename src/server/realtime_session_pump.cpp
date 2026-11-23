@@ -7,18 +7,24 @@ RealtimeSessionPump::~RealtimeSessionPump() {
   Stop();
   Join();
 }
-bool RealtimeSessionPump::Start() {
-  if (started_ || stopped_.load() || !operations_.start ||
-      !operations_.message || !operations_.tick || !operations_.cancel ||
-      !operations_.join || !operations_.start())
-    return false;
+bool RealtimeSessionPump::Start() { return Start(nullptr).ok(); }
+ObjectReply RealtimeSessionPump::Start(const io::Json* configuration) {
+  const auto unavailable = []() -> ObjectReply {
+    return {.value={}, .http_status=503, .code="realtime_session_unavailable",
+            .message="Realtime session initialization failed"};
+  };
+  if (started_ || stopped_.load() || !operations_.start || !operations_.message ||
+      !operations_.tick || !operations_.cancel || !operations_.join)
+    return unavailable();
+  auto reply = operations_.start(configuration);
+  if (!reply.ok() || reply.commit_unknown) return reply;
   try {
     worker_ = std::thread([this] { Run(); });
     started_ = true;
-    return true;
+    return {};
   } catch (...) {
     Stop();
-    return false;
+    return unavailable();
   }
 }
 bool RealtimeSessionPump::Message(WebSocketOpcode opcode,

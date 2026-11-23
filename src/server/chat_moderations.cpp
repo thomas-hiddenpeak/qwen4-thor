@@ -3,16 +3,19 @@
 #include <new>
 
 #include "chat_model_step.h"
+#include "q4t/server/decision_plan.h"
 #include "q4t/server/moderations_execution.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_admission.h"
 #include "q4t/server/request_json.h"
 
 namespace q4t::server {
-void ChatServer::HandleModerations(int fd, const std::string& body,
-                                   std::shared_ptr<RequestControl> owner) {
+void ChatServer::HandleClassification(int fd, const std::string& body,
+                                      ClassificationApi api,
+                                      std::shared_ptr<RequestControl> owner) {
   auto* http = detail::HttpResponseContext::Current(fd);
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
+  const bool decisions = api == ClassificationApi::kDecisions;
   bool success = false;
   const auto started = std::chrono::steady_clock::now();
   std::shared_ptr<RequestControl> control = std::move(owner);
@@ -54,19 +57,23 @@ void ChatServer::HandleModerations(int fd, const std::string& body,
     io::Json request;
     auto status = io::ParseJson(body, &request, true, kApplicationJsonLimits);
     if (!status) {
-      detail::SendError(fd, 400, "Invalid moderation JSON", {}, "invalid_json");
+      detail::SendError(
+          fd, 400,
+          decisions ? "Invalid Decisions JSON" : "Invalid moderation JSON", {},
+          "invalid_json");
       return;
     }
     const auto config = PlanningConfig(fd);
     ModerationsRequestPlan plan;
     ChatPlanError error;
-    status = PlanModerationsRequest(request, config, &plan, &error);
+    status = decisions ? CheckDecisionRequest(request, config, &error)
+                       : PlanModerationsRequest(request, config, &plan, &error);
     if (!status) {
       detail::SendError(fd, error.http_status, status.message(), {}, error.code,
                         error.param);
       return;
     }
-    const auto id = detail::NewRequestId("modr_");
+    const auto id = detail::NewRequestId(decisions ? "dec_" : "modr_");
     if (!control)
       control = requests_.Register(
           id, "", started + std::chrono::milliseconds(request_deadline_ms_),
@@ -91,28 +98,31 @@ void ChatServer::HandleModerations(int fd, const std::string& body,
     }
     auto& rate = batch_rate ? *batch_rate : own_rate;
     ScopeExit settle([&] { rate.Settle(); });
-    auto reply = ExecuteModerationsRequest(
-        id, plan, clients_, http->Client(), rate,
-        [&](const ModerationPlan& input, ModelPreparation& accounting,
-            ModerationStepResult* result) {
-          InternalModelStep step{input.request,
-                                 config,
-                                 accounting,
-                                 [] { return ObjectReply{}; },
-                                 {},
-                                 false,
-                                 {},
-                                 {},
-                                 0,
-                                 0};
-          auto executed = RunInternalModelStep(fd, &step, control);
-          if (executed.ok()) {
-            result->content = std::move(step.content);
-            result->finish_reason = std::move(step.finish_reason);
-          }
-          return executed;
-        },
-        cancelled);
+    auto reply =
+        decisions
+            ? RunDecisionRequest(fd, request, config, rate, control, cancelled)
+            : ExecuteModerationsRequest(
+                  id, plan, clients_, http->Client(), rate,
+                  [&](const ModerationPlan& input, ModelPreparation& accounting,
+                      ModerationStepResult* result) {
+                    InternalModelStep step{input.request,
+                                           config,
+                                           accounting,
+                                           [] { return ObjectReply{}; },
+                                           {},
+                                           false,
+                                           {},
+                                           {},
+                                           0,
+                                           0};
+                    auto executed = RunInternalModelStep(fd, &step, control);
+                    if (executed.ok()) {
+                      result->content = std::move(step.content);
+                      result->finish_reason = std::move(step.finish_reason);
+                    }
+                    return executed;
+                  },
+                  cancelled);
     // All device, grammar and internal step owners are already drained.
     rate.Settle();
     if (!reply.ok()) {
@@ -121,8 +131,10 @@ void ChatServer::HandleModerations(int fd, const std::string& body,
       return;
     }
     if (cancelled() || !control->Finish()) {
-      detail::SendError(fd, 409, "Moderation request was cancelled", {},
-                        control->Reason());
+      detail::SendError(fd, 409,
+                        decisions ? "Decision request was cancelled"
+                                  : "Moderation request was cancelled",
+                        {}, control->Reason());
       return;
     }
     success = detail::SendSimple(fd, 200, "OK", OutputJson(reply.value),

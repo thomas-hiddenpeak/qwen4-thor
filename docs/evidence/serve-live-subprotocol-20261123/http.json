@@ -1,0 +1,38 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 36,
+    "cleanup_complete": true
+  },
+  "handshakes": [
+    {
+      "path": "/v1/live/sessions",
+      "status": 101,
+      "protocol": "live",
+      "session_id": "live_0046a17cc14fd86e46a2efd5813b94fd"
+    },
+    {
+      "path": "/v1/realtime",
+      "status": 101,
+      "protocol": "realtime"
+    },
+    {
+      "path": "/v1/realtime?intent=transcription",
+      "status": 101,
+      "protocol": "realtime"
+    }
+  ],
+  "seconds": 36.5974624059163,
+  "default_unchanged": true,
+  "core": "42",
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "websocket_sessions": 3,
+    "chats": 1,
+    "controls": 33
+  },
+  "source_commit": "034964fd51f5d2c080bd14906e67c29b6b3bf4e7"
+}

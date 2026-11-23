@@ -7,17 +7,19 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import unittest
 import uuid
 from unittest import mock
 
-from tools.serve_recovery import bundle, deployment, lifecycle, quota_manager, service, store
+from tools.serve_recovery import build_tools, bundle, deployment, lifecycle, quota_manager, service, store
 from tools.serve_recovery import test_native_bundle
 from tools.serve_recovery.test_gateway import config
 from tools.serve_service import package as engine, test_service as old
 
 ROOT = Path(__file__).resolve().parents[2]
-CLI = ROOT/'.q4t-work/serve-access-20261109/host/q4t_service_cli_fixture'
+CLI = Path(os.environ.get('Q4T_SERVICE_CLI',
+    ROOT/'.q4t-work/serve-access-20261109/host/q4t_service_cli_fixture'))
 
 
 class LifecycleTests(unittest.TestCase):
@@ -176,6 +178,178 @@ class NativeEntryTests(unittest.TestCase):
         self.assertEqual(value['status'], 'PASS')
         self.assertFalse(value['model_actions']);self.assertFalse(value['state_checked'])
         self.assertTrue((Path(receipt['package'])/'engine/licenses/openai-node/LICENSE').is_file())
+
+    def test_audited_rollback_covers_only_reviewed_stat_and_original_bytes(self):
+        from tools.serve_recovery import model_content as content
+        receipt, args = self.prepare(self.root/'original')
+        package, digest = Path(receipt['package']), receipt['manifest_sha256']
+        model = Path(args[args.index('--model')+1]).resolve()
+        path = model/'weights.safetensors'
+        original = engine.read(package/'manifest.json')['model_assets']
+        path.chmod(path.stat().st_mode ^ 0o100)
+        with self.assertRaisesRegex(ValueError, 'model asset identity changed'):
+            bundle.verify(package, digest)
+        revision = 'b'*40
+        index = self.root/'upstream.json'
+        engine.save(index, dict(id='test/cpu', sha=revision, siblings=[
+            dict(rfilename=path.name, size=path.stat().st_size,
+                 lfs=dict(size=path.stat().st_size, sha256=engine.sha(path)))]))
+        report = self.root/'content.json'
+        spec = [sys.executable, '-B', str(ROOT/'tools/serve_recovery/model_content.py'),
+                'audit','--package',str(package),'--manifest-sha256',digest,
+                '--upstream-index',str(index),'--upstream-sha256',engine.sha(index),
+                '--repository','test/cpu','--revision',revision,'--report',str(report)]
+        proc = subprocess.run(spec, capture_output=True, text=True, timeout=30)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        audit = engine.read(report)
+        self.assertEqual(set(audit['assets']), {path.name})
+        rows = content.source_index(index, engine.sha(index), 'test/cpu', revision)
+        with self.assertRaisesRegex(ValueError, 'content report identity differs'):
+            content.validated_binding(package, digest, report, 'c'*64, engine.sha(index), rows)
+        self.assertEqual(content.content_hash(model, path.name, bundle.file_identity(path)),
+                         engine.sha(path))
+        output = self.root/'rollback'
+        result = content.prepare(package, digest, report, engine.sha(report),
+                                 engine.sha(index), rows, output)
+        check = json.loads(self.invoke(output/'engine/q4t','check','--package',output,
+                           '--manifest-sha256',result['manifest_sha256']).stdout)
+        self.assertTrue(check['package_verified'])
+        bound = engine.read(output/'manifest.json')
+        self.assertEqual(bound['model_assets'], original)
+        self.assertEqual(bound['engine_manifest_sha256'],
+                         engine.read(package/'manifest.json')['engine_manifest_sha256'])
+        path.write_bytes(b'other bytes')
+        with self.assertRaisesRegex(ValueError, 'model changed after content qualification'):
+            bundle.verify(output, result['manifest_sha256'])
+        with self.assertRaisesRegex(ValueError, 'only covers ctime drift'):
+            content.drift(original, bundle.assets(model))
+
+    def test_selected_workers_execute_only_the_qualified_image(self):
+        args = self.setup_inputs()
+        binary = args[args.index('--binary')+1]
+        release = args[args.index('--release')+1]
+        metadata = engine.read(release)
+        conf = metadata['observed_configuration']
+        conf['live_worker_profile'] = 'q4t-live-workers-v1'
+        decl = metadata['release_declarations']
+        path = Path(decl['directory'])/'configuration.json'
+        engine.save(path, conf)
+        decl['files'][path.name] = engine.sha(path)
+        directory = self.root/'installed'
+        directory.mkdir()
+        for name in engine.LIVE_WORKERS:
+            shutil.copy2('/usr/bin/true', directory/name)
+        files = {name:engine.sha(directory/name) for name in engine.LIVE_WORKERS}
+        decision = Path(metadata['acceptance_decision'])
+        receipt = engine.read(decision)
+        selection = dict(profile='q4t-live-workers-v1', engine_sha256=engine.sha(binary),
+                         files=files)
+        receipt['live_workers'] = selection
+        engine.save(decision, receipt)
+        metadata['acceptance_decision_sha256'] = engine.sha(decision)
+        engine.save(release, metadata)
+
+        with self.assertRaisesRegex(RuntimeError, 'qualification with this engine'):
+            engine.accepted_live_workers(receipt, '0'*64)
+        result, _ = self.prepare(self.root/'opt-out', args=args)
+        package = Path(result['package'])
+        inner = engine.read(package/'engine/manifest.json')
+        self.assertEqual(engine.live_transport_args(inner), ['--live-worker-sha256', 'none'])
+        result, _ = self.prepare(self.root/'selected', args=args, extra=('--live-workers-dir', directory))
+        package = Path(result['package'])
+        entry = package/'engine/q4t'
+        inner = engine.read(package/'engine/manifest.json')
+        self.assertEqual(inner['live_workers'], selection)
+        self.assertEqual(engine.live_transport_args(inner),
+                         ['--live-worker-sha256', ','.join(files[n] for n in engine.LIVE_WORKERS)])
+        def launch(name):
+            return subprocess.run([entry, '--live-worker-exec', name, files[name], '3'],
+                                  capture_output=True, timeout=5).returncode
+        for name in files:
+            self.assertEqual(launch(name), 0)
+        changed, absent, link = engine.LIVE_WORKERS
+        (entry.parent/changed).chmod(0o700)
+        with (entry.parent/changed).open('ab') as stream:
+            stream.write(b'unqualified')
+        (entry.parent/absent).unlink()
+        (entry.parent/link).unlink()
+        (entry.parent/link).symlink_to(directory/link)
+        for name in files:
+            self.assertNotEqual(launch(name), 0)
+        status = json.loads(self.invoke(entry, 'check', '--package', package,
+                            '--manifest-sha256', result['manifest_sha256']).stdout)
+        self.assertTrue(status['package_verified'])
+        self.assertEqual(status['live_worker_files'], dict.fromkeys(files, 'unavailable'))
+
+    def test_live_transport_is_pinned_and_optional_during_service_check(self):
+        args = self.setup_inputs()
+        path = self.root/'private-trunks.json'
+        row = dict(client_id='alpha', listen_ip='127.0.0.1', port=5061,
+                   certificate_dir='/private/carrier', peer_subject='carrier')
+        engine.save(path, dict(trunks=[row]))
+        path.chmod(0o600)
+        receipt, _ = self.prepare(self.root/'parent', args=args,
+            extra=('--sip-trunks-file', path, '--live-webrtc-address', '127.0.0.2'))
+        package = Path(receipt['package'])
+        outer = bundle.verify(package, receipt['manifest_sha256'])
+        inner = engine.verify(package/'engine', outer['engine_manifest_sha256'])
+        self.assertEqual(inner['live_transport'], dict(profile='q4t-live-transport-v1',
+            webrtc_address='127.0.0.2', sip_trunks_file=str(path), sip_trunks_sha256=engine.sha(path)))
+        launch = engine.command(package/'engine', inner, state_directory=self.root/'state')
+        for option, expected in [('--live-webrtc-address','127.0.0.2'),
+                                 ('--sip-trunks-file',str(path)), ('--sip-trunks-sha256',engine.sha(path))]:
+            self.assertEqual(launch[launch.index(option)+1], expected)
+        path.unlink()
+        self.invoke(package/'engine/q4t', 'check', '--package', package,
+                    '--manifest-sha256', receipt['manifest_sha256'])
+        self.assertFalse(any(p.name == path.name for p in package.rglob('*')))
+
+    def test_live_transport_rejects_invalid_options_offline(self):
+        path = self.root/'private-trunks.json'
+        engine.save(path, dict(trunks=[]))
+        path.chmod(0o600)
+        with self.assertRaisesRegex(RuntimeError, 'native Live transport'):
+            engine.live_transport_binding(CLI, None, path)
+        for invalid in ('0.0.0.0', '255.255.255.255', '239.1.2.3', 'localhost', ''):
+            with self.subTest(address=invalid), self.assertRaisesRegex(RuntimeError, 'WebRTC address'):
+                engine.live_transport_binding(CLI, invalid, None)
+            check = subprocess.run([CLI, 'live-transport-check', invalid], capture_output=True)
+            self.assertNotEqual(check.returncode, 0)
+        selected = engine.live_transport_binding(CLI, '127.0.0.2', None)
+        self.assertEqual(selected, dict(profile='q4t-live-transport-v1', webrtc_address='127.0.0.2'))
+        self.assertIsNone(engine.live_transport_binding(CLI, None, None))
+
+    def test_recording_opt_in_survives_sealed_parent_prepare(self):
+        args = self.setup_inputs()
+        release = args[args.index('--release')+1]
+        metadata = engine.read(release)
+        config = metadata['observed_configuration']
+        config['application_state'] = dict(profile='q4t-objects-v1',
+            live_recordings=False, **engine.APPLICATION_LIMITS)
+        declarations = metadata['release_declarations']
+        path = Path(declarations['directory'])/'configuration.json'
+        engine.save(path, config)
+        declarations['files'][path.name] = engine.sha(path)
+        engine.save(release, metadata)
+        entry = self.root/'entry'
+        build_tools.prepare(entry/'service-tools')
+        cli = entry/'q4t'
+        shutil.copy2(CLI, cli)
+        for name, opt_in in [('first', False), ('second', True)]:
+            receipt, _ = self.prepare(self.root/name, cli=cli, args=args,
+                                      extra=('--live-recordings',) if opt_in else ())
+            package = Path(receipt['package'])
+            outer = bundle.verify(package, receipt['manifest_sha256'])
+            inner = engine.verify(package/'engine', outer['engine_manifest_sha256'])
+            launch = engine.command(package/'engine', inner, state_directory=self.root/'state')
+            self.assertEqual(launch.count('--live-recordings'), int(opt_in))
+            cli = package/'engine/q4t'
+        native = args[args.index('--native-receipt')+1]
+        altered = engine.read(native)
+        altered['source_files']['src/service/guardian_main.cpp'] = '0'*64
+        engine.save(native, altered)
+        self.invoke(cli, *args, '--output', self.root/'unbound', ok=1)
+        self.assertFalse((self.root/'unbound').exists())
 
     def test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset(self):
         first,args = self.prepare(self.root/'first')

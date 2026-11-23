@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 
 from tools.serve_host import native
-from tools.serve_recovery import access_store, ledger
+from tools.serve_recovery import access_store, bundle, ledger
 from tools.serve_recovery import publication_archive as publication
 from tools.serve_recovery import publication_files as files
 from tools.serve_recovery import version_registration as registration
@@ -24,31 +24,32 @@ MAX_SELECTED = 4
 # Reviewed predecessors: original archive, then the identity-guard-only revision.
 # Their plan formats and move/restore semantics are unchanged. Keep plan bytes.
 LEGACY_PLAN_SOURCES = frozenset((
+    '03c4074d6584fe4c85fb06c9eb91ff8fd527453328acd04f1be2ed3a1a8a69e5',
     '0467795ed3a1422e1cd57c1afd22923c60288583e37477294cd9fb6f9363825e',
     '40610c3d30b67f370ce20e4e17beb107f86be69eac953795a1dac9ee52139c08',
 ))
 
 
 @contextmanager
-def locked(state, *, authority=None):
+def locked(state, *, authority=None, read_bundle=None):
     # Also excludes live Guardians, deployment/publication writers and the GPU
     # lease. No sampling claim is needed: this tool performs no device work.
-    with publication.locked(state, authority=authority) as (state, desc, manifest, current):
+    with publication.locked(state, authority=authority, read_bundle=read_bundle) as (state, desc, manifest, current):
         binding = access_store.binding(state, desc['service_id'])
         with version_store.open_bound(binding) as writer:
             selected = writer.head['state']['policy']
-            registration.for_state(state, desc, selected)
+            registration.for_state(state, desc, selected, read_bundle=read_bundle or bundle.verify)
             yield state, desc, manifest, current, selected, binding
 
 
-def entries(state, binding, selected):
+def entries(state, binding, selected, *, read_bundle=None):
     result = {}
     for cycle, paths in registration.intents(state).items():
         ledger.require(set(paths) == {'committed'},
                        'unfinished version registration requires resolution')
         path = paths['committed']
         value = registration.intent(native.private_json(path,
-            registration.MAX_BYTES), binding)
+            registration.MAX_BYTES), binding, read_bundle=read_bundle or bundle.verify)
         ledger.require(value['registration']['registry']['cycle_id'] == cycle and
             value['candidate']['revision'] <= selected['revision'],
             'uncommitted or misnamed version registration')
@@ -103,7 +104,7 @@ def unreferenced(state, current, source):
                        'registration remains an active state/release dependency')
 
 
-def verify_file(path, row, binding):
+def verify_file(path, row, binding, *, read_bundle=None):
     ledger.keys(row, ('cycle_id', 'sha256', 'identity', 'checkpoints'))
     ledger.require(ledger.identifier(row['cycle_id']) and
         type(row['sha256']) is str and ledger.HASH.fullmatch(row['sha256']),
@@ -111,7 +112,7 @@ def verify_file(path, row, binding):
     # private_json refuses symlinks, nonregular files, foreign owners and
     # writable authority. Keep the original inode as well as the full bytes.
     value = registration.intent(native.private_json(path,
-        registration.MAX_BYTES), binding)
+        registration.MAX_BYTES), binding, read_bundle=read_bundle or bundle.verify)
     ledger.require(native.inode(path) == row['identity'] and
         engine.sha(path) == row['sha256'] and
         value['registration']['registry']['cycle_id'] == row['cycle_id'],
@@ -148,18 +149,18 @@ def verify_checkpoint(path, item, row, binding, value):
                        'archived checkpoint registry differs')
 
 
-def prepare(state, output, cycles, *, authority=None):
+def prepare(state, output, cycles, *, authority=None, read_bundle=None):
     ledger.require(type(cycles) is list and 1 <= len(cycles) <= MAX_SELECTED and
         len(set(cycles)) == len(cycles) and all(ledger.identifier(c) for c in cycles),
         'one to four explicit version cycles required')
-    with locked(state, authority=authority) as (state, desc, manifest, current, selected, binding):
+    with locked(state, authority=authority, read_bundle=read_bundle) as (state, desc, manifest, current, selected, binding):
         output = Path(output).absolute()
         parent = files.directory(output.parent)
         ledger.require(output.is_relative_to(Path(manifest['repository'])/'.q4t-work') and
             not output.is_relative_to(state) and
             not output.is_relative_to(Path(current['root'])/files.DIRECTORY) and
             not os.path.lexists(output), 'new private archive directory required')
-        records = entries(state, binding, selected)
+        records = entries(state, binding, selected, read_bundle=read_bundle)
         ledger.require(not protected(state, desc, current, selected, records).intersection(cycles),
                        'current or retained root registration cannot be archived')
         rows = []
@@ -172,7 +173,7 @@ def prepare(state, output, cycles, *, authority=None):
             row = dict(cycle_id=cycle, sha256=engine.sha(path), identity=native.inode(path),
                        checkpoints=[])
             row['checkpoints'] = checkpoint_rows(state, binding, row, value)
-            verify_file(path, row, binding)
+            verify_file(path, row, binding, read_bundle=read_bundle)
             rows.append(row)
         value = dict(format=FORMAT, state=str(state), service_id=desc['service_id'],
             archive=str(output), publication_sha256=ledger.digest(current),
@@ -184,7 +185,7 @@ def prepare(state, output, cycles, *, authority=None):
                     cycles=cycles, model_actions=False, files_moved=False)
 
 
-def apply(path, expected, *, restore=False, authority=None):
+def apply(path, expected, *, restore=False, authority=None, read_bundle=None):
     path = Path(path).absolute()
     ledger.require(engine.sha(path) == expected, 'reviewed archive plan changed')
     value = native.private_json(path)
@@ -196,7 +197,7 @@ def apply(path, expected, *, restore=False, authority=None):
             *LEGACY_PLAN_SOURCES) and
         type(value['cycles']) is list and 1 <= len(value['cycles']) <= MAX_SELECTED,
         'archive plan/source identity differs')
-    with locked(value['state'], authority=authority) as (state, desc, manifest, current, selected, binding):
+    with locked(value['state'], authority=authority, read_bundle=read_bundle) as (state, desc, manifest, current, selected, binding):
         pool = state/registration.DIRECTORY
         ledger.require(value['service_id'] == desc['service_id'] and
             archive.is_relative_to(Path(manifest['repository'])/'.q4t-work') and
@@ -212,7 +213,7 @@ def apply(path, expected, *, restore=False, authority=None):
             receipt = native.private_json(archive/'retired.json')
             ledger.require(receipt.get('plan_sha256') == expected and
                 receipt.get('status') == 'RETIRED', 'completed archive required before restore')
-        records = entries(state, binding, selected)
+        records = entries(state, binding, selected, read_bundle=read_bundle)
         keep = protected(state, desc, current, selected, records)
         moves, seen, saved_records = [], set(), {}
         for row in value['cycles']:
@@ -227,7 +228,7 @@ def apply(path, expected, *, restore=False, authority=None):
                 unreferenced(state, current, source)
             exists = [os.path.lexists(p) for p in (source, target)]
             ledger.require(sum(exists) == 1, 'archive source/destination collision or loss')
-            item = verify_file(source if exists[0] else target, row, binding)
+            item = verify_file(source if exists[0] else target, row, binding, read_bundle=read_bundle)
             saved_records[cycle] = item
             ledger.require(item['candidate']['revision'] <= selected['revision'],
                            'restored registration is ahead of current recovery state')
@@ -270,7 +271,7 @@ def apply(path, expected, *, restore=False, authority=None):
             os.rename(source, target); files.sync(source.parent); files.sync(target.parent)
         files.sync(pool); files.sync(archive)
         for row in value['cycles']:
-            verify_file((pool if restore else archive)/(row['cycle_id']+'.json'), row, binding)
+            verify_file((pool if restore else archive)/(row['cycle_id']+'.json'), row, binding, read_bundle=read_bundle)
             for checkpoint in row['checkpoints']:
                 path = (state/checkpoints.DIRECTORY/checkpoint['name'] if restore else
                         archive/('checkpoint-'+checkpoint['name']))

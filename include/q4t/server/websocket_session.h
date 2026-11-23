@@ -17,6 +17,15 @@ inline constexpr size_t kWebSocketOutputBytes = 4ULL << 20;
 inline constexpr size_t kWebSocketOutputMessageBytes = 1ULL << 20;
 inline constexpr size_t kWebSocketOutputMaximumBytes = 128ULL << 20;
 
+// A session publishes complete JSON events on its owner thread. A full
+// destination returns false without consuming the event; the owner retries.
+struct SessionEventOutput {
+  size_t message_bytes = 0;
+  std::function<bool()> closed;
+  std::function<bool(std::string_view)> try_push;
+  bool Valid() const { return message_bytes && closed && try_push; }
+};
+
 // One model producer, one socket consumer. Frames, including a partially sent
 // front, remain charged until acknowledgement. No overwrite or implicit replay.
 // The owner must stop/join its producer before destroying this mailbox.
@@ -25,6 +34,10 @@ class WebSocketOutput {
   explicit WebSocketOutput(size_t bytes = kWebSocketOutputBytes,
                            size_t frames = 64,
                            size_t message_bytes = kWebSocketOutputMessageBytes);
+  SessionEventOutput Events() {
+    return {Valid() ? MessageLimit() : 0, [this] { return Closed(); },
+            [this](auto text) { return TryPush(WebSocketOpcode::kText, text); }};
+  }
   bool Valid() const { return valid_; }
   size_t MessageLimit() const { return max_message_bytes_; }
   bool TryPush(WebSocketOpcode opcode, std::string_view payload);
@@ -55,6 +68,7 @@ class WebSocketOutput {
 };
 
 enum class WebSocketSessionEnd {
+  kCompleted,
   kPeerClose,
   kPeerEof,
   kProtocol,
@@ -93,6 +107,12 @@ struct WebSocketSessionCallbacks {
   // the decoder until accepted. Authorization/output/stop remain serviced;
   // a sustained wait has the same bounded duration as an output write.
   std::function<bool(size_t)> message_ready = {};
+  // True commits that the producer has finished and queued its terminal event.
+  // Stops accepting messages, drains all queued bytes, then sends close 1000.
+  // The whole drain is bounded by write; EOF/deadline is never completion.
+  // Authorization and shutdown still take precedence. Must remain true and
+  // prohibit further producer writes once observed.
+  std::function<bool()> completed = {};
 };
 
 // Borrowed plain backend socket, no fd flag changes and no ownership transfer.

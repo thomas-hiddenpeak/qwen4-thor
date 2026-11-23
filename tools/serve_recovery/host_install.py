@@ -12,7 +12,7 @@ import stat
 import subprocess
 import uuid
 
-from tools.serve_recovery import bundle, device_domain, host_artifact as artifact
+from tools.serve_recovery import device_domain, host_artifact as artifact
 from tools.serve_recovery import ledger, resource_install as resources, resource_kernel, store
 
 FORMAT = 'q4t-native-host-installation-v1'
@@ -33,7 +33,7 @@ def validate(value):
     ledger.keys(chosen['python'], ('path', 'sha256'))
     ledger.keys(value['resource'], ('directory', 'domain_id', 'policy'))
     ledger.require(ledger.identifier(value['resource']['domain_id']) and
-        type(chosen['sources']) is dict and chosen['sources'].keys() == set(bundle.SOURCES) and
+        type(chosen['sources']) is dict and chosen['sources'].keys() in artifact.HOST_INVENTORIES.values() and
         all(type(d) is str and ledger.HASH.fullmatch(d) for d in
             (*chosen['sources'].values(), chosen['manifest_sha256'], chosen['python']['sha256'])),
         'invalid host source or resource binding')

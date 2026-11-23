@@ -1,0 +1,15 @@
+{
+  "driver": "realtime-clear-business-01",
+  "lease_status": "ENV_ABORT",
+  "driver_status": "FAIL",
+  "seconds": 87.6030031950213,
+  "successful_queries": 57,
+  "monitor_status": "CLEANUP_FAILED",
+  "monitor_error": "worker not reaped",
+  "last_api_event": "init",
+  "model_exit": -9,
+  "remaining": [],
+  "ports_released": true,
+  "lease_held_through_cleanup": true,
+  "binary_sha256": "1e16f8d3717da01ceddbdd948559e5a4d3078d749cc8993fa42a030572ce72a3"
+}

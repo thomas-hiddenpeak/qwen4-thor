@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-21",
+  "updated": "2026-11-23",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -62,7 +62,8 @@
       "evidence": [
         "SERVE_CHAT_INPUT_2026-11-08.md",
         "evidence/serve-chat-input-20261108/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": null,
       "accepted_subsets": [
@@ -622,7 +623,8 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "A02",
@@ -1028,7 +1030,8 @@
         "docs/evidence/serve-legacy-tools-20261108/index.json",
         "docs/SERVE_CUSTOM_TOOLS_2026-11-08.md",
         "docs/evidence/serve-custom-tools-20261108/index.json",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-tool-enum-padding-20261123/README.md"
       ],
       "release": {
         "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
@@ -1250,7 +1253,8 @@
         "evidence/serve-input-tokens-business-20261110/README.md",
         "evidence/serve-input-tokens-delivery-20261110/README.md",
         "evidence/serve-mcp-tunnel-transport-cpu-20261116/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": {
         "engine_binary_sha256": "5935be0ab5b3f3ddaed910f7f7e719cc9e148f576b36b959087d9878d6a6ed97",
@@ -2453,7 +2457,8 @@
         "revision": 234,
         "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
         "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "A08",
@@ -2470,7 +2475,8 @@
         "evidence/serve-retention-followup-20261110/README.md",
         "evidence/serve-retention-business-20261110/README.md",
         "evidence/serve-retention-delivery-20261110/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": {
         "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
@@ -2594,7 +2600,8 @@
           "/webhook_event_types"
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "A09",
@@ -2856,7 +2863,8 @@
         "evidence/serve-asr-http-20261117/README.md",
         "evidence/serve-asr-package-cpu-20261117/README.md",
         "evidence/serve-speech-http-20261118/README.md",
-        "evidence/serve-realtime-transcription-business-20261119/README.md"
+        "evidence/serve-realtime-transcription-business-20261119/README.md",
+        "evidence/serve-tool-enum-padding-20261123/README.md"
       ],
       "release": null,
       "findings": [
@@ -3033,7 +3041,8 @@
       "remaining_required": [
         "Multiple video tracks, presentation canvas/clipping and remaining format combinations",
         "Audio/Realtime/image-generation/video-generation model assets and actual backend execution",
-        "Recorded model quality failures remain unresolved; never relabelled by other input/mode successes"
+        "Recorded model quality failures remain unresolved; never relabelled by other input/mode successes",
+        "The historical SIP named-tool 502 lacks its raw arguments and detailed terminal. An independently reproduced XML enum-padding failure is fixed and verified with the original call flow. Compare detailed receipts if the incident recurs."
       ],
       "media_state_cache_plan": {
         "state": "cpu_pass_business_pending",
@@ -7891,7 +7900,8 @@
         "docs/evidence/serve-cold-outer-cpu-20261112/review.json",
         "evidence/serve-cold-entry-cpu-20261112/README.md",
         "evidence/serve-cold-watch-cpu-20261112/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": null,
       "development_status": "Explicit root domain management has 20 targeted CPU passes; strict FD handoff and narrow retained-controller cold-awareness have 10 CPU passes and actual accepted v16-origin adaptation b5e14f73. Current host BUSY; no host GPU rule/model/default change. Real initial qualification, bounded cold business and release remain required. Continue all master tasks. Cold business/host drivers have 10 targeted CPU passes including actual subreaper entry. Frozen 1 start / 3 Chat / 1 probe / 600s; no host policy or GPU work yet. Candidate d53caf4d is prepared; plan-v2 fixes validation-only sealed import ordering (4 affected CPU plus actual package check passed), original refusal retained. Maintenance question for nvargus/jtop pending; no foreign service or host policy action.",
@@ -7963,7 +7973,8 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev366 or then-current default; pending host/camera maintenance handoff remains required."
+      "current_execution_prerequisite": "Refresh exact cold qualification against rev366 or then-current default; pending host/camera maintenance handoff remains required.",
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "R08",
@@ -7993,7 +8004,8 @@
         "evidence/serve-resource-version-cpu-20261112/README.md",
         "evidence/serve-outer-resource-business-20261112/README.md",
         "evidence/serve-outer-resource-delivery-20261112/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": null,
       "plan": "SERVE_RESOURCE_DOMAIN_2026-11-12.md",
@@ -8027,7 +8039,8 @@
       "remaining_required": [
         "Unified physical DRAM/GPU charge hard boundary platform evidence",
         "Cold and pressure composition beyond delivered normal-NVML resource subset"
-      ]
+      ],
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "R09",
@@ -8267,7 +8280,8 @@
       "evidence": [
         "evidence/serve-retrieval-managed-business-20261112/README.md",
         "evidence/serve-managed-vision-delivery-20261116/README.md",
-        "SERVE_SURFACE_REAUDIT_2026-11-16.md"
+        "SERVE_SURFACE_REAUDIT_2026-11-16.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -9030,7 +9044,8 @@
           "/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}"
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "Q02",
@@ -9047,7 +9062,9 @@
         "evidence/serve-managed-vision-delivery-20261116/README.md",
         "evidence/serve-video-geometry-delivery-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "evidence/serve-root-rollback-business-20261116/README.md"
+        "evidence/serve-root-rollback-business-20261116/README.md",
+        "evidence/serve-recovery-recording-option-20261123/README.md",
+        "evidence/serve-live-default-20261123/README.md"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -10192,7 +10209,8 @@
       "native_realtime_mcp_main_20261120": {
         "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
         "evidence": "evidence/serve-pr56-merged-20261120/README.md"
-      }
+      },
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
     },
     {
       "id": "Q03",
@@ -10451,8 +10469,8 @@
       }
     }
   ],
-  "next_task": "Confirm PR #57 checks and merge native Realtime tracing; rev426 STOPPED reversibly delivered. Then implement Live and every remaining inference/application, recovery and final delivery task. Platform management excluded by explicit user decision.",
-  "next": "rev426追踪可回退交付，PR #57检查/合入；Live来源与合同已作私有准备，随后连续实现全部剩余任务。",
+  "next_task": "Integrate qualified Live delivery after host CI, diagnose the startup 503, and continue the remaining inference, application and recovery tasks.",
+  "next": "核对 Live 主线检查并合入；定位启动期 503；按总计划推进剩余推理与应用服务组合、恢复和交付。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16001,7 +16019,7 @@
     "evidence": "evidence/serve-pr56-merged-20261120/README.md"
   },
   "native_realtime_tracing_20261120": {
-    "status": "IDLE_TRACE_RECOVERY_NATIVE_BUILD_CPU_ACCEPTED_BUSINESS_PENDING",
+    "status": "REV426_DELIVERED_PR57_MERGED",
     "native_cpu_distinct": 40,
     "cpu_executions": 58,
     "integration_cpu_cases": 26,
@@ -16014,7 +16032,6 @@
     "default_revision": 426,
     "default_state": "STOPPED",
     "remaining": [
-      "PR #57 checks/merge",
       "Live and all remaining master tasks"
     ],
     "native_build": {
@@ -16138,7 +16155,7 @@
       },
       "evidence": "evidence/serve-realtime-tracing-idle-recovery-20261121/README.md"
     },
-    "state": "delivered_stopped_pr57_checks_pending",
+    "state": "delivered_stopped_merged_main",
     "actual_business": {
       "evidence": "evidence/serve-realtime-tracing-http-20261121/README.md",
       "status": "PASS",
@@ -16200,6 +16217,168 @@
         "live_state_unchanged": true
       },
       "archive_sha256": "bbe1c0c66b84ebfa5d146f0209774876495613a79b3dfab49ef6a52ce412affa"
+    },
+    "historical_pre_business_status": "IDLE_TRACE_RECOVERY_NATIVE_BUILD_CPU_ACCEPTED_BUSINESS_PENDING",
+    "merge": {
+      "status": "MERGED_VERIFIED",
+      "pr": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/57",
+      "head": "5a4370937f36d1f87eb6da05f3ddc7ced17e866b",
+      "merge": "22669a16295d3101876e2234fd9d0419536c9a11",
+      "checks": 2,
+      "unchanged_default_revision": 426,
+      "new_gpu_starts": 0,
+      "live_work_preserved": true,
+      "source_files_preserved": 28,
+      "branch_retained_for_active_live": true,
+      "master_goal_active": true
     }
+  },
+  "native_live_20261121": {
+    "state": "managed_live_primary_and_fallback_delivered_rev430",
+    "plan": "SERVE_LIVE_2026-11-21.md",
+    "master_active": true,
+    "default_revision": 426,
+    "default_changed": false,
+    "gpu_starts": 4,
+    "type_roots": 16,
+    "type_nodes": 941,
+    "live_sdk_vectors": 808,
+    "realtime_regression_vectors": 476,
+    "distinct_native_cpu_tests": 130,
+    "original_build_failure_preserved": true,
+    "subtasks": [
+      {
+        "id": "L01",
+        "state": "source_cpu_verified",
+        "title": "有界合同与原生校验"
+      },
+      {
+        "id": "L02",
+        "state": "primary_client_wss_business_accepted_profile_recovery_delivery_pending",
+        "title": "主WSS与持续语音业务"
+      },
+      {
+        "id": "L03",
+        "state": "client_responses_decisions_voice_business_accepted",
+        "title": "委派与上下文"
+      },
+      {
+        "id": "L04",
+        "state": "scoped_recording_download_sideband_and_ws_webrtc_forks_business_accepted",
+        "title": "存储/sideband/fork"
+      },
+      {
+        "id": "L05",
+        "state": "live_and_realtime_sip_webrtc_owned_calls_accepted_ephemeral_credentials_and_delivery_remaining",
+        "title": "WebRTC/SIP媒体接入"
+      },
+      {
+        "id": "L06",
+        "state": "planned",
+        "title": "组合验收与可回退交付"
+      }
+    ],
+    "all_remaining_master_tasks_required": true,
+    "cpu_evidence": "evidence/serve-live-contract-cpu-20261121/README.md",
+    "formal_host_build_pass": true,
+    "generator_compatibility_pass": true,
+    "configuration_pcm_evidence": "evidence/serve-live-configuration-pcm-cpu-20261121/README.md",
+    "configuration_tests": 9,
+    "pcm_tests": 12,
+    "lifecycle_tests": 10,
+    "lifecycle_private_evidence": ".q4t-work/serve-live-20261121/lifecycle-cpu-01/result.json",
+    "transport_tests": 24,
+    "lifecycle_transport_distinct_tests": 31,
+    "lifecycle_transport_evidence": "evidence/serve-live-lifecycle-transport-cpu-20261121/README.md",
+    "input_tests": 15,
+    "input_original_failures": 4,
+    "input_repair_tests": 8,
+    "input_evidence": "evidence/serve-live-input-cpu-20261121/README.md",
+    "frontend_tests": 10,
+    "frontend_original_cpu_failures": 4,
+    "frontend_repair_tests": 4,
+    "frontend_evidence": "evidence/serve-live-frontend-cpu-20261121/README.md",
+    "scheduler_tests": 10,
+    "scheduler_evidence": "evidence/serve-live-scheduler-cpu-20261121/README.md",
+    "context_tests": 13,
+    "context_new_tests": 10,
+    "context_evidence": "evidence/serve-live-context-cpu-20261121/README.md",
+    "actual_work": 14,
+    "gpu_seconds": 323.3045244219226,
+    "binding_tests": 12,
+    "binding_new_tests": 9,
+    "close_tail_tests": 18,
+    "close_tail_new_tests": 6,
+    "business_evidence": "evidence/serve-live-client-http-20261121/README.md",
+    "original_health_assertion_failure_retained": true,
+    "original_business_failures_retained": true,
+    "release_pending": true,
+    "fixture_cpu_tests": 21,
+    "fixture_cpu_new": 12,
+    "fixture_cpu_evidence": "evidence/serve-live-fixture-cpu-20261121/README.md",
+    "fixture_state": "actual_sdk_fixture_playback_and_client_resume_pass",
+    "fixture_business_evidence": "evidence/serve-live-fixture-http-20261121/README.md",
+    "responses_stream_cpu_evidence": "evidence/serve-live-responses-stream-cpu-20261123/README.md",
+    "responses_settings_cpu_evidence": "evidence/serve-live-responses-settings-cpu-20261123/README.md",
+    "responses_continuation_cpu_evidence": "evidence/serve-live-responses-continuation-cpu-20261123/README.md",
+    "decision_inference_cpu_evidence": "evidence/serve-decision-inference-cpu-20261123/README.md",
+    "decision_plan_cpu_evidence": "evidence/serve-decision-plan-cpu-20261123/README.md",
+    "decision_items_cpu_evidence": "evidence/serve-live-decision-items-cpu-20261123/README.md",
+    "responses_business_evidence": "evidence/serve-live-responses-http-20261123/README.md",
+    "responses_execution_cpu_evidence": "evidence/serve-live-responses-execution-cpu-20261123/README.md",
+    "decision_http_business_evidence": "evidence/serve-decisions-http-20261123/README.md",
+    "decision_session_business_evidence": "evidence/serve-live-decisions-20261123/README.md",
+    "recording_wave_cpu_evidence": "evidence/serve-live-recording-wave-20261123/README.md",
+    "recording_store_cpu_evidence": "evidence/serve-live-recording-store-20261123/README.md",
+    "recording_http_evidence": "evidence/serve-live-recording-http-20261123/README.md",
+    "public_contract_evidence": "evidence/serve-voice-public-contract-20261123/README.md",
+    "webrtc_media_cpu_evidence": "evidence/serve-live-webrtc-media-20261123/README.md",
+    "native_live_subprotocol_http_evidence": "evidence/serve-live-subprotocol-20261123/README.md",
+    "webrtc_media_policy_evidence": "evidence/serve-live-media-policy-20261123/README.md",
+    "webrtc_creation_business_evidence": "evidence/serve-live-media-create-20261123/README.md",
+    "webrtc_sideband_business_evidence": "evidence/serve-live-sideband-20261123/README.md",
+    "webrtc_creation_status_evidence": "evidence/serve-live-sideband-20261123/create-status.json",
+    "stored_fork_state_evidence": "evidence/serve-live-fork-state-20261123/README.md",
+    "stored_fork_business_evidence": "evidence/serve-live-fork-http-20261123/README.md",
+    "sip_input_evidence": "evidence/serve-live-sip-contract-20261123/README.md",
+    "sip_trunk_evidence": "evidence/serve-live-sip-trunk-20261123/README.md",
+    "sip_invite_evidence": "evidence/serve-live-sip-invite-20261123/README.md",
+    "sip_incoming_webhook_evidence": "evidence/serve-live-sip-webhook-20261123/README.md",
+    "sip_reject_business_evidence": "evidence/serve-live-sip-reject-20261123/README.md",
+    "realtime_sip_reject_business_evidence": "evidence/serve-realtime-sip-reject-20261123/README.md",
+    "sip_secure_media_evidence": "evidence/serve-sip-secure-media-20261123/README.md",
+    "sip_dialog_evidence": "evidence/serve-sip-dialog-20261123/README.md",
+    "sip_accept_business_evidence": "evidence/serve-live-sip-accept-20261123/README.md",
+    "sip_transfer_business_evidence": "evidence/serve-live-sip-transfer-20261123/README.md",
+    "sip_dtmf_business_evidence": "evidence/serve-live-sip-dtmf-20261123/README.md",
+    "realtime_sip_control_contract_evidence": "evidence/serve-realtime-sip-control-contract-20261123/README.md",
+    "realtime_sip_accept_business_evidence": "evidence/serve-realtime-sip-accept-20261123/README.md",
+    "realtime_client_secret_component_evidence": "evidence/serve-realtime-client-secret-contract-20261123/README.md",
+    "realtime_sideband_capacity_evidence": "evidence/serve-realtime-sideband-capacity-20261123/README.md",
+    "realtime_webrtc_create_business_evidence": "evidence/serve-realtime-webrtc-create-20261123/README.md",
+    "realtime_sip_playout_history_evidence": "evidence/serve-realtime-call-playout-20261123/README.md",
+    "realtime_client_secret_tls_wss_evidence": "evidence/serve-realtime-client-issuer-20261123/README.md",
+    "realtime_client_secret_webrtc_business_evidence": "evidence/serve-realtime-client-rtc-20261123/README.md",
+    "realtime_client_secret_generation_evidence": "evidence/serve-realtime-client-recovery-20261123/README.md",
+    "realtime_named_tool_enum_padding_evidence": "evidence/serve-tool-enum-padding-20261123/README.md",
+    "media_worker_install_evidence": "evidence/serve-live-worker-install-20261123/README.md",
+    "recording_recovery_prepare_evidence": "evidence/serve-recovery-recording-option-20261123/README.md",
+    "managed_trunk_binding_evidence": "docs/evidence/serve-managed-trunk-binding-20261123/",
+    "managed_worker_binding_evidence": "evidence/serve-managed-worker-binding-20261123/README.md",
+    "managed_capacity_business_evidence": "evidence/serve-live-primary-light-20261123/README.md",
+    "live_capability_discovery_evidence": "evidence/serve-live-discovery-20261123/README.md",
+    "http_config_schema_evidence": "evidence/serve-live-config-schema-20261123/README.md",
+    "detached_rollback_business_evidence": "evidence/serve-model-ctime-rollback-20261123/README.md",
+    "content_qualified_registration_evidence": "evidence/serve-model-rollback-registration-20261123/README.md",
+    "archived_registration_review": "evidence/serve-model-rollback-history-20261123/README.md",
+    "historical_publication": "evidence/serve-model-history-publication-20261123/README.md",
+    "audited_stopped_retention": "evidence/serve-model-history-maintenance-20261123/README.md",
+    "registered_control_startup": "evidence/serve-registered-startup-20261123/README.md",
+    "registered_control_delivery": "evidence/serve-control-delivery-20261123/README.md",
+    "registered_control_failover": "evidence/serve-control-fallback-20261123/README.md",
+    "qualified_profile_observations": "evidence/serve-live-profile-observations-20261123/README.md",
+    "sealed_live_profiles": "evidence/serve-live-registry-20261123/README.md",
+    "managed_optional_workers": "evidence/serve-live-managed-workers-20261123/README.md",
+    "default_and_registered_failover": "evidence/serve-live-default-20261123/README.md"
   }
 }

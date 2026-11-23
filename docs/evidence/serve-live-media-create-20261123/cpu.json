@@ -1,0 +1,75 @@
+{
+  "engine_sha256": "350371c20bf757da8258442cfbd7ca1c3e774f89a594965df194372bb4a71bdc",
+  "ingress_sha256": "ac0da7937f6f1cdd7d36e5acc6d6f06a8c2b8045def254216a9422e5fcd862aa",
+  "worker_sha256": "78ad95202395655147e6fe71d799f3eb9549a238fa79a875dcf0834d279c8cf6",
+  "matched_protocol_sources": 885,
+  "native_checks": 27,
+  "schema_tests": 5,
+  "route_process_tests": [
+    "native ingress",
+    "optional nginx"
+  ],
+  "runtime_routes": 92,
+  "openapi_operations": 91,
+  "audit_mutations": 32,
+  "transport": {
+    "media": [
+      {
+        "codec": "OPUS",
+        "payload": 111,
+        "inbound_samples": 28768,
+        "outbound_samples": 28288,
+        "amplitudes": [
+          9000,
+          9018
+        ],
+        "loopback_ice_candidates": 1,
+        "data_messages": 2,
+        "audio_after_data_channel_close": true
+      },
+      {
+        "codec": "PCMU",
+        "payload": 0,
+        "inbound_samples": 29068,
+        "outbound_samples": 28606,
+        "amplitudes": [
+          8858,
+          8972
+        ],
+        "loopback_ice_candidates": 1,
+        "data_messages": 2,
+        "audio_after_data_channel_close": true
+      },
+      {
+        "codec": "PCMA",
+        "payload": 8,
+        "inbound_samples": 29047,
+        "outbound_samples": 28606,
+        "amplitudes": [
+          8903,
+          9021
+        ],
+        "loopback_ice_candidates": 1,
+        "data_messages": 2,
+        "audio_after_data_channel_close": true
+      }
+    ],
+    "rejected": 4,
+    "rejected_wrong_pin": true,
+    "isolated_missing_plugins": true,
+    "invalid_bindings": 4,
+    "owner_eof_cleanup": true,
+    "startup_timeout_seconds": 15.029,
+    "new_model_starts": 0
+  },
+  "logs": {
+    "host-cpu.log": "3e3b235c270990b9747ca526447f0cc9ac3bb5b8a0db366663bbafc1504af230",
+    "host-final.log": "f8d9ebb133240ddc05989b912c972f409201aa2fffa9d6a9a2a5c59ca154237a",
+    "engine-final.log": "17ae1aa8159e81b48d85305cb0b8a4366e7ef6a29d2e12851a98ef0e0b03f2d1",
+    "ingress.log": "85ed28bcfb9d1ec71c8d944a208e1a650af5360932b738bdcadb2d6f51446b8b",
+    "nginx.log": "bf447829dce4144d2ce6098866a12a501eae28552c310d684a588fdfd773bfc4",
+    "schema-tests.log": "2be297623737900b2b44333fce417e47dbf65aaf451cb2a9afa2d859b0609ce0",
+    "media-cpu.log": "4f980326764c59b1c2a722574b6dbaf1d462ea42d65a555956c5828a22975f34",
+    "inventory.json": "cd2fc89bd7f43aa10925a63419978f3203416ece70b9f3ba9733393152bf3b3e"
+  }
+}

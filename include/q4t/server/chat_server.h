@@ -16,8 +16,10 @@
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
+#include <future>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <span>
 #include <string>
 #include <thread>
@@ -32,6 +34,7 @@
 #include "q4t/server/http_listener.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/server_options.h"
+#include "q4t/server/sip_service.h"
 #include "q4t/server/sequence_admission.h"
 #include "q4t/server/chat_plan.h"
 #include "q4t/server/model_catalog.h"
@@ -55,6 +58,7 @@
 #include "q4t/server/asr_response.h"
 #include "q4t/server/realtime_transcription_session.h"
 #include "q4t/server/realtime_conversation_session.h"
+#include "q4t/server/realtime_client_secrets.h"
 #include "q4t/audio/features.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
@@ -88,6 +92,9 @@
 
 namespace q4t {
 namespace server {
+struct LiveSessionCallbacks;
+class LiveSideband;
+enum class LiveTransport;
 struct EmbeddingStepResult;
 class RequestDiagnostics;
 class AsrStreamPass;
@@ -203,8 +210,13 @@ class ChatServer {
   void HandleMetrics(int fd);
   void HandlePreflight(int fd, const std::string& body);
   void HandleResponsesTokenCount(int fd, const std::string& body);
-  void HandleModerations(int fd, const std::string& body,
-                         std::shared_ptr<RequestControl> owner = {});
+  enum class ClassificationApi { kModerations, kDecisions };
+  void HandleClassification(int fd, const std::string& body, ClassificationApi api,
+                            std::shared_ptr<RequestControl> owner = {});
+  ObjectReply RunDecisionRequest(int fd, const io::Json& request,
+                                 const ChatPlanConfig& config, ClientRateLease& rate,
+                                 const std::shared_ptr<RequestControl>& control,
+                                 const std::function<bool()>& cancelled);
   void HandleVectorSearch(int fd, const std::string& method,
                            const std::string& path, const std::string& body);
   void HandleEmbeddings(int fd, const std::string& body,
@@ -324,13 +336,36 @@ class ChatServer {
       audio::AlignerTimes* aligned_times = nullptr);
   void HandleTranscription(int fd, std::string_view content_type,
                             std::string_view body);
+  io::Json RealtimeClientDefaults(int fd, std::string model);
+  void IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers, const std::string& body);
   void HandleRealtime(int fd, std::string_view path,
                        const HttpRequestHeaders& headers,
                        std::string_view initial, std::string_view accept);
+  RealtimeConversationCallbacks MakeRealtimeCallbacks(const ClientIdentity& client);
   void HandleRealtimeConversation(int fd, std::string_view path,
                                    const HttpRequestHeaders& headers,
                                    std::string_view initial,
                                    std::string_view accept);
+  LiveSessionCallbacks MakeLiveCallbacks(
+      const ClientIdentity& client, const std::string& id, size_t message_bytes,
+      LiveTransport transport, std::shared_ptr<LiveSideband> sideband = {},
+      std::shared_ptr<const io::Json> fork_state = {});
+  ObjectReply LoadLiveFork(int fd, const ClientIdentity& client,
+                           std::string_view source,
+                           std::shared_ptr<const io::Json>* state);
+  void HandleLiveSideband(int fd, std::string_view path,
+      const HttpRequestHeaders& headers, std::string_view initial, std::string_view accept);
+  void HandleSipControl(int fd, std::string_view id, const std::string& body,
+                        bool transfer);
+  void HandleSipReject(int fd, std::string_view id, const std::string& body);
+  void HandleLiveMediaCreate(int fd, std::string_view source,
+                             const std::string& body,
+                             std::atomic<int>*& admission, std::string_view sip_id = {},
+                             std::optional<std::string_view> offer_type = std::nullopt);
+  void JoinLiveMedia();
+  void HandleLive(int fd, std::string_view path,
+                    const HttpRequestHeaders& headers,
+                    std::string_view initial, std::string_view accept);
   RealtimeGenerationResult RunRealtimeConversation(
       const ClientIdentity& client, const RealtimeConversationJob& job,
       const std::shared_ptr<RequestControl>& control,
@@ -419,9 +454,27 @@ class ChatServer {
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
   ClientAdmission clients_;
+  RealtimeClientSecrets realtime_secrets_;
   std::shared_ptr<const AccessProgramPolicy> access_program_policy_;
   std::unique_ptr<ClientPolicyAdmin> client_policy_admin_;
   std::unique_ptr<ObjectStore> objects_;
+  struct LiveMediaThread {
+    std::string client, session;
+    std::weak_ptr<LiveSideband> sideband;
+    bool webrtc_call = false;
+    std::atomic<bool> hangup{false};
+    std::shared_future<bool> completion;
+    std::atomic<bool> attachable{false}, finished{true};
+    std::jthread worker;
+  };
+  std::mutex live_media_mu_;
+  std::array<LiveMediaThread, 4> live_media_threads_;
+  std::string live_webrtc_address_;
+  bool live_recordings_ = false;
+  std::string sip_trunks_file_;
+  std::string sip_trunks_sha256_;
+  LiveWorkerPins live_worker_pins_;
+  SipService sip_service_;
   ApplicationOwner<RealtimeTraceStore> realtime_traces_;
   RealtimeTraceStoreOptions realtime_trace_options_;
   std::shared_ptr<const FileExpansionOptions> file_inputs_;
@@ -586,7 +639,7 @@ class ChatServer {
   std::atomic<int> operations_observation_conns_{0};
   std::atomic<int> operations_control_conns_{0};
   std::atomic<int> business_conns_{0};
-  std::atomic<int> realtime_conns_{0};
+  std::atomic<int> realtime_conns_{0}, sideband_conns_{0};
   std::atomic<int> tunnel_poll_conns_{0}, tunnel_response_conns_{0};
   std::atomic<int> observation_conns_{0};
   std::atomic<int> control_conns_{0};

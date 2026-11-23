@@ -144,6 +144,37 @@ bool RequestRoundTrip(const Json& request, const std::string& text,
 }
 }  // namespace
 
+Q4T_TEST(schema_named_tool_xml_enum_padding_round_trip) {
+  const auto request = Parse(R"({"messages":[{"role":"user","content":"q"}],
+    "enable_thinking":false,"tools":[{"type":"function","function":{
+    "name":"lookup_project_record","parameters":{"type":"object","properties":{
+    "record_key":{"type":"string","enum":["release"]}},"required":["record_key"],
+    "additionalProperties":false}}}],"tool_choice":{"type":"function",
+    "function":{"name":"lookup_project_record"}}})");
+  // The real matcher must allow every forced byte. The independent parser
+  // must then accept the same bytes and return the sole allowed argument.
+  for (const std::string padding : {" \t", "\r\n", "\n\n", "                "}) {
+    const auto wire = "<tool_call>\n<function=lookup_project_record>\n"
+                      "<parameter=record_key>" +
+                      padding + "release" + padding +
+                      "</parameter>\n</function>\n</tool_call>";
+    Q4T_CHECK(RequestRoundTrip(request, wire, 1, ""));
+  }
+  return true;
+}
+
+Q4T_TEST(schema_named_tool_enum_distinct_whitespace_values) {
+  const auto request = Parse(R"({"messages":[{"role":"user","content":"q"}],
+    "enable_thinking":false,"tools":[{"type":"function","function":{
+    "name":"read","parameters":{"type":"object","properties":{"v":{
+    "type":"string","enum":["release"," release","release ","\nrelease\n"]}},
+    "required":["v"],"additionalProperties":false}}}],"tool_choice":"required"})");
+  for (const auto* value : {R"({"v":"release"})", R"({"v":" release"})",
+                            R"({"v":"release "})", R"({"v":"\nrelease\n"})"})
+    Q4T_CHECK(RequestRoundTrip(request, RichCall(value), 1, ""));
+  return true;
+}
+
 Q4T_TEST(schema_text_stop_worker_receipt_without_eos) {
   const auto schema = Object(R"({"type":"string","format":"time"})");
   const auto request = RichRequest(

@@ -821,6 +821,8 @@ def openapi():
         paths.setdefault(path, {})[method] = operation
     from tools.serve_responses.build_contract import add_openapi
     add_openapi(paths, response, error)
+    from tools.serve_protocol.voice_contract import add_voice_routes
+    add_voice_routes(paths, response, error)
     return dict(openapi="3.1.0", info=dict(title="Q4T serving contract",
         version="q4t-serve-v1", description="Static supported surface, not full OpenAI API compatibility. See required native semantics and version-bound acceptance matrix."),
         servers=[dict(url="http://127.0.0.1:8080", description="Example only; use effective configured address")],
@@ -872,8 +874,14 @@ def main():
     publish(ROOT / "docs/serve-message-profile-v3.schema.json", message_schema(), args.check)
     publish(ROOT / "docs/serve-input-semantics-v1.json", semantics(), args.check)
     spec = openapi()
-    assert {method.upper()+" "+path for path, operations in spec["paths"].items()
-            for method in operations} == set(inventory["routes"])
+    declared = {method.upper()+" "+path for path, operations in spec["paths"].items()
+                for method in operations}
+    # OpenAPI paths exclude queries. The runtime inventory also tracks the
+    # distinct transcription protocol selected by this exact upgrade target.
+    if 'transcription' in next(p['schema']['enum'] for p in
+            spec['paths']['/v1/realtime']['get']['parameters'] if p['name']=='intent'):
+        declared.add('GET /v1/realtime?intent=transcription')
+    assert declared == set(inventory["routes"]), declared ^ set(inventory["routes"])
     publish(ROOT / "docs/serve-openapi-v1.json", spec, args.check)
     from tools.serve_responses.build_contract import standalone_openapi
     publish(ROOT / "docs/serve-openapi-bundle-v1.json", standalone_openapi(spec), args.check)

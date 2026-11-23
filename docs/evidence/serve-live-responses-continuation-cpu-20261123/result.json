@@ -1,0 +1,19 @@
+{
+  "tests": 13,
+  "new_tests": 5,
+  "passed": 13,
+  "sources_sha256": {
+    "CMakeLists.txt": "023775d8c73b2ac742df549d660f296c6a081aa5a6047b7fa265ae0d7c1ce6b6",
+    "cmake/ChatProtocolIdentity.cmake": "244b8a2f031c1fdc3d8a48791f334485228ef3ea652f5143714f59a25ed8b4bf",
+    "cmake/HostTestSources.cmake": "03f83958093aaafb37ba9f1411836debf3cde4fe12f6a880fdd8df2a036635e4",
+    "include/q4t/server/live_responses_turn.h": "f02a6b980b348d355ba0e91b1dc8e76c74b77c2ebf1fa66e522b02228421e874",
+    "src/server/live_responses_turn.cpp": "0edb0a0c86913f527fe03b1aa9321cd49dd098a5ddd8bf4319ad4295153ddda8",
+    "tests/server_native_responses_stream_test.cpp": "c3f6fb8255a02a7b9d3a51dab705fd3bc65805a10e63ed3e701d7a3ae02fab9c"
+  },
+  "build_log_sha256": "599e0a84f621221f31fc6a272555e5ac12ebf1ac2f1355d3282f6397713c0cca",
+  "cpu_log_sha256": "48f27e651ffd36a62341494bea4d37e81e893ec7170b9d9a77ef036b397d15e1",
+  "binary_sha256": "d6b908266f9a59ba72d94b87d7cc5e0c60ac77cac0642e879d99bff841b9d4e1",
+  "warnings": 0,
+  "gpu_starts": 0,
+  "real_responses_delegation_accepted": false
+}

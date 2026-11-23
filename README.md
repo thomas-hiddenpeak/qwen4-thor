@@ -365,20 +365,34 @@ Responses生成也接受此字段，以保持计数与生成同源。
 原始持久历史不删除；截断、无法缩短或认证失败均返回具体错误，
 无可压缩项不编造模型用量。入口原生支持这两种模式，无需外部网关。
 
-部署方可自行前置nginx或其他HTTP网关，传递普通Bearer Authorization，
-无需提供q4t内部凭据或准入子请求。nginx前置的最小转发配置如下；
-Host须与原生入口策略的`server_name`一致，TLS/来源限制由部署方按需配置：
+部署方可按需在原生入口之前放置 nginx。下面的片段放在 nginx 的
+`http` 块。本机示例将请求转给 18161 端口的 q4t 原生入口；公开监听
+地址、TLS 和来源限制由部署方配置，Host 应与原生 `server_name` 一致。
+长期 Key 和 Realtime 短期凭据均由 q4t 验证。WebSocket 升级时保留
+握手和子协议，普通 HTTP 与 SSE 使用同一入口。
 
 ```nginx
-location / {
-    proxy_pass http://127.0.0.1:18161;
-    proxy_http_version 1.1;
-    proxy_set_header Host $http_host;
-    proxy_set_header Connection "";
-    proxy_buffering off;
-    proxy_request_buffering on;
-    proxy_cache off;
-    proxy_next_upstream off;
+map $http_upgrade $q4t_upgrade {
+    default   "";
+    websocket websocket;
+}
+map $q4t_upgrade $q4t_connection {
+    default   "";
+    websocket upgrade;
+}
+server {
+    listen 127.0.0.1:8080;
+    location / {
+        proxy_pass http://127.0.0.1:18161;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header Upgrade $q4t_upgrade;
+        proxy_set_header Connection $q4t_connection;
+        proxy_buffering off;
+        proxy_request_buffering on;
+        proxy_cache off;
+        proxy_next_upstream off;
+    }
 }
 ```
 
@@ -916,15 +930,59 @@ print(reply.choices[0].message.content)
 时长和转录输出预算，不静默截断。准备阶段与主回答共用deadline、
 RPM/TPM和取消；`usage.q4t_audio_preparation`报告真实准备量，
 多choice只计一次。此输入路径识别语音内容，非语言声学理解仍待补齐。
-语音输出及assistant音频历史已交付；当前rev416保留同一
+语音输出及assistant音频历史已交付；当前rev426保留同一
 Realtime conversation的真实音频输入、手动commit、VAD自动回答/
 打断、混合输入及空闲。原生WebSocket/TLS、PCM/G.711、音色/语速、
 播放取回/截断、函数工具与持久Prompt沿用同一核心与客户配额；取消
 按实际文字/音频用量结算。已完成[真实恢复与可回退交付](docs/evidence/serve-realtime-duplex-delivery-20261120/README.md)。
 前序rev396已[重新签发初始凭据](docs/evidence/serve-realtime-duplex-credential-reissue-20261120/README.md)，
-rev416继承更正后的初始化凭据，客户配额和用量保持，旧包保留作历史证据。
+后续rev416/rev426继承更正后的初始化凭据，客户配额和用量保持，旧包保留作历史证据。
 原错误答案与模型质量FAIL独立保留，默认采样未改。Realtime MCP也已
-交付；追踪、Live及剩余兼容继续按总计划实现，正常播放听感仍待用户安排。
+交付；[原生追踪](docs/SERVE_REALTIME_TRACING_2026-11-20.md)已随rev426
+可回退交付，辅助存储/采集恢复不重启健康核心。
+[Live及剩余兼容](docs/SERVE_LIVE_2026-11-21.md)继续按总计划实现，
+正常播放听感仍待用户安排。
+
+Live 工作分支支持 `client.live.create({session, transport: {type: "webrtc", sdp: offer}})`。
+将返回的 `transport.sdp` 设置为对端描述，保留 `session.id`。浏览器音轨协商
+Opus、PCMU 或 PCMA，前端数据通道的权限在 `session.client.data_channel` 指定。
+部署时将可选媒体程序 `q4t-live-webrtc` 放在 `q4t` 同目录，提供 GStreamer
+WebRTC、NICE 与对应编解码插件。ICE 默认绑定回环，受控内网可用
+`q4t serve --live-webrtc-address IPv4` 指定客户端可达的本机接口。
+此入口需要已配置的原生 ASR 与语音模型。[通话验收及边界](docs/evidence/serve-live-media-create-20261123/README.md)。
+
+后端用创建通话的具名客户端凭据，在官方 JS SDK 的 `openai/resources/live/sideband/ws` 模块中通过
+`new SidebandWS(client, {session_id: id, graceful_close: true})` 接入进行中的 WebRTC 会话。
+旁路先回放最近三秒，再接收实时事件。后端可读取静音前的输入 PCM 和带会话时间戳的输出 PCM，
+应将这项凭据保存在服务端。每个客户端最多两个旁路连接，实例最多四个。旁路断开后浏览器仍可通话。
+[接入、回放及资源实测](docs/evidence/serve-live-sideband-20261123/README.md)。
+
+工作分支的 SIP 来电信令进程 `q4t-live-sip` 使用可选的 Sofia-SIP（LGPL-2.1-or-later）。电话媒体进程 `q4t-sip-media` 使用系统 libSRTP2 和 GStreamer。真实通话已覆盖接听、工具回填、版本播报和挂断。[电话验收](docs/evidence/serve-tool-enum-padding-20261123/README.md)
+
+从源码准备发行目录时，编译启用的媒体目标后，运行
+`cmake --install build --component q4t-live-workers --prefix /absolute/path/to/staging`。
+该组件只安装本次构建生成的 q4t 媒体程序。将其与引擎置于同一目录，由部署环境为启用的功能提供相应运行库和插件。[迁移验证](docs/evidence/serve-live-worker-install-20261123/README.md)
+
+Ubuntu 24.04 arm64 的运维方可从已验收的引擎决定生成可选组件包。用发行决定中固定的
+SHA 运行以下命令，再用 apt 安装生成的本地包。apt 会解析 GStreamer NICE、
+Sofia-SIP 和 SRTP 等运行依赖。安装后的程序位于 `/usr/lib/q4t/live-workers`，
+可传给 `q4t service prepare --live-workers-dir`。普通文本服务独立运行。
+
+```bash
+python3 tools/serve_live/package_workers.py --workers "$WORKER_DIR" \
+  --decision "$ENGINE_DECISION" --decision-sha256 "$DECISION_SHA256" \
+  --version "$PACKAGE_VERSION" --output "$PWD/q4t-live-workers.deb"
+sudo apt install --no-install-recommends ./q4t-live-workers.deb
+```
+
+
+Live 工作分支提供按会话录制。启动 `q4t serve` 或托管 `prepare` 时使用
+`--live-recordings` 开放权限，具名客户端在 `session.start` 中传入
+`store: true` 启用本次录制。收到 `session.closed` 后，同一 API Key 对应的客户端可调用
+`client.live.sessions.downloadRecording(session.id)`。下载为双声道 16 位 PCM WAV，
+左声道是接受的输入，右声道是发出的音频，采样率沿用会话协商值。
+录音保留 30 天，占用应用对象存储配额。存储出错会在会话内报告
+`param=session.store`，语音仍可继续。默认发行版本见 [当前状态](docs/STATUS.md)。
 
 真实时间戳由独立Qwen3-ForcedAligner-0.6B提供，通过
 `--aligner-model-dir DIR`启用；默认30秒、4096上下文token、512词、

@@ -64,6 +64,15 @@ jobs:
           g++-14 --version
           cmake --version
           /usr/bin/python3 -c 'import numpy; print(numpy.__version__)'
+      - name: Extract optional nginx integration fixture
+        timeout-minutes: 2
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl --fail --silent --show-error --location --retry 2 --max-time 25 \
+            https://nginx.org/packages/ubuntu/pool/nginx/n/nginx/nginx_1.30.6-1~noble_amd64.deb -o nginx.deb
+          echo '86f0f503139203e8d75f1832b309ec084b0de5dfb6b72e11d0327790d3ffb90b  nginx.deb' | sha256sum -c -
+          dpkg-deb -x nginx.deb q4t-nginx
+          echo "Q4T_TEST_NGINX=$PWD/q4t-nginx/usr/sbin/nginx" >> "$GITHUB_ENV"
       - name: Protect runner system document resources
         run: |
           # Hosted images can make codec resource directories world-writable.

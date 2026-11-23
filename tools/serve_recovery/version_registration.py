@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 from tools.serve_host import native
-from tools.serve_recovery import access_store, deployment, ledger, publication_files
+from tools.serve_recovery import access_store, bundle, deployment, ledger, publication_files
 from tools.serve_recovery import store, version_contract, version_policy, version_store
 
 DIRECTORY = 'version-registrations'
@@ -42,11 +42,17 @@ def intents(state):
     return result
 
 
-def intent(value, binding):
+def intent(value, binding, *, read_bundle=bundle.verify):
+    qualified_intent(value, binding, read_bundle=read_bundle)
+    return value
+
+
+def qualified_intent(value, binding, *, read_bundle=bundle.verify):
     ledger.keys(value, ('format', 'binding', 'registration', 'previous', 'candidate'))
     ledger.require(value['format'] == FORMAT and value['binding'] == binding,
                    'version registration intent identity differs')
-    registration = version_contract.verify(value['registration'])
+    qualified = version_contract.verified_qualification(value['registration'], read_bundle=read_bundle)
+    registration = qualified.registration
     previous = value['previous']
     expected = version_policy.initial(registration['registry'], registration['bootstrap_boot_id'])
     if previous is not None:
@@ -61,7 +67,7 @@ def intent(value, binding):
     ledger.require(value['candidate'] == expected and
                    len(ledger.canonical(value)) <= MAX_BYTES,
                    'version registration candidate changed')
-    return value
+    return qualified
 
 
 def install(state, registration, *, request_id, expected_cycle):
@@ -167,7 +173,12 @@ def load(state, root):
     return for_state(state,root,selected)
 
 
-def for_state(state, root, selected):
+def for_state(state, root, selected, *, read_bundle=bundle.verify):
+    qualified = qualification_for_state(state, root, selected, read_bundle=read_bundle)
+    return dict(registration=qualified.registration, state=selected)
+
+
+def qualification_for_state(state, root, selected, *, read_bundle=bundle.verify):
     """Verify retained registration against an already exclusively owned head."""
     state = Path(state).absolute()
     version_policy.validate(selected)
@@ -178,13 +189,17 @@ def for_state(state, root, selected):
         value = native.private_json(files['committed'],MAX_BYTES)
         ledger.require(value['candidate']['revision'] <= selected['revision'],
                        'version registration selection needs resume')
-    registration = for_cycle(state, root, selected['registry']['cycle_id'])
-    ledger.require(registration['registry'] == selected['registry'],
+    qualified = qualified_cycle(state, root, selected['registry']['cycle_id'], read_bundle=read_bundle)
+    ledger.require(qualified.registration['registry'] == selected['registry'],
                    'selected version registry changed')
-    return dict(registration=registration,state=selected)
+    return qualified
 
 
-def for_cycle(state, root, cycle):
+def for_cycle(state, root, cycle, *, read_bundle=bundle.verify):
+    return qualified_cycle(state, root, cycle, read_bundle=read_bundle).registration
+
+
+def qualified_cycle(state, root, cycle, *, read_bundle=bundle.verify):
     """Read immutable registration for an authenticated root's live cycle.
 
     Observers never acquire the version writer lock or reconcile its journal.
@@ -196,9 +211,10 @@ def for_cycle(state, root, cycle):
     ledger.require(cycle in entries and all('committed' in files and
         'pending' not in files for files in entries.values()),
         'selected version registration is missing or needs resume')
-    value = intent(native.private_json(entries[cycle]['committed'],MAX_BYTES),binding)
-    registration = value['registration']
+    value = native.private_json(entries[cycle]['committed'], MAX_BYTES)
+    qualified = qualified_intent(value, binding, read_bundle=read_bundle)
+    registration = qualified.registration
     ledger.require(registration['registry']['cycle_id'] == cycle and
         registration['root'] == dict(package=root['package'],manifest_sha256=root['manifest_sha256']),
         'selected root needs explicit version registration')
-    return registration
+    return qualified

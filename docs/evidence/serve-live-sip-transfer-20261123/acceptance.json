@@ -1,0 +1,110 @@
+{
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 61,
+    "cleanup_complete": true
+  },
+  "seconds": 63.13887879718095,
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "calls": 1,
+    "sdk_requests": 13,
+    "sidebands": 1,
+    "voice_inputs": 1,
+    "client_results": 1,
+    "chats": 1,
+    "controls": 36
+  },
+  "transfers": {
+    "request_status": [
+      486,
+      202,
+      200
+    ],
+    "onward_status": [
+      486,
+      200
+    ],
+    "same_authenticated_dialog": true
+  },
+  "transfer_sdk": {
+    "foreign_live": 404,
+    "foreign_realtime": 404,
+    "invalid": 400,
+    "carrier_refusal": 502,
+    "realtime": 200,
+    "overlap": 409,
+    "live": 200
+  },
+  "blocked_media": null,
+  "sdk": {
+    "foreign_accept": 404,
+    "invalid": 400,
+    "accepted": 200,
+    "foreign_hangup": 404,
+    "hangup": 200,
+    "retired": 404,
+    "sideband_close": 1000
+  },
+  "voice": {
+    "version": "rev426",
+    "input": "\u8bf7\u67e5\u8be2\u5f53\u524d\u9879\u76ee\u7248\u672c\u53f7\u3002",
+    "output": "rev426",
+    "kinds": [
+      "session.started",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.input_transcript.delta",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.delegation.created",
+      "session.thinking.appended",
+      "session.commentary.appended",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.usage.updated",
+      "session.output_transcript.delta",
+      "session.closed"
+    ]
+  },
+  "playout": {
+    "codec": "Opus",
+    "frames_sent": 239,
+    "decoded_samples": 24000,
+    "peak": 14023,
+    "source_sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483"
+  },
+  "core": "42",
+  "default_unchanged": true,
+  "binary_sha256": "fd821138f851aa6730ab121394de8a87b3b79da1fe4259f592ba224f1f35a613",
+  "ingress_sha256": "61228f6fda7827ae96ea2b774d141417bdc87441e49497b92a0264ab737500b3",
+  "sip_sha256": "970963826247fe14ad690f746a13f49183a0c6b378604ca91c8a6fd8248b5efb",
+  "audio_sha256": "8733022910a465c3fb70643ba6a62c751d6aae1dfad62f8124ea8f99a1118a69"
+}

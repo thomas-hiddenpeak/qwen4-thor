@@ -1,0 +1,8 @@
+  CHECK failed: parser.Append(stopping.Append(vocabulary[token]), &deltas) (line 100)
+  CHECK failed: RequestRoundTrip(request, wire, 1, "") (line 161)
+[FAIL] schema_named_tool_xml_enum_padding_round_trip
+token 39: no finite grammar-allowed token
+  CHECK failed: status (line 99)
+  CHECK failed: RequestRoundTrip(request, RichCall(value), 1, "") (line 174)
+[FAIL] schema_named_tool_enum_distinct_whitespace_values
+2 tests, 0 passed, 2 failed, 0 skipped
