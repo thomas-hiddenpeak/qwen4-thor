@@ -349,6 +349,20 @@ def realtime_pending_capabilities(value):
         semantic.get('implemented') is True and
         semantic.get('profile') == 'q4t-native-semantic-turn-v1'),
         'pending Realtime metadata lacks semantic implementation')
+    if 'live' in value or 'calls' in realtime or 'client_secrets' in realtime:
+        live, calls, secrets = value.get('live'), realtime.get('calls'), realtime.get('client_secrets')
+        ledger.require(declared and type(realtime.get('conversation')) is dict
+            and realtime['conversation'].get('implemented') is True
+            and type(live) is dict and live.get('sessions') == '/v1/live/sessions'
+            and live.get('transports') == ['websocket', 'webrtc', 'sip']
+            and live.get('media_readiness_dependency') is False and
+            type(calls) is dict and calls.get('create') == '/v1/realtime/calls'
+            and type(secrets) is dict and secrets.get('issue') == '/v1/realtime/client_secrets'
+            and secrets.get('owner_scoped') is True and
+            realtime['pending_execution'] == [], 'pending Realtime media declarations differ')
+        # Preserve the supplied capabilities in the permit identity. Historical
+        # profiles below retain the original compatibility normalization.
+        return
     expected = ['conversation', 'live']
     ledger.require(realtime['pending_execution'] ==
         (expected if declared else ['semantic_vad', *expected]),

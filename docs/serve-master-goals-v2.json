@@ -16351,6 +16351,7 @@
     "recording_recovery_prepare_evidence": "evidence/serve-recovery-recording-option-20261123/README.md",
     "managed_trunk_binding_evidence": "docs/evidence/serve-managed-trunk-binding-20261123/",
     "managed_worker_binding_evidence": "evidence/serve-managed-worker-binding-20261123/README.md",
-    "managed_capacity_business_evidence": "evidence/serve-live-primary-light-20261123/README.md"
+    "managed_capacity_business_evidence": "evidence/serve-live-primary-light-20261123/README.md",
+    "live_capability_discovery_evidence": "evidence/serve-live-discovery-20261123/README.md"
   }
 }

@@ -1,6 +1,7 @@
 """Live primary and light business with real managed argv and persistent state."""
 import argparse
 import contextlib
+import hashlib
 import http.client
 import json
 import shutil
@@ -22,7 +23,29 @@ PROFILES = ('primary', 'light')
 SCHEMA = 'q4t-live-primary-light-business-v1'
 
 
-def prepare(out, selection):
+def discovery_candidate(build, previous, witness, expected):
+    # Only a declaration-only rebuild can carry forward the previous worker
+    # failure diagnosis. The fresh engine still executes both real profiles.
+    prior = pkg.read(previous)
+    old_protocols = {v['protocol'] for v in prior['profiles'].values()}
+    pkg.require(prior['engine_sha256'] == expected['engine_sha256'] and
+                prior['environment']['status'] == 'PASS' and len(old_protocols) == 1 and
+                set(prior['profiles']) == set(PROFILES), 'prior two-profile qualification')
+    compiled = pkg.read(build/'generated/q4t/server/chat_protocol_sources.json')
+    pkg.require(all(pkg.sha(ROOT/n) == h for n,h in compiled.items()),
+                'build receipt differs from current sources')
+    name = 'src/server/chat_capabilities.cpp'
+    original = dict(compiled)
+    original[name] = witness['sources'][name]
+    def protocol(rows):
+        return hashlib.sha256(''.join(n+':'+h+'\n' for n,h in sorted(rows.items())).encode()).hexdigest()
+    pkg.require(original[name] != compiled[name] and protocol(original) in old_protocols,
+                'compiled protocol change is broader than discovery')
+    return dict(previous_binary=expected['engine_sha256'], previous_protocol=protocol(original),
+                binary=pkg.sha(build/'q4t'), protocol=protocol(compiled), changed_source=name)
+
+
+def prepare(out, selection, *, discovery_build=None, previous_profiles=None):
     pkg.require(not out.exists(), 'fresh stage required')
     out.mkdir(mode=0o700, parents=True)
     state = out/'state'
@@ -39,6 +62,12 @@ def prepare(out, selection):
     witness = pkg.read(selection.parent/'plan.json')
     pkg.require(witness['binary_sha256'] == expected['engine_sha256'] and
                 witness['live_workers'] == expected, 'worker witness binary binding')
+    pkg.require((discovery_build is None) == (previous_profiles is None),
+                'discovery rebuild and prior profiles must be supplied together')
+    change = None
+    if discovery_build is not None:
+        change = discovery_candidate(discovery_build, previous_profiles, witness, expected)
+        expected = dict(expected, engine_sha256=change['binary'])
     pkg.save(receipt, dict(engine_sha256=expected['engine_sha256'],
                           ingress_sha256=witness['ingress_sha256']))
     ports = []
@@ -69,6 +98,7 @@ def prepare(out, selection):
         pkg.require(command[0] == plan['binary'] and '--live-recordings' in command and
                     '--live-worker-sha256' in command, 'managed model command')
         plan.update(schema=SCHEMA, limits=Stage.limits, name=name, command=command,
+                    discovery_change=change,
                     capacity=settings['profile'], selected_sha256=pkg.sha(previous/'manifest.json'),
                     installed_policy_sha256=pkg.sha(package_dir/'client-policy.json'))
         pkg.save(phase/'plan.json', plan)
@@ -111,6 +141,13 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if self.plan.get('discovery_change'):
+            pkg.require(cfg['protocol_source_sha256'] == self.plan['discovery_change']['protocol'] and
+                        capabilities['live']['sideband'] == '/v1/live/sessions/{session_id}/attach' and
+                        capabilities['realtime']['client_secrets']['owner_scoped'] and
+                        capabilities['realtime']['calls']['create'] == '/v1/realtime/calls' and
+                        capabilities['realtime']['pending_execution'] == [],
+                        'actual Live discovery differs')
         shared = self.out.parent/'conversation.json'
         if name == 'primary':
             status, value = self.api('POST', '/v1/conversations',
@@ -152,11 +189,14 @@ def main():
     parser.add_argument('action', choices=('prepare','run','finalize'))
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--worker-qualification', type=Path)
+    parser.add_argument('--discovery-build', type=Path)
+    parser.add_argument('--previous-profiles', type=Path)
     args = parser.parse_args()
     out = args.output.resolve()
     pkg.require(out.is_relative_to(ROOT/'.q4t-work'), 'private evidence directory')
     if args.action == 'prepare':
-        prepare(out, args.worker_qualification)
+        prepare(out, args.worker_qualification, discovery_build=args.discovery_build,
+                previous_profiles=args.previous_profiles)
         return
     plans = [pkg.read(out/name/'plan.json') for name in PROFILES]
     pkg.require(all(p['schema'] == SCHEMA for p in plans), 'profile plan identity')
@@ -177,7 +217,8 @@ def main():
                 'verified sources changed')
     pkg.save(out/'acceptance.json', dict(environment=env, results=results,
         profiles={n:pkg.read(out/n/'observation.json') for n in PROFILES},
-        engine_sha256=plans[0]['binary_sha256'], ingress_sha256=plans[0]['ingress_sha256']))
+        engine_sha256=plans[0]['binary_sha256'], ingress_sha256=plans[0]['ingress_sha256'],
+        disclosure_update=plans[0].get('discovery_change')))
 
 
 if __name__ == '__main__':

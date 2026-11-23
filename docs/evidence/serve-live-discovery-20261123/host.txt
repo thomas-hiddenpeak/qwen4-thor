@@ -1,0 +1,17 @@
+[PASS] chat_capabilities_reports_live_calls_and_credential_scope
+[PASS] chat_capabilities_vector_management_and_execution_configuration
+[PASS] chat_capabilities_native_file_search_conditions_and_output_types
+[PASS] chat_capabilities_mcp_native_execution_and_recovery_boundaries
+[PASS] chat_capabilities_files_separates_capacity_storage_and_consumption
+[PASS] chat_capabilities_native_video_separates_model_and_codec_readiness
+[PASS] chat_capabilities_transport_observation_contract
+[PASS] chat_capabilities_text_stop_profile
+[PASS] chat_capabilities_preflight_contract
+[PASS] chat_capabilities_identity
+[PASS] chat_capabilities_option_contract
+[PASS] chat_capabilities_runtime_flags
+[PASS] chat_capabilities_model_escaping
+[PASS] chat_capabilities_media_and_host_failure_boundaries
+[PASS] chat_capabilities_native_completions_and_models
+[PASS] chat_capabilities_native_responses_state_and_recovery
+16 tests, 16 passed, 0 failed, 0 skipped

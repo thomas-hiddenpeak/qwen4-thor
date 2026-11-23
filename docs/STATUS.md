@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+认证 `/v1/capabilities` 已修正 Live 和 Realtime 的过期声明。主轻两套实际引擎现在都列出已执行的会话、WebRTC 呼叫、SIP 控制及临时凭据兑换入口。16 项原生能力测试、6 项迁移检查和两套配置的实际 SDK/Chat 均通过。[声明与证据](evidence/serve-live-discovery-20261123/README.md)
+
 主配置与轻量配置已在同一严格 GPU 租约通过 Live 业务短验。两次启动使用实际托管命令和已固定身份的媒体程序；均完成 WebRTC 创建、数据通道开关及 Chat=42。主配置创建的 Conversation 在轻量配置中仅原客户端可读。正式包的守护器恢复和版本回退仍在推进。[业务与边界](evidence/serve-live-primary-light-20261123/README.md)
 
 托管包已支持选配三个安装后的媒体程序，按引擎与发行验收记录绑定 SHA-256。真实 SDK 使用被改变的 WebRTC 程序收到 503，原模型的 Chat 返回 42；放回合格文件后，同一模型上新会话收到 201 并完成数据通道开关。信令与 RTP 的固定身份 CPU 短验也已通过。继续正式主轻组合的封包、恢复和回退。[验证记录](evidence/serve-managed-worker-binding-20261123/README.md)
