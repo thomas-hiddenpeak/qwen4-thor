@@ -765,12 +765,17 @@ service.main(['resume', '--help'])
             arguments += ['--'+name, str(self.directory/name)]
         arguments += ['--object-store-dir', '/persistent/objects',
                       '--object-max-client-mib', '128', '--object-io-timeout-ms', '500']
-        with mock.patch.object(service.bundle, 'prepare', return_value={}) as prepare, \
-             contextlib.redirect_stdout(io.StringIO()):
-            self.assertEqual(service.main(arguments), 0)
-        self.assertEqual(prepare.call_args.kwargs['application_state'],
-                         dict(directory='/persistent/objects', max_client_mib=128,
-                              io_timeout_ms=500))
+        for recording in (False, True):
+            options = ['--live-recordings'] if recording else []
+            with self.subTest(recording=recording), \
+                 mock.patch.object(service.bundle, 'prepare', return_value={}) as prepare, \
+                 contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(service.main(arguments + options), 0)
+                expected = dict(directory='/persistent/objects', max_client_mib=128,
+                                io_timeout_ms=500)
+                if recording:
+                    expected['live_recordings'] = True
+                self.assertEqual(prepare.call_args.kwargs['application_state'], expected)
 
     def test_cli_carries_capacity_input_to_sealed_package(self):
         path = self.directory/'capacity.json'

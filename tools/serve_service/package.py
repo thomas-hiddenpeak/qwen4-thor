@@ -90,17 +90,21 @@ def regular(path):
     require(stat.S_ISREG(value.st_mode), 'regular file required')
 
 
-def read(path):
-    regular(path)
-    require(Path(path).stat().st_size <= 2*1024**2, 'metadata size limit')
+def decode_metadata(text):
     def unique(pairs):
         result = {}
         for key, value in pairs:
             require(key not in result, 'duplicate metadata key')
             result[key] = value
         return result
-    return json.loads(Path(path).read_text(), object_pairs_hook=unique,
+    return json.loads(text, object_pairs_hook=unique,
         parse_constant=lambda _: require(False, 'non-finite metadata'))
+
+
+def read(path):
+    regular(path)
+    require(Path(path).stat().st_size <= 2*1024**2, 'metadata size limit')
+    return decode_metadata(Path(path).read_text())
 
 
 def save(path, value):
@@ -133,6 +137,23 @@ def private_directory(path, repository=ROOT):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.mkdir(mode=0o700, exist_ok=False)
     return path
+
+
+def add_application_options(parser):
+    parser.add_argument('--object-store-dir')
+    parser.add_argument('--live-recordings', action='store_true')
+    for key in APPLICATION_LIMITS:
+        parser.add_argument('--object-'+key.replace('_', '-'), type=int)
+
+
+def application_cli(args):
+    options = {key: getattr(args, 'object_'+key) for key in APPLICATION_LIMITS
+               if getattr(args, 'object_'+key) is not None}
+    if args.object_store_dir is not None:
+        options['directory'] = args.object_store_dir
+    if args.live_recordings:
+        options['live_recordings'] = True
+    return options or None
 
 
 def application_settings(value):

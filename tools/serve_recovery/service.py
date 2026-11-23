@@ -352,7 +352,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--client-crl', type=Path)
     prepare.add_argument('--served-model-name')
     prepare.add_argument('--model-alias', action='append', default=[])
-    prepare.add_argument('--object-store-dir')
+    engine.add_application_options(prepare)
     prepare.add_argument('--capacity-config', type=Path)
     prepare.add_argument('--access-program-policy', type=Path)
     prepare.add_argument('--file-input-policy', type=Path)
@@ -369,8 +369,6 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     engine.add_asr_auxiliary_options(prepare)
     prepare.add_argument('--recovery-profiles', type=Path)
     prepare.add_argument('--recovery-profile-policy', type=Path)
-    for option in engine.APPLICATION_LIMITS:
-        prepare.add_argument('--object-'+option.replace('_', '-'), type=int)
     for name in ('outer-run', 'outer-start', 'outer-init', 'outer-status', 'outer-enable', 'outer-disable',
                  'outer-acknowledge', 'check', 'reload', 'init', 'init-resume', 'run', 'start', 'resume', 'status', 'diagnostics', 'stop',
                  'tls-status', 'tls-reload', 'observe', 'metrics', 'export',
@@ -457,11 +455,16 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     locks = ExitStack()
     try:
         if args.operation == 'prepare':
-            repository = (workspace if workspace is not None else
-                bundle.verify(package, digest)['repository'] if package is not None else bundle.ROOT)
+            repository = workspace if workspace is not None else bundle.ROOT
+            parent_sources = None
+            if package is not None:
+                verified = bundle.verify(package, digest)
+                repository = verified['repository']
+                parent_sources = bundle.verified_native_sources(package, verified)
             result = bundle.prepare(args.binary, args.release, args.model, args.guardian,
                 args.cuda_probe, args.nginx, args.policy, args.backend_policy, args.output,
                 native_receipt=args.native_receipt, certificate=args.certificate, key=args.key,
+                parent_native_sources=parent_sources,
                 native_ingress=args.native_ingress, ingress_mode=args.ingress_mode,
                 device_control=args.device_control,
                 client_ca=args.client_ca, client_crl=args.client_crl,
@@ -487,10 +490,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                     name=args.served_model_name if args.served_model_name is not None
                          else 'qwen3.8-flash-next', aliases=args.model_alias)
                     if args.served_model_name is not None or args.model_alias else None,
-                application_state=({**({'directory': args.object_store_dir}
-                    if args.object_store_dir is not None else {}),
-                    **{k: getattr(args, 'object_'+k) for k in engine.APPLICATION_LIMITS
-                       if getattr(args, 'object_'+k) is not None}} or None))
+                application_state=engine.application_cli(args))
         elif args.operation == 'version-adapt':
             if args.resource_observation:
                 from tools.serve_recovery import resource_compat as adapter

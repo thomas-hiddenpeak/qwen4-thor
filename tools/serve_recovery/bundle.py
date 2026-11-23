@@ -221,6 +221,13 @@ def gateway_config_for(package, manifest, directory, *, access=None):
            if manifest.get('recovery_profiles') is not None else {})))
 
 
+def verified_native_sources(package, manifest):
+    raw = ingress.read_file(Path(package)/'native-build.json', maximum=2 * 1024**2)
+    ledger.require(hashlib.sha256(raw).hexdigest() == manifest['files']['native-build.json'],
+                   'parent native receipt changed')
+    return engine.decode_metadata(raw.decode('utf-8'))['source_files']
+
+
 def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             backend_policy_path, output, *, native_receipt, certificate=None, key=None,
             native_ingress=None, ingress_mode='native', client_ca=None, client_crl=None,
@@ -229,7 +236,8 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             embedding_model_dir=None, recovery_profiles=None, recovery_profile_policy=None,
             device_control=None, mcp_policy=None, web_policy=None,
             asr_model_dir=None, asr_limits=None, asr_auxiliary=None,
-            tts_model_dir=None, tts_limits=None, tts_base_model_dir=None):
+            tts_model_dir=None, tts_limits=None, tts_base_model_dir=None,
+            parent_native_sources=None):
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     ledger.require(ingress_mode in ('native', 'nginx'), 'invalid ingress mode')
     native = ingress_mode == 'native'
@@ -264,8 +272,9 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
             require_client_certificate=client_ca is not None)
     elif certificate is not None:
         ingress.certificate_check(certificate, key, policy['server_name'])
-    build = engine.read(native_receipt)
-    ledger.require(type(build.get('version')) is int and build['version'] == 1 and
+    native_bytes = ingress.read_file(native_receipt, maximum=2 * 1024**2)
+    build = engine.decode_metadata(native_bytes.decode('utf-8'))
+    ledger.require(type(build) is dict and type(build.get('version')) is int and build['version'] == 1 and
         type(build.get('source_files')) is dict and
         build['source_files'].keys() == NATIVE_SOURCES and
         build.get('guardian_sha256') == engine.sha(guardian) and
@@ -273,11 +282,11 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         (not native or build.get('ingress_sha256') == engine.sha(native_ingress)) and
         (device_control is None or build.get('device_control_sha256') == engine.sha(device_control)),
         'native build receipt mismatch')
-    for name, digest in build['source_files'].items():
-        # Sources are copied from this builder's ROOT below. The explicit
-        # repository selects deployment paths and its cooperative lease.
-        ledger.require(not Path(name).is_absolute() and '..' not in Path(name).parts and
-                       engine.sha(ROOT/name) == digest, 'native source changed since build')
+    # A fresh builder snapshots the source bytes. A sealed parent carries the
+    # same verified digests in its own build receipt and can build offline.
+    expected_sources = (parent_native_sources if parent_native_sources is not None
+                        else {name: engine.sha(ROOT/name) for name in NATIVE_SOURCES})
+    ledger.require(build['source_files'] == expected_sources, 'native source changed since build')
     if tls is not None:
         tls_control.check(native_ingress, policy, tls, Path(output).parent)
     target = engine.private_directory(output, repository)
@@ -307,7 +316,7 @@ def prepare(binary, release, model, guardian, cuda_probe, nginx, policy_path,
         shutil.copyfile(ROOT/name, destination)
         destination.chmod(0o400)
     ingress.save(target/'gateway-policy.json', ledger.canonical(policy)+b'\n')
-    shutil.copyfile(native_receipt, target/'native-build.json')
+    ingress.save(target/'native-build.json', native_bytes)
     (target/'native-build.json').chmod(0o400)
     names = [*('bin/'+name for name in executables),
              *('source/'+name for name in SOURCES), 'gateway-policy.json', 'native-build.json']

@@ -9050,7 +9050,8 @@
         "evidence/serve-managed-vision-delivery-20261116/README.md",
         "evidence/serve-video-geometry-delivery-20261116/README.md",
         "SERVE_SURFACE_REAUDIT_2026-11-16.md",
-        "evidence/serve-root-rollback-business-20261116/README.md"
+        "evidence/serve-root-rollback-business-20261116/README.md",
+        "evidence/serve-recovery-recording-option-20261123/README.md"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -16346,6 +16347,7 @@
     "realtime_client_secret_webrtc_business_evidence": "evidence/serve-realtime-client-rtc-20261123/README.md",
     "realtime_client_secret_generation_evidence": "evidence/serve-realtime-client-recovery-20261123/README.md",
     "realtime_named_tool_enum_padding_evidence": "evidence/serve-tool-enum-padding-20261123/README.md",
-    "media_worker_install_evidence": "evidence/serve-live-worker-install-20261123/README.md"
+    "media_worker_install_evidence": "evidence/serve-live-worker-install-20261123/README.md",
+    "recording_recovery_prepare_evidence": "evidence/serve-recovery-recording-option-20261123/README.md"
   }
 }

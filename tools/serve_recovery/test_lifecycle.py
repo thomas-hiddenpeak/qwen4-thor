@@ -11,13 +11,14 @@ import unittest
 import uuid
 from unittest import mock
 
-from tools.serve_recovery import bundle, deployment, lifecycle, quota_manager, service, store
+from tools.serve_recovery import build_tools, bundle, deployment, lifecycle, quota_manager, service, store
 from tools.serve_recovery import test_native_bundle
 from tools.serve_recovery.test_gateway import config
 from tools.serve_service import package as engine, test_service as old
 
 ROOT = Path(__file__).resolve().parents[2]
-CLI = ROOT/'.q4t-work/serve-access-20261109/host/q4t_service_cli_fixture'
+CLI = Path(os.environ.get('Q4T_SERVICE_CLI',
+    ROOT/'.q4t-work/serve-access-20261109/host/q4t_service_cli_fixture'))
 
 
 class LifecycleTests(unittest.TestCase):
@@ -176,6 +177,38 @@ class NativeEntryTests(unittest.TestCase):
         self.assertEqual(value['status'], 'PASS')
         self.assertFalse(value['model_actions']);self.assertFalse(value['state_checked'])
         self.assertTrue((Path(receipt['package'])/'engine/licenses/openai-node/LICENSE').is_file())
+
+    def test_recording_opt_in_survives_sealed_parent_prepare(self):
+        args = self.setup_inputs()
+        release = args[args.index('--release')+1]
+        metadata = engine.read(release)
+        config = metadata['observed_configuration']
+        config['application_state'] = dict(profile='q4t-objects-v1',
+            live_recordings=False, **engine.APPLICATION_LIMITS)
+        declarations = metadata['release_declarations']
+        path = Path(declarations['directory'])/'configuration.json'
+        engine.save(path, config)
+        declarations['files'][path.name] = engine.sha(path)
+        engine.save(release, metadata)
+        entry = self.root/'entry'
+        build_tools.prepare(entry/'service-tools')
+        cli = entry/'q4t'
+        shutil.copy2(CLI, cli)
+        for name, opt_in in [('first', False), ('second', True)]:
+            receipt, _ = self.prepare(self.root/name, cli=cli, args=args,
+                                      extra=('--live-recordings',) if opt_in else ())
+            package = Path(receipt['package'])
+            outer = bundle.verify(package, receipt['manifest_sha256'])
+            inner = engine.verify(package/'engine', outer['engine_manifest_sha256'])
+            launch = engine.command(package/'engine', inner, state_directory=self.root/'state')
+            self.assertEqual(launch.count('--live-recordings'), int(opt_in))
+            cli = package/'engine/q4t'
+        native = args[args.index('--native-receipt')+1]
+        altered = engine.read(native)
+        altered['source_files']['src/service/guardian_main.cpp'] = '0'*64
+        engine.save(native, altered)
+        self.invoke(cli, *args, '--output', self.root/'unbound', ok=1)
+        self.assertFalse((self.root/'unbound').exists())
 
     def test_packaged_native_entry_prepares_new_target_and_round_trips_without_state_reset(self):
         first,args = self.prepare(self.root/'first')
