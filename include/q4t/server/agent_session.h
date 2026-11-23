@@ -13,7 +13,8 @@ enum class AgentSessionShape {
   kInputEvent,
   kEvent,
   kItem,
-  kTurn
+  kTurn,
+  kSubagent
 };
 Status ValidateAgentSession(const io::Json& value, AgentSessionShape shape,
                             ChatPlanError* error);

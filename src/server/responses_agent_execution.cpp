@@ -1,6 +1,7 @@
 #include "q4t/server/responses_execution.h"
 
 #include <algorithm>
+#include <ctime>
 #include <limits>
 
 #include "object_protocol.h"
@@ -105,6 +106,7 @@ Status ResponsesExecution::AppendAgent(const ResponseDelta& delta,
 
 namespace {
 using AgentEmit = std::function<ObjectReply(const Json&)>;
+using AgentClaim = std::function<ObjectReply(const std::string&)>;
 
 // The model runner returns after releasing its GPU sequence. Dispatching a
 // deeper wait never nests GPU ownership or starts another HTTP request.
@@ -112,11 +114,12 @@ class AgentDispatch {
  public:
   AgentDispatch(ResponsesAgentTree& tree,
                 const ResponsesExecution::AgentModelStep& step,
-                const AgentEmit& emit, const StateAccess& access, size_t* used,
+                const AgentEmit& emit, const AgentClaim& claim, const StateAccess& access, size_t* used,
                 size_t limit)
       : tree_(tree),
         step_(step),
         emit_(emit),
+        claim_(claim),
         access_(access),
         used_(*used),
         limit_(limit) {}
@@ -171,6 +174,8 @@ class AgentDispatch {
     ResponsesAgentTree::Turn turn;
     if (!tree_.Claim(target, &turn))
       return Error(500, "agent_state_invalid", "Agent turn already claimed");
+    auto started = claim_(target);
+    if (!started.ok()) return started;
     for (;;) {
       auto checked = Check();
       if (!checked.ok()) return checked;
@@ -232,6 +237,7 @@ class AgentDispatch {
   ResponsesAgentTree& tree_;
   const ResponsesExecution::AgentModelStep& step_;
   const AgentEmit& emit_;
+  const AgentClaim& claim_;
   const StateAccess& access_;
   size_t& used_;
   size_t limit_;
@@ -249,6 +255,21 @@ ObjectReply ResponsesExecution::RunAgents(
     auto status = output_.AppendAgentItem(item, &wire);
     if (!status)
       return Error(503, "response_storage_exhausted", status.message());
+    if (!plan_.agent_session_id.empty()) {
+      const auto action = item.GetString("action");
+      if (item.GetString("type") == "multi_agent_call_output" &&
+          (action == "spawn_agent" || action == "followup_task")) {
+        Json result;
+        const auto& text = item.GetArray("output")->array.front();
+        if (!io::ParseJson(text.GetString("text"), &result, true, kSchemaJsonLimits))
+          return Error(503, "agent_state_invalid", "Invalid native dispatch result");
+        if (result.GetString("status") == "queued")
+          agent_queued_items_[result.GetString("agent_name")] = item.GetString("id");
+      }
+      plan_.agent_tree = agents_->SaveSession();
+      if (!plan_.agent_item_times.IsObject()) plan_.agent_item_times = Object();
+      Set(&plan_.agent_item_times, item.GetString("id"), Number(std::time(nullptr)));
+    }
     status = RecordOutput(status, &wire);
     if (!status)
       return Error(503, "response_storage_exhausted", status.message());
@@ -261,7 +282,18 @@ ObjectReply ResponsesExecution::RunAgents(
   const auto limit =
       std::min<uint64_t>(kMaxNativeToolCalls,
                          envelope_.options.GetInt("max_tool_calls", INT64_MAX));
-  AgentDispatch dispatch(*agents_, step, emit, access_, &native_tool_calls_,
+  const AgentClaim claim = [&](const std::string& target) -> ObjectReply {
+    if (plan_.agent_session_id.empty()) return {};
+    const auto found = agent_queued_items_.find(target);
+    if (found == agent_queued_items_.end())
+      return Error(503, "agent_state_invalid", "Missing queued child dispatch");
+    if (!plan_.agent_claim_times.IsObject()) plan_.agent_claim_times = Object();
+    Set(&plan_.agent_claim_times, found->second, Number(std::time(nullptr)));
+    agent_queued_items_.erase(found);
+    plan_.agent_tree = agents_->SaveSession();
+    return Checkpoint();
+  };
+  AgentDispatch dispatch(*agents_, step, emit, claim, access_, &native_tool_calls_,
                          limit);
   for (const auto& [index, call] : agent_pending_) {
     Json arguments;

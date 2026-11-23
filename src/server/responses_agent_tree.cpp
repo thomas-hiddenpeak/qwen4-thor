@@ -212,6 +212,70 @@ Status ResponsesAgentTree::Act(std::string_view caller, std::string_view action,
   *result = Describe(found->first, agent);
   return {};
 }
+Json ResponsesAgentTree::SaveSession() const {
+  auto members = Array();
+  for (const auto& [name, agent] : agents_) {
+    auto row = Object({{"name", String(name)}, {"parent", String(agent.parent)},
+                       {"messages", agent.messages},
+                       {"delivered", Number(agent.delivered)},
+                       {"generation", Number(agent.generation)},
+                       {"status", *Describe(name, agent).Find("status")}});
+    members.array.push_back(std::move(row));
+  }
+  return members;
+}
+
+Status ResponsesAgentTree::RestoreSession(const Json& saved) {
+  if (!saved.IsArray() || saved.array.size() > ResponsesOutput::kMaxItems)
+    return Status::Fail("Invalid stored session agent list");
+  decltype(agents_) restored;
+  size_t bytes = 0;
+  for (const auto& row : saved.array) {
+    const auto name = row.GetString("name"), parent = row.GetString("parent");
+    const auto* messages = row.GetArray("messages");
+    const auto* delivered = row.Find("delivered");
+    const auto* generation = row.Find("generation");
+    if (row.object.size() != 6 || !IsDescendant(name, parent) ||
+        !ValidLeaf(std::string_view(name).substr(parent.size() + 1)) ||
+        (parent != "root" && !restored.contains(parent)) ||
+        !messages || messages->array.empty() ||
+        messages->array.size() > ResponsesOutput::kMaxItems ||
+        !delivered || !IsInputInteger(*delivered) || delivered->number < 0 ||
+        delivered->number > messages->array.size() ||
+        !generation || !IsInputInteger(*generation) || generation->number < 0 ||
+        generation->number >= 9007199254740991.0)
+      return Status::Fail("Invalid stored session agent");
+    const auto size = OutputJson(*messages).size();
+    if (size > ResponsesOutput::kStorageLimit - bytes)
+      return Status::Fail("Stored session agents exceed the history budget");
+    bytes += size;
+    Agent agent;
+    agent.parent = parent;
+    agent.messages = *messages;
+    agent.delivered = delivered->AsInt();
+    agent.generation = generation->AsInt();
+    const auto state = row.GetString("status");
+    if (state == "completed" || state == "incomplete") {
+      if (agent.delivered >= messages->array.size() ||
+          messages->array[agent.delivered].GetString("role") != "assistant" ||
+          !messages->array[agent.delivered].Find("content") ||
+          !messages->array[agent.delivered].Find("content")->IsString())
+        return Status::Fail("Missing stored session agent answer");
+      agent.state = state == "completed" ? State::kCompleted : State::kIncomplete;
+    } else if (state == "interrupted" || state == "running" || state == "queued") {
+      agent.state = State::kInterrupted;
+    } else {
+      return Status::Fail("Invalid stored session agent status");
+    }
+    if (!restored.emplace(name, std::move(agent)).second)
+      return Status::Fail("Duplicate stored session agent");
+  }
+  agents_ = std::move(restored);
+  stored_text_ = bytes;
+  root_messages_ = {};
+  return {};
+}
+
 bool ResponsesAgentTree::Claim(const std::string& name, Turn* turn) {
   *turn = {};
   const auto found = agents_.find(name);

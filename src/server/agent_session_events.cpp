@@ -1,6 +1,7 @@
 #include "q4t/server/agent_session.h"
 
 #include "agent_session_internal.h"
+#include "agent_subagent_internal.h"
 #include "object_protocol.h"
 
 namespace q4t::server {
@@ -21,7 +22,7 @@ Json Member(const Json& value, const char* key) {
 size_t VisibleOutputs(const Json& output, size_t end) {
   size_t count = 0;
   for (size_t i = 0; i < end; ++i)
-    if (!IsAgentDiscoveryItem(output.array[i].GetString("type"))) ++count;
+    if (!IsPrivateAgentOutput(output.array[i])) ++count;
   return count;
 }
 
@@ -172,7 +173,7 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     const auto raw = event.GetInt("output_index", -1);
     if (!output || raw < 0 || static_cast<size_t>(raw) >= output->array.size())
       return Invalid();
-    if (IsAgentDiscoveryItem(output->array[raw].GetString("type"))) return {};
+    if (IsPrivateAgentOutput(output->array[raw])) return {};
     const auto shown = cursor.turn_output_offset + VisibleOutputs(*output, raw);
     Set(&loc, "output_index", Number(shown));
   }
@@ -182,7 +183,9 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     if (!item) return Invalid();
     if (item->GetString("type") == "function_call") return {};
     auto items = Array(), actions = Array();
-    auto projected = ProjectItem(*item, turn, &items, &actions, false);
+    auto projected = item->GetString("type") == "multi_agent_call_output"
+                         ? ParentActionItem(*item, *record.Find("response"), session, turn, &items)
+                         : ProjectItem(*item, turn, &items, &actions, false);
     if (!projected.ok()) return projected;
     if (items.array.empty()) return {};
     Set(&loc, "item", std::move(items.array.front()));

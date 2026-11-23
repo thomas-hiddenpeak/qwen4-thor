@@ -316,6 +316,11 @@ def current_surface(root):
             'server::IsAgentEventStream(method, path)' not in native or
             'server::IsAgentEventSubmission(method, path)' not in native):
         raise ValueError("review native session routing")
+    if ('agent_detail::ReadSessionSubagents(objects, route, options, access)' not in
+            (root/'src/server/agent_session_http.cpp').read_text() or
+            'state.ReadRecord(link.GetString("response_id"), access)' not in
+            (root/'src/server/agent_subagent.cpp').read_text()):
+        raise ValueError("review scoped subagent history routing")
     session = '/v1/agents/sessions'
     resource = session + '/{session_id}'
     for method, path in [('POST', session), ('GET', session), ('POST', resource),
@@ -325,7 +330,10 @@ def current_surface(root):
                          ('DELETE', resource + '/artifacts/{artifact_id}'),
                          *(('GET', resource + suffix) for suffix in
                            ('/turns', '/turns/{turn_id}', '/items', '/turns/{turn_id}/items', '/traces',
-                            '/artifacts', '/artifacts/{artifact_id}', '/artifacts/{artifact_id}/content'))]:
+                            '/artifacts', '/artifacts/{artifact_id}', '/artifacts/{artifact_id}/content',
+                            '/subagents', '/subagents/{subagent_id}', '/subagents/{subagent_id}/items',
+                            '/subagents/{subagent_id}/turns', '/subagents/{subagent_id}/turns/{turn_id}',
+                            '/subagents/{subagent_id}/turns/{turn_id}/items'))]:
         routes.append((path, method))
         operations = method != 'POST' and path != resource + '/events' and not path.endswith('/content')
         native_routes.append((method, path, 'true' if operations else 'false'))

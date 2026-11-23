@@ -9,6 +9,8 @@
 #include <unordered_set>
 
 #include "object_protocol.h"
+#include "q4t/server/application_routes.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/batch_state.h"
 #include "q4t/server/http_response.h"
@@ -97,6 +99,11 @@ Json SavedResponse(ResponseStatePlan& plan, const Json& response,
     if (!plan.agent_turn_finished_at && Terminal(response))
       plan.agent_turn_finished_at = std::time(nullptr);
     Set(&result, "agent_session_id", String(plan.agent_session_id));
+    if (plan.agent_tree.IsArray()) Set(&result, "agent_tree", plan.agent_tree);
+    if (plan.agent_claim_times.IsObject())
+      Set(&result, "agent_claim_times", plan.agent_claim_times);
+    if (plan.agent_item_times.IsObject())
+      Set(&result, "agent_item_times", plan.agent_item_times);
     Set(&result, "agent_turn_started_at", Number(plan.agent_turn_started_at));
     Set(&result, "agent_turn_finished_at", Number(plan.agent_turn_finished_at));
   }
@@ -387,7 +394,8 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
 ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
                                     const StateAccess& access,
                                     ResponseStatePlan* plan,
-                                    const CancelledAgentHistory* cancelled) {
+                                    const CancelledAgentHistory* cancelled,
+                                    std::string_view agent_session) {
   *plan = {};
   if (access.scope.empty() || access.scope.size() > 256)
     return StateError("Authenticated state scope is unavailable");
@@ -426,6 +434,11 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
                        plan->own_input.array.end());
       auto reply = MergeInputSnapshots(*bindings, all, &plan->input_snapshots);
       if (!reply.ok()) return reply;
+    }
+    if (!agent_session.empty()) {
+      if (data->GetString("agent_session_id") != agent_session)
+        return StateError("Previous response belongs to another Agent session");
+      if (const auto* tree = data->Find("agent_tree")) plan->agent_tree = *tree;
     }
     const auto& output = response->GetArray("output")->array;
     if (cancelled) {
@@ -525,6 +538,18 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
         !ValidId(session->str) || !response->GetBool("background"))
       return StateError("Invalid stored Agent session binding");
     plan->agent_session_id = session->str;
+    if (const auto* tree = data->Find("agent_tree")) plan->agent_tree = *tree;
+    for (auto [field, target] : {std::pair{"agent_item_times", &plan->agent_item_times},
+                                 std::pair{"agent_claim_times", &plan->agent_claim_times}}) {
+      const auto* times = data->Find(field);
+      if (!times) continue;
+      if (!times->IsObject() || times->object.size() > ResponsesOutput::kMaxItems)
+        return StateError("Invalid stored subagent clock");
+      for (const auto& [key, value] : times->object)
+        if (!ValidApplicationId(key) || !IsInputInteger(value) || value.number <= 0)
+          return StateError("Invalid stored subagent clock");
+      *target = *times;
+    }
     plan->agent_turn_started_at = data->GetInt("agent_turn_started_at");
     plan->agent_turn_finished_at = data->GetInt("agent_turn_finished_at");
   }
