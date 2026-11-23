@@ -46,8 +46,9 @@ def prepare(source, manifest_sha256, stage, observations, output):
             package.require(registry['profiles'][name] == item['capacity'],
                             'Live observations changed the selected capacities')
             row = copy.deepcopy(old)
-            row.update(format=profile_live_reuse.RECORD_FORMAT, identity=identity,
-                       capabilities=package.read(stage/name/'capabilities.json'),
+            capabilities = package.read(stage/name/'capabilities.json')
+            row.update(format=profile_live_reuse.format_for(capabilities), identity=identity,
+                       capabilities=capabilities,
                        configuration=item['configuration'], startup_memory=item['startup_memory'],
                        environment=environment)
             row['business']['live'] = dict(observation=accepted['profiles'][name],

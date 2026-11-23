@@ -591,7 +591,7 @@ def tracing_enabled(capabilities):
 def format_for(profile, identity=None, capabilities=None, business_value=None):
     if 'live' in (capabilities or {}):
         from tools.serve_recovery import profile_live_reuse
-        return profile_live_reuse.RECORD_FORMAT
+        return profile_live_reuse.format_for(capabilities)
     if tracing_enabled(capabilities):
         return TRACING_FORMAT
     if mcp_enabled(capabilities):

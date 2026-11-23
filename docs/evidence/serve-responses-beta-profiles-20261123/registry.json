@@ -1,0 +1,56 @@
+{
+  "primary": [
+    "current raw digest",
+    "exact v23 predecessor",
+    "exact v22 predecessor",
+    "native ingress and workers",
+    "rejected changed evidence",
+    "rejected missing history",
+    "rejected wrong ingress",
+    "rejected wrong worker"
+  ],
+  "light": [
+    "current raw digest",
+    "exact v23 predecessor",
+    "exact v22 predecessor",
+    "native ingress and workers",
+    "rejected changed evidence",
+    "rejected missing history",
+    "rejected wrong ingress",
+    "rejected wrong worker"
+  ],
+  "automatic_to_rev432": "rejected: migration would change application capabilities without an explicit qualified extension; automatic recovery cannot lose or add features",
+  "successor_acceptance": {
+    "status": "ACCEPT_LIVE_PRIMARY_LIGHT",
+    "registry_sha256": "6afcd36255bf271bd1eb69a54f71aa29857c4450dee0f2429f41e2d7b813a63f",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 71,
+      "cleanup_complete": true,
+      "lease_result_sha256": "78b0d6b0c4be7ab9c23e35d2b6a9438f689ad2b7b788720de6255f2c2b7dbbd7"
+    },
+    "migration_permit_sha256": "bd5b1a184d69bfb2c5d7c9487b7ab62887af5359407cbc513ed943523ebcbbf1",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "pins": {
+    "records": {
+      "primary": {
+        "previous": "d10054a6a8dae78f324ec37f510e32761c00568f0957d16927bbea583a587a0f",
+        "selected": "e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a"
+      },
+      "light": {
+        "previous": "16337b914b6b7a7b4bb476b0185b7dd9340be77eae44253d0c40f52e612aef98",
+        "selected": "19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c"
+      }
+    },
+    "bytes": {
+      "primary": 5671128,
+      "light": 8379153
+    },
+    "registry": "6afcd36255bf271bd1eb69a54f71aa29857c4450dee0f2429f41e2d7b813a63f"
+  }
+}

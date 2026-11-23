@@ -16408,6 +16408,7 @@
   "responses_beta_selector_20261123": {
     "status": "PRIMARY_LIGHT_HTTP_QUALIFIED_CANDIDATE",
     "primary_light": "evidence/serve-responses-beta-profiles-20261123/README.md",
+    "registry": "evidence/serve-responses-beta-profiles-20261123/registry.json",
     "evidence": "evidence/serve-responses-beta-selector-20261123/README.md",
     "official_sdk": "7.47.0",
     "covered_paths": 6,
@@ -16416,7 +16417,7 @@
     "packaged_as_default": false,
     "remaining": [
       "Named multi-agent beta and its separate item, tool and event behavior",
-      "Seal both accepted profiles, qualify same-capability failover and publish the new engine"
+      "Qualify registered same-capability failover and publish the new engine"
     ]
   }
 }

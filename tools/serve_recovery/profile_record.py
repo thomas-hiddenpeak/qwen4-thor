@@ -32,7 +32,9 @@ def shape(value, size):
              (value.get('format') == 'q4t-profile-business-v22' and
               value['reused_business'].get('format') == 'q4t-tracing-profile-source-reuse-v1') or
              (value.get('format') == 'q4t-profile-business-v23' and
-              value['reused_business'].get('format') == 'q4t-live-profile-source-reuse-v1')),
+              value['reused_business'].get('format') == 'q4t-live-profile-source-reuse-v1') or
+             (value.get('format') == 'q4t-profile-business-v24' and
+              value['reused_business'].get('format') == 'q4t-live-beta-profile-source-reuse-v1')),
             'only explicit reviewed source records have the larger evidence bound')
 
 
