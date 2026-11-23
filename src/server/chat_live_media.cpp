@@ -294,9 +294,11 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
   auto* telephone = owner->invitation.get();
   const auto negotiated = telephone
       ? owner->process.Negotiate(telephone->offer, telephone->local_address,
-                                 cancelled, &answer, &telephone->peer_address)
+                                 cancelled, &answer, &telephone->peer_address,
+                                 live_worker_pins_.rtp)
       : owner->process.Negotiate(offer_type ? offer.sdp : request.Find("transport")->GetString("sdp"),
-                                 live_webrtc_address_, cancelled, &answer);
+                                 live_webrtc_address_, cancelled, &answer, nullptr,
+                                 live_worker_pins_.webrtc);
   struct WipeAnswer {
     std::string& value;
     ~WipeAnswer() { CryptoWipe(&value); }

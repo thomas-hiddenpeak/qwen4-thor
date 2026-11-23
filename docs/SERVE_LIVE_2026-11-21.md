@@ -268,3 +268,7 @@ const grant = await client.realtime.clientSecrets.create({
 ### 托管部署的中继配置
 
 在 `q4t service prepare` 及轻量托管入口中，`--live-webrtc-address IPV4` 选择本机媒体地址。`--sip-trunks-file FILE` 选择归部署账号所有的私有常规文件，封包机与服务机须能访问同一绝对路径。文件包含中继授权和可选 webhook 凭据，包内只记录规范路径和 SHA-256。需要轮换时用新文件准备后继包并显式部署。自动回退要求地址、路径和摘要一致。实际服务打开文件后复核同一批字节，文件缺失、权限不合格或内容变化会增加 `/v1/config` 的 `sip.activation_failures`，Chat 可继续服务。运行 `q4t live-transport-check IPV4 [FILE]` 可离线复核地址和中继配置格式。完整信令还依赖媒体程序、证书和授权的客户端。
+
+### 托管包的可选媒体程序
+
+用 `cmake --install BUILD --component q4t-live-workers --prefix DIR` 安装已构建的媒体组件。`q4t service prepare --live-workers-dir DIR` 从已核验的引擎验收决定读取 `live_workers`，其中的 `profile` 为 `q4t-live-workers-v1`，`engine_sha256` 对应所选模型程序，`files` 逐一绑定三个安装文件的 SHA-256。部署包复制已核验的字节，子进程在每次使用时核验并执行同一份密封镜像。`service check` 的 `live_worker_files` 报告各文件的完整性；运行库和网络须在目标环境验证。支持此合同的新发行省略选项时会显式禁用这三个程序。启用 SIP 中继还需对应配置、证书和 Sofia-SIP 运行库，WebRTC 需可用的 GStreamer/NICE 插件。自动回退比较两侧选中的媒体文件。

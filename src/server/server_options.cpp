@@ -416,7 +416,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--prefix-cache-checkpoints" && key != "--client-policy-file" &&
         key != "--access-program-policy-file" &&
         key != "--file-input-policy-file" && key != "--mcp-policy-file" &&
-        key != "--sip-trunks-file" && key != "--sip-trunks-sha256" && key != "--web-policy-file" && key != "--served-model-name" &&
+        key != "--sip-trunks-file" && key != "--sip-trunks-sha256" &&
+        key != "--live-worker-sha256" && key != "--web-policy-file" && key != "--served-model-name" &&
         key != "--model-alias" && key != "--object-store-dir")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
@@ -467,6 +468,9 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.mtp_subset_head = value;
     } else if (key == "--access-program-policy-file") {
       parsed.access_program_policy_file = value;
+    } else if (key == "--live-worker-sha256") {
+      if (!parsed.live_worker_pins.Parse(value))
+        return Status::Fail("Invalid Live worker digest list");
     } else if (key == "--sip-trunks-sha256") {
       if (value.empty()) return Status::Fail("Empty SIP trunks digest");
       parsed.sip_trunks_sha256 = value;

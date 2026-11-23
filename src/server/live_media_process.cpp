@@ -138,11 +138,13 @@ ObjectReply LiveMediaProcess::Negotiate(std::string_view offer,
                                         const std::string& address,
                                         const std::function<bool()>& cancelled,
                                         std::string* answer,
-                                        const std::string* sip_peer) {
+                                        const std::string* sip_peer,
+                                        const std::string& worker_sha256) {
   if (offer.empty() || offer.size() >= buffer_.size() ||
       offer.find('\0') != offer.npos)
     return Error(400, "live_invalid_sdp", "Invalid media session description");
-  if (!answer || !cancelled || slot_ >= 0) return Unavailable();
+  if (!answer || !cancelled || slot_ >= 0 || worker_sha256 == "none")
+    return Unavailable();
   struct sigaction disposition {};
   if (sigaction(SIGCHLD, nullptr, &disposition) ||
       disposition.sa_handler != SIG_DFL ||
@@ -155,7 +157,7 @@ ObjectReply LiveMediaProcess::Negotiate(std::string_view offer,
   const auto engine = std::filesystem::read_symlink("/proc/self/exe", ec);
   if (ec || !engine.is_absolute()) return Unavailable();
   std::string name = sip_peer ? "q4t-sip-media" : "q4t-live-webrtc";
-  const auto path = engine.parent_path() / name;
+  auto path = engine.parent_path() / name;
   int pair[2];
   if (socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, pair))
     return Unavailable();
@@ -170,10 +172,18 @@ ObjectReply LiveMediaProcess::Negotiate(std::string_view offer,
   }
   int error = posix_spawn_file_actions_adddup2(&actions, child, 3);
   if (!error) error = posix_spawn_file_actions_addclosefrom_np(&actions, 4);
-  char socket[] = "3";
-  char* argv[] = {name.data(), socket, const_cast<char*>(address.c_str()),
-                  sip_peer ? const_cast<char*>(sip_peer->c_str()) : nullptr,
-                  nullptr};
+  std::vector<std::string> arguments;
+  if (worker_sha256.empty()) {
+    arguments.push_back(name);
+  } else {
+    path = engine;
+    arguments = {engine.string(), "--live-worker-exec", name, worker_sha256};
+  }
+  arguments.insert(arguments.end(), {"3", address});
+  if (sip_peer) arguments.push_back(*sip_peer);
+  std::vector<char*> argv;
+  for (auto& arg : arguments) argv.push_back(arg.data());
+  argv.push_back(nullptr);
   // Only media-specific deployment settings reach this child; service keys,
   // TLS credentials and model-library loader settings are never inherited.
   std::vector<std::string> options{"LC_ALL=C", "MALLOC_ARENA_MAX=2"};
@@ -186,7 +196,7 @@ ObjectReply LiveMediaProcess::Negotiate(std::string_view offer,
   pid_t pid = -1;
   if (!error)
     error =
-        posix_spawn(&pid, path.c_str(), &actions, nullptr, argv, env.data());
+        posix_spawn(&pid, path.c_str(), &actions, nullptr, argv.data(), env.data());
   posix_spawn_file_actions_destroy(&actions);
   close(child);
   if (error) return Unavailable();

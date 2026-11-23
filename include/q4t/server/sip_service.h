@@ -38,7 +38,8 @@ class SipService {
   SipService& operator=(const SipService&) = delete;
   void Start(const std::string& config,
              std::function<bool(std::string_view)> current_scope,
-             const std::string& expected_sha256 = {});
+             const std::string& expected_sha256 = {},
+             const std::string& worker_sha256 = {});
   void Stop();
   std::string HealthJson() const;
   ObjectReply Reserve(std::string_view scope, std::string_view id,

@@ -476,6 +476,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 web_policy=args.web_policy,
                 sip_trunks_file=args.sip_trunks_file,
                 live_webrtc_address=args.live_webrtc_address,
+                live_workers_dir=args.live_workers_dir,
                 embedding_model_dir=args.embedding_model_dir,
                 tts_model_dir=args.tts_model_dir,
                 tts_base_model_dir=args.tts_base_model_dir,

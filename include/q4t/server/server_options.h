@@ -1,5 +1,6 @@
 #pragma once
 #include "q4t/server/asr_service.h"
+#include "q4t/server/live_worker.h"
 #include "q4t/server/tts_service.h"
 #include "q4t/server/aligner_service.h"
 #include "q4t/server/speaker_service.h"
@@ -67,6 +68,7 @@ struct ServerOptions {
   // Empty resolves to XDG_STATE_HOME or HOME in the startup owner, without I/O.
   std::string sip_trunks_file;
   std::string sip_trunks_sha256;
+  LiveWorkerPins live_worker_pins;
   bool live_recordings = false;
   std::string live_webrtc_address = "127.0.0.1";
   std::string object_store_dir;

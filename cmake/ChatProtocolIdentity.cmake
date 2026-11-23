@@ -489,6 +489,8 @@ set(protocol_inputs
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
   src/server/sip_webhook.cpp
+  include/q4t/server/live_worker.h
+  src/service/live_worker_exec.cpp
   src/server/sip_service.cpp
   src/server/sip_child.cpp
   src/server/sip_child.h

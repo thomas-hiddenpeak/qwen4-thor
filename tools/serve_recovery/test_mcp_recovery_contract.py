@@ -92,6 +92,13 @@ class PrivatePolicyRecoveryTests(unittest.TestCase):
         first = version_contract.payload(fixture.root)
         second = version_contract.payload(fixture.fallback)
         version_contract.compatible(first, second)
+        a, b = copy.deepcopy(first), copy.deepcopy(second)
+        for value in (a, b):
+            value['engine']['live_workers'] = dict(files={'q4t-live-sip':'a'*64})
+        version_contract.compatible(a, b)
+        b['engine']['live_workers']['files']['q4t-live-sip'] = 'b'*64
+        with self.assertRaisesRegex(ValueError, 'qualified media workers'):
+            version_contract.compatible(a, b)
         binding = dict(profile='q4t-live-transport-v1', webrtc_address='127.0.0.1',
                        sip_trunks_file='/private/trunks.json', sip_trunks_sha256='a'*64)
         a, b = copy.deepcopy(first), copy.deepcopy(second)

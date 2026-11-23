@@ -145,6 +145,7 @@ def add_application_options(parser):
     parser.add_argument('--live-recordings', action='store_true')
     parser.add_argument('--sip-trunks-file', type=Path)
     parser.add_argument('--live-webrtc-address')
+    parser.add_argument('--live-workers-dir', type=Path)
     for key in APPLICATION_LIMITS:
         parser.add_argument('--object-'+key.replace('_', '-'), type=int)
 
@@ -612,6 +613,47 @@ def _native_policy_binding(binary, path, raw, command, profile, label,
     return value
 
 
+LIVE_WORKERS = ('q4t-live-webrtc', 'q4t-live-sip', 'q4t-sip-media')
+MAX_WORKER_BYTES = 8 * 1024 * 1024
+
+
+def accepted_live_workers(decision, binary_sha256):
+    selection = decision.get('live_workers')
+    require(type(selection) is dict and set(selection) == {'profile', 'engine_sha256', 'files'}
+            and selection['profile'] == 'q4t-live-workers-v1'
+            and selection['engine_sha256'] == binary_sha256,
+            'media workers require qualification with this engine')
+    files = selection['files']
+    require(type(files) is dict and set(files) == set(LIVE_WORKERS)
+            and all(type(h) is str and len(h) == 64 and
+                    all(c in '0123456789abcdef' for c in h) for h in files.values()),
+            'invalid qualified media worker inventory')
+    return selection
+
+
+def read_live_worker(path, expected):
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC)
+    with os.fdopen(fd, 'rb') as stream:
+        info = os.fstat(fd)
+        require(stat.S_ISREG(info.st_mode) and info.st_mode & stat.S_IXUSR and
+                4 <= info.st_size <= MAX_WORKER_BYTES, 'invalid media executable')
+        raw = stream.read(info.st_size + 1)
+        require(len(raw) == info.st_size and raw.startswith(b'\x7fELF') and
+                hashlib.sha256(raw).hexdigest() == expected, 'media executable identity differs')
+        return raw
+
+
+def live_worker_health(directory, manifest):
+    health = {}
+    for name, digest in manifest.get('live_workers', {}).get('files', {}).items():
+        try:
+            read_live_worker(Path(directory)/name, digest)
+            health[name] = 'verified'
+        except (RuntimeError, OSError):
+            health[name] = 'unavailable'
+    return health
+
+
 def validate_live_transport(value):
     require(type(value) is dict and value.get('profile') == 'q4t-live-transport-v1'
             and value.keys() in ({'profile', 'webrtc_address'},
@@ -685,7 +727,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             embedding_model_dir=None, mcp_policy=None, web_policy=None,
             asr_model_dir=None, asr_limits=None, asr_auxiliary=None,
             tts_model_dir=None, tts_limits=None, tts_base_model_dir=None,
-            sip_trunks_file=None, live_webrtc_address=None):
+            sip_trunks_file=None, live_webrtc_address=None, live_workers_dir=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
@@ -759,7 +801,18 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     regular(acceptance)
     require(sha(acceptance) == metadata['acceptance_decision_sha256'],
             'acceptance receipt mismatch')
-    accepted_release(metadata, read(acceptance))
+    decision = read(acceptance)
+    accepted_release(metadata, decision)
+    workers = None
+    supports_workers = metadata.get('observed_configuration', {}).get('live_worker_profile') == 'q4t-live-workers-v1'
+    if supports_workers:
+        workers = dict(profile='q4t-live-workers-v1', files={})
+    images = {}
+    if live_workers_dir is not None:
+        require(supports_workers, 'accepted engine lacks pinned worker launch support')
+        workers = accepted_live_workers(decision, metadata['binary_sha256'])
+        for name, digest in workers['files'].items():
+            images[name] = read_live_worker(Path(live_workers_dir)/name, digest)
     protocol = metadata['chat_protocol']['protocol_sha256']
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
@@ -815,6 +868,10 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     require({'config.json', 'tokenizer.json', 'tokenizer_config.json'} <=
             model_files.keys(), 'model metadata incomplete')
     target = private_directory(output, repository)
+    for name, image in images.items():
+        with (target/name).open('xb') as stream:
+            stream.write(image)
+        (target/name).chmod(0o500)
     for source, name in zip((binary, release, cache, acceptance), FILES):
         shutil.copyfile(source, target/name)
         os.chmod(target/name, 0o500 if name == 'q4t' else 0o400)
@@ -874,6 +931,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},
         weight_shards_rehashed=False, managed_service_accepted=False)
+    if workers is not None:
+        manifest['live_workers'] = workers
     if live is not None:
         manifest['live_transport'] = live
     if access_binding is not None:
@@ -1055,7 +1114,15 @@ def verify(package, digest):
                               voice_registration='native_tts_base' in config)
     check_tts_declaration(metadata, config.get('native_tts'),
                           config.get('native_tts_base'), config.get('native_asr'))
-    accepted_release(metadata, read(package/'acceptance.json'))
+    decision = read(package/'acceptance.json')
+    accepted_release(metadata, decision)
+    if 'live_workers' in manifest:
+        selection = manifest['live_workers']
+        require(metadata.get('observed_configuration', {}).get('live_worker_profile') ==
+                'q4t-live-workers-v1' and type(selection) is dict, 'invalid managed media selection')
+        if selection != dict(profile='q4t-live-workers-v1', files={}):
+            require(selection == accepted_live_workers(decision, manifest['files']['q4t']),
+                    'packaged media selection differs from release qualification')
     require(metadata['binary_sha256'] == manifest['files']['q4t'] and
             metadata['build_cache_sha256'] == manifest['files']['CMakeCache.txt']
             and metadata['acceptance_decision_sha256'] ==
@@ -1201,6 +1268,10 @@ def check_media_declaration(metadata, profile):
 
 def live_transport_args(manifest):
     args = []
+    if 'live_workers' in manifest:
+        files = manifest['live_workers']['files']
+        pins = ','.join(files[name] for name in LIVE_WORKERS) if files else 'none'
+        args += ['--live-worker-sha256', pins]
     if 'live_transport' in manifest:
         live = manifest['live_transport']
         args += ['--live-webrtc-address', live['webrtc_address']]

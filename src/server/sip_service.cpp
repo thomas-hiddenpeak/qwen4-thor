@@ -198,12 +198,13 @@ class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
   }
 
   bool Start(Config* c, const std::filesystem::path& engine,
-             const std::function<bool(std::string_view)>& current_scope) {
+             const std::function<bool(std::string_view)>& current_scope,
+             const std::string& worker_sha256) {
     scope_ = c->scope;
     media_local_ = c->media_local;
     media_peer_ = c->media_peer;
     current_scope_ = current_scope;
-    if (!current_scope_(scope_)) return false;
+    if (!current_scope_(scope_) || worker_sha256 == "none") return false;
     std::vector<std::string> args{"3",      c->ip,      c->port,
                                   c->certs, c->subject, scope_};
     if (!c->webhook.empty()) {
@@ -216,8 +217,13 @@ class SipService::Trunk : public std::enable_shared_from_this<Trunk> {
       realtime_ = c->realtime;
     }
     CryptoWipe(&c->webhook);
-    if (!signal_.Start(engine.parent_path() / "q4t-live-sip", std::move(args),
-                       publisher_.Fd()))
+    auto program = engine.parent_path() / "q4t-live-sip";
+    if (!worker_sha256.empty()) {
+      program = engine;
+      args.insert(args.begin(), {"--live-worker-exec", "q4t-live-sip",
+                                 worker_sha256});
+    }
+    if (!signal_.Start(program, std::move(args), publisher_.Fd()))
       return false;
     publisher_.CloseChannel();
     if (!signal_.Ready("READY " + c->port)) return false;
@@ -639,9 +645,10 @@ void SipService::Stop() {
 
 void SipService::Start(const std::string& config,
                        std::function<bool(std::string_view)> current_scope,
-                       const std::string& expected_sha256) {
+                       const std::string& expected_sha256,
+                       const std::string& worker_sha256) {
   if (config.empty()) return;
-  auto run = [this, config, expected_sha256,
+  auto run = [this, config, expected_sha256, worker_sha256,
               current_scope = std::move(current_scope)](std::stop_token stop) {
     try {
       std::error_code ec;
@@ -661,7 +668,7 @@ void SipService::Start(const std::string& config,
           std::lock_guard lock(mutex_);
           trunks_.push_back(trunk);
         }
-        if (!trunk->Start(&entry, engine, current_scope)) {
+        if (!trunk->Start(&entry, engine, current_scope, worker_sha256)) {
           ++activation_failures_;
           std::lock_guard lock(mutex_);
           std::erase(trunks_, trunk);

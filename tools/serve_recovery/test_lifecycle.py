@@ -178,6 +178,63 @@ class NativeEntryTests(unittest.TestCase):
         self.assertFalse(value['model_actions']);self.assertFalse(value['state_checked'])
         self.assertTrue((Path(receipt['package'])/'engine/licenses/openai-node/LICENSE').is_file())
 
+    def test_selected_workers_execute_only_the_qualified_image(self):
+        args = self.setup_inputs()
+        binary = args[args.index('--binary')+1]
+        release = args[args.index('--release')+1]
+        metadata = engine.read(release)
+        conf = metadata['observed_configuration']
+        conf['live_worker_profile'] = 'q4t-live-workers-v1'
+        decl = metadata['release_declarations']
+        path = Path(decl['directory'])/'configuration.json'
+        engine.save(path, conf)
+        decl['files'][path.name] = engine.sha(path)
+        directory = self.root/'installed'
+        directory.mkdir()
+        for name in engine.LIVE_WORKERS:
+            shutil.copy2('/usr/bin/true', directory/name)
+        files = {name:engine.sha(directory/name) for name in engine.LIVE_WORKERS}
+        decision = Path(metadata['acceptance_decision'])
+        receipt = engine.read(decision)
+        selection = dict(profile='q4t-live-workers-v1', engine_sha256=engine.sha(binary),
+                         files=files)
+        receipt['live_workers'] = selection
+        engine.save(decision, receipt)
+        metadata['acceptance_decision_sha256'] = engine.sha(decision)
+        engine.save(release, metadata)
+
+        with self.assertRaisesRegex(RuntimeError, 'qualification with this engine'):
+            engine.accepted_live_workers(receipt, '0'*64)
+        result, _ = self.prepare(self.root/'opt-out', args=args)
+        package = Path(result['package'])
+        inner = engine.read(package/'engine/manifest.json')
+        self.assertEqual(engine.live_transport_args(inner), ['--live-worker-sha256', 'none'])
+        result, _ = self.prepare(self.root/'selected', args=args, extra=('--live-workers-dir', directory))
+        package = Path(result['package'])
+        entry = package/'engine/q4t'
+        inner = engine.read(package/'engine/manifest.json')
+        self.assertEqual(inner['live_workers'], selection)
+        self.assertEqual(engine.live_transport_args(inner),
+                         ['--live-worker-sha256', ','.join(files[n] for n in engine.LIVE_WORKERS)])
+        def launch(name):
+            return subprocess.run([entry, '--live-worker-exec', name, files[name], '3'],
+                                  capture_output=True, timeout=5).returncode
+        for name in files:
+            self.assertEqual(launch(name), 0)
+        changed, absent, link = engine.LIVE_WORKERS
+        (entry.parent/changed).chmod(0o700)
+        with (entry.parent/changed).open('ab') as stream:
+            stream.write(b'unqualified')
+        (entry.parent/absent).unlink()
+        (entry.parent/link).unlink()
+        (entry.parent/link).symlink_to(directory/link)
+        for name in files:
+            self.assertNotEqual(launch(name), 0)
+        status = json.loads(self.invoke(entry, 'check', '--package', package,
+                            '--manifest-sha256', result['manifest_sha256']).stdout)
+        self.assertTrue(status['package_verified'])
+        self.assertEqual(status['live_worker_files'], dict.fromkeys(files, 'unavailable'))
+
     def test_live_transport_is_pinned_and_optional_during_service_check(self):
         args = self.setup_inputs()
         path = self.root/'private-trunks.json'

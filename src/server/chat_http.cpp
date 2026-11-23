@@ -194,7 +194,7 @@ Status ChatServer::Run() {
     return !stop_requested_.load() && policy &&
            std::any_of(policy->clients.begin(), policy->clients.end(),
                        [&](const auto& client) { return client.id == scope; });
-  }, sip_trunks_sha256_);
+  }, sip_trunks_sha256_, live_worker_pins_.sip);
   detail::ServeFaultPoint("connection.before_publish");
   operations_listen_fd_.store(operations_fd);
   listen_fd_.store(listen_fd);

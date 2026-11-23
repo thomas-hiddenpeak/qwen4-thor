@@ -10455,8 +10455,8 @@
       }
     }
   ],
-  "next_task": "Implement Realtime WebRTC call creation and scoped client secrets, investigate the observed structured tool failure and continue remaining Serve delivery.",
-  "next": "将三个安装后媒体程序身份绑定到托管包，验证主轻配置与恢复，继续旧式 nginx 独立鉴权和可回退发行。托管中继配置摘要已通过实际 Chat 故障隔离短验。默认 rev426。",
+  "next_task": "Qualify Live primary/light managed profiles, service recovery and rollback; complete standalone optional nginx credential compatibility and remaining delivery.",
+  "next": "将已验托管媒体机制纳入实际主轻配置、组合恢复和可回退发行，完成可选旧式 nginx 的临时凭据兼容。默认 rev426。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -16349,6 +16349,7 @@
     "realtime_named_tool_enum_padding_evidence": "evidence/serve-tool-enum-padding-20261123/README.md",
     "media_worker_install_evidence": "evidence/serve-live-worker-install-20261123/README.md",
     "recording_recovery_prepare_evidence": "evidence/serve-recovery-recording-option-20261123/README.md",
-    "managed_trunk_binding_evidence": "docs/evidence/serve-managed-trunk-binding-20261123/"
+    "managed_trunk_binding_evidence": "docs/evidence/serve-managed-trunk-binding-20261123/",
+    "managed_worker_binding_evidence": "evidence/serve-managed-worker-binding-20261123/README.md"
   }
 }

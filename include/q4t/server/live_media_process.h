@@ -19,7 +19,8 @@ class LiveMediaProcess {
   ObjectReply Negotiate(std::string_view offer, const std::string& address,
                         const std::function<bool()>& cancelled,
                         std::string* answer,
-                        const std::string* sip_peer = nullptr);
+                        const std::string* sip_peer = nullptr,
+                        const std::string& worker_sha256 = {});
   bool Send(char type, std::string_view payload);
   bool Drain(std::stop_token stop);
   bool ActivateSip(const std::function<bool()>& cancelled);

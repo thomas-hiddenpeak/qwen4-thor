@@ -53,6 +53,8 @@ def compatible(first, second):
     a, b = first['engine'], second['engine']
     ledger.require(a['model_dir'] == b['model_dir'] and a['settings'] == b['settings'],
                    'automatic recovery would change application settings or capacity')
+    ledger.require(a.get('live_workers', {}).get('files', {}) == b.get('live_workers', {}).get('files', {}),
+                   'automatic recovery would change qualified media workers')
     ledger.require(a.get('live_transport') == b.get('live_transport'),
                    'automatic recovery would change Live transport authority')
     # These private authorities live outside settings. Identical model/profile

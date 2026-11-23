@@ -73,6 +73,8 @@ def check_target(current, target):
     ledger.require(old_core['model_dir'] == new_core['model_dir'] and
         all(old_core['settings'].get(k) == new_core['settings'].get(k)
             for k in ('application_state', 'model_names')), 'deployment application identity changed')
+    if old_core.get('live_workers', {}).get('files'):
+        ledger.require(new_core.get('live_workers', {}).get('files'), 'deployment would remove qualified media workers')
     embedding = old_core['settings'].get('native_embedding')
     if embedding is not None:
         selected = new_core['settings'].get('native_embedding', {})

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+托管包已支持选配三个安装后的媒体程序，按引擎与发行验收记录绑定 SHA-256。真实 SDK 使用被改变的 WebRTC 程序收到 503，原模型的 Chat 返回 42；放回合格文件后，同一模型上新会话收到 201 并完成数据通道开关。信令与 RTP 的固定身份 CPU 短验也已通过。继续正式主轻组合的封包、恢复和回退。[验证记录](evidence/serve-managed-worker-binding-20261123/README.md)
+
 托管服务可选配 WebRTC 本机地址和 SIP 中继配置。实际引擎在封包时读取私有文件，启动及恢复时对读取到的同一批字节核验 SHA-256。严格 GPU 租约内，替换为另一份语法有效的中继配置后，SIP 报告一次激活失败，同一模型仍通过 Chat 返回 42。六项 CPU 检查覆盖从 CLI 封包、外部文件消失、非法地址到自动回退授权边界。继续媒体程序身份与主轻恢复。[验证记录](evidence/serve-managed-trunk-binding-20261123/)
 
 原生 `q4t service prepare` 已补齐 Live 录制开关，并修复管理工具快照缺少原生来源、无法首次封包的问题。实际 CLI 的首次封包、父包生成子包、启用或省略录制、来源不符拒绝，以及离线回退共 11 项检查通过。继续媒体程序身份绑定、可选中继配置和主轻恢复，默认 rev426。[封包及回退](evidence/serve-recovery-recording-option-20261123/README.md)

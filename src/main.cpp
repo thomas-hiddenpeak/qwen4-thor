@@ -949,6 +949,8 @@ int main(int argc, char** argv) {
   if (tunnel_agent >= 0) return tunnel_agent;
   if (argc > 1 && std::strcmp(argv[1], "mcp-policy-check") == 0)
     return q4t::server::RunMcpDeploymentPolicyCheck(argc, argv);
+  if (argc > 1 && std::strcmp(argv[1], "--live-worker-exec") == 0)
+    return q4t::server::RunPinnedLiveWorker(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "live-transport-check") == 0)
     return q4t::server::RunLiveTransportCheck(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "web-policy-check") == 0)

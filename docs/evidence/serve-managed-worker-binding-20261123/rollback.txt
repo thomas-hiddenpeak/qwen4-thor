@@ -1,0 +1,6 @@
+test_sealed_authority_cannot_change_or_disappear_on_automatic_recovery (tools.serve_recovery.test_mcp_recovery_contract.PrivatePolicyRecoveryTests.test_sealed_authority_cannot_change_or_disappear_on_automatic_recovery) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.531s
+
+OK

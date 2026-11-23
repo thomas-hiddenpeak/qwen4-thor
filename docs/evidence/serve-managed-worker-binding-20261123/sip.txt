@@ -1,0 +1,8 @@
+test_call_answer_ack_secure_audio_and_carrier_hangup (tools.serve_live.test_sip_dialog.DialogTest.test_call_answer_ack_secure_audio_and_carrier_hangup) ... /home/rm01/models/dev/qwen4-thor/tools/serve_live/test_sip_media.py:65: DeprecationWarning: 'audioop' is deprecated and slated for removal in Python 3.13
+  import audioop
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.052s
+
+OK

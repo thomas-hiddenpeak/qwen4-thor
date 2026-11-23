@@ -473,6 +473,7 @@ class ChatServer {
   bool live_recordings_ = false;
   std::string sip_trunks_file_;
   std::string sip_trunks_sha256_;
+  LiveWorkerPins live_worker_pins_;
   SipService sip_service_;
   ApplicationOwner<RealtimeTraceStore> realtime_traces_;
   RealtimeTraceStoreOptions realtime_trace_options_;
