@@ -45,8 +45,26 @@ assert.deepEqual(updated.testing_criteria, created.testing_criteria);
 const listing = await request('list', owner.evals.list({order_by: 'updated_at', order: 'desc', limit: 10}), 200);
 assert.ok(listing.data.some(row => row.id === path && row.name === updated.name));
 await assert.rejects(peer.evals.delete(path), err => err.status === 404);
+let device;
+if (plan.model) {
+  const criteria = updated.testing_criteria[0];
+  const field = criteria.input.match(/^\{\{item\.decision\.counts\.(\w+)\}\}$/)?.[1];
+  assert.ok(Object.hasOwn(decision.counts, field));
+  const completed = await owner.chat.completions.create({model: plan.model,
+    temperature: 0, max_tokens: 64, reasoning_effort: 'none', messages: [
+      {role: 'user', content: 'Read this JSON record and return just the integer value of counts.' +
+        field + '. Record: ' + JSON.stringify(decision)}]});
+  const actual = completed.choices[0].message.content.trim();
+  assert.equal(actual, String(decision.counts[field]));
+  const independent = await peer.chat.completions.create({model: plan.model,
+    temperature: 0, max_tokens: 32, reasoning_effort: 'none',
+    messages: [{role: 'user', content: 'Return only the decimal answer to 6 times 7.'}]});
+  const peerAnswer = independent.choices[0].message.content.trim();
+  assert.equal(peerAnswer, '42');
+  device = {criterion: criteria.name, field, answer: actual, independent_chat: peerAnswer};
+}
 const deleted = await request('delete', owner.evals.delete(path), 200);
 assert.equal(deleted.eval_id, path);
 assert.equal(deleted.deleted, true);
 await assert.rejects(owner.evals.retrieve(path), err => err.status === 404);
-process.stdout.write(JSON.stringify({sdk: version, calls, cross_project: 404, deleted_read: 404}));
+process.stdout.write(JSON.stringify({sdk: version, calls, cross_project: 404, deleted_read: 404, device}));

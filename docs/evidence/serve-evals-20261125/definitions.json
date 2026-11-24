@@ -63,5 +63,37 @@
       "evals-optional-routes-cpu.log": "e11f479acb9a6444ea690210cb068d4ae8f1d1d9f5edfb18c20cd386e6aee16b",
       "evals-inventory-merged-reviewed.json": "a84f34fd1d60fe637345b0e28d85cafb562a3f5d409eb159c8c598ad89a3781a"
     }
+  },
+  "native_tls_device": {
+    "source": "d596a4e7e",
+    "engine_sha256": "73585ed507bc23f7d349faafc0e1781a7bbce088370a01cc48d484636e61b346",
+    "sdk_driver_sha256": "9c7c182aac880b87f84dff9031f6cbd916492bb5ec4de5519c82b50c1e012f73",
+    "independent_official_wire_validation": 5,
+    "statuses": {
+      "create": 201,
+      "retrieve": 200,
+      "update": 200,
+      "list": 200,
+      "delete": 200
+    },
+    "cross_project": 404,
+    "deleted_read": 404,
+    "model_business": {
+      "criterion": "Required paths",
+      "field": "required_inference_or_application_service",
+      "answer": "157",
+      "independent_chat": "42"
+    },
+    "model_starts": 1,
+    "seconds": 35.782,
+    "unchanged_stopped_default": true,
+    "gpu_lease": "COMPLETED",
+    "raw_sha256": {
+      "evals-device-business-01/plan.json": "2ed9510f6d181323a282c1c883d1cbdd6102fd5abaf8bfe5891c0b80489df1ef",
+      "evals-device-business-01/create/sdk-result.json": "4c9228305ee4fc01ea8571b3ed8cf61f36e9a7010f1a32bc84d0e16877b4c495",
+      "evals-device-business-01/result.json": "0cff4750d18b0f9aea2395c43ca6715f3113a6d8cd79a4dd58b84d454e506b56",
+      "evals-device-lease-01/exit.json": "00350cfabb3556e097225ea92263e36328eb20b547c4795ae919bf0e7c0e0314",
+      "evals_device_business.py": "394df21eeaa94b38fe0458bf94250f7169dc7f2e2aad149731073e41f25f0800"
+    }
   }
 }

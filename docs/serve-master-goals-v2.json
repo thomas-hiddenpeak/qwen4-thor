@@ -5716,7 +5716,7 @@
       "eval_definitions_20261125": {
         "evidence": "evidence/serve-evals-20261125/definitions.json",
         "methods": 5,
-        "stage": "cpu_sdk_passed",
+        "stage": "native_tls_sdk_device_passed",
         "run_and_output_methods_open": 7,
         "issued": false
       }
@@ -10182,7 +10182,7 @@
       "eval_definitions_20261125": {
         "evidence": "evidence/serve-evals-20261125/definitions.json",
         "methods": 5,
-        "stage": "cpu_sdk_passed",
+        "stage": "native_tls_sdk_device_passed",
         "run_and_output_methods_open": 7,
         "issued": false
       },
