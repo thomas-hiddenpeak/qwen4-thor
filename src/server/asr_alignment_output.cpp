@@ -179,7 +179,9 @@ Status AlignedAsrSubtitle(std::string_view text, int64_t duration_ms,
                           std::span<const audio::AlignerWord> words,
                           const audio::AlignerTimes& times, bool vtt,
                           std::string* out, int64_t origin_ms, size_t first_cue,
-                          bool header, size_t* cue_count) {
+                          bool header, size_t* cue_count,
+                          const std::function<Status(std::string_view,
+                                                     std::string*)>& translate) {
   if (auto s = Validate(text, duration_ms, words, times, out); !s) return s;
   if (origin_ms < 0 || origin_ms > 600000 - duration_ms || !first_cue ||
       first_cue > 65536)
@@ -222,11 +224,16 @@ Status AlignedAsrSubtitle(std::string_view text, int64_t duration_ms,
   std::string result = vtt && header ? "WEBVTT\n\n" : "";
   for (size_t i = 0; i < cues.size(); ++i) {
     const auto& cue = cues[i];
+    auto slice = text.substr(cue.source_begin, cue.source_end - cue.source_begin);
+    std::string translated;
+    if (translate) {
+      if (auto status = translate(slice, &translated); !status) return status;
+      slice = translated;
+    }
     result += std::to_string(i + first_cue) + '\n' +
               Stamp(origin_ms + times.fixed_ms[cue.first * 2], vtt) + " --> " +
               Stamp(origin_ms + times.fixed_ms[cue.end * 2 - 1], vtt) + '\n' +
-              SubtitleText(text.substr(cue.source_begin,
-                                       cue.source_end - cue.source_begin)) +
+              SubtitleText(slice) +
               "\n\n";
   }
   *out = std::move(result);

@@ -14,6 +14,20 @@ EVIDENCE = ROOT/'docs/evidence/serve-asr-http-20261117/service-http-05'
 
 
 class TranscriptionsContract(unittest.TestCase):
+    def test_translation_request_and_five_success_formats(self):
+        request = dict(file='binary', model='whisper-1', prompt='Formal English')
+        for fmt in ('json', 'text', 'srt', 'verbose_json', 'vtt'):
+            self.assertEqual(errors(dict(request, response_format=fmt), 'translation_create'), [])
+        for extra in ({'stream':True}, {'language':'en'}, {'response_format':'diarized_json'}):
+            self.assertTrue(errors(dict(request, **extra), 'translation_create'))
+        self.assertEqual(errors(dict(text='Hello',language='english',duration=1.25),
+                                'translation_verbose_response'), [])
+        self.assertTrue(errors(dict(text='Hello',language='Chinese',duration=1.25),
+                               'translation_verbose_response'))
+        op = build_contract.openapi()['paths']['/v1/audio/translations']['post']
+        self.assertEqual(set(op['responses']['200']['content']),
+                         {'application/json','text/plain','text/vtt','application/x-subrip'})
+
     def test_multipart_shapes_and_cross_field_constraints(self):
         base = dict(file='binary', model='qwen3-asr-0.6b')
         for extra in [{}, dict(stream=True, include=['logprobs']),

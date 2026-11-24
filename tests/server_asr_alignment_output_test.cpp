@@ -31,6 +31,32 @@ q4t::io::Json Json(const std::string& raw) {
 }
 }  // namespace
 
+Q4T_TEST(audio_translation_subtitles_keep_source_edges_and_atomic_failure) {
+  const std::string source = "甲。乙。";
+  const auto words = Words(source, {"甲", "乙"});
+  const auto times = Times({100, 380, 700, 950});
+  std::string out;
+  size_t calls = 0;
+  auto translator = [&](std::string_view cue, std::string* translated) {
+    ++calls;
+    *translated = cue == "甲。" ? "<One>" : "Two";
+    return q4t::Status{};
+  };
+  Q4T_CHECK(AlignedAsrSubtitle(source, 1100, words, times, true, &out, 0, 1,
+                               true, nullptr, translator));
+  Q4T_CHECK(calls == 2 && out.find("00:00:00.100 --> 00:00:00.380") != out.npos &&
+            out.find("00:00:00.700 --> 00:00:00.950") != out.npos &&
+            out.find("&lt;One&gt;") != out.npos && out.find("Two") != out.npos);
+  const auto previous = out;
+  auto failing = [&](std::string_view cue, std::string* translated) {
+    if (cue == "乙。") return q4t::Status::Fail("cancelled");
+    return translator(cue, translated);
+  };
+  Q4T_CHECK(!AlignedAsrSubtitle(source, 1100, words, times, false, &out, 0, 1,
+                                true, nullptr, failing) && out == previous);
+  return true;
+}
+
 Q4T_TEST(aligned_asr_words_keep_full_text_and_actual_duration) {
   const std::string source = "你好，Thor！";
   const auto words = Words(source, {"你", "好", "Thor"});

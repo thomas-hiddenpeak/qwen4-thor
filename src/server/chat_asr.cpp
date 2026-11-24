@@ -10,7 +10,7 @@
 
 namespace q4t::server {
 void ChatServer::HandleTranscription(int fd, std::string_view content_type,
-                                     std::string_view body) {
+                                     std::string_view body, bool translation) {
   using Clock = std::chrono::steady_clock;
   auto* http = detail::HttpResponseContext::Current(fd);
   metrics_.requests_total.fetch_add(1);
@@ -51,24 +51,29 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
     }
     AsrRequest request;
     ChatPlanError error;
-    auto status = ParseAsrRequest(content_type, body, &request, &error);
+    auto status = ParseAsrRequest(content_type, body, &request, &error, translation);
     if (!status) {
       detail::SendError(fd, error.http_status, status.message(), {}, error.code,
                         error.param);
       return;
     }
-    if (asr_model_dir_.empty() || request.model != audio::AsrConfig::kModelId) {
+    const bool known_model = request.model == audio::AsrConfig::kModelId ||
+                             (translation && request.model == "whisper-1");
+    if (asr_model_dir_.empty() || !known_model) {
       detail::SendError(fd, 404, "Transcription model is not configured", {},
                         "model_not_found", "model");
       return;
     }
+    // Translation guidance applies to English output, not source recognition.
+    std::string guidance;
+    if (translation) guidance.swap(request.prompt);
     const bool diarized = request.format == AsrFormat::kDiarizedJson;
     const bool separated = diarized && !separator_model_dir_.empty();
     const bool chunked =
         diarized || request.chunking.mode != AsrChunking::Mode::kSingle;
     const bool aligned = diarized || request.format == AsrFormat::kSrt ||
                          request.format == AsrFormat::kVtt ||
-                         request.format == AsrFormat::kVerboseJson;
+                         (request.format == AsrFormat::kVerboseJson && !translation);
     const auto id = detail::NewRequestId("asr_");
     control = requests_.Register(
         id, "", started + std::chrono::milliseconds(request_deadline_ms_),
@@ -243,6 +248,7 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
     const auto text = [&]() -> const std::string& {
       return separated ? overlapping.Text() : diarization.Text();
     };
+    std::string response;
     for (size_t index = 0; index < chunks.size(); ++index) {
       const auto& chunk = chunks[index].chunk;
       const auto track = chunks[index].track;
@@ -322,12 +328,13 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
             fd, request, features, (chunk.end_sample - chunk.begin_sample) / 16,
             transcript, control, diagnostic, rate, http->Usage(), &part,
             chunk.begin_sample / 16, output.CueCount() + 1, index == 0, &cues,
-            diarized ? &words : nullptr, diarized ? &times : nullptr);
+            (diarized || translation) ? &words : nullptr,
+            (diarized || translation) ? &times : nullptr);
         if (!reply.ok()) {
           send_failure(reply);
           return;
         }
-      } else {
+      } else if (!translation) {
         const auto actual = http->Usage().Total();
         status = actual ? transcript.ResultJson(*actual, prompt.audio_tokens,
                                                 false, &part)
@@ -336,6 +343,17 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
           detail::SendError(fd, 502, status.message(), {}, "asr_usage_invalid");
           return;
         }
+      }
+      if (translation) {
+        diagnostic.Stage("translation");
+        reply = TranslateTranscript(fd, request, guidance, transcript,
+                                    pcm.samples.size() / 16, output_budget,
+                                    words, times, control, rate, &response);
+        if (!reply.ok()) {
+          send_failure(reply);
+          return;
+        }
+        continue;
       }
       const size_t first_segment = segments().size();
       const bool leading_space = !text().empty();
@@ -403,18 +421,19 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
         return;
       }
     }
-    std::string response;
-    const auto actual = http->Usage().Total();
-    status = actual
-                 ? (separated
-                        ? overlapping.Finish(*actual, request.stream, &response)
-                    : diarized
-                        ? diarization.Finish(*actual, request.stream, &response)
-                        : output.Finish(*actual, &response))
-                 : Status::Fail("ASR usage unavailable");
-    if (!status) {
-      detail::SendError(fd, 502, status.message(), {}, "asr_usage_invalid");
-      return;
+    if (!translation) {
+      const auto actual = http->Usage().Total();
+      status = actual
+                   ? (separated
+                          ? overlapping.Finish(*actual, request.stream, &response)
+                      : diarized
+                          ? diarization.Finish(*actual, request.stream, &response)
+                          : output.Finish(*actual, &response))
+                   : Status::Fail("ASR usage unavailable");
+      if (!status) {
+        detail::SendError(fd, 502, status.message(), {}, "asr_usage_invalid");
+        return;
+      }
     }
     if (cancelled() || !control->Finish()) {
       detail::SendError(fd, 409, "Transcription cancelled", {},

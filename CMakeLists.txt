@@ -390,6 +390,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/asr_alignment_output.cpp
   src/server/asr_chunk_output.cpp
   src/server/chat_asr_alignment.cpp
+  src/server/chat_audio_translation.cpp
   src/server/chat_asr.cpp
   src/server/chat_realtime.cpp
   src/server/chat_realtime_secrets.cpp
@@ -634,6 +635,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/realtime_duplex_input.cpp
   src/server/realtime_conversation_input.cpp
   src/server/realtime_legacy_credentials.cpp
+  src/server/realtime_legacy_events.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_session_pump.cpp
@@ -1112,6 +1114,7 @@ if(Q4T_BUILD_TESTS)
     src/server/realtime_duplex_input.cpp
     src/server/realtime_conversation_input.cpp
     src/server/realtime_legacy_credentials.cpp
+    src/server/realtime_legacy_events.cpp
     src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_session_pump.cpp

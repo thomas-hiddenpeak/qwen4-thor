@@ -347,7 +347,8 @@ inline bool IsVoiceMetadata(std::string_view method, std::string_view target) {
   return VoiceMethodAllowed(method, target) && !IsVoiceCreation(method, target);
 }
 inline bool IsTranscriptionTarget(std::string_view target) {
-  return target.substr(0, target.find('?')) == "/v1/audio/transcriptions";
+  const auto path = target.substr(0, target.find('?'));
+  return path == "/v1/audio/transcriptions" || path == "/v1/audio/translations";
 }
 inline bool IsBinaryUpload(std::string_view method, std::string_view target) {
   const auto path = target.substr(0, target.find('?'));

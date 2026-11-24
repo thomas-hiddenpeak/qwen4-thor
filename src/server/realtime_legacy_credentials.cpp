@@ -34,7 +34,9 @@ ObjectReply AudioFormat(const Json& body, std::string_view field, Json* audio) {
   return {};
 }
 
-void FlatFormat(const Json& audio, std::string_view key, Json* result) {
+}  // namespace
+
+void CopyLegacyRealtimeAudioFormat(const Json& audio, std::string_view key, Json* result) {
   const auto* format = audio.Find("format");
   if (!format) return;
   const auto type = format->GetString("type");
@@ -42,7 +44,6 @@ void FlatFormat(const Json& audio, std::string_view key, Json* result) {
   if (type == "audio/pcmu") Set(result, std::string(key), String("g711_ulaw"));
   if (type == "audio/pcma") Set(result, std::string(key), String("g711_alaw"));
 }
-}  // namespace
 
 ObjectReply LegacyRealtimeExpiry(const Json& body, std::string_view field,
                                  Json* expiry) {
@@ -137,13 +138,13 @@ Json LegacyConversationResource(const Json& session, const Json* requested_modal
   }
   if (const auto* audio = session.Find("audio")) {
     if (const auto* in = audio->Find("input")) {
-      FlatFormat(*in, "input_audio_format", &flat);
+      CopyLegacyRealtimeAudioFormat(*in, "input_audio_format", &flat);
       Copy(*in, "transcription", &flat, "input_audio_transcription");
       Copy(*in, "noise_reduction", &flat, "input_audio_noise_reduction");
       Copy(*in, "turn_detection", &flat, "turn_detection");
     }
     if (const auto* out = audio->Find("output")) {
-      FlatFormat(*out, "output_audio_format", &flat);
+      CopyLegacyRealtimeAudioFormat(*out, "output_audio_format", &flat);
       Copy(*out, "voice", &flat, "voice");
       Copy(*out, "speed", &flat, "speed");
     }

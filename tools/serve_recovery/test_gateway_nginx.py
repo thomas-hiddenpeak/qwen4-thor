@@ -115,7 +115,7 @@ class Stack:
                 return (any(path == root or path.startswith(root+'/')
                             for root in roots) or
                         (method == 'POST' and
-                         path in ('/v1/audio/transcriptions', '/v1/audio/speech', '/v1/decisions')) or
+                         path in ('/v1/audio/transcriptions', '/v1/audio/translations', '/v1/audio/speech', '/v1/decisions')) or
                         path.startswith('/v1/chat/completions/') or
                         (method != 'POST' and path == '/v1/chat/completions'))
             def do_GET(self):
@@ -450,7 +450,7 @@ class NginxTests(unittest.TestCase):
             body = '{"cpu_fixture":true}' if method == 'POST' else ''
             content_type = 'application/json'
             if method == 'POST' and (template in (
-                                      '/v1/files', '/v1/audio/transcriptions') or
+                                      '/v1/files', '/v1/audio/transcriptions', '/v1/audio/translations') or
                                       template.endswith('/parts')):
                 content_type = 'multipart/form-data; boundary=cpu-route'
                 body = ('--cpu-route\r\nContent-Disposition: form-data; '

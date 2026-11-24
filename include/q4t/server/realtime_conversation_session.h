@@ -37,6 +37,7 @@ struct RealtimeConversationJob {
   bool native_input = false;
   std::shared_ptr<const RealtimeMcpContext> mcp = {};
   bool mcp_definitions_only = false;
+  std::optional<double> legacy_temperature = std::nullopt;
 };
 struct RealtimeGenerationResult {
   ObjectReply reply;
@@ -46,9 +47,12 @@ struct RealtimeGenerationResult {
   std::optional<RealtimeResponseUsage> usage;
   // Only an actually completed default-context generation may publish a cut.
   std::optional<std::vector<size_t>> retained_input_indices;
+  int planned_output_tokens = 0;
 };
 using RealtimeDeltaSink = std::function<ObjectReply(const ResponseDelta&)>;
 struct RealtimeConversationCallbacks {
+  // Present only when the client negotiated the beta WebSocket dialect.
+  std::optional<double> legacy_wire_temperature = std::nullopt;
   std::function<bool()> interrupted;
   // Session-thread, bounded/pure validation. Do not acknowledge settings that
   // the connected execution owner cannot honor.
@@ -128,7 +132,7 @@ class RealtimeConversationSession {
  private:
   struct Work;
   void ConfigureTracing() noexcept;
-  ObjectReply Emit(io::Json event);
+  ObjectReply Emit(io::Json event, const Work* owner = nullptr);
   bool Flush();
   bool Event(std::string_view type, io::Json fields);
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});
@@ -145,7 +149,8 @@ class RealtimeConversationSession {
   RealtimePromptResolver PromptResolver();
   ObjectReply StartSession(const io::Json* call, io::Json* preview = nullptr);
   ObjectReply ApplySettings(const io::Json& update);
-  bool Settings(const io::Json& update, std::string_view event_id);
+  bool Settings(const io::Json& update, std::string_view event_id,
+                std::optional<double> temperature);
   bool CreateItem(const io::Json& event);
   bool ItemCommand(const io::Json& event, bool erase);
   bool TruncateItem(const io::Json& event);
@@ -153,7 +158,8 @@ class RealtimeConversationSession {
                            std::string_view event_id);
   ObjectReply ValidateSpeech(const RealtimeSpeechOptions& speech) const;
   bool CreateResponse(const io::Json& event,
-                      RealtimeInputCommit* automatic = nullptr);
+                      RealtimeInputCommit* automatic = nullptr,
+                      std::optional<double> temperature = std::nullopt);
   void StartWork(Work& work);
   void AdvanceWork(Work& work);
   bool InputReady();
@@ -169,6 +175,7 @@ class RealtimeConversationSession {
   const SessionEventOutput output_;
   const RealtimeConversationCallbacks callbacks_;
   const size_t message_bytes_;
+  std::optional<double> legacy_temperature_;
   RealtimeConversation history_;
   RealtimeSpeechHistory speech_;
   std::unique_ptr<RealtimeConversationInput> input_;

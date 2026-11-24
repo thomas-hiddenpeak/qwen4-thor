@@ -1,0 +1,249 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 458,
+    "version_revision": 158,
+    "profile_revision": 48,
+    "previous_profile_revision": 47,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "690b82da5791abcd0b26318d6dfb875fb1791f299f1876f746b189ea87f5ae76",
+    "fallback": "6ed31afc54a4f9f8f43b1aba728db30454ef3efd1b968266b1f594ce3bbf3512",
+    "engine": "c8fe32c16e8e12335e4d05e5830508d3341e3b679feed6ded1648604b7efdacf",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "managed": {
+    "fallback": {
+      "seconds": 171.899,
+      "starts": 2,
+      "receipt": "6ed31afc54a4f9f8f43b1aba728db30454ef3efd1b968266b1f594ce3bbf3512",
+      "parent": "457",
+      "input_tokens": 1821,
+      "dispatch": "failed",
+      "initial_error": {
+        "code": "invalid_request",
+        "message": "Internal step exceeds cumulative client input limit"
+      },
+      "child_turns": 2,
+      "other": 404,
+      "release_lookup": "publication_revision = 442\nUTC = 2026-11-24T00:16Z",
+      "chat": "42",
+      "cleanup": true,
+      "sources": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-subagent-fallback-01/service-acceptance.json",
+          "sha256": "1e2243f2b8c2a4f472170248821219f732dfa0ce6f606ed928802f75aba45e1b"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-subagent-fallback-01/service.release.json",
+          "sha256": "ce80cc7cb376d2eff6dfa1b3647a23c9e14110a98ef20d734488e2a6b1de3e49"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-fallback-business-02/subagent-before.json",
+          "sha256": "1a5e228caf3b328d4b6f5069c7a075e1d9b5112e80bbde7a305d086d4b2732d3"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-fallback-business-02/subagent-after.json",
+          "sha256": "38d3a4e4e2d9ae91461fffb84482c0886f3af5e9a34366214015abd7badb69e8"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-fallback-business-02/managed-tool-resume.json",
+          "sha256": "264cc5ed2ff90d53e2e350e4dd2b65ef6e324b5f6789a323f6682b737335df41"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-fallback-business-02/result.json",
+          "sha256": "77415b3684b18cc1e3e54c93c88cd139ed9f9c679569c38c198cdb38eb9081aa"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-fallback-lease-02/exit.json",
+          "sha256": "34cfa7deaf3398b778978c533abf0b39605c19af4261d76e0a78d6fb85251f19"
+        }
+      ]
+    },
+    "takeover": {
+      "seconds": 198.242,
+      "starts": 2,
+      "receipt": "690b82da5791abcd0b26318d6dfb875fb1791f299f1876f746b189ea87f5ae76",
+      "parent": "457",
+      "input_tokens": 1804,
+      "dispatch": "failed",
+      "initial_error": {
+        "code": "invalid_request",
+        "message": "Internal step exceeds cumulative client input limit"
+      },
+      "child_turns": 2,
+      "other": 404,
+      "release_lookup": "publication_revision = 442\nUTC = 2026-11-24T00:25Z",
+      "chat": "42",
+      "cleanup": true,
+      "sources": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-subagent-primary-01/service-acceptance.json",
+          "sha256": "04b5773d40d7500cfb0888ff58a94c76b5d28ef4ea6aa5575c78d16b6e32316f"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-subagent-primary-01/service.release.json",
+          "sha256": "3e13e1eb6bacb917631f77ee2e136700d1814ed1a4fe7043d70f26eab9bdc20c"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-quota-03/subagent-before.json",
+          "sha256": "8b2277d8ac90366d973f783dbaf9705fc33b53167864d109f3f4568b718f1e51"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-quota-03/subagent-after.json",
+          "sha256": "7295350adffb9a6c1dede1bfe82feb4356a09a4dc261892bd5409049af736002"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-quota-03/managed-tool-resume.json",
+          "sha256": "7d070a330db6a55ec4bf80e53f5e5acfdfb94de4be8aafb7474212e330deb8fe"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-quota-03/result.json",
+          "sha256": "bb616baf148c48c78d088807227e203db0569937b40ad531cd86d434a6b45820"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-takeover-lease-03/exit.json",
+          "sha256": "9602bc8a5a38859d7c2d6f96aee781b5598efbf73f680c4aece8f52aff52838a"
+        }
+      ],
+      "selection": {
+        "selected": "fallback",
+        "probes": 1,
+        "consumed": true,
+        "signal": 6
+      }
+    }
+  },
+  "original_managed_failure": {
+    "status": "FAIL",
+    "reason": "After process replacement the original tool result contained publication_revision 442; sampled output was unrelated to the query and omitted the revision and UTC. It remains a failed business answer.",
+    "temperature": 1,
+    "stored_user_and_tool_history": [
+      "message",
+      "tool_search_call",
+      "tool_search_output",
+      "function_call",
+      "function_call_output"
+    ],
+    "parent": "457",
+    "raw": [
+      {
+        "path": ".q4t-work/serve-responses-agents-20261123/quota-fallback-business-01/state/application-objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_e8238afa970032190c5493b9ebd6cd55.json",
+        "sha256": "9e1020db4c1cfb305c21e3e6212004552d7d8ea46231d1ce780ef948059ccd0f"
+      },
+      {
+        "path": ".q4t-work/serve-responses-agents-20261123/quota-fallback-business-01/managed-tool-resume.stderr",
+        "sha256": "e4f835de013f442d5961b7b9c44fcbbe38c7fa458b9a84f075c4e98a939854c3"
+      },
+      {
+        "path": ".q4t-work/serve-responses-agents-20261123/quota-fallback-business-01/result.json",
+        "sha256": "fbe90cbb75ed377f6a5cb4ffef3e4b4ef938beef6d469e77d8b3d33de08d4b1d"
+      },
+      {
+        "path": ".q4t-work/serve-responses-agents-20261123/quota-fallback-lease-01/exit.json",
+        "sha256": "44cb60e6f4576f04e7b82ef54c10da9b1bc52ff21f8d3e0aafdd0022b5bc93eb"
+      }
+    ],
+    "separate_takeover_attempts": [
+      {
+        "cause": "The isolated fault actor rejected an unexpected test directory prefix before model startup.",
+        "raw": {
+          "path": ".q4t-work/serve-responses-agents-20261123/quota-takeover-business-01/result.json",
+          "sha256": "bf9d8469d2fea8e9b3ed2e068906e28cbf7038e2b650c1d7014f4cc6aa4dd6e8"
+        }
+      },
+      {
+        "cause": "The first primary startup had insufficient available shared DRAM while the host build was running. The guard correctly refused allocation. The readiness check required generation one before injecting gateway loss. The successful case ran after build completion.",
+        "recorded": [
+          {
+            "model": "model-1",
+            "state": "startup_memory_insufficient",
+            "required_bytes": 120783008684,
+            "observed_available_bytes": 120661704704
+          },
+          {
+            "model": "model-2",
+            "state": "admitted",
+            "required_bytes": 120783008684,
+            "observed_available_bytes": 120816680960
+          }
+        ],
+        "raw": {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-quota-02/result.json",
+          "sha256": "1a987d496bfeb83d347c7a843d9eaf0c46617fe5abc424ec87cea5d0e11873a8"
+        }
+      }
+    ]
+  },
+  "operator_handoff": {
+    "source_commit": "c62a73bb6816e9253df67f53d11d284f2d694d5c",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/quota-subagent-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/quota-subagent-primary-01/bundle",
+      "manifest_sha256": "690b82da5791abcd0b26318d6dfb875fb1791f299f1876f746b189ea87f5ae76"
+    },
+    "revision": 458,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/quota-subagent-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "d1beeb50929ac3b2467bcdc68abf992f37805475af29c66a0e98ea86d570acde",
+    "handoff_sha256": "3addfa88f0aec07cc07e5eaae4d30459906d300783035233828567fc4ae4caee",
+    "checked": true,
+    "source_files": 698,
+    "hours_executed": 0
+  },
+  "receipt_sources": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/quota-subagent-maintenance-01/result.json",
+      "sha256": "2b633cd4065cc13993d21fa843721218c8438ada8a7a9a93cd6e1d6bc32973d8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/quota-subagent-maintenance-intents-01/result.json",
+      "sha256": "7123342f437620e6dc652522dbed561851577befbf0b6936d429152d78a298e9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/quota-subagent-delivery/result.json",
+      "sha256": "856a797b137af685ac259a56fd1dcb05e6bfc5ff1d68c7bbf0bd08ab30f722ab"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/quota-subagent-day.json",
+      "sha256": "9a205ba40bce6e0ce0101da326363c8a6817a8ef52fbd07e2836ea2219c01952"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/quota-publication-lease-01/exit.json",
+      "sha256": "b840817ac408538a9b7ba7dfac9e7944e2ad8289f4b16a37295b265744db0732"
+    }
+  ],
+  "capacities": {
+    "path": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json",
+    "sha256": "e4ace020c20a55356136f0ce688ec3b9ecb743bdb8542b69c420480518682146"
+  },
+  "legacy_transcription": {
+    "path": "docs/evidence/serve-realtime-legacy-sessions-20261124/transcription.json",
+    "sha256": "cbedef2eb24ff2f754513115656501f9e99fa6b42977a77f94b6fa869d786c13"
+  },
+  "subagent_queries_main": {
+    "merge": "5c9e5316127d16bf6cd3e1d51a864ec98f0f1349",
+    "head": "6a0590524ccd845aae3f73889402b6960c06e0f3",
+    "checks": [
+      {
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45293241901/job/138107077085",
+        "result": "SUCCESS"
+      },
+      {
+        "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45293235753/job/138107056633",
+        "result": "SUCCESS"
+      }
+    ]
+  },
+  "issued_api_methods": {
+    "declared": 133,
+    "required_methods": 231,
+    "missing_declaration": 98,
+    "exact_success_declarations": 133,
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "issued": "d5d90b170da0b6fd21bc5e727abfb3afac3f00a12af51b5c4dddd0eeabe3e69b"
+    }
+  }
+}

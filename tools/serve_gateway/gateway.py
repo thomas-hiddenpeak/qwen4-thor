@@ -28,6 +28,7 @@ DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
 # These route declarations are shared by standalone and supervised nginx modes.
 APPLICATION_ROUTES = [
     ('POST', '/v1/audio/transcriptions', 'data'),
+    ('POST', '/v1/audio/translations', 'data'),
     ('POST', '/v1/audio/speech', 'data'),
     ('POST', '/v1/decisions', 'data'),
     ('POST', '/v1/audio/voices', 'data'),
@@ -310,8 +311,17 @@ def responses_beta_maps():
     default "";
     "~(^|,)[ \t]*agents=v1[ \t]*(,|$)" agents=v1;
   }
+  map $http_openai_beta $q4t_realtime_header {
+    default "";
+    "~(^|,)[ \t]*realtime=v1[ \t]*(,|$)" realtime=v1;
+  }
+  map $http_sec_websocket_protocol $q4t_realtime_selector {
+    default $q4t_realtime_header;
+    "~(^|,)[ \t]*openai-beta\.realtime-v1[ \t]*(,|$)" realtime=v1;
+  }
   map $uri $q4t_responses_beta {
     default "";
+    /v1/realtime $q4t_realtime_selector;
     ~^/v1/responses(/|$) $q4t_multi_agent;
     ~^/v1/(agents|vaults)(/|$) $q4t_agent_config;
   }'''

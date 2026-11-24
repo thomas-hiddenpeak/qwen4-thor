@@ -2893,7 +2893,8 @@
         "evidence/serve-speech-http-20261118/README.md",
         "evidence/serve-realtime-transcription-business-20261119/README.md",
         "evidence/serve-tool-enum-padding-20261123/README.md",
-        "evidence/serve-native-maintenance-delivery-20261123/README.md"
+        "evidence/serve-native-maintenance-delivery-20261123/README.md",
+        "evidence/serve-audio-translation-20261124/business.json"
       ],
       "release": null,
       "findings": [
@@ -5295,6 +5296,18 @@
       "native_realtime_mcp_main_20261120": {
         "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
         "evidence": "evidence/serve-pr56-merged-20261120/README.md"
+      },
+      "audio_translation_20261124": {
+        "evidence": "evidence/serve-audio-translation-20261124/business.json",
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "release_pending": true,
+        "formats": [
+          "json",
+          "text",
+          "verbose_json",
+          "srt",
+          "vtt"
+        ]
       }
     },
     {
@@ -8358,7 +8371,8 @@
         "evidence/serve-agent-environments-20261124/delivery.json",
         "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
         "evidence/serve-agent-workspaces-20261124/subagent-stream.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -9135,7 +9149,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev456_delivered_remaining_deliveries",
+      "state": "rev458_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9161,7 +9175,8 @@
         "evidence/serve-agent-vaults-20261123/delivery.json",
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
-        "evidence/serve-agent-workspaces-20261124/delivery.json"
+        "evidence/serve-agent-workspaces-20261124/delivery.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -10312,7 +10327,13 @@
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
       "agent_registration_main_20261123": "docs/evidence/serve-agent-registration-20261123/main.json",
       "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json",
-      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json"
+      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json",
+      "subagent_quota_release": {
+        "revision": 458,
+        "fallback_registered": true,
+        "desired": "STOPPED",
+        "evidence": "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
+      }
     },
     {
       "id": "Q03",
@@ -10330,7 +10351,8 @@
         "evidence/serve-native-maintenance-delivery-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/delivery.json",
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
-        "evidence/serve-agent-environments-20261124/delivery.json"
+        "evidence/serve-agent-environments-20261124/delivery.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
       ],
       "release": null,
       "surface_prose_audit": {
@@ -16508,9 +16530,10 @@
     "default_and_registered_failover": "evidence/serve-live-default-20261123/README.md",
     "sideband_metrics_and_soak_delivery": "evidence/serve-live-stability-handoff-20261123/README.md",
     "legacy_transcription_session_issuance": {
-      "status": "candidate_business_pass",
+      "status": "rev458_delivered",
       "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/transcription.json",
-      "remaining_methods": 98
+      "remaining_methods": 98,
+      "release": "docs/evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
     },
     "legacy_conversation_session_issuance": {
       "status": "candidate_business_pass",
@@ -16519,6 +16542,23 @@
         "legacy_beta_websocket_wire",
         "qualified_delivery"
       ]
+    },
+    "legacy_beta_conversation_wire": {
+      "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/beta-wire.json",
+      "status": "CANDIDATE_BUSINESS_PASS",
+      "sdk": "7.47.0",
+      "starts": 1,
+      "answer": "42",
+      "tokens": 109
+    },
+    "legacy_beta_resources": {
+      "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/beta-resources.json",
+      "status": "CANDIDATE_BUSINESS_PASS",
+      "outputs": [
+        "conversation_response_snapshot",
+        "transcription_start_and_update"
+      ],
+      "starts": 1
     }
   },
   "responses_beta_selector_20261123": {
@@ -16755,6 +16795,7 @@
       "identity_and_turn_history_preserved": true
     },
     "recoverable_client_turn_quota": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota.json",
-    "quota_primary_light": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json"
+    "quota_primary_light": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json",
+    "subagent_delivery": "docs/evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
   }
 }

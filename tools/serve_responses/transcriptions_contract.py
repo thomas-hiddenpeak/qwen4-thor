@@ -4,7 +4,9 @@ from pathlib import Path
 
 SDK_FILE = 'src/resources/audio/transcriptions.ts'
 SDK_SOURCES = {SDK_FILE:
-    '8a81d4cb4c975cf027f78b8d86feb2fb39e7860b265433a91ebf13bef9f61d80'}
+    '8a81d4cb4c975cf027f78b8d86feb2fb39e7860b265433a91ebf13bef9f61d80',
+    'src/resources/audio/translations.ts':
+    '1868adba37b8cc402975ad3a51f23ae506520abf4bdfb5314b9ed7656bbc404d'}
 
 
 def definitions():
@@ -89,7 +91,14 @@ def definitions():
         usage=obj(dict(type=dict(const='duration'), seconds=seconds), ['type', 'seconds'])),
         ['text', 'language', 'duration', 'usage'])
     verbose['anyOf'] = [dict(required=['words']), dict(required=['segments'])]
-    return dict(transcription_create=request, transcription_response=response,
+    translation = obj(dict(file=request['properties']['file'], model=request['properties']['model'],
+        prompt=request['properties']['prompt'], temperature=request['properties']['temperature'],
+        response_format=dict(enum=['json','text','srt','verbose_json','vtt'])), ['file','model'])
+    return dict(translation_create=translation,
+        translation_response=obj(dict(text=text), ['text']),
+        translation_verbose_response=obj(dict(text=text, language=dict(const='english'),
+            duration=seconds), ['text','language','duration']),
+        transcription_create=request, transcription_response=response,
         transcription_verbose_response=verbose, transcription_word=word,
         transcription_segment=segment,
         transcription_diarized_response=diarized,
@@ -102,11 +111,11 @@ def definitions():
 
 
 def source_sha(sdk):
-    path = Path(sdk)/'node_modules/openai'/SDK_FILE
-    digest = hashlib.sha256(path.read_bytes()).hexdigest()
-    if digest != SDK_SOURCES[SDK_FILE]:
-        raise ValueError('transcriptions SDK source drift')
-    return digest
+    for name, expected in SDK_SOURCES.items():
+        path = Path(sdk)/'node_modules/openai'/name
+        if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+            raise ValueError('audio SDK source drift: '+name)
+    return SDK_SOURCES[SDK_FILE]
 
 
 def add_openapi(paths, response, error):
@@ -157,3 +166,17 @@ def add_openapi(paths, response, error):
                 offsets='real original sample origin; seek in 10ms feature frames'),
             multipart_arrays='repeated bracket names; nested chunking_strategy bracket fields or JSON object',
             zero_temperature='native confidence policy; not a claim about private provider thresholds')}))
+
+    translated = response(dict(anyOf=[external('translation_response'),
+                                      external('translation_verbose_response')]))
+    for media in ('text/plain', 'text/vtt', 'application/x-subrip'):
+        translated['content'][media] = dict(schema=dict(type='string'))
+    paths['/v1/audio/translations'] = dict(post=dict(
+        operationId='createTranslation',
+        requestBody=dict(required=True, content={'multipart/form-data':dict(
+            schema=external('translation_create'))}),
+        responses={'200':translated,'default':response(error,'Audio translation error')},
+        **{'x-q4t':dict(backend='qwen3-asr-0.6b followed by the resident native Chat model',
+            accepted_model_ids=['whisper-1','qwen3-asr-0.6b'],
+            output_language='english', required_for_subtitles='aligner-model-dir',
+            quota='one request and one cumulative source and translation budget')}))

@@ -1,5 +1,7 @@
 #include "q4t/server/realtime_conversation_session.h"
 
+#include "q4t/server/realtime_legacy_events.h"
+
 #include <algorithm>
 #include <variant>
 
@@ -64,6 +66,7 @@ struct RealtimeConversationSession::Work {
   std::thread worker;
   std::atomic<bool> done{false};
   bool prepared = false;
+  int planned_output_tokens = 0;
   // Native generation may already be Finished while its output is queued.
   // The public response still belongs to this session until response.done.
   bool cancelled_after_generation = false;
@@ -147,6 +150,7 @@ RealtimeConversationSession::RealtimeConversationSession(
       output_(std::move(output)),
       callbacks_(std::move(callbacks)),
       message_bytes_(message_bytes),
+      legacy_temperature_(callbacks_.legacy_wire_temperature),
       history_(id_),
       speech_(id_) {
   if (callbacks_.mcp_import && callbacks_.mcp_call) {
@@ -263,12 +267,23 @@ void RealtimeConversationSession::ConfigureTracing() noexcept {
 
   }
 }
-ObjectReply RealtimeConversationSession::Emit(Json event) {
+ObjectReply RealtimeConversationSession::Emit(Json event, const Work* owner) {
   if (cancelled_ || output_.closed() ||
       (callbacks_.interrupted && callbacks_.interrupted()))
     return object_detail::Error(409, "realtime_connection_closed",
                                 "Realtime connection closed");
   if (trace_) trace_->Observe(event, RealtimeTraceNow());
+  if (legacy_temperature_) {
+    const double sampling = owner ? owner->job.legacy_temperature.value()
+                                  : *legacy_temperature_;
+    const auto voice = owner && owner->speech.enabled
+                           ? std::string_view(owner->speech.chat.speech.voice)
+                           : std::string_view{};
+    if (!EncodeLegacyRealtimeEvent(&event, sampling,
+                                   owner ? owner->planned_output_tokens : 0,
+                                   voice))
+      return {};
+  }
   auto text = OutputJson(event);
   if (text.size() > output_.message_bytes)
     return object_detail::Error(503, "realtime_event_too_large",
@@ -520,9 +535,11 @@ RealtimePromptResolver RealtimeConversationSession::PromptResolver() {
   };
 }
 bool RealtimeConversationSession::Settings(const Json& update,
-                                           std::string_view event_id) {
+                                           std::string_view event_id,
+                                           std::optional<double> temperature) {
   auto reply = ApplySettings(update);
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+  if (temperature) legacy_temperature_ = temperature;
   ConfigureTracing();
   return Event("session.updated", Object({{"session", PublicSettings()}})) &&
          ImportMcp(mcp_selection_);
@@ -766,7 +783,8 @@ ObjectReply RealtimeConversationSession::StoreAudio(
                                        status.message());
 }
 bool RealtimeConversationSession::CreateResponse(
-    const Json& event, RealtimeInputCommit* automatic) {
+    const Json& event, RealtimeInputCommit* automatic,
+    std::optional<double> temperature) {
   const auto event_id = event.GetString("event_id");
   const auto* parameters = event.Find("response");
   Json response = parameters ? *parameters : Object();
@@ -832,6 +850,7 @@ bool RealtimeConversationSession::CreateResponse(
                {},
                in_conversation,
                std::move(selection.prompt)};
+  work->job.legacy_temperature = temperature ? temperature : legacy_temperature_;
   work->job.native_input = bool(input_);
   work->job.mcp = std::move(selection.mcp);
   work->mcp_selection = std::move(mcp_selection);
@@ -892,6 +911,7 @@ bool RealtimeConversationSession::CreateResponse(
     work->prepared = Accepted(reply);
   }
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+  work->planned_output_tokens = reply.value.GetInt("max_output_tokens");
   work->control = callbacks_.acquire(work->job.response_id);
   if (work->control && work->control->id() != work->job.response_id) {
     // A mismatched callback result grants no ownership of another request.
@@ -917,7 +937,8 @@ bool RealtimeConversationSession::CreateResponse(
   if (const auto* metadata = response.Find("metadata"))
     options.metadata = *metadata;
   work->output = std::make_unique<RealtimeResponseOutput>(
-      std::move(options), [this](const Json& value) { return Emit(value); },
+      std::move(options),
+      [this, active](const Json& value) { return Emit(value, active); },
       [this, active](const Json& item, bool begin, bool terminal) {
         return Store(*active, item, begin, terminal);
       },
@@ -1081,6 +1102,11 @@ bool RealtimeConversationSession::Message(WebSocketOpcode opcode,
   if (event_id.size() > 512)
     return ErrorEvent(Invalid("invalid_event_id",
                               "Event identity exceeds its limit", "event_id"));
+  std::optional<double> temperature;
+  if (legacy_temperature_) {
+    auto decoded = DecodeLegacyRealtimeEvent(&event, &temperature);
+    if (!Accepted(decoded)) return ErrorEvent(std::move(decoded), event_id);
+  }
   const auto shape = Shape(event, RealtimeShape::kClientEvent);
   if (!Accepted(shape)) return ErrorEvent(shape, event_id);
   size_t storage = 0;
@@ -1090,12 +1116,12 @@ bool RealtimeConversationSession::Message(WebSocketOpcode opcode,
         event_id);
   const auto type = event.GetString("type");
   if (type == "session.update")
-    return Settings(*event.Find("session"), event_id);
+    return Settings(*event.Find("session"), event_id, temperature);
   if (type == "conversation.item.create") return CreateItem(event);
   if (type == "conversation.item.delete") return ItemCommand(event, true);
   if (type == "conversation.item.retrieve") return ItemCommand(event, false);
   if (type == "conversation.item.truncate") return TruncateItem(event);
-  if (type == "response.create") return CreateResponse(event);
+  if (type == "response.create") return CreateResponse(event, nullptr, temperature);
   if (type == "response.cancel") return CancelResponse(event);
   if (input_ && (type == "input_audio_buffer.append" ||
                  type == "input_audio_buffer.commit" ||
@@ -1164,6 +1190,8 @@ bool RealtimeConversationSession::Tick() {
       continue;
     }
     if (work.worker.joinable()) work.worker.join();
+    if (work.result.planned_output_tokens > 0)
+      work.planned_output_tokens = work.result.planned_output_tokens;
     RealtimeResponseEnd end;
     end.state = work.result.state;
     end.message = &work.result.message;

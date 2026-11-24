@@ -44,6 +44,26 @@ Json Read(const std::string& wire) {
 SampledToken Token(int id = 7) { return {id, -9999, {}, -0.25}; }
 }  // namespace
 
+Q4T_TEST(audio_translation_form_preserves_only_translation_input_fields) {
+  ChatPlanError error;
+  AsrRequest parsed;
+  const auto valid = Form({{"model", "whisper-1"}, {"prompt", "formal English"},
+                           {"temperature", "0.7"}, {"response_format", "verbose_json"}});
+  Q4T_CHECK(ParseAsrRequest(kType, valid, &parsed, &error, true));
+  Q4T_CHECK(parsed.model == "whisper-1" && parsed.prompt == "formal English" &&
+            parsed.temperature == 0.7 && parsed.format == AsrFormat::kVerboseJson &&
+            !parsed.segment_timestamps);
+  for (const auto& [name, value] : Fields{{"language", "en"}, {"stream", "true"},
+        {"timestamp_granularities[]", "word"}, {"response_format", "diarized_json"},
+        {"prompt[]", "ignored"}, {"temperature", "1.1"}}) {
+    Q4T_CHECK(!ParseAsrRequest(kType, Form({{"model", "whisper-1"}, {name, value}}),
+                               &parsed, &error, true));
+    Q4T_CHECK(error.http_status == 400 && !error.param.empty());
+    Q4T_CHECK(parsed.prompt == "formal English" && parsed.temperature == 0.7);
+  }
+  return true;
+}
+
 Q4T_TEST(asr_form_preserves_binary_and_real_multipart_fields) {
   std::string audio(9000, '\0');
   audio.replace(4090, 27, "\r\n--q4t-audio-test-not-a-part");

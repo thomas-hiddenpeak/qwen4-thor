@@ -310,9 +310,9 @@ io::Json RealtimeTranscriptionSession::SessionResource(bool legacy) const {
   return session;
 }
 bool RealtimeTranscriptionSession::SettingsEvent(bool legacy, bool created) {
-  auto event =
-      Event(std::string(legacy ? "transcription_session." : "session.") +
-            (created ? "created" : "updated"));
+  auto event = Event(created ? "session.created"
+                             : legacy ? "transcription_session.updated"
+                                      : "session.updated");
   Set(&event, "session", SessionResource(legacy));
   return Emit(std::move(event));
 }
@@ -336,7 +336,7 @@ bool RealtimeTranscriptionSession::Start() {
   const auto ready = callbacks_.validate(settings_);
   if (!ready.ok() || ready.commit_unknown) return false;
   started_ = true;
-  return SettingsEvent(false, true);
+  return SettingsEvent(callbacks_.legacy_wire, true);
 }
 ObjectReply RealtimeTranscriptionSession::Configure(
     RealtimeTranscriptionSettings next) {

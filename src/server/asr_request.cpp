@@ -71,7 +71,7 @@ std::string_view AsrLanguageCode(std::string_view name) {
 }
 
 Status ParseAsrRequest(std::string_view content_type, std::string_view body,
-                       AsrRequest* out, ChatPlanError* error) {
+                       AsrRequest* out, ChatPlanError* error, bool translation) {
   if (!out) return Invalid(error, {}, "Missing transcription plan owner", 500);
   if (error) *error = {};
   if (body.size() > kAsrFormBytes)
@@ -107,6 +107,9 @@ Status ParseAsrRequest(std::string_view content_type, std::string_view body,
       return {};
     }
     if (part.has_filename) return fail("Only file may contain binary data");
+    if (translation && name != "model" && name != "prompt" &&
+        name != "temperature" && name != "response_format")
+      return fail("Unknown audio translation field");
     const bool bracket = name.ends_with("[]");
     if (bracket) name.resize(name.size() - 2);
     const bool array =
@@ -165,7 +168,7 @@ Status ParseAsrRequest(std::string_view content_type, std::string_view body,
         plan.format = AsrFormat::kVerboseJson;
       else if (value == "vtt")
         plan.format = AsrFormat::kVtt;
-      else if (value == "diarized_json")
+      else if (value == "diarized_json" && !translation)
         plan.format = AsrFormat::kDiarizedJson;
       else
         return fail("Invalid transcription response format");
@@ -241,7 +244,7 @@ Status ParseAsrRequest(std::string_view content_type, std::string_view body,
       plan.format != AsrFormat::kVerboseJson)
     return Invalid(error, "timestamp_granularities",
                    "Timestamps require verbose_json");
-  if (plan.format == AsrFormat::kVerboseJson && !plan.word_timestamps)
+  if (!translation && plan.format == AsrFormat::kVerboseJson && !plan.word_timestamps)
     plan.segment_timestamps = true;
   if (plan.stream && plan.format != AsrFormat::kJson &&
       plan.format != AsrFormat::kText &&

@@ -31,7 +31,8 @@ RealtimeConversationCallbacks ChatServer::MakeRealtimeCallbacks(
   const auto prepare = [this, client, native_input, legacy_temperature](const Json& current_settings, const Json& response,
                            const Json& items, const PromptSnapshot* prompt,
                            const RealtimeMcpContext* mcp,
-                           bool definitions_only) {
+                           bool definitions_only,
+                           std::optional<double> override_temperature = std::nullopt) {
     const auto current = clients_.RecoveryIdentity(client.Index());
     if (!clients_.OwnsIdentity(client) || !current.Allowed() ||
         current.Id() != client.Id())
@@ -52,8 +53,14 @@ RealtimeConversationCallbacks ChatServer::MakeRealtimeCallbacks(
     const auto status =
         PlanRealtimeChat(current_settings, response, items, planning, &plan,
                          &failure, prompt, native_input, mcp,
-                         definitions_only, &history, legacy_temperature);
-    return status ? ObjectReply{} : Failure(status, failure);
+                         definitions_only, &history, override_temperature ? override_temperature : legacy_temperature);
+    if (!status) return Failure(status, failure);
+    ObjectReply prepared;
+    if (override_temperature) {
+      const auto limit = plan.envelope.options.GetInt("max_output_tokens");
+      prepared.value = Object({{"max_output_tokens", Number(limit)}});
+    }
+    return prepared;
   };
   RealtimeConversationCallbacks callbacks;
   callbacks.traces = [this] { return realtime_traces_.Get(); };
@@ -74,7 +81,7 @@ RealtimeConversationCallbacks ChatServer::MakeRealtimeCallbacks(
   callbacks.prepare = [prepare](const RealtimeConversationJob& job) {
     return prepare(job.settings, job.response, job.snapshot.items,
                    job.prompt ? &*job.prompt : nullptr, job.mcp.get(),
-                   job.mcp_definitions_only);
+                   job.mcp_definitions_only, job.legacy_temperature);
   };
   callbacks.mcp_import.emplace();
   callbacks.mcp_import->import =
@@ -179,7 +186,8 @@ RealtimeConversationCallbacks ChatServer::MakeRealtimeCallbacks(
   callbacks.release = [this](const auto& control) { requests_.Remove(control); };
   callbacks.execute = [this, client, legacy_temperature](const auto& job, const auto& control,
                           const auto& emit, const auto& speech) {
-    return RunRealtimeConversation(client, job, control, emit, speech, legacy_temperature);
+    return RunRealtimeConversation(client, job, control, emit, speech,
+        job.legacy_temperature ? job.legacy_temperature : legacy_temperature);
   };
   return callbacks;
 }
@@ -240,6 +248,8 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
     settings = RealtimeClientDefaults(fd, selected.GetString("model"));
   }
   auto callbacks = MakeRealtimeCallbacks(client, http->RealtimeTemperature());
+  if (headers.realtime_beta)
+    callbacks.legacy_wire_temperature = http->RealtimeTemperature().value_or(0.8);
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
   RealtimeConversationPump session(
@@ -504,6 +514,8 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
         {&plan.generation.chat, accounting ? &*accounting : nullptr,
          delivery ? &native_speech : nullptr},
         &invocation);
+    if (job.legacy_temperature)
+      result.planned_output_tokens = plan.envelope.options.GetInt("max_output_tokens");
     if (result.usage && delivery) {
       if (const auto observed = speech_usage.Total())
         result.usage->output_audio = observed->output;
