@@ -238,6 +238,7 @@ set(protocol_inputs
   src/server/responses_file_search.cpp
   src/server/responses_agent_tree.cpp
   src/server/responses_agent_execution.cpp
+  src/server/responses_automation_execution.cpp
   src/server/responses_web_search.cpp
   src/server/responses_web_context.cpp
   src/server/responses_web_output.cpp
@@ -789,6 +790,8 @@ set(protocol_inputs
   src/server/agent_cron.cpp
   src/server/agent_automation_clock.cpp
   src/server/agent_automation_http.cpp
+  src/server/agent_automation_tool.cpp
+  src/server/agent_automation_tool.h
   src/server/agent_automation_dispatcher.cpp
   src/server/agent_automation_dispatcher.h
   src/server/agent_automation_delivery.cpp

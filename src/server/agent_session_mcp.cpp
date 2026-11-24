@@ -44,8 +44,12 @@ void ResponsesExecution::ConfigureAgentSession(const Json& session,
   agent_http_sealed_ = std::move(sealed_http);
   agent_vaults_ = *session.Find("vault_ids");
   agent_mcp_tools_ = Array();
-  for (const auto& tool : session.Find("agent")->GetArray("tools")->array)
-    if (tool.GetString("type") == "mcp") agent_mcp_tools_.array.push_back(tool);
+  session_automations_ = false;
+  for (const auto& tool : session.Find("agent")->GetArray("tools")->array) {
+    const auto type = tool.GetString("type");
+    if (type == "automations") session_automations_ = true;
+    if (type == "mcp") agent_mcp_tools_.array.push_back(tool);
+  }
 }
 
 ObjectReply ResponsesExecution::RestoreAgentSession() {

@@ -40,7 +40,12 @@ ObjectReply PublicAutomation(const Json& data, const std::string& id) {
 
 ObjectReply Registry(ObjectStore& objects, const StateAccess& access,
                      const ChatPlanConfig& config, const AutomationRoute& route,
-                     std::string_view method, const Json& body, int64_t now) {
+                     std::string_view method, const Json& body, int64_t now,
+                     SessionAutomationChange* caller) {
+  if (caller &&
+      (!caller->session.starts_with("agent_session_") ||
+       !ValidId(caller->session) || !ValidId(caller->call_id) || caller->write))
+    return Error(500, "automation_caller_invalid", "Invalid automation caller");
   const bool create = route.kind == Kind::kCollection;
   ObjectRequest req;
   req.kind = ObjectKind::kAutomation;
@@ -52,33 +57,46 @@ ObjectReply Registry(ObjectStore& objects, const StateAccess& access,
   auto execute = [&] {
     return objects.Execute(req, access.deadline, access.cancelled);
   };
+  auto commit = [&]() -> ObjectReply {
+    if (!caller) return execute();
+    caller->write.emplace(std::move(req));
+    return {};
+  };
   Json resource;
   if (create) {
     req.data = Object({{"format", String("q4t.agent.automation.v1")}});
-    resource =
-        Object({{"type", String(body.GetString("type"))},
-                {"id", String(req.id)},
-                {"object", String("agent.automation")},
-                {"created_at", Number(now)},
-                {"metadata", Object()},
-                {"status", String("active")},
-                {"created_by", Object({{"type", String("developer")}})}});
+    auto creator = caller ? Object({{"type", String("agent")},
+                                    {"session_id", String(caller->session)},
+                                    {"tool_call_id", String(caller->call_id)}})
+                          : Object({{"type", String("developer")}});
+    resource = Object({{"type", String(body.GetString("type"))},
+                       {"id", String(req.id)},
+                       {"object", String("agent.automation")},
+                       {"created_at", Number(now)},
+                       {"metadata", Object()},
+                       {"status", String("active")},
+                       {"created_by", std::move(creator)}});
   } else {
     auto prior = execute();
     if (!prior.ok()) return prior;
     req.data = Field(prior.value, "data");
     auto found = PublicAutomation(req.data, req.id);
-    if (!found.ok() || method == "GET") return found;
+    if (!found.ok()) return found;
+    const auto& creator = *found.value.Find("created_by");
+    if (caller && (creator.GetString("type") != "agent" ||
+                   creator.GetString("session_id") != caller->session))
+      return Error(404, "object_not_found", "Automation not found");
+    if (method == "GET") return found;
     req.expected_revision = prior.value.GetInt("revision");
     if (method == "DELETE") {
       req.operation = ObjectOperation::kErase;
-      auto deleted = execute();
+      const auto id = req.id;
+      auto deleted = commit();
       if (deleted.ok())
-        deleted.value = Object({{"id", String(req.id)},
+        deleted.value = Object({{"id", String(id)},
                                 {"object", String("agent.automation.deleted")},
                                 {"deleted", Boolean(true)}});
-      if (deleted.commit_unknown)
-        deleted.value = Object({{"id", String(req.id)}});
+      if (deleted.commit_unknown) deleted.value = Object({{"id", String(id)}});
       return deleted;
     }
     resource = std::move(found.value);
@@ -126,6 +144,12 @@ ObjectReply Registry(ObjectStore& objects, const StateAccess& access,
       if (!create && resource.Find("target")->GetString("type") !=
                          target->GetString("type"))
         return Invalid("An update must retain the target type", "target.type");
+      const auto& creator = *resource.Find("created_by");
+      if (creator.GetString("type") == "agent" &&
+          (target->GetString("type") != "existing_session" ||
+           creator.GetString("session_id") != target->GetString("session_id")))
+        return Invalid("An agent wakeup must target its creator session",
+                       "target.session_id");
       auto public_target = ProjectTarget(objects, access, config, *target);
       if (!public_target.ok()) return public_target;
       const auto dependencies = InspectAutomationTarget(public_target.value);
@@ -153,7 +177,7 @@ ObjectReply Registry(ObjectStore& objects, const StateAccess& access,
   auto checked = PublicAutomation(req.data, req.id);
   if (!checked.ok()) return checked;
   req.operation = ObjectOperation::kPut;
-  auto saved = execute();
+  auto saved = commit();
   if (saved.ok()) {
     saved.http_status = create ? 201 : 200;
     saved.value = std::move(resource);

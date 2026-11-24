@@ -22,6 +22,35 @@ bool Input(const std::string& text, ResponsesInputPlan* plan,
   return NormalizeResponsesInput(Read(text), plan, error).ok();
 }
 
+Q4T_TEST(responses_consecutive_synchronous_tool_rounds_keep_call_boundaries) {
+  const auto prior = Read(R"({"type":"function_call","call_id":"first",
+                             "name":"read","arguments":"{}"})");
+  const auto reply = Read(R"({"type":"function_call_output","call_id":"first",
+                             "output":"one"})");
+  const auto next = Read(R"({"type":"function_call","call_id":"second",
+                            "name":"read","arguments":"{}"})");
+  const auto end = Read(R"({"type":"function_call_output","call_id":"second",
+                            "output":"two"})");
+  auto request = Read(R"({"input":[]})");
+  auto& history = request.object.front().second.array;
+  history = {prior, reply, next, end};
+  ResponsesInputPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error));
+  const auto& messages = plan.messages.array;
+  Q4T_CHECK(messages.size() == 4 &&
+            messages[0].GetArray("tool_calls")->array.size() == 1 &&
+            messages[1].GetString("tool_call_id") == "first" &&
+            messages[2].GetArray("tool_calls")->array.size() == 1 &&
+            messages[3].GetString("tool_call_id") == "second");
+  const auto pending = Read(R"({"type":"function_call","call_id":"pending",
+                               "name":"read","arguments":"{}"})");
+  history.insert(history.begin() + 1, pending);
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  history = {prior, reply, next, reply};
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  return true;
+}
 Q4T_TEST(responses_multi_agent_history_validates_and_renders_typed_pairs) {
   auto request = Read(R"({"input":[
     {"type":"multi_agent_call","action":"list_agents","call_id":"ac",

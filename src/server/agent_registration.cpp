@@ -6,6 +6,7 @@
 #include <chrono>
 
 #include "object_protocol.h"
+#include "agent_automation_tool.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/input_contract.h"
@@ -29,9 +30,17 @@ void Default(Json& value, std::string_view key, Json fallback) {
 }
 
 ObjectReply NormalizeTools(Json& tools) {
+  const auto wakeups = std::ranges::count_if(tools.array, [](const Json& tool) {
+    return tool.GetString("type") == "automations";
+  });
+  if (wakeups > 1) return Invalid("Duplicate automations tool", "tools");
   for (size_t i = 0; i < tools.array.size(); ++i) {
     auto& tool = tools.array[i];
     const auto type = tool.GetString("type");
+    if (wakeups && type == "function" &&
+        tool.GetString("name") == automation_detail::kToolName)
+      return Invalid("The session automations tool already uses this name",
+                     "tools[" + std::to_string(i) + "].name");
     if (type == "function") Default(tool, "defer_loading", Boolean(false));
     if (type == "programmatic_tool_calling")
       Default(tool, "enabled", Boolean(true));

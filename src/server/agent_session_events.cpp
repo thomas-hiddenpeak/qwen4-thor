@@ -1,3 +1,4 @@
+#include "agent_automation_tool.h"
 #include "q4t/server/agent_session.h"
 
 #include "agent_session_internal.h"
@@ -22,7 +23,9 @@ Json Member(const Json& value, const char* key) {
 size_t VisibleOutputs(const Json& output, size_t end) {
   size_t count = 0;
   for (size_t i = 0; i < end; ++i)
-    if (!IsPrivateAgentOutput(output.array[i])) ++count;
+    if (!IsPrivateAgentOutput(output.array[i]) &&
+        output.array[i].GetString("type") != "function_call_output")
+      ++count;
   return count;
 }
 
@@ -149,12 +152,15 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
       // results is possible. Publish the callable item at the durable handoff.
       for (size_t index = 0; index < snapshot.items.array.size(); ++index) {
         const auto& item = snapshot.items.array[index];
-        if (item.GetString("type") != "function_call") continue;
-        auto call =
-            Object({{"session_id", String(id)},
-                    {"turn_id", String(turn)},
-                    {"output_index", Number(cursor.turn_output_offset + index)},
-                    {"item", item}});
+        if (item.GetString("type") != "function_call" ||
+            automation_detail::IsToolItem(item))
+          continue;
+        auto call = Object(
+            {{"session_id", String(id)},
+             {"turn_id", String(turn)},
+             {"output_index", Number(cursor.turn_output_offset +
+                                     VisibleOutputs(snapshot.items, index))},
+             {"item", item}});
         const auto key = prefix + "_call_" + std::to_string(index);
         if (snapshot.turn.GetString("status") == "waiting" &&
             item.GetString("status") == "completed" &&
@@ -215,7 +221,17 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
       type == "response.output_item.done") {
     const auto* item = event.Find("item");
     if (!item) return Invalid();
-    if (item->GetString("type") == "function_call") return {};
+    if (item->GetString("type") == "function_call" &&
+        (!automation_detail::IsToolItem(*item) || type.ends_with(".added")))
+      return {};
+    // Function results enter the turn as input items. The SDK's
+    // item.done union accepts only model output, and the next model item
+    // keeps its contiguous output index.
+    if (item->GetString("type") == "function_call_output" &&
+        automation_detail::IsToolItem(*item)) {
+      if (type.ends_with(".done")) return {};
+      Set(&loc, "output_index", Json{});
+    }
     auto items = Array(), actions = Array();
     auto projected = IsAgentOperationResult(*item)
                          ? ParentActionItem(*item, *record.Find("response"),

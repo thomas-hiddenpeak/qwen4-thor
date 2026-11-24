@@ -110,7 +110,8 @@ class ResponsesState {
   ObjectReply Begin(const io::Json& snapshot, const io::Json& events,
                     const StateAccess& access, ResponseStatePlan* plan);
   ObjectReply Checkpoint(const io::Json& snapshot, const io::Json& events,
-                         const StateAccess& access, ResponseStatePlan* plan);
+                         const StateAccess& access, ResponseStatePlan* plan,
+                         const ObjectRequest* automation = nullptr);
   // The caller supplies actual generated items and original ordered events.
   // A completed stored response is acknowledged only after the atomic receipt.
   ObjectReply Finish(const io::Json& snapshot, const io::Json& events,

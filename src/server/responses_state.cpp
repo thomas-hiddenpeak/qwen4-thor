@@ -790,7 +790,8 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
 
 ObjectReply ResponsesState::Checkpoint(const Json& snapshot, const Json& events,
                                        const StateAccess& access,
-                                       ResponseStatePlan* plan) {
+                                       ResponseStatePlan* plan,
+                                       const ObjectRequest* automation) {
   if (plan->scope != access.scope)
     return Error(403, "object_scope_mismatch",
                  "Response belongs to another client");
@@ -800,17 +801,41 @@ ObjectReply ResponsesState::Checkpoint(const Json& snapshot, const Json& events,
        snapshot.GetString("status") != "in_progress") ||
       (plan->store && plan->response_revision <= 0))
     return StateError("Invalid response checkpoint");
+  if (automation) {
+    const auto* row = automation->data.Find("resource");
+    const auto* creator = row ? row->Find("created_by") : nullptr;
+    const auto* target = row ? row->Find("target") : nullptr;
+    if (!plan->store || plan->agent_session_id.empty() ||
+        automation->kind != ObjectKind::kAutomation ||
+        automation->scope != access.scope || !creator || !target ||
+        row->GetString("id") != automation->id ||
+        creator->GetString("type") != "agent" ||
+        creator->GetString("session_id") != plan->agent_session_id ||
+        target->GetString("type") != "existing_session" ||
+        target->GetString("session_id") != plan->agent_session_id ||
+        (automation->operation != ObjectOperation::kPut &&
+         !(automation->operation == ObjectOperation::kErase &&
+           automation->expected_revision > 0)))
+      return StateError("Invalid session automation checkpoint");
+  }
   if (!plan->store) return {};
   auto bindings =
       MergeInputSnapshots(Json(), plan->history, &plan->input_snapshots);
   if (!bindings.ok()) return bindings;
   bindings = BindGeneratedContracts(snapshot, plan);
   if (!bindings.ok()) return bindings;
-  auto written = objects_.Execute(
+  auto response =
       Write(ObjectKind::kResponse, plan->id, access, plan->response_revision,
             SavedResponse(*plan, snapshot, events),
-            !plan->conversation_id.empty(), plan->ephemeral),
-      access.deadline, access.cancelled);
+            !plan->conversation_id.empty(), plan->ephemeral);
+  if (automation) {
+    const std::array writes{std::move(response), *automation};
+    auto saved =
+        objects_.ExecuteBatch(writes, access.deadline, access.cancelled);
+    if (saved.ok()) ++plan->response_revision;
+    return saved;
+  }
+  auto written = objects_.Execute(response, access.deadline, access.cancelled);
   if (written.ok()) plan->response_revision = written.value.GetInt("revision");
   return written;
 }

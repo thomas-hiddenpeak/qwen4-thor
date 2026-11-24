@@ -1,3 +1,4 @@
+#include "agent_automation_tool.h"
 #include "q4t/server/responses_python.h"
 #include "q4t/server/responses_plan.h"
 
@@ -575,6 +576,8 @@ Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
     std::unordered_set<std::string> disabled{
         std::string(kResponsesToolSearchModelName), kResponsesProgramModelName,
         kPythonToolName};
+    if (envelope.session_automations)
+      disabled.insert(automation_detail::kToolName);
     for (const auto& binding : bindings) disabled.insert(binding.model_name);
     std::vector<ResponsesWebBinding> web;
     status = PlanResponsesWebBindings(Object({{"tools", active}}), &web, error);

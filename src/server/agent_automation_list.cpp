@@ -29,7 +29,8 @@ ObjectReply Invocation(const Json& data, const std::string& id) {
 }  // namespace
 
 ObjectReply List(ObjectStore& objects, const StateAccess& access,
-                 const AutomationRoute& route, std::string_view raw) {
+                 const AutomationRoute& route, std::string_view raw,
+                 std::string_view creator_session) {
   const bool invocations = route.kind != AutomationRouteKind::kCollection;
   ObjectRequest req;
   req.scope = access.scope;
@@ -74,6 +75,12 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access,
   auto valid = ParseItemViewOptions(options, &page, &error, true);
   if (!valid) return Invalid(error.param, valid.message());
   const auto matches = [&](const Json& resource) {
+    if (!creator_session.empty()) {
+      const auto* creator = resource.Find("created_by");
+      if (!creator || creator->GetString("type") != "agent" ||
+          creator->GetString("session_id") != creator_session)
+        return false;
+    }
     if (invocations)
       return resource.GetString("automation_id") == route.automation;
     return session_id.empty() ||

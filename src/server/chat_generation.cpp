@@ -5044,6 +5044,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           };
           result = responses->RunAgents(response_parser.CompletedToolCalls(), run_agent, publish);
         }
+        if (result.ok() && responses->PendingAutomations()) {
+          auto* jobs = background_.Get();
+          result = responses->RunSessionAutomations(
+              response_parser.CompletedToolCalls(), planning_config,
+              jobs && jobs->AutomationsAvailable(),
+              [jobs] {
+                if (jobs) jobs->WakeAutomations();
+              },
+              publish);
+        }
         if (result.ok() && responses->PendingFileSearch())
           result = responses->RunFileSearches(
               response_parser.CompletedToolCalls(), callbacks, &query_usage,

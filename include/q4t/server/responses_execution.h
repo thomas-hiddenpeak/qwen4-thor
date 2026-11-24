@@ -164,14 +164,20 @@ class ResponsesExecution {
                         const std::function<bool(const std::string&)>& publish);
   void ConfigureAgentModelStep(const ResponsesAgentTree::Turn& turn, bool allow_tools,
                                io::Json* request) const;
+  ObjectReply RunSessionAutomations(
+      size_t completed_calls, const ChatPlanConfig& config,
+      bool dispatcher_available, const std::function<void()>& wake,
+      const std::function<bool(const std::string&)>& publish);
+  bool PendingAutomations() const { return !automation_pending_.empty(); }
   bool PendingAgents() const { return !agent_pending_.empty(); }
   bool QueuedAgents() const { return agents_ && !agents_->FirstQueued().empty(); }
   ObjectReply RunWebSearches(size_t completed_calls,
                              const std::function<bool(const std::string&)>& publish);
   bool HasFileSearch() const { return !file_search_bindings_.empty(); }
   bool HasNativeTools() const {
-    return !python_container_.IsNull() || HasFileSearch() || HasWebSearch() ||
-           HasToolSearch() || HasPrograms() || HasMcp();
+    return session_automations_ || !python_container_.IsNull() ||
+           HasFileSearch() || HasWebSearch() || HasToolSearch() ||
+           HasPrograms() || HasMcp();
   }
   bool HasAsyncTools() const { return has_async_tools_ || program_async_wait_; }
   bool HasToolSearch() const { return !tool_search_catalog_.search.IsNull(); }
@@ -189,7 +195,8 @@ class ResponsesExecution {
   size_t PendingNativeCalls() const {
     return python_pending_.size() + file_search_pending_.size() +
            tool_search_pending_.size() + program_pending_.size() +
-           mcp_pending_.size() + web_pending_.size() + agent_pending_.size();
+           mcp_pending_.size() + web_pending_.size() + agent_pending_.size() +
+           automation_pending_.size();
   }
   ObjectReply RunPrograms(
       size_t completed_calls, bool* client_wait,
@@ -382,6 +389,9 @@ class ResponsesExecution {
   std::optional<ResponsesAgentTree> agents_;
   std::map<size_t, ResponseToolCall> agent_pending_;
   size_t agent_argument_bytes_ = 0;
+  bool session_automations_ = false;
+  std::map<size_t, ResponseToolCall> automation_pending_;
+  size_t automation_argument_bytes_ = 0;
   size_t web_argument_bytes_ = 0;
   WebExecutionBudget web_budget_;
   std::vector<WebPage> web_sources_;

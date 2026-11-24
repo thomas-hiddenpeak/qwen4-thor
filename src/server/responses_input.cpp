@@ -1044,9 +1044,8 @@ Status NormalizeResponsesInput(const io::Json& request,
       ++automatic_returns;
     } else if (type == "function_call" || type == "custom_tool_call") {
       if (results.size() > automatic_returns) {
-        if (async_ids.empty())
-          return Invalid(error, path,
-                         "new call before previous tool results end");
+        // A result followed by a new call starts another assistant step.
+        // flush() verifies every synchronous call in the prior group.
         status = flush();
         if (!status) return status;
       }

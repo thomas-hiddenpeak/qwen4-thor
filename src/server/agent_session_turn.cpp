@@ -10,6 +10,7 @@
 #include "q4t/server/input_snapshot_bindings.h"
 
 #include "agent_session_internal.h"
+#include "agent_automation_tool.h"
 #include "agent_subagent_internal.h"
 #include "agent_workspace_copy.h"
 #include "object_protocol.h"
@@ -63,6 +64,10 @@ ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
                                   {"execution", String("server")}}));
   }
   for (const auto& tool : session_tools) {
+    if (tool.GetString("type") == "automations") {
+      tools.array.push_back(automation_detail::SessionTool());
+      continue;
+    }
     if (tool.GetString("type") == "web_search") {
       const auto mode = tool.GetString("mode");
       if (mode == "disabled") continue;
@@ -350,6 +355,13 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
       if (IsAgentOperationResult(entry)) {
         auto action = ParentActionItem(entry, response, session, token, &result.items);
         if (!action.ok()) return action;
+        continue;
+      }
+      if (source == response.GetArray("output") &&
+          automation_detail::IsToolItem(entry)) {
+        auto projected =
+            ProjectItem(entry, token, &result.items, &actions, false);
+        if (!projected.ok()) return projected;
         continue;
       }
       const Json* input = &entry;
