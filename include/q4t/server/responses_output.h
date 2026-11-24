@@ -101,7 +101,8 @@ class ResponsesOutput {
   Status Finish(bool incomplete, size_t completed_calls,
                 const ResponsesUsage& usage, int64_t completed_at,
                 std::string* wire, const ResponsesReasoningSeal& seal = {},
-                bool content_filtered = false);
+                bool content_filtered = false,
+                bool assistant_prompt_exhausted = false);
   Status Fail(std::string_view code, std::string_view message,
               std::string* wire);
   // Used immediately before a failure/cancellation terminal, never as a

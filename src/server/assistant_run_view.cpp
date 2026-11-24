@@ -202,9 +202,12 @@ ObjectReply ProjectRun(ObjectStore& objects, const StateAccess& access,
     }
     if (stage == "incomplete") {
       Set(&run, "incomplete_details",
-          Object({{"reason", String("max_completion_tokens")}}));
+          Object({{"reason", String(data.GetBool("assistant_prompt_exhausted")
+                                        ? "max_prompt_tokens"
+                                        : "max_completion_tokens")}}));
     }
   }
+  view->prompt_tokens = input;
   const auto prompt_limit = run.GetInt("max_prompt_tokens");
   const auto output_limit = run.GetInt("max_completion_tokens");
   const bool pending = !calls.array.empty();
@@ -258,6 +261,33 @@ ObjectReply ProjectRun(ObjectStore& objects, const StateAccess& access,
   for (const auto& msg : view->messages.array)
     if (!ValidateAssistant(msg, AssistantShape::kMessageResource, &error))
       return CorruptRun();
+  return {};
+}
+
+// Queued legs created by older releases use the same durable Run history.
+ObjectReply LoadRunPromptBudget(ObjectStore& objects, const StateAccess& access,
+                                const ResponseStatePlan& plan,
+                                std::optional<uint64_t>* remaining) {
+  remaining->reset();
+  ObjectRequest thread;
+  auto loaded =
+      LoadThreadDraft(objects, access, plan.assistant_thread_id, &thread);
+  if (!loaded.ok()) return loaded;
+  const auto* runs = thread.data.GetArray("runs");
+  if (!runs || runs->array.empty()) return CorruptRun();
+  const auto& entry = runs->array.back();
+  const auto* resource = entry.Find("run");
+  const auto* ids = entry.GetArray("response_ids");
+  if (!resource || resource->GetString("id") != plan.assistant_run_id || !ids ||
+      ids->array.empty() || ids->array.back().str != plan.id)
+    return CorruptRun();
+  const auto limit = resource->GetInt("max_prompt_tokens");
+  if (!limit) return {};
+  RunView view;
+  auto observed = ProjectRun(objects, access, entry, &view);
+  if (!observed.ok()) return observed;
+  *remaining =
+      static_cast<uint64_t>(std::max<int64_t>(0, limit - view.prompt_tokens));
   return {};
 }
 

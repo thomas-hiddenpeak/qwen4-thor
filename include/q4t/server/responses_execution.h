@@ -109,6 +109,9 @@ class ResponsesExecution {
                          const ResponsesContextCheck& check);
   ObjectReply Begin(std::string* wire);
   ObjectReply StartRunning(std::string* wire);
+  // Check the actual encoded step before model admission. Only Assistants
+  // Runs with an explicit prompt limit use this cumulative bound.
+  bool AdmitAssistantPrompt(uint64_t consumed, uint64_t next);
   ObjectReply CheckParentCancellation(bool* cancelled);
   ObjectReply Cancel();
   ObjectReply Checkpoint();
@@ -324,6 +327,7 @@ class ResponsesExecution {
   StateAccess access_;
   ResponsesEnvelope envelope_;
   ResponsesGenerationPlan generation_;
+  std::optional<uint64_t> assistant_prompt_remaining_;
   ResponseStatePlan plan_;
   ResponsesOutput output_;
   std::unique_ptr<ResponsesMcpState> mcp_state_;

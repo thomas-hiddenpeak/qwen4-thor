@@ -34,6 +34,7 @@ struct ResponseStatePlan {
   // transaction. Later checkpoints retain just the ID in the private record.
   std::string agent_session_id;
   std::string assistant_thread_id, assistant_run_id;
+  bool assistant_prompt_exhausted = false;
   int64_t assistant_started_at = 0, assistant_finished_at = 0;
   std::vector<ObjectRequest> assistant_writes;
   // Recorded with the native item checkpoint. Session subagent resources use

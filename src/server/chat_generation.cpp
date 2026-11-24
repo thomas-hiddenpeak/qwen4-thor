@@ -1975,6 +1975,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
       }
     }
+    if (responses && !responses->AdmitAssistantPrompt(
+                         prepared_input + responses_usage.input_tokens +
+                             moderation_usage.input_tokens,
+                         prompt_u32.size())) {
+      response_incomplete = true;
+      finish_response();
+      return;
+    }
     PreparedCompletionPrompt* completion_prompt = nullptr;
     if (completion) {
       completion_prompt =
@@ -4956,6 +4964,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           const auto consumed = prepared_input + responses_usage.input_tokens +
                                 moderation_usage.input_tokens +
                                 query_usage.committed_input;
+          if (!responses->AdmitAssistantPrompt(consumed, count))
+            return object_detail::Error(400,
+                                        "assistant_prompt_budget_exhausted",
+                                        "Run prompt budget exhausted");
           if (planning_config.client_limits &&
               (consumed > planning_config.client_limits->max_prompt_tokens ||
                count >
@@ -5050,6 +5062,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         if (result.ok()) result = prepare_tool_media();
         answer = native_calls != 0 && !client_wait &&
                  native_calls == response_parser.CompletedToolCalls();
+        if (result.code == "assistant_prompt_budget_exhausted") {
+          response_incomplete = true;
+          response_step = ResponseStep::kFinish;
+          continue;
+        }
         if (!result.ok()) {
           err_guard.ok = false;
           SendError(fd, result.http_status, result.ClientMessage(), {},

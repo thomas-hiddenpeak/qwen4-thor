@@ -2672,6 +2672,11 @@
         "accepted_methods": 158,
         "required_methods": 231,
         "hours_of_long_run": 0
+      },
+      "assistant_prompt_budget_20261124": {
+        "status": "business_accepted",
+        "evidence": "evidence/serve-assistants-20261124/prompt-budget.json",
+        "default_contains_change": false
       }
     },
     {
@@ -6092,6 +6097,11 @@
         "accepted_methods": 158,
         "required_methods": 231,
         "hours_of_long_run": 0
+      },
+      "assistant_prompt_budget_20261124": {
+        "status": "business_accepted",
+        "evidence": "evidence/serve-assistants-20261124/prompt-budget.json",
+        "default_contains_change": false
       }
     },
     {
@@ -9252,6 +9262,11 @@
         "accepted_methods": 158,
         "required_methods": 231,
         "hours_of_long_run": 0
+      },
+      "assistant_prompt_budget_20261124": {
+        "status": "business_accepted",
+        "evidence": "evidence/serve-assistants-20261124/prompt-budget.json",
+        "default_contains_change": false
       }
     },
     {
@@ -10753,8 +10768,8 @@
       }
     }
   ],
-  "next_task": "Verify cumulative Assistants prompt admission, implement hosted code execution and container resources, and continue the remaining inference, application and recovery contracts.",
-  "next": "验收 Run 多步提示预算，补齐托管代码执行及容器接口，接续开放的推理、应用服务和恢复任务。",
+  "next_task": "Implement container resources and hosted code execution, deliver qualified changes, and continue all open application, inference and recovery contracts.",
+  "next": "接续容器资源、托管代码执行和已验修改发行，持续推进全部开放的协议与恢复工作。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
