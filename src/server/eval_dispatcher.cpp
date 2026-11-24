@@ -4,11 +4,16 @@
 #include <array>
 
 #include "eval_runs.h"
+#include "eval_sampling.h"
 
 namespace q4t::server {
 using namespace std::chrono_literals;
-EvalDispatcher::EvalDispatcher(ObjectStore& objects, ClientAdmission& clients)
-    : thread_([this, &objects, &clients](std::stop_token stop) {
+EvalDispatcher::EvalDispatcher(ObjectStore& objects, ClientAdmission& clients,
+                               ChatPlanConfig config,
+                               std::function<ResponsesJobs*()> jobs)
+    : config_(std::move(config)),
+      jobs_(std::move(jobs)),
+      thread_([this, &objects, &clients](std::stop_token stop) {
         Run(objects, clients, stop);
       }) {}
 void EvalDispatcher::Wake() {
@@ -85,12 +90,17 @@ void EvalDispatcher::Run(ObjectStore& objects, ClientAdmission& clients,
             continue;
           }
           const auto status = run->GetString("status");
-          if (!data->GetBool("deleting") && status != "in_progress" &&
+          if (!data->GetBool("deleting") && !data->Has("pending_response") &&
+              status != "in_progress" &&
               status != "queued")
             continue;
-          auto result = eval_detail::AdvanceRun(objects, access, row);
+          std::optional<eval_detail::SamplingOwner> sampler;
+          if (auto* jobs = jobs_())
+            sampler.emplace(clients, owner, *jobs, config_);
+          auto result = eval_detail::AdvanceRun(objects, access, row,
+                                                sampler ? &*sampler : nullptr);
           if (result.ok())
-            delay = 25ms;
+            delay = std::min(delay, result.http_status == 202 ? 150ms : 25ms);
           else if (result.http_status != 409 && result.http_status != 404 &&
                    !canceled())
             ++errors_;

@@ -3,6 +3,7 @@
 #include <ctime>
 
 #include "eval_grading.h"
+#include "eval_sampling.h"
 #include "q4t/server/binary_store.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/schema_graph.h"
@@ -154,16 +155,18 @@ ObjectReply Score(const Json& criteria, const Json& row, Json* results,
 }  // namespace
 
 ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
-                       const Json& record) {
+                       const Json& record, SamplingOwner* owner) {
   using namespace object_detail;
   auto write = Update(ObjectKind::kEvalRun, access, record);
   if (write.data.GetBool("deleting"))
-    return ResumeRunDeletion(objects, access, record);
+    return ResumeRunDeletion(objects, access, record,
+                             owner ? &owner->jobs : nullptr);
   const auto* original = write.data.Find("resource");
   if (!original) return InvalidRecord();
   auto resource = *original;
   const auto status = resource.GetString("status");
-  if (status != "queued" && status != "in_progress") return {};
+  if (status != "queued" && status != "in_progress")
+    return ReleaseSampling(objects, access, owner ? &owner->jobs : nullptr, write);
   auto& totals = Field(resource, "per_testing_criteria_results");
   const auto* criteria = write.data.GetArray("criteria");
   if (!criteria) return InvalidRecord();
@@ -186,7 +189,11 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
   bool done = false;
   ObjectReply loaded;
   const auto source_type = source->GetString("type");
-  if (source_type == "file_content") {
+  if (write.data.Has("pending_response")) {
+    const auto* saved = write.data.Find("pending_input");
+    if (!saved) return InvalidRecord();
+    row = *saved;
+  } else if (source_type == "file_content") {
     const auto* content = source->GetArray("content");
     if (!content || static_cast<size_t>(index) > content->array.size())
       return InvalidRecord();
@@ -205,13 +212,44 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
   if (!schema) return InvalidRecord();
   auto checked = ValidateRow(*schema, row);
   if (!checked.ok()) return Finish(objects, access, write, resource, checked);
-  if (data_source->GetString("type") != "jsonl")
-    return Finish(objects, access, write, resource,
-                  BadInput("data_source",
-                           "Sampling requires a model execution provider"));
+  ObjectRequest consumed;
+  if (data_source->GetString("type") != "jsonl") {
+    if (!owner)
+      return Error(503, "eval_sample_unavailable",
+                   "Model sampling owner is unavailable");
+    auto sampled =
+        SampleRow(objects, access, *owner, write, *data_source, &row, &consumed);
+    if (!sampled.ok()) {
+      if (sampled.http_status >= 500 || sampled.http_status == 409 ||
+          sampled.http_status == 429 || sampled.http_status == 499 ||
+          sampled.commit_unknown)
+        return sampled;
+      return Finish(objects, access, write, resource, sampled);
+    }
+    if (sampled.http_status == 202) return sampled;
+    const auto& sample = *row.Find("sample");
+    Set(&resource, "model", *sample.Find("model"));
+    auto& per_model = Field(resource, "per_model_usage");
+    if (per_model.IsNull()) per_model = Array();
+    const auto name = sample.GetString("model");
+    auto used = std::find_if(
+        per_model.array.begin(), per_model.array.end(),
+        [&](const Json& v) { return v.GetString("model_name") == name; });
+    if (used == per_model.array.end()) {
+      per_model.array.push_back(Object({{"model_name", String(name)}}));
+      used = std::prev(per_model.array.end());
+    }
+    Set(&*used, "invocation_count",
+        Number(used->GetInt("invocation_count") + 1));
+    const auto& usage = *sample.Find("usage");
+    for (const auto* key : {"prompt_tokens", "completion_tokens",
+                            "total_tokens", "cached_tokens"})
+      Set(&*used, key, Number(used->GetInt(key) + usage.GetInt(key)));
+  }
   auto results = Array();
   bool passed = true;
-  auto scored = Score(*criteria, row, &results, &totals, &passed);
+  auto scored =
+      Score(*write.data.GetArray("criteria"), row, &results, &totals, &passed);
   auto sample = Sample(row);
   if (!scored.ok())
     Set(&sample, "error",
@@ -250,7 +288,9 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
   Set(&write.data, "resource", std::move(resource));
   Set(&write.data, "row", Number(index + 1));
   Field(write.data, "output_ids").array.push_back(String(id));
-  std::array writes{std::move(write), std::move(output)};
+  if (!consumed.id.empty()) ClearSampling(write.data);
+  std::vector<ObjectRequest> writes{std::move(write), std::move(output)};
+  if (!consumed.id.empty()) writes.push_back(std::move(consumed));
   auto committed =
       objects.ExecuteBatch(writes, access.deadline, access.cancelled);
   if (committed.http_status == 413 && !committed.commit_unknown) {

@@ -73,6 +73,7 @@ class ResponsesExecution {
                             const BatchResponseLink* batch_parent = nullptr,
                             const io::Json* credential_source = nullptr);
   ObjectReply BindChatKitThread(ObjectRequest mutation);
+  ObjectReply BindEvalSampling(ObjectRequest mutation);
   ObjectReply BindAssistantRun(std::string thread_id, std::string run_id,
                                std::vector<ObjectRequest> writes);
   bool GenerationReady() const { return generation_ready_; }

@@ -1,0 +1,26 @@
+{
+  "stage": "cpu_verified_pending_device",
+  "scope": "model-generated Evals completions and responses with inline or file input",
+  "cpu_tests": 8,
+  "build_warnings": 0,
+  "cpu_receipt_sha256": "ba43143dbd4dfa7e76ec90db86b04e44cc01524d7d6334b0d7f2cf8196828cc0",
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1358,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "business_pending": [
+    "native TLS with both model sources and scoring controls",
+    "published profiles and independent recovery"
+  ],
+  "other_evals_pending": [
+    "stored inference source filters",
+    "additional graders"
+  ]
+}
