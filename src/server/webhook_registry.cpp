@@ -11,15 +11,12 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/native_crypto.h"
 #include "webhook_keys.h"
+#include "webhook_events.h"
 
 namespace q4t::server {
 namespace {
 using namespace object_detail;
 using Kind = WebhookRouteKind;
-constexpr std::array<std::string_view, 8> kEvents = {
-    "response.completed",  "response.failed", "response.cancelled",
-    "response.incomplete", "batch.completed", "batch.failed",
-    "batch.cancelled",     "batch.expired"};
 
 ObjectReply Invalid(std::string key, std::string message) {
   auto out = Error(400, "invalid_request", std::move(message));
@@ -93,7 +90,7 @@ ObjectReply Apply(const Json& body, const FileFetchOptions* network,
       return Invalid("event_types", "Choose at least one event");
     Json normalized = Array();
     for (const auto& item : events->array) {
-      if (std::ranges::find(kEvents, item.str) == kEvents.end())
+      if (!webhook_detail::EventBit(item.str))
         return Invalid("event_types", "Event is unavailable to this project");
       if (std::ranges::none_of(normalized.array, [&](const Json& prior) {
             return item.str == prior.str;
@@ -108,7 +105,7 @@ ObjectReply Apply(const Json& body, const FileFetchOptions* network,
 ObjectReply Test(ObjectStore& objects, const StateAccess& access,
                  const FileFetchOptions& network, const Json& record,
                  const Json& endpoint, const std::string& type, int64_t now) {
-  if (std::ranges::find(kEvents, type) == kEvents.end())
+  if (!webhook_detail::EventBit(type))
     return Invalid("event_type", "Event is unavailable to this project");
   const auto id = NewObjectId(ObjectKind::kWebhookEvent);
   if (id.empty()) return Error(503, "webhook_id_unavailable", "No event ID");
@@ -161,8 +158,7 @@ ObjectReply HandleWebhook(ObjectStore& objects, const StateAccess& access,
     return List(objects, access, raw);
   if (!raw.empty()) return Invalid("query", "Unexpected query parameters");
   if (route.kind == Kind::kCatalog) {
-    auto events = Array();
-    for (auto name : kEvents) events.array.push_back(String(std::string(name)));
+    auto events = webhook_detail::EventTypes();
     ObjectReply out;
     out.value =
         Object({{"object", String("list")}, {"data", std::move(events)}});

@@ -460,6 +460,15 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.AgentTools(data.GetArray("tools"));
   } else if (kind == "vault" && data.GetString("object") == "vault") {
     // The container metadata has no content or credential object edges.
+  } else if (kind == "webhook_event") {
+    const auto* event = data.Find("event");
+    const auto* deliveries = data.GetArray("deliveries");
+    inspector.value.uncertain =
+        data.GetString("format") != "q4t.webhook.event.v1" || !event ||
+        !event->GetString("id").starts_with("evt_") || !deliveries;
+    // The queue is retained up to its absolute delivery deadline, even
+    // when the sender is disabled. Pending work must not pin an expired row.
+    if (data.GetInt("deliver_before") <= 0) inspector.value.uncertain = true;
   } else if (kind == "webhook_endpoint") {
     const auto* endpoint = data.Find("resource");
     inspector.value.uncertain =

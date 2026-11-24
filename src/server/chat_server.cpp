@@ -54,6 +54,7 @@ ChatServer::~ChatServer() {
   // Start may have succeeded without a subsequent Run. Stop accepting TCP
   // connections before releasing the model, including partial startup state.
   startup_listeners_.Close();
+  webhook_dispatcher_.RequestStop();
   batches_.RequestStop();
   vector_jobs_.RequestStop();
   background_.RequestStop();
@@ -69,6 +70,7 @@ ChatServer::~ChatServer() {
   // freed).
   StopScheduler();
   JoinLiveMedia();
+  webhook_dispatcher_.Join();
   batches_.Join();
   vector_jobs_.Join();
   background_.Join();
@@ -1089,6 +1091,10 @@ void ChatServer::RecoverApplicationJobs() noexcept {
         [this](auto& job) { RunBackgroundResponse(job); },
         [this](auto& job) { return AdmitBackgroundBatch(job); });
   });
+  if (webhook_network_)
+    webhook_dispatcher_.TryStart([this] {
+      return std::make_unique<WebhookDispatcher>(*objects_, clients_, *webhook_network_);
+    });
   batches_.TryStart([this] {
     return std::make_unique<BatchJobs>(
         *objects_, clients_, PlanningConfig(), batch_options_,

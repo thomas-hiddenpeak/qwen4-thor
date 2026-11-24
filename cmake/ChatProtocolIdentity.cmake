@@ -506,6 +506,10 @@ set(protocol_inputs
   src/server/webhook_transport.cpp
   src/server/webhook_registry.cpp
   src/server/webhook_keys.cpp
+  src/server/webhook_events.cpp
+  src/server/webhook_dispatcher.cpp
+  include/q4t/server/webhook_dispatcher.h
+  src/server/webhook_events.h
   src/server/webhook_keys.h
   include/q4t/server/live_worker.h
   src/service/live_worker_exec.cpp

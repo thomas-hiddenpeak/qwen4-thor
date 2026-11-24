@@ -86268,6 +86268,9 @@
                   "retry_after_ms",
                   "last_failure"
                 ]
+              },
+              "webhook_dispatcher": {
+                "$ref": "#/components/schemas/serve-config-v1.schema.json/properties/application_startup/properties/automation_dispatcher"
               }
             },
             "required": [
@@ -87377,6 +87380,39 @@
           },
           "live_worker_profile": {
             "const": "q4t-live-workers-v1"
+          },
+          "webhook_delivery": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "acknowledged": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "retries": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "errors": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "capacity_deferrals": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "capacity_losses": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "acknowledged",
+              "retries",
+              "errors",
+              "capacity_deferrals",
+              "capacity_losses"
+            ]
           }
         },
         "required": [

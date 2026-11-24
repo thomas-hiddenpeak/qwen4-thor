@@ -318,6 +318,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_transport.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_registry.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_keys.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_events.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_dispatcher.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_child.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sip_owner_fixture.cpp

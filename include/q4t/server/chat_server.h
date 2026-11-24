@@ -85,6 +85,7 @@
 #include "q4t/server/batch_execution.h"
 #include "q4t/server/batch_jobs.h"
 #include "q4t/server/vector_jobs.h"
+#include "q4t/server/webhook_dispatcher.h"
 #include "q4t/server/application_owner.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
@@ -505,6 +506,7 @@ class ChatServer {
   ResponsesJobsOptions background_options_;
   BatchJobsOptions batch_options_;
   ApplicationOwner<ResponsesJobs> background_;
+  ApplicationOwner<WebhookDispatcher> webhook_dispatcher_;
   ApplicationOwner<BatchJobs> batches_;
   ApplicationOwner<VectorJobs> vector_jobs_;
   ApplicationStartup background_scanner_;

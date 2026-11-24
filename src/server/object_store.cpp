@@ -539,6 +539,17 @@ ObjectReply ObjectStore::ScanResponses(std::string after,
                   false, deadline, cancelled);
 }
 
+ObjectReply ObjectStore::ReconcileWebhooks(
+    std::string cursor, Clock::time_point deadline,
+    const std::function<bool()>& cancelled) {
+  if (state_->options.domain != ObjectStoreDomain::kApplication ||
+      cursor.size() > 320)
+    return Error(400, "invalid_object_domain", "Invalid reconciliation request");
+  return Dispatch(OutputJson(Object({{"operation", String("webhook_reconcile")},
+                                     {"after", String(std::move(cursor))}})),
+                  true, deadline, cancelled);
+}
+
 ObjectReply ObjectStore::ScanBatches(std::string after,
                                     Clock::time_point deadline,
                                     const std::function<bool()>& cancelled) {
