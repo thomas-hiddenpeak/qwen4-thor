@@ -80,6 +80,22 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 live.format_for(altered)
 
+    def test_skill_workspace_migration_preserves_assistants_and_immutable_versions(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(translations=live.TRANSLATION_CAPABILITY, assistants=live.ASSISTANTS_CAPABILITY)
+        target = dict(old, container_workspaces=live.SKILLS_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, target))
+        with self.assertRaisesRegex(ValueError, "predecessor"):
+            live.format_for(target)
+        self.assertFalse(migration.explicit_extension(target, old))
+        self.assertFalse(migration.explicit_extension({}, target))
+        for change in (dict(skill_mount='latest'), dict(file_contents=1), dict(skills='/skills')):
+            with self.subTest(change=change):
+                bad = dict(target, container_workspaces=dict(live.SKILLS_CAPABILITY, **change))
+                self.assertFalse(migration.explicit_extension(old, bad))
+                with self.assertRaises(ValueError):
+                    live.format_for(bad)
+
     def test_assistants_extension_requires_all_run_endpoints_and_predecessor(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(translations=live.TRANSLATION_CAPABILITY)

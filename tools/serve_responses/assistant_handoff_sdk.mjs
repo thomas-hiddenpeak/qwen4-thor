@@ -22,6 +22,9 @@ const connect = apiKey => new OpenAI({apiKey,baseURL:p.base,timeout:60000,maxRet
 const owner = connect(p.key), foreign = connect(p.other);
 const runs = owner.beta.threads.runs;
 const hidden = e => e instanceof OpenAI.APIError && e.status === 404;
+const budget = p.max_prompt_tokens;
+if (budget !== undefined) assert.ok(Number.isSafeInteger(budget) && budget >= 256);
+const budgetFields = budget === undefined ? {} : {max_prompt_tokens:budget};
 let proof;
 if (p.phase === 'create') {
   const assistant = await owner.beta.assistants.create({
@@ -32,11 +35,12 @@ if (p.phase === 'create') {
   const thread = await owner.beta.threads.create({metadata:{purpose:'release handoff'},
     messages:[{role:'user',content:'What is the Q4T publication revision?'}]});
   const events = [];
-  const stream = runs.stream(thread.id,{assistant_id:assistant.id,max_completion_tokens:256,
+  const stream = runs.stream(thread.id,{assistant_id:assistant.id,max_completion_tokens:256,...budgetFields,
     tool_choice:{type:'function',function:{name:'get_release'}}});
   stream.on('event', e => events.push(e.event));
   const run = await stream.finalRun();
   assert.equal(run.status,'requires_action',JSON.stringify(run));
+  if (budget !== undefined) assert.equal(run.max_prompt_tokens,budget);
   const calls = run.required_action.submit_tool_outputs.tool_calls;
   assert.equal(calls.length,1);
   assert.equal(calls[0].function.name,'get_release');
@@ -61,6 +65,7 @@ if (p.phase === 'create') {
   assert.equal(run.assistant_id,assistant.id);
   assert.equal(run.thread_id,old.thread);
   assert.equal(run.status,'requires_action');
+  if (budget !== undefined) assert.equal(run.max_prompt_tokens,budget);
   const [call] = run.required_action.submit_tool_outputs.tool_calls;
   assert.equal(call.id,old.call);
   assert.equal(call.function.arguments,old.arguments);
@@ -75,6 +80,10 @@ if (p.phase === 'create') {
   const done = await stream.finalRun();
   assert.equal(done.id,old.run);
   assert.equal(done.status,'completed',JSON.stringify(done));
+  if (budget !== undefined) {
+    assert.equal(done.max_prompt_tokens,budget);
+    assert.ok(done.usage.prompt_tokens > 0 && done.usage.prompt_tokens <= budget);
+  }
   assert.equal(text.join('').trim(),String(revision));
   const steps = (await runs.steps.list(done.id,{...path,order:'asc'})).data;
   assert.equal(steps.length,2);
@@ -89,7 +98,8 @@ if (p.phase === 'create') {
   assert.equal(events.at(-1),'thread.run.completed');
   proof = {assistant:assistant.id,thread:run.thread_id,run:done.id,step:steps[0].id,call:call.id,
     arguments:call.function.arguments,events,status:done.status,answer:text.join('').trim(),
-    total_tokens:done.usage.total_tokens,message:message.id};
+    total_tokens:done.usage.total_tokens,message:message.id,
+    ...(budget === undefined ? {} : {prompt_tokens:done.usage.prompt_tokens})};
 }
-process.stdout.write(JSON.stringify({...proof,sdk:version,source_sha256:p.source_sha256,
+process.stdout.write(JSON.stringify({...proof,...budgetFields,sdk:version,source_sha256:p.source_sha256,
   revision,foreign_status:404})+'\n');

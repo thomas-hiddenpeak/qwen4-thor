@@ -1,0 +1,152 @@
+{
+  "status": "ACCEPT_SKILLS_PRIMARY_LIGHT",
+  "engine_sha256": "2c1cbb9fed82a0fa38d8e6983e3679d381b163e7ce8cddb29111f73b974684a9",
+  "ingress_sha256": "8dcbff0906e72c0109a9b36febe529e92a9708d2c2b5cb8d0c934bc27f453572",
+  "qualification": {
+    "status": "ACCEPT_SKILLS_PRIMARY_LIGHT",
+    "registry_sha256": "1e0beddb47ecc358e68c519045cb163619abcb72b70643f407a81dbc5c4af844",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 75,
+      "cleanup_complete": true,
+      "lease_result_sha256": "260c49671a6e145a1b9f0872236e8007cf8aeeccabe2458bdb1553c6a6504218"
+    },
+    "migration_permit_sha256": "f46ec6fe323da4e75b349f9275aacf4ccdc1da050029d36ab2a7675443066d56",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "source_release_revision": 462,
+  "profiles": {
+    "primary": {
+      "seconds": 41.827,
+      "mtp": true,
+      "revision": 462,
+      "record": "dab417dc1d87af8a07f9636a2748e5ae5da0528ffdaa9ed02426c6d8a5c1874d",
+      "predecessor": "2016b070e7fb19a74b4bd421d27141642de84336dd1f0b6f09de948677628881",
+      "chat": "42",
+      "session_closed": true,
+      "tool_status": "requires_action",
+      "skill_zip_sha256": [
+        "d959158448a92abd7a5dd56ea2eea089fb7cc4d13bcdbaed0b86d9105c84eeb1",
+        "63eba70080be23f89bb3fbb578a604dd6e954db606fb79292fa3cd4a1b085b87"
+      ],
+      "foreign": [
+        404,
+        404
+      ],
+      "cleanup": true
+    },
+    "light": {
+      "seconds": 37.084,
+      "mtp": false,
+      "revision": 462,
+      "record": "00985afbf62b8a7d2521003e6830763ff35073ef53e1fef862e27c84c8501e90",
+      "predecessor": "a43a354cc03ef066bbd100712284a6dccdfe3b332b4f02b3dd9a879e41d8f58d",
+      "chat": "42",
+      "session_closed": true,
+      "tool_status": "completed",
+      "skill_zip_sha256": [
+        "d959158448a92abd7a5dd56ea2eea089fb7cc4d13bcdbaed0b86d9105c84eeb1",
+        "63eba70080be23f89bb3fbb578a604dd6e954db606fb79292fa3cd4a1b085b87"
+      ],
+      "foreign": [
+        404,
+        404
+      ],
+      "cleanup": true
+    }
+  },
+  "handoff": {
+    "persisted_skill_versions": 2,
+    "ids_and_file_content_preserved": true,
+    "source_files_deleted": true,
+    "container_deleted_after_reopen": true,
+    "tool_run_budget": 2048,
+    "prompt_tokens": 760,
+    "total_tokens": 782,
+    "answer": "462"
+  },
+  "cpu": {
+    "migration_tests": 33,
+    "actual_receipt_mutations": 10,
+    "inventory": 1282,
+    "inventory_mutations": 38
+  },
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/acceptance.json",
+      "sha256": "7c061333749eeeeb9084b3f020adbdca3703e81470a7d95ea8caf78b11003a7b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/profile-observations.json",
+      "sha256": "a93b5b76e845d06d5206c45c64b98817b2b0e70a82689ad84910fab174ed0872"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-profile-lease-01/exit.json",
+      "sha256": "260c49671a6e145a1b9f0872236e8007cf8aeeccabe2458bdb1553c6a6504218"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/workspace-skill-qualified-01/acceptance.json",
+      "sha256": "583992b728238345d65bd6bbfafa20de5996fcb1fa5b6b45bf5904653dd335db"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/workspace-skill-qualified-01/plan.json",
+      "sha256": "b38e19f330e06f5dcfe7a1005a5cad1231a513bb4343b318ccc18d2571a74386"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-skill-migration-final.log",
+      "sha256": "48dbb8afbd85489cd3a519319be03e722b4631d4fc26bb2e3c6ac8c295edddf9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-skill-negative-01.json",
+      "sha256": "ae03ad4ed4dd6388131c75eb03fac8082fdef22f743ba6c7d2f9d1462db55a6c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/workspace-skill-audit-01.json",
+      "sha256": "b749dd5a0165fdc35210da6ef2ed5dd450604009372f08f65055d48cebe0e812"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/workspace-skill-qualified-01/qualified/primary.json",
+      "sha256": "dab417dc1d87af8a07f9636a2748e5ae5da0528ffdaa9ed02426c6d8a5c1874d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/primary/skill-handoff.json",
+      "sha256": "f66d562a576d6a8d2be212e60590abd3e38d0cca924fa61c59efe7018fd6f46e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/primary/observation.json",
+      "sha256": "46946bedc8156f5ed233b4beb638acba9ac1adc5de5ce9a5b9bc988bb3578156"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/primary/result.json",
+      "sha256": "53059bd63a2129c045bf50d3629e017752a5741bc0e753a5abcfaac72800c3e0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/primary/cleanup.json",
+      "sha256": "711ea82bec1cb5cdbdbc4c681db94f001d988cb21bcf95186a6ccb33ec0d1ed1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/workspace-skill-qualified-01/qualified/light.json",
+      "sha256": "00985afbf62b8a7d2521003e6830763ff35073ef53e1fef862e27c84c8501e90"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/light/skill-handoff.json",
+      "sha256": "5dee4599ac41ddb51353951edf74147934739df66447f4b0550e28f7b05aa050"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/light/observation.json",
+      "sha256": "98b59d2a485b0b626009831ae1fbd58e1b88b62cf775af236d6d4ed90e4e853d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/light/result.json",
+      "sha256": "35b7242047755917ec772bbfd91903506c98608ec7886fac286724d68736c7b8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/skill-profiles-01/light/cleanup.json",
+      "sha256": "f1e06df729de57fb861decf1af6a30e16088af556c3482b930a392cbb4cd7cd7"
+    }
+  ]
+}

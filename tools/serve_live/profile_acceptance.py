@@ -69,7 +69,8 @@ def prepare(out, selection, *, discovery_build=None, previous_profiles=None):
 
 def prepare_profiles(out, envelope, selected, expected, ingress_sha256, *,
                      discovery_change=None, beta_change=None, agent_change=None,
-                     protected=None, build=None, installed_workers=None):
+                     protected=None, build=None, installed_workers=None,
+                     previous_fixture=None, selected_manifest=None):
     pkg.require(not out.exists(), 'fresh stage required')
     out.mkdir(mode=0o700, parents=True)
     state = out/'state'
@@ -85,7 +86,7 @@ def prepare_profiles(out, envelope, selected, expected, ingress_sha256, *,
             ports.append(sock.getsockname()[1])
     for index, name in enumerate(PROFILES):
         phase = out/name
-        live.prepare(phase, receipt, protected=protected, build=build)
+        live.prepare(phase, receipt, protected=protected, build=build, previous_fixture=previous_fixture)
         plan = pkg.read(phase/'plan.json')
         plan['port'], plan['operations_port'], plan['public_port'] = ports[3*index:3*index+3]
         workers.Stage.prepare_fixture(phase, plan, installed_workers)
@@ -106,7 +107,7 @@ def prepare_profiles(out, envelope, selected, expected, ingress_sha256, *,
                     '--live-worker-sha256' in command, 'managed model command')
         plan.update(schema=SCHEMA, limits=Stage.limits, name=name, command=command,
                     discovery_change=discovery_change,
-                    capacity=settings['profile'], selected_sha256=pkg.sha(ROOT/'build/service/manifest.json'),
+                    capacity=settings['profile'], selected_sha256=pkg.sha(selected_manifest or ROOT/'build/service/manifest.json'),
                     installed_policy_sha256=pkg.sha(package_dir/'client-policy.json'))
         if beta_change is not None:
             plan['beta_change'] = beta_change
@@ -159,6 +160,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'skill_handoff' in self.plan:
+            from tools.serve_responses import skill_profiles
+            skill_profiles.business(self, capabilities)
         if 'assistant_handoff' in self.plan:
             from tools.serve_responses import assistant_profiles
             assistant_profiles.business(self, capabilities)
