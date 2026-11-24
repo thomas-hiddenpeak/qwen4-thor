@@ -1,0 +1,40 @@
+{
+  "stage": "host_verified",
+  "model": "qwen3-embedding-0.6b",
+  "dimensions": 1024,
+  "range": [
+    0,
+    1
+  ],
+  "provider": "native trained model qualified for the public embeddings endpoint",
+  "hosted_reference": {
+    "model": "text-embedding-3-large",
+    "source": "https://developers.openai.com/api/docs/guides/graders",
+    "scores_interchangeable": false
+  },
+  "cpu": {
+    "distinct_passes": 23,
+    "log_sha256": "a46da58c7b78f346593267761839c9c2ff4a71e149692424e0d92f48226134a9",
+    "first_attempt": {
+      "exit": 139,
+      "reason": "New test dereferenced the nullable usage field when no model ran. Corrected the test to require null and the terminal item error.",
+      "log_sha256": "53c6ceef15d3ea2ce7f19ff986c9afca950336ab7ec63470ce5dc9ea240fbb47"
+    }
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 240,
+    "native_routes": 396,
+    "reviewed_source_anchors": 1365,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "issued": false,
+  "pending": [
+    "Compare with public embeddings via native TLS",
+    "Managed recovery, package qualification and issuance"
+  ]
+}

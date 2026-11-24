@@ -419,6 +419,10 @@ class ChatServer {
   ObjectReply EncodeVectorDocument(std::string_view text,
                                     const VectorSearchControl& control,
                                     VectorEncodedText* output);
+  ObjectReply RunEvalEmbedding(const io::Json& input,
+                               const ClientIdentity& client,
+                               ClientLease& permit,
+                               const std::shared_ptr<RequestControl>& control);
   ObjectReply RunVectorEmbedding(
       const std::vector<int32_t>& tokens, const ClientIdentity& client,
       ClientLease& permit, const std::shared_ptr<RequestControl>& control,

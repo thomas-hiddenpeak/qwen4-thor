@@ -957,6 +957,13 @@ void ChatServer::Dispatch(int fd, const std::string& method,
         : IsStoredChatTarget(path)
             ? HandleStoredChatRequest(*objects_, method, path, body, access)
             : HandleConversationRequest(*objects_, method, path, body, access);
+    if (eval_dispatcher_ && reply.ok() &&
+        (eval_route == EvalRouteKind::kCancel ||
+         (method == "DELETE" && (eval_route == EvalRouteKind::kRun ||
+                                 eval_route == EvalRouteKind::kEval)))) {
+      const auto route = ParseEvalRoute(path);
+      eval_dispatcher_->CancelEmbedding(scope, route.eval, route.run);
+    }
     if (create_eval_run && (reply.ok() || reply.commit_unknown))
       eval_dispatcher_->Wake();
     if (reply.ok() && eval_route == EvalRouteKind::kReport)

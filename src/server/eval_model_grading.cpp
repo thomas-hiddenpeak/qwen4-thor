@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "eval_run_state.h"
+#include "eval_grading.h"
 
 namespace q4t::server::eval_detail {
 namespace {
@@ -128,9 +129,15 @@ ObjectReply ReadGrade(const Json& criterion, const Json& sample, Json* out) {
 }
 }  // namespace
 
+bool CosineCriterion(const Json& criterion) {
+  return criterion.GetString("type") == "text_similarity" &&
+         criterion.GetString("evaluation_metric") == "cosine";
+}
+
 bool ModelCriterion(const Json& criterion) {
   const auto type = criterion.GetString("type");
-  return type == "label_model" || type == "score_model";
+  return type == "label_model" || type == "score_model" ||
+         CosineCriterion(criterion);
 }
 
 void RecordModelUsage(Json* resource, const Json& sample) {
@@ -183,17 +190,26 @@ ObjectReply AdvanceModelGrade(ObjectStore& objects, const StateAccess& access,
                    "Model grader owner is unavailable");
     const auto criterion = criteria->array[index];
     Json source, jury = row, grade;
-    auto result = GraderSource(criterion, &source);
-    if (result.ok())
-      result =
-          SampleRow(objects, access, *owner, write, source, &jury, consumed);
-    if (!result.ok() &&
+    ObjectReply result;
+    const bool cosine = CosineCriterion(criterion);
+    if (cosine) {
+      result = GradeCosine(criterion, row, owner->embed, &grade, &resource);
+    } else {
+      result = GraderSource(criterion, &source);
+      if (result.ok())
+        result =
+            SampleRow(objects, access, *owner, write, source, &jury, consumed);
+    }
+    const bool terminal_embedding_error =
+        cosine && (result.code == "eval_embedding_invalid" ||
+                   result.code == "deadline_exceeded");
+    if (!result.ok() && !terminal_embedding_error &&
         (result.commit_unknown || result.http_status == 409 ||
          result.http_status == 429 || result.http_status == 499 ||
          result.http_status >= 500))
       return result;
     if (result.ok() && result.http_status == 202) return result;
-    if (result.ok()) {
+    if (result.ok() && !cosine) {
       const auto& sample = *jury.Find("sample");
       RecordModelUsage(&resource, sample);
       result = ReadGrade(criterion, sample, &grade);

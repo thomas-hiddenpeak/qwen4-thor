@@ -494,10 +494,14 @@ std::string ChatCapabilitiesJson(
          R"("run_sources":["jsonl","completions","responses"],)"
          R"("stored_sources":["stored_completions","responses"],)"
          R"("graders":["string_check","text_similarity","python","label_model","score_model"],)"
-         R"("text_similarity":["fuzzy_match","bleu","gleu","rouge_1","rouge_2","rouge_3","rouge_4","rouge_5","rouge_l"],)"
+         R"("text_similarity":["fuzzy_match","bleu","gleu","rouge_1","rouge_2","rouge_3","rouge_4","rouge_5","rouge_l")" +
+         (native_embedding ? R"(,"cosine")" : "") + "]," +
          R"("python_profile":"local_default",)"
          R"("row_checkpoints":true,)"
          R"("pure_text_interruption_retries":1})"
+         R"(,"eval_embedding_grader":{"metric":"cosine","model":"qwen3-embedding-0.6b",)"
+         R"("dimensions":1024,"range":[0,1],"configured":)" +
+         (native_embedding ? "true}" : "false}") +
          R"(,"chatkit":{"selector":"chatkit_beta=v1","client":"/v1/chatkit",)"
          R"("uploads":"/v1/chatkit/attachments","grant_scope":"project_user_workflow",)"
          R"("client_tools":"serial","thread_history":true,"direct_document_upload":true})"
