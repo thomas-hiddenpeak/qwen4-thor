@@ -22,5 +22,48 @@
   "other_evals_pending": [
     "stored inference source filters",
     "additional graders"
-  ]
+  ],
+  "first_device": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 36.247,
+    "unchanged_default": true,
+    "phases": [],
+    "reports": [
+      {
+        "type": "completions",
+        "prediction": "157",
+        "score": 1,
+        "seed": 7102,
+        "usage": {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 1,
+          "prompt_tokens": 309,
+          "completion_tokens": 4,
+          "total_tokens": 313,
+          "cached_tokens": 0
+        },
+        "original_id": "evalrun_29cfa0d8f8323f674c1c38393aa13ef4"
+      },
+      {
+        "type": "responses",
+        "prediction": "157",
+        "score": 0,
+        "seed": 2883338658268282,
+        "usage": {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 1,
+          "prompt_tokens": 309,
+          "completion_tokens": 4,
+          "total_tokens": 313,
+          "cached_tokens": 0
+        },
+        "original_id": "evalrun_a9709d4ec92a639d4696d4cdb10c308e"
+      }
+    ],
+    "independent_chat": "42",
+    "canceled": "canceled",
+    "raw_sdk_observations_sha256": "dd5ff53d62210038744e2a83e4e5e82f278ace99f9da4e9f650d40e50ba62100",
+    "failure": "Frozen HTTP oneOf matched both EvalItem and the plain message variant for scalar text in a template echoed by the server. The versioned SDK accepted all seven exchanges; raw validation failed."
+  }
 }

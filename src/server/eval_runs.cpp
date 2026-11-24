@@ -17,6 +17,27 @@ ObjectReply Get(ObjectStore& objects, const StateAccess& access,
   return objects.Execute(Read(kind, access, id), access.deadline,
                          access.cancelled);
 }
+// A string in a standard template message matches both branches of upstream
+// oneOf. The equivalent typed text part selects EvalItem unambiguously. Keep
+// the original run request internally so replay uses exactly the submitted
+// input.
+void PublicRunTemplate(Json* run) {
+  auto* source = run->Find("data_source");
+  if (!source || !source->Has("input_messages")) return;
+  auto& spec = Field(Field(*run, "data_source"), "input_messages");
+  if (spec.GetString("type") != "template" || !spec.GetArray("template"))
+    return;
+  for (auto& message : Field(spec, "template").array) {
+    const auto role = message.GetString("role");
+    const auto* content = message.Find("content");
+    if (content && content->IsString() &&
+        (role == "user" || role == "assistant" || role == "system" ||
+         role == "developer"))
+      Set(&message, "content",
+          Object({{"type", String("input_text")}, {"text", *content}}));
+  }
+}
+
 ObjectReply Public(const Json& record, const EvalRoute& route, bool output) {
   const auto* data = record.Find("data");
   const auto* item = data ? data->Find("resource") : nullptr;
@@ -30,6 +51,7 @@ ObjectReply Public(const Json& record, const EvalRoute& route, bool output) {
     return InvalidRecord();
   ObjectReply result;
   result.value = *item;
+  if (!output) PublicRunTemplate(&result.value);
   return result;
 }
 ObjectReply Create(ObjectStore& objects, const StateAccess& access,
@@ -127,6 +149,7 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
   }
   if (stored.ok()) {
     stored.value = std::move(resource);
+    PublicRunTemplate(&stored.value);
     stored.http_status = 201;
   } else if (stored.commit_unknown) {
     stored.value = Object({{"id", *resource.Find("id")}});
@@ -324,7 +347,7 @@ ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
   auto write = Update(ObjectKind::kEvalRun, access, run.value);
   if (status != "canceled") {
     Set(&result.value, "status", String("canceled"));
-    Set(&write.data, "resource", result.value);
+    Set(&Field(write.data, "resource"), "status", String("canceled"));
     auto saved = objects.Execute(write, access.deadline, access.cancelled);
     if (!saved.ok()) return saved;
     ++write.expected_revision;

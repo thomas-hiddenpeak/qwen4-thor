@@ -165,6 +165,16 @@ ObjectReply SamplingRequest(const Json& source, const Json& row,
   if (!input.IsArray() && !input.IsString())
     return BadInput("input_messages",
                     "Expected an input message array or text");
+  // EvalItem permits a single content part where Responses accepts a list.
+  for (auto& message : input.array) {
+    const auto* part = message.Find("content");
+    if (part && part->IsObject()) Set(&message, "content", Array({*part}));
+    if (auto* array = message.GetArray("content"); array) {
+      for (auto& value : Field(message, "content").array)
+        if (value.IsString())
+          value = Object({{"type", String("input_text")}, {"text", value}});
+    }
+  }
   *request = Object({{"model", String(source.GetString("model", config.model))},
                      {"input", std::move(input)},
                      {"background", Boolean(true)},

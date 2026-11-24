@@ -87,6 +87,8 @@ Q4T_TEST(evals_model_samples_bind_one_worker_and_release_parent_and_child) {
     deliver = false;
     auto run = Request(objects, "POST", base, body, scope);
     Q4T_CHECK(run.ok());
+    const auto& part = *run.value.Find("data_source")->Find("input_messages")->GetArray("template")->array[0].Find("content");
+    Q4T_CHECK(part.GetString("type") == "input_text" && part.GetString("text") == "Report {{item.count}}");
     const auto id = run.value.GetString("id");
     const auto path = base + "/" + id;
     ObjectRequest get;

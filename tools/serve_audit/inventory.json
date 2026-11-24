@@ -5109,9 +5109,9 @@
     "src/server/eval_grading.cpp": "38971089d7ee9eae60e23d6bd3f51c2a02f7bd1557aaec2f3ad23efba9e58aab",
     "src/server/eval_grading.h": "6f5bb001a5ed5c1a15516aac8920532d1935d7f43caec9e56af9b2b492e33d7a",
     "src/server/eval_run_state.h": "0e0d10bb99b1e036d6d600a59594be9ffd1d634d24837db59cc59107122a0613",
-    "src/server/eval_runs.cpp": "a978547bad8ab8ea9a0398db2d7f9759de83b189dfad16783519750f76ef3ae6",
+    "src/server/eval_runs.cpp": "e917830d47f69b0a28ef197ba125c6678b317051213688ad159b474c47268e72",
     "src/server/eval_runs.h": "dd7defa613175f11284a4e654e05e0c953f559a4e4411e023ba83e1365437fe7",
-    "src/server/eval_sampling.cpp": "fb291efa21b6143ff78e9ccd7235623e0506e132b27cc88b78bab0f0e3271eb7",
+    "src/server/eval_sampling.cpp": "fdb979566339b3fb160e44df620dd80b2218b8d148d6fe068a0eb029203645e1",
     "src/server/eval_sampling.h": "302cf02ae39a46991578eb59376930c7937bbbcf12525e3d9f63cb1a83c54d74"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
