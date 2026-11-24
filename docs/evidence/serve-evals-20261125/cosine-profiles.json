@@ -1,11 +1,9 @@
 {
-  "stage": "retry_prepared",
+  "stage": "profiles_qualified",
   "predecessor_revision": 480,
   "profile_format": "q4t-profile-business-v46",
   "pending": [
-    "Scoped migration checks",
-    "Partial evaluation, deleted dataset, retained scored items and metered embedding calls across both issued capacities",
-    "Qualification and release"
+    "Managed model and gateway recovery, independent fallback and publication"
   ],
   "previous_attempt": {
     "primary": {
@@ -86,5 +84,226 @@
     "cause": "Recompressing the entire already compressed v45 history together with the v46 delta exceeded the 128 KiB witness limit.",
     "log_sha256": "0ddc1b583172dea94962ffe83f078c2d97f408de783d5affc347ea9bfc1387c4",
     "repair": "Retain the signed v45 envelope verbatim and compress only the new reconstruction fields. Keep both the existing single-frame and profile file limits."
+  },
+  "previous_revision": 480,
+  "status": "ACCEPT_EVAL_COSINE_PRIMARY_LIGHT",
+  "profiles": {
+    "primary": {
+      "seconds": 42.969,
+      "starts": 1,
+      "record": "3a06296e569444482724f6b6415e19d61512f6ccdb5dae66a957e667ff330e92",
+      "previous": "bd258166e4b8719408474b18aac3a5cf684722753f1bfc7e75709d53097cfe8e",
+      "business": {
+        "sdk": "7.47.0",
+        "phase": "primary",
+        "evaluation": "eval_8a3f7c9d6956cad8aee0b50576d0d6d3",
+        "run": "evalrun_06bd48bba706068cf6962cc22cc69595",
+        "file": "file_49b7cb0492b2415e99d45fda90e621a7",
+        "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+        "source_deleted": 404,
+        "peer": 404,
+        "status": "in_progress",
+        "items": [
+          {
+            "id": "outputitem_cca876fd856ae4541eb69e05e547dde3",
+            "index": 0,
+            "answer": "157",
+            "cosine": 1,
+            "score": 1,
+            "seed": 674229966830939,
+            "created_at": 1795560299
+          }
+        ],
+        "counts": {
+          "total": 1,
+          "errored": 0,
+          "passed": 1,
+          "failed": 0
+        },
+        "usage": [
+          {
+            "model_name": "qwen3.8-flash-next",
+            "invocation_count": 1,
+            "prompt_tokens": 309,
+            "completion_tokens": 4,
+            "total_tokens": 313,
+            "cached_tokens": 0
+          },
+          {
+            "model_name": "qwen3-embedding-0.6b",
+            "invocation_count": 1,
+            "prompt_tokens": 8,
+            "completion_tokens": 0,
+            "total_tokens": 8,
+            "cached_tokens": 0
+          }
+        ],
+        "cosine": {
+          "model": "qwen3-embedding-0.6b",
+          "baseline": [
+            1,
+            0.47933263119300346
+          ],
+          "tokens": [
+            8,
+            19
+          ],
+          "owner_report": 200,
+          "peer_report": 404
+        }
+      }
+    },
+    "light": {
+      "seconds": 40.448,
+      "starts": 1,
+      "record": "0809999642ccd316c363a0a969ab045aeaf3c006594c7b22517cc4b9218c69af",
+      "previous": "f8d8c92cab7612628fb1c105afdea20a9c081b77289e6a745367aded9db4a95b",
+      "business": {
+        "sdk": "7.47.0",
+        "phase": "light",
+        "evaluation": "eval_8a3f7c9d6956cad8aee0b50576d0d6d3",
+        "run": "evalrun_06bd48bba706068cf6962cc22cc69595",
+        "file": "file_49b7cb0492b2415e99d45fda90e621a7",
+        "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+        "source_deleted": 404,
+        "peer": 404,
+        "status": "completed",
+        "items": [
+          {
+            "id": "outputitem_cca876fd856ae4541eb69e05e547dde3",
+            "index": 0,
+            "answer": "157",
+            "cosine": 1,
+            "score": 1,
+            "seed": 674229966830939,
+            "created_at": 1795560299
+          },
+          {
+            "id": "outputitem_8641b2144d8642da0af56342edf5034f",
+            "index": 1,
+            "answer": "157",
+            "cosine": 0.47933263119300307,
+            "score": 0,
+            "seed": 3259372078170956,
+            "created_at": 1795560335
+          },
+          {
+            "id": "outputitem_0c45a03a55dc5faec3401879cee6833e",
+            "index": 2,
+            "answer": "157",
+            "cosine": 1,
+            "score": 1,
+            "seed": 836903536180550,
+            "created_at": 1795560336
+          },
+          {
+            "id": "outputitem_409b388a534581151fc52851b4e98fc0",
+            "index": 3,
+            "answer": "157",
+            "cosine": 0.47933263119300307,
+            "score": 0,
+            "seed": 1715441547624518,
+            "created_at": 1795560337
+          },
+          {
+            "id": "outputitem_9037da0dfade52072b942d56ebdd3ae1",
+            "index": 4,
+            "answer": "157",
+            "cosine": 1,
+            "score": 1,
+            "seed": 1204592615088045,
+            "created_at": 1795560338
+          },
+          {
+            "id": "outputitem_9a001958976127d7d3f1bf4d48b95b90",
+            "index": 5,
+            "answer": "157",
+            "cosine": 0.47933263119300307,
+            "score": 0,
+            "seed": 2444658520243381,
+            "created_at": 1795560339
+          }
+        ],
+        "counts": {
+          "total": 6,
+          "errored": 0,
+          "passed": 3,
+          "failed": 3
+        },
+        "usage": [
+          {
+            "model_name": "qwen3.8-flash-next",
+            "invocation_count": 6,
+            "prompt_tokens": 1854,
+            "completion_tokens": 24,
+            "total_tokens": 1878,
+            "cached_tokens": 0
+          },
+          {
+            "model_name": "qwen3-embedding-0.6b",
+            "invocation_count": 6,
+            "prompt_tokens": 81,
+            "completion_tokens": 0,
+            "total_tokens": 81,
+            "cached_tokens": 0
+          }
+        ],
+        "chat": "42",
+        "cosine": {
+          "model": "qwen3-embedding-0.6b",
+          "baseline": [
+            1,
+            0.47933263119300346
+          ],
+          "tokens": [
+            8,
+            19
+          ],
+          "owner_report": 200,
+          "peer_report": 404
+        },
+        "stopped": {
+          "run": "evalrun_06bd48bba706068cf6962cc22cc69595",
+          "items": [
+            "outputitem_cca876fd856ae4541eb69e05e547dde3"
+          ],
+          "total": 1
+        }
+      }
+    }
+  },
+  "registry_sha256": "e9e623275d89a94637a5916e8a247b9a17a56d67bd55186f37187c0285d1f9ba",
+  "configuration_checks": {
+    "profiles": 2,
+    "revisions": [
+      45,
+      46
+    ],
+    "schemas": 2
+  },
+  "cpu": {
+    "passed": 43,
+    "sha256": "5166e7b8e37e152000541319505c7d1dc943cdf6006c5668f5fe5d8fac1f3252",
+    "setup_failures": "Four runs failed at fixture setup in this sparse checkout. Added the tracked evidence files and repeated all cases."
+  },
+  "initial_device_attempt": "Relative path to the test driver was resolved against the lease root. It exited before starting a model. The qualified lease used an absolute path.",
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-qualified-01/qualified/registry.json": "e9e623275d89a94637a5916e8a247b9a17a56d67bd55186f37187c0285d1f9ba",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-qualified-01/acceptance.json": "940aa97c27e92ff00f691c7abddbcb477a3c193cc9211303e403b03d17435ae9",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/acceptance.json": "5c35c82b1e0b5aa927d3b6e3281f5341f5620fdcc6c9c0c228ee1493a726cce4",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/profile-observations.json": "12d8cc16dc42b4990407a76fe8abffe2b9017cc1eb953d370959c35a0e0f0703",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/lease/exit.json": "9d9657bdb048993301735c7d9370908872573f71272686ef7175a5fd4d8a102f",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/light/eval-stopped.json": "cc97ba0506589f42785167995205208bf24f1f00fe80ffc2daa5cfbbd6a8cdee",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/eval3-profile-pins-inventory.json": "919b3139eb7a02bfb69468507642e394e819a40c9f2f2499563bc7ce902987cb",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/primary/configuration.wire": "1af075579f52c3e08a463385622f4023db62ce1c34928ff8fb8c24cfa02870ec",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/primary/cleanup.json": "40f8fda0658a6d1f8059d303539e7df336e53275918efab10ef09c662e267f67",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/primary/plan.json": "465cfce8435cf1684cb45fca3b9579d51260ba9aa09e15dcf9146cc2fc4c1d0a",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/primary/result.json": "5b2b1f9aaeb2948610665e598513b276728b099d3e5b2102a0cc248235aeaf98",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/primary/eval-cosine-handoff.json": "fb731edafb1880d5b0764fd462fba67342faafbe106740bc1de9567f7c73e261",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/light/configuration.wire": "b113f23460b788cc16586a3f4f681d80c3641f70cc20059b5bf5bd90f2f53a31",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/light/cleanup.json": "eacd0d4fa13ed3a39d38241819427740518c915c6275c45daa9b1475709e8a92",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/light/plan.json": "fdf57c84721650c6e4140ea8e71106b593d75b1990ac010c85d325bf6ee903ac",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/light/result.json": "079aa1805ceecb323c6682e286e3f017d8f22fba72f5c558e7fac79cd577417c",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval3-profiles-02/light/eval-cosine-handoff.json": "8c9117b697ea9125e3537bacd7a7f74d15f3f175d88fab335c0ac52d66789028"
   }
 }

@@ -18166,6 +18166,10 @@
       "stage": "native_tls_verified",
       "receipt": "docs/evidence/serve-evals-20261125/trained-cosine.json",
       "issued": false
+    },
+    "cosine_profiles": {
+      "receipt": "docs/evidence/serve-evals-20261125/cosine-profiles.json",
+      "stage": "profiles_qualified"
     }
   }
 }

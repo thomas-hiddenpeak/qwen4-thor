@@ -126,6 +126,32 @@ class MigrationTests(unittest.TestCase):
                 del bad[field]
                 self.assertFalse(migration.explicit_extension(old, dict(new, evals=bad)))
 
+    def test_cosine_preserves_the_previous_profile_envelope_as_an_opaque_value(self):
+        from tools.serve_recovery import profile_live_reuse as live, profile_mcp_codec as codec
+        history = dict(format=live.EVAL_FORMAT, previous=codec.pack({'prior': 'reviewed'}))
+        metadata = dict(format=live.EVAL_RECORD, configuration={'seq': 1}, startup_memory={},
+                        environment={}, engine={'binary_sha256': 'a' * 64}, ctimes={},
+                        capabilities={}, added=['eval_embedding_grader'], live={'observed': 1})
+        current = dict(format=live.COSINE_RECORD, capabilities={'eval_embedding_grader': {}},
+                       identity={'model_assets': {}}, business={'live': {}},
+                       reused_business=dict(format=live.COSINE_FORMAT,
+                                            previous=codec.pack(metadata), history=history))
+        recovered = live.previous_record(current)
+        self.assertEqual(recovered['reused_business'], history)
+        self.assertEqual(recovered['business']['live'], {'observed': 1})
+        self.assertNotIn('eval_embedding_grader', recovered['capabilities'])
+        for transformation in ('missing', 'ambiguous', 'wrong_version'):
+            with self.subTest(transformation=transformation):
+                wrong = copy.deepcopy(current)
+                if transformation == 'missing':
+                    del wrong['reused_business']['history']
+                elif transformation == 'ambiguous':
+                    wrong['reused_business']['previous'] = codec.pack(dict(metadata, reused_business=history))
+                else:
+                    wrong['reused_business']['history']['format'] = live.COSINE_FORMAT
+                with self.assertRaises(ledger.LedgerError):
+                    live.previous_record(wrong)
+
     def test_trained_cosine_migration_requires_the_exact_model_and_metrics(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(evals=live.EVAL_CAPABILITY, vector_stores={'native_embedding_configured': True})

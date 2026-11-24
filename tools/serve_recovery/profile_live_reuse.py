@@ -25,7 +25,10 @@ MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 COSINE_RECORD = 'q4t-profile-business-v46'
 COSINE_FORMAT = 'q4t-eval-cosine-source-v1'
-COSINE_REVIEWED = {}
+COSINE_REVIEWED = {
+    'primary': '3a06296e569444482724f6b6415e19d61512f6ccdb5dae66a957e667ff330e92',
+    'light': '0809999642ccd316c363a0a969ab045aeaf3c006594c7b22517cc4b9218c69af',
+}
 EVAL_RECORD = 'q4t-profile-business-v45'
 EVAL_FORMAT = 'q4t-eval-source-v1'
 EVAL_REVIEWED = {
@@ -266,6 +269,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '5c35c82b1e0b5aa927d3b6e3281f5341f5620fdcc6c9c0c228ee1493a726cce4':
+        '1efb565263062c11b682bab1905424da4fdb84fc902c87c67bb3a60e2e57c137',
     'dcb959dc77dcbd23b96df4c56d5d3c6a86386a342f4dd8de4cc244e9bb265c0e':
         '69a8c51d99aaaf17574cef5e5d688c808925cf5eeb69d2642125d22480e7174e',
     'b65198bc23c0b545f11ed565601fa9942c8a1ca960d0613a385de251168073e4':
