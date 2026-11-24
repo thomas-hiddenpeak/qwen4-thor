@@ -2720,6 +2720,13 @@
         "required_methods": 231,
         "accepted_method_declarations": 178,
         "long_run_hours": 0
+      },
+      "translation_transport_delivery_20261124": {
+        "revision": 468,
+        "evidence": "evidence/serve-realtime-translation-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 179,
+        "long_run_hours": 0
       }
     },
     {
@@ -6212,6 +6219,13 @@
         "required_methods": 231,
         "accepted_method_declarations": 178,
         "long_run_hours": 0
+      },
+      "translation_transport_delivery_20261124": {
+        "revision": 468,
+        "evidence": "evidence/serve-realtime-translation-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 179,
+        "long_run_hours": 0
       }
     },
     {
@@ -8554,6 +8568,13 @@
         "required_methods": 231,
         "accepted_method_declarations": 178,
         "long_run_hours": 0
+      },
+      "translation_transport_delivery_20261124": {
+        "revision": 468,
+        "evidence": "evidence/serve-realtime-translation-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 179,
+        "long_run_hours": 0
       }
     },
     {
@@ -9499,6 +9520,13 @@
         "pending": [
           "independent sealed recovery and publication"
         ]
+      },
+      "translation_transport_delivery_20261124": {
+        "revision": 468,
+        "evidence": "evidence/serve-realtime-translation-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 179,
+        "long_run_hours": 0
       }
     },
     {
@@ -11047,11 +11075,18 @@
         "pending": [
           "independent sealed recovery and publication"
         ]
+      },
+      "translation_transport_delivery_20261124": {
+        "revision": 468,
+        "evidence": "evidence/serve-realtime-translation-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 179,
+        "long_run_hours": 0
       }
     }
   ],
-  "next_task": "Qualify sealed translation recovery and publish the stopped primary/fallback pair, then continue the remaining required inference/application methods.",
-  "next": "验收翻译封包故障接手并发布可回退版本，继续应用服务其余缺口。",
+  "next_task": "Implement Agents automations, scheduled and manual invocations against real session turns, then continue the remaining required inference/application and recovery capabilities.",
+  "next": "推进 Agents 自动化、定时及手动触发的真实会话，再接续其余推理、应用服务和恢复事项。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
