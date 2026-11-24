@@ -10,7 +10,7 @@ namespace q4t::server {
 namespace {
 using namespace object_detail;
 constexpr size_t kPacketBytes = 65535, kPcmPacket = 960;
-constexpr size_t kDataBytes = 4ULL << 20, kPcmBytes = 4ULL << 20;
+constexpr size_t kDataBytes = 4ULL << 20;
 }  // namespace
 
 LiveMediaCall::LiveMediaCall(std::string id, uint64_t expires_at,
@@ -45,14 +45,11 @@ bool LiveMediaCall::Publish(std::string_view wire) {
     std::string pcm;
     if (!delta || !delta->IsString() ||
         !DecodeRealtimeAudioBase64(delta->str, &pcm).ok() || pcm.empty() ||
-        pcm.size() % 2 || pcm.size() > kPcmBytes) {
+        pcm.size() % 2 || pcm.size() > MediaPcmPlayout::kMaxBytes) {
       failed_ = true;
       return false;
     }
-    if (pcm.size() > kPcmBytes - queued_pcm_ || media_.size() >= 512)
-      return false;
-    queued_pcm_ += pcm.size();
-    media_.push_back(std::move(pcm));
+    return playout_.Enqueue(std::move(pcm));
   } else {
     if (sideband_) sideband_->Publish(wire, Clock::now());
     if (frontend_.AllowsServer(event)) channel_.Queue(wire);
@@ -148,10 +145,29 @@ bool LiveMediaCall::Tick(Clock::time_point now) {
   }
   if (!session_.Tick()) return false;
   bool blocked = verified_ && !channel_.Flush(now, send_);
-  if (verified_ && !media_.empty() && now >= next_audio_) {
+  if (verified_ && !playout_.Flush(now, send_)) blocked = true;
+  if (!blocked)
+    blocked_since_ = {};
+  else if (blocked_since_ == Clock::time_point{})
+    blocked_since_ = now;
+  return !blocked || now - blocked_since_ < std::chrono::seconds(15);
+}
+
+bool MediaPcmPlayout::Enqueue(std::string&& pcm) {
+  if (pcm.empty() || pcm.size() % 2 || pcm.size() > kMaxBytes - queued_pcm_ ||
+      media_.size() >= 512)
+    return false;
+  queued_pcm_ += pcm.size();
+  media_.push_back(std::move(pcm));
+  return true;
+}
+
+bool MediaPcmPlayout::Flush(IMediaCall::Clock::time_point now,
+                            const IMediaCall::Send& send) {
+  if (!media_.empty() && now >= next_audio_) {
     auto chunk =
         std::string_view(media_.front()).substr(pcm_offset_, kPcmPacket);
-    if (send_('P', chunk)) {
+    if (send('P', chunk)) {
       pcm_offset_ += chunk.size();
       queued_pcm_ -= chunk.size();
       if (pcm_offset_ == media_.front().size()) {
@@ -163,24 +179,24 @@ bool LiveMediaCall::Tick(Clock::time_point now) {
       next_audio_ =
           now + std::chrono::microseconds(chunk.size() * 1000000ULL / 48000);
     } else {
-      blocked = true;
+      return false;
     }
   }
-  if (!blocked)
-    blocked_since_ = {};
-  else if (blocked_since_ == Clock::time_point{})
-    blocked_since_ = now;
-  return !blocked || now - blocked_since_ < std::chrono::seconds(15);
+  return true;
+}
+
+void MediaPcmPlayout::Clear() {
+  media_.clear();
+  pcm_offset_ = queued_pcm_ = 0;
 }
 
 bool LiveMediaCall::EndTransport() {
   transport_ended_ = true;
-  media_.clear();
-  pcm_offset_ = queued_pcm_ = 0;
+  playout_.Clear();
   return session_.CloseMedia();
 }
 
 bool LiveMediaCall::Finished() const {
-  return session_.Finalized() && channel_.Empty() && media_.empty();
+  return session_.Finalized() && channel_.Empty() && playout_.Empty();
 }
 }  // namespace q4t::server

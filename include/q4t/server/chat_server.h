@@ -92,6 +92,7 @@
 
 namespace q4t {
 namespace server {
+struct RealtimeTranslationNative;
 struct LiveSessionCallbacks;
 class LiveSideband;
 enum class LiveTransport;
@@ -350,6 +351,8 @@ class ChatServer {
   void HandleRealtime(int fd, std::string_view path,
                        const HttpRequestHeaders& headers,
                        std::string_view initial, std::string_view accept);
+  RealtimeTranslationNative MakeRealtimeTranslationNative(
+      const ClientIdentity& client);
   RealtimeConversationCallbacks MakeRealtimeCallbacks(
       const ClientIdentity& client, std::optional<double> legacy_temperature = std::nullopt);
   void HandleRealtimeTranslation(int fd, std::string_view path,
@@ -374,7 +377,8 @@ class ChatServer {
   void HandleLiveMediaCreate(int fd, std::string_view source,
                              const std::string& body,
                              std::atomic<int>*& admission, std::string_view sip_id = {},
-                             std::optional<std::string_view> offer_type = std::nullopt);
+                             std::optional<std::string_view> offer_type = std::nullopt,
+                             bool translation = false);
   void JoinLiveMedia();
   void HandleLive(int fd, std::string_view path,
                     const HttpRequestHeaders& headers,

@@ -17,6 +17,7 @@ class IMediaCall {
   virtual bool Tick(Clock::time_point now) = 0;
   virtual bool Finished() const = 0;
   virtual bool EndTransport() = 0;
+  virtual bool Succeeded() const { return true; }
 };
 
 // Ordered, bounded SCTP messages shared by both application protocols. Losing
@@ -36,6 +37,22 @@ class MediaDataChannel {
   size_t queued_data_ = 0;
   std::deque<std::string> data_;
   IMediaCall::Clock::time_point waiting_data_{};
+};
+
+// One negotiated mono, 24 kHz PCM16 output track. A blocked carrier never
+// causes a burst of old packets after it becomes writable again.
+class MediaPcmPlayout {
+ public:
+  static constexpr size_t kMaxBytes = 4ULL << 20;
+  bool Enqueue(std::string&& pcm);
+  bool Flush(IMediaCall::Clock::time_point now, const IMediaCall::Send& send);
+  bool Empty() const { return media_.empty(); }
+  void Clear();
+
+ private:
+  size_t pcm_offset_ = 0, queued_pcm_ = 0;
+  std::deque<std::string> media_;
+  IMediaCall::Clock::time_point next_audio_{};
 };
 
 class LiveMediaCall final : public IMediaCall {
@@ -61,9 +78,8 @@ class LiveMediaCall final : public IMediaCall {
   MediaDataChannel channel_;
   bool verified_ = false;
   bool failed_ = false;
-  size_t pcm_offset_ = 0, queued_pcm_ = 0;
-  std::deque<std::string> media_;
-  Clock::time_point next_audio_{}, blocked_since_{};
+  MediaPcmPlayout playout_;
+  Clock::time_point blocked_since_{};
   // Destroy the backend while the channel, media queues and callbacks exist.
   LiveSession session_;
 };

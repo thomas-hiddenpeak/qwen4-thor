@@ -33,6 +33,10 @@ Q4T_TEST(chat_capabilities_reports_live_calls_and_credential_scope) {
   const auto* realtime = value.Find("realtime");
   Q4T_CHECK(realtime && realtime->GetArray("pending_execution") &&
             realtime->GetArray("pending_execution")->array.empty());
+  const auto* translations = realtime->Find("translations");
+  Q4T_CHECK(translations && translations->GetString("calls") ==
+                "/v1/realtime/translations/calls" &&
+            translations->GetString("webrtc_output") == "remote_audio_track");
   const auto* calls = realtime->Find("calls");
   Q4T_CHECK(calls && calls->GetString("create") == "/v1/realtime/calls");
   const auto* secrets = realtime->Find("client_secrets");

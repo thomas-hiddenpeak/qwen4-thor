@@ -71,6 +71,12 @@ inline std::string_view LiveForkId(std::string_view path) {
 inline bool IsRealtimeTranslationTarget(std::string_view target) {
   return target.substr(0, target.find('?')) == "/v1/realtime/translations";
 }
+inline bool IsTranslationCall(std::string_view target) {
+  return target == "/v1/realtime/translations/calls";
+}
+inline bool IsRealtimeOffer(std::string_view target) {
+  return target == "/v1/realtime/calls" || IsTranslationCall(target);
+}
 inline bool ValidRealtimeTranslationTarget(std::string_view target) {
   return target == "/v1/realtime/translations" ||
          target == "/v1/realtime/translations?model=gpt-realtime-translate";
@@ -95,7 +101,7 @@ inline bool IsRealtimeUpgrade(std::string_view method,
 
 inline bool IsLiveMediaCreate(std::string_view method, std::string_view target) {
   return method == "POST" &&
-         (target == "/v1/realtime/calls" || target == "/v1/live/sessions" ||
+         (IsRealtimeOffer(target) || target == "/v1/live/sessions" ||
           !LiveForkId(target).empty() ||
           !SipControlId(target, "/accept").empty());
 }

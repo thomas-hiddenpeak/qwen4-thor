@@ -2794,6 +2794,16 @@
         "src/server/realtime_translation_session.cpp",
         "tests/server_realtime_shape_test.cpp"
       ]
+    },
+    "POST /v1/realtime/translations/calls": {
+      "semantics": "Negotiate a scoped WebRTC speech translation call and return its SDP answer.",
+      "boundary": "Short-lived translation credential or owner API key. Input and translated output travel on SRTP tracks. Optional SCTP carries subtitles and session controls.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/translation_media_call.cpp",
+        "tests/server_realtime_translation_test.cpp",
+        "tools/serve_realtime/translation_browser.js"
+      ]
     }
   },
   "whitelists": {
@@ -3408,8 +3418,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "8b3d45363de542868796c373aa4c535ab1fddf29c0e7d3272915331ebc2824e9",
-    "cmake/ChatProtocolIdentity.cmake": "75432dfaa83db6cfda3084161e26e6c346478cdc17efacfa9236a8a2120c59a7",
+    "CMakeLists.txt": "17f8df5adb79cb73e32c7cb5816e9aa29d143ad64451e52fa487fb2be04787b8",
+    "cmake/ChatProtocolIdentity.cmake": "d5646bc1dcfdf7b309c55a3c268029063ee8ce1d3f26939f629fa529bec66073",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3493,7 +3503,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "44a15ef2e1ca5abab20f9c0eda1ab030a1dbae0b7ff186cd6fb35c5e7d87aa51",
+    "include/q4t/server/application_routes.h": "53a84aba5c5c463235460bb3944d60c29ab81ee32e4ed8eb5e21f2b5d0277e0d",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3535,7 +3545,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "acbbc643be348715a3d845a43a1754ae6d89883d7cf09873a7037ac9de43c473",
+    "include/q4t/server/chat_server.h": "5164e3125b0985d8d4a336d37b7e544ad82e5c37c1ef77ce678922941df30f38",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -3604,7 +3614,7 @@
     "include/q4t/server/live_decision_items.h": "871b053f7639318de9ff7afb9dcfe46654658107ed2718913a707573056652c2",
     "include/q4t/server/live_frontend.h": "267d1d350e51d5a1165bb31bb5f7f89a2ef14a6bee525c7042020ba638b78009",
     "include/q4t/server/live_frontend_work.h": "d85c5478f446764f2c154dc658fcfc1ba4aa243894877284a8752abc0f8131a8",
-    "include/q4t/server/live_media_call.h": "1b64dc343229ff187b8d9fc5ff3cc13be01151a8f592bb304aeb032d29b3c9a4",
+    "include/q4t/server/live_media_call.h": "7f33539d87af14278155fbc9968c32a2d1ccb19b5f0822eb25503c5c8b5dc56f",
     "include/q4t/server/live_media_policy.h": "2ae9d55363c03229824295622c0636871f3a946ce2b48aec85005e4640c3986b",
     "include/q4t/server/live_media_process.h": "6055c89008cf91e55b472e33ea9d70a1b3c1d78f94976d0e4381b67a3f8aa741",
     "include/q4t/server/live_native_backend.h": "5d45c9620e7442ab70eb42fe43c50ffd8014e6e614172d9ef5d6ce857c53165a",
@@ -3980,7 +3990,7 @@
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
     "src/server/chat_audio_translation.cpp": "e0853dba46a7af885bd31863f5bcc1e6cb9b44af3d69aba8bea8af372ed5d6ce",
-    "src/server/chat_capabilities.cpp": "264ae6aed0c2717f48619710975ff1dc519568967554b4c5c73969bba39616d3",
+    "src/server/chat_capabilities.cpp": "11cf9b301056921395d4a47ea2050ecc63c34f81fe43df8d1ba8954809e1d46d",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -3990,11 +4000,11 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "5722d95c92e64f7ea984f73505f9d64dccaa10b22865790a3bff62f5aebc3b6a",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "5cdc34988004bd1c393bc9c147046d9f1d36c830a99a75d225b9acf8f517ace6",
+    "src/server/chat_http.cpp": "9f1f6429f62e327ae2164e32d13f704252908ede9eddb8592989bef35ad7b46b",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
-    "src/server/chat_live_media.cpp": "bd95ef9ee662403aa60c2ab830276fdf62a8afbafdc776ea01b3c90deb3bd4a9",
+    "src/server/chat_live_media.cpp": "bd171c3bf08b7e418ac2fa54217942961fd39f81dc2d937cf16885401bec790d",
     "src/server/chat_live_sideband.cpp": "b7e92aad7e42e98ff9efcc46b01706996f2c06902653855b1209458ca5c20d24",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "0623a6552ba0ea9538fedb2222563b0cf545dda071f78353186049df2f9010e7",
@@ -4009,7 +4019,7 @@
     "src/server/chat_realtime_conversation.cpp": "0282e9374eee3547632ded324fbc1326b8047bb2c4328d54d57bc30b11d46e46",
     "src/server/chat_realtime_secrets.cpp": "c554ac3d2a72176e190916d28738c68a5b8d45ae1e0f40df16d1cc513441f615",
     "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab",
-    "src/server/chat_realtime_translation.cpp": "11fa5a4ea894cede1339c450ec1a13e6d503880bd1d0c726ac0185595f20f47a",
+    "src/server/chat_realtime_translation.cpp": "264c1ad43b3565aa4845f85fea80785c772e8ecbd08aab7ff9908d4849d663da",
     "src/server/chat_response_parser.cpp": "fdda93a831b6487af815b2f386b9cb8244bf8106f7e1bb8db75838fa5b1547df",
     "src/server/chat_responses.cpp": "1e0d42b60014d1a4bbb8bb7da70c8a9643890161c7b11171bed3615f4d83ca6a",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
@@ -4150,7 +4160,7 @@
     "src/server/live_decision_items.cpp": "621869b943f1a4fdf866b289c78d7ea8230d1fb98f557596b318308fd88e174b",
     "src/server/live_frontend.cpp": "a924f3b8b2ea4fd007ba5ff914d42c9838a5696c02acc00224a317fbfbcf4626",
     "src/server/live_frontend_work.cpp": "f3a064778687481c0ec49c4af9310ab6ccb4d51a6dbc127b62347606cf83a1c8",
-    "src/server/live_media_call.cpp": "4204c03d1bd5aa7c6d9b6f115e2467cf5a8d980fedcb0f7dbed5f6d5b3350ec4",
+    "src/server/live_media_call.cpp": "6ebdbb1934baa7e68e61ffaeba2df6c308c7140f1ab20f25349553de068509c3",
     "src/server/live_media_policy.cpp": "c2e2f356ff605d3c3d03b70b212dcebd944b599d6062b41b745e96a389eeb1a9",
     "src/server/live_media_process.cpp": "7f0331e42f87b623d4dc93ed6141586e006a79cd4105d714b1a32cbb424a6ae5",
     "src/server/live_native_backend.cpp": "14e9ec2541eb094f5dacb084679fa4411b70ba9282ac689d4d9c1450d0fabb3b",
@@ -4243,7 +4253,7 @@
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
     "src/server/realtime_chat_plan.cpp": "472688e886fbe4dc1221c990913e05485e1e9109ba135e16ca756433328d5e39",
     "src/server/realtime_client_secrets.cpp": "a026ff8a3f3d76682384721d3442ba155768a919565571a80a60fb13c95f5490",
-    "src/server/realtime_client_ticket.cpp": "0eddb0205fc80e7f7a3d10b07c56d6526c81a9e1ec98c719f29fe86fa8520b84",
+    "src/server/realtime_client_ticket.cpp": "18111a789b2dd9f291c85942c538c22892b94f46726e084b0aa3be6f3cc126ba",
     "src/server/realtime_conversation.cpp": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8",
     "src/server/realtime_conversation_input.cpp": "6e9f6c6eea012b9cb6a8b9573bafdf440e2f5ba0811b364d984375e1b021f490",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
@@ -4286,8 +4296,8 @@
     "src/server/realtime_translation.cpp": "3a2f31ae18aa3b64c91aeb37abbe97fd832ad234f218a694cc5fa9af9316de3d",
     "src/server/realtime_translation_session.cpp": "2d21d1c5c16ddeb2b5a527d549c11689e40e72168a57da16bacecbdfbb7e0cf9",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
-    "src/server/realtime_webrtc_request.cpp": "baa8f19d3637da90a47bfe9d320e1b55a46c1c837b691eac6a89222b3d9a9fff",
-    "src/server/realtime_webrtc_request.h": "a9fbcadec507376486cfc021db5f83b793cf346e490314353ac38e8e607c5e4e",
+    "src/server/realtime_webrtc_request.cpp": "092614d2ac2c40ade2886c753cebf27c7f51aee849f12b189decb04be9b10eaf",
+    "src/server/realtime_webrtc_request.h": "5960b5ed2da082f35bcfc953fff416545c2e2b523b5d2c9ffa011c76ccccfc1e",
     "src/server/realtime_wire_shape.cpp": "5a36703372edd69787ed46fd5e332087a1a670e6f890461ee3ae41615050d750",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
@@ -4396,6 +4406,8 @@
     "src/server/token_logprobs.cpp": "9f9dfa9d1bf9e29b1e971461ba0cd000a7f6eea8cc5d25799f3bfb1e91581f32",
     "src/server/tool_result_contracts.cpp": "9b5d46c3583eb4ed9d22e63a48a3f3b2691abf0a48de306290c9df495c87a2af",
     "src/server/tool_result_schema.cpp": "577bc8b842db5d575af90317e85601969c51c82bd4e798f3d3fdf927381fd789",
+    "src/server/translation_media_call.cpp": "cf67d573dc652ba02820b144e4a42183077f2d0a512957afeabbba7109856d02",
+    "src/server/translation_media_call.h": "debbe4707b370f19ec750f7a4c9ab912361103a24e3e966b0444ef643b6c3f95",
     "src/server/tts_assets.cpp": "8f002812b6886f151100ea5ac643ed2ac57dc1fb6a6b986af17cf3a44f300e7f",
     "src/server/tts_service.cpp": "32d55363946f639a5d7defa2fbba2f7fef616fe2bdfbd75086d918e7c1ec2984",
     "src/server/tts_upload.cpp": "2e6134b5607f814f1ec1dc2fda179169ec3e2a7c5415052a067aa5a505436ba4",
@@ -4459,7 +4471,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "bfd8a9b12785322bb1d6bb626ed60aa9552357cad79c1937c2e64993284dc322",
+    "src/service/ingress_main.cpp": "f0cb92067c3a6ca02ffeca4d1020ed30e9deee213c72992589753dd6f36f5822",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -4489,7 +4501,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "11bb2bd76e301908ee4b66b2cbdb58ab2ad08c68c394abc694fb3b1b8f439668",
+    "tools/serve_gateway/gateway.py": "9ce8cb9cce0edc38caac7c6678272694bf49d3c71e1edc574ede8edc51bcea5e",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -8515,6 +8527,24 @@
       "evidence": [
         "src/service/ingress_main.cpp",
         "include/q4t/server/application_routes.h"
+      ]
+    },
+    "POST /v1/realtime/translations/calls": {
+      "semantics": "Negotiate a scoped WebRTC speech translation call and return its SDP answer.",
+      "boundary": "Short-lived translation credential or owner API key. Input and translated output travel on SRTP tracks. Optional SCTP carries subtitles and session controls.",
+      "evidence": [
+        "src/server/chat_live_media.cpp",
+        "src/server/translation_media_call.cpp",
+        "tests/server_realtime_translation_test.cpp",
+        "tools/serve_realtime/translation_browser.js"
+      ]
+    },
+    "OPTIONS /v1/realtime/translations/calls": {
+      "semantics": "Configured CORS preflight for creating a WebRTC call.",
+      "boundary": "Origin, method and request headers must be allowed by the deployment.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp"
       ]
     }
   },

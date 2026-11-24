@@ -2,7 +2,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/multipart.h"
-#include "q4t/server/realtime_shape.h"
+#include "q4t/server/realtime_translation.h"
 
 namespace q4t::server {
 namespace {
@@ -21,9 +21,11 @@ std::string MediaType(std::string_view header) {
 
 ObjectReply ParseRealtimeWebRtcOffer(std::string_view content_type,
                                      std::string_view body,
-                                     RealtimeWebRtcOffer* offer) {
+                                     RealtimeWebRtcOffer* offer, bool translation) {
   RealtimeWebRtcOffer next;
-  next.session = Object({{"type", String("realtime")}});
+  next.session = translation
+      ? Object({{"model", String(std::string(kRealtimeTranslationModel))}})
+      : Object({{"type", String("realtime")}});
   std::string configuration;
   const auto media = MediaType(content_type);
   if (media == "application/sdp") {
@@ -74,6 +76,12 @@ ObjectReply ParseRealtimeWebRtcOffer(std::string_view content_type,
   }
   if (next.sdp.empty() || next.sdp.find('\0') != next.sdp.npos)
     return Error(400, "live_invalid_sdp", "Missing or invalid SDP offer");
+  if (translation) {
+    auto reply = RealtimeTranslationSettings{}.Apply(next.session, true);
+    if (!reply.ok()) return reply;
+    *offer = std::move(next);
+    return {};
+  }
   ChatPlanError error;
   const auto valid = ValidateRealtimeWireShape(
       next.session, RealtimeShape::kSession, &error, "session");

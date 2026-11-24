@@ -17,38 +17,8 @@ ObjectReply LostOutput() {
 }
 }  // namespace
 
-void ChatServer::HandleRealtimeTranslation(int fd, std::string_view path,
-                                           const HttpRequestHeaders& headers,
-                                           std::string_view initial,
-                                           std::string_view accept) {
-  auto* http = detail::HttpResponseContext::Current(fd);
-  if (!http || !http->Client().Allowed()) return;
-  if (!ValidRealtimeTranslationTarget(path)) {
-    detail::SendError(fd, 400, "Invalid translation session query", {},
-                      "invalid_request", "model");
-    return;
-  }
-  if (asr_model_dir_.empty() || tts_model_dir_.empty()) {
-    detail::SendError(fd, 503, "Translation audio models are unavailable", {},
-                      "translation_unavailable");
-    return;
-  }
-  if (RejectUnhealthy(fd) ||
-      !CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare))
-    return;
-  const auto bytes = kRealtimeConversationHostBytes + kRealtimeSessionHostBytes;
-  HttpBodyLease memory(realtime_host_budget_);
-  if (!memory.Acquire(bytes) ||
-      !runtime::ReadSystemMemory().CanAllocate(bytes + (512ULL << 20))) {
-    detail::SendError(fd, 503, "Translation session memory unavailable", {},
-                      "memory_pressure");
-    return;
-  }
-  const auto client = http->Client();
-  const size_t limit = client.Scoped()
-                           ? std::min<size_t>(kWebSocketMessageLimit,
-                                              client.Limits()->max_body_bytes)
-                           : kWebSocketMessageLimit;
+RealtimeTranslationNative ChatServer::MakeRealtimeTranslationNative(
+    const ClientIdentity& client) {
   auto input = PrepareRealtimeInput(client);
   RealtimeTranslationNative native;
   native.acquire = std::move(input.acquire);
@@ -149,6 +119,41 @@ void ChatServer::HandleRealtimeTranslation(int fd, std::string_view path,
       return LostOutput();
     return {};
   };
+  return native;
+}
+
+void ChatServer::HandleRealtimeTranslation(int fd, std::string_view path,
+                                           const HttpRequestHeaders& headers,
+                                           std::string_view initial,
+                                           std::string_view accept) {
+  auto* http = detail::HttpResponseContext::Current(fd);
+  if (!http || !http->Client().Allowed()) return;
+  if (!ValidRealtimeTranslationTarget(path)) {
+    detail::SendError(fd, 400, "Invalid translation session query", {},
+                      "invalid_request", "model");
+    return;
+  }
+  if (asr_model_dir_.empty() || tts_model_dir_.empty()) {
+    detail::SendError(fd, 503, "Translation audio models are unavailable", {},
+                      "translation_unavailable");
+    return;
+  }
+  if (RejectUnhealthy(fd) ||
+      !CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare))
+    return;
+  const auto bytes = kRealtimeConversationHostBytes + kRealtimeSessionHostBytes;
+  HttpBodyLease memory(realtime_host_budget_);
+  if (!memory.Acquire(bytes) ||
+      !runtime::ReadSystemMemory().CanAllocate(bytes + (512ULL << 20))) {
+    detail::SendError(fd, 503, "Translation session memory unavailable", {},
+                      "memory_pressure");
+    return;
+  }
+  const auto client = http->Client();
+  const size_t limit = client.Scoped()
+                           ? std::min<size_t>(kWebSocketMessageLimit,
+                                              client.Limits()->max_body_bytes)
+                           : kWebSocketMessageLimit;
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
   auto send = [&](Json event) {
@@ -157,7 +162,7 @@ void ChatServer::HandleRealtimeTranslation(int fd, std::string_view path,
     return output.Push(WebSocketOpcode::kText, OutputJson(event), write);
   };
   auto session = std::make_shared<RealtimeTranslationSession>(
-      detail::NewRequestId("sess_"), send, std::move(native), limit,
+      detail::NewRequestId("sess_"), send, MakeRealtimeTranslationNative(client), limit,
       asr_limits_.max_audio_seconds);
   RealtimeTranslationPump pump(session, limit);
   const auto ready = pump.Start(http->RealtimeStartup());

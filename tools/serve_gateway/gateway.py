@@ -47,6 +47,7 @@ APPLICATION_ROUTES = [
     ('POST', '/v1/realtime/transcription_sessions', 'data'),
     ('POST', '/v1/realtime/sessions', 'data'),
     ('POST', '/v1/realtime/calls', 'data'),
+    ('POST', '/v1/realtime/translations/calls', 'data'),
     ('POST', '/v1/live/sessions/{session_id}/accept', 'data'),
     ('POST', '/v1/realtime/calls/{call_id}/accept', 'data'),
     ('POST', '/v1/live/sessions/{session_id}/hangup', 'control'),

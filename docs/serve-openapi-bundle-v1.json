@@ -15619,6 +15619,93 @@
         }
       }
     },
+    "/v1/realtime/translations/calls": {
+      "post": {
+        "operationId": "post_v1_realtime_translations_calls",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "WebRTC SDP answer",
+            "headers": {
+              "Location": {
+                "required": true,
+                "schema": {
+                  "type": "string",
+                  "pattern": "^/v1/realtime/calls/rtc_[A-Za-z0-9_-]+$"
+                }
+              }
+            },
+            "content": {
+              "application/sdp": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 65535
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/sdp": {
+              "schema": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 65535
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sdp": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 65535
+                  },
+                  "session": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/realtime_translation_session_create"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "sdp"
+                ]
+              },
+              "encoding": {
+                "sdp": {
+                  "contentType": "application/sdp"
+                },
+                "session": {
+                  "contentType": "application/json"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/realtime/calls/{call_id}/accept": {
       "post": {
         "operationId": "post_v1_realtime_calls_call_id_accept",

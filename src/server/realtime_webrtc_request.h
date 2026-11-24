@@ -11,5 +11,6 @@ struct RealtimeWebRtcOffer {
 };
 ObjectReply ParseRealtimeWebRtcOffer(std::string_view content_type,
                                      std::string_view body,
-                                     RealtimeWebRtcOffer* offer);
+                                     RealtimeWebRtcOffer* offer,
+                                     bool translation = false);
 }  // namespace q4t::server

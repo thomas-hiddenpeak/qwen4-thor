@@ -111,7 +111,7 @@ class Stack:
                 roots = ('/v1/skills', '/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
-                         '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/translations/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/live/sessions')
+                         '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/translations/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/realtime/translations/calls', '/v1/live/sessions')
                 return (any(path == root or path.startswith(root+'/')
                             for root in roots) or
                         (method == 'POST' and
@@ -182,7 +182,7 @@ class Stack:
                 if '/subagents/subagent_owned' in self.path and row['client'] != 'alpha':
                     self.response(404, dict(error=dict(code='object_not_found')))
                     return
-                if self.path == '/v1/realtime/calls' and method == 'POST':
+                if method == 'POST' and self.path in ('/v1/realtime/calls', '/v1/realtime/translations/calls'):
                     if self.headers.get('Content-Type') != 'application/sdp':
                         self.response(415, dict(error='invalid content type'))
                         return
@@ -459,7 +459,7 @@ class NginxTests(unittest.TestCase):
                         'name="file"; filename="fixture.txt"\r\n'
                         'Content-Type: text/plain\r\n\r\nactual CPU bytes'
                         '\r\n--cpu-route--\r\n')
-            create_call = method == 'POST' and template == '/v1/realtime/calls'
+            create_call = method == 'POST' and template in ('/v1/realtime/calls', '/v1/realtime/translations/calls')
             if create_call:
                 content_type, body = 'application/sdp', 'v=0\r\ns=fixture\r\n'
             with self.subTest(method=method, path=path):

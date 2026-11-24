@@ -5411,6 +5411,15 @@
           "translation WebRTC",
           "primary/light handoff and managed recovery/release"
         ]
+      },
+      "realtime_translation_browser_20261124": {
+        "evidence": "evidence/serve-realtime-translation-20261124/browser.json",
+        "scope": "Chromium 148 native media",
+        "candidate_declared": 179,
+        "issued_declared": 178,
+        "pending": [
+          "primary/light and managed recovery/publication"
+        ]
       }
     },
     {
@@ -9469,6 +9478,15 @@
           "translation WebRTC",
           "primary/light handoff and managed recovery/release"
         ]
+      },
+      "realtime_translation_browser_20261124": {
+        "evidence": "evidence/serve-realtime-translation-20261124/browser.json",
+        "scope": "Chromium 148 native media",
+        "candidate_declared": 179,
+        "issued_declared": 178,
+        "pending": [
+          "primary/light and managed recovery/publication"
+        ]
       }
     },
     {
@@ -11002,11 +11020,20 @@
           "translation WebRTC",
           "primary/light handoff and managed recovery/release"
         ]
+      },
+      "realtime_translation_browser_20261124": {
+        "evidence": "evidence/serve-realtime-translation-20261124/browser.json",
+        "scope": "Chromium 148 native media",
+        "candidate_declared": 179,
+        "issued_declared": 178,
+        "pending": [
+          "primary/light and managed recovery/publication"
+        ]
       }
     }
   ],
-  "next_task": "Implement translation WebRTC using the native audio pipeline and qualify recovery, then continue the remaining inference/application methods.",
-  "next": "补齐实时翻译浏览器媒体通话，验证主轻接手与可回退发行，接续推理与应用服务总计划。",
+  "next_task": "Qualify the translation socket and browser media across release capacities and sealed recovery, then continue the remaining inference/application methods.",
+  "next": "验证两种翻译传输的主轻配置与整包恢复，继续推理和应用服务的其余缺口。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

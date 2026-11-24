@@ -326,7 +326,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
   try {
     std::string method, path, body;
     const auto resolve_realtime = [&](std::string_view key) {
-      const auto audience = IsRealtimeTranslationTarget(path)
+      const auto audience = (IsRealtimeTranslationTarget(path) || IsTranslationCall(path))
                                 ? RealtimeSecretAudience::kTranslation
                                 : RealtimeSecretAudience::kRealtime;
       return realtime_secrets_.Resolve(key, &grant, RealtimeSecretTime::Now(), audience);
@@ -562,7 +562,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && path != "/v1/realtime/calls" && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
+      if (method == "POST" && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
                                  path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||
                                  IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
@@ -612,8 +612,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       IssueRealtimeSecret(fd, headers, body, RealtimeCredentialApi::kTranscription);
     else if (path == "/v1/realtime/sessions" && method == "POST")
       IssueRealtimeSecret(fd, headers, body, RealtimeCredentialApi::kConversation);
-    else if (method == "POST" && path == "/v1/realtime/calls") {
-      HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type);
+    else if (method == "POST" && IsRealtimeOffer(path)) {
+      HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type,
+                            IsTranslationCall(path));
     } else if (IsLiveMediaCreate(method, path))
       HandleLiveMediaCreate(fd, LiveForkId(path), body, admission);
     else if (IsRealtimeTarget(path))
