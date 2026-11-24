@@ -100,6 +100,8 @@ Json SavedResponse(ResponseStatePlan& plan, const Json& response,
       plan.assistant_finished_at = std::time(nullptr);
     Set(&result, "assistant_started_at", Number(plan.assistant_started_at));
     Set(&result, "assistant_finished_at", Number(plan.assistant_finished_at));
+    if (plan.assistant_prompt_exhausted)
+      Set(&result, "assistant_prompt_exhausted", Boolean(true));
     Set(&result, "assistant_thread_id", String(plan.assistant_thread_id));
     Set(&result, "assistant_run_id", String(plan.assistant_run_id));
   }

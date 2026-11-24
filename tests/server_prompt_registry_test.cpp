@@ -3350,3 +3350,76 @@ Q4T_TEST(assistant_run_queues_thread_atomically_and_projects_real_tool_state) {
             view.run.Find("usage")->GetInt("total_tokens") == 516);
   return true;
 }
+
+Q4T_TEST(
+    assistant_run_prompt_budget_survives_queue_reopen_and_counts_only_work_done) {
+  using namespace q4t::server::assistant_detail;
+  using namespace q4t::server::responses_detail;
+  Fixture f;
+  const auto config = Config();
+  const auto now = std::time(nullptr);
+  std::string response_id;
+  Json entry;
+  {
+    ObjectStore objects(f.options);
+    auto assistant =
+        HandleAssistantRegistry(objects, "POST", "/v1/assistants",
+                                R"({"model":"cpu"})", config, Access(), false);
+    Q4T_CHECK(Ok(assistant));
+    ObjectRequest lookup;
+    lookup.scope = Access().scope;
+    lookup.kind = ObjectKind::kAssistant;
+    lookup.id = assistant.value.GetString("id");
+    auto record = objects.Execute(lookup, Access().deadline);
+    auto thread = HandleAssistantThreads(
+        objects, "POST", "/v1/threads",
+        R"({"messages":[{"role":"user","content":"Read the release record"}]})",
+        Access(), false);
+    Q4T_CHECK(Ok(record) && Ok(thread));
+    const auto thread_id = thread.value.GetString("id");
+    ObjectRequest draft;
+    Q4T_CHECK(Ok(LoadThreadDraft(objects, Access(), thread_id, &draft)));
+    Json run, native;
+    auto request = Object({{"assistant_id", String(lookup.id)},
+                           {"max_prompt_tokens", Number(256)}});
+    Q4T_CHECK(Ok(PrepareRunSettings(record.value, draft.data, request, config,
+                                    "run_capped", now, &run, &native)));
+    ResponsesExecution queued(objects);
+    Q4T_CHECK(Ok(queued.Prepare(native, config, Access(), now, true)));
+    response_id = queued.Id();
+    entry = Object({{"run", run},
+                    {"response_ids", Array({String(response_id)})},
+                    {"submitted", Object()}});
+    ::Set(&draft.data, "runs", Array({entry}));
+    draft.operation = ObjectOperation::kPut;
+    Q4T_CHECK(Ok(queued.BindAssistantRun(thread_id, "run_capped", {draft})));
+    std::string wire;
+    Q4T_CHECK(Ok(queued.Begin(&wire)));
+  }
+  ObjectStore objects(f.options);
+  ResponsesExecution restored(objects);
+  Q4T_CHECK(Ok(restored.RestoreQueued(response_id, config, Access())));
+  restored.BindBackgroundControl(
+      std::make_shared<RequestControl>(response_id, "", Clock::now() + 5s));
+  std::string wire;
+  Q4T_CHECK(Ok(restored.StartRunning(&wire)));
+  Q4T_CHECK(restored.AdmitAssistantPrompt(100, 156));
+  Q4T_CHECK(!restored.AdmitAssistantPrompt(100, 157));
+  Q4T_CHECK(!restored.AdmitAssistantPrompt(UINT64_MAX, 2));
+  Q4T_CHECK(Ok(restored.Finish(true, 0, {}, now, &wire)));
+  const auto record = ResponsesState(objects).ReadRecord(response_id, Access());
+  Q4T_CHECK(Ok(record) && record.value.GetBool("assistant_prompt_exhausted"));
+  const auto& snapshot = restored.Output().Snapshot();
+  Q4T_CHECK(snapshot.GetString("status") == "incomplete");
+  const auto* details = snapshot.Find("incomplete_details");
+  Q4T_CHECK(details && details->IsObject() && !details->Has("reason"));
+  RunView view;
+  Q4T_CHECK(Ok(ProjectRun(objects, Access(), entry, &view)));
+  Q4T_CHECK(view.run.GetString("status") == "incomplete" &&
+            view.run.Find("incomplete_details")->GetString("reason") ==
+                "max_prompt_tokens");
+  Q4T_CHECK(view.prompt_tokens == 0 &&
+            view.run.Find("usage")->GetInt("total_tokens") == 0 &&
+            view.steps.array.empty() && view.messages.array.empty());
+  return true;
+}

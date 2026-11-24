@@ -1,0 +1,151 @@
+{
+  "status": "ACCEPT_ASSISTANTS_CUMULATIVE_PROMPT_ADMISSION",
+  "engine": "290b9bc97b9c93230ed57076e97e17d8cfe5cf5991c97468d47b27dacc753925",
+  "ingress": "f4ef4776b8db25a9a303234f8497a5595ed6082e850d71ec179717c43a481e15",
+  "source": "70f48ee0245e06b75454016976c695b73268410c58b736916e0ef29bd22e2040",
+  "sdk": "7.47.0",
+  "cpu": 16,
+  "official_responses": 4,
+  "official_stream_events": 22,
+  "model_starts": 1,
+  "seconds": 50.583,
+  "independent_chat": "42",
+  "cases": {
+    "initial": {
+      "limit": 256,
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "reason": "max_prompt_tokens",
+      "native": [
+        {
+          "status": "incomplete",
+          "input": 0,
+          "output": 0,
+          "entered_prefill": false,
+          "budget_exhausted": true
+        }
+      ]
+    },
+    "submit": {
+      "limit": 580,
+      "usage": {
+        "prompt_tokens": 369,
+        "completion_tokens": 20,
+        "total_tokens": 389
+      },
+      "reason": "max_prompt_tokens",
+      "native": [
+        {
+          "status": "incomplete",
+          "input": 0,
+          "output": 0,
+          "entered_prefill": false,
+          "budget_exhausted": true
+        },
+        {
+          "status": "completed",
+          "input": 369,
+          "output": 20,
+          "entered_prefill": true,
+          "budget_exhausted": false
+        }
+      ]
+    },
+    "file_search": {
+      "limit": 640,
+      "usage": {
+        "prompt_tokens": 521,
+        "completion_tokens": 41,
+        "total_tokens": 562
+      },
+      "reason": "max_prompt_tokens",
+      "native": [
+        {
+          "status": "incomplete",
+          "input": 521,
+          "output": 41,
+          "entered_prefill": true,
+          "budget_exhausted": true
+        }
+      ]
+    },
+    "query_admission": {
+      "limit": 520,
+      "usage": {
+        "prompt_tokens": 473,
+        "completion_tokens": 41,
+        "total_tokens": 514
+      },
+      "reason": "max_prompt_tokens",
+      "native": [
+        {
+          "status": "incomplete",
+          "input": 473,
+          "output": 41,
+          "entered_prefill": true,
+          "budget_exhausted": true
+        }
+      ]
+    }
+  },
+  "default_revision": 462,
+  "default_contains_change": false,
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-business-lease-01/exit.json",
+      "sha256": "d163cfd921c02df61dc7c59176e94ce0e494127d2d1c9be17db5866093f818a7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-business-01/plan.json",
+      "sha256": "da238db2ebf1bd0f7fb3756a9cfbc7d206df17a68bbf5756ff895e21c455362b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-business-01/result.json",
+      "sha256": "d1376986812a9760f6a77f72fcb611d98ae3be29be04f6c2b84d0353b9fd9cb0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-business-01/create/sdk-result.json",
+      "sha256": "2d5dd6f7ef40b91fb2585bd1a37410826d53e9b784bddfbc2a290ed4234af59e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-business-01/create/run-wire.json",
+      "sha256": "8a3053e53dfb70ae8ff01545adb9e4bffa7bb7ebb13fbfbb28fef8dd2a63203a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-business-01/create/run-events.json",
+      "sha256": "78fb8e970898fc896bdca6b64dff72f8a4057a131166a59450b4e6db584de53a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-wire-01.json",
+      "sha256": "f3d906d360d2f011b94ee78f7535e8c1822e5d313e3ab622b20db26d6653816a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-cpu-02.log",
+      "sha256": "cb35c643c85757d5eed7c31ff72f77d169becb4a5bd39dfe53304e2152c08766"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-source-audit-01.json",
+      "sha256": "6bd830a16fd1684a4d9fde4bcbfb84b1757ac9ab025ec59829f4218bf1d6aab2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-required-01.txt",
+      "sha256": "57808e83628f06ea92167662e50cfd09e34614a6a3b126ecc4272c0b4c6823f0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant_budget_business.py",
+      "sha256": "f12df840bf59d718a1da72aa5a8b79bebf8d0802783f760abf551585db89a644"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget_wire_check.py",
+      "sha256": "07858b97c1229df5a846cf41751bedd0f8fa9786de7c3efbe1844b09e6156137"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/budget-contract-test-01.log",
+      "sha256": "d0bbd3fb4fcf80c9cbf5ce59bf4ce44bb927e9e40a6269d0b33dc8c4a94c4755"
+    }
+  ],
+  "targeted_python_contracts": 1
+}

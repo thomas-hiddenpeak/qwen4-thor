@@ -26,9 +26,13 @@ void StreamAssistantRun(int fd, ObjectStore& objects, const StateAccess& access,
                         const std::string& response_id, bool include_search);
 struct RunView {
   io::Json run, steps, messages;
+  int64_t prompt_tokens = 0;
 };
 ObjectReply ProjectRun(ObjectStore& objects, const StateAccess& access,
                        const io::Json& entry, RunView* view);
+ObjectReply LoadRunPromptBudget(ObjectStore& objects, const StateAccess& access,
+                                const ResponseStatePlan& plan,
+                                std::optional<uint64_t>* remaining);
 bool ActiveRun(const io::Json& run);
 // Reads project immutable native output without changing storage. Writers
 // persist a terminal projection with their own thread CAS.

@@ -639,9 +639,11 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
                                const ResponsesUsage& usage,
                                int64_t completed_at, std::string* wire,
                                const ResponsesReasoningSeal& seal,
-                               bool content_filtered) {
+                               bool content_filtered,
+                               bool assistant_prompt_exhausted) {
   wire->clear();
   if (!started_ || terminal_ || (content_filtered && !incomplete) ||
+      (assistant_prompt_exhausted && !incomplete) ||
       (compaction_item_ != kMaxItems && !compaction_done_) ||
       response_.GetString("status") != "in_progress" ||
       usage.input_tokens < 0 || usage.output_tokens < 0 ||
@@ -698,7 +700,9 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
     CloseItem(i, Items().array[i].GetString("status") == "incomplete", wire);
   }
   Set(&response_, "status", String(incomplete ? "incomplete" : "completed"));
-  if (incomplete)
+  if (assistant_prompt_exhausted)
+    Set(&response_, "incomplete_details", Object());
+  else if (incomplete)
     Set(&response_, "incomplete_details",
         Object({{"reason", String(content_filtered ? "content_filter"
                                                    : "max_output_tokens")}}));

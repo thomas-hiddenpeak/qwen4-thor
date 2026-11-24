@@ -7,6 +7,7 @@
 #include <ctime>
 
 #include "agent_session_internal.h"
+#include "assistant_runs_internal.h"
 #include "agent_subagent_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/input_snapshot_bindings.h"
@@ -733,10 +734,24 @@ ObjectReply ResponsesExecution::CheckParentCancellation(bool* cancelled) {
                                   cancelled);
 }
 
+bool ResponsesExecution::AdmitAssistantPrompt(uint64_t consumed,
+                                              uint64_t next) {
+  if (!assistant_prompt_remaining_) return true;
+  const auto limit = *assistant_prompt_remaining_;
+  if (consumed <= limit && next <= limit - consumed) return true;
+  plan_.assistant_prompt_exhausted = true;
+  return false;
+}
+
 ObjectReply ResponsesExecution::StartRunning(std::string* wire) {
   wire->clear();
   if (!begun_ || plan_.finished || commit_unknown_)
     return Error(500, "response_state_invalid", "Invalid response start");
+  if (!plan_.assistant_thread_id.empty()) {
+    auto budget = assistant_detail::LoadRunPromptBudget(
+        objects_, access_, plan_, &assistant_prompt_remaining_);
+    if (!budget.ok()) return budget;
+  }
   auto candidate = output_;
   auto events = events_;
   size_t bytes = event_bytes_;
@@ -887,9 +902,9 @@ ObjectReply ResponsesExecution::Finish(bool incomplete, size_t completed_calls,
                                  index, cipher_config_, access_, opaque);
       return encryption.ok() ? Status() : Status::Fail(encryption.message);
     };
-  auto status =
-      candidate.Finish(incomplete, completed_calls, usage, completed_at,
-                       &terminal, seal, content_filtered);
+  auto status = candidate.Finish(
+      incomplete, completed_calls, usage, completed_at, &terminal, seal,
+      content_filtered, plan_.assistant_prompt_exhausted);
   if (!encryption.ok()) return encryption;
   if (status) status = Capture(terminal, &events, &bytes);
   if (!status) return OutputError(status);
