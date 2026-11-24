@@ -18050,9 +18050,14 @@
     "candidate_declared_methods": 215,
     "required_methods": 231,
     "remaining": [
-      "text similarity, model and Python graders",
+      "METEOR with lexical resources and cosine with trained embeddings",
+      "requested Python grading image and package compatibility",
+      "complex message and tool trajectory projection",
       "package profiles and independent takeover",
       "remaining inference/application methods and outstanding recovery compositions"
-    ]
+    ],
+    "local_graders": "evidence/serve-evals-20261125/graders.json",
+    "model_graders": "evidence/serve-evals-20261125/model-graders.json",
+    "interrupted_model_sampling": "evidence/serve-evals-20261125/recovery.json"
   }
 }
