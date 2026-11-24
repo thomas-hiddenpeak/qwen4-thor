@@ -94,7 +94,8 @@ def prepare(source, manifest_sha256, stage, observations, output):
                   profile_live_reuse.AUTOMATION_RECORD: 'ACCEPT_AUTOMATION_PRIMARY_LIGHT',
                   profile_live_reuse.WEBHOOK_RECORD: 'ACCEPT_WEBHOOK_PRIMARY_LIGHT',
                   profile_live_reuse.HOSTED_LIFECYCLE_RECORD: 'ACCEPT_HOSTED_ENVIRONMENT_LIFECYCLE_PRIMARY_LIGHT',
-                  profile_live_reuse.PREPARATION_RECORD: 'ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT'}
+                  profile_live_reuse.PREPARATION_RECORD: 'ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT',
+                  profile_live_reuse.CHATKIT_RECORD: 'ACCEPT_CHATKIT_PRIMARY_LIGHT'}
         primary = evidence['primary']['record']
         label = status[primary['format']]
         if primary['reused_business']['format'] == profile_live_reuse.AGENT_REFRESH:

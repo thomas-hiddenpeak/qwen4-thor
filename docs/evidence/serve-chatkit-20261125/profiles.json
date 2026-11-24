@@ -1,0 +1,88 @@
+{
+  "status": "ACCEPT_CHATKIT_PRIMARY_LIGHT",
+  "published": false,
+  "issued_revision": 476,
+  "profiles": {
+    "primary": {
+      "seconds": 41.19,
+      "model_starts": 1,
+      "previous": "fe389ddf35f8564241bdcc1e6884a221a765e33ce38ed0aedd6c387aa44ed6a1",
+      "profile": "62288a6044e8239640fa01bc9b1d52c43baaeac60a21fd890e5dabd5dfafd994"
+    },
+    "light": {
+      "seconds": 36.193,
+      "model_starts": 1,
+      "previous": "042ec92da5594a72850730ef93f8b9c3c518a42b8c49de912a5281385fb3283f",
+      "profile": "5ba0f338da57899669e6db3954c4124c98ffdc5d602819dee9921ecb92aa716c"
+    }
+  },
+  "binary": "3d4638600e708087ad4f2fe910ad609b34db56303bc4dfce0ad302b3fd894044",
+  "ingress": "a1d1070beabbe1b26dce51e4261143ee966ac0ef1a8b9c64e2d745f7af5b9c32",
+  "primary": {
+    "phase": "primary",
+    "sdk": "7.47.0",
+    "peer": 404,
+    "workflow": "agent_d16f470a521fc2ffa4ea0b5b27401489",
+    "thread": "cthr_e046ca4a37fb1c16b94877402428136d",
+    "attachment": "file_f81570e49282d6af165d1b3e236330c7",
+    "session": "cksess_68da69be1d91aec76bf6307daa349b625de2f158add5c41526e8d2f69bd10407",
+    "call": "call_resp_be0802b52462a1bb0617db6099331820_0",
+    "proposed_count": 157,
+    "bytes": 830,
+    "sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+    "source_deleted": 404
+  },
+  "light": {
+    "phase": "light",
+    "sdk": "7.47.0",
+    "peer": 404,
+    "thread": "cthr_e046ca4a37fb1c16b94877402428136d",
+    "attachment": "file_f81570e49282d6af165d1b3e236330c7",
+    "call": "call_resp_be0802b52462a1bb0617db6099331820_0",
+    "verified_count": 157,
+    "session": "cksess_61b07be98f8245e053d4914e074626790d52dae7e4b95a5cedc9d1c6dad339dd",
+    "other_user": 404,
+    "repeat": 409,
+    "answer": "157",
+    "chat": "42",
+    "items": 3
+  },
+  "configuration_schema": {
+    "wire_responses": 4,
+    "formats": [
+      43,
+      44
+    ],
+    "validators": 2
+  },
+  "original_failure": {
+    "primary": "PASS",
+    "light": "FAIL",
+    "answer": "The attachment reports the number, but let me confirm the exact value.\n\n",
+    "sampling_temperature": 1,
+    "original_call_and_file_snapshot_preserved": true,
+    "source_digest_in_snapshot": true,
+    "observation": "The original task asked the model to confirm document access. It requested confirmation again. The later workflow has the model propose a number read from the document and independently checks it against the project record before submitting the result."
+  },
+  "raw": {
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-qualified-01/qualified/registry.json": "c60bb665c08c51c4a7242bf14960247d20a7ea0b973879144ee68837d07c41d1",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-qualified-01/acceptance.json": "13f2fe8ba97a64b4db352a1dff704e3742155bc53eb18ea2fab70f3e2a9ff894",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/profile-observations.json": "b04b195fdaab594c3d6e9b9553755f9b0f3c3c0608fe9345dd65b09d584990e0",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/acceptance.json": "b4250176a3bdf3c94fab37921aadf211e9c29edef1da7e83965f8e0aaf8f049e",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/lease/exit.json": "97aff280742b541b74896258413786dac0d6bcdbfea07681760e1f1579f64858",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-01/light/chatkit-handoff.stderr": "44ffb11e398782413d7653b970c04cd1619ba855d8ec4c4cc73279caa080eea7",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-01/light/result.json": "3b82040a9973b33ac209aeaa070e5e73a3d08af07691fe3ce20e3ff468a70d3e",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-profiles-lease-01/exit.json": "a9ee141a80e5cdf80e0fb08756c5a1d901fbf53f63c8af6445b7aabc222c503e",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/chatkit-profile-migration-cpu.log": "b72ec94cdbf0e57efb6483ae9167a0c56ba2e33d31f8f63ca1e40c7b0ee16f32",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/primary/chatkit-handoff.json": "61728cc22365be1f59faf0c69cf33df98ceee1f48befa06438e29a6eeaeebdf6",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/primary/configuration.wire": "786322f297f556b2d5d808969dc9090090d4421bad1d361d0e82e985c04de5a6",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/primary/cleanup.json": "0b0236d7e74555091510944dfa88f56c3c9c1335c99d30eb74aec352f8dec361",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/primary/plan.json": "85131099e0a7021714f9c502d02b3fde4f99a7078ca7975feb4559418c08948d",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/primary/result.json": "7cf992d890f2ddd6be88d1f21c652aefee62f5a24277f0f86a63a1cbef587869",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/light/chatkit-handoff.json": "22b4d745266f6e493480479e8529707e5c56c7b242442729334d850607f60e2d",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/light/configuration.wire": "e0b0a96f26bb690ab1f4d251589f18a0c09b734858383d91f34ba40422dd70dd",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/light/cleanup.json": "710a0d86443133feb2d80f8718a32cdeeaa2d0d8a7552fa849cdc0fc0ffcce06",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/light/plan.json": "ae483a5fe9e6c324b9c0acf12b52f228b42c4c2ebf62727c3a69d52ecc8be64e",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/chatkit-profiles-02/light/result.json": "bb3bc5eea5e8e5e512b29ec0cf32748cc420aab45a822caafe2ab04420c433e5"
+  }
+}

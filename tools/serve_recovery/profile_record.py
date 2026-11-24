@@ -44,6 +44,8 @@ def shape(value, size):
               value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
              (value.get('format') == 'q4t-profile-business-v28' and
               value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v44' and
+              value['reused_business'].get('format') == 'q4t-chatkit-source-v1') or
              (value.get('format') == 'q4t-profile-business-v43' and
               value['reused_business'].get('format') == 'q4t-hosted-preparation-source-v1') or
              (value.get('format') == 'q4t-profile-business-v42' and
@@ -139,6 +141,7 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT': 'q4t-agent-registration-profile-source-v1',
         'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT': 'q4t-agent-session-profile-source-v1',
         'ACCEPT_AUTOMATION_PRIMARY_LIGHT': 'q4t-agent-automation-source-v1',
+        'ACCEPT_CHATKIT_PRIMARY_LIGHT': 'q4t-chatkit-source-v1',
         'ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT': 'q4t-hosted-preparation-source-v1',
         'ACCEPT_HOSTED_ENVIRONMENT_LIFECYCLE_PRIMARY_LIGHT': 'q4t-hosted-environment-lifecycle-source-v1',
         'ACCEPT_WEBHOOK_PRIMARY_LIGHT': 'q4t-webhook-source-v1',

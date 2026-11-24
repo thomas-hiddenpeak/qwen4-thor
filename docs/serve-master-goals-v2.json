@@ -2989,6 +2989,11 @@
         "state": "targeted_candidate_accepted",
         "evidence": "evidence/serve-chatkit-20261125/attachments.json",
         "issued": false
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
       }
     },
     {
@@ -7534,6 +7539,11 @@
         "state": "targeted_candidate_accepted",
         "evidence": "evidence/serve-chatkit-20261125/attachments.json",
         "issued": false
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
       }
     },
     {
@@ -8620,6 +8630,11 @@
         "revision": 476,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
       }
     },
     {
@@ -10127,6 +10142,11 @@
         "state": "targeted_candidate_accepted",
         "evidence": "evidence/serve-chatkit-20261125/attachments.json",
         "issued": false
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
       }
     },
     {
@@ -11335,6 +11355,11 @@
         "revision": 476,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
       }
     },
     {
