@@ -18153,6 +18153,11 @@
       "stage": "native_tls_verified",
       "receipt": "docs/evidence/serve-evals-20261125/tool-trajectories.json",
       "issued": false
+    },
+    "frozen_response_files": {
+      "stage": "native_tls_verified",
+      "receipt": "docs/evidence/serve-evals-20261125/frozen-file-inputs.json",
+      "issued": false
     }
   }
 }
