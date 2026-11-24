@@ -529,7 +529,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            (headers.realtime_beta && method == "GET" &&
                     path.substr(0, path.find('?')) == "/v1/realtime"
                 ? "OpenAI-Beta: realtime=v1\r\n" : "") +
-           (headers.assistants_beta && server::IsAssistantTarget(path)
+           (headers.assistants_beta && server::IsAssistantsV2Target(path)
                 ? "OpenAI-Beta: assistants=v2\r\n" : "") +
            (headers.agents_beta && server::IsManagedAgentTarget(path)
                 ? "OpenAI-Beta: agents=v1\r\n" : "") +

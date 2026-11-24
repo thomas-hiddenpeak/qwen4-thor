@@ -129,6 +129,12 @@ def schema(graph):
     inline_search = {'properties': {'file_search': {'oneOf': [
         {'required': ['vector_store_ids']}, {'required': ['vector_stores']}]}}}
     create_assistant['properties']['tool_resources'].update(inline_search)
+    thread_create = definitions['assistant_' + str(assistants['roots']['thread_create'])]
+    thread_create['properties']['tool_resources'].update(inline_search)
+    msg_query = definitions['assistant_' + str(assistants['roots']['message_query'])]
+    msg_query['properties']['limit'] = page_limit
+    definitions['assistant_message_list'] = copy.deepcopy(definitions['agents_list'])
+    definitions['assistant_message_list']['properties']['data']['items'] = ref('assistant_message_resource')
     assistant_query = definitions['assistant_' + str(assistants['roots']['query'])]
     assistant_query['properties']['limit'] = page_limit
     definitions['assistant_list'] = copy.deepcopy(definitions['agents_list'])
@@ -514,6 +520,15 @@ def add_openapi(paths, response, error):
         ('/v1/vaults/{vault_id}', 'get', None, 'vault', None),
         ('/v1/vaults/{vault_id}', 'post', 'vault_update', 'vault', None),
         ('/v1/vaults/{vault_id}', 'delete', None, 'vault_deleted', None),
+        ('/v1/threads', 'post', 'assistant_thread_create', 'assistant_thread_resource', None),
+        ('/v1/threads/{thread_id}', 'get', None, 'assistant_thread_resource', None),
+        ('/v1/threads/{thread_id}', 'post', 'assistant_thread_update', 'assistant_thread_resource', None),
+        ('/v1/threads/{thread_id}', 'delete', None, 'assistant_thread_deleted', None),
+        ('/v1/threads/{thread_id}/messages', 'post', 'assistant_message_create', 'assistant_message_resource', None),
+        ('/v1/threads/{thread_id}/messages', 'get', None, 'assistant_message_list', 'assistant_message_query'),
+        ('/v1/threads/{thread_id}/messages/{message_id}', 'get', None, 'assistant_message_resource', None),
+        ('/v1/threads/{thread_id}/messages/{message_id}', 'post', 'assistant_message_update', 'assistant_message_resource', None),
+        ('/v1/threads/{thread_id}/messages/{message_id}', 'delete', None, 'assistant_message_deleted', None),
         ('/v1/assistants', 'post', 'assistant_create', 'assistant_resource', None),
         ('/v1/assistants', 'get', None, 'assistant_list', 'assistant_query'),
         ('/v1/assistants/{assistant_id}', 'get', None, 'assistant_resource', None),
@@ -630,7 +645,7 @@ def add_openapi(paths, response, error):
                 'default': response(error, 'Native error; unknown/other-client identities return 404')},
             **{'x-q4t-query-contract': query_contract,
                'x-q4t-body-contract': body or 'empty body only'})
-        if path.startswith('/v1/assistants'):
+        if path.startswith(('/v1/assistants', '/v1/threads')):
             parameters.append(dict(name='OpenAI-Beta', **{'in':'header'}, required=True,
                 schema=dict(type='string', pattern=r'(^|,)[ \t]*assistants=v2[ \t]*(,|$)'),
                 example='assistants=v2'))
@@ -639,7 +654,7 @@ def add_openapi(paths, response, error):
                 **{'in':'header'}, required=True, schema=dict(type='string',
                     pattern=r'(^|,)[ \t]*agents=v1[ \t]*(,|$)'), example='agents=v1'))
         if body:
-            optional = path in ('/v1/conversations', '/v1/responses/input_tokens', '/v1/vaults',
+            optional = path in ('/v1/threads', '/v1/conversations', '/v1/responses/input_tokens', '/v1/vaults',
                                 '/v1/agents/environments/templates')
             operation['requestBody'] = dict(required=not optional,
                 content={'application/json': dict(schema=nullable(external(body))

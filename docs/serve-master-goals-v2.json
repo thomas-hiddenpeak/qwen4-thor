@@ -2647,6 +2647,12 @@
           "release"
         ],
         "evidence": "evidence/serve-assistants-20261124/registry.json"
+      },
+      "assistants_threads_20261124": {
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "methods": 9,
+        "evidence": "evidence/serve-assistants-20261124/threads.json",
+        "remaining": "Runs, steps, streaming, tool submission and managed delivery."
       }
     },
     {
@@ -6048,6 +6054,12 @@
           "release"
         ],
         "evidence": "evidence/serve-assistants-20261124/registry.json"
+      },
+      "assistants_threads_20261124": {
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "methods": 9,
+        "evidence": "evidence/serve-assistants-20261124/threads.json",
+        "remaining": "Runs, steps, streaming, tool submission and managed delivery."
       }
     },
     {

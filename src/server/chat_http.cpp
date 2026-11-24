@@ -457,7 +457,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
             path == "/v1/decisions" || path == "/v1/embeddings" ||
             path == "/v1/audio/speech" || IsTranscriptionTarget(path) ||
             IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
-            IsAssistantTarget(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
+            IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
             IsFileTarget(path) || IsUploadTarget(path))) ||
           (method == "GET" && (!LiveRecordingId(path).empty() ||
@@ -545,10 +545,10 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
-        IsAssistantTarget(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
+        IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && path != "/v1/realtime/calls" && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" ||
+      if (method == "POST" && path != "/v1/realtime/calls" && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" ||
                                  path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||
                                  IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
@@ -772,7 +772,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   if ((IsStoredChatTarget(path) &&
        !(method == "POST" &&
          path.substr(0, path.find('?')) == "/v1/chat/completions")) ||
-      IsAssistantTarget(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
+      IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
       IsBatchTarget(path) || IsVectorStoreTarget(path) ||
       (IsResponsesTarget(path) &&
        path.substr(0, path.find('?')) != "/v1/responses")) {
@@ -782,7 +782,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                 "object_scope_unavailable");
       return;
     }
-    if (IsAssistantTarget(path) && !context->AssistantsBeta()) {
+    if (IsAssistantsV2Target(path) && !context->AssistantsBeta()) {
       SendError(fd, 400, "Assistants require OpenAI-Beta assistants=v2", {},
                 "beta_required", "OpenAI-Beta");
       return;
@@ -830,6 +830,9 @@ void ChatServer::Dispatch(int fd, const std::string& method,
             ? HandleEnvironmentTemplate(*objects_, method, path, body, access)
         : IsVaultTarget(path)
             ? HandleAgentVault(*objects_, method, path, body, access)
+        : ParseAssistantThreadRoute(path).kind != AssistantThreadRouteKind::kNone
+            ? HandleAssistantThreads(*objects_, method, path, body, access,
+                                     !embedding_model_dir_.empty())
         : IsAssistantTarget(path)
             ? HandleAssistantRegistry(*objects_, method, path, body,
                                       PlanningConfig(fd), access,

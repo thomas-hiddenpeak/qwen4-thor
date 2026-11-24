@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <ctime>
 
+#include "assistant_threads_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/files.h"
@@ -11,56 +12,11 @@
 #include "q4t/server/vector_stores.h"
 
 namespace q4t::server {
-namespace {
+namespace assistant_detail {
 using namespace object_detail;
-constexpr std::string_view kRoot = "/v1/assistants";
-
 ObjectReply Invalid(std::string message, std::string field) {
   auto result = Error(400, "invalid_request", std::move(message));
   result.value = Object({{"param", String(std::move(field))}});
-  return result;
-}
-
-ObjectReply ReadResource(const Json& record, Json* resource) {
-  const auto* data = record.Find("data");
-  const auto* row = data ? data->Find("assistant") : nullptr;
-  ChatPlanError error;
-  if (!row || row->GetString("id") != record.GetString("id") ||
-      !ValidateAssistant(*row, AssistantShape::kResource, &error))
-    return Error(503, "assistant_record_invalid", "Invalid stored assistant");
-  *resource = *row;
-  return {};
-}
-
-ObjectReply List(ObjectStore& objects, ObjectRequest page, std::string_view raw,
-                 const StateAccess& access) {
-  auto query = ParseApplicationQuery(raw);
-  if (!query.ok()) return query;
-  ChatPlanError error;
-  auto valid = ValidateAssistant(query.value, AssistantShape::kQuery, &error);
-  if (!valid) return Invalid(valid.message(), error.param);
-  page.limit = query.value.GetInt("limit", 20);
-  page.after = query.value.GetString("after");
-  page.before = query.value.GetString("before");
-  page.descending = query.value.GetString("order", "desc") == "desc";
-  if (page.limit < 1 || page.limit > 100)
-    return Invalid("Expected a limit from 1 to 100", "limit");
-  if (!page.after.empty() && !page.before.empty())
-    return Invalid("Choose one pagination cursor", "before");
-  for (const auto* key : {"after", "before"}) {
-    if (query.value.Has(key) && !IsAssistantTarget(std::string(kRoot) + "/" +
-                                                   query.value.GetString(key)))
-      return Invalid("Invalid assistant cursor", key);
-  }
-  page.operation = ObjectOperation::kList;
-  auto result = objects.Execute(page, access.deadline, access.cancelled);
-  if (!result.ok()) return result;
-  for (auto& record : Field(result.value, "data").array) {
-    Json row;
-    auto checked = ReadResource(record, &row);
-    if (!checked.ok()) return checked;
-    record = std::move(row);
-  }
   return result;
 }
 
@@ -109,6 +65,55 @@ ObjectReply BindResources(ObjectStore& objects, const BinaryAccess& access,
   Set(&search, "vector_store_ids", std::move(bound));
   return {};
 }
+}  // namespace assistant_detail
+namespace {
+using namespace object_detail;
+using namespace assistant_detail;
+constexpr std::string_view kRoot = "/v1/assistants";
+
+ObjectReply ReadResource(const Json& record, Json* resource) {
+  const auto* data = record.Find("data");
+  const auto* row = data ? data->Find("assistant") : nullptr;
+  ChatPlanError error;
+  if (!row || row->GetString("id") != record.GetString("id") ||
+      !ValidateAssistant(*row, AssistantShape::kResource, &error))
+    return Error(503, "assistant_record_invalid", "Invalid stored assistant");
+  *resource = *row;
+  return {};
+}
+
+ObjectReply List(ObjectStore& objects, ObjectRequest page, std::string_view raw,
+                 const StateAccess& access) {
+  auto query = ParseApplicationQuery(raw);
+  if (!query.ok()) return query;
+  ChatPlanError error;
+  auto valid = ValidateAssistant(query.value, AssistantShape::kQuery, &error);
+  if (!valid) return Invalid(valid.message(), error.param);
+  page.limit = query.value.GetInt("limit", 20);
+  page.after = query.value.GetString("after");
+  page.before = query.value.GetString("before");
+  page.descending = query.value.GetString("order", "desc") == "desc";
+  if (page.limit < 1 || page.limit > 100)
+    return Invalid("Expected a limit from 1 to 100", "limit");
+  if (!page.after.empty() && !page.before.empty())
+    return Invalid("Choose one pagination cursor", "before");
+  for (const auto* key : {"after", "before"}) {
+    if (query.value.Has(key) && !IsAssistantTarget(std::string(kRoot) + "/" +
+                                                   query.value.GetString(key)))
+      return Invalid("Invalid assistant cursor", key);
+  }
+  page.operation = ObjectOperation::kList;
+  auto result = objects.Execute(page, access.deadline, access.cancelled);
+  if (!result.ok()) return result;
+  for (auto& record : Field(result.value, "data").array) {
+    Json row;
+    auto checked = ReadResource(record, &row);
+    if (!checked.ok()) return checked;
+    record = std::move(row);
+  }
+  return result;
+}
+
 }  // namespace
 
 ObjectReply HandleAssistantRegistry(

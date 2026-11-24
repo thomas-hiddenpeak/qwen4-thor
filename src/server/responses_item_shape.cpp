@@ -199,7 +199,9 @@ class Validator {
     if (item.IsString() && bounds.Has("maxLength"))
       return TextWithinBounds(item.str, bounds);
     if (item.IsArray()) {
-      if (item.array.size() > static_cast<size_t>(bounds.GetInt("maxItems")))
+      if ((bounds.Has("maxItems") && item.array.size() >
+           static_cast<size_t>(bounds.GetInt("maxItems"))) ||
+          item.array.size() < static_cast<size_t>(bounds.GetInt("minItems")))
         return false;
       const auto* elements = bounds.Find("items");
       return !elements || std::ranges::all_of(item.array, [&](const Json& v) {
@@ -361,6 +363,13 @@ Status ValidateAssistant(const Json& value, AssistantShape shape,
     case AssistantShape::kUpdate: root = "update"; break;
     case AssistantShape::kResource: root = "resource"; break;
     case AssistantShape::kQuery: root = "query"; break;
+    case AssistantShape::kThreadCreate: root = "thread_create"; break;
+    case AssistantShape::kThreadUpdate: root = "thread_update"; break;
+    case AssistantShape::kThreadResource: root = "thread_resource"; break;
+    case AssistantShape::kMessageCreate: root = "message_create"; break;
+    case AssistantShape::kMessageUpdate: root = "message_update"; break;
+    case AssistantShape::kMessageResource: root = "message_resource"; break;
+    case AssistantShape::kMessageQuery: root = "message_query"; break;
   }
   return Validate(graph, value, root, error, "", true);
 }

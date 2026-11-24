@@ -7,7 +7,16 @@
     "update": 159,
     "resource": 169,
     "deleted": 179,
-    "query": 182
+    "query": 182,
+    "thread_create": 186,
+    "thread_update": 223,
+    "thread_resource": 230,
+    "thread_deleted": 238,
+    "message_create": 240,
+    "message_update": 248,
+    "message_resource": 249,
+    "message_deleted": 285,
+    "message_query": 287
   },
   "nodes": [
     {
@@ -1556,11 +1565,1209 @@
     {
       "kind": "literal",
       "value": "desc"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "messages",
+          "optional": true,
+          "type": 187
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "tool_resources",
+          "optional": true,
+          "type": 210
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        188
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 189
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "attachments",
+          "optional": true,
+          "type": 190
+        },
+        {
+          "name": "content",
+          "optional": false,
+          "type": 197,
+          "bounds": {
+            "minItems": 1
+          }
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 208
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        191
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 192
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 114
+        },
+        {
+          "name": "tools",
+          "optional": false,
+          "type": 193
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        194
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 195
+    },
+    {
+      "kind": "union",
+      "variants": [
+        143,
+        196
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 153
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        3,
+        198
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 199
+    },
+    {
+      "kind": "union",
+      "variants": [
+        200,
+        204,
+        207
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_file",
+          "optional": false,
+          "type": 201
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 203
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 202
+        },
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        101,
+        103,
+        107
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "image_file"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 205
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 206
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 202
+        },
+        {
+          "name": "url",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "image_url"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 109
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        172,
+        209
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "user"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        211
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "file_search",
+          "optional": true,
+          "type": 214
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        213
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 20
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        215
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "vector_store_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 1
+          }
+        },
+        {
+          "name": "vector_stores",
+          "optional": true,
+          "type": 216,
+          "bounds": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        217
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 218
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "chunking_strategy",
+          "optional": true,
+          "type": 219
+        },
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        220,
+        221
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 107
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "static",
+          "optional": false,
+          "type": 222
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 139
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "chunk_overlap_tokens",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "max_chunk_size_tokens",
+          "optional": false,
+          "type": 123
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "tool_resources",
+          "optional": true,
+          "type": 224
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        225
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": true,
+          "type": 226
+        },
+        {
+          "name": "file_search",
+          "optional": true,
+          "type": 228
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        227
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 20
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        229
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "vector_store_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 171,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 231
+        },
+        {
+          "name": "tool_resources",
+          "optional": false,
+          "type": 232
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        233
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": true,
+          "type": 234
+        },
+        {
+          "name": "file_search",
+          "optional": true,
+          "type": 236
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        235
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 20
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        237
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "vector_store_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 180
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 239
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "attachments",
+          "optional": true,
+          "type": 241
+        },
+        {
+          "name": "content",
+          "optional": false,
+          "type": 197,
+          "bounds": {
+            "minItems": 1
+          }
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 208
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        242
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 243
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 114
+        },
+        {
+          "name": "tools",
+          "optional": false,
+          "type": 244
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        245
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 246
+    },
+    {
+      "kind": "union",
+      "variants": [
+        143,
+        247
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 153
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "assistant_id",
+          "optional": false,
+          "type": 170
+        },
+        {
+          "name": "attachments",
+          "optional": false,
+          "type": 250
+        },
+        {
+          "name": "completed_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "content",
+          "optional": false,
+          "type": 258
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "incomplete_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "incomplete_details",
+          "optional": false,
+          "type": 272
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 171,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 280
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 208
+        },
+        {
+          "name": "run_id",
+          "optional": false,
+          "type": 170
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 281
+        },
+        {
+          "name": "thread_id",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        251
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 252
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 253
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        254
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 255
+    },
+    {
+      "kind": "union",
+      "variants": [
+        143,
+        256
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 153
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        123
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 259
+    },
+    {
+      "kind": "union",
+      "variants": [
+        200,
+        204,
+        260,
+        270
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 261
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 109
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "annotations",
+          "optional": false,
+          "type": 262
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 263
+    },
+    {
+      "kind": "union",
+      "variants": [
+        264,
+        267
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "end_index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "file_citation",
+          "optional": false,
+          "type": 265
+        },
+        {
+          "name": "start_index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 266
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "file_citation"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "end_index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "file_path",
+          "optional": false,
+          "type": 268
+        },
+        {
+          "name": "start_index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 269
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "file_path"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "refusal",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 271
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "refusal"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        273
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "reason",
+          "optional": false,
+          "type": 274
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        275,
+        276,
+        277,
+        278,
+        279
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "content_filter"
+    },
+    {
+      "kind": "literal",
+      "value": "max_tokens"
+    },
+    {
+      "kind": "literal",
+      "value": "run_cancelled"
+    },
+    {
+      "kind": "literal",
+      "value": "run_expired"
+    },
+    {
+      "kind": "literal",
+      "value": "run_failed"
+    },
+    {
+      "kind": "literal",
+      "value": "thread.message"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        282,
+        283,
+        284
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "in_progress"
+    },
+    {
+      "kind": "literal",
+      "value": "incomplete"
+    },
+    {
+      "kind": "literal",
+      "value": "completed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 180
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 286
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.message.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "before",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 183
+        },
+        {
+          "name": "run_id",
+          "optional": true,
+          "type": 114
+        }
+      ],
+      "additional": null
     }
   ],
   "sources_sha256": {
     "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
     "src/resources/beta/assistants.ts": "8d3d6b04baade1f5d3c597c1b49915e3e2387dac5ab106e5d0f54b95ea4d4716",
+    "src/resources/beta/threads/messages.ts": "402598dd86e46e43d92075e988beb1cdf34bb25b49d96474a9cdf52ebe7732a3",
+    "src/resources/beta/threads/threads.ts": "73e2e924fb0285385c8032c62de7f3dec6ff64c4ea8cadb3791c57d7ab69e335",
     "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
   },
   "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",

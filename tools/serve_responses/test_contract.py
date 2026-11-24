@@ -192,6 +192,24 @@ class ApplicationContract(unittest.TestCase):
         self.assertFalse(errors(dict(valid, tool_resources={'file_search':{
             'vector_stores':[{'file_ids':[]}]}}), 'assistant_create'))
 
+    def test_thread_and_message_schema_matches_sdk_body_and_path(self):
+        message = dict(role='user', content=[dict(type='text', text='release')])
+        self.assertFalse(errors(message, 'assistant_message_create'))
+        self.assertFalse(errors(dict(messages=[message]), 'assistant_thread_create'))
+        self.assertFalse(errors(dict(metadata=None), 'assistant_message_update'))
+        for bad in [dict(message, content=[]), dict(message, role='system'),
+                    dict(message, attachments=[{}]), dict(message, metadata={'x':'长'*513})]:
+            self.assertTrue(errors(bad, 'assistant_message_create'))
+            self.assertTrue(errors(dict(messages=[bad]), 'assistant_thread_create'))
+        self.assertTrue(errors(dict(thread_id='thread_1'), 'assistant_message_update'))
+        self.assertTrue(errors(dict(tool_resources=dict(file_search={})), 'assistant_thread_create'))
+        spec = api.openapi()['paths']
+        self.assertFalse(spec['/v1/threads']['post']['requestBody']['required'])
+        page = spec['/v1/threads/{thread_id}/messages']['get']
+        query = {arg['name']:arg for arg in page['parameters'] if arg['in']=='query'}
+        self.assertEqual(set(query), {'after','before','limit','order','run_id'})
+        self.assertEqual(query['limit']['schema']['maximum'], 100)
+
     def test_archived_real_business_wire(self):
         checked, rejected = self.audit(ROOT/'docs/evidence/serve-responses-business-20261109/business-01', legacy=True)
         self.assertGreater(checked, 20)

@@ -74,6 +74,8 @@ inline std::string Kind(ObjectKind kind) {
       return "environment_template";
     case ObjectKind::kVault:
       return "vault";
+    case ObjectKind::kThread:
+      return "thread";
     case ObjectKind::kAssistant:
       return "assistant";
     case ObjectKind::kAgent:
@@ -84,7 +86,7 @@ inline std::string Kind(ObjectKind kind) {
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kEnvironment); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kThread); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

@@ -1,0 +1,186 @@
+{
+  "status": "CANDIDATE_BUSINESS_PASS",
+  "binary": "be6ad6a12268c3b9cd0d48c045c0cf7ff9e4120e94615442186a7dd654dd5125",
+  "ingress": "83e00fb7bbc1094a2509674746c382d70249d8b7e3d00013c6a541ada19adf30",
+  "protocol_sources_sha256": "65374c7a730ebb2df81f8e5472cd3385c57bb5901aa75737b05d59aba98df471",
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 38.211,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "thread_methods": 4,
+    "message_methods": 5,
+    "indexed_files": 2,
+    "retrieved_revision": 460,
+    "retrieved_intent": "STOPPED",
+    "source_sha256": "c4ab8696bad304fa31e43234139760100b07917507d515f2fb6fac3b507eda65",
+    "bidirectional_pagination": true,
+    "implicit_store_expiry_days": 7,
+    "foreign_statuses": [
+      404,
+      404,
+      404
+    ],
+    "wrong_parent": 404,
+    "deleted_descendant": 404,
+    "independent_chat": "42",
+    "wire_objects": 17,
+    "driver_sha256": "e8aa6612da1a5e62b1936d87c4bd1efb2f083aed7b6492420d93b29d5b024111"
+  },
+  "wire": {
+    "status": "PASS",
+    "validated_http_responses": 17,
+    "routes": [
+      [
+        "delete",
+        "/v1/threads/{thread_id}"
+      ],
+      [
+        "delete",
+        "/v1/threads/{thread_id}/messages/{message_id}"
+      ],
+      [
+        "get",
+        "/v1/threads/{thread_id}"
+      ],
+      [
+        "get",
+        "/v1/threads/{thread_id}/messages"
+      ],
+      [
+        "get",
+        "/v1/threads/{thread_id}/messages/{message_id}"
+      ],
+      [
+        "post",
+        "/v1/threads"
+      ],
+      [
+        "post",
+        "/v1/threads/{thread_id}"
+      ],
+      [
+        "post",
+        "/v1/threads/{thread_id}/messages"
+      ],
+      [
+        "post",
+        "/v1/threads/{thread_id}/messages/{message_id}"
+      ]
+    ]
+  },
+  "methods": {
+    "declared": 149,
+    "exact_success_declarations": 149,
+    "missing_declaration": 82,
+    "required_methods": 231
+  },
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "queries": {
+    "total": 119,
+    "counts": {
+      "declared": 119,
+      "bracket_name_only": 0,
+      "missing": 0
+    }
+  },
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 169,
+    "native_routes": 278,
+    "reviewed_source_anchors": 1256,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "cpu": {
+    "native": 8,
+    "python": 17,
+    "optional_nginx": 1
+  },
+  "diagnostics": [
+    "The first native test invocation placed .. in its fixture path and all eight cases failed to open the store. The same executable passed on a canonical path.",
+    "The first optional nginx fixture was invoked without its CLI binary argument. Supplying the exact optional test binary exercised forwarding.",
+    "The first SDK drive read first_id from the CursorPage wrapper. The pinned SDK exposes data and has_more on that wrapper. The corrected check verified both the SDK data and raw HTTP first_id on the same request. The first attempt is retained.",
+    "During schema generation the first invocation omitted the required pinned --types argument. The contract was regenerated before testing."
+  ],
+  "limits": [
+    "This delivery covers persisted threads/messages and attachment file_search ingestion. Runs, steps, model-generated thread replies and submissions require their own acceptance.",
+    "Storage uses one CAS per thread subject to the configured per-object and owner byte limits. Attached files/vector stores have independent lifetimes.",
+    "Default remains rev460. The user owns the 24-hour soak."
+  ],
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-business-lease-02/exit.json",
+      "sha256": "e54267a2252e1cc507b89b609754ec1ee871cf3ea66dc3bebc87ab6a78cac06c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-business-02/plan.json",
+      "sha256": "f41cfd910e07443567bd7b771d9bae9e3bc3ee1ce56dd7a1bd9e3b059d0077ff"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-business-02/result.json",
+      "sha256": "799eaa96dbc08b2d6cc2a2dbd5beac414dff90b4b1e3138415edd4c2f83058eb"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-business-02/create/sdk-result.json",
+      "sha256": "a5bcbb8d3322653653a406ff8937ddf751cfb36e12bf048585a099f28dac9824"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-business-02/create/thread-wire.json",
+      "sha256": "a9ec301914ba51686017e9397331b384c31b504b289003f10856212898db3593"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-wire-02.json",
+      "sha256": "d0854f8c83871a3ace2d35ada985aae54d77714a837da591c93fe84fb7dd6b00"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-methods-01.json",
+      "sha256": "0f018206f72c1197b24ad4b3eb87421cf6762dcbe80043a8746904c8674e3593"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-query-01.json",
+      "sha256": "7b68b6053fb4eae5869fef7dacd4c00976098dffa3703ffab81d9a204540e42e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-source-audit-01.json",
+      "sha256": "a7071d9a7c15992ad88ea31cffa33768aaf0b3cd6de8640c3c1b76c3a8638553"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-native-cpu-02.log",
+      "sha256": "33039b4119f5fa395c36c6fa16cf6a6f9fa5a1eafcee22447008a6a8d49df142"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-contracts-cpu-01.log",
+      "sha256": "3a32e41a6ab36c359302d683db8fb0bb7e7b088fa5bad623d4ca6c40ec2791fd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-nginx-cpu-02.log",
+      "sha256": "587039a056839bf141f2a9a81dc86e0b8ddc32f9bc9f104e9346b3fa0288b844"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-business-01/result.json",
+      "sha256": "53b60ab819e72c5c0b15f0caa21ae263817ffc7d9d58e38096e78ca63f0d14ea"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-business-01/create/sdk.stderr",
+      "sha256": "ecf8a590f67cb0f3eca8edae111adf99b1e6fa4272931a9e406e2e758f7a01d4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-native-cpu-01.log",
+      "sha256": "94c1851ce4d7c4f59a32560c5d1402546d6531f8b8b01945d5666925f035e01d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/threads-nginx-cpu-01.log",
+      "sha256": "0fbbac269a9d9885a6a463b2950eb16d49ce14538dca0f2925469a0435ff0611"
+    }
+  ]
+}

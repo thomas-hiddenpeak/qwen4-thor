@@ -4816,6 +4816,726 @@
         "x-q4t-body-contract": "empty body only"
       }
     },
+    "/v1/threads": {
+      "post": {
+        "operationId": "post_v1_threads",
+        "parameters": [
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_thread_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "assistant_thread_create",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_thread_create"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/threads/{thread_id}": {
+      "get": {
+        "operationId": "get_v1_threads_thread_id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_thread_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_threads_thread_id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_thread_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "assistant_thread_update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_thread_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_threads_thread_id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_thread_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/threads/{thread_id}/messages": {
+      "post": {
+        "operationId": "post_v1_threads_thread_id_messages",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_message_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "assistant_message_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_message_create"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_threads_thread_id_messages",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_message_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "assistant_message_query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/threads/{thread_id}/messages/{message_id}": {
+      "get": {
+        "operationId": "get_v1_threads_thread_id_messages_message_id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_message_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_threads_thread_id_messages_message_id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_message_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "assistant_message_update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_message_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_threads_thread_id_messages_message_id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_message_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
     "/v1/assistants": {
       "post": {
         "operationId": "post_v1_assistants",
@@ -45820,6 +46540,1209 @@
           "assistant_185": {
             "const": "desc"
           },
+          "assistant_186": {
+            "type": "object",
+            "properties": {
+              "messages": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_187"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_4",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              },
+              "tool_resources": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_210",
+                "properties": {
+                  "file_search": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "vector_store_ids"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "vector_stores"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_187": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_188"
+              }
+            ]
+          },
+          "assistant_188": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_189"
+            }
+          },
+          "assistant_189": {
+            "type": "object",
+            "properties": {
+              "attachments": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_190"
+              },
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_197",
+                "minItems": 1
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_4",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_208"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_190": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_191"
+              }
+            ]
+          },
+          "assistant_191": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_192"
+            }
+          },
+          "assistant_192": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_193"
+              }
+            },
+            "required": [
+              "file_id",
+              "tools"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_193": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_194"
+              }
+            ]
+          },
+          "assistant_194": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_195"
+            }
+          },
+          "assistant_195": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_143"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_196"
+              }
+            ]
+          },
+          "assistant_196": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_153"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_197": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_198"
+              }
+            ]
+          },
+          "assistant_198": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_199"
+            }
+          },
+          "assistant_199": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_200"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_204"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_207"
+              }
+            ]
+          },
+          "assistant_200": {
+            "type": "object",
+            "properties": {
+              "image_file": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_201"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_203"
+              }
+            },
+            "required": [
+              "image_file",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_201": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_202"
+              },
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              }
+            },
+            "required": [
+              "file_id"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_202": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_101"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_103"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_107"
+              }
+            ]
+          },
+          "assistant_203": {
+            "const": "image_file"
+          },
+          "assistant_204": {
+            "type": "object",
+            "properties": {
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_205"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_206"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_205": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_202"
+              },
+              "url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              }
+            },
+            "required": [
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_206": {
+            "const": "image_url"
+          },
+          "assistant_207": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_109"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_208": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_172"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_209"
+              }
+            ]
+          },
+          "assistant_209": {
+            "const": "user"
+          },
+          "assistant_210": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_211"
+              }
+            ]
+          },
+          "assistant_211": {
+            "type": "object",
+            "properties": {
+              "code_interpreter": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_212"
+              },
+              "file_search": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_214"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_212": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_213"
+              }
+            ]
+          },
+          "assistant_213": {
+            "type": "object",
+            "properties": {
+              "file_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 20
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_214": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_215"
+              }
+            ]
+          },
+          "assistant_215": {
+            "type": "object",
+            "properties": {
+              "vector_store_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 1
+              },
+              "vector_stores": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_216",
+                "maxItems": 1
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_216": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_217"
+              }
+            ]
+          },
+          "assistant_217": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_218"
+            }
+          },
+          "assistant_218": {
+            "type": "object",
+            "properties": {
+              "chunking_strategy": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_219"
+              },
+              "file_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_4",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_219": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_220"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_221"
+              }
+            ]
+          },
+          "assistant_220": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_107"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_221": {
+            "type": "object",
+            "properties": {
+              "static": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_222"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_139"
+              }
+            },
+            "required": [
+              "static",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_222": {
+            "type": "object",
+            "properties": {
+              "chunk_overlap_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              },
+              "max_chunk_size_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              }
+            },
+            "required": [
+              "chunk_overlap_tokens",
+              "max_chunk_size_tokens"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_223": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_4",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              },
+              "tool_resources": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_224"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_224": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_225"
+              }
+            ]
+          },
+          "assistant_225": {
+            "type": "object",
+            "properties": {
+              "code_interpreter": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_226"
+              },
+              "file_search": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_228"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_226": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_227"
+              }
+            ]
+          },
+          "assistant_227": {
+            "type": "object",
+            "properties": {
+              "file_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 20
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_228": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_229"
+              }
+            ]
+          },
+          "assistant_229": {
+            "type": "object",
+            "properties": {
+              "vector_store_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 1
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_230": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_171",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_231"
+              },
+              "tool_resources": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_232"
+              }
+            },
+            "required": [
+              "created_at",
+              "id",
+              "metadata",
+              "object",
+              "tool_resources"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_231": {
+            "const": "thread"
+          },
+          "assistant_232": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_233"
+              }
+            ]
+          },
+          "assistant_233": {
+            "type": "object",
+            "properties": {
+              "code_interpreter": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_234"
+              },
+              "file_search": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_236"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_234": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_235"
+              }
+            ]
+          },
+          "assistant_235": {
+            "type": "object",
+            "properties": {
+              "file_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 20
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_236": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_237"
+              }
+            ]
+          },
+          "assistant_237": {
+            "type": "object",
+            "properties": {
+              "vector_store_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 1
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_238": {
+            "type": "object",
+            "properties": {
+              "deleted": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_180"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_239"
+              }
+            },
+            "required": [
+              "deleted",
+              "id",
+              "object"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_239": {
+            "const": "thread.deleted"
+          },
+          "assistant_240": {
+            "type": "object",
+            "properties": {
+              "attachments": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_241"
+              },
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_197",
+                "minItems": 1
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_4",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_208"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_241": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_242"
+              }
+            ]
+          },
+          "assistant_242": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_243"
+            }
+          },
+          "assistant_243": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_244"
+              }
+            },
+            "required": [
+              "file_id",
+              "tools"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_244": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_245"
+              }
+            ]
+          },
+          "assistant_245": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_246"
+            }
+          },
+          "assistant_246": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_143"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_247"
+              }
+            ]
+          },
+          "assistant_247": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_153"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_248": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_4",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_249": {
+            "type": "object",
+            "properties": {
+              "assistant_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_170"
+              },
+              "attachments": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_250"
+              },
+              "completed_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_257"
+              },
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_258"
+              },
+              "created_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "incomplete_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_257"
+              },
+              "incomplete_details": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_272"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_171",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_280"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_208"
+              },
+              "run_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_170"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_281"
+              },
+              "thread_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              }
+            },
+            "required": [
+              "assistant_id",
+              "attachments",
+              "completed_at",
+              "content",
+              "created_at",
+              "id",
+              "incomplete_at",
+              "incomplete_details",
+              "metadata",
+              "object",
+              "role",
+              "run_id",
+              "status",
+              "thread_id"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_250": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_251"
+              }
+            ]
+          },
+          "assistant_251": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_252"
+            }
+          },
+          "assistant_252": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_253"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_253": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_254"
+              }
+            ]
+          },
+          "assistant_254": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_255"
+            }
+          },
+          "assistant_255": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_143"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_256"
+              }
+            ]
+          },
+          "assistant_256": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_153"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_257": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              }
+            ]
+          },
+          "assistant_258": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_259"
+            }
+          },
+          "assistant_259": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_200"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_204"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_260"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_270"
+              }
+            ]
+          },
+          "assistant_260": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_261"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_109"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_261": {
+            "type": "object",
+            "properties": {
+              "annotations": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_262"
+              },
+              "value": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              }
+            },
+            "required": [
+              "annotations",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_262": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_263"
+            }
+          },
+          "assistant_263": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_264"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_267"
+              }
+            ]
+          },
+          "assistant_264": {
+            "type": "object",
+            "properties": {
+              "end_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              },
+              "file_citation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_265"
+              },
+              "start_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_266"
+              }
+            },
+            "required": [
+              "end_index",
+              "file_citation",
+              "start_index",
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_265": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              }
+            },
+            "required": [
+              "file_id"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_266": {
+            "const": "file_citation"
+          },
+          "assistant_267": {
+            "type": "object",
+            "properties": {
+              "end_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              },
+              "file_path": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_268"
+              },
+              "start_index": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_269"
+              }
+            },
+            "required": [
+              "end_index",
+              "file_path",
+              "start_index",
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_268": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              }
+            },
+            "required": [
+              "file_id"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_269": {
+            "const": "file_path"
+          },
+          "assistant_270": {
+            "type": "object",
+            "properties": {
+              "refusal": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_271"
+              }
+            },
+            "required": [
+              "refusal",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_271": {
+            "const": "refusal"
+          },
+          "assistant_272": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_273"
+              }
+            ]
+          },
+          "assistant_273": {
+            "type": "object",
+            "properties": {
+              "reason": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_274"
+              }
+            },
+            "required": [
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_274": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_275"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_276"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_277"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_278"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_279"
+              }
+            ]
+          },
+          "assistant_275": {
+            "const": "content_filter"
+          },
+          "assistant_276": {
+            "const": "max_tokens"
+          },
+          "assistant_277": {
+            "const": "run_cancelled"
+          },
+          "assistant_278": {
+            "const": "run_expired"
+          },
+          "assistant_279": {
+            "const": "run_failed"
+          },
+          "assistant_280": {
+            "const": "thread.message"
+          },
+          "assistant_281": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_282"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_283"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_284"
+              }
+            ]
+          },
+          "assistant_282": {
+            "const": "in_progress"
+          },
+          "assistant_283": {
+            "const": "incomplete"
+          },
+          "assistant_284": {
+            "const": "completed"
+          },
+          "assistant_285": {
+            "type": "object",
+            "properties": {
+              "deleted": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_180"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_286"
+              }
+            },
+            "required": [
+              "deleted",
+              "id",
+              "object"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_286": {
+            "const": "thread.message.deleted"
+          },
+          "assistant_287": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              },
+              "before": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 20
+              },
+              "order": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+              },
+              "run_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
           "assistant_create": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_0"
           },
@@ -45834,6 +47757,78 @@
           },
           "assistant_query": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_182"
+          },
+          "assistant_thread_create": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_186"
+          },
+          "assistant_thread_update": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_223"
+          },
+          "assistant_thread_resource": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_230"
+          },
+          "assistant_thread_deleted": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_238"
+          },
+          "assistant_message_create": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_240"
+          },
+          "assistant_message_update": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_248"
+          },
+          "assistant_message_resource": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_249"
+          },
+          "assistant_message_deleted": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_285"
+          },
+          "assistant_message_query": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_287"
+          },
+          "assistant_message_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_message_resource"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "has_more",
+              "first_id",
+              "last_id"
+            ],
+            "additionalProperties": false
           },
           "assistant_list": {
             "type": "object",

@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+Threads 与 Messages 的九项方法通过官方 SDK 和原生 TLS。项目发布记录和运行意图两个附件均完成真实索引，检索分别得到 rev460 和 STOPPED。跨客户、跨会话读取及删除后的访问均返回 404。八项原生、十七项 Python 及一项可选 nginx 检查通过。一次模型启动用时 38.211 秒，逐项校验了 17 个成功 HTTP 响应。候选声明 149/231 项，剩余 82 项；下一组为 Runs、步骤、工具回填与恢复。[验收回执](evidence/serve-assistants-20261124/threads.json)
+
 Assistants v2 的五项注册表操作已通过官方 Node SDK 和原生 TLS。客户端上传 rev460 发布记录，创建 Assistant 时同步创建向量库，真实索引完成后查到 460。另一客户读取 Assistant、绑定该文件及向量库均为 404。前后分页、更新、删除后读取、超限与独立 Chat 均通过。单次模型启动耗时 38.778 秒，6 项原生、18 项 Python 及 1 项可选 nginx 检查通过。候选声明 140/231，仍缺 91 项；默认 rev460 声明 135 项。后续接续 Threads、Runs 与工具回填以及可回退发行。[验收回执](evidence/serve-assistants-20261124/registry.json)
 
 同一 Agent 回合的两个原生 TLS 订阅端都收到 12 个相同 ID 的事件，正文均为 42。默认订阅的 2 条增量有填充，显式关闭的订阅无填充；去掉填充后两侧逐字段一致。错误查询返回 400，跨客户返回 404。另核实 Responses 的 `include` 与 `include[]` 取回相同的输出和用量。6 项原生与 12 项 Python 检查通过，真实 SDK 一次模型启动用时 36.547 秒。候选已声明现有 135 个方法的全部 110 个官方查询参数名称。默认仍为 rev460；另有 96 个方法待实现。[实测与矩阵](evidence/serve-agent-event-query-20261124/business.json)

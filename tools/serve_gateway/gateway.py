@@ -61,6 +61,13 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/tunnels/{tunnel_id}', 'control'),
     ('GET', '/v1/tunnels/{tunnel_id}/poll', 'tunnel_poll'),
     ('POST', '/v1/tunnels/{tunnel_id}/response', 'tunnel_response'),
+    ('POST', '/v1/threads', 'data'),
+    *((method, path, 'data' if method == 'POST' else 'control')
+      for path, methods in (
+          ('/v1/threads/{thread_id}', ('GET', 'POST', 'DELETE')),
+          ('/v1/threads/{thread_id}/messages', ('GET', 'POST')),
+          ('/v1/threads/{thread_id}/messages/{message_id}', ('GET', 'POST', 'DELETE')))
+      for method in methods),
     *((method, '/v1/assistants', 'control' if method == 'GET' else 'data')
       for method in ('GET', 'POST')),
     *((method, '/v1/assistants/{assistant_id}', 'data' if method == 'POST' else 'control')
@@ -247,6 +254,8 @@ def route_map():
     rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
+                           'thread_[A-Za-z0-9_-]{1,121}' if part == '{thread_id}' else
+                           'msg_[A-Za-z0-9_-]{1,124}' if part == '{message_id}' else
                            'asst_[A-Za-z0-9_-]{1,123}' if part == '{assistant_id}' else
                            'agent_session_[A-Za-z0-9_-]{1,114}' if part == '{session_id}' and path.startswith('/v1/agents/sessions/') else
                            'environment_(?!template_)[A-Za-z0-9_-]{1,116}' if part == '{environment_id}' else
@@ -332,7 +341,7 @@ def responses_beta_maps():
     default "";
     /v1/realtime $q4t_realtime_selector;
     ~^/v1/responses(/|$) $q4t_multi_agent;
-    ~^/v1/assistants(/|$) $q4t_assistants_beta;
+    ~^/v1/(assistants|threads)(/|$) $q4t_assistants_beta;
     ~^/v1/(agents|vaults)(/|$) $q4t_agent_config;
   }'''
 

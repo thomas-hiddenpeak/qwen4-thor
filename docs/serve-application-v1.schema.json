@@ -24157,6 +24157,1209 @@
     "assistant_185": {
       "const": "desc"
     },
+    "assistant_186": {
+      "type": "object",
+      "properties": {
+        "messages": {
+          "$ref": "#/$defs/assistant_187"
+        },
+        "metadata": {
+          "$ref": "#/$defs/assistant_4",
+          "maxProperties": 16,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "maxLength": 512
+          }
+        },
+        "tool_resources": {
+          "$ref": "#/$defs/assistant_210",
+          "properties": {
+            "file_search": {
+              "oneOf": [
+                {
+                  "required": [
+                    "vector_store_ids"
+                  ]
+                },
+                {
+                  "required": [
+                    "vector_stores"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_187": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_188"
+        }
+      ]
+    },
+    "assistant_188": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_189"
+      }
+    },
+    "assistant_189": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "$ref": "#/$defs/assistant_190"
+        },
+        "content": {
+          "$ref": "#/$defs/assistant_197",
+          "minItems": 1
+        },
+        "metadata": {
+          "$ref": "#/$defs/assistant_4",
+          "maxProperties": 16,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "maxLength": 512
+          }
+        },
+        "role": {
+          "$ref": "#/$defs/assistant_208"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_190": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_2"
+        },
+        {
+          "$ref": "#/$defs/assistant_191"
+        }
+      ]
+    },
+    "assistant_191": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_192"
+      }
+    },
+    "assistant_192": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/assistant_114"
+        },
+        "tools": {
+          "$ref": "#/$defs/assistant_193"
+        }
+      },
+      "required": [
+        "file_id",
+        "tools"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_193": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_194"
+        }
+      ]
+    },
+    "assistant_194": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_195"
+      }
+    },
+    "assistant_195": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_143"
+        },
+        {
+          "$ref": "#/$defs/assistant_196"
+        }
+      ]
+    },
+    "assistant_196": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/assistant_153"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_197": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_3"
+        },
+        {
+          "$ref": "#/$defs/assistant_198"
+        }
+      ]
+    },
+    "assistant_198": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_199"
+      }
+    },
+    "assistant_199": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_200"
+        },
+        {
+          "$ref": "#/$defs/assistant_204"
+        },
+        {
+          "$ref": "#/$defs/assistant_207"
+        }
+      ]
+    },
+    "assistant_200": {
+      "type": "object",
+      "properties": {
+        "image_file": {
+          "$ref": "#/$defs/assistant_201"
+        },
+        "type": {
+          "$ref": "#/$defs/assistant_203"
+        }
+      },
+      "required": [
+        "image_file",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_201": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/assistant_202"
+        },
+        "file_id": {
+          "$ref": "#/$defs/assistant_3"
+        }
+      },
+      "required": [
+        "file_id"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_202": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_101"
+        },
+        {
+          "$ref": "#/$defs/assistant_103"
+        },
+        {
+          "$ref": "#/$defs/assistant_107"
+        }
+      ]
+    },
+    "assistant_203": {
+      "const": "image_file"
+    },
+    "assistant_204": {
+      "type": "object",
+      "properties": {
+        "image_url": {
+          "$ref": "#/$defs/assistant_205"
+        },
+        "type": {
+          "$ref": "#/$defs/assistant_206"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_205": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/assistant_202"
+        },
+        "url": {
+          "$ref": "#/$defs/assistant_3"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_206": {
+      "const": "image_url"
+    },
+    "assistant_207": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/assistant_3"
+        },
+        "type": {
+          "$ref": "#/$defs/assistant_109"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_208": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_172"
+        },
+        {
+          "$ref": "#/$defs/assistant_209"
+        }
+      ]
+    },
+    "assistant_209": {
+      "const": "user"
+    },
+    "assistant_210": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_2"
+        },
+        {
+          "$ref": "#/$defs/assistant_211"
+        }
+      ]
+    },
+    "assistant_211": {
+      "type": "object",
+      "properties": {
+        "code_interpreter": {
+          "$ref": "#/$defs/assistant_212"
+        },
+        "file_search": {
+          "$ref": "#/$defs/assistant_214"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_212": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_213"
+        }
+      ]
+    },
+    "assistant_213": {
+      "type": "object",
+      "properties": {
+        "file_ids": {
+          "$ref": "#/$defs/assistant_128",
+          "maxItems": 20
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_214": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_215"
+        }
+      ]
+    },
+    "assistant_215": {
+      "type": "object",
+      "properties": {
+        "vector_store_ids": {
+          "$ref": "#/$defs/assistant_128",
+          "maxItems": 1
+        },
+        "vector_stores": {
+          "$ref": "#/$defs/assistant_216",
+          "maxItems": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_216": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_217"
+        }
+      ]
+    },
+    "assistant_217": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_218"
+      }
+    },
+    "assistant_218": {
+      "type": "object",
+      "properties": {
+        "chunking_strategy": {
+          "$ref": "#/$defs/assistant_219"
+        },
+        "file_ids": {
+          "$ref": "#/$defs/assistant_128"
+        },
+        "metadata": {
+          "$ref": "#/$defs/assistant_4",
+          "maxProperties": 16,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "maxLength": 512
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_219": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_220"
+        },
+        {
+          "$ref": "#/$defs/assistant_221"
+        }
+      ]
+    },
+    "assistant_220": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/assistant_107"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_221": {
+      "type": "object",
+      "properties": {
+        "static": {
+          "$ref": "#/$defs/assistant_222"
+        },
+        "type": {
+          "$ref": "#/$defs/assistant_139"
+        }
+      },
+      "required": [
+        "static",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_222": {
+      "type": "object",
+      "properties": {
+        "chunk_overlap_tokens": {
+          "$ref": "#/$defs/assistant_123"
+        },
+        "max_chunk_size_tokens": {
+          "$ref": "#/$defs/assistant_123"
+        }
+      },
+      "required": [
+        "chunk_overlap_tokens",
+        "max_chunk_size_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_223": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/assistant_4",
+          "maxProperties": 16,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "maxLength": 512
+          }
+        },
+        "tool_resources": {
+          "$ref": "#/$defs/assistant_224"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_224": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_2"
+        },
+        {
+          "$ref": "#/$defs/assistant_225"
+        }
+      ]
+    },
+    "assistant_225": {
+      "type": "object",
+      "properties": {
+        "code_interpreter": {
+          "$ref": "#/$defs/assistant_226"
+        },
+        "file_search": {
+          "$ref": "#/$defs/assistant_228"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_226": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_227"
+        }
+      ]
+    },
+    "assistant_227": {
+      "type": "object",
+      "properties": {
+        "file_ids": {
+          "$ref": "#/$defs/assistant_128",
+          "maxItems": 20
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_228": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_229"
+        }
+      ]
+    },
+    "assistant_229": {
+      "type": "object",
+      "properties": {
+        "vector_store_ids": {
+          "$ref": "#/$defs/assistant_128",
+          "maxItems": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_230": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/assistant_123"
+        },
+        "id": {
+          "$ref": "#/$defs/assistant_3"
+        },
+        "metadata": {
+          "$ref": "#/$defs/assistant_171",
+          "maxProperties": 16,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "maxLength": 512
+          }
+        },
+        "object": {
+          "$ref": "#/$defs/assistant_231"
+        },
+        "tool_resources": {
+          "$ref": "#/$defs/assistant_232"
+        }
+      },
+      "required": [
+        "created_at",
+        "id",
+        "metadata",
+        "object",
+        "tool_resources"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_231": {
+      "const": "thread"
+    },
+    "assistant_232": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_2"
+        },
+        {
+          "$ref": "#/$defs/assistant_233"
+        }
+      ]
+    },
+    "assistant_233": {
+      "type": "object",
+      "properties": {
+        "code_interpreter": {
+          "$ref": "#/$defs/assistant_234"
+        },
+        "file_search": {
+          "$ref": "#/$defs/assistant_236"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_234": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_235"
+        }
+      ]
+    },
+    "assistant_235": {
+      "type": "object",
+      "properties": {
+        "file_ids": {
+          "$ref": "#/$defs/assistant_128",
+          "maxItems": 20
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_236": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_237"
+        }
+      ]
+    },
+    "assistant_237": {
+      "type": "object",
+      "properties": {
+        "vector_store_ids": {
+          "$ref": "#/$defs/assistant_128",
+          "maxItems": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_238": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/assistant_180"
+        },
+        "id": {
+          "$ref": "#/$defs/assistant_3"
+        },
+        "object": {
+          "$ref": "#/$defs/assistant_239"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_239": {
+      "const": "thread.deleted"
+    },
+    "assistant_240": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "$ref": "#/$defs/assistant_241"
+        },
+        "content": {
+          "$ref": "#/$defs/assistant_197",
+          "minItems": 1
+        },
+        "metadata": {
+          "$ref": "#/$defs/assistant_4",
+          "maxProperties": 16,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "maxLength": 512
+          }
+        },
+        "role": {
+          "$ref": "#/$defs/assistant_208"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_241": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_2"
+        },
+        {
+          "$ref": "#/$defs/assistant_242"
+        }
+      ]
+    },
+    "assistant_242": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_243"
+      }
+    },
+    "assistant_243": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/assistant_114"
+        },
+        "tools": {
+          "$ref": "#/$defs/assistant_244"
+        }
+      },
+      "required": [
+        "file_id",
+        "tools"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_244": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_245"
+        }
+      ]
+    },
+    "assistant_245": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_246"
+      }
+    },
+    "assistant_246": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_143"
+        },
+        {
+          "$ref": "#/$defs/assistant_247"
+        }
+      ]
+    },
+    "assistant_247": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/assistant_153"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_248": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/assistant_4",
+          "maxProperties": 16,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "maxLength": 512
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_249": {
+      "type": "object",
+      "properties": {
+        "assistant_id": {
+          "$ref": "#/$defs/assistant_170"
+        },
+        "attachments": {
+          "$ref": "#/$defs/assistant_250"
+        },
+        "completed_at": {
+          "$ref": "#/$defs/assistant_257"
+        },
+        "content": {
+          "$ref": "#/$defs/assistant_258"
+        },
+        "created_at": {
+          "$ref": "#/$defs/assistant_123"
+        },
+        "id": {
+          "$ref": "#/$defs/assistant_3"
+        },
+        "incomplete_at": {
+          "$ref": "#/$defs/assistant_257"
+        },
+        "incomplete_details": {
+          "$ref": "#/$defs/assistant_272"
+        },
+        "metadata": {
+          "$ref": "#/$defs/assistant_171",
+          "maxProperties": 16,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "maxLength": 512
+          }
+        },
+        "object": {
+          "$ref": "#/$defs/assistant_280"
+        },
+        "role": {
+          "$ref": "#/$defs/assistant_208"
+        },
+        "run_id": {
+          "$ref": "#/$defs/assistant_170"
+        },
+        "status": {
+          "$ref": "#/$defs/assistant_281"
+        },
+        "thread_id": {
+          "$ref": "#/$defs/assistant_3"
+        }
+      },
+      "required": [
+        "assistant_id",
+        "attachments",
+        "completed_at",
+        "content",
+        "created_at",
+        "id",
+        "incomplete_at",
+        "incomplete_details",
+        "metadata",
+        "object",
+        "role",
+        "run_id",
+        "status",
+        "thread_id"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_250": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_2"
+        },
+        {
+          "$ref": "#/$defs/assistant_251"
+        }
+      ]
+    },
+    "assistant_251": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_252"
+      }
+    },
+    "assistant_252": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/assistant_114"
+        },
+        "tools": {
+          "$ref": "#/$defs/assistant_253"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "assistant_253": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_254"
+        }
+      ]
+    },
+    "assistant_254": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_255"
+      }
+    },
+    "assistant_255": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_143"
+        },
+        {
+          "$ref": "#/$defs/assistant_256"
+        }
+      ]
+    },
+    "assistant_256": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/assistant_153"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_257": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_2"
+        },
+        {
+          "$ref": "#/$defs/assistant_123"
+        }
+      ]
+    },
+    "assistant_258": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_259"
+      }
+    },
+    "assistant_259": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_200"
+        },
+        {
+          "$ref": "#/$defs/assistant_204"
+        },
+        {
+          "$ref": "#/$defs/assistant_260"
+        },
+        {
+          "$ref": "#/$defs/assistant_270"
+        }
+      ]
+    },
+    "assistant_260": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/assistant_261"
+        },
+        "type": {
+          "$ref": "#/$defs/assistant_109"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_261": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/assistant_262"
+        },
+        "value": {
+          "$ref": "#/$defs/assistant_3"
+        }
+      },
+      "required": [
+        "annotations",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_262": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assistant_263"
+      }
+    },
+    "assistant_263": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_264"
+        },
+        {
+          "$ref": "#/$defs/assistant_267"
+        }
+      ]
+    },
+    "assistant_264": {
+      "type": "object",
+      "properties": {
+        "end_index": {
+          "$ref": "#/$defs/assistant_123"
+        },
+        "file_citation": {
+          "$ref": "#/$defs/assistant_265"
+        },
+        "start_index": {
+          "$ref": "#/$defs/assistant_123"
+        },
+        "text": {
+          "$ref": "#/$defs/assistant_3"
+        },
+        "type": {
+          "$ref": "#/$defs/assistant_266"
+        }
+      },
+      "required": [
+        "end_index",
+        "file_citation",
+        "start_index",
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_265": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/assistant_3"
+        }
+      },
+      "required": [
+        "file_id"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_266": {
+      "const": "file_citation"
+    },
+    "assistant_267": {
+      "type": "object",
+      "properties": {
+        "end_index": {
+          "$ref": "#/$defs/assistant_123"
+        },
+        "file_path": {
+          "$ref": "#/$defs/assistant_268"
+        },
+        "start_index": {
+          "$ref": "#/$defs/assistant_123"
+        },
+        "text": {
+          "$ref": "#/$defs/assistant_3"
+        },
+        "type": {
+          "$ref": "#/$defs/assistant_269"
+        }
+      },
+      "required": [
+        "end_index",
+        "file_path",
+        "start_index",
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_268": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/assistant_3"
+        }
+      },
+      "required": [
+        "file_id"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_269": {
+      "const": "file_path"
+    },
+    "assistant_270": {
+      "type": "object",
+      "properties": {
+        "refusal": {
+          "$ref": "#/$defs/assistant_3"
+        },
+        "type": {
+          "$ref": "#/$defs/assistant_271"
+        }
+      },
+      "required": [
+        "refusal",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_271": {
+      "const": "refusal"
+    },
+    "assistant_272": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_2"
+        },
+        {
+          "$ref": "#/$defs/assistant_273"
+        }
+      ]
+    },
+    "assistant_273": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "$ref": "#/$defs/assistant_274"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_274": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_275"
+        },
+        {
+          "$ref": "#/$defs/assistant_276"
+        },
+        {
+          "$ref": "#/$defs/assistant_277"
+        },
+        {
+          "$ref": "#/$defs/assistant_278"
+        },
+        {
+          "$ref": "#/$defs/assistant_279"
+        }
+      ]
+    },
+    "assistant_275": {
+      "const": "content_filter"
+    },
+    "assistant_276": {
+      "const": "max_tokens"
+    },
+    "assistant_277": {
+      "const": "run_cancelled"
+    },
+    "assistant_278": {
+      "const": "run_expired"
+    },
+    "assistant_279": {
+      "const": "run_failed"
+    },
+    "assistant_280": {
+      "const": "thread.message"
+    },
+    "assistant_281": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/assistant_282"
+        },
+        {
+          "$ref": "#/$defs/assistant_283"
+        },
+        {
+          "$ref": "#/$defs/assistant_284"
+        }
+      ]
+    },
+    "assistant_282": {
+      "const": "in_progress"
+    },
+    "assistant_283": {
+      "const": "incomplete"
+    },
+    "assistant_284": {
+      "const": "completed"
+    },
+    "assistant_285": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/assistant_180"
+        },
+        "id": {
+          "$ref": "#/$defs/assistant_3"
+        },
+        "object": {
+          "$ref": "#/$defs/assistant_286"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "assistant_286": {
+      "const": "thread.message.deleted"
+    },
+    "assistant_287": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/assistant_114"
+        },
+        "before": {
+          "$ref": "#/$defs/assistant_114"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "order": {
+          "$ref": "#/$defs/assistant_183"
+        },
+        "run_id": {
+          "$ref": "#/$defs/assistant_114"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
     "assistant_create": {
       "$ref": "#/$defs/assistant_0"
     },
@@ -24171,6 +25374,78 @@
     },
     "assistant_query": {
       "$ref": "#/$defs/assistant_182"
+    },
+    "assistant_thread_create": {
+      "$ref": "#/$defs/assistant_186"
+    },
+    "assistant_thread_update": {
+      "$ref": "#/$defs/assistant_223"
+    },
+    "assistant_thread_resource": {
+      "$ref": "#/$defs/assistant_230"
+    },
+    "assistant_thread_deleted": {
+      "$ref": "#/$defs/assistant_238"
+    },
+    "assistant_message_create": {
+      "$ref": "#/$defs/assistant_240"
+    },
+    "assistant_message_update": {
+      "$ref": "#/$defs/assistant_248"
+    },
+    "assistant_message_resource": {
+      "$ref": "#/$defs/assistant_249"
+    },
+    "assistant_message_deleted": {
+      "$ref": "#/$defs/assistant_285"
+    },
+    "assistant_message_query": {
+      "$ref": "#/$defs/assistant_287"
+    },
+    "assistant_message_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/assistant_message_resource"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
     },
     "assistant_list": {
       "type": "object",
