@@ -2696,6 +2696,13 @@
         "evidence": "evidence/serve-skills-20261124/profiles.json",
         "default_revision": 462,
         "remaining": "Managed model and gateway recovery, stopped publication, hosted execution."
+      },
+      "skill_workspace_delivery_20261124": {
+        "revision": 464,
+        "evidence": "evidence/serve-skills-20261124/delivery.json",
+        "accepted_methods": 178,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     },
     {
@@ -6134,6 +6141,13 @@
         "default_contains_change": false,
         "hosted_model_tool_execution": "pending",
         "native_workspace_unicode_snapshot": "cpu_verified"
+      },
+      "skill_workspace_delivery_20261124": {
+        "revision": 464,
+        "evidence": "evidence/serve-skills-20261124/delivery.json",
+        "accepted_methods": 178,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     },
     {
@@ -8446,6 +8460,13 @@
         "evidence": "evidence/serve-skills-20261124/profiles.json",
         "default_revision": 462,
         "remaining": "Managed model and gateway recovery, stopped publication, hosted execution."
+      },
+      "skill_workspace_delivery_20261124": {
+        "revision": 464,
+        "evidence": "evidence/serve-skills-20261124/delivery.json",
+        "accepted_methods": 178,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     },
     {
@@ -9337,6 +9358,13 @@
         "evidence": "evidence/serve-skills-20261124/profiles.json",
         "default_revision": 462,
         "remaining": "Managed model and gateway recovery, stopped publication, hosted execution."
+      },
+      "skill_workspace_delivery_20261124": {
+        "revision": 464,
+        "evidence": "evidence/serve-skills-20261124/delivery.json",
+        "accepted_methods": 178,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     },
     {
@@ -10841,11 +10869,18 @@
         "evidence": "evidence/serve-skills-20261124/profiles.json",
         "default_revision": 462,
         "remaining": "Managed model and gateway recovery, stopped publication, hosted execution."
+      },
+      "skill_workspace_delivery_20261124": {
+        "revision": 464,
+        "evidence": "evidence/serve-skills-20261124/delivery.json",
+        "accepted_methods": 178,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     }
   ],
-  "next_task": "Complete native hosted execution with bound workspace data, primary/light recovery and rollback publication; continue all remaining inference and application contracts.",
-  "next": "将已固定的技能和容器文件接入托管执行，核验跨配置接手及发行，并继续全部未完成的推理与应用工作。",
+  "next_task": "Implement hosted code execution using owner-scoped workspace files, then continue the remaining inference, application and recovery contracts.",
+  "next": "补齐通过模型工具执行访问授权工作区及文件的链路，接续剩余推理、应用服务与恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
