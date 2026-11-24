@@ -2659,6 +2659,12 @@
         "methods": 9,
         "evidence": "evidence/serve-assistants-20261124/runs.json",
         "remaining": "Managed handoff, hard pre-generation prompt budget and hosted code interpreter."
+      },
+      "assistant_capacity_handoff_20261124": {
+        "status": "ACCEPT_ASSISTANTS_PRIMARY_LIGHT",
+        "evidence": "evidence/serve-assistants-20261124/profiles.json",
+        "default_revision": 460,
+        "remaining": "Sealed managed recovery and publication."
       }
     },
     {
@@ -8352,7 +8358,13 @@
         "guardian_sha256": "e8290fa1dedf4f5bddfdb1c09d3ed5167ea9333ebdd8739c86a6affc38c4176a"
       },
       "agent_registration_primary_light_20261123": "docs/evidence/serve-agent-registration-20261123/profiles.json",
-      "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json"
+      "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
+      "assistant_capacity_handoff_20261124": {
+        "status": "ACCEPT_ASSISTANTS_PRIMARY_LIGHT",
+        "evidence": "evidence/serve-assistants-20261124/profiles.json",
+        "default_revision": 460,
+        "remaining": "Sealed managed recovery and publication."
+      }
     },
     {
       "id": "R10",
@@ -9206,6 +9218,12 @@
         "methods": 9,
         "evidence": "evidence/serve-assistants-20261124/runs.json",
         "remaining": "Managed handoff, hard pre-generation prompt budget and hosted code interpreter."
+      },
+      "assistant_capacity_handoff_20261124": {
+        "status": "ACCEPT_ASSISTANTS_PRIMARY_LIGHT",
+        "evidence": "evidence/serve-assistants-20261124/profiles.json",
+        "default_revision": 460,
+        "remaining": "Sealed managed recovery and publication."
       }
     },
     {
@@ -10691,6 +10709,12 @@
         "hours_run": 0,
         "owner": "user",
         "evidence": "evidence/serve-audio-translation-20261124/delivery.json"
+      },
+      "assistant_capacity_handoff_20261124": {
+        "status": "ACCEPT_ASSISTANTS_PRIMARY_LIGHT",
+        "evidence": "evidence/serve-assistants-20261124/profiles.json",
+        "default_revision": 460,
+        "remaining": "Sealed managed recovery and publication."
       }
     }
   ],

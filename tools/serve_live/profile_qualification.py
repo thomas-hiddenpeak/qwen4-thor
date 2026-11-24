@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'assistants' in declared or 'assistant_handoff' in plan:
+            from tools.serve_responses import assistant_profiles
+            profiles[name]['evidence_sha256'].update(assistant_profiles.verify(phase, plan, declared))
+            continue
         if 'translations' in declared or 'media_client_change' in plan:
             from tools.native_asr import translation_profiles
             profiles[name]['evidence_sha256'].update(translation_profiles.verify(phase, plan, declared))

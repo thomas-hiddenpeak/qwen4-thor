@@ -80,6 +80,19 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 live.format_for(altered)
 
+    def test_assistants_extension_requires_all_run_endpoints_and_predecessor(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(translations=live.TRANSLATION_CAPABILITY)
+        new = dict(old, assistants=live.ASSISTANTS_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension({}, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        for change in (dict(run_steps=1), dict(submit_tool_outputs=False), dict(threads='/threads')):
+            altered = dict(old, assistants=dict(live.ASSISTANTS_CAPABILITY, **change))
+            self.assertFalse(migration.explicit_extension(old, altered))
+            with self.assertRaises(ValueError):
+                live.format_for(altered)
+
     def test_translation_extension_checks_formats_backend_and_enabled_type(self):
         from tools.serve_recovery import profile_live_reuse as live
         candidate = dict(translations=live.TRANSLATION_CAPABILITY)
