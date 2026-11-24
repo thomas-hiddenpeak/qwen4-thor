@@ -1007,6 +1007,13 @@ ASR质量限制，并按用户确认做速度归一化内容复核，正常听�
 Silero的MIT许可见[声明](third_party/licenses/silero-vad/README.md)。
 日/韩分词已实现，实际语言业务与人工时间精度尚未验收。
 
+上传录音需要英文译文时，可通过 `POST /v1/audio/translations` 提交
+`multipart/form-data`，包含 `file` 和 `model`。`whisper-1` 与
+`qwen3-asr-0.6b` 选择同一条本地 Qwen ASR 和 Chat 翻译路径。默认返回
+JSON；`text`、`verbose_json`、`srt` 和 `vtt` 可通过 `response_format`
+选择。字幕时间取自源语音，需配置 `--aligner-model-dir`。
+[官方 SDK 双配置验收](docs/evidence/serve-audio-translation-20261124/profiles.json)
+
 原生说话人后端通过`--speaker-model-dir DIR`启用，同时配置ASR、
 对齐和VAD资产。`POST /v1/audio/transcriptions`使用
 `response_format="diarized_json"`和`chunking_strategy="auto"`，

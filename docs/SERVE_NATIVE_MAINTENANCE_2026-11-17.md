@@ -6,6 +6,18 @@ N07重新打开的缺口是：rev260有安全归档源码，但密封发行和�
 service入口没有这项能力。本组补齐正式入口，不改模型/协议/推理
 程序、容量或恢复策略，不新增外部服务依赖。
 
+## 归档已经完成的整包交接
+
+服务停机后，旧的 `root-version-transfer.json` 仍可能保护两个恢复周期。先用当前包的 `maintenance-status` 检查版本登记占用。当部署和版本周期都已前移，运维人员可以在项目源码目录运行以下命令。该入口从项目源码运行，rev460 密封包自身提供后续的 `maintenance-plan` 和 `maintenance-apply`。
+
+```bash
+python -m tools.serve_recovery.retire_root_transfer \
+  --package "$package" --manifest-sha256 "$package_sha256" --state "$state" \
+  --transfer-sha256 "$transfer_sha256" --output "$private_directory/archive"
+```
+
+使用事前核对过的现用包与旧交接文件摘要。输出父目录由操作人持有，建议权限 0700，与状态目录同一文件系统。涉及历史模型身份的部署还须传入对应的 `--model-history` 和 `--model-history-sha256`。工具持有维护锁，核对 STOPPED 意图、两个原始登记以及各自的最终检查点，然后把交接文件原样移入归档。用相同路径和摘要可续做中断的操作。确认回执后，重新查询 `maintenance-status`，按原生版本归档流程选择已经解除保护的登记。检查点和已消费的恢复预算均保留。
+
 ## 实施合同
 
 - 新服务包v20增加三类归档模块和统一维护入口；冻结v19来源集合，
