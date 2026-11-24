@@ -1,0 +1,12 @@
+{
+  "pr": 108,
+  "push_job": 138681809524,
+  "passing_pr_job": 138681860956,
+  "runtime_changes": false,
+  "cause": "A normal Batch upload Feed on cold storage exceeded the shared fixture override of 250 ms. All healthy operations now inherit the production 2000 ms I/O budget. Two intentionally lost receipt cases allow time for the actual post-commit timeout and still require exact invocation/usage results.",
+  "targeted_passes": 6,
+  "raw": {
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/batch-default-budget-cpu.log": "24c5c92e1138d962a7a0525ca5411b17175ff6bc17145a75322bd731b20e2225",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/remote-138681809524.log": "dc6f9ac5dc2e826043fb5f6efaf288a06649c75bf129b1cb7a400951cca8ff52"
+  }
+}
