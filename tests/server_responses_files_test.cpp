@@ -1,10 +1,15 @@
 #include "q4t/server/responses_execution.h"
 
+#include <algorithm>
+#include <atomic>
 #include <cstdlib>
+#include <thread>
 #include <filesystem>
 #include <fstream>
 
+#include "../src/server/eval_sampling.h"
 #include "../src/server/object_protocol.h"
+#include "q4t/server/object_retention.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/file_document_worker.h"
@@ -103,19 +108,141 @@ std::string Prompt(const ResponsesExecution& run) {
   if (!status) throw std::runtime_error(status.message());
   return prompt;
 }
-bool FinishFixture(ResponsesExecution& run) {
+bool FinishFixture(ResponsesExecution& run, int64_t completed = 43) {
   std::string wire;
   if (!run.Begun() && !Ok(run.Begin(&wire))) return false;
   ResponseDelta delta;
   delta.kind = ResponseDelta::Kind::kContent;
   delta.text = "CPU lifecycle output fixture";
   return run.Append(delta, "null", &wire).ok() &&
-         Ok(run.Finish(false, 0, {100, 0, 6, 0}, 43, &wire));
+         Ok(run.Finish(false, 0, {100, 0, 6, 0}, completed, &wire));
 }
 constexpr auto kSheetFixture =
     R"({"summary":"CPU step receipt fixture: alpha 42 and beta 7",)"
     R"("headers":["name: row label","value: quantity"]})";
 }  // namespace
+
+Q4T_TEST(evals_reopen_deleted_file_history_uses_owned_snapshot) {
+  Fixture fixture;
+  fixture.config.default_max_tokens = 32;
+  const auto access = Access();
+  std::string run_id, base, file, immutable_id, source_id;
+  {
+    ObjectStore objects(fixture.objects);
+    file = Upload(objects, "Accepted project record: 157 approved paths.\n",
+                  "decision.txt");
+    auto request = Request(Stored(file));
+    Set(&request, "store", Boolean(true));
+    ResponsesExecution source(objects);
+    Q4T_CHECK(Ok(source.Prepare(request, fixture.config, access, 42)));
+    Q4T_CHECK(Prompt(source).find("157 approved paths") != std::string::npos);
+    Q4T_CHECK(FinishFixture(source));
+    source_id = source.Id();
+    auto definition = HandleEval(
+        objects, access, "POST", "/v1/evals",
+        R"({"data_source_config":{"type":"logs"},"testing_criteria":[]})");
+    Q4T_CHECK(Ok(definition));
+    base = "/v1/evals/" + definition.value.GetString("id") + "/runs";
+    auto run = HandleEval(
+        objects, access, "POST", base,
+        R"({"data_source":{"type":"responses","model":"cpu-file-lifecycle",)"
+        R"("sampling_params":{"max_completion_tokens":32,"reasoning_effort":"none"},)"
+        R"("source":{"type":"responses","model":"cpu-file-lifecycle"}}})");
+    Q4T_CHECK(Ok(run));
+    run_id = run.value.GetString("id");
+    ObjectRequest get;
+    get.kind = ObjectKind::kEvalRun;
+    get.scope = access.scope;
+    get.id = run_id;
+    auto stored = objects.Execute(get, access.deadline);
+    Q4T_CHECK(Ok(stored));
+    const auto& data = *stored.value.Find("data");
+    const auto* roots = data.GetArray("input_snapshots");
+    Q4T_CHECK(roots && roots->array.size() == 1);
+    immutable_id = roots->array[0].Find("snapshot")->GetString("id");
+    const auto retained = InspectObjectRetention("evalrun", data);
+    Q4T_CHECK(!retained.uncertain &&
+              std::find(retained.references.begin(), retained.references.end(),
+                        immutable_id) != retained.references.end());
+    Q4T_CHECK(Ok(Files(objects).Erase(Binary(), file)));
+    Q4T_CHECK(Ok(ResponsesState(objects).Erase(source.Id(), access)));
+  }
+  ObjectStore objects(fixture.objects);
+  Q4T_CHECK(Files(objects).Retrieve(Binary(), file).http_status == 404);
+  Q4T_CHECK(ResponsesState(objects).ReadRecord(source_id, access).http_status ==
+            404);
+  auto foreign = access;
+  foreign.scope = "client:other";
+  Q4T_CHECK(HandleEval(objects, foreign, "GET", base + "/" + run_id, {})
+                .http_status == 404);
+  BinaryAccess binary{access.scope, access.deadline, {}};
+  BinaryRead read;
+  BinaryStore store(objects);
+  Q4T_CHECK(Ok(store.Open(binary, ObjectKind::kEvalRun, run_id, 60, &read)));
+  Q4T_CHECK(read.manifest.chunks.size() == 1);
+  std::string bytes;
+  Q4T_CHECK(Ok(store.Read(binary, read, 0, &bytes)) &&
+            Ok(store.Close(binary, &read)));
+  Json row, replay;
+  Q4T_CHECK(q4t::io::ParseJson(bytes, &row) &&
+            row.GetArray("frozen_response_parts"));
+  const auto& parts = *row.Find("frozen_response_parts");
+  auto actual = HandleEval(objects, access, "GET", base + "/" + run_id, {});
+  Q4T_CHECK(Ok(actual) &&
+            Ok(eval_detail::SamplingRequest(*actual.value.Find("data_source"),
+                                            row, fixture.config, &replay)));
+  auto changed = replay;
+  Set(&Field(Field(changed, "input").array[0], "content").array[0], "file_id",
+      String("file_replacement"));
+  ResponsesExecution rejected(objects);
+  Q4T_CHECK(
+      rejected
+          .Prepare(changed, fixture.config, access, 43, true, nullptr, &parts)
+          .code == "eval_frozen_input_invalid");
+  ResponsesExecution other(objects);
+  Q4T_CHECK(
+      !other.Prepare(replay, fixture.config, foreign, 43, true, nullptr, &parts)
+           .ok());
+  GatewayClientPolicy policy;
+  policy.version = 3;
+  policy.gateway_token = std::string(64, 'a');
+  policy.sha256 = std::string(64, 'b');
+  policy.clients.push_back({"files", 2, 1, 8192, 64, 65536, 60, 16000});
+  ClientAdmission clients;
+  Q4T_CHECK(clients.Configure(policy));
+  std::atomic<int> calls{0};
+  ResponsesJobs jobs(objects, {}, [&](auto& job) {
+    if (Prompt(*job.run).find("157 approved paths") == std::string::npos ||
+        !FinishFixture(*job.run, std::time(nullptr)))
+      throw std::runtime_error("Evaluation lost the frozen document");
+    ++calls;
+  });
+  eval_detail::SamplingOwner sampler{clients, clients.RecoveryIdentity(0), jobs,
+                                     fixture.config};
+  ObjectRequest get;
+  get.kind = ObjectKind::kEvalRun;
+  get.scope = access.scope;
+  get.id = run_id;
+  for (int i = 0; i < 300; ++i) {
+    auto stored = objects.Execute(get, access.deadline);
+    Q4T_CHECK(Ok(stored));
+    const auto status =
+        stored.value.Find("data")->Find("resource")->GetString("status");
+    if (status == "completed") break;
+    Q4T_CHECK(status == "queued" || status == "in_progress");
+    Q4T_CHECK(
+        Ok(eval_detail::AdvanceRun(objects, access, stored.value, &sampler)));
+    std::this_thread::sleep_for(5ms);
+  }
+  const auto item = HandleEval(objects, access, "GET",
+                               base + "/" + run_id + "/output_items", {});
+  Q4T_CHECK(calls == 1 && Ok(item) &&
+            item.value.GetArray("data")->array.size() == 1);
+  Q4T_CHECK(OutputJson(item.value).find(immutable_id) == std::string::npos &&
+            OutputJson(item.value).find("frozen_response_parts") ==
+                std::string::npos);
+  return true;
+}
 
 Q4T_TEST(responses_video_file_uses_temporal_input_and_count_generation_parity) {
   Fixture f;

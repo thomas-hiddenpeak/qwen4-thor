@@ -277,7 +277,8 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
                                         const ChatPlanConfig& config,
                                         StateAccess access, int64_t created,
                                         bool background_executor,
-                                        const CancelledAgentHistory* cancelled) {
+                                        const CancelledAgentHistory* cancelled,
+                                        const Json* frozen_eval_parts) {
   if (prepared_ || begun_)
     return Error(500, "response_state_invalid", "Response already prepared");
   access_ = std::move(access);
@@ -321,7 +322,36 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
   }
   auto resolved = state_.Resolve(envelope_, access_, &plan_, cancelled, agent_session_id_);
   if (!resolved.ok()) return resolved;
-  return PlanGeneration(config, created);
+  if (frozen_eval_parts) {
+    // This comes only from the scoped, server-authored Evals dataset. Keep
+    // canonical IDs assigned by this execution; recheck the part digest at
+    // its indexed location before permitting any snapshot read.
+    if (!frozen_eval_parts->IsArray() ||
+        frozen_eval_parts->array.size() > 4096 ||
+        plan_.own_input.array.size() != plan_.history.array.size())
+      return Error(422, "eval_frozen_input_invalid", "Invalid frozen history");
+    auto bindings = Array();
+    for (const auto& indexed : frozen_eval_parts->array) {
+      const auto* position = indexed.Find("index");
+      const auto* saved = indexed.Find("binding");
+      if (!position || !IsInputInteger(*position) || position->AsInt() < 0 ||
+          static_cast<size_t>(position->AsInt()) >=
+              plan_.history.array.size() ||
+          !saved || !saved->IsObject())
+        return Error(422, "eval_frozen_input_invalid",
+                     "Invalid snapshot index");
+      auto binding = *saved;
+      const auto& item = plan_.history.array[position->AsInt()];
+      Set(&binding, "item_id", *item.Find("id"));
+      bindings.array.push_back(std::move(binding));
+    }
+    auto checked =
+        MergeInputSnapshots(bindings, plan_.history, &plan_.input_snapshots);
+    if (!checked.ok())
+      return Error(422, "eval_frozen_input_invalid",
+                   "Stored file binding does not match its replayed part");
+  }
+  return PlanGeneration(config, created, frozen_eval_parts != nullptr);
 }
 
 ObjectReply ResponsesExecution::RequiredExecutors(
@@ -395,7 +425,8 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 }
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
-                                               int64_t created) {
+                                               int64_t created,
+                                               bool require_frozen_files) {
   envelope_.managed_agent_tools = !agent_session_id_.empty();
   envelope_.session_automations = session_automations_;
   if (const auto* agents = envelope_.request.Find("multi_agent");
@@ -514,7 +545,10 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
         files_->Prepare(file_history_, FileInputProfile::kResponsesStored,
                         plan_.input_snapshots,
                         {access_.scope, access_.deadline, access_.cancelled},
-                        require_frozen_inputs_);
+                        require_frozen_inputs_ || require_frozen_files);
+    if (require_frozen_files && prepared.code == "file_expansion_invalid")
+      return Error(422, "eval_frozen_input_invalid",
+                   "Stored file input has no matching immutable snapshot");
     if (!prepared.ok()) return prepared;
   }
   program_file_options_ =

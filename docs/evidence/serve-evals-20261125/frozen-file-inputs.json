@@ -1,0 +1,34 @@
+{
+  "stage": "host_verified",
+  "source": "Persisted Responses input snapshots, projected into the owned Eval dataset with position, binding and retention roots.",
+  "cpu": {
+    "distinct_passes": 18,
+    "first_attempt": {
+      "passed": 17,
+      "failed": 1,
+      "reason": "Fixture sent the stored Chat limit filter to a Responses selector. The server rejected the unknown field.",
+      "sha256": "b2dcb5aef0457fef509a280a8e909f30be23f25422bced644cda7e4cad256535"
+    },
+    "corrected_fixture": {
+      "passed": 1,
+      "sha256": "363fd0aad09a6b139292db4c602d7bcbabec9cd58cfee06b6eecb0b4184d5709"
+    }
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1364,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "pending": [
+    "Native TLS Node and Python replay after public file deletion",
+    "Stored Chat file and media bindings",
+    "Release qualification"
+  ],
+  "issued": false
+}

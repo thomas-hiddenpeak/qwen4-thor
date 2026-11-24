@@ -60,7 +60,8 @@ class ResponsesExecution {
   ObjectReply Prepare(const io::Json& request, const ChatPlanConfig& config,
                       StateAccess access, int64_t created,
                       bool background_executor = false,
-                      const CancelledAgentHistory* cancelled = nullptr);
+                      const CancelledAgentHistory* cancelled = nullptr,
+                      const io::Json* frozen_eval_parts = nullptr);
   ObjectReply RestoreQueued(const std::string& id, const ChatPlanConfig& config,
                             StateAccess access);
   // Private, unexecuted queue state. Freeze publishes no Response resource;
@@ -286,7 +287,8 @@ class ResponsesExecution {
   Status Capture(std::string_view wire, io::Json* events, size_t* bytes) const;
   ObjectReply BindMutationResult(ObjectReply reply);
   ObjectReply RequiredExecutors(bool background_executor) const;
-  ObjectReply PlanGeneration(const ChatPlanConfig& config, int64_t created);
+  ObjectReply PlanGeneration(const ChatPlanConfig& config, int64_t created,
+                             bool require_frozen_files = false);
   ObjectReply BuildPreparedGeneration(const ChatPlanConfig& config);
   ObjectReply PersistPreparedInputs();
   void ReleasePreparedInputs() noexcept;
