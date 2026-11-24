@@ -23,6 +23,16 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+CODE_RECORD = 'q4t-profile-business-v38'
+CODE_FORMAT = 'q4t-interpreter-workspace-source-v1'
+CODE_CAPABILITY = dict(runtime_requirement='system_cpython_3_12', workspace='/mnt/data',
+                       skill_mount='/mnt/skills', session_state='files', responses_citations=True,
+                       assistant_output_files=True, file_limit=256, file_bytes=8388608,
+                       workspace_bytes=16777216, network='disabled')
+CODE_REVIEWED = {
+    'primary': '9f9b7800cfc6e92efe0ce6009767c4dc4d6237cafdc526c31bf2db8fec4c2a44',
+    'light': 'a841cfa9cacd791bd8425eebb5652c87a72ce7328d44f079c9a547d5f17a55f0',
+}
 SKILLS_RECORD = 'q4t-profile-business-v37'
 SKILLS_FORMAT = 'q4t-skill-workspace-source-v1'
 SKILLS_CAPABILITY = dict(endpoint='/v1/containers', skills='/v1/skills', skill_versions=True,
@@ -152,7 +162,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 WORKSPACE_RECORD: WORKSPACE_FORMAT, ARTIFACT_RECORD: ARTIFACT_FORMAT,
                 MANAGED_TOOL_RECORD: MANAGED_TOOL_FORMAT, SUBAGENT_RECORD: SUBAGENT_FORMAT,
                 TRANSLATION_RECORD: TRANSLATION_FORMAT, ASSISTANTS_RECORD: ASSISTANTS_FORMAT,
-                SKILLS_RECORD: SKILLS_FORMAT}
+                SKILLS_RECORD: SKILLS_FORMAT, CODE_RECORD: CODE_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -174,6 +184,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '5429ed3286976393ee139a6a848ed81c8981335c373789bcb0d4a96f059fc6f3':
+        '8dcbff0906e72c0109a9b36febe529e92a9708d2c2b5cb8d0c934bc27f453572',
     '7c061333749eeeeb9084b3f020adbdca3703e81470a7d95ea8caf78b11003a7b':
         '8dcbff0906e72c0109a9b36febe529e92a9708d2c2b5cb8d0c934bc27f453572',
     '432ffbbea808303224305fdbc043548f7366d175dd8c8f7bd4657c9091aa43c8':
@@ -226,6 +238,13 @@ def record_hash(value):
 
 
 def format_for(capabilities):
+    if 'hosted_python' in capabilities:
+        previous = dict(capabilities)
+        declaration = previous.pop('hosted_python')
+        ledger.require(ledger.canonical(declaration) == ledger.canonical(CODE_CAPABILITY)
+                       and format_for(previous) == SKILLS_RECORD,
+                       'interpreter declaration or workspace predecessor differs')
+        return CODE_RECORD
     if 'container_workspaces' in capabilities:
         previous = dict(capabilities)
         declaration = previous.pop('container_workspaces')
@@ -337,7 +356,17 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] == SKILLS_RECORD:
+    if value['format'] == CODE_RECORD:
+        proofs = value['business']['live']['evidence_sha256']
+        old = prior['business']['live']['evidence_sha256']
+        ledger.require(prior['format'] == SKILLS_RECORD and
+                       record_hash(prior) == SKILLS_REVIEWED.get(prior['profile']) and
+                       previous['added'] == ['hosted_python'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256'} and
+                       format_for(after) == CODE_RECORD and old.keys() | {'code-handoff.json'} == proofs.keys() and
+                       ledger.HASH.fullmatch(proofs['code-handoff.json']),
+                       'interpreter qualification requires the selected workspace record and SDK handoff')
+    elif value['format'] == SKILLS_RECORD:
         proofs = value['business']['live']['evidence_sha256']
         old = prior['business']['live']['evidence_sha256']
         ledger.require(prior['format'] == ASSISTANTS_RECORD and
@@ -520,6 +549,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == CODE_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == CODE_REVIEWED.get(name),
+                       'interpreter record differs from its qualification')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == SKILLS_REVIEWED.get(name),
+                       'interpreter qualification lost its released predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == SKILLS_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) == SKILLS_REVIEWED.get(name),

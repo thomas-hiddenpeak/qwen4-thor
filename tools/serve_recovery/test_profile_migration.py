@@ -96,6 +96,21 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     live.format_for(bad)
 
+    def test_interpreter_extension_preserves_workspace_and_runtime_limits(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(container_workspaces=live.SKILLS_CAPABILITY)
+        target = dict(old, hosted_python=dict(live.CODE_CAPABILITY))
+        self.assertTrue(migration.explicit_extension(old, target))
+        self.assertFalse(migration.explicit_extension({}, target))
+        self.assertFalse(migration.explicit_extension(target, old))
+        for change in (dict(network='enabled'), dict(file_limit=True),
+                       dict(assistant_output_files=False), dict(workspace_bytes=0)):
+            with self.subTest(change=change):
+                bad = dict(target, hosted_python=dict(live.CODE_CAPABILITY, **change))
+                self.assertFalse(migration.explicit_extension(old, bad))
+                with self.assertRaises(ValueError):
+                    live.format_for(bad)
+
     def test_assistants_extension_requires_all_run_endpoints_and_predecessor(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(translations=live.TRANSLATION_CAPABILITY)

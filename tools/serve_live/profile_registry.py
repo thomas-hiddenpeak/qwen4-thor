@@ -88,7 +88,8 @@ def prepare(source, manifest_sha256, stage, observations, output):
                   profile_live_reuse.SUBAGENT_RECORD: 'ACCEPT_SUBAGENT_PRIMARY_LIGHT',
                   profile_live_reuse.TRANSLATION_RECORD: 'ACCEPT_TRANSLATION_REALTIME_PRIMARY_LIGHT',
                   profile_live_reuse.ASSISTANTS_RECORD: 'ACCEPT_ASSISTANTS_PRIMARY_LIGHT',
-                  profile_live_reuse.SKILLS_RECORD: 'ACCEPT_SKILLS_PRIMARY_LIGHT'}
+                  profile_live_reuse.SKILLS_RECORD: 'ACCEPT_SKILLS_PRIMARY_LIGHT',
+                  profile_live_reuse.CODE_RECORD: 'ACCEPT_INTERPRETER_PRIMARY_LIGHT'}
         primary = evidence['primary']['record']
         label = status[primary['format']]
         if primary['reused_business']['format'] == profile_live_reuse.AGENT_REFRESH:

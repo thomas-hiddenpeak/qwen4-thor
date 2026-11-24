@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主配置使用自动容器从 rev464 记录读取 464 并生成 version.txt，随后删除上传源。轻配置按原 Responses ID 取得同一自动容器和文件，执行 Python 从原文件计算 465 并下载 next.txt。两侧均验证跨客户 404、独立 Chat 42 和 WebRTC 关闭。GPU 查询 82 次全部正常，34 项迁移用例通过，10 项记录反例均被拒绝。两份 v38 容量记录可逐字节还原 v37。下一项验收封包后的进程恢复。[交接回执](evidence/serve-code-interpreter-20261124/profiles.json)
+
+正在验证托管 Python 的跨配置接手。主配置在自动容器生成版本文件并删除上传源，轻配置用原 Responses ID 和自动容器继续计算。接受条件包括原容器 ID、原文件字节、跨客户 404、新生成文件和独立 Chat。
+
 托管 Python 通过原生 TLS 和官方 Node SDK 7.47.0 短验。模型读取 rev464 发布记录，写出 selected.txt。Responses 的流式结果、GET 和重放一致；Assistants 使用自动工作区，Run 步骤记录实际代码和 stdout，消息所引 Files 副本下载得到 464，两种文件接口均对其他客户返回 404。独立 Chat 答 42。本次单启动 48.160 秒。已修复阶段事件未持久化和 GET 漏空 logprobs 数组，保留三次失败。当前跨调用保留文件；变量会话、绘图、科学包、受控网络与内存档位仍待实现。默认仍为 rev464。[业务回执](evidence/serve-code-interpreter-20261124/business.json)
 
 托管 Python 正在接入原生工作进程。仅在一次性子进程中加载系统 CPython 3.12，开启系统调用过滤后执行代码。CPU 原型已读取发布记录并生成文件；后续验证工作区原子写回和模型工具调用。
