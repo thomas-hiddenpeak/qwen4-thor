@@ -1,0 +1,11 @@
+{
+  "failed_build": "The root q4t_host_tests target compiled program_vm.cpp without QuickJS headers. The separate tests/host project already linked the pinned VM target.",
+  "fix": "Link the existing q4t native programmatic target for the root host executable.",
+  "checks": 6,
+  "model_starts": 0,
+  "logs": {
+    "conversation-host-build-01.log": "239d9918ef88a8a83b4096f0a59c98e11702de48cbbdb1d56763462cbe7aea28",
+    "conversation-top-host-build-02.log": "610cea368fd1dbb0dc8bc626c48f89ae390cc7abbeb2e77d39b491e17f08dd86",
+    "conversation-top-host-six.log": "5793e21a9d5327b8c50ff2346c2c85422fdecfa13f47b483d38a52ce3762731e"
+  }
+}

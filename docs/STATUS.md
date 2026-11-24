@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+顶层 CMake 的 q4t_host_tests 已恢复可构建。该目标编译 program_vm.cpp 时遗漏了项目已有的 QuickJS 目标，导致缺少 quickjs.h。已对齐独立 tests/host 构建的依赖声明，顶层构建成功，6 项受影响的 Realtime 用例全部通过。 下一步继续旧版实时协议接入。[构建回执](evidence/serve-realtime-legacy-sessions-20261124/host-build.json)
+
 新候选已通过旧版 POST /v1/realtime/sessions 签发和真实 WSS 对话。官方 Node SDK 7.47.0 领取 15 秒凭据，指定温度 0.75、输出上限 32，原生会话返回 42，总用量 109 tokens，独立 Chat 返回 42。存储和生成计划用例验证温度实际传给模型；临时凭据再次签发、读取模型列表均为 401。6 项 CPU 用例、20 项协议及网关检查、2 项真实网关检查通过。一次启动 35.084 秒。该候选覆盖 134/231 个必做 HTTP 方法的成功状态声明；仍需验收旧版 WebSocket 事件及发行。[验收](evidence/serve-realtime-legacy-sessions-20261124/conversation.json)
 
 修复了单回合客户 token 配额超限后，Agents 将整个会话报为服务器故障的问题。从真实故障对象库的副本启动，原失败回合保留 invalid_request 和用量，SDK 读到会话 idle，同一客户使用 1793/4096 输入 token 取回子 Agent 已算出的 457。子回合仍为两个，没有再次派发；其他客户读取返回 404。真实转写与独立 Chat 同机验证通过，一次启动 41.592 秒。六项 CPU 测试覆盖投影、SSE、重开及取消。下一步重新验证此二进制的主轻配置和封包恢复。[真实失败与恢复](evidence/serve-agent-workspaces-20261124/subagent-quota.json)
