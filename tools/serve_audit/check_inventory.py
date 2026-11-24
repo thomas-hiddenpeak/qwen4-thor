@@ -351,6 +351,25 @@ def current_surface(root):
         raise ValueError('review assistant thread dispatch')
     if 'ServeAssistantRun(fd, *objects_' not in dispatch:
         raise ValueError('review Assistant run routing')
+    if not all(marker in source for source, marker in (
+            (dispatch, 'HandleChatKit(*objects_, access'),
+            (dispatch, 'ServeChatKitClient(fd, *objects_'),
+            (dispatch, 'context->ChatKitBeta()'),
+            (native, 'server::ChatKitMethodAllowed(method, path)'),
+            (native, 'server::IsChatKitObservation(method, path)'),
+            (native, 'server::IsChatKitClient(method, path)'),
+            (native, 'server::ClientTicketAudience::kChatKit'))):
+        raise ValueError('review ChatKit session, thread and native browser routing')
+    for method, path in (
+            ('POST', '/v1/chatkit'),
+            ('POST', '/v1/chatkit/sessions'),
+            ('POST', '/v1/chatkit/sessions/{session_id}/cancel'),
+            ('GET', '/v1/chatkit/threads'),
+            ('GET', '/v1/chatkit/threads/{thread_id}'),
+            ('DELETE', '/v1/chatkit/threads/{thread_id}'),
+            ('GET', '/v1/chatkit/threads/{thread_id}/items')):
+        routes.append((path, method))
+        native_routes.append((method, path, 'false' if path in ('/v1/chatkit', '/v1/chatkit/sessions') else 'true'))
     if ('HandleWebhook(*objects_, access' not in dispatch or
             'server::WebhookMethodAllowed(method, path)' not in native):
         raise ValueError('review webhook management and native ingress routing')
@@ -618,6 +637,8 @@ def current_surface(root):
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake",
                        root / "cmake/automation_types.h.in",
+                       root / "cmake/chatkit_types.h.in",
+                       root / "src/server/contracts/openai_chatkit_types_v1.json",
                        root / "cmake/webhook_types.h.in",
                        root / "src/server/contracts/openai_webhook_types_v1.json",
                        root / "cmake/container_types.h.in", root / "cmake/skill_types.h.in",

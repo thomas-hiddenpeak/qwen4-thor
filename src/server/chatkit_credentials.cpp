@@ -11,7 +11,8 @@ StateCipherBinding Stored(const std::string& session) {
   return {"q4t.chatkit", "session", "stored_client_secret", session};
 }
 ObjectReply Denied() {
-  return Error(401, "invalid_client_secret", "Invalid or expired ChatKit session");
+  return Error(401, "invalid_client_secret",
+               "Invalid or expired ChatKit session");
 }
 }  // namespace
 
@@ -33,7 +34,8 @@ ObjectReply IssueSecret(ObjectStore& objects, const StateAccess& issuer,
     if (!issuer.scope.starts_with("client:") ||
         !SignRealtimeTicket(authority.binding, authority.key_digest,
                             std::string_view(issuer.scope).substr(7), opaque,
-                            expires_at, token, ClientTicketAudience::kChatKit)) {
+                            expires_at, token,
+                            ClientTicketAudience::kChatKit)) {
       CryptoWipe(&opaque);
       return Error(503, "chatkit_issuer_unavailable", "Invalid session issuer");
     }
@@ -51,29 +53,40 @@ ObjectReply Redeem(ObjectStore& objects, const StateAccess& access,
   std::string_view nonce;
   if (ReadRealtimeTicket(token, &ticket, ClientTicketAudience::kChatKit)) {
     if (access.scope != "client:" + std::string(ticket.owner) ||
-        now >= ticket.expires_at) return Denied();
+        now >= ticket.expires_at)
+      return Denied();
     nonce = ticket.nonce;
   } else {
     if (access.scope != "local:anonymous" || !token.starts_with(kPrefix))
       return Denied();
     nonce = token.substr(kPrefix.size());
-    if (nonce.size() != 64 || nonce.find_first_not_of("0123456789abcdef") != nonce.npos)
+    if (nonce.size() != 64 ||
+        nonce.find_first_not_of("0123456789abcdef") != nonce.npos)
       return Denied();
   }
-  ObjectRequest request;
-  request.scope = access.scope;
-  request.kind = ObjectKind::kChatKitSession;
-  request.id = "cksess_" + Digest(nonce);
+  ObjectRequest read;
+  read.scope = access.scope;
+  read.kind = ObjectKind::kChatKitSession;
+  read.id = "cksess_" + Digest(nonce);
   for (int attempt = 0; attempt != 4; ++attempt) {
-    request.operation = ObjectOperation::kGet;
-    auto row = objects.Execute(request, access.deadline, access.cancelled);
+    auto request = read;
+    auto row = objects.Execute(read, access.deadline, access.cancelled);
     if (!row.ok()) return row.http_status == 404 ? Denied() : row;
     request.data = Field(row.value, "data");
     const auto* session = request.data.Find("session");
     if (!session || session->GetString("id") != request.id ||
         session->GetString("status") != "active" ||
         session->GetInt("expires_at") <= now ||
-        request.data.GetString("token_sha256") != Digest(token)) return Denied();
+        request.data.GetString("token_sha256") != Digest(token))
+      return Denied();
+    // Validate the stored public shape before dereferencing feature settings.
+    // Its actual secret was authenticated by its complete digest above.
+    auto shape = *session;
+    Set(&shape, "client_secret", String("redacted"));
+    ChatPlanError error;
+    if (!ValidateChatKit(shape, "session", &error))
+      return Error(503, "chatkit_record_invalid",
+                   "Invalid stored ChatKit session");
     const auto expires_at = session->GetInt("expires_at");
     const auto limit = session->GetInt("max_requests_per_1_minute");
     if (limit < 1) return Denied();
@@ -83,25 +96,33 @@ ObjectReply Redeem(ObjectStore& objects, const StateAccess& access,
     if (const auto* prior = request.data.GetArray("requests")) {
       if (prior->array.size() > 60)
         return Error(503, "chatkit_record_invalid", "Invalid session usage");
+      int64_t previous = -1;
       for (const auto& bucket : prior->array) {
         const auto second = bucket.GetInt("second", -1);
         const auto count = bucket.GetInt("count", -1);
-        if (second < 0 || count < 1 || count > limit || used > limit - count)
+        if (second <= previous || count < 1 || count > limit)
           return Error(503, "chatkit_record_invalid", "Invalid session usage");
+        previous = second;
         if (second > now)
-          return Error(503, "chatkit_clock_unavailable", "Session clock moved backward");
+          return Error(503, "chatkit_clock_unavailable",
+                       "Session clock moved backward");
         if (second <= now - 60) continue;
+        if (used > limit - count)
+          return Error(503, "chatkit_record_invalid", "Invalid session usage");
         used += count;
         buckets.array.push_back(bucket);
       }
     }
     if (used >= limit)
-      return Error(429, "rate_limit_exceeded", "ChatKit session rate limit reached");
-    if (!buckets.array.empty() && buckets.array.back().GetInt("second") == now) {
+      return Error(429, "rate_limit_exceeded",
+                   "ChatKit session rate limit reached");
+    if (!buckets.array.empty() &&
+        buckets.array.back().GetInt("second") == now) {
       auto& last = buckets.array.back();
       Set(&last, "count", Number(last.GetInt("count") + 1));
     } else {
-      buckets.array.push_back(Object({{"second", Number(now)}, {"count", Number(1)}}));
+      buckets.array.push_back(
+          Object({{"second", Number(now)}, {"count", Number(1)}}));
     }
     Set(&request.data, "requests", std::move(buckets));
     request.operation = ObjectOperation::kPut;
@@ -123,7 +144,8 @@ ObjectReply RestoreSecret(StateCipher& cipher, const StateAccess& issuer,
                           std::string* token) {
   auto reply = cipher.Open(sealed, Stored(session), issuer, token);
   if (reply.http_status == 400)
-    return Error(503, "chatkit_record_invalid", "Invalid stored ChatKit session");
+    return Error(503, "chatkit_record_invalid",
+                 "Invalid stored ChatKit session");
   return reply;
 }
 }  // namespace q4t::server::chatkit_detail

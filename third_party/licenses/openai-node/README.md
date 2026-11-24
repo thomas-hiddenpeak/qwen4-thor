@@ -15,3 +15,5 @@ own implementations; this declaration does not claim those APIs are complete.
 The hosted template field sizes supplement the SDK types with facts extracted
 from the frozen OpenAI HTTP specification. The extractor records the upstream
 commit and content digest. [OpenAPI source](https://github.com/openai/openai-openapi/blob/926a7b8133226630bac025350e84b0ca5c31d45a/openapi.json)
+
+The self-hosted ChatKit endpoint follows the request and event shapes of the upstream Python SDK. q4t implements this protocol in C++. [ChatKit server and types at the reviewed revision](https://github.com/openai/chatkit-python/tree/dacc133c280b39b9334d06ea73f0f1c199e59927/chatkit)

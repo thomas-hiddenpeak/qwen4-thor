@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-24",
+  "updated": "2026-11-25",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -2979,6 +2979,11 @@
         "revision": 476,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "chatkit_text_and_functions_20261125": {
+        "state": "targeted_candidate_accepted",
+        "evidence": "evidence/serve-chatkit-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -7514,6 +7519,11 @@
           "Container tier / configured egress, programmatic tool invocations and a hosted shell.",
           "Capacity handoff, managed recovery, installed release and remaining serving interfaces."
         ]
+      },
+      "chatkit_text_and_functions_20261125": {
+        "state": "targeted_candidate_accepted",
+        "evidence": "evidence/serve-chatkit-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -10097,6 +10107,11 @@
         "revision": 476,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "chatkit_text_and_functions_20261125": {
+        "state": "targeted_candidate_accepted",
+        "evidence": "evidence/serve-chatkit-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -11722,7 +11737,7 @@
     }
   ],
   "next_task": "Implement ChatKit sessions, threads and real client turns, remaining hosted-environment backends, and the other required inference, application, ingress and recovery tasks.",
-  "next": "推进 ChatKit 会话、线程与真实客户端回合，继续托管环境后端及其余推理、应用、接入与恢复任务。",
+  "next": "补齐 ChatKit 附件、其余浏览器动作、容量及恢复交付，继续剩余 28 项方法和未完成的接口业务语义。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

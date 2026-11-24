@@ -1,0 +1,94 @@
+{
+  "status": "ACCEPT_TARGETED_NATIVE_CHATKIT_TEXT_AND_FUNCTIONS",
+  "deployed": false,
+  "issued_revision": 476,
+  "official": {
+    "node_sdk": "7.47.0",
+    "http_spec": "926a7b8133226630bac025350e84b0ca5c31d45a",
+    "self_hosted_protocol": {
+      "repository": "openai/chatkit-python",
+      "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+      "files": {
+        "chatkit/types.py": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+        "chatkit/server.py": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+        "LICENSE": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+      }
+    }
+  },
+  "candidate": {
+    "binary": "609d4268fd5d270aef83cddb126b8a831b7e81793ee7aa9aaaf1406a4ef249b1",
+    "ingress": "c53cb290814df91436383b807d4185136f4a41583d86d70e6e6289a6b7159a07",
+    "sdk_driver": "412065a638ecd99e7344d5bc0015cabff9a63c62958f3512e9fca2d32cc7348b"
+  },
+  "business": {
+    "seconds": 37.868,
+    "model_starts": 1,
+    "transport": "native TLS",
+    "project": "published rev476 receipt",
+    "call_id_sha256": "7798cf06f112850779494292eced6a54dc7fe0f6c38cdf22d84f606477e32612",
+    "actual_tool": {
+      "publication_revision": 476
+    },
+    "first_answer": "476",
+    "followup_answer": "476",
+    "healthy_peer": "42",
+    "admin_methods": 6,
+    "official_schema_validated_before_redaction": 7,
+    "items": 5,
+    "sse_events": [
+      3,
+      8,
+      8
+    ],
+    "assistant_delta_text_equals_final": true,
+    "other_user": 404,
+    "other_project": 404,
+    "revoked": 401,
+    "session_secret_on_admin": 401,
+    "duplicate_tool_result": 409,
+    "unchanged_default": true
+  },
+  "cpu": {
+    "chatkit": 6,
+    "existing_realtime_secret": 3,
+    "inventory_mutations": 40
+  },
+  "routes": {
+    "scope": 231,
+    "candidate": 203,
+    "issued": 197,
+    "remaining_declarations": 28,
+    "runtime_guarantee": false
+  },
+  "remaining": [
+    "ChatKit attachments and model consumption",
+    "workflow tracing and remaining self-hosted browser operations",
+    "issued capacity profiles, cross-process continuity and independent package rollback",
+    "other required application method families and master tasks"
+  ],
+  "previous": {
+    "cli_precheck": "guard refused output outside active worktree; zero starts; corrected to common repository guard",
+    "first_gpu": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 38.202,
+      "unchanged_default": true,
+      "phases": []
+    },
+    "cause": "SDK assertions finished, then local evidence driver tried to read the 5 MiB official OpenAPI with the 2 MiB release metadata reader. Original round remains failed.",
+    "unchanged_candidate": true
+  },
+  "raw": {
+    "webhook-dev/chatkit-cpu-02.log": "43b2f6b6bee376a7699952c174b1688460f55f09cf9073ee3e774f36d9761424",
+    "webhook-dev/chatkit-realtime-cpu-01.log": "d32eebbe815a93d4447304bd053f8ed19d61fb853361d34d29f9de06c1026c4b",
+    "webhook-dev/chatkit-audit-02.json": "8d21b702ffa83ad9790843b719e92f600675b19318b9d037a17fe8405a4d3964",
+    "chatkit-business-02/result.json": "e60ef43e99a4b5861a49424f53bbc75f0d1a381c2472dec897d6dcfa91a95fbf",
+    "chatkit-business-02/create/sdk-result.json": "f68f5ef14a67739c9717ce205f12c72f69e71c1420d1726f0604e16452d3f08e",
+    "chatkit-business-02/create/run-wire.json": "fa706dfca89d31153ab4a18bc1ea1413f36dbf4a8bf25a4ef8e0e22dc2a49037",
+    "chatkit-business-lease-02/exit.json": "035030a34278b1601ce269df88e719e64391bbf8293ecd2f3792f923eb3cccc4",
+    "chatkit-business-01/result.json": "8ea91fe272553b24cfd9818367e6835a415efcbc2dc5cae339f2169ffd9097a5",
+    "chatkit-business-lease-01/exit.json": "7705a761fb8ff2fd412ebb972474669655657f1b6ddc6be8702134da4752b948",
+    "webhook-dev/chatkit-business-01.log": "1c4b5cd3c397cf8f6df7743b072d31079b51e7bd41e8d896a66dbc62cc171554",
+    "webhook-dev/chatkit-business-owned-01.log": "95da04c7069920c78a8cd799be125cd8cfc49f135b7d7c4d5eca59459d9af3cc"
+  }
+}

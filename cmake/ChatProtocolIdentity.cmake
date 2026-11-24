@@ -1186,7 +1186,7 @@ file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_chatkit_types_v1.jso
   Q4T_CHATKIT_TYPES)
 string(FIND "${Q4T_CHATKIT_TYPES}" ")q4t_types\"" chatkit_delimiter)
 if(NOT chatkit_delimiter EQUAL -1)
-  message(FATAL_ERROR "Webhook type graph collides with C++ raw string delimiter")
+  message(FATAL_ERROR "ChatKit type graph collides with C++ raw string delimiter")
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/chatkit_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/chatkit_types_data.h" @ONLY)

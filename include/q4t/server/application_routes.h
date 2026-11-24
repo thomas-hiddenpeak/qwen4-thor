@@ -725,6 +725,10 @@ inline bool ChatKitMethodAllowed(std::string_view method, std::string_view path)
   return kind != ChatKitRouteKind::kNone && method == ChatKitAllow(kind);
 }
 
+inline bool IsChatKitObservation(std::string_view method, std::string_view target) {
+  return (method == "GET" || method == "DELETE") && ChatKitMethodAllowed(method, target);
+}
+
 enum class WebhookRouteKind { kNone, kCatalog, kCollection, kEndpoint, kRotate, kTest };
 struct WebhookRoute {
   WebhookRouteKind kind = WebhookRouteKind::kNone;
@@ -1133,6 +1137,7 @@ inline bool IsCancellationRequest(std::string_view method,
   return (method == "POST" && ParseAssistantRunRoute(target).kind ==
                                   AssistantRunRouteKind::kCancel) ||
          (method == "POST" && target == "/v1/requests/cancel") ||
+         (method == "POST" && ParseChatKitRoute(target).kind == ChatKitRouteKind::kCancel) ||
          IsResponseCancellation(method, target) ||
          IsBatchCancellation(method, target) ||
          IsVectorStoreCancellation(method, target) ||

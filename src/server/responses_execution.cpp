@@ -111,6 +111,7 @@ ObjectReply ResponsesExecution::BindChatKitThread(ObjectRequest mutation) {
       !thread || thread->GetString("id") != mutation.id ||
       mutation.data.GetString("pending_response") != Id())
     return Error(500, "chatkit_binding_invalid", "Invalid ChatKit thread handoff");
+  plan_.chatkit_thread_id = mutation.id;
   plan_.chatkit_thread_write = std::move(mutation);
   return {};
 }

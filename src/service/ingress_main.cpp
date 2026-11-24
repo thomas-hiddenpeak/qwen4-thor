@@ -446,7 +446,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
                server::IsMcpTunnelMetadata(method, path) ||
                server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||
-               server::IsChatKitTarget(path) ||
+               server::IsChatKitObservation(method, path) ||
                ((method == "GET" || method == "DELETE") && server::IsWebhookTarget(path)) ||
                server::IsBatchObservation(method, path) ||
                server::IsSkillObservation(method, path) ||

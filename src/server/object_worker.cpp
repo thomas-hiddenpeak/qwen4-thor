@@ -2023,9 +2023,12 @@ class DiskStore {
         const auto* stored = record.Find("data");
         const auto* thread = stored ? stored->Find("thread") : nullptr;
         if (!thread || !thread->IsObject()) return IoError();
-        // Thread lists only need public metadata. Item history stays in the
-        // owning record and is fetched explicitly by the items operation.
-        Set(&record, "data", Object({{"thread", *thread}}));
+        // Internal list projection. Browser visibility and cursor selection
+        // depend on the originating workflow and session, never on item text.
+        auto projection = Object({{"thread", *thread}});
+        for (const char* key : {"workflow", "created_by", "session_only"})
+          if (const auto* value = stored->Find(key)) Set(&projection, key, *value);
+        Set(&record, "data", std::move(projection));
       }
       if (request.GetString("kind") == "trace") {
         const auto* data = record.Find("data");
