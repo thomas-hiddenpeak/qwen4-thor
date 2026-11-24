@@ -7,6 +7,7 @@
 #include "q4t/server/lifetime.h"
 
 #include "agent_artifact_internal.h"
+#include "agent_environment_bindings.h"
 #include "agent_subagent_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
@@ -54,17 +55,28 @@ ObjectReply DeleteSession(ObjectStore& objects, const std::string& id,
     auto workspace = objects.Execute(release, access.deadline, access.cancelled);
     if (!workspace.ok()) return workspace;
     release.data = std::move(Field(workspace.value, "data"));
-    if (release.data.GetString("bound_session") != id)
+    if (!environment_detail::HasAttachedSession(release.data, id))
       return Error(503, "environment_record_invalid", "Invalid workspace owner");
     release.operation = ObjectOperation::kPut;
     release.expected_revision = workspace.value.GetInt("revision");
-    release.ttl_seconds = 86400;
-    Set(&Field(release.data, "resource"), "status", String("disconnected"));
-    // Keep a status receipt after deletion and discard private workspace bytes.
-    std::erase_if(release.data.object, [](const auto& field) {
-      return field.first == "sealed_definition" || field.first == "bound_session" ||
-             field.first == "input_snapshots";
-    });
+    if (release.data.Has("attached_sessions")) {
+      auto& peers = Field(release.data, "attached_sessions").array;
+      std::erase_if(peers, [&](const Json& peer) { return peer.str == id; });
+      if (peers.empty())
+        Set(&Field(release.data, "resource"), "status", String("disconnected"));
+      Set(&release.data, "last_activity_at", Number(std::time(nullptr)));
+      release.ttl_seconds = 0;
+    } else {
+      release.ttl_seconds = 86400;
+      Set(&Field(release.data, "resource"), "status", String("disconnected"));
+      // Keep a status receipt after deletion and discard private workspace
+      // bytes.
+      std::erase_if(release.data.object, [](const auto& field) {
+        return field.first == "sealed_definition" ||
+               field.first == "bound_session" ||
+               field.first == "input_snapshots";
+      });
+    }
     mutations.push_back(std::move(release));
   }
   for (const auto& turn : links.array) {

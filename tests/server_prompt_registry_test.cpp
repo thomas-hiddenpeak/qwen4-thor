@@ -544,6 +544,73 @@ Q4T_TEST(hosted_workspace_retention_collects_orphan_after_reopen) {
   return true;
 }
 
+Q4T_TEST(
+    hosted_workspace_new_standalone_allows_128_sessions_and_legacy_stays_single) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto access = Access();
+  const std::string root = "/v1/agents/environments";
+  const auto fresh = [&] {
+    return HandleHostedEnvironment(
+        db, "POST", root, R"({"environment":{"type":"openai_hosted"}})",
+        Access(), "");
+  };
+  const auto attach = [&](const std::string& id) {
+    auto request = Parse(
+        R"({"agent":{"model":"cpu"},"environment":{"type":"openai_hosted"}})");
+    auto environment = *request.Find("environment");
+    Set(&environment, "environment_id",
+        q4t::server::responses_detail::String(id));
+    Set(&request, "environment", std::move(environment));
+    ResponsesExecution run(db);
+    return PrepareAgentSessionExecution(db, request, Config(), Access(),
+                                        std::time(nullptr), run);
+  };
+  auto old = fresh();
+  Q4T_CHECK(Ok(old));
+  ObjectRequest legacy;
+  legacy.kind = ObjectKind::kEnvironment;
+  legacy.scope = access.scope;
+  legacy.id = old.value.GetString("id");
+  auto row = db.Execute(legacy, Access().deadline);
+  Q4T_CHECK(Ok(row));
+  legacy.operation = ObjectOperation::kPut;
+  legacy.data = *row.value.Find("data");
+  std::erase_if(legacy.data.object, [](const auto& field) {
+    return field.first == "attached_sessions";
+  });
+  legacy.expected_revision = row.value.GetInt("revision");
+  legacy.expires_at = row.value.GetInt("expires_at");
+  Q4T_CHECK(Ok(db.Execute(legacy, Access().deadline)));
+  Q4T_CHECK(Ok(attach(legacy.id)) && attach(legacy.id).http_status == 409);
+
+  auto standalone = fresh();
+  Q4T_CHECK(Ok(standalone));
+  const auto id = standalone.value.GetString("id");
+  std::vector<std::string> ids;
+  for (size_t n = 0; n < 128; ++n) {
+    auto session = attach(id);
+    Q4T_CHECK(Ok(session));
+    ids.push_back(session.value.GetString("id"));
+  }
+  auto overflow = attach(id);
+  Q4T_CHECK(overflow.http_status == 409 &&
+            overflow.code == "environment_session_limit");
+  const auto file = HandleHostedEnvironment(
+      db, "POST", root + "/" + id + "/files",
+      R"({"type":"inline","path":"/workspace/shared.txt","data":"cTR0"})",
+      Access(), "");
+  Q4T_CHECK(Ok(file));
+  for (const auto& sid : {ids.front(), ids.back()}) {
+    AgentSessionView view;
+    Q4T_CHECK(Ok(ReadAgentSessionTurn(db, sid, "", Access(), &view)));
+    const auto* files = view.session.Find("environment")->GetArray("files");
+    Q4T_CHECK(files && files->array.size() == 1 &&
+              files->array[0].GetString("path") == "/workspace/shared.txt");
+  }
+  return true;
+}
+
 Q4T_TEST(hosted_workspace_two_claims_commit_only_one_session_and_response) {
   Fixture f;
   ObjectStore store(f.options);

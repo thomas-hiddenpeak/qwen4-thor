@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <ctime>
 
 #include "agent_session_internal.h"
 #include "object_protocol.h"
@@ -82,6 +83,30 @@ void Install(Json* list, Json file) {
 }
 }  // namespace
 
+ObjectReply RefreshWorkspaceFiles(ObjectStore& objects,
+                                  const StateAccess& access, const Json& record,
+                                  Json* session) {
+  if (!record.GetBool("shared_environment")) return {};
+  auto* environment = session->Find("environment");
+  if (!environment || environment->GetString("type") != "openai_hosted")
+    return Error(503, "environment_record_invalid",
+                 "Invalid shared environment");
+  ObjectRequest get;
+  get.kind = ObjectKind::kEnvironment;
+  get.scope = access.scope;
+  get.id = environment->GetString("id");
+  auto current = objects.Execute(get, access.deadline, access.cancelled);
+  if (!current.ok()) return current;
+  const auto& data = Field(current.value, "data");
+  const auto* resource = data.Find("resource");
+  const auto* files = resource ? resource->GetArray("files") : nullptr;
+  if (!files || !HasAttachedSession(data, session->GetString("id")))
+    return Error(503, "environment_record_invalid",
+                 "Shared workspace binding changed");
+  Set(&Field(*session, "environment"), "files", *files);
+  return {};
+}
+
 ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
                            std::string_view method, std::string_view target,
                            const Json& input, const Json& stored,
@@ -99,22 +124,30 @@ ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
                : parsed;
   }
   const auto* record = stored.Find("data");
-  const auto owner = record ? record->GetString("bound_session") : "";
-  if (owner.empty())
-    return Error(503, "environment_record_invalid", "Missing workspace owner");
-  auto session = agent_detail::ReadRow(objects, owner, access);
-  if (!session.ok()) return session;
-  auto& session_data = Field(session.value, "data");
+  if (!record)
+    return Error(503, "environment_record_invalid", "Missing workspace");
+  const bool shared = record->Has("attached_sessions");
+  ObjectReply session;
   AgentSessionView state;
-  auto projected = agent_detail::ProjectHistory(objects, session_data, owner, "",
-                                                access, &state, false);
-  if (!projected.ok()) return projected;
-  const auto* bound = state.session.Find("environment");
-  if (!bound || bound->GetString("id") != id)
-    return Error(503, "environment_record_invalid", "Workspace owner changed");
-  if (state.session.GetString("status") != "idle")
-    return Error(409, "environment_turn_active",
-                 "Workspace files are available between turns");
+  const auto owner = record->GetString("bound_session");
+  if (!shared) {
+    if (owner.empty())
+      return Error(503, "environment_record_invalid",
+                   "Missing workspace owner");
+    session = agent_detail::ReadRow(objects, owner, access);
+    if (!session.ok()) return session;
+    auto projected =
+        agent_detail::ProjectHistory(objects, Field(session.value, "data"),
+                                     owner, "", access, &state, false);
+    if (!projected.ok()) return projected;
+    const auto* bound = state.session.Find("environment");
+    if (!bound || bound->GetString("id") != id)
+      return Error(503, "environment_record_invalid",
+                   "Workspace owner changed");
+    if (state.session.GetString("status") != "idle")
+      return Error(409, "environment_turn_active",
+                   "Workspace files are available between turns");
+  }
   ChatPlanError error;
   auto shape =
       ValidateEnvironment(input, EnvironmentShape::kFileCreate, &error);
@@ -156,21 +189,28 @@ ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
   update.expected_revision = stored.GetInt("revision");
   update.expires_at = stored.GetInt("expires_at");
   update.data = std::move(data);
-  Set(&Field(state.session, "environment"), "files",
-      *Field(update.data, "resource").Find("files"));
-  auto bound_settings =
-      agent_detail::BindSessionSettings(&session_data, state.session);
-  if (!bound_settings.ok()) return bound_settings;
-  ObjectRequest owner_write;
-  owner_write.operation = ObjectOperation::kPut;
-  owner_write.kind = ObjectKind::kAgentSession;
-  owner_write.scope = access.scope;
-  owner_write.id = owner;
-  owner_write.expected_revision = session.value.GetInt("revision");
-  owner_write.ttl_seconds = 0;
-  owner_write.data = std::move(session_data);
-  const ObjectRequest writes[]{std::move(update), std::move(owner_write)};
-  auto result = objects.ExecuteBatch(writes, access.deadline, access.cancelled);
+  ObjectReply result;
+  if (shared) {
+    Set(&update.data, "last_activity_at", Number(std::time(nullptr)));
+    result = objects.Execute(update, access.deadline, access.cancelled);
+  } else {
+    auto& session_data = Field(session.value, "data");
+    Set(&Field(state.session, "environment"), "files",
+        *Field(update.data, "resource").Find("files"));
+    auto bound_settings =
+        agent_detail::BindSessionSettings(&session_data, state.session);
+    if (!bound_settings.ok()) return bound_settings;
+    ObjectRequest owner_write;
+    owner_write.operation = ObjectOperation::kPut;
+    owner_write.kind = ObjectKind::kAgentSession;
+    owner_write.scope = access.scope;
+    owner_write.id = owner;
+    owner_write.expected_revision = session.value.GetInt("revision");
+    owner_write.ttl_seconds = 0;
+    owner_write.data = std::move(session_data);
+    const ObjectRequest writes[]{std::move(update), std::move(owner_write)};
+    result = objects.ExecuteBatch(writes, access.deadline, access.cancelled);
+  }
   copies.Settle(result);
   if (result.ok()) {
     result.http_status = 201;

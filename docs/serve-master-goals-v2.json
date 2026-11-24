@@ -698,6 +698,11 @@
           "Prewarm setup failure"
         ],
         "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
+      },
+      "standalone_shared_workspaces_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
+        "max_sessions": 128
       }
     },
     {
@@ -2865,6 +2870,11 @@
           "Prewarm setup failure"
         ],
         "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
+      },
+      "standalone_shared_workspaces_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
+        "max_sessions": 128
       }
     },
     {
@@ -6435,6 +6445,11 @@
           "Prewarm setup failure"
         ],
         "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
+      },
+      "standalone_shared_workspaces_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
+        "max_sessions": 128
       }
     },
     {
@@ -9838,6 +9853,11 @@
           "Prewarm setup failure"
         ],
         "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
+      },
+      "standalone_shared_workspaces_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
+        "max_sessions": 128
       }
     },
     {
@@ -11419,8 +11439,8 @@
       }
     }
   ],
-  "next_task": "Implement new standalone hosted environment sharing across up to 128 sessions, idle suspension and resumption, and setup failures. Continue all remaining service goals.",
-  "next": "后续按上游新建独立环境的约定补齐 128 个会话共享、20 分钟闲置挂起、7 天检查点恢复以及预热失败事件。",
+  "next_task": "Implement and verify shared hosted environment inactivity suspension, authenticated checkpoint resume and expiry, plus setup failure. Continue the remaining inference, application and recovery tasks.",
+  "next": "补齐共享环境的空闲挂起、检查点恢复与过期及预热失败，继续其余应用与恢复项。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

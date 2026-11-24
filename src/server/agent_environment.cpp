@@ -128,6 +128,8 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
   auto prepared = PrepareRecord(objects, access, *body.Find("environment"),
                                 vaults, resource, &copies);
   if (!prepared.ok()) return prepared;
+  // Only new standalone environments support multiple live attachments.
+  Set(&resource.data, "attached_sessions", Array());
   ObjectReply committed;
   if (key.empty()) {
     committed = objects.Execute(resource, access.deadline, access.cancelled);
@@ -235,12 +237,18 @@ ObjectReply environment_detail::PrepareAttachment(
     req.data = std::move(Field(row.value, "data"));
     auto view = Resource(req.data, req.id);
     if (!view.ok()) return view;
-    if (view.value.GetString("status") != "ready")
+    const auto state = view.value.GetString("status");
+    const auto* sessions = req.data.GetArray("attached_sessions");
+    if (state != "ready" &&
+        !(sessions && (state == "connected" || state == "disconnected")))
       return Error(409, "environment_not_ready",
                    "Environment is no longer available for attachment");
     req.operation = ObjectOperation::kPut;
     req.expected_revision = row.value.GetInt("revision");
-    req.mutate_before = req.data.GetInt("warm_until");
+    if (sessions && sessions->array.size() >= kMaxAttachedSessions)
+      return Error(409, "environment_session_limit",
+                   "Environment has 128 attached sessions");
+    if (state == "ready") req.mutate_before = req.data.GetInt("warm_until");
     const auto* ids = req.data.GetArray("vault_ids");
     if (!ids) return Corrupt();
     auto checked = CheckAgentVaults(objects, access, *ids);
@@ -266,7 +274,14 @@ ObjectReply environment_detail::PrepareAttachment(
                           "capability_directories", "desktop"})
     Set(&session, key, *settings.value.Find(key));
   Set(&resource, "status", String("connected"));
-  Set(&req.data, "bound_session", String(session_id));
+  if (auto* sessions = req.data.Find("attached_sessions")) {
+    if (!sessions->IsArray() || HasAttachedSession(req.data, session_id))
+      return Corrupt();
+    Field(req.data, "attached_sessions").array.push_back(String(session_id));
+    Set(&req.data, "last_activity_at", Number(std::time(nullptr)));
+  } else {
+    Set(&req.data, "bound_session", String(session_id));
+  }
   req.ttl_seconds = 0;
   ObjectReply result;
   result.value = std::move(session);

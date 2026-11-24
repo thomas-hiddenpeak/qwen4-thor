@@ -1,0 +1,69 @@
+{
+  "status": "ACCEPT_NEW_STANDALONE_SHARED_HOSTED_WORKSPACE",
+  "issued": 472,
+  "device_runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 35.986,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "device_binary": "f154d064f975284a3d800a709c2cba474b99ced5c9ac099b8f0ed489fcbb4f04",
+  "sdk": "7.47.0",
+  "bytes": 10686,
+  "artifact_sha256": "437568bb061898f2d3f7e24c41aae310c07e7380c1dd4712586e31ca07bfee5e",
+  "release_revision": 472,
+  "sessions": [
+    "agent_session_96550509eea6b20e6a5b4c7346efb5d8",
+    "agent_session_2a0112a10a7ca3d0b07e387334834454",
+    "agent_session_23685877802ed6586a2a800bd9ff916b"
+  ],
+  "environment": "environment_0d4523210eb674922acca83eef2301ee",
+  "third_session_empty_history": true,
+  "peer": 404,
+  "model_answer": "42",
+  "independent_chat": "42",
+  "official_shapes": 3,
+  "cpu_cases": 8,
+  "attachment_limit_checked": 128,
+  "legacy_single_attach": 409,
+  "remaining": [
+    "Idle suspension, private checkpoint resume/expiry and setup failure."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-lease-01/exit.json",
+      "sha256": "40eb026ce50b33b403a60466ac7e0d7b9bb71af0376baa1d8efe206ce393ee78"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-business-01/plan.json",
+      "sha256": "104f5caa94fdae85a3ad6733b1d8d76e48ddf6eaaf95370e5daeef062decafbc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-business-01/result.json",
+      "sha256": "bd006cdd7f303b009e7b47038d350c6d293f48e9ef80eba5c5e46fdfa4f34fa0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-business-01/create/sdk-result.json",
+      "sha256": "d84214a729a7e5bf27213af2f37da5a75b53dfc45510b151e9dc3eb63392d888"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-business-01/create/run-wire.json",
+      "sha256": "209994f0107c7d57447768c665e33fc32cff832648e318062bb602d5131f2b0d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/shared-workspace-cpu-03.log",
+      "sha256": "fb8ea31eb0f9736b62cc3b1b1c2158ed329c4bf30b6c9cd74d9c2eb4ba311f88"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/shared-inventory-02.json",
+      "sha256": "690a128a87bb4555b134619eb20aa620243861bfde2d1b9ba3477a6c474d080b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared_environment_business.py",
+      "sha256": "fca8e9c91c0bf1a4e2e456869158f9b5094b42346927c503ee394059062d9016"
+    }
+  ]
+}
