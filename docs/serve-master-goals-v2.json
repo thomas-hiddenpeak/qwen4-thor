@@ -3017,6 +3017,10 @@
         "evidence": "evidence/serve-evals-20261125/delivery.json",
         "revision": 480,
         "state": "issued_bounded_acceptance"
+      },
+      "cosine_delivery_20261125": {
+        "revision": 482,
+        "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
       }
     },
     {
@@ -6673,6 +6677,10 @@
         "evidence": "evidence/serve-evals-20261125/delivery.json",
         "revision": 480,
         "state": "issued_bounded_acceptance"
+      },
+      "cosine_delivery_20261125": {
+        "revision": 482,
+        "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
       }
     },
     {
@@ -8709,6 +8717,10 @@
         "evidence": "evidence/serve-evals-20261125/delivery.json",
         "revision": 480,
         "state": "issued_bounded_acceptance"
+      },
+      "cosine_delivery_20261125": {
+        "revision": 482,
+        "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
       }
     },
     {
@@ -9131,6 +9143,10 @@
         "evidence": "evidence/serve-evals-20261125/delivery.json",
         "revision": 480,
         "state": "issued_bounded_acceptance"
+      },
+      "cosine_delivery_20261125": {
+        "revision": 482,
+        "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
       }
     },
     {
@@ -10256,12 +10272,16 @@
         "evidence": "evidence/serve-evals-20261125/delivery.json",
         "revision": 480,
         "state": "issued_bounded_acceptance"
+      },
+      "cosine_delivery_20261125": {
+        "revision": 482,
+        "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev480_delivered_remaining_deliveries",
+      "state": "rev482_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -11038,7 +11058,7 @@
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
       "current_mainline_evidence": "evidence/serve-chatkit-20261125/delivery.json",
-      "current_candidate": "Issued rev480 includes Evals definitions, runs, sampling, stored sources, graders and notifications. 215/231 HTTP success declarations. Tool trajectory compatibility and other service work continue.",
+      "current_candidate": "Released trained Evals cosine, authenticated reports, tool trajectories and frozen Responses files. 215/231 success declarations.",
       "tts_input_delivery_20261118": {
         "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
         "revision": 316,
@@ -11481,6 +11501,10 @@
         "evidence": "evidence/serve-evals-20261125/delivery.json",
         "revision": 480,
         "state": "issued_bounded_acceptance"
+      },
+      "cosine_delivery_20261125": {
+        "revision": 482,
+        "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
       }
     },
     {
@@ -11586,16 +11610,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "6149036d5ba0673fcba272a2c040ae204b65d87e",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-delivery-soak-src",
+        "source_commit": "861d71230590e2d830eef5f84fc91824bc7599a8",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/bundle",
-          "manifest_sha256": "783ccb40ac667d5378208731cd53e3cf3fb31dc3e247fcf67b3bb8f8b4b5b755"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-client-primary-01/bundle",
+          "manifest_sha256": "a5e061b8a33a550e104b320dca0dae24564f7ce364e143527bf45687bf229cef"
         },
-        "revision": 480,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "38c94f5f9fafc57273ab1a45cda5ce405c5f95a2e8da1936e625ff9844591901",
-        "handoff_sha256": "5992170b8c9c24fd4f2dab3dc3803b0b0224339f43ee61e53c14827db09354e9",
+        "revision": 482,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "7ece2cb3afee956dfad3f6e9816ff43e900f9095a590fc76999330f3b21efc53",
+        "handoff_sha256": "d38f7c6894ff12b8e15e996daaae9d37d84e276d39a169525f4b447129b4f831",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -11918,6 +11942,25 @@
         "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-delivery-soak-src/.q4t-work/day-01/plan.json",
         "plan_sha256": "0bc637a9292ad2d261923644160e8451313dd822b82bba60f7a3f8d1a539a0d6",
         "handoff_sha256": "6cbddd7439eb04324aac0018cbbdedc17639f2006d86f378bc37e0d6e0367b32",
+        "checked": true,
+        "source_files": 700,
+        "hours_executed": 0
+      },
+      "cosine_delivery_20261125": {
+        "revision": 482,
+        "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
+      },
+      "retained_rev480_day_handoff": {
+        "source_commit": "6149036d5ba0673fcba272a2c040ae204b65d87e",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-delivery-soak-src",
+        "package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/bundle",
+          "manifest_sha256": "783ccb40ac667d5378208731cd53e3cf3fb31dc3e247fcf67b3bb8f8b4b5b755"
+        },
+        "revision": 480,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "38c94f5f9fafc57273ab1a45cda5ce405c5f95a2e8da1936e625ff9844591901",
+        "handoff_sha256": "5992170b8c9c24fd4f2dab3dc3803b0b0224339f43ee61e53c14827db09354e9",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -18014,6 +18057,13 @@
       "matching_success_sets": 215,
       "missing_declaration": 16,
       "evidence": "evidence/serve-evals-20261125/delivery.json"
+    },
+    "rev482": {
+      "required": 231,
+      "declared": 215,
+      "matching_success_sets": 215,
+      "missing_declaration": 16,
+      "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
     }
   },
   "agent_hosted_workspace_20261124": {
@@ -18122,18 +18172,17 @@
     "candidate_declared_methods": 215,
     "required_methods": 231,
     "remaining": [
-      "METEOR with lexical resources and cosine with trained embeddings",
-      "requested Python grading image and package compatibility",
-      "complex message and tool trajectory projection",
-      "remaining inference/application methods and outstanding recovery compositions",
-      "authenticated rendered evaluation report and absolute report_url"
+      "METEOR lexical resources and locally calibrated semantic thresholds",
+      "Python grading images and package compatibility",
+      "Stored Chat media and file histories",
+      "Remaining inference/application methods and recovery compositions"
     ],
     "local_graders": "evidence/serve-evals-20261125/graders.json",
     "model_graders": "evidence/serve-evals-20261125/model-graders.json",
     "interrupted_model_sampling": "evidence/serve-evals-20261125/recovery.json",
     "qualified_profiles": "evidence/serve-evals-20261125/drain-profiles.json",
-    "publication": "evidence/serve-evals-20261125/delivery.json",
-    "revision": 480,
+    "publication": "evidence/serve-evals-20261125/cosine-delivery.json",
+    "revision": 482,
     "issued_declared_methods": 215,
     "long_run": "user_owned_preflight_only",
     "python_sdk": "evidence/serve-evals-20261125/python-sdk.json",
@@ -18142,7 +18191,9 @@
       "implementation": "Serve an authenticated, project-scoped run report and generate a routable absolute URL through native/direct and optional proxy entry points. Validate the URI and content through actual clients.",
       "candidate_status": "native_direct_optional_frontends_verified",
       "receipt": "docs/evidence/serve-evals-20261125/run-reports.json",
-      "issued": false
+      "issued": true,
+      "issued_revision": 482,
+      "resolved_revision": 482
     },
     "mainline": {
       "112": "fb794a04d1b0d92ed1fbe4da5cccf09d10e1fd3f",
@@ -18150,26 +18201,36 @@
       "114": "a83c7d72dbabb00e7da4af023280f41b63caee31",
       "115": "308425574e10e96dcaec689b3d7a7a777fa49b78",
       "116": "920ab3e86d3e6f9fe641a9b0f0e23169c249dd5f",
-      "117": "1340ae73c3210f6f6321d66b2e5d42c5f27c423a"
+      "117": "1340ae73c3210f6f6321d66b2e5d42c5f27c423a",
+      "118": "7bc43de14a93a6089a6bf1e836ac197cfc194c96",
+      "119": "66e75fb3b17bf9c8a4617b81695f136387f76102",
+      "120": "37ec9f6592a926dcf4fb90a78c71a60fd90c0c09",
+      "121": "a886979b2f7d158b1e39798ae876703a9ba16be0"
     },
     "tool_trajectories": {
       "stage": "native_tls_verified",
       "receipt": "docs/evidence/serve-evals-20261125/tool-trajectories.json",
-      "issued": false
+      "issued": true,
+      "issued_revision": 482
     },
     "frozen_response_files": {
       "stage": "native_tls_verified",
       "receipt": "docs/evidence/serve-evals-20261125/frozen-file-inputs.json",
-      "issued": false
+      "issued": true,
+      "issued_revision": 482
     },
     "trained_cosine": {
       "stage": "native_tls_verified",
       "receipt": "docs/evidence/serve-evals-20261125/trained-cosine.json",
-      "issued": false
+      "issued": true,
+      "issued_revision": 482
     },
     "cosine_profiles": {
       "receipt": "docs/evidence/serve-evals-20261125/cosine-profiles.json",
-      "stage": "profiles_qualified"
-    }
+      "stage": "profiles_qualified",
+      "issued": true,
+      "issued_revision": 482
+    },
+    "prior_evals_publication": "evidence/serve-evals-20261125/delivery.json"
   }
 }
