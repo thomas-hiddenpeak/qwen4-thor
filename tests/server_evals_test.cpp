@@ -771,6 +771,23 @@ Q4T_TEST(evals_runs_persist_real_pass_fail_outputs_and_filter_by_parent) {
   read.kind = ObjectKind::kEvalRun;
   read.scope = access.scope;
   read.id = id;
+  // rev480 stored a relative JSON collection in the durable run. Opening
+  // that record through a new frontend must only project the public view.
+  auto old = store.Execute(read, access.deadline);
+  Q4T_CHECK(old.ok());
+  auto previous = read;
+  previous.operation = ObjectOperation::kPut;
+  previous.expected_revision = old.value.GetInt("revision");
+  previous.expires_at = old.value.GetInt("expires_at");
+  previous.data = *old.value.Find("data");
+  Set(&Field(previous.data, "resource"), "report_url", String(path + "/output_items"));
+  Q4T_CHECK(store.Execute(previous, access.deadline).ok());
+  auto historical = HandleEval(store, access, "GET", path, {}, nullptr, "https://old.example");
+  Q4T_CHECK(historical.ok() && historical.value.GetString("report_url") ==
+            "https://old.example" + path + "/report");
+  auto stored = store.Execute(read, access.deadline);
+  Q4T_CHECK(stored.value.Find("data")->Find("resource")->GetString("report_url") ==
+            path + "/output_items");
   for (int turn = 0; turn < 4; ++turn) {
     auto record = store.Execute(read, access.deadline);
     Q4T_CHECK(record.ok());

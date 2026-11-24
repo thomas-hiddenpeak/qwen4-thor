@@ -18139,7 +18139,10 @@
     "python_sdk": "evidence/serve-evals-20261125/python-sdk.json",
     "report_url_gap": {
       "observed": "Issued run.report_url points to a relative JSON output-item collection. The upstream schema expects a URI for a rendered per-run report.",
-      "implementation": "Serve an authenticated, project-scoped run report and generate a routable absolute URL through native/direct and optional proxy entry points. Validate the URI and content through actual clients."
+      "implementation": "Serve an authenticated, project-scoped run report and generate a routable absolute URL through native/direct and optional proxy entry points. Validate the URI and content through actual clients.",
+      "candidate_status": "native_direct_optional_frontends_verified",
+      "receipt": "docs/evidence/serve-evals-20261125/run-reports.json",
+      "issued": false
     },
     "mainline": {
       "112": "fb794a04d1b0d92ed1fbe4da5cccf09d10e1fd3f",

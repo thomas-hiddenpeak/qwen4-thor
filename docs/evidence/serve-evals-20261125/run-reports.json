@@ -1,5 +1,5 @@
 {
-  "stage": "implementation_pending_qualification",
+  "stage": "native_direct_optional_frontends_verified",
   "issued": false,
   "focus": [
     "Per-request absolute report links for new and old runs",
@@ -19,8 +19,58 @@
     "errors": []
   },
   "pending": [
-    "Focused host contracts",
-    "Three application entry points against the same Thor run",
     "Release qualification"
-  ]
+  ],
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 35.058,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "evaluation": "eval_a18f176c162df8158a8c9655a762cf68",
+    "run": "evalrun_dbdc790aad33a06e31cab5704302c467",
+    "answer": "157",
+    "independent_chat": "42",
+    "results": [
+      {
+        "entry": "native",
+        "absolute": "https://127.0.0.1:52765/project/serve/v1/evals/eval_a18f176c162df8158a8c9655a762cf68/runs/evalrun_dbdc790aad33a06e31cab5704302c467/report",
+        "foreign_status": 404,
+        "sha256": "8ff9039e92b66fe38f7686acbad68994a9325d6b8b9bae7482691db2d80618be",
+        "bytes": 1012
+      },
+      {
+        "entry": "nginx",
+        "absolute": "https://localhost:39497/v1/evals/eval_a18f176c162df8158a8c9655a762cf68/runs/evalrun_dbdc790aad33a06e31cab5704302c467/report",
+        "foreign_status": 404,
+        "sha256": "8ff9039e92b66fe38f7686acbad68994a9325d6b8b9bae7482691db2d80618be",
+        "bytes": 1012
+      },
+      {
+        "entry": "direct",
+        "absolute": "http://127.0.0.1:52917/v1/evals/eval_a18f176c162df8158a8c9655a762cf68/runs/evalrun_dbdc790aad33a06e31cab5704302c467/report",
+        "foreign_status": 404,
+        "sha256": "8ff9039e92b66fe38f7686acbad68994a9325d6b8b9bae7482691db2d80618be",
+        "bytes": 1012
+      }
+    ],
+    "deleted_status": 404,
+    "driver_sha256": "b17622da651242599210c99f633bb683b06b481f4db2e72574cfdd370fe28c86"
+  },
+  "cpu": {
+    "distinct": 20,
+    "suite_sha256": "0cbbc4a82b710ca700d2ca64337e5203b8978d9d4903dc807c5077d3140b7832",
+    "legacy_relative_url_fixture_sha256": "a17f2932a0b3684accd65f988c8f8ee0054eadf667ba00298522b4e6e95969be"
+  },
+  "lease_sha256": "d35422cf6094753d4791ab95dcb6419701a18cf4592c9887f8cb8a0eb7c93784",
+  "candidate": {
+    "binary": "6f87b6dc3d5b46830782209094f90f418fb068fb4d2670a7769637aeafcb4193",
+    "ingress": "1efb565263062c11b682bab1905424da4fdb84fc902c87c67bb3a60e2e57c137",
+    "sdk_driver": "b17622da651242599210c99f633bb683b06b481f4db2e72574cfdd370fe28c86"
+  }
 }
