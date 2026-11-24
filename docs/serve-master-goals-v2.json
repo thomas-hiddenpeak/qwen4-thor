@@ -2727,7 +2727,9 @@
         "required_methods": 231,
         "declared_with_expected_success": 179,
         "long_run_hours": 0
-      }
+      },
+      "automation_development": "evidence/serve-agent-automations-20261124/development.json",
+      "automation_business": "evidence/serve-agent-automations-20261124/business.json"
     },
     {
       "id": "A09",
@@ -6226,7 +6228,9 @@
         "required_methods": 231,
         "declared_with_expected_success": 179,
         "long_run_hours": 0
-      }
+      },
+      "automation_development": "evidence/serve-agent-automations-20261124/development.json",
+      "automation_business": "evidence/serve-agent-automations-20261124/business.json"
     },
     {
       "id": "A12",
@@ -9527,7 +9531,9 @@
         "required_methods": 231,
         "declared_with_expected_success": 179,
         "long_run_hours": 0
-      }
+      },
+      "automation_development": "evidence/serve-agent-automations-20261124/development.json",
+      "automation_business": "evidence/serve-agent-automations-20261124/business.json"
     },
     {
       "id": "Q02",
@@ -11085,8 +11091,8 @@
       }
     }
   ],
-  "next_task": "Implement Agents automations, scheduled and manual invocations against real session turns, then continue the remaining required inference/application and recovery capabilities.",
-  "next": "推进 Agents 自动化、定时及手动触发的真实会话，再接续其余推理、应用服务和恢复事项。",
+  "next_task": "Qualify automation delivery across process and capacity changes, implement the model-facing automation tools, and continue the remaining inference, application and recovery tasks.",
+  "next": "验证自动化投递跨进程与配置接手，接入模型使用的自动化工具并继续剩余推理、应用及恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

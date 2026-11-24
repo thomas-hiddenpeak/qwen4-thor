@@ -307,6 +307,9 @@ def current_surface(root):
     if ('HandleEnvironmentTemplate(*objects_' not in dispatch or
             'EnvironmentTemplateMethodAllowed(method, target)' not in application_routes):
         raise ValueError("review native environment template routing")
+    if ('HandleAgentAutomation(*objects_' not in dispatch or
+            'AutomationMethodAllowed(method, automation)' not in application_routes):
+        raise ValueError('review managed automation routing')
     if ('HandleHostedEnvironment(*objects_' not in dispatch or
             'ParseHostedRoute(target)' not in application_routes or
             'environment_detail::WorkspaceFiles(' not in (root/'src/server/agent_environment.cpp').read_text()):
@@ -361,6 +364,12 @@ def current_surface(root):
                           ('/v1/threads/{thread_id}/messages/{message_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/assistants', ('GET', 'POST')),
                           ('/v1/assistants/{assistant_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/agents/automations', ('GET', 'POST')),
+                          ('/v1/agents/automations/{automation_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/agents/automations/{automation_id}/pause', ('POST',)),
+                          ('/v1/agents/automations/{automation_id}/resume', ('POST',)),
+                          ('/v1/agents/automations/{automation_id}/invocations', ('GET', 'POST')),
+                          ('/v1/agents/automations/{automation_id}/invocations/{invocation_id}', ('GET',)),
                           ('/v1/agents/environments', ('GET', 'POST')),
                           ('/v1/agents/environments/{environment_id}', ('GET',)),
                           ('/v1/agents/environments/{environment_id}/files', ('GET', 'POST')),
@@ -600,6 +609,7 @@ def current_surface(root):
                        root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake",
+                       root / "cmake/automation_types.h.in",
                        root / "cmake/container_types.h.in", root / "cmake/skill_types.h.in",
                        root / "tools/serve_responses/generate_item_types.mjs",
                        root / "cmake/RustRegex.cmake",
@@ -653,6 +663,10 @@ def mutation_checks(inventory, actual):
             raise ValueError("Voice/Consent routes escaped extraction")
         cases.append(dict(actual, **{group: [route for route in actual[group]
                                             if route != omitted]}))
+        invocation = "POST /v1/agents/automations/{automation_id}/invocations"
+        if invocation not in actual[group]:
+            raise ValueError("Manual invocation escaped extraction")
+        cases.append(dict(actual, **{group: [r for r in actual[group] if r != invocation]}))
         session = "POST /v1/agents/sessions"
         if session not in actual[group]:
             raise ValueError("Managed session creation escaped extraction")

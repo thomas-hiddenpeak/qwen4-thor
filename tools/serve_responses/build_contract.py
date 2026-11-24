@@ -132,6 +132,19 @@ def schema(graph):
     page_limit = dict(type='integer', minimum=1, maximum=100, default=20)
     definitions['agents_query'] = obj(dict(limit=page_limit,
         after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
+    automations = json.loads((ROOT/'src/server/contracts/openai_automation_types_v1.json').read_text())
+    assert automations['profile'] == 'q4t-openai-automation-types-v1'
+    definitions.update(graph_definitions(automations, 'automation_'))
+    for page, item in [('automation_list', 'automation_resource'),
+                       ('automation_invocation_list', 'automation_invocation')]:
+        definitions[page] = copy.deepcopy(definitions['agents_list'])
+        definitions[page]['properties']['data']['items'] = ref(item)
+    for name in ('query', 'invocation_query'):
+        properties = dict(limit=page_limit, after=dict(type='string'),
+                          order=dict(enum=['asc', 'desc']))
+        if name == 'query':
+            properties['session_id'] = dict(type='string')
+        definitions['automation_' + name] = obj(properties)
     vault_meta = dict(type='object', maxProperties=16,
                       propertyNames=dict(minLength=1, maxLength=64),
                       additionalProperties=dict(type='string', maxLength=512))
@@ -643,6 +656,16 @@ def add_openapi(paths, response, error):
         ('/v1/agents/environments/templates/{environment_template_id}', 'get', None, 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'post', 'hosted_template_update', 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'delete', None, 'hosted_template_deleted', None),
+        ('/v1/agents/automations', 'post', 'automation_create', 'automation_resource', None),
+        ('/v1/agents/automations', 'get', None, 'automation_list', 'automation_query'),
+        ('/v1/agents/automations/{automation_id}', 'get', None, 'automation_resource', None),
+        ('/v1/agents/automations/{automation_id}', 'post', 'automation_update', 'automation_resource', None),
+        ('/v1/agents/automations/{automation_id}', 'delete', None, 'automation_deleted', None),
+        ('/v1/agents/automations/{automation_id}/pause', 'post', None, 'automation_resource', None),
+        ('/v1/agents/automations/{automation_id}/resume', 'post', None, 'automation_resource', None),
+        ('/v1/agents/automations/{automation_id}/invocations', 'post', None, 'automation_invocation', None),
+        ('/v1/agents/automations/{automation_id}/invocations', 'get', None, 'automation_invocation_list', 'automation_invocation_query'),
+        ('/v1/agents/automations/{automation_id}/invocations/{invocation_id}', 'get', None, 'automation_invocation', None),
         ('/v1/agents/sessions', 'post', 'agent_session_create', 'agent_session_resource', None),
         ('/v1/agents/sessions', 'get', None, 'agent_session_list', 'agent_session_query'),
         ('/v1/agents/sessions/{session_id}', 'get', None, 'agent_session_resource', None),
@@ -742,7 +765,7 @@ def add_openapi(paths, response, error):
             parameters.append(dict(name='Idempotency-Key', **{'in': 'header'}, required=False,
                 schema=dict(type='string', minLength=1, maxLength=256, pattern=r'^[ -~]+$')))
         success_code = '202' if accepted else '200'
-        if body in {'agents_create', 'agent_session_create', 'vault_create',
+        if body in {'agents_create', 'automation_create', 'agent_session_create', 'vault_create',
                     'credential_create', 'hosted_template_create',
                     'hosted_environment_create', 'hosted_file_create'}:
             success_code = '201'

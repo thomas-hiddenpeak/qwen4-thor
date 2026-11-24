@@ -53,6 +53,19 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
   return reply;
 }
 
+ObjectReply ResponsesExecution::BindAutomationDelivery(ObjectRequest write) {
+  const auto* row = write.data.Find("resource");
+  if (!plan_.agent_session_write || plan_.automation_delivery_write ||
+      write.operation != ObjectOperation::kPut ||
+      write.kind != ObjectKind::kAutomationInvocation ||
+      write.scope != Scope() || write.expected_revision < 1 || !row ||
+      row->GetString("id") != write.id || row->GetString("status") != "completed" ||
+      row->GetString("session_id") != plan_.agent_session_id)
+    return Error(500, "automation_delivery_invalid", "Invalid delivery receipt");
+  plan_.automation_delivery_write = std::move(write);
+  return {};
+}
+
 ObjectReply ResponsesExecution::BindAgentSession(
     ObjectRequest mutation, std::optional<ObjectRequest> environment,
     std::shared_ptr<environment_detail::WorkspaceCopies> workspace_copies) {
@@ -124,6 +137,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   size_t bytes = plan_.agent_session_write
                      ? OutputJson(plan_.agent_session_write->data).size()
                      : 0;
+  if (plan_.automation_delivery_write)
+    bytes += OutputJson(plan_.automation_delivery_write->data).size();
   for (const auto& write : plan_.assistant_writes)
     bytes += OutputJson(write.data).size();
   if (plan_.agent_environment_write)

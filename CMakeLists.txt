@@ -573,6 +573,16 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/vault_oauth.cpp
   src/server/vault_credential.cpp
   src/server/agent_session.cpp
+  src/server/agent_cron.cpp
+  src/server/agent_automation_clock.cpp
+  src/server/agent_automation_http.cpp
+  src/server/agent_automation_dispatcher.cpp
+  src/server/agent_automation_delivery.cpp
+  src/server/agent_automation_queue.cpp
+  src/server/agent_automation_list.cpp
+  src/server/agent_automation_registry.cpp
+  src/server/agent_definition_cipher.cpp
+  src/server/agent_automation_target.cpp
   src/server/agent_session_turn.cpp
   src/server/agent_subagent.cpp
   src/server/agent_session_traces.cpp

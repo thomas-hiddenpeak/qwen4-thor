@@ -101,6 +101,16 @@ APPLICATION_ROUTES = [
       for method in ('GET', 'POST', 'DELETE')),
     *((method, '/v1/agents', 'control' if method == 'GET' else 'data')
       for method in ('GET', 'POST')),
+    *((method, '/v1/agents/automations' + suffix,
+       'data' if method == 'POST' else 'control')
+      for suffix, methods in (
+          ('', ('GET', 'POST')),
+          ('/{automation_id}', ('GET', 'POST', 'DELETE')),
+          ('/{automation_id}/pause', ('POST',)),
+          ('/{automation_id}/resume', ('POST',)),
+          ('/{automation_id}/invocations', ('GET', 'POST')),
+          ('/{automation_id}/invocations/{invocation_id}', ('GET',)))
+      for method in methods),
     *((method, '/v1/agents/{agent_id}', 'data' if method == 'POST' else 'control')
       for method in ('GET', 'POST', 'DELETE')),
     *((method, '/v1/vaults', 'data' if method == 'POST' else 'control')
@@ -281,6 +291,8 @@ def route_map():
     rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
+                           'automation_[A-Za-z0-9_-]{1,117}' if part == '{automation_id}' else
+                           'invocation_[A-Za-z0-9_-]{1,117}' if part == '{invocation_id}' else
                            'run_[A-Za-z0-9_-]{1,124}' if part == '{run_id}' else
                            'step_[A-Za-z0-9_-]{1,123}' if part == '{step_id}' else
                            'thread_[A-Za-z0-9_-]{1,121}' if part == '{thread_id}' else

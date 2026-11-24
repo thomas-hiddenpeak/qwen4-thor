@@ -253,8 +253,39 @@ std::string Key(std::string_view owner, std::string_view id) {
 
 size_t ObjectRetentionInfo::Bytes() const {
   size_t bytes = references.capacity() * sizeof(std::string);
+  if (!owning_automation.empty()) bytes += owning_automation.capacity() + 1;
   for (const auto& reference : references) bytes += reference.capacity() + 1;
   return bytes;
+}
+
+ObjectRetentionInfo InspectAutomationTarget(const Json& target) {
+  Inspector inspector;
+  if (target.GetString("type") == "existing_session") {
+    inspector.RequiredId(target, "session_id", "agent_session_");
+    return inspector.Finish();
+  }
+  const auto* env = target.Find("environment");
+  const auto* vaults = target.GetArray("vault_ids");
+  if (target.GetString("type") != "new_session" || !env || !vaults) {
+    inspector.value.uncertain = true;
+    return inspector.Finish();
+  }
+  inspector.Reference(target.Find("agent_id"));
+  if (const auto* agent = target.Find("agent"); agent && agent->IsObject())
+    inspector.AgentTools(agent->GetArray("tools"));
+  inspector.Reference(env->Find("environment_id"));
+  inspector.Reference(env->Find("environment_template_id"));
+  if (const auto* files = env->GetArray("files"))
+    for (const auto& file : files->array)
+      if (file.GetString("type") == "file_id")
+        inspector.RequiredId(file, "file_id", "file_");
+  if (const auto* skills = env->GetArray("skills"))
+    for (const auto& skill : skills->array)
+      if (skill.GetString("type") == "skill_reference")
+        inspector.Reference(skill.Find("skill_id"));
+  for (const auto& id : vaults->array) inspector.Reference(&id);
+  inspector.Items(target.Find("input"));
+  return inspector.Finish();
 }
 
 ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
@@ -429,6 +460,29 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.AgentTools(data.GetArray("tools"));
   } else if (kind == "vault" && data.GetString("object") == "vault") {
     // The container metadata has no content or credential object edges.
+  } else if (kind == "automation" || kind == "invocation") {
+    const auto* row = data.Find("resource");
+    const auto status = row ? row->GetString("status") : "";
+    const bool parent = kind == "automation";
+    const bool queued = !parent && status == "queued";
+    inspector.value.active = queued || (parent && status == "active");
+    const auto object = parent ? "agent.automation" : "agent.automation.invocation";
+    if (!row || row->GetString("object") != object ||
+        (!inspector.value.active && status != "completed" &&
+         !(parent ? status == "paused" : status == "skipped" || status == "failed")))
+      inspector.value.uncertain = true;
+    if (parent || queued) {
+      const auto* refs = data.GetArray("target_references");
+      if (!refs || !data.Has("sealed_target")) inspector.value.uncertain = true;
+      if (refs)
+        for (const auto& id : refs->array) inspector.Reference(&id);
+    }
+    if (parent) inspector.Reference(data.Find("pending_delivery"));
+    if (!parent && row) {
+      inspector.Reference(row->Find("session_id"));
+      inspector.RequiredId(*row, "automation_id", "automation_", false);
+      inspector.value.owning_automation = row->GetString("automation_id");
+    }
   } else if (kind == "environment_template" || kind == "environment") {
     inspector.HostedEnvironment(data, kind == "environment_template", payloads);
     if (kind == "environment") inspector.Snapshots(data);
@@ -694,6 +748,13 @@ Status PlanObjectRetention(std::span<const ObjectRetentionNode> nodes,
   }
   for (size_t i = 0; i < nodes.size(); ++i) {
     const auto& n = nodes[i];
+    if (!n.retention->owning_automation.empty()) {
+      const auto parent = identities.find(Key(n.owner, n.retention->owning_automation));
+      candidate[i] = candidate[i] || parent == identities.end() ||
+          std::ranges::none_of(parent->second, [&](size_t index) {
+            return nodes[index].kind == "automation";
+          });
+    }
     const bool unknown = uncertain_owners.contains(n.owner);
     plan->active += n.retention->active;
     plan->uncertain += unknown;

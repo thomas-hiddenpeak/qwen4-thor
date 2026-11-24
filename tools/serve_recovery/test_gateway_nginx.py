@@ -434,7 +434,8 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(run_id='run_1', step_id='step_1', thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
+            identities = dict(automation_id='automation_1', invocation_id='invocation_1',
+                              run_id='run_1', step_id='step_1', thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1', container_id='cntr_1', skill_id='skill_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
@@ -585,6 +586,24 @@ class NginxTests(unittest.TestCase):
                 row = self.stack.application_requests[-1]
                 self.assertEqual((row['method'], row['path'], row['client'], row['openai_beta']),
                                  ('GET' if body is None else 'POST', path, 'alpha', 'assistants=v2'))
+
+    def test_automation_paths_preserve_owner_selector_and_nested_id(self):
+        self.ready()
+        base = '/v1/agents/automations'
+        row = base + '/automation_1'
+        history = row + '/invocations'
+        beta = {'OpenAI-Beta': 'agents=v1'}
+        for body, path in [({}, base), (None, base + '?limit=2'), ({}, row + '/pause'),
+                           ({}, row + '/resume'), ({}, history),
+                           (None, history + '/invocation_1')]:
+            with self.subTest(path=path):
+                self.assertEqual(self.stack.request(body, path=path, extra=beta)[0], 200)
+                seen = self.stack.application_requests[-1]
+                self.assertEqual((seen['path'], seen['client'], seen['openai_beta']),
+                                 (path, 'alpha', 'agents=v1'))
+        for path in [base + '/agent_wrong', history + '/automation_wrong']:
+            self.assertEqual(self.stack.request(path=path, extra=beta)[0], 404)
+        self.assertEqual(len(self.stack.application_requests), 6)
 
     def test_environment_templates_preserve_identity_and_sdk_selector(self):
         self.ready()

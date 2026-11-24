@@ -1,0 +1,3137 @@
+{
+  "profile": "q4t-openai-automation-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "create": 0,
+    "update": 160,
+    "resource": 164,
+    "deleted": 251,
+    "query": 253,
+    "invocation": 257,
+    "invocation_query": 272
+  },
+  "nodes": [
+    {
+      "kind": "union",
+      "variants": [
+        1,
+        156
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "expression",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "target",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "timezone",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 155
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "union",
+      "variants": [
+        6,
+        153
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent",
+          "optional": true,
+          "type": 7
+        },
+        {
+          "name": "agent_id",
+          "optional": true,
+          "type": 19
+        },
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 95
+        },
+        {
+          "name": "input",
+          "optional": false,
+          "type": 139
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 150
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 152
+        },
+        {
+          "name": "vault_ids",
+          "optional": true,
+          "type": 66
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        8
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "compaction",
+          "optional": true,
+          "type": 9
+        },
+        {
+          "name": "experimental",
+          "optional": true,
+          "type": 15
+        },
+        {
+          "name": "instructions",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 19
+        },
+        {
+          "name": "multi_agent",
+          "optional": true,
+          "type": 20
+        },
+        {
+          "name": "reasoning",
+          "optional": true,
+          "type": 25
+        },
+        {
+          "name": "service_tier",
+          "optional": true,
+          "type": 39
+        },
+        {
+          "name": "text",
+          "optional": true,
+          "type": 45
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 55
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        11
+      ]
+    },
+    {
+      "kind": "null"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "async",
+          "optional": true,
+          "type": 12
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        13,
+        14
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": false
+    },
+    {
+      "kind": "literal",
+      "value": true
+    },
+    {
+      "kind": "union",
+      "variants": [
+        16
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "time_awareness",
+          "optional": true,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        13,
+        14
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        2
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        21
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 22
+        },
+        {
+          "name": "max_concurrent_subagents",
+          "optional": true,
+          "type": 23
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "boolean"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        24
+      ]
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        26
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "effort",
+          "optional": true,
+          "type": 27
+        },
+        {
+          "name": "summary",
+          "optional": true,
+          "type": 35
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "none"
+    },
+    {
+      "kind": "literal",
+      "value": "minimal"
+    },
+    {
+      "kind": "literal",
+      "value": "low"
+    },
+    {
+      "kind": "literal",
+      "value": "medium"
+    },
+    {
+      "kind": "literal",
+      "value": "high"
+    },
+    {
+      "kind": "literal",
+      "value": "xhigh"
+    },
+    {
+      "kind": "literal",
+      "value": "max"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        36,
+        37,
+        38
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "concise"
+    },
+    {
+      "kind": "literal",
+      "value": "detailed"
+    },
+    {
+      "kind": "literal",
+      "value": "auto"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        38,
+        40,
+        41,
+        42,
+        43,
+        44
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "default"
+    },
+    {
+      "kind": "literal",
+      "value": "flex"
+    },
+    {
+      "kind": "literal",
+      "value": "priority"
+    },
+    {
+      "kind": "literal",
+      "value": "fast"
+    },
+    {
+      "kind": "literal",
+      "value": "ultrafast"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        46
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "format",
+          "optional": true,
+          "type": 47
+        },
+        {
+          "name": "verbosity",
+          "optional": true,
+          "type": 54
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        48,
+        50
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 49
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "text"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "schema",
+          "optional": false,
+          "type": 51
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 53
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 52
+    },
+    {
+      "kind": "any"
+    },
+    {
+      "kind": "literal",
+      "value": "json_schema"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        30,
+        31,
+        32
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        56
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 57
+    },
+    {
+      "kind": "union",
+      "variants": [
+        58,
+        61,
+        63,
+        65,
+        83,
+        91,
+        93
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "defer_loading",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "description",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "parameters",
+          "optional": false,
+          "type": 59
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 60
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 52
+    },
+    {
+      "kind": "literal",
+      "value": "function"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 62
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "tool_search"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 64
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "programmatic_tool_calling"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_tools",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "connection_origin",
+          "optional": true,
+          "type": 68
+        },
+        {
+          "name": "credential_id",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "request_metadata",
+          "optional": true,
+          "type": 71
+        },
+        {
+          "name": "required",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "server_label",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "transport",
+          "optional": false,
+          "type": 73
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 82
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        67
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 2
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        69,
+        70
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "service"
+    },
+    {
+      "kind": "literal",
+      "value": "environment"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        72
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 52
+    },
+    {
+      "kind": "union",
+      "variants": [
+        74,
+        78
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "authorization",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "headers",
+          "optional": true,
+          "type": 75
+        },
+        {
+          "name": "server_url",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 77
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        76
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "literal",
+      "value": "http"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "args",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "command",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "cwd",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "env",
+          "optional": true,
+          "type": 79
+        },
+        {
+          "name": "env_vars",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 81
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        80
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "literal",
+      "value": "stdio"
+    },
+    {
+      "kind": "literal",
+      "value": "mcp"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "context_size",
+          "optional": true,
+          "type": 54
+        },
+        {
+          "name": "location",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "mode",
+          "optional": true,
+          "type": 86
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 90
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        85
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "city",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "country",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "region",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "timezone",
+          "optional": true,
+          "type": 18
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        87,
+        88,
+        89
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "disabled"
+    },
+    {
+      "kind": "literal",
+      "value": "cached"
+    },
+    {
+      "kind": "literal",
+      "value": "live"
+    },
+    {
+      "kind": "literal",
+      "value": "web_search"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "include_screenshots",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 92
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "computer_use"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 94
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "automations"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        96,
+        97,
+        136,
+        138
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 28
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "container_size",
+          "optional": true,
+          "type": 98
+        },
+        {
+          "name": "desktop",
+          "optional": true,
+          "type": 101
+        },
+        {
+          "name": "env",
+          "optional": true,
+          "type": 103
+        },
+        {
+          "name": "environment_id",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "environment_template_id",
+          "optional": true,
+          "type": 19
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": 106
+        },
+        {
+          "name": "network",
+          "optional": true,
+          "type": 113
+        },
+        {
+          "name": "packages",
+          "optional": true,
+          "type": 118
+        },
+        {
+          "name": "plugins",
+          "optional": true,
+          "type": 120
+        },
+        {
+          "name": "setup_commands",
+          "optional": true,
+          "type": 126
+        },
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 129
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 135
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        31,
+        99,
+        100
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "small"
+    },
+    {
+      "kind": "literal",
+      "value": "large"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        102
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 22
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        104
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "never"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        107
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 108
+    },
+    {
+      "kind": "union",
+      "variants": [
+        109,
+        111
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 110
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "file_id"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 112
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "inline"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        114
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "access",
+          "optional": false,
+          "type": 115
+        },
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "blocked_domains",
+          "optional": true,
+          "type": 66
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        87,
+        116,
+        117
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "enabled"
+    },
+    {
+      "kind": "literal",
+      "value": "restricted"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        119
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "npm",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "python",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "system",
+          "optional": true,
+          "type": 66
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        121
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 122
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 112
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "media_type",
+          "optional": false,
+          "type": 124
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 125
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "application/zip"
+    },
+    {
+      "kind": "literal",
+      "value": "base64"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        127
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 128
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "command",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "cwd",
+          "optional": true,
+          "type": 18
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        130
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 131
+    },
+    {
+      "kind": "union",
+      "variants": [
+        132,
+        134
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 133
+        },
+        {
+          "name": "version",
+          "optional": true,
+          "type": 18
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "skill_reference"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 112
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "openai_hosted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": true,
+          "type": 66
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 137
+        },
+        {
+          "name": "workspace_directory",
+          "optional": false,
+          "type": 2
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "self_hosted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "container_size",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "desktop",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "env",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "environment_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "environment_template_id",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "files",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "network",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "packages",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "plugins",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "setup_commands",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 105
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 135
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 140
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 141
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 147
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 148
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 142
+    },
+    {
+      "kind": "union",
+      "variants": [
+        143,
+        145
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 144
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "input_text"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 146
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "input_image"
+    },
+    {
+      "kind": "literal",
+      "value": "user"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        149
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "message"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        151
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "literal",
+      "value": "new_session"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "instructions",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 154
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "existing_session"
+    },
+    {
+      "kind": "literal",
+      "value": "periodic"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 157
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "run_at",
+          "optional": false,
+          "type": 24
+        },
+        {
+          "name": "target",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 159
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        158
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "literal",
+      "value": "once"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "expression",
+          "optional": true,
+          "type": 19
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 161
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 19
+        },
+        {
+          "name": "run_at",
+          "optional": true,
+          "type": 23
+        },
+        {
+          "name": "target",
+          "optional": true,
+          "type": 163
+        },
+        {
+          "name": "timezone",
+          "optional": true,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        162
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "union",
+      "variants": [
+        6,
+        153
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        165,
+        247
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 24
+        },
+        {
+          "name": "created_by",
+          "optional": false,
+          "type": 166
+        },
+        {
+          "name": "expression",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 171
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 172
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 173
+        },
+        {
+          "name": "target",
+          "optional": false,
+          "type": 176
+        },
+        {
+          "name": "timezone",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 155
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        167,
+        169
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 168
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "developer"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "tool_call_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 170
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent"
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "literal",
+      "value": "agent.automation"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        174,
+        175
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "active"
+    },
+    {
+      "kind": "literal",
+      "value": "paused"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        177,
+        246
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "agent",
+          "optional": false,
+          "type": 178
+        },
+        {
+          "name": "agent_id",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 215
+        },
+        {
+          "name": "input",
+          "optional": false,
+          "type": 239
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 245
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 152
+        },
+        {
+          "name": "vault_ids",
+          "optional": false,
+          "type": 67
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        179
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "compaction",
+          "optional": true,
+          "type": 180
+        },
+        {
+          "name": "experimental",
+          "optional": true,
+          "type": 182
+        },
+        {
+          "name": "instructions",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "multi_agent",
+          "optional": false,
+          "type": 185
+        },
+        {
+          "name": "reasoning",
+          "optional": false,
+          "type": 187
+        },
+        {
+          "name": "service_tier",
+          "optional": false,
+          "type": 190
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 191
+        },
+        {
+          "name": "tools",
+          "optional": false,
+          "type": 197
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        181
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "async",
+          "optional": false,
+          "type": 22
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        183
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "time_awareness",
+          "optional": false,
+          "type": 22
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        2
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 22
+        },
+        {
+          "name": "max_concurrent_subagents",
+          "optional": false,
+          "type": 186
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        24
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "effort",
+          "optional": false,
+          "type": 188
+        },
+        {
+          "name": "summary",
+          "optional": false,
+          "type": 189
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        36,
+        37,
+        38
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        38,
+        40,
+        41,
+        42,
+        43,
+        44
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "format",
+          "optional": false,
+          "type": 192
+        },
+        {
+          "name": "verbosity",
+          "optional": false,
+          "type": 196
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        193,
+        194
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 49
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "schema",
+          "optional": false,
+          "type": 195
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 53
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 52
+    },
+    {
+      "kind": "union",
+      "variants": [
+        30,
+        31,
+        32
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 198
+    },
+    {
+      "kind": "union",
+      "variants": [
+        199,
+        201,
+        202,
+        209,
+        213,
+        214
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "defer_loading",
+          "optional": false,
+          "type": 22
+        },
+        {
+          "name": "description",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "parameters",
+          "optional": false,
+          "type": 200
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 60
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 52
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 22
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 64
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_tools",
+          "optional": false,
+          "type": 203
+        },
+        {
+          "name": "connection_origin",
+          "optional": false,
+          "type": 204
+        },
+        {
+          "name": "credential_id",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "request_metadata",
+          "optional": false,
+          "type": 205
+        },
+        {
+          "name": "required",
+          "optional": false,
+          "type": 22
+        },
+        {
+          "name": "server_label",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "transport",
+          "optional": false,
+          "type": 206
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 82
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        67
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        69,
+        70
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 52
+    },
+    {
+      "kind": "union",
+      "variants": [
+        207,
+        208
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "server_url",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 77
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "args",
+          "optional": false,
+          "type": 67
+        },
+        {
+          "name": "command",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "cwd",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "env_vars",
+          "optional": false,
+          "type": 67
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 81
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": false,
+          "type": 203
+        },
+        {
+          "name": "context_size",
+          "optional": false,
+          "type": 196
+        },
+        {
+          "name": "location",
+          "optional": false,
+          "type": 210
+        },
+        {
+          "name": "mode",
+          "optional": false,
+          "type": 212
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 90
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        211
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "city",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "country",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "region",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "timezone",
+          "optional": false,
+          "type": 184
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        87,
+        88,
+        89
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "include_screenshots",
+          "optional": false,
+          "type": 22
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 92
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 94
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        216,
+        217,
+        238
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 28
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": false,
+          "type": 203
+        },
+        {
+          "name": "container_size",
+          "optional": false,
+          "type": 218
+        },
+        {
+          "name": "desktop",
+          "optional": false,
+          "type": 219
+        },
+        {
+          "name": "environment_id",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "environment_template_id",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "files",
+          "optional": false,
+          "type": 221
+        },
+        {
+          "name": "network",
+          "optional": false,
+          "type": 226
+        },
+        {
+          "name": "packages",
+          "optional": false,
+          "type": 228
+        },
+        {
+          "name": "plugins",
+          "optional": false,
+          "type": 230
+        },
+        {
+          "name": "skills",
+          "optional": false,
+          "type": 233
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 135
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        31,
+        99,
+        100
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        220
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 22
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        222
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 223
+    },
+    {
+      "kind": "union",
+      "variants": [
+        224,
+        225
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 110
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "path",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "size_bytes",
+          "optional": false,
+          "type": 24
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 112
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        227
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "access",
+          "optional": false,
+          "type": 115
+        },
+        {
+          "name": "allowed_domains",
+          "optional": false,
+          "type": 67
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        229
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "npm",
+          "optional": false,
+          "type": 67
+        },
+        {
+          "name": "python",
+          "optional": false,
+          "type": 67
+        },
+        {
+          "name": "system",
+          "optional": false,
+          "type": 67
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        231
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 232
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 112
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        234
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 235
+    },
+    {
+      "kind": "union",
+      "variants": [
+        236,
+        237
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 133
+        },
+        {
+          "name": "version",
+          "optional": false,
+          "type": 184
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 112
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "capability_directories",
+          "optional": false,
+          "type": 67
+        },
+        {
+          "name": "environment_id",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 137
+        },
+        {
+          "name": "workspace_directory",
+          "optional": false,
+          "type": 2
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 240
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 241
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 147
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 149
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 242
+    },
+    {
+      "kind": "union",
+      "variants": [
+        243,
+        244
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 144
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 146
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "instructions",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 154
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 24
+        },
+        {
+          "name": "created_by",
+          "optional": false,
+          "type": 166
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 248
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 172
+        },
+        {
+          "name": "run_at",
+          "optional": false,
+          "type": 24
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 249
+        },
+        {
+          "name": "target",
+          "optional": false,
+          "type": 176
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 159
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 2
+    },
+    {
+      "kind": "union",
+      "variants": [
+        174,
+        175,
+        250
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "completed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 22
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 252
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.automation.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 19
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 23
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 254
+        },
+        {
+          "name": "session_id",
+          "optional": true,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        255,
+        256
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "asc"
+    },
+    {
+      "kind": "literal",
+      "value": "desc"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "automation_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 24
+        },
+        {
+          "name": "error",
+          "optional": false,
+          "type": 258
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 260
+        },
+        {
+          "name": "scheduled_at",
+          "optional": false,
+          "type": 186
+        },
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 184
+        },
+        {
+          "name": "skip_reason",
+          "optional": false,
+          "type": 261
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 263
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 268
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        259
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "message",
+          "optional": false,
+          "type": 2
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "agent.automation.invocation"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        10,
+        262
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "pending_delivery"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        264,
+        266
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 265
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "manual"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "automation",
+          "optional": false,
+          "type": 164
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 267
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "automation"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        250,
+        269,
+        270,
+        271
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "queued"
+    },
+    {
+      "kind": "literal",
+      "value": "failed"
+    },
+    {
+      "kind": "literal",
+      "value": "skipped"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 19
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 23
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 254
+        }
+      ],
+      "additional": null
+    }
+  ],
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/beta/agents/agents.ts": "03d26f89be2ce0137ef1326e8e196138c8a5a882af3c845cb05d6f6303dc19a2",
+    "src/resources/beta/agents/automations/automations.ts": "bbb27af99899c3bd4d289ec6b6f4b41762029e0668ffbbea61a362097fc6b188",
+    "src/resources/beta/agents/automations/invocations.ts": "5dd1cdfde23803e372609af76f768ba4c25422baf88fa8559bd4a255d4e6a125"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}

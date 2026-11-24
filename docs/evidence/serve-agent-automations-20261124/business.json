@@ -1,0 +1,77 @@
+{
+  "status": "PASS_NATIVE_TLS_OFFICIAL_SDK",
+  "sdk": "7.47.0",
+  "binary": "206f32f8952b5df71de93ab1004311fe27d2ba9e1c1bdbe6346379bc948e2770",
+  "ingress": "f06eb62270ee8efa305cda7aa7ac6b60780ba790efdb1a545c6bf18861b9a06a",
+  "elapsed_seconds": 41.132,
+  "model_starts": 1,
+  "nvml_queries": 41,
+  "unchanged_default": true,
+  "manual": {
+    "revision": 468,
+    "answer": "468",
+    "session": "agent_session_fe02cbfe36c5bdf62bdfda98c2714789",
+    "turn": "turn_a67273cd985939b7e271987744e73e63",
+    "automation_status_at_invocation": "paused"
+  },
+  "scheduled": {
+    "answer": "469",
+    "session": "agent_session_fe02cbfe36c5bdf62bdfda98c2714789",
+    "turn": "turn_fbf69164594bdfbb3f9a9b45baf1d5c6",
+    "requested_epoch": 1795518965,
+    "observed_epoch": 1795518965,
+    "automation_status": "completed"
+  },
+  "cross_client": 404,
+  "wrong_parent": 404,
+  "independent_chat": "42",
+  "dual_validated_wire_resources": 13,
+  "release": {
+    "revision": 468,
+    "published_matching_success": 179,
+    "candidate_matching_success": 189,
+    "required": 231
+  },
+  "preceding_attempts": [
+    {
+      "run": "01",
+      "result": "HTTP 415 for SDK pause",
+      "starts": 1
+    },
+    {
+      "run": "02",
+      "result": "ENV_ABORT concurrent CPU host executable",
+      "starts": 0
+    }
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-business-03/plan.json",
+      "sha256": "2d8fde68782bd7add36007ffc391735566f1b526cda6ace86b0fd5f6810baf3f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-business-03/result.json",
+      "sha256": "cafe9adcb473e0e76fb7214d9b3125ce60421ec9bc0f8e69ee1672aae382dcc2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-business-03/create/sdk-result.json",
+      "sha256": "1a0d301bb82a0b762e5f309bfbc92ade3c5f40454d291115c1510da9ce6271a7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-business-03/create/run-wire.json",
+      "sha256": "65df0178b0f92e25dd196b16341f1f3430de42ae93e2054577abd2718c38f1a9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-business-lease-03/exit.json",
+      "sha256": "34ee86d19b3980a77c7085057a413193b5bc59127856ed118df94cdfbc64af5c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-business-lease-03/nvml-queries.jsonl",
+      "sha256": "532235efd3ca5c67c7c1d40618ef4b4210c56ea59c3ead3ea5fb356a47fea677"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/real-schema.json",
+      "sha256": "3038fe252c4c7fd89441524f69aa5f5ff61f91c868ddc7933524fc23cec4e041"
+    }
+  ]
+}

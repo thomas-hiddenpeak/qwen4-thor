@@ -1,3 +1,4 @@
+#include "../src/server/agent_definition_cipher.h"
 #include "q4t/server/state_cipher.h"
 
 #include <sys/stat.h>
@@ -308,3 +309,31 @@ Q4T_TEST(state_cipher_unavailable_dependency_leaves_plain_responses_usable) {
   return true;
 }
 #endif
+
+Q4T_TEST(automation_target_cipher_keeps_legacy_templates_and_binds_purpose) {
+  Fixture f;
+  ObjectStore store(f.options);
+  StateCipher cipher(store);
+  const auto shared_id = "opaque_resource_1";
+  const auto source = R"({"secret":"private template value"})";
+  const auto old_binding = StateCipherBinding{
+      "q4t.agents", "environment", "template_definition", shared_id};
+  std::string legacy;
+  Q4T_CHECK(Ok(cipher.Seal(source, old_binding, Access(), &legacy)));
+  Json sealed, decoded;
+  sealed.type = Json::Type::kString;
+  sealed.str = legacy;
+  using namespace q4t::server::agent_detail;
+  const auto historical = DefinitionKind::kEnvironmentTemplate;
+  const auto target = DefinitionKind::kAutomationTarget;
+  Q4T_CHECK(Ok(OpenDefinition(store, Access(), historical, shared_id, sealed, &decoded)));
+  Q4T_CHECK(decoded.GetString("secret") == "private template value");
+  Q4T_CHECK(!OpenDefinition(store, Access(), target, shared_id, sealed, &decoded).ok());
+  Q4T_CHECK(Ok(SealDefinition(store, Access(), target, shared_id, Parse(source), &sealed)));
+  Q4T_CHECK(!OpenDefinition(store, Access("client:b"), target, shared_id, sealed, &decoded).ok());
+  Q4T_CHECK(!OpenDefinition(store, Access(), target, "opaque_resource_2", sealed, &decoded).ok());
+  Q4T_CHECK(!OpenDefinition(store, Access(), historical, shared_id, sealed, &decoded).ok());
+  Q4T_CHECK(Ok(OpenDefinition(store, Access(), target, shared_id, sealed, &decoded)));
+  Q4T_CHECK(decoded.GetString("secret") == "private template value");
+  return true;
+}

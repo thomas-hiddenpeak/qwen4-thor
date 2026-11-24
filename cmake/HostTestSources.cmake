@@ -466,6 +466,19 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/vault_oauth.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/vault_credential.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_cron.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_clock.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_dispatcher.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_delivery.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_queue.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_list.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_registry.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_definition_cipher.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_target.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_agent_automation_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_agent_cron_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_automation_route_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_turn.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_subagent.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_traces.cpp

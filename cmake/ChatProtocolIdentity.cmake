@@ -786,6 +786,23 @@ set(protocol_inputs
   src/server/vault_oauth.cpp
   src/server/vault_credential.cpp
   src/server/agent_session.cpp
+  src/server/agent_cron.cpp
+  src/server/agent_automation_clock.cpp
+  src/server/agent_automation_http.cpp
+  src/server/agent_automation_dispatcher.cpp
+  src/server/agent_automation_dispatcher.h
+  src/server/agent_automation_delivery.cpp
+  src/server/agent_automation_queue.cpp
+  src/server/agent_automation_list.cpp
+  src/server/agent_automation_registry.cpp
+  src/server/agent_definition_cipher.cpp
+  src/server/agent_definition_cipher.h
+  src/server/agent_automation_target.cpp
+  src/server/agent_automation_internal.h
+  include/q4t/server/agent_cron.h
+  include/q4t/server/agent_automation.h
+  src/server/contracts/openai_automation_types_v1.json
+  cmake/automation_types.h.in
   src/server/agent_session_turn.cpp
   src/server/agent_subagent.cpp
   src/server/agent_session_traces.cpp
@@ -1128,6 +1145,15 @@ if(NOT assistant_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/assistant_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/assistant_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_automation_types_v1.json"
+  Q4T_AUTOMATION_TYPES)
+string(FIND "${Q4T_AUTOMATION_TYPES}" ")q4t_types\"" automation_delimiter)
+if(NOT automation_delimiter EQUAL -1)
+  message(FATAL_ERROR "Agent automation type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/automation_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/automation_types_data.h" @ONLY)
 
 file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_agent_registration_types_v1.json"
   Q4T_AGENT_REGISTRATION_TYPES)

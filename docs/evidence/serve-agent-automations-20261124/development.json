@@ -1,0 +1,102 @@
+{
+  "schema_nodes": 273,
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "schemas_sha256": "a686f2eb4ef0c58b65d831a80d3c2e1c4691094fdf2889013c490683c41fc326",
+  "fixtures": 7,
+  "validators": 2,
+  "status": "CPU_PASS",
+  "host_checks": [
+    "agent_cron_fields_ranges_names_and_lists",
+    "agent_cron_day_rules_and_large_steps",
+    "agent_cron_local_clock_gap_and_fold",
+    "agent_cron_rejects_invalid_fields",
+    "agent_automation_routes_preserve_nested_ownership_and_methods",
+    "agent_automation_actions_are_mutations",
+    "agent_automation_schedule_is_atomic_across_restart_and_skips_pending",
+    "agent_automation_once_pause_update_and_complete",
+    "agent_automation_delivery_waits_for_capacity_and_closes_missing_target",
+    "automation_target_cipher_keeps_legacy_templates_and_binds_purpose",
+    "automation_retention_tracks_target_dependencies_and_orphaned_history",
+    "environment_template_max_inline_file_survives_reopen_and_rejects_mixed_parts",
+    "environment_template_seals_private_inputs_and_preserves_patch_semantics",
+    "agent_automation_hosted_projection_keeps_private_target_sealed"
+  ],
+  "publication_revision": 468,
+  "published_in_release": false,
+  "remaining": [
+    "Managed model/gateway restart and packaged profile transfer",
+    "Model-created automation tools and remaining master-plan tasks"
+  ],
+  "admission_and_persistence": [
+    "Caller-scoped CAS claims, one-time and periodic scheduling, paused manual delivery, duplicate suppression after reopening the store, quota backoff, and failure after deleting the target.",
+    "Private environment data and the previous template cipher format exercised against the real object worker.",
+    "Orphan collection preserves queued deliveries and checks the automation owner and object kind."
+  ],
+  "gateway": [
+    "Native ingress: selector, URI, identity and invalid nested IDs",
+    "Optional nginx: same scoped request and rejection checks"
+  ],
+  "candidate_methods": {
+    "declared_matching_success": 189,
+    "required": 231,
+    "released_matching_success": 179
+  },
+  "reviewed": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 211,
+    "native_routes": 347,
+    "reviewed_source_anchors": 1314,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "prior_failures": [
+    "The initial real SDK test created an automation but pause returned HTTP 415 on a bodyless POST; changed the HTTP media check only for the three no-argument actions.",
+    "The second lease identified the concurrent CPU host-test executable as competing before the first model start. That attempt performed no model inference."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/required-04.txt",
+      "sha256": "eb54536af5a8ef053180cb3a3c9298dc4ab7ebdd55df93e42533842111716882"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/host-04.log",
+      "sha256": "da8eac4684e481f1ada9b9487227f008f039c96dfe158c01ea488a565918fc7d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/nginx-01.log",
+      "sha256": "e8658e63543e52b4e0f467fd75ae5e5e933ec55d9441ceec184ee400ad1fc89a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/ingress-01.log",
+      "sha256": "f8c7905a3ebef1dec8a0235d5bb595e33c62d4c521ece53eaa2e285b75af0053"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/inventory-03.json",
+      "sha256": "9fde12ea1b82aa44d7fc8886b0e2c1105735ff353ee5c89a69ee9acac002cd1a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/methods.json",
+      "sha256": "1e75dc0737580ea326847d8ccd985991756ac7a45826b6329842547db446100a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/schema-preflight.json",
+      "sha256": "c21c082578d456c60e9f017dc48b134b22cced58f0588f1f2d9b073fd216fd7f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-business-01/create/sdk.stderr",
+      "sha256": "afc9ceeb62f5155f496967dc20fb3abf737b2ddfcb24b053c4473b9328cc8dc3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-business-01/result.json",
+      "sha256": "21962070743635e703ef7920de18250164a613583588e47a1ad4367f3c701780"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-business-lease-02/exit.json",
+      "sha256": "65c08e51aa0437347b776b536da9d3a99547b74ea2c6512b477334f05f2d17f8"
+    }
+  ]
+}

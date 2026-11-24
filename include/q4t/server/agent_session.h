@@ -49,7 +49,8 @@ class ResponsesExecution;
 // Prepare native inference and bind its first queue receipt to the session.
 ObjectReply PrepareAgentSessionExecution(
     ObjectStore& objects, const io::Json& request, const ChatPlanConfig& config,
-    const StateAccess& access, int64_t created, ResponsesExecution& run);
+    const StateAccess& access, int64_t created, ResponsesExecution& run,
+    std::optional<ObjectRequest> delivery = {});
 struct AgentSessionView {
   io::Json session;
   io::Json turn;
