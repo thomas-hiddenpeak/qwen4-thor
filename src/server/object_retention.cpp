@@ -140,7 +140,11 @@ class Inspector {
                           payloads))
           value.uncertain = true;
     } else if (!StoredString(sealed, {"sealed_definition"}, payloads)) {
-      value.uncertain = true;
+      const bool discarded = !is_template && attached && status == "expired" &&
+                             !sealed && data.GetInt("expired_at") > 0 &&
+                             !data.Has("input_snapshots") && payloads.empty() &&
+                             files->array.empty() && skills->array.empty();
+      if (!discarded) value.uncertain = true;
     }
     for (const auto& file : files->array) {
       const auto type = file.GetString("type");
@@ -167,9 +171,11 @@ class Inspector {
     if (attached) {
       if (data.Has("bound_session") ||
           attached->array.size() > environment_detail::kMaxAttachedSessions ||
-          ((status == "connected") != !attached->array.empty()) ||
+          (status == "connected" && attached->array.empty()) ||
+          ((status == "ready" || status == "disconnected") &&
+           !attached->array.empty()) ||
           (status != "connected" && status != "disconnected" &&
-           status != "expired" && status != "ready"))
+           status != "expired" && status != "ready" && status != "suspended"))
         value.uncertain = true;
       std::unordered_set<std::string_view> unique;
       for (const auto& id : attached->array) {

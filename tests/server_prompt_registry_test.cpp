@@ -1,3 +1,4 @@
+#include "q4t/server/object_retention.h"
 #include "../src/server/assistant_runs_internal.h"
 #include "../src/server/responses_json.h"
 #include "../src/server/agent_subagent_internal.h"
@@ -608,6 +609,247 @@ Q4T_TEST(
     Q4T_CHECK(files && files->array.size() == 1 &&
               files->array[0].GetString("path") == "/workspace/shared.txt");
   }
+  return true;
+}
+
+namespace {
+ObjectRequest WorkspaceRecord(ObjectStore& db, const std::string& id,
+                              const StateAccess& access) {
+  ObjectRequest change;
+  change.kind = ObjectKind::kEnvironment;
+  change.id = id;
+  change.scope = access.scope;
+  auto read = db.Execute(change, access.deadline);
+  if (!read.ok()) throw std::runtime_error("Missing fixture workspace");
+  change.operation = ObjectOperation::kPut;
+  change.data = *read.value.Find("data");
+  change.expected_revision = read.value.GetInt("revision");
+  change.expires_at = read.value.GetInt("expires_at");
+  return change;
+}
+
+ObjectReply SeedAttachedWorkspace(ObjectStore& db, const StateAccess& access,
+                                  const std::string& model, std::string* env) {
+  const std::string path = "/v1/agents/environments";
+  auto prepared = HandleHostedEnvironment(
+      db, "POST", path,
+      R"({"environment":{"type":"openai_hosted","files":[{"type":"inline","path":"/workspace/outputs/release.txt","data":"NDcyCg=="}]}})",
+      access, "");
+  if (!prepared.ok()) return prepared;
+  *env = prepared.value.GetString("id");
+  const auto request =
+      Parse("{\"agent\":{\"model\":\"" + model +
+            "\",\"reasoning\":{\"effort\":\"none\"}},\"environment\":{\"type\":"
+            "\"openai_hosted\",\"environment_id\":\"" +
+            *env + "\"}}");
+  auto config = Config();
+  config.model = model;
+  ResponsesExecution run(db);
+  return PrepareAgentSessionExecution(db, request, config, access,
+                                      std::time(nullptr), run);
+}
+}  // namespace
+
+Q4T_TEST(hosted_workspace_checkpoint_preserves_files_and_expires_content) {
+  Fixture f;
+  const auto access = Access();
+  const std::string path = "/v1/agents/environments";
+  std::string env, sid;
+  {
+    ObjectStore db(f.options);
+    auto session = SeedAttachedWorkspace(db, access, "cpu", &env);
+    Q4T_CHECK(Ok(session));
+    sid = session.value.GetString("id");
+    auto old = WorkspaceRecord(db, env, access);
+    Set(&old.data, "last_activity_at",
+        Parse(std::to_string(std::time(nullptr) - 1210)));
+    Q4T_CHECK(Ok(db.Execute(old, access.deadline)));
+    auto view =
+        HandleHostedEnvironment(db, "GET", path + "/" + env, "", access, "");
+    Q4T_CHECK(Ok(view) && view.value.GetString("status") == "suspended");
+    auto checkpoint = WorkspaceRecord(db, env, access);
+    Q4T_CHECK(checkpoint.data.GetInt("checkpoint_until") -
+                  checkpoint.data.GetInt("suspended_at") ==
+              7 * 24 * 3600);
+  }
+  ObjectStore db(f.options);
+  auto read = HandleHostedEnvironment(db, "GET", path + "/" + env + "/files",
+                                      "", access, "");
+  Q4T_CHECK(Ok(read) && read.value.GetArray("data")->array.size() == 1);
+  auto awake = WorkspaceRecord(db, env, access);
+  Q4T_CHECK(awake.data.Find("resource")->GetString("status") == "connected" &&
+            !awake.data.Has("checkpoint_until"));
+  Set(&awake.data, "last_activity_at",
+      Parse(std::to_string(std::time(nullptr) - 1220)));
+  Q4T_CHECK(Ok(db.Execute(awake, access.deadline)));
+  auto checkpoint = WorkspaceRecord(db, env, access);
+  Q4T_CHECK(checkpoint.data.Find("resource")->GetString("status") ==
+            "suspended");
+  Set(&checkpoint.data, "checkpoint_until",
+      Parse(std::to_string(std::time(nullptr) - 1)));
+  Q4T_CHECK(Ok(db.Execute(checkpoint, access.deadline)));
+  auto expired = WorkspaceRecord(db, env, access);
+  Q4T_CHECK(expired.data.Find("resource")->GetString("status") == "expired" &&
+            !expired.data.Has("sealed_definition") &&
+            !expired.data.Has("input_snapshots") &&
+            !expired.data.Has("_q4t_application_payload"));
+  Q4T_CHECK(!InspectObjectRetention("environment", expired.data).uncertain);
+  auto barred = HandleHostedEnvironment(db, "GET", path + "/" + env + "/files",
+                                        "", access, "");
+  Q4T_CHECK(barred.http_status == 409);
+  AgentSessionView history;
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(db, sid, "", access, &history)) &&
+            history.session.GetString("id") == sid);
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_busy_and_waiting_turns_hold_checkpoint) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto access = Access();
+  const std::string path = "/v1/agents/environments";
+  auto warm = HandleHostedEnvironment(
+      db, "POST", path, R"({"environment":{"type":"openai_hosted"}})", access,
+      "");
+  Q4T_CHECK(Ok(warm));
+  const auto env = warm.value.GetString("id");
+  auto request = Parse(R"({"agent":{"model":"cpu","tools":[{"type":"function",
+    "name":"lookup","description":"Read a record","parameters":{"type":"object",
+    "properties":{}}}]},"environment":{"type":"openai_hosted"},
+    "input":"Read the record."})");
+  auto binding = *request.Find("environment");
+  Set(&binding, "environment_id", *warm.value.Find("id"));
+  Set(&request, "environment", std::move(binding));
+  auto config = Config();
+  config.structured = true;
+  ResponsesExecution run(db);
+  auto session = PrepareAgentSessionExecution(db, request, config, access,
+                                              std::time(nullptr), run);
+  Q4T_CHECK(Ok(session));
+  run.BindBackgroundControl(
+      std::make_shared<RequestControl>(run.Id(), "", Clock::now() + 5s));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
+  const auto past = Parse(std::to_string(std::time(nullptr) - 1250));
+  auto stale = [&] {
+    auto mutation = WorkspaceRecord(db, env, access);
+    Set(&mutation.data, "last_activity_at", past);
+    if (!Ok(db.Execute(mutation, access.deadline))) return std::string{};
+    auto view =
+        HandleHostedEnvironment(db, "GET", path + "/" + env, "", access, "");
+    return view.value.GetString("status");
+  };
+  Q4T_CHECK(stale() == "connected");
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call = {0, "call_record", "lookup", "{}"};
+  Q4T_CHECK(run.Append(delta, "null", &wire));
+  Q4T_CHECK(Ok(run.Finish(false, 1, {9, 0, 8, 0}, std::time(nullptr), &wire)));
+  // A pending call stays live beyond the idle duration even when inference
+  // finished before that window. Cancel is new activity by the client.
+  ObjectRequest response;
+  response.kind = ObjectKind::kResponse;
+  response.id = run.Id();
+  response.scope = access.scope;
+  auto record = db.Execute(response, access.deadline);
+  Q4T_CHECK(Ok(record));
+  response.data = *record.value.Find("data");
+  response.operation = ObjectOperation::kPut;
+  response.expected_revision = record.value.GetInt("revision");
+  response.expires_at = record.value.GetInt("expires_at");
+  Set(&response.data, "agent_turn_finished_at", past);
+  Q4T_CHECK(Ok(db.Execute(response, access.deadline)) &&
+            stale() == "connected");
+  auto cancelled = CancelAgentSessionTurn(
+      db, nullptr, session.value.GetString("id"),
+      Parse(R"({"events":[{"type":"agent.session.input.cancel"}]})"),
+      "cancel-record", access);
+  Q4T_CHECK(Ok(cancelled) && stale() == "connected");
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_detached_checkpoint_leaves_bounded_expiry_receipt) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto access = Access();
+  std::string env;
+  auto session = SeedAttachedWorkspace(db, access, "cpu", &env);
+  Q4T_CHECK(Ok(session));
+  ObjectRequest owner;
+  owner.kind = ObjectKind::kAgentSession;
+  owner.id = session.value.GetString("id");
+  owner.scope = access.scope;
+  auto record = db.Execute(owner, access.deadline);
+  Q4T_CHECK(Ok(record));
+  owner.operation = ObjectOperation::kErase;
+  owner.expected_revision = record.value.GetInt("revision");
+  auto disconnected = WorkspaceRecord(db, env, access);
+  auto resource = *disconnected.data.Find("resource");
+  Set(&resource, "status", Parse(R"("disconnected")"));
+  Set(&disconnected.data, "resource", std::move(resource));
+  Set(&disconnected.data, "attached_sessions", Parse("[]"));
+  Set(&disconnected.data, "last_activity_at",
+      Parse(std::to_string(std::time(nullptr) - 1220)));
+  const ObjectRequest detach[] = {std::move(owner), std::move(disconnected)};
+  Q4T_CHECK(Ok(db.ExecuteBatch(detach, access.deadline)));
+  auto checkpoint = WorkspaceRecord(db, env, access);
+  Q4T_CHECK(checkpoint.data.Find("resource")->GetString("status") ==
+            "suspended");
+  Set(&checkpoint.data, "checkpoint_until",
+      Parse(std::to_string(std::time(nullptr) - 1)));
+  Q4T_CHECK(Ok(db.Execute(checkpoint, access.deadline)));
+  auto receipt = WorkspaceRecord(db, env, access);
+  Q4T_CHECK(receipt.data.Find("resource")->GetString("status") == "expired" &&
+            receipt.expires_at > std::time(nullptr) &&
+            receipt.expires_at <= std::time(nullptr) + 86400 &&
+            !receipt.data.Has("sealed_definition"));
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_corrupt_checkpoint_cannot_reactivate) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto access = Access();
+  const std::string root = "/v1/agents/environments/";
+  std::string env;
+  Q4T_CHECK(Ok(SeedAttachedWorkspace(db, access, "cpu", &env)));
+  auto aged = WorkspaceRecord(db, env, access);
+  Set(&aged.data, "last_activity_at",
+      Parse(std::to_string(std::time(nullptr) - 1220)));
+  Q4T_CHECK(Ok(db.Execute(aged, access.deadline)));
+  auto broken = WorkspaceRecord(db, env, access);
+  Q4T_CHECK(broken.data.Find("resource")->GetString("status") == "suspended");
+  Set(&broken.data, "sealed_definition", Parse(R"("damaged-checkpoint")"));
+  Q4T_CHECK(Ok(db.Execute(broken, access.deadline)));
+  auto files =
+      HandleHostedEnvironment(db, "GET", root + env + "/files", "", access, "");
+  Q4T_CHECK(!files.ok());
+  auto after = WorkspaceRecord(db, env, access);
+  Q4T_CHECK(after.expected_revision == broken.expected_revision + 1 &&
+            after.data.Find("resource")->GetString("status") == "suspended");
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_recovery_fixture_uses_persisted_activity_clock) {
+  // The recovery client opens this actual, authenticated store under its own
+  // lease. Only its preceding activity time is advanced to bound GPU use.
+  Fixture f;
+  const auto access = Access("client:alpha");
+  ObjectStore db(f.options);
+  std::string env;
+  auto session = SeedAttachedWorkspace(db, access, "qwen3.8-flash-next", &env);
+  Q4T_CHECK(Ok(session));
+  auto change = WorkspaceRecord(db, env, access);
+  const auto now = std::time(nullptr);
+  Set(&change.data, "last_activity_at", Parse(std::to_string(now - 1200 + 90)));
+  Q4T_CHECK(Ok(db.Execute(change, access.deadline)));
+  const auto file =
+      std::filesystem::path(f.options.directory).parent_path() / "handoff.json";
+  std::ofstream out(file);
+  out << "{\"tenant\":\"alpha\",\"environment\":\"" << env
+      << "\",\"session\":\"" << session.value.GetString("id")
+      << "\",\"idle_deadline\":" << now + 90 << "}\n";
+  Q4T_CHECK(out.good());
   return true;
 }
 

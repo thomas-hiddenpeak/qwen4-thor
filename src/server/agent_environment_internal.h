@@ -14,6 +14,10 @@ ObjectReply PrepareAttachment(ObjectStore& objects, const StateAccess& access,
                               const io::Json& vaults, ObjectRequest* write,
                               std::shared_ptr<WorkspaceCopies>* copies);
 // Resolve shared files from the single workspace record for current views.
+ObjectReply PrepareWorkspaceActivity(ObjectStore& objects,
+                                     const StateAccess& access,
+                                     const io::Json& stored,
+                                     ObjectRequest* change);
 ObjectReply RefreshWorkspaceFiles(ObjectStore& objects,
                                   const StateAccess& access,
                                   const io::Json& record, io::Json* session);

@@ -112,21 +112,32 @@ ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
                            const Json& input, const Json& stored,
                            const Json& resource) {
   const auto id = resource.GetString("id");
-  if (resource.GetString("status") != "connected")
-    return Error(409, "environment_not_connected",
-                 "Environment has no connected session");
-  if (method == "GET") {
-    const auto split = target.find('?');
-    auto parsed = ParseApplicationQuery(
-        split == target.npos ? "" : target.substr(split + 1));
-    return parsed.ok()
-               ? FilesPage(id, *resource.GetArray("files"), parsed.value)
-               : parsed;
-  }
   const auto* record = stored.Find("data");
   if (!record)
     return Error(503, "environment_record_invalid", "Missing workspace");
   const bool shared = record->Has("attached_sessions");
+  ObjectRequest activity;
+  if (shared) {
+    auto active = PrepareWorkspaceActivity(objects, access, stored, &activity);
+    if (!active.ok()) return active;
+  } else if (resource.GetString("status") != "connected") {
+    return Error(409, "environment_not_connected",
+                 "Environment has no connected session");
+  }
+  if (method == "GET") {
+    const auto split = target.find('?');
+    auto parsed = ParseApplicationQuery(
+        split == target.npos ? "" : target.substr(split + 1));
+    if (!parsed.ok()) return parsed;
+    auto page = FilesPage(id, *resource.GetArray("files"), parsed.value);
+    if (!page.ok() || !shared) return page;
+    if (resource.GetString("status") == "connected" &&
+        activity.data.GetInt("last_activity_at") ==
+            record->GetInt("last_activity_at"))
+      return page;
+    auto touched = objects.Execute(activity, access.deadline, access.cancelled);
+    return touched.ok() ? page : touched;
+  }
   ObjectReply session;
   AgentSessionView state;
   const auto owner = record->GetString("bound_session");
@@ -158,7 +169,7 @@ ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
   if (!shape) return Bad(shape.message(), error.param);
   auto projection = PublicTemplate(single, id, 0, 0);
   if (!projection.ok()) return projection;
-  auto data = *stored.Find("data");
+  auto data = shared ? std::move(activity.data) : *stored.Find("data");
   const auto* sealed = data.Find("sealed_definition");
   if (!sealed)
     return Error(503, "environment_record_invalid",
@@ -188,6 +199,7 @@ ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
   update.id = id;
   update.expected_revision = stored.GetInt("revision");
   update.expires_at = stored.GetInt("expires_at");
+  update.mutate_before = activity.mutate_before;
   update.data = std::move(data);
   ObjectReply result;
   if (shared) {

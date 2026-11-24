@@ -1,6 +1,8 @@
 #include "q4t/server/object_store.h"
 #include "webhook_events.h"
 #include "agent_session_internal.h"
+#include "agent_environment_bindings.h"
+#include "agent_automation_tool.h"
 #include "q4t/server/batch_checkpoint.h"
 #include "q4t/server/batch_quota.h"
 #include "q4t/server/batch_state.h"
@@ -169,7 +171,10 @@ struct Metadata {
   uint32_t terminal_event = 0;
   bool agent_started = false;
   bool webhook_deferred = false;
-  int64_t warm_wake = 0;
+  int64_t environment_wake = 0, agent_finished = 0;
+  std::string last_response{};
+  bool waiting_tool = false;
+  int64_t cancelled_at = 0;
 };
 void IndexWebhookState(Metadata* metadata, const Json& data) {
   if (metadata->kind == "webhook_endpoint") {
@@ -180,10 +185,40 @@ void IndexWebhookState(Metadata* metadata, const Json& data) {
     metadata->terminal_event = webhook_detail::EventBit(
         webhook_detail::Transition(metadata->kind, data, false));
     metadata->webhook_deferred = data.Has("q4t_webhook_deferred");
-    if (metadata->kind == "environment" &&
-        webhook_detail::Transition("environment", data, true) ==
-            "agent.environment.ready")
-      metadata->warm_wake = data.GetInt("warm_until");
+    if (metadata->kind == "environment") {
+      const auto* resource = data.Find("resource");
+      if (!resource || resource->GetString("type") != "openai_hosted") return;
+      const auto status = resource->GetString("status");
+      if (status == "ready") {
+        metadata->environment_wake = data.GetInt("warm_until");
+      } else if (data.GetArray("attached_sessions")) {
+        const auto last = data.GetInt("last_activity_at");
+        if ((status == "connected" || status == "disconnected") && last > 0)
+          metadata->environment_wake =
+              last + environment_detail::kEnvironmentIdleSeconds;
+        if (status == "suspended")
+          metadata->environment_wake = data.GetInt("checkpoint_until");
+      }
+    } else if (metadata->kind == "agent_session") {
+      const auto* turns = data.GetArray("turns");
+      if (turns && !turns->array.empty()) {
+        const auto& last = turns->array.back();
+        metadata->last_response = last.GetString("response_id");
+        metadata->cancelled_at = last.GetInt("cancel_requested_at");
+      }
+    } else if (metadata->kind == "response" &&
+               !data.GetString("agent_session_id").empty()) {
+      const auto* response = data.Find("response");
+      const auto* output = response ? response->GetArray("output") : nullptr;
+      metadata->agent_finished = data.GetInt("agent_turn_finished_at");
+      metadata->waiting_tool =
+          output && response->GetString("status") == "completed" &&
+          std::ranges::any_of(output->array, [](const Json& item) {
+            return item.GetString("type") == "function_call" &&
+                   item.GetString("status") == "completed" &&
+                   !automation_detail::IsToolItem(item);
+          });
+    }
   }
 }
 struct Usage {
@@ -297,10 +332,34 @@ class DiskStore {
     return {};
   }
 
+  // Consult bounded in-memory indices. Reading 128 full session histories
+  // from storage at one deadline would delay unrelated client requests.
+  int64_t IdleDeadline(const std::string& owner, const Json& data,
+                       int64_t now) {
+    const auto* members = data.GetArray("attached_sessions");
+    if (!members ||
+        members->array.size() > environment_detail::kMaxAttachedSessions)
+      return now + 30;
+    auto last = data.GetInt("last_activity_at");
+    for (const auto& id : members->array) {
+      const auto s =
+          records_.find(owner + ".agent_session." + id.str + ".json");
+      if (s == records_.end()) return now + 30;
+      if (s->second.last_response.empty()) continue;
+      const auto r = records_.find(owner + ".response." +
+                                   s->second.last_response + ".json");
+      if (r == records_.end() || !r->second.terminal_event ||
+          (r->second.waiting_tool && !s->second.cancelled_at))
+        return now + 30;
+      last = std::max({last, r->second.agent_finished, s->second.cancelled_at});
+    }
+    return last + environment_detail::kEnvironmentIdleSeconds;
+  }
+
   int WaitForRequest() {
-    if (warm_environments_.empty()) return 1;
+    if (environment_timers_.empty()) return 1;
     const auto now = Now();
-    const auto [due, name] = *warm_environments_.begin();
+    const auto [due, name] = *environment_timers_.begin();
     if (due > now) {
       // Re-evaluate wall time periodically if the system clock is adjusted.
       return detail::WaitWorkerInput(
@@ -308,26 +367,61 @@ class DiskStore {
     }
     const auto it = records_.find(name);
     if (it == records_.end()) return -1;
-    const auto retry = [&] {
-      warm_environments_.erase({due, name});
-      it->second.warm_wake = now + 30;
-      warm_environments_.emplace(it->second.warm_wake, name);
-      ++environment_expiry_retries_;
+    const auto reschedule = [&](int64_t when) {
+      environment_timers_.erase({due, name});
+      it->second.environment_wake = when;
+      environment_timers_.emplace(when, name);
     };
     Json stored;
     if (!ReadKnown(name, it->second, &stored)) {
-      retry();
+      ++environment_expiry_retries_;
+      reschedule(now + 30);
       return detail::WaitWorkerInput(0);
     }
     auto& data = Field(stored, "data");
-    Set(&Field(data, "resource"), "status", String("expired"));
+    auto& resource = Field(data, "resource");
+    const auto status = resource.GetString("status");
+    auto expires = it->second.expires;
+    if (status == "connected" || status == "disconnected") {
+      const auto idle = IdleDeadline(it->second.owner, data, now);
+      if (idle > now) {
+        reschedule(idle);
+        return detail::WaitWorkerInput(0);
+      }
+      // The workspace is already durable and its encrypted definition is
+      // authenticated under its owner and environment ID on resume.
+      Set(&resource, "status", String("suspended"));
+      Set(&data, "suspended_at", Number(idle));
+      Set(&data, "checkpoint_until",
+          Number(idle + environment_detail::kCheckpointSeconds));
+    } else if (status == "suspended") {
+      // Rebuild the public receipt with no checkpoint content or private
+      // snapshot references. Normal retention can reclaim unreferenced chunks.
+      auto receipt = Object({{"id", String(it->second.id)},
+                             {"object", String("agent.environment")},
+                             {"type", String("openai_hosted")},
+                             {"status", String("expired")},
+                             {"files", Array()},
+                             {"skills", Array()},
+                             {"plugins", Array()}});
+      const auto* members = data.GetArray("attached_sessions");
+      if (members && members->array.empty())
+        expires = now + std::min<int64_t>(86400, options_.max_ttl_seconds);
+      data = Object({{"resource", std::move(receipt)},
+                     {"warm_until", Number(data.GetInt("warm_until"))},
+                     {"expired_at", Number(data.GetInt("checkpoint_until"))},
+                     {"vault_ids", Array()},
+                     {"attached_sessions", Field(data, "attached_sessions")}});
+    } else {
+      Set(&resource, "status", String("expired"));
+    }
     auto mutation = Object({{"operation", String("put")},
                             {"owner", String(it->second.owner)},
                             {"id", String(it->second.id)},
                             {"kind", String("environment")},
                             {"revision", Number(it->second.revision)},
                             {"ttl", Number(0)},
-                            {"expires_at", Number(it->second.expires)},
+                            {"expires_at", Number(expires)},
                             {"data", std::move(data)}});
     auto result =
         Batch(Object({{"mutations", Array({std::move(mutation)})}}), true);
@@ -335,7 +429,8 @@ class DiskStore {
       if (result.commit_unknown) return -1;
       // A source at its absolute byte limit can still report logical expiry
       // through GET. Let other tenants proceed and retry this commit later.
-      retry();
+      ++environment_expiry_retries_;
+      reschedule(now + 30);
     }
     // One expiry per iteration keeps client requests responsive under backlog.
     return detail::WaitWorkerInput(0);
@@ -907,10 +1002,20 @@ class DiskStore {
       ++*added;
     };
     const auto type = webhook_detail::Transition(kind, *data, creating);
-    if (!type.empty() && (creating || !prior->second.terminal_event)) {
+    const bool transitioned =
+        creating || (kind == "environment" ? prior->second.terminal_event !=
+                                                 webhook_detail::EventBit(type)
+                                           : !prior->second.terminal_event);
+    if (!type.empty() && transitioned) {
+      const bool suspended = type == "agent.environment.suspended";
       const auto occurred =
-          type == "agent.environment.expired" ? data->GetInt("warm_until") : 0;
-      append(Notice(owner, id, type,
+          suspended ? data->GetInt("suspended_at")
+          : type == "agent.environment.expired"
+              ? data->GetInt("expired_at", data->GetInt("warm_until"))
+              : 0;
+      const auto identity =
+          suspended ? id + "/" + std::to_string(write.GetInt("revision")) : id;
+      append(Notice(owner, identity, type,
                     webhook_detail::EventPayload(type, id, *data), occurred));
       if (type == "agent.session.created" && data->GetBool("created_idle"))
         append(Notice(
@@ -1107,7 +1212,7 @@ class DiskStore {
                             options_.max_ttl_seconds, &created, &expires,
                             exists && (found->second.retention.active ||
                                        (retention && kind == "environment" &&
-                                        found->second.warm_wake > 0))
+                                        found->second.environment_wake > 0))
                                 ? found->second.expires
                                 : 0);
         if (!timing.ok()) return timing;
@@ -1360,14 +1465,14 @@ class DiskStore {
     ++client.count;
     total_.bytes += metadata.bytes;
     ++total_.count;
-    if (metadata.warm_wake > 0)
-      warm_environments_.emplace(metadata.warm_wake, name);
+    if (metadata.environment_wake > 0)
+      environment_timers_.emplace(metadata.environment_wake, name);
     records_.emplace(name, std::move(metadata));
   }
   using Iterator = std::map<std::string, Metadata>::iterator;
   void Remove(Iterator found) {
-    if (found->second.warm_wake > 0)
-      warm_environments_.erase({found->second.warm_wake, found->first});
+    if (found->second.environment_wake > 0)
+      environment_timers_.erase({found->second.environment_wake, found->first});
     batch_quota_.Remove(found->second.owner, found->second.batch_charge);
     retention_bytes_ -= found->second.retention.Bytes();
     auto client = clients_.find(found->second.owner);
@@ -1884,7 +1989,7 @@ class DiskStore {
   Fd root_, lock_;
   bool initialized_ = false;
   std::map<std::string, Metadata> records_;
-  std::set<std::pair<int64_t, std::string>> warm_environments_;
+  std::set<std::pair<int64_t, std::string>> environment_timers_;
   std::map<std::string, Usage> clients_;
   BatchQueueQuota batch_quota_;
   Usage total_;

@@ -890,8 +890,20 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   std::erase_if(data.object, [](const auto& field) {
     return field.first == "pending_tool_results";
   });
+  std::optional<ObjectRequest> workspace;
+  if (data.GetBool("shared_environment")) {
+    ObjectRequest lookup;
+    lookup.kind = ObjectKind::kEnvironment;
+    lookup.scope = access.scope;
+    lookup.id = execution_settings.Find("environment")->GetString("id");
+    auto stored = objects.Execute(lookup, access.deadline, access.cancelled);
+    if (!stored.ok()) return stored;
+    auto active = environment_detail::PrepareWorkspaceActivity(
+        objects, access, stored.value, &workspace.emplace());
+    if (!active.ok()) return active;
+  }
   mutation.data = std::move(data);
-  return run.BindAgentSession(std::move(mutation));
+  return run.BindAgentSession(std::move(mutation), std::move(workspace));
 }
 ObjectReply ReconcileAgentEventReceipt(
     ObjectStore& objects, const std::string& id, const Json& request,

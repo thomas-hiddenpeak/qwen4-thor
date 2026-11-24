@@ -8,6 +8,8 @@
 
 namespace q4t::server::environment_detail {
 inline constexpr std::size_t kMaxAttachedSessions = 128;
+inline constexpr int64_t kEnvironmentIdleSeconds = 20 * 60;
+inline constexpr int64_t kCheckpointSeconds = 7 * 24 * 3600;
 
 inline bool HasAttachedSession(const io::Json& data, std::string_view id) {
   if (id.empty()) return false;

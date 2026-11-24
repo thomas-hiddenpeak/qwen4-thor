@@ -703,6 +703,12 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
         "max_sessions": 128
+      },
+      "hosted_checkpoint_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
+        "idle_seconds": 1200,
+        "retention_seconds": 604800
       }
     },
     {
@@ -2875,6 +2881,12 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
         "max_sessions": 128
+      },
+      "hosted_checkpoint_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
+        "idle_seconds": 1200,
+        "retention_seconds": 604800
       }
     },
     {
@@ -6450,6 +6462,12 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
         "max_sessions": 128
+      },
+      "hosted_checkpoint_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
+        "idle_seconds": 1200,
+        "retention_seconds": 604800
       }
     },
     {
@@ -9858,6 +9876,12 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
         "max_sessions": 128
+      },
+      "hosted_checkpoint_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
+        "idle_seconds": 1200,
+        "retention_seconds": 604800
       }
     },
     {
@@ -11439,8 +11463,8 @@
       }
     }
   ],
-  "next_task": "Implement and verify shared hosted environment inactivity suspension, authenticated checkpoint resume and expiry, plus setup failure. Continue the remaining inference, application and recovery tasks.",
-  "next": "补齐共享环境的空闲挂起、检查点恢复与过期及预热失败，继续其余应用与恢复项。",
+  "next_task": "Implement and verify session environment SSE, real environment provisioning failures and remaining inference, application and recovery tasks.",
+  "next": "补齐会话 SSE 环境事件、真实预热失败，继续其余推理、应用与恢复项。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

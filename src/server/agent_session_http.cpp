@@ -62,10 +62,14 @@ ObjectReply DeleteSession(ObjectStore& objects, const std::string& id,
     if (release.data.Has("attached_sessions")) {
       auto& peers = Field(release.data, "attached_sessions").array;
       std::erase_if(peers, [&](const Json& peer) { return peer.str == id; });
-      if (peers.empty())
-        Set(&Field(release.data, "resource"), "status", String("disconnected"));
-      Set(&release.data, "last_activity_at", Number(std::time(nullptr)));
-      release.ttl_seconds = 0;
+      auto& resource = Field(release.data, "resource");
+      const auto status = resource.GetString("status");
+      const bool last_session = peers.empty();
+      if (status == "connected") {
+        if (last_session) Set(&resource, "status", String("disconnected"));
+        Set(&release.data, "last_activity_at", Number(std::time(nullptr)));
+      }
+      release.ttl_seconds = status == "expired" && last_session ? 86400 : 0;
     } else {
       release.ttl_seconds = 86400;
       Set(&Field(release.data, "resource"), "status", String("disconnected"));

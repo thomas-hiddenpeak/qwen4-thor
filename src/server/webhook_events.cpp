@@ -6,15 +6,15 @@
 namespace q4t::server::webhook_detail {
 namespace {
 using namespace object_detail;
-constexpr std::array<std::string_view, 15> kTypes = {
-    "response.completed",       "response.failed",
-    "response.cancelled",       "response.incomplete",
-    "batch.completed",          "batch.failed",
-    "batch.cancelled",          "batch.expired",
-    "agent.session.created",    "agent.environment.ready",
-    "agent.session.idle",       "agent.session.in_progress",
-    "agent.session.failed",     "agent.session.action_required",
-    "agent.environment.expired"};
+constexpr std::array<std::string_view, 16> kTypes = {
+    "response.completed",        "response.failed",
+    "response.cancelled",        "response.incomplete",
+    "batch.completed",           "batch.failed",
+    "batch.cancelled",           "batch.expired",
+    "agent.session.created",     "agent.environment.ready",
+    "agent.session.idle",        "agent.session.in_progress",
+    "agent.session.failed",      "agent.session.action_required",
+    "agent.environment.expired", "agent.environment.suspended"};
 }  // namespace
 uint32_t EventBit(std::string_view name) {
   for (size_t i = 0; i < kTypes.size(); ++i)
@@ -58,6 +58,7 @@ std::string_view Transition(std::string_view kind, const Json& data,
     const auto status = resource->GetString("status");
     if (creating && status == "ready") return "agent.environment.ready";
     if (status == "expired") return "agent.environment.expired";
+    if (status == "suspended") return "agent.environment.suspended";
     return {};
   }
   if (kind != "response" && kind != "batch") return {};
