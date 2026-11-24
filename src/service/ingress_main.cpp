@@ -423,6 +423,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::RealtimeTraceMethodAllowed(method, path) ||
       server::VoiceMethodAllowed(method, path) ||
       server::ConversationMethodAllowed(method, path) ||
+      server::ContainerMethodAllowed(method, path) ||
       server::AssistantMethodAllowed(method, path) ||
       server::ManagedAgentMethodAllowed(method, path) ||
       server::PromptMethodAllowed(method, path) ||
@@ -439,6 +440,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
                server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||
                server::IsBatchObservation(method, path) ||
+               server::IsContainerObservation(method, path) ||
                server::IsAssistantObservation(method, path) ||
                server::IsManagedAgentObservation(method, path) ||
                server::IsPromptObservation(method, path) ||
@@ -657,7 +659,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       websocket_protocol =
           server::SelectWebSocketProtocol(path, headers.websocket_protocols);
     }
-    streaming = server::IsBinaryUpload(method, path);
+    streaming = server::IsBinaryUpload(method, path, headers.content_type);
     headers.body_limit = streaming ? config.file_body_bytes : config.body_bytes;
     if (server::IsTranscriptionTarget(path))
       headers.body_limit =

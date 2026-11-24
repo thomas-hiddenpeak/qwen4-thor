@@ -1,6 +1,10 @@
 #include "q4t/server/files_http.h"
 
+#include "containers_internal.h"
+
 #include "object_protocol.h"
+#include "q4t/server/containers.h"
+#include "q4t/server/request_json.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
@@ -72,6 +76,11 @@ ObjectReply FileHttpRequest::Prepare(std::string_view method,
                                      std::string_view target,
                                      std::string_view content_type,
                                      HttpBodyStream* stream) {
+  if (IsContainerTarget(target)) {
+    container_target_ = target;
+    method_ = method;
+    return PrepareContainer(content_type, stream);
+  }
   if (IsUploadTarget(target))
     return PrepareUpload(method, target, content_type, stream);
   method_ = method;
@@ -110,17 +119,7 @@ ObjectReply FileHttpRequest::Prepare(std::string_view method,
     wire_limit_ = kFileWireBytes;
     upload_ = std::make_unique<FileUpload>(objects_, access_, content_type);
     if (!upload_->Result().ok()) return upload_->Result();
-    stream->max_bytes = kFileWireBytes;
-    stream->reservation_bytes = kFileWorkingBytes;
-    stream->max_metadata_bytes = 16ULL << 20;
-    stream->consume = [this, stream](auto bytes, auto deadline) {
-      const auto result = upload_->Feed(bytes, deadline);
-      if (!result.ok()) {
-        stream->failure_status = result.http_status;
-        stream->failure_code = result.ClientCode();
-      }
-      return result.ok();
-    };
+    PrepareFileStream(stream);
   } else {
     // No body is valid here. A streaming reservation also accounts for the
     // response working set before any durable list/read work starts.
@@ -134,6 +133,105 @@ ObjectReply FileHttpRequest::Prepare(std::string_view method,
   }
   return {};
 }
+void FileHttpRequest::PrepareFileStream(HttpBodyStream* stream) {
+  stream->max_bytes = kFileWireBytes;
+  stream->reservation_bytes = kFileWorkingBytes;
+  stream->max_metadata_bytes = 16ULL << 20;
+  stream->consume = [this, stream](auto bytes, auto deadline) {
+    const auto result = upload_->Feed(bytes, deadline);
+    if (!result.ok()) {
+      stream->failure_status = result.http_status;
+      stream->failure_code = result.ClientCode();
+    }
+    return result.ok();
+  };
+}
+
+ObjectReply FileHttpRequest::PrepareContainer(std::string_view content_type,
+                                              HttpBodyStream* stream) {
+  using Kind = ContainerRouteKind;
+  const auto route = ParseContainerRoute(container_target_);
+  if (!ContainerMethodAllowed(method_, container_target_)) {
+    auto reply =
+        Error(405, "method_not_allowed", "Container method not allowed");
+    reply.value = Object(
+        {{"allow",
+          String(route.kind == Kind::kCollection || route.kind == Kind::kFiles
+                     ? "GET, POST"
+                 : route.kind == Kind::kContent ? "GET"
+                                                : "GET, DELETE")}});
+    return reply;
+  }
+  std::string media(content_type);
+  std::transform(
+      media.begin(), media.end(), media.begin(), [](unsigned char c) {
+        return c >= 'A' && c <= 'Z' ? static_cast<char>(c + ('a' - 'A'))
+                                    : static_cast<char>(c);
+      });
+  auto type = std::string_view(media).substr(0, media.find(';'));
+  while (!type.empty() && (type.back() == ' ' || type.back() == '\t'))
+    type.remove_suffix(1);
+  if (method_ == "POST" && route.kind == Kind::kFiles &&
+      IsMultipartForm(content_type)) {
+    const StateAccess access{access_.scope, access_.deadline,
+                             access_.cancelled};
+    const std::string_view target = container_target_;
+    const auto query = target.find('?');
+    if (query != target.npos && query + 1 != target.size())
+      return container_detail::Invalid("Unknown query for upload", "query");
+    container_detail::Stored parent;
+    auto metadata =
+        container_detail::Read(objects_, access, route.container, &parent);
+    if (!metadata.ok()) return metadata;
+    auto workspace = container_detail::OpenWorkspace(objects_, access, &parent);
+    if (!workspace.ok()) return workspace;
+    upload_ = std::make_unique<FileUpload>(
+        objects_, access_, content_type,
+        [this, access](BinaryStage* stage, std::string_view name,
+                       std::string_view id) {
+          std::string body;
+          if (!stage)
+            body = OutputJson(Object({{"file_id", String(std::string(id))}}));
+          return HandleContainers(objects_, access, method_, container_target_,
+                                  body, nullptr, stage, name);
+        });
+    if (!upload_->Result().ok()) return upload_->Result();
+    wire_limit_ = kFileWireBytes;
+    PrepareFileStream(stream);
+    return {};
+  }
+  if (method_ == "POST") {
+    const auto split = media.find(';');
+    auto charset = split == media.npos
+                       ? std::string_view{}
+                       : std::string_view(media).substr(split + 1);
+    while (!charset.empty() &&
+           (charset.front() == ' ' || charset.front() == '\t'))
+      charset.remove_prefix(1);
+    if (type != "application/json" ||
+        (!charset.empty() && charset != "charset=utf-8" &&
+         charset != "charset=\"utf-8\""))
+      return Error(415, "unsupported_media_type",
+                   "Expected application/json with UTF-8 or a file form");
+    stream->max_bytes = wire_limit_ = kChatBodyBytes;
+    stream->reservation_bytes = kChatBodyBytes;
+    stream->consume = [this](auto bytes, auto) {
+      json_body_.append(bytes);
+      return true;
+    };
+  } else {
+    stream->max_bytes = wire_limit_ = 1;
+    stream->reservation_bytes =
+        route.kind == Kind::kContent ? kFileWorkingBytes
+        : route.kind == Kind::kCollection || route.kind == Kind::kFiles
+            ? kFileListWorkingBytes
+            : 65536;
+    stream->failure_status = 400;
+    stream->failure_code = "unexpected_body";
+    stream->consume = [](auto, auto) { return false; };
+  }
+  return {};
+}
 void FileHttpRequest::Serve(int fd) {
   if (!upload_action_.empty()) {
     ServeUpload(fd);
@@ -141,6 +239,20 @@ void FileHttpRequest::Serve(int fd) {
   }
   if (upload_) {
     Reply(fd, upload_->Finish(), access_);
+    return;
+  }
+  if (!container_target_.empty()) {
+    const StateAccess access{access_.scope, access_.deadline,
+                             access_.cancelled};
+    BinaryRead read;
+    auto result = HandleContainers(objects_, access, method_, container_target_,
+                                   json_body_, &read);
+    if (result.ok() && !read.id.empty()) {
+      BinaryStore binary(objects_);
+      SendPinnedBinary(fd, binary, access_, read);
+    } else {
+      Reply(fd, result, access_);
+    }
     return;
   }
   if (content_) {

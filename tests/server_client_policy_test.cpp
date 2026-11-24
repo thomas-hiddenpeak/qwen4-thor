@@ -256,6 +256,31 @@ Q4T_TEST(client_file_admission_separates_json_and_exact_upload_route) {
   return true;
 }
 
+Q4T_TEST(client_container_file_allowance_applies_only_to_multipart) {
+  ClientAdmission admission;
+  Q4T_CHECK(admission.Configure(FilePolicy(8192)));
+  for (const auto path : {"/v1/containers/cntr_a/files", "/v1/containers",
+                          "/v1/containers/cntr_a/files-extra"}) {
+    for (const auto type : {"application/json", "Multipart/Form-Data ; boundary=f"}) {
+      HttpRequestHeaders headers;
+      headers.client_id = "alpha";
+      headers.gateway_token = kSecret;
+      headers.content_type = type;
+      headers.content_length = 8192;
+      ClientLease lease;
+      ClientIdentity identity;
+      int status = 0;
+      const bool allowed = AdmitClientRequest("POST", path, &headers, admission,
+                                              &lease, &identity, &status);
+      const bool form = std::string_view(path) == "/v1/containers/cntr_a/files" &&
+                        std::string_view(type).starts_with("Multipart");
+      Q4T_CHECK(allowed == form && (form || status == 413));
+      Q4T_CHECK(headers.body_limit == (form ? 8192 : 1024));
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(client_transcription_uses_file_quota_without_relaxing_other_routes) {
   ClientAdmission current, old;
   Q4T_CHECK(current.Configure(FilePolicy(8192)));

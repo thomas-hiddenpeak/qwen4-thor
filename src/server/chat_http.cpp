@@ -457,11 +457,16 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
             path == "/v1/decisions" || path == "/v1/embeddings" ||
             path == "/v1/audio/speech" || IsTranscriptionTarget(path) ||
             IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
-            IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
+            IsAssistantsV2Target(path) || IsManagedAgentTarget(path) ||
+            IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
-            IsFileTarget(path) || IsUploadTarget(path))) ||
-          (method == "GET" && (!LiveRecordingId(path).empty() ||
-             ParseAgentSessionRoute(path).kind == AgentSessionRouteKind::kArtifactContent)) ||
+            IsContainerTarget(path) || IsFileTarget(path) ||
+            IsUploadTarget(path))) ||
+          (method == "GET" &&
+           (!LiveRecordingId(path).empty() ||
+            ParseAgentSessionRoute(path).kind ==
+                AgentSessionRouteKind::kArtifactContent ||
+            ParseContainerRoute(path).kind == ContainerRouteKind::kContent)) ||
           (method == "GET" && IsVectorStoreTarget(path) &&
            !IsVectorStoreObservation(method, path)) ||
           (method == "GET" && IsFileTarget(path) &&
@@ -475,7 +480,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           return false;
         }
       }
-      if (IsFileTarget(path) || IsUploadTarget(path)) {
+      if (IsContainerTarget(path) || IsFileTarget(path) ||
+          IsUploadTarget(path)) {
         if (!objects_) {
           failure_status = 503;
           headers.error_code = "object_scope_unavailable";

@@ -306,6 +306,21 @@ def current_surface(root):
             'server::AssistantMethodAllowed(method, path)' not in native or
             'context->AssistantsBeta()' not in dispatch):
         raise ValueError('review assistant registry routing and version selector')
+    file_http = (root/'src/server/files_http.cpp').read_text()
+    if not all(value in source for source,value in (
+            (dispatch,'IsContainerTarget(path)'), (file_http,'HandleContainers(objects_'),
+            (file_http,'PrepareContainer(content_type, stream)'),
+            (native,'server::ContainerMethodAllowed(method, path)'),
+            (native,'server::IsContainerObservation(method, path)'))):
+        raise ValueError('review native container routing')
+    for path, methods in (('/v1/containers', ('GET','POST')),
+                          ('/v1/containers/{container_id}', ('GET','DELETE')),
+                          ('/v1/containers/{container_id}/files', ('GET','POST')),
+                          ('/v1/containers/{container_id}/files/{file_id}', ('GET','DELETE')),
+                          ('/v1/containers/{container_id}/files/{file_id}/content', ('GET',))):
+        for method in methods:
+            routes.append((path,method))
+            native_routes.append((method,path,'false' if method=='POST' or path.endswith('/content') else 'true'))
     if 'HandleAssistantThreads(*objects_' not in dispatch:
         raise ValueError('review assistant thread dispatch')
     if 'ServeAssistantRun(fd, *objects_' not in dispatch:
@@ -560,6 +575,8 @@ def current_surface(root):
                        root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake",
+                       root / "cmake/container_types.h.in",
+                       root / "tools/serve_responses/generate_item_types.mjs",
                        root / "cmake/RustRegex.cmake",
                        root / "cmake/regex-syntax-0.8.8.sha256",
                        root / "src/server/regex_syntax/lib.rs"})

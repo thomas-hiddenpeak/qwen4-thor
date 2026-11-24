@@ -28,6 +28,10 @@ class FileHttpRequest {
 
  private:
   void Content(int fd);
+  ObjectReply PrepareContainer(std::string_view content_type,
+                               HttpBodyStream* stream);
+  void PrepareFileStream(HttpBodyStream* stream);
+  std::string container_target_;
   ObjectReply PrepareUpload(std::string_view method, std::string_view target,
                             std::string_view content_type,
                             HttpBodyStream* stream);

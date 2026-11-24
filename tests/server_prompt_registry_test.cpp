@@ -18,6 +18,8 @@
 #include "q4t/server/vector_stores.h"
 
 #include <algorithm>
+#include <array>
+#include <ctime>
 #include <cstdlib>
 #include <set>
 #include <filesystem>
@@ -28,6 +30,7 @@
 
 #include "q4t/server/chat_prompt.h"
 #include "q4t/server/conversation_state.h"
+#include "q4t/server/containers.h"
 #include "q4t/server/http_connection.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_execution.h"
@@ -3421,5 +3424,156 @@ Q4T_TEST(
   Q4T_CHECK(view.prompt_tokens == 0 &&
             view.run.Find("usage")->GetInt("total_tokens") == 0 &&
             view.steps.array.empty() && view.messages.array.empty());
+  return true;
+}
+
+Q4T_TEST(
+    container_reopens_private_file_after_source_deletion_and_pins_download) {
+  Fixture f;
+  auto access = [] { return Access(); };
+  auto binary = [&] {
+    auto a = access();
+    return BinaryAccess{a.scope, a.deadline, a.cancelled};
+  };
+  std::string path, file_id;
+  const std::string bytes("revision\0receipt", 16);
+  {
+    ObjectStore objects(f.options);
+    FileUpload upload(objects, binary(),
+                      "multipart/form-data; boundary=fixture");
+    const std::string form =
+        "--fixture\r\nContent-Disposition: form-data; "
+        "name=\"purpose\"\r\n\r\nassistants\r\n"
+        "--fixture\r\nContent-Disposition: form-data; name=\"file\"; "
+        "filename=\"release.dat\"\r\n\r\n" +
+        bytes + "\r\n--fixture--\r\n";
+    Q4T_CHECK(Ok(upload.Feed(form, access().deadline)));
+    auto stored = upload.Finish();
+    Q4T_CHECK(Ok(stored));
+    file_id = stored.value.GetString("id");
+    auto body = Parse(
+        R"({"name":"release","file_ids":[],"memory_limit":"4g","expires_after":{"minutes":5,"anchor":"last_active_at"},"network_policy":{"type":"allowlist","allowed_domains":["records.example"],"domain_secrets":[{"domain":"records.example","name":"token","value":"test-container-opaque-7813"}]}})");
+    auto files = *body.Find("file_ids");
+    files.array.push_back(q4t::server::responses_detail::String(file_id));
+    Set(&body, "file_ids", files);
+    auto created = HandleContainers(objects, access(), "POST", "/v1/containers",
+                                    OutputJson(body));
+    Q4T_CHECK(Ok(created));
+    path = "/v1/containers/" + created.value.GetString("id");
+    Q4T_CHECK(created.value.GetString("memory_limit") == "4g" &&
+              !created.value.Find("network_policy")->Has("domain_secrets"));
+    auto wrong = HandleContainers(objects, Access("client:other"), "POST",
+                                  "/v1/containers", OutputJson(body));
+    Q4T_CHECK(wrong.http_status == 404);
+    auto entries = HandleContainers(objects, Access("client:other"), "GET",
+                                    "/v1/containers", "");
+    Q4T_CHECK(Ok(entries) && entries.value.GetArray("data")->array.empty());
+    Q4T_CHECK(Ok(Files(objects).Erase(binary(), file_id)));
+  }
+  ObjectStore objects(f.options);
+  auto entries = HandleContainers(objects, access(), "GET",
+                                  "/v1/containers?name=release&limit=1", "");
+  Q4T_CHECK(Ok(entries) && entries.value.GetArray("data")->array.size() == 1 &&
+            !entries.value.GetBool("has_more"));
+  Q4T_CHECK(HandleContainers(objects, Access("client:other"), "GET", path, "")
+                .http_status == 404);
+  auto files = HandleContainers(objects, access(), "GET", path + "/files", "");
+  Q4T_CHECK(Ok(files) && files.value.GetArray("data")->array.size() == 1);
+  auto entry = files.value.GetArray("data")->array[0];
+  Q4T_CHECK(entry.GetString("path") == "/mnt/data/release.dat" &&
+            entry.GetInt("bytes") == 16);
+  auto url = path + "/files/" + entry.GetString("id");
+  BinaryRead pin;
+  Q4T_CHECK(Ok(
+      HandleContainers(objects, access(), "GET", url + "/content", "", &pin)));
+  Q4T_CHECK(Ok(HandleContainers(objects, access(), "DELETE", url, "")));
+  Q4T_CHECK(HandleContainers(objects, access(), "GET", url, "").http_status ==
+            404);
+  BinaryStore store(objects);
+  std::string returned;
+  Q4T_CHECK(Ok(store.Read(binary(), pin, 0, &returned)) && returned == bytes);
+  Q4T_CHECK(Ok(store.Close(binary(), &pin)));
+  auto missing = HandleContainers(objects, access(), "GET",
+                                  "/v1/containers?name=other", "");
+  Q4T_CHECK(Ok(missing) && missing.value.GetArray("data")->array.empty());
+  ObjectRequest workspace;
+  workspace.kind = ObjectKind::kToolRun;
+  workspace.scope = access().scope;
+  workspace.id = "workspace_" + entry.GetString("container_id");
+  auto saved = objects.Execute(workspace, access().deadline);
+  Q4T_CHECK(Ok(saved) &&
+            OutputJson(saved.value).find("test-container-opaque-7813") ==
+                std::string::npos);
+  Q4T_CHECK(!saved.value.Find("data")->GetString("execution_options").empty());
+  Q4T_CHECK(Ok(HandleContainers(objects, access(), "DELETE", path, "")));
+  Q4T_CHECK(HandleContainers(objects, access(), "GET", path, "").http_status ==
+            404);
+  return true;
+}
+
+Q4T_TEST(
+    container_idle_expiration_retains_only_metadata_and_never_reopens_data) {
+  using q4t::server::responses_detail::Number;
+  Fixture f;
+  ObjectStore objects(f.options);
+  const auto call = [&](std::string method, std::string url,
+                        std::string body = "") {
+    return HandleContainers(objects, Access(), method, url, body);
+  };
+  auto created = call(
+      "POST", "/v1/containers",
+      R"({"name":"expiry","expires_after":{"anchor":"last_active_at","minutes":1}})");
+  Q4T_CHECK(Ok(created));
+  Q4T_CHECK(
+      call(
+          "POST", "/v1/containers",
+          R"({"name":"x","expires_after":{"anchor":"last_active_at","minutes":1.5}})")
+          .http_status == 400);
+  const auto id = created.value.GetString("id");
+  const auto url = "/v1/containers/" + id;
+  ObjectRequest metadata, workspace;
+  metadata.kind = ObjectKind::kContainer;
+  metadata.id = id;
+  metadata.scope = Access().scope;
+  workspace.kind = ObjectKind::kToolRun;
+  workspace.id = "workspace_" + id;
+  workspace.scope = Access().scope;
+  auto row = objects.Execute(metadata, Access().deadline);
+  auto work = objects.Execute(workspace, Access().deadline);
+  Q4T_CHECK(Ok(row) && Ok(work));
+  // Install a separately named fixture whose last activity was a minute ago.
+  const auto now = std::time(nullptr);
+  const auto near = NewObjectId(ObjectKind::kContainer);
+  metadata.id = near;
+  metadata.operation = ObjectOperation::kPut;
+  metadata.ttl_seconds = 0;
+  metadata.created_at = now - 60;
+  metadata.data = *row.value.Find("data");
+  auto info = *metadata.data.Find("resource");
+  Set(&info, "id", q4t::server::responses_detail::String(near));
+  Set(&info, "created_at", Number(now - 60));
+  Set(&info, "last_active_at", Number(now - 59));
+  Set(&metadata.data, "resource", info);
+  Set(&metadata.data, "workspace_expires_at", Number(now + 1));
+  workspace.id = "workspace_" + near;
+  workspace.operation = ObjectOperation::kPut;
+  workspace.ttl_seconds = 0;
+  workspace.created_at = now - 60;
+  workspace.expires_at = now + 1;
+  workspace.data = *work.value.Find("data");
+  Set(&workspace.data, "container_id",
+      q4t::server::responses_detail::String(near));
+  std::array changes{metadata, workspace};
+  Q4T_CHECK(Ok(objects.ExecuteBatch(changes, Access().deadline)));
+  std::this_thread::sleep_until(
+      std::chrono::system_clock::from_time_t(now + 1) + 50ms);
+  const auto expired = "/v1/containers/" + near;
+  auto snapshot = call("GET", expired);
+  Q4T_CHECK(Ok(snapshot) && snapshot.value.GetString("status") == "expired" &&
+            snapshot.value.GetInt("last_active_at") == now - 59);
+  Q4T_CHECK(call("GET", expired + "/files").code == "container_expired");
+  workspace.operation = ObjectOperation::kGet;
+  Q4T_CHECK(objects.Execute(workspace, Access().deadline).http_status == 404);
+  Q4T_CHECK(Ok(call("DELETE", expired)) && Ok(call("DELETE", url)));
   return true;
 }

@@ -31,7 +31,7 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
   if (identity->Scoped()) {
     const auto& limits = *identity->Limits();
     headers->body_limit =
-        IsBinaryUpload(method, path) && limits.max_file_body_bytes
+        IsBinaryUpload(method, path, headers->content_type) && limits.max_file_body_bytes
             ? limits.max_file_body_bytes
             : limits.max_body_bytes;
   }
@@ -50,6 +50,7 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
          IsResponsesObservation(method, path) ||
          IsVectorStoreObservation(method, path) ||
          IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
+         IsContainerObservation(method, path) ||
          (IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path)) || IsVoiceMetadata(method, path) || IsManagedAgentObservation(method, path) || IsPromptObservation(method, path) ||
          IsStoredChatManagement(method, path) ||
          RealtimeTraceMethodAllowed(method, path))

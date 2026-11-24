@@ -69,8 +69,11 @@ ObjectReply Public(const Json& stored, bool* hidden = nullptr,
 }  // namespace
 
 FileUpload::FileUpload(ObjectStore& objects, BinaryAccess access,
-                       std::string_view content_type)
-    : binary_(objects), access_(std::move(access)) {
+                       std::string_view content_type,
+                       ContainerSink container_sink)
+    : container_sink_(std::move(container_sink)),
+      binary_(objects),
+      access_(std::move(access)) {
   std::string boundary;
   const auto checked = MultipartBoundary(content_type, &boundary);
   if (!checked) {
@@ -92,6 +95,11 @@ Status FileUpload::BeginPart(const MultipartPart& part) {
   text_.clear();
   if (!seen_.insert(field_).second)
     return Failure(Invalid("Duplicate multipart field", field_));
+  if (container_sink_ &&
+      (seen_.size() != 1 ||
+       (field_ != "file" && (field_ != "file_id" || part.has_filename))))
+    return Failure(Invalid("Expected exactly one file or file_id", field_));
+  if (container_sink_ && field_ == "file_id") return {};
   if (field_ == "file") {
     if (!part.has_filename || part.filename.empty() ||
         part.filename.size() > 1024 ||
@@ -147,7 +155,9 @@ Status FileUpload::EndPart() {
   } else {
     if (detail::NormalizeUtf8(text_) != text_ || text_.find('\0') != text_.npos)
       return Failure(Invalid("Multipart text field requires UTF-8", field_));
-    if (field_ == "purpose") {
+    if (container_sink_) {
+      source_file_ = text_;
+    } else if (field_ == "purpose") {
       if (!Purpose(text_))
         return Failure(Invalid("Invalid file purpose", "purpose"));
       purpose_ = text_;
@@ -176,6 +186,12 @@ ObjectReply FileUpload::Finish() {
   if (!parsed) {
     if (result_.ok()) result_ = Invalid(parsed.message(), "body");
     return result_;
+  }
+  if (container_sink_) {
+    if (file_ended_) return result_ = container_sink_(&stage_, filename_, {});
+    if (!source_file_.empty())
+      return result_ = container_sink_(nullptr, {}, source_file_);
+    return result_ = Invalid("Expected a file or file_id", "file");
   }
   if (!file_ended_ || purpose_.empty()) {
     result_ = Invalid("file and purpose are required",
