@@ -23,6 +23,15 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+TRANSLATION_RECORD = 'q4t-profile-business-v35'
+TRANSLATION_FORMAT = 'q4t-translation-realtime-source-v1'
+TRANSLATION_CAPABILITY = dict(endpoint='/v1/audio/translations', models=['whisper-1', 'qwen3-asr-0.6b'],
+    backend='native_asr_and_chat', language='english', configured=True,
+    formats=['json','text','verbose_json','srt','vtt'], subtitles_require='aligner-model-dir')
+TRANSLATION_REVIEWED = {
+    'primary': '75d0e41fe4033bca234cffebed3163869a3e2b5cebf1315ba639c0c36461ac96',
+    'light': 'b7951dcde8dcbb1b3d75886640f23c218a5f77003d534c16fbd1b5e7b81d5b69',
+}
 SUBAGENT_RECORD = 'q4t-profile-business-v34'
 SUBAGENT_FORMAT = 'q4t-managed-subagent-source-v1'
 SUBAGENT_REVIEWED = {
@@ -124,7 +133,8 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 SESSION_RECORD: SESSION_FORMAT, VAULT_RECORD: VAULT_FORMAT,
                 OAUTH_RECORD: OAUTH_FORMAT, ENVIRONMENT_RECORD: ENVIRONMENT_FORMAT,
                 WORKSPACE_RECORD: WORKSPACE_FORMAT, ARTIFACT_RECORD: ARTIFACT_FORMAT,
-                MANAGED_TOOL_RECORD: MANAGED_TOOL_FORMAT, SUBAGENT_RECORD: SUBAGENT_FORMAT}
+                MANAGED_TOOL_RECORD: MANAGED_TOOL_FORMAT, SUBAGENT_RECORD: SUBAGENT_FORMAT,
+                TRANSLATION_RECORD: TRANSLATION_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -146,6 +156,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '92a0ac0c3d173820cdb36c1002ed4f46b0063fba3bb5727f655db05f7e827cfe':
+        '458b028f02d936beb055a4ffe1d4c6a55bc7766082c039339d3c2b4b05bc6919',
     '82f102fbf86efb6c7a861ae3fb0243f64402988507d8ba4748251f5642d4e433':
         '9e72f5309977c0f7ae4f3e7c192b12029a8ba6a1d845da688fc6b140c66c8f87',
     '1de6946fe64e0d94905bf146bc242b483cb07e9e0a3a83d15b0ab01d94dd57dc':
@@ -192,6 +204,13 @@ def record_hash(value):
 
 
 def format_for(capabilities):
+    if 'translations' in capabilities:
+        previous = dict(capabilities)
+        declaration = previous.pop('translations')
+        ledger.require(ledger.canonical(declaration) == ledger.canonical(TRANSLATION_CAPABILITY)
+                       and format_for(previous) == SUBAGENT_RECORD,
+                       'translation qualification requires both native models and its predecessor')
+        return TRANSLATION_RECORD
     if 'agent_session_subagents' in capabilities:
         previous = dict(capabilities)
         child = previous.pop('agent_session_subagents')
@@ -282,7 +301,19 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] == SUBAGENT_RECORD:
+    if value['format'] == TRANSLATION_RECORD:
+        proofs = value['business']['live']['evidence_sha256']
+        old_proofs = prior['business']['live']['evidence_sha256']
+        additions = {'translations.json', 'beta-conversation.json', 'beta-transcription.json'}
+        ledger.require(prior['format'] == SUBAGENT_RECORD and
+                       record_hash(prior) in SUBAGENT_REVIEWED.get(prior['profile'], ()) and
+                       previous['added'] == ['translations'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256'} and
+                       format_for(after) == TRANSLATION_RECORD and
+                       old_proofs.keys() | additions == proofs.keys() and
+                       all(ledger.HASH.fullmatch(proofs[k]) for k in additions),
+                       'translation qualification requires the reviewed predecessor and three SDK receipts')
+    elif value['format'] == SUBAGENT_RECORD:
         proofs = value['business']['live']['evidence_sha256']
         old_proofs = prior['business']['live']['evidence_sha256']
         ledger.require(prior['format'] == MANAGED_TOOL_RECORD
@@ -431,6 +462,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == TRANSLATION_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == TRANSLATION_REVIEWED.get(name),
+                       'translation qualification differs from the reviewed run')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) in SUBAGENT_REVIEWED.get(name, ()),
+                       'translation qualification lost the reviewed predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == SUBAGENT_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) in SUBAGENT_REVIEWED.get(name, ()),

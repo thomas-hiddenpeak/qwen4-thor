@@ -5307,7 +5307,9 @@
           "verbose_json",
           "srt",
           "vtt"
-        ]
+        ],
+        "profiles": "evidence/serve-audio-translation-20261124/profiles.json",
+        "profile_status": "ACCEPT_TRANSLATION_REALTIME_PRIMARY_LIGHT"
       }
     },
     {

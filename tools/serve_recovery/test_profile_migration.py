@@ -80,6 +80,19 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 live.format_for(altered)
 
+    def test_translation_extension_checks_formats_backend_and_enabled_type(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        candidate = dict(translations=live.TRANSLATION_CAPABILITY)
+        self.assertTrue(migration.explicit_extension({}, candidate))
+        self.assertFalse(migration.explicit_extension(candidate, {}))
+        for change in (dict(configured=1), dict(backend='asr_only'), dict(formats=['json']),
+                       dict(language='source'), dict(subtitles_require='')):
+            altered = dict(translations=dict(live.TRANSLATION_CAPABILITY, **change))
+            with self.subTest(change=change):
+                self.assertFalse(migration.explicit_extension({}, altered))
+                with self.assertRaises(ValueError):
+                    live.format_for(altered)
+
     def test_managed_subagent_requires_owned_history_and_complete_lifecycle(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(agent_sessions=live.MANAGED_TOOL_SESSION, agent_session_artifacts=live.ARTIFACT_CAPABILITY)

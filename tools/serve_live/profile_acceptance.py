@@ -159,6 +159,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'media_client_change' in self.plan:
+            from tools.native_asr import translation_profiles
+            translation_profiles.business(self, capabilities)
         if self.plan.get('agent_vaults', {}).get('subagents'):
             from tools.serve_responses import subagent_profile_acceptance
             subagent_profile_acceptance.business(self)
