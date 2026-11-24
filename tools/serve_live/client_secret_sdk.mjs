@@ -23,10 +23,10 @@ const parent = client(args.key);
 const model = 'qwen3.8-flash-next';
 const options = {perMessageDeflate:false, followRedirects:false, handshakeTimeout:5000, maxPayload:4<<20};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-function open(account, target) {
+function open(account, target, Socket = OpenAIRealtimeWS) {
   const events = [];
   let failure, status, bytes = 0;
-  const socket = new OpenAIRealtimeWS({...target, options}, account);
+  const socket = new Socket({...target, options}, account);
   socket.socket.on('unexpected-response', (_,res) => {status = res.statusCode; res.resume(); socket.socket.terminate();});
   socket.on('error', (err) => { failure = err.error?.code || 'transport_error'; });
   socket.on('event', (e) => {
@@ -82,6 +82,40 @@ async function legacyTranscription() {
     return {sdk:'7.47.0',issued:200,invalid_ttl:400,invalid_format:400,recursive_issue:401,
       models:401,requested_ttl:15,language:'zh',transcript:event.transcript,independent_chat:reply};
   } finally {connection.close();}
+}
+
+async function legacyWire() {
+  const {OpenAIRealtimeWS:BetaSocket} = await import(pathToFileURL(path.join(root, 'beta/realtime/ws.mjs')));
+  const grant = await parent.beta.realtime.sessions.create({model, modalities:['text'],
+    temperature:.75, turn_detection:null, max_response_output_tokens:32,
+    client_secret:{expires_after:{seconds:30}}});
+  const socket = open(client(grant.client_secret.value),{model},BetaSocket);
+  try {
+    const created = (await socket.wait('session.created')).session;
+    check(created.temperature===.75 && created.modalities[0]==='text' &&
+      !('output_modalities' in created), 'beta session.created');
+    socket.send({type:'session.update',session:{temperature:.9,modalities:['text'],
+      instructions:'Answer arithmetic with only the resulting integer.'}});
+    const updated = (await socket.wait('session.updated')).session;
+    check(updated.temperature===.9 && updated.max_response_output_tokens===32, 'beta update');
+    socket.send({type:'conversation.item.create',item:{type:'message',role:'user',
+      content:[{type:'input_text',text:'What is 6 times 7? Reply with only the number.'}]}});
+    const item = (await socket.wait('conversation.item.created')).item;
+    check(item.role==='user' && item.content[0].text.includes('6 times 7'), 'beta item receipt');
+    socket.send({type:'response.create',response:{temperature:.6,
+      max_response_output_tokens:32,modalities:['text']}});
+    const result = (await socket.wait('response.done')).response;
+    const answer = result.output.flatMap(i=>i.content||[]).filter(p=>p.type==='text')
+      .map(p=>p.text).join('').trim();
+    check(result.status==='completed' && answer==='42' && usage(result)>0, 'beta response resource');
+    const completed = await socket.wait('response.text.done');
+    const delta = await socket.wait('response.text.delta');
+    check(completed.text.trim()==='42' && delta.response_id===result.id &&
+      delta.item_id===completed.item_id, 'beta delta and completion');
+    return {sdk:'7.47.0',beta_session:true,issued_temperature:.75,updated_temperature:.9,
+      requested_temperature:.6,delta:'response.text.delta',completed:'response.text.done',
+      answer,tokens:usage(result)};
+  } finally {socket.close();}
 }
 
 async function legacyConversation() {
@@ -171,7 +205,8 @@ async function run() {
 }
 try {
   console.log(JSON.stringify(args.legacy_transcription ? await legacyTranscription() :
-    args.legacy_conversation ? await legacyConversation() : await run()));
+    args.legacy_conversation ? await legacyConversation() :
+    args.legacy_wire ? await legacyWire() : await run()));
 } catch (e) {
   // SDK error objects may hold request metadata; never print them wholesale.
   console.error('SDK check failed', e.status || '', e.code || '', String(e.message).slice(0,320));

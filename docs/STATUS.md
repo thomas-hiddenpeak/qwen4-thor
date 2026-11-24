@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 Node SDK 7.47.0 已用旧版 WebSocket 完成真实对话。会话签发温度 0.75，更新为 0.9，此次回答单独指定 0.6。客户端读到同一回答的 response.text.delta、response.text.done 和终态，文本为 42，用量 109 tokens。7 项 CPU 检查通过，原生与可选 nginx 均验证 SDK 请求头、浏览器子协议及错误版本。一次模型启动，用时 35.12 秒。后续补齐响应配置回显及转写首帧，默认仍为 rev458。[验收回执](evidence/serve-realtime-legacy-sessions-20261124/beta-wire.json)
+
 顶层 CMake 的 q4t_host_tests 已恢复可构建。该目标编译 program_vm.cpp 时遗漏了项目已有的 QuickJS 目标，导致缺少 quickjs.h。已对齐独立 tests/host 构建的依赖声明，顶层构建成功，6 项受影响的 Realtime 用例全部通过。 下一步继续旧版实时协议接入。[构建回执](evidence/serve-realtime-legacy-sessions-20261124/host-build.json)
 
 新候选已通过旧版 POST /v1/realtime/sessions 签发和真实 WSS 对话。官方 Node SDK 7.47.0 领取 15 秒凭据，指定温度 0.75、输出上限 32，原生会话返回 42，总用量 109 tokens，独立 Chat 返回 42。存储和生成计划用例验证温度实际传给模型；临时凭据再次签发、读取模型列表均为 401。6 项 CPU 用例、20 项协议及网关检查、2 项真实网关检查通过。一次启动 35.084 秒。该候选覆盖 134/231 个必做 HTTP 方法的成功状态声明；仍需验收旧版 WebSocket 事件及发行。[验收](evidence/serve-realtime-legacy-sessions-20261124/conversation.json)

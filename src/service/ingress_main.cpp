@@ -523,6 +523,9 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
                 : "Content-Type: " + headers.content_type + "\r\n") +
            (headers.agent_event_key.empty() ? "" :
                 "Idempotency-Key: " + headers.agent_event_key + "\r\n") +
+           (headers.realtime_beta && method == "GET" &&
+                    path.substr(0, path.find('?')) == "/v1/realtime"
+                ? "OpenAI-Beta: realtime=v1\r\n" : "") +
            (headers.agents_beta && server::IsManagedAgentTarget(path)
                 ? "OpenAI-Beta: agents=v1\r\n" : "") +
            (headers.responses_multi_agent && server::IsResponsesTarget(path)
