@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+官方 Node SDK 经原生 TLS 上传一页项目 PDF，原 Chat 答出 157。先删源文件，再从历史 Chat 创建 Evals 并删除原对话，重放仍答 157，得 1 分。Python SDK 独立读回同一结果。另一客户读取返回 404，其 Chat 仍能答 42。此轮启动一次，用时 88.345 秒。下一步验证项目安全记录并完成组合交付。[验证记录](evidence/serve-evals-20261125/stored-chat-files.json)
+
 真实 PDF 已上传并从 Chat 读出 157。创建 Evals 运行时，SDK 用例把 stored_completions 配在 Responses 运行下，服务返回 400。已按冻结规范改用 completions 运行，保留原失败回执，下一步重验文件删除后的重放。[验证记录](evidence/serve-evals-20261125/stored-chat-files.json)
 
 历史 Chat 的 PDF 与图片内容现在可以投影到 Responses 采样输入。系统先核对原消息部件和所属客户，再沿用原二进制分块；工具调用或推理项改变历史位置时会重新关联消息。25 项主机用例通过，已覆盖来源删除、对象库重开、跨客户访问和缓存边界。下一步用真实 PDF 及官方 SDK 验证重放。[验证记录](evidence/serve-evals-20261125/stored-chat-files.json)
