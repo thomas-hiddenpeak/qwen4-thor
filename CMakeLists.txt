@@ -471,6 +471,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/webhook_transport.cpp
   src/server/eval_runs.cpp
   src/server/eval_dispatcher.cpp
+  src/server/eval_sampling.cpp
   src/server/eval_execution.cpp
   src/server/eval_grading.cpp
   src/server/evals.cpp

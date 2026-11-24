@@ -1099,7 +1099,8 @@ void ChatServer::RecoverApplicationJobs() noexcept {
     return std::make_unique<EnvironmentPreparer>(*objects_, clients_);
   });
   eval_dispatcher_.TryStart([this] {
-    return std::make_unique<EvalDispatcher>(*objects_, clients_);
+    return std::make_unique<EvalDispatcher>(*objects_, clients_, PlanningConfig(),
+                                            [this] {return background_.Get();});
   });
   if (webhook_network_)
     webhook_dispatcher_.TryStart([this] {

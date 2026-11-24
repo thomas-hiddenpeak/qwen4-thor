@@ -29,31 +29,6 @@ ObjectReply Append(std::string_view text, size_t* remaining, std::string* out) {
   return {};
 }
 
-const Json* Resolve(std::string_view path, const Json& row) {
-  const Json* value = &row;
-  size_t depth = 0;
-  for (;;) {
-    const auto dot = path.find('.');
-    const auto key = path.substr(0, dot);
-    if (key.empty() || ++depth > 64) return nullptr;
-    if (depth == 1 && key != "item" && key != "sample") return nullptr;
-    if (value->IsArray()) {
-      size_t index = 0;
-      const auto [end, ec] =
-          std::from_chars(key.data(), key.data() + key.size(), index);
-      if (ec != std::errc{} || end != key.data() + key.size() ||
-          index >= value->array.size())
-        return nullptr;
-      value = &value->array[index];
-    } else {
-      value = value->Find(std::string(key));
-      if (!value) return nullptr;
-    }
-    if (dot == path.npos) return value;
-    path.remove_prefix(dot + 1);
-  }
-}
-
 ObjectReply Fold(std::string_view text, size_t* remaining, std::string* out) {
   while (!text.empty()) {
     const auto* first = reinterpret_cast<const uint8_t*>(text.data());
@@ -83,6 +58,31 @@ bool Contains(const std::string& text, const std::string& pattern) {
 }
 }  // namespace
 
+const io::Json* ResolveVariable(std::string_view path, const Json& row) {
+  const Json* value = &row;
+  size_t depth = 0;
+  for (;;) {
+    const auto dot = path.find('.');
+    const auto key = path.substr(0, dot);
+    if (key.empty() || ++depth > 64) return nullptr;
+    if (depth == 1 && key != "item" && key != "sample") return nullptr;
+    if (value->IsArray()) {
+      size_t index = 0;
+      const auto [end, ec] =
+          std::from_chars(key.data(), key.data() + key.size(), index);
+      if (ec != std::errc{} || end != key.data() + key.size() ||
+          index >= value->array.size())
+        return nullptr;
+      value = &value->array[index];
+    } else {
+      value = value->Find(std::string(key));
+      if (!value) return nullptr;
+    }
+    if (dot == path.npos) return value;
+    path.remove_prefix(dot + 1);
+  }
+}
+
 ObjectReply RenderText(std::string_view text, const io::Json& row,
                        std::string_view param, size_t* remaining,
                        std::string* rendered) {
@@ -98,7 +98,7 @@ ObjectReply RenderText(std::string_view text, const io::Json& row,
     auto path = text.substr(0, end);
     while (path.starts_with(' ')) path.remove_prefix(1);
     while (path.ends_with(' ')) path.remove_suffix(1);
-    const auto* value = Resolve(path, row);
+    const auto* value = ResolveVariable(path, row);
     if (!value) return Invalid(param, "Unknown evaluation variable");
     if (value->IsString()) {
       result = Append(value->str, remaining, &output);

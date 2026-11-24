@@ -1,0 +1,120 @@
+{
+  "stage": "native_tls_model_sampling_verified",
+  "scope": "model-generated Evals completions and responses with inline or file input",
+  "cpu_tests": 8,
+  "build_warnings": 0,
+  "cpu_receipt_sha256": "ba43143dbd4dfa7e76ec90db86b04e44cc01524d7d6334b0d7f2cf8196828cc0",
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1358,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "business_pending": [
+    "published profiles and independent recovery"
+  ],
+  "other_evals_pending": [
+    "stored inference source filters",
+    "additional graders"
+  ],
+  "first_device": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 36.247,
+    "unchanged_default": true,
+    "phases": [],
+    "reports": [
+      {
+        "type": "completions",
+        "prediction": "157",
+        "score": 1,
+        "seed": 7102,
+        "usage": {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 1,
+          "prompt_tokens": 309,
+          "completion_tokens": 4,
+          "total_tokens": 313,
+          "cached_tokens": 0
+        },
+        "original_id": "evalrun_29cfa0d8f8323f674c1c38393aa13ef4"
+      },
+      {
+        "type": "responses",
+        "prediction": "157",
+        "score": 0,
+        "seed": 2883338658268282,
+        "usage": {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 1,
+          "prompt_tokens": 309,
+          "completion_tokens": 4,
+          "total_tokens": 313,
+          "cached_tokens": 0
+        },
+        "original_id": "evalrun_a9709d4ec92a639d4696d4cdb10c308e"
+      }
+    ],
+    "independent_chat": "42",
+    "canceled": "canceled",
+    "raw_sdk_observations_sha256": "dd5ff53d62210038744e2a83e4e5e82f278ace99f9da4e9f650d40e50ba62100",
+    "failure": "Frozen HTTP oneOf matched both EvalItem and the plain message variant for scalar text in a template echoed by the server. The versioned SDK accepted all seven exchanges; raw validation failed."
+  },
+  "verified_source": "28888d69c",
+  "fixed_device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 42.705,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ],
+    "sdk": "7.47.0",
+    "reports": [
+      {
+        "type": "completions",
+        "prediction": "157",
+        "score": 1,
+        "seed": 7102,
+        "usage": {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 1,
+          "prompt_tokens": 309,
+          "completion_tokens": 4,
+          "total_tokens": 313,
+          "cached_tokens": 0
+        },
+        "original_id": "evalrun_ad48aaa6924aa834c42c171c83abca05"
+      },
+      {
+        "type": "responses",
+        "prediction": "157",
+        "score": 0,
+        "seed": 2760337193466997,
+        "usage": {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 1,
+          "prompt_tokens": 309,
+          "completion_tokens": 4,
+          "total_tokens": 313,
+          "cached_tokens": 0
+        },
+        "original_id": "evalrun_c6471d6b6a089dc24586f4a6930bd131"
+      }
+    ],
+    "independent_chat": "42",
+    "canceled": "canceled",
+    "foreign_project": 404,
+    "deleted": 404,
+    "wire_objects": 7,
+    "driver_sha256": "b2b8e73254d336a8c334a1a561f916ecbdcefc12bb85f7953576995ad9763300",
+    "lease": "COMPLETED",
+    "wire_receipt_sha256": "8e46e8a90fd3a6bc34d189777eec848ff8edfd629d46d62101ad1ba14f9cfece"
+  },
+  "cpu_after_fix_sha256": "ba43143dbd4dfa7e76ec90db86b04e44cc01524d7d6334b0d7f2cf8196828cc0"
+}

@@ -1,4 +1,5 @@
 #include "eval_run_state.h"
+#include "eval_sampling.h"
 
 #include <algorithm>
 #include <ctime>
@@ -16,6 +17,27 @@ ObjectReply Get(ObjectStore& objects, const StateAccess& access,
   return objects.Execute(Read(kind, access, id), access.deadline,
                          access.cancelled);
 }
+// A string in a standard template message matches both branches of upstream
+// oneOf. The equivalent typed text part selects EvalItem unambiguously. Keep
+// the original run request internally so replay uses exactly the submitted
+// input.
+void PublicRunTemplate(Json* run) {
+  auto* source = run->Find("data_source");
+  if (!source || !source->Has("input_messages")) return;
+  auto& spec = Field(Field(*run, "data_source"), "input_messages");
+  if (spec.GetString("type") != "template" || !spec.GetArray("template"))
+    return;
+  for (auto& message : Field(spec, "template").array) {
+    const auto role = message.GetString("role");
+    const auto* content = message.Find("content");
+    if (content && content->IsString() &&
+        (role == "user" || role == "assistant" || role == "system" ||
+         role == "developer"))
+      Set(&message, "content",
+          Object({{"type", String("input_text")}, {"text", *content}}));
+  }
+}
+
 ObjectReply Public(const Json& record, const EvalRoute& route, bool output) {
   const auto* data = record.Find("data");
   const auto* item = data ? data->Find("resource") : nullptr;
@@ -29,6 +51,7 @@ ObjectReply Public(const Json& record, const EvalRoute& route, bool output) {
     return InvalidRecord();
   ObjectReply result;
   result.value = *item;
+  if (!output) PublicRunTemplate(&result.value);
   return result;
 }
 ObjectReply Create(ObjectStore& objects, const StateAccess& access,
@@ -126,6 +149,7 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
   }
   if (stored.ok()) {
     stored.value = std::move(resource);
+    PublicRunTemplate(&stored.value);
     stored.http_status = 201;
   } else if (stored.commit_unknown) {
     stored.value = Object({{"id", *resource.Find("id")}});
@@ -195,13 +219,22 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access,
 }
 
 ObjectReply DeleteRun(ObjectStore& objects, const StateAccess& access,
-                      const Json& definition, const Json& record) {
+                      const Json& definition, const Json& record,
+                      ResponsesJobs* jobs) {
   auto parent = Update(ObjectKind::kEval, access, definition);
   auto run = Update(ObjectKind::kEvalRun, access, record);
   auto* children = run.data.Find("output_ids");
   const auto* resource = run.data.Find("resource");
   if (!children || !children->IsArray() || !resource) return InvalidRecord();
   if (resource->GetString("eval_id") != parent.id) return NotFound();
+  if (!run.data.GetBool("deleting") && run.data.Has("pending_response")) {
+    Set(&run.data, "deleting", Boolean(true));
+    auto fenced = objects.Execute(run, access.deadline, access.cancelled);
+    if (!fenced.ok()) return fenced;
+    ++run.expected_revision;
+  }
+  auto released = ReleaseSampling(objects, access, jobs, run);
+  if (!released.ok()) return released;
   auto& runs = Field(parent.data, "run_ids");
   if (!runs.IsArray()) return InvalidRecord();
   auto it = std::find_if(
@@ -239,18 +272,19 @@ ObjectReply DeleteRun(ObjectStore& objects, const StateAccess& access,
 }  // namespace
 
 ObjectReply ResumeRunDeletion(ObjectStore& objects, const StateAccess& access,
-                              const Json& record) {
+                              const Json& record, ResponsesJobs* jobs) {
   const auto* data = record.Find("data");
   const auto* resource = data ? data->Find("resource") : nullptr;
   if (!resource || !data->GetBool("deleting")) return InvalidRecord();
   auto parent =
       Get(objects, access, ObjectKind::kEval, resource->GetString("eval_id"));
-  return parent.ok() ? DeleteRun(objects, access, parent.value, record)
+  return parent.ok() ? DeleteRun(objects, access, parent.value, record, jobs)
                      : parent;
 }
 
 ObjectReply RemoveChildren(ObjectStore& objects, const StateAccess& access,
-                           ObjectRequest* parent, Json* record) {
+                           ObjectRequest* parent, Json* record,
+                           ResponsesJobs* jobs) {
   for (;;) {
     const auto* data = record->Find("data");
     if (!data) return InvalidRecord();
@@ -261,7 +295,7 @@ ObjectReply RemoveChildren(ObjectStore& objects, const StateAccess& access,
     auto row =
         Get(objects, access, ObjectKind::kEvalRun, ids->array.back().str);
     if (!row.ok()) return row;
-    auto deleted = DeleteRun(objects, access, *record, row.value);
+    auto deleted = DeleteRun(objects, access, *record, row.value, jobs);
     if (!deleted.ok()) return deleted;
     auto current = Get(objects, access, ObjectKind::kEval, parent->id);
     if (!current.ok()) return current;
@@ -271,7 +305,8 @@ ObjectReply RemoveChildren(ObjectStore& objects, const StateAccess& access,
 }
 ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
                        const EvalRoute& route, std::string_view method,
-                       std::string_view query, const std::string& body) {
+                       std::string_view query, const std::string& body,
+                       ResponsesJobs* jobs) {
   using Kind = EvalRouteKind;
   const bool list = method == "GET" &&
                     (route.kind == Kind::kRuns || route.kind == Kind::kOutputs);
@@ -290,7 +325,7 @@ ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
   auto run = Get(objects, access, ObjectKind::kEvalRun, route.run);
   if (!run.ok()) return run;
   if (method == "DELETE")
-    return DeleteRun(objects, access, parent.value, run.value);
+    return DeleteRun(objects, access, parent.value, run.value, jobs);
   auto result = Public(run.value, route, false);
   if (!result.ok()) return result;
   if (route.kind == Kind::kRun) return result;
@@ -307,13 +342,17 @@ ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
       return BadInput("body", "Unexpected cancel body");
   }
   const auto status = result.value.GetString("status");
-  if (status == "canceled") return result;
-  if (status != "queued" && status != "in_progress")
+  if (status != "canceled" && status != "queued" && status != "in_progress")
     return Error(409, "eval_run_terminal", "Evaluation has already finished");
   auto write = Update(ObjectKind::kEvalRun, access, run.value);
-  Set(&result.value, "status", String("canceled"));
-  Set(&write.data, "resource", result.value);
-  auto saved = objects.Execute(write, access.deadline, access.cancelled);
-  return saved.ok() ? result : saved;
+  if (status != "canceled") {
+    Set(&result.value, "status", String("canceled"));
+    Set(&Field(write.data, "resource"), "status", String("canceled"));
+    auto saved = objects.Execute(write, access.deadline, access.cancelled);
+    if (!saved.ok()) return saved;
+    ++write.expected_revision;
+  }
+  auto released = ReleaseSampling(objects, access, jobs, write);
+  return released.ok() ? result : released;
 }
 }  // namespace q4t::server::eval_detail

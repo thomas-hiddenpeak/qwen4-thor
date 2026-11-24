@@ -509,6 +509,8 @@ set(protocol_inputs
   src/server/eval_run_state.h
   src/server/eval_dispatcher.cpp
   include/q4t/server/eval_dispatcher.h
+  src/server/eval_sampling.cpp
+  src/server/eval_sampling.h
   src/server/eval_execution.cpp
   src/server/eval_grading.cpp
   src/server/eval_grading.h

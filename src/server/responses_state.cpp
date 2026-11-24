@@ -93,6 +93,8 @@ Json SavedResponse(ResponseStatePlan& plan, const Json& response,
                                                                    : "online")},
               {"conversation_id", String(plan.conversation_id)},
               {"conversation_revision", Number(plan.conversation_revision)}}));
+  if (!plan.eval_run_id.empty())
+    Set(&result, "eval_run_id", String(plan.eval_run_id));
   if (!plan.chatkit_thread_id.empty())
     Set(&result, "chatkit_thread_id", String(plan.chatkit_thread_id));
   if (!plan.assistant_thread_id.empty()) {
@@ -547,6 +549,12 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
     return StateError("Stored response cannot restore execution state");
   plan->id = id;
   plan->scope = access.scope;
+  if (const auto* eval = data->Find("eval_run_id")) {
+    if (!eval->IsString() || !eval->str.starts_with("evalrun_") ||
+        !ValidId(eval->str) || !response->GetBool("background"))
+      return StateError("Invalid evaluation response binding");
+    plan->eval_run_id = eval->str;
+  }
   if (const auto* thread = data->Find("chatkit_thread_id")) {
     if (!thread->IsString() || !thread->str.starts_with("cthr_") ||
         !ValidId(thread->str) || !response->GetBool("background"))
@@ -757,6 +765,16 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
   auto mutation = Write(ObjectKind::kResponse, plan->id, access, 0,
                         SavedResponse(*plan, snapshot, events),
                         !plan->conversation_id.empty(), plan->ephemeral);
+  if (plan->eval_sampling_write) {
+    if (plan->agent_session_write || plan->chatkit_thread_write ||
+        !plan->assistant_writes.empty() || plan->batch_parent)
+      return StateError("Conflicting evaluation row admission");
+    const std::array writes{std::move(*plan->eval_sampling_write), std::move(mutation)};
+    auto result = objects_.ExecuteBatch(writes, access.deadline, access.cancelled);
+    plan->eval_sampling_write.reset();
+    if (result.ok()) plan->response_revision = 1;
+    return result;
+  }
   if (plan->chatkit_thread_write) {
     if (plan->agent_session_write || !plan->assistant_writes.empty())
       return StateError("Conflicting ChatKit thread admission");
@@ -1082,6 +1100,9 @@ ObjectReply ResponsesState::Erase(std::string id, const StateAccess& access) {
         return Error(409, "chatkit_thread_owns_response", "The thread still uses this response");
     }
   }
+  if (existing.value.Find("data")->Has("eval_run_id"))
+    return Error(409, "eval_run_owns_response",
+                 "The evaluation owns this model sample");
   if (existing.value.Find("data")->Has("assistant_thread_id"))
     return Error(409, "assistant_thread_owns_response",
                  "Delete the owning Assistant thread to release this run");

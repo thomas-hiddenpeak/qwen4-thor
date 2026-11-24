@@ -1,10 +1,13 @@
 #include "q4t/server/evals.h"
 
+#include <atomic>
 #include <cstdlib>
+#include <thread>
 #include <filesystem>
 
 #include "../src/server/eval_grading.h"
 #include "../src/server/eval_runs.h"
+#include "../src/server/eval_sampling.h"
 #include "../src/server/object_protocol.h"
 #include "q4t/server/http_connection.h"
 #include "q4t/server/files.h"
@@ -46,6 +49,110 @@ const char* kDefinition = R"({
   "testing_criteria":[{"name":"Count check","type":"string_check","input":"{{sample.output_text}}",
     "operation":"eq","reference":"{{item.count}}"}],
   "metadata":{"project":"q4t"}})";
+
+Q4T_TEST(evals_model_samples_bind_one_worker_and_release_parent_and_child) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ClientAdmission clients;
+  ChatPlanConfig config;
+  config.model = "cpu";
+  config.default_max_tokens = 32;
+  auto client = clients.RecoveryIdentity(0);
+  const std::string scope = "local:anonymous";
+  StateAccess access{scope, std::chrono::steady_clock::now() + 20s, {}};
+  std::atomic<int> calls{0};
+  std::atomic<bool> deliver{false};
+  ResponsesJobs jobs(objects, {}, [&](auto& job) {
+    ++calls;
+    while (!deliver && !job.control->Cancelled())
+      std::this_thread::sleep_for(1ms);
+    if (job.control->Cancelled()) return;
+    ResponseDelta delta;
+    delta.kind = ResponseDelta::Kind::kContent;
+    delta.text = "157";
+    std::string wire;
+    if (!job.run->Append(delta, "null", &wire) ||
+        !job.run->Finish(false, 0, {5, 0, 2, 0}, std::time(nullptr), &wire).ok())
+      throw std::runtime_error("Evaluation sampling fixture");
+  });
+  eval_detail::SamplingOwner owner{clients, client, jobs, config};
+  auto def = Request(objects, "POST", "/v1/evals", kDefinition, scope);
+  Q4T_CHECK(def.ok());
+  const auto base = "/v1/evals/" + def.value.GetString("id") + "/runs";
+  const std::string body = R"({"data_source":{"type":"completions","model":"cpu",
+    "input_messages":{"type":"template","template":[{"role":"user","content":"Report {{item.count}}"}]},
+    "sampling_params":{"temperature":0,"reasoning_effort":"none"},
+    "source":{"type":"file_content","content":[{"item":{"count":157}}]}}})";
+  for (const bool cancel : {false, true}) {
+    deliver = false;
+    auto run = Request(objects, "POST", base, body, scope);
+    Q4T_CHECK(run.ok());
+    const auto& part = *run.value.Find("data_source")->Find("input_messages")->GetArray("template")->array[0].Find("content");
+    Q4T_CHECK(part.GetString("type") == "input_text" && part.GetString("text") == "Report {{item.count}}");
+    const auto id = run.value.GetString("id");
+    const auto path = base + "/" + id;
+    ObjectRequest get;
+    get.kind = ObjectKind::kEvalRun;
+    get.scope = scope;
+    get.id = id;
+    auto read = [&] { return objects.Execute(get, access.deadline); };
+    auto advance = [&] {
+      return eval_detail::AdvanceRun(objects, access, read().value, &owner);
+    };
+    Q4T_CHECK(advance().ok());
+    const auto previous = read();
+    auto claim = eval_detail::AdvanceRun(objects, access, previous.value, &owner);
+    Q4T_CHECK(claim.http_status == 202);
+    const auto claimed = read();
+    auto data = *claimed.value.Find("data");
+    const auto child = data.GetString("pending_response");
+    Q4T_CHECK(!child.empty());
+    const auto& input = *data.Find("sampling_request");
+    Q4T_CHECK(input.GetInt("max_output_tokens") == 32 &&
+              input.GetInt("seed", -1) >= 0 &&
+              input.GetArray("input")->array[0].GetString("content") == "Report 157");
+    Q4T_CHECK(advance().http_status == 202);
+    auto stale = eval_detail::AdvanceRun(objects, access, previous.value, &owner);
+    Q4T_CHECK(stale.http_status == 409);
+    for (int i = 0; calls < (cancel ? 2 : 1) && i < 1000; ++i)
+      std::this_thread::sleep_for(1ms);
+    Q4T_CHECK(calls == (cancel ? 2 : 1));
+    if (cancel) {
+      // Simulate cancellation while the model owner is unavailable. A later
+      // dispatcher observes the durable fence and releases the original child.
+      auto unavailable = HandleEval(objects, access, "POST", path + "/cancel", {});
+      Q4T_CHECK(unavailable.http_status == 503);
+      auto fenced = Request(objects, "GET", path, {}, scope);
+      Q4T_CHECK(fenced.ok() && fenced.value.GetString("status") == "canceled");
+      Q4T_CHECK(advance().ok());
+      Q4T_CHECK(Request(objects, "POST", path + "/cancel", {}, scope).ok());
+    } else {
+      deliver = true;
+      for (int i = 0; jobs.Health().owned && i < 2000; ++i)
+        std::this_thread::sleep_for(1ms);
+      Q4T_CHECK(!jobs.Health().owned);
+      Q4T_CHECK(ResponsesState(objects).Erase(child, access).http_status == 409);
+      Q4T_CHECK(advance().ok());
+      Q4T_CHECK(advance().ok());
+      auto result = Request(objects, "GET", path, {}, scope);
+      Q4T_CHECK(result.ok() && result.value.GetString("status") == "completed");
+      Q4T_CHECK(result.value.Find("result_counts")->GetInt("passed") == 1);
+      auto usage = result.value.GetArray("per_model_usage")->array.front();
+      Q4T_CHECK(usage.GetInt("invocation_count") == 1 &&
+                usage.GetInt("completion_tokens") == 2 &&
+                usage.GetInt("total_tokens") == 7);
+      auto outputs = Request(objects, "GET", path + "/output_items", {}, scope);
+      Q4T_CHECK(outputs.ok() && outputs.value.GetArray("data")->array.size() == 1);
+      const auto& sample = *outputs.value.GetArray("data")->array[0].Find("sample");
+      Q4T_CHECK(sample.GetInt("seed") == input.GetInt("seed") &&
+                sample.GetInt("max_completion_tokens") == 32);
+    }
+    Q4T_CHECK(!read().value.Find("data")->Has("pending_response"));
+    Q4T_CHECK(ResponsesState(objects).Retrieve(child, access).http_status == 404);
+    Q4T_CHECK(Request(objects, "DELETE", path, {}, scope).ok());
+  }
+  return true;
+}
 
 Q4T_TEST(evals_string_grader_resolves_dataset_once_and_folds_unicode) {
   const auto row = Object(

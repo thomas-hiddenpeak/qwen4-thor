@@ -3,9 +3,10 @@
 #include "q4t/server/responses_state.h"
 
 namespace q4t::server {
+class ResponsesJobs;
 Status ValidateEval(const io::Json& value, const char* root,
                     ChatPlanError* error);
 ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
                        std::string_view method, std::string_view target,
-                       const std::string& body);
+                       const std::string& body, ResponsesJobs* jobs = nullptr);
 }  // namespace q4t::server

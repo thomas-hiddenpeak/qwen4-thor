@@ -207,7 +207,7 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access,
 
 ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
                        std::string_view method, std::string_view target,
-                       const std::string& body) {
+                       const std::string& body, ResponsesJobs* jobs) {
   const auto route = ParseEvalRoute(target);
   if (route.kind == EvalRouteKind::kNone)
     return Error(404, "route_not_found", "Unknown eval route");
@@ -224,7 +224,7 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
       route.kind != EvalRouteKind::kEval)
     return eval_detail::RunRequest(
         objects, access, route, method,
-        split == target.npos ? "" : target.substr(split + 1), body);
+        split == target.npos ? "" : target.substr(split + 1), body, jobs);
   if (method != "POST" && !body.empty())
     return Invalid("body", "Unexpected body");
   if (collection && method == "GET")
@@ -278,7 +278,7 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
     request.expires_at = row.value.GetInt("expires_at");
     if (method == "DELETE") {
       auto children =
-          eval_detail::RemoveChildren(objects, access, &request, &row.value);
+          eval_detail::RemoveChildren(objects, access, &request, &row.value, jobs);
       if (!children.ok()) return children;
       request.operation = ObjectOperation::kErase;
       auto removed =

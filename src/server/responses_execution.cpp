@@ -54,6 +54,20 @@ ObjectReply ResponsesExecution::BindMutationResult(ObjectReply reply) {
   return reply;
 }
 
+ObjectReply ResponsesExecution::BindEvalSampling(ObjectRequest mutation) {
+  const auto* run = mutation.data.Find("resource");
+  if (!Prepared() || Begun() || !Envelope().background || !plan_.store ||
+      plan_.eval_sampling_write || mutation.operation != ObjectOperation::kPut ||
+      mutation.kind != ObjectKind::kEvalRun || mutation.scope != Scope() ||
+      mutation.expected_revision < 1 || !run || run->GetString("id") != mutation.id ||
+      run->GetString("status") != "in_progress" ||
+      mutation.data.GetString("pending_response") != Id())
+    return Error(500, "eval_sampling_invalid", "Invalid evaluation sampling claim");
+  plan_.eval_run_id = mutation.id;
+  plan_.eval_sampling_write = std::move(mutation);
+  return {};
+}
+
 ObjectReply ResponsesExecution::BindAutomationDelivery(ObjectRequest write) {
   const auto* row = write.data.Find("resource");
   if (!plan_.agent_session_write || plan_.automation_delivery_write ||
@@ -756,6 +770,21 @@ ObjectReply ResponsesExecution::CheckParentCancellation(bool* cancelled) {
     return Error(500, "batch_response_binding_invalid",
                  "Missing parent output");
   *cancelled = false;
+  if (!plan_.eval_run_id.empty()) {
+    ObjectRequest parent;
+    parent.scope = access_.scope;
+    parent.kind = ObjectKind::kEvalRun;
+    parent.id = plan_.eval_run_id;
+    auto stored = objects_.Execute(parent, access_.deadline, access_.cancelled);
+    if (!stored.ok()) return stored;
+    const auto* data = stored.value.Find("data");
+    const auto* run = data ? data->Find("resource") : nullptr;
+    if (!run || data->GetString("pending_response") != Id())
+      return Error(503, "eval_sampling_invalid", "Invalid evaluation parent");
+    *cancelled = data->GetBool("deleting") ||
+                 run->GetString("status") != "in_progress";
+    return {};
+  }
   if (!plan_.agent_session_id.empty()) {
     auto row = agent_detail::ReadRow(objects_, plan_.agent_session_id, access_);
     if (!row.ok()) return row;

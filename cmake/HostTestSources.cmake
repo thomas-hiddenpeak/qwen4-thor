@@ -318,6 +318,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_transport.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_runs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_dispatcher.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_sampling.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_grading.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/evals.cpp

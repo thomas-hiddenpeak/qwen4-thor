@@ -479,6 +479,7 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       inspector.value.uncertain = true;
     }
     if (run) {
+      inspector.Reference(data.Find("pending_response"));
       if (data.Has("blob")) inspector.Blob(data);
       const auto* resource = data.Find("resource");
       const auto status = resource ? resource->GetString("status") : "";

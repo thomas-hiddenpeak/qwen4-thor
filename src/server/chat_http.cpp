@@ -904,7 +904,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                   path, body, client,
                   {access.scope, access.deadline, access.cancelled})
         : IsEvalTarget(path)
-            ? HandleEval(*objects_, access, method, path, body)
+            ? HandleEval(*objects_, access, method, path, body, background_.Get())
         : IsChatKitTarget(path)
             ? HandleChatKit(*objects_, access, method, path, body,
                 {headers.gateway_token, headers.authorization.starts_with("Q4T-Issuer ")
