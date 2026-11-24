@@ -4158,6 +4158,7 @@
     "tools/serve_recovery/resource_reconcile.py": "603a66c3c006a3b05b13b80d2c6072014e08d289a9c058faa5cf2f60c3c8d5ed",
     "tools/serve_recovery/retention.py": "e9174f5bec4241a26847ceeaf0e0c3b708b1557e341a7fccc2623e93d5fbb862",
     "tools/serve_recovery/retention_epoch.py": "e6819f11405851206c1093fea6a2c2174c232036c2056c48b5609ff636693640",
+    "tools/serve_recovery/retire_root_transfer.py": "66e1cd61fc11f38bc82a4296e48ff3a9a542ccc70bddd1f0492da819a60a58b5",
     "tools/serve_recovery/retrieval_acceptance.py": "4cb55e544591ee31cbd131d41bd1d526a47abd4d0d8af0127dd721c88cda1b20",
     "tools/serve_recovery/root_checkpoints.py": "78a630ffba153e672258c41fe37f8d3a43e7fcd1e1c72ceab4a4b1b3fe59e1a8",
     "tools/serve_recovery/root_transfer.py": "094261adae9dc47efa97482484f08b368b528175a918e62198c37203b644d3a4",

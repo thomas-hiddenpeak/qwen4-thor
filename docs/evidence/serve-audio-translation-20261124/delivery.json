@@ -165,7 +165,19 @@
     "intent": {
       "path": ".q4t-work/serve-responses-agents-20261123/media-client-maintenance-intents-01/result.json",
       "sha256": "a2d18689475e797b32e476c104b415b3bddf2dd6f17e16b70bb5d845fe56ac18"
-    }
+    },
+    "source_audit": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 155,
+      "native_routes": 258,
+      "reviewed_source_anchors": 1250,
+      "mutation_checks": 38,
+      "errors": []
+    },
+    "previous_source_audit": "The offline helper was initially missing its reviewed digest. The checker detected it; the CI root-transfer group now runs its tests."
   },
   "profiles": {
     "path": "docs/evidence/serve-audio-translation-20261124/profiles.json",
