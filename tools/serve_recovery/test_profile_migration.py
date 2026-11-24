@@ -113,6 +113,24 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     live.format_for(bad)
 
+    def test_preparation_extension_preserves_source_lifetime_and_isolation(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(hosted_environment_lifecycle=live.HOSTED_LIFECYCLE_CAPABILITY)
+        new = dict(old, hosted_environment_preparation=live.PREPARATION_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        self.assertFalse(migration.explicit_extension({}, new))
+        for field, invalid in dict(min_file_entries=1, max_files=100, source_pin_seconds=0,
+                                   worker_jobs=2, tenant_rotation=False, pending_attachment=False,
+                                   session_failure_events=False, synchronous_fallback=False,
+                                   core_readiness_dependency=True).items():
+            with self.subTest(field=field):
+                candidate = dict(new, hosted_environment_preparation={
+                    **live.PREPARATION_CAPABILITY, field: invalid})
+                self.assertFalse(migration.explicit_extension(old, candidate))
+                with self.assertRaises(ValueError):
+                    live.format_for(candidate)
+
     def test_webhook_extension_preserves_retry_and_deployment_boundaries(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(agent_automations=live.AUTOMATION_CAPABILITY)

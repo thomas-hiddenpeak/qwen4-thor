@@ -15,7 +15,8 @@ const connect=key=>new OpenAI({apiKey:key,baseURL:p.base,timeout:35000,maxRetrie
 const owner=connect(p.key), peer=connect(p.other);
 const {sessions,environments}=owner.beta.agents;
 const model='qwen3.8-flash-next';
-const bytes=readFileSync(new URL('../../docs/evidence/serve-webhooks-20261124/delivery.json',import.meta.url));
+const receipt=p.preparation ? 'environment-delivery.json' : 'delivery.json';
+const bytes=readFileSync(new URL('../../docs/evidence/serve-webhooks-20261124/'+receipt,import.meta.url));
 const digest=createHash('sha256').update(bytes).digest('hex');
 const revision=JSON.parse(bytes).publication.publication_revision;
 assert.equal(p.revision,revision);
@@ -40,14 +41,39 @@ async function waitForTool(id) {
   return action;
 }
 if (p.phase==='prepare') {
-  const workspace=await environments.create({environment:{type:'openai_hosted'}});
+  const params={type:'openai_hosted'};
+  const sources=[];
+  if (p.preparation) {
+    for (const filename of ['published.json','release-copy.json']) {
+      const source=await owner.files.create({file:new File([bytes],filename,
+        {type:'application/json'}),purpose:'user_data'});
+      sources.push(source.id);
+    }
+    params.files=sources.map((file_id,i)=>({type:'file_id',file_id,
+      path:i===0 ? path : '/workspace/records/release-copy.json'}));
+  }
+  const workspace=await environments.create({environment:params});
+  if (p.preparation) {
+    assert.equal(workspace.status,'pending');
+    await Promise.all(sources.map(id=>owner.files.delete(id)));
+  }
   const environment={type:'openai_hosted',environment_id:workspace.id};
   const agent={model,reasoning:{effort:'none'}};
   const first=await sessions.create({agent:{...agent,...releaseAgent},environment});
   const second=await sessions.create({agent,environment});
-  const uploaded=await environments.files.create(workspace.id,{type:'inline',path,data:bytes.toString('base64')});
-  assert.equal(uploaded.path,path);
-  assert.equal(uploaded.environment_id,workspace.id);
+  if (p.preparation) {
+    const end=Date.now()+30000;
+    while ((await environments.retrieve(workspace.id)).status==='pending') {
+      assert.ok(Date.now()<end,'preparation deadline');
+      await delay(100);
+    }
+    for (const id of sources)
+      await assert.rejects(owner.files.retrieve(id),e=>e.status===404);
+  } else {
+    const uploaded=await environments.files.create(workspace.id,{type:'inline',path,data:bytes.toString('base64')});
+    assert.equal(uploaded.path,path);
+    assert.equal(uploaded.environment_id,workspace.id);
+  }
   for (const s of [first,second]) {
     const current=await sessions.retrieve(s.id);
     assert.equal(current.environment.files.find(x=>x.path===path).size_bytes,bytes.length);
@@ -57,11 +83,18 @@ if (p.phase==='prepare') {
     content:[{type:'input_text',text:'Call read_release_record now with {}. After it returns, give me the actual published revision.'}]}]}]});
   const action=await waitForTool(first.id);
   process.stdout.write(JSON.stringify({phase:p.phase,sdk:version,peer:404,environment:workspace.id,
-    session:first.id,sibling:second.id,file:uploaded.path,turn:action.turn_id,call:action.call_id,
+    session:first.id,sibling:second.id,file:path,turn:action.turn_id,call:action.call_id,
+    ...(p.preparation ? {initial_state:workspace.status,deleted_sources:sources} : {}),
     bytes:bytes.length,sha256:digest}));
 } else {
   assert.equal(p.phase,'restore');
   const previous=p.previous;
+  if (p.preparation) {
+    assert.equal(previous.initial_state,'pending');
+    assert.equal(new Set(previous.deleted_sources).size,2);
+    for (const id of previous.deleted_sources)
+      await assert.rejects(owner.files.retrieve(id),e=>e.status===404);
+  }
   const state=await environments.retrieve(previous.environment);
   assert.equal(state.status,'connected');
   assert.equal((await sessions.turns.list(previous.sibling)).data.length,0);

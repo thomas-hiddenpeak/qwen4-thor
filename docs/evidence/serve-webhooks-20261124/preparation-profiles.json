@@ -1,0 +1,130 @@
+{
+  "status": "ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT",
+  "issued_revision_at_verification": 474,
+  "profiles": {
+    "primary": {
+      "seconds": 41.784,
+      "starts": 1,
+      "mtp": true,
+      "previous": "68481ee9e52c56bc0bd993214a52da4d1ebe654a28ab79ada05d7e30a5fbb1b0",
+      "profile": "fe389ddf35f8564241bdcc1e6884a221a765e33ce38ed0aedd6c387aa44ed6a1",
+      "ssl_client": "openai-node 7.47.0",
+      "peer": 404
+    },
+    "light": {
+      "seconds": 37.249,
+      "starts": 1,
+      "mtp": false,
+      "previous": "99a16787d773574d10009467ccec6aaeeed421e365fbf22bde69a77d109e8ee7",
+      "profile": "042ec92da5594a72850730ef93f8b9c3c518a42b8c49de912a5281385fb3283f",
+      "ssl_client": "openai-node 7.47.0",
+      "peer": 404
+    }
+  },
+  "candidate": {
+    "binary": "25e864a81b01ef9581dc27dc4aec29c02f528608fe4c080feb2b51112915251b",
+    "ingress": "ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46"
+  },
+  "business": {
+    "source_files_deleted": 2,
+    "initial_state": "pending",
+    "retained_bytes": 9937,
+    "content_sha256": "0b897eab130615e1f8cf1a616bd504962b4f1905ee9a5b19d0b14698d35cd577",
+    "same_session": "agent_session_7c53d23f2030a3a795fba0b50da0d272",
+    "original_turn": "turn_9bdafcbb33c6044ea3ad094ff336e2e3",
+    "original_call": "call_resp_a7f690a3e0756e0a4615d99167178acd_0",
+    "answer": "The actual published revision is **474**.",
+    "independent_chat": "42"
+  },
+  "configuration_schema": {
+    "profiles": 4,
+    "errors": 0,
+    "versions": [
+      42,
+      43
+    ]
+  },
+  "managed_delivery": false,
+  "prior_attempts": [
+    "First source preparation omitted the already-pinned GStreamer fixture path. No model started. The repeat supplied the pinned plugin and registry.",
+    "First offline evidence review requested observations.json. The finalizer produced profile-observations.json. The reviewer read that file without rerunning either model."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/profile-observations.json",
+      "sha256": "adb13373a47f0870fd33601b6368191df6a18fcef77fa19a47bb1a7c4f2dbe11"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/acceptance.json",
+      "sha256": "cd0d8ac581bde958758caf1b8dde20c470b3606b5562d73581cce376483d4c41"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/lease/exit.json",
+      "sha256": "b5266392f20dc31049fe44457f2ff88c70750dbc4c3be676e916dde875b1d8ae"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-qualified-01/acceptance.json",
+      "sha256": "d2899bb6e5172d8c11649841e0ef88b831ecce30f5a6853237747b961ce5aecd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-qualified-01/qualified/registry.json",
+      "sha256": "736381459d6d439dccf9413451c157d4bd80a2fa90c5bef2f0b72f07b0ea79d8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/pending-wire-schema-01.json",
+      "sha256": "24527e54e35a89c5700d62f3c113945f53d1e05ec8ef18b066c83c7481188cf0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/pending-profile-migration-01.log",
+      "sha256": "089d0839d954b9a44fdc2dd1b8565fcc1fa1a84d3c547561f4019d04b6674324"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/pending-profile-prepare-01.log",
+      "sha256": "3f6da961322157f1c8d2ec9125589272dd5ea92af7a0b41a8a112a2b3223f93d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/pending-profile-review-02.log",
+      "sha256": "2ffab40e06e83d1fc0e7e1e3d0a090fdb3bbdb39bb3c8188f4cec2908d10761f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/primary/preparation-handoff.json",
+      "sha256": "386f3c943b5836834a03a00f021b1cedbfbefd03426401e0ad65220833b3b743"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/primary/plan.json",
+      "sha256": "5f86ca59752b2fd2b63cb84c65a63d74ec681d46f34bc8e9757bdce9a422a684"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/primary/result.json",
+      "sha256": "a45d3d1efcfc0b1a18900281309145ca9ffb6a0d313d644b7cf142caed45f66d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/primary/configuration.wire",
+      "sha256": "acbd22752a518882d4893a8c0bca742eedf46b88a53e360941e91c9cf276b770"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/primary/cleanup.json",
+      "sha256": "58be894ee980b69f09d346d95bed4d95e849f590739e95dd8b253c256c517d01"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/light/preparation-handoff.json",
+      "sha256": "df425e019e04bdf9f61233f38102a3edb91d9898c812829c73bbed131b2570a8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/light/plan.json",
+      "sha256": "6883207ad565156ea37a74897081b3008a7c0d813352598bfefeac500fd212df"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/light/result.json",
+      "sha256": "a6ba9d8e21c3bf8df07826f24a3721d78553d481ec0c240e8a07565f45b6695a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/light/configuration.wire",
+      "sha256": "dcdc44f2f8fefe00847597e742779c87e6ee0347c7281a35baf13d9bf2e883d3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/pending-profiles-02/light/cleanup.json",
+      "sha256": "7aaa791093e2bee9e5fa51dcb2119cce00f458b70f1d4f499306500954bc9a07"
+    }
+  ]
+}

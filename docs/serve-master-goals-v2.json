@@ -739,6 +739,16 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
         "official_payloads": 9
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
       }
     },
     {
@@ -2947,6 +2957,16 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
         "official_payloads": 9
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
       }
     },
     {
@@ -6558,6 +6578,16 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
         "official_payloads": 9
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
       }
     },
     {
@@ -8536,6 +8566,16 @@
         "revision": 474,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
       }
     },
     {
@@ -10017,6 +10057,16 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
         "official_payloads": 9
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
       }
     },
     {
@@ -11616,6 +11666,16 @@
         "revision": 474,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
       }
     }
   ],

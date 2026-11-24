@@ -67,7 +67,8 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
-        if 'hosted_environment_lifecycle' in declared or 'environment_handoff' in plan:
+        if ('hosted_environment_lifecycle' in declared or 'environment_handoff' in plan or
+                'preparation_handoff' in plan):
             from tools.serve_responses import environment_lifecycle_profiles
             profiles[name]['evidence_sha256'].update(environment_lifecycle_profiles.verify(phase, plan, declared))
             continue
