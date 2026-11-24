@@ -666,6 +666,13 @@
           "primary to light redelivery"
         ],
         "pending": "managed interruption and release"
+      },
+      "webhook_delivery_20261124": {
+        "revision": 472,
+        "evidence": "evidence/serve-webhooks-20261124/delivery.json",
+        "declared_with_expected_success": 197,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     },
     {
@@ -2801,6 +2808,13 @@
           "primary to light redelivery"
         ],
         "pending": "managed interruption and release"
+      },
+      "webhook_delivery_20261124": {
+        "revision": 472,
+        "evidence": "evidence/serve-webhooks-20261124/delivery.json",
+        "declared_with_expected_success": 197,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     },
     {
@@ -6339,6 +6353,13 @@
           "primary to light redelivery"
         ],
         "pending": "managed interruption and release"
+      },
+      "webhook_delivery_20261124": {
+        "revision": 472,
+        "evidence": "evidence/serve-webhooks-20261124/delivery.json",
+        "declared_with_expected_success": 197,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     },
     {
@@ -8295,6 +8316,13 @@
           "primary to light redelivery"
         ],
         "pending": "managed interruption and release"
+      },
+      "webhook_delivery_20261124": {
+        "revision": 472,
+        "evidence": "evidence/serve-webhooks-20261124/delivery.json",
+        "declared_with_expected_success": 197,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     },
     {
@@ -8704,6 +8732,13 @@
         "evidence": "evidence/serve-agent-automations-20261124/delivery.json",
         "required_methods": 231,
         "declared_with_expected_success": 189,
+        "long_run_hours": 0
+      },
+      "webhook_delivery_20261124": {
+        "revision": 472,
+        "evidence": "evidence/serve-webhooks-20261124/delivery.json",
+        "declared_with_expected_success": 197,
+        "required_methods": 231,
         "long_run_hours": 0
       }
     },
@@ -9696,6 +9731,13 @@
           "primary to light redelivery"
         ],
         "pending": "managed interruption and release"
+      },
+      "webhook_delivery_20261124": {
+        "revision": 472,
+        "evidence": "evidence/serve-webhooks-20261124/delivery.json",
+        "declared_with_expected_success": 197,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     },
     {
@@ -11267,11 +11309,18 @@
           "primary to light redelivery"
         ],
         "pending": "managed interruption and release"
+      },
+      "webhook_delivery_20261124": {
+        "revision": 472,
+        "evidence": "evidence/serve-webhooks-20261124/delivery.json",
+        "declared_with_expected_success": 197,
+        "required_methods": 231,
+        "long_run_hours": 0
       }
     }
   ],
-  "next_task": "Package the native webhook deployment policy, verify managed recovery and implement the remaining inference/application endpoints and event producers.",
-  "next": "Webhook 出站策略封包、受监护恢复及其余应用事件与接口。",
+  "next_task": "Connect Agent session and environment lifecycle transitions to signed subscriptions. Continue the remaining inference and application endpoints, recovery and delivery tasks.",
+  "next": "实现 Agent 会话与执行环境的真实生命周期通知，再接续其余推理、应用服务和恢复事项。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

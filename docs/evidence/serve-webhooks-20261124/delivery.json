@@ -1,0 +1,238 @@
+{
+  "status": "ACCEPT_MANAGED_WEBHOOK_RECOVERY_AND_RELEASE",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 472,
+    "version_revision": 165,
+    "profile_revision": 55,
+    "previous_profile_revision": 54,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "ef75d132e31305df676ae8364a49f6d45ca690cd8a063439536a447f636f9504",
+    "fallback": "fe11b5a5a421cd4466fa7bd958f39a32d8d24120082efa717815c71f8f82a861",
+    "engine": "5e2224c0c4bf28773515149f225ab7ef5524927189a135aced2088fa30a6d351",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "business": {
+    "opt-in": {
+      "seconds": 164.887,
+      "starts": 2,
+      "guardian_same": true,
+      "old_generation": 1,
+      "new_generation": 2,
+      "manifest": "a01a27e85f9f15e046ec1bc351eeec2fa0bfd9037f6b4897c4873bc6eaddf2d3",
+      "signed_outbound": true,
+      "event": "evt_c9daf0c02b37ee75a6a955c9d2eaf4e4",
+      "resource": "resp_f621b8df70e51d3ccbc27c690a05b688",
+      "endpoint": "whe_7d6748efa51a306d76f1d4c7eb54d1cf",
+      "chat": "42",
+      "peer": 404,
+      "response_answer": "470",
+      "batch_answer": "470",
+      "retry_seconds": 102,
+      "delivery_http": [
+        503,
+        202,
+        202
+      ]
+    },
+    "fallback": {
+      "seconds": 120.455,
+      "starts": 2,
+      "guardian_same": true,
+      "old_generation": 1,
+      "new_generation": 2,
+      "manifest": "fe11b5a5a421cd4466fa7bd958f39a32d8d24120082efa717815c71f8f82a861",
+      "signed_outbound": false,
+      "event": "evt_91b68af795e037d32cc4cd390c977451",
+      "resource": "resp_da303d633f4ebeb5e28910a032b3475d",
+      "endpoint": "whe_2b898ec930e6a6852951a22addc08799",
+      "chat": "42",
+      "peer": 404,
+      "outbound_attempts": 0,
+      "disabled_delivery_http": 503,
+      "response_answer": "470"
+    },
+    "primary": {
+      "seconds": 185.685,
+      "starts": 2,
+      "guardian_same": true,
+      "old_generation": 1,
+      "new_generation": 2,
+      "manifest": "ef75d132e31305df676ae8364a49f6d45ca690cd8a063439536a447f636f9504",
+      "signed_outbound": false,
+      "event": "evt_628fbaf01e4cfe28ef069bbc95afc53a",
+      "resource": "resp_2c60e58885588469a33f522403fb8e1f",
+      "endpoint": "whe_e4db568263108f2e8feb09c276678441",
+      "chat": "42",
+      "peer": 404,
+      "outbound_attempts": 0,
+      "disabled_delivery_http": 503,
+      "response_answer": "470",
+      "fallback_consumed": true
+    }
+  },
+  "method_declarations": {
+    "required": 231,
+    "declared_with_expected_success": 197,
+    "missing": 34
+  },
+  "sdk": "7.47.0",
+  "day": {
+    "source_commit": "9f360af7c0275c302242e29c33aacbcd84c5e042",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/webhook-client-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/webhook-client-primary-01/bundle",
+      "manifest_sha256": "ef75d132e31305df676ae8364a49f6d45ca690cd8a063439536a447f636f9504"
+    },
+    "revision": 472,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/webhook-client-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "3d49128b09d604a789ea18db0022ff8cd7fcd272a27213899514507d64cd3352",
+    "handoff_sha256": "b13042c7f3e85c7d3b58d59ba67ae54691ddcf57bb69d3f60f1cde6dd9129f4e",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "source_commit": "9f360af7c0275c302242e29c33aacbcd84c5e042",
+  "failed_check": "First gateway fault fixture rejected a nonmatching private test directory name. It exited before model startup, released ports and left the published default unchanged. The fixture was then run under its expected private directory prefix.",
+  "limits": [
+    "The deployed default retains the operator decision to leave webhook egress disabled. Delivery is enabled by including a policy at preparation.",
+    "Real model notifications cover response.completed and batch.completed. Other producer families and the remaining 34 methods continue under the master plan.",
+    "The 24-hour plan is checked and ready for the owner. No long run or full-model performance suite was executed."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-delivery/result.json",
+      "sha256": "a2147327553d78825802b03c98f2a56b0bd3482a0e8d291c1d53ebe2cb12a714"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-delivery/plan.json",
+      "sha256": "10a024733d1f383422997b933c7b2fe7d793588b3997d803990dfcc8b8a36a5e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-maintenance-01/result.json",
+      "sha256": "6cb0ecd203dfc1c631a22efcd38afee36add68a260200cb5383a318090d3cf40"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-day.json",
+      "sha256": "97e4e3744f537fe81d6bde46ddec35813881b0b99f58f99e23453ab0b7df5bff"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-released-methods.json",
+      "sha256": "f501b16453f8424ae1067c62be8534dcd0ccef1e8a2d5cf9f2366759f4785481"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-primary-business-01/result.json",
+      "sha256": "29667daa5a44ebd29d4cc623f41c9d14e7b0b1c09186a840b4f4758a13a18365"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-primary-business-01/guardian.log",
+      "sha256": "867aa0d4097b254c3ecfa6c3136abe16f1377f28db7a4441c91ac1eedd48c3f6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-primary-lease-01/exit.json",
+      "sha256": "ec6b680c719e307b92f652237371c9b38dfb7264e01ca21587329643d293a1b2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-opt-in-lease-01/exit.json",
+      "sha256": "d21f83ffc3f2a108452f012c9a7b7d423bda713de8d7deddb5149618eb09560b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-opt-in-business-01/prepare-run.json",
+      "sha256": "6c6741a7ed9fc534f01fb8fef1b4ee9c486754cf430225b68936fe30cae66a8c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-opt-in-business-01/restore-run.json",
+      "sha256": "6be2b838bc2a937c622afaf2e69070520f144e331c9fca944234de13facef5bd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-opt-in-business-01/result.json",
+      "sha256": "5e08545defe1baa3d1562075b5d5fc6c49047c7b43d511e844c53def94192158"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-opt-in-business-01/chat-after.wire",
+      "sha256": "4f82156b97eae4a7f90d86f7021836ebfcae393bdf352e02b09531e24e5f7c2f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-opt-in-business-01/interruption.json",
+      "sha256": "27bed4cd4ba731e255daefa520c6bd9e4486f1ea8a8421dce5ae4d7add178049"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-fallback-01/origin.json",
+      "sha256": "5cb88522cd7fb056722a5570a54b526850253c54764c38458be972f5dcdac11d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-fallback-01/service-acceptance.json",
+      "sha256": "eaea2bec5243274ddaf54e253da9f4605cb869befb1e78db0a8b3c26c485998e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-fallback-01/service.release.json",
+      "sha256": "cc4a8ad740e4cde8d4151c6e11d5b1bc2aec8606046d32b8e819f940d551f870"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-fallback-lease-01/exit.json",
+      "sha256": "6c2970de8b79d8b7e146fbc639e372f7deeb1bbcae5b93f125c6b2e237cbf7e2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-fallback-business-01/prepare-run.json",
+      "sha256": "38849a7d157c22f242f3d40c35ff45cd2a0ec43fdc946befbd075680b7a8af15"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-fallback-business-01/restore-run.json",
+      "sha256": "01a6b8feb27be645f9f900f1c523612766182323c5b0def9755624cb82090edc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-fallback-business-01/result.json",
+      "sha256": "58159259da4e945aa78430ef610285154f1c76af54c880632afd49eeca5e7238"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-fallback-business-01/chat-after.wire",
+      "sha256": "5352f3af071c5a556f67677df016536be96d65edbac93746098a7d041767861d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-fallback-business-01/interruption.json",
+      "sha256": "b2b1579210228edc778005db5db884d646c6832af417c082cb99f223e662275b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-primary-01/origin.json",
+      "sha256": "3c2e1e20386b3dde4be0f0e0c400d0c5eea722438244184219582277630a10bb"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-primary-01/service-acceptance.json",
+      "sha256": "c6b70bbbf79f589692f91bd31d62eb1ac41136793ae0c7605440591e811dda2a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-client-primary-01/service.release.json",
+      "sha256": "8f928cb9552826615169b7fb15733ef73b996454e05372ae6223985a767f88ed"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-webhook-02/takeover.json",
+      "sha256": "97ce86132427792917d5ead7b99b4c014c119e73901af2f6028fd3d3c16bb138"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-primary-lease-02/exit.json",
+      "sha256": "7eb366c76c473af02e2caf35879df2df48f8b21718dc13892d16fec2c040601b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-webhook-02/prepare-run.json",
+      "sha256": "28dcb60be847daa8ef3f5aec2b3b2fb3b12fe3ba57b6e58f106f0d2897708c53"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-webhook-02/restore-run.json",
+      "sha256": "15fdaa0bba6630074f407d4694619506b6114391d0b8af96c028ede7590fc119"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-webhook-02/result.json",
+      "sha256": "4ce9e02de7a350760dbf0b7c95b3e011379fb194f2b57ac3e829a6ea651d18a3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-webhook-02/chat-after.wire",
+      "sha256": "70880049cc8199efb9284d2e8338c8a20787541f039e37c65bbc875017bbfa77"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-webhook-02/interruption.json",
+      "sha256": "34e87e91abeab32f14a1f009905c8d9f3dd6d31e406cd3016f8a47916d17f518"
+    }
+  ]
+}
