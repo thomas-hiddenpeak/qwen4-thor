@@ -12,7 +12,7 @@ class RealtimeNoiseInput {
   using Sink = std::function<Status(std::span<const float>)>;
   RealtimeNoiseInput(RealtimeAudioFormat format, audio::NoiseReduction mode,
                      uint64_t begin_ticks,
-                     std::function<bool()> cancelled = {});
+                     std::function<bool()> cancelled = {}, double strength = 1);
   bool Valid() const { return valid_; }
   // Serial session-owner calls. CPU work checks cancellation between fixed
   // chunks; caller keeps the socket reader independent and bounds its inbox.

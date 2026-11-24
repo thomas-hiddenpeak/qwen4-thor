@@ -107,6 +107,13 @@ def add_voice_routes(paths, response, error):
     operation('post', secrets, json_result({'$ref':realtime+'client_secret_created'}),
               body=content('application/json', {'$ref':realtime+'client_secret_create'}))
     paths[secrets]['post']['requestBody']['required'] = False
+    operation('post', '/v1/realtime/translations/client_secrets',
+              json_result({'$ref':realtime+'translation_secret_created'}),
+              body=content('application/json', {'$ref':realtime+'translation_secret_create'}))
+    operation('get', '/v1/realtime/translations', upgrade,
+              parameters=[param('model', 'query', dict(const='gpt-realtime-translate'))],
+              **{'x-q4t-client-event':{'$ref':realtime+'translation_client_event'},
+                 'x-q4t-server-event':{'$ref':realtime+'translation_server_event'}})
     legacy = '/v1/realtime/transcription_sessions'
     # Reuse the nested transcription input contracts from the generated GA schema.
     def input_field(name):

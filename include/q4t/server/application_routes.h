@@ -68,15 +68,24 @@ inline std::string_view LiveForkId(std::string_view path) {
   return LiveResourceId(path, "/fork");
 }
 // Exact WebSocket targets; adapters validate their own query semantics.
+inline bool IsRealtimeTranslationTarget(std::string_view target) {
+  return target.substr(0, target.find('?')) == "/v1/realtime/translations";
+}
+inline bool ValidRealtimeTranslationTarget(std::string_view target) {
+  return target == "/v1/realtime/translations" ||
+         target == "/v1/realtime/translations?model=gpt-realtime-translate";
+}
 inline bool IsRealtimeCredentialTarget(std::string_view path) {
   return path == "/v1/realtime/client_secrets" ||
+         path == "/v1/realtime/translations/client_secrets" ||
          path == "/v1/realtime/transcription_sessions" ||
          path == "/v1/realtime/sessions";
 }
 
 inline bool IsRealtimeTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
-  return path == "/v1/realtime" || path == "/v1/live/sessions" ||
+  return path == "/v1/realtime" || IsRealtimeTranslationTarget(target) ||
+         path == "/v1/live/sessions" ||
          !LiveSidebandId(target).empty() || !LiveForkId(target).empty();
 }
 inline bool IsRealtimeUpgrade(std::string_view method,

@@ -1,0 +1,210 @@
+{
+  "status": "ACCEPT_NATIVE_TRANSLATION_WEBSOCKET_HTTP",
+  "sdk": "7.47.0",
+  "fixed_official_openapi": "926a7b8133226630bac025350e84b0ca5c31d45a",
+  "issued_default_revision": 466,
+  "candidate": {
+    "binary": "f6cfdaa3cb198d8d8645de79eec44039889ec1677a1a862dba3cf3047841c868",
+    "ingress": "03febb95177c39fd1d54fb08fcfca75a8744e08735782b5a54412f0c7e7a1e21",
+    "sdk_driver": "71a89ff3de1857f385af37d921243c552ee72092a2be18453b3c339d2ca5c22c"
+  },
+  "source_pcm_sha256": "1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc",
+  "source_transcript": "甚至出现交易几乎停滞的情况。",
+  "translated": "It has even led to a situation where trading has almost stalled.",
+  "independent_audio_transcription": "It has even led to a situation where trading has almost stalled.",
+  "pcm16_mono_24000_bytes": 264960,
+  "wav_sha256": "2d08ba382052ca0e091135b1df8c73bc7c2f7ea4c2ea9e9fe340d870421dadcd",
+  "events_before_close_request": 23,
+  "audience_mismatches": [
+    401,
+    401
+  ],
+  "limited_customer": {
+    "error": "tts_output_limit",
+    "close_code": 1011,
+    "successful_terminal": false
+  },
+  "independent_chat": "42",
+  "validated_events": [
+    {
+      "capture": "events.json",
+      "events": 176,
+      "types": {
+        "session.created": 1,
+        "session.input_transcript.delta": 7,
+        "session.output_transcript.delta": 13,
+        "session.output_audio.delta": 153,
+        "session.updated": 1,
+        "session.closed": 1
+      }
+    },
+    {
+      "capture": "events.json.limited",
+      "events": 16,
+      "types": {
+        "session.created": 1,
+        "session.output_transcript.delta": 14,
+        "error": 1
+      }
+    }
+  ],
+  "cpu": [
+    "noise_stream_bypass_exact_and_finish_never_adds_samples",
+    "noise_stream_invalid_input_budget_and_cancel_never_drain_success",
+    "noise_stream_partition_and_backpressure_are_bit_exact",
+    "noise_stream_silence_and_connection_state_do_not_leak",
+    "noise_stream_stationary_hum_attenuation_and_speech_tone_retention",
+    "noise_translation_strength_interpolates_the_full_waveform",
+    "realtime_client_secret_capacity_is_scoped_and_expiry_releases_it",
+    "realtime_client_secret_issue_redeem_and_expire_at_either_clock",
+    "realtime_client_secret_rejects_invalid_ttls_and_private_resource_fields",
+    "realtime_noise_cancel_or_sink_failure_poison_only_owned_pipeline",
+    "realtime_noise_partial_word_and_fractional_clock_finish_exactly",
+    "realtime_noise_resample_overshoot_is_saturated_once_before_filter",
+    "realtime_noise_stream_matches_whole_reference_for_every_partition",
+    "realtime_shape_matches_actual_sdk_type_oracle",
+    "realtime_translation_flushes_before_close_and_preserves_update_order",
+    "realtime_translation_secret_redeems_only_on_its_own_transport",
+    "realtime_translation_settings_preserve_effective_audio_contract",
+    "websocket_session_completion_does_not_override_failure_or_revocation",
+    "websocket_session_completion_drains_all_frames_before_normal_close",
+    "websocket_session_completion_in_message_stops_same_batch_dispatch",
+    "websocket_session_completion_slow_reader_and_eof_are_not_success",
+    "websocket_session_drains_error_before_1011"
+  ],
+  "sdk_oracle": {
+    "vectors": 594,
+    "concrete_assignability_checks": 2500,
+    "differences": 0
+  },
+  "optional_gateway_tests": 10,
+  "starts": 1,
+  "seconds": 80.896,
+  "method_declarations": {
+    "required": 231,
+    "exact": 179,
+    "remaining": 52
+  },
+  "open": [
+    "Translation WebRTC media tracks, dual-profile handoff and sealed package recovery/publication.",
+    "Other language pairs, extended speech and subjective listening are outside this single real utterance."
+  ],
+  "earlier_failures": [
+    "TTS startup exceeded the fixture workspace with unspecified context/frame limits. Used the previously accepted explicit TTS bounds.",
+    "At 384 service completion tokens the decoded clause exhausted the audio-code budget. The original socket lost the error. Tested both the fix and a deliberately limited second customer."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-lease-03/exit.json",
+      "sha256": "e3e90a3bf7850ca1683cf333832495e6b185a0a418c4a0163cbb53a6a1d3fd57"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-03/result.json",
+      "sha256": "5579dee5663e061b3bc2500d136792c6c09f4e769944da3ce7befb68b889582f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-03/plan.json",
+      "sha256": "7a1ab0b88af53f3c1c66a27f1afaeb3d4f4a3d07c86c2bead856fd04d3a71528"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-03/create/sdk-result.json",
+      "sha256": "098617fbabcb648c927517180a39e8688f4930048da8c12f6e27efc4150e4c71"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-03/create/translated.wav",
+      "sha256": "2d08ba382052ca0e091135b1df8c73bc7c2f7ea4c2ea9e9fe340d870421dadcd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-03/create/events.json",
+      "sha256": "b886d86470fcf9df0c8754f218fcc81134a427edfe6dfe28bbb22165a7899c10"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-03/create/events.json.limited",
+      "sha256": "f8198a7f4ef6a4e99208bd9d42e946a0457d5563f1abbfb24410943011686358"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/wire.json",
+      "sha256": "b48273cf842402fe427a25079c8cede2c7a5b7201220642b5ffd94d9e2377968"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/audit-05.json",
+      "sha256": "3721eeff4b1bcb1039f5c5fd82eb5a3d2afa557fc37023d6fecad27b0bbc660c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/methods.json",
+      "sha256": "18226237ef9b8ecba0334e3112cbe77e8ad2c11d42a8c249c7e1ada176117d14"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/optional-gateway-04.log",
+      "sha256": "6d3f0aef48c08c6eb72e5700168f8089712e5cd1743ebf06c33ad9c234ee1391"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/graph-02.log",
+      "sha256": "bdc44b376fadd642c6f46a012ae5baa6739258d276cf53243aaa44ce85b6c018"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/vectors-01.log",
+      "sha256": "f091b20a34f9ba04b40477959188ecc49272dceee7d1ef2f2cd881467a4b3e05"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-01/result.json",
+      "sha256": "6026845a47d1a40768e79427172a3be95d93e399b17a27f86413d9118f4a3d90"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-lease-01/exit.json",
+      "sha256": "9a51b77379cb0a54863c5a8d9c372e4fe75df1a0c82012d5414e37361cd3462d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-01/create/model.log",
+      "sha256": "344e9ef1e0447b8a39f303065d0da47b3353492acafbc98e81528a5b9efb50b3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-02/result.json",
+      "sha256": "c73d684319e3e52c3f69f8681d61b48d992c79f277ef18d00a950fc8c3711e47"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-lease-02/exit.json",
+      "sha256": "e70f483999a85da773d1e16bccacfb95c1d3a291aab23f7c49b8217ffd47e349"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-02/create/model.log",
+      "sha256": "23b03adccd21cf4d2c52c3475fa221ae4023ad07edfd9d34a340e7afa8cf97c9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/realtime-translation-business-02/create/events.json",
+      "sha256": "05cd1a0cef22a2f4a6c8435ab728e70ce587dba301845dc9b7692968b80e62a6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/cpu-translation-drain.log",
+      "sha256": "381580c2b4fdf301dac175055eda19c3d6c7abf7cd5dcc2e871464d10c011d59"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/cpu-error-drain.log",
+      "sha256": "007b7411d68d94fa82a242fc67a8c00bbc715d31e02ca2c29375278497cec019"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/cpu-websocket-completion.log",
+      "sha256": "6a064b99c8bc6da3636c2fb965a599ddccdcb7b036761a9ddb5e66bc190e259e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/cpu-realtime_client_secret_.log",
+      "sha256": "d32eebbe815a93d4447304bd053f8ed19d61fb853361d34d29f9de06c1026c4b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/cpu-realtime_shape_matches_actual_sdk_type_oracle.log",
+      "sha256": "39efa06d17408b26f43250079277e90ce81ccc3c0ae742b6208ac6f221b71fc6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/cpu-noise_translation_strength.log",
+      "sha256": "0654930fda4eb8c7d7ada30add5d5250fbc7c9e11b8754bd64997950cc60bebf"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/cpu-noise-stream.log",
+      "sha256": "72a6c5bd477dd15987faa508f06a5c51cde678b30424aa4799b9eb7e6490906f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-dev-01/cpu-realtime-noise.log",
+      "sha256": "54d9b86ba6937f6433b7b7619f9169f6e88a05e5248c1bf3b72e80e608a9f4a4"
+    }
+  ]
+}

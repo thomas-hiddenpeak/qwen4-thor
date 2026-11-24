@@ -38,6 +38,8 @@ APPLICATION_ROUTES = [
     *((method, '/v1/audio/voice_consents/{consent_id}', 'control')
       for method in ('GET','POST','DELETE')),
     ('GET', '/v1/realtime', 'realtime'),
+    ('GET', '/v1/realtime/translations', 'realtime'),
+    ('POST', '/v1/realtime/translations/client_secrets', 'data'),
     ('GET', '/v1/live/sessions', 'realtime'),
     ('GET', '/v1/live/sessions/{session_id}/attach', 'sideband'),
     ('POST', '/v1/live/sessions', 'data'),
@@ -427,7 +429,7 @@ def realtime_issuer_maps(clients):
                      for c in clients)
     return ('  map $http_authorization $q4t_issuer_digest {\n    default "";\n'+rows+
             '\n  }\n  map "$request_method:$request_uri" $q4t_realtime_issuer {\n'
-            '    default "";\n    "POST:/v1/realtime/client_secrets" "Q4T-Issuer $q4t_issuer_digest";\n'
+            '    default "";\n    "POST:/v1/realtime/client_secrets" "Q4T-Issuer $q4t_issuer_digest";\n    "POST:/v1/realtime/translations/client_secrets" "Q4T-Issuer $q4t_issuer_digest";\n'
             '    "POST:/v1/realtime/transcription_sessions" "Q4T-Issuer $q4t_issuer_digest";\n'
             '    "POST:/v1/realtime/sessions" "Q4T-Issuer $q4t_issuer_digest";\n  }')
 

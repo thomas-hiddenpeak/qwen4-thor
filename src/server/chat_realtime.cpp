@@ -33,6 +33,10 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
                                 std::string_view accept) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
+  if (IsRealtimeTranslationTarget(path)) {
+    HandleRealtimeTranslation(fd, path, headers, initial, accept);
+    return;
+  }
   if (IsCallSideband(path)) {
     HandleLiveSideband(fd, path, headers, initial, accept);
     return;
@@ -185,16 +189,18 @@ RealtimeTranscriptionCallbacks ChatServer::PrepareRealtimeInput(
   callbacks.release = [this](const auto& control) {
     requests_.Remove(control);
   };
-  callbacks.execute = [this, client](const auto& job, const auto& bytes,
+  callbacks.execute = [this, client](const auto& job, const auto&,
                                      const auto& control, const auto& emit) {
-    return RunRealtimeTranscription(client, job, bytes, control, emit);
+    const auto pcm = job.processed_audio ? job.processed_audio->Samples()
+                                         : std::span<const float>{};
+    return RunRealtimeTranscription(client, job, pcm, control, emit);
   };
   return callbacks;
 }
 
 ObjectReply ChatServer::RunRealtimeTranscription(
     const ClientIdentity& original, const RealtimeTranscriptionJob& job,
-    const std::array<std::span<const uint8_t>, 2>& /*bytes*/,
+    std::span<const float> pcm,
     const std::shared_ptr<RequestControl>& control,
     const RealtimeTranscriptSink& emit) {
   metrics_.requests_total.fetch_add(1);
@@ -270,8 +276,6 @@ ObjectReply ChatServer::RunRealtimeTranscription(
                                       http.Usage(), emit);
         const size_t max_samples =
             size_t(asr_limits_.max_audio_seconds) * 16000;
-        const auto pcm = job.processed_audio ? job.processed_audio->Samples()
-                                             : std::span<const float>{};
         if (pcm.empty() || pcm.size() > max_samples)
           return Error(400, "audio_invalid",
                        "Committed processed audio missing");

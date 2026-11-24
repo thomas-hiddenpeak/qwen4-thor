@@ -13,7 +13,14 @@
     "call_refer": 465,
     "call_reject": 466,
     "client_secret_create": 467,
-    "client_secret_created": 473
+    "client_secret_created": 473,
+    "translation_secret_create": 513,
+    "translation_secret_created": 528,
+    "translation_session_create": 516,
+    "translation_session_update": 540,
+    "translation_session": 529,
+    "translation_client_event": 551,
+    "translation_server_event": 557
   },
   "nodes": [
     {
@@ -6401,6 +6408,682 @@
         }
       ],
       "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "expires_after",
+          "optional": true,
+          "type": 514
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 516
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        515
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "anchor",
+          "optional": true,
+          "type": 470
+        },
+        {
+          "name": "seconds",
+          "optional": true,
+          "type": 212
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "audio",
+          "optional": true,
+          "type": 517
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        518
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": true,
+          "type": 519
+        },
+        {
+          "name": "output",
+          "optional": true,
+          "type": 526
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        520
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "noise_reduction",
+          "optional": true,
+          "type": 521
+        },
+        {
+          "name": "transcription",
+          "optional": true,
+          "type": 524
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        522
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 523
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        195,
+        196
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        525
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "model",
+          "optional": false,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        527
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "language",
+          "optional": true,
+          "type": 4
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "expires_at",
+          "optional": false,
+          "type": 51
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 529
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "audio",
+          "optional": false,
+          "type": 530
+        },
+        {
+          "name": "expires_at",
+          "optional": false,
+          "type": 51
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 539
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": true,
+          "type": 531
+        },
+        {
+          "name": "output",
+          "optional": true,
+          "type": 537
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        532
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "noise_reduction",
+          "optional": true,
+          "type": 533
+        },
+        {
+          "name": "transcription",
+          "optional": true,
+          "type": 535
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        534
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 523
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        536
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "model",
+          "optional": false,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        538
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "language",
+          "optional": true,
+          "type": 4
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "translation"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "audio",
+          "optional": true,
+          "type": 541
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        542
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": true,
+          "type": 543
+        },
+        {
+          "name": "output",
+          "optional": true,
+          "type": 549
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        544
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "noise_reduction",
+          "optional": true,
+          "type": 545
+        },
+        {
+          "name": "transcription",
+          "optional": true,
+          "type": 547
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        546
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 523
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        548
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "model",
+          "optional": false,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        550
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "language",
+          "optional": true,
+          "type": 4
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        552,
+        553,
+        555
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 540
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 279
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "audio",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "event_id",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 554
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "session.input_audio_buffer.append"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": true,
+          "type": 4
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 556
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "session.close"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        315,
+        558,
+        559,
+        560,
+        562,
+        564,
+        566
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 529
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 405
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "session",
+          "optional": false,
+          "type": 529
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 407
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 561
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "session.closed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "delta",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "elapsed_ms",
+          "optional": true,
+          "type": 211
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 563
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "session.input_transcript.delta"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "delta",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "elapsed_ms",
+          "optional": true,
+          "type": 211
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 565
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "session.output_transcript.delta"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "channels",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "delta",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "elapsed_ms",
+          "optional": true,
+          "type": 211
+        },
+        {
+          "name": "event_id",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "format",
+          "optional": true,
+          "type": 567
+        },
+        {
+          "name": "sample_rate",
+          "optional": true,
+          "type": 212
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 569
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        568
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "pcm16"
+    },
+    {
+      "kind": "literal",
+      "value": "session.output_audio.delta"
     }
   ],
   "sources_sha256": {

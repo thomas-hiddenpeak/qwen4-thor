@@ -16,7 +16,7 @@ inline std::string_view SelectWebSocketProtocol(
   if (path == "/v1/live/sessions" || !LiveSidebandId(target).empty() ||
       !LiveForkId(target).empty()) {
     name = "live";
-  } else if (path == "/v1/realtime") {
+  } else if (path == "/v1/realtime" || IsRealtimeTranslationTarget(target)) {
     name = "realtime";
   } else {
     return {};

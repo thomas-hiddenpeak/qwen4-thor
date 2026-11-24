@@ -386,6 +386,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/realtime_trace_session.cpp
   src/server/realtime_trace_api.cpp
   src/server/realtime_wire_shape.cpp
+  src/server/realtime_translation.cpp
+  src/server/realtime_translation_session.cpp
   src/server/asr_statistics.cpp
   src/server/asr_alignment_output.cpp
   src/server/asr_chunk_output.cpp
@@ -394,6 +396,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_asr.cpp
   src/server/chat_realtime.cpp
   src/server/chat_realtime_secrets.cpp
+  src/server/chat_realtime_translation.cpp
   src/server/chat_realtime_conversation.cpp
   src/server/chat_live.cpp
   src/server/chat_live_media.cpp
@@ -977,6 +980,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_realtime_transcript_history_test.cpp
     tests/server_realtime_conversation_test.cpp
     tests/server_realtime_shape_test.cpp
+    tests/server_realtime_translation_test.cpp
     tests/server_realtime_response_output_test.cpp
     tests/server_realtime_conversation_session_test.cpp
     tests/server_realtime_conversation_pump_test.cpp
@@ -1146,6 +1150,8 @@ if(Q4T_BUILD_TESTS)
   src/server/realtime_media_call.cpp
   src/server/realtime_client_ticket.cpp
   src/server/realtime_client_secrets.cpp
+  src/server/realtime_translation.cpp
+  src/server/realtime_translation_session.cpp
   src/server/realtime_webrtc_request.cpp
   src/server/realtime_call_pcm.cpp
   src/server/live_sideband.cpp

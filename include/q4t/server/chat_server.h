@@ -343,7 +343,7 @@ class ChatServer {
       const std::shared_ptr<RequestControl>& control, ClientRateLease& rate,
       std::string* response);
   io::Json RealtimeClientDefaults(int fd, std::string model);
-  enum class RealtimeCredentialApi { kClientSecret, kTranscription, kConversation };
+  enum class RealtimeCredentialApi { kClientSecret, kTranscription, kConversation, kTranslation };
   void IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
                            const std::string& body,
                            RealtimeCredentialApi api = RealtimeCredentialApi::kClientSecret);
@@ -352,6 +352,9 @@ class ChatServer {
                        std::string_view initial, std::string_view accept);
   RealtimeConversationCallbacks MakeRealtimeCallbacks(
       const ClientIdentity& client, std::optional<double> legacy_temperature = std::nullopt);
+  void HandleRealtimeTranslation(int fd, std::string_view path,
+                                 const HttpRequestHeaders& headers,
+                                 std::string_view initial, std::string_view accept);
   void HandleRealtimeConversation(int fd, std::string_view path,
                                    const HttpRequestHeaders& headers,
                                    std::string_view initial,
@@ -383,8 +386,7 @@ class ChatServer {
       std::optional<double> legacy_temperature = std::nullopt);
   ObjectReply RunRealtimeTranscription(
       const ClientIdentity& client, const RealtimeTranscriptionJob& job,
-      const std::array<std::span<const uint8_t>, 2>& bytes,
-      const std::shared_ptr<RequestControl>& control,
+      std::span<const float> pcm, const std::shared_ptr<RequestControl>& control,
       const RealtimeTranscriptSink& emit);
   RealtimeTranscriptionCallbacks PrepareRealtimeInput(
       const ClientIdentity& client);

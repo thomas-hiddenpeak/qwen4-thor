@@ -22,6 +22,35 @@ Status ValidateWireShape(const io::Json& value, RealtimeShape shape,
                          ChatPlanError* error, std::string_view path) {
   auto status = ValidateRealtimeShape(value, shape, error, path);
   if (status) return status;
+  // The published translation wire contract adds a bounded noise strength to
+  // the pinned SDK's processor shape. All sibling and enclosing fields still
+  // pass the exact type graph, including duplicate names and discriminators.
+  const bool wrapped = shape == RealtimeShape::kTranslationSecretCreate ||
+                       shape == RealtimeShape::kTranslationSecretCreated ||
+                       shape == RealtimeShape::kTranslationClientEvent ||
+                       shape == RealtimeShape::kTranslationServerEvent;
+  if (wrapped || shape == RealtimeShape::kTranslationSessionCreate ||
+      shape == RealtimeShape::kTranslationSessionUpdate ||
+      shape == RealtimeShape::kTranslationSession) {
+    const auto* session = wrapped ? value.Find("session") : &value;
+    const auto* audio = session ? session->Find("audio") : nullptr;
+    const auto* input = audio ? audio->Find("input") : nullptr;
+    const auto* noise = input ? input->Find("noise_reduction") : nullptr;
+    const auto* strength = noise ? noise->Find("strength") : nullptr;
+    if (!strength || !strength->IsNumber() ||
+        !(strength->number >= 0 && strength->number <= 1)) return status;
+    size_t bytes = 0;
+    if (!MeasureRealtimeStorage(value, 1ULL << 20, &bytes)) return status;
+    auto projected = value;
+    auto* config = wrapped ? UniqueField(&projected, "session") : &projected;
+    auto* options = UniqueField(UniqueField(UniqueField(config, "audio"),
+                                            "input"), "noise_reduction");
+    if (!UniqueField(options, "strength")) return status;
+    std::erase_if(options->object, [](const auto& field) {
+      return field.first == "strength";
+    });
+    return ValidateRealtimeShape(projected, shape, error, path);
+  }
   if (shape == RealtimeShape::kClientEvent &&
       value.GetString("type") == "response.create") {
     size_t storage = 0;
@@ -92,7 +121,8 @@ Status ValidateRealtimeWireShape(const io::Json& value, RealtimeShape shape,
                ? CheckSipRejectCode(value, error)
                : CheckSipReferTarget(value, error);
   }
-  if (shape == RealtimeShape::kClientSecretCreate) {
+  if (shape == RealtimeShape::kClientSecretCreate ||
+      shape == RealtimeShape::kTranslationSecretCreate) {
     auto status = ValidateWireShape(value, shape, error, path);
     if (!status) return status;
     const auto* expiry = value.Find("expires_after");

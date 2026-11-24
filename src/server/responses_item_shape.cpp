@@ -520,6 +520,27 @@ Status ValidateRealtimeShape(const Json& value, RealtimeShape shape,
     case RealtimeShape::kCallReject: root = "call_reject"; break;
     case RealtimeShape::kClientSecretCreate: root = "client_secret_create"; break;
     case RealtimeShape::kClientSecretCreated: root = "client_secret_created"; break;
+    case RealtimeShape::kTranslationSecretCreate:
+      root = "translation_secret_create";
+      break;
+    case RealtimeShape::kTranslationSecretCreated:
+      root = "translation_secret_created";
+      break;
+    case RealtimeShape::kTranslationSessionCreate:
+      root = "translation_session_create";
+      break;
+    case RealtimeShape::kTranslationSessionUpdate:
+      root = "translation_session_update";
+      break;
+    case RealtimeShape::kTranslationSession:
+      root = "translation_session";
+      break;
+    case RealtimeShape::kTranslationClientEvent:
+      root = "translation_client_event";
+      break;
+    case RealtimeShape::kTranslationServerEvent:
+      root = "translation_server_event";
+      break;
   }
   return Validate(RealtimeTypes(), value, root, error, path);
 }

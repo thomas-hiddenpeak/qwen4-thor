@@ -141,7 +141,7 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
   std::string_view writing;
   size_t sent = 0;
   bool application_frame = false, closing = false, message_waiting = false;
-  bool completed = false;
+  bool completed = false, failed_after_output = false;
   auto now = Clock::now(), active = now;
   const auto deadline = now + limits.session;
   auto write_deadline = Clock::time_point::max();
@@ -149,7 +149,9 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
   auto input_deadline = Clock::time_point::max();
   auto completion_deadline = Clock::time_point::max();
   const auto check_completion = [&] {
-    if (!completed && cb.completed && cb.completed()) {
+    if (completed) return;
+    failed_after_output = cb.failed_after_output && cb.failed_after_output();
+    if (failed_after_output || (cb.completed && cb.completed())) {
       completed = true;
       message_waiting = false;
       completion_deadline = Clock::now() + limits.write;
@@ -201,7 +203,9 @@ WebSocketSessionResult RunWebSocketSession(int fd, std::string_view initial,
             result.end = WebSocketSessionEnd::kWriteDeadline;
             return finish();
           } else if (completed && writing.empty() && output.Front().empty())
-            close(WebSocketSessionEnd::kCompleted, 1000);
+            close(failed_after_output ? WebSocketSessionEnd::kApplication
+                                      : WebSocketSessionEnd::kCompleted,
+                  failed_after_output ? 1011 : 1000);
         }
       }
       if (closing && now >= close_deadline) {

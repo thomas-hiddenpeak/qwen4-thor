@@ -291,6 +291,13 @@ const roots = mode === '--environments' ? {
   call_reject: exported(realtimeCalls, 'CallRejectParams'),
   client_secret_create: exported(realtimeSecrets, 'ClientSecretCreateParams'),
   client_secret_created: exported(realtimeSecrets, 'ClientSecretCreateResponse'),
+  translation_secret_create: exported(realtime, 'RealtimeTranslationClientSecretCreateRequest'),
+  translation_secret_created: exported(realtime, 'RealtimeTranslationClientSecretCreateResponse'),
+  translation_session_create: exported(realtime, 'RealtimeTranslationSessionCreateRequest'),
+  translation_session_update: exported(realtime, 'RealtimeTranslationSessionUpdateRequest'),
+  translation_session: exported(realtime, 'RealtimeTranslationSession'),
+  translation_client_event: exported(realtime, 'RealtimeTranslationClientEvent'),
+  translation_server_event: exported(realtime, 'RealtimeTranslationServerEvent'),
 } : {
   input_item: exported(source, 'ResponseInputItem'),
   output_item: exported(source, 'ResponseOutputItem'),

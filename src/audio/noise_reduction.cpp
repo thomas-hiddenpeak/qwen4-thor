@@ -26,11 +26,13 @@ struct Window {
 Status Invalid() { return Status::Fail("noise stream input or state invalid"); }
 }  // namespace
 
-NoiseStream::NoiseStream(NoiseReduction mode, uint64_t maximum_samples)
-    : mode_(mode), maximum_(maximum_samples) {
+NoiseStream::NoiseStream(NoiseReduction mode, uint64_t maximum_samples,
+                         double strength)
+    : mode_(mode), maximum_(maximum_samples), strength_(strength) {
   valid_ =
       (mode == NoiseReduction::kOff || mode == NoiseReduction::kNearField ||
        mode == NoiseReduction::kFarField) &&
+      strength >= 0 && strength <= 1 &&
       maximum_samples && maximum_samples <= 3600ULL * 16000;
   for (auto& bucket : minimum_)
     bucket.fill(std::numeric_limits<double>::infinity());
@@ -69,8 +71,9 @@ bool NoiseStream::Transform() {
     if (!std::isfinite(gain)) return false;
     old_gain_[k] = gain;
     old_power_[k] = power;
-    spectrum[k] *= gain;
-    if (k && k != 256) spectrum[512 - k] *= gain;
+    const double applied = std::lerp(1., gain, strength_);
+    spectrum[k] *= applied;
+    if (k && k != 256) spectrum[512 - k] *= applied;
   }
   detail::NoiseFft(&spectrum, true);
   for (size_t i = 0; i < 256; ++i) {

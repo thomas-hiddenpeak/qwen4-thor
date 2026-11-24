@@ -113,8 +113,26 @@ const types = live ? Object.fromEntries(Object.entries(liveTypes).map(([k,v])=>[
   session: 'RealtimeSessionCreateRequest', response: 'RealtimeResponse',
   call_accept: 'CallAcceptParams', call_refer: 'CallReferParams', call_reject: 'CallRejectParams',
   client_secret_create: 'ClientSecretCreateParams', client_secret_created: 'ClientSecretCreateResponse',
+  translation_secret_create: 'RealtimeTranslationClientSecretCreateRequest',
+  translation_secret_created: 'RealtimeTranslationClientSecretCreateResponse',
+  translation_session_create: 'RealtimeTranslationSessionCreateRequest',
+  translation_session_update: 'RealtimeTranslationSessionUpdateRequest',
+  translation_session: 'RealtimeTranslationSession',
+  translation_client_event: 'RealtimeTranslationClientEvent',
+  translation_server_event: 'RealtimeTranslationServerEvent',
 } : {input_item:'ResponseInputItem',output_item:'ResponseOutputItem',conversation_item:'ConversationItem'};
 if (realtime) vectors.push(
+  {name:'translation_credentials_with_transcription',shape:'translation_secret_create',positive:true,input:{
+    session:{model:'gpt-realtime-translate',audio:{input:{noise_reduction:null,
+      transcription:{model:'gpt-realtime-whisper'}},output:{language:'fr'}}}}},
+  {name:'translation_create_with_conversation_type',shape:'translation_session_create',input:{
+    type:'realtime',model:'gpt-realtime-translate'}},
+  {name:'translation_update_clears_transcription',shape:'translation_session_update',positive:true,
+    input:{audio:{input:{transcription:null}}}},
+  {name:'translation_immutable_model',shape:'translation_session_update',input:{model:'other'}},
+  {name:'translation_pcm_output',shape:'translation_server_event',positive:true,input:{
+    type:'session.output_audio.delta',event_id:'ev',delta:'AAA=',sample_rate:24000,channels:1,format:'pcm16'}},
+  {name:'translation_conversation_event',shape:'translation_client_event',input:{type:'response.create'}},
   {name:'secret_default',shape:'client_secret_create',positive:true,input:{}},
   {name:'secret_transcription',shape:'client_secret_create',positive:true,input:{
     expires_after:{anchor:'created_at',seconds:10},session:{type:'transcription',
