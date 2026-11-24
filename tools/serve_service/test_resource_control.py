@@ -277,9 +277,12 @@ time.sleep(30)
         with mock.patch.object(r, 'Envelope', side_effect=envelope), \
              mock.patch.object(r, 'properties', return_value=self.props), \
              mock.patch.object(Path, 'rmdir', autospec=True, side_effect=self.remove_leaf):
+            # This case waits for a real backend launch before injecting OOM.
             rc, state = self.run_supervisor(observe, isolated=True,
+                config_overrides=dict(startup_seconds=2),
                 manifest_overrides=dict(version=10, host_resources=self.selected))
         self.assertEqual((rc, state['attempts'], state['restarts']), (1, 1, 0))
+        self.assertEqual(len(set(seen)), 1)
         self.assertEqual(state['error'], 'host_resource_oom')
         self.assertTrue(state['cleanup_confirmed'])
         self.assertFalse(sup.processes.group_members(seen[0]))
