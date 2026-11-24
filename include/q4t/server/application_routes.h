@@ -381,10 +381,14 @@ inline bool AgentRegistrationMethodAllowed(std::string_view method,
          (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/agents");
 }
 
-enum class AgentSessionRouteKind { kNone, kCollection, kSession, kTurns, kTurn, kItems, kTurnItems, kEvents, kTraces, kArtifacts, kArtifact, kArtifactContent };
+enum class AgentSessionRouteKind {
+  kNone, kCollection, kSession, kTurns, kTurn, kItems, kTurnItems, kEvents,
+  kTraces, kArtifacts, kArtifact, kArtifactContent, kSubagents, kSubagent,
+  kSubagentItems, kSubagentTurns, kSubagentTurn, kSubagentTurnItems
+};
 struct AgentSessionRoute {
   AgentSessionRouteKind kind = AgentSessionRouteKind::kNone;
-  std::string_view session, turn, artifact = {};
+  std::string_view session, turn, artifact = {}, subagent = {};
 };
 
 inline AgentSessionRoute ParseAgentSessionRoute(std::string_view target) {
@@ -417,14 +421,31 @@ inline AgentSessionRoute ParseAgentSessionRoute(std::string_view target) {
       return {Kind::kArtifactContent, id, {}, artifact};
     return {};
   }
+  if (path == "subagents") return {Kind::kSubagents, id, {}};
+  std::string_view subagent;
+  if (path.starts_with("subagents/")) {
+    path.remove_prefix(10);
+    const auto tail = path.find('/');
+    subagent = path.substr(0, tail);
+    if (!subagent.starts_with("subagent_") || subagent.size() <= 9 ||
+        !ValidApplicationId(subagent)) return {};
+    if (tail == path.npos) return {Kind::kSubagent, id, {}, {}, subagent};
+    path.remove_prefix(tail + 1);
+    if (path == "items") return {Kind::kSubagentItems, id, {}, {}, subagent};
+    if (path == "turns") return {Kind::kSubagentTurns, id, {}, {}, subagent};
+  }
   if (!path.starts_with("turns/")) return {};
   path.remove_prefix(6);
   const auto tail = path.find('/');
   const auto turn = path.substr(0, tail);
   if (!turn.starts_with("turn_") || turn.size() <= 5 ||
       !ValidApplicationId(turn)) return {};
-  if (tail == path.npos) return {Kind::kTurn, id, turn};
-  if (path.substr(tail) == "/items") return {Kind::kTurnItems, id, turn};
+  if (tail == path.npos)
+    return {subagent.empty() ? Kind::kTurn : Kind::kSubagentTurn, id, turn,
+            {}, subagent};
+  if (path.substr(tail) == "/items")
+    return {subagent.empty() ? Kind::kTurnItems : Kind::kSubagentTurnItems,
+            id, turn, {}, subagent};
   return {};
 }
 

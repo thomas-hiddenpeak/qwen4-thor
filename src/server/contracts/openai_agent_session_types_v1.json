@@ -14,7 +14,9 @@
     "turn": 304,
     "artifact": 487,
     "artifact_deleted": 489,
-    "artifact_query": 491
+    "artifact_query": 491,
+    "subagent": 445,
+    "subagent_query": 492
   },
   "nodes": [
     {
@@ -6479,6 +6481,27 @@
         }
       ],
       "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 18
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 252
+        }
+      ],
+      "additional": null
     }
   ],
   "sources_sha256": {
@@ -6486,6 +6509,7 @@
     "src/resources/beta/agents/agents.ts": "03d26f89be2ce0137ef1326e8e196138c8a5a882af3c845cb05d6f6303dc19a2",
     "src/resources/beta/agents/sessions/artifacts.ts": "caf511144b7aebaefc99c9fea9d409934adaf851e56d3bab52b3332ec1954213",
     "src/resources/beta/agents/sessions/sessions.ts": "80ee2d0fdfcc6579e4b76f31b4401f88f65acd36b817e98eb7f3c979d5bb0cca",
+    "src/resources/beta/agents/sessions/subagents/subagents.ts": "9429196b3bf78b1a6ea6ca6739db31dff75e955583dff58002fade3b09f814e2",
     "src/resources/beta/agents/sessions/turns/turns.ts": "fe8b44a1227041176c34413a9d645b8bc68673ce1ed612a9fc63a3b979b05730"
   },
   "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",

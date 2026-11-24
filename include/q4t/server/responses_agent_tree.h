@@ -30,6 +30,10 @@ class ResponsesAgentTree {
              const io::Json& arguments, io::Json* result);
   bool Claim(const std::string& name, Turn* turn);
   Status RecordExchange(Turn* turn, const io::Json& messages);
+  // Private managed-session state. Restoring a terminal predecessor never
+  // redispatches work abandoned by its former model owner.
+  io::Json SaveSession() const;
+  Status RestoreSession(const io::Json& saved);
   size_t StoredText() const { return stored_text_; }
   const io::Json& RootMessages() const { return root_messages_; }
   std::string FirstQueued() const;

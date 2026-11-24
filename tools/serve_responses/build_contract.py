@@ -170,13 +170,15 @@ def schema(graph):
     definitions.update(graph_definitions(sessions, 'agent_session_'))
     artifact_query = definitions['agent_session_'+str(sessions['roots']['artifact_query'])]
     artifact_query['properties']['limit'] = dict(type='integer', minimum=1, maximum=100, default=20)
+    child_query = definitions['agent_session_'+str(sessions['roots']['subagent_query'])]
+    child_query['properties']['limit'] = dict(type='integer', minimum=1, maximum=100, default=20)
     trace = dict(id=dict(type='string'), session_id=dict(type='string'),
                  object=dict(const='agent.session.trace'), created_at=dict(type='integer'),
                  otlp=dict(type='object', required=['resourceSpans'],
                            properties=dict(resourceSpans=dict(type='array', items=dict(type='object')))))
     definitions['agent_session_trace'] = obj(trace, trace.keys())
     for suffix, member in [('list', 'resource'), ('turn_list', 'turn'), ('item_list', 'item'),
-                           ('trace_list', 'trace'), ('artifact_list', 'artifact')]:
+                           ('trace_list', 'trace'), ('artifact_list', 'artifact'), ('subagent_list', 'subagent')]:
         page = copy.deepcopy(definitions['agents_list'])
         page['properties']['data']['items'] = ref('agent_session_' + member)
         definitions['agent_session_' + suffix] = page
@@ -518,6 +520,12 @@ def add_openapi(paths, response, error):
         ('/v1/agents/sessions/{session_id}/turns', 'get', None, 'agent_session_turn_list', 'agents_query'),
         ('/v1/agents/sessions/{session_id}/turns/{turn_id}', 'get', None, 'agent_session_turn', None),
         ('/v1/agents/sessions/{session_id}/items', 'get', None, 'agent_session_item_list', 'agents_query'),
+        ('/v1/agents/sessions/{session_id}/subagents', 'get', None, 'agent_session_subagent_list', 'agent_session_subagent_query'),
+        ('/v1/agents/sessions/{session_id}/subagents/{subagent_id}', 'get', None, 'agent_session_subagent', None),
+        ('/v1/agents/sessions/{session_id}/subagents/{subagent_id}/items', 'get', None, 'agent_session_item_list', 'agent_session_subagent_query'),
+        ('/v1/agents/sessions/{session_id}/subagents/{subagent_id}/turns', 'get', None, 'agent_session_turn_list', 'agent_session_subagent_query'),
+        ('/v1/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}', 'get', None, 'agent_session_turn', None),
+        ('/v1/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items', 'get', None, 'agent_session_item_list', 'agent_session_subagent_query'),
         ('/v1/agents/sessions/{session_id}/artifacts', 'get', None, 'agent_session_artifact_list', 'agent_session_artifact_query'),
         ('/v1/agents/sessions/{session_id}/artifacts/{artifact_id}', 'get', None, 'agent_session_artifact', None),
         ('/v1/agents/sessions/{session_id}/artifacts/{artifact_id}', 'delete', None, 'agent_session_artifact_deleted', None),

@@ -229,7 +229,7 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
     if (!identity)
       return Error(413, "mcp_credential_source_capacity", identity.message());
   }
-  auto resolved = state_.Resolve(envelope_, access_, &plan_, cancelled);
+  auto resolved = state_.Resolve(envelope_, access_, &plan_, cancelled, agent_session_id_);
   if (!resolved.ok()) return resolved;
   return PlanGeneration(config, created);
 }
@@ -314,12 +314,25 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
     agents_.emplace(count ? static_cast<size_t>(std::min<double>(
                                 count->number, ResponsesOutput::kMaxItems)) : 3);
   }
+  if (agents_ && !agent_session_id_.empty() && !plan_.agent_tree.IsNull()) {
+    auto restored = agents_->RestoreSession(plan_.agent_tree);
+    if (!restored) return Error(503, "agent_state_invalid", restored.message());
+  }
   web_policy_ = config.web_policy;
   envelope_.agent_time_awareness = agent_time_awareness_;
   envelope_.web_content = plan_.web_content;
   cipher_config_.model = config.model;
   cipher_config_.count_input_only = config.count_input_only;
   auto history = plan_.history;
+  if (!agent_session_id_.empty()) {
+    // A child may answer between the root's wait call and its result. Only
+    // the owner's wait result belongs in the root model's tool exchange.
+    // Preserve every native item in the independently queryable record.
+    std::erase_if(history.array, [](const auto& item) {
+      const auto* owner = item.Find("agent");
+      return owner && owner->IsObject() && owner->GetString("agent_name") != "root";
+    });
+  }
   compaction_trigger_ =
       !plan_.own_input.array.empty() &&
       plan_.own_input.array.back().GetString("type") == "compaction_trigger";

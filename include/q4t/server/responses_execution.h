@@ -325,6 +325,7 @@ class ResponsesExecution {
   io::Json agent_mcp_tools_, agent_vaults_;
   bool agent_time_awareness_ = false;
   std::string agent_session_id_, agent_http_sealed_;
+  std::map<std::string, std::string> agent_queued_items_;
   std::vector<ResponsesMcpDefinition> mcp_credentials_;
   // Digest of the caller's original request, not the expanded/stored one.
   // Batch may resupply that authenticated File row, never persisted secrets.

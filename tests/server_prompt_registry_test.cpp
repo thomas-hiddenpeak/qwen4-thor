@@ -1,3 +1,4 @@
+#include "../src/server/agent_subagent_internal.h"
 #include "../src/server/agent_artifact_internal.h"
 #include "../src/server/agent_environment_internal.h"
 #include "../src/server/schema_string.h"
@@ -2746,5 +2747,184 @@ Q4T_TEST(prompt_realtime_token_limit_does_not_accept_fraction_or_overflow) {
     Q4T_CHECK(registry.Create(definition, Config(), Access()).http_status ==
               400);
   }
+  return true;
+}
+
+Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
+  Fixture fixture;
+  auto config = Config();
+  config.structured = true;
+  const auto request = Parse(R"({"agent":{"model":"cpu","multi_agent":{"enabled":true,"max_concurrent_subagents":1}},
+      "environment":{"type":"none"},"input":"Delegate the lookup."})");
+  const auto now = std::time(nullptr);
+  std::string wire;
+  const auto begin = [&](ResponsesExecution& run) {
+    run.BindBackgroundControl(std::make_shared<RequestControl>(run.Id(), "", Clock::now() + 5s));
+    return Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire));
+  };
+  const auto end = [&](ResponsesExecution& run) {
+    ResponseDelta text;
+    text.kind = ResponseDelta::Kind::kContent;
+    text.text = "Done.";
+    ResponsesGenerationPlan next;
+    return Ok(run.ContinueFileSearch(12, config, {}, &next)) && run.Append(text, {}, &wire) &&
+           Ok(run.Finish(false, 0, {27, 0, 16, 0}, now + 2, &wire));
+  };
+  std::function<bool()> inspect_claim;
+  const auto dispatch = [&](ResponsesExecution& run, bool followup) {
+    ResponseDelta call;
+    call.kind = ResponseDelta::Kind::kTool;
+    call.call = followup ? ResponseToolCall{0, "second", "multi_agent_followup_task",
+                                          R"({"target":"root/reader","task":"recall"})"}
+                         : ResponseToolCall{0, "first", "multi_agent_spawn_agent",
+                                          R"({"name":"reader","task":"lookup"})"};
+    if (!run.Append(call, {}, &wire)) return false;
+    call.call = {1, followup ? "wait2" : "wait1", "multi_agent_wait_agent",
+                 R"({"target":"root/reader"})"};
+    if (!run.Append(call, {}, &wire)) return false;
+    int invoked = 0;
+    auto step = [&](const ResponsesAgentTree::Turn& turn, bool, Json* assistant, bool* done) {
+      if (turn.name != "root/reader" || turn.messages.array.front().GetString("content") != "lookup" ||
+          (followup && (turn.messages.array.size() != 3 ||
+                       turn.messages.array[1].GetString("content") != "452" ||
+                       turn.messages.array[2].GetString("content") != "recall")))
+        throw std::runtime_error("Child did not recover its own transcript");
+      if (inspect_claim && !inspect_claim()) throw std::runtime_error("Incorrect live child claim boundary");
+      ++invoked;
+      *assistant = Parse(R"({"role":"assistant","content":"452"})");
+      *done = true;
+      return ObjectReply{};
+    };
+    return Ok(run.RunAgents(2, step, {})) && invoked == 1;
+  };
+  std::string id, parent;
+  AgentEventCursor from_create, late;
+  Json early_events = Parse("[]");
+  const auto drain = [&](ObjectStore& store, AgentEventCursor& cursor, Json* out, bool terminal) {
+    for (size_t i = 0; i < 16; ++i) {
+      bool settled = false;
+      Json batch;
+      if (!Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor, &batch, &settled))) return false;
+      out->array.insert(out->array.end(), batch.array.begin(), batch.array.end());
+      if (settled || batch.array.empty()) return settled == terminal;
+    }
+    return false;
+  };
+  {
+    ObjectStore objects(fixture.options);
+    ResponsesExecution first(objects);
+    auto created = PrepareAgentSessionExecution(objects, request, config, Access(), now, first);
+    Q4T_CHECK(Ok(created));
+    id = created.value.GetString("id");
+    parent = created.value.Find("agent")->GetString("id");
+    inspect_claim = [&] {
+      if (!drain(objects, from_create, &early_events, false) ||
+          !Ok(OpenAgentEventSubscription(objects, id, Access(), &late))) return false;
+      Json now = Parse("[]");
+      return drain(objects, late, &now, false) && now.array.empty() &&
+             std::count_if(early_events.array.begin(), early_events.array.end(), [](const Json& e) {
+               return e.GetString("type") == "agent.session.turn.in_progress" &&
+                      e.Find("turn")->Find("subagent_id")->IsString();
+             }) == 1;
+    };
+    Q4T_CHECK(begin(first) && dispatch(first, false) && end(first));
+    inspect_claim = {};
+  }
+  const auto base = "/v1/agents/sessions/" + id + "/subagents";
+  // Reopen the journal for every reader and for the following inference.
+  ObjectStore reopened(fixture.options);
+  const auto read = [&](const std::string& path, std::string scope = "client:prompt-a",
+                        ItemViewOptions options = {}) {
+    return agent_detail::ReadSessionSubagents(reopened, ParseAgentSessionRoute(path), options, Access(scope));
+  };
+  auto list = read(base);
+  Q4T_CHECK(Ok(list) && list.value.GetArray("data")->array.size() == 1);
+  const auto child = list.value.GetString("first_id");
+  const auto resource = base + "/" + child;
+  auto item = read(resource);
+  Q4T_CHECK(Ok(item) && item.value.GetString("status") == "active" &&
+            item.value.Find("closed_at")->IsNull() &&
+            item.value.GetString("parent_agent_id") == parent);
+  ChatPlanError error;
+  Q4T_CHECK(ValidateAgentSession(item.value, AgentSessionShape::kSubagent, &error));
+  auto turns = read(resource+"/turns");
+  Q4T_CHECK(Ok(turns) && turns.value.GetArray("data")->array.size() == 1);
+  const auto turn = turns.value.GetString("first_id");
+  auto detail = read(resource+"/turns/"+turn);
+  Q4T_CHECK(Ok(detail) && detail.value.GetString("status") == "completed" &&
+            detail.value.GetInt("started_at") >= now &&
+            detail.value.GetInt("completed_at") >= detail.value.GetInt("started_at") &&
+            ValidateAgentSession(detail.value, AgentSessionShape::kTurn, &error));
+  Q4T_CHECK(drain(reopened, from_create, &early_events, true));
+  Json late_events = Parse("[]");
+  Q4T_CHECK(drain(reopened, late, &late_events, true));
+  const auto verify_stream = [&](const Json& events, bool subscribed_late) {
+    std::vector<std::string> edges;
+    std::set<std::string> ids;
+    std::string child_text;
+    for (const auto& e : events.array) {
+      if (!ids.insert(e.GetString("event_id")).second) return false;
+      if (e.GetString("type") == "agent.session.subagent.created" &&
+          e.Find("subagent")->GetString("id") == child) edges.emplace_back("created_child");
+      if (e.GetString("turn_id") != turn) continue;
+      const auto kind = e.GetString("type").substr(std::string("agent.session.turn.").size());
+      if (kind == "created" || kind == "in_progress" || kind == "completed") edges.push_back(kind);
+      if (e.Has("output_index") && e.GetInt("output_index", -1) != 0) return false;
+      if (kind == "output_text.delta") child_text += e.GetString("delta");
+      if (kind == "completed" && OutputJson(*e.Find("turn")) != OutputJson(detail.value)) return false;
+    }
+    return child_text == "452" &&
+        edges == (subscribed_late ? std::vector<std::string>{"completed"}
+                                  : std::vector<std::string>{"created_child", "created", "in_progress", "completed"});
+  };
+  Q4T_CHECK(verify_stream(early_events, false) && verify_stream(late_events, true));
+  auto items = read(resource+"/turns/"+turn+"/items");
+  Q4T_CHECK(Ok(items) && items.value.GetArray("data")->array.size() == 2 &&
+            read(resource+"/items").value.GetString("first_id") == items.value.GetString("first_id"));
+  Q4T_CHECK(read(base, "client:other").http_status == 404 &&
+            read(resource+"/items","client:other").http_status == 404 &&
+            read(resource+"/turns/turn_unknown").http_status == 404);
+  AgentSessionView view;
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(reopened, id, "", Access(), &view, true)));
+  bool saw_call = false;
+  for (const auto& row : view.items.array) {
+    Q4T_CHECK(row.GetString("type") != "multi_agent_call" &&
+              OutputJson(row).find("452") == std::string::npos);
+    if (row.GetString("type") == "create_subagent_call") {
+      saw_call = true;
+      Q4T_CHECK(row.GetString("agent_id") == item.value.GetString("parent_agent_id"));
+    }
+  }
+  Q4T_CHECK(saw_call);
+  ResponsesExecution next(reopened);
+  const auto event = Parse(R"({"events":[{"type":"agent.session.input.message","input":[{"role":"user","content":[{"type":"input_text","text":"Ask the same reader."}]}]}]})");
+  bool replay = false;
+  Q4T_CHECK(Ok(PrepareAgentSessionEvents(reopened, id, event, "follow-child", config,
+                                         Access(), next, &replay)) && !replay);
+  Q4T_CHECK(begin(next) && dispatch(next, true) && end(next));
+  ItemViewOptions page;
+  page.descending = false;
+  page.limit = 1;
+  turns = read(resource+"/turns", "client:prompt-a", page);
+  Q4T_CHECK(Ok(turns) && turns.value.GetBool("has_more") && turns.value.GetString("first_id") == turn);
+  page.after = turn;
+  turns = read(resource+"/turns", "client:prompt-a", page);
+  Q4T_CHECK(Ok(turns) && !turns.value.GetBool("has_more") && turns.value.GetString("first_id") != turn);
+  const auto second = turns.value.GetString("first_id");
+  page.descending = true;
+  page.after.clear();
+  turns = read(resource + "/turns", "client:prompt-a", page);
+  Q4T_CHECK(Ok(turns) && turns.value.GetBool("has_more") &&
+            turns.value.GetString("first_id") == second);
+  page.after = second;
+  turns = read(resource + "/turns", "client:prompt-a", page);
+  Q4T_CHECK(Ok(turns) && !turns.value.GetBool("has_more") &&
+            turns.value.GetString("first_id") == turn);
+  const auto original = read(resource + "/turns/" + turn);
+  Q4T_CHECK(Ok(original) && OutputJson(original.value) == OutputJson(detail.value));
+  page.after = "msg_not_owned";
+  Q4T_CHECK(read(resource + "/items", "client:prompt-a", page).http_status == 400);
+  page.after = items.value.GetString("last_id");
+  Q4T_CHECK(read(resource + "/turns/" + second + "/items", "client:prompt-a", page).http_status == 400);
   return true;
 }

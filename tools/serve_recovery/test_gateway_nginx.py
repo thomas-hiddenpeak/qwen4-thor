@@ -179,6 +179,9 @@ class Stack:
                 if row['token'] != stack.token:
                     self.response(403, dict(error=dict(code='invalid_gateway_credentials')))
                     return
+                if '/subagents/subagent_owned' in self.path and row['client'] != 'alpha':
+                    self.response(404, dict(error=dict(code='object_not_found')))
+                    return
                 if self.path == '/v1/realtime/calls' and method == 'POST':
                     if self.headers.get('Content-Type') != 'application/sdp':
                         self.response(415, dict(error='invalid content type'))
@@ -431,7 +434,7 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
+            identities = dict(subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
@@ -534,6 +537,38 @@ class NginxTests(unittest.TestCase):
                              (path, 'alpha', 'agents=v1'))
         self.assertEqual(self.stack.request(path=root+'/other_1', extra=selector)[0], 404)
         self.assertEqual(len(self.stack.application_requests), 3)
+
+    def test_subagent_history_preserves_owner_pagination_and_beta_selector(self):
+        self.ready()
+        root = '/v1/agents/sessions/agent_session_1/subagents'
+        member = root+'/subagent_owned'
+        selector = {'OpenAI-Beta':'agents=v1'}
+        for path in (root, member, member+'/items', member+'/turns?after=turn_1&limit=2&order=asc',
+                     member+'/turns/turn_2', member+'/turns/turn_2/items?order=desc'):
+            with self.subTest(path=path):
+                self.assertEqual(self.stack.request(path=path,extra=selector)[0], 200)
+                row = self.stack.application_requests[-1]
+                self.assertEqual((row['method'],row['path'],row['client'],row.get('openai_beta'),
+                                  row['upstream_port']), ('GET',path,'alpha','agents=v1',
+                                  self.stack.value['policy']['upstream_operations_port']))
+        self.assertEqual(self.stack.request(path=member, key='B'*40, extra=selector)[0], 404)
+        self.assertEqual(self.stack.application_requests[-1]['client'], 'beta')
+        before = len(self.stack.application_requests)
+        status, _, _ = self.stack.request(path=member, key='B'*40,
+            extra=dict(selector, **{'X-Q4T-Client-Id':'alpha'}))
+        if self.stack.native_ingress:
+            self.assertEqual(status, 400)
+            self.assertEqual(len(self.stack.application_requests), before)
+        else:
+            self.assertEqual(status, 404)
+            self.assertEqual(len(self.stack.application_requests), before + 1)
+            self.assertEqual(self.stack.application_requests[-1]['client'], 'beta')
+        before = len(self.stack.application_requests)
+        for path in (root+'/untyped', member+'/turns/not_a_turn', member+'/extra'):
+            self.assertEqual(self.stack.request(path=path,extra=selector)[0],404)
+        self.assertEqual(self.stack.request({},path=member,extra=selector)[0],404)
+        self.assertEqual(self.stack.request(path=member,key='invalid')[0],401)
+        self.assertEqual(len(self.stack.application_requests), before)
 
     def test_agent_session_traces_preserve_cursor_selector_and_owner(self):
         self.ready()

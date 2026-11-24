@@ -10,6 +10,7 @@
 #include "q4t/server/input_snapshot_bindings.h"
 
 #include "agent_session_internal.h"
+#include "agent_subagent_internal.h"
 #include "agent_workspace_copy.h"
 #include "object_protocol.h"
 #include "q4t/server/request_json.h"
@@ -94,14 +95,13 @@ ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
                    "Session tool executor is unavailable");
     tools.array.push_back(tool);
   }
-  if (agent.Find("multi_agent")->GetBool("enabled"))
-    return Error(503, "agent_executor_unavailable",
-                 "Requested session execution mode is unavailable");
   auto result = ObjectReply{};
   result.value = Object({{"background", Boolean(true)},
                          {"store", Boolean(true)},
                          {"input", std::move(input)},
                          {"tools", std::move(tools)}});
+  if (agent.Find("multi_agent")->GetBool("enabled"))
+    Set(&result.value, "multi_agent", *agent.Find("multi_agent"));
   for (const auto* key :
        {"model", "instructions", "text", "reasoning", "service_tier"})
     if (Nonnull(agent, key)) Set(&result.value, key, *agent.Find(key));
@@ -295,10 +295,13 @@ ObjectReply PrepareAgentSessionExecution(
                                 start.tool_search);
     if (!native.ok()) return native;
     run.ConfigureAgentSession(start.session, start.sealed_http);
-    result = run.Prepare(native.value, config, access, created, true);
+    auto selected = config;
+    selected.responses_multi_agent = native.value.Has("multi_agent");
+    result = run.Prepare(native.value, selected, access, created, true);
     if (!result.ok()) return result;
     auto link = Object({{"id", String("turn_" + nonce.substr(14))},
                         {"response_id", String(run.Id())}});
+    if (selected.responses_multi_agent) Set(&link, "multi_agent", Boolean(true));
     if (start.tool_search) Set(&link, "tool_search", Boolean(true));
     if (!start.sealed_http.empty())
       Set(&link, "sealed_http", String(start.sealed_http));
@@ -326,6 +329,12 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
   for (const auto* source :
        {record.GetArray("own_input"), response.GetArray("output")}) {
     for (const auto& entry : source->array) {
+      if (IsPrivateAgentOutput(entry)) continue;
+      if (entry.GetString("type") == "multi_agent_call_output") {
+        auto action = ParentActionItem(entry, response, session, token, &result.items);
+        if (!action.ok()) return action;
+        continue;
+      }
       const Json* input = &entry;
       Json tool_result;
       if (entry.GetString("type") == "function_call_output") {
@@ -796,6 +805,7 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
     auto& current_agent = Field(execution_settings, "agent");
     const auto& original_agent = *original.value.Find("agent");
     Set(&current_agent, "model", Copy(original_agent, "model"));
+    Set(&current_agent, "multi_agent", Copy(original_agent, "multi_agent"));
     const auto live_tool = [](const Json& tool) {
       const auto type = tool.GetString("type");
       return type == "function" || type == "mcp";
@@ -821,7 +831,9 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   }
   const bool cancelled = view.turn.GetString("status") == "cancelled";
   run.ConfigureAgentSession(execution_settings, data.GetString("sealed_http"));
-  auto prepared = run.Prepare(native.value, config, access, std::time(nullptr),
+  auto selected = config;
+  selected.responses_multi_agent = native.value.Has("multi_agent");
+  auto prepared = run.Prepare(native.value, selected, access, std::time(nullptr),
                               true, cancelled ? &previous : nullptr);
   if (!prepared.ok()) return prepared;
   auto turn = view.turn.GetString("id");
@@ -832,6 +844,7 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
     turn = "turn_" + nonce.substr(14);
   }
   auto next = Object({{"id", String(turn)}, {"response_id", String(run.Id())}});
+  if (selected.responses_multi_agent) Set(&next, "multi_agent", Boolean(true));
   if (tool_search) Set(&next, "tool_search", Boolean(true));
   if (waiting) Set(&next, "tool_results", std::move(pending));
   if (data.Has("sealed_http")) Set(&next, "sealed_http", Copy(data, "sealed_http"));

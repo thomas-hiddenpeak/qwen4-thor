@@ -7,6 +7,16 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+子 Agent 归属检查已分别在真实原生网关与可选 nginx 验证。两个入口对其他客户都返回 404。原生入口先拒绝外部传入的身份头（400，后端收到零次请求），nginx 覆盖该头并按密钥对应的客户转发，后端返回 404。修正 CI 对两个入口共用同一状态码的预期，四项 CPU 网络检查通过。 下一步复核远端检查。[回执](evidence/serve-agent-workspaces-20261124/subagent-gateway-policies.json)
+
+已补齐可选 nginx 前置遗漏的六项子 Agent 查询。真实 nginx 转发了原始分页游标、客户身份和 Agents beta 选择器；另一个客户伪造身份头时，CPU 后端收到真实身份并返回 404。错误方法、畸形 ID 和无效密钥均在前置被拒绝。10 项配置测试和 2 项真实 nginx 转发测试通过，后续复核 PR 检查。[前置验收](evidence/serve-agent-workspaces-20261124/subagent-nginx.json)
+
+PR #76 两项 host-contracts 检查通过，rev456 的发布与回退记录已随 `38bc57402` 合入 main。合并树与受检提交一致。子 Agent 的查询和事件验收位于后续工作分支。[主线回执](evidence/serve-agent-workspaces-20261124/session-tools-main.json)
+
+子 Agent 的创建、领取任务、输出及终态已接入托管会话 SSE。15 项 CPU 短验覆盖领取后的晚订阅、重开存储、跨回合分页和根回合隔离。官方 SDK 在原生 TLS 上接收两个子回合的完整事件，文本与 GET 结果逐字相同，两个回答分别包含 456 和 457，随后独立 Chat 答 42。一次模型启动，耗时 55.9 秒。首轮夹具遗漏无环境会话所需的初始输入，原 400 保留。下一步继续显式关闭、恢复与发行验收。[子回合 SSE 回执](evidence/serve-agent-workspaces-20261124/subagent-stream.json)
+
+托管子 Agent 的六项读取已通过原生 TLS 与官方 Node SDK 7.47.0 短验。子 Agent 从发布记录读出 456，下一回合沿用原身份和记忆算出 457，其他客户读取返回 404，随后独立 Chat 返回 42。一次模型启动，耗时 64.7 秒。另有 6 项 CPU 检查覆盖存储重开、正反向分页与错误游标。候选声明 132/231 项方法。默认发行仍为 rev456；继续子回合事件、关闭与恢复及发行验收。[查询验收回执](evidence/serve-agent-workspaces-20261124/subagent-queries.json)
+
 默认已发布 **rev456**，版本登记 157，生产意图 STOPPED。带新控制器的主包和回退包分别通过真实网关致命退出、模型退出后的工具回填与独立 Chat，分别耗时 163.3 和 133.4 秒。发布启动模型 0 次，13 份客户与恢复文件摘要保持；rev454 包校验了原周期和 16 条登记，新包校验第 17 条。24 小时计划已预检，由用户实跑。必做的 231 个方法中当前声明 126 个，105 个缺声明。下一项为托管子 Agent 的查询、生命周期和多回合接续。[发布、业务与回退回执](evidence/serve-agent-workspaces-20261124/session-tools-delivery.json)
 
 PR #75 两项 host-contracts 检查均已通过，提交 `813fe01a1` 随 `7a8dca8a1` 合入 main，合并树与受检提交相同。主线包含 rev454 交付记录与托管函数延迟发现。[合入记录](evidence/serve-agent-workspaces-20261124/session-discovery-main.json)

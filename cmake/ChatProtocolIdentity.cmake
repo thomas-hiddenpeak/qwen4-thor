@@ -739,9 +739,11 @@ set(protocol_inputs
   src/server/vault_credential.cpp
   src/server/agent_session.cpp
   src/server/agent_session_turn.cpp
+  src/server/agent_subagent.cpp
   src/server/agent_session_traces.cpp
   src/server/agent_session_mcp.cpp
   src/server/agent_session_internal.h
+  src/server/agent_subagent_internal.h
   src/server/agent_session_http.cpp
   src/server/agent_session_cancel.cpp
   src/server/agent_session_settings.cpp

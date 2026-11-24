@@ -1,0 +1,24 @@
+{
+  "original_ci": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45288903266/job/138092285523",
+  "native": {
+    "foreign": 404,
+    "untrusted_client_header": 400,
+    "forwarded_on_bad_header": false
+  },
+  "optional_nginx": {
+    "foreign": 404,
+    "untrusted_client_header": 404,
+    "forwarded_as": "beta"
+  },
+  "tests": {
+    "native": {
+      "passed": 2,
+      "sha256": "9f448a908789479762632dceee4e584b98b752e7f56e486c5b7a795a448b4b24"
+    },
+    "nginx": {
+      "passed": 2,
+      "sha256": "90d25cd9bc746f12f7410325ed68b4cc4932342296edb55727208a916d2553b7"
+    }
+  },
+  "fixture_sha256": "64aeeda004f2f5e730ffe94e1d2e56add63ff184447937909983a55e33d0b2d4"
+}
