@@ -2665,6 +2665,13 @@
         "evidence": "evidence/serve-assistants-20261124/profiles.json",
         "default_revision": 460,
         "remaining": "Sealed managed recovery and publication."
+      },
+      "assistant_delivery_20261124": {
+        "revision": 462,
+        "evidence": "evidence/serve-assistants-20261124/delivery.json",
+        "accepted_methods": 158,
+        "required_methods": 231,
+        "hours_of_long_run": 0
       }
     },
     {
@@ -6078,6 +6085,13 @@
         "methods": 9,
         "evidence": "evidence/serve-assistants-20261124/runs.json",
         "remaining": "Managed handoff, hard pre-generation prompt budget and hosted code interpreter."
+      },
+      "assistant_delivery_20261124": {
+        "revision": 462,
+        "evidence": "evidence/serve-assistants-20261124/delivery.json",
+        "accepted_methods": 158,
+        "required_methods": 231,
+        "hours_of_long_run": 0
       }
     },
     {
@@ -8364,6 +8378,13 @@
         "evidence": "evidence/serve-assistants-20261124/profiles.json",
         "default_revision": 460,
         "remaining": "Sealed managed recovery and publication."
+      },
+      "assistant_delivery_20261124": {
+        "revision": 462,
+        "evidence": "evidence/serve-assistants-20261124/delivery.json",
+        "accepted_methods": 158,
+        "required_methods": 231,
+        "hours_of_long_run": 0
       }
     },
     {
@@ -9224,6 +9245,13 @@
         "evidence": "evidence/serve-assistants-20261124/profiles.json",
         "default_revision": 460,
         "remaining": "Sealed managed recovery and publication."
+      },
+      "assistant_delivery_20261124": {
+        "revision": 462,
+        "evidence": "evidence/serve-assistants-20261124/delivery.json",
+        "accepted_methods": 158,
+        "required_methods": 231,
+        "hours_of_long_run": 0
       }
     },
     {
@@ -10715,11 +10743,18 @@
         "evidence": "evidence/serve-assistants-20261124/profiles.json",
         "default_revision": 460,
         "remaining": "Sealed managed recovery and publication."
+      },
+      "assistant_delivery_20261124": {
+        "revision": 462,
+        "evidence": "evidence/serve-assistants-20261124/delivery.json",
+        "accepted_methods": 158,
+        "required_methods": 231,
+        "hours_of_long_run": 0
       }
     }
   ],
-  "next_task": "Reconcile the frozen HTTP method contracts and implement hosted environment provisioning, workspace access and remaining Serve master tasks.",
-  "next": "按冻结 HTTP 方法核对兼容性，补齐执行环境、工作区文件与会话执行，持续推进其余推理、应用服务和恢复任务。",
+  "next_task": "Verify cumulative Assistants prompt admission, implement hosted code execution and container resources, and continue the remaining inference, application and recovery contracts.",
+  "next": "验收 Run 多步提示预算，补齐托管代码执行及容器接口，接续开放的推理、应用服务和恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

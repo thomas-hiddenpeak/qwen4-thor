@@ -5,6 +5,7 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 | 开发接入 | 已验证的业务 | 客户端和部署条件 |
 |---|---|---|
 | Chat、Responses、Agents | 项目资料查询、流式工具事件、工具结果回填、子 Agent 回合及配额恢复 | API Key 区分客户。持久会话跨进程恢复；具体模型、工具及发行组合见[托管业务回执](evidence/serve-agent-workspaces-20261124/subagent-delivery.json)。 |
+| Assistants v2 | 注册及更新 Assistant，维护 Thread 和 Message，流式创建 Run，按工具调用 ID 回填，读取步骤、取消及恢复待回填的 Run。附件检索已读取真实发布记录。 | 使用客户 API Key 和 `OpenAI-Beta: assistants=v2`。仅可访问本客户的数据。工具回填及崩溃接手见[发行回执](evidence/serve-assistants-20261124/delivery.json)，输入预算与代码执行继续跟踪。 |
 | 旧版 Realtime 对话与转写 | Node SDK 7.47.0 在原生 TLS 上完成中文转写、文本增量及终态；两种容量均已验证 | SDK WebSocket 助手使用 WSS，部署时为其配置原生 TLS 或可选 TLS 网关。转写须通过支持 transcription intent 的连接助手并显式传入 beta 头。[SDK 回执](evidence/serve-realtime-legacy-sessions-20261124/beta-resources.json) |
 | 上传语音翻译 | 中文真实录音译为英文，JSON、纯文本、详尽 JSON、SRT 和 VTT 均已通过两种容量短验 | 配置原生 ASR；字幕还需对齐模型。`whisper-1` 是请求别名，实际后端为 Qwen ASR 和本地 Chat。[双配置回执](evidence/serve-audio-translation-20261124/profiles.json) |
 

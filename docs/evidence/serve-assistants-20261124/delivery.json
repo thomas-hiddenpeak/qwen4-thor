@@ -1,0 +1,252 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 462,
+    "version_revision": 160,
+    "profile_revision": 50,
+    "previous_profile_revision": 49,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "dd508623e988c1c0269585824e440bd6db307785aee4b57b1ccf12c46026ef36",
+    "fallback": "94386c0e04b22529535e19444441a49643567b69b4154509cde7ae0fc8c514b3",
+    "engine": "30954b9703d77aa45c4300be1776cc8e1995b926f4873974850e54fda85845ef",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "managed": {
+    "fallback": {
+      "seconds": 123.512,
+      "starts": 2,
+      "guard_retained": true,
+      "generations": [
+        1,
+        2
+      ],
+      "stable_fields": [
+        "assistant",
+        "thread",
+        "run",
+        "step",
+        "call",
+        "arguments"
+      ],
+      "answer": "460",
+      "fresh_chat": "42",
+      "wrong_call": 400,
+      "foreign": 404,
+      "ports_released": true,
+      "owned_processes_left": [],
+      "receipts": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-fallback-business-01/result.json",
+          "sha256": "c535311f5732d106d756393b60cbc9dd4c00a15f96ead501f37ff55908f68365"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-fallback-business-01/before-run.json",
+          "sha256": "25cce72f0155b3e4ea574b4e02e756a8c63aa1f649f5864fee65c0370bd880d8"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-fallback-business-01/after-run.json",
+          "sha256": "772f169f45732f15c80df3a0bb12e1758f2d9653b0f2c5406e9d92cbc515020b"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-fallback-business-01/interruption.json",
+          "sha256": "82bc64a4e96e2675858660f29ad0f3683eca7a3ed368731b9e72c01c7f955cd2"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-fallback-business-01/chat-after.wire",
+          "sha256": "91057675823161b4f8cc7ee19db00022b731b142b9190882e053664f874d4eba"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-client-fallback-01/service-acceptance.json",
+          "sha256": "c56bc66b21320e10463ec6ab7fc3402452bc323f3ca57bbfb1e49c8fe3e4d268"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-fallback-lease-01/exit.json",
+          "sha256": "8b6039e8e315a114e7fad518e847fd4f08f3aeb71ef04b9530e4c7a42b3ab053"
+        }
+      ],
+      "fault": "owned model SIGKILL"
+    },
+    "primary": {
+      "seconds": 154.472,
+      "starts": 2,
+      "guard_retained": true,
+      "generations": [
+        1,
+        2
+      ],
+      "stable_fields": [
+        "assistant",
+        "thread",
+        "run",
+        "step",
+        "call",
+        "arguments"
+      ],
+      "answer": "460",
+      "fresh_chat": "42",
+      "wrong_call": 400,
+      "foreign": 404,
+      "ports_released": true,
+      "owned_processes_left": [],
+      "receipts": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-assistant-03/result.json",
+          "sha256": "3ab67f23a3a19461de667bd11a82a66d74b18271cebe313fbd62973f70150a0a"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-assistant-03/before-run.json",
+          "sha256": "13663d5cdf433ddcfe8f7ae42856cd5c1390deb3c139d81fa71315a85b13f119"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-assistant-03/after-run.json",
+          "sha256": "26f86323b312db5e6d9dbf3928414436a1a1f7859c38614bbdf9548ceccc6d08"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-assistant-03/interruption.json",
+          "sha256": "670da825c7ad2e786ffceaea32183ce17fa692041635749c0907e079abf250f8"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-assistant-03/chat-after.wire",
+          "sha256": "cbcc4d71edfb6e27caf22d38bfbb6a1215532bb80e4dddb1923f7e11dce2129d"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-client-primary-01/service-acceptance.json",
+          "sha256": "2bd22ac24380117ffeef5b576e9d9212739743e7b8251db7c745de8ad67665ec"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-primary-lease-03/exit.json",
+          "sha256": "81221c8c4a9eff865f469d31bce7128749b4619700f79d4f2bb01a5268efdae3"
+        }
+      ],
+      "fault": "owned gateway SIGABRT",
+      "selected": "fallback",
+      "probes": 1,
+      "takeover": {
+        "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-assistant-03/takeover.json",
+        "sha256": "7b6e150cd9fbfe01ae6cab1636ccf505b534197389901b9d7f3a6a5c75a3d302"
+      }
+    }
+  },
+  "retained_failed_runs": [
+    {
+      "status": "FAIL",
+      "reason": "The second startup found less available unified RAM than its native admission threshold while this task also compiled. The policy tried the light profile as a third start and the bounded driver stopped.",
+      "available_bytes": 120625475584,
+      "required_bytes": 120783008684,
+      "receipts": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-assistant-01/result.json",
+          "sha256": "17da472e39576e1854076add05017dab6d5432298f2c5ead8cb118ff0ce3a8f5"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-assistant-01/state/runs/9cb2f0a6-62f6-4b39-a0b6-3fb09d5a79a2/fallback/controller-2/model-2/model.log",
+          "sha256": "a55219a406275e891b34ef441323f983fa91f100945884bc12a1cc01c8a117e6"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-primary-lease-01/exit.json",
+          "sha256": "543589ff64df9094908a0d6ed6acecda5821768001301d49a725a5e461757173"
+        }
+      ]
+    },
+    {
+      "status": "ENV_ABORT",
+      "reason": "The lease detected the separate q4t_host_tests CPU process. Its NVML context flag was false. Registration had not started a model. The CPU cases and the GPU retry were subsequently serialized.",
+      "receipts": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-primary-lease-02/exit.json",
+          "sha256": "04b1e0b7d84ea9fab16852ab0441e05a7f50188e340cbf058dd24f5aac93bd54"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/assistant-primary-lease-02/events.jsonl",
+          "sha256": "89411500f8ff41e87606edd5867e32206d9041711fee338b73d9fd65ed025df6"
+        }
+      ]
+    }
+  ],
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "a3467ea48e6f436fdeeecb157c73d6fc8ac80c17904103287b6cc57b380f9c1a"
+        ],
+        "sha256": "2fa77592fbb319bb89a5501eda2c21ef86e10a06e475b4b9a571a5ddab3e2c4e",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "399d1d4c-aca4-44c0-ae0a-e7495e955cb1"
+        ],
+        "sha256": "c4885d038c2be7da46b0d6480165e345a0fdb37695d4ffd737c4e260966eabe5",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "d95d96c9-a2a8-4e68-ae8b-c1cbc715a569"
+        ],
+        "sha256": "20064ccd33b8db81d1c483f063009c041bfcadf1b8f9fdd88718c723646273b4",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "profiles": {
+    "path": "docs/evidence/serve-assistants-20261124/profiles.json",
+    "sha256": "bce0c06b245444f4e3bc5f61711cf9f02fcf36d4459a319db23ec7e74175a799"
+  },
+  "main": {
+    "81": {
+      "merge": "c7ccc06e3d32fd504dfec7005cf9c237eb91c2ee",
+      "head": "6027627a997a5fd4afc43336042d7cec6f7e81a7",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45317509624",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45317516834"
+      }
+    },
+    "82": {
+      "merge": "4dc3c63414406746b13a62914dcd39befcd5e922",
+      "head": "292d1c49fff6fd0b21bb6e8e3b6a504c8d4a9b99",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45317589704",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45317598480"
+      }
+    }
+  },
+  "issued_methods": {
+    "required_methods": 231,
+    "declared": 158,
+    "exact_success_declarations": 158,
+    "missing_declaration": 73,
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "issued": "a481aa4a40ccc68fbfe788430c5a263cebc790d0cb6f58db2f9e073d91d9892e"
+    }
+  },
+  "day": {
+    "source_commit": "21e45bd6c038e584a8e0f92a9853d6accb8c42e6",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/assistant-client-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/assistant-client-primary-01/bundle",
+      "manifest_sha256": "dd508623e988c1c0269585824e440bd6db307785aee4b57b1ccf12c46026ef36"
+    },
+    "revision": 462,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/assistant-client-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "dd49a24d5e6dae3f6ffb8fe88070cd441023f6040edeba13611c458b3ee125ac",
+    "handoff_sha256": "b04433fdacbf4d408ae90165803da43207cf680c0f443d736c9f1aeae86b23c8",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "publication_lease": {
+    "path": ".q4t-work/serve-responses-agents-20261123/assistant-publication-lease-01/exit.json",
+    "sha256": "f43d7e16a12cd256550b166647b6d8e8f1a2a9757c8a45875d3ee1c0ed176afb"
+  }
+}
