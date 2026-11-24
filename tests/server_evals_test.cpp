@@ -348,7 +348,7 @@ Q4T_TEST(
 }
 
 Q4T_TEST(evals_interrupted_text_replays_once_with_original_input_and_seed) {
-  for (const std::string mode : {"resume", "exhaust", "explicit", "tools", "cancel_parent"}) {
+  for (const std::string mode : {"resume", "exhaust", "explicit", "tools", "cancel_parent", "drain_race"}) {
     Fixture fixture;
     ClientAdmission clients;
     auto identity = clients.RecoveryIdentity(0);
@@ -367,6 +367,11 @@ Q4T_TEST(evals_interrupted_text_replays_once_with_original_input_and_seed) {
       ObjectStore objects(fixture.options);
       ResponsesJobs jobs(objects, {}, [&](auto& job) {
         ++calls;
+        if (!attempt && mode == "drain_race") {
+          ResponsesExecution::ObserveError(job.run.get(), 503,
+              "client minute quota unavailable", "service_draining");
+          return;
+        }
         if (!attempt || mode == "exhaust") {
           while (!job.control->Cancelled()) std::this_thread::sleep_for(1ms);
           return;
@@ -418,7 +423,7 @@ Q4T_TEST(evals_interrupted_text_replays_once_with_original_input_and_seed) {
         std::this_thread::sleep_for(1ms);
       Q4T_CHECK(calls == attempt + 1);
       if (mode == "explicit") Q4T_CHECK(jobs.Cancel(child, access).ok());
-      if (attempt && mode == "resume")
+      if ((attempt && mode == "resume") || mode == "drain_race")
         for (int i = 0; jobs.Health().owned && i < 2000; ++i)
           std::this_thread::sleep_for(1ms);
       jobs.RequestStop();
@@ -450,6 +455,46 @@ Q4T_TEST(evals_interrupted_text_replays_once_with_original_input_and_seed) {
       }
     }
   }
+  return true;
+}
+
+Q4T_TEST(evals_frozen_service_preserves_queued_model_job_and_accepts_cancel) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  GatewayClientPolicy policy;
+  policy.version = 3;
+  policy.gateway_token = std::string(64, 'a');
+  policy.sha256 = std::string(64, 'b');
+  policy.clients.push_back({"alpha", 2, 1, 1024, 64, 65536, 30, 6000});
+  ClientAdmission retiring;
+  Q4T_CHECK(retiring.Configure(policy) && retiring.EnableRateRecovery() &&
+            retiring.RestoreRates(nullptr, std::string(64, '1')));
+  ChatPlanConfig config;
+  config.model = "cpu";
+  ResponsesJobs jobs(objects, {}, [](auto&) { throw std::logic_error("unexpected model callback"); });
+  auto alpha = retiring.RecoveryIdentity(0);
+  eval_detail::SamplingOwner owner{retiring, alpha, jobs, config};
+  StateAccess access{"client:alpha", std::chrono::steady_clock::now() + 10s, {}};
+  auto def = Request(objects, "POST", "/v1/evals", kDefinition);
+  Q4T_CHECK(def.ok());
+  auto path = "/v1/evals/" + def.value.GetString("id") + "/runs";
+  auto run = Request(objects, "POST", path, R"({"data_source":{"type":"completions","model":"cpu",
+    "source":{"type":"file_content","content":[{"item":{"count":157}}]}}})");
+  Q4T_CHECK(run.ok());
+  ObjectRequest get;
+  get.kind = ObjectKind::kEvalRun;
+  get.scope = access.scope;
+  get.id = run.value.GetString("id");
+  auto old = objects.Execute(get, access.deadline);
+  ClientRateState checkpoint;
+  Q4T_CHECK(retiring.FreezeRates(&checkpoint));
+  for (int i = 0; i < 3; ++i)
+    Q4T_CHECK(eval_detail::AdvanceRun(objects, access, old.value, &owner).http_status == 202);
+  auto current = objects.Execute(get, access.deadline);
+  Q4T_CHECK(EncodeSchemaJson(current.value) == EncodeSchemaJson(old.value) &&
+            jobs.Health().owned == 0);
+  auto canceled = Request(objects, "POST", path + "/" + get.id + "/cancel");
+  Q4T_CHECK(canceled.ok() && canceled.value.GetString("status") == "canceled");
   return true;
 }
 
