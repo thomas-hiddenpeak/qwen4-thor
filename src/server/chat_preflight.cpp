@@ -116,10 +116,14 @@ void ChatServer::HandleConfig(int fd) {
       ApplicationStartupJson(background_scanner_.Health()) +
       R"(,"automation_dispatcher":)" +
       ApplicationStartupJson(automation_dispatcher_.Health()) +
+      R"(,"eval_dispatcher":)" +
+      ApplicationStartupJson(eval_dispatcher_.StartupHealth()) +
       R"(,"webhook_dispatcher":)" +
       ApplicationStartupJson(webhook_dispatcher_.StartupHealth()) +
       R"(,"environment_preparer":)" +
       ApplicationStartupJson(environment_preparer_.StartupHealth()) + "}," +
+      R"("evaluation_run_errors":)" +
+      std::to_string(eval_dispatcher_ ? eval_dispatcher_->Errors() : 0) + "," +
       (environment_preparer_ ? R"("environment_preparation":)" +
                                OutputJson(environment_preparer_->Health()) + ","
                              : "") +

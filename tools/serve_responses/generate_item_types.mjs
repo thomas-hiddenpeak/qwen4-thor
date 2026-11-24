@@ -448,6 +448,25 @@ if (mode === '--assistants') {
 if (mode === '--evals') {
   const query = nodes[roots.output_query];
   query.fields = query.fields.filter(field => field.name !== 'eval_id');
+  // The frozen HTTP success schema explicitly admits null in these outputs.
+  // 7.47.0 declares them non-null in TypeScript. Only widen the response
+  // field edge, never its shared primitive/object or any request field.
+  const nullIndex = nodes.findIndex(node => node.kind === 'null');
+  if (nullIndex < 0) throw new Error('Missing null type');
+  function nullableField(record, name, expected) {
+    const field = nodes[record].fields.find(field => field.name === name);
+    if (!field || nodes[field.type].kind !== expected)
+      throw new Error('Review Eval HTTP nullability for '+name);
+    const type = field.type;
+    field.type = nodes.length;
+    nodes.push({kind: 'union', variants: [type, nullIndex]});
+  }
+  for (const [name, kind] of [['model','string'], ['name','string'], ['error','object'],
+      ['per_model_usage','array'], ['per_testing_criteria_results','array']])
+    nullableField(roots.run, name, kind);
+  const sample = nodes[roots.output_item].fields.find(field => field.name === 'sample');
+  nullableField(sample.type, 'error', 'object');
+
 }
 // The frozen HTTP definition supplies value limits absent from TypeScript.
 if (mode === '--chatkit') {

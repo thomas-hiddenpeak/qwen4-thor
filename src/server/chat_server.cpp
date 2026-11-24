@@ -55,6 +55,7 @@ ChatServer::~ChatServer() {
   // connections before releasing the model, including partial startup state.
   startup_listeners_.Close();
   environment_preparer_.RequestStop();
+  eval_dispatcher_.RequestStop();
   webhook_dispatcher_.RequestStop();
   batches_.RequestStop();
   vector_jobs_.RequestStop();
@@ -72,6 +73,7 @@ ChatServer::~ChatServer() {
   StopScheduler();
   JoinLiveMedia();
   environment_preparer_.Join();
+  eval_dispatcher_.Join();
   webhook_dispatcher_.Join();
   batches_.Join();
   vector_jobs_.Join();
@@ -1095,6 +1097,9 @@ void ChatServer::RecoverApplicationJobs() noexcept {
   });
   environment_preparer_.TryStart([this] {
     return std::make_unique<EnvironmentPreparer>(*objects_, clients_);
+  });
+  eval_dispatcher_.TryStart([this] {
+    return std::make_unique<EvalDispatcher>(*objects_, clients_);
   });
   if (webhook_network_)
     webhook_dispatcher_.TryStart([this] {

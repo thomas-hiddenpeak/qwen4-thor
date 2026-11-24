@@ -4538,7 +4538,7 @@
         {
           "name": "error",
           "optional": false,
-          "type": 459
+          "type": 493
         },
         {
           "name": "eval_id",
@@ -4558,12 +4558,12 @@
         {
           "name": "model",
           "optional": false,
-          "type": 20
+          "type": 491
         },
         {
           "name": "name",
           "optional": false,
-          "type": 20
+          "type": 492
         },
         {
           "name": "object",
@@ -4573,12 +4573,12 @@
         {
           "name": "per_model_usage",
           "optional": false,
-          "type": 461
+          "type": 494
         },
         {
           "name": "per_testing_criteria_results",
           "optional": false,
-          "type": 463
+          "type": 495
         },
         {
           "name": "report_url",
@@ -5279,7 +5279,7 @@
         {
           "name": "error",
           "optional": false,
-          "type": 459
+          "type": 496
         },
         {
           "name": "finish_reason",
@@ -5435,6 +5435,48 @@
     {
       "kind": "literal",
       "value": "pass"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        18
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        18
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        459,
+        18
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        461,
+        18
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        463,
+        18
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        459,
+        18
+      ]
     }
   ],
   "sources_sha256": {

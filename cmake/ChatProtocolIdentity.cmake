@@ -504,6 +504,14 @@ set(protocol_inputs
   src/server/file_fetch_http.cpp
   src/server/sip_webhook.cpp
   src/server/webhook_transport.cpp
+  src/server/eval_runs.cpp
+  src/server/eval_runs.h
+  src/server/eval_run_state.h
+  src/server/eval_dispatcher.cpp
+  include/q4t/server/eval_dispatcher.h
+  src/server/eval_execution.cpp
+  src/server/eval_grading.cpp
+  src/server/eval_grading.h
   src/server/evals.cpp
   src/server/chatkit_sessions.cpp
   src/server/chatkit_client.cpp

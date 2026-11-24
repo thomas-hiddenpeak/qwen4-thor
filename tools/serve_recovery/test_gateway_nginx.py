@@ -436,7 +436,7 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(eval_id='eval_1', webhook_endpoint_id='whe_1', automation_id='automation_1', invocation_id='invocation_1',
+            identities = dict(output_item_id='outputitem_1', eval_id='eval_1', webhook_endpoint_id='whe_1', automation_id='automation_1', invocation_id='invocation_1',
                               run_id='run_1', step_id='step_1', thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1', container_id='cntr_1', skill_id='skill_1',
@@ -451,6 +451,8 @@ class NginxTests(unittest.TestCase):
                 identities['session_id'] = 'agent_session_1'
             if template.startswith('/v1/containers/'):
                 identities['file_id'] = 'cfile_1'
+            if template.startswith('/v1/evals/'):
+                identities['run_id'] = 'evalrun_1'
             path = template.format(**identities)
             if method == 'GET' and template != '/v1/live/sessions/{session_id}/content':
                 path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'

@@ -377,10 +377,16 @@ def current_surface(root):
             'server::IsEvalObservation(method, path)' not in native):
         raise ValueError('review Evals definition dispatch and admission')
     for path, methods in (('/v1/evals', ('GET', 'POST')),
-                          ('/v1/evals/{eval_id}', ('GET', 'POST', 'DELETE'))):
+                          ('/v1/evals/{eval_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/evals/{eval_id}/runs', ('GET', 'POST')),
+                          ('/v1/evals/{eval_id}/runs/{run_id}', ('GET', 'DELETE')),
+                          ('/v1/evals/{eval_id}/runs/{run_id}/cancel', ('POST',)),
+                          ('/v1/evals/{eval_id}/runs/{run_id}/output_items', ('GET',)),
+                          ('/v1/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}', ('GET',))):
         for method in methods:
             routes.append((path, method))
-            native_routes.append((method, path, 'false' if method == 'POST' else 'true'))
+            native_routes.append((method, path, 'false' if method == 'POST' and
+                                  not path.endswith('/cancel') else 'true'))
     if ('HandleWebhook(*objects_, access' not in dispatch or
             'server::WebhookMethodAllowed(method, path)' not in native):
         raise ValueError('review webhook management and native ingress routing')

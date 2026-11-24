@@ -1,0 +1,32 @@
+{
+  "stage": "cpu_jsonl_run_and_string_grading",
+  "scope": "native eval run objects, scoped file and inline JSONL, string grading, cancellation and output pagination",
+  "original_failure": "SDK 7.47.0 typed EvalRun.model as string and EvalRun.error as an object. The official HTTP success contract permits null. Local run creation originally returned 503.",
+  "negative_and_recovery": [
+    "foreign file and run 404",
+    "stale scoring CAS 409",
+    "one deliberately failed row",
+    "cursor cannot be borrowed from another run",
+    "source File erased, store reopened, original manifest still yields both rows",
+    "canceled and deleted parents"
+  ],
+  "results": {
+    "native_cpu_cases": 7,
+    "actual_nginx_forwarding": "pass",
+    "declared_methods": 215,
+    "required_methods": 231
+  },
+  "issued": false,
+  "open_work": [
+    "device SDK validation of the run and item methods",
+    "model-sampled and stored data sources",
+    "model, Python and similarity graders",
+    "qualification of the resulting service package"
+  ],
+  "raw_sha256": {
+    "evals-runs-cpu-02.log": "63aab4bc2cda37aab47e5b010952d227912625f00f6cc8320a10a391d8b4a71b",
+    "evals-runs-cpu-04.log": "1b613910d49b1a31f75c609f1c98cfa3b7e833ce8e2b4c89cb3c220a1b8577bf",
+    "evals-runs-optional-all-routes-02.log": "e19106d0a3b7dbcd8e63553fc9907c1bab3b4c96893d13e4ee3c9a1d9851fad8",
+    "evals-runs-methods-02.json": "87fa0fdac3bb016a00a9cb76cde3a59ba7ba90690d590af582997fa8a6490fb2"
+  }
+}

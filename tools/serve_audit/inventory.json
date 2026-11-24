@@ -3078,6 +3078,69 @@
         "src/server/evals.cpp",
         "tests/server_evals_test.cpp"
       ]
+    },
+    "DELETE /v1/evals/{eval_id}/runs/{run_id}": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "GET /v1/evals/{eval_id}/runs": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "GET /v1/evals/{eval_id}/runs/{run_id}": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "GET /v1/evals/{eval_id}/runs/{run_id}/output_items": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "GET /v1/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "POST /v1/evals/{eval_id}/runs": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "POST /v1/evals/{eval_id}/runs/{run_id}/cancel": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3692,8 +3755,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "5e100eb49d313d3151932a2679ff0291a3d45fe2be7828bfcdce1ea7e41095e3",
-    "cmake/ChatProtocolIdentity.cmake": "59ee3cf10105f13e83be39464c9ceb0c4dc6bcf8d55cda78e15422bad31ea01e",
+    "CMakeLists.txt": "8473401549b56a82a51fb69a005c214055090818c0334fed8e20f437c7c6dbba",
+    "cmake/ChatProtocolIdentity.cmake": "64d1c6585d159680c116e844948dbfdaf9c2869a254077b7822e36ab3e12b2d6",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3784,7 +3847,7 @@
     "include/q4t/server/application_owner.h": "722cb383b3cbe48525c7444d852cac99d508679e7099ca9236aab50e8a38f87b",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "659f06e5ad1c5324b7530ad31e2c288ca879ab38ad4b3267d3e3fb1d320a4e4e",
+    "include/q4t/server/application_routes.h": "d1beecef718f570d8396d9c3f59d03bbb734a78725a150c4d8e7cecdcc41ad24",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3826,7 +3889,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "5804382dc7c7cbc4f45d09aafe94170355eed1fe70cf26ad5145e8c847d69882",
+    "include/q4t/server/chat_server.h": "bedb9b2889ea4164f72de1284a68caf5305e591df39f2cee62decbc2d7e8d661",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -3935,7 +3998,7 @@
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "f5dd11a1415b894c8d0b0cd1b38bd04267a932662b7f05a7f84a50ae3061efe5",
-    "include/q4t/server/object_store.h": "53d8e4f16bc0192661ea9fbc11ab6f904433fd95a5bc4f784a7e9bb0c5118513",
+    "include/q4t/server/object_store.h": "401f15615d21b33b9cf932ce1d1bccf3df301fdfc6fcbfbdd715502a473355a5",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -4276,7 +4339,7 @@
     "src/server/batch_state.cpp": "c1f4ea93b2b4373f649cd870a0066afa9698798a25360a73d69da29bd474fc71",
     "src/server/batch_usage.cpp": "abf218b785045fe0116bc88ba22fd21087db0989b7a4b50011b1d35d5abbebca",
     "src/server/batch_validation.cpp": "670542f022f7e4b8d10a28ef80941170925f41e1c9e5ef1507705d545dfff394",
-    "src/server/binary_store.cpp": "9e381cf79b396bdfa2c2f562ac6b6efc6e64e651ff2529d1ed71f6b9bfa0301e",
+    "src/server/binary_store.cpp": "2e93d18d0e316a3333db9fe8a7298592250f77f6fd8c95ac956facc7b6a0835d",
     "src/server/cache_io.cpp": "96d9d7315eb8a7a90905d718528fd624aa5caec3a9830568afaddacbb9e19fa9",
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
@@ -4303,7 +4366,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "3d7318c7f3721312adbab0b5927177da711d5c00244aca802ce596180def1672",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "de05cfab5256091c99cc210f2a216765ee7b987f3e6846f6622e27503dff4645",
+    "src/server/chat_http.cpp": "2ab84b4047143fe5d942e1639430b46861488eabd11bcd75bed3dd76ea157d70",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -4316,7 +4379,7 @@
     "src/server/chat_moderation.cpp": "0c7dc6c4ac42b1bd8bd904056344f58418a60e0e5879b20255ecad208d7ac5a5",
     "src/server/chat_moderations.cpp": "8f8b89dbfa7503b618e96083e2a6867a6a53c057360ea04030dc46d10da3c455",
     "src/server/chat_plan.cpp": "8e74bb7eeb9f38b4cc3916077e4b6bdbd63bac12c0390c6b09e347a291c4c5b4",
-    "src/server/chat_preflight.cpp": "4637056d05c4c4b32d6857bc58c812cea6cdbb3981c86f54f94b69b6dbe9cb5a",
+    "src/server/chat_preflight.cpp": "f265ec583643e6b9920aa13f0995729d6164642d78c7a11385e1c354ba60770e",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
     "src/server/chat_realtime.cpp": "350dcb749ca4d88a97f0a841acbe126b5f936a469a57610b728af8ff2dd2687e",
     "src/server/chat_realtime_conversation.cpp": "3515546723d710738b80bd01652e8d87a87e0c5dc44ab9a7d9792cf78f25e1ab",
@@ -4328,7 +4391,7 @@
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
     "src/server/chat_separator_backend.cpp": "092770259109e29b5fc6c9c68310d3202116bd23ffe28f34375bdc0ddd3e4adf",
     "src/server/chat_separator_execution.cpp": "abde3a4315e87a79f6d33a9f89c5074e3e0fcda2454408d79295f46d7aa559dd",
-    "src/server/chat_server.cpp": "81fc82b725be8c162a8ce5b5d7fb67826f3c0dcf58824acbaa63938b4ba051a9",
+    "src/server/chat_server.cpp": "c1e42d11a9c9abe4ac5b1296c876249d98bfcbcfeb05ead3a2a805e884d8607f",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_speaker_backend.cpp": "c6bbd91640521f96d26051f8e2b5320dd756ce35b631ed367439b230945d906f",
     "src/server/chat_speaker_execution.cpp": "d53c92b11221302bae76287203569667ba770914d0f4dd103a0347f799c000a0",
@@ -4377,7 +4440,7 @@
     "src/server/contracts/openai_container_types_v1.json": "e24a221e48e74a6c8556f0273477e6a1a45a74b9af2012eefe3e83682bb4ef52",
     "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
     "src/server/contracts/openai_environment_types_v1.json": "e28dc97fbb23877addcfe83e3e7d5cddc05d27383b6378f0cfcfc09c7b6d2ee5",
-    "src/server/contracts/openai_eval_types_v1.json": "7f0f09c62607eabf5f7f79adf241064be8c804dd4631c960d545acc4b1141a21",
+    "src/server/contracts/openai_eval_types_v1.json": "f4de1f7e4aededc9860bd076fc72be5e7b4e950ef5be27ca0028b0c9c30fa488",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
     "src/server/contracts/openai_live_types_v1.json": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
     "src/server/contracts/openai_multi_agent_types_v1.json": "2c07ee92deacfb8c247d6fdd48f6eed1b073c75235065eb6ded5ca23f82f19e6",
@@ -4399,7 +4462,7 @@
     "src/server/embedding_metadata.cpp": "ace571f57dcd0b2cc2389ae37f1582eda93835d5dac30881453b9a00932f0490",
     "src/server/embeddings_execution.cpp": "2f79fcedf3c4486fff96837ba528a55cd575ee8a898e011f214dd36c800a9fd6",
     "src/server/embeddings_plan.cpp": "04d1723b63377850f176c878842b93f2e268eefc36ecb9abcb23280c8deff4cd",
-    "src/server/evals.cpp": "ac7c965b9fc10e4f29e635a3e9dd5fb3f26f9a2242b64d50cc768574845a42f9",
+    "src/server/evals.cpp": "b69fae03eb89caaeb7d27dcacb531fed49b41b41fa23a954d5f7687c58a67e38",
     "src/server/file_audio.cpp": "3123a206f9367824242797137efb4caddbf08c6f18dafa81df4d12c7b4aa2356",
     "src/server/file_audio_protocol.h": "7cde45b376ce72e1798039d79e474a1b21f96efa0dc869ad5c82f7cd5fa37999",
     "src/server/file_audio_worker.cpp": "326c228bed7589002d2e5d765262bb058f2cef422335b891cb0ee20782546650",
@@ -4542,8 +4605,8 @@
     "src/server/native_python.cpp": "109858208f4f462a61ef7397d794484eaf2ef5fd97afc8555445af740fd6f0b8",
     "src/server/native_python.h": "ca242b04a6270b905db65dfb1f541b3ea98d283c92dfee9049e7a055c7ebe5b1",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "f61738dfcf9aa475ec13d234740c9f4bdcbd9c3ddc6d48c8107c3e2ef0dce560",
-    "src/server/object_retention.cpp": "4c7cfbb4350e2956ed9554daccbe7136592b83239d2142406735299abc1553c8",
+    "src/server/object_protocol.h": "4ce44bbf252094cdcec08be82b3c88495456c58a91dfbb62857c4db77a1a92e6",
+    "src/server/object_retention.cpp": "09787be8ae37614984c282527448bcfbf00e66b7748f9afe9b838713907689d1",
     "src/server/object_store.cpp": "962fe79b440c51fcf19feec1be962a85badeae5f2ed87223d7d82517609d3629",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "fee6788a794cf74ab6af92cef56e37e914de8d79add7cc8dd4ccc6f16087c1ac",
@@ -4826,7 +4889,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "1e0548f0eead8eade4e1942092b07469f9905c9a3dbded5023e7a5f16e2e0caf",
+    "tools/serve_gateway/gateway.py": "f16948869beb32a074652ed3081dc22ebbab387031d24550e9447cd05c0636de",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -5003,7 +5066,7 @@
     "tools/serve_recovery/version_registration.py": "8f127f8423fcba9a383232f596ed8e25239953725f092c0680acba9518cecede",
     "tools/serve_recovery/version_runtime.py": "2d3303bb16d919249dc7dedb11e5d4095f8df775a0ae3c2bba70bb1d1a655726",
     "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
-    "tools/serve_responses/generate_item_types.mjs": "0da2c5519785ff8e62899fea8cc62d7069ce0b6bb6c1d2158a6ef162caa86869",
+    "tools/serve_responses/generate_item_types.mjs": "0851b9f909b36c9d19ea8508a3e33dbbe027d84b987665bae2764821eec7c119",
     "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
     "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
     "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
@@ -5039,7 +5102,15 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "include/q4t/server/eval_dispatcher.h": "fd79978932fed17010545ca047327e06a792c40088bbd43a6376f3c0efaf820e",
+    "src/server/eval_dispatcher.cpp": "3479b55a74a3dc665a7926a1af15c74a90bb56cd81e3300e8eb159dfcf1b4436",
+    "src/server/eval_execution.cpp": "5fde7bd16c79bb8a784e3322053266d69c3f1b17e7f4e6cc9e49af352b04e1ff",
+    "src/server/eval_grading.cpp": "fd9f401376d873aaf43816889e35bd89b285efe519c6be64808c658bee171231",
+    "src/server/eval_grading.h": "f0f1d27ea62ff8c66487d418854f68f0a9b6d89fe44c60038252611965e85b1f",
+    "src/server/eval_run_state.h": "0e0d10bb99b1e036d6d600a59594be9ffd1d634d24837db59cc59107122a0613",
+    "src/server/eval_runs.cpp": "24a2e99e015b612f59e86e714a412553be9787aaf1b9b467280d48ec3ac6b495",
+    "src/server/eval_runs.h": "d096086fcf3cab0b74eb92995b448cf27dcbb7f389e90aae0c4346b327b3037d"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -9303,6 +9374,114 @@
       "boundary": "按认证范围访问，按真实创建或更新时间分页，修改与删除按原修订号提交。",
       "evidence": [
         "src/server/evals.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "DELETE /v1/evals/{eval_id}/runs/{run_id}": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "GET /v1/evals/{eval_id}/runs": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "GET /v1/evals/{eval_id}/runs/{run_id}": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "GET /v1/evals/{eval_id}/runs/{run_id}/output_items": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "GET /v1/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/evals/{eval_id}/runs": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/evals/{eval_id}/runs/{run_id}": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/evals/{eval_id}/runs/{run_id}/cancel": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/evals/{eval_id}/runs/{run_id}/output_items": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "POST /v1/evals/{eval_id}/runs": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
+        "tests/server_evals_test.cpp"
+      ]
+    },
+    "POST /v1/evals/{eval_id}/runs/{run_id}/cancel": {
+      "semantics": "客户范围内创建、查询、取消和删除评估运行，按状态或游标读取逐条评分。",
+      "boundary": "逐行检查并以同一次条件写入提交结果与计数，取消及删除与保存互斥。文件来源固定到创建时的内容。",
+      "evidence": [
+        "src/server/eval_runs.cpp",
+        "src/server/eval_execution.cpp",
         "tests/server_evals_test.cpp"
       ]
     }

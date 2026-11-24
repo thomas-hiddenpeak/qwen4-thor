@@ -4,6 +4,7 @@
 #include <chrono>
 #include <set>
 
+#include "eval_runs.h"
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/chat_storage.h"
@@ -207,17 +208,23 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access,
 ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
                        std::string_view method, std::string_view target,
                        const std::string& body) {
-  if (!IsEvalTarget(target))
+  const auto route = ParseEvalRoute(target);
+  if (route.kind == EvalRouteKind::kNone)
     return Error(404, "route_not_found", "Unknown eval route");
   const auto split = target.find('?');
   const auto path = target.substr(0, split);
   const bool collection = path == "/v1/evals";
   if (!EvalMethodAllowed(method, target)) {
     auto error = Error(405, "method_not_allowed", "Method not allowed");
-    error.value = Object(
-        {{"allow", String(collection ? "GET, POST" : "GET, POST, DELETE")}});
+    error.value =
+        Object({{"allow", String(std::string(EvalAllow(route.kind)))}});
     return error;
   }
+  if (route.kind != EvalRouteKind::kCollection &&
+      route.kind != EvalRouteKind::kEval)
+    return eval_detail::RunRequest(
+        objects, access, route, method,
+        split == target.npos ? "" : target.substr(split + 1), body);
   if (method != "POST" && !body.empty())
     return Invalid("body", "Unexpected body");
   if (collection && method == "GET")
@@ -242,7 +249,7 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
   ObjectRequest request;
   request.scope = access.scope;
   request.kind = ObjectKind::kEval;
-  Json resource;
+  Json resource, runs;
   int64_t created = now, updated = now;
   if (collection) {
     request.id = NewObjectId(request.kind);
@@ -270,6 +277,9 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
     request.expected_revision = row.value.GetInt("revision");
     request.expires_at = row.value.GetInt("expires_at");
     if (method == "DELETE") {
+      auto children =
+          eval_detail::RemoveChildren(objects, access, &request, &row.value);
+      if (!children.ok()) return children;
       request.operation = ObjectOperation::kErase;
       auto removed =
           objects.Execute(request, access.deadline, access.cancelled);
@@ -280,6 +290,7 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
       return removed;
     }
     const auto& data = Field(row.value, "data");
+    if (const auto* ids = data.Find("run_ids")) runs = *ids;
     created = data.GetInt("created_us");
     updated = std::max<int64_t>(now, data.GetInt("updated_us") + 1);
     resource = std::move(prior.value);
@@ -292,6 +303,7 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
   request.data = Object({{"resource", resource},
                          {"created_us", Number(created)},
                          {"updated_us", Number(updated)}});
+  if (!runs.IsNull()) Set(&request.data, "run_ids", std::move(runs));
   auto saved = objects.Execute(request, access.deadline, access.cancelled);
   if (saved.ok()) {
     saved.http_status = collection ? 201 : 200;
