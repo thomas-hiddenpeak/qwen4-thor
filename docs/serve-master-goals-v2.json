@@ -714,6 +714,15 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
         "official_events": 4
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
       }
     },
     {
@@ -2897,6 +2906,15 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
         "official_events": 4
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
       }
     },
     {
@@ -6483,6 +6501,15 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
         "official_events": 4
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
       }
     },
     {
@@ -8446,6 +8473,15 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
       }
     },
     {
@@ -9902,6 +9938,15 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
         "official_events": 4
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
       }
     },
     {
@@ -11480,6 +11525,15 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
       }
     }
   ],

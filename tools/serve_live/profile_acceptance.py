@@ -160,6 +160,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'environment_handoff' in self.plan:
+            from tools.serve_responses import environment_lifecycle_profiles
+            environment_lifecycle_profiles.business(self, capabilities)
         if 'webhook_handoff' in self.plan:
             self.webhook_subscriber.business(self, capabilities)
         if 'automation_handoff' in self.plan:
