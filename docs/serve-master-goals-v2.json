@@ -8358,7 +8358,8 @@
         "evidence/serve-agent-environments-20261124/delivery.json",
         "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
         "evidence/serve-agent-workspaces-20261124/subagent-stream.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -9135,7 +9136,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev456_delivered_remaining_deliveries",
+      "state": "rev458_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -9161,7 +9162,8 @@
         "evidence/serve-agent-vaults-20261123/delivery.json",
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
-        "evidence/serve-agent-workspaces-20261124/delivery.json"
+        "evidence/serve-agent-workspaces-20261124/delivery.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -10312,7 +10314,13 @@
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
       "agent_registration_main_20261123": "docs/evidence/serve-agent-registration-20261123/main.json",
       "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json",
-      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json"
+      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json",
+      "subagent_quota_release": {
+        "revision": 458,
+        "fallback_registered": true,
+        "desired": "STOPPED",
+        "evidence": "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
+      }
     },
     {
       "id": "Q03",
@@ -10330,7 +10338,8 @@
         "evidence/serve-native-maintenance-delivery-20261123/README.md",
         "evidence/serve-responses-agent-interruption-20261123/delivery.json",
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
-        "evidence/serve-agent-environments-20261124/delivery.json"
+        "evidence/serve-agent-environments-20261124/delivery.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
       ],
       "release": null,
       "surface_prose_audit": {
@@ -16747,6 +16756,7 @@
       "identity_and_turn_history_preserved": true
     },
     "recoverable_client_turn_quota": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota.json",
-    "quota_primary_light": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json"
+    "quota_primary_light": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json",
+    "subagent_delivery": "docs/evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
   }
 }
