@@ -26,7 +26,10 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 SAFETY_RECORD = 'q4t-profile-business-v47'
 SAFETY_FORMAT = 'q4t-project-safety-source-v1'
 SAFETY_CAPABILITY = dict(alerts=True, cases=True, publication='local_operator')
-SAFETY_REVIEWED = {}
+SAFETY_REVIEWED = {
+    'primary': '94074d22b03e8ae3a0a61fac422291c0f229b348bce63a737f6ad56f80ccd1c8',
+    'light': 'edfd08a8083ef3e4a435bef3b9d415ad8ed57be3e7112981083444b13061a70a',
+}
 COSINE_RECORD = 'q4t-profile-business-v46'
 COSINE_FORMAT = 'q4t-eval-cosine-source-v1'
 COSINE_REVIEWED = {
@@ -274,6 +277,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '9b4414892237b10b1e4d6f1720c7636c5de4c26ac97ace169ca8762121e196b3':
+        '842072a374fdc040504d96c2a16746772621860237478a4088b1de3b2c10ff65',
     '5c35c82b1e0b5aa927d3b6e3281f5341f5620fdcc6c9c0c228ee1493a726cce4':
         '1efb565263062c11b682bab1905424da4fdb84fc902c87c67bb3a60e2e57c137',
     'dcb959dc77dcbd23b96df4c56d5d3c6a86386a342f4dd8de4cc244e9bb265c0e':

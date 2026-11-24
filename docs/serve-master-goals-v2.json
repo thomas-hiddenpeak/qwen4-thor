@@ -18243,7 +18243,7 @@
     "issued": false,
     "receipt": "evidence/serve-project-safety-20261125/records.json",
     "profiles": {
-      "stage": "migration_cpu_verified",
+      "stage": "qualified",
       "receipt": "evidence/serve-project-safety-20261125/profiles.json"
     }
   }

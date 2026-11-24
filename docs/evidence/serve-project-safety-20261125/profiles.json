@@ -1,5 +1,5 @@
 {
-  "stage": "migration_cpu_verified",
+  "stage": "qualified",
   "issued": false,
   "predecessor_revision": 482,
   "profile_format": "q4t-profile-business-v47",
@@ -18,6 +18,83 @@
     "corrected": "Used the digest-verified plugin in the acceptance child environment."
   },
   "pending": [
-    "Primary/light SDK qualification, rollback and stopped publication"
-  ]
+    "Managed model restart, fallback takeover and stopped publication"
+  ],
+  "status": "ACCEPT_PROJECT_SAFETY_PRIMARY_LIGHT",
+  "profiles": {
+    "primary": {
+      "seconds": 66.516,
+      "starts": 1,
+      "profile_sha256": "94074d22b03e8ae3a0a61fac422291c0f229b348bce63a737f6ad56f80ccd1c8",
+      "restored_predecessor": "3a06296e569444482724f6b6415e19d61512f6ccdb5dae66a957e667ff330e92",
+      "request": "req-45f0c9f368545c3a3aaeb7d1296ec543",
+      "alert": "alert_dd48932c2b56408598c20bc8b07e9dce",
+      "case": "C-178f8cb2-16e6-4b39-9c66-e8fe81ee0ad7",
+      "source_response": "resp_31bd10f9ebd91e6bbbb111da0c6f95c6",
+      "foreign": 404,
+      "chat": "42",
+      "document": {
+        "sdk": "7.47.0",
+        "history_answer": "157",
+        "sha256": "39e3d3a8c6d54be05537d428a6fb56b6cad67e9eaef3531c7cf0a4af7f3e15cf",
+        "source_file": "file_ad914ab79ada015085a50fab6355510b",
+        "response": "chatcmpl-auto-4cb76b2d762f9203d67995a4c7cb2ef3",
+        "source_deleted_before_selection": 404
+      }
+    },
+    "light": {
+      "seconds": 63.197,
+      "starts": 1,
+      "profile_sha256": "edfd08a8083ef3e4a435bef3b9d415ad8ed57be3e7112981083444b13061a70a",
+      "restored_predecessor": "0809999642ccd316c363a0a969ab045aeaf3c006594c7b22517cc4b9218c69af",
+      "request": "req-45f0c9f368545c3a3aaeb7d1296ec543",
+      "alert": "alert_dd48932c2b56408598c20bc8b07e9dce",
+      "case": "C-178f8cb2-16e6-4b39-9c66-e8fe81ee0ad7",
+      "source_response": "resp_31bd10f9ebd91e6bbbb111da0c6f95c6",
+      "foreign": 404,
+      "chat": "42",
+      "document": {
+        "sdk": "7.47.0",
+        "independent_chat": "42",
+        "history_answer": "157",
+        "replay_answer": "157",
+        "score": 1,
+        "sha256": "39e3d3a8c6d54be05537d428a6fb56b6cad67e9eaef3531c7cf0a4af7f3e15cf",
+        "source_file": "file_ad914ab79ada015085a50fab6355510b",
+        "response": "chatcmpl-auto-4cb76b2d762f9203d67995a4c7cb2ef3",
+        "evaluation": "eval_7cd49b54d36dc1f8fa580be41a6b09e6",
+        "run": "evalrun_6f7b9aa9890f07d0877bb3d5732ef6bc",
+        "output": "outputitem_bbfdd539815d59aa3949e45d2e2d3ec1",
+        "source_deleted_before_selection": 404,
+        "response_deleted": 404,
+        "foreign_project": 404
+      }
+    }
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/acceptance.json": "9b4414892237b10b1e4d6f1720c7636c5de4c26ac97ace169ca8762121e196b3",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-qualified-01/acceptance.json": "f3336ecb9d9a2c8a8de92b935902b32ef50d6407c1533ac6e8a9b2e4dd5fb6f2",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-qualified-01/qualified/registry.json": "982442888cca3a6eaaea3499b1ee25172dbd51e229c7739ed2559f4a40764136",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/profile-observations.json": "ded18b1bee1cefc6b69f35c56ee7e87c375427bae7208b72817fecafd6fe36e7",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/lease/exit.json": "83486650c29a30a9397a54640dda76bfbcdadd504ff62cc52e47058f897222dd",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/safety-profile-pin-inventory.json": "f891319cf7bee128df18fbf0c739e00cc866155b89984d689af72370a3dde09e",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/primary/plan.json": "968738348cda04b6bcb84270eeb8e2c1529fb72942099eba7ef867ef9707edc7",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/primary/configuration.wire": "4c23cf5fec7be0a17715987b3263504964521aa9f5a6f974b55de3e7ce3aa6e1",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/primary/result.json": "7501f996a61320be9651c635d122010aff56845a187b7397535951de7b06a7bd",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/primary/cleanup.json": "6609d0110c11beee6b962b376a9554099dd6076bf814a37f5bffe406fdc28281",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/primary/project-safety-handoff.json": "bf50917bbf2f2f85e2ccb10b4f5bc8473995dcb333b739614e01250131c60648",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/light/plan.json": "9a50d4a374e62fb2405c3409c1f5d413b4e2bd644f892b63cb7b9dea9f75cc9d",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/light/configuration.wire": "7625de4ead62306407c2ddeb0c96ea7ad6311caafce8606d3755dfc8ee5c463f",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/light/result.json": "53ca6fd76d8c7bc2b2f3e5756f8b20e4b09797b5cc267a5f9ff6f7376f4592f4",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/light/cleanup.json": "35e1b4beeeb37c0f8690709984438079d0ff1a787baf3192223792229cc4e1b0",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/safety-profiles-02/light/project-safety-handoff.json": "c0499de6fe7b934449233ffe65520916dc60b5d324a2c82d80396d3f528054e9"
+  },
+  "schemas": {
+    "capacities": 2,
+    "schema_views": 2,
+    "revisions": [
+      46,
+      47
+    ]
+  }
 }
