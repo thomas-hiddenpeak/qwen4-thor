@@ -116,6 +116,8 @@ inline std::string Operation(ObjectOperation op) {
       return "erase";
     case ObjectOperation::kList:
       return "list";
+    case ObjectOperation::kEnvironmentEvents:
+      return "environment_events";
     case ObjectOperation::kHealth:
       return "health";
   }

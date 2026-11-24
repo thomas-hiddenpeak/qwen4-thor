@@ -709,6 +709,11 @@
         "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
         "idle_seconds": 1200,
         "retention_seconds": 604800
+      },
+      "hosted_session_environment_stream_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
+        "official_events": 4
       }
     },
     {
@@ -2887,6 +2892,11 @@
         "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
         "idle_seconds": 1200,
         "retention_seconds": 604800
+      },
+      "hosted_session_environment_stream_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
+        "official_events": 4
       }
     },
     {
@@ -6468,6 +6478,11 @@
         "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
         "idle_seconds": 1200,
         "retention_seconds": 604800
+      },
+      "hosted_session_environment_stream_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
+        "official_events": 4
       }
     },
     {
@@ -9882,6 +9897,11 @@
         "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
         "idle_seconds": 1200,
         "retention_seconds": 604800
+      },
+      "hosted_session_environment_stream_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
+        "official_events": 4
       }
     },
     {
@@ -11463,8 +11483,8 @@
       }
     }
   ],
-  "next_task": "Implement and verify session environment SSE, real environment provisioning failures and remaining inference, application and recovery tasks.",
-  "next": "补齐会话 SSE 环境事件、真实预热失败，继续其余推理、应用与恢复项。",
+  "next_task": "Complete asynchronous environment preparation, real setup failures, guarded delivery and remaining inference, application and recovery tasks.",
+  "next": "补齐异步预热、真实准备失败、可恢复发行与其余推理应用任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

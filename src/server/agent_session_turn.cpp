@@ -899,7 +899,7 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
     auto stored = objects.Execute(lookup, access.deadline, access.cancelled);
     if (!stored.ok()) return stored;
     auto active = environment_detail::PrepareWorkspaceActivity(
-        objects, access, stored.value, &workspace.emplace());
+        objects, access, stored.value, &workspace.emplace(), id, turn);
     if (!active.ok()) return active;
   }
   mutation.data = std::move(data);

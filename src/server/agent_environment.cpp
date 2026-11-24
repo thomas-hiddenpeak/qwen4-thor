@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "agent_environment_internal.h"
+#include "agent_environment_journal.h"
 #include "object_protocol.h"
 #include "q4t/server/agent_vault.h"
 #include "q4t/server/application_query.h"
@@ -221,7 +222,8 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access, Json query) {
 
 ObjectReply environment_detail::PrepareWorkspaceActivity(
     ObjectStore& objects, const StateAccess& access, const Json& stored,
-    ObjectRequest* change) {
+    ObjectRequest* change, const std::string& session,
+    const std::string& turn) {
   const auto* data = stored.Find("data");
   if (!data) return Corrupt();
   const auto* members = data->GetArray("attached_sessions");
@@ -249,6 +251,7 @@ ObjectReply environment_detail::PrepareWorkspaceActivity(
         OpenDefinition(objects, access, change->id, *sealed, &definition);
     if (!opened.ok()) return opened;
     Set(&Field(change->data, "resource"), "status", String("connected"));
+    AppendEnvironmentStatus(&change->data, "connected", session, turn);
     std::erase_if(change->data.object, [](const auto& field) {
       return field.first == "suspended_at" || field.first == "checkpoint_until";
     });
@@ -317,7 +320,10 @@ ObjectReply environment_detail::PrepareAttachment(
   for (const auto* key : {"network", "packages", "skills", "plugins",
                           "capability_directories", "desktop"})
     Set(&session, key, *settings.value.Find(key));
+  const auto previous_status = resource.GetString("status");
   Set(&resource, "status", String("connected"));
+  if (req.data.Has("attached_sessions") && previous_status != "connected")
+    AppendEnvironmentStatus(&req.data, "connected");
   if (auto* sessions = req.data.Find("attached_sessions")) {
     if (!sessions->IsArray() || HasAttachedSession(req.data, session_id))
       return Corrupt();

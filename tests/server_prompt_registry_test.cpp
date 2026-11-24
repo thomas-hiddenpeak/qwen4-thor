@@ -4,6 +4,7 @@
 #include "../src/server/agent_subagent_internal.h"
 #include "../src/server/agent_artifact_internal.h"
 #include "../src/server/agent_environment_internal.h"
+#include "../src/server/agent_environment_journal.h"
 #include "../src/server/schema_string.h"
 #include "q4t/io/base64.h"
 #include "../src/server/mcp_transport_internal.h"
@@ -333,8 +334,15 @@ Q4T_TEST(hosted_workspace_session_turn_and_file_commit_share_revision) {
   AgentEventCursor cursor;
   Json events;
   bool settled = false;
-  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor, &events, &settled)) &&
-            settled && events.array.size() == 2 &&
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor, &events,
+                                        &settled)) &&
+            settled && events.array.size() == 3 &&
+            events.array[1].GetString("type") ==
+                "agent.session.environment.connected" &&
+            events.array[1].GetString("session_id") == id &&
+            events.array[1].Find("environment")->GetString("id") ==
+                view.session.Find("environment")->GetString("id") &&
+            events.array[1].Find("turn_id")->IsNull() &&
             events.array.front().GetString("type") == "agent.session.created" &&
             events.array.back().GetString("type") == "agent.session.idle");
   Q4T_CHECK(Ok(change("a/z")) && Ok(change("a.x")) && Ok(change("a/b", "")));
@@ -628,6 +636,20 @@ ObjectRequest WorkspaceRecord(ObjectStore& db, const std::string& id,
   return change;
 }
 
+ObjectReply AttachWorkspace(ObjectStore& db, const StateAccess& access,
+                            const std::string& model, const std::string& env) {
+  const auto request =
+      Parse("{\"agent\":{\"model\":\"" + model +
+            "\",\"reasoning\":{\"effort\":\"none\"}},\"environment\":{\"type\":"
+            "\"openai_hosted\",\"environment_id\":\"" +
+            env + "\"}}");
+  auto config = Config();
+  config.model = model;
+  ResponsesExecution run(db);
+  return PrepareAgentSessionExecution(db, request, config, access,
+                                      std::time(nullptr), run);
+}
+
 ObjectReply SeedAttachedWorkspace(ObjectStore& db, const StateAccess& access,
                                   const std::string& model, std::string* env) {
   const std::string path = "/v1/agents/environments";
@@ -637,16 +659,7 @@ ObjectReply SeedAttachedWorkspace(ObjectStore& db, const StateAccess& access,
       access, "");
   if (!prepared.ok()) return prepared;
   *env = prepared.value.GetString("id");
-  const auto request =
-      Parse("{\"agent\":{\"model\":\"" + model +
-            "\",\"reasoning\":{\"effort\":\"none\"}},\"environment\":{\"type\":"
-            "\"openai_hosted\",\"environment_id\":\"" +
-            *env + "\"}}");
-  auto config = Config();
-  config.model = model;
-  ResponsesExecution run(db);
-  return PrepareAgentSessionExecution(db, request, config, access,
-                                      std::time(nullptr), run);
+  return AttachWorkspace(db, access, model, *env);
 }
 }  // namespace
 
@@ -830,6 +843,102 @@ Q4T_TEST(hosted_workspace_corrupt_checkpoint_cannot_reactivate) {
   return true;
 }
 
+Q4T_TEST(hosted_workspace_stream_replays_both_committed_transitions) {
+  Fixture f;
+  const auto access = Access();
+  std::string env, sid, sibling;
+  AgentEventCursor first, second;
+  {
+    ObjectStore db(f.options);
+    auto session = SeedAttachedWorkspace(db, access, "cpu", &env);
+    Q4T_CHECK(Ok(session));
+    sid = session.value.GetString("id");
+    auto other = AttachWorkspace(db, access, "cpu", env);
+    Q4T_CHECK(Ok(other));
+    sibling = other.value.GetString("id");
+    Q4T_CHECK(Ok(OpenAgentEventSubscription(db, sid, access, &first)));
+    Q4T_CHECK(Ok(OpenAgentEventSubscription(db, sibling, access, &second)));
+    Q4T_CHECK(first.environment_sequence == second.environment_sequence &&
+              first.environment_sequence > 0);
+    auto old = WorkspaceRecord(db, env, access);
+    Set(&old.data, "last_activity_at",
+        Parse(std::to_string(std::time(nullptr) - 1250)));
+    Q4T_CHECK(Ok(db.Execute(old, access.deadline)));
+    ObjectRequest get;
+    get.kind = ObjectKind::kEnvironment;
+    get.scope = access.scope;
+    get.id = env;
+    auto state = db.Execute(get, access.deadline);
+    Q4T_CHECK(Ok(state) &&
+              state.value.Find("data")->Find("resource")->GetString("status") ==
+                  "suspended");
+    ObjectRequest wake;
+    Q4T_CHECK(Ok(environment_detail::PrepareWorkspaceActivity(
+        db, access, state.value, &wake, sid, "turn_fixture")));
+    Q4T_CHECK(Ok(db.Execute(wake, access.deadline)));
+  }
+  // The subscriber was between polls for both transitions. Reopening the
+  // worker must preserve their order and the private turn association.
+  ObjectStore db(f.options);
+  Json a, b;
+  bool settled = false;
+  Q4T_CHECK(
+      Ok(ReplayAgentSessionEvents(db, sid, access, &first, &a, &settled)));
+  Q4T_CHECK(
+      Ok(ReplayAgentSessionEvents(db, sibling, access, &second, &b, &settled)));
+  Q4T_CHECK(a.array.size() == 2 && b.array.size() == 2 && !settled);
+  for (size_t i = 0; i < a.array.size(); ++i) {
+    const std::string status = i == 0 ? "suspended" : "connected";
+    Q4T_CHECK(a.array[i].GetString("type") ==
+                  "agent.session.environment." + status &&
+              a.array[i].Find("environment")->GetString("status") == status &&
+              a.array[i].Find("environment")->GetString("id") == env);
+    Q4T_CHECK(b.array[i].GetString("session_id") == sibling &&
+              b.array[i].Find("turn_id")->IsNull() &&
+              a.array[i].GetString("event_id") !=
+                  b.array[i].GetString("event_id"));
+  }
+  Q4T_CHECK(a.array[1].GetString("turn_id") == "turn_fixture");
+  Q4T_CHECK(
+      Ok(ReplayAgentSessionEvents(db, sid, access, &first, &a, &settled)) &&
+      a.array.empty());
+  Q4T_CHECK(OpenAgentEventSubscription(db, sid, Access("client:peer"), &first)
+                .http_status == 404);
+  return true;
+}
+
+Q4T_TEST(
+    hosted_workspace_stream_detects_retention_gap_without_private_payload) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto access = Access();
+  std::string env;
+  Q4T_CHECK(Ok(SeedAttachedWorkspace(db, access, "cpu", &env)));
+  auto record = WorkspaceRecord(db, env, access);
+  const auto prior = record.data.GetInt("environment_sequence");
+  for (size_t i = 0; i <= environment_detail::kEnvironmentEventLimit; ++i)
+    environment_detail::AppendEnvironmentStatus(
+        &record.data, (i % 2 == 0) ? "suspended" : "connected");
+  Q4T_CHECK(Ok(db.Execute(record, access.deadline)));
+  ObjectRequest read;
+  read.scope = access.scope;
+  read.id = env;
+  read.kind = ObjectKind::kEnvironment;
+  read.operation = ObjectOperation::kEnvironmentEvents;
+  read.data = Parse("{}");
+  Set(&read.data, "after_sequence", Parse(std::to_string(prior)));
+  Q4T_CHECK(db.Execute(read, access.deadline).code ==
+            "environment_event_cursor_expired");
+  Set(&read.data, "after_sequence", Parse(std::to_string(prior + 1)));
+  auto events = db.Execute(read, access.deadline);
+  Q4T_CHECK(Ok(events) && events.value.GetArray("events")->array.size() ==
+                              environment_detail::kEnvironmentEventLimit);
+  for (const auto& row : events.value.GetArray("events")->array)
+    Q4T_CHECK(row.object.size() == 2 && row.Has("status") &&
+              row.Has("sequence"));
+  return true;
+}
+
 Q4T_TEST(hosted_workspace_recovery_fixture_uses_persisted_activity_clock) {
   // The recovery client opens this actual, authenticated store under its own
   // lease. Only its preceding activity time is advanced to bound GPU use.
@@ -839,6 +948,8 @@ Q4T_TEST(hosted_workspace_recovery_fixture_uses_persisted_activity_clock) {
   std::string env;
   auto session = SeedAttachedWorkspace(db, access, "qwen3.8-flash-next", &env);
   Q4T_CHECK(Ok(session));
+  auto sibling = AttachWorkspace(db, access, "qwen3.8-flash-next", env);
+  Q4T_CHECK(Ok(sibling));
   auto change = WorkspaceRecord(db, env, access);
   const auto now = std::time(nullptr);
   Set(&change.data, "last_activity_at", Parse(std::to_string(now - 1200 + 90)));
@@ -848,6 +959,7 @@ Q4T_TEST(hosted_workspace_recovery_fixture_uses_persisted_activity_clock) {
   std::ofstream out(file);
   out << "{\"tenant\":\"alpha\",\"environment\":\"" << env
       << "\",\"session\":\"" << session.value.GetString("id")
+      << "\",\"sibling\":\"" << sibling.value.GetString("id")
       << "\",\"idle_deadline\":" << now + 90 << "}\n";
   Q4T_CHECK(out.good());
   return true;
