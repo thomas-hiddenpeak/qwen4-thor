@@ -1056,23 +1056,66 @@ inline bool IsManagedAgentObservation(std::string_view method,
          !IsAgentEventStream(method, target) && ManagedAgentMethodAllowed(method, target);
 }
 
+enum class EvalRouteKind { kNone, kCollection, kEval, kRuns, kRun, kCancel,
+                           kOutputs, kOutput };
+struct EvalRoute {
+  EvalRouteKind kind = EvalRouteKind::kNone;
+  std::string_view eval{}, run{}, output{};
+};
+inline EvalRoute ParseEvalRoute(std::string_view target) {
+  if (target.find('#') != target.npos) return {};
+  auto path = target.substr(0, target.find('?'));
+  using Kind = EvalRouteKind;
+  if (path == "/v1/evals") return {Kind::kCollection};
+  if (!path.starts_with("/v1/evals/")) return {};
+  path.remove_prefix(10);
+  const auto eval = path.substr(0, path.find('/'));
+  if (!eval.starts_with("eval_") || eval.size() <= 5 || !ValidApplicationId(eval))
+    return {};
+  path.remove_prefix(eval.size());
+  if (path.empty()) return {Kind::kEval, eval};
+  if (path == "/runs") return {Kind::kRuns, eval};
+  if (!path.starts_with("/runs/")) return {};
+  path.remove_prefix(6);
+  const auto run = path.substr(0, path.find('/'));
+  if (!run.starts_with("evalrun_") || run.size() <= 8 || !ValidApplicationId(run))
+    return {};
+  path.remove_prefix(run.size());
+  if (path.empty()) return {Kind::kRun, eval, run};
+  if (path == "/cancel") return {Kind::kCancel, eval, run};
+  if (path == "/output_items") return {Kind::kOutputs, eval, run};
+  if (!path.starts_with("/output_items/")) return {};
+  path.remove_prefix(14);
+  if (!path.starts_with("outputitem_") || path.size() <= 11 ||
+      !ValidApplicationId(path)) return {};
+  return {Kind::kOutput, eval, run, path};
+}
 inline bool IsEvalTarget(std::string_view target) {
-  if (target.find('#') != target.npos) return false;
-  const auto path = target.substr(0, target.find('?'));
-  if (path == "/v1/evals") return true;
-  if (!path.starts_with("/v1/evals/")) return false;
-  const auto id = path.substr(10);
-  return id.starts_with("eval_") && id.size() > 5 && ValidApplicationId(id);
+  return ParseEvalRoute(target).kind != EvalRouteKind::kNone;
 }
-
+inline std::string_view EvalAllow(EvalRouteKind kind) {
+  using Kind = EvalRouteKind;
+  switch (kind) {
+    case Kind::kCollection:
+    case Kind::kRuns: return "GET, POST";
+    case Kind::kEval: return "GET, POST, DELETE";
+    case Kind::kRun: return "GET, DELETE";
+    case Kind::kCancel: return "POST";
+    case Kind::kOutputs:
+    case Kind::kOutput: return "GET";
+    case Kind::kNone: return {};
+  }
+  return {};
+}
 inline bool EvalMethodAllowed(std::string_view method, std::string_view target) {
-  return IsEvalTarget(target) &&
-         (method == "GET" || method == "POST" ||
-          (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/evals"));
+  const auto allow = EvalAllow(ParseEvalRoute(target).kind);
+  return (method == "GET" || method == "POST" || method == "DELETE") &&
+         allow.find(method) != allow.npos;
 }
-
 inline bool IsEvalObservation(std::string_view method, std::string_view target) {
-  return (method == "GET" || method == "DELETE") && EvalMethodAllowed(method, target);
+  const auto kind = ParseEvalRoute(target).kind;
+  return (method == "GET" || method == "DELETE" || kind == EvalRouteKind::kCancel)
+         && EvalMethodAllowed(method, target);
 }
 
 inline bool IsPromptTarget(std::string_view target) {

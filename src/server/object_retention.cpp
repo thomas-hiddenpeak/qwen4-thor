@@ -470,6 +470,21 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     // this member. An abandoned job cannot protect an expired store forever.
     inspector.value.collect_when_unreferenced = true;
     if (file) inspector.Reference(file->Find("id"));
+  } else if (kind == "eval" || kind == "evalrun") {
+    const bool run = kind == "evalrun";
+    const auto* ids = data.Find(run ? "output_ids" : "run_ids");
+    if (ids && ids->IsArray()) {
+      for (const auto& id : ids->array) inspector.Reference(&id);
+    } else if (ids || run) {
+      inspector.value.uncertain = true;
+    }
+    if (run) {
+      if (data.Has("blob")) inspector.Blob(data);
+      const auto* resource = data.Find("resource");
+      const auto status = resource ? resource->GetString("status") : "";
+      inspector.value.active = status == "queued" || status == "in_progress";
+      inspector.value.uncertain |= !resource || data.GetBool("deleting");
+    }
   } else if (kind == "batch" && data.GetString("format") == "q4t.batch.v1") {
     const auto* batch = data.Find("batch");
     const auto* pages = data.GetArray("pages");

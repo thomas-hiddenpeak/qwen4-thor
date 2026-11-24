@@ -51,7 +51,9 @@ enum class ObjectKind {
   kWebhookEvent,
   kChatKitSession,
   kChatKitThread,
-  kEval
+  kEval,
+  kEvalRun,
+  kEvalOutput
 };
 enum class ObjectOperation {
   kGet,

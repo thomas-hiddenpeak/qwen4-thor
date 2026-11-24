@@ -5719,6 +5719,17 @@
         "stage": "native_tls_sdk_device_passed",
         "run_and_output_methods_open": 7,
         "issued": false
+      },
+      "eval_jsonl_runs_20261125": {
+        "evidence": "evidence/serve-evals-20261125/runs.json",
+        "stage": "native_tls_sdk_jsonl_device_passed",
+        "methods": 7,
+        "issued": false,
+        "remaining": [
+          "sampled and stored sources",
+          "other graders",
+          "release"
+        ]
       }
     },
     {
@@ -10191,6 +10202,17 @@
         "revision": 478,
         "state": "issued_bounded_acceptance",
         "long_run": "user_owned_preflight_only"
+      },
+      "eval_jsonl_runs_20261125": {
+        "evidence": "evidence/serve-evals-20261125/runs.json",
+        "stage": "native_tls_sdk_jsonl_device_passed",
+        "methods": 7,
+        "issued": false,
+        "remaining": [
+          "sampled and stored sources",
+          "other graders",
+          "release"
+        ]
       }
     },
     {

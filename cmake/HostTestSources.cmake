@@ -316,6 +316,10 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_webhook.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_transport.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_runs.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_dispatcher.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_grading.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/evals.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_sessions.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_client.cpp

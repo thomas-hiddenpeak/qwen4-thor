@@ -1,0 +1,90 @@
+{
+  "stage": "native_tls_jsonl_string_grading_verified",
+  "scope": "native eval run objects, scoped file and inline JSONL, string grading, cancellation and output pagination",
+  "original_failure": "SDK 7.47.0 typed EvalRun.model as string and EvalRun.error as an object. The official HTTP success contract permits null. Local run creation originally returned 503.",
+  "negative_and_recovery": [
+    "foreign file and run 404",
+    "stale scoring CAS 409",
+    "one deliberately failed row",
+    "cursor cannot be borrowed from another run",
+    "source File erased, store reopened, original manifest still yields both rows",
+    "canceled and deleted parents"
+  ],
+  "results": {
+    "native_cpu_cases": 7,
+    "actual_nginx_forwarding": "pass",
+    "declared_methods": 215,
+    "required_methods": 231
+  },
+  "issued": false,
+  "open_work": [
+    "model-sampled and stored data sources",
+    "model, Python and similarity graders",
+    "qualification of the resulting service package"
+  ],
+  "raw_sha256": {
+    "evals-runs-cpu-02.log": "63aab4bc2cda37aab47e5b010952d227912625f00f6cc8320a10a391d8b4a71b",
+    "evals-runs-cpu-04.log": "1b613910d49b1a31f75c609f1c98cfa3b7e833ce8e2b4c89cb3c220a1b8577bf",
+    "evals-runs-optional-all-routes-02.log": "e19106d0a3b7dbcd8e63553fc9907c1bab3b4c96893d13e4ee3c9a1d9851fad8",
+    "evals-runs-methods-02.json": "87fa0fdac3bb016a00a9cb76cde3a59ba7ba90690d590af582997fa8a6490fb2"
+  },
+  "first_device_run": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 36.131,
+    "unchanged_default": true,
+    "phases": [],
+    "failed_operation": "POST /v1/evals/{eval_id}/runs/{run_id}/cancel",
+    "http_status": 415,
+    "observation": "Official SDK sends no JSON body and no Content-Type when canceling. Passed file snapshot and both scoring rows before cancellation.",
+    "result_sha256": "7054c0f5615c07fefaa5766b00de17dac3f8ce98a0766d843a2dde6f9c4d88ee"
+  },
+  "native_tls_device": {
+    "sdk": "7.47.0",
+    "model_answer": "157",
+    "independent_chat": "42",
+    "recovery": {
+      "evaluation": "eval_3cc871c837148e4523c1177c669938cd",
+      "run": "evalrun_14656db9370d05f5b7bfc33b29b11ea6",
+      "outputs": [
+        "outputitem_5e24120f3360adbda5da56f05fcccf84",
+        "outputitem_99b7193f9560e77afc2b39495df3afc1"
+      ],
+      "prediction": "157"
+    },
+    "scores": [
+      1,
+      0
+    ],
+    "counts": {
+      "total": 2,
+      "errored": 0,
+      "passed": 1,
+      "failed": 1
+    },
+    "foreign_project": 404,
+    "foreign_run": 404,
+    "deleted_file": 404,
+    "deleted_run": 404,
+    "canceled": "canceled",
+    "wire_objects": 7,
+    "driver_sha256": "e9db94328d8d13ab397c745aa1031a714258736530bf05361bad7e5dc50d5588",
+    "model_starts": 1,
+    "seconds": 35.954,
+    "unchanged_stopped_default": true,
+    "all_ports_released": true,
+    "source_commit": "5ae8ba3393cc8411a5001e1a983ca3f3a1943902",
+    "engine_sha256": "6a7f8f4c74d6cd9a82a6c38b68d8ba1229db0c05efef859760ac6e7d7b398feb",
+    "initial_failure_kept": true,
+    "data_source": "scope record, owner-uploaded JSONL with deleted original File, two graded rows",
+    "strict_lease": "COMPLETED",
+    "raw_sha256": {
+      "eval-runs-device-business-02/result.json": "2f735ffc03be86725a2dc0280b120d82de57288b378144e90ae32da8c27d8bac",
+      "eval-runs-device-business-02/plan.json": "7210613bb3711a0b0687439e2f282252489d8c7bc42d6aa572137a78609c9bf2",
+      "eval-runs-device-business-02/create/sdk-observations.json": "3a2e339af6076685203f04c9f7dc521d1e474f516b79a41139660e4692586251",
+      "eval-runs-device-business-02/create/sdk-result.json": "0a5228b33e475485bc896f8d4d4a8fb9066f6c41113eed314d9e8158f7bf62aa",
+      "eval-runs-device-lease-02/exit.json": "75159eb619918c667bd885b06697f80a3cb5664067c07f6f45785faf9895efcf",
+      "eval_runs_device_business.py": "a6160150eeef49aadfb3dda53a8f91c0fcc23fe4020d5b913f9a7822cad87e07"
+    }
+  }
+}

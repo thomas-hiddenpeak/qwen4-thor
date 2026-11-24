@@ -26,6 +26,16 @@ ROUTES = {'/v1/models': ('GET', 'control'),
 DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
 # Application identities are bounded ASCII tokens; backend owns query parsing.
 # These route declarations are shared by standalone and supervised nginx modes.
+EVAL_ROUTES = (
+    ('/v1/evals', ('GET', 'POST')),
+    ('/v1/evals/{eval_id}', ('GET', 'POST', 'DELETE')),
+    ('/v1/evals/{eval_id}/runs', ('GET', 'POST')),
+    ('/v1/evals/{eval_id}/runs/{run_id}', ('GET', 'DELETE')),
+    ('/v1/evals/{eval_id}/runs/{run_id}/cancel', ('POST',)),
+    ('/v1/evals/{eval_id}/runs/{run_id}/output_items', ('GET',)),
+    ('/v1/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}', ('GET',)),
+)
+
 APPLICATION_ROUTES = [
     ('POST', '/v1/audio/transcriptions', 'data'),
     ('POST', '/v1/audio/translations', 'data'),
@@ -159,10 +169,8 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/chatkit/threads/{thread_id}', 'control'),
     ('DELETE', '/v1/chatkit/threads/{thread_id}', 'control'),
     ('GET', '/v1/chatkit/threads/{thread_id}/items', 'control'),
-    *((method, path, 'data' if method == 'POST' else 'control')
-      for path, methods in (('/v1/evals', ('GET', 'POST')),
-                            ('/v1/evals/{eval_id}', ('GET', 'POST', 'DELETE')))
-      for method in methods),
+    *((method, path, 'data' if method == 'POST' and not path.endswith('/cancel') else 'control')
+      for path, methods in EVAL_ROUTES for method in methods),
     ('GET', '/v1/webhook_event_types', 'control'),
     *((method, '/v1/webhook_endpoints' + suffix,
        'data' if method == 'POST' else 'control')
@@ -316,6 +324,8 @@ def route_map():
                            'whe_[A-Za-z0-9_-]{1,124}' if part == '{webhook_endpoint_id}' else
                            'automation_[A-Za-z0-9_-]{1,117}' if part == '{automation_id}' else
                            'invocation_[A-Za-z0-9_-]{1,117}' if part == '{invocation_id}' else
+                           'evalrun_[A-Za-z0-9_-]{1,120}' if part == '{run_id}' and path.startswith('/v1/evals/') else
+                           'outputitem_[A-Za-z0-9_-]{1,117}' if part == '{output_item_id}' else
                            'run_[A-Za-z0-9_-]{1,124}' if part == '{run_id}' else
                            'step_[A-Za-z0-9_-]{1,123}' if part == '{step_id}' else
                            'cthr_[A-Za-z0-9_-]{1,123}' if part == '{thread_id}' and path.startswith('/v1/chatkit/') else

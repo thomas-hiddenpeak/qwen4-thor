@@ -107,7 +107,8 @@ void Identity(ObjectReply* reply, const std::string& id,
 }
 bool Root(const ObjectRequest& root) {
   const auto format = root.data.GetString("format");
-  return (root.kind == ObjectKind::kVoiceConsent &&
+  return (root.kind == ObjectKind::kEvalRun && format == "q4t.eval_run.v1") ||
+         (root.kind == ObjectKind::kVoiceConsent &&
           format == "q4t.voice_consent.v1") ||
          (root.kind == ObjectKind::kVoice && format == "q4t.voice.v1") ||
          (root.kind == ObjectKind::kLiveRecording &&
@@ -286,7 +287,8 @@ ObjectReply BinaryStore::Open(const BinaryAccess& access, ObjectKind kind,
   if (!checked.ok()) return checked;
   if (!read || !read->id.empty() || lifetime_seconds < 1 ||
       lifetime_seconds > 3600 ||
-      (kind != ObjectKind::kFile && kind != ObjectKind::kSkillVersion &&
+      (kind != ObjectKind::kFile && kind != ObjectKind::kEvalRun &&
+       kind != ObjectKind::kSkillVersion &&
        kind != ObjectKind::kContainerFile &&
        kind != ObjectKind::kToolRun && kind != ObjectKind::kBatch &&
        kind != ObjectKind::kInputSnapshot &&

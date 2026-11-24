@@ -91,6 +91,7 @@ void ChatServer::RequestStop() {
   background_.PreventStart();
   realtime_traces_.PreventStart();
   environment_preparer_.PreventStart();
+  eval_dispatcher_.PreventStart();
   webhook_dispatcher_.PreventStart();
   batches_.PreventStart();
   vector_jobs_.PreventStart();
@@ -232,6 +233,7 @@ Status ChatServer::Run() {
         requests_.CancelAll();
         if (mcp_tunnels_) mcp_tunnels_->Stop();
         environment_preparer_.RequestStop();
+        eval_dispatcher_.RequestStop();
         webhook_dispatcher_.RequestStop();
         batches_.RequestStop();
         vector_jobs_.RequestStop();
@@ -291,6 +293,7 @@ Status ChatServer::Run() {
   std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
   requests_.CancelAll();
   environment_preparer_.RequestStop();
+  eval_dispatcher_.RequestStop();
   webhook_dispatcher_.RequestStop();
   batches_.RequestStop();
   vector_jobs_.RequestStop();
@@ -306,6 +309,7 @@ Status ChatServer::Run() {
   }
   seq_cv_.notify_all();
   environment_preparer_.Join();
+  eval_dispatcher_.Join();
   webhook_dispatcher_.Join();
   batches_.Join();
   vector_jobs_.Join();
@@ -600,6 +604,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         IsMcpTunnelTarget(path)) {
       if (method == "POST" && !IsChatKitUpload(method, path) && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
                                  IsAutomationAction(path) ||
+                                 ParseEvalRoute(path).kind == EvalRouteKind::kCancel ||
                                  ParseChatKitRoute(path).kind == ChatKitRouteKind::kCancel ||
                                  ParseWebhookRoute(path).kind == WebhookRouteKind::kRotate ||
                                  path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||
@@ -865,6 +870,13 @@ void ChatServer::Dispatch(int fd, const std::string& method,
           return (!cancellation && stop_requested_.load()) ||
                  detail::ClientConnectionFailed(fd);
         }};
+    const bool create_eval_run = method == "POST" &&
+        ParseEvalRoute(path).kind == EvalRouteKind::kRuns;
+    if (create_eval_run && !eval_dispatcher_) {
+      SendError(fd, 503, "Evaluation worker is unavailable", {},
+                "eval_worker_unavailable");
+      return;
+    }
     if (IsChatKitClient(method, path)) {
       ServeChatKitClient(fd, *objects_, background_.Get(), PlanningConfig(fd),
                          access, BearerCredential(headers.authorization), body);
@@ -930,6 +942,8 @@ void ChatServer::Dispatch(int fd, const std::string& method,
         : IsStoredChatTarget(path)
             ? HandleStoredChatRequest(*objects_, method, path, body, access)
             : HandleConversationRequest(*objects_, method, path, body, access);
+    if (create_eval_run && (reply.ok() || reply.commit_unknown))
+      eval_dispatcher_->Wake();
     if (reply.ok())
       SendSimple(fd, reply.http_status, reply.http_status == 201 ? "Created" : "OK",
                  OutputJson(reply.value), "application/json",

@@ -23155,7 +23155,7 @@
       "required": [],
       "additionalProperties": false
     },
-    "eval_130": {
+    "eval_487": {
       "type": "object",
       "properties": {
         "after": {
@@ -23167,28 +23167,28 @@
         "order": {
           "$ref": "#/$defs/eval_131"
         },
-        "order_by": {
-          "$ref": "#/$defs/eval_134"
+        "status": {
+          "$ref": "#/$defs/eval_488"
         }
       },
       "required": [],
       "additionalProperties": false
     },
-    "eval_134": {
+    "eval_488": {
       "anyOf": [
         {
-          "$ref": "#/$defs/eval_135"
+          "$ref": "#/$defs/eval_489"
         },
         {
-          "$ref": "#/$defs/eval_136"
+          "$ref": "#/$defs/eval_490"
         }
       ]
     },
-    "eval_136": {
-      "const": "updated_at"
+    "eval_490": {
+      "const": "pass"
     },
-    "eval_135": {
-      "const": "created_at"
+    "eval_489": {
+      "const": "fail"
     },
     "eval_131": {
       "anyOf": [
@@ -23226,43 +23226,544 @@
     "eval_20": {
       "type": "string"
     },
-    "eval_128": {
+    "eval_474": {
       "type": "object",
       "properties": {
-        "deleted": {
-          "$ref": "#/$defs/eval_129"
+        "created_at": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "datasource_item": {
+          "$ref": "#/$defs/eval_475"
+        },
+        "datasource_item_id": {
+          "$ref": "#/$defs/eval_81"
         },
         "eval_id": {
           "$ref": "#/$defs/eval_20"
         },
+        "id": {
+          "$ref": "#/$defs/eval_20"
+        },
         "object": {
+          "$ref": "#/$defs/eval_476"
+        },
+        "results": {
+          "$ref": "#/$defs/eval_477"
+        },
+        "run_id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "sample": {
+          "$ref": "#/$defs/eval_481"
+        },
+        "status": {
           "$ref": "#/$defs/eval_20"
         }
       },
       "required": [
-        "deleted",
+        "created_at",
+        "datasource_item",
+        "datasource_item_id",
         "eval_id",
-        "object"
+        "id",
+        "object",
+        "results",
+        "run_id",
+        "sample",
+        "status"
       ],
       "additionalProperties": false
     },
-    "eval_129": {
-      "type": "boolean"
-    },
-    "eval_106": {
+    "eval_481": {
       "type": "object",
       "properties": {
-        "metadata": {
-          "$ref": "#/$defs/eval_17"
+        "error": {
+          "$ref": "#/$defs/eval_496"
         },
-        "name": {
+        "finish_reason": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "input": {
+          "$ref": "#/$defs/eval_482"
+        },
+        "max_completion_tokens": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "output": {
+          "$ref": "#/$defs/eval_484"
+        },
+        "seed": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "temperature": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "top_p": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "usage": {
+          "$ref": "#/$defs/eval_486"
+        }
+      },
+      "required": [
+        "error",
+        "finish_reason",
+        "input",
+        "max_completion_tokens",
+        "model",
+        "output",
+        "seed",
+        "temperature",
+        "top_p",
+        "usage"
+      ],
+      "additionalProperties": false
+    },
+    "eval_486": {
+      "type": "object",
+      "properties": {
+        "cached_tokens": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "completion_tokens": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "prompt_tokens": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "total_tokens": {
+          "$ref": "#/$defs/eval_81"
+        }
+      },
+      "required": [
+        "cached_tokens",
+        "completion_tokens",
+        "prompt_tokens",
+        "total_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "eval_484": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_485"
+      }
+    },
+    "eval_485": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "role": {
           "$ref": "#/$defs/eval_21"
         }
       },
       "required": [],
       "additionalProperties": false
     },
-    "eval_17": {
+    "eval_482": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_483"
+      }
+    },
+    "eval_483": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_496": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_459"
+        },
+        {
+          "$ref": "#/$defs/eval_18"
+        }
+      ]
+    },
+    "eval_18": {
+      "type": "null"
+    },
+    "eval_459": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "message": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "eval_477": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_478"
+      }
+    },
+    "eval_478": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "passed": {
+          "$ref": "#/$defs/eval_129"
+        },
+        "sample": {
+          "$ref": "#/$defs/eval_479"
+        },
+        "score": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_21"
+        }
+      },
+      "required": [
+        "name",
+        "passed",
+        "score"
+      ],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_7": {},
+    "eval_479": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_480"
+        }
+      ]
+    },
+    "eval_480": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_129": {
+      "type": "boolean"
+    },
+    "eval_476": {
+      "const": "eval.run.output_item"
+    },
+    "eval_475": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_467": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "limit": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "order": {
+          "$ref": "#/$defs/eval_131"
+        },
+        "status": {
+          "$ref": "#/$defs/eval_468"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_468": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_469"
+        },
+        {
+          "$ref": "#/$defs/eval_470"
+        },
+        {
+          "$ref": "#/$defs/eval_471"
+        },
+        {
+          "$ref": "#/$defs/eval_472"
+        },
+        {
+          "$ref": "#/$defs/eval_473"
+        }
+      ]
+    },
+    "eval_473": {
+      "const": "failed"
+    },
+    "eval_472": {
+      "const": "canceled"
+    },
+    "eval_471": {
+      "const": "completed"
+    },
+    "eval_470": {
+      "const": "in_progress"
+    },
+    "eval_469": {
+      "const": "queued"
+    },
+    "eval_466": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "object": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "run_id": {
+          "$ref": "#/$defs/eval_21"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_3": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_4"
+        },
+        {
+          "$ref": "#/$defs/eval_5"
+        }
+      ]
+    },
+    "eval_5": {
+      "const": true
+    },
+    "eval_4": {
+      "const": false
+    },
+    "eval_433": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "data_source": {
+          "$ref": "#/$defs/eval_434"
+        },
+        "error": {
+          "$ref": "#/$defs/eval_493"
+        },
+        "eval_id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "metadata": {
+          "$ref": "#/$defs/eval_115"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_491"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_492"
+        },
+        "object": {
+          "$ref": "#/$defs/eval_460"
+        },
+        "per_model_usage": {
+          "$ref": "#/$defs/eval_494"
+        },
+        "per_testing_criteria_results": {
+          "$ref": "#/$defs/eval_495"
+        },
+        "report_url": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "result_counts": {
+          "$ref": "#/$defs/eval_465"
+        },
+        "status": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "created_at",
+        "data_source",
+        "error",
+        "eval_id",
+        "id",
+        "metadata",
+        "model",
+        "name",
+        "object",
+        "per_model_usage",
+        "per_testing_criteria_results",
+        "report_url",
+        "result_counts",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "eval_465": {
+      "type": "object",
+      "properties": {
+        "errored": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "failed": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "passed": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "total": {
+          "$ref": "#/$defs/eval_81"
+        }
+      },
+      "required": [
+        "errored",
+        "failed",
+        "passed",
+        "total"
+      ],
+      "additionalProperties": false
+    },
+    "eval_495": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_463"
+        },
+        {
+          "$ref": "#/$defs/eval_18"
+        }
+      ]
+    },
+    "eval_463": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_464"
+      }
+    },
+    "eval_464": {
+      "type": "object",
+      "properties": {
+        "failed": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "passed": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "testing_criteria": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "failed",
+        "passed",
+        "testing_criteria"
+      ],
+      "additionalProperties": false
+    },
+    "eval_494": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_461"
+        },
+        {
+          "$ref": "#/$defs/eval_18"
+        }
+      ]
+    },
+    "eval_461": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_462"
+      }
+    },
+    "eval_462": {
+      "type": "object",
+      "properties": {
+        "cached_tokens": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "completion_tokens": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "invocation_count": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "model_name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "prompt_tokens": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "total_tokens": {
+          "$ref": "#/$defs/eval_81"
+        }
+      },
+      "required": [
+        "cached_tokens",
+        "completion_tokens",
+        "invocation_count",
+        "model_name",
+        "prompt_tokens",
+        "total_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "eval_460": {
+      "const": "eval.run"
+    },
+    "eval_492": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_18"
+        }
+      ]
+    },
+    "eval_491": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_18"
+        }
+      ]
+    },
+    "eval_115": {
       "anyOf": [
         {
           "$ref": "#/$defs/eval_18"
@@ -23280,134 +23781,127 @@
         "$ref": "#/$defs/eval_20"
       }
     },
-    "eval_18": {
-      "type": "null"
-    },
-    "eval_107": {
-      "type": "object",
-      "properties": {
-        "created_at": {
-          "$ref": "#/$defs/eval_81"
-        },
-        "data_source_config": {
-          "$ref": "#/$defs/eval_108"
-        },
-        "id": {
-          "$ref": "#/$defs/eval_20"
-        },
-        "metadata": {
-          "$ref": "#/$defs/eval_115"
-        },
-        "name": {
-          "$ref": "#/$defs/eval_20"
-        },
-        "object": {
-          "$ref": "#/$defs/eval_116"
-        },
-        "testing_criteria": {
-          "$ref": "#/$defs/eval_117"
-        }
-      },
-      "required": [
-        "created_at",
-        "data_source_config",
-        "id",
-        "metadata",
-        "name",
-        "object",
-        "testing_criteria"
-      ],
-      "additionalProperties": false
-    },
-    "eval_117": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/eval_118"
-      }
-    },
-    "eval_118": {
+    "eval_493": {
       "anyOf": [
         {
-          "$ref": "#/$defs/eval_61"
+          "$ref": "#/$defs/eval_459"
         },
         {
-          "$ref": "#/$defs/eval_119"
-        },
-        {
-          "$ref": "#/$defs/eval_125"
-        },
-        {
-          "$ref": "#/$defs/eval_126"
-        },
-        {
-          "$ref": "#/$defs/eval_127"
+          "$ref": "#/$defs/eval_18"
         }
       ]
     },
-    "eval_127": {
+    "eval_434": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_139"
+        },
+        {
+          "$ref": "#/$defs/eval_151"
+        },
+        {
+          "$ref": "#/$defs/eval_435"
+        }
+      ]
+    },
+    "eval_435": {
       "type": "object",
       "properties": {
-        "input": {
-          "$ref": "#/$defs/eval_87"
+        "input_messages": {
+          "$ref": "#/$defs/eval_436"
         },
         "model": {
-          "$ref": "#/$defs/eval_20"
-        },
-        "name": {
-          "$ref": "#/$defs/eval_20"
-        },
-        "pass_threshold": {
-          "$ref": "#/$defs/eval_84"
-        },
-        "range": {
-          "$ref": "#/$defs/eval_92"
+          "$ref": "#/$defs/eval_21"
         },
         "sampling_params": {
-          "$ref": "#/$defs/eval_94"
+          "$ref": "#/$defs/eval_446"
+        },
+        "source": {
+          "$ref": "#/$defs/eval_450"
         },
         "type": {
-          "$ref": "#/$defs/eval_105"
+          "$ref": "#/$defs/eval_432"
         }
       },
       "required": [
-        "input",
-        "model",
-        "name",
+        "source",
         "type"
       ],
       "additionalProperties": false
     },
-    "eval_105": {
-      "const": "score_model"
+    "eval_432": {
+      "const": "responses"
     },
-    "eval_94": {
+    "eval_450": {
       "anyOf": [
         {
-          "$ref": "#/$defs/eval_95"
+          "$ref": "#/$defs/eval_451"
+        },
+        {
+          "$ref": "#/$defs/eval_457"
+        },
+        {
+          "$ref": "#/$defs/eval_458"
         }
       ]
     },
-    "eval_95": {
+    "eval_458": {
       "type": "object",
       "properties": {
-        "max_completions_tokens": {
+        "created_after": {
           "$ref": "#/$defs/eval_96"
+        },
+        "created_before": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "instructions_search": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "metadata": {
+          "$ref": "#/$defs/eval_7"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_164"
         },
         "reasoning_effort": {
           "$ref": "#/$defs/eval_97"
         },
-        "seed": {
-          "$ref": "#/$defs/eval_96"
-        },
         "temperature": {
           "$ref": "#/$defs/eval_96"
         },
+        "tools": {
+          "$ref": "#/$defs/eval_282"
+        },
         "top_p": {
           "$ref": "#/$defs/eval_96"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_432"
+        },
+        "users": {
+          "$ref": "#/$defs/eval_282"
         }
       },
-      "required": [],
+      "required": [
+        "type"
+      ],
       "additionalProperties": false
+    },
+    "eval_282": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_59"
+        }
+      ]
+    },
+    "eval_59": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_20"
+      }
     },
     "eval_96": {
       "anyOf": [
@@ -23468,30 +23962,2211 @@
     "eval_98": {
       "const": "none"
     },
-    "eval_92": {
+    "eval_164": {
       "anyOf": [
         {
-          "$ref": "#/$defs/eval_93"
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_20"
         }
       ]
     },
-    "eval_93": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/eval_81"
-      }
+    "eval_457": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_149"
+        }
+      },
+      "required": [
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
     },
-    "eval_87": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/eval_88"
-      }
+    "eval_149": {
+      "const": "file_id"
     },
-    "eval_88": {
+    "eval_451": {
       "type": "object",
       "properties": {
         "content": {
-          "$ref": "#/$defs/eval_89"
+          "$ref": "#/$defs/eval_452"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_147"
+        }
+      },
+      "required": [
+        "content",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_147": {
+      "const": "file_content"
+    },
+    "eval_452": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_453"
+      }
+    },
+    "eval_453": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/eval_454"
+        },
+        "sample": {
+          "$ref": "#/$defs/eval_455"
+        }
+      },
+      "required": [
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "eval_455": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_456"
+        }
+      ]
+    },
+    "eval_456": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_454": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_446": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_447"
+        }
+      ]
+    },
+    "eval_447": {
+      "type": "object",
+      "properties": {
+        "max_completion_tokens": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "reasoning_effort": {
+          "$ref": "#/$defs/eval_97"
+        },
+        "seed": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "temperature": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "text": {
+          "$ref": "#/$defs/eval_448"
+        },
+        "tools": {
+          "$ref": "#/$defs/eval_230"
+        },
+        "top_p": {
+          "$ref": "#/$defs/eval_84"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_230": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_231"
+        }
+      ]
+    },
+    "eval_231": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_232"
+      }
+    },
+    "eval_232": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_233"
+        },
+        {
+          "$ref": "#/$defs/eval_244"
+        },
+        {
+          "$ref": "#/$defs/eval_269"
+        },
+        {
+          "$ref": "#/$defs/eval_271"
+        },
+        {
+          "$ref": "#/$defs/eval_279"
+        },
+        {
+          "$ref": "#/$defs/eval_291"
+        },
+        {
+          "$ref": "#/$defs/eval_315"
+        },
+        {
+          "$ref": "#/$defs/eval_332"
+        },
+        {
+          "$ref": "#/$defs/eval_334"
+        },
+        {
+          "$ref": "#/$defs/eval_367"
+        },
+        {
+          "$ref": "#/$defs/eval_369"
+        },
+        {
+          "$ref": "#/$defs/eval_391"
+        },
+        {
+          "$ref": "#/$defs/eval_399"
+        },
+        {
+          "$ref": "#/$defs/eval_406"
+        },
+        {
+          "$ref": "#/$defs/eval_411"
+        },
+        {
+          "$ref": "#/$defs/eval_421"
+        }
+      ]
+    },
+    "eval_421": {
+      "type": "object",
+      "properties": {
+        "allowed_callers": {
+          "$ref": "#/$defs/eval_234"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_422"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_422": {
+      "const": "apply_patch"
+    },
+    "eval_234": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_235"
+        }
+      ]
+    },
+    "eval_235": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_236"
+      }
+    },
+    "eval_236": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_237"
+        },
+        {
+          "$ref": "#/$defs/eval_238"
+        }
+      ]
+    },
+    "eval_238": {
+      "const": "programmatic"
+    },
+    "eval_237": {
+      "const": "direct"
+    },
+    "eval_411": {
+      "type": "object",
+      "properties": {
+        "search_content_types": {
+          "$ref": "#/$defs/eval_412"
+        },
+        "search_context_size": {
+          "$ref": "#/$defs/eval_283"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_416"
+        },
+        "user_location": {
+          "$ref": "#/$defs/eval_419"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_419": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_420"
+        }
+      ]
+    },
+    "eval_420": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "country": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "region": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "timezone": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_290"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_290": {
+      "const": "approximate"
+    },
+    "eval_416": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_417"
+        },
+        {
+          "$ref": "#/$defs/eval_418"
+        }
+      ]
+    },
+    "eval_418": {
+      "const": "web_search_preview_2025_03_11"
+    },
+    "eval_417": {
+      "const": "web_search_preview"
+    },
+    "eval_283": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_100"
+        },
+        {
+          "$ref": "#/$defs/eval_101"
+        },
+        {
+          "$ref": "#/$defs/eval_102"
+        }
+      ]
+    },
+    "eval_412": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_413"
+        }
+      ]
+    },
+    "eval_413": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_414"
+      }
+    },
+    "eval_414": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_186"
+        },
+        {
+          "$ref": "#/$defs/eval_415"
+        }
+      ]
+    },
+    "eval_415": {
+      "const": "image"
+    },
+    "eval_186": {
+      "const": "text"
+    },
+    "eval_406": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "execution": {
+          "$ref": "#/$defs/eval_407"
+        },
+        "parameters": {
+          "$ref": "#/$defs/eval_7"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_410"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_410": {
+      "const": "tool_search"
+    },
+    "eval_407": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_408"
+        },
+        {
+          "$ref": "#/$defs/eval_409"
+        }
+      ]
+    },
+    "eval_409": {
+      "const": "client"
+    },
+    "eval_408": {
+      "const": "server"
+    },
+    "eval_399": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "tools": {
+          "$ref": "#/$defs/eval_400"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_405"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "tools",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_405": {
+      "const": "namespace"
+    },
+    "eval_400": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_401"
+      }
+    },
+    "eval_401": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_391"
+        },
+        {
+          "$ref": "#/$defs/eval_402"
+        }
+      ]
+    },
+    "eval_402": {
+      "type": "object",
+      "properties": {
+        "allowed_callers": {
+          "$ref": "#/$defs/eval_234"
+        },
+        "async": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "defer_loading": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "description": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "output_schema": {
+          "$ref": "#/$defs/eval_403"
+        },
+        "parameters": {
+          "$ref": "#/$defs/eval_7"
+        },
+        "strict": {
+          "$ref": "#/$defs/eval_191"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_201"
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_201": {
+      "const": "function"
+    },
+    "eval_191": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_4"
+        },
+        {
+          "$ref": "#/$defs/eval_5"
+        }
+      ]
+    },
+    "eval_403": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_404"
+        }
+      ]
+    },
+    "eval_404": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_391": {
+      "type": "object",
+      "properties": {
+        "allowed_callers": {
+          "$ref": "#/$defs/eval_234"
+        },
+        "async": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "defer_loading": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "description": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "format": {
+          "$ref": "#/$defs/eval_392"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_8"
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_8": {
+      "const": "custom"
+    },
+    "eval_392": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_393"
+        },
+        {
+          "$ref": "#/$defs/eval_394"
+        }
+      ]
+    },
+    "eval_394": {
+      "type": "object",
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "syntax": {
+          "$ref": "#/$defs/eval_395"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_398"
+        }
+      },
+      "required": [
+        "definition",
+        "syntax",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_398": {
+      "const": "grammar"
+    },
+    "eval_395": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_396"
+        },
+        {
+          "$ref": "#/$defs/eval_397"
+        }
+      ]
+    },
+    "eval_397": {
+      "const": "regex"
+    },
+    "eval_396": {
+      "const": "lark"
+    },
+    "eval_393": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/eval_186"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_369": {
+      "type": "object",
+      "properties": {
+        "allowed_callers": {
+          "$ref": "#/$defs/eval_234"
+        },
+        "environment": {
+          "$ref": "#/$defs/eval_370"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_390"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_390": {
+      "const": "shell"
+    },
+    "eval_370": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_371"
+        },
+        {
+          "$ref": "#/$defs/eval_383"
+        },
+        {
+          "$ref": "#/$defs/eval_388"
+        }
+      ]
+    },
+    "eval_388": {
+      "type": "object",
+      "properties": {
+        "container_id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_389"
+        }
+      },
+      "required": [
+        "container_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_389": {
+      "const": "container_reference"
+    },
+    "eval_383": {
+      "type": "object",
+      "properties": {
+        "skills": {
+          "$ref": "#/$defs/eval_384"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_387"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_387": {
+      "const": "local"
+    },
+    "eval_384": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_385"
+        }
+      ]
+    },
+    "eval_385": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_386"
+      }
+    },
+    "eval_386": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "path": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "eval_371": {
+      "type": "object",
+      "properties": {
+        "file_ids": {
+          "$ref": "#/$defs/eval_294"
+        },
+        "memory_limit": {
+          "$ref": "#/$defs/eval_318"
+        },
+        "network_policy": {
+          "$ref": "#/$defs/eval_323"
+        },
+        "skills": {
+          "$ref": "#/$defs/eval_372"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_382"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_382": {
+      "const": "container_auto"
+    },
+    "eval_372": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_373"
+        }
+      ]
+    },
+    "eval_373": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_374"
+      }
+    },
+    "eval_374": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_375"
+        },
+        {
+          "$ref": "#/$defs/eval_377"
+        }
+      ]
+    },
+    "eval_377": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "source": {
+          "$ref": "#/$defs/eval_378"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_381"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_381": {
+      "const": "inline"
+    },
+    "eval_378": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "media_type": {
+          "$ref": "#/$defs/eval_379"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_380"
+        }
+      },
+      "required": [
+        "data",
+        "media_type",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_380": {
+      "const": "base64"
+    },
+    "eval_379": {
+      "const": "application/zip"
+    },
+    "eval_375": {
+      "type": "object",
+      "properties": {
+        "skill_id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_376"
+        },
+        "version": {
+          "$ref": "#/$defs/eval_21"
+        }
+      },
+      "required": [
+        "skill_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_376": {
+      "const": "skill_reference"
+    },
+    "eval_323": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_324"
+        },
+        {
+          "$ref": "#/$defs/eval_326"
+        }
+      ]
+    },
+    "eval_326": {
+      "type": "object",
+      "properties": {
+        "allowed_domains": {
+          "$ref": "#/$defs/eval_59"
+        },
+        "domain_secrets": {
+          "$ref": "#/$defs/eval_327"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_330"
+        }
+      },
+      "required": [
+        "allowed_domains",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_330": {
+      "const": "allowlist"
+    },
+    "eval_327": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_328"
+        }
+      ]
+    },
+    "eval_328": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_329"
+      }
+    },
+    "eval_329": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "value": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "domain",
+        "name",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "eval_324": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/eval_325"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_325": {
+      "const": "disabled"
+    },
+    "eval_318": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_319"
+        },
+        {
+          "$ref": "#/$defs/eval_320"
+        },
+        {
+          "$ref": "#/$defs/eval_321"
+        },
+        {
+          "$ref": "#/$defs/eval_322"
+        }
+      ]
+    },
+    "eval_322": {
+      "const": "64g"
+    },
+    "eval_321": {
+      "const": "16g"
+    },
+    "eval_320": {
+      "const": "4g"
+    },
+    "eval_319": {
+      "const": "1g"
+    },
+    "eval_294": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_59"
+        }
+      ]
+    },
+    "eval_367": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/eval_368"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_368": {
+      "const": "local_shell"
+    },
+    "eval_334": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/eval_335"
+        },
+        "background": {
+          "$ref": "#/$defs/eval_338"
+        },
+        "input_fidelity": {
+          "$ref": "#/$defs/eval_341"
+        },
+        "input_image_mask": {
+          "$ref": "#/$defs/eval_342"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_344"
+        },
+        "moderation": {
+          "$ref": "#/$defs/eval_356"
+        },
+        "output_compression": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "output_format": {
+          "$ref": "#/$defs/eval_357"
+        },
+        "partial_images": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "quality": {
+          "$ref": "#/$defs/eval_361"
+        },
+        "size": {
+          "$ref": "#/$defs/eval_362"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_366"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_366": {
+      "const": "image_generation"
+    },
+    "eval_362": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_162"
+        },
+        {
+          "$ref": "#/$defs/eval_345"
+        },
+        {
+          "$ref": "#/$defs/eval_363"
+        },
+        {
+          "$ref": "#/$defs/eval_364"
+        },
+        {
+          "$ref": "#/$defs/eval_365"
+        }
+      ]
+    },
+    "eval_365": {
+      "const": "1536x1024"
+    },
+    "eval_364": {
+      "const": "1024x1536"
+    },
+    "eval_363": {
+      "const": "1024x1024"
+    },
+    "eval_345": {
+      "type": "string"
+    },
+    "eval_162": {
+      "const": "auto"
+    },
+    "eval_361": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_100"
+        },
+        {
+          "$ref": "#/$defs/eval_101"
+        },
+        {
+          "$ref": "#/$defs/eval_102"
+        },
+        {
+          "$ref": "#/$defs/eval_103"
+        },
+        {
+          "$ref": "#/$defs/eval_104"
+        },
+        {
+          "$ref": "#/$defs/eval_162"
+        }
+      ]
+    },
+    "eval_357": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_358"
+        },
+        {
+          "$ref": "#/$defs/eval_359"
+        },
+        {
+          "$ref": "#/$defs/eval_360"
+        }
+      ]
+    },
+    "eval_360": {
+      "const": "jpeg"
+    },
+    "eval_359": {
+      "const": "webp"
+    },
+    "eval_358": {
+      "const": "png"
+    },
+    "eval_356": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_100"
+        },
+        {
+          "$ref": "#/$defs/eval_162"
+        }
+      ]
+    },
+    "eval_344": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_345"
+        },
+        {
+          "$ref": "#/$defs/eval_346"
+        },
+        {
+          "$ref": "#/$defs/eval_347"
+        },
+        {
+          "$ref": "#/$defs/eval_348"
+        },
+        {
+          "$ref": "#/$defs/eval_349"
+        },
+        {
+          "$ref": "#/$defs/eval_350"
+        },
+        {
+          "$ref": "#/$defs/eval_351"
+        },
+        {
+          "$ref": "#/$defs/eval_352"
+        },
+        {
+          "$ref": "#/$defs/eval_353"
+        },
+        {
+          "$ref": "#/$defs/eval_354"
+        },
+        {
+          "$ref": "#/$defs/eval_355"
+        }
+      ]
+    },
+    "eval_355": {
+      "const": "chatgpt-image-latest"
+    },
+    "eval_354": {
+      "const": "gpt-image-1.5"
+    },
+    "eval_353": {
+      "const": "gpt-image-2.5-flare-2026-09-08"
+    },
+    "eval_352": {
+      "const": "gpt-image-2.5-flare"
+    },
+    "eval_351": {
+      "const": "gpt-image-2.5-sunburst-2026-09-08"
+    },
+    "eval_350": {
+      "const": "gpt-image-2.5-sunburst"
+    },
+    "eval_349": {
+      "const": "gpt-image-2-2026-04-21"
+    },
+    "eval_348": {
+      "const": "gpt-image-2"
+    },
+    "eval_347": {
+      "const": "gpt-image-1-mini"
+    },
+    "eval_346": {
+      "const": "gpt-image-1"
+    },
+    "eval_342": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_343"
+        }
+      ]
+    },
+    "eval_343": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "image_url": {
+          "$ref": "#/$defs/eval_21"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_341": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_100"
+        },
+        {
+          "$ref": "#/$defs/eval_102"
+        }
+      ]
+    },
+    "eval_338": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_162"
+        },
+        {
+          "$ref": "#/$defs/eval_339"
+        },
+        {
+          "$ref": "#/$defs/eval_340"
+        }
+      ]
+    },
+    "eval_340": {
+      "const": "opaque"
+    },
+    "eval_339": {
+      "const": "transparent"
+    },
+    "eval_335": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_162"
+        },
+        {
+          "$ref": "#/$defs/eval_336"
+        },
+        {
+          "$ref": "#/$defs/eval_337"
+        }
+      ]
+    },
+    "eval_337": {
+      "const": "edit"
+    },
+    "eval_336": {
+      "const": "generate"
+    },
+    "eval_332": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/eval_333"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_333": {
+      "const": "programmatic_tool_calling"
+    },
+    "eval_315": {
+      "type": "object",
+      "properties": {
+        "allowed_callers": {
+          "$ref": "#/$defs/eval_234"
+        },
+        "container": {
+          "$ref": "#/$defs/eval_316"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_331"
+        }
+      },
+      "required": [
+        "container",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_331": {
+      "const": "code_interpreter"
+    },
+    "eval_316": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_317"
+        }
+      ]
+    },
+    "eval_317": {
+      "type": "object",
+      "properties": {
+        "file_ids": {
+          "$ref": "#/$defs/eval_294"
+        },
+        "memory_limit": {
+          "$ref": "#/$defs/eval_318"
+        },
+        "network_policy": {
+          "$ref": "#/$defs/eval_323"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_162"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_291": {
+      "type": "object",
+      "properties": {
+        "allowed_callers": {
+          "$ref": "#/$defs/eval_234"
+        },
+        "allowed_tools": {
+          "$ref": "#/$defs/eval_292"
+        },
+        "authorization": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "connector_id": {
+          "$ref": "#/$defs/eval_295"
+        },
+        "defer_loading": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "headers": {
+          "$ref": "#/$defs/eval_304"
+        },
+        "require_approval": {
+          "$ref": "#/$defs/eval_306"
+        },
+        "server_description": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "server_label": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "server_url": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "tunnel_id": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_314"
+        }
+      },
+      "required": [
+        "server_label",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_314": {
+      "const": "mcp"
+    },
+    "eval_306": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_307"
+        },
+        {
+          "$ref": "#/$defs/eval_312"
+        },
+        {
+          "$ref": "#/$defs/eval_313"
+        }
+      ]
+    },
+    "eval_313": {
+      "const": "never"
+    },
+    "eval_312": {
+      "const": "always"
+    },
+    "eval_307": {
+      "type": "object",
+      "properties": {
+        "always": {
+          "$ref": "#/$defs/eval_308"
+        },
+        "never": {
+          "$ref": "#/$defs/eval_310"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_310": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_311"
+        }
+      ]
+    },
+    "eval_311": {
+      "type": "object",
+      "properties": {
+        "read_only": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "tool_names": {
+          "$ref": "#/$defs/eval_294"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_308": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_309"
+        }
+      ]
+    },
+    "eval_309": {
+      "type": "object",
+      "properties": {
+        "read_only": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "tool_names": {
+          "$ref": "#/$defs/eval_294"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_304": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_305"
+        }
+      ]
+    },
+    "eval_305": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_20"
+      }
+    },
+    "eval_295": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_296"
+        },
+        {
+          "$ref": "#/$defs/eval_297"
+        },
+        {
+          "$ref": "#/$defs/eval_298"
+        },
+        {
+          "$ref": "#/$defs/eval_299"
+        },
+        {
+          "$ref": "#/$defs/eval_300"
+        },
+        {
+          "$ref": "#/$defs/eval_301"
+        },
+        {
+          "$ref": "#/$defs/eval_302"
+        },
+        {
+          "$ref": "#/$defs/eval_303"
+        }
+      ]
+    },
+    "eval_303": {
+      "const": "connector_sharepoint"
+    },
+    "eval_302": {
+      "const": "connector_outlookemail"
+    },
+    "eval_301": {
+      "const": "connector_outlookcalendar"
+    },
+    "eval_300": {
+      "const": "connector_microsoftteams"
+    },
+    "eval_299": {
+      "const": "connector_googledrive"
+    },
+    "eval_298": {
+      "const": "connector_googlecalendar"
+    },
+    "eval_297": {
+      "const": "connector_gmail"
+    },
+    "eval_296": {
+      "const": "connector_dropbox"
+    },
+    "eval_292": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_59"
+        },
+        {
+          "$ref": "#/$defs/eval_293"
+        }
+      ]
+    },
+    "eval_293": {
+      "type": "object",
+      "properties": {
+        "read_only": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "tool_names": {
+          "$ref": "#/$defs/eval_294"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_279": {
+      "type": "object",
+      "properties": {
+        "external_web_access": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "filters": {
+          "$ref": "#/$defs/eval_280"
+        },
+        "search_context_size": {
+          "$ref": "#/$defs/eval_283"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_284"
+        },
+        "user_location": {
+          "$ref": "#/$defs/eval_287"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_287": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_288"
+        }
+      ]
+    },
+    "eval_288": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "country": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "region": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "timezone": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_289"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_289": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_290"
+        }
+      ]
+    },
+    "eval_284": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_285"
+        },
+        {
+          "$ref": "#/$defs/eval_286"
+        }
+      ]
+    },
+    "eval_286": {
+      "const": "web_search_2025_08_26"
+    },
+    "eval_285": {
+      "const": "web_search"
+    },
+    "eval_280": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_281"
+        }
+      ]
+    },
+    "eval_281": {
+      "type": "object",
+      "properties": {
+        "allowed_domains": {
+          "$ref": "#/$defs/eval_282"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_271": {
+      "type": "object",
+      "properties": {
+        "display_height": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "display_width": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "environment": {
+          "$ref": "#/$defs/eval_272"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_278"
+        }
+      },
+      "required": [
+        "display_height",
+        "display_width",
+        "environment",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_278": {
+      "const": "computer_use_preview"
+    },
+    "eval_272": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_273"
+        },
+        {
+          "$ref": "#/$defs/eval_274"
+        },
+        {
+          "$ref": "#/$defs/eval_275"
+        },
+        {
+          "$ref": "#/$defs/eval_276"
+        },
+        {
+          "$ref": "#/$defs/eval_277"
+        }
+      ]
+    },
+    "eval_277": {
+      "const": "browser"
+    },
+    "eval_276": {
+      "const": "ubuntu"
+    },
+    "eval_275": {
+      "const": "linux"
+    },
+    "eval_274": {
+      "const": "mac"
+    },
+    "eval_273": {
+      "const": "windows"
+    },
+    "eval_269": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/eval_270"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_270": {
+      "const": "computer"
+    },
+    "eval_244": {
+      "type": "object",
+      "properties": {
+        "filters": {
+          "$ref": "#/$defs/eval_245"
+        },
+        "max_num_results": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "ranking_options": {
+          "$ref": "#/$defs/eval_262"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_268"
+        },
+        "vector_store_ids": {
+          "$ref": "#/$defs/eval_59"
+        }
+      },
+      "required": [
+        "type",
+        "vector_store_ids"
+      ],
+      "additionalProperties": false
+    },
+    "eval_268": {
+      "const": "file_search"
+    },
+    "eval_262": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_263"
+        }
+      ]
+    },
+    "eval_263": {
+      "type": "object",
+      "properties": {
+        "hybrid_search": {
+          "$ref": "#/$defs/eval_264"
+        },
+        "ranker": {
+          "$ref": "#/$defs/eval_266"
+        },
+        "score_threshold": {
+          "$ref": "#/$defs/eval_84"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_266": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_162"
+        },
+        {
+          "$ref": "#/$defs/eval_267"
+        }
+      ]
+    },
+    "eval_267": {
+      "const": "default-2024-11-15"
+    },
+    "eval_264": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_265"
+        }
+      ]
+    },
+    "eval_265": {
+      "type": "object",
+      "properties": {
+        "embedding_weight": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "text_weight": {
+          "$ref": "#/$defs/eval_81"
+        }
+      },
+      "required": [
+        "embedding_weight",
+        "text_weight"
+      ],
+      "additionalProperties": false
+    },
+    "eval_245": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_246"
+        },
+        {
+          "$ref": "#/$defs/eval_257"
+        }
+      ]
+    },
+    "eval_257": {
+      "type": "object",
+      "properties": {
+        "filters": {
+          "$ref": "#/$defs/eval_258"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_259"
+        }
+      },
+      "required": [
+        "filters",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_259": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_260"
+        },
+        {
+          "$ref": "#/$defs/eval_261"
+        }
+      ]
+    },
+    "eval_261": {
+      "const": "or"
+    },
+    "eval_260": {
+      "const": "and"
+    },
+    "eval_258": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_246": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_247"
+        },
+        "value": {
+          "$ref": "#/$defs/eval_254"
+        }
+      },
+      "required": [
+        "key",
+        "type",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "eval_254": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_81"
+        },
+        {
+          "$ref": "#/$defs/eval_4"
+        },
+        {
+          "$ref": "#/$defs/eval_5"
+        },
+        {
+          "$ref": "#/$defs/eval_255"
+        }
+      ]
+    },
+    "eval_255": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_256"
+      }
+    },
+    "eval_256": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_81"
+        }
+      ]
+    },
+    "eval_247": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_63"
+        },
+        {
+          "$ref": "#/$defs/eval_64"
+        },
+        {
+          "$ref": "#/$defs/eval_248"
+        },
+        {
+          "$ref": "#/$defs/eval_249"
+        },
+        {
+          "$ref": "#/$defs/eval_250"
+        },
+        {
+          "$ref": "#/$defs/eval_251"
+        },
+        {
+          "$ref": "#/$defs/eval_252"
+        },
+        {
+          "$ref": "#/$defs/eval_253"
+        }
+      ]
+    },
+    "eval_253": {
+      "const": "nin"
+    },
+    "eval_252": {
+      "const": "in"
+    },
+    "eval_251": {
+      "const": "lte"
+    },
+    "eval_250": {
+      "const": "lt"
+    },
+    "eval_249": {
+      "const": "gte"
+    },
+    "eval_248": {
+      "const": "gt"
+    },
+    "eval_64": {
+      "const": "ne"
+    },
+    "eval_63": {
+      "const": "eq"
+    },
+    "eval_233": {
+      "type": "object",
+      "properties": {
+        "allowed_callers": {
+          "$ref": "#/$defs/eval_234"
+        },
+        "async": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "defer_loading": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "description": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "output_schema": {
+          "$ref": "#/$defs/eval_239"
+        },
+        "parameters": {
+          "$ref": "#/$defs/eval_241"
+        },
+        "strict": {
+          "$ref": "#/$defs/eval_243"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_201"
+        }
+      },
+      "required": [
+        "name",
+        "parameters",
+        "strict",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_243": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_4"
+        },
+        {
+          "$ref": "#/$defs/eval_5"
+        }
+      ]
+    },
+    "eval_241": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_242"
+        }
+      ]
+    },
+    "eval_242": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_239": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_240"
+        }
+      ]
+    },
+    "eval_240": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_448": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_449"
+        }
+      ]
+    },
+    "eval_449": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "$ref": "#/$defs/eval_227"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_227": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_185"
+        },
+        {
+          "$ref": "#/$defs/eval_193"
+        },
+        {
+          "$ref": "#/$defs/eval_228"
+        }
+      ]
+    },
+    "eval_228": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "schema": {
+          "$ref": "#/$defs/eval_229"
+        },
+        "strict": {
+          "$ref": "#/$defs/eval_191"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_192"
+        }
+      },
+      "required": [
+        "name",
+        "schema",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_192": {
+      "const": "json_schema"
+    },
+    "eval_229": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_193": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/eval_194"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_194": {
+      "const": "json_object"
+    },
+    "eval_185": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/eval_186"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_436": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_437"
+        },
+        {
+          "$ref": "#/$defs/eval_445"
+        }
+      ]
+    },
+    "eval_445": {
+      "type": "object",
+      "properties": {
+        "item_reference": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_181"
+        }
+      },
+      "required": [
+        "item_reference",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_181": {
+      "const": "item_reference"
+    },
+    "eval_437": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "$ref": "#/$defs/eval_438"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_179"
+        }
+      },
+      "required": [
+        "template",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_179": {
+      "const": "template"
+    },
+    "eval_438": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_439"
+      }
+    },
+    "eval_439": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_440"
+        },
+        {
+          "$ref": "#/$defs/eval_441"
+        }
+      ]
+    },
+    "eval_441": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_442"
         },
         "role": {
           "$ref": "#/$defs/eval_52"
@@ -23544,7 +26219,7 @@
     "eval_53": {
       "const": "user"
     },
-    "eval_89": {
+    "eval_442": {
       "anyOf": [
         {
           "$ref": "#/$defs/eval_20"
@@ -23559,14 +26234,14 @@
           "$ref": "#/$defs/eval_48"
         },
         {
-          "$ref": "#/$defs/eval_90"
+          "$ref": "#/$defs/eval_443"
         },
         {
-          "$ref": "#/$defs/eval_91"
+          "$ref": "#/$defs/eval_444"
         }
       ]
     },
-    "eval_91": {
+    "eval_444": {
       "type": "object",
       "properties": {
         "detail": {
@@ -23588,7 +26263,7 @@
     "eval_41": {
       "const": "input_image"
     },
-    "eval_90": {
+    "eval_443": {
       "type": "object",
       "properties": {
         "text": {
@@ -23781,6 +26456,1452 @@
     "eval_33": {
       "const": "explicit"
     },
+    "eval_440": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_151": {
+      "type": "object",
+      "properties": {
+        "input_messages": {
+          "$ref": "#/$defs/eval_152"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "sampling_params": {
+          "$ref": "#/$defs/eval_182"
+        },
+        "source": {
+          "$ref": "#/$defs/eval_202"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_211"
+        }
+      },
+      "required": [
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_211": {
+      "const": "completions"
+    },
+    "eval_202": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_203"
+        },
+        {
+          "$ref": "#/$defs/eval_209"
+        },
+        {
+          "$ref": "#/$defs/eval_210"
+        }
+      ]
+    },
+    "eval_210": {
+      "type": "object",
+      "properties": {
+        "created_after": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "created_before": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "limit": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "metadata": {
+          "$ref": "#/$defs/eval_17"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_16"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_16": {
+      "const": "stored_completions"
+    },
+    "eval_17": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_19"
+        }
+      ]
+    },
+    "eval_209": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_149"
+        }
+      },
+      "required": [
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_203": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_204"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_147"
+        }
+      },
+      "required": [
+        "content",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_204": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_205"
+      }
+    },
+    "eval_205": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/eval_206"
+        },
+        "sample": {
+          "$ref": "#/$defs/eval_207"
+        }
+      },
+      "required": [
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "eval_207": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_208"
+        }
+      ]
+    },
+    "eval_208": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_206": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_182": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_183"
+        }
+      ]
+    },
+    "eval_183": {
+      "type": "object",
+      "properties": {
+        "max_completion_tokens": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "reasoning_effort": {
+          "$ref": "#/$defs/eval_97"
+        },
+        "response_format": {
+          "$ref": "#/$defs/eval_184"
+        },
+        "seed": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "temperature": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "tools": {
+          "$ref": "#/$defs/eval_195"
+        },
+        "top_p": {
+          "$ref": "#/$defs/eval_84"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_195": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_196"
+        }
+      ]
+    },
+    "eval_196": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_197"
+      }
+    },
+    "eval_197": {
+      "type": "object",
+      "properties": {
+        "function": {
+          "$ref": "#/$defs/eval_198"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_201"
+        }
+      },
+      "required": [
+        "function",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_198": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "parameters": {
+          "$ref": "#/$defs/eval_199"
+        },
+        "strict": {
+          "$ref": "#/$defs/eval_191"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "eval_199": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_200"
+        }
+      ]
+    },
+    "eval_200": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_184": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_185"
+        },
+        {
+          "$ref": "#/$defs/eval_187"
+        },
+        {
+          "$ref": "#/$defs/eval_193"
+        }
+      ]
+    },
+    "eval_187": {
+      "type": "object",
+      "properties": {
+        "json_schema": {
+          "$ref": "#/$defs/eval_188"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_192"
+        }
+      },
+      "required": [
+        "json_schema",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_188": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "schema": {
+          "$ref": "#/$defs/eval_189"
+        },
+        "strict": {
+          "$ref": "#/$defs/eval_191"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "eval_189": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_190"
+        }
+      ]
+    },
+    "eval_190": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_152": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_153"
+        },
+        {
+          "$ref": "#/$defs/eval_180"
+        }
+      ]
+    },
+    "eval_180": {
+      "type": "object",
+      "properties": {
+        "item_reference": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_181"
+        }
+      },
+      "required": [
+        "item_reference",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_153": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "$ref": "#/$defs/eval_154"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_179"
+        }
+      },
+      "required": [
+        "template",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_154": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_155"
+      }
+    },
+    "eval_155": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_156"
+        },
+        {
+          "$ref": "#/$defs/eval_175"
+        }
+      ]
+    },
+    "eval_175": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_176"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_52"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_57"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_176": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_30"
+        },
+        {
+          "$ref": "#/$defs/eval_42"
+        },
+        {
+          "$ref": "#/$defs/eval_48"
+        },
+        {
+          "$ref": "#/$defs/eval_177"
+        },
+        {
+          "$ref": "#/$defs/eval_178"
+        }
+      ]
+    },
+    "eval_178": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "image_url": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_41"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_177": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_39"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_156": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_157"
+        },
+        "phase": {
+          "$ref": "#/$defs/eval_172"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_52"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_57"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_172": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_173"
+        },
+        {
+          "$ref": "#/$defs/eval_174"
+        }
+      ]
+    },
+    "eval_174": {
+      "const": "final_answer"
+    },
+    "eval_173": {
+      "const": "commentary"
+    },
+    "eval_157": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_158"
+        }
+      ]
+    },
+    "eval_158": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_159"
+      }
+    },
+    "eval_159": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_30"
+        },
+        {
+          "$ref": "#/$defs/eval_160"
+        },
+        {
+          "$ref": "#/$defs/eval_167"
+        }
+      ]
+    },
+    "eval_167": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/eval_168"
+        },
+        "file_data": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "file_id": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "file_url": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "filename": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "prompt_cache_breakpoint": {
+          "$ref": "#/$defs/eval_169"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_171"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_171": {
+      "const": "input_file"
+    },
+    "eval_169": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_170"
+        }
+      ]
+    },
+    "eval_170": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/eval_33"
+        },
+        "ttl": {
+          "$ref": "#/$defs/eval_34"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "eval_168": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_100"
+        },
+        {
+          "$ref": "#/$defs/eval_102"
+        },
+        {
+          "$ref": "#/$defs/eval_162"
+        }
+      ]
+    },
+    "eval_160": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/eval_161"
+        },
+        "file_id": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "image_url": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "prompt_cache_breakpoint": {
+          "$ref": "#/$defs/eval_165"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_41"
+        }
+      },
+      "required": [
+        "detail",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_165": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_166"
+        }
+      ]
+    },
+    "eval_166": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/eval_33"
+        },
+        "ttl": {
+          "$ref": "#/$defs/eval_34"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "eval_161": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_100"
+        },
+        {
+          "$ref": "#/$defs/eval_102"
+        },
+        {
+          "$ref": "#/$defs/eval_162"
+        },
+        {
+          "$ref": "#/$defs/eval_163"
+        }
+      ]
+    },
+    "eval_163": {
+      "const": "original"
+    },
+    "eval_139": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/eval_140"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_150"
+        }
+      },
+      "required": [
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_150": {
+      "const": "jsonl"
+    },
+    "eval_140": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_141"
+        },
+        {
+          "$ref": "#/$defs/eval_148"
+        }
+      ]
+    },
+    "eval_148": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_149"
+        }
+      },
+      "required": [
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_141": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_142"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_147"
+        }
+      },
+      "required": [
+        "content",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_142": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_143"
+      }
+    },
+    "eval_143": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/eval_144"
+        },
+        "sample": {
+          "$ref": "#/$defs/eval_145"
+        }
+      },
+      "required": [
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "eval_145": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_146"
+        }
+      ]
+    },
+    "eval_146": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_144": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_137": {
+      "type": "object",
+      "properties": {
+        "data_source": {
+          "$ref": "#/$defs/eval_138"
+        },
+        "metadata": {
+          "$ref": "#/$defs/eval_17"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_21"
+        }
+      },
+      "required": [
+        "data_source"
+      ],
+      "additionalProperties": false
+    },
+    "eval_138": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_139"
+        },
+        {
+          "$ref": "#/$defs/eval_151"
+        },
+        {
+          "$ref": "#/$defs/eval_212"
+        }
+      ]
+    },
+    "eval_212": {
+      "type": "object",
+      "properties": {
+        "input_messages": {
+          "$ref": "#/$defs/eval_213"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "sampling_params": {
+          "$ref": "#/$defs/eval_223"
+        },
+        "source": {
+          "$ref": "#/$defs/eval_423"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_432"
+        }
+      },
+      "required": [
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_423": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_424"
+        },
+        {
+          "$ref": "#/$defs/eval_430"
+        },
+        {
+          "$ref": "#/$defs/eval_431"
+        }
+      ]
+    },
+    "eval_431": {
+      "type": "object",
+      "properties": {
+        "created_after": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "created_before": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "instructions_search": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "metadata": {
+          "$ref": "#/$defs/eval_7"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_164"
+        },
+        "reasoning_effort": {
+          "$ref": "#/$defs/eval_97"
+        },
+        "temperature": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "tools": {
+          "$ref": "#/$defs/eval_282"
+        },
+        "top_p": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_432"
+        },
+        "users": {
+          "$ref": "#/$defs/eval_282"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_430": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_149"
+        }
+      },
+      "required": [
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_424": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_425"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_147"
+        }
+      },
+      "required": [
+        "content",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_425": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_426"
+      }
+    },
+    "eval_426": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/eval_427"
+        },
+        "sample": {
+          "$ref": "#/$defs/eval_428"
+        }
+      },
+      "required": [
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "eval_428": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_429"
+        }
+      ]
+    },
+    "eval_429": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_427": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_223": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_224"
+        }
+      ]
+    },
+    "eval_224": {
+      "type": "object",
+      "properties": {
+        "max_completion_tokens": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "reasoning_effort": {
+          "$ref": "#/$defs/eval_97"
+        },
+        "seed": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "temperature": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "text": {
+          "$ref": "#/$defs/eval_225"
+        },
+        "tools": {
+          "$ref": "#/$defs/eval_230"
+        },
+        "top_p": {
+          "$ref": "#/$defs/eval_84"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_225": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_226"
+        }
+      ]
+    },
+    "eval_226": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "$ref": "#/$defs/eval_227"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_213": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_214"
+        },
+        {
+          "$ref": "#/$defs/eval_222"
+        }
+      ]
+    },
+    "eval_222": {
+      "type": "object",
+      "properties": {
+        "item_reference": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_181"
+        }
+      },
+      "required": [
+        "item_reference",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_214": {
+      "type": "object",
+      "properties": {
+        "template": {
+          "$ref": "#/$defs/eval_215"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_179"
+        }
+      },
+      "required": [
+        "template",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_215": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_216"
+      }
+    },
+    "eval_216": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_217"
+        },
+        {
+          "$ref": "#/$defs/eval_218"
+        }
+      ]
+    },
+    "eval_218": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_219"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_52"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_57"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_219": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_30"
+        },
+        {
+          "$ref": "#/$defs/eval_42"
+        },
+        {
+          "$ref": "#/$defs/eval_48"
+        },
+        {
+          "$ref": "#/$defs/eval_220"
+        },
+        {
+          "$ref": "#/$defs/eval_221"
+        }
+      ]
+    },
+    "eval_221": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "image_url": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_41"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_220": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_39"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_217": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_130": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "limit": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "order": {
+          "$ref": "#/$defs/eval_131"
+        },
+        "order_by": {
+          "$ref": "#/$defs/eval_134"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_134": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_135"
+        },
+        {
+          "$ref": "#/$defs/eval_136"
+        }
+      ]
+    },
+    "eval_136": {
+      "const": "updated_at"
+    },
+    "eval_135": {
+      "const": "created_at"
+    },
+    "eval_128": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/eval_129"
+        },
+        "eval_id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "object": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "deleted",
+        "eval_id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "eval_107": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "data_source_config": {
+          "$ref": "#/$defs/eval_108"
+        },
+        "id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "metadata": {
+          "$ref": "#/$defs/eval_115"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "object": {
+          "$ref": "#/$defs/eval_116"
+        },
+        "testing_criteria": {
+          "$ref": "#/$defs/eval_117"
+        }
+      },
+      "required": [
+        "created_at",
+        "data_source_config",
+        "id",
+        "metadata",
+        "name",
+        "object",
+        "testing_criteria"
+      ],
+      "additionalProperties": false
+    },
+    "eval_117": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_118"
+      }
+    },
+    "eval_118": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_61"
+        },
+        {
+          "$ref": "#/$defs/eval_119"
+        },
+        {
+          "$ref": "#/$defs/eval_125"
+        },
+        {
+          "$ref": "#/$defs/eval_126"
+        },
+        {
+          "$ref": "#/$defs/eval_127"
+        }
+      ]
+    },
+    "eval_127": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/eval_87"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "pass_threshold": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "range": {
+          "$ref": "#/$defs/eval_92"
+        },
+        "sampling_params": {
+          "$ref": "#/$defs/eval_94"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_105"
+        }
+      },
+      "required": [
+        "input",
+        "model",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_105": {
+      "const": "score_model"
+    },
+    "eval_94": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_95"
+        }
+      ]
+    },
+    "eval_95": {
+      "type": "object",
+      "properties": {
+        "max_completions_tokens": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "reasoning_effort": {
+          "$ref": "#/$defs/eval_97"
+        },
+        "seed": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "temperature": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "top_p": {
+          "$ref": "#/$defs/eval_96"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_92": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_93"
+        }
+      ]
+    },
+    "eval_93": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_81"
+      }
+    },
+    "eval_87": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_88"
+      }
+    },
+    "eval_88": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_89"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_52"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_57"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_89": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_30"
+        },
+        {
+          "$ref": "#/$defs/eval_42"
+        },
+        {
+          "$ref": "#/$defs/eval_48"
+        },
+        {
+          "$ref": "#/$defs/eval_90"
+        },
+        {
+          "$ref": "#/$defs/eval_91"
+        }
+      ]
+    },
+    "eval_91": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "image_url": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_41"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_90": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_39"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
     "eval_126": {
       "type": "object",
       "properties": {
@@ -23950,12 +28071,6 @@
     "eval_60": {
       "const": "label_model"
     },
-    "eval_59": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/eval_20"
-      }
-    },
     "eval_120": {
       "type": "array",
       "items": {
@@ -24091,24 +28206,8 @@
     "eval_65": {
       "const": "like"
     },
-    "eval_64": {
-      "const": "ne"
-    },
-    "eval_63": {
-      "const": "eq"
-    },
     "eval_116": {
       "const": "eval"
-    },
-    "eval_115": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/eval_18"
-        },
-        {
-          "$ref": "#/$defs/eval_19"
-        }
-      ]
     },
     "eval_108": {
       "anyOf": [
@@ -24142,9 +28241,6 @@
       ],
       "additionalProperties": false
     },
-    "eval_16": {
-      "const": "stored_completions"
-    },
     "eval_114": {
       "type": "object",
       "properties": {},
@@ -24153,7 +28249,6 @@
         "$ref": "#/$defs/eval_7"
       }
     },
-    "eval_7": {},
     "eval_111": {
       "type": "object",
       "properties": {
@@ -24200,9 +28295,6 @@
       ],
       "additionalProperties": false
     },
-    "eval_8": {
-      "const": "custom"
-    },
     "eval_110": {
       "type": "object",
       "properties": {},
@@ -24210,6 +28302,19 @@
       "additionalProperties": {
         "$ref": "#/$defs/eval_7"
       }
+    },
+    "eval_106": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/eval_17"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_21"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
     },
     "eval_0": {
       "type": "object",
@@ -24589,36 +28694,38 @@
         "$ref": "#/$defs/eval_7"
       }
     },
-    "eval_3": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/eval_4"
-        },
-        {
-          "$ref": "#/$defs/eval_5"
-        }
-      ]
-    },
-    "eval_5": {
-      "const": true
-    },
-    "eval_4": {
-      "const": false
-    },
     "eval_create": {
       "$ref": "#/$defs/eval_0"
     },
-    "eval_eval": {
-      "$ref": "#/$defs/eval_107"
-    },
     "eval_update": {
       "$ref": "#/$defs/eval_106"
+    },
+    "eval_eval": {
+      "$ref": "#/$defs/eval_107"
     },
     "eval_deleted": {
       "$ref": "#/$defs/eval_128"
     },
     "eval_query": {
       "$ref": "#/$defs/eval_130"
+    },
+    "eval_run_create": {
+      "$ref": "#/$defs/eval_137"
+    },
+    "eval_run": {
+      "$ref": "#/$defs/eval_433"
+    },
+    "eval_run_deleted": {
+      "$ref": "#/$defs/eval_466"
+    },
+    "eval_run_query": {
+      "$ref": "#/$defs/eval_467"
+    },
+    "eval_output_item": {
+      "$ref": "#/$defs/eval_474"
+    },
+    "eval_output_query": {
+      "$ref": "#/$defs/eval_487"
     },
     "eval_list": {
       "type": "object",
@@ -24630,6 +28737,68 @@
           "type": "array",
           "items": {
             "$ref": "#/$defs/eval_eval"
+          }
+        },
+        "first_id": {
+          "type": "string"
+        },
+        "last_id": {
+          "type": "string"
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "first_id",
+        "last_id",
+        "has_more"
+      ],
+      "additionalProperties": false
+    },
+    "eval_run_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/eval_run"
+          }
+        },
+        "first_id": {
+          "type": "string"
+        },
+        "last_id": {
+          "type": "string"
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "first_id",
+        "last_id",
+        "has_more"
+      ],
+      "additionalProperties": false
+    },
+    "eval_output_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/eval_output_item"
           }
         },
         "first_id": {
