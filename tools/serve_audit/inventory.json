@@ -2664,6 +2664,116 @@
         "src/service/ingress_main.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
+    },
+    "DELETE /v1/skills/{skill_id}": {
+      "semantics": "删除指定技能或不可变版本，同时维护默认和最新版本引用。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "DELETE /v1/skills/{skill_id}/versions/{version}": {
+      "semantics": "删除指定技能或不可变版本，同时维护默认和最新版本引用。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills": {
+      "semantics": "按客户读取技能与版本，集合支持游标分页。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}": {
+      "semantics": "按客户读取技能与版本，集合支持游标分页。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}/content": {
+      "semantics": "下载固定版本或默认版本的 ZIP，显式 JSON 接受类型返回 Base64。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}/versions": {
+      "semantics": "按客户读取技能与版本，集合支持游标分页。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}/versions/{version}": {
+      "semantics": "按客户读取技能与版本，集合支持游标分页。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}/versions/{version}/content": {
+      "semantics": "下载固定版本或默认版本的 ZIP，显式 JSON 接受类型返回 Base64。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "POST /v1/skills": {
+      "semantics": "创建技能、发布版本或原子更新默认版本。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "POST /v1/skills/{skill_id}": {
+      "semantics": "创建技能、发布版本或原子更新默认版本。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "POST /v1/skills/{skill_id}/versions": {
+      "semantics": "创建技能、发布版本或原子更新默认版本。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3278,12 +3388,12 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "cf3163d6cf8a81cff5a0519f6063da8c6fa9f9a626819c425799c0fea1913760",
-    "cmake/ChatProtocolIdentity.cmake": "498bda748127ad1f85793a9294c765e68686355716d84d3c2da349ff43a7fe93",
+    "CMakeLists.txt": "412132a3ab150cfa01815611308a02dd5d479b704f6d284db9ed97e7dc1d3402",
+    "cmake/ChatProtocolIdentity.cmake": "8f8c878f2f646a4279700778b414977acb3e57e262c25ad70eadff530291b5d4",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
-    "cmake/NativeDocuments.cmake": "87135b491c6a07632b8e240f120f3c329b58aa82a0e451966a0c055ee4f29c3e",
+    "cmake/NativeDocuments.cmake": "699beca8d0e39d872cd4e591eec63610e5a884971ebab4a9dc49acc5cd9b7f72",
     "cmake/NativeIngress.cmake": "2ba586bec94444ef73dba490c1465c075a132c558a96127d5cc29780533ea510",
     "cmake/NativeSip.cmake": "232c8a4f54b48019cc918371749ff5264be01a33e7a1ac49f321695597cd9203",
     "cmake/NativeVideo.cmake": "61e107a022bf88c8d2a22a95d8047b66e18e460cff49feff22a04038ad6af423",
@@ -3293,6 +3403,7 @@
     "cmake/StructuredOutput.cmake": "66f791cc30c164e2a3b40c639a699e13077774d9bacf59b3b55a924e134f5b84",
     "cmake/container_types.h.in": "d5a483b0117c4cb9fd602c557cdaaabe2414ad522b93b3f1d56ad62f9aa6109b",
     "cmake/regex-syntax-0.8.8.sha256": "6eba6c50e6a79adfb56202c75e8a3b551fe384f84e8bb7e3f2634fe2791a7880",
+    "cmake/skill_types.h.in": "ba3dd016ca17609c3f92194e1d99ce31cc235922bf89b7f10324d829b7972f3f",
     "include/q4t/audio/aligner_config.h": "db9e41dc284ebcf4fb7b78d0c0c4b2579902dfe7b5c946535c6643aff7b39f05",
     "include/q4t/audio/aligner_layout.h": "28fa3f1dddcffc360e9c237910d0aab3cd34556051ce690933ff07e0241ac122",
     "include/q4t/audio/aligner_model.h": "9fc650ff2eceb0ce8c8d50f9e7922bda8ccd0ad901a5136db97e2e57cf30ca05",
@@ -3361,7 +3472,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "1349d22f8ce648a02d687275b25e1558d7ebf8c167cde580c6d7a5a7f8793fb6",
+    "include/q4t/server/application_routes.h": "3e9b7322bf5ab04cbb2d9eb2ba19ff71517cbbab621b2b9f21ae4c419329bdbf",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3415,7 +3526,7 @@
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
-    "include/q4t/server/containers.h": "49c694b1c68d853e3776a56f46795e04889322a74925e484b1e6d224d748227d",
+    "include/q4t/server/containers.h": "6402daf168fd01ae3289252b462cc5b4c9b48767c8e15f44fff96dd3be0bac51",
     "include/q4t/server/conversation_api.h": "df3cb4b69686e881fcaa1f9e46f0f97309cb8feddf21a09e457ee86f1842b878",
     "include/q4t/server/conversation_state.h": "073237c038816155bbacecbec129e5dfee77f7cb7dd45068903cfa34f8a0fc95",
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
@@ -3431,7 +3542,7 @@
     "include/q4t/server/embeddings_execution.h": "0d7ed7709aacde156f590a913d2b0cc7245c09318c9af4705ec6f88cfc7a49e3",
     "include/q4t/server/embeddings_plan.h": "c29801b6005ec838b3f39fd52d6701e285f7a1923f791f4d4479a71334961ebe",
     "include/q4t/server/file_audio.h": "c10902ca8e194e2c04bde93b8ea2ea777c65722dbcbba45114f631dd84c8dc75",
-    "include/q4t/server/file_document.h": "50c90e92b475063a9c469e1ac84d912a3b3232c3810a38fd86840726b5f107fd",
+    "include/q4t/server/file_document.h": "dc46dc5a20aae669c475c9d23b0d8bee7371de7e6d2fea68cbfa9acef600e344",
     "include/q4t/server/file_document_worker.h": "006f8e02037cf396a918be053328bedd0d75b77ef30c8fe5d6eca868cb36d183",
     "include/q4t/server/file_expansion.h": "a023ab8389eff1a3590fb466e3f5a95b8dc05efefc6546ec0cdc6751518f9f5a",
     "include/q4t/server/file_extract.h": "51e4284575c6d7273af0636b4f9719146881c2c59f705685675ee1185c56e939",
@@ -3447,15 +3558,15 @@
     "include/q4t/server/file_video.h": "ba312dd94c738ba4717bb3cb0e3356e24b319c4748d13e9722d7e7a3b08546e6",
     "include/q4t/server/file_webp.h": "b7fa99598fcce0ed0d1feb3016cfe5936944d2910167472c53ff3c92c44ba0cd",
     "include/q4t/server/files.h": "a174c9134707e6de82e6820bbe9cee804fc9b7c40b836bee7866006d2475af1a",
-    "include/q4t/server/files_http.h": "ad39db9bc43709387a1674bea8c909d15ca3abbf1468a4e447596674299ad90f",
+    "include/q4t/server/files_http.h": "c4f99307a6846da191fdb00dd80141ad5efcf957eb1393aa82b85766d7104d32",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
     "include/q4t/server/grammar_process.h": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447",
-    "include/q4t/server/http_connection.h": "81cc135f902f527cf80df6de65f020e6219bd50f8b6994fc0c2767310db2f130",
+    "include/q4t/server/http_connection.h": "59ea223a3190fcee359d906b44050605e5558633654171464b7b67d681e02442",
     "include/q4t/server/http_framing.h": "689fd32f9bf2b042c8f8b59cebd92d70d55f7b950c1f475babfe736420765524",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
-    "include/q4t/server/http_request.h": "9988a6400d854ec2a4b50dc61e04c8747adb64853ef67810c89a0d9748d6ab68",
+    "include/q4t/server/http_request.h": "6b6e2597a1d377c843456aa18d74b93480aa0aba561473e9200b755119c041db",
     "include/q4t/server/http_response.h": "7a61aa28c3f9b07a28609bba16760f76d97d29493b5b25c99a0aa879b04a595e",
     "include/q4t/server/input_contract.h": "af0929dfa050a137da35156e2fa4398f3710eee05cc3db0c5538ffa7825c6209",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
@@ -3510,7 +3621,7 @@
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
-    "include/q4t/server/object_store.h": "8444396c2690142ca21007e60d02cb20ce1ae3f083cdd9937fdf8057656127eb",
+    "include/q4t/server/object_store.h": "abeebc4d8555c8f83df8784f764ea71ee0b1aac7ead20592852f654b2692125d",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -3617,6 +3728,9 @@
     "include/q4t/server/sip_refer_target.h": "d6b6b9b9375d22b64b0da1cf22a552cf90ab3db59ac7d3a79d2eb5c5d2b8864f",
     "include/q4t/server/sip_service.h": "c679b720844b14eea466b0b02e5e41c39d02d675512ef24cebbdbf96946cba15",
     "include/q4t/server/sip_webhook.h": "12a903f3fb0c8659b22ae7a320ecbf8b43c4896071a3396111bc473b5d7d87f1",
+    "include/q4t/server/skill_upload.h": "99bf61fea0f74b8a49651764cfe5985f000c1c5b3d5fd052bf30a5a82c603704",
+    "include/q4t/server/skill_worker.h": "575387337b611fdca31955390a693f1b0c514a9e97efbc553dd6dfe7670ecde1",
+    "include/q4t/server/skills.h": "0280dd8cd55a733c321fd467f2936bd2021ca34e28c5e06a1fb2f3faa280c4e7",
     "include/q4t/server/speaker_assets.h": "b4c66b4b6fe5ded56d155717cfe481664fa2ae856e375410c71a192c9557162b",
     "include/q4t/server/speaker_reference.h": "d0640a3f84dd671923f74ae62fede74f4b28f08c844e0b6232e1b0868287203b",
     "include/q4t/server/speaker_service.h": "8dd4b05457095100f58df2d62f8cdd061f213fe169d002b4264de145102183c9",
@@ -3740,7 +3854,7 @@
     "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
     "src/audio/vad_chunks.cpp": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "db425e55a16f7d043a3377aeb4df5cddb9f974847900843a418b7d7100c79ce2",
+    "src/main.cpp": "1a7af87df6cf73ab8aee6bf1ce9ac348b8a57b87a1417a214f6574388e5f9226",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "35f740f37bcb7fe5eb52f335e71f7d33d5ed498b470e8521acb89e5d0412a67f",
@@ -3825,7 +3939,7 @@
     "src/server/batch_state.cpp": "c1f4ea93b2b4373f649cd870a0066afa9698798a25360a73d69da29bd474fc71",
     "src/server/batch_usage.cpp": "abf218b785045fe0116bc88ba22fd21087db0989b7a4b50011b1d35d5abbebca",
     "src/server/batch_validation.cpp": "670542f022f7e4b8d10a28ef80941170925f41e1c9e5ef1507705d545dfff394",
-    "src/server/binary_store.cpp": "2df20cb6617c1f19d3e0e988c6aaa8bf98dd18c04dd597a71365c4dcebeb26eb",
+    "src/server/binary_store.cpp": "27e6c3d027dac5c37afe9b7e3234b746e3e5895c8f96dd367a9fc76138c2c6ad",
     "src/server/cache_io.cpp": "96d9d7315eb8a7a90905d718528fd624aa5caec3a9830568afaddacbb9e19fa9",
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
@@ -3852,7 +3966,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "3d77b83633d4839ec77c599cdd005f1ee9d1a8d52ef0c94165841fa941562749",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "245da3cdc45684db961f1ae926dba7c7794e6dec53a29d1c55baf900cf19b28e",
+    "src/server/chat_http.cpp": "0af2846fbb03617db7b1bc9031417b35deb2a8a154372459d4d037a92cafe20b",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3900,12 +4014,13 @@
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "e2a05426d7b410e2dc00f3c8128e3d67bb349eb0277e87a687c921862f192beb",
+    "src/server/client_request.cpp": "7db68ca1e6e69fed6617f65517ae15f70d1ce694f9fb5de9dc8290d82f9971e5",
     "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/container_files.cpp": "e442730a05aa9f27c82d57fb5d07425aafdc40952b4300f19b543bd125b7c1a4",
-    "src/server/containers.cpp": "574304b1c4bcbd38fe9e72c467b8d79c18b560f23b2d766212681399dfbc192e",
-    "src/server/containers_internal.h": "ca65c344443aa4f606669f5482eecb32ffdbd3aba30207b97fdd7090c7cb68a7",
+    "src/server/container_skills.cpp": "cb1ae238e97040b3c6326281ddd435e5e120d4487f8aecd6720d94e4c7b35bc6",
+    "src/server/containers.cpp": "1a9ddadb06da95335da2f03f14e8be8f325ed0ed6612674be8f7e5c9129444bd",
+    "src/server/containers_internal.h": "010803c591e9075ea45cb285655929b207a619920802fb083ee42ee32d60d4f3",
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
     "src/server/contracts/openai_agent_session_types_v1.json": "989cbd668d01c3686b2d38d1bc280bba7c8134328f8f4836f9fa7ce05d1157ab",
     "src/server/contracts/openai_assistant_types_v1.json": "265a9ff4cecaef4b8e81e862a202877ba83b947fe094abd79561e4191edd8fcc",
@@ -3916,6 +4031,7 @@
     "src/server/contracts/openai_live_types_v1.json": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
     "src/server/contracts/openai_multi_agent_types_v1.json": "2c07ee92deacfb8c247d6fdd48f6eed1b073c75235065eb6ded5ca23f82f19e6",
     "src/server/contracts/openai_realtime_types_v1.json": "4055c325fca57d6de987aa4f9e93bca1fe2f3740d5e65eec23156b23ebfe0d0c",
+    "src/server/contracts/openai_skill_types_v1.json": "37485c913a3a5d7593880b72f889c7fe9a00db5dd8623bbb03f223dc50cb9dfe",
     "src/server/contracts/openai_vault_credential_types_v1.json": "f3c5a9a4be6e274325fd214d4e2ea7094f1fa0408f91107384abcfcec72456a2",
     "src/server/conversation_api.cpp": "3c8196c30809f764da5cc714b1f89ec7deefab8ecd86942d7f300bac67e96f41",
     "src/server/conversation_state.cpp": "e974516e7ae4f3c7a65de603794d784a5797e489a3891a788e7746586ab2cfca",
@@ -3960,10 +4076,10 @@
     "src/server/file_office_sheet.cpp": "f5879f2d1ba822b8a5fedd5b7435a59d03ee9e25befa2b60b1e9c307f54bf96b",
     "src/server/file_office_text.cpp": "c712e869ed9418029edb9f8dca6ebb9001b11cf0a7928a1d9891a794f61159e0",
     "src/server/file_office_xml.cpp": "2a0ea6103939f2448b558e98514d037207d6f6398fcfdaa72a40ee2655a3a8c1",
-    "src/server/file_package.cpp": "3eab985e479b0d2e762e068432bf6827253a78ccebdb6665881856ba5e622117",
-    "src/server/file_package.h": "0e57b84d8582d0412f04ce60748aeb58af4c73d0a12df531e339302cd1dbbc62",
-    "src/server/file_package_runtime.cpp": "619851092ed16b309aa69ac8fdf42cd10aa767d8fb29fa4b7e5ee27865393680",
-    "src/server/file_package_runtime.h": "c40c3bd92a58a1276f02fa36f6c7e16ab2c2d1cbb443b3748ee8b6f107fe638a",
+    "src/server/file_package.cpp": "aa2a5d5bc2950eb98a33018be054912f4d9f9d646b468724bc2a13550de74a3b",
+    "src/server/file_package.h": "8428608270b37a44887b942ee123ee925c9b4d29254b93a11198e2a5de3bc0d6",
+    "src/server/file_package_runtime.cpp": "338e2c88cfb7f6d394080ebe5f3a884037c7fa9333e25eb40ccafe7e69be0ca3",
+    "src/server/file_package_runtime.h": "3b13fae3c8fb2ae21ddcae8cd24bc533316a6b2086a712d8a72889d88b0ed88d",
     "src/server/file_pdf.cpp": "45eb9f161b445c095280dac08e3b000f0778c7e75701d24b83431ebb436a901f",
     "src/server/file_pdf_protocol.h": "037c5c280f270dd8b8a69411b718eeb5421b5e2c94cace2422df4ea039acf189",
     "src/server/file_pdf_sandbox.cpp": "826e8f0bf9237200d37770bb235a2f69a93953b31c377560ecfdc83b67db947f",
@@ -3987,13 +4103,13 @@
     "src/server/file_webp_protocol.h": "ae236906fdcdf4cae176be4c313729cda618802894eecc099f10b5735d089d24",
     "src/server/file_webp_worker.cpp": "ed6ca89514b2f2c1123ea89775b53e8c709e92dd79a5338579494fb0368cc5a3",
     "src/server/files.cpp": "4ee20c1ad701b307f443f66c5ea7fc7966434e2c45fd43f7c60d0c4a8c732d5c",
-    "src/server/files_http.cpp": "0af52cbdd799fee5facf1cd4c5fb5b9cb05420fce3b953aaad495f1536f7c91f",
+    "src/server/files_http.cpp": "3b70b238e4e3cd9e185baa0fdedd45bfcd3d8773672ae448432d0af434573b0a",
     "src/server/finite_response.cpp": "ce920a476844972506719d688078a3256512024619611d9175cf8b3be38ca7bc",
     "src/server/grammar_process.cpp": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "17ea74ee08fa6993928f27439bce23333f0ead817fe31b0848f737f262a9e4bd",
-    "src/server/http_response.cpp": "e7975c1039374eb22c0220539bd590c86524e315d3e7c0519ff89607d9ec633f",
+    "src/server/http_request.cpp": "863880cd99565b563e40123b6b1c08c42bcc31b674e9d5490c7167d1fb30839f",
+    "src/server/http_response.cpp": "6be2c277addba721d42b2dec79e3756707748765a027282ce471bc006c53ac58",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
     "src/server/input_snapshot_bindings.cpp": "6fd1f18ab5e125f945f285d0f6be63a2ba8893ad69fbf52a7343f95d2d74f985",
@@ -4071,9 +4187,9 @@
     "src/server/native_chat_generation.cpp": "4f223e5f912d2382df67a5258aba6dec0328e4199bf04621da8012fbdd5b183b",
     "src/server/native_crypto.cpp": "9da39bb1de51c80b9a028e4e748a77266a5d145a24173ab5d0fdc192bccde92a",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "c95c184d6ee04c578aa146761b446647ee04d11d97c25f619d9ed670b5f2bffe",
-    "src/server/object_retention.cpp": "8edb2194736db3157e5afd1d4260f074cf791ca6f010e4c05c4bbc55604901ad",
-    "src/server/object_store.cpp": "05fcbac1ffd21a18d6f047137dae9c2871fa008c526eb29b1da4828be54426b8",
+    "src/server/object_protocol.h": "59bee8c8dcc27b9c697a8c3a50e47e9b9c5a99986f081d68a9b3fee9f82356d6",
+    "src/server/object_retention.cpp": "a3c0a44d1dd7bed8496d0e4e1c1ab1b854656ceb6df867a1551089471035752d",
+    "src/server/object_store.cpp": "d92a1ab5c09cd841223d008dd0b39de1b6deb61e2b3769f297882f928a89d0c9",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "675be8530047880b57644e3634deb128386ee3f7973ea98b9c3fa073beb8bd59",
     "src/server/output_constraints.cpp": "add0daef3ba87df074329f1ed554220023ab0db4211667f27ea723e23c4cacd9",
@@ -4164,7 +4280,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "2fb783afdb0d4478647b9b1231db474835697971203966bd8cb1c5a696e85940",
-    "src/server/responses_item_shape.cpp": "51a53659517b93217be781a0b11f3152bfd974876a4382a1ae4bf52a555dd31a",
+    "src/server/responses_item_shape.cpp": "390d0579e90e9c0b84749a9183c49cd5f82bbe03a7be78ec58d20f848b2ae645",
     "src/server/responses_jobs.cpp": "02ba0eb00df0e814216696c04000c848f2b8aa88ca89509b4cbd9bb7e508a5b8",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -4220,6 +4336,13 @@
     "src/server/sip_control_contract.h": "b30e8d021de5d0b810357086739d7b97070d3c75c4253640244356aeb743b8e3",
     "src/server/sip_service.cpp": "cfc1803ef7d3bb4544ad7b27a5cf1988319fdc34ad68f6dad601a114c83627ee",
     "src/server/sip_webhook.cpp": "0647e469953099bb545b4a2b6377b8c8dc02fada699f1863a89dd1dbfe7f7f8e",
+    "src/server/skill_bundle.cpp": "784edbe3b34c50458fff35e47315bb810ada6bfff41f8cfac78bccdc184002d0",
+    "src/server/skill_bundle.h": "58f59c0a79a94ef06b82f9a9260d31bbe869cd1bb6c26de28004b8d113c30500",
+    "src/server/skill_manifest.cpp": "87c21e223b05a8d4c0fa35dca6070fd246ab1dd7bdc35d9addbd0e646ec451d9",
+    "src/server/skill_manifest.h": "67930fd0609bc6252fe31d0287ce9129b9f4d1738e3269a36e34167f15f6fbba",
+    "src/server/skill_upload.cpp": "38cc99c54b3ec6de3ed8d177e563dfac1f9ce794e220adadc11dbdb789f338a7",
+    "src/server/skill_worker.cpp": "6f1ace8f6aaabb9abc3ca056d40d4a9098e323853a695092ed00e46ae6abff29",
+    "src/server/skills.cpp": "45d64ba4ba210036790d4e7c49aacdaa7c3430c93e2ce2bc733f0494034e7a0c",
     "src/server/speaker_assets.cpp": "9048808d7bfe756a6ed27760d9ae4d7390c49f79d7e2dab3f07e7455d790d42c",
     "src/server/speaker_reference.cpp": "60ed09ac7c0f4ebfb8d6a1b7ce69900967c6392a008ccbcf21a682b2539040dd",
     "src/server/speaker_service.cpp": "aa7564970ef8db5837fbe6af9cf126c62b69c59a5557864939d21a2c7f3d8f36",
@@ -4303,7 +4426,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "5a9298af92e5b72719f14f8ccef2fd793b42488825f2a4e4fcadc50479919d69",
+    "src/service/ingress_main.cpp": "722b99f8dd76fe689c3ee67d983274c6d70738a62173e3bb0aabe230e3dee98f",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -4333,7 +4456,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "3738b57eaeba0e2cd85b744e522aed9925d5eb5ee4fb154972d51efdabb499a1",
+    "tools/serve_gateway/gateway.py": "ed297fc266d3c2bb2096014d7a4dc1dd2772b6e38f6ef99adf608fe5a268d25b",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -4510,7 +4633,7 @@
     "tools/serve_recovery/version_registration.py": "8f127f8423fcba9a383232f596ed8e25239953725f092c0680acba9518cecede",
     "tools/serve_recovery/version_runtime.py": "2d3303bb16d919249dc7dedb11e5d4095f8df775a0ae3c2bba70bb1d1a655726",
     "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
-    "tools/serve_responses/generate_item_types.mjs": "1019cf31411f79fc5b193ee973b42a54d06a7f227b7d8f926abf7844e2dc162b",
+    "tools/serve_responses/generate_item_types.mjs": "1ab2cf7f2baaf3ea951100a8f8679a16da12ea98f3c99a832918b77178145428",
     "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
     "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
     "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
@@ -8153,6 +8276,176 @@
         "src/server/files_http.cpp",
         "src/service/ingress_main.cpp",
         "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "DELETE /v1/skills/{skill_id}": {
+      "semantics": "删除指定技能或不可变版本，同时维护默认和最新版本引用。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "DELETE /v1/skills/{skill_id}/versions/{version}": {
+      "semantics": "删除指定技能或不可变版本，同时维护默认和最新版本引用。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills": {
+      "semantics": "按客户读取技能与版本，集合支持游标分页。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}": {
+      "semantics": "按客户读取技能与版本，集合支持游标分页。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}/content": {
+      "semantics": "下载固定版本或默认版本的 ZIP，显式 JSON 接受类型返回 Base64。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}/versions": {
+      "semantics": "按客户读取技能与版本，集合支持游标分页。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}/versions/{version}": {
+      "semantics": "按客户读取技能与版本，集合支持游标分页。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/skills/{skill_id}/versions/{version}/content": {
+      "semantics": "下载固定版本或默认版本的 ZIP，显式 JSON 接受类型返回 Base64。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/skills": {
+      "semantics": "响应技能路径的原生方法预检。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/skills/{skill_id}": {
+      "semantics": "响应技能路径的原生方法预检。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/skills/{skill_id}/content": {
+      "semantics": "响应技能路径的原生方法预检。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/skills/{skill_id}/versions": {
+      "semantics": "响应技能路径的原生方法预检。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/skills/{skill_id}/versions/{version}": {
+      "semantics": "响应技能路径的原生方法预检。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/skills/{skill_id}/versions/{version}/content": {
+      "semantics": "响应技能路径的原生方法预检。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "POST /v1/skills": {
+      "semantics": "创建技能、发布版本或原子更新默认版本。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "POST /v1/skills/{skill_id}": {
+      "semantics": "创建技能、发布版本或原子更新默认版本。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "POST /v1/skills/{skill_id}/versions": {
+      "semantics": "创建技能、发布版本或原子更新默认版本。",
+      "boundary": "在认证客户范围内读写；版本或租约的丢失回执不重放。",
+      "evidence": [
+        "src/server/skills.cpp",
+        "src/server/files_http.cpp",
+        "src/server/skill_worker.cpp",
+        "tests/server_skill_worker_test.cpp"
       ]
     }
   },

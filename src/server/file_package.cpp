@@ -27,7 +27,8 @@ ObjectReply Capacity() {
   return Error(413, "file_document_capacity",
                "Document container capacity exceeded");
 }
-bool Name(std::string_view name, bool directory) {
+}  // namespace
+bool ValidPackageMemberName(std::string_view name, bool directory) {
   if (name.empty() || name.size() > 1024 || name.front() == '/' ||
       name.find('\\') != name.npos || name.find(':') != name.npos)
     return false;
@@ -45,6 +46,7 @@ bool Name(std::string_view name, bool directory) {
   }
   return false;
 }
+namespace {
 std::string String(const xmlChar* value) {
   return value ? reinterpret_cast<const char*>(value) : "";
 }
@@ -68,13 +70,14 @@ std::string_view XmlNode::Attribute(std::string_view key,
 }
 
 ObjectReply ReadPackage(std::string_view bytes, const PackageLimits& limits,
-                        const BinaryAccess& access, Package* output) {
+                        const BinaryAccess& access, Package* output,
+                        std::vector<std::string>* directory_names) {
   if (output) output->clear();
   if (!output || !ValidPackageLimits(limits))
     return Error(500, "file_document_budget_invalid",
                  "Invalid container budget");
   auto& api = Runtime();
-  if (!api.ready)
+  if (!api.archive_ready)
     return Error(503, "file_package_dependency_unavailable",
                  "Codec not initialized");
   if (bytes.empty()) return Invalid();
@@ -89,6 +92,7 @@ ObjectReply ReadPackage(std::string_view bytes, const PackageLimits& limits,
           ARCHIVE_OK)
     return Invalid();
   Package next;
+  std::vector<std::string> directories;
   std::unordered_set<std::string> names;
   uint64_t total = 0;
   size_t entries = 0;
@@ -103,7 +107,7 @@ ObjectReply ReadPackage(std::string_view bytes, const PackageLimits& limits,
     const auto type = api.archive_entry_filetype_fn(entry);
     const bool directory = type == AE_IFDIR;
     const char* path = api.archive_entry_pathname_utf8_fn(entry);
-    if (!path || strnlen(path, 1025) > 1024 || !Name(path, directory) ||
+    if (!path || strnlen(path, 1025) > 1024 || !ValidPackageMemberName(path, directory) ||
         (type != AE_IFREG && !directory) ||
         api.archive_entry_hardlink_fn(entry) ||
         api.archive_entry_is_encrypted_fn(entry))
@@ -136,10 +140,12 @@ ObjectReply ReadPackage(std::string_view bytes, const PackageLimits& limits,
     if (sized && static_cast<uint64_t>(promised) != member.bytes.size())
       return Invalid();
     if (!directory) next.push_back(std::move(member));
+    else if (directory_names) directories.push_back(std::move(member.name));
   }
   if (next.empty()) return Invalid();
   if (auto reply = Live(access); !reply.ok()) return reply;
   *output = std::move(next);
+  if (directory_names) *directory_names = std::move(directories);
   return {};
 }
 

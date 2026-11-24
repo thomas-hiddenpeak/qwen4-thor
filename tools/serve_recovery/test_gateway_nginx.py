@@ -108,7 +108,7 @@ class Stack:
                 self.close_connection = True
             def application_path(self, method):
                 path = self.path.split('?', 1)[0]
-                roots = ('/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
+                roots = ('/v1/skills', '/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
                          '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/live/sessions')
@@ -436,7 +436,7 @@ class NginxTests(unittest.TestCase):
                 time.sleep(0.11)
             identities = dict(run_id='run_1', step_id='step_1', thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
-                              upload_id='upload_1', file_id='file_1', container_id='cntr_1',
+                              upload_id='upload_1', file_id='file_1', container_id='cntr_1', skill_id='skill_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
                               vector_store_id='vs_1', tunnel_id='tunnel_local', consent_id='cons_1',
                               voice_id='voice_1', trace_id='trace_1', session_id='live_1', call_id='rtc_1')
@@ -526,6 +526,20 @@ class NginxTests(unittest.TestCase):
 
     def ready(self):
         self.stack.wait(lambda: self.stack.bound == self.stack.generation)
+
+    def test_skill_versions_and_content_preserve_owner_and_query(self):
+        self.ready()
+        root = '/v1/skills/skill_1'
+        for body, path in [(None, '/v1/skills?limit=0'),
+                           ({'default_version':'2'}, root),
+                           (None, root+'/versions?order=asc'),
+                           (None, root+'/content'), (None, root+'/versions/2/content')]:
+            self.assertEqual(self.stack.request(body, path=path)[0], 200)
+            row = self.stack.application_requests[-1]
+            self.assertEqual((row['client'],row['path']),('alpha',path))
+        for path in (root+'/versions/1/unknown',root+'/versions/1/content/extra','/v1/skills/cntr_1'):
+            self.assertEqual(self.stack.request(path=path)[0],404)
+        self.assertEqual(len(self.stack.application_requests),5)
 
     def test_container_file_paths_keep_owner_and_distinguish_file_ids(self):
         self.ready()

@@ -432,6 +432,77 @@ inline bool IsContainerObservation(std::string_view method,
          ParseContainerRoute(target).kind != ContainerRouteKind::kContent;
 }
 
+enum class SkillRouteKind {
+  kNone,
+  kCollection,
+  kSkill,
+  kContent,
+  kVersions,
+  kVersion,
+  kVersionContent
+};
+struct SkillRoute {
+  SkillRouteKind kind = SkillRouteKind::kNone;
+  std::string_view skill, version;
+};
+
+inline bool ValidSkillVersionNumber(std::string_view value) {
+  return !value.empty() && value.size() <= 19 && value.front() != '0' &&
+         value.find_first_not_of("0123456789") == value.npos;
+}
+
+inline SkillRoute ParseSkillRoute(std::string_view target) {
+  using Kind = SkillRouteKind;
+  if (target.find('#') != target.npos) return {};
+  const auto path = target.substr(0, target.find('?'));
+  constexpr std::string_view root = "/v1/skills";
+  if (path == root) return {Kind::kCollection, {}, {}};
+  if (!path.starts_with("/v1/skills/")) return {};
+  auto suffix = path.substr(root.size() + 1);
+  auto slash = suffix.find('/');
+  const auto id = suffix.substr(0, slash);
+  if (!ValidApplicationId(id) || !id.starts_with("skill_") || id.size() < 7)
+    return {};
+  if (slash == suffix.npos) return {Kind::kSkill, id, {}};
+  suffix.remove_prefix(slash + 1);
+  if (suffix == "content") return {Kind::kContent, id, {}};
+  if (suffix == "versions") return {Kind::kVersions, id, {}};
+  if (!suffix.starts_with("versions/")) return {};
+  suffix.remove_prefix(9);
+  slash = suffix.find('/');
+  const auto v = suffix.substr(0, slash);
+  if (!ValidApplicationId(v)) return {};
+  if (slash == suffix.npos) return {Kind::kVersion, id, v};
+  if (suffix.substr(slash) == "/content") return {Kind::kVersionContent, id, v};
+  return {};
+}
+inline bool IsSkillTarget(std::string_view target) {
+  return ParseSkillRoute(target).kind != SkillRouteKind::kNone;
+}
+inline bool SkillMethodAllowed(std::string_view method,
+                               std::string_view target) {
+  using Kind = SkillRouteKind;
+  const auto kind = ParseSkillRoute(target).kind;
+  if (method == "GET") return kind != Kind::kNone;
+  if (method == "POST")
+    return kind == Kind::kCollection || kind == Kind::kVersions ||
+           kind == Kind::kSkill;
+  return method == "DELETE" && (kind == Kind::kSkill || kind == Kind::kVersion);
+}
+inline bool IsSkillObservation(std::string_view method,
+                               std::string_view target) {
+  using Kind = SkillRouteKind;
+  const auto kind = ParseSkillRoute(target).kind;
+  return (method == "GET" || method == "DELETE") &&
+         SkillMethodAllowed(method, target) && kind != Kind::kContent &&
+         kind != Kind::kVersionContent;
+}
+inline bool IsSkillCreation(std::string_view method, std::string_view target) {
+  const auto kind = ParseSkillRoute(target).kind;
+  return method == "POST" && (kind == SkillRouteKind::kCollection ||
+                              kind == SkillRouteKind::kVersions);
+}
+
 // Container file creation also accepts a small JSON reference. Only the MIME
 // upload gets the streaming file allowance at both admission boundaries.
 inline bool IsMultipartForm(std::string_view type) {
@@ -455,6 +526,7 @@ inline bool IsBinaryUpload(std::string_view method, std::string_view target,
   return (method == "POST" &&
           (path == "/v1/files" || IsTranscriptionTarget(target) ||
            IsVoiceCreation(method, target) ||
+           (IsSkillCreation(method,target) && IsMultipartForm(content_type)) ||
            (ParseContainerRoute(target).kind == ContainerRouteKind::kFiles &&
             IsMultipartForm(content_type)))) ||
          (UploadMethodAllowed(method, target) && path.ends_with("/parts"));

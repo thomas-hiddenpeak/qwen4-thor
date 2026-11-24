@@ -1,6 +1,6 @@
 #pragma once
 
-#include "q4t/server/binary_store.h"
+#include "q4t/server/file_document.h"
 #include "q4t/server/responses_state.h"
 
 namespace q4t::server {
@@ -17,6 +17,11 @@ enum class ContainerShape {
 };
 Status ValidateContainer(const io::Json& value, ContainerShape shape,
                          ChatPlanError* error);
+// Read checked workspace-relative paths and exact bytes for the hosted tool.
+ObjectReply ReadContainerSkillFiles(ObjectStore& objects,
+                                    const StateAccess& access,
+                                    std::string_view container,
+                                    std::vector<FilePackageEntry>* files);
 ObjectReply HandleContainers(ObjectStore& objects, const StateAccess& access,
                              std::string_view method, std::string_view target,
                              const std::string& body,

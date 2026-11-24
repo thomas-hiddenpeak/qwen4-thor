@@ -423,6 +423,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::RealtimeTraceMethodAllowed(method, path) ||
       server::VoiceMethodAllowed(method, path) ||
       server::ConversationMethodAllowed(method, path) ||
+      server::SkillMethodAllowed(method, path) ||
       server::ContainerMethodAllowed(method, path) ||
       server::AssistantMethodAllowed(method, path) ||
       server::ManagedAgentMethodAllowed(method, path) ||
@@ -440,6 +441,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
                server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||
                server::IsBatchObservation(method, path) ||
+               server::IsSkillObservation(method, path) ||
                server::IsContainerObservation(method, path) ||
                server::IsAssistantObservation(method, path) ||
                server::IsManagedAgentObservation(method, path) ||
@@ -523,6 +525,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            (!delegated.empty() ? "Authorization: Bearer " + std::string(delegated) + "\r\n"
              : server::IsRealtimeCredentialTarget(path)
                  ? "Authorization: Q4T-Issuer " + std::string(identity.IssuerDigest()) + "\r\n" : "") +
+           (server::IsSkillTarget(path) && !headers.accept.empty()
+                ? "Accept: " + headers.accept + "\r\n" : "") +
            (headers.content_type.empty()
                 ? ""
                 : "Content-Type: " + headers.content_type + "\r\n") +

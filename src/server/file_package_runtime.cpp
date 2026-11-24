@@ -15,24 +15,23 @@ PackageRuntime& Runtime() {
   static PackageRuntime runtime;
   return runtime;
 }
-ObjectReply LoadPackageRuntime() {
-  auto& api = Runtime();
-  if (api.ready) return {};
-  const auto unavailable = [] {
-    return object_detail::Error(503, "file_package_dependency_unavailable",
-                                "Document container codec unavailable");
-  };
-  // Explicit child-only initialization, never static initialization in the
-  // model process. NODELETE keeps callbacks/data valid for this short lifetime.
-  void* archive =
-      dlopen(Q4T_SYSTEM_ARCHIVE_LIBRARY, RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
-  void* xml =
-      dlopen(Q4T_SYSTEM_XML_LIBRARY, RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
-  if (!archive || !xml) return unavailable();
+namespace {
+ObjectReply Unavailable() {
+  return object_detail::Error(503, "file_package_dependency_unavailable",
+                              "Document container codec unavailable");
+}
+}  // namespace
 #define Q4T_LOAD(handle, symbol)                                           \
   api.symbol##_fn =                                                        \
       reinterpret_cast<decltype(api.symbol##_fn)>(dlsym(handle, #symbol)); \
-  if (!api.symbol##_fn) return unavailable()
+  if (!api.symbol##_fn) return Unavailable()
+
+ObjectReply LoadArchiveRuntime() {
+  auto& api = Runtime();
+  if (api.archive_ready) return {};
+  void* archive =
+      dlopen(Q4T_SYSTEM_ARCHIVE_LIBRARY, RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
+  if (!archive) return Unavailable();
   Q4T_LOAD(archive, archive_read_new);
   Q4T_LOAD(archive, archive_read_support_filter_none);
   Q4T_LOAD(archive, archive_read_support_format_zip_seekable);
@@ -46,6 +45,17 @@ ObjectReply LoadPackageRuntime() {
   Q4T_LOAD(archive, archive_entry_size_is_set);
   Q4T_LOAD(archive, archive_entry_is_encrypted);
   Q4T_LOAD(archive, archive_entry_hardlink);
+  api.archive_ready = true;
+  return {};
+}
+ObjectReply LoadPackageRuntime() {
+  auto& api = Runtime();
+  if (api.ready) return {};
+  auto archive = LoadArchiveRuntime();
+  if (!archive.ok()) return archive;
+  void* xml =
+      dlopen(Q4T_SYSTEM_XML_LIBRARY, RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
+  if (!xml) return Unavailable();
   Q4T_LOAD(xml, xmlInitParser);
   Q4T_LOAD(xml, xmlSetExternalEntityLoader);
   Q4T_LOAD(xml, xmlReaderForMemory);

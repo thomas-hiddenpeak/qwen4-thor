@@ -20,6 +20,10 @@ enum class FileDocumentFormat {
   kRtf,
   kVideo
 };
+struct FilePackageEntry {
+  std::string name;
+  std::string bytes;
+};
 struct FilePackageLimits {
   uint64_t max_bytes = 128ULL << 20;
   uint64_t max_entry_bytes = 32ULL << 20;

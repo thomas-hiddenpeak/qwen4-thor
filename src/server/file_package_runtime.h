@@ -7,6 +7,7 @@
 
 namespace q4t::server::file_detail {
 struct PackageRuntime {
+  bool archive_ready = false;
   bool ready = false;
 #define Q4T_PACKAGE_API(symbol) decltype(&symbol) symbol##_fn = nullptr
   Q4T_PACKAGE_API(archive_read_new);

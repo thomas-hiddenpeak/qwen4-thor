@@ -76,6 +76,10 @@ inline std::string Kind(ObjectKind kind) {
       return "vault";
     case ObjectKind::kContainer:
       return "container";
+    case ObjectKind::kSkill:
+      return "skill";
+    case ObjectKind::kSkillVersion:
+      return "skill_version";
     case ObjectKind::kContainerFile:
       return "container_file";
     case ObjectKind::kThread:
@@ -90,7 +94,7 @@ inline std::string Kind(ObjectKind kind) {
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kContainerFile); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kSkillVersion); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

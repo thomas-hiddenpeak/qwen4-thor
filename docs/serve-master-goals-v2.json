@@ -2683,6 +2683,13 @@
         "evidence": "evidence/serve-containers-20261124/business.json",
         "default_contains_change": false,
         "hosted_execution_and_mounts": "pending"
+      },
+      "skill_http_and_workspace_20261124": {
+        "state": "business_accepted",
+        "evidence": "evidence/serve-skills-20261124/business.json",
+        "default_contains_change": false,
+        "hosted_model_tool_execution": "pending",
+        "native_workspace_unicode_snapshot": "cpu_verified"
       }
     },
     {
@@ -6114,6 +6121,13 @@
         "evidence": "evidence/serve-containers-20261124/business.json",
         "default_contains_change": false,
         "hosted_execution_and_mounts": "pending"
+      },
+      "skill_http_and_workspace_20261124": {
+        "state": "business_accepted",
+        "evidence": "evidence/serve-skills-20261124/business.json",
+        "default_contains_change": false,
+        "hosted_model_tool_execution": "pending",
+        "native_workspace_unicode_snapshot": "cpu_verified"
       }
     },
     {
@@ -7048,6 +7062,13 @@
         "evidence": "evidence/serve-containers-20261124/business.json",
         "default_contains_change": false,
         "hosted_execution_and_mounts": "pending"
+      },
+      "skill_http_and_workspace_20261124": {
+        "state": "business_accepted",
+        "evidence": "evidence/serve-skills-20261124/business.json",
+        "default_contains_change": false,
+        "hosted_model_tool_execution": "pending",
+        "native_workspace_unicode_snapshot": "cpu_verified"
       }
     },
     {
@@ -9291,6 +9312,13 @@
         "evidence": "evidence/serve-containers-20261124/business.json",
         "default_contains_change": false,
         "hosted_execution_and_mounts": "pending"
+      },
+      "skill_http_and_workspace_20261124": {
+        "state": "business_accepted",
+        "evidence": "evidence/serve-skills-20261124/business.json",
+        "default_contains_change": false,
+        "hosted_model_tool_execution": "pending",
+        "native_workspace_unicode_snapshot": "cpu_verified"
       }
     },
     {
@@ -10792,8 +10820,8 @@
       }
     }
   ],
-  "next_task": "Implement owned skill versions and container mounts, hosted execution and qualified delivery; continue all open application and recovery contracts.",
-  "next": "补齐技能版本、容器挂载与托管执行，完成新候选的回退及继承验收，并继续全部剩余任务。",
+  "next_task": "Complete native hosted execution with bound workspace data, primary/light recovery and rollback publication; continue all remaining inference and application contracts.",
+  "next": "将已固定的技能和容器文件接入托管执行，核验跨配置接手及发行，并继续全部未完成的推理与应用工作。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

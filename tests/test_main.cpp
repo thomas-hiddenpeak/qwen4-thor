@@ -23,6 +23,7 @@
 #include "q4t/server/sip_webhook.h"
 #include "q4t/server/web_search.h"
 #include "q4t/server/file_document_worker.h"
+#include "q4t/server/skill_worker.h"
 #include "q4t/server/program_worker.h"
 #include "q4t/server/mcp_transport.h"
 #include "q4t/server/mcp_tunnel_agent.h"
@@ -100,6 +101,8 @@ int main(int argc, char** argv) {
   if (fetch_worker >= 0) return fetch_worker;
   const int document_worker = q4t::server::MaybeRunFileDocumentWorker(argc, argv);
   if (document_worker >= 0) return document_worker;
+  const int skill_worker = q4t::server::MaybeRunSkillWorker(argc, argv);
+  if (skill_worker >= 0) return skill_worker;
   const int webp_fixture = WebpWorkerFixture(argc, argv);
   if (webp_fixture >= 0) return webp_fixture;
   const int webp_worker = q4t::server::MaybeRunFileWebpWorker(argc, argv);

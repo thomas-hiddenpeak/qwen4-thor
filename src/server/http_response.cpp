@@ -745,7 +745,7 @@ bool SendBinaryResponse(int fd, uint64_t length,
     context->RejectCapturedJson();
     return false;
   }
-  if (content_type != "application/octet-stream" &&
+  if (content_type != "application/octet-stream" && content_type != "application/zip" &&
       content_type != "application/json" && content_type != "audio/wav")
     return false;
   auto* context = HttpResponseContext::Current(fd);

@@ -151,9 +151,6 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
     std::erase_if(network.object,
                   [](const auto& e) { return e.first == "domain_secrets"; });
   }
-  if (const auto* skills = body.GetArray("skills");
-      skills && !skills->array.empty())
-    Set(&execution, "skills", *skills);
   Json info =
       Object({{"object", String("container")},
               {"id", String(id)},
@@ -179,7 +176,8 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
   state.workspace.data =
       Object({{"format", String("q4t.container_workspace.v1")},
               {"container_id", String(id)},
-              {"files", Array()}});
+              {"files", Array()},
+              {"mounted_skills", Array()}});
   if (!execution.object.empty()) {
     std::string sealed;
     auto stored = StateCipher(objects).Seal(
@@ -196,7 +194,19 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
         PrepareFiles(objects, access, *files, &state, &pins, &writes);
     if (!prepared.ok()) return prepared;
   }
-  return Commit(objects, access, std::move(state), std::move(writes));
+  std::vector<BinaryStage> stages;
+  ScopeExit release([&] { FinishSkillStages(objects, access, &stages); });
+  if (const auto* skills = body.GetArray("skills")) {
+    auto prepared = PrepareSkills(objects, access, *skills, &state, &pins,
+                                  &stages, &writes);
+    if (!prepared.ok()) return prepared;
+  }
+  auto result = Commit(objects, access, std::move(state), std::move(writes));
+  for (auto& stage : stages) {
+    stage.closed = result.ok();
+    stage.commit_unknown = result.commit_unknown;
+  }
+  return result;
 }
 
 ObjectReply List(ObjectStore& objects, const StateAccess& access,

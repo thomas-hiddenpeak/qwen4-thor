@@ -177,6 +177,28 @@ class ApplicationContract(unittest.TestCase):
                 self.assertTrue(all(not validator.is_valid(n) for n in (0, 1.5, 101, '20', True)))
                 self.assertEqual(validator.is_valid(None), nullable)
 
+    def test_skill_content_representations_uploads_and_zero_page(self):
+        paths = api.openapi()['paths']
+        for route, query in [('/v1/skills', 'skill_query'),
+                             ('/v1/skills/{skill_id}/versions', 'skill_version_query')]:
+            limit = next(p['schema'] for p in paths[route]['get']['parameters'] if p['name'] == 'limit')
+            self.assertTrue(Draft202012Validator(limit).is_valid(0))
+            for value in (0, 100):
+                self.assertFalse(errors({'limit':value},query))
+            for value in (-1, 101, 1.5, '0', True):
+                self.assertTrue(errors({'limit':value},query))
+            form = paths[route]['post']['requestBody']['content']['multipart/form-data']['schema']
+            valid = Draft202012Validator(form).is_valid
+            self.assertTrue(valid({'files':['root/SKILL.md','root/data']}) and valid({'files':'zip'}))
+            self.assertFalse(valid({'files':[]}) or valid({'files':['x']*501}))
+            self.assertEqual(valid({'files':'zip','default':True}),route.endswith('/versions'))
+        for route in ('/v1/skills/{skill_id}/content','/v1/skills/{skill_id}/versions/{version}/content'):
+            content = paths[route]['get']['responses']['200']['content']
+            self.assertEqual(set(content), {'application/json','application/zip'})
+            self.assertEqual(content['application/json']['schema']['contentEncoding'],'base64')
+        for name in ('skill_list','skill_version_list'):
+            self.assertFalse(errors(dict(object='list',data=[],first_id=None,last_id=None,has_more=False),name))
+
     def test_container_expiry_pages_file_forms_and_deletion(self):
         for minutes in (0, 1.5, '2', True, 1, 20):
             value = dict(name='release', expires_after=dict(anchor='last_active_at', minutes=minutes))

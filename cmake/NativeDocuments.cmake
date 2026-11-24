@@ -21,6 +21,7 @@ find_path(Q4T_ZLIB_INCLUDE_DIR zlib.h REQUIRED)
 # Runtime absence is a request-local dependency error, not a server startup
 # dependency. Fixed system SONAMEs are opened and verified in the child only.
 set(Q4T_SYSTEM_WEBP_LIBRARY "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/libwebpdecoder.so.3")
+set(Q4T_SYSTEM_SKILL_YAML_LIBRARY "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/libyaml-0.so.2")
 set(Q4T_SYSTEM_ZLIB_LIBRARY "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/libz.so.1")
 function(q4t_link_native_documents target)
   q4t_configure_native_video(${target})
@@ -29,6 +30,7 @@ function(q4t_link_native_documents target)
     ${Q4T_LIBREOFFICE_INCLUDE_DIR} ${Q4T_WEBP_INCLUDE_DIR} ${Q4T_ZLIB_INCLUDE_DIR})
   target_compile_definitions(${target} PRIVATE
     Q4T_SYSTEM_WEBP_LIBRARY="${Q4T_SYSTEM_WEBP_LIBRARY}"
+    Q4T_SYSTEM_SKILL_YAML_LIBRARY="${Q4T_SYSTEM_SKILL_YAML_LIBRARY}"
     Q4T_SYSTEM_ZLIB_LIBRARY="${Q4T_SYSTEM_ZLIB_LIBRARY}"
     Q4T_SYSTEM_ARCHIVE_LIBRARY="${Q4T_SYSTEM_ARCHIVE_LIBRARY}"
     Q4T_SYSTEM_XML_LIBRARY="${Q4T_SYSTEM_XML_LIBRARY}"

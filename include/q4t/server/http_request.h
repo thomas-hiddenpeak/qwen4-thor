@@ -31,6 +31,7 @@ struct HttpRequestHeaders {
   std::string host;
   std::string authorization;
   std::string content_type;
+  std::string accept;
   bool responses_multi_agent = false;
   bool assistants_beta = false;
   bool agents_beta = false;

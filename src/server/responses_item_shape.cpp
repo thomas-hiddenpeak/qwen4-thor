@@ -19,6 +19,8 @@
 #include "vault_credential_internal.h"
 #include "q4t/server/assistant_registry.h"
 #include "q4t/server/assistant_types_data.h"
+#include "q4t/server/skill_types_data.h"
+#include "q4t/server/skills.h"
 #include "q4t/server/container_types_data.h"
 #include "q4t/server/containers.h"
 #include "q4t/server/agent_registration_types_data.h"
@@ -356,6 +358,19 @@ Status ValidateAgentSession(const Json& value, AgentSessionShape shape,
     case AgentSessionShape::kItem: root = "item"; break;
     case AgentSessionShape::kTurn: root = "turn"; break;
     case AgentSessionShape::kSubagent: root = "subagent"; break;
+  }
+  return Validate(graph, value, root, error, "");
+}
+
+Status ValidateSkill(const Json& value, SkillShape shape, ChatPlanError* error) {
+  static const Graph graph(skill_types::kData, "q4t-openai-skill-types-v1");
+  const char* root = "";
+  switch (shape) {
+    case SkillShape::kResource: root = "resource"; break;
+    case SkillShape::kVersion: root = "version_resource"; break;
+    case SkillShape::kQuery: root = "query"; break;
+    case SkillShape::kVersionQuery: root = "version_query"; break;
+    case SkillShape::kUpdate: root = "update"; break;
   }
   return Validate(graph, value, root, error, "");
 }

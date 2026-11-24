@@ -460,12 +460,14 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
             IsAssistantsV2Target(path) || IsManagedAgentTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
-            IsContainerTarget(path) || IsFileTarget(path) ||
+            IsSkillTarget(path) || IsContainerTarget(path) || IsFileTarget(path) ||
             IsUploadTarget(path))) ||
           (method == "GET" &&
            (!LiveRecordingId(path).empty() ||
             ParseAgentSessionRoute(path).kind ==
                 AgentSessionRouteKind::kArtifactContent ||
+            ParseSkillRoute(path).kind == SkillRouteKind::kContent ||
+            ParseSkillRoute(path).kind == SkillRouteKind::kVersionContent ||
             ParseContainerRoute(path).kind == ContainerRouteKind::kContent)) ||
           (method == "GET" && IsVectorStoreTarget(path) &&
            !IsVectorStoreObservation(method, path)) ||
@@ -480,7 +482,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           return false;
         }
       }
-      if (IsContainerTarget(path) || IsFileTarget(path) ||
+      if (IsSkillTarget(path) || IsContainerTarget(path) || IsFileTarget(path) ||
           IsUploadTarget(path)) {
         if (!objects_) {
           failure_status = 503;
@@ -499,7 +501,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         file_request = std::make_unique<FileHttpRequest>(*objects_, access);
         const auto ready = file_request->Prepare(method, path,
                                                   headers.content_type,
-                                                  &body_stream);
+                                                  &body_stream, headers.accept);
         if (!ready.ok()) {
           file_preparation = ready;
           failure_status = ready.http_status;
