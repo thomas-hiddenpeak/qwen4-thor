@@ -12,6 +12,10 @@ ObjectReply RenderText(std::string_view text, const io::Json& row,
                        std::string* rendered);
 ObjectReply GradePython(const io::Json& criterion, const io::Json& row,
                         const StateAccess& access);
+ObjectReply GradeCosine(
+    const io::Json& criterion, const io::Json& row,
+    const std::function<ObjectReply(const io::Json&)>& embed, io::Json* grade,
+    io::Json* resource);
 ObjectReply GradeSimilarity(const io::Json& criterion, const io::Json& row,
                             size_t* remaining, size_t* work);
 ObjectReply GradeString(const io::Json& criterion, const io::Json& row,

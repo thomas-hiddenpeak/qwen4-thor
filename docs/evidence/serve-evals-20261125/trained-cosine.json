@@ -1,0 +1,86 @@
+{
+  "stage": "native_tls_verified",
+  "model": "qwen3-embedding-0.6b",
+  "dimensions": 1024,
+  "range": [
+    0,
+    1
+  ],
+  "provider": "native trained model qualified for the public embeddings endpoint",
+  "hosted_reference": {
+    "model": "text-embedding-3-large",
+    "source": "https://developers.openai.com/api/docs/guides/graders",
+    "scores_interchangeable": false
+  },
+  "cpu": {
+    "distinct_passes": 23,
+    "log_sha256": "a46da58c7b78f346593267761839c9c2ff4a71e149692424e0d92f48226134a9",
+    "first_attempt": {
+      "exit": 139,
+      "reason": "New test dereferenced the nullable usage field when no model ran. Corrected the test to require null and the terminal item error.",
+      "log_sha256": "53c6ceef15d3ea2ce7f19ff986c9afca950336ab7ec63470ce5dc9ea240fbb47"
+    }
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 240,
+    "native_routes": 396,
+    "reviewed_source_anchors": 1365,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "issued": false,
+  "pending": [
+    "Managed recovery, package qualification and issuance"
+  ],
+  "sdk": {
+    "sdk": "7.47.0",
+    "model": "qwen3-embedding-0.6b",
+    "answer": "157",
+    "expected": [
+      0.9999999999999993,
+      0.38498399615128187
+    ],
+    "observed": [
+      1,
+      0.38498399615128204
+    ],
+    "threshold": 0.95,
+    "usage": {
+      "model_name": "qwen3-embedding-0.6b",
+      "invocation_count": 2,
+      "prompt_tokens": 59,
+      "completion_tokens": 0,
+      "total_tokens": 59,
+      "cached_tokens": 0
+    },
+    "foreign_status": 404,
+    "independent_chat": "42",
+    "run": "evalrun_4d26d65248337d091d7a06d525e17983",
+    "driver_sha256": "899b30bbcea807867f56c3da00d0e441150e409140811b5e3dd9857473194686"
+  },
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.92,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "runtime_source": "9c6b4fe10",
+  "candidate": {
+    "binary": "6caf7555c0ebe92a0530e708c7aa0704e39d4d38ba0c33bf51ea24848564fb20",
+    "ingress": "1efb565263062c11b682bab1905424da4fdb84fc902c87c67bb3a60e2e57c137",
+    "sdk_driver": "899b30bbcea807867f56c3da00d0e441150e409140811b5e3dd9857473194686"
+  },
+  "lease": {
+    "exit_sha256": "f961ccd833e6c36ab9cbd5f699ae1b22d914afa1ebcbee738a409dca738b13b2",
+    "status": "COMPLETED",
+    "compute_backend": "nvml"
+  },
+  "maximum_absolute_difference": 6.661338147750939e-16
+}

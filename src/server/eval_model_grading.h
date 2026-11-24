@@ -3,6 +3,7 @@
 #include "eval_sampling.h"
 
 namespace q4t::server::eval_detail {
+bool CosineCriterion(const io::Json& criterion);
 bool ModelCriterion(const io::Json& criterion);
 void RecordModelUsage(io::Json* resource, const io::Json& sample);
 // Advances one model criterion. HTTP 202 means resume from the durable run;

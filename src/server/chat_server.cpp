@@ -1099,8 +1099,16 @@ void ChatServer::RecoverApplicationJobs() noexcept {
     return std::make_unique<EnvironmentPreparer>(*objects_, clients_);
   });
   eval_dispatcher_.TryStart([this] {
-    return std::make_unique<EvalDispatcher>(*objects_, clients_, PlanningConfig(),
-                                            [this] {return background_.Get();});
+    EvalDispatcher::Embed embed;
+    if (!embedding_model_dir_.empty())
+      embed = [this](const auto& input, const auto& client, auto& permit,
+                     const auto& control) {
+        return RunEvalEmbedding(input, client, permit, control);
+      };
+    return std::make_unique<EvalDispatcher>(
+        *objects_, clients_, PlanningConfig(),
+        [this] { return background_.Get(); }, std::move(embed),
+        std::chrono::milliseconds(request_deadline_ms_));
   });
   if (webhook_network_)
     webhook_dispatcher_.TryStart([this] {

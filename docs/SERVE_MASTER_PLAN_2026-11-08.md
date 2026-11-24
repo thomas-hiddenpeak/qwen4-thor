@@ -1,5 +1,9 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+官方 Node SDK 经原生 TLS 查询真实项目记录得到 157，再用公开 embeddings API 独立复算相同文本及无关文本的分数。Evals 返回 1 和 0.384984，最大绝对差 6.7×10⁻¹⁶。两次评分累计输入 59 tokens，跨客户读取返回 404，独立 Chat 答 42。设备用时 39.920 秒、一次模型启动。接下来验证主轻配置接手及发行回退。[验证记录](evidence/serve-evals-20261125/trained-cosine.json)
+
+Evals 使用项目配置的 Qwen3-Embedding-0.6B 计算两段文本的余弦分数，复用公开 embeddings 接口的客户配额与 token 计量。23 项主机用例通过，其中包含取消隔离、持久评分重开、模型缺失、请求超时以及精确阈值 1。首轮测试误读空用量导致的失败已保留。下一步通过原生 TLS 独立复算设备分数。[验证记录](evidence/serve-evals-20261125/trained-cosine.json)
+
 官方 SDK 通过直接 HTTP、带 /project/serve 前缀的原生 TLS 和可选 nginx 读取同一个运行。三份 1,012 字节的 HTML 内容一致，评分页正确显示一条通过、一条失败。各入口跨客户读取均为 404。一次启动模型，用时 35.058 秒。20 项主机检查通过，另将 rev480 的旧链接写入持久化记录，验证读取时生成新链接且原记录不变。候选待并入与发行。[验证记录](evidence/serve-evals-20261125/run-reports.json)
 
 已接入按项目鉴权的 HTML 报告，公开链接在读取时按当前入口生成，兼容旧运行。页面展示运行状态、成功与失败计数、各项评分和原始结果入口。正在验证原生 TLS 前缀、直接 HTTP 和可选 nginx 是否能读到同一份报告。[验证记录](evidence/serve-evals-20261125/run-reports.json)

@@ -9,6 +9,8 @@
 #include <unordered_map>
 
 #include "eval_run_state.h"
+#include "eval_model_grading.h"
+#include "q4t/model/embedding_config.h"
 
 extern "C" {
 #include <cutils.h>
@@ -196,6 +198,75 @@ ObjectReply Metric(std::string_view metric, std::string* candidate,
   return {};
 }
 }  // namespace
+
+ObjectReply GradeCosine(const Json& criterion, const Json& row,
+                        const std::function<ObjectReply(const Json&)>& embed,
+                        Json* grade, Json* resource) {
+  if (!embed)
+    return Error(422, "eval_embedding_model_unconfigured",
+                 "Cosine grading requires the native trained embedding model");
+  size_t budget = kChatBodyBytes;
+  std::string input, reference;
+  auto read = RenderText(criterion.GetString("input"), row,
+                         "testing_criteria.input", &budget, &input);
+  if (read.ok())
+    read = RenderText(criterion.GetString("reference"), row,
+                      "testing_criteria.reference", &budget, &reference);
+  if (!read.ok()) return read;
+  auto result =
+      embed(Array({String(std::move(input)), String(std::move(reference))}));
+  if (!result.ok()) return result;
+  const auto& response = result.value;
+  const auto* vectors = response.GetArray("data");
+  const auto* usage = response.Find("usage");
+  const auto invalid = [] {
+    return Error(502, "eval_embedding_invalid",
+                 "Expected two complete trained embeddings and their usage");
+  };
+  if (response.GetString("object") != "list" ||
+      response.GetString("model") != model::EmbeddingConfig::kModelId ||
+      !vectors || vectors->array.size() != 2 || !usage ||
+      usage->GetInt("prompt_tokens") <= 0 ||
+      usage->GetInt("total_tokens") != usage->GetInt("prompt_tokens"))
+    return invalid();
+  const auto* a = vectors->array[0].GetArray("embedding");
+  const auto* b = vectors->array[1].GetArray("embedding");
+  if (vectors->array[0].GetString("object") != "embedding" ||
+      vectors->array[1].GetString("object") != "embedding" || !a || !b ||
+      a->array.size() != model::EmbeddingConfig::kHidden ||
+      b->array.size() != a->array.size() ||
+      vectors->array[0].GetInt("index", -1) != 0 ||
+      vectors->array[1].GetInt("index", -1) != 1)
+    return invalid();
+  double dot = 0, aa = 0, bb = 0;
+  bool identical = true;
+  for (size_t i = 0; i < a->array.size(); ++i) {
+    const auto& x = a->array[i];
+    const auto& y = b->array[i];
+    if (!x.IsNumber() || !y.IsNumber()) return invalid();
+    identical = identical && x.number == y.number;
+    dot += x.number * y.number;
+    aa += x.number * x.number;
+    bb += y.number * y.number;
+  }
+  if (!std::isfinite(dot) || !std::isfinite(aa) || !std::isfinite(bb) ||
+      aa <= 0 || bb <= 0)
+    return invalid();
+  // Evals similarity grades have a [0, 1] range. Scores use the actual
+  // configured model's vectors with FP64 accumulation.
+  Json score;
+  score.type = Json::Type::kNumber;
+  score.number =
+      identical ? 1.0
+                : std::clamp(dot / (std::sqrt(aa) * std::sqrt(bb)), 0.0, 1.0);
+  *grade = Object({{"name", String(criterion.GetString("name"))},
+                   {"type", String("text_similarity")},
+                   {"score", score},
+                   {"passed", Boolean(score.number >=
+                                      criterion.GetNumber("pass_threshold"))}});
+  RecordModelUsage(resource, response);
+  return {};
+}
 
 ObjectReply GradeSimilarity(const Json& criterion, const Json& row,
                             size_t* bytes, size_t* work) {

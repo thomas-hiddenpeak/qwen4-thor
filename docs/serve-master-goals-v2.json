@@ -18161,6 +18161,11 @@
       "stage": "native_tls_verified",
       "receipt": "docs/evidence/serve-evals-20261125/frozen-file-inputs.json",
       "issued": false
+    },
+    "trained_cosine": {
+      "stage": "native_tls_verified",
+      "receipt": "docs/evidence/serve-evals-20261125/trained-cosine.json",
+      "issued": false
     }
   }
 }

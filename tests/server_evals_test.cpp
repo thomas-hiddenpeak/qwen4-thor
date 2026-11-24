@@ -1,4 +1,6 @@
 #include "q4t/server/evals.h"
+#include "q4t/server/eval_dispatcher.h"
+#include "q4t/model/embedding_config.h"
 
 #include <atomic>
 #include <cmath>
@@ -688,6 +690,212 @@ Q4T_TEST(evals_text_budget_and_missing_fields_never_publish_partial_text) {
   Q4T_CHECK(full.ok() && budget == 0 && out == "1234");
   auto overflow = eval_detail::RenderText("x", row, "input", &budget, &out);
   Q4T_CHECK(overflow.http_status == 413 && out == "1234");
+  return true;
+}
+
+Q4T_TEST(evals_cosine_scores_the_actual_trained_pair_and_counts_usage) {
+  auto criterion = Object({{"name", String("Meaning")},
+                           {"input", String("{{sample.output_text}}")},
+                           {"reference", String("{{item.reference}}")},
+                           {"pass_threshold", Number(1)}});
+  const auto row =
+      Object({{"item", Object({{"reference", String("reference")}})},
+              {"sample", Object({{"output_text", String("candidate")}})}});
+  auto coords = Array();
+  coords.array.resize(model::EmbeddingConfig::kHidden, Number(0));
+  auto a = coords, b = coords;
+  a.array[0] = Number(1);
+  b.array[0] = Number(3);
+  b.array[1] = Number(4);
+  Json grade, resource = Object();
+  const auto embed = [&](const Json& input) {
+    ObjectReply result;
+    if (input.array.size() != 2 || input.array[0].str != "candidate" ||
+        input.array[1].str != "reference")
+      return Error(400, "unexpected_pair", "Invalid pair");
+    result.value =
+        Object({{"object", String("list")},
+                {"model", String(model::EmbeddingConfig::kModelId)},
+                {"data", Array({Object({{"object", String("embedding")},
+                                        {"index", Number(0)},
+                                        {"embedding", a}}),
+                                Object({{"object", String("embedding")},
+                                        {"index", Number(1)},
+                                        {"embedding", b}})})},
+                {"usage", Object({{"prompt_tokens", Number(9)},
+                                  {"total_tokens", Number(9)}})}});
+    return result;
+  };
+  Q4T_CHECK(
+      eval_detail::GradeCosine(criterion, row, embed, &grade, &resource).ok());
+  Json wire;
+  Q4T_CHECK(io::ParseJson(OutputJson(grade), &wire) &&
+            !wire.GetBool("passed") &&
+            std::abs(wire.GetNumber("score") - 0.6) < 1e-12);
+  const auto& usage = resource.GetArray("per_model_usage")->array.front();
+  Q4T_CHECK(usage.GetString("model_name") == model::EmbeddingConfig::kModelId &&
+            usage.GetInt("invocation_count") == 1 &&
+            usage.GetInt("total_tokens") == 9);
+  a = b;
+  Q4T_CHECK(
+      eval_detail::GradeCosine(criterion, row, embed, &grade, &resource).ok() &&
+      grade.GetNumber("score") == 1.0 && grade.GetBool("passed"));
+  b.array[0] = Number(-3);
+  b.array[1] = Number(-4);
+  Q4T_CHECK(
+      eval_detail::GradeCosine(criterion, row, embed, &grade, &resource).ok() &&
+      grade.GetNumber("score") == 0.0 && !grade.GetBool("passed"));
+  b = coords;
+  Q4T_CHECK(
+      eval_detail::GradeCosine(criterion, row, embed, &grade, &resource).code ==
+      "eval_embedding_invalid");
+  Q4T_CHECK(eval_detail::GradeCosine(criterion, row, {}, &grade, &resource)
+                .http_status == 422);
+  return true;
+}
+
+constexpr char kCosineDefinition[] = R"({
+  "data_source_config":{"type":"custom","item_schema":{"type":"object"}},
+  "testing_criteria":[{"type":"text_similarity","name":"Semantic",
+    "evaluation_metric":"cosine","pass_threshold":1,"input":"{{sample.output_text}}",
+    "reference":"{{item.reference}}"}]})";
+constexpr char kCosineRows[] = R"({"data_source":{"type":"jsonl","source":{
+  "type":"file_content","content":[{"item":{"reference":"Project scope"},
+  "sample":{"output_text":"Project scope"}}]}}})";
+
+Q4T_TEST(evals_cosine_dispatcher_cancels_only_the_matching_project_and_run) {
+  Fixture f;
+  ObjectStore store(f.options);
+  ClientAdmission clients;
+  const std::string scope = "local:anonymous";
+  const auto definition =
+      Request(store, "POST", "/v1/evals", kCosineDefinition, scope);
+  Q4T_CHECK(definition.ok());
+  const auto eval = definition.value.GetString("id");
+  const auto runs = "/v1/evals/" + eval + "/runs";
+  const auto created = Request(store, "POST", runs, kCosineRows, scope);
+  Q4T_CHECK(created.ok());
+  const auto run = created.value.GetString("id");
+  ResponsesJobs jobs(store, {}, [](auto&) {});
+  std::atomic<std::shared_ptr<RequestControl>> active;
+  std::atomic<int> calls{0};
+  EvalDispatcher dispatcher(
+      store, clients, {}, [&] { return &jobs; },
+      [&](const Json&, const auto&, auto&, const auto& control) {
+        ++calls;
+        active.store(control);
+        while (!control->Cancelled()) std::this_thread::sleep_for(1ms);
+        return Error(409, "eval_canceled", "Embedding canceled");
+      },
+      5s);
+  const auto end = std::chrono::steady_clock::now() + 4s;
+  while (!active.load() && std::chrono::steady_clock::now() < end)
+    std::this_thread::sleep_for(1ms);
+  auto owned = active.load();
+  Q4T_CHECK(owned && !owned->Cancelled());
+  dispatcher.CancelEmbedding("client:beta", eval, run);
+  dispatcher.CancelEmbedding(scope, eval, "other");
+  Q4T_CHECK(!owned->Cancelled());
+  auto canceled =
+      Request(store, "POST", runs + "/" + run + "/cancel", {}, scope);
+  Q4T_CHECK(canceled.ok());
+  dispatcher.CancelEmbedding(scope, eval, run);
+  Q4T_CHECK(owned->Cancelled());
+  dispatcher.RequestStop();
+  dispatcher.Join();
+  const auto final = Request(store, "GET", runs + "/" + run, {}, scope);
+  Q4T_CHECK(final.ok() && final.value.GetString("status") == "canceled" &&
+            final.value.Find("result_counts")->GetInt("total") == 0 &&
+            calls == 1);
+  return true;
+}
+
+Q4T_TEST(evals_cosine_recovers_checkpoint_and_counts_missing_model_as_error) {
+  Fixture f;
+  ObjectRequest read;
+  read.kind = ObjectKind::kEvalRun;
+  read.scope = "local:anonymous";
+  std::string runs;
+  int calls = 0;
+  for (int phase = 0; phase < 4; ++phase) {
+    ObjectStore store(f.options);
+    ClientAdmission clients;
+    ChatPlanConfig config;
+    StateAccess auth{read.scope, std::chrono::steady_clock::now() + 5s, {}};
+    ResponsesJobs jobs(store, {}, [](auto&) {});
+    eval_detail::SamplingOwner owner{clients, clients.RecoveryIdentity(0), jobs,
+                                     config};
+    if (phase == 0) {
+      auto def =
+          Request(store, "POST", "/v1/evals", kCosineDefinition, read.scope);
+      Q4T_CHECK(def.ok());
+      runs = "/v1/evals/" + def.value.GetString("id") + "/runs";
+      owner.embed = [&](const Json&) {
+        ++calls;
+        auto vector = Array();
+        vector.array.resize(model::EmbeddingConfig::kHidden, Number(1));
+        auto data = Array();
+        for (int i = 0; i < 2; ++i)
+          data.array.push_back(Object({{"object", String("embedding")},
+                                       {"index", Number(i)},
+                                       {"embedding", vector}}));
+        ObjectReply result;
+        result.value =
+            Object({{"object", String("list")},
+                    {"model", String(model::EmbeddingConfig::kModelId)},
+                    {"data", data},
+                    {"usage", Object({{"total_tokens", Number(7)},
+                                      {"prompt_tokens", Number(7)}})}});
+        return result;
+      };
+    }
+    if (phase == 3)
+      owner.embed = [](const Json&) {
+        return Error(409, "deadline_exceeded", "Embedding deadline elapsed");
+      };
+    if (phase != 1) {
+      auto run = Request(store, "POST", runs, kCosineRows, read.scope);
+      Q4T_CHECK(run.ok());
+      read.id = run.value.GetString("id");
+    }
+    bool reached = false;
+    for (int step = 0; step < 10 && !reached; ++step) {
+      auto record = store.Execute(read, auth.deadline);
+      Q4T_CHECK(record.ok());
+      const auto& data = *record.value.Find("data");
+      const auto* grades = data.Find("model_results");
+      reached = !phase
+                    ? grades && grades->Has("0")
+                    : data.Find("resource")->GetString("status") == "completed";
+      if (!reached)
+        Q4T_CHECK(
+            eval_detail::AdvanceRun(store, auth, record.value, &owner).ok());
+    }
+    Q4T_CHECK(reached && calls == 1);
+    if (!phase) continue;
+    const auto path = runs + "/" + read.id;
+    auto final = Request(store, "GET", path, {}, read.scope);
+    Q4T_CHECK(final.ok());
+    const auto& counts = *final.value.Find("result_counts");
+    const auto* usage = final.value.Find("per_model_usage");
+    Q4T_CHECK(usage);
+    Q4T_CHECK(counts.GetInt("total") == 1 && counts.GetInt("failed") == 0);
+    if (phase == 1) {
+      Q4T_CHECK(counts.GetInt("passed") == 1 && usage->IsArray() &&
+                usage->array.size() == 1 &&
+                usage->array[0].GetInt("invocation_count") == 1 &&
+                usage->array[0].GetInt("total_tokens") == 7);
+    } else {
+      auto page = Request(store, "GET", path + "/output_items", {}, read.scope);
+      Q4T_CHECK(page.ok() && counts.GetInt("errored") == 1 && usage->IsNull());
+      const auto& output = page.value.GetArray("data")->array.front();
+      Q4T_CHECK(output.GetString("status") == "error" &&
+                output.GetArray("results")->array.empty() &&
+                output.Find("sample")->Find("error")->GetString("code") ==
+                    (phase == 2 ? "eval_embedding_model_unconfigured"
+                                : "deadline_exceeded"));
+    }
+  }
   return true;
 }
 

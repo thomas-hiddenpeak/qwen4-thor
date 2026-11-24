@@ -6,6 +6,8 @@
 #include "cuda_memory_backend.h"
 #include "object_protocol.h"
 #include "q4t/server/embeddings_execution.h"
+#include "q4t/server/finite_response.h"
+#include "q4t/server/request_json.h"
 #include "q4t/server/request_admission.h"
 #include "q4t/server/request_diagnostics.h"
 
@@ -168,6 +170,40 @@ ObjectReply ChatServer::RunEmbeddingInput(
     return Error(503, "gpu_unhealthy", "Embedding buffer cleanup failed");
   completed = !cancelled();
   return completed ? ObjectReply{} : interrupted();
+}
+
+ObjectReply ChatServer::RunEvalEmbedding(
+    const io::Json& input, const ClientIdentity& client, ClientLease& permit,
+    const std::shared_ptr<RequestControl>& control) {
+  using namespace object_detail;
+  FiniteResponse output(256 << 10, FiniteResponseFormat::kEmbeddings);
+  detail::HttpResponseContext http(
+      detail::HttpResponseContext::Detached{-1, &output});
+  http.SetClient(client, &permit);
+  if (!http.SetTraceId(control->id()))
+    return Error(500, "eval_embedding_owner_invalid", "Invalid grading owner");
+  const auto request =
+      Object({{"model", String(model::EmbeddingConfig::kModelId)},
+              {"input", input},
+              {"encoding_format", String("float")}});
+  HandleEmbeddings(-1, OutputJson(request), control);
+  ObjectReply reply;
+  if (!output.Complete() || !io::ParseJson(output.Body(), &reply.value, true,
+                                           kApplicationJsonLimits)) {
+    if (control->Cancelled())
+      return Error(409, control->Reason(), "Embedding request canceled");
+    return Error(502, "eval_embedding_invalid",
+                 "Incomplete native embedding response");
+  }
+  if (output.Status() != 200) {
+    const auto* error = reply.value.Find("error");
+    if (!error || error->GetString("code").empty())
+      return Error(502, "eval_embedding_invalid",
+                   "Invalid native embedding response");
+    return Error(output.Status(), error->GetString("code"),
+                 error->GetString("message"));
+  }
+  return reply;
 }
 
 void ChatServer::HandleEmbeddings(int fd, const std::string& body,

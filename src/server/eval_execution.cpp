@@ -149,6 +149,11 @@ ObjectReply Score(const Json& criteria, const Json& row,
       const auto* grade =
           model_results ? model_results->Find(std::to_string(i)) : nullptr;
       if (!grade || !grade->IsObject()) return InvalidRecord();
+      if (CosineCriterion(grader)) {
+        if (const auto* error = grade->Find("error"))
+          return Error(422, error->GetString("code"),
+                       error->GetString("message"));
+      }
       result.value = *grade;
     } else if (type == "string_check")
       result = GradeString(grader, row, &budget);

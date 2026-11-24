@@ -9,6 +9,7 @@ struct SamplingOwner {
   ClientIdentity client;
   ResponsesJobs& jobs;
   const ChatPlanConfig& config;
+  std::function<ObjectReply(const io::Json&)> embed = {};
 };
 ObjectReply ProjectEvalSample(const io::Json& response, const io::Json& request,
                               io::Json* sample);
