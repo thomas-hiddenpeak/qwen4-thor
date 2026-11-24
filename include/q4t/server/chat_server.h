@@ -337,13 +337,15 @@ class ChatServer {
   void HandleTranscription(int fd, std::string_view content_type,
                             std::string_view body);
   io::Json RealtimeClientDefaults(int fd, std::string model);
+  enum class RealtimeCredentialApi { kClientSecret, kTranscription, kConversation };
   void IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
                            const std::string& body,
-                           bool legacy_transcription = false);
+                           RealtimeCredentialApi api = RealtimeCredentialApi::kClientSecret);
   void HandleRealtime(int fd, std::string_view path,
                        const HttpRequestHeaders& headers,
                        std::string_view initial, std::string_view accept);
-  RealtimeConversationCallbacks MakeRealtimeCallbacks(const ClientIdentity& client);
+  RealtimeConversationCallbacks MakeRealtimeCallbacks(
+      const ClientIdentity& client, std::optional<double> legacy_temperature = std::nullopt);
   void HandleRealtimeConversation(int fd, std::string_view path,
                                    const HttpRequestHeaders& headers,
                                    std::string_view initial,
@@ -371,7 +373,8 @@ class ChatServer {
   RealtimeGenerationResult RunRealtimeConversation(
       const ClientIdentity& client, const RealtimeConversationJob& job,
       const std::shared_ptr<RequestControl>& control,
-      const RealtimeDeltaSink& emit, const RealtimeSpeechSink& speech);
+      const RealtimeDeltaSink& emit, const RealtimeSpeechSink& speech,
+      std::optional<double> legacy_temperature = std::nullopt);
   ObjectReply RunRealtimeTranscription(
       const ClientIdentity& client, const RealtimeTranscriptionJob& job,
       const std::array<std::span<const uint8_t>, 2>& bytes,

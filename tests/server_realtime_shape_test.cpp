@@ -2,6 +2,7 @@
 
 #include "q4t/server/realtime_client_secrets.h"
 #include "q4t/server/realtime_client_ticket.h"
+#include "q4t/server/realtime_legacy_credentials.h"
 #include "../src/server/object_protocol.h"
 
 #include <filesystem>
@@ -116,6 +117,47 @@ const std::string binding(64,'a'), issuer_key(64,'b');
 const q4t::server::RealtimeSecretIssuer alpha{"alpha", binding, issuer_key};
 const q4t::server::RealtimeSecretIssuer beta{"beta", binding, issuer_key};
 }  // namespace
+
+Q4T_TEST(realtime_legacy_conversation_redemption_keeps_sampling_private) {
+  using namespace q4t::server;
+  using namespace q4t::server::object_detail;
+  Json request;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"temperature":0.75,"modalities":["text","audio"],
+    "input_audio_format":"g711_ulaw","output_audio_format":"pcm16",
+    "max_response_output_tokens":16,"client_secret":{"expires_after":{"seconds":15}}})",
+    &request));
+  double temperature = 0;
+  Q4T_CHECK(LegacyConversationCredential(request, &request, &temperature).ok());
+  const auto& startup = *request.Find("session");
+  Q4T_CHECK(temperature == 0.75 && !startup.Has("temperature"));
+  Q4T_CHECK(startup.Find("output_modalities")->array[0].str == "audio");
+  auto effective = startup;
+  Set(&effective, "id", String("sess_example"));
+  Set(&effective, "object", String("realtime.session"));
+  auto resource = LegacyConversationResource(effective, nullptr, temperature);
+  Q4T_CHECK(resource.GetString("input_audio_format") == "g711_ulaw" &&
+            resource.GetString("output_audio_format") == "pcm16" &&
+            resource.Find("temperature")->number == 0.75 &&
+            resource.GetInt("max_response_output_tokens") == 16);
+  auto issuer = alpha;
+  issuer.legacy_temperature = temperature;
+  RealtimeClientSecrets store;
+  const RealtimeSecretTime now{1000, {}};
+  auto issued = store.Issue(issuer, request, effective, now);
+  Q4T_CHECK(issued.ok() && issued.value.GetInt("expires_at") == 1015);
+  RealtimeSecretGrant grant;
+  Q4T_CHECK(store.Resolve(issued.value.GetString("value"), &grant, now).ok());
+  Q4T_CHECK(grant.owner == "alpha" && grant.legacy_temperature == 0.75);
+  Q4T_CHECK(!grant.session.Has("temperature"));
+  for (const auto* bad : {R"({"temperature":0.59})", R"({"temperature":1.21})",
+       R"({"modalities":["audio","audio"]})", R"({"input_audio_format":"wav"})",
+       R"({"client_secret":{"expires_at":{"seconds":15}}})"}) {
+    Json input;
+    Q4T_CHECK(q4t::io::ParseJson(bad, &input));
+    Q4T_CHECK(!LegacyConversationCredential(input, &request, &temperature).ok());
+  }
+  return true;
+}
 
 Q4T_TEST(realtime_client_secret_issue_redeem_and_expire_at_either_clock) {
   using namespace q4t::server;

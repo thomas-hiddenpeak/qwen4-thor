@@ -115,7 +115,8 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
                         const PromptSnapshot* prompt, bool native_input,
                         const RealtimeMcpContext* mcp,
                         bool mcp_definitions_only,
-                        const Json* native_mcp_items) {
+                        const Json* native_mcp_items,
+                        std::optional<double> legacy_temperature) {
   if (!plan || !error) return Status::Fail("Missing Realtime plan owner");
   *error = {};
   auto status = ValidateRealtimeWireShape(
@@ -180,6 +181,12 @@ Status PlanRealtimeChat(const Json& settings, const Json& response,
       Object({{"model", String(settings.GetString("model", config.model))},
               {"store", Boolean(false)},
               {"stream", Boolean(false)}});
+  if (legacy_temperature) {
+    Json value;
+    value.type = Json::Type::kNumber;
+    value.number = *legacy_temperature;
+    Set(&request, "temperature", std::move(value));
+  }
   for (const auto* key : {"instructions", "parallel_tool_calls", "tools",
                           "tool_choice", "reasoning"})
     if (const auto* value = Option(settings, response, key))

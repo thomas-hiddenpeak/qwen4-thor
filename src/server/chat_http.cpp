@@ -363,7 +363,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           headers.failure = HttpReceiveFailure::kAdmission;
           return false;
         }
-        context.SetRealtimeStartup(&grant.session);
+        context.SetRealtimeStartup(&grant.session, grant.legacy_temperature);
       }
       ClientIdentity identity;
       if (!AdmitClientRequest(method, path, &headers, clients_, &client_lease,
@@ -591,7 +591,9 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     else if (path == "/v1/realtime/client_secrets" && method == "POST")
       IssueRealtimeSecret(fd, headers, body);
     else if (path == "/v1/realtime/transcription_sessions" && method == "POST")
-      IssueRealtimeSecret(fd, headers, body, true);
+      IssueRealtimeSecret(fd, headers, body, RealtimeCredentialApi::kTranscription);
+    else if (path == "/v1/realtime/sessions" && method == "POST")
+      IssueRealtimeSecret(fd, headers, body, RealtimeCredentialApi::kConversation);
     else if (method == "POST" && path == "/v1/realtime/calls") {
       HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type);
     } else if (IsLiveMediaCreate(method, path))

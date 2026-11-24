@@ -26,9 +26,9 @@ ObjectReply Failure(const Status& status, const ChatPlanError& error) {
 }  // namespace
 
 RealtimeConversationCallbacks ChatServer::MakeRealtimeCallbacks(
-    const ClientIdentity& client) {
+    const ClientIdentity& client, std::optional<double> legacy_temperature) {
   const bool native_input = !asr_model_dir_.empty();
-  const auto prepare = [this, client, native_input](const Json& current_settings, const Json& response,
+  const auto prepare = [this, client, native_input, legacy_temperature](const Json& current_settings, const Json& response,
                            const Json& items, const PromptSnapshot* prompt,
                            const RealtimeMcpContext* mcp,
                            bool definitions_only) {
@@ -52,7 +52,7 @@ RealtimeConversationCallbacks ChatServer::MakeRealtimeCallbacks(
     const auto status =
         PlanRealtimeChat(current_settings, response, items, planning, &plan,
                          &failure, prompt, native_input, mcp,
-                         definitions_only, &history);
+                         definitions_only, &history, legacy_temperature);
     return status ? ObjectReply{} : Failure(status, failure);
   };
   RealtimeConversationCallbacks callbacks;
@@ -177,9 +177,9 @@ RealtimeConversationCallbacks ChatServer::MakeRealtimeCallbacks(
         client.Id());
   };
   callbacks.release = [this](const auto& control) { requests_.Remove(control); };
-  callbacks.execute = [this, client](const auto& job, const auto& control,
+  callbacks.execute = [this, client, legacy_temperature](const auto& job, const auto& control,
                           const auto& emit, const auto& speech) {
-    return RunRealtimeConversation(client, job, control, emit, speech);
+    return RunRealtimeConversation(client, job, control, emit, speech, legacy_temperature);
   };
   return callbacks;
 }
@@ -239,7 +239,7 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
       Set(&selected, "model", Field(settings, "model"));
     settings = RealtimeClientDefaults(fd, selected.GetString("model"));
   }
-  auto callbacks = MakeRealtimeCallbacks(client);
+  auto callbacks = MakeRealtimeCallbacks(client, http->RealtimeTemperature());
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
   RealtimeConversationPump session(
@@ -280,7 +280,8 @@ void ChatServer::HandleRealtimeConversation(int fd, std::string_view path,
 RealtimeGenerationResult ChatServer::RunRealtimeConversation(
     const ClientIdentity& original, const RealtimeConversationJob& job,
     const std::shared_ptr<RequestControl>& control,
-    const RealtimeDeltaSink& emit, const RealtimeSpeechSink& speech) {
+    const RealtimeDeltaSink& emit, const RealtimeSpeechSink& speech,
+    std::optional<double> legacy_temperature) {
   RealtimeGenerationResult result;
   const auto client = clients_.RecoveryIdentity(original.Index());
   if (!clients_.OwnsIdentity(original) || !client.Allowed() ||
@@ -364,7 +365,7 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
     status = PlanRealtimeChat(job.settings, job.response, job.snapshot.items,
                               config, &plan, &error,
                               prompt ? &*prompt : nullptr, job.native_input,
-                              job.mcp.get(), false, &mcp_history);
+                              job.mcp.get(), false, &mcp_history, legacy_temperature);
     if (status && !plan.input_ready) {
       diagnostic.Stage("input_prepare");
       RealtimeFileInputs files;

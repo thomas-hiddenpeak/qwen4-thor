@@ -8,6 +8,7 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -120,7 +121,11 @@ class HttpResponseContext {
   void SetAgentsBeta(bool enabled) { agents_beta_ = enabled; }
   bool ResponsesMultiAgent() const { return responses_multi_agent_; }
   void SetResponsesMultiAgent(bool enabled) { responses_multi_agent_ = enabled; }
-  void SetRealtimeStartup(const io::Json* settings) { realtime_startup_ = settings; }
+  void SetRealtimeStartup(const io::Json* settings, std::optional<double> temperature) {
+    realtime_startup_ = settings;
+    realtime_temperature_ = temperature;
+  }
+  std::optional<double> RealtimeTemperature() const { return realtime_temperature_; }
   const ClientIdentity& Client() const { return client_; }
   ClientRateDomain RateDomain() const { return rate_domain_; }
   // Trusted native execution only. The context settles on destruction unless
@@ -261,6 +266,7 @@ class HttpResponseContext {
   std::string trace_id_;
   PreparationUsage preparation_usage_;
   ClientIdentity client_;
+  std::optional<double> realtime_temperature_;
   const io::Json* realtime_startup_ = nullptr;
   bool responses_multi_agent_ = false;
   bool agents_beta_ = false;

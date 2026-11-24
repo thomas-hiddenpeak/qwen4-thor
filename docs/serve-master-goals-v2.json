@@ -16511,6 +16511,14 @@
       "status": "candidate_business_pass",
       "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/transcription.json",
       "remaining_methods": 98
+    },
+    "legacy_conversation_session_issuance": {
+      "status": "candidate_business_pass",
+      "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/conversation.json",
+      "remaining": [
+        "legacy_beta_websocket_wire",
+        "qualified_delivery"
+      ]
     }
   },
   "responses_beta_selector_20261123": {

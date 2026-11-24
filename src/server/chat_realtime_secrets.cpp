@@ -1,6 +1,7 @@
 #include "chat_server_internal.h"
 
 #include "object_protocol.h"
+#include "q4t/server/realtime_legacy_credentials.h"
 #include "q4t/server/realtime_chat_plan.h"
 #include "q4t/server/realtime_conversation_session.h"
 #include "q4t/server/realtime_transcription_session.h"
@@ -25,7 +26,7 @@ io::Json ChatServer::RealtimeClientDefaults(int fd, std::string model) {
 
 void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
                                      const std::string& body,
-                                     bool legacy_transcription) {
+                                     RealtimeCredentialApi api) {
   const auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
   const auto client = http->Client();
@@ -45,8 +46,18 @@ void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
     detail::SendError(fd, 400, "Invalid credential request JSON", {}, "invalid_request", "body");
     return;
   }
-  if (legacy_transcription) {
-    const auto reply = LegacyTranscriptionCredential(request, &request);
+  std::optional<double> legacy_temperature;
+  Json requested_modes;
+  if (api != RealtimeCredentialApi::kClientSecret) {
+    ObjectReply reply;
+    if (api == RealtimeCredentialApi::kConversation) {
+      if (const auto* modes = request.Find("modalities")) requested_modes = *modes;
+      double temperature = 0.8;
+      reply = LegacyConversationCredential(request, &request, &temperature);
+      legacy_temperature = temperature;
+    } else {
+      reply = LegacyTranscriptionCredential(request, &request);
+    }
     if (!reply.ok()) {
       detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
                         reply.ClientCode(), reply.value.GetString("param"));
@@ -82,28 +93,32 @@ void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
       reply = preview.Configure(settings);
       if (reply.ok()) {
         resource = preview.SessionResource();
-        if (legacy_transcription) legacy_resource = preview.SessionResource(true);
+        if (api == RealtimeCredentialApi::kTranscription) legacy_resource = preview.SessionResource(true);
       }
     }
   } else {
     RealtimeConversationSession preview(
         id, detail::NewRequestId("conv_"),
         RealtimeClientDefaults(fd, startup.GetString("model")), output,
-        MakeRealtimeCallbacks(client), bytes);
+        MakeRealtimeCallbacks(client, legacy_temperature), bytes);
     reply = preview.PreviewCredential(startup, &resource);
+    if (reply.ok() && legacy_temperature)
+      legacy_resource = LegacyConversationResource(resource,
+          requested_modes.IsNull() ? nullptr : &requested_modes, *legacy_temperature);
     if (reply.ok() && startup.Has("prompt") && resource.Has("prompt"))
       Set(&startup, "prompt", Field(resource, "prompt"));
   }
   if (reply.ok() && !reply.commit_unknown)
-    reply = realtime_secrets_.Issue({client.Id(), headers.gateway_token, issuer},
+    reply = realtime_secrets_.Issue({client.Id(), headers.gateway_token, issuer, legacy_temperature},
                                     request, resource);
   if (!reply.ok() || reply.commit_unknown) {
     detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
                       reply.ClientCode(), reply.value.GetString("param"));
     return;
   }
-  if (legacy_transcription) {
-    Set(&legacy_resource, "modalities", Array({String("text")}));
+  if (api != RealtimeCredentialApi::kClientSecret) {
+    if (api == RealtimeCredentialApi::kTranscription)
+      Set(&legacy_resource, "modalities", Array({String("text")}));
     Set(&legacy_resource, "client_secret",
         Object({{"value", Field(reply.value, "value")},
                 {"expires_at", Field(reply.value, "expires_at")}}));

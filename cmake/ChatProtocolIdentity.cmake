@@ -790,6 +790,7 @@ set(protocol_inputs
   src/server/realtime_duplex_input.cpp
   include/q4t/server/realtime_conversation_input.h
   src/server/realtime_conversation_input.cpp
+  include/q4t/server/realtime_legacy_credentials.h
   include/q4t/server/realtime_transcription_protocol.h
   include/q4t/server/object_diagnostics.h
   include/q4t/server/realtime_transcription_pump.h
@@ -866,6 +867,7 @@ set(protocol_inputs
   src/server/finite_response.cpp
   src/server/http_request.cpp
   src/server/websocket.cpp
+  src/server/realtime_legacy_credentials.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
   include/q4t/server/realtime_session_pump.h
