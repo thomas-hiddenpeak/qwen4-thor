@@ -96,6 +96,24 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     live.format_for(bad)
 
+    def test_automation_requires_both_owned_tool_and_qualified_translation(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(agent_sessions=live.MANAGED_TOOL_SESSION,
+                   realtime={'translations':live.TRANSLATOR_CAPABILITY})
+        new = dict(old, agent_sessions=live.automation_session(),
+                   agent_automations=live.AUTOMATION_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        self.assertFalse(migration.explicit_extension(dict(old,realtime={}),new))
+        self.assertFalse(migration.explicit_extension(old,dict(new,agent_sessions=old['agent_sessions'])))
+        for change in (dict(session_scope='tenant'),dict(manual_invocations=1),
+                       dict(tool_receipt='deferred'),dict(schedules=['once'])):
+            with self.subTest(change=change):
+                wrong = dict(new, agent_automations=dict(live.AUTOMATION_CAPABILITY, **change))
+                self.assertFalse(migration.explicit_extension(old,wrong))
+                with self.assertRaises(ValueError):
+                    live.format_for(wrong)
+
     def test_translation_transport_extension_preserves_scope_and_media(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(realtime={'websocket':'/v1/realtime'}, hosted_python=live.CODE_CAPABILITY)

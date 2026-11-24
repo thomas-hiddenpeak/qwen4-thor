@@ -23,6 +23,16 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+AUTOMATION_REVIEWED = {
+    'primary': '39378d4ab67df2449d4f0953faf466c3be2d2a413b74c8abe57b79417aafa1d4',
+    'light': 'ded04edfd79a1cd60454ae157a47c0f62ed02ddc81b85e563cfe8bc8b613cede',
+}
+AUTOMATION_RECORD = 'q4t-profile-business-v40'
+AUTOMATION_FORMAT = 'q4t-agent-automation-source-v1'
+AUTOMATION_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents/automations',
+    schedules=['once','periodic'], targets=['new_session','existing_session'],
+    manual_invocations=True, session_tool='manage_automation', session_scope='creator_only',
+    tool_receipt='atomic_with_mutation')
 TRANSLATOR_RECORD = 'q4t-profile-business-v39'
 TRANSLATOR_FORMAT = 'q4t-translation-transport-source-v1'
 TRANSLATOR_CAPABILITY = dict(client_secrets='/v1/realtime/translations/client_secrets',
@@ -173,7 +183,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 MANAGED_TOOL_RECORD: MANAGED_TOOL_FORMAT, SUBAGENT_RECORD: SUBAGENT_FORMAT,
                 TRANSLATION_RECORD: TRANSLATION_FORMAT, ASSISTANTS_RECORD: ASSISTANTS_FORMAT,
                 SKILLS_RECORD: SKILLS_FORMAT, CODE_RECORD: CODE_FORMAT,
-                TRANSLATOR_RECORD: TRANSLATOR_FORMAT}
+                TRANSLATOR_RECORD: TRANSLATOR_FORMAT, AUTOMATION_RECORD: AUTOMATION_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -195,6 +205,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '97196543bab99ad9654f62e9ff56d591580d951abfe54d9336c0b42ada918264':
+        'f06eb62270ee8efa305cda7aa7ac6b60780ba790efdb1a545c6bf18861b9a06a',
     '315bf9fd8172b37e40c0ad7de0e9ae46a98db4f2c6d9914a59306032ff43aa44':
         '7b9770f3784c047bce10342b5a085c2b6ca3a231be285f7fae3580fffe60ec36',
     '5429ed3286976393ee139a6a848ed81c8981335c373789bcb0d4a96f059fc6f3':
@@ -250,7 +262,20 @@ def record_hash(value):
     return hashlib.sha256(ledger.canonical(value) + b'\n').hexdigest()
 
 
+def automation_session():
+    return dict(MANAGED_TOOL_SESSION,
+                tool_types=[*MANAGED_TOOL_SESSION['tool_types'], 'automations'])
+
+
 def format_for(capabilities):
+    if 'agent_automations' in capabilities:
+        previous = dict(capabilities)
+        declaration = previous.pop('agent_automations')
+        ledger.require(ledger.canonical(declaration) == ledger.canonical(AUTOMATION_CAPABILITY) and
+                       ledger.canonical(previous.get('agent_sessions')) == ledger.canonical(automation_session()) and
+                       format_for(dict(previous, agent_sessions=MANAGED_TOOL_SESSION)) == TRANSLATOR_RECORD,
+                       'invalid automation or session declaration or predecessor')
+        return AUTOMATION_RECORD
     if 'translations' in capabilities.get('realtime', {}):
         transport = dict(capabilities['realtime'])
         declaration = transport.pop('translations')
@@ -376,7 +401,21 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] == TRANSLATOR_RECORD:
+    if value['format'] == AUTOMATION_RECORD:
+        proofs = value['business']['live']['evidence_sha256']
+        old = prior['business']['live']['evidence_sha256']
+        ledger.require(prior['format'] == TRANSLATOR_RECORD and
+                       record_hash(prior) == TRANSLATOR_REVIEWED.get(prior['profile']) and
+                       previous['added'] == ['agent_automations'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256','agent_sessions'} and
+                       format_for(after) == AUTOMATION_RECORD and
+                       old.keys() | {'automation-handoff.json'} == proofs.keys() and
+                       all(proofs[k] == v for k,v in old.items() if k not in
+                           ('configuration.wire','capabilities.json','core-after.wire',
+                            'observation.json','result.json','cleanup.json','plan.json')) and
+                       ledger.HASH.fullmatch(proofs['automation-handoff.json']),
+                       'automation qualification needs the issued profile and pending delivery handoff')
+    elif value['format'] == TRANSLATOR_RECORD:
         proofs = value['business']['live']['evidence_sha256']
         old = prior['business']['live']['evidence_sha256']
         expected = dict(before['realtime'], translations=TRANSLATOR_CAPABILITY)
@@ -582,6 +621,21 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == AUTOMATION_RECORD:
+        ledger.require(record_hash(value) == AUTOMATION_REVIEWED.get(value['profile']),
+                       'automation profile differs from the qualified queue handoff')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == TRANSLATOR_REVIEWED.get(value['profile']),
+                       'automation handoff lost its issued predecessor')
+        # Reconstruct the allowed migration from the retained predecessor.
+        # The profile registry already binds this complete record by digest.
+        reproduced = copy.deepcopy(value)
+        attach(reproduced, prior)
+        ledger.require(ledger.canonical(reproduced['reused_business']) ==
+                       ledger.canonical(value['reused_business']),
+                       'automation handoff predecessor differs')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == TRANSLATOR_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) == TRANSLATOR_REVIEWED.get(name),

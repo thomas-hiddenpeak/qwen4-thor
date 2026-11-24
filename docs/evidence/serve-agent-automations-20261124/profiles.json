@@ -1,0 +1,159 @@
+{
+  "status": "ACCEPT_AUTOMATION_PRIMARY_LIGHT",
+  "profile_source": "q4t-agent-automation-source-v1",
+  "candidate": {
+    "binary": "0376bcd2759c4040d9c41bd1961785b8e24d06b0dcfd968ea16ecde55dd32d5f",
+    "ingress": "f06eb62270ee8efa305cda7aa7ac6b60780ba790efdb1a545c6bf18861b9a06a"
+  },
+  "source_release": 468,
+  "primary": {
+    "phase": "prepare",
+    "sdk": "7.47.0",
+    "session": "agent_session_05e95dea95a0c605ca9ec6c29efd9338",
+    "turn": "turn_bf4faee2a375366017888a8d379af795",
+    "call": "call_resp_1ab3b39d88f1ff6970651823a23ca742_0",
+    "automation": "automation_45477f44991f17c533888cb1e713c706",
+    "invocation": "invocation_c45de4bb6825e3a35bf8c85f46dfa661",
+    "scheduled_at": 1795521424,
+    "queued": true,
+    "peer": 404
+  },
+  "light": {
+    "phase": "restore",
+    "sdk": "7.47.0",
+    "previous": {
+      "phase": "prepare",
+      "sdk": "7.47.0",
+      "session": "agent_session_05e95dea95a0c605ca9ec6c29efd9338",
+      "turn": "turn_bf4faee2a375366017888a8d379af795",
+      "call": "call_resp_1ab3b39d88f1ff6970651823a23ca742_0",
+      "automation": "automation_45477f44991f17c533888cb1e713c706",
+      "invocation": "invocation_c45de4bb6825e3a35bf8c85f46dfa661",
+      "scheduled_at": 1795521424,
+      "queued": true,
+      "peer": 404
+    },
+    "answers": [
+      "468",
+      "469"
+    ],
+    "chat": "42",
+    "peer": 404,
+    "delivered": "invocation_c45de4bb6825e3a35bf8c85f46dfa661",
+    "turns": [
+      "turn_bf4faee2a375366017888a8d379af795",
+      "turn_d616e1eb71a7fe8ab3194355200a65f9"
+    ],
+    "final_invocations": [
+      "invocation_c45de4bb6825e3a35bf8c85f46dfa661"
+    ]
+  },
+  "capacities": {
+    "primary": {
+      "previous": "2845a42aa6265ef5dc85a6c7bff236e6147067166bee588623a46795ed340a3e",
+      "qualified": "39378d4ab67df2449d4f0953faf466c3be2d2a413b74c8abe57b79417aafa1d4",
+      "seconds": 44.58,
+      "starts": 1,
+      "unchanged_default": true
+    },
+    "light": {
+      "previous": "ad144a7a4324c52b3caea26fb7270ab8a4c831999215cfa192602303506ce478",
+      "qualified": "ded04edfd79a1cd60454ae157a47c0f62ed02ddc81b85e563cfe8bc8b613cede",
+      "seconds": 45.2,
+      "starts": 1,
+      "unchanged_default": true
+    }
+  },
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 85,
+    "cleanup_complete": true
+  },
+  "config_schema": {
+    "automation_error_counter": "unsigned_integer",
+    "dispatcher_core_readiness_dependency": false,
+    "historical_fields_optional": true,
+    "actual_config_and_bundled_schema": [
+      "primary",
+      "light"
+    ]
+  },
+  "remaining": [
+    "managed model loss",
+    "fatal native gateway and version takeover",
+    "reversible default delivery",
+    "all other inference, application and recovery gaps"
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/acceptance.json",
+      "sha256": "97196543bab99ad9654f62e9ff56d591580d951abfe54d9336c0b42ada918264"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/observations.json",
+      "sha256": "ceaa7baa9314ec00492a133caeab96e9e70eaa1d9dcb135360acd6c63a46bef1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-qualified-01/acceptance.json",
+      "sha256": "eb4e9ca1f946f24dced18d96ae98f33f9adedbe75fe783df9eec8d1769a81127"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-qualified-01/qualified/registry.json",
+      "sha256": "867e8f80fb65b2748dc87a029329a76c922d93d28faa9a93f3bc5d77af44beaf"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-profile-lease-03/exit.json",
+      "sha256": "5428958e652d890f89afacdfb3b9a89a6fe5ab93d3ed0871bac060067c27fee2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/profiles-cpu-final.log",
+      "sha256": "cf0fbad216f9f2e08f1706ef3e17863f837ced5e8a86a8fffc92a90e3f08398e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/profile-config-test.log",
+      "sha256": "c346f1228fe88f4ab3cb336ffa610dc3a34ec7c7bb7d05df7a1c222f2d928881"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/profiles-finalize-03.log",
+      "sha256": "bd8aa1f3353c3be025618bb3061ca5665ab671cfe0b0ea494ca7f4a156425575"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/profiles-finalize-03b.log",
+      "sha256": "cf60129c93bf1fd4f5618ad6676e81d6b998fec7b0d08cc69bf738908a2cf0cb"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/primary/result.json",
+      "sha256": "8eda7ef5757ba9b85c12691454f944b22f7ef931a82748c7ced9f9128ef2d795"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/primary/cleanup.json",
+      "sha256": "021d127998a9b48a8113a32b3368676cacf265864c5f27d7d333dca2798b1a87"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/primary/configuration.wire",
+      "sha256": "91bf7a200e3263b430136bd6ce56ed414b9b701b7ca949e03b4089c75f34c861"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/primary/automation-handoff.json",
+      "sha256": "87100e7a9b87bb25ae7cada48d5736185f3711297a1b09e1e34b35dc4ae4f3ae"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/light/result.json",
+      "sha256": "4f6c5cde290da8ff7e8a398460a819ae0f919c05bb6d2e4662edceec070ca1d4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/light/cleanup.json",
+      "sha256": "8f3e282081ad961db7bddff8a5dfeeb71aaeab4700ddc15bed662fe44b491fce"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/light/configuration.wire",
+      "sha256": "105521a904717ad3a410f082ede4f725466eac57cb9bc15a9909f9a315e1774b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-src/.q4t-work/automation-profiles-03/light/automation-handoff.json",
+      "sha256": "fe6b6d0060dce24f80c6aea12dd76c9a9ba613d00c3be8f40ab2827f6ad7fd03"
+    }
+  ]
+}
