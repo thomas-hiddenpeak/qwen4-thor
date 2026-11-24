@@ -203,8 +203,8 @@ Json ProjectStoredItem(const Json& item, const ItemViewOptions& options,
           !included("message.input_image.image_url"))
         Hide(&part, "image_url");
       if (part.GetString("type") == "output_text" &&
-          !included("message.output_text.logprobs"))
-        Hide(&part, "logprobs", false);
+          (!included("message.output_text.logprobs") || !part.Has("logprobs")))
+        Set(&part, "logprobs", Array());
     }
   }
   return result;

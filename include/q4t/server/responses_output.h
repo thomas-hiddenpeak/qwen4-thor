@@ -58,6 +58,14 @@ class ResponsesOutput {
   Status AppendSummary(std::string_view text, std::string* wire);
   Status StartCompaction(std::string id, std::string* wire);
   Status CompleteCompaction(const io::Json& item, std::string* wire);
+  Status StartPython(std::string container, const std::string& code,
+                     size_t* index, std::string* wire);
+  Status EndPython(size_t index, const std::string& logs, bool failed,
+                   const io::Json* generated_files, std::string* wire);
+  using ContainerFileExport =
+      std::function<Status(const std::string& message, const io::Json& file)>;
+  Status CitePythonFiles(const ContainerFileExport& export_file,
+                         std::string* wire);
   Status StartFileSearch(size_t* index, std::string* wire);
   Status SearchFileSearch(size_t index, const io::Json& queries,
                           std::string* wire);
@@ -137,6 +145,8 @@ class ResponsesOutput {
   std::unordered_set<size_t> mcp_arguments_complete_;
   std::vector<size_t> call_indices_;
   std::unordered_set<size_t> closed_items_;
+  std::unordered_map<std::string, io::Json> python_files_;
+  size_t python_item_ = kMaxItems;
   size_t summary_item_ = kMaxItems;
   size_t compaction_item_ = kMaxItems;
   bool compaction_done_ = false;

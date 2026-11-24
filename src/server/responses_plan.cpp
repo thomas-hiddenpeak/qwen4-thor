@@ -1,3 +1,4 @@
+#include "q4t/server/responses_python.h"
 #include "q4t/server/responses_plan.h"
 
 #include <algorithm>
@@ -572,7 +573,8 @@ Status GenerationOptions(const ResponsesEnvelope& envelope, Json* value,
                                              &bindings, error);
     if (!status) return status;
     std::unordered_set<std::string> disabled{
-        std::string(kResponsesToolSearchModelName), kResponsesProgramModelName};
+        std::string(kResponsesToolSearchModelName), kResponsesProgramModelName,
+        kPythonToolName};
     for (const auto& binding : bindings) disabled.insert(binding.model_name);
     std::vector<ResponsesWebBinding> web;
     status = PlanResponsesWebBindings(Object({{"tools", active}}), &web, error);

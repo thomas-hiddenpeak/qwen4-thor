@@ -4915,6 +4915,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           return;
         }
         if (stream && !write_stream(citations)) return;
+        s = responses->CitePythonFiles(&citations);
+        if (!s) {
+          err_guard.ok = false;
+          SendError(fd, 503, s.message(), {}, "response_file_citation_failed");
+          return;
+        }
+        if (stream && !write_stream(citations)) return;
         s = responses->CiteWebSearchSources(&citations);
         if (!s) {
           err_guard.ok = false;
@@ -5041,6 +5048,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           result = responses->RunFileSearches(
               response_parser.CompletedToolCalls(), callbacks, &query_usage,
               &answer, publish);
+        if (result.ok() && responses->PendingPython())
+          result = responses->RunPython(response_parser.CompletedToolCalls(),
+                                        publish);
         if (result.ok() && responses->PendingWebSearch())
           result = responses->RunWebSearches(response_parser.CompletedToolCalls(), publish);
         if (result.ok() && responses->PendingToolSearch())

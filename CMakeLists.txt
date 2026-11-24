@@ -553,6 +553,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/assistant_registry.cpp
   src/server/containers.cpp
   src/server/container_files.cpp
+  src/server/container_execution.cpp
+  src/server/responses_python.cpp
+  src/server/responses_python_execution.cpp
   src/server/container_skills.cpp
   src/server/assistant_threads.cpp
   src/server/assistant_run_settings.cpp
@@ -791,7 +794,8 @@ target_sources(q4t_server PRIVATE src/server/native_crypto.cpp
 q4t_link_native_crypto(q4t_server)
 q4t_link_native_documents(q4t_server)
 include(cmake/NativeProgrammatic.cmake)
-target_sources(q4t_server PRIVATE src/server/program_worker.cpp
+target_sources(q4t_server PRIVATE src/server/native_python.cpp
+  src/server/program_worker.cpp
   src/server/responses_program.cpp
   src/server/responses_program_plan.cpp
   src/server/responses_program_output.cpp

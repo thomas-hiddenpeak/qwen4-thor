@@ -1,4 +1,5 @@
 #include "q4t/server/responses_program.h"
+#include "q4t/server/responses_python.h"
 
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
@@ -87,20 +88,24 @@ io::Json NativeResponsesProgramDefinition(
 }
 
 Status MapResponsesProgramChoice(const Json& choice, bool enabled, Json* mapped,
-                                 ChatPlanError* error) {
+                                 ChatPlanError* error, bool python) {
   *mapped = choice;
   const auto convert = [&](const Json& original, Json* result,
                            const std::string& path) -> Status {
     *result = original;
-    if (original.GetString("type") != "programmatic_tool_calling") return {};
+    const bool is_python = original.GetString("type") == "code_interpreter";
+    if (!is_python && original.GetString("type") != "programmatic_tool_calling")
+      return {};
     auto status = InputFields(original, {"type"}, &error->param, path);
     if (!status) return status;
-    if (!enabled) {
+    if (!(is_python ? python : enabled)) {
       *error = {"invalid_request", path, 400};
-      return Status::Fail("Program choice requires its enabled tool");
+      return Status::Fail("Tool choice requires its enabled tool");
     }
-    *result = Object({{"type", String("function")},
-                      {"name", String(kResponsesProgramModelName)}});
+    *result =
+        Object({{"type", String("function")},
+                {"name", String(is_python ? kPythonToolName
+                                          : kResponsesProgramModelName)}});
     return {};
   };
   if (choice.GetString("type") == "allowed_tools") {

@@ -1,0 +1,5 @@
+#pragma once
+
+namespace q4t::server::detail {
+inline constexpr char kWorkspacePython[] = R"q4tpy(@Q4T_WORKSPACE_PYTHON@)q4tpy";
+}  // namespace q4t::server::detail

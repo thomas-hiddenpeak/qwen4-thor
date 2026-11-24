@@ -249,7 +249,8 @@ Status ResponsesOutput::Cancel() {
   for (size_t i = 0; i < Items().array.size(); ++i)
     if (!closed_items_.contains(i)) {
       const auto type = Items().array[i].GetString("type");
-      if (type == "file_search_call" || type == "mcp_call" || type == "web_search_call")
+      if (type == "file_search_call" || type == "mcp_call" ||
+          type == "code_interpreter_call" || type == "web_search_call")
         Set(&Items().array[i], "status", String("incomplete"));
       else if (type == "mcp_list_tools")
         Set(&Items().array[i], "error", String("MCP listing cancelled"));
@@ -516,8 +517,9 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
   // Compaction has no status/arguments/content fields in the SDK contract.
   // Its done event was published when the authenticated window was ready.
   if (item.GetString("type") == "compaction") return;
-  Set(&item, "status", String(incomplete ? "incomplete" : "completed"));
   const auto type = item.GetString("type");
+  if (type != "code_interpreter_call" || item.GetString("status") != "failed")
+    Set(&item, "status", String(incomplete ? "incomplete" : "completed"));
   if (type == "message" || (type == "reasoning" && item.GetArray("content") &&
                             !item.GetArray("content")->array.empty())) {
     const auto& part = Field(item, "content").array[0];
@@ -664,6 +666,7 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
     for (size_t i = 0; i < Items().array.size(); ++i)
       if ((Items().array[i].GetString("type") == "file_search_call" ||
            Items().array[i].GetString("type") == "tool_search_call" ||
+           Items().array[i].GetString("type") == "code_interpreter_call" ||
            Items().array[i].GetString("type") == "web_search_call" ||
            Items().array[i].GetString("type") == "mcp_call" ||
            Items().array[i].GetString("type") == "mcp_list_tools") &&
@@ -678,7 +681,8 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
         incomplete &&
         (Items().array[i].GetString("type") == "file_search_call" ||
          Items().array[i].GetString("type") == "tool_search_call" ||
-           Items().array[i].GetString("type") == "web_search_call" ||
+         Items().array[i].GetString("type") == "code_interpreter_call" ||
+         Items().array[i].GetString("type") == "web_search_call" ||
          Items().array[i].GetString("type") == "mcp_call" ||
          (call_indices_[i] != kNoCall ? call_indices_[i] >= completed_calls
                                       : i + 1 == Items().array.size()));

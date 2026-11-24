@@ -395,6 +395,12 @@ Q4T_TEST(
   auto hidden = Read(store, "GET", root);
   Q4T_CHECK(Ok(hidden) &&
             OutputJson(hidden.value).find("\"logprob\":") == std::string::npos);
+  const auto& part = hidden.value.GetArray("output")
+                         ->array.back()
+                         .GetArray("content")
+                         ->array.front();
+  Q4T_CHECK(part.GetArray("logprobs") &&
+            part.GetArray("logprobs")->array.empty());
   auto visible =
       Read(store, "GET", root + "?include%5B%5D=message.output_text.logprobs");
   Q4T_CHECK(Ok(visible) && OutputJson(visible.value).find("\"logprob\":-0.5") !=
@@ -408,6 +414,10 @@ Q4T_TEST(
     const auto end = replay.wire.find("\r\n\r\n", offset);
     Q4T_CHECK(end != replay.wire.npos);
     const auto event = Parse(replay.wire.substr(offset, end - offset));
+    if (const auto* part = event.Find("part");
+        part && part->GetString("type") == "output_text")
+      Q4T_CHECK(part->GetArray("logprobs") &&
+                part->GetArray("logprobs")->array.empty());
     if (event.GetString("type") == "response.output_text.delta" ||
         event.GetString("type") == "response.output_text.done") {
       Q4T_CHECK(event.GetArray("logprobs") &&

@@ -215,3 +215,24 @@ Q4T_TEST(program_worker_cancelled_and_unreaped_slot_is_bounded) {
                 .ok());
   return true;
 }
+
+Q4T_TEST(hosted_python_worker_reads_skill_and_writes_scoped_result) {
+  auto request = Object({
+      {"files", Array({Object({{"path", String("/mnt/skills/docs/SKILL.md")},
+                               {"data", String("NDI=")},
+                               {"writable", Boolean(false)}})})},
+      {"code", String("from pathlib import Path\n"
+                      "value = Path('/mnt/skills/docs/SKILL.md').read_text()\n"
+                      "Path('answer.txt').write_text(value)\n"
+                      "print(value)")},
+  });
+  auto result =
+      ExecutePythonWorker(request, {"client:python", Clock::now() + 10s, {}});
+  Q4T_CHECK(result.ok());
+  Q4T_CHECK(result.value.GetString("logs") == "42\n");
+  const auto* files = result.value.GetArray("files");
+  Q4T_CHECK(files && files->array.size() == 1);
+  Q4T_CHECK(files->array[0].GetString("data") == "NDI=");
+  Q4T_CHECK(files->array[0].GetString("path") == "/mnt/data/answer.txt");
+  return true;
+}

@@ -78,6 +78,13 @@ class RunStream {
         return Send("thread.message.created", initial) &&
                Send("thread.message.in_progress", initial);
       }
+      if (item->GetString("type") == "code_interpreter_call")
+        return ToolDelta(
+            *step,
+            Object({{"index", Number(0)},
+                    {"id", *item->Find("id")},
+                    {"type", String("code_interpreter")},
+                    {"code_interpreter", Object({{"input", String("")}})}}));
       if (item->GetString("type") == "function_call") {
         const auto call =
             Object({{"index", Number(0)},
@@ -103,6 +110,61 @@ class RunStream {
           Object({{"id", String(id)},
                   {"object", String("thread.message.delta")},
                   {"delta", Object({{"content", Array({std::move(part)})}})}}));
+    }
+    if (type == "response.output_text.annotation.added" && message) {
+      const auto index = event.GetInt("annotation_index", -1);
+      const auto part_index = event.GetInt("content_index", -1);
+      const auto* parts = message->GetArray("content");
+      if (!parts || part_index < 0 ||
+          static_cast<size_t>(part_index) >= parts->array.size())
+        return false;
+      const auto* text = parts->array[part_index].Find("text");
+      const auto* refs = text ? text->GetArray("annotations") : nullptr;
+      const auto* source = event.Find("annotation");
+      if (!source || source->GetString("type") != "container_file_citation")
+        return true;
+      if (!refs) return false;
+      const auto found =
+          std::ranges::find_if(refs->array, [&](const Json& ref) {
+            return ref.GetString("type") == "file_path" &&
+                   ref.GetInt("start_index") == source->GetInt("start_index");
+          });
+      if (index < 0 || found == refs->array.end()) return false;
+      auto ref = *found;
+      Set(&ref, "index", Number(found - refs->array.begin()));
+      auto part = Object(
+          {{"index", Number(part_index)},
+           {"type", String("text")},
+           {"text", Object({{"annotations", Array({std::move(ref)})}})}});
+      return Send(
+          "thread.message.delta",
+          Object({{"id", String(id)},
+                  {"object", String("thread.message.delta")},
+                  {"delta", Object({{"content", Array({std::move(part)})}})}}));
+    }
+    if (type == "response.code_interpreter_call_code.delta" && step)
+      return ToolDelta(*step,
+                       Object({{"index", Number(0)},
+                               {"type", String("code_interpreter")},
+                               {"code_interpreter",
+                                Object({{"input", *event.Find("delta")}})}}));
+    if (type == "response.output_item.done" && step && item &&
+        item->GetString("type") == "code_interpreter_call" &&
+        item->GetArray("outputs")) {
+      auto outputs = Array();
+      for (const auto& log : item->GetArray("outputs")->array) {
+        if (log.GetString("type") != "logs") continue;
+        auto delta = log;
+        Set(&delta, "index", Number(outputs.array.size()));
+        outputs.array.push_back(std::move(delta));
+      }
+      if (!outputs.array.empty() &&
+          !ToolDelta(*step,
+                     Object({{"index", Number(0)},
+                             {"type", String("code_interpreter")},
+                             {"code_interpreter",
+                              Object({{"outputs", std::move(outputs)}})}})))
+        return false;
     }
     if (type == "response.function_call_arguments.delta" && step)
       return ToolDelta(

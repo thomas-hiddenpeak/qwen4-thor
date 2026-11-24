@@ -1,3 +1,4 @@
+#include "q4t/server/responses_python.h"
 #include "q4t/server/responses_execution.h"
 
 #include <algorithm>
@@ -13,6 +14,10 @@ Status ResponsesExecution::BindActiveTools(const io::Json& active,
                                            const io::Json* input) {
   const auto& history = input ? *input : generation_history_;
   const auto request = Object({{"tools", active}});
+  python_container_ = {};
+  for (const auto& tool : active.array)
+    if (tool.GetString("type") == "code_interpreter" && tool.Has("container"))
+      python_container_ = *tool.Find("container");
   auto status =
       PlanResponsesFileSearchBindings(request, &file_search_bindings_, error);
   if (!status) return status;

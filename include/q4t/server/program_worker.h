@@ -10,6 +10,9 @@ namespace q4t::server {
 ObjectReply ExecuteProgramWorker(const io::Json& input,
                                  const BinaryAccess& access,
                                  GrammarControl control = {});
+ObjectReply ExecutePythonWorker(const io::Json& input,
+                                const BinaryAccess& access,
+                                GrammarControl control = {});
 int MaybeRunProgramWorker(int argc, char** argv);
 
 }  // namespace q4t::server

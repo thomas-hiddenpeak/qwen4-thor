@@ -2703,6 +2703,16 @@
         "accepted_methods": 178,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "hosted_python_20261124": {
+        "status": "ACCEPT_HOSTED_PYTHON_WORKSPACE_HTTP",
+        "receipt": "evidence/serve-code-interpreter-20261124/business.json",
+        "installed_revision": 464,
+        "remaining": [
+          "Retained Python variables and broader Python packages, plots and binary images.",
+          "Container tier / configured egress, programmatic tool invocations and a hosted shell.",
+          "Capacity handoff, managed recovery, installed release and remaining serving interfaces."
+        ]
       }
     },
     {
@@ -6148,6 +6158,16 @@
         "accepted_methods": 178,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "hosted_python_20261124": {
+        "status": "ACCEPT_HOSTED_PYTHON_WORKSPACE_HTTP",
+        "receipt": "evidence/serve-code-interpreter-20261124/business.json",
+        "installed_revision": 464,
+        "remaining": [
+          "Retained Python variables and broader Python packages, plots and binary images.",
+          "Container tier / configured egress, programmatic tool invocations and a hosted shell.",
+          "Capacity handoff, managed recovery, installed release and remaining serving interfaces."
+        ]
       }
     },
     {
@@ -7046,7 +7066,17 @@
       "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json",
       "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
       "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
-      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json",
+      "hosted_python_20261124": {
+        "status": "ACCEPT_HOSTED_PYTHON_WORKSPACE_HTTP",
+        "receipt": "evidence/serve-code-interpreter-20261124/business.json",
+        "installed_revision": 464,
+        "remaining": [
+          "Retained Python variables and broader Python packages, plots and binary images.",
+          "Container tier / configured egress, programmatic tool invocations and a hosted shell.",
+          "Capacity handoff, managed recovery, installed release and remaining serving interfaces."
+        ]
+      }
     },
     {
       "id": "N01",
@@ -9365,6 +9395,16 @@
         "accepted_methods": 178,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "hosted_python_20261124": {
+        "status": "ACCEPT_HOSTED_PYTHON_WORKSPACE_HTTP",
+        "receipt": "evidence/serve-code-interpreter-20261124/business.json",
+        "installed_revision": 464,
+        "remaining": [
+          "Retained Python variables and broader Python packages, plots and binary images.",
+          "Container tier / configured egress, programmatic tool invocations and a hosted shell.",
+          "Capacity handoff, managed recovery, installed release and remaining serving interfaces."
+        ]
       }
     },
     {
@@ -10879,8 +10919,8 @@
       }
     }
   ],
-  "next_task": "Implement hosted code execution using owner-scoped workspace files, then continue the remaining inference, application and recovery contracts.",
-  "next": "补齐通过模型工具执行访问授权工作区及文件的链路，接续剩余推理、应用服务与恢复任务。",
+  "next_task": "Qualify hosted Python file and application state handoff, recover and publish the scoped implementation; continue remaining inference and application methods.",
+  "next": "验证主、轻配置之间的工具状态交接与受管恢复，随后接续其他应用服务任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

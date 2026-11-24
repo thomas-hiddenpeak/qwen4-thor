@@ -227,8 +227,11 @@ ObjectReply BinaryStore::PreparePublish(const BinaryAccess& access,
                        stage.closed, stage.commit_unknown);
   if (!checked.ok()) return checked;
   if (!writes || root.operation != ObjectOperation::kPut ||
-      root.expected_revision || root.scope != access.scope ||
-      !ValidId(root.id) || root.id == stage.id || !Root(root))
+      (root.expected_revision != 0 &&
+       (root.kind != ObjectKind::kContainerFile ||
+        root.expected_revision < 1)) ||
+      root.scope != access.scope || !ValidId(root.id) || root.id == stage.id ||
+      !Root(root))
     return Invalid("Invalid binary publication root");
   for (const auto& existing : *writes)
     if (existing.scope != access.scope || existing.id == stage.id ||
