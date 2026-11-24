@@ -453,7 +453,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
            (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
             path == "/v1/completions" || path == "/v1/moderations" ||
             path == "/v1/decisions" || path == "/v1/embeddings" ||
-            path == "/v1/audio/speech" || path == "/v1/audio/transcriptions" ||
+            path == "/v1/audio/speech" || IsTranscriptionTarget(path) ||
             IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
             IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
@@ -609,11 +609,12 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         context.RecordReceiveFailure(HttpReceiveFailure::kMethod, 405);
         SendError(fd, 405, "method not allowed", {}, "method_not_allowed",
                     "method", "POST");
-      } else if (path != "/v1/audio/transcriptions") {
+      } else if (path.find('?') != path.npos) {
         SendError(fd, 400, "Transcription does not accept query parameters", {},
                     "invalid_request", "query");
       } else {
-        HandleTranscription(fd, headers.content_type, body);
+        HandleTranscription(fd, headers.content_type, body,
+                            path == "/v1/audio/translations");
       }
     } else if (IsMcpTunnelTarget(path)) {
       const auto& client = context.Client();

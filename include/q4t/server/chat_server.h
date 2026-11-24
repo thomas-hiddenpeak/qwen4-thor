@@ -335,7 +335,13 @@ class ChatServer {
       std::vector<audio::AlignerWord>* aligned_words = nullptr,
       audio::AlignerTimes* aligned_times = nullptr);
   void HandleTranscription(int fd, std::string_view content_type,
-                            std::string_view body);
+                           std::string_view body, bool translation);
+  ObjectReply TranslateTranscript(
+      int fd, const AsrRequest& request, std::string_view guidance,
+      const AsrTranscript& transcript, int64_t duration_ms, uint64_t budget,
+      std::span<const audio::AlignerWord> words, const audio::AlignerTimes& times,
+      const std::shared_ptr<RequestControl>& control, ClientRateLease& rate,
+      std::string* response);
   io::Json RealtimeClientDefaults(int fd, std::string model);
   enum class RealtimeCredentialApi { kClientSecret, kTranscription, kConversation };
   void IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,

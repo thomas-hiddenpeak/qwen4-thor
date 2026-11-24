@@ -120,6 +120,7 @@ set(protocol_inputs
   include/q4t/server/asr_statistics.h
   src/server/asr_alignment_output.cpp
   src/server/chat_asr_alignment.cpp
+  src/server/chat_audio_translation.cpp
   src/server/chat_asr.cpp
   src/server/chat_realtime.cpp
   src/server/chat_asr_execution.cpp

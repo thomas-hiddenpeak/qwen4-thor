@@ -94,7 +94,7 @@ ObjectReply ChatServer::FormatAlignedTranscription(
     }
   }
   if (cancelled()) return interrupted();
-  if (request.format == AsrFormat::kDiarizedJson) {
+  if (aligned_words || aligned_times || request.format == AsrFormat::kDiarizedJson) {
     if (!aligned_words || !aligned_times)
       return Error(500, "alignment_owner_invalid",
                    "Diarized alignment owner unavailable");

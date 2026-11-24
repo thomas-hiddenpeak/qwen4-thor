@@ -168,6 +168,12 @@ std::string ChatCapabilitiesJson(
          R"("fork":"/v1/live/sessions/{session_id}/fork",)"
          R"("media_worker_profile":"q4t-live-workers-v1",)"
          R"("sip_requires_trunks":true,"media_readiness_dependency":false},)"
+         R"("translations":{"endpoint":"/v1/audio/translations",)"
+         R"("models":["whisper-1","qwen3-asr-0.6b"],)"
+         R"("backend":"native_asr_and_chat","language":"english","configured":)" +
+         (native_asr ? "true" : "false") +
+         R"(,"formats":["json","text","verbose_json","srt","vtt"],)"
+         R"("subtitles_require":"aligner-model-dir"},)"
          R"("transcriptions":{"endpoint":"/v1/audio/transcriptions",)"
          R"("profile":)" +
          Quote(kNativeAsrProfile) + R"(,"revision":)" +
