@@ -1,0 +1,214 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 464,
+    "version_revision": 161,
+    "profile_revision": 51,
+    "previous_profile_revision": 50,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "d4cf1f7333b234c88aff6b2f802a1d6823c2a6a97b03f0d0d0c3a4d25a46a715",
+    "fallback": "245d7228a3dd1e77af210d11fc7b49d80c3c1b22bbc20b087158f63720bb6e89",
+    "engine": "2c1cbb9fed82a0fa38d8e6983e3679d381b163e7ce8cddb29111f73b974684a9",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "managed": {
+    "fallback": {
+      "fault": "owned model SIGKILL",
+      "seconds": 117.303,
+      "starts": 2,
+      "guard_retained": true,
+      "returned_revision": 462,
+      "chat": "42",
+      "max_prompt_tokens": 2048,
+      "usage": {
+        "prompt_tokens": 758,
+        "completion_tokens": 20,
+        "total_tokens": 778
+      },
+      "zip_sha256": "b46144dc1f7190270fb14559aea4b52895cd89b74d932b8453d64b43ed5fdadc",
+      "file_sha256": "70f48ee0245e06b75454016976c695b73268410c58b736916e0ef29bd22e2040",
+      "source_removed_before_fault": true,
+      "foreign": 404,
+      "wrong_tool_call": 400,
+      "cleanup": true,
+      "receipts": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/skill-fallback-business-01/before-run.json",
+          "sha256": "2e280411f897ea5d25d957198c05ab5f0d6f418746fc51173685442a2d2ed62f"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/skill-fallback-business-01/after-run.json",
+          "sha256": "8804f29646663d5f1627d33667fec98e332c3cf7b7993079f0faee15dd576079"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/skill-fallback-business-01/chat-after.wire",
+          "sha256": "a15185bcc0e297f54ad58f57cbb5d071430b1f44ccca4b73f10243359d95adf2"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/skill-fallback-business-01/interruption.json",
+          "sha256": "af37c3c4d7d001b6023e136d727d165ae2d7d674ef37b07116649776df718abc"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/skill-fallback-business-01/result.json",
+          "sha256": "861d032b241d70bab1f8f74ec45ac8f84bf1b7798965397531659e53679bb095"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/skill-fallback-lease-01/exit.json",
+          "sha256": "7c62809bfd3e3486c575e7e859aada72c17a0cd41c2500ea27db531c88cd3b78"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/skill-client-fallback-01/service-acceptance.json",
+          "sha256": "faf25deb3e4db5bd9f3aede173b523f0e4d82a8b9f080984cf93f301723d2fbe"
+        }
+      ]
+    },
+    "primary": {
+      "fault": "owned gateway SIGABRT",
+      "seconds": 162.695,
+      "starts": 2,
+      "guard_retained": true,
+      "returned_revision": 462,
+      "chat": "42",
+      "max_prompt_tokens": 2048,
+      "usage": {
+        "prompt_tokens": 758,
+        "completion_tokens": 20,
+        "total_tokens": 778
+      },
+      "zip_sha256": "b46144dc1f7190270fb14559aea4b52895cd89b74d932b8453d64b43ed5fdadc",
+      "file_sha256": "70f48ee0245e06b75454016976c695b73268410c58b736916e0ef29bd22e2040",
+      "source_removed_before_fault": true,
+      "foreign": 404,
+      "wrong_tool_call": 400,
+      "cleanup": true,
+      "selected": "fallback",
+      "probes": 1,
+      "receipts": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-skill-01/before-run.json",
+          "sha256": "52b7ce897e6c186b4eb706f6b81e15a2cda9c94e9ae88df9ab601dd641663dc9"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-skill-01/after-run.json",
+          "sha256": "3aeb5cec8faeb6915d43d0f8344f5ea7f90de9c595bc91193e2203a3b52709ca"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-skill-01/chat-after.wire",
+          "sha256": "deb73d1200a73ee90d3143b6a7f234a3e0b70448c193116b9206818b7a0b51f6"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-skill-01/interruption.json",
+          "sha256": "ceedf5911ee3bd650fcc8d1134dcf5525ca5e4aec3c9810536b758dca516968b"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-skill-01/result.json",
+          "sha256": "fc683c9331c19bbb43b3ecbdb6285460ae15769d9a9c3d7e2fff29ca125cd06b"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/skill-primary-lease-01/exit.json",
+          "sha256": "40391d2a074885cffeb44a92701eee0968ea1ee8fcfc7b644be9cbca565cec69"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/skill-client-primary-01/service-acceptance.json",
+          "sha256": "b6533826dcf8d506d168692ab392b9006eccd3fc3b45f3eb1d2cb09be19fa407"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-skill-01/takeover.json",
+          "sha256": "b29c5bd0673ea6604d088cc6eb8f193c0c848aab15a0cf737a99c43554dcabca"
+        }
+      ]
+    }
+  },
+  "day_preflight": {
+    "source_commit": "1d0605471573dd666c855b3c16c105b8dcd752ff",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/skill-client-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/skill-client-primary-01/bundle",
+      "manifest_sha256": "d4cf1f7333b234c88aff6b2f802a1d6823c2a6a97b03f0d0d0c3a4d25a46a715"
+    },
+    "revision": 464,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/skill-client-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "d157b0fd3eb5a08d3f823e290955ff1aa2300662615bea7d2940c106943c133f",
+    "handoff_sha256": "11c1afb30e9ebc33c54042272e45ba87e435d79f4da12d7a84df912844cb3465",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "b834e415ab6882a41d12cdf095a42e43b0545fd668bbdf4fde163910f6833e4b"
+        ],
+        "sha256": "01e650a4128681316776a59f649a5a87eb561fcbb608292ab21c47193ef47958",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "d0c2dd86-e892-4324-98f3-5870f061ee9a"
+        ],
+        "sha256": "2ed40c324cf510cb76aa3989d205579258e3e68c74cc21ed03ad6711f54cedf5",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "a561169e-ffbf-4be5-b051-64f7159827bd"
+        ],
+        "sha256": "1494e05a68252cddaedad185efab08728192effbcc02f1ef74f01dbe7dba0d51",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "required_methods": 231,
+  "declared_methods": 178,
+  "exact_http_success": 178,
+  "missing_methods": 53,
+  "previous_revision": 462,
+  "previous_primary": "dd508623e988c1c0269585824e440bd6db307785aee4b57b1ccf12c46026ef36",
+  "source": "1d0605471573dd666c855b3c16c105b8dcd752ff",
+  "libyaml_notice": "64609fa7e24f1daa7c78a84e571d5c385350534ead8830158e0744c64f0497b6",
+  "remaining": [
+    "Hosted execution of skill and container files.",
+    "Remaining inference and application methods and semantics.",
+    "User-owned long-duration run."
+  ],
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-client-delivery/result.json",
+      "sha256": "249dba3ac2fbcdf79a93b9effa996fd0b866a8aadd839cebedd1334eabc82134"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-client-delivery/plan.json",
+      "sha256": "f77b6a233f81660c951a5333d2273a6436305cc1b68c21c36e3e50c8cb4e3723"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-client-maintenance-01/result.json",
+      "sha256": "51cdaf2c19ef14064a9a78b9403eaac049074c41ffbb2858990396148461d3a6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-publication-lease-01/exit.json",
+      "sha256": "a3d450edb93c800b3c9619e6c094f89e7b58ea3b5d982048c94eba38d36bae4d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-client-day.json",
+      "sha256": "5f6aab48e6f8533413cce7b0b5b28af2d09bb167ccdfa3a356c2dffb28710e3d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-released-methods.json",
+      "sha256": "fc3fed9ba3579d2b240f233023ec8b9b4999416526e521c5981dfcdc22804970"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-client-primary-01/bundle/engine/declarations/schemas/openapi.json",
+      "sha256": "1ea63a49b42ae35d9eb16e1be4a0768f3820228c35168f93b3ffb8567031477b"
+    }
+  ]
+}
