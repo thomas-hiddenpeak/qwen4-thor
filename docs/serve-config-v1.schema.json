@@ -3641,6 +3641,9 @@
         },
         "webhook_dispatcher": {
           "$ref": "#/properties/application_startup/properties/automation_dispatcher"
+        },
+        "environment_preparer": {
+          "$ref": "#/properties/application_startup/properties/automation_dispatcher"
         }
       },
       "required": [
@@ -4782,6 +4785,24 @@
         "errors",
         "capacity_deferrals",
         "capacity_losses"
+      ]
+    },
+    "environment_preparation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "completed_attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "retryable_errors": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "completed_attempts",
+        "retryable_errors"
       ]
     }
   },

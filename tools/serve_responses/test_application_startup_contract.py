@@ -11,6 +11,19 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class ApplicationStartupContract(unittest.TestCase):
+    def test_workspace_preparation_health_is_optional_and_counts_are_bounded(self):
+        schema = json.loads((ROOT / 'docs/serve-config-v1.schema.json').read_text())
+        group = schema['properties']['application_startup']
+        self.assertIn('environment_preparer', group['properties'])
+        self.assertNotIn('environment_preparer', group['required'])
+        self.assertNotIn('environment_preparation', schema['required'])
+        validator = Draft202012Validator(schema['properties']['environment_preparation'])
+        current = dict(completed_attempts=3, retryable_errors=1)
+        validator.validate(current)
+        for bad in ({**current, 'retryable_errors': -1}, {'completed_attempts': 3},
+                    {**current, 'completed_attempts': True}, {**current, 'file_id': 'private'}):
+            self.assertFalse(validator.is_valid(bad))
+
     def test_actual_native_startup_health_and_negative_contract(self):
         schema = json.loads((ROOT / 'docs/serve-config-v1.schema.json').read_text())
         item = schema['properties']['application_startup']['properties']['responses']

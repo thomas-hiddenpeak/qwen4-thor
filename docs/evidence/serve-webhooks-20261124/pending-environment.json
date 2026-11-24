@@ -93,5 +93,18 @@
     "webhook-dev/async-inventory-04.json": "df309d90d6ea84d6cee6960f2e1320bdb0786b2b3a7d328aeb452e2840ff0177",
     "environment_pending_business.py": "c696e05d91c6f00815efc872bbbb6cc181020b1d3d4d7df9a313f28420aa0366",
     "environment_fair_preparation_business.py": "9dfd40f385392a4f3f78e7ec3f3cf2ce855e941051d358a1786941597d762afe"
+  },
+  "diagnostics_contract": {
+    "native_startup_cases": 1,
+    "config_schema_cases": 5,
+    "legacy_configurations_accepted": true,
+    "source_fixture_setup_failures": 2,
+    "runtime_changes": 0,
+    "raw_sha256": {
+      "async-startup-owner-01.log": "7b3edb0fc9529f79d97e429d1dbd60bdc1f2d8a7f310f758b3fc38d1427125a4",
+      "async-diagnostics-cpu-01.log": "4707683dd32b157798caff422d97fcffb5c92b739adac394c87a2ae21df7e35c",
+      "async-diagnostics-cpu-02.log": "40746a1b6971c18bc7295b48b73ebdfa4205322badffed30a68805489e363754",
+      "async-diagnostics-cpu-03.log": "aae2ede6a13ece0aa9b78816b166018b79291fffb53ce0c201e5691c216d798c"
+    }
   }
 }
