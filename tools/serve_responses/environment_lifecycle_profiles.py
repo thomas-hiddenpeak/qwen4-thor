@@ -17,20 +17,33 @@ PROOF = ROOT/'docs/evidence/serve-webhooks-20261124/environment-stream.json'
 RELEASE = ROOT/'docs/evidence/serve-webhooks-20261124/delivery.json'
 ACTOR = ROOT/'tools/serve_responses/environment_handoff_sdk.mjs'
 RECEIPT = 'environment-handoff.json'
+PREPARATION_PROOF = PROOF.with_name('pending-environment.json')
+PREPARATION_RELEASE = RELEASE.with_name('environment-delivery.json')
+PREPARATION_RECEIPT = 'preparation-handoff.json'
 
 
-def prepare(out, build, deployment):
-    release = pkg.read(RELEASE)['publication']
+def prepare(out, build, deployment, preparation=False):
+    release_path = PREPARATION_RELEASE if preparation else RELEASE
+    proof_path = PREPARATION_PROOF if preparation else PROOF
+    reviewed = reuse.HOSTED_LIFECYCLE_REVIEWED if preparation else reuse.WEBHOOK_REVIEWED
+    key = 'preparation_handoff' if preparation else 'environment_handoff'
+    release = pkg.read(release_path)['publication']
     source = deployment/'build/service'
     manifest = bundle.verify(source, release['primary'])
     engine = pkg.verify(source/'engine', manifest['engine_manifest_sha256'])
-    proof = pkg.read(PROOF)
+    proof = pkg.read(proof_path)
     identity = build/'generated/q4t/server/chat_protocol_sources.json'
     sources = pkg.read(identity)
-    pkg.require(proof['status'] == 'ACCEPT_HOSTED_SESSION_SUSPEND_AND_RESUME_STREAM'
-                and proof['official_events'] == 4 and proof['device_runtime']['status'] == 'PASS'
-                and all(pkg.sha(ROOT/name) == digest for name,digest in sources.items()),
-                'workspace profiles require the tested lifecycle and identified current sources')
+    if preparation:
+        pkg.require(proof['status'] == 'ACCEPT_DURABLE_MULTI_FILE_PREPARATION_AND_SESSION_EVENTS'
+                    and proof['official_payloads'] == 9 and proof['device']['fair']['runtime']['status'] == 'PASS',
+                    'missing qualified workspace preparation')
+    else:
+        pkg.require(proof['status'] == 'ACCEPT_HOSTED_SESSION_SUSPEND_AND_RESUME_STREAM'
+                    and proof['official_events'] == 4 and proof['device_runtime']['status'] == 'PASS',
+                    'missing qualified workspace lifecycle')
+    pkg.require(all(pkg.sha(ROOT/name) == digest for name,digest in sources.items()),
+                'workspace profiles require current source identity')
     candidate = dict(binary=pkg.sha(build/'q4t'), ingress=pkg.sha(build/'q4t-ingress'))
     protected = {str(deployment/'build'/n):pkg.sha(deployment/'build'/n)
                  for n in ('q4t','q4t.release.json','service/manifest.json',
@@ -46,7 +59,7 @@ def prepare(out, build, deployment):
         previous = phase/'previous-profile.json'
         shutil.copyfile(source/('profile-'+name+'.json'), previous)
         anchor = pkg.sha(previous)
-        pkg.require(anchor == reuse.WEBHOOK_REVIEWED[name] ==
+        pkg.require(anchor == reviewed[name] ==
                     manifest['recovery_profiles']['qualifications'][name]['evidence_sha256'],
                     'selected release capacity differs from the reviewed predecessor')
         ingress = phase/'engine/q4t-ingress'
@@ -58,11 +71,11 @@ def prepare(out, build, deployment):
                               tokens_per_minute=32000, max_prompt_tokens=8192)
         pkg.save(phase/'client-policy.json', policy)
         shutil.copy2(phase/'client-policy.json',phase/'engine/client-policy.json')
-        plan.update(ingress=str(ingress), environment_handoff=dict(previous=anchor,
-                    release=release['primary'], protocol=protocol(sources)),
+        plan[key] = dict(previous=anchor, release=release['primary'], protocol=protocol(sources))
+        plan.update(ingress=str(ingress),
                     client_policy_sha256=pkg.sha(phase/'client-policy.json'),
                     installed_policy_sha256=pkg.sha(phase/'engine/client-policy.json'))
-        for path in (ACTOR, ACTOR.with_name('agent_webhook_turns.mjs'), Path(__file__), PROOF, RELEASE):
+        for path in (ACTOR, ACTOR.with_name('agent_webhook_turns.mjs'), Path(__file__), proof_path, release_path):
             plan['sources'][str(path.relative_to(ROOT))] = pkg.sha(path)
         pkg.save(phase/'plan.json',plan)
 
@@ -70,34 +83,50 @@ def prepare(out, build, deployment):
 def business(stage, capabilities):
     plan = stage.plan
     primary = plan['name'] == 'primary'
+    preparation = 'preparation_handoff' in plan
+    receipt = PREPARATION_RECEIPT if preparation else RECEIPT
+    release = PREPARATION_RELEASE if preparation else RELEASE
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1", key=stage.keys['alpha'],
                   other=stage.keys['beta'], sdk=plan['sdk_directory'],
                   phase='prepare' if primary else 'restore',
-                  revision=pkg.read(RELEASE)['publication']['publication_revision'])
+                  preparation=preparation, revision=pkg.read(release)['publication']['publication_revision'])
     if not primary:
-        params['previous'] = pkg.read(stage.out.parent/'primary'/RECEIPT)
+        params['previous'] = pkg.read(stage.out.parent/'primary'/receipt)
     process = subprocess.run(['node',ACTOR],input=json.dumps(params),capture_output=True,
         text=True,timeout=160,env=dict(os.environ,NODE_EXTRA_CA_CERTS=plan['tls']['certificate']))
     (stage.out/'environment-handoff.stderr').write_text(process.stderr)
     pkg.require(process.returncode == 0, 'environment SDK handoff failed for '+plan['name'])
-    pkg.save(stage.out/RECEIPT,json.loads(process.stdout))
+    pkg.save(stage.out/receipt,json.loads(process.stdout))
     verify(stage.out,plan,capabilities)
 
 
 def verify(phase, plan, capabilities):
-    change = plan['environment_handoff']
+    preparation = 'preparation_handoff' in plan
+    change = plan['preparation_handoff' if preparation else 'environment_handoff']
+    receipt = PREPARATION_RECEIPT if preparation else RECEIPT
+    release_path = PREPARATION_RELEASE if preparation else RELEASE
+    reviewed = reuse.HOSTED_LIFECYCLE_REVIEWED if preparation else reuse.WEBHOOK_REVIEWED
     name = plan['name']
     prior = profile_record.read(phase/'previous-profile.json')
-    expected = dict(prior['capabilities'], hosted_environment_lifecycle=reuse.HOSTED_LIFECYCLE_CAPABILITY,
-                    protocol_source_sha256=change['protocol'])
-    release = pkg.read(RELEASE)['publication']
-    pkg.require(pkg.sha(phase/'previous-profile.json') == change['previous'] == reuse.WEBHOOK_REVIEWED[name]
+    expected = dict(prior['capabilities'], protocol_source_sha256=change['protocol'])
+    if preparation:
+        expected['hosted_environment_preparation'] = reuse.PREPARATION_CAPABILITY
+    else:
+        expected['hosted_environment_lifecycle'] = reuse.HOSTED_LIFECYCLE_CAPABILITY
+    release = pkg.read(release_path)['publication']
+    pkg.require(pkg.sha(phase/'previous-profile.json') == change['previous'] == reviewed[name]
                 and plan['selected_sha256'] == change['release'] == release['primary']
                 and pkg.same_json(expected,capabilities) and plan['capacity'] == prior['capacity'],
                 'workspace declaration, capacity or released predecessor differs')
-    row = pkg.read(phase/RECEIPT)
-    pkg.require(row['sdk'] == '7.47.0' and row['peer'] == 404 and row['bytes'] == RELEASE.stat().st_size
-                and row['sha256'] == pkg.sha(RELEASE), 'release file or scope isolation differs')
+    row = pkg.read(phase/receipt)
+    pkg.require(row['sdk'] == '7.47.0' and row['peer'] == 404 and row['bytes'] == release_path.stat().st_size
+                and row['sha256'] == pkg.sha(release_path), 'release file or scope isolation differs')
+    if preparation:
+        original = row if name == 'primary' else row['previous']
+        pkg.require(original['initial_state'] == 'pending' and
+                    len(set(original['deleted_sources'])) == len(original['deleted_sources']) == 2 and
+                    all(isinstance(key,str) and key.startswith('file_') for key in original['deleted_sources']),
+                    'missing original pending prewarm and deleted source identities')
     if name == 'primary':
         ids = dict(environment='environment_', session='agent_session_', sibling='agent_session_',
                    turn='turn_', call='call_')
@@ -107,7 +136,7 @@ def verify(phase, plan, capabilities):
                     'primary did not preserve shared workspace and pending client call')
     else:
         import re
-        old = pkg.read(phase.parent/'primary'/RECEIPT)
+        old = pkg.read(phase.parent/'primary'/receipt)
         revision = release['publication_revision']
         pkg.require(row['phase'] == 'restore' and pkg.same_json(row['previous'],old)
                     and row['turns'] == [old['turn']] and row['call'] == old['call']
@@ -115,16 +144,17 @@ def verify(phase, plan, capabilities):
                     and isinstance(row['artifact'],str) and row['artifact'],
                     'light did not finish the original tool call or recover its file')
     inherited = prior['business']['live']['evidence_sha256']
-    pkg.require(COMMON <= inherited.keys() and 'webhook-handoff.json' in inherited,
+    pkg.require(COMMON <= inherited.keys() and ('environment-handoff.json' if preparation else 'webhook-handoff.json') in inherited,
                 'missing issued profile evidence')
-    return {**{k:v for k,v in inherited.items() if k not in COMMON},RECEIPT:pkg.sha(phase/RECEIPT)}
+    return {**{k:v for k,v in inherited.items() if k not in COMMON},receipt:pkg.sha(phase/receipt)}
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for key in ('output','build','deployment'):
         parser.add_argument('--'+key,type=Path,required=True)
+    parser.add_argument('--preparation', action='store_true')
     args = parser.parse_args()
     out = args.output.resolve()
     pkg.require(out.is_relative_to(ROOT/'.q4t-work'),'private evidence directory required')
-    prepare(out,args.build.resolve(strict=True),args.deployment.resolve(strict=True))
+    prepare(out,args.build.resolve(strict=True),args.deployment.resolve(strict=True), args.preparation)

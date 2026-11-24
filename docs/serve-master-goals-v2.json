@@ -739,6 +739,22 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
         "official_payloads": 9
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
+      },
+      "hosted_preparation_release_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-delivery.json",
+        "revision": 476,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -2947,6 +2963,22 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
         "official_payloads": 9
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
+      },
+      "hosted_preparation_release_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-delivery.json",
+        "revision": 476,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -6558,6 +6590,22 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
         "official_payloads": 9
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
+      },
+      "hosted_preparation_release_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-delivery.json",
+        "revision": 476,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -8536,6 +8584,22 @@
         "revision": 474,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
+      },
+      "hosted_preparation_release_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-delivery.json",
+        "revision": 476,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -10017,6 +10081,22 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
         "official_payloads": 9
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
+      },
+      "hosted_preparation_release_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-delivery.json",
+        "revision": 476,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -11219,6 +11299,12 @@
         "revision": 474,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "hosted_preparation_release_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-delivery.json",
+        "revision": 476,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -11616,11 +11702,27 @@
         "revision": 474,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "hosted_preparation_profiles_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-profiles.json",
+        "issued_revision_at_test": 474,
+        "verified": [
+          "deleted source files with ready workspace",
+          "original external call across primary and light",
+          "four actual configuration documents and exact v42 predecessor"
+        ],
+        "pending": "managed recovery, independent package takeover and issuance"
+      },
+      "hosted_preparation_release_20261125": {
+        "evidence": "evidence/serve-webhooks-20261124/preparation-delivery.json",
+        "revision": 476,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     }
   ],
-  "next_task": "Qualify durable prewarming across capacity profiles and supervised packages, then advance remaining required inference and application methods.",
-  "next": "验收多文件预热主轻容量接手、恢复和发行，继续其余必做推理与应用方法。",
+  "next_task": "Implement ChatKit sessions, threads and real client turns, remaining hosted-environment backends, and the other required inference, application, ingress and recovery tasks.",
+  "next": "推进 ChatKit 会话、线程与真实客户端回合，继续托管环境后端及其余推理、应用、接入与恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

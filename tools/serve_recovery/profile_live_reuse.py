@@ -23,6 +23,15 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+PREPARATION_RECORD = 'q4t-profile-business-v43'
+PREPARATION_FORMAT = 'q4t-hosted-preparation-source-v1'
+PREPARATION_CAPABILITY = dict(min_file_entries=2, max_files=50, source_pin_seconds=3600,
+    worker_jobs=1, tenant_rotation=True, pending_attachment=True, session_failure_events=True,
+    synchronous_fallback=True, core_readiness_dependency=False)
+PREPARATION_REVIEWED = {
+    'primary': 'fe389ddf35f8564241bdcc1e6884a221a765e33ce38ed0aedd6c387aa44ed6a1',
+    'light': '042ec92da5594a72850730ef93f8b9c3c518a42b8c49de912a5281385fb3283f',
+}
 HOSTED_LIFECYCLE_RECORD = 'q4t-profile-business-v42'
 HOSTED_LIFECYCLE_FORMAT = 'q4t-hosted-environment-lifecycle-source-v1'
 HOSTED_LIFECYCLE_CAPABILITY = dict(prewarm_seconds=300, max_sessions=128,
@@ -203,7 +212,8 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 TRANSLATION_RECORD: TRANSLATION_FORMAT, ASSISTANTS_RECORD: ASSISTANTS_FORMAT,
                 SKILLS_RECORD: SKILLS_FORMAT, CODE_RECORD: CODE_FORMAT,
                 TRANSLATOR_RECORD: TRANSLATOR_FORMAT, AUTOMATION_RECORD: AUTOMATION_FORMAT,
-                WEBHOOK_RECORD: WEBHOOK_FORMAT, HOSTED_LIFECYCLE_RECORD: HOSTED_LIFECYCLE_FORMAT}
+                WEBHOOK_RECORD: WEBHOOK_FORMAT, HOSTED_LIFECYCLE_RECORD: HOSTED_LIFECYCLE_FORMAT,
+                PREPARATION_RECORD: PREPARATION_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -225,6 +235,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'cd0d8ac581bde958758caf1b8dde20c470b3606b5562d73581cce376483d4c41':
+        'ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46',
     '3280676f47c89ff879f88386e7ff954fc91e583d873525e3571eb5c1c12aa237':
         'ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46',
     '5c530a6c2de1a1af191645ac0b0c51ee1af38ceacfa36bf6f26fa21d5168abb5':
@@ -292,6 +304,13 @@ def automation_session():
 
 
 def format_for(capabilities):
+    if 'hosted_environment_preparation' in capabilities:
+        prior = dict(capabilities)
+        selected = prior.pop('hosted_environment_preparation')
+        ledger.require(ledger.canonical(selected) == ledger.canonical(PREPARATION_CAPABILITY)
+                       and format_for(prior) == HOSTED_LIFECYCLE_RECORD,
+                       'invalid hosted preparation declaration or predecessor')
+        return PREPARATION_RECORD
     if 'hosted_environment_lifecycle' in capabilities:
         prior = dict(capabilities)
         selected = prior.pop('hosted_environment_lifecycle')
@@ -439,8 +458,10 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            PREPARATION_RECORD: (HOSTED_LIFECYCLE_RECORD, HOSTED_LIFECYCLE_REVIEWED,
+                                 'hosted_environment_preparation', 'preparation-handoff.json'),
             HOSTED_LIFECYCLE_RECORD: (WEBHOOK_RECORD, WEBHOOK_REVIEWED, 'hosted_environment_lifecycle',
                                       'environment-handoff.json'),
             WEBHOOK_RECORD: (AUTOMATION_RECORD, AUTOMATION_REVIEWED, 'webhooks', 'webhook-handoff.json'),
@@ -669,8 +690,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            PREPARATION_RECORD: (PREPARATION_REVIEWED, HOSTED_LIFECYCLE_REVIEWED),
             HOSTED_LIFECYCLE_RECORD: (HOSTED_LIFECYCLE_REVIEWED, WEBHOOK_REVIEWED),
             WEBHOOK_RECORD: (WEBHOOK_REVIEWED, AUTOMATION_REVIEWED),
             AUTOMATION_RECORD: (AUTOMATION_REVIEWED, TRANSLATOR_REVIEWED),

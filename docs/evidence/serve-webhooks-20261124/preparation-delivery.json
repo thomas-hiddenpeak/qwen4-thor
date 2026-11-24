@@ -1,0 +1,233 @@
+{
+  "route_declarations": {
+    "expected": 231,
+    "exact_http_success": 197,
+    "missing": 34,
+    "runtime_qualification": false
+  },
+  "status": "ACCEPT_ISSUED_HOSTED_PREPARATION_AND_RECOVERY",
+  "issued_binary": "25e864a81b01ef9581dc27dc4aec29c02f528608fe4c080feb2b51112915251b",
+  "prior_publication_revision": 474,
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 476,
+    "version_revision": 167,
+    "profile_revision": 57,
+    "previous_profile_revision": 56,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "f95db1678c584f610e4ea2b004c609a6426e53ee349dab39f3a16505b3800839",
+    "fallback": "868394945a4a98ca6352bf69df837e2c2634cfbc01e4ffa17cb84bcdc5938d2c",
+    "engine": "25e864a81b01ef9581dc27dc4aec29c02f528608fe4c080feb2b51112915251b",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "device_cases": {
+    "primary": {
+      "seconds": 208.697,
+      "model_starts": 2,
+      "ports_released": true,
+      "guardian_same": true,
+      "sources_deleted": 2,
+      "initial_state": "pending",
+      "workspace": "environment_123cacc92495c208733f85e41f814de4",
+      "original_turn": "turn_75d07a7c18381034792c3e79850b078c",
+      "original_call": "call_resp_51b27867bf911b396594a63e4a483e06_0",
+      "revision_answer": "The actual published revision is **474**.",
+      "file_bytes": 9937,
+      "sha256": "0b897eab130615e1f8cf1a616bd504962b4f1905ee9a5b19d0b14698d35cd577",
+      "independent_chat": "42",
+      "version_takeover": true
+    },
+    "fallback": {
+      "seconds": 128.251,
+      "model_starts": 2,
+      "ports_released": true,
+      "guardian_same": true,
+      "sources_deleted": 2,
+      "initial_state": "pending",
+      "workspace": "environment_fbecdd8ed07fd4293f67f63c80cebdc6",
+      "original_turn": "turn_a17fedf92142720a8caa9f0c67b2a040",
+      "original_call": "call_resp_f089c3c1f685e59589e601cdb1ae9a40_0",
+      "revision_answer": "revision number from that result. The actual published revision is: **474**.",
+      "file_bytes": 9937,
+      "sha256": "0b897eab130615e1f8cf1a616bd504962b4f1905ee9a5b19d0b14698d35cd577",
+      "independent_chat": "42"
+    }
+  },
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "d0879bb84c1207b9d39712cb905a653dda014dbd58c8fe170f8c2be3006c045a"
+        ],
+        "sha256": "def4abe9e65454207a1992b2fe39a1785d3c4b676d2c3874aab818ccb659da55",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "8e7e1ba1-0d4a-4eba-bf0f-fc22700a862b"
+        ],
+        "sha256": "50514fdd72f6ce61dd91857072d76400d3a12fe924bcd9c0cfa030667b635c50",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "b9dc7717-725f-4711-a4ee-8e49456cc1c8"
+        ],
+        "sha256": "b69c80956c416529a122d11e3172155ba8b4a4373a4d8d4a843a39cd8a5cff8b",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "soak": {
+    "source_commit": "df3d6214ab0b344aafd4dca1ffe22a9e4a32352e",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/preparation-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/preparation-client-primary-01/bundle",
+      "manifest_sha256": "f95db1678c584f610e4ea2b004c609a6426e53ee349dab39f3a16505b3800839"
+    },
+    "revision": 476,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/preparation-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "047c8fd0185fafdac7972dbe718e707471ccbce84db6a417c306db857e9c7b1b",
+    "handoff_sha256": "825c1869c6621829d54037171b11bf6fd6454f1220e3f6d520535ec066398cbf",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "auxiliary_dependencies": "Outbound delivery disabled in default, deployment policy remains optional. Upstream provisioning backends remain separate work.",
+  "preserved_attempts": [
+    "Input preparation first missed the pinned media fixture. The first offline reviewer looked up the wrong observations filename. Both earlier records and the corrected primary/light receipts are retained in preparation-profiles.json.",
+    "The first publication postflight was interrupted after stable issuance and fallback registration by the lease guard identifying a separate CPU host test and its object worker (no observed NVIDIA compute context). Preserved raw evidence; the same transaction was verified after the test exited. No second publication or additional model startup."
+  ],
+  "fault_boundary": "The client requested a pending workspace, removed its upload sources, then stopped at an outstanding client tool call. Both faults followed successful preparation. Recovery of a job interrupted while still pending has separate deterministic storage-level coverage.",
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-delivery-delivery/result.json",
+      "sha256": "ebcce28561eb49827b23cb04c828a75e885fe932c76aa5fe99ea60bfcc6465c3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-delivery-delivery/check.stdout",
+      "sha256": "1b02539f42a60325e4b033f534d5f4bd501fff0fc6069f477c8baaf3a4358c3b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-delivery-delivery/status.stdout",
+      "sha256": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-delivery-delivery/version-status.stdout",
+      "sha256": "75e04fd4c9620d9e971948e0b278dafd3aa19e72b1287af447d710c6850515d1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-delivery-maintenance-01/result.json",
+      "sha256": "e657029405358edc477363dcaf93d87c49b21cf4e022c80227946b9b1bafa232"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-maintenance-lease-01/exit.json",
+      "sha256": "52f916808f9a139944bb739f3d863bc9161805300ff2355a48739f624f61c3c8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-publish-lease-02/exit.json",
+      "sha256": "75071c9f001feaf7dd0da986c2e55c0ea2dd820d681a947bd5b0a2419e57ee68"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-delivery-day.json",
+      "sha256": "87399a2b63652d16521aa6f17ccee9afca709553b40e61e9243bde086baf55da"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-webhooks-20261124/preparation-profiles.json",
+      "sha256": "07fc4899e6228065849f280e8ccb612a77fcde880a6d4250f943bfd6de42c472"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-publish-lease-01/exit.json",
+      "sha256": "08656b0b9b5b505bd92cc4363414cde351660834fb0e3429b9e9d66b1ef96fd3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-publish-lease-01/events.jsonl",
+      "sha256": "cb9a8231ea267941c18131a31a6ce21018317d76eba77aeede7e8c3fcc16eb05"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-publish-postflight-original-01/plan.json",
+      "sha256": "85c77269a9b922e3cf30cc950c335b8208183bb3b9c7be8578b3b5575e819827"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-preparation-01/takeover.json",
+      "sha256": "edca921e6d72f86f6064d6aec4aa5c3647867a8e817b94cdcecd607c7adae32f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-primary-lease-01/exit.json",
+      "sha256": "8babd17b162588e516b27921153be950920f82ddc06621c52599410e0b5500bd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-preparation-01/result.json",
+      "sha256": "c94fce7f6bde2adb90d06692cc1a9ec85429ced905cf74374839457eb16adb24"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-preparation-01/interruption.json",
+      "sha256": "eaf8ba295f8afcc1bfb4d13643c38baea5fdd3aa9b3374ec8527965bf65d68df"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-preparation-01/prepare-run.json",
+      "sha256": "77152e6991558754a41ed5b384c42934cb4ea158230442ee2b54f73f9c028ae1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-preparation-01/restore-run.json",
+      "sha256": "49f9afdcd9d1b609429049187a72c61add69899ce84e93592e0bf7dc509ea24b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-client-primary-01/origin.json",
+      "sha256": "77f64d7c5c5b64ea4fd13bbde139bf76732682c061a6ae6b22952a3681f6a30d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-client-primary-01/service-acceptance.json",
+      "sha256": "79bdd2c85a694926eeb3e4cc6ed60d08276ce08f4aaf968a4c8dec0e3f9f2da3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-client-primary-01/service.release.json",
+      "sha256": "93da6f07578449c35b9481f3e5d8b28efdd413a7870142e4a31de3e5ba2ca3b5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-fallback-lease-01/exit.json",
+      "sha256": "7a6972def006df1cd85edea999f852c1b7a666e0c8c9add359723588898e41f2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-fallback-business-01/result.json",
+      "sha256": "d5c566fd63a3b971d59dab5f9751a9e8e6d5751e66dff80315fb31925a7e8853"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-fallback-business-01/interruption.json",
+      "sha256": "015baae3e3ceb81d4a9d3e17fae2ae7eef9d31cd742349aca4fc12db0383a8e6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-fallback-business-01/prepare-run.json",
+      "sha256": "40e027dcd4eaa3d988d55e59e9919b1bdf87f22984d5bf469c316462d499d2e6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-fallback-business-01/restore-run.json",
+      "sha256": "ae992ec4a5296e0179dc88b04fdfc493ff2cc2e4ad8c2ca6b6dbe1edcec68528"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-client-fallback-01/origin.json",
+      "sha256": "53ae1f938db4a8e638c297d82d5e6f998ccf706938382134f011a8422cff7b28"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-client-fallback-01/service-acceptance.json",
+      "sha256": "f92205ff87981e35a105cc96c39fe6e88c1d93e9c2c397aa078ded28767bbb65"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-client-fallback-01/service.release.json",
+      "sha256": "696d83c6d7f4cb9e99a18dac91961dbfbd6207b65b91c96620f8773199b1dd7c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/preparation-release-methods.json",
+      "sha256": "c30c6393c4dfdc3352290647661d7d204dcd5f2021080fb6db58fa64116aa6a9"
+    }
+  ]
+}
