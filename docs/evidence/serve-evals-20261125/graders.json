@@ -1,0 +1,66 @@
+{
+  "stage": "targeted_host_verified",
+  "text_similarity": {
+    "metrics": [
+      "fuzzy_match",
+      "bleu",
+      "gleu",
+      "rouge_1",
+      "rouge_2",
+      "rouge_3",
+      "rouge_4",
+      "rouge_5",
+      "rouge_l"
+    ],
+    "oracles": [
+      "RapidFuzz fuzz.ratio (normalized Indel, Unicode codepoints)",
+      "NLTK 3.9.1 single-reference sentence BLEU and GLEU",
+      "Google rouge-score 0.1.2 default unstemmed tokenizer and F measure"
+    ],
+    "candidate": "a b a b c d",
+    "reference": "a b a b b c d",
+    "scores": [
+      0.9166666666666665,
+      0.5985529678206387,
+      0.6818181818181818,
+      0.923076923076923,
+      0.9090909090909091,
+      0.6666666666666665,
+      0.28571428571428575,
+      0.0,
+      0.923076923076923
+    ],
+    "tolerance": 1e-12,
+    "budget": "65536 units per side and 8388608 comparison work units shared by all lexical graders on a row"
+  },
+  "python": {
+    "provider": "existing disposable native CPython 3.12 worker, optional; default/local profile",
+    "source_data": "grade(sample, item)",
+    "verified": "0.75 is preserved; NaN, raised exceptions and nonnumeric strings return invalid score zero and never pass, including at threshold zero",
+    "external_images": "cloud image/package parity pending"
+  },
+  "pending": [
+    "cosine with trained embeddings",
+    "METEOR including lexical resources",
+    "model-based label and score graders",
+    "device HTTP and packaged profiles/recovery"
+  ],
+  "references": [
+    "https://developers.openai.com/api/docs/guides/graders",
+    "https://rapidfuzz.github.io/RapidFuzz/Usage/fuzz.html",
+    "https://www.nltk.org/api/nltk.translate.bleu_score.html",
+    "https://www.nltk.org/api/nltk.translate.gleu_score.html",
+    "https://github.com/google-research/google-research/tree/master/rouge"
+  ],
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1360,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

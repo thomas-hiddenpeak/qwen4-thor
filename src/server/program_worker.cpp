@@ -68,7 +68,13 @@ ObjectReply Execute(const io::Json& input, const BinaryAccess& access,
   limits.max_values = 512 * 1024;
   if (!io::ParseJson(output, &value, true, limits) || !value.IsObject())
     return Failure(GrammarFailure::kWorker);
-  if (python) {
+  if (python && input.Has("grader")) {
+    const auto* score = value.Find("score");
+    const auto* error = value.Find("error");
+    if (!error || !error->IsBool() || !score || value.object.size() != 2 ||
+        (value.GetBool("error") ? !score->IsNull() : !score->IsNumber()))
+      return Failure(GrammarFailure::kWorker);
+  } else if (python) {
     if (!value.GetArray("files") || !value.Find("logs") ||
         !value.Find("logs")->IsString() || !value.Find("error") ||
         !value.Find("error")->IsBool() || value.object.size() != 3)

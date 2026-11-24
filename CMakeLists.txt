@@ -473,6 +473,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/eval_dispatcher.cpp
   src/server/eval_sampling.cpp
   src/server/eval_stored_inputs.cpp
+  src/server/eval_similarity.cpp
   src/server/eval_execution.cpp
   src/server/eval_grading.cpp
   src/server/evals.cpp

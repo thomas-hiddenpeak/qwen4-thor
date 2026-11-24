@@ -1,6 +1,7 @@
 #include "q4t/server/evals.h"
 
 #include <atomic>
+#include <cmath>
 #include <cstdlib>
 #include <thread>
 #include <filesystem>
@@ -246,6 +247,87 @@ Q4T_TEST(evals_model_samples_bind_one_worker_and_release_parent_and_child) {
     Q4T_CHECK(ResponsesState(objects).Retrieve(child, access).http_status == 404);
     Q4T_CHECK(Request(objects, "DELETE", path, {}, scope).ok());
   }
+  return true;
+}
+
+Q4T_TEST(
+    evals_python_grades_use_isolated_worker_and_preserve_invalid_outcomes) {
+  StateAccess access{
+      "client:alpha", std::chrono::steady_clock::now() + 12s, {}};
+  auto row = Object({{"item", Object({{"expected", String("157")}})},
+                     {"sample", Object({{"output_text", String("157")}})}});
+  auto grade = [&](std::string source) {
+    auto python = Object({{"type", String("python")},
+                          {"name", String("project")},
+                          {"source", String(source)},
+                          {"pass_threshold", Number(0)}});
+    return eval_detail::GradePython(python, row, access);
+  };
+  auto passed = grade(
+      "def grade(sample,item):\n print('unrelated output')\n return 0.75 if "
+      "sample['output_text']==item['expected'] else 0.25");
+  Q4T_CHECK(passed.ok() && passed.value.GetBool("passed") &&
+            passed.value.GetNumber("score") == 0.75 &&
+            !passed.value.Has("error"));
+  for (const auto* source :
+       {"def grade(sample,item):\n return float('nan')",
+        "def grade(sample,item):\n raise ValueError('bad row')",
+        "def grade(sample,item):\n return '1'"}) {
+    auto invalid = grade(source);
+    Q4T_CHECK(invalid.ok() && invalid.value.GetNumber("score") == 0 &&
+              !invalid.value.GetBool("passed") &&
+              invalid.value.Find("error")->GetString("code") ==
+                  "invalid_python_grade");
+  }
+  return true;
+}
+
+Q4T_TEST(evals_text_similarity_matches_independent_lexical_oracles) {
+  const auto row =
+      Object({{"item", Object({{"reference", String("a b a b b c d")}})},
+              {"sample", Object({{"output_text", String("a b a b c d")}})}});
+  auto grade = [&](std::string metric, std::string input, std::string reference,
+                   size_t work = 8 * 1024 * 1024) {
+    size_t bytes = 1 << 20;
+    auto threshold = Number(0);
+    threshold.str.clear();
+    threshold.number = 0.5;
+    return eval_detail::GradeSimilarity(
+        Object({{"name", String("comparison")},
+                {"evaluation_metric", String(metric)},
+                {"input", String(input)},
+                {"reference", String(reference)},
+                {"pass_threshold", std::move(threshold)}}),
+        row, &bytes, &work);
+  };
+  // RapidFuzz normalized Indel, NLTK sentence BLEU/GLEU and Google rouge-score.
+  for (const auto& [metric, expected] : std::array{
+           std::pair{"fuzzy_match", 0.9166666666666665},
+           std::pair{"bleu", 0.5985529678206387},
+           std::pair{"gleu", 0.6818181818181818},
+           std::pair{"rouge_1", 0.923076923076923},
+           std::pair{"rouge_2", 0.9090909090909091},
+           std::pair{"rouge_3", 0.6666666666666665},
+           std::pair{"rouge_4", 0.28571428571428575}, std::pair{"rouge_5", 0.0},
+           std::pair{"rouge_l", 0.923076923076923}}) {
+    auto result = grade(metric, "{{sample.output_text}}", "{{item.reference}}");
+    Q4T_CHECK(result.ok() &&
+              std::abs(result.value.GetNumber("score") - expected) < 1e-12);
+    Q4T_CHECK(result.value.GetBool("passed") == (expected >= 0.5));
+  }
+  Q4T_CHECK(
+      std::abs(
+          grade("fuzzy_match", "🍎甲乙", "🍎乙甲").value.GetNumber("score") -
+          2.0 / 3.0) < 1e-12);
+  Q4T_CHECK(grade("fuzzy_match", "", "").value.GetNumber("score") == 1.0);
+  Q4T_CHECK(grade("rouge_l", "", "").value.GetNumber("score") == 0);
+  Q4T_CHECK(
+      grade("rouge_1", "RED, blue!", "red BLUE").value.GetNumber("score") == 1);
+  Q4T_CHECK(grade("fuzzy_match", std::string(4096, 'x'), std::string(4096, 'y'),
+                  16384)
+                .http_status == 413);
+  Q4T_CHECK(grade("fuzzy_match", "{{item.missing}}", "text").http_status ==
+            400);
   return true;
 }
 

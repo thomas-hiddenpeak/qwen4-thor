@@ -4,6 +4,7 @@
 #include <charconv>
 
 #include "object_protocol.h"
+#include "q4t/server/program_worker.h"
 
 // The pinned Unicode 17 tables and UTF-8 codec are already linked in q4t.
 // This calls the plain C conversion routines without creating an interpreter.
@@ -110,6 +111,43 @@ ObjectReply RenderText(std::string_view text, const io::Json& row,
   }
   *rendered = std::move(output);
   return {};
+}
+
+ObjectReply GradePython(const io::Json& criterion, const io::Json& row,
+                        const StateAccess& access) {
+  const auto tag = criterion.GetString("image_tag");
+  if (!tag.empty() && tag != "q4t-python3.12")
+    return Invalid("testing_criteria.image_tag",
+                   "Python grader image is unavailable");
+  const auto* item = row.Find("item");
+  const auto* sample = row.Find("sample");
+  if (!item || !item->IsObject())
+    return Invalid("data_source.source.item",
+                   "Python grader requires a dataset item");
+  auto request = Object(
+      {{"files", Array()},
+       {"code", String(criterion.GetString("source"))},
+       {"grader",
+        Object({{"sample", sample ? *sample : Object()}, {"item", *item}})}});
+  auto run = ExecutePythonWorker(
+      request, {access.scope, access.deadline, access.cancelled});
+  if (!run.ok()) return run;
+  const bool invalid = run.value.GetBool("error");
+  const auto value = invalid ? Number(0) : *run.value.Find("score");
+  ObjectReply result;
+  result.value = Object(
+      {{"name", String(criterion.GetString("name"))},
+       {"type", String("python")},
+       {"score", value},
+       {"passed",
+        Boolean(!invalid &&
+                value.number >= criterion.GetNumber("pass_threshold", 0.5))}});
+  if (invalid)
+    Set(&result.value, "error",
+        Object({{"code", String("invalid_python_grade")},
+                {"message",
+                 String("Python grade failed or returned an invalid value")}}));
+  return result;
 }
 
 ObjectReply GradeString(const io::Json& criterion, const io::Json& row,

@@ -330,12 +330,17 @@ def evaluate(request):
     os.chdir, os.mkdir = fs.chdir, fs.mkdir
     os.getcwd = lambda: fs.cwd
     error = False
+    grade_input = request.get('grader')
+    score = None
     with contextlib.redirect_stdout(log), contextlib.redirect_stderr(log):
         try:
-            exec(
-                compile(request['code'], '<container>', 'exec'),
-                {'__name__': '__main__'},
-            )
+            namespace = {'__name__': '__main__'}
+            exec(compile(request['code'], '<container>', 'exec'), namespace)
+            if grade_input is not None:
+                value = namespace['grade'](grade_input['sample'], grade_input['item'])
+                if not isinstance(value, (int, float)) or not math.isfinite(value):
+                    raise ValueError('grade must return a finite number')
+                score = float(value)
         except BaseException as exc:
             message = type(exc).__name__ + ': ' + str(exc)[:1024]
             if log.size <= MAX_LOG - 4096:
@@ -343,4 +348,6 @@ def evaluate(request):
             else:
                 io.StringIO.write(log, '\n[interpreter output limit]\n')
             error = True
+    if grade_input is not None:
+        return {'score': score, 'error': error}
     return {'logs': log.getvalue(), 'error': error, 'files': fs.changes()}

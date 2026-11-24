@@ -131,18 +131,27 @@ ObjectReply Finish(ObjectStore& objects, const StateAccess& access,
   return objects.Execute(write, access.deadline, access.cancelled);
 }
 
-ObjectReply Score(const Json& criteria, const Json& row, Json* results,
-                  Json* totals, bool* passed) {
+ObjectReply Score(const Json& criteria, const Json& row,
+                  const StateAccess& access, Json* results, Json* totals,
+                  bool* passed) {
   size_t budget = kChatBodyBytes;
+  size_t comparison_work = 8 * 1024 * 1024;
   if (!criteria.IsArray() || !totals->IsArray() ||
       totals->array.size() != criteria.array.size())
     return InvalidRecord();
   for (size_t i = 0; i < criteria.array.size(); ++i) {
     const auto& grader = criteria.array[i];
-    if (grader.GetString("type") != "string_check")
+    const auto type = grader.GetString("type");
+    ObjectReply result;
+    if (type == "string_check")
+      result = GradeString(grader, row, &budget);
+    else if (type == "python")
+      result = GradePython(grader, row, access);
+    else if (type == "text_similarity")
+      result = GradeSimilarity(grader, row, &budget, &comparison_work);
+    else
       return BadInput("testing_criteria",
                       "Grader requires a separate execution provider");
-    auto result = GradeString(grader, row, &budget);
     if (!result.ok()) return result;
     const bool matched = result.value.GetBool("passed");
     const auto field = matched ? "passed" : "failed";
@@ -248,8 +257,8 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
   }
   auto results = Array();
   bool passed = true;
-  auto scored =
-      Score(*write.data.GetArray("criteria"), row, &results, &totals, &passed);
+  auto scored = Score(*write.data.GetArray("criteria"), row, access, &results,
+                      &totals, &passed);
   auto sample = Sample(row);
   if (!scored.ok())
     Set(&sample, "error",
