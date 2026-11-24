@@ -18239,7 +18239,7 @@
     }
   },
   "project_safety_20261125": {
-    "stage": "targeted_host_verified",
+    "stage": "native_tls_verified",
     "issued": false,
     "receipt": "evidence/serve-project-safety-20261125/records.json"
   }
