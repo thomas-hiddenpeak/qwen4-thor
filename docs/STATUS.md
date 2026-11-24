@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+真实模型从项目记录回答 157 后，同一行的两个文本与两个 Python 评分分别得到 6/7、1、0.75、0。最后一项返回 NaN，明确记录无效且未通过。四份官方 SDK 原始响应通过 HTTP 规范验证，跨客户为 404，独立 Chat 答 42。设备一次启动用时 36.258 秒。下一步接入模型标签与数值评分及其持久化。[设备验收](evidence/serve-evals-20261125/graders.json)
+
 Evals 已实现 9 种有界文本相似度指标，并复用隔离 CPython 工作进程执行 grade(sample, item)。重复 n-gram、Unicode 字符、空输入与计算上限通过针对性检查。独立 RapidFuzz、NLTK 和 Google rouge-score 对照的分数误差小于 1e-12。Python 的 0.75 部分分保留，异常、非数值和 NaN 明确标记无效，得零分。下一步验证真实数据行、HTTP 逐条分数和独立客户。[数值与隔离验证](evidence/serve-evals-20261125/graders.json)
 
 从已删除的历史 Responses 记录重放输入后，模型仍答 157 并得 1 分。订阅者通过官方 SDK 验签成功、失败、取消三类 Evals 通知，均只收到运行 ID；独立客户答 42。补验 39.891 秒，一次模型启动。历史 Chat 来源沿用首轮成功证据。任务表同步了 rev478 的实际发行、长稳预检身份和 Evals 余项，候选仍待发行。[设备与主机回执](evidence/serve-evals-20261125/stored-sources.json)

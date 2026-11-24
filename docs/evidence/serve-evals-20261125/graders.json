@@ -1,5 +1,5 @@
 {
-  "stage": "targeted_host_verified",
+  "stage": "native_tls_lexical_and_default_python_graders_verified",
   "text_similarity": {
     "metrics": [
       "fuzzy_match",
@@ -43,7 +43,8 @@
     "cosine with trained embeddings",
     "METEOR including lexical resources",
     "model-based label and score graders",
-    "device HTTP and packaged profiles/recovery"
+    "packaged profiles and recovery",
+    "requested Python image inventory and package compatibility"
   ],
   "references": [
     "https://developers.openai.com/api/docs/guides/graders",
@@ -62,5 +63,47 @@
     "reviewed_source_anchors": 1360,
     "mutation_checks": 40,
     "errors": []
+  },
+  "verified_source": "831f4fe57",
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 36.258,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ],
+    "sdk": "7.47.0",
+    "model_answer": "157",
+    "independent_chat": "42",
+    "scores": [
+      0.8571428571428571,
+      1,
+      0.75,
+      0
+    ],
+    "invalid": "invalid_python_grade",
+    "usage": [
+      {
+        "model_name": "qwen3.8-flash-next",
+        "invocation_count": 1,
+        "prompt_tokens": 303,
+        "completion_tokens": 4,
+        "total_tokens": 307,
+        "cached_tokens": 0
+      }
+    ],
+    "wire_objects": 4,
+    "driver_sha256": "d9ac08ae89b18dd5e9297eea299787f5192d983537553085067c2aee3687c8f5",
+    "lease": "COMPLETED",
+    "wire_sha256": "270f3de6eeae9a18b4ed5a2f61970ace800f6454c8facacc78affc74a6d79287"
+  },
+  "cpu": {
+    "evals": 12,
+    "existing_python_worker": 1,
+    "log_sha256": {
+      "evals-graders-final-cpu.log": "7f71a653ef56dc57454f5e6dcde11c8c78a65665e0281aad2fafc2556f9a2ddc",
+      "evals-graders-existing-worker.log": "880131a3888ad0dd0428fa8a9c54b154cf7daef5eed7d87284965aef4ea363b1"
+    }
   }
 }
