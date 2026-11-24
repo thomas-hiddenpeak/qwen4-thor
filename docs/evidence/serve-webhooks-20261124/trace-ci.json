@@ -1,0 +1,15 @@
+{
+  "pr": 106,
+  "previous_head": "0d49ab45f48f80589bd24e492e82ed6db8de00f1",
+  "failed_job": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45433301805/job/138584214609",
+  "failed_assertion": "trace_session_exporter_start_recovers_on_idle_tick_without_query at line 446",
+  "old_health_contract": "Health uses try_to_lock. Controller counters are defined only when snapshot_available is true.",
+  "change": "Read a single available snapshot before asserting exact recovery counts. Use the existing bounded test wait.",
+  "cpu_distinct": 3,
+  "cpu_repetitions": 4,
+  "cpu_passes": 12,
+  "production_changes": 0,
+  "new_model_starts": 0,
+  "cpu_sha256": "77fb3f7acc8c4de7a32458571ac254f7136094f5e0062a25710a95dd32f2a03c",
+  "failure_log_sha256": "24670ed28ada56bf35922caff552a6354390de40cae6883b642dc7bd5bb01ff9"
+}
