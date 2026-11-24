@@ -113,6 +113,19 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     live.format_for(bad)
 
+    def test_eval_extension_binds_grading_sources_and_retry_budget(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(chatkit=live.CHATKIT_CAPABILITY)
+        new = dict(old, evals=live.EVAL_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        self.assertFalse(migration.explicit_extension({}, new))
+        for field in live.EVAL_CAPABILITY:
+            with self.subTest(field=field):
+                bad = dict(live.EVAL_CAPABILITY)
+                del bad[field]
+                self.assertFalse(migration.explicit_extension(old, dict(new, evals=bad)))
+
     def test_chatkit_extension_preserves_issuer_history_and_files(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(hosted_environment_preparation=live.PREPARATION_CAPABILITY)

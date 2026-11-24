@@ -95,6 +95,7 @@ Json SavedResponse(ResponseStatePlan& plan, const Json& response,
               {"conversation_revision", Number(plan.conversation_revision)}}));
   if (!plan.eval_run_id.empty())
     Set(&result, "eval_run_id", String(plan.eval_run_id));
+  if (plan.eval_shutdown) Set(&result, "eval_shutdown", Boolean(true));
   if (!plan.chatkit_thread_id.empty())
     Set(&result, "chatkit_thread_id", String(plan.chatkit_thread_id));
   if (!plan.assistant_thread_id.empty()) {

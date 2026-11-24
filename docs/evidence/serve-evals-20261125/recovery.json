@@ -1,0 +1,94 @@
+{
+  "stage": "host_verified",
+  "observed": [
+    "one retry after confirmed shutdown for private text-only model samples",
+    "the frozen request, original row, seed and selected budget survive reopen",
+    "explicit cancellation, linked tools and a second interruption stay terminal",
+    "parent cancellation between attempts clears frozen inputs"
+  ],
+  "cpu_cases": 14,
+  "profile_migrations": 2,
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1362,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "receipts": {
+    "eval-interruption-cpu-03.log": "0e1f4b79b83578a6bca59df67f97a4115bf6d744fdcee25ed1686f9b2f1c1657",
+    "eval-profile-migration-cpu-02.log": "b72ec94cdbf0e57efb6483ae9167a0c56ba2e33d31f8f63ca1e40c7b0ee16f32"
+  },
+  "fixture_diagnostics": [
+    "Initial CPU case used a tool declaration while structured processing in the CPU plan was disabled. The test now enables it and reaches the guarded interruption.",
+    "The sparse worktree initially lacked four tracked migration fixture files. Their original Git blobs were checked out and the two affected migration cases passed."
+  ],
+  "pending": [
+    "real in-flight capacity change",
+    "managed model restart and independent rollback",
+    "default release and day handoff"
+  ],
+  "initial_config_failure": {
+    "status": "FAIL",
+    "reason": "The standalone schema rejected evaluation_run_errors. The native configuration also included the new eval_dispatcher health group.",
+    "raw_sha256": "d759a8936447dfda5aef2e88eaec1aa248c4954b3f0eb192139865b117e87ebd",
+    "cpu_regression_sha256": "76e4dd0da49684bfecf1d0b1e43bef5ffc0afd07b37a4a33fcb60d2406e7b8d3"
+  },
+  "initial_takeover_failure": {
+    "seconds": 222.734,
+    "model_starts": 2,
+    "fallback_selected": "fallback",
+    "actual_run_error": {
+      "code": "service_draining",
+      "message": "client minute quota unavailable"
+    },
+    "counts": {
+      "total": 2,
+      "errored": 0,
+      "passed": 1,
+      "failed": 1
+    },
+    "original_result_sha256": "8784af08e414b685a3e0c3e2072f713303758770be6eac963ae060b2f17c90e1",
+    "stderr_sha256": "af9550af266c271e61f6973c112f442ce93e930c8aca3a04a18c34bfbcd32cab",
+    "lease": "COMMAND_FAILED",
+    "clean": true
+  },
+  "first_managed_restart": {
+    "result": {
+      "status": "PASS",
+      "seconds": 127.84969003871083,
+      "model_starts": 2,
+      "stop_returncode": 0,
+      "supervisor_exit": 0,
+      "remaining": [],
+      "adopted_reaped": 0,
+      "ports_free": true,
+      "unchanged_default": true,
+      "receipt_sha256": "48e368f976f5c0a3e08375cd1306e63f518017015b094e41547fac540162ebc0"
+    },
+    "lease": "COMPLETED"
+  },
+  "drain_fix": {
+    "cpu_cases": 15,
+    "receipt_sha256": "e6e9cfebe1a82fa04db9e8af19bf32cf19ba7bae3ea5d5f6c21dcbd4c182f036",
+    "audit": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 239,
+      "native_routes": 394,
+      "reviewed_source_anchors": 1362,
+      "mutation_checks": 40,
+      "errors": []
+    },
+    "verified": [
+      "Frozen retiring process does not mutate the run or admit new model work. Explicit parent cancellation still commits.",
+      "The reserve race has an authoritative service_draining error. The new live owner can retry an affected pure-text row once with its frozen seed/input and budget."
+    ]
+  }
+}

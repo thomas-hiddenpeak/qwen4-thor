@@ -47,6 +47,22 @@ class ApplicationStartupContract(unittest.TestCase):
             del bad[key]
             self.assertFalse(validator.is_valid(bad), key)
 
+    def test_eval_dispatcher_and_counter_preserve_historical_configs(self):
+        schema = json.loads((ROOT/'docs/serve-config-v1.schema.json').read_text())
+        config = json.loads((ROOT/'docs/evidence/serve-native-embedding-business-20261111'
+                             /'config-1.json').read_text())
+        validator = Draft202012Validator(schema)
+        validator.validate(config)
+        health = dict(state='ready', readiness_dependency=False, attempts=1,
+                      failures=0, recoveries=0, retry_after_ms=0, last_failure='none')
+        startup = dict(config['application_startup'], eval_dispatcher=health)
+        current = dict(config, application_startup=startup, evaluation_run_errors=0)
+        validator.validate(current)
+        for bad in (-1, 0.5, '0', False):
+            self.assertFalse(validator.is_valid(dict(current, evaluation_run_errors=bad)))
+        startup['eval_dispatcher'] = dict(health, readiness_dependency=True)
+        self.assertFalse(validator.is_valid(current))
+
     def test_automation_reports_optional_startup_and_nonnegative_errors(self):
         schema = json.loads((ROOT/'docs/serve-config-v1.schema.json').read_text())
         group = schema['properties']['application_startup']

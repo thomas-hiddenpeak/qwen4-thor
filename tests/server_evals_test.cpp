@@ -282,6 +282,157 @@ Q4T_TEST(
   return true;
 }
 
+Q4T_TEST(evals_interrupted_text_replays_once_with_original_input_and_seed) {
+  for (const std::string mode : {"resume", "exhaust", "explicit", "tools", "cancel_parent", "drain_race"}) {
+    Fixture fixture;
+    ClientAdmission clients;
+    auto identity = clients.RecoveryIdentity(0);
+    ChatPlanConfig config;
+    config.model = "cpu";
+    config.structured = true;
+    config.default_max_tokens = 32;
+    StateAccess access{"local:anonymous",
+                       std::chrono::steady_clock::now() + 10s, {}};
+    ObjectRequest parent;
+    parent.kind = ObjectKind::kEvalRun;
+    parent.scope = access.scope;
+    std::string path, first_id, frozen;
+    std::atomic<unsigned> calls{0};
+    for (unsigned attempt = 0; attempt < 2; ++attempt) {
+      ObjectStore objects(fixture.options);
+      ResponsesJobs jobs(objects, {}, [&](auto& job) {
+        ++calls;
+        if (!attempt && mode == "drain_race") {
+          ResponsesExecution::ObserveError(job.run.get(), 503,
+              "client minute quota unavailable", "service_draining");
+          return;
+        }
+        if (!attempt || mode == "exhaust") {
+          while (!job.control->Cancelled()) std::this_thread::sleep_for(1ms);
+          return;
+        }
+        ResponseDelta delta;
+        delta.kind = ResponseDelta::Kind::kContent;
+        delta.text = "157";
+        std::string wire;
+        if (!job.run->Append(delta, "null", &wire) ||
+            !job.run->Finish(false, 0, {5, 0, 2, 0}, std::time(nullptr),
+                             &wire).ok())
+          throw std::runtime_error("Evaluation retry fixture");
+      });
+      eval_detail::SamplingOwner owner{clients, identity, jobs, config};
+      auto read = [&] { return objects.Execute(parent, access.deadline); };
+      auto step = [&] {
+        return eval_detail::AdvanceRun(objects, access, read().value, &owner);
+      };
+      if (!attempt) {
+        auto def = Request(objects, "POST", "/v1/evals", kDefinition, access.scope);
+        Q4T_CHECK(def.ok());
+        const auto collection = "/v1/evals/" + def.value.GetString("id") + "/runs";
+        std::string params = mode == "tools" ?
+            R"("tools":[{"type":"function","function":{"name":"lookup","parameters":{"type":"object","properties":{}}}}],)" : "";
+        auto run = Request(objects, "POST", collection,
+            R"({"data_source":{"type":"completions","model":"cpu","input_messages":{"type":"template","template":[{"role":"user","content":"Report {{item.count}}"}]},"sampling_params":{)" +
+            params + R"("temperature":0},"source":{"type":"file_content","content":[{"item":{"count":157}}]}}})",
+            access.scope);
+        Q4T_CHECK(run.ok());
+        parent.id = run.value.GetString("id");
+        path = collection + "/" + parent.id;
+        Q4T_CHECK(step().ok());
+      }
+      const auto submitted = step();
+      Q4T_CHECK(submitted.http_status == 202);
+      const auto claimed = read();
+      const auto& data = *claimed.value.Find("data");
+      const auto child = data.GetString("pending_response");
+      const auto* request = data.Find("sampling_request");
+      Q4T_CHECK(!child.empty() && request);
+      if (!attempt) {
+        first_id = child;
+        frozen = EncodeSchemaJson(*request);
+      } else {
+        Q4T_CHECK(first_id != child && EncodeSchemaJson(*request) == frozen &&
+                  data.GetInt("interruption_retries") == 1);
+      }
+      for (int i = 0; calls != attempt + 1 && i < 1000; ++i)
+        std::this_thread::sleep_for(1ms);
+      Q4T_CHECK(calls == attempt + 1);
+      if (mode == "explicit") Q4T_CHECK(jobs.Cancel(child, access).ok());
+      if ((attempt && mode == "resume") || mode == "drain_race")
+        for (int i = 0; jobs.Health().owned && i < 2000; ++i)
+          std::this_thread::sleep_for(1ms);
+      jobs.RequestStop();
+      jobs.Join();
+      Q4T_CHECK(step().ok());
+      const auto saved = read();
+      const auto& state = *saved.value.Find("data");
+      if (mode == "explicit" || mode == "tools" || (attempt && mode == "exhaust")) {
+        Q4T_CHECK(state.Find("resource")->GetString("status") == "failed");
+        Q4T_CHECK(step().ok() && calls == attempt + 1);
+        break;
+      }
+      if (!attempt) {
+        Q4T_CHECK(!state.Has("pending_response") && state.Has("pending_input") &&
+                  state.GetInt("row") == 0 && state.GetInt("interruption_retries") == 1);
+        Q4T_CHECK(ResponsesState(objects).Retrieve(child, access).http_status == 404);
+        if (mode == "cancel_parent") {
+          auto stopped = Request(objects, "POST", path + "/cancel", {}, access.scope);
+          Q4T_CHECK(stopped.ok() && stopped.value.GetString("status") == "canceled" &&
+                    !read().value.Find("data")->Has("pending_input"));
+          Q4T_CHECK(step().ok() && calls == 1);
+          break;
+        }
+      } else {
+        Q4T_CHECK(step().ok());
+        auto result = Request(objects, "GET", path, {}, access.scope);
+        Q4T_CHECK(result.ok() && result.value.GetString("status") == "completed" &&
+                  result.value.Find("result_counts")->GetInt("passed") == 1);
+      }
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(evals_frozen_service_preserves_queued_model_job_and_accepts_cancel) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  GatewayClientPolicy policy;
+  policy.version = 3;
+  policy.gateway_token = std::string(64, 'a');
+  policy.sha256 = std::string(64, 'b');
+  policy.clients.push_back({"alpha", 2, 1, 1024, 64, 65536, 30, 6000});
+  ClientAdmission retiring;
+  Q4T_CHECK(retiring.Configure(policy) && retiring.EnableRateRecovery() &&
+            retiring.RestoreRates(nullptr, std::string(64, '1')));
+  ChatPlanConfig config;
+  config.model = "cpu";
+  ResponsesJobs jobs(objects, {}, [](auto&) { throw std::logic_error("unexpected model callback"); });
+  auto alpha = retiring.RecoveryIdentity(0);
+  eval_detail::SamplingOwner owner{retiring, alpha, jobs, config};
+  StateAccess access{"client:alpha", std::chrono::steady_clock::now() + 10s, {}};
+  auto def = Request(objects, "POST", "/v1/evals", kDefinition);
+  Q4T_CHECK(def.ok());
+  auto path = "/v1/evals/" + def.value.GetString("id") + "/runs";
+  auto run = Request(objects, "POST", path, R"({"data_source":{"type":"completions","model":"cpu",
+    "source":{"type":"file_content","content":[{"item":{"count":157}}]}}})");
+  Q4T_CHECK(run.ok());
+  ObjectRequest get;
+  get.kind = ObjectKind::kEvalRun;
+  get.scope = access.scope;
+  get.id = run.value.GetString("id");
+  auto old = objects.Execute(get, access.deadline);
+  ClientRateState checkpoint;
+  Q4T_CHECK(retiring.FreezeRates(&checkpoint));
+  for (int i = 0; i < 3; ++i)
+    Q4T_CHECK(eval_detail::AdvanceRun(objects, access, old.value, &owner).http_status == 202);
+  auto current = objects.Execute(get, access.deadline);
+  Q4T_CHECK(EncodeSchemaJson(current.value) == EncodeSchemaJson(old.value) &&
+            jobs.Health().owned == 0);
+  auto canceled = Request(objects, "POST", path + "/" + get.id + "/cancel");
+  Q4T_CHECK(canceled.ok() && canceled.value.GetString("status") == "canceled");
+  return true;
+}
+
 Q4T_TEST(evals_model_graders_resume_without_replacing_the_original_sample) {
   Fixture f;
   std::string eval, id;

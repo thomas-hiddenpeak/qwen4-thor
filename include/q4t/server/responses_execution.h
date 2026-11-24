@@ -115,7 +115,7 @@ class ResponsesExecution {
   // Runs with an explicit prompt limit use this cumulative bound.
   bool AdmitAssistantPrompt(uint64_t consumed, uint64_t next);
   ObjectReply CheckParentCancellation(bool* cancelled);
-  ObjectReply Cancel();
+  ObjectReply Cancel(bool server_shutdown = false);
   ObjectReply Checkpoint();
   // Block policy keeps all generated items/events private until the actual
   // classifier approves them. GET/replay continue to see the safe checkpoint.

@@ -94892,6 +94892,9 @@
                   "last_failure"
                 ]
               },
+              "eval_dispatcher": {
+                "$ref": "#/components/schemas/serve-config-v1.schema.json/properties/application_startup/properties/automation_dispatcher"
+              },
               "webhook_dispatcher": {
                 "$ref": "#/components/schemas/serve-config-v1.schema.json/properties/application_startup/properties/automation_dispatcher"
               },
@@ -96006,6 +96009,11 @@
           },
           "live_worker_profile": {
             "const": "q4t-live-workers-v1"
+          },
+          "evaluation_run_errors": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Errors observed by the evaluation dispatcher since startup."
           },
           "webhook_delivery": {
             "type": "object",

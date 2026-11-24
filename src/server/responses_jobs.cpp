@@ -791,7 +791,8 @@ void ResponsesJobs::Execute(const std::shared_ptr<Job>& job) noexcept {
     if (job->control->Cancelled() &&
         (std::string_view(job->control->Reason()) == "explicit_cancel" ||
          std::string_view(job->control->Reason()) == "server_shutdown")) {
-      job->run->Cancel();
+      job->run->Cancel(std::string_view(job->control->Reason()) ==
+                       "server_shutdown");
     } else {
       if (job->control->Cancelled())
         ResponsesExecution::ObserveError(job->run.get(), 408,

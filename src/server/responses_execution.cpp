@@ -842,7 +842,7 @@ ObjectReply ResponsesExecution::StartRunning(std::string* wire) {
   return {};
 }
 
-ObjectReply ResponsesExecution::Cancel() {
+ObjectReply ResponsesExecution::Cancel(bool server_shutdown) {
   if (plan_.finished) return {};
   if (!begun_ || commit_unknown_)
     return Error(409, "response_state_invalid", "Response cannot be cancelled");
@@ -857,6 +857,7 @@ ObjectReply ResponsesExecution::Cancel() {
   auto status = ApplyActualUsage(&candidate);
   if (status) status = candidate.Cancel();
   if (!status) return OutputError(status);
+  plan_.eval_shutdown = server_shutdown && !plan_.eval_run_id.empty();
   auto result = BindMutationResult(
       state_.Finish(candidate.Snapshot(), events_, cleanup, &plan_));
   if (!result.commit_unknown && (result.code == "object_too_large" ||
