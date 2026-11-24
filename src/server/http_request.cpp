@@ -453,7 +453,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      *path == "/v1/embeddings" || *path == "/v1/audio/speech" ||
                      IsResponsesTarget(*path) || IsConversationTarget(*path) ||
                      IsAssistantsV2Target(*path) || IsManagedAgentTarget(*path) || IsPromptTarget(*path) ||
-                     IsUploadTarget(*path)
+                     IsContainerTarget(*path) || IsUploadTarget(*path)
                  ? kChatBodyBytes
                  : 4096);
   const size_t body_limit = std::min(route_limit, headers->body_limit);

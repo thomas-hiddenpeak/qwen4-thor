@@ -1,0 +1,807 @@
+{
+  "profile": "q4t-openai-container-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "create": 0,
+    "created": 32,
+    "resource": 40,
+    "list_item": 45,
+    "query": 50,
+    "file_created": 54,
+    "file_resource": 56,
+    "file_list_item": 57,
+    "file_query": 58
+  },
+  "nodes": [
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "expires_after",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 5
+        },
+        {
+          "name": "memory_limit",
+          "optional": true,
+          "type": 8
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "network_policy",
+          "optional": true,
+          "type": 13
+        },
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 21
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "anchor",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "minutes",
+          "optional": false,
+          "type": 4
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "last_active_at"
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        6
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 7
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "1g"
+    },
+    {
+      "kind": "literal",
+      "value": "4g"
+    },
+    {
+      "kind": "literal",
+      "value": "16g"
+    },
+    {
+      "kind": "literal",
+      "value": "64g"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        14,
+        16
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "disabled"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": false,
+          "type": 6
+        },
+        {
+          "name": "domain_secrets",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 19
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "domain",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "allowlist"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        22
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 23
+    },
+    {
+      "kind": "union",
+      "variants": [
+        24,
+        27
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 25
+        },
+        {
+          "name": "version",
+          "optional": true,
+          "type": 26
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "skill_reference"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        7
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 28
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 31
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "media_type",
+          "optional": false,
+          "type": 29
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "application/zip"
+    },
+    {
+      "kind": "literal",
+      "value": "base64"
+    },
+    {
+      "kind": "literal",
+      "value": "inline"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "expires_after",
+          "optional": true,
+          "type": 33
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "last_active_at",
+          "optional": true,
+          "type": 36
+        },
+        {
+          "name": "memory_limit",
+          "optional": true,
+          "type": 8
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "network_policy",
+          "optional": true,
+          "type": 37
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        34
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "anchor",
+          "optional": true,
+          "type": 35
+        },
+        {
+          "name": "minutes",
+          "optional": true,
+          "type": 36
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        3
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        38
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 5
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        15,
+        20
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "expires_after",
+          "optional": true,
+          "type": 41
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "last_active_at",
+          "optional": true,
+          "type": 36
+        },
+        {
+          "name": "memory_limit",
+          "optional": true,
+          "type": 8
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "network_policy",
+          "optional": true,
+          "type": 43
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        42
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "anchor",
+          "optional": true,
+          "type": 35
+        },
+        {
+          "name": "minutes",
+          "optional": true,
+          "type": 36
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        44
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 5
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "expires_after",
+          "optional": true,
+          "type": 46
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "last_active_at",
+          "optional": true,
+          "type": 36
+        },
+        {
+          "name": "memory_limit",
+          "optional": true,
+          "type": 8
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "network_policy",
+          "optional": true,
+          "type": 48
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        47
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "anchor",
+          "optional": true,
+          "type": 35
+        },
+        {
+          "name": "minutes",
+          "optional": true,
+          "type": 36
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        49
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 5
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 36
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 51
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        52,
+        53
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "asc"
+    },
+    {
+      "kind": "literal",
+      "value": "desc"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "bytes",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "container_id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 55
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "container.file"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "bytes",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "container_id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 55
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "bytes",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "container_id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 4
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 55
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 7
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 36
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 51
+        }
+      ],
+      "additional": null
+    }
+  ],
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/containers/containers.ts": "7d4d3e0fb4996229180c1b3970d088f579073f00c43cdb1e3204d6f3258afd01",
+    "src/resources/containers/files/files.ts": "a92d6eabedeca264ff92363aa464ec9eac2ff00262e57759bdaccf172d463a58",
+    "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}

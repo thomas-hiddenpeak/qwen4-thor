@@ -2565,6 +2565,105 @@
         "src/server/assistant_run_stream.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
+    },
+    "DELETE /v1/containers/{container_id}": {
+      "semantics": "按客户和父对象校验归属，事务删除后返回对象 ID 和删除标志。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "DELETE /v1/containers/{container_id}/files/{file_id}": {
+      "semantics": "按客户和父对象校验归属，事务删除后返回对象 ID 和删除标志。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers": {
+      "semantics": "持久化容器元数据、按名称筛选及带游标分页。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers/{container_id}": {
+      "semantics": "持久化容器元数据、按名称筛选及带游标分页。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers/{container_id}/files": {
+      "semantics": "按父容器访问文件；支持引用现有 Files 或 multipart 上传、分页元数据及定长二进制下载。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers/{container_id}/files/{file_id}": {
+      "semantics": "按父容器访问文件；支持引用现有 Files 或 multipart 上传、分页元数据及定长二进制下载。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers/{container_id}/files/{file_id}/content": {
+      "semantics": "按父容器访问文件；支持引用现有 Files 或 multipart 上传、分页元数据及定长二进制下载。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/containers": {
+      "semantics": "持久化容器元数据、按名称筛选及带游标分页。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/containers/{container_id}/files": {
+      "semantics": "按父容器访问文件；支持引用现有 Files 或 multipart 上传、分页元数据及定长二进制下载。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3179,8 +3278,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "6619903243910ef1a086fc51b760d32af20d23d760ea4fd9ec69d5216e6234af",
-    "cmake/ChatProtocolIdentity.cmake": "6a9a0b393ef8e986770dffdd0ec08e065fdad8ab6e3cd1ed9358b68443b62b1d",
+    "CMakeLists.txt": "cf3163d6cf8a81cff5a0519f6063da8c6fa9f9a626819c425799c0fea1913760",
+    "cmake/ChatProtocolIdentity.cmake": "498bda748127ad1f85793a9294c765e68686355716d84d3c2da349ff43a7fe93",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3192,6 +3291,7 @@
     "cmake/RecoveryProbe.cmake": "b10bd71c92a8c9a9f6545da89ab06585f7c1398a978eb01aae9e18eb716c0271",
     "cmake/RustRegex.cmake": "99d9e977c34f48ae74d54ef33b432ce5287d668e7573d0b7bac0b7a5655924c3",
     "cmake/StructuredOutput.cmake": "66f791cc30c164e2a3b40c639a699e13077774d9bacf59b3b55a924e134f5b84",
+    "cmake/container_types.h.in": "d5a483b0117c4cb9fd602c557cdaaabe2414ad522b93b3f1d56ad62f9aa6109b",
     "cmake/regex-syntax-0.8.8.sha256": "6eba6c50e6a79adfb56202c75e8a3b551fe384f84e8bb7e3f2634fe2791a7880",
     "include/q4t/audio/aligner_config.h": "db9e41dc284ebcf4fb7b78d0c0c4b2579902dfe7b5c946535c6643aff7b39f05",
     "include/q4t/audio/aligner_layout.h": "28fa3f1dddcffc360e9c237910d0aab3cd34556051ce690933ff07e0241ac122",
@@ -3261,7 +3361,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "4ca39dff92e862744ca0225f36a1695899c6a74b28ccac2edbdf9b5b26a29fb7",
+    "include/q4t/server/application_routes.h": "1349d22f8ce648a02d687275b25e1558d7ebf8c167cde580c6d7a5a7f8793fb6",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3315,6 +3415,7 @@
     "include/q4t/server/client_request.h": "d08159942c0f0f95c5040546b3aab647eac435546767e96a1c922f3d88957998",
     "include/q4t/server/completion_plan.h": "3974785c56eb107ef29c4904f7d04476080c1d11315f8d621b7ea49a8856d896",
     "include/q4t/server/completion_response.h": "4728686120ce9577aa66f60460982212d0450c429eb27d0e2ecdfa9e2b355f98",
+    "include/q4t/server/containers.h": "49c694b1c68d853e3776a56f46795e04889322a74925e484b1e6d224d748227d",
     "include/q4t/server/conversation_api.h": "df3cb4b69686e881fcaa1f9e46f0f97309cb8feddf21a09e457ee86f1842b878",
     "include/q4t/server/conversation_state.h": "073237c038816155bbacecbec129e5dfee77f7cb7dd45068903cfa34f8a0fc95",
     "include/q4t/server/cuda_quota_metrics.h": "40ea24b9df80e446f13c89cf4e5d8ce09741fc67ce3d413096cc1ac10e59cbc2",
@@ -3345,12 +3446,12 @@
     "include/q4t/server/file_source.h": "d6c365c754368537b687238864b0dcdd8444b6b093d48145455b87faa95b263b",
     "include/q4t/server/file_video.h": "ba312dd94c738ba4717bb3cb0e3356e24b319c4748d13e9722d7e7a3b08546e6",
     "include/q4t/server/file_webp.h": "b7fa99598fcce0ed0d1feb3016cfe5936944d2910167472c53ff3c92c44ba0cd",
-    "include/q4t/server/files.h": "c6441097de1d8ff9d260a46abc33feda1446d95cfee2c5573bdd405e0cc836d9",
-    "include/q4t/server/files_http.h": "6806f943d1bf018c7886846145400b32dad0fedac6aec3be06184c138289b8ea",
+    "include/q4t/server/files.h": "a174c9134707e6de82e6820bbe9cee804fc9b7c40b836bee7866006d2475af1a",
+    "include/q4t/server/files_http.h": "ad39db9bc43709387a1674bea8c909d15ca3abbf1468a4e447596674299ad90f",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
     "include/q4t/server/grammar_process.h": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447",
-    "include/q4t/server/http_connection.h": "8195609e2d246ce61544bf62d93254eceeb3085a200a02cb73676e5107e8da0f",
+    "include/q4t/server/http_connection.h": "81cc135f902f527cf80df6de65f020e6219bd50f8b6994fc0c2767310db2f130",
     "include/q4t/server/http_framing.h": "689fd32f9bf2b042c8f8b59cebd92d70d55f7b950c1f475babfe736420765524",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
@@ -3409,7 +3510,7 @@
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
-    "include/q4t/server/object_store.h": "8afc2826671809f920ace9b642b64f533a4902afa7c78f39c41529042357232b",
+    "include/q4t/server/object_store.h": "8444396c2690142ca21007e60d02cb20ce1ae3f083cdd9937fdf8057656127eb",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -3724,7 +3825,7 @@
     "src/server/batch_state.cpp": "c1f4ea93b2b4373f649cd870a0066afa9698798a25360a73d69da29bd474fc71",
     "src/server/batch_usage.cpp": "abf218b785045fe0116bc88ba22fd21087db0989b7a4b50011b1d35d5abbebca",
     "src/server/batch_validation.cpp": "670542f022f7e4b8d10a28ef80941170925f41e1c9e5ef1507705d545dfff394",
-    "src/server/binary_store.cpp": "839ddbb537b6a8c66ab0fc4efdd51052c4a9c5e04adeeaf27ee6235b0a0aa886",
+    "src/server/binary_store.cpp": "2df20cb6617c1f19d3e0e988c6aaa8bf98dd18c04dd597a71365c4dcebeb26eb",
     "src/server/cache_io.cpp": "96d9d7315eb8a7a90905d718528fd624aa5caec3a9830568afaddacbb9e19fa9",
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
@@ -3751,7 +3852,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "3d77b83633d4839ec77c599cdd005f1ee9d1a8d52ef0c94165841fa941562749",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "9ddd60ff2d9f19e9460a10c811d4c5047e6cdba921a9d54d4a62d7e58eb73a3b",
+    "src/server/chat_http.cpp": "245da3cdc45684db961f1ae926dba7c7794e6dec53a29d1c55baf900cf19b28e",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3799,12 +3900,16 @@
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "ac56a7e035a60ee4906e0ed4d8a3643143aed75d0ac3b3d9cbf6d9a460913ff2",
+    "src/server/client_request.cpp": "e2a05426d7b410e2dc00f3c8128e3d67bb349eb0277e87a687c921862f192beb",
     "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
+    "src/server/container_files.cpp": "e442730a05aa9f27c82d57fb5d07425aafdc40952b4300f19b543bd125b7c1a4",
+    "src/server/containers.cpp": "574304b1c4bcbd38fe9e72c467b8d79c18b560f23b2d766212681399dfbc192e",
+    "src/server/containers_internal.h": "ca65c344443aa4f606669f5482eecb32ffdbd3aba30207b97fdd7090c7cb68a7",
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
     "src/server/contracts/openai_agent_session_types_v1.json": "989cbd668d01c3686b2d38d1bc280bba7c8134328f8f4836f9fa7ce05d1157ab",
     "src/server/contracts/openai_assistant_types_v1.json": "265a9ff4cecaef4b8e81e862a202877ba83b947fe094abd79561e4191edd8fcc",
+    "src/server/contracts/openai_container_types_v1.json": "e24a221e48e74a6c8556f0273477e6a1a45a74b9af2012eefe3e83682bb4ef52",
     "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
     "src/server/contracts/openai_environment_types_v1.json": "e28dc97fbb23877addcfe83e3e7d5cddc05d27383b6378f0cfcfc09c7b6d2ee5",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -3881,13 +3986,13 @@
     "src/server/file_webp.cpp": "0e8994aee25358847f5732a6fe68fd708dfc74b46b5c3a85673006be50e0357d",
     "src/server/file_webp_protocol.h": "ae236906fdcdf4cae176be4c313729cda618802894eecc099f10b5735d089d24",
     "src/server/file_webp_worker.cpp": "ed6ca89514b2f2c1123ea89775b53e8c709e92dd79a5338579494fb0368cc5a3",
-    "src/server/files.cpp": "2eb85871d7f22a11ba2ad905448ec5fdf82b80ffed409d4d20da58972c466d4e",
-    "src/server/files_http.cpp": "5220e8a39538a87fda59dc33b525104966452a4ac53df9c04202f59c007905c0",
+    "src/server/files.cpp": "4ee20c1ad701b307f443f66c5ea7fc7966434e2c45fd43f7c60d0c4a8c732d5c",
+    "src/server/files_http.cpp": "0af52cbdd799fee5facf1cd4c5fb5b9cb05420fce3b953aaad495f1536f7c91f",
     "src/server/finite_response.cpp": "ce920a476844972506719d688078a3256512024619611d9175cf8b3be38ca7bc",
     "src/server/grammar_process.cpp": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "89cb8c534c0a0a3eb4db5dce7a9dc18eeadad6bf0e14cf9ceacd400c7802616c",
+    "src/server/http_request.cpp": "17ea74ee08fa6993928f27439bce23333f0ead817fe31b0848f737f262a9e4bd",
     "src/server/http_response.cpp": "e7975c1039374eb22c0220539bd590c86524e315d3e7c0519ff89607d9ec633f",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -3966,9 +4071,9 @@
     "src/server/native_chat_generation.cpp": "4f223e5f912d2382df67a5258aba6dec0328e4199bf04621da8012fbdd5b183b",
     "src/server/native_crypto.cpp": "9da39bb1de51c80b9a028e4e748a77266a5d145a24173ab5d0fdc192bccde92a",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "0be12f33044bc64e8496a7f161b15dc2a850cffb9ff4d80dea2707c767da67ea",
-    "src/server/object_retention.cpp": "d2d17bdd3ae89df84d83ae00d71ee178959359f0daddaa763097e36ece6ea463",
-    "src/server/object_store.cpp": "75e4413ceecabe49604cafb8a03d2b8c706f44228e239169e79ac3734b848134",
+    "src/server/object_protocol.h": "c95c184d6ee04c578aa146761b446647ee04d11d97c25f619d9ed670b5f2bffe",
+    "src/server/object_retention.cpp": "8edb2194736db3157e5afd1d4260f074cf791ca6f010e4c05c4bbc55604901ad",
+    "src/server/object_store.cpp": "05fcbac1ffd21a18d6f047137dae9c2871fa008c526eb29b1da4828be54426b8",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "675be8530047880b57644e3634deb128386ee3f7973ea98b9c3fa073beb8bd59",
     "src/server/output_constraints.cpp": "add0daef3ba87df074329f1ed554220023ab0db4211667f27ea723e23c4cacd9",
@@ -4059,7 +4164,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "2fb783afdb0d4478647b9b1231db474835697971203966bd8cb1c5a696e85940",
-    "src/server/responses_item_shape.cpp": "f96837e365c99a8efcd61c4270edf6234773fbd0b6bfa62c1d53bdff0a2f283b",
+    "src/server/responses_item_shape.cpp": "51a53659517b93217be781a0b11f3152bfd974876a4382a1ae4bf52a555dd31a",
     "src/server/responses_jobs.cpp": "02ba0eb00df0e814216696c04000c848f2b8aa88ca89509b4cbd9bb7e508a5b8",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -4198,7 +4303,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "6b14d0f18b6f3b08271a20a22527e24d3f7fd4d001a13efce771259d28eebb33",
+    "src/service/ingress_main.cpp": "5a9298af92e5b72719f14f8ccef2fd793b42488825f2a4e4fcadc50479919d69",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -4228,7 +4333,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "67b8515ac518359dc825c75f07f57d3fc4835f1519609be434ca491d45d8899f",
+    "tools/serve_gateway/gateway.py": "3738b57eaeba0e2cd85b744e522aed9925d5eb5ee4fb154972d51efdabb499a1",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -4405,6 +4510,7 @@
     "tools/serve_recovery/version_registration.py": "8f127f8423fcba9a383232f596ed8e25239953725f092c0680acba9518cecede",
     "tools/serve_recovery/version_runtime.py": "2d3303bb16d919249dc7dedb11e5d4095f8df775a0ae3c2bba70bb1d1a655726",
     "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
+    "tools/serve_responses/generate_item_types.mjs": "1019cf31411f79fc5b193ee973b42a54d06a7f227b7d8f926abf7844e2dc162b",
     "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
     "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
     "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
@@ -7887,6 +7993,165 @@
         "src/server/assistant_run_http.cpp",
         "src/server/assistant_run_admission.cpp",
         "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "DELETE /v1/containers/{container_id}": {
+      "semantics": "按客户和父对象校验归属，事务删除后返回对象 ID 和删除标志。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "DELETE /v1/containers/{container_id}/files/{file_id}": {
+      "semantics": "按客户和父对象校验归属，事务删除后返回对象 ID 和删除标志。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers": {
+      "semantics": "持久化容器元数据、按名称筛选及带游标分页。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers/{container_id}": {
+      "semantics": "持久化容器元数据、按名称筛选及带游标分页。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers/{container_id}/files": {
+      "semantics": "按父容器访问文件；支持引用现有 Files 或 multipart 上传、分页元数据及定长二进制下载。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers/{container_id}/files/{file_id}": {
+      "semantics": "按父容器访问文件；支持引用现有 Files 或 multipart 上传、分页元数据及定长二进制下载。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/containers/{container_id}/files/{file_id}/content": {
+      "semantics": "按父容器访问文件；支持引用现有 Files 或 multipart 上传、分页元数据及定长二进制下载。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/containers": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/containers/{container_id}": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/containers/{container_id}/files": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/containers/{container_id}/files/{file_id}": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/containers/{container_id}/files/{file_id}/content": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "src/server/files_http.cpp",
+        "docs/SERVE_FILES_UPLOADS_BATCH_2026-11-10.md",
+        "docs/evidence/serve-files-transport-cpu-20261110/README.md",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "POST /v1/containers": {
+      "semantics": "持久化容器元数据、按名称筛选及带游标分页。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/containers/{container_id}/files": {
+      "semantics": "按父容器访问文件；支持引用现有 Files 或 multipart 上传、分页元数据及定长二进制下载。",
+      "boundary": "按 last_active_at 刷新工作区期限，过期仅保留容器元数据。托管执行和技能挂载单独验收。",
+      "evidence": [
+        "src/server/containers.cpp",
+        "src/server/container_files.cpp",
+        "src/server/files_http.cpp",
+        "src/service/ingress_main.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
     }

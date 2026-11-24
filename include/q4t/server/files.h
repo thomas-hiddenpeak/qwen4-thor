@@ -15,8 +15,10 @@ inline constexpr size_t kFileListWorkingBytes = 32ULL << 20;
 // the HTTP reader and MIME parser both finish successfully. No destructor IO.
 class FileUpload {
  public:
+  using ContainerSink = std::function<ObjectReply(
+      BinaryStage*, std::string_view, std::string_view)>;
   FileUpload(ObjectStore& objects, BinaryAccess access,
-             std::string_view content_type);
+             std::string_view content_type, ContainerSink container_sink = {});
   const ObjectReply& Result() const { return result_; }
   ObjectReply Feed(std::string_view bytes,
                    std::chrono::steady_clock::time_point deadline);
@@ -30,6 +32,8 @@ class FileUpload {
   Status EndPart();
   Status Flush();
   Status Failure(ObjectReply reply);
+  ContainerSink container_sink_;
+  std::string source_file_;
   BinaryStore binary_;
   BinaryAccess access_;
   BinaryStage stage_;

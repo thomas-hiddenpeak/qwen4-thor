@@ -479,6 +479,13 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   } else if (kind == "live_fork_state" &&
              data.GetString("format") == "q4t.live_fork.v1") {
     inspector.value.collect_when_unreferenced = true;
+  } else if (kind == "container" &&
+             data.GetString("format") == "q4t.container.v1") {
+    // Public metadata survives expiration. It must not retain workspace bytes.
+  } else if (kind == "container_file" &&
+             data.GetString("format") == "q4t.container_file.v1") {
+    inspector.Blob(data);
+    inspector.value.collect_when_unreferenced = true;
   } else if (kind == "file" && data.GetString("format") == "q4t.file.v1") {
     inspector.Blob(data);
   } else if (kind == "input_snapshot" &&
@@ -488,7 +495,14 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.value.collect_when_unreferenced = true;
   } else if (kind == "tool_run") {
     const auto format = data.GetString("format");
-    if (format == "q4t.environment.creation.v1") {
+    if (format == "q4t.container_workspace.v1") {
+      const auto* files = data.GetArray("files");
+      if (!files)
+        inspector.value.uncertain = true;
+      else
+        for (const auto& file : files->array)
+          inspector.RequiredId(file, "id", "cfile_");
+    } else if (format == "q4t.environment.creation.v1") {
       inspector.RequiredId(data, "environment_id", "environment_");
       const auto digest = data.GetString("request_sha256");
       if (digest.size() != 64 ||

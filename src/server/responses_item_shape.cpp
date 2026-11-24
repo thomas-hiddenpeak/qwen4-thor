@@ -19,6 +19,8 @@
 #include "vault_credential_internal.h"
 #include "q4t/server/assistant_registry.h"
 #include "q4t/server/assistant_types_data.h"
+#include "q4t/server/container_types_data.h"
+#include "q4t/server/containers.h"
 #include "q4t/server/agent_registration_types_data.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/responses_item_types_data.h"
@@ -356,6 +358,43 @@ Status ValidateAgentSession(const Json& value, AgentSessionShape shape,
     case AgentSessionShape::kSubagent: root = "subagent"; break;
   }
   return Validate(graph, value, root, error, "");
+}
+
+Status ValidateContainer(const Json& value, ContainerShape shape,
+                         ChatPlanError* error) {
+  static const Graph graph(container_types::kData,
+                           "q4t-openai-container-types-v1");
+  const char* root = "";
+  switch (shape) {
+    case ContainerShape::kCreate:
+      root = "create";
+      break;
+    case ContainerShape::kCreated:
+      root = "created";
+      break;
+    case ContainerShape::kResource:
+      root = "resource";
+      break;
+    case ContainerShape::kListItem:
+      root = "list_item";
+      break;
+    case ContainerShape::kQuery:
+      root = "query";
+      break;
+    case ContainerShape::kFileCreated:
+      root = "file_created";
+      break;
+    case ContainerShape::kFileResource:
+      root = "file_resource";
+      break;
+    case ContainerShape::kFileListItem:
+      root = "file_list_item";
+      break;
+    case ContainerShape::kFileQuery:
+      root = "file_query";
+      break;
+  }
+  return Validate(graph, value, root, error, "", true);
 }
 
 Status ValidateAssistant(const Json& value, AssistantShape shape,

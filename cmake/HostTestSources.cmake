@@ -436,6 +436,8 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_registry.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/prompt_api.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_registry.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/containers.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/container_files.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_threads.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_run_settings.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_run_view.cpp

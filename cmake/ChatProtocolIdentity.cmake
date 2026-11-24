@@ -728,10 +728,16 @@ set(protocol_inputs
   src/server/vault_credential_internal.h
   src/server/contracts/openai_assistant_types_v1.json
   cmake/assistant_types.h.in
+  cmake/container_types.h.in
+  src/server/contracts/openai_container_types_v1.json
+  include/q4t/server/containers.h
   include/q4t/server/assistant_registry.h
   src/server/assistant_runs_internal.h
   src/server/assistant_threads_internal.h
+  src/server/containers_internal.h
   src/server/assistant_registry.cpp
+  src/server/containers.cpp
+  src/server/container_files.cpp
   src/server/assistant_threads.cpp
   src/server/assistant_run_settings.cpp
   src/server/assistant_run_view.cpp
@@ -1066,6 +1072,15 @@ if(NOT environment_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/environment_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/environment_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_container_types_v1.json"
+  Q4T_CONTAINER_TYPES)
+string(FIND "${Q4T_CONTAINER_TYPES}" ")q4t_types\"" container_delimiter)
+if(NOT container_delimiter EQUAL -1)
+  message(FATAL_ERROR "Container type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/container_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/container_types_data.h" @ONLY)
 
 file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_assistant_types_v1.json"
   Q4T_ASSISTANT_TYPES)

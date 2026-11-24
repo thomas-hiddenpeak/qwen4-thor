@@ -3930,6 +3930,643 @@
         "x-q4t-recovery": "Unknown receipt retains original IDs. Matching complete parameters reconcile the original File without replay. Cancel/expiry release unfinished parts; completed File retains its own lifetime."
       }
     },
+    "/v1/containers": {
+      "get": {
+        "operationId": "get_v1_containers",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_26"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_26"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "container_query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_containers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_created"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "container_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_create"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/containers/{container_id}": {
+      "get": {
+        "operationId": "get_v1_containers_container_id",
+        "parameters": [
+          {
+            "name": "container_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "delete": {
+        "operationId": "delete_v1_containers_container_id",
+        "parameters": [
+          {
+            "name": "container_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/containers/{container_id}/files": {
+      "post": {
+        "operationId": "post_v1_containers_container_id_files",
+        "parameters": [
+          {
+            "name": "container_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_file_created"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "container_file_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_file_create"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file_id": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "additionalProperties": false,
+                "oneOf": [
+                  {
+                    "required": [
+                      "file_id"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "file"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_containers_container_id_files",
+        "parameters": [
+          {
+            "name": "container_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_26"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_file_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "container_file_query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/containers/{container_id}/files/{file_id}": {
+      "get": {
+        "operationId": "get_v1_containers_container_id_files_file_id",
+        "parameters": [
+          {
+            "name": "container_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_file_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "delete": {
+        "operationId": "delete_v1_containers_container_id_files_file_id",
+        "parameters": [
+          {
+            "name": "container_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_file_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/containers/{container_id}/files/{file_id}/content": {
+      "get": {
+        "operationId": "get_v1_containers_container_id_files_file_id_content",
+        "parameters": [
+          {
+            "name": "container_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Immutable container file bytes",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
     "/v1/vaults/{vault_id}/credentials": {
       "get": {
         "operationId": "get_v1_vaults_vault_id_credentials",
@@ -45754,6 +46391,929 @@
             "required": [
               "id",
               "object",
+              "deleted"
+            ],
+            "additionalProperties": false
+          },
+          "container_0": {
+            "type": "object",
+            "properties": {
+              "expires_after": {
+                "type": "object",
+                "properties": {
+                  "anchor": {
+                    "const": "last_active_at"
+                  },
+                  "minutes": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "anchor",
+                  "minutes"
+                ],
+                "additionalProperties": false
+              },
+              "file_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_5"
+              },
+              "memory_limit": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_8"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "network_policy": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_13"
+              },
+              "skills": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_21"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "container_1": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_2"
+              }
+            ]
+          },
+          "container_2": {
+            "type": "object",
+            "properties": {
+              "anchor": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_3"
+              },
+              "minutes": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_4"
+              }
+            },
+            "required": [
+              "anchor",
+              "minutes"
+            ],
+            "additionalProperties": false
+          },
+          "container_3": {
+            "const": "last_active_at"
+          },
+          "container_4": {
+            "type": "number"
+          },
+          "container_5": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_6"
+              }
+            ]
+          },
+          "container_6": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+            }
+          },
+          "container_7": {
+            "type": "string"
+          },
+          "container_8": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_9"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_10"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_12"
+              }
+            ]
+          },
+          "container_9": {
+            "const": "1g"
+          },
+          "container_10": {
+            "const": "4g"
+          },
+          "container_11": {
+            "const": "16g"
+          },
+          "container_12": {
+            "const": "64g"
+          },
+          "container_13": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_14"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_16"
+              }
+            ]
+          },
+          "container_14": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_15"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "container_15": {
+            "const": "disabled"
+          },
+          "container_16": {
+            "type": "object",
+            "properties": {
+              "allowed_domains": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_6"
+              },
+              "domain_secrets": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_17"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_20"
+              }
+            },
+            "required": [
+              "allowed_domains",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "container_17": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_18"
+              }
+            ]
+          },
+          "container_18": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_19"
+            }
+          },
+          "container_19": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "value": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              }
+            },
+            "required": [
+              "domain",
+              "name",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "container_20": {
+            "const": "allowlist"
+          },
+          "container_21": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_22"
+              }
+            ]
+          },
+          "container_22": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_23"
+            }
+          },
+          "container_23": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_24"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_27"
+              }
+            ]
+          },
+          "container_24": {
+            "type": "object",
+            "properties": {
+              "skill_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_25"
+              },
+              "version": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_26"
+              }
+            },
+            "required": [
+              "skill_id",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "container_25": {
+            "const": "skill_reference"
+          },
+          "container_26": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              }
+            ]
+          },
+          "container_27": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "source": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_28"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_31"
+              }
+            },
+            "required": [
+              "description",
+              "name",
+              "source",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "container_28": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "media_type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_29"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_30"
+              }
+            },
+            "required": [
+              "data",
+              "media_type",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "container_29": {
+            "const": "application/zip"
+          },
+          "container_30": {
+            "const": "base64"
+          },
+          "container_31": {
+            "const": "inline"
+          },
+          "container_32": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "type": "integer"
+              },
+              "expires_after": {
+                "type": "object",
+                "properties": {
+                  "anchor": {
+                    "const": "last_active_at"
+                  },
+                  "minutes": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "anchor",
+                  "minutes"
+                ],
+                "additionalProperties": false
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "last_active_at": {
+                "type": "integer"
+              },
+              "memory_limit": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_8"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "network_policy": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_37"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              }
+            },
+            "required": [
+              "created_at",
+              "id",
+              "name",
+              "object",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "container_33": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_34"
+              }
+            ]
+          },
+          "container_34": {
+            "type": "object",
+            "properties": {
+              "anchor": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_35"
+              },
+              "minutes": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_36"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "container_35": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_3"
+              }
+            ]
+          },
+          "container_36": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_4"
+              }
+            ]
+          },
+          "container_37": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_38"
+              }
+            ]
+          },
+          "container_38": {
+            "type": "object",
+            "properties": {
+              "allowed_domains": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_5"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_39"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "container_39": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_15"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_20"
+              }
+            ]
+          },
+          "container_40": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "type": "integer"
+              },
+              "expires_after": {
+                "type": "object",
+                "properties": {
+                  "anchor": {
+                    "const": "last_active_at"
+                  },
+                  "minutes": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "anchor",
+                  "minutes"
+                ],
+                "additionalProperties": false
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "last_active_at": {
+                "type": "integer"
+              },
+              "memory_limit": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_8"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "network_policy": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_43"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              }
+            },
+            "required": [
+              "created_at",
+              "id",
+              "name",
+              "object",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "container_41": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_42"
+              }
+            ]
+          },
+          "container_42": {
+            "type": "object",
+            "properties": {
+              "anchor": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_35"
+              },
+              "minutes": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_36"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "container_43": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_44"
+              }
+            ]
+          },
+          "container_44": {
+            "type": "object",
+            "properties": {
+              "allowed_domains": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_5"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_39"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "container_45": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "type": "integer"
+              },
+              "expires_after": {
+                "type": "object",
+                "properties": {
+                  "anchor": {
+                    "const": "last_active_at"
+                  },
+                  "minutes": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "anchor",
+                  "minutes"
+                ],
+                "additionalProperties": false
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "last_active_at": {
+                "type": "integer"
+              },
+              "memory_limit": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_8"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "network_policy": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_48"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "status": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              }
+            },
+            "required": [
+              "created_at",
+              "id",
+              "name",
+              "object",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "container_46": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_47"
+              }
+            ]
+          },
+          "container_47": {
+            "type": "object",
+            "properties": {
+              "anchor": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_35"
+              },
+              "minutes": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_36"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "container_48": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_49"
+              }
+            ]
+          },
+          "container_49": {
+            "type": "object",
+            "properties": {
+              "allowed_domains": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_5"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_39"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "container_50": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_26"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 20
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_26"
+              },
+              "order": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "container_51": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_52"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_53"
+              }
+            ]
+          },
+          "container_52": {
+            "const": "asc"
+          },
+          "container_53": {
+            "const": "desc"
+          },
+          "container_54": {
+            "type": "object",
+            "properties": {
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "container_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "created_at": {
+                "type": "integer"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_55"
+              },
+              "path": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "source": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              }
+            },
+            "required": [
+              "bytes",
+              "container_id",
+              "created_at",
+              "id",
+              "object",
+              "path",
+              "source"
+            ],
+            "additionalProperties": false
+          },
+          "container_55": {
+            "const": "container.file"
+          },
+          "container_56": {
+            "type": "object",
+            "properties": {
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "container_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "created_at": {
+                "type": "integer"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_55"
+              },
+              "path": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "source": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              }
+            },
+            "required": [
+              "bytes",
+              "container_id",
+              "created_at",
+              "id",
+              "object",
+              "path",
+              "source"
+            ],
+            "additionalProperties": false
+          },
+          "container_57": {
+            "type": "object",
+            "properties": {
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "container_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "created_at": {
+                "type": "integer"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_55"
+              },
+              "path": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              },
+              "source": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_7"
+              }
+            },
+            "required": [
+              "bytes",
+              "container_id",
+              "created_at",
+              "id",
+              "object",
+              "path",
+              "source"
+            ],
+            "additionalProperties": false
+          },
+          "container_58": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_26"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 20
+              },
+              "order": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "container_create": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_0"
+          },
+          "container_created": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_32"
+          },
+          "container_resource": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_40"
+          },
+          "container_list_item": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_45"
+          },
+          "container_query": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_50"
+          },
+          "container_file_created": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_54"
+          },
+          "container_file_resource": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_56"
+          },
+          "container_file_list_item": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_57"
+          },
+          "container_file_query": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_58"
+          },
+          "container_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_list_item"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "first_id": {
+                "type": "string"
+              },
+              "last_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "has_more",
+              "first_id",
+              "last_id"
+            ],
+            "additionalProperties": false
+          },
+          "container_file_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_file_list_item"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "first_id": {
+                "type": "string"
+              },
+              "last_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "has_more",
+              "first_id",
+              "last_id"
+            ],
+            "additionalProperties": false
+          },
+          "container_file_create": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "file_id"
+            ],
+            "additionalProperties": false
+          },
+          "container_deleted": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "container.deleted"
+              },
+              "id": {
+                "type": "string"
+              },
+              "deleted": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "object",
+              "id",
+              "deleted"
+            ],
+            "additionalProperties": false
+          },
+          "container_file_deleted": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "container.file.deleted"
+              },
+              "id": {
+                "type": "string"
+              },
+              "deleted": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "object",
+              "id",
               "deleted"
             ],
             "additionalProperties": false

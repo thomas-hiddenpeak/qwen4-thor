@@ -61,6 +61,14 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/tunnels/{tunnel_id}', 'control'),
     ('GET', '/v1/tunnels/{tunnel_id}/poll', 'tunnel_poll'),
     ('POST', '/v1/tunnels/{tunnel_id}/response', 'tunnel_response'),
+    *((method, path, 'data' if method == 'POST' or path.endswith('/content') else 'control')
+      for path, methods in (
+          ('/v1/containers', ('GET','POST')),
+          ('/v1/containers/{container_id}', ('GET','DELETE')),
+          ('/v1/containers/{container_id}/files', ('GET','POST')),
+          ('/v1/containers/{container_id}/files/{file_id}', ('GET','DELETE')),
+          ('/v1/containers/{container_id}/files/{file_id}/content', ('GET',)))
+      for method in methods),
     ('POST', '/v1/threads/runs', 'data'),
     ('POST', '/v1/threads/{thread_id}/runs/{run_id}/cancel', 'control'),
     ('POST', '/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs', 'data'),
@@ -268,6 +276,8 @@ def route_map():
                            'step_[A-Za-z0-9_-]{1,123}' if part == '{step_id}' else
                            'thread_[A-Za-z0-9_-]{1,121}' if part == '{thread_id}' else
                            'msg_[A-Za-z0-9_-]{1,124}' if part == '{message_id}' else
+                           'cntr_[A-Za-z0-9_-]{1,123}' if part == '{container_id}' else
+                           'cfile_[A-Za-z0-9_-]{1,122}' if part == '{file_id}' and path.startswith('/v1/containers/') else
                            'asst_[A-Za-z0-9_-]{1,123}' if part == '{assistant_id}' else
                            'agent_session_[A-Za-z0-9_-]{1,114}' if part == '{session_id}' and path.startswith('/v1/agents/sessions/') else
                            'environment_(?!template_)[A-Za-z0-9_-]{1,116}' if part == '{environment_id}' else

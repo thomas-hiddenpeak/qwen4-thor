@@ -122,6 +122,32 @@ def schema(graph):
     definitions['vault_update'] = obj(dict(name=nullable(vault_name), metadata=vault_meta))
     definitions['vault_deleted'] = obj(dict(id=dict(type='string'), object=dict(const='vault.deleted'),
                                            deleted=dict(const=True)), ['id', 'object', 'deleted'])
+    containers = json.loads((ROOT/'src/server/contracts/openai_container_types_v1.json').read_text())
+    assert containers['profile'] == 'q4t-openai-container-types-v1'
+    definitions.update(graph_definitions(containers, 'container_'))
+    for query in ('query', 'file_query'):
+        definitions['container_' + str(containers['roots'][query])]['properties']['limit'] = page_limit
+    for name, item in [('container_list','container_list_item'),('container_file_list','container_file_list_item')]:
+        definitions[name] = copy.deepcopy(definitions['agents_list'])
+        fields = definitions[name]['properties']
+        fields['data']['items'] = ref(item)
+        fields.update(first_id=dict(type='string'), last_id=dict(type='string'))
+    expiry = obj({'anchor':dict(const='last_active_at'),
+                  'minutes':dict(type='integer',minimum=1)}, ['anchor','minutes'])
+    for shape in ('create','created','resource','list_item'):
+        fields = definitions['container_' + str(containers['roots'][shape])]['properties']
+        fields['expires_after'] = expiry
+        for field in ('created_at','last_active_at'):
+            if field in fields:
+                fields[field] = dict(type='integer')
+    for shape in ('file_created','file_resource','file_list_item'):
+        fields = definitions['container_' + str(containers['roots'][shape])]['properties']
+        fields.update(created_at=dict(type='integer'), bytes=dict(type='integer', minimum=0))
+    definitions['container_file_create'] = obj({'file_id':dict(type='string')}, ['file_id'])
+    for name, tag in [('container_deleted', 'container.deleted'),
+                      ('container_file_deleted', 'container.file.deleted')]:
+        definitions[name] = obj(dict(object=dict(const=tag), id=dict(type='string'),
+                                     deleted=dict(type='boolean')), ['object','id','deleted'])
     assistants = json.loads((ROOT/'src/server/contracts/openai_assistant_types_v1.json').read_text())
     assert assistants['profile'] == 'q4t-openai-assistant-types-v1'
     definitions.update(graph_definitions(assistants, 'assistant_'))
@@ -515,6 +541,15 @@ def add_openapi(paths, response, error):
         return result
 
     endpoints = [
+        ('/v1/containers','get',None,'container_list','container_query'),
+        ('/v1/containers','post','container_create','container_created',None),
+        ('/v1/containers/{container_id}','get',None,'container_resource',None),
+        ('/v1/containers/{container_id}','delete',None,'container_deleted',None),
+        ('/v1/containers/{container_id}/files','post','container_file_create','container_file_created',None),
+        ('/v1/containers/{container_id}/files','get',None,'container_file_list','container_file_query'),
+        ('/v1/containers/{container_id}/files/{file_id}','get',None,'container_file_resource',None),
+        ('/v1/containers/{container_id}/files/{file_id}','delete',None,'container_file_deleted',None),
+        ('/v1/containers/{container_id}/files/{file_id}/content','get',None,None,None),
         ('/v1/vaults/{vault_id}/credentials', 'get', None, 'credential_list', 'vault_query'),
         ('/v1/vaults/{vault_id}/credentials', 'post', 'credential_create', 'credential_resource', None),
         ('/v1/vaults/{vault_id}/credentials/{credential_id}', 'get', None, 'credential_resource', None),
@@ -631,7 +666,10 @@ def add_openapi(paths, response, error):
             query_contract = query + ' with optional beta' if query else 'optional beta'
         event_stream = path.endswith('/events') and method == 'get'
         accepted = body == 'agent_session_event_batch'
-        if path.endswith('/artifacts/{artifact_id}/content'):
+        if path.startswith('/v1/containers/') and path.endswith('/content'):
+            success = dict(description='Immutable container file bytes', content={
+                'application/octet-stream': dict(schema=dict(type='string',format='binary'))})
+        elif path.endswith('/artifacts/{artifact_id}/content'):
             success = dict(description='Immutable artifact contents', content={
                 'application/octet-stream': dict(schema=dict(type='string', format='binary'))})
         elif event_stream or accepted:
@@ -677,6 +715,10 @@ def add_openapi(paths, response, error):
             operation['requestBody'] = dict(required=not optional,
                 content={'application/json': dict(schema=nullable(external(body))
                     if optional else external(body))})
+        if body == 'container_file_create':
+            operation['requestBody']['content']['multipart/form-data'] = dict(schema={
+                'type':'object','properties':{'file_id':{'type':'string'},'file':{'type':'string','format':'binary'}},
+                'additionalProperties':False,'oneOf':[{'required':['file_id']},{'required':['file']}]})
         if body == 'agent_session_create':
             operation['description'] = (
                 'Use a prepared hosted workspace or create one with inline settings. '

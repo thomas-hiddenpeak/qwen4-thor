@@ -108,7 +108,7 @@ class Stack:
                 self.close_connection = True
             def application_path(self, method):
                 path = self.path.split('?', 1)[0]
-                roots = ('/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
+                roots = ('/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
                          '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/live/sessions')
@@ -436,7 +436,7 @@ class NginxTests(unittest.TestCase):
                 time.sleep(0.11)
             identities = dict(run_id='run_1', step_id='step_1', thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
-                              upload_id='upload_1', file_id='file_1',
+                              upload_id='upload_1', file_id='file_1', container_id='cntr_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
                               vector_store_id='vs_1', tunnel_id='tunnel_local', consent_id='cons_1',
                               voice_id='voice_1', trace_id='trace_1', session_id='live_1', call_id='rtc_1')
@@ -444,6 +444,8 @@ class NginxTests(unittest.TestCase):
                                  identities.keys())
             if template.startswith('/v1/agents/sessions/'):
                 identities['session_id'] = 'agent_session_1'
+            if template.startswith('/v1/containers/'):
+                identities['file_id'] = 'cfile_1'
             path = template.format(**identities)
             if method == 'GET' and template != '/v1/live/sessions/{session_id}/content':
                 path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'
@@ -524,6 +526,19 @@ class NginxTests(unittest.TestCase):
 
     def ready(self):
         self.stack.wait(lambda: self.stack.bound == self.stack.generation)
+
+    def test_container_file_paths_keep_owner_and_distinguish_file_ids(self):
+        self.ready()
+        root = '/v1/containers/cntr_1/files'
+        for body, path in [({'name':'q4t'}, '/v1/containers'),
+                           ({'file_id':'file_1'}, root),
+                           (None, root+'?limit=1'), (None, root+'/cfile_1/content')]:
+            self.assertEqual(self.stack.request(body, path=path)[0], 200)
+            row = self.stack.application_requests[-1]
+            self.assertEqual((row['client'],row['path']), ('alpha',path))
+        for path in (root+'/file_1/content','/v1/containers/file_1/files'):
+            self.assertEqual(self.stack.request(path=path)[0], 404)
+        self.assertEqual(len(self.stack.application_requests), 4)
 
     def test_assistant_registry_preserves_beta_and_owned_metadata_lane(self):
         self.ready()

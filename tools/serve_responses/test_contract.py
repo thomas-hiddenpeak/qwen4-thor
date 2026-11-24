@@ -177,6 +177,24 @@ class ApplicationContract(unittest.TestCase):
                 self.assertTrue(all(not validator.is_valid(n) for n in (0, 1.5, 101, '20', True)))
                 self.assertEqual(validator.is_valid(None), nullable)
 
+    def test_container_expiry_pages_file_forms_and_deletion(self):
+        for minutes in (0, 1.5, '2', True, 1, 20):
+            value = dict(name='release', expires_after=dict(anchor='last_active_at', minutes=minutes))
+            self.assertEqual(not errors(value, 'container_create'), type(minutes) is int and minutes > 0)
+        for name in ('container_list', 'container_file_list'):
+            page = dict(object='list', data=[], has_more=False, first_id='', last_id='')
+            self.assertFalse(errors(page, name))
+            self.assertTrue(errors(dict(page, first_id=None), name))
+        for name, tag in [('container_deleted','container.deleted'),
+                          ('container_file_deleted','container.file.deleted')]:
+            self.assertFalse(errors(dict(id='record', object=tag, deleted=True), name))
+            self.assertTrue(errors({}, name))
+        body = api.openapi()['paths']['/v1/containers/{container_id}/files']['post']['requestBody']['content']
+        valid = Draft202012Validator(body['multipart/form-data']['schema']).is_valid
+        self.assertTrue(valid({'file':'bytes'}) and valid({'file_id':'file_a'}))
+        self.assertFalse(valid({}) or valid({'file':'bytes','file_id':'file_a'}))
+        self.assertTrue(errors({'file':'bytes'}, 'container_file_create'))
+
     def test_assistant_registry_tool_resources_and_field_bounds(self):
         valid = dict(model='qwen', name='业'*256, temperature=0, top_p=1)
         self.assertFalse(errors(valid, 'assistant_create'))

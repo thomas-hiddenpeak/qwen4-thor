@@ -1,0 +1,172 @@
+{
+  "status": "ACCEPT_NATIVE_CONTAINER_AND_FILE_HTTP_RESOURCES",
+  "engine": "eafde80cdc29b822855b4d1e53e226bd06eaa03a61a3a7d5e8b900064a2b9b98",
+  "ingress": "e6865edfa864ab1233975e78561d238e612d2cbdd48549fa8dd8688e3b13c8e8",
+  "public_default": 462,
+  "default_contains_change": false,
+  "main_assistant_budget": "03946c3f0910c5223e42a7e944d2e7c551561e36",
+  "official_revision": {
+    "date": "2026-11-07T19:24:53Z",
+    "sha": "926a7b8133226630bac025350e84b0ca5c31d45a"
+  },
+  "sdk": "7.47.0",
+  "individual_request_seconds_not_measured": true,
+  "scope": {
+    "required": 231,
+    "declared": 167,
+    "remaining": 64
+  },
+  "business": {
+    "json_responses": 16,
+    "methods": [
+      "DELETE /containers/{container_id}",
+      "DELETE /containers/{container_id}/files/{file_id}",
+      "GET /containers",
+      "GET /containers/{container_id}",
+      "GET /containers/{container_id}/files",
+      "GET /containers/{container_id}/files/{file_id}",
+      "GET /containers/{container_id}/files/{file_id}/content",
+      "POST /containers",
+      "POST /containers/{container_id}/files"
+    ],
+    "tenants": 2,
+    "negative_statuses": [
+      404,
+      404,
+      404,
+      404,
+      404,
+      400,
+      400,
+      404,
+      404
+    ],
+    "download": {
+      "bytes": 1048773,
+      "sha256": "95dcc2a805e5d4faf62d1b185636b4d61494b3a75c4c4697f0240a0f281fc8df"
+    },
+    "release": 462,
+    "declared_and_official_match": true,
+    "shapes": [
+      "created",
+      "deleted",
+      "file_created",
+      "file_deleted",
+      "file_list",
+      "file_resource",
+      "list",
+      "resource"
+    ]
+  },
+  "minutes_default": 20,
+  "cpu_cases": 18,
+  "optional_nginx_cases": 1,
+  "source_anchors": 1269,
+  "mutation_checks": 38,
+  "accepted_seconds": 34.63,
+  "accepted_starts": 1,
+  "prior_failures": [
+    "Initial CPU invocation used a noncanonical object directory and two sparse SDK fixtures were absent.",
+    "Two targeted CPU cases exposed an invalidated JSON field reference in the create reply. Fixed before HTTP.",
+    "The first native TLS large multipart upload received 413 at ingress because the file path was not classified for streaming."
+  ],
+  "limits": [
+    "Python/code interpreter execution, skill mounting and enforcement of network and memory settings by a running sandbox require separate implementation and acceptance.",
+    "Candidate delivery and primary/fallback continuity for the budget and container resources remain open.",
+    "Long-duration soak is operator-owned."
+  ],
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-02/plan.json",
+      "sha256": "337ed90b231b7c3f1728be33040335f33141d7d64326e68d1cb485245a7f95fd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-02/result.json",
+      "sha256": "d24c7e14e91016fc8c0778aeda8609dc28bc51595fb1ec94969ee7c7354c4361"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-02/create/sdk-result.json",
+      "sha256": "510de332f0fcda4a459c8b36ff5d5c8d406259ebb7ac6475575f00ce12bcfe97"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-02/create/run-wire.json",
+      "sha256": "4e91020fcc2113420c55d9ec931379769918cc0977a57fb262026afd44eeaaef"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-lease-02/exit.json",
+      "sha256": "384afe7cc3cbfb2f5dc2552bf4a7c2f6e2d4e52832f69ccf01c394d5302b91ad"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-audit-01.json",
+      "sha256": "78e0f50a1a11116ea716968feda6ca3152285808e57aab066cf7c9bb659a8027"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-methods-01.json",
+      "sha256": "1755dea98081678f3984bbe74393514335f61a1cb6d742cfbe14de7a816fff81"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-wire-02.json",
+      "sha256": "b0ba4832f3ffa8b257024092d1f41f83090fabb56f95f91f9a0b38f82fbe5cc0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-cpu-04.log",
+      "sha256": "418bd04e4f48470194252896cf4e5c3a92acbb4aa57b722b574c6992e7734f5b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-nginx-03.log",
+      "sha256": "481bcda8242f4828d026b628c3d559391fb71b5be9a0139a0463589cea0e394c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-contract-test-01.log",
+      "sha256": "9f75add94930d82f86f40553d972627172fa9fcad2415eaa9947d6de3d460011"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-01/plan.json",
+      "sha256": "e9479a2cdfbdb6d6faf56a4ac1a471cd42d57b1bcd0d35de686dc738b9ac60a9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-01/result.json",
+      "sha256": "b0a38f2441b24b39c49dc21fa1d8fc19f7e462f09fd1737cbb16a2c0a8524eb0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-01/create/sdk.stderr",
+      "sha256": "8106bbc4b2190c05675066452edd6d481b0a58a2f5bc4d131bc6c15ddf212f4f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-01/actor.mjs",
+      "sha256": "92d39fe403dd449efd5aba99dc41c0376ca305a496d6d228887f1d40aec82660"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-business-lease-01/exit.json",
+      "sha256": "6319457bc6aae3acfa1291894de73c9cb16eeb56f7b6bd42b914dab152724372"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-cpu-01.log",
+      "sha256": "506d4fd049b49ec416fabb97d877bfdf856b58a7f2ab0b5e632033dd08ade020"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-cpu-02.log",
+      "sha256": "0bb5f189c2d3b946444d2c266d4911d790dafb32a20898251f620f67d46a74d8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container-cpu-03.log",
+      "sha256": "7c244e837281a9b5294bf0cdae566403186a02c51c99275ac15af26efa287bdd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container_business.py",
+      "sha256": "25ff38d38892aae12f022b0be57fc35627c1ac775f3695ab2e9aca9f98083af2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/container_wire_check.py",
+      "sha256": "7e078535eab1843f68cd220f752c8f809286156a7252f9efe6fe4cd9ec4c607a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/pr84-merged.json",
+      "sha256": "ad594bd2502b340db15b2f2bb2342eaf4e500cf0686218abdb47b1f6050009e8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/pr85-merged.json",
+      "sha256": "323210a2d40cc2f2642869512afd10072c8ae1cf3cc1315eb157c08f9ace1396"
+    }
+  ]
+}

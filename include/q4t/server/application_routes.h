@@ -350,13 +350,6 @@ inline bool IsTranscriptionTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/audio/transcriptions" || path == "/v1/audio/translations";
 }
-inline bool IsBinaryUpload(std::string_view method, std::string_view target) {
-  const auto path = target.substr(0, target.find('?'));
-  return (method == "POST" &&
-          (path == "/v1/files" || IsTranscriptionTarget(target) ||
-           IsVoiceCreation(method, target))) ||
-         (UploadMethodAllowed(method, target) && path.ends_with("/parts"));
-}
 
 inline bool IsResponsesTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
@@ -379,6 +372,92 @@ inline bool IsAssistantTarget(std::string_view target) {
   if (!path.starts_with(prefix)) return false;
   const auto id = path.substr(prefix.size());
   return id.starts_with("asst_") && id.size() > 5 && ValidApplicationId(id);
+}
+
+enum class ContainerRouteKind {
+  kNone,
+  kCollection,
+  kContainer,
+  kFiles,
+  kFile,
+  kContent
+};
+struct ContainerRoute {
+  ContainerRouteKind kind = ContainerRouteKind::kNone;
+  std::string_view container, file;
+};
+inline ContainerRoute ParseContainerRoute(std::string_view target) {
+  using Kind = ContainerRouteKind;
+  if (target.find('#') != target.npos) return {};
+  auto path = target.substr(0, target.find('?'));
+  if (path == "/v1/containers") return {Kind::kCollection, {}, {}};
+  constexpr std::string_view prefix = "/v1/containers/";
+  if (!path.starts_with(prefix)) return {};
+  path.remove_prefix(prefix.size());
+  auto sep = path.find('/');
+  const auto id = path.substr(0, sep);
+  if (!id.starts_with("cntr_") || id.size() == 5 || !ValidApplicationId(id))
+    return {};
+  if (sep == path.npos) return {Kind::kContainer, id, {}};
+  path.remove_prefix(sep + 1);
+  if (path == "files") return {Kind::kFiles, id, {}};
+  if (!path.starts_with("files/")) return {};
+  path.remove_prefix(6);
+  sep = path.find('/');
+  const auto file = path.substr(0, sep);
+  if (!file.starts_with("cfile_") || file.size() == 6 ||
+      !ValidApplicationId(file))
+    return {};
+  if (sep == path.npos) return {Kind::kFile, id, file};
+  if (path.substr(sep) == "/content") return {Kind::kContent, id, file};
+  return {};
+}
+inline bool IsContainerTarget(std::string_view target) {
+  return ParseContainerRoute(target).kind != ContainerRouteKind::kNone;
+}
+inline bool ContainerMethodAllowed(std::string_view method,
+                                   std::string_view target) {
+  using Kind = ContainerRouteKind;
+  const auto kind = ParseContainerRoute(target).kind;
+  if (method == "GET") return kind != Kind::kNone;
+  if (method == "POST")
+    return kind == Kind::kCollection || kind == Kind::kFiles;
+  return method == "DELETE" &&
+         (kind == Kind::kContainer || kind == Kind::kFile);
+}
+inline bool IsContainerObservation(std::string_view method,
+                                   std::string_view target) {
+  return (method == "GET" || method == "DELETE") &&
+         ContainerMethodAllowed(method, target) &&
+         ParseContainerRoute(target).kind != ContainerRouteKind::kContent;
+}
+
+// Container file creation also accepts a small JSON reference. Only the MIME
+// upload gets the streaming file allowance at both admission boundaries.
+inline bool IsMultipartForm(std::string_view type) {
+  type = type.substr(0, type.find(';'));
+  const auto end = type.find_last_not_of(" \t");
+  if (end == type.npos) return false;
+  type = type.substr(0, end + 1);
+  constexpr std::string_view form = "multipart/form-data";
+  if (type.size() != form.size()) return false;
+  for (size_t i = 0; i < type.size(); ++i) {
+    auto c = type[i];
+    if (c >= 'A' && c <= 'Z') c = static_cast<char>(c + ('a' - 'A'));
+    if (c != form[i]) return false;
+  }
+  return true;
+}
+
+inline bool IsBinaryUpload(std::string_view method, std::string_view target,
+                           std::string_view content_type = {}) {
+  const auto path = target.substr(0, target.find('?'));
+  return (method == "POST" &&
+          (path == "/v1/files" || IsTranscriptionTarget(target) ||
+           IsVoiceCreation(method, target) ||
+           (ParseContainerRoute(target).kind == ContainerRouteKind::kFiles &&
+            IsMultipartForm(content_type)))) ||
+         (UploadMethodAllowed(method, target) && path.ends_with("/parts"));
 }
 
 enum class AssistantThreadRouteKind { kNone, kCollection, kThread, kMessages, kMessage };
