@@ -1,0 +1,319 @@
+{
+  "status": "ACCEPT_TRANSLATION_RECOVERY_AND_STOPPED_PUBLICATION",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 468,
+    "version_revision": 163,
+    "profile_revision": 53,
+    "previous_profile_revision": 52,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "984a9774aba9da6a300f5af69f9e6e72ff5245cc5f04142d3fdc3206f3732326",
+    "fallback": "995ea3abf98f41a75218b5184dfd71da4fa9757624c2c6d2bacc2341f660d777",
+    "engine": "f366ee84fc43794535fb6005595d7e5deb2c77ac7a48c3caf42fc0bb43f75352",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "recovery": {
+    "fallback": {
+      "fault": "owned model SIGKILL",
+      "seconds": 178.444,
+      "starts": 2,
+      "guardian_retained": true,
+      "old_grant_status": 401,
+      "old_grant_remaining_seconds": 538,
+      "independent_chat": "42",
+      "processes_remaining": 0,
+      "adopted_children_reaped": 6,
+      "calls": {
+        "before": {
+          "input": "甚至出现交易几乎停滞的情况。",
+          "english": "There were even cases where trading nearly came to a standstill.",
+          "spoken": "But with even cases, where trading nearly came to a standstill.",
+          "wav_sha256": "a2f24cff4aec6b4955ab144427da9b4f27777c38691b8651545c8f9e937bbcbe",
+          "events": 22,
+          "inbound": {
+            "packets": 175,
+            "decodedSamples": 202560,
+            "energy": 0.3766693949036238
+          },
+          "browser": "148.0.7778.0",
+          "receivedBeforeClose": true
+        },
+        "after": {
+          "input": "甚至出现交易几乎停滞的情况。",
+          "english": "There were even cases where trading nearly came to a standstill.",
+          "spoken": "But with even cases, where trading nearly came to a standstill.",
+          "wav_sha256": "342954d1200093da7870bc7eec2ae5f0c3c7c7237e5ae568108e2104bdcad9fd",
+          "events": 22,
+          "inbound": {
+            "packets": 175,
+            "decodedSamples": 202080,
+            "energy": 0.41710893623916057
+          },
+          "browser": "148.0.7778.0",
+          "receivedBeforeClose": true
+        }
+      }
+    },
+    "primary": {
+      "fault": "owned gateway SIGABRT",
+      "seconds": 229.909,
+      "starts": 2,
+      "guardian_retained": true,
+      "old_grant_status": 401,
+      "old_grant_remaining_seconds": 546,
+      "independent_chat": "42",
+      "processes_remaining": 0,
+      "adopted_children_reaped": 6,
+      "calls": {
+        "before": {
+          "input": "甚至出现交易几乎停滞的情况。",
+          "english": "There were even cases where trading nearly came to a standstill.",
+          "spoken": "But with even cases, where trading nearly came to a standstill.",
+          "wav_sha256": "d8e01f6479d4b44ade5b08e8062c67fda37382dbbd829114546836aaf51bdfb8",
+          "events": 22,
+          "inbound": {
+            "packets": 175,
+            "decodedSamples": 203040,
+            "energy": 0.35830763486293155
+          },
+          "browser": "148.0.7778.0",
+          "receivedBeforeClose": true
+        },
+        "after": {
+          "input": "甚至出现交易几乎停滞的情况。",
+          "english": "There were even cases where trading nearly came to a standstill.",
+          "spoken": "But with even cases, where trading nearly came to a standstill.",
+          "wav_sha256": "aa4a0dc251facd0ec6f0a6c9a717b0068b584ff0604548dcd2d3aa38a34f0e80",
+          "events": 22,
+          "inbound": {
+            "packets": 175,
+            "decodedSamples": 202560,
+            "energy": 0.3859292200873027
+          },
+          "browser": "148.0.7778.0",
+          "receivedBeforeClose": true
+        }
+      },
+      "selected": "fallback",
+      "device_probes": 1
+    }
+  },
+  "previous_failures": [
+    {
+      "run": "fallback-01",
+      "result": "503 live_media_unavailable before media activation",
+      "cause": "The managed process uses the system plugin directory. The host lacks the optional Ubuntu GStreamer ICE package. Both supported media components were projected at their distribution locations in a private mount for the transport checks."
+    },
+    {
+      "run": "fallback-02",
+      "result": "Business succeeded, lease command failed at teardown",
+      "cause": "Six exited Chromium helpers adopted by the harness needed waitpid. A Chromium-only CPU check collected three child processes. Both final guardians were also tested with browser child collection and an empty process table."
+    },
+    {
+      "run": "primary-01",
+      "result": "Fault actor refused the isolated state directory before model initialization",
+      "model_starts": 0,
+      "cause": "The existing actor requires a fatal-business- directory. Reused its original ownership constraint with a fresh properly named test state."
+    },
+    {
+      "run": "primary-02",
+      "result": "ENV_ABORT before fault injection",
+      "cause": "The external acceptance monitor could not reap an NVML query worker. Only owned test processes were stopped. An idle lease then passed before the single affected case was retried."
+    },
+    {
+      "run": "maintenance-01",
+      "result": "Archive transfers completed before the ten-minute wrapper timer expired during the read-only final inventory",
+      "cause": "Before publication, resumed only the inventory and verified archived device/inode, bytes, selection protection, and the old stopped release. No transfer was repeated."
+    }
+  ],
+  "declarations": {
+    "required": 231,
+    "expected_success": 179,
+    "missing": 52
+  },
+  "source_text": "甚至出现交易几乎停滞的情况。",
+  "capture_quality": "Subtitle and independent ASR preserved separately. Their opening words can differ.",
+  "optional_media_runtime": {
+    "fault_checks": "private mount with distribution packages",
+    "packages": [
+      {
+        "name": "gstreamer1.0-nice",
+        "archive_sha256": "1e82a7173412ea0ddfb990de76b94066021c2d15e6ff7a41b106a942b06dbbc4",
+        "files": [
+          "gstreamer-1.0/libgstnice.so"
+        ]
+      },
+      {
+        "name": "libsofia-sip-ua0t64",
+        "archive_sha256": "9817628a9626723b9e0a067af3e4ce791dbc43424596498ba9010f570c997b21",
+        "files": [
+          "libsofia-sip-ua.so.0",
+          "libsofia-sip-ua.so.0.6.0"
+        ]
+      }
+    ]
+  },
+  "long_run": {
+    "owner": "user",
+    "executed_hours": 0,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/translator-client-soak-src/.q4t-work/day-01/plan.json",
+    "sha256": "558b626f48d5904d81a7cbb42c638c454944836b8e49b88e6ad2f09b2d3a42f0",
+    "checked": true
+  },
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-client-delivery/result.json",
+      "sha256": "e7742425e584ab0f5f27f7762a040c08a19586bd38a5f554fddf4a212fb837bc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-client-maintenance-01/result.json",
+      "sha256": "8dfb0bf1a7247c5d31579d68fd5303cc51a4bc575715309ef00f282e6d5fc142"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-client-day.json",
+      "sha256": "e1ae6f2a54f966340a43da90fdd7638d2ff24b5779bb7354ce7d2c0a95145c5d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-released-methods.json",
+      "sha256": "b4a3df30a9774bc938d17d648f71a3cfebd980efe9572c762163be2561474bad"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-publication-lease-01/exit.json",
+      "sha256": "a1c50befbde6e1cd64b93219a593623386b9900963f85879af7b340783a3b0ea"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-01/result.json",
+      "sha256": "15e129ba9de5fd904f35b3261789a2ba71e9e287c9bb63b48f3b5a29c8d2d15a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-lease-01/exit.json",
+      "sha256": "3360573978182fc3c41d6246fbd3d05031b53ea0b51965a9ab9fa6072964b67a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-02/result.json",
+      "sha256": "203c21993bab1bbc7d09db0a0e33185d3a8bb7d5c79c4504b4da594700273503"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-lease-02/exit.json",
+      "sha256": "352d507b7b247e54f5ff2675c3dc596ded4b2821d421ee5893cebe49b1f795f4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-publication-lease-02/exit.json",
+      "sha256": "11b754a48d9baa31bab023fc95fd3e7d794215d093596600b42230805fb2eab8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-client-maintenance-01/resumed-after.stdout",
+      "sha256": "5bad916eda37a16c43fdb4f843a6d180912e16f777223068e7c3c80ed84253d2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-lease-03/exit.json",
+      "sha256": "a74acadaf150aa97a88727c143236412ccbe45a17ac66f39031ed4688f2bc7cf"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-03/before-run.json",
+      "sha256": "16b0e70b4fd200127da68f50b176deb3cc9d7d3ada7b58c03dd07470e720495d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-03/after-run.json",
+      "sha256": "dd149031efb2ec979b477e570be7496b1d8d85a1c6c80abaa22dc4bb4350123e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-03/before-events.json",
+      "sha256": "20ff132ae44589dd295ab433c31eec2708f0b2627d16bd1378c3515dd8af7d78"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-03/after-events.json",
+      "sha256": "c7cb1c6263e6c118f4640c1b32dbeb5bac9016e8e9c3aefcab751d91327db1e8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-03/before.wav",
+      "sha256": "a2f24cff4aec6b4955ab144427da9b4f27777c38691b8651545c8f9e937bbcbe"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-03/after.wav",
+      "sha256": "342954d1200093da7870bc7eec2ae5f0c3c7c7237e5ae568108e2104bdcad9fd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-03/interruption.json",
+      "sha256": "2109a248c1bf81de45ff1583f3604c731d2a306190ed31119a3ae0b124a878ce"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-03/result.json",
+      "sha256": "90aee25b8feb4175ef68b0f2ec20d4c7a5224f8cca4c3a236538a934f6bf08eb"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fallback-business-03/chat-after.wire",
+      "sha256": "35740ac5dba99766aa3dcdb0585084fd9178204d058d4761dba0e1831d46252a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-client-fallback-01/service-acceptance.json",
+      "sha256": "0269272a348251b845cc7b6cd54d5b1e7b33d2b6f050f52decc9088883f25d19"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-primary-lease-03/exit.json",
+      "sha256": "0a24baabc289f0c0f4e1a998a702e780984690e94e0a543f7d8e36dbcd66afec"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/before-run.json",
+      "sha256": "5e4bf39021a13014ca32fcb85456491d6899fab0272b4a8ccd579678257fcb4e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/after-run.json",
+      "sha256": "4655e5a70c7d651568ee81f9d587fdaa8df752def11a53b0285ca91eb2c20ae0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/before-events.json",
+      "sha256": "cc5997cab5023c132e883409258e1d229b0b2b5f103ce61200f16e4de79e7744"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/after-events.json",
+      "sha256": "3464f2652a326c5b6487fb12f3b08f9aa5d3e5f382868738597e925b2f833d5d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/before.wav",
+      "sha256": "d8e01f6479d4b44ade5b08e8062c67fda37382dbbd829114546836aaf51bdfb8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/after.wav",
+      "sha256": "aa4a0dc251facd0ec6f0a6c9a717b0068b584ff0604548dcd2d3aa38a34f0e80"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/interruption.json",
+      "sha256": "b36a402f91d2a9ccef0899277f42976ea7277860d4e8da26c5054b4fe5b6fdb2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/result.json",
+      "sha256": "e128790477607961ba778650a3a93f2af9328933e075cec32cda187dfffc2ea5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/chat-after.wire",
+      "sha256": "5869ea48db6846466ba37aa3ba6454e14f0c9803b1ff450dde346380adba6cc1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-client-primary-01/service-acceptance.json",
+      "sha256": "eabaf73bc57b166214be5ec66875e475fa6b7ec16c7b1c44af8e26201ec9d48e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-translator-03/takeover.json",
+      "sha256": "deb4eb4ce258507db8dd2fbab21ae1f42055a83769483986ad1c90b7ddee5467"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-fatal-business-01/result.json",
+      "sha256": "f47fea68de2f8649a48e56f4aba493128db86af273001a389c0ea5824d2a1584"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-primary-lease-01/exit.json",
+      "sha256": "ab93a2e269ba9b9372f98d9f871850eefdec3ee5de10da650664c29c0a0e31d4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-primary-lease-02/exit.json",
+      "sha256": "85bf1eadc698d2846ff9d38c2c9389e1ee5b72b783ce7cecbd35a157d6b7f279"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translator-monitor-recheck-01/exit.json",
+      "sha256": "78d5e7678bd894dfc262ac5df354736a0a44cbd631d404e16a7d09ef06ebddb3"
+    }
+  ]
+}

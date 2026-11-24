@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+rev468 已登记实时翻译主包和独立回退包，默认服务保持 STOPPED。分别终止隔离模型和触发网关致命退出后，两组 Chromium 均重新建连并收到可独立转写的英文音轨，旧凭据在有效期内返回 401，新 Chat 答 42。每组启动两代模型；发布启动零次，13 份保护记录保持原值。四段音频和独立转写保留，开头词差异仍可见。WebRTC 验收在私有挂载中提供 Ubuntu 媒体组件。发行 OpenAPI 已声明冻结范围内的 179/231 项方法，仍缺 52 项声明。 下一步接入 Agents 自动化与实际执行。[恢复与发行回执](evidence/serve-realtime-translation-20261124/delivery.json)
+
 正式主配置（MTP 开）已用官方 WebSocket 完成翻译和低额度错误交付，轻配置（MTP 关）已用 Chromium 实际收听媒体轨并转写。轻配置拒绝了主配置签发且还剩 565 秒的旧凭据。两侧普通 Chat 均答 42，常规 WebRTC 关闭成功。两份 v39 容量记录可逐字节还原 rev466 的 v38 前驱，35 项迁移用例通过，138 次 GPU 采集成功。主配置独立 ASR 开头有词差异，轻配置逐字一致。默认仍为 rev466，下一步验收封包恢复。[容量交接回执](evidence/serve-realtime-translation-20261124/profiles.json)
 
 Chromium 148 已按官方示例使用短期翻译凭据和初始 SDP，通过 WebRTC 发送中文录音并从远端音轨录下英文。浏览器收到 303 个 RTP 包，独立 ASR 与字幕逐字一致。22 个 SCTP 事件经两份合同校验；两次凭据错用均为 401，另一客户 Chat 答 42。首次验收器缺少播放元素，CPU 定位后复验成功，一次启动用时 71.103 秒。默认仍为 rev466；下一步验证主、轻配置及整包恢复。[浏览器音轨回执](evidence/serve-realtime-translation-20261124/browser.json)
