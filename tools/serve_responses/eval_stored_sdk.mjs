@@ -60,11 +60,11 @@ try {
   const other=await peer.chat.completions.create({model:p.model,store:true,temperature:0,
     reasoning_effort:'none',max_tokens:32,metadata:project,messages:[{role:'user',content:'Return only 6 times 7.'}]});
   const independent=other.choices[0].message.content.trim(); assert.equal(independent,'42');
-  const chat=await owner.chat.completions.create({model:p.model,store:true,temperature:0,
+  const chat=p.responsesOnly ? null : await owner.chat.completions.create({model:p.model,store:true,temperature:0,
     reasoning_effort:'none',max_tokens:48,metadata:project,messages:[{role:'user',content:prompt}]});
   const response=await owner.responses.create({model:p.model,store:true,temperature:0,
     reasoning:{effort:'none'},max_output_tokens:48,metadata:project,instructions:'Scope test',input:prompt});
-  assert.equal(chat.choices[0].message.content.trim(),answer);
+  if (chat) assert.equal(chat.choices[0].message.content.trim(),answer);
   assert.equal(response.output_text.trim(),answer);
   const {id:eval_id}=await owner.evals.create({data_source_config:{type:'logs',metadata:project},
     testing_criteria:[{name:'Original prediction',type:'string_check',input:'{{sample.output_text}}',
@@ -75,7 +75,7 @@ try {
     ['completions',{type:'stored_completions',metadata:project,model:p.model,limit:4},chat,
       ()=>owner.chat.completions.delete(chat.id)],
     ['responses',{type:'responses',metadata:project,instructions_search:'Scope test',
-       reasoning_effort:'none',temperature:0,model:p.model},response,()=>owner.responses.delete(response.id)]]) {
+       reasoning_effort:'none',temperature:0,model:p.model},response,()=>owner.responses.delete(response.id)]].filter(entry => entry[2])) {
     const created=await observe(collection,'post',201,owner.evals.runs.create(eval_id,
       {data_source:{type,model:p.model,source,input_messages:{type:'item_reference',item_reference:'item.input_trajectory'},
                     sampling_params:{reasoning_effort:'none',temperature:0,max_completion_tokens:48,seed:98}}}));

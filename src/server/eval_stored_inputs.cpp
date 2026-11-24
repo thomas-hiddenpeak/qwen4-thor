@@ -112,8 +112,26 @@ ObjectReply DatasetRow(const Json& record, const Json& config,
     if (!outputs.array.empty())
       text = outputs.array.front().GetString("content");
   } else {
-    for (const auto& message : messages->array)
-      trajectory.array.push_back(ProjectStoredItem(message, {}));
+    ItemViewOptions view;
+    view.include = {"message.input_image.image_url"};
+    for (const auto& message : messages->array) {
+      auto input = ProjectStoredItem(message, view);
+      // The input-item list includes storage identifiers and lifecycle state.
+      // EasyInputMessage accepts role/content when replaying these messages.
+      const auto* parts = input.GetArray("content");
+      const bool output_message =
+          input.GetString("role") == "assistant" && parts &&
+          std::any_of(parts->array.begin(), parts->array.end(),
+                      [](const Json& part) {
+                        return part.GetString("type") == "output_text" ||
+                               part.GetString("type") == "refusal";
+                      });
+      if (input.GetString("type") == "message" && !output_message)
+        std::erase_if(input.object, [](const auto& field) {
+          return field.first == "id" || field.first == "status";
+        });
+      trajectory.array.push_back(std::move(input));
+    }
     for (const auto& result : output->array) {
       auto item = ProjectStoredItem(result, {});
       if (item.GetString("type") == "message")

@@ -5113,7 +5113,7 @@
     "src/server/eval_runs.h": "da14d9ebf451e736c0c8e60c7428975ce554ea10943c63d982634709b7e679d6",
     "src/server/eval_sampling.cpp": "fdb979566339b3fb160e44df620dd80b2218b8d148d6fe068a0eb029203645e1",
     "src/server/eval_sampling.h": "302cf02ae39a46991578eb59376930c7937bbbcf12525e3d9f63cb1a83c54d74",
-    "src/server/eval_stored_inputs.cpp": "43e1cf3eda56762cfc3db6f92f19769fc2e506c7e7373d0ddb54cf8844512b13"
+    "src/server/eval_stored_inputs.cpp": "fc5abdfa3263efa005b5f67d71343debbba0585ad8afb9def8e084311601d942"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",

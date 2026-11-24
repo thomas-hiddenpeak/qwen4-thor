@@ -23,5 +23,62 @@
   "acceptance_pending": [
     "native TLS business over stored Chat and Responses, signed delivery",
     "packaged profiles and recovery"
-  ]
+  ],
+  "first_device": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 36.674,
+    "unchanged_default": true,
+    "phases": [],
+    "completed_output": {
+      "id": "outputitem_371bf6fd0ec2a2852bfd84b8251c3894",
+      "prediction": "157",
+      "score": 1
+    },
+    "runs": {
+      "responses": {
+        "id": "evalrun_bbc740a46a6aa20e1b03628cf713a959",
+        "status": "failed",
+        "result_counts": {
+          "total": 0,
+          "errored": 0,
+          "passed": 0,
+          "failed": 0
+        },
+        "error": {
+          "code": "invalid_request",
+          "message": "Unknown item field"
+        },
+        "per_model_usage": null
+      },
+      "completions": {
+        "id": "evalrun_e1804c48edfaf7fc797c4ba3b9a266c8",
+        "status": "completed",
+        "result_counts": {
+          "total": 1,
+          "errored": 0,
+          "passed": 1,
+          "failed": 0
+        },
+        "error": null,
+        "per_model_usage": [
+          {
+            "model_name": "qwen3.8-flash-next",
+            "invocation_count": 1,
+            "prompt_tokens": 303,
+            "completion_tokens": 4,
+            "total_tokens": 307,
+            "cached_tokens": 0
+          }
+        ]
+      }
+    },
+    "durable_record_sha256": {
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.evalrun.evalrun_bbc740a46a6aa20e1b03628cf713a959.json": "431bbd32d5e31a9b11b95082657869f06992bd9ac73d7e1d98e0fa163742e845",
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.evalrun.evalrun_e1804c48edfaf7fc797c4ba3b9a266c8.json": "28dc2c91e443225cdb1f033dea3cc21b8fe6a4b5245cba82f0f1b693001f963d",
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.outputitem.outputitem_371bf6fd0ec2a2852bfd84b8251c3894.json": "a0794aab41dd591dc76f66bb4ce97cbabe096f7b799bf6441aabd01ccbe586d4"
+    },
+    "failure": "Stored Responses user input carried list-only id and status into EasyInputMessage. Source was deleted and snapshot intact. The model did not start for that row.",
+    "pending_webhook_delivery_at_shutdown": true
+  }
 }

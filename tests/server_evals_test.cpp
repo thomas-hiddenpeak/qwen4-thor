@@ -101,6 +101,50 @@ Q4T_TEST(evals_stored_completion_snapshot_filters_and_survives_source_deletion) 
   return true;
 }
 
+Q4T_TEST(evals_stored_response_can_replay_its_input_after_source_erasure) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  StateAccess access{"client:alpha", std::chrono::steady_clock::now() + 10s, {}};
+  ChatPlanConfig config;
+  config.model = "cpu";
+  ResponsesExecution original(objects);
+  auto input = Object({{"input", String("Read source")}, {"store", Boolean(true)},
+                       {"metadata", Object({{"source", String("log")}})}});
+  Q4T_CHECK(original.Prepare(input, config, access, std::time(nullptr), true).ok());
+  std::string wire;
+  Q4T_CHECK(original.Begin(&wire).ok());
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kContent;
+  delta.text = "157";
+  Q4T_CHECK(original.Append(delta, "null", &wire));
+  Q4T_CHECK(original.Finish(false, 0, {5,0,1,0}, std::time(nullptr), &wire).ok());
+  auto def = Request(objects, "POST", "/v1/evals",
+      R"({"data_source_config":{"type":"logs","metadata":{"source":"log"}},"testing_criteria":[]})");
+  Q4T_CHECK(def.ok());
+  const auto base = "/v1/evals/" + def.value.GetString("id") + "/runs";
+  auto run = Request(objects, "POST", base, R"({"data_source":{"type":"responses","model":"cpu",
+    "source":{"type":"responses","model":"cpu","metadata":{"source":"log"}}}})");
+  Q4T_CHECK(run.ok());
+  Q4T_CHECK(ResponsesState(objects).Erase(original.Id(), access).ok());
+  BinaryAccess auth{access.scope,access.deadline,{}};
+  BinaryRead read;
+  BinaryStore store(objects);
+  Q4T_CHECK(store.Open(auth,ObjectKind::kEvalRun,run.value.GetString("id"),60,&read).ok());
+  Q4T_CHECK(read.manifest.chunks.size()==1);
+  std::string bytes;
+  Q4T_CHECK(store.Read(auth,read,0,&bytes).ok());
+  Q4T_CHECK(store.Close(auth,&read).ok());
+  Json row, request;
+  Q4T_CHECK(io::ParseJson(bytes,&row,true));
+  Q4T_CHECK(row.Find("item")->GetString("output_text")=="157");
+  Q4T_CHECK(eval_detail::SamplingRequest(*run.value.Find("data_source"),row,config,&request).ok());
+  const auto& message = request.GetArray("input")->array.front();
+  Q4T_CHECK(!message.Has("id") && !message.Has("status"));
+  ResponsesExecution replay(objects);
+  Q4T_CHECK(replay.Prepare(request,config,access,std::time(nullptr),true).ok());
+  return true;
+}
+
 Q4T_TEST(evals_model_samples_bind_one_worker_and_release_parent_and_child) {
   Fixture fixture;
   ObjectStore objects(fixture.options);
