@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'project_safety' in declared or 'project_safety_handoff' in plan:
+            from tools.serve_responses import safety_profiles
+            profiles[name]['evidence_sha256'].update(safety_profiles.verify(phase, plan, declared))
+            continue
         if 'evals' in declared or 'eval_handoff' in plan:
             from tools.serve_responses import eval_profiles
             profiles[name]['evidence_sha256'].update(eval_profiles.verify(phase, plan, declared))

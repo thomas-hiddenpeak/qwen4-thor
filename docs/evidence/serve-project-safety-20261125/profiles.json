@@ -1,0 +1,23 @@
+{
+  "stage": "migration_cpu_verified",
+  "issued": false,
+  "predecessor_revision": 482,
+  "profile_format": "q4t-profile-business-v47",
+  "cpu": {
+    "passed": 45,
+    "sha256": "292e0bd1a659bfd1ca35a7d44cc625b35f2d2e1bc37e98924cf994975d2b6088"
+  },
+  "handoff": [
+    "Recover original project records and their stored Responses result",
+    "Replay a file-backed historical Chat after the source file and Chat have been deleted",
+    "Verify tenant separation and independent model Chat"
+  ],
+  "preparation": {
+    "initial": "GStreamer fixture search path absent, stopped before model start.",
+    "initial_sha256": "c03cbd1503016b7676fcd12b12ceda7d81a8eb69174d67ce5081ab467d61d221",
+    "corrected": "Used the digest-verified plugin in the acceptance child environment."
+  },
+  "pending": [
+    "Primary/light SDK qualification, rollback and stopped publication"
+  ]
+}
