@@ -23,10 +23,10 @@ const parent = client(args.key);
 const model = 'qwen3.8-flash-next';
 const options = {perMessageDeflate:false, followRedirects:false, handshakeTimeout:5000, maxPayload:4<<20};
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-function open(account, target, Socket = OpenAIRealtimeWS) {
+function open(account, target, Socket = OpenAIRealtimeWS, socketOptions = options) {
   const events = [];
   let failure, status, bytes = 0;
-  const socket = new Socket({...target, options}, account);
+  const socket = new Socket({...target, options:socketOptions}, account);
   socket.socket.on('unexpected-response', (_,res) => {status = res.statusCode; res.resume(); socket.socket.terminate();});
   socket.on('error', (err) => { failure = err.error?.code || 'transport_error'; });
   socket.on('event', (e) => {
@@ -66,11 +66,23 @@ async function legacyTranscription() {
   const delegated = client(value);
   check(await status(delegated.beta.realtime.transcriptionSessions.create({}))===401, 'recursive issuance');
   check(await status(delegated.models.list())===401, 'credential scope');
-  const connection = open(delegated,{intent:'transcription'});
+  const beta = !!args.beta_transcription_wire;
+  const connectOptions = beta ? {...options, headers:{'OpenAI-Beta':'realtime=v1'}} : options;
+  const connection = open(delegated,{intent:'transcription'},OpenAIRealtimeWS,connectOptions);
   try {
     const created = (await connection.wait('session.created')).session;
-    check(created.audio.input.transcription.language==='zh' && created.audio.input.turn_detection===null &&
-      created.audio.input.format.type==='audio/pcm', 'inherited transcription settings');
+    if (beta) {
+      check(created.input_audio_transcription.language==='zh' && created.turn_detection===null &&
+        created.input_audio_format==='pcm16' && !('audio' in created), 'beta transcription startup');
+      connection.send({type:'transcription_session.update',session:{input_audio_format:'pcm16',
+        input_audio_transcription:{model:'qwen3-asr-0.6b',language:'zh'},turn_detection:null}});
+      const updated = (await connection.wait('transcription_session.updated')).session;
+      check(updated.id===created.id && updated.input_audio_transcription.language==='zh' &&
+        updated.input_audio_format==='pcm16', 'beta transcription update');
+    } else {
+      check(created.audio.input.transcription.language==='zh' && created.audio.input.turn_detection===null &&
+        created.audio.input.format.type==='audio/pcm', 'inherited transcription settings');
+    }
     connection.send({type:'input_audio_buffer.append',audio:fs.readFileSync(args.pcm).toString('base64')});
     connection.send({type:'input_audio_buffer.commit'});
     const event = await connection.wait('conversation.item.input_audio_transcription.completed');
@@ -80,7 +92,8 @@ async function legacyTranscription() {
     const reply = modelReply.choices[0].message.content.trim();
     check(reply==='42','fresh Chat');
     return {sdk:'7.47.0',issued:200,invalid_ttl:400,invalid_format:400,recursive_issue:401,
-      models:401,requested_ttl:15,language:'zh',transcript:event.transcript,independent_chat:reply};
+      models:401,requested_ttl:15,language:'zh',transcript:event.transcript,independent_chat:reply,
+      ...(beta ? {beta_start:'session.created',beta_update:'transcription_session.updated'} : {})};
   } finally {connection.close();}
 }
 
@@ -108,12 +121,16 @@ async function legacyWire() {
     const answer = result.output.flatMap(i=>i.content||[]).filter(p=>p.type==='text')
       .map(p=>p.text).join('').trim();
     check(result.status==='completed' && answer==='42' && usage(result)>0, 'beta response resource');
+    const start = (await socket.wait('response.created')).response;
+    check(start.id===result.id && start.temperature===.6 && result.temperature===.6 &&
+      start.max_output_tokens===32 && result.max_output_tokens===32, 'per-response execution settings');
     const completed = await socket.wait('response.text.done');
     const delta = await socket.wait('response.text.delta');
     check(completed.text.trim()==='42' && delta.response_id===result.id &&
       delta.item_id===completed.item_id, 'beta delta and completion');
     return {sdk:'7.47.0',beta_session:true,issued_temperature:.75,updated_temperature:.9,
-      requested_temperature:.6,delta:'response.text.delta',completed:'response.text.done',
+      requested_temperature:.6,reported_temperature:result.temperature,max_output_tokens:result.max_output_tokens,
+      delta:'response.text.delta',completed:'response.text.done',
       answer,tokens:usage(result)};
   } finally {socket.close();}
 }

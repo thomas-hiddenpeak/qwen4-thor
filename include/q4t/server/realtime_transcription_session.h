@@ -87,6 +87,8 @@ struct RealtimeTranscriptionCallbacks {
       execute;
   // Must outlive this processor, including Cancel/Join/destruction.
   IRealtimeTranscriptionOwner* owner = nullptr;
+  // Set only on the primary socket that negotiated realtime=v1.
+  bool legacy_wire = false;
 };
 
 enum class RealtimeInputTail { kAnalyzing, kSilence, kMayContainSpeech };

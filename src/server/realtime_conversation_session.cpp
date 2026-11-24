@@ -66,6 +66,7 @@ struct RealtimeConversationSession::Work {
   std::thread worker;
   std::atomic<bool> done{false};
   bool prepared = false;
+  int planned_output_tokens = 0;
   // Native generation may already be Finished while its output is queued.
   // The public response still belongs to this session until response.done.
   bool cancelled_after_generation = false;
@@ -266,14 +267,23 @@ void RealtimeConversationSession::ConfigureTracing() noexcept {
 
   }
 }
-ObjectReply RealtimeConversationSession::Emit(Json event) {
+ObjectReply RealtimeConversationSession::Emit(Json event, const Work* owner) {
   if (cancelled_ || output_.closed() ||
       (callbacks_.interrupted && callbacks_.interrupted()))
     return object_detail::Error(409, "realtime_connection_closed",
                                 "Realtime connection closed");
   if (trace_) trace_->Observe(event, RealtimeTraceNow());
-  if (legacy_temperature_ && !EncodeLegacyRealtimeEvent(&event, *legacy_temperature_))
-    return {};
+  if (legacy_temperature_) {
+    const double sampling = owner ? owner->job.legacy_temperature.value()
+                                  : *legacy_temperature_;
+    const auto voice = owner && owner->speech.enabled
+                           ? std::string_view(owner->speech.chat.speech.voice)
+                           : std::string_view{};
+    if (!EncodeLegacyRealtimeEvent(&event, sampling,
+                                   owner ? owner->planned_output_tokens : 0,
+                                   voice))
+      return {};
+  }
   auto text = OutputJson(event);
   if (text.size() > output_.message_bytes)
     return object_detail::Error(503, "realtime_event_too_large",
@@ -901,6 +911,7 @@ bool RealtimeConversationSession::CreateResponse(
     work->prepared = Accepted(reply);
   }
   if (!Accepted(reply)) return ErrorEvent(std::move(reply), event_id);
+  work->planned_output_tokens = reply.value.GetInt("max_output_tokens");
   work->control = callbacks_.acquire(work->job.response_id);
   if (work->control && work->control->id() != work->job.response_id) {
     // A mismatched callback result grants no ownership of another request.
@@ -926,7 +937,8 @@ bool RealtimeConversationSession::CreateResponse(
   if (const auto* metadata = response.Find("metadata"))
     options.metadata = *metadata;
   work->output = std::make_unique<RealtimeResponseOutput>(
-      std::move(options), [this](const Json& value) { return Emit(value); },
+      std::move(options),
+      [this, active](const Json& value) { return Emit(value, active); },
       [this, active](const Json& item, bool begin, bool terminal) {
         return Store(*active, item, begin, terminal);
       },
@@ -1178,6 +1190,8 @@ bool RealtimeConversationSession::Tick() {
       continue;
     }
     if (work.worker.joinable()) work.worker.join();
+    if (work.result.planned_output_tokens > 0)
+      work.planned_output_tokens = work.result.planned_output_tokens;
     RealtimeResponseEnd end;
     end.state = work.result.state;
     end.message = &work.result.message;

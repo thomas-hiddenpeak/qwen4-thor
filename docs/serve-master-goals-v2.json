@@ -16527,6 +16527,15 @@
       "starts": 1,
       "answer": "42",
       "tokens": 109
+    },
+    "legacy_beta_resources": {
+      "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/beta-resources.json",
+      "status": "CANDIDATE_BUSINESS_PASS",
+      "outputs": [
+        "conversation_response_snapshot",
+        "transcription_start_and_update"
+      ],
+      "starts": 1
     }
   },
   "responses_beta_selector_20261123": {

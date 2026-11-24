@@ -76,6 +76,7 @@ void ChatServer::HandleRealtime(int fd, std::string_view path,
                                          client.Limits()->max_body_bytes)
                       : kWebSocketMessageLimit;
   auto callbacks = PrepareRealtimeInput(client);
+  callbacks.legacy_wire = headers.realtime_beta;
   WebSocketOutput output(kWebSocketOutputMaximumBytes, 64,
                          kWebSocketMaximumLimit);
   RealtimeTranscriptionPump session(

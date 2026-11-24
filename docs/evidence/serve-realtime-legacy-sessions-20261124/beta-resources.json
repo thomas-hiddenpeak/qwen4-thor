@@ -1,0 +1,106 @@
+{
+  "status": "CANDIDATE_BUSINESS_PASS",
+  "engine": "5d81db9fdd5f45b99364fe5d15b3c94b182187d43db3a30578b6c6f14e003a4c",
+  "ingress": "d1fafdd5e7dbfcaadea5988837aa7d73f349e2271236735bac8f07d358b539af",
+  "compiled_sources": "86de9bec62edaadac599f27342ecd8579f0af4c16d37e568c7ba235b33a37e73",
+  "sdk_conversation": {
+    "sdk": "7.47.0",
+    "beta_session": true,
+    "issued_temperature": 0.75,
+    "updated_temperature": 0.9,
+    "requested_temperature": 0.6,
+    "reported_temperature": 0.6,
+    "max_output_tokens": 32,
+    "delta": "response.text.delta",
+    "completed": "response.text.done",
+    "answer": "42",
+    "tokens": 109,
+    "driver_sha256": "e4869d35f7be32b919b2645e06c446d1593c437c4e34e481b25642a55ca93982"
+  },
+  "sdk_transcription": {
+    "sdk": "7.47.0",
+    "issued": 200,
+    "invalid_ttl": 400,
+    "invalid_format": 400,
+    "recursive_issue": 401,
+    "models": 401,
+    "requested_ttl": 15,
+    "language": "zh",
+    "transcript": "请查询当前项目版本号。",
+    "independent_chat": "42",
+    "beta_start": "session.created",
+    "beta_update": "transcription_session.updated",
+    "waveform_sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483",
+    "driver_sha256": "e4869d35f7be32b919b2645e06c446d1593c437c4e34e481b25642a55ca93982"
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 41.573,
+    "unchanged_default": true,
+    "phases": [
+      "conversation",
+      "transcription"
+    ]
+  },
+  "targeted_cpu": 10,
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 154,
+    "native_routes": 256,
+    "reviewed_source_anchors": 1248,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "lease": "COMPLETED",
+  "scope": "The official beta conversation helper supplied realtime=v1 automatically. Its constructor does not accept transcription intent. Transcription therefore used the stable official WebSocket helper with explicit realtime=v1 and intent=transcription, plus the beta issuance API. The CPU audio response tests cover PCM16 and both G.711 formats. No synthesized audio was requested in this GPU case.",
+  "retained_attempts": [
+    "First host selection used a binary built before the new audio-format test; selection refused the missing test. Rebuilt and ran all 10.",
+    "First lease command ran from the nested checkout and rejected the output path before obtaining a lease or starting a model. The repository-root invocation completed."
+  ],
+  "artifacts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-resources-business-02/plan.json",
+      "sha256": "ab9d1aac705ef7d0ac3ce26f31124d4373fd47065659baeeda3abc207397029f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-resources-business-02/result.json",
+      "sha256": "8735a7ee55411a6a10c141679abe4d60c26b4d489559cec836ff93f15057343f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-resources-business-02/create/conversation-result.json",
+      "sha256": "8da3a75e64eac6ecf1ffdba894b9db1a97dd2dcf5276a5acc86ddfd08f92194e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-resources-business-02/create/transcription-result.json",
+      "sha256": "976e6561fac084dd9ab24dd2001378b05ef958d5abf775269d5e5e7f246096b1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-resources-lease-02/exit.json",
+      "sha256": "b04efa403ba54ac48e281e4cc8b8e833bb5c711ee1bd15f0a114f1c817ef132e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-resources-cpu-01.log",
+      "sha256": "6ac84dd2617fac1dc6e6b28877cf612ba1bc274b195dc9cf5792bccb9d0c740d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-resources-cpu-02.log",
+      "sha256": "46a0dd0507ec751b64f930433a1158194efb06693f7821bd9f759e620e6316ed"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-resources-run-01.log",
+      "sha256": "1c4b5cd3c397cf8f6df7743b072d31079b51e7bd41e8d896a66dbc62cc171554"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-resource-audit.json",
+      "sha256": "e3d19296a1d660d045d7947fc530be841311789d577cbf739df77934991fd4be"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta_resource_business.py",
+      "sha256": "b383c37a11656afb535e4f5b11e1728e95e5fc45fd2fea477b52de95ff7dd95a"
+    }
+  ]
+}

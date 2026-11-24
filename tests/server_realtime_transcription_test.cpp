@@ -167,6 +167,31 @@ Q4T_TEST(legacy_transcription_ticket_roundtrip_keeps_only_supplied_settings) {
   return true;
 }
 
+Q4T_TEST(realtime_beta_transcription_negotiates_flat_startup_and_update) {
+  Fixture f;
+  f.callbacks.legacy_wire = true;
+  RealtimeTranscriptionSession session("sess_beta", f.output, f.callbacks, 30);
+  const auto request = Parse(R"({"type":"transcription","audio":{"input":{
+    "transcription":{"language":"en"},"turn_detection":null}}})");
+  Q4T_CHECK(session.StartConfigured(request).ok());
+  const auto created = Drain(f.output);
+  Q4T_CHECK(created.size() == 1 &&
+            created[0].GetString("type") == "session.created");
+  const auto* startup = created[0].Find("session");
+  Q4T_CHECK(startup && !startup->Has("audio") &&
+            startup->GetString("input_audio_format") == "pcm16" &&
+            startup->Find("input_audio_transcription")->GetString("language") == "en");
+  Q4T_CHECK(Send(session, R"({"type":"transcription_session.update","session":{
+    "input_audio_transcription":{"language":"zh"}}})"));
+  const auto updated = Drain(f.output);
+  Q4T_CHECK(updated.size() == 1 &&
+            updated[0].GetString("type") == "transcription_session.updated");
+  const auto* settings = updated[0].Find("session");
+  Q4T_CHECK(settings && settings->GetString("id") == startup->GetString("id") &&
+            settings->Find("input_audio_transcription")->GetString("language") == "zh");
+  return true;
+}
+
 Q4T_TEST(realtime_transcription_composed_configure_precedes_only_one_ack) {
   Fixture f;
   RealtimeTranscriptionSettings seen;
