@@ -159,6 +159,10 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/chatkit/threads/{thread_id}', 'control'),
     ('DELETE', '/v1/chatkit/threads/{thread_id}', 'control'),
     ('GET', '/v1/chatkit/threads/{thread_id}/items', 'control'),
+    *((method, path, 'data' if method == 'POST' else 'control')
+      for path, methods in (('/v1/evals', ('GET', 'POST')),
+                            ('/v1/evals/{eval_id}', ('GET', 'POST', 'DELETE')))
+      for method in methods),
     ('GET', '/v1/webhook_event_types', 'control'),
     *((method, '/v1/webhook_endpoints' + suffix,
        'data' if method == 'POST' else 'control')
@@ -308,6 +312,7 @@ def route_map():
     rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
+                           'eval_[A-Za-z0-9_-]{1,123}' if part == '{eval_id}' else
                            'whe_[A-Za-z0-9_-]{1,124}' if part == '{webhook_endpoint_id}' else
                            'automation_[A-Za-z0-9_-]{1,117}' if part == '{automation_id}' else
                            'invocation_[A-Za-z0-9_-]{1,117}' if part == '{invocation_id}' else

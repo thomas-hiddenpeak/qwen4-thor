@@ -110,7 +110,7 @@ class Stack:
                 self.close_connection = True
             def application_path(self, method):
                 path = self.path.split('?', 1)[0]
-                roots = ('/v1/chatkit', '/v1/webhook_endpoints', '/v1/webhook_event_types', '/v1/skills', '/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
+                roots = ('/v1/evals', '/v1/chatkit', '/v1/webhook_endpoints', '/v1/webhook_event_types', '/v1/skills', '/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
                          '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/translations/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/realtime/translations/calls', '/v1/live/sessions')
@@ -436,7 +436,7 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(webhook_endpoint_id='whe_1', automation_id='automation_1', invocation_id='invocation_1',
+            identities = dict(eval_id='eval_1', webhook_endpoint_id='whe_1', automation_id='automation_1', invocation_id='invocation_1',
                               run_id='run_1', step_id='step_1', thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1', container_id='cntr_1', skill_id='skill_1',

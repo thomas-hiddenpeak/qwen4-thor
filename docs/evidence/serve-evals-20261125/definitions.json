@@ -49,5 +49,19 @@
     ".q4t-work/serve-responses-agents-20261123/webhook-dev/evals-definition-methods.json": "434d4bc4177fae3c5ea95ad10bbc32551f01ab7cab3b905fced1c18379d89c2b",
     ".q4t-work/serve-responses-agents-20261123/webhook-dev/evals-inventory-02.json": "a84f34fd1d60fe637345b0e28d85cafb562a3f5d409eb159c8c598ad89a3781a",
     ".q4t-work/serve-responses-agents-20261123/webhook-dev/curated-evals-graph-02.log": "919d13666f830b9fcd2edf7ca72233a3efa0bc88d3f6792a603ee412f5ce215f"
+  },
+  "optional_gateway": {
+    "actual_nginx_route_test": "pass",
+    "route_contract_tests": 19,
+    "inventory_mutation_checks": 40,
+    "routes": [
+      "GET and POST /v1/evals",
+      "GET, POST and DELETE /v1/evals/{eval_id}"
+    ],
+    "raw_sha256": {
+      "evals-optional-all-routes-01.log": "40794b2b841bd10464fb09ca8536683025a200b9a00b07d586f3613ca876f9b9",
+      "evals-optional-routes-cpu.log": "e11f479acb9a6444ea690210cb068d4ae8f1d1d9f5edfb18c20cd386e6aee16b",
+      "evals-inventory-merged-reviewed.json": "a84f34fd1d60fe637345b0e28d85cafb562a3f5d409eb159c8c598ad89a3781a"
+    }
   }
 }
