@@ -48,7 +48,7 @@ ObjectRequest Write(ObjectKind kind, const std::string& id,
   request.expected_revision = revision;
   request.data = std::move(data);
   if (permanent || (kind == ObjectKind::kResponse &&
-                    request.data.Has("agent_session_id")))
+                    (request.data.Has("agent_session_id") || request.data.Has("assistant_thread_id"))))
     request.ttl_seconds = 0;
   if (ephemeral) {
     request.ttl_seconds = 600;
@@ -93,6 +93,16 @@ Json SavedResponse(ResponseStatePlan& plan, const Json& response,
                                                                    : "online")},
               {"conversation_id", String(plan.conversation_id)},
               {"conversation_revision", Number(plan.conversation_revision)}}));
+  if (!plan.assistant_thread_id.empty()) {
+    if (!plan.assistant_started_at && response.GetString("status") == "in_progress")
+      plan.assistant_started_at = std::time(nullptr);
+    if (!plan.assistant_finished_at && Terminal(response))
+      plan.assistant_finished_at = std::time(nullptr);
+    Set(&result, "assistant_started_at", Number(plan.assistant_started_at));
+    Set(&result, "assistant_finished_at", Number(plan.assistant_finished_at));
+    Set(&result, "assistant_thread_id", String(plan.assistant_thread_id));
+    Set(&result, "assistant_run_id", String(plan.assistant_run_id));
+  }
   if (!plan.agent_session_id.empty()) {
     if (!plan.agent_turn_started_at && response.GetString("status") == "in_progress")
       plan.agent_turn_started_at = std::time(nullptr);
@@ -533,6 +543,17 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
     return StateError("Stored response cannot restore execution state");
   plan->id = id;
   plan->scope = access.scope;
+  if (data->Has("assistant_thread_id") || data->Has("assistant_run_id")) {
+    auto thread = data->GetString("assistant_thread_id");
+    auto run = data->GetString("assistant_run_id");
+    if (!thread.starts_with("thread_") || !run.starts_with("run_") ||
+        !ValidId(thread) || !ValidId(run) || !response->GetBool("background"))
+      return StateError("Invalid stored Assistant run binding");
+    plan->assistant_thread_id = std::move(thread);
+    plan->assistant_run_id = std::move(run);
+    plan->assistant_started_at = data->GetInt("assistant_started_at");
+    plan->assistant_finished_at = data->GetInt("assistant_finished_at");
+  }
   if (const auto* session = data->Find("agent_session_id")) {
     if (!session->IsString() || !session->str.starts_with("agent_session_") ||
         !ValidId(session->str) || !response->GetBool("background"))
@@ -726,6 +747,15 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
   auto mutation = Write(ObjectKind::kResponse, plan->id, access, 0,
                         SavedResponse(*plan, snapshot, events),
                         !plan->conversation_id.empty(), plan->ephemeral);
+  if (!plan->assistant_thread_id.empty()) {
+    if (plan->assistant_writes.empty() || plan->agent_session_write)
+      return StateError("Missing Assistant run admission");
+    auto writes = std::move(plan->assistant_writes);
+    writes.push_back(std::move(mutation));
+    auto result = objects_.ExecuteBatch(writes, access.deadline, access.cancelled);
+    if (result.ok()) plan->response_revision = 1;
+    return result;
+  }
   if (plan->agent_session_write) {
     std::vector<ObjectRequest> writes;
     writes.reserve(plan->agent_environment_write ? 3 : 2);
@@ -989,6 +1019,9 @@ ObjectReply ResponsesState::Erase(std::string id, const StateAccess& access) {
   if (!Terminal(response.value))
     return Error(409, "response_not_completed",
                  "Cancel an active response before deletion");
+  if (existing.value.Find("data")->Has("assistant_thread_id"))
+    return Error(409, "assistant_thread_owns_response",
+                 "Delete the owning Assistant thread to release this run");
   if (existing.value.Find("data")->Has("agent_session_id"))
     return Error(409, "agent_session_owns_response",
                  "Delete the owning Agent session to release its turn");

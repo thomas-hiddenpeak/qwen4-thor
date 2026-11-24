@@ -193,9 +193,14 @@ class Validator {
            count <= bounds.GetInt("maxLength");
   }
   static bool WithinBounds(const Json& item, const Json& bounds) {
-    if (item.IsNumber() && bounds.Has("maximum"))
-      return item.number >= bounds.GetNumber("minimum") &&
-             item.number <= bounds.GetNumber("maximum");
+    if (item.IsNumber()) {
+      const auto* types = bounds.GetArray("type");
+      if (types && std::ranges::any_of(types->array, [](const Json& value) {
+            return value.str == "integer";
+          }) && !IsInputInteger(item)) return false;
+      return (!bounds.Has("minimum") || item.number >= bounds.GetNumber("minimum")) &&
+             (!bounds.Has("maximum") || item.number <= bounds.GetNumber("maximum"));
+    }
     if (item.IsString() && bounds.Has("maxLength"))
       return TextWithinBounds(item.str, bounds);
     if (item.IsArray()) {
@@ -370,6 +375,15 @@ Status ValidateAssistant(const Json& value, AssistantShape shape,
     case AssistantShape::kMessageUpdate: root = "message_update"; break;
     case AssistantShape::kMessageResource: root = "message_resource"; break;
     case AssistantShape::kMessageQuery: root = "message_query"; break;
+    case AssistantShape::kRunCreate: root = "run_create"; break;
+    case AssistantShape::kThreadRunCreate: root = "thread_run_create"; break;
+    case AssistantShape::kRunSubmit: root = "run_submit"; break;
+    case AssistantShape::kRunUpdate: root = "run_update"; break;
+    case AssistantShape::kRunListQuery: root = "run_list_query"; break;
+    case AssistantShape::kRunResource: root = "run_resource"; break;
+    case AssistantShape::kStepResource: root = "step_resource"; break;
+    case AssistantShape::kStepListQuery: root = "step_list_query"; break;
+    case AssistantShape::kStepQuery: root = "step_query"; break;
   }
   return Validate(graph, value, root, error, "", true);
 }

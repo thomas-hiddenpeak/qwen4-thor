@@ -308,7 +308,16 @@ def current_surface(root):
         raise ValueError('review assistant registry routing and version selector')
     if 'HandleAssistantThreads(*objects_' not in dispatch:
         raise ValueError('review assistant thread dispatch')
-    for path, methods in (('/v1/threads', ('POST',)),
+    if 'ServeAssistantRun(fd, *objects_' not in dispatch:
+        raise ValueError('review Assistant run routing')
+    for path, methods in (('/v1/threads/runs', ('POST',)),
+                          ('/v1/threads/{thread_id}/runs', ('GET','POST')),
+                          ('/v1/threads/{thread_id}/runs/{run_id}', ('GET','POST')),
+                          ('/v1/threads/{thread_id}/runs/{run_id}/cancel', ('POST',)),
+                          ('/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs', ('POST',)),
+                          ('/v1/threads/{thread_id}/runs/{run_id}/steps', ('GET',)),
+                          ('/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}', ('GET',)),
+                          ('/v1/threads', ('POST',)),
                           ('/v1/threads/{thread_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/threads/{thread_id}/messages', ('GET', 'POST')),
                           ('/v1/threads/{thread_id}/messages/{message_id}', ('GET', 'POST', 'DELETE')),

@@ -432,6 +432,15 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   } else if (kind == "environment_template" || kind == "environment") {
     inspector.HostedEnvironment(data, kind == "environment_template", payloads);
     if (kind == "environment") inspector.Snapshots(data);
+  } else if (kind == "thread") {
+    if (const auto* runs = data.Find("runs")) {
+      if (!runs->IsArray()) inspector.value.uncertain = true;
+      for (const auto& entry : runs->array) {
+        const auto* responses = entry.GetArray("response_ids");
+        if (!responses || responses->array.empty()) inspector.value.uncertain = true;
+        else for (const auto& id : responses->array) inspector.Reference(&id);
+      }
+    }
   } else if (kind == "agent_session") {
     const auto* session = data.Find("session");
     const auto* agent = session ? session->Find("agent") : nullptr;

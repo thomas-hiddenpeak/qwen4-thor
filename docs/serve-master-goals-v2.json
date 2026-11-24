@@ -2653,6 +2653,12 @@
         "methods": 9,
         "evidence": "evidence/serve-assistants-20261124/threads.json",
         "remaining": "Runs, steps, streaming, tool submission and managed delivery."
+      },
+      "assistants_runs_20261124": {
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "methods": 9,
+        "evidence": "evidence/serve-assistants-20261124/runs.json",
+        "remaining": "Managed handoff, hard pre-generation prompt budget and hosted code interpreter."
       }
     },
     {
@@ -6060,6 +6066,12 @@
         "methods": 9,
         "evidence": "evidence/serve-assistants-20261124/threads.json",
         "remaining": "Runs, steps, streaming, tool submission and managed delivery."
+      },
+      "assistants_runs_20261124": {
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "methods": 9,
+        "evidence": "evidence/serve-assistants-20261124/runs.json",
+        "remaining": "Managed handoff, hard pre-generation prompt budget and hosted code interpreter."
       }
     },
     {
@@ -9188,7 +9200,13 @@
       "agent_session_sdk_stream_20261123": "docs/evidence/serve-agent-sessions-20261123/stream.json",
       "agent_session_settings_20261123": "docs/evidence/serve-agent-sessions-20261123/settings.json",
       "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
-      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json",
+      "assistants_runs_20261124": {
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "methods": 9,
+        "evidence": "evidence/serve-assistants-20261124/runs.json",
+        "remaining": "Managed handoff, hard pre-generation prompt budget and hosted code interpreter."
+      }
     },
     {
       "id": "Q02",

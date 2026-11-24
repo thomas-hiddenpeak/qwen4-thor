@@ -72,6 +72,8 @@ class ResponsesExecution {
                             int64_t created,
                             const BatchResponseLink* batch_parent = nullptr,
                             const io::Json* credential_source = nullptr);
+  ObjectReply BindAssistantRun(std::string thread_id, std::string run_id,
+                               std::vector<ObjectRequest> writes);
   bool GenerationReady() const { return generation_ready_; }
   bool PendingFileSheets() const {
     return (files_ && files_->PendingSheets()) ||

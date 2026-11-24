@@ -4816,6 +4816,885 @@
         "x-q4t-body-contract": "empty body only"
       }
     },
+    "/v1/threads/runs": {
+      "post": {
+        "operationId": "post_v1_threads_runs",
+        "parameters": [
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_resource"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Assistants v2 named SSE resource and delta events, followed by done.",
+                "x-q4t-event-schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_event"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "assistant_thread_run_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/assistant_thread_run_create"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/threads/{thread_id}/runs": {
+      "post": {
+        "operationId": "post_v1_threads_thread_id_runs",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_299"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_299"
+            },
+            "style": "form",
+            "explode": true,
+            "x-q4t-alias-for": "include"
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_resource"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Assistants v2 named SSE resource and delta events, followed by done.",
+                "x-q4t-event-schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_event"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "assistant_step_query",
+        "x-q4t-body-contract": "assistant_run_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_create"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_threads_thread_id_runs",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_114"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_114"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_183"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "assistant_run_list_query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/threads/{thread_id}/runs/{run_id}": {
+      "get": {
+        "operationId": "get_v1_threads_thread_id_runs_run_id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_threads_thread_id_runs_run_id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "assistant_run_update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_update"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/threads/{thread_id}/runs/{run_id}/cancel": {
+      "post": {
+        "operationId": "post_v1_threads_thread_id_runs_run_id_cancel",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only",
+        "description": "Idempotent native background cancellation, empty body, 200 real resource. Independent bounded cancellation admission."
+      }
+    },
+    "/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs": {
+      "post": {
+        "operationId": "post_v1_threads_thread_id_runs_run_id_submit_tool_outputs",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_resource"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Assistants v2 named SSE resource and delta events, followed by done.",
+                "x-q4t-event-schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_event"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "assistant_run_submit",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_submit"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/threads/{thread_id}/runs/{run_id}/steps": {
+      "get": {
+        "operationId": "get_v1_threads_thread_id_runs_run_id_steps",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_114"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_114"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_299"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_299"
+            },
+            "style": "form",
+            "explode": true,
+            "x-q4t-alias-for": "include"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_183"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_step_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "assistant_step_list_query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}": {
+      "get": {
+        "operationId": "get_v1_threads_thread_id_runs_run_id_steps_step_id",
+        "parameters": [
+          {
+            "name": "thread_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "step_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_299"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "serve-application-v1.schema.json#/$defs/assistant_299"
+            },
+            "style": "form",
+            "explode": true,
+            "x-q4t-alias-for": "include"
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/assistant_step_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "assistant_step_query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
     "/v1/threads": {
       "post": {
         "operationId": "post_v1_threads",

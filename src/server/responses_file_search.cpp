@@ -35,9 +35,9 @@ Status PlanResponsesFileSearchTool(const Json& definition,
   if (definition.GetString("type") != "file_search")
     return Invalid(error, at + ".type", "Expected file_search tool");
   const auto* stores = definition.GetArray("vector_store_ids");
-  if (!stores || stores->array.empty())
+  if (!stores)
     return Invalid(error, at + ".vector_store_ids",
-                   "Expected nonempty vector store IDs");
+                   "Expected an array of vector store IDs");
   if (stores->array.size() > kResponsesSearchStores)
     return Invalid(error, at + ".vector_store_ids",
                    "Vector store working set exceeds request budget", true);
@@ -129,8 +129,8 @@ Status PlanResponsesFileSearchCall(const ResponsesFileSearchTool& tool,
     error->param = "file_search.arguments.queries";
     return status;
   }
-  if (tool.store_ids.empty() || tool.store_ids.size() > kResponsesSearchStores)
-    return Invalid(error, "file_search", "Missing validated tool owner");
+  if (tool.store_ids.size() > kResponsesSearchStores)
+    return Invalid(error, "file_search", "Too many vector stores for file search");
   *plan = tool.search;
   plan->queries = std::move(query.queries);
   return {};

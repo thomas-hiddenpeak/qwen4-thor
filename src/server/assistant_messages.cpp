@@ -90,6 +90,10 @@ ObjectReply ListMessages(const Json& messages, std::string_view raw) {
   ChatPlanError error;
   auto valid = ValidateAssistant(page, AssistantShape::kMessageQuery, &error);
   if (!valid) return Invalid(valid.message(), error.param);
+  return PageAssistantRows(messages, page);
+}
+
+ObjectReply PageAssistantRows(const Json& messages, const Json& page) {
   const auto limit = page.GetInt("limit", 20);
   if (limit < 1 || limit > 100) return Invalid("Expected 1 to 100", "limit");
   if (page.Has("after") && page.Has("before"))

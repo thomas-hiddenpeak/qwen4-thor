@@ -46,7 +46,8 @@ ObjectReply VectorStores::Attach(const BinaryAccess& access,
 }
 ObjectReply VectorStores::AttachForThread(
     const BinaryAccess& access, const std::string& id,
-    const std::vector<std::string>& file_ids, const ObjectRequest& thread) {
+    const std::vector<std::string>& file_ids, const ObjectRequest& thread,
+    std::vector<ObjectRequest>* prepared_writes) {
   auto root = Read(access, id, true);
   if (!root.ok()) return root;
   auto data = *root.value.Find("data");
@@ -69,7 +70,7 @@ ObjectReply VectorStores::AttachForThread(
     members.array.push_back(std::move(edge));
   }
   mutations.push_back(thread);
-  return Publish(access, root.value, std::move(data), mutations);
+  return Publish(access, root.value, std::move(data), mutations, prepared_writes);
 }
 
 ObjectReply VectorStores::LoadRecord(const BinaryAccess& access,

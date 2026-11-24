@@ -547,6 +547,11 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/prompt_api.cpp
   src/server/assistant_registry.cpp
   src/server/assistant_threads.cpp
+  src/server/assistant_run_settings.cpp
+  src/server/assistant_run_view.cpp
+  src/server/assistant_run_stream.cpp
+  src/server/assistant_run_http.cpp
+  src/server/assistant_run_admission.cpp
   src/server/assistant_messages.cpp
   src/server/agent_registration.cpp
   src/server/agent_vault.cpp

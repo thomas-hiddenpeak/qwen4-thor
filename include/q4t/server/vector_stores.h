@@ -28,7 +28,8 @@ class VectorStores {
   // Commit related new application state with the store and all its members.
   ObjectReply Create(const BinaryAccess& access, const io::Json& request,
                      const std::string& id,
-                     std::span<const ObjectRequest> related);
+                     std::span<const ObjectRequest> related,
+                     std::vector<ObjectRequest>* prepared = nullptr);
   ObjectReply Retrieve(const BinaryAccess& access, const std::string& id);
   ObjectReply Update(const BinaryAccess& access, const std::string& id,
                      const io::Json& request);
@@ -37,7 +38,8 @@ class VectorStores {
   // Publish the parent update and all newly referenced files in one commit.
   ObjectReply AttachForThread(const BinaryAccess& access, const std::string& id,
                               const std::vector<std::string>& file_ids,
-                              const ObjectRequest& thread);
+                              const ObjectRequest& thread,
+                              std::vector<ObjectRequest>* prepared = nullptr);
   ObjectReply Attach(const BinaryAccess& access, const std::string& id,
                      const io::Json& request);
   ObjectReply RetrieveFile(const BinaryAccess& access, const std::string& id,
@@ -130,7 +132,8 @@ class VectorStores {
                           std::vector<ObjectRequest>* mutations);
   ObjectReply Publish(const BinaryAccess& access, const io::Json& before,
                       io::Json data,
-                      std::span<const ObjectRequest> children = {});
+                      std::span<const ObjectRequest> children = {},
+                      std::vector<ObjectRequest>* prepared = nullptr);
   ObjectReply ChangeJob(const BinaryAccess& access,
                         const VectorIngestionClaim& claim,
                         std::string_view action, const io::Json& completion);

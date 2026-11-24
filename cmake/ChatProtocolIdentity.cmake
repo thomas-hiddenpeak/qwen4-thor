@@ -729,9 +729,15 @@ set(protocol_inputs
   src/server/contracts/openai_assistant_types_v1.json
   cmake/assistant_types.h.in
   include/q4t/server/assistant_registry.h
+  src/server/assistant_runs_internal.h
   src/server/assistant_threads_internal.h
   src/server/assistant_registry.cpp
   src/server/assistant_threads.cpp
+  src/server/assistant_run_settings.cpp
+  src/server/assistant_run_view.cpp
+  src/server/assistant_run_stream.cpp
+  src/server/assistant_run_http.cpp
+  src/server/assistant_run_admission.cpp
   src/server/assistant_messages.cpp
   src/server/contracts/openai_agent_registration_types_v1.json
   cmake/agent_registration_types.h.in

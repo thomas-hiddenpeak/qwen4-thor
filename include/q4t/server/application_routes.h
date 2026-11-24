@@ -409,18 +409,88 @@ inline AssistantThreadRoute ParseAssistantThreadRoute(std::string_view target) {
   return {Kind::kMessage, thread, message};
 }
 
+enum class AssistantRunRouteKind {
+  kNone,
+  kCreateThread,
+  kRuns,
+  kRun,
+  kCancel,
+  kSubmit,
+  kSteps,
+  kStep
+};
+struct AssistantRunRoute {
+  AssistantRunRouteKind kind = AssistantRunRouteKind::kNone;
+  std::string_view thread, run, step;
+};
+inline AssistantRunRoute ParseAssistantRunRoute(std::string_view target) {
+  using Kind = AssistantRunRouteKind;
+  if (target.find('#') != target.npos) return {};
+  auto path = target.substr(0, target.find('?'));
+  if (path == "/v1/threads/runs") return {Kind::kCreateThread, {}, {}, {}};
+  if (!path.starts_with("/v1/threads/")) return {};
+  path.remove_prefix(12);
+  const auto slash = path.find('/');
+  const auto thread = path.substr(0, slash);
+  if (slash == path.npos || !thread.starts_with("thread_") ||
+      thread.size() <= 7 || !ValidApplicationId(thread))
+    return {};
+  path.remove_prefix(slash + 1);
+  if (path == "runs") return {Kind::kRuns, thread, {}, {}};
+  if (!path.starts_with("runs/")) return {};
+  path.remove_prefix(5);
+  const auto next = path.find('/');
+  const auto run = path.substr(0, next);
+  if (!run.starts_with("run_") || run.size() <= 4 || !ValidApplicationId(run))
+    return {};
+  if (next == path.npos) return {Kind::kRun, thread, run, {}};
+  path.remove_prefix(next + 1);
+  if (path == "cancel") return {Kind::kCancel, thread, run, {}};
+  if (path == "submit_tool_outputs") return {Kind::kSubmit, thread, run, {}};
+  if (path == "steps") return {Kind::kSteps, thread, run, {}};
+  if (!path.starts_with("steps/")) return {};
+  const auto step = path.substr(6);
+  if (!step.starts_with("step_") || step.size() <= 5 ||
+      !ValidApplicationId(step))
+    return {};
+  return {Kind::kStep, thread, run, step};
+}
+inline bool AssistantRunMethodAllowed(std::string_view method,
+                                      std::string_view target) {
+  using Kind = AssistantRunRouteKind;
+  switch (ParseAssistantRunRoute(target).kind) {
+    case Kind::kCreateThread:
+    case Kind::kCancel:
+    case Kind::kSubmit:
+      return method == "POST";
+    case Kind::kRuns:
+    case Kind::kRun:
+      return method == "GET" || method == "POST";
+    case Kind::kSteps:
+    case Kind::kStep:
+      return method == "GET";
+    case Kind::kNone:
+      return false;
+  }
+  return false;
+}
+
 inline bool IsAssistantsV2Target(std::string_view target) {
-  return IsAssistantTarget(target) || ParseAssistantThreadRoute(target).kind !=
-                                         AssistantThreadRouteKind::kNone;
+  return IsAssistantTarget(target) ||
+         ParseAssistantRunRoute(target).kind != AssistantRunRouteKind::kNone ||
+         ParseAssistantThreadRoute(target).kind !=
+             AssistantThreadRouteKind::kNone;
 }
 
 inline bool AssistantMethodAllowed(std::string_view method,
                                    std::string_view target) {
+  if (AssistantRunMethodAllowed(method, target)) return true;
   using Kind = AssistantThreadRouteKind;
   const auto kind = ParseAssistantThreadRoute(target).kind;
   if (kind != Kind::kNone)
     return method == "POST" || (method == "GET" && kind != Kind::kCollection) ||
-           (method == "DELETE" && (kind == Kind::kThread || kind == Kind::kMessage));
+           (method == "DELETE" &&
+            (kind == Kind::kThread || kind == Kind::kMessage));
   return IsAssistantTarget(target) &&
          (method == "GET" || method == "POST" ||
           (method == "DELETE" && target.starts_with("/v1/assistants/")));
@@ -428,7 +498,9 @@ inline bool AssistantMethodAllowed(std::string_view method,
 
 inline bool IsAssistantObservation(std::string_view method,
                                    std::string_view target) {
-  return method != "POST" && AssistantMethodAllowed(method, target);
+  return (method != "POST" && AssistantMethodAllowed(method, target)) ||
+         (method == "POST" && ParseAssistantRunRoute(target).kind ==
+                                  AssistantRunRouteKind::kCancel);
 }
 
 inline bool IsAgentRegistrationTarget(std::string_view target) {
@@ -718,7 +790,9 @@ inline bool IsResponseCancellation(std::string_view method,
 
 inline bool IsCancellationRequest(std::string_view method,
                                   std::string_view target) {
-  return (method == "POST" && target == "/v1/requests/cancel") ||
+  return (method == "POST" && ParseAssistantRunRoute(target).kind ==
+                                  AssistantRunRouteKind::kCancel) ||
+         (method == "POST" && target == "/v1/requests/cancel") ||
          IsResponseCancellation(method, target) ||
          IsBatchCancellation(method, target) ||
          IsVectorStoreCancellation(method, target) ||

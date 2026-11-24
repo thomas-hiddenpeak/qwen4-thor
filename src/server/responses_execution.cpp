@@ -83,10 +83,47 @@ ObjectReply ResponsesExecution::BindAgentSession(
   return {};
 }
 
+ObjectReply ResponsesExecution::BindAssistantRun(
+    std::string thread_id, std::string run_id, std::vector<ObjectRequest> writes) {
+  if (!prepared_ || begun_ || !plan_.store || !envelope_.background ||
+      !plan_.assistant_writes.empty() || plan_.agent_session_write ||
+      !thread_id.starts_with("thread_") || !ValidId(thread_id) ||
+      !run_id.starts_with("run_") || !ValidId(run_id))
+    return Error(500, "assistant_run_binding_invalid", "Invalid run handoff");
+  bool linked = false;
+  for (const auto& write : writes) {
+    if (write.scope != plan_.scope || write.operation != ObjectOperation::kPut)
+      return Error(500, "assistant_run_binding_invalid", "Invalid participant");
+    if (write.kind == ObjectKind::kThread) {
+      const auto* runs = write.data.GetArray("runs");
+      if (linked || write.id != thread_id || !runs || runs->array.empty())
+        return Error(500, "assistant_run_binding_invalid", "Invalid thread handoff");
+      const auto& entry = runs->array.back();
+      const auto* resource = entry.Find("run");
+      const auto* legs = entry.GetArray("response_ids");
+      if (!resource || resource->GetString("id") != run_id || !legs ||
+          legs->array.empty() || legs->array.back().str != plan_.id)
+        return Error(500, "assistant_run_binding_invalid", "Run handoff changed");
+      linked = true;
+    } else if (write.kind != ObjectKind::kVectorStore &&
+               write.kind != ObjectKind::kVectorStoreFile &&
+               write.kind != ObjectKind::kVectorStoreBatch) {
+      return Error(500, "assistant_run_binding_invalid", "Unexpected participant");
+    }
+  }
+  if (!linked) return Error(500, "assistant_run_binding_invalid", "Missing thread");
+  plan_.assistant_thread_id = std::move(thread_id);
+  plan_.assistant_run_id = std::move(run_id);
+  plan_.assistant_writes = std::move(writes);
+  return {};
+}
+
 size_t ResponsesExecution::RetainedInputBytes() const {
   size_t bytes = plan_.agent_session_write
                      ? OutputJson(plan_.agent_session_write->data).size()
                      : 0;
+  for (const auto& write : plan_.assistant_writes)
+    bytes += OutputJson(write.data).size();
   if (plan_.agent_environment_write)
     bytes += OutputJson(plan_.agent_environment_write->data).size();
   for (const auto* value : {&plan_.request,
