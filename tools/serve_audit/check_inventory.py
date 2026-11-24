@@ -572,6 +572,8 @@ def current_surface(root):
                        root / "src/model/model_owner.cpp",
                        root / "src/model/model.cu", root / "src/mtp/mtp.cu",
                        root / "cmake/CudaCleanupBoundary.cmake",
+                       root / "cmake/workspace_python.h.in",
+                       root / "src/server/workspace_python.py",
                        root / "CMakeLists.txt",
                        root / "tools/serve_gateway/gateway.py",
                        root / "tools/serve_gateway/client_policy.py",

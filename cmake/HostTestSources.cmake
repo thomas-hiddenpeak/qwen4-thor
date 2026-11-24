@@ -190,6 +190,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/audio/stream_resample.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/stream_resample_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/asr_features_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/native_python.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/program_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_program.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_program_plan.cpp
@@ -444,6 +445,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_registry.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/containers.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/container_files.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/container_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_python.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_python_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/container_skills.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_threads.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_run_settings.cpp

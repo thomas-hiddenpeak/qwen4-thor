@@ -183,7 +183,12 @@ set(protocol_inputs
   include/q4t/server/responses_program.h
   src/server/program_vm.cpp
   src/server/program_vm.h
+  include/q4t/server/responses_python.h
   include/q4t/server/program_worker.h
+  src/server/native_python.cpp
+  src/server/native_python.h
+  src/server/workspace_python.py
+  cmake/workspace_python.h.in
   cmake/NativeProgrammatic.cmake
   third_party/quickjs/SOURCE.json
   include/q4t/server/tool_result_contracts.h
@@ -751,6 +756,9 @@ set(protocol_inputs
   src/server/assistant_registry.cpp
   src/server/containers.cpp
   src/server/container_files.cpp
+  src/server/container_execution.cpp
+  src/server/responses_python.cpp
+  src/server/responses_python_execution.cpp
   src/server/container_skills.cpp
   src/server/assistant_threads.cpp
   src/server/assistant_run_settings.cpp
@@ -1131,3 +1139,7 @@ if(NOT agent_session_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/agent_session_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/agent_session_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/workspace_python.py" Q4T_WORKSPACE_PYTHON)
+configure_file("${CMAKE_CURRENT_LIST_DIR}/workspace_python.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/workspace_python.h" @ONLY)

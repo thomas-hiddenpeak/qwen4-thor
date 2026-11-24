@@ -151,6 +151,7 @@ class ResponsesExecution {
                 std::string* wire);
   Status AppendSummary(std::string_view text, std::string* wire);
   Status CiteFileSearchSources(std::string* wire);
+  Status CitePythonFiles(std::string* wire);
   Status CiteWebSearchSources(std::string* wire);
   bool HasWebSearch() const { return !web_bindings_.empty(); }
   bool PendingWebSearch() const { return !web_pending_.empty(); }
@@ -166,8 +167,8 @@ class ResponsesExecution {
                              const std::function<bool(const std::string&)>& publish);
   bool HasFileSearch() const { return !file_search_bindings_.empty(); }
   bool HasNativeTools() const {
-    return HasFileSearch() || HasWebSearch() || HasToolSearch() ||
-           HasPrograms() || HasMcp();
+    return !python_container_.IsNull() || HasFileSearch() || HasWebSearch() ||
+           HasToolSearch() || HasPrograms() || HasMcp();
   }
   bool HasAsyncTools() const { return has_async_tools_ || program_async_wait_; }
   bool HasToolSearch() const { return !tool_search_catalog_.search.IsNull(); }
@@ -183,9 +184,9 @@ class ResponsesExecution {
   bool PendingPrograms() const { return !program_pending_.empty(); }
   bool PendingProgramResume() const;
   size_t PendingNativeCalls() const {
-    return file_search_pending_.size() + tool_search_pending_.size() +
-           program_pending_.size() + mcp_pending_.size() + web_pending_.size() +
-           agent_pending_.size();
+    return python_pending_.size() + file_search_pending_.size() +
+           tool_search_pending_.size() + program_pending_.size() +
+           mcp_pending_.size() + web_pending_.size() + agent_pending_.size();
   }
   ObjectReply RunPrograms(
       size_t completed_calls, bool* client_wait,
@@ -193,6 +194,9 @@ class ResponsesExecution {
   ObjectReply RunToolSearches(
       size_t completed_calls, bool* client_wait,
       const std::function<bool(const std::string&)>& publish);
+  bool PendingPython() const { return !python_pending_.empty(); }
+  ObjectReply RunPython(size_t completed_calls,
+                        const std::function<bool(const std::string&)>& publish);
   bool PendingFileSearch() const { return !file_search_pending_.empty(); }
   static constexpr size_t kMaxNativeToolCalls = 64;
   ObjectReply RunFileSearches(
@@ -275,6 +279,8 @@ class ResponsesExecution {
   ObjectReply PersistPreparedInputs();
   void ReleasePreparedInputs() noexcept;
   Status RecordOutput(Status status, std::string* wire);
+  Status AppendPython(const ResponseDelta& delta, bool* handled,
+                      std::string* wire);
   Status AppendFileSearch(const ResponseDelta& delta, bool* handled,
                           std::string* wire);
   Status AppendWebSearch(const ResponseDelta& delta, bool* handled,
@@ -355,6 +361,9 @@ class ResponsesExecution {
   std::map<size_t, NativeMcpCall> mcp_pending_;
   size_t mcp_argument_bytes_ = 0;
   io::Json mcp_resume_;
+  io::Json python_container_;
+  std::string python_container_id_;
+  std::map<size_t, ResponseToolCall> python_pending_;
   std::vector<ResponsesFileSearchBinding> file_search_bindings_;
   struct NativeFileCall {
     ResponseToolCall call;

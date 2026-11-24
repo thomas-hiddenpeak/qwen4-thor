@@ -3577,3 +3577,60 @@ Q4T_TEST(
   Q4T_CHECK(Ok(call("DELETE", expired)) && Ok(call("DELETE", url)));
   return true;
 }
+
+Q4T_TEST(hosted_python_workspace_keeps_file_identity_and_isolates_clients) {
+  Fixture f;
+  std::string id, file;
+  {
+    ObjectStore objects(f.options);
+    auto created = HandleContainers(objects, Access(), "POST", "/v1/containers",
+                                    R"({"name":"monthly-report"})");
+    Q4T_CHECK(Ok(created));
+    id = created.value.GetString("id");
+    auto first = ExecuteContainerPython(
+        objects, Access(), id,
+        "from pathlib import Path\nPath('answer.txt').write_text(str(17 + "
+        "25))");
+    Q4T_CHECK(Ok(first));
+    const auto& files = first.value.GetArray("files")->array;
+    Q4T_CHECK(files.size() == 1 && files[0].GetString("source") == "assistant");
+    file = files[0].GetString("id");
+    const auto& ref = first.value.GetArray("generated_files")->array[0];
+    Q4T_CHECK(
+        Ok(ExportAssistantOutputFile(objects, Access(), "msg_report", ref)));
+    Q4T_CHECK(ExportAssistantOutputFile(objects, Access("client:other"),
+                                        "msg_report", ref)
+                  .http_status == 404);
+    Q4T_CHECK(
+        ExecuteContainerPython(objects, Access("client:other"), id, "print(42)")
+            .http_status == 404);
+  }
+  ObjectStore objects(f.options);
+  auto next = ExecuteContainerPython(
+      objects, Access(), id,
+      "from pathlib import Path\np=Path('/mnt/data/answer.txt')\n"
+      "print(p.read_text())\np.write_text('43')");
+  Q4T_CHECK(Ok(next));
+  Q4T_CHECK(next.value.GetString("logs") == "42\n" &&
+            next.value.GetArray("files")->array[0].GetString("id") == file);
+  auto third = ExecuteContainerPython(
+      objects, Access(), id,
+      "from pathlib import "
+      "Path\np=Path('answer.txt')\nprint(p.read_text())\np.unlink()");
+  Q4T_CHECK(Ok(third) && third.value.GetString("logs") == "43\n");
+  auto page = HandleContainers(objects, Access(), "GET",
+                               "/v1/containers/" + id + "/files", "");
+  Q4T_CHECK(Ok(page) && page.value.GetArray("data")->array.empty());
+  const auto copy = AssistantOutputFileId("msg_report", file);
+  BinaryAccess owner{Access().scope, Access().deadline, {}};
+  BinaryRead pin;
+  Files exported(objects);
+  auto source = exported.Open(owner, copy, &pin);
+  Q4T_CHECK(Ok(source) &&
+            source.value.GetString("purpose") == "assistants_output");
+  BinaryStore binary(objects);
+  std::string result;
+  Q4T_CHECK(Ok(binary.Read(owner, pin, 0, &result)) && result == "42");
+  Q4T_CHECK(Ok(binary.Close(owner, &pin)));
+  return true;
+}

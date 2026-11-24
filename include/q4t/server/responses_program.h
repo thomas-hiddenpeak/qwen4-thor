@@ -24,7 +24,8 @@ io::Json NativeResponsesProgramDefinition(
     const io::Json& active_tools, bool parallel = true,
     const std::vector<ResponsesMcpBinding>* mcp = nullptr);
 Status MapResponsesProgramChoice(const io::Json& choice, bool enabled,
-                                 io::Json* mapped, ChatPlanError* error);
+                                 io::Json* mapped, ChatPlanError* error,
+                                 bool python = false);
 // The SDK result remains a string. Only the explicit versioned representation
 // carries typed media; ordinary text, including JSON-looking text, stays text.
 Status DecodeResponsesProgramOutput(std::string_view result, io::Json* content);

@@ -22,6 +22,18 @@ ObjectReply ReadContainerSkillFiles(ObjectStore& objects,
                                     const StateAccess& access,
                                     std::string_view container,
                                     std::vector<FilePackageEntry>* files);
+// Run one tool call against a scoped snapshot. Publish its file delta
+// atomically.
+ObjectReply ExecuteContainerPython(ObjectStore& objects,
+                                   const StateAccess& access,
+                                   std::string_view container,
+                                   std::string_view code);
+std::string AssistantOutputFileId(const std::string& message,
+                                  const std::string& container_file);
+ObjectReply ExportAssistantOutputFile(ObjectStore& objects,
+                                      const StateAccess& access,
+                                      const std::string& message,
+                                      const io::Json& file);
 ObjectReply HandleContainers(ObjectStore& objects, const StateAccess& access,
                              std::string_view method, std::string_view target,
                              const std::string& body,

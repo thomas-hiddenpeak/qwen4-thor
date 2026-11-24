@@ -1,3 +1,4 @@
+#include "q4t/server/responses_python.h"
 #include "q4t/server/responses_execution.h"
 #include "q4t/server/generation_style.h"
 #include "q4t/server/tool_result_contracts.h"
@@ -809,6 +810,8 @@ Status ResponsesExecution::Append(const ResponseDelta& delta,
   }
   bool handled = false;
   auto status = AppendAgent(delta, &handled, wire);
+  if (!status || handled) return status;
+  status = AppendPython(delta, &handled, wire);
   if (!status || handled) return status;
   status = AppendWebSearch(delta, &handled, wire);
   if (!status || handled) return status;

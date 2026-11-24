@@ -984,3 +984,52 @@ Q4T_TEST(agent_session_delta_padding_is_per_subscription) {
   Q4T_CHECK(!done.Has("obfuscation"));
   return true;
 }
+
+Q4T_TEST(
+    hosted_python_file_links_bind_committed_unicode_paths_and_skip_missing_files) {
+  ResponsesOutput output;
+  std::string wire;
+  size_t index;
+  Json files;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"([{"container_id":"cntr_a","id":"cfile_a","path":"/mnt/data/报告 x.txt","source":"assistant"}])",
+      &files));
+  Q4T_CHECK(output.Init(Options(), "resp_report", 42, false) &&
+            output.Start(&wire));
+  Q4T_CHECK(output.StartPython("cntr_a", "print(42)", &index, &wire) &&
+            output.EndPython(index, "42", false, &files, &wire));
+  const std::string url = "sandbox:/mnt/data/报告%20x.txt";
+  Q4T_CHECK(
+      output.Append(Text("证😀(" + url + ") (sandbox:/mnt/data/foreign.txt)"),
+                    "null", &wire));
+  int exports = 0;
+  auto save = [&](const std::string& message, const Json& file) {
+    if (message.empty() || file.GetString("id") != "cfile_a")
+      return q4t::Status::Fail("unexpected file");
+    ++exports;
+    return q4t::Status{};
+  };
+  Q4T_CHECK(output.CitePythonFiles(save, &wire) && exports == 1 &&
+            wire.find("response.output_text.annotation.added") != wire.npos);
+  const auto& refs = output.Snapshot()
+                         .GetArray("output")
+                         ->array.back()
+                         .GetArray("content")
+                         ->array[0]
+                         .GetArray("annotations")
+                         ->array;
+  Q4T_CHECK(refs.size() == 1 && refs[0].GetInt("start_index") == 3 &&
+            refs[0].GetInt("end_index") ==
+                static_cast<int64_t>(3 + url.size() - 4) &&
+            refs[0].GetString("filename") == "报告 x.txt" &&
+            refs[0].GetString("container_id") == "cntr_a");
+  Q4T_CHECK(output.CitePythonFiles(save, &wire) && wire.empty() &&
+            exports == 1);
+  files.array.clear();
+  Q4T_CHECK(output.StartPython("cntr_a", "pass", &index, &wire) &&
+            output.EndPython(index, "", false, &files, &wire));
+  Q4T_CHECK(output.Append(Text(url), "null", &wire) &&
+            output.CitePythonFiles(save, &wire) && wire.empty() &&
+            exports == 1);
+  return true;
+}

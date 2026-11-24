@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "object_protocol.h"
+#include "q4t/server/containers.h"
 
 namespace q4t::server::assistant_detail {
 namespace {
@@ -28,7 +29,32 @@ Json PublicMessage(const Json& item, const Json& run, int64_t created,
     } else if (part.GetString("type") == "output_text") {
       auto annotations = Array();
       if (const auto* refs = part.GetArray("annotations")) {
+        std::vector<size_t> offsets;
         for (const auto& ref : refs->array) {
+          if (ref.GetString("type") == "container_file_citation") {
+            const auto& text = part.Find("text")->str;
+            if (offsets.empty()) {
+              for (size_t i = 0; i < text.size(); ++i)
+                if ((static_cast<unsigned char>(text[i]) & 0xc0) != 0x80)
+                  offsets.push_back(i);
+              offsets.push_back(text.size());
+            }
+            const auto start = ref.GetInt("start_index", -1);
+            const auto end = ref.GetInt("end_index", -1);
+            if (start < 0 || end < start ||
+                static_cast<size_t>(end) >= offsets.size())
+              continue;
+            const auto id = AssistantOutputFileId(item.GetString("id"),
+                                                  ref.GetString("file_id"));
+            annotations.array.push_back(Object(
+                {{"type", String("file_path")},
+                 {"start_index", Number(start)},
+                 {"end_index", Number(end)},
+                 {"text", String(text.substr(offsets[start],
+                                             offsets[end] - offsets[start]))},
+                 {"file_path", Object({{"file_id", String(id)}})}}));
+            continue;
+          }
           if (ref.GetString("type") != "file_citation") continue;
           const auto pos = Number(ref.GetInt("index"));
           annotations.array.push_back(
@@ -149,7 +175,8 @@ ObjectReply ProjectRun(ObjectStore& objects, const StateAccess& access,
     for (const auto& item : response->GetArray("output")->array) {
       const auto type = item.GetString("type");
       auto state = item.GetString("status", "in_progress");
-      if (state != "completed")
+      if (state != "completed" &&
+          !(type == "code_interpreter_call" && state == "failed"))
         state =
             stage == "failed" || stage == "cancelled" ? stage : "in_progress";
       if (type == "message") {
@@ -162,7 +189,8 @@ ObjectReply ProjectRun(ObjectStore& objects, const StateAccess& access,
         view->steps.array.push_back(Step(run, item, "message_creation",
                                          std::move(detail), state, created,
                                          finished));
-      } else if (type == "function_call" || type == "file_search_call") {
+      } else if (type == "function_call" || type == "file_search_call" ||
+                 type == "code_interpreter_call") {
         Json tool;
         auto step_end = finished;
         if (type == "function_call") {
@@ -181,6 +209,18 @@ ObjectReply ProjectRun(ObjectStore& objects, const StateAccess& access,
           if (!result && stage == "completed") calls.array.push_back(tool);
           Set(&Field(tool, "function"), "output", result ? *result : Json());
           if (!result && state == "completed") state = "in_progress";
+        } else if (type == "code_interpreter_call") {
+          auto outputs = Array();
+          if (const auto* values = item.GetArray("outputs")) {
+            for (const auto& value : values->array)
+              if (value.GetString("type") == "logs")
+                outputs.array.push_back(value);
+          }
+          tool = Object({{"type", String("code_interpreter")},
+                         {"id", *item.Find("id")},
+                         {"code_interpreter",
+                          Object({{"input", String(item.GetString("code"))},
+                                  {"outputs", std::move(outputs)}})}});
         } else {
           tool = Object({{"type", String("file_search")},
                          {"id", *item.Find("id")},

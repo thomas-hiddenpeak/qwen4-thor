@@ -122,7 +122,9 @@ Json ViewEvent(Json event, const ResponsesReadPlan& plan) {
     // caller did not request probability contents. Other event types must
     // not acquire an unrelated field.
     if (event.Has("logprobs")) Set(&event, "logprobs", Array());
-    if (event.Has("part")) Remove(&Field(event, "part"), "logprobs");
+    if (auto* part = event.Find("part");
+        part && part->GetString("type") == "output_text")
+      Set(&Field(event, "part"), "logprobs", Array());
   }
   ApplyDeltaObfuscation(&event, plan.obfuscation);
   return event;

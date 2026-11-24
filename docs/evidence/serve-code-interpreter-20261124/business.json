@@ -1,0 +1,211 @@
+{
+  "status": "ACCEPT_HOSTED_PYTHON_WORKSPACE_HTTP",
+  "sdk": "7.47.0",
+  "binary": "ff3d2c6b8d19afb0e205c2c82a91e008162b2dbf124e8b10ecbe68d918025f38",
+  "ingress": "8dcbff0906e72c0109a9b36febe529e92a9708d2c2b5cb8d0c934bc27f453572",
+  "protocol_sources_sha256": "16fd3683422badd415ab831178f21d66aa6d6ce5970da1bd4ea5acfb34e14075",
+  "source_revision": 464,
+  "source_sha256": "404742dd211968ab7e4f9453e6103e72bcf5406bc434d511045431f391b32230",
+  "duration_seconds": 48.16,
+  "responses": {
+    "status": "completed",
+    "generated_logs": [
+      {
+        "type": "logs",
+        "logs": "464\n"
+      }
+    ],
+    "answer": "464\n\n[selected](sandbox:/mnt/data/selected.txt)",
+    "container": "cntr_9fae4f240712ba9903c47a51d954bef6",
+    "citation": {
+      "type": "container_file_citation",
+      "container_id": "cntr_9fae4f240712ba9903c47a51d954bef6",
+      "file_id": "cfile_c39bb4f58a338d3028fa32808647ac9d",
+      "filename": "selected.txt",
+      "start_index": 16,
+      "end_index": 46
+    },
+    "generated_file": "cfile_c39bb4f58a338d3028fa32808647ac9d",
+    "foreign_download": 404,
+    "get_matches_stream": true,
+    "replay_matches_live": true
+  },
+  "assistants": {
+    "status": "completed",
+    "thread": "thread_c4f4bdab9e147f11de9830947cd45481",
+    "run": "run_bf2d6bc44a4628069c25bb319fef5b5d",
+    "steps": [
+      "tool_calls",
+      "message_creation"
+    ],
+    "step_output": [
+      {
+        "type": "logs",
+        "logs": "464\n"
+      }
+    ],
+    "message": "msg_4d2a2fb4dc39729786c431d24e8cb377",
+    "generated_file": "file_072d5f28068fae50bf24769bc605539b",
+    "purpose": "assistants_output",
+    "raw_contents": "464",
+    "foreign_download": 404
+  },
+  "schema": {
+    "responses_events": 30,
+    "replayed_events": 30,
+    "assistants_events": 31,
+    "responses_terminal_and_get": 2,
+    "run_steps": 2,
+    "assistant_message_and_file": 2,
+    "declared_and_official_match": true
+  },
+  "independent_chat": "42",
+  "cpu": {
+    "hosted": 4,
+    "related_quickjs": 9,
+    "retrieval_citations": 3,
+    "stored_logprobs": 1
+  },
+  "scope": {
+    "required_methods": 231,
+    "declared_methods_with_expected_status": 178,
+    "remaining": 53,
+    "runtime": "optional system CPython 3.12 only in a disposable seccomp-filtered process",
+    "workspace": "16 MiB, 256 files, 8 MiB/file",
+    "network": "disabled",
+    "persistence": "files only"
+  },
+  "pending": [
+    "Retained Python variables and broader Python packages, plots and binary images.",
+    "Container tier / configured egress, programmatic tool invocations and a hosted shell.",
+    "Capacity handoff, managed recovery, installed release and remaining serving interfaces."
+  ],
+  "prior_failures": [
+    {
+      "attempt": 1,
+      "reason": "Invalid native Responses event sequence. The tool stages now checkpoint before streaming.",
+      "stage": {
+        "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-01/result.json",
+        "sha256": "475b97cd2ed91e957299d83609949da6c839d5e3c6623fb49132b7c1dfa5b2c3"
+      },
+      "details": {
+        "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-01/create/sdk.stderr",
+        "sha256": "8378d1e00e9f0f95525da3734bcd488184eada101a6d0a6850546e740703cb92"
+      }
+    },
+    {
+      "attempt": 2,
+      "reason": "GET excluded an empty logprobs array required by official OpenAPI. Retrieval and stored replay now preserve the array.",
+      "stage": {
+        "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-02/result.json",
+        "sha256": "2ff966bc1cdda29420623a91792695bb4116ab59a504b4e7fccd9975160db0f4"
+      },
+      "details": {
+        "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-02/create/sdk.stderr",
+        "sha256": "652f6c735dd59abddef2659080eb91c8f3aba99b496c8d22391134febbb06ecc"
+      }
+    },
+    {
+      "attempt": 3,
+      "reason": "The SDK observer retained mutable event objects. Snapshotting events at delivery preserves the actual deltas.",
+      "stage": {
+        "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-03/result.json",
+        "sha256": "55242d7fa7791a91b6286261ad65b0d9c48049e61ae69be4ba2003d83e0aaab6"
+      },
+      "details": {
+        "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-03/create/sdk.stderr",
+        "sha256": "552762ee2f3c83dadda5d84ff874a50837ac17a5b555e474e3689bfc777ed425"
+      }
+    }
+  ],
+  "previous_merge": {
+    "merge": "709261a17a2a1a743c7b8d0e68fb2591659b4e77",
+    "head": "b7597ab5745275c2b8b84c551c885c4384fb7c4a",
+    "checks": {
+      "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45341476902",
+      "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45341522732"
+    }
+  },
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/docs/evidence/serve-skills-20261124/delivery.json",
+      "sha256": "404742dd211968ab7e4f9453e6103e72bcf5406bc434d511045431f391b32230"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-04/plan.json",
+      "sha256": "0dc3441522aaaf983bf4dd58db8f7ec2649c73c003d397c239789e18057afaec"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-04/result.json",
+      "sha256": "520c97d59df8700dd1720651aa6d677eda9d2e5f39d1f42b619c6cbe2e17cdca"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-lease-04/exit.json",
+      "sha256": "8e3db781da89ce0d0629fa98bc67d7721ecbc9acbe661e0e6f915e7db7f434ad"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-04/schema.json",
+      "sha256": "07e25468a20e670edd4e5e2fdcefce0df931ee365fe8004e5685a19302f28f41"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-04/create/sdk-result.json",
+      "sha256": "c5cf4d1b5fdf6d9593696787415455eb0d16d92007f840c86392bc978c8c014b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-04/create/events.json",
+      "sha256": "f27752b02256c41a821ed63cc2003bf20c67c0da2e08c1e3722603342dbfca03"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-04/create/events.json.replay.json",
+      "sha256": "d2d62d34785588220ccdbc9985d9af09f0aa366e2336066854b39e8f05c5b0ce"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-04/create/events.json.get.json",
+      "sha256": "f9835f638bcae15843c7039953657fef3813bd50eb846015927345b464504b00"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-04/create/events.json.artifacts.json",
+      "sha256": "a3df6391be794627b13a082fdda9a7208535e973acdc995f2940bdfcf439408f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-business-04/create/events.json.assistants.json",
+      "sha256": "2d842482cd3ba961ba0695c4c516ca6644f4785483a73575012642e4b7044d4d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted_code_business.py",
+      "sha256": "4a89e0c4396ba4ef77a6360c1d3895fcdb4ee33fe9fa8094c5d86e58ab5008ff"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted_code_wire.py",
+      "sha256": "4742705ba1e4b0b13ea6bafb4f697998599afe8ec3217ee5e849a0a677d4dcf9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/pr89-merged.json",
+      "sha256": "6403f4be1681a5a00f4c929021f38aa2f59ec9304e9d4da0d0b79a6329291531"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-dev-01/api-test-05.log",
+      "sha256": "37009df9cf2dacd4a4ba41a00e8565c43bd5a75d3205c3ccdfb61cca4231d935"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-dev-01/citation-regression.log",
+      "sha256": "c20dd6a95f1eeff6ec90c630903ed0279fe649d0c5a44c34776be4342e3adc2d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-dev-01/program-regression-01.log",
+      "sha256": "1af2bab8a20236a5c05f9023e32394651878113ab0f9e6472151d3a03db79f77"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-dev-01/logprobs-regression.log",
+      "sha256": "eb1c87c39c861d462d7c8b40c3b6026caf50602b13fcbfac68e8701ecefb12d7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-dev-01/smoke-02.json",
+      "sha256": "91dbce5818bedd7efaed3edce154288eb9e1541c26d89fadcf0b9445682d88c4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/hosted-code-dev-01/inventory-03.json",
+      "sha256": "49b9c756456583e444dfcdbe3a306c8d70e0c98cc6c1ddba5924478bf9077abe"
+    }
+  ]
+}

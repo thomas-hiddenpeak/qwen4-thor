@@ -527,3 +527,24 @@ Q4T_TEST(responses_custom_grammar_flat_format_preserves_public_definition) {
   }
   return true;
 }
+
+Q4T_TEST(hosted_python_tool_choice_is_mapped_to_an_owned_builtin) {
+  Json tools, choice, effective;
+  ChatPlanError error;
+  auto input = Read(
+      R"({"tools":[{"type":"code_interpreter","container":{"type":"auto"}}],"tool_choice":{"type":"code_interpreter"}})");
+  const auto mapped =
+      NormalizeResponsesTools(input, &tools, &choice, &error, &effective);
+  Q4T_CHECK(mapped);
+  Q4T_CHECK(tools.array.size() == 1 &&
+            tools.array[0].Find("function")->GetString("name") ==
+                "q4t_builtin_code_interpreter");
+  Q4T_CHECK(choice.Find("function")->GetString("name") ==
+            "q4t_builtin_code_interpreter");
+  Q4T_CHECK(effective.array[0].GetString("type") == "code_interpreter");
+  auto invalid = Read(
+      R"({"tools":[{"type":"code_interpreter","container":"/home/other"}]})");
+  Q4T_CHECK(
+      !NormalizeResponsesTools(invalid, &tools, &choice, &error, &effective));
+  return true;
+}

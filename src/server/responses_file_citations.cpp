@@ -1,10 +1,12 @@
 #include "q4t/server/responses_output.h"
 
 #include <algorithm>
+#include <charconv>
 #include <set>
 #include <unordered_map>
 
 #include "q4t/server/output_schema.h"
+#include "q4t/server/completion_response.h"
 #include "responses_json.h"
 
 namespace q4t::server {
@@ -91,6 +93,86 @@ Status ResponsesOutput::CiteFileSearchSources(std::string* wire) {
     Set(&fields, "annotation", citation.annotation);
     annotations.push_back(std::move(citation.annotation));
     Event("response.output_text.annotation.added", std::move(fields), wire);
+  }
+  return {};
+}
+namespace {
+std::string SandboxPath(std::string_view uri) {
+  std::string path;
+  for (size_t i = 0; i < uri.size(); ++i) {
+    if (uri[i] != '%') {
+      path.push_back(uri[i]);
+      continue;
+    }
+    if (uri.size() - i < 3) return {};
+    unsigned byte = 0;
+    const char* start = uri.data() + i + 1;
+    const auto result = std::from_chars(start, start + 2, byte, 16);
+    if (result.ec != std::errc{} || result.ptr != start + 2) return {};
+    path.push_back(static_cast<char>(byte));
+    i += 2;
+  }
+  return path;
+}
+}  // namespace
+
+Status ResponsesOutput::CitePythonFiles(const ContainerFileExport& export_file,
+                                        std::string* wire) {
+  wire->clear();
+  if (!started_ || terminal_) return Status::Fail("Response is inactive");
+  if (python_files_.empty()) return {};
+  constexpr std::string_view prefix = "sandbox:/mnt/data/";
+  for (size_t i = python_item_ + 1; i < Items().array.size(); ++i) {
+    auto& item = Items().array[i];
+    if (closed_items_.contains(i) || item.GetString("type") != "message")
+      continue;
+    auto& content = Field(item, "content").array;
+    if (content.size() != 1 || content[0].GetString("type") != "output_text")
+      continue;
+    const std::string_view text = content[0].Find("text")->str;
+    auto& annotations = Field(content[0], "annotations").array;
+    std::set<int64_t> existing;
+    for (const auto& ref : annotations)
+      if (ref.GetString("type") == "container_file_citation")
+        existing.insert(ref.GetInt("start_index"));
+    size_t offset = 0, characters = 0;
+    std::set<std::string> exported;
+    while (offset < text.size()) {
+      const auto start = text.find(prefix, offset);
+      if (start == text.npos) break;
+      const auto delimiter =
+          text.find_first_of(")>`\"' \t\r\n", start + prefix.size());
+      const auto end = delimiter == text.npos ? text.size() : delimiter;
+      characters += Utf8Characters(text.substr(offset, start - offset));
+      const auto first = characters;
+      characters += Utf8Characters(text.substr(start, end - start));
+      offset = end;
+      const auto encoded = text.substr(start + 8, end - start - 8);
+      // The workspace enforces a 1024-byte relative name.
+      if (encoded.size() > 3 * 1024 + 10 || existing.contains(first)) continue;
+      auto it = python_files_.find(SandboxPath(encoded));
+      if (it == python_files_.end()) continue;
+      const auto& file = it->second;
+      const auto& path = it->first;
+      auto annotation =
+          Object({{"type", String("container_file_citation")},
+                  {"container_id", *file.Find("container_id")},
+                  {"file_id", *file.Find("id")},
+                  {"filename", String(path.substr(path.rfind('/') + 1))},
+                  {"start_index", Number(first)},
+                  {"end_index", Number(characters)}});
+      auto charged = Charge(OutputJson(annotation).size() + 8 * sizeof(io::Json));
+      if (!charged) return charged;
+      if (export_file && exported.insert(file.GetString("id")).second) {
+        auto saved = export_file(item.GetString("id"), file);
+        if (!saved) return saved;
+      }
+      auto fields = Location(i, true);
+      Set(&fields, "annotation_index", Number(annotations.size()));
+      Set(&fields, "annotation", annotation);
+      annotations.push_back(std::move(annotation));
+      Event("response.output_text.annotation.added", std::move(fields), wire);
+    }
   }
   return {};
 }

@@ -1,3 +1,4 @@
+#include "q4t/server/responses_python.h"
 #include "q4t/server/responses_input.h"
 
 #include <algorithm>
@@ -949,6 +950,32 @@ Status NormalizeResponsesInput(const io::Json& request,
         status = flush();
         if (!status) return status;
       }
+    } else if (type == "code_interpreter_call") {
+      status = ValidateResponsesItemShape(item, ResponsesItemShape::kInput,
+                                          error, path);
+      if (!status) return status;
+      const auto prefix = "history_python_" + std::to_string(i);
+      auto id = prefix;
+      for (size_t n = 0; call_ids.contains(id) || expected.contains(id); ++n)
+        id = prefix + "_" + std::to_string(n);
+      auto args = Object({{"code", String(item.GetString("code"))}});
+      calls.array.push_back(Object(
+          {{"id", String(id)},
+           {"type", String("function")},
+           {"function", Object({{"name", String(kPythonToolName)},
+                                {"arguments", String(OutputJson(args))}})}}));
+      auto data =
+          Object({{"status", String(item.GetString("status"))},
+                  {"container_id", String(item.GetString("container_id"))}});
+      if (const auto* outputs = item.Find("outputs"))
+        Set(&data, "outputs", *outputs);
+      results.emplace_back(Object({{"role", String("tool")},
+                                   {"tool_call_id", String(id)},
+                                   {"content", String(OutputJson(data))}}),
+                           path);
+      expected.emplace(id, false);
+      returned.insert(id);
+      ++automatic_returns;
     } else if (type == "web_search_call") {
       status = ValidateResponsesItemShape(item, ResponsesItemShape::kInput,
                                           error, path);
@@ -1156,6 +1183,7 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
     std::string path, name_space, description;
   };
   std::vector<Entry> entries;
+  bool python_enabled = false;
   bool program_enabled = false;
   std::string program_path;
   std::vector<std::string> model_paths;
@@ -1219,6 +1247,18 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
           model_paths.push_back(at);
           if (!binding.direct) program_only.insert(binding.model_name);
         }
+        continue;
+      }
+      if (type == "code_interpreter") {
+        if (python_enabled)
+          return Invalid(error, at, "Duplicate code interpreter");
+        auto valid = ValidatePythonTool(definition, error, at);
+        if (!valid) return valid;
+        python_enabled = true;
+        tools->array.push_back(PythonToolFunction());
+        if (!ResponsesToolAllows(definition, "direct"))
+          program_only.insert(kPythonToolName);
+        model_paths.push_back(at);
         continue;
       }
       if (type == "programmatic_tool_calling") {
@@ -1401,7 +1441,7 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
     auto status = MapNamespaceChoice(*original, identities, &selected, error);
     if (status)
       status = MapResponsesProgramChoice(selected, program_enabled,
-                                         &native_choice, error);
+                                         &native_choice, error, python_enabled);
     if (status)
       status = MapResponsesMcpChoice(
           native_choice, mcp, &mcp_choice, error,
