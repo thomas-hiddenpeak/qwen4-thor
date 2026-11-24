@@ -1,0 +1,117 @@
+{
+  "status": "ACCEPT_TRANSLATION_SAMPLING_AND_TYPED_ERRORS",
+  "candidate": {
+    "binary": "f366ee84fc43794535fb6005595d7e5deb2c77ac7a48c3caf42fc0bb43f75352",
+    "ingress": "7b9770f3784c047bce10342b5a085c2b6ca3a231be285f7fae3580fffe60ec36",
+    "worker": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de"
+  },
+  "protocol_sources_sha256": "6e88c18bfb533f4830f8ff1b3c677ef0000f657a325cba339e2b6a631944a78a",
+  "profiles": {},
+  "scope": "Selected primary model options. One isolated model start for both transports. Separate release profile and package qualification follows.",
+  "original_model_failure": "Initial profile returned translation_output_incomplete after correct input transcription. A diagnostic build distinguished a model refusal on a low-budget request from actual exhausted speech output. Original error is retained.",
+  "diagnostic_refusal": {
+    "type": "invalid_request_error",
+    "code": "translation_refused",
+    "message": "The model declined to translate this clause"
+  },
+  "contract": "Dedicated translator uses default greedy internal text generation as in native audio translation. Model refusal produces translation_refused. Tenant audio/token limits still apply.",
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 103.353,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "socket": {
+    "sdk": "7.47.0",
+    "input": "甚至出现交易几乎停滞的情况。",
+    "english": "There were even cases where trading nearly came to a standstill.",
+    "spoken": "But even cases where trading nearly came to a standstill.",
+    "wav_sha256": "fb8127c671d34b1e4df1e4ef9fe7ffc6ff55f5bce254c287735e85e014d05e6d",
+    "pcm_bytes": 168960,
+    "before_close": 26,
+    "limited_error": "tts_output_limit",
+    "limited_close": 1011,
+    "grant_audiences": [
+      401,
+      401
+    ],
+    "independent_chat": "42",
+    "wire_objects": 121,
+    "driver_sha256": "71a89ff3de1857f385af37d921243c552ee72092a2be18453b3c339d2ca5c22c"
+  },
+  "browser": {
+    "location": "/v1/realtime/calls/rtc_c7bc3e6afc9a6ca51d12835ab7af526d",
+    "inbound": {
+      "packets": 175,
+      "decodedSamples": 202560,
+      "energy": 0.3750609727770558
+    },
+    "peak": 18249,
+    "streamCount": 1,
+    "receivedBeforeClose": true,
+    "inputOfferCandidates": 0,
+    "browser": "148.0.7778.0",
+    "input": "甚至出现交易几乎停滞的情况。",
+    "english": "There were even cases where trading nearly came to a standstill.",
+    "spoken": "But with even cases, where trading nearly came to a standstill.",
+    "pcm_bytes": 208158,
+    "grant_audiences": [
+      401,
+      401
+    ],
+    "independent_chat": "42",
+    "wav_sha256": "d0bd22dc6bb9cc373702bde4b37b66c1e4608046fbbd57a677c5145b0f44c85b",
+    "wire_events": 22
+  },
+  "quality": "The two target subtitles agree. Both independent transcriptions preserved the trading/standstill clause. Their opening words differ from the subtitles; exact rendered pronunciation and listening remain unverified.",
+  "schema": [
+    {
+      "capture": "events.json",
+      "events": 121,
+      "types": {
+        "session.created": 1,
+        "session.input_transcript.delta": 7,
+        "session.output_transcript.delta": 13,
+        "session.output_audio.delta": 98,
+        "session.updated": 1,
+        "session.closed": 1
+      }
+    },
+    {
+      "capture": "events.json.limited",
+      "events": 15,
+      "types": {
+        "session.created": 1,
+        "session.output_transcript.delta": 13,
+        "error": 1
+      }
+    },
+    {
+      "capture": "browser-events.json",
+      "events": 22,
+      "types": {
+        "session.created": 1,
+        "session.input_transcript.delta": 7,
+        "session.output_transcript.delta": 13,
+        "session.closed": 1
+      }
+    }
+  ],
+  "raw": {
+    ".q4t-work/serve-responses-agents-20261123/translation-fix-business-01/result.json": "58095116062ad65f3e88a94bf8df9cff679acc5733fb446ddc90f897f4cd9e10",
+    ".q4t-work/serve-responses-agents-20261123/translation-fix-business-01/plan.json": "908bab1adf1c70bd558c1dcaba63200d903ebf1cee31a66c1ee4976566c2b920",
+    ".q4t-work/serve-responses-agents-20261123/translation-fix-lease-01/exit.json": "652c79f3fd2ff753ec8a664d884c3b7b41afb3c70fedcc2388e9c6bf4f276623",
+    ".q4t-work/serve-responses-agents-20261123/translator-profile-lease-01/exit.json": "8bdf04c3ab64c9c1ba93316e7b7eb0794c029c34e028dc84086cf52480b63d7f",
+    ".q4t-work/serve-responses-agents-20261123/translation-diagnose-lease-01/exit.json": "72b074359cad8fb1024fd0519435852982767def159983fcb3511e62acd6e974",
+    ".q4t-work/serve-responses-agents-20261123/translation-diagnose-01/create/events.json.limited": "b6c54b8fc67145ddb9bb493d70ab5b038fd601b6e13679d6c152e43d39cb7c09",
+    ".q4t-work/serve-responses-agents-20261123/translation-fix-business-01/create/events.json": "806f4441afb2fe98bb672a7ee24b18a53dc364e90fa860eec5d373afc242c9b4",
+    ".q4t-work/serve-responses-agents-20261123/translation-fix-business-01/create/events.json.limited": "53fb3b9aaf24ea425428b49a2eba79ae1dd16b5cb1b1b76859eb49baee26d84c",
+    ".q4t-work/serve-responses-agents-20261123/translation-fix-business-01/create/browser-events.json": "b7ba22f2d2a87f2f669b8b01b389bf71050777fcdd88b076ed71ca6082477608",
+    ".q4t-work/serve-responses-agents-20261123/translation-fix-business-01/create/browser.wav": "d0bd22dc6bb9cc373702bde4b37b66c1e4608046fbbd57a677c5145b0f44c85b",
+    ".q4t-work/serve-responses-agents-20261123/translation-fix-business-01/create/translated.wav": "fb8127c671d34b1e4df1e4ef9fe7ffc6ff55f5bce254c287735e85e014d05e6d",
+    ".q4t-work/serve-responses-agents-20261123/translation-webrtc-dev/fixed-schema.json": "22b9cfcf5080a9f57e9111d9d95cc7a003ccf3cd1b4a84d504f1e0dad2215af2"
+  }
+}

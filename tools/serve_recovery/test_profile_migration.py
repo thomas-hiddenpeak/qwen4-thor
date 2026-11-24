@@ -96,6 +96,20 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     live.format_for(bad)
 
+    def test_translation_transport_extension_preserves_scope_and_media(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(realtime={'websocket':'/v1/realtime'}, hosted_python=live.CODE_CAPABILITY)
+        target = dict(old, realtime=dict(old['realtime'], translations=live.TRANSLATOR_CAPABILITY))
+        self.assertTrue(migration.explicit_extension(old, target))
+        self.assertFalse(migration.explicit_extension(dict(realtime=old['realtime']), target))
+        for change in (dict(calls='/v1/realtime/calls'), dict(data_channel='required'),
+                       dict(webrtc_output='text'), dict(requires=['text_model'])):
+            altered = dict(target, realtime=dict(old['realtime'],
+                translations=dict(live.TRANSLATOR_CAPABILITY, **change)))
+            self.assertFalse(migration.explicit_extension(old, altered))
+            with self.assertRaises(ValueError):
+                live.format_for(altered)
+
     def test_interpreter_extension_preserves_workspace_and_runtime_limits(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(container_workspaces=live.SKILLS_CAPABILITY)

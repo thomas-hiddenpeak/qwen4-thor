@@ -526,6 +526,15 @@ def extends(previous, target):
 
 def explicit_extension(previous, target):
     """Compare qualified semantics when a declared pending capability ships."""
+    old_realtime = previous.get('realtime', {})
+    new_realtime = target.get('realtime', {})
+    if (isinstance(new_realtime, dict) and 'translations' in new_realtime and
+            (not isinstance(old_realtime, dict) or 'translations' not in old_realtime)):
+        from tools.serve_recovery import profile_live_reuse as live
+        if (not isinstance(old_realtime, dict) or
+                not package.same_json(previous.get('hosted_python'), live.CODE_CAPABILITY) or
+                not package.same_json(new_realtime['translations'], live.TRANSLATOR_CAPABILITY)):
+            return False
     if 'hosted_python' not in previous and 'hosted_python' in target:
         from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['hosted_python'], live.CODE_CAPABILITY) or

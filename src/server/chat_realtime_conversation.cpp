@@ -291,7 +291,7 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
     const ClientIdentity& original, const RealtimeConversationJob& job,
     const std::shared_ptr<RequestControl>& control,
     const RealtimeDeltaSink& emit, const RealtimeSpeechSink& speech,
-    std::optional<double> legacy_temperature) {
+    std::optional<double> temperature) {
   RealtimeGenerationResult result;
   const auto client = clients_.RecoveryIdentity(original.Index());
   if (!clients_.OwnsIdentity(original) || !client.Allowed() ||
@@ -375,7 +375,7 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
     status = PlanRealtimeChat(job.settings, job.response, job.snapshot.items,
                               config, &plan, &error,
                               prompt ? &*prompt : nullptr, job.native_input,
-                              job.mcp.get(), false, &mcp_history, legacy_temperature);
+                              job.mcp.get(), false, &mcp_history, temperature);
     if (status && !plan.input_ready) {
       diagnostic.Stage("input_prepare");
       RealtimeFileInputs files;
