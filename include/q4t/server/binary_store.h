@@ -70,6 +70,11 @@ class BinaryStore {
   ObjectReply Open(const BinaryAccess& access, ObjectKind kind,
                    const std::string& id, int lifetime_seconds,
                    BinaryRead* read, io::Json* pinned_data = nullptr);
+  // Reopen a durable pin for exactly its original, authenticated source.
+  // This reads the pinned manifest even after deletion of the public file.
+  ObjectReply ResumeRead(const BinaryAccess& access, ObjectKind source_kind,
+                         const std::string& source_id,
+                         const std::string& pin_id, BinaryRead* read);
   ObjectReply Read(const BinaryAccess& access, const BinaryRead& read,
                    size_t chunk, std::string* bytes);
   ObjectReply Close(const BinaryAccess& access, BinaryRead* read);

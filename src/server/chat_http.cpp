@@ -88,6 +88,7 @@ void ChatServer::RequestStop() {
   stop_requested_.store(true);
   background_.PreventStart();
   realtime_traces_.PreventStart();
+  environment_preparer_.PreventStart();
   webhook_dispatcher_.PreventStart();
   batches_.PreventStart();
   vector_jobs_.PreventStart();
@@ -228,6 +229,7 @@ Status ChatServer::Run() {
             std::chrono::steady_clock::now() + std::chrono::seconds(2);
         requests_.CancelAll();
         if (mcp_tunnels_) mcp_tunnels_->Stop();
+        environment_preparer_.RequestStop();
         webhook_dispatcher_.RequestStop();
         batches_.RequestStop();
         vector_jobs_.RequestStop();
@@ -286,6 +288,7 @@ Status ChatServer::Run() {
   RequestStop();
   std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
   requests_.CancelAll();
+  environment_preparer_.RequestStop();
   webhook_dispatcher_.RequestStop();
   batches_.RequestStop();
   vector_jobs_.RequestStop();
@@ -300,6 +303,7 @@ Status ChatServer::Run() {
     seq_stopping_ = true;
   }
   seq_cv_.notify_all();
+  environment_preparer_.Join();
   webhook_dispatcher_.Join();
   batches_.Join();
   vector_jobs_.Join();
@@ -857,7 +861,8 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                   {access.scope, access.deadline, access.cancelled})
         : ParseHostedRoute(path).kind != HostedRouteKind::kNone
             ? HandleHostedEnvironment(*objects_, method, path, body, access,
-                                      context->AgentEventKey())
+                                      context->AgentEventKey(),
+                                      environment_preparer_.Get() != nullptr)
         : IsEnvironmentTemplateTarget(path)
             ? HandleEnvironmentTemplate(*objects_, method, path, body, access)
         : IsVaultTarget(path)

@@ -15,7 +15,8 @@ Status ValidateEnvironment(const io::Json& value, EnvironmentShape shape,
                            ChatPlanError* error);
 ObjectReply HandleHostedEnvironment(ObjectStore& objects, std::string_view method,
                                     std::string_view target, const std::string& body,
-                                    const StateAccess& access, std::string_view key);
+                                    const StateAccess& access, std::string_view key,
+                                    bool queue_files = false);
 ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
                                       std::string_view method,
                                       std::string_view target,

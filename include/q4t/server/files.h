@@ -54,7 +54,8 @@ class Files {
   ObjectReply List(const BinaryAccess& access, const io::Json& query);
   ObjectReply Open(const BinaryAccess& access, const std::string& id,
                    BinaryRead* read, std::string* mime_type = nullptr,
-                   uint64_t max_bytes = kBinaryMaxBytes);
+                   uint64_t max_bytes = kBinaryMaxBytes,
+                   int pin_seconds = 0);
 
  private:
   ObjectReply Stored(const BinaryAccess& access, const std::string& id);

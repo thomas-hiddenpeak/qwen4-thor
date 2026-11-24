@@ -744,10 +744,12 @@ set(protocol_inputs
   src/server/contracts/openai_environment_types_v1.json
   cmake/environment_types.h.in
   include/q4t/server/agent_environment.h
+  include/q4t/server/agent_environment_preparer.h
   src/server/agent_environment_template.cpp
   src/server/agent_environment_definition.cpp
   src/server/agent_environment_config.cpp
   src/server/agent_environment.cpp
+  src/server/agent_environment_preparer.cpp
   src/server/agent_environment_files.cpp
   src/server/agent_environment_workspace.cpp
   src/server/agent_workspace_copy.cpp

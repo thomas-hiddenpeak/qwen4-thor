@@ -74,7 +74,8 @@ ObjectReply DeleteSession(ObjectStore& objects, const std::string& id,
         }
         Set(&release.data, "last_activity_at", Number(std::time(nullptr)));
       }
-      release.ttl_seconds = status == "expired" && last_session ? 86400 : 0;
+      release.ttl_seconds = last_session && (status == "expired" || status == "failed" ||
+                                             status == "pending") ? 86400 : 0;
     } else {
       release.ttl_seconds = 86400;
       Set(&Field(release.data, "resource"), "status", String("disconnected"));
@@ -310,6 +311,15 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
                                           config, access, *run, &replay)
               : PrepareAgentSessionExecution(objects, request, config, access,
                                              std::time(nullptr), *run);
+    // Finishing a pending workspace can win the attachment CAS. A definite
+    // conflict committed neither the new session nor its initial turn.
+    const auto* binding = request.Find("environment");
+    if (!event && binding && binding->Has("environment_id") &&
+        !session.commit_unknown && session.code == "object_revision_conflict") {
+      run = std::make_unique<ResponsesExecution>(objects, jobs, true);
+      session = PrepareAgentSessionExecution(objects, request, config, access,
+                                             std::time(nullptr), *run);
+    }
     if (event && !session.ok())
       return ReconcileAgentEventReceipt(objects, std::string(route.session),
                                         request, http->AgentEventKey(), access,

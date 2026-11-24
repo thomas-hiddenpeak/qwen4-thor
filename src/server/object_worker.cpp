@@ -171,6 +171,7 @@ struct Metadata {
   uint32_t webhook_subscriptions = 0;
   uint32_t terminal_event = 0;
   bool agent_started = false;
+  bool environment_pending = false;
   bool webhook_deferred = false;
   int64_t environment_wake = 0, agent_finished = 0;
   int64_t environment_sequence = 0;
@@ -190,6 +191,7 @@ void IndexWebhookState(Metadata* metadata, const Json& data) {
     if (metadata->kind == "environment") {
       const auto* resource = data.Find("resource");
       if (!resource || resource->GetString("type") != "openai_hosted") return;
+      metadata->environment_pending = resource->GetString("status") == "pending";
       metadata->environment_sequence = data.GetInt("environment_sequence");
       const auto status = resource->GetString("status");
       if (status == "ready") {
@@ -449,6 +451,22 @@ class DiskStore {
     const auto operation = request.GetString("operation");
     if (operation == "retention") return Retention(request);
     if (operation == "webhook_reconcile") return ReconcileWebhooks(request);
+    if (operation == "next_environment") {
+      ObjectReply result;
+      result.value = Object();
+      auto owner = pending_environments_.upper_bound(request.GetString("after"));
+      if (owner == pending_environments_.end()) owner = pending_environments_.begin();
+      if (owner != pending_environments_.end()) {
+        auto& group = owner->second;
+        auto name = group.names.upper_bound(group.previous);
+        if (name == group.names.end()) name = group.names.begin();
+        group.previous = *name;
+        result.value = Object({{"after", String(owner->first)},
+                               {"owner", String(owner->first)},
+                               {"id", String(records_.at(*name).id)}});
+      }
+      return result;
+    }
     if (operation == "scan_responses") {
       auto pruned = Prune();
       return pruned.ok() ? ScanResponses(request) : pruned;
@@ -499,7 +517,8 @@ class DiskStore {
                      "Invalid environment event boundary");
       ObjectReply result;
       result.value =
-          Object({{"sequence", Number(latest)}, {"events", Array()}});
+          Object({{"sequence", Number(latest)}, {"events", Array()},
+                  {"preparing", Boolean(found->second.environment_pending)}});
       // The usual live poll answers entirely from the owner-scoped index.
       if (since == -1 || since == latest) return result;
       Json stored;
@@ -1052,6 +1071,7 @@ class DiskStore {
       const bool suspended = type == "agent.environment.suspended";
       const auto occurred =
           suspended ? data->GetInt("suspended_at")
+          : type == "agent.environment.ready" ? data->GetInt("prepared_at")
           : type == "agent.environment.failed" ? data->GetInt("failed_at")
           : type == "agent.environment.expired"
               ? data->GetInt("expired_at", data->GetInt("warm_until"))
@@ -1508,12 +1528,19 @@ class DiskStore {
     ++client.count;
     total_.bytes += metadata.bytes;
     ++total_.count;
+    if (metadata.environment_pending)
+      pending_environments_[metadata.owner].names.insert(name);
     if (metadata.environment_wake > 0)
       environment_timers_.emplace(metadata.environment_wake, name);
     records_.emplace(name, std::move(metadata));
   }
   using Iterator = std::map<std::string, Metadata>::iterator;
   void Remove(Iterator found) {
+    if (found->second.environment_pending) {
+      auto group = pending_environments_.find(found->second.owner);
+      group->second.names.erase(found->first);
+      if (group->second.names.empty()) pending_environments_.erase(group);
+    }
     if (found->second.environment_wake > 0)
       environment_timers_.erase({found->second.environment_wake, found->first});
     batch_quota_.Remove(found->second.owner, found->second.batch_charge);
@@ -2033,6 +2060,13 @@ class DiskStore {
   bool initialized_ = false;
   std::map<std::string, Metadata> records_;
   std::set<std::pair<int64_t, std::string>> environment_timers_;
+  struct PendingEnvironments {
+    std::set<std::string> names;
+    std::string previous;
+  };
+  // Rotate owners and then jobs within an owner, including jobs which need
+  // another attempt. Inactive tenants cannot monopolize the worker.
+  std::map<std::string, PendingEnvironments> pending_environments_;
   std::map<std::string, Usage> clients_;
   BatchQueueQuota batch_quota_;
   Usage total_;
