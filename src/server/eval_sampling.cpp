@@ -214,8 +214,11 @@ ObjectReply SampleRow(ObjectStore& objects, const StateAccess& access,
     auto translated = SamplingRequest(source, *row, owner.config, &request);
     if (!translated.ok()) return translated;
     if (!request.Has("seed")) {
-      const auto digest =
-          Digest(write.id + ":" + std::to_string(write.data.GetInt("row")));
+      std::string identity =
+          write.id + ":" + std::to_string(write.data.GetInt("row"));
+      if (const auto* grades = write.data.Find("model_results"))
+        identity += ":grader:" + std::to_string(grades->object.size());
+      const auto digest = Digest(identity);
       int64_t seed = 0;
       // Thirteen hexadecimal digits are exact even for JSON double clients.
       std::from_chars(digest.data(), digest.data() + 13, seed, 16);
@@ -256,6 +259,9 @@ ObjectReply SampleRow(ObjectStore& objects, const StateAccess& access,
     return InvalidRecord();
   const auto state = response->GetString("status");
   if (state == "in_progress" || state == "queued") return Pending();
+  *consumed = Read(ObjectKind::kResponse, access, id);
+  consumed->operation = ObjectOperation::kErase;
+  consumed->expected_revision = observed.value.GetInt("revision");
   if (state != "completed" && state != "incomplete") {
     const auto error = Copy(*response, "error");
     return Error(422, error.GetString("code", "eval_sample_failed"),
@@ -269,9 +275,6 @@ ObjectReply SampleRow(ObjectStore& objects, const StateAccess& access,
   auto projected = Projection(*response, *request, &sample);
   if (!projected.ok()) return projected;
   Set(row, "sample", std::move(sample));
-  *consumed = Read(ObjectKind::kResponse, access, id);
-  consumed->operation = ObjectOperation::kErase;
-  consumed->expected_revision = observed.value.GetInt("revision");
   return {};
 }
 

@@ -1,0 +1,26 @@
+{
+  "stage": "focused_host_verified",
+  "features": [
+    "label_model with enumerated labels and passing subset",
+    "score_model with structured numeric result, reasoning steps, sampling options and range",
+    "per-row and per-criterion checkpoint with original sample isolation and actual model usage"
+  ],
+  "cpu_cases": 13,
+  "cpu_receipt_sha256": "77c8751dc325ccbcfac0e0439e5c2ab18ccac2af3401ffbe60d81a5288e4e37b",
+  "restart": "Reopened the object store after a label had committed; exactly one rating request ran after reopening. Two invocations, original sample 157, scores 1 and 0.75.",
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1362,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "pending": [
+    "native TLS with positive and negative examples",
+    "delivery profiles and independent recovery"
+  ]
+}

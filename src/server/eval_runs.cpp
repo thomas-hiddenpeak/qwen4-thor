@@ -1,4 +1,5 @@
 #include "eval_run_state.h"
+#include "eval_model_grading.h"
 #include "eval_sampling.h"
 
 #include <algorithm>
@@ -356,6 +357,7 @@ ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
   if (status != "canceled") {
     Set(&result.value, "status", String("canceled"));
     Set(&Field(write.data, "resource"), "status", String("canceled"));
+    ClearModelGrades(write.data);
     auto saved = objects.Execute(write, access.deadline, access.cancelled);
     if (!saved.ok()) return saved;
     ++write.expected_revision;

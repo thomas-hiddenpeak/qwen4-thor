@@ -322,6 +322,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_stored_inputs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_similarity.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_execution.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_model_grading.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_grading.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/evals.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_sessions.cpp

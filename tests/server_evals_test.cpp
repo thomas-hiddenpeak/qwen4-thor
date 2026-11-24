@@ -282,6 +282,100 @@ Q4T_TEST(
   return true;
 }
 
+Q4T_TEST(evals_model_graders_resume_without_replacing_the_original_sample) {
+  Fixture f;
+  std::string eval, id;
+  std::atomic<int> calls{0};
+  for (int phase = 0; phase < 2; ++phase) {
+    ObjectStore store(f.options);
+    ClientAdmission clients;
+    ChatPlanConfig config;
+    config.model = "cpu";
+    config.structured = true;
+    auto identity = clients.RecoveryIdentity(0);
+    StateAccess auth{
+        "local:anonymous", std::chrono::steady_clock::now() + 10s, {}};
+    ResponsesJobs jobs(store, {}, [&](auto& job) {
+      const auto* format =
+          job.run->Envelope().options.Find("text")->Find("format");
+      ++calls;
+      ResponseDelta delta;
+      delta.kind = ResponseDelta::Kind::kContent;
+      delta.text = format->GetString("name") == "eval_label"
+                       ? R"({"label":"right"})"
+                       : R"({"result":0.75,"steps":[]})";
+      std::string wire;
+      if (!job.run->Append(delta, "null", &wire) ||
+          !job.run->Finish(false, 0, {4, 0, 2, 0}, std::time(nullptr), &wire)
+               .ok())
+        throw std::runtime_error("Model grader fixture");
+    });
+    eval_detail::SamplingOwner owner{clients, identity, jobs, config};
+    if (!phase) {
+      auto definition = Request(store, "POST", "/v1/evals", R"({
+        "data_source_config":{"type":"custom","item_schema":{"type":"object"}},
+        "testing_criteria":[{"type":"label_model","model":"cpu","name":"Classify",
+          "input":[{"role":"user","content":"Read {{sample.output_text}}"}],
+          "labels":["right","wrong"],"passing_labels":["right"]},
+          {"type":"score_model","model":"cpu","name":"Rate",
+          "input":[{"role":"user","content":"Rate {{sample.output_text}}"}],
+          "range":[0,1],"pass_threshold":0.8,"sampling_params":{"max_completions_tokens":48,"seed":15}}]})",
+                                auth.scope);
+      Q4T_CHECK(definition.ok());
+      eval = "/v1/evals/" + definition.value.GetString("id") + "/runs";
+      auto run = Request(store, "POST", eval,
+                         R"({"data_source":{"type":"jsonl","source":{
+        "type":"file_content","content":[{"item":{},"sample":{"output_text":"157"}}]}}})",
+                         auth.scope);
+      Q4T_CHECK(run.ok());
+      id = run.value.GetString("id");
+    }
+    ObjectRequest get;
+    get.kind = ObjectKind::kEvalRun;
+    get.id = id;
+    get.scope = auth.scope;
+    bool reached = false;
+    for (int step = 0; step < 1600 && !reached; ++step) {
+      auto record = store.Execute(get, auth.deadline);
+      Q4T_CHECK(record.ok());
+      const auto& data = *record.value.Find("data");
+      if (!phase) {
+        const auto* grades = data.Find("model_results");
+        reached = grades && grades->Has("0") && !data.Has("pending_response");
+      } else {
+        reached = data.Find("resource")->GetString("status") == "completed";
+      }
+      if (!reached) {
+        auto advanced =
+            eval_detail::AdvanceRun(store, auth, record.value, &owner);
+        Q4T_CHECK(advanced.ok());
+        std::this_thread::sleep_for(1ms);
+      }
+    }
+    Q4T_CHECK(reached && calls == (phase ? 2 : 1));
+    if (phase) {
+      const auto path = eval + "/" + id;
+      const auto final = Request(store, "GET", path, {}, auth.scope);
+      Q4T_CHECK(final.ok() &&
+                final.value.Find("result_counts")->GetInt("failed") == 1);
+      const auto& usage = final.value.GetArray("per_model_usage")->array[0];
+      Q4T_CHECK(usage.GetInt("invocation_count") == 2 &&
+                usage.GetInt("total_tokens") == 12);
+      auto page = Request(store, "GET", path + "/output_items", {}, auth.scope);
+      Q4T_CHECK(page.ok() && page.value.GetArray("data")->array.size() == 1);
+      const auto& row = page.value.GetArray("data")->array[0];
+      Q4T_CHECK(row.Find("sample")->GetArray("output")->array[0].GetString(
+                    "content") == "157");
+      const auto& scores = row.GetArray("results")->array;
+      Q4T_CHECK(scores.size() == 2 && scores[0].GetInt("score") == 1 &&
+                scores[0].Find("sample")->GetString("label") == "right" &&
+                scores[1].GetNumber("score") == 0.75 &&
+                !scores[1].GetBool("passed"));
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(evals_text_similarity_matches_independent_lexical_oracles) {
   const auto row =
       Object({{"item", Object({{"reference", String("a b a b b c d")}})},

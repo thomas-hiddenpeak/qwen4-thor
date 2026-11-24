@@ -3755,8 +3755,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "7e98cb20053a83e0e4c9256b354a29bda4c82872e0ed635bda20d484bfe23e3d",
-    "cmake/ChatProtocolIdentity.cmake": "beee12f75696065e6aaff35391a2e658b4b7ca488d5172f461644c9f282798aa",
+    "CMakeLists.txt": "0917fea1659e0b35cebcf8dda0fdd8e6f02ce7cba85f00d098726188cb15fce7",
+    "cmake/ChatProtocolIdentity.cmake": "62a8089b5c4fec6f01635dd6e04ad0f2926ce4f8f3082f4c6ff44967c32e1df1",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -5105,16 +5105,18 @@
     "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
     "include/q4t/server/eval_dispatcher.h": "894aa441d9bab19b05c75a320c80992a8b4513745fd7e1d02d79ea7111abd680",
     "src/server/eval_dispatcher.cpp": "6691ffeabdad31eaa7767f794ec500a2f1cf87b47d79b516c4146356cab37d00",
-    "src/server/eval_execution.cpp": "4dc32f6f586b745039e72e45d0584ec6e25089171f498f7bf34062234d61b49a",
+    "src/server/eval_execution.cpp": "9f5dbf519cd9835a5a6967cecae701e0d4201e456bbd96f8f3a87e409a5ab3dd",
     "src/server/eval_grading.cpp": "48378c66bfc929cd0c7d5a4d29f8ccaf103266227ac0b37a2bde3ab5d18f2d93",
     "src/server/eval_grading.h": "00c2e06af55b67d3420c3bcc61e1c8064245e490dbc353682a953008ef7e834c",
     "src/server/eval_run_state.h": "0e0d10bb99b1e036d6d600a59594be9ffd1d634d24837db59cc59107122a0613",
-    "src/server/eval_runs.cpp": "c2e8825e72f8036ed8395e0004d11ea84f598c90281c321187487fd43e7a3e7d",
+    "src/server/eval_runs.cpp": "3c6de6a8de72f4f2bfd6887f5373c5e2eeefdc2a6bfb25e8bf706ff1d7974307",
     "src/server/eval_runs.h": "da14d9ebf451e736c0c8e60c7428975ce554ea10943c63d982634709b7e679d6",
-    "src/server/eval_sampling.cpp": "fdb979566339b3fb160e44df620dd80b2218b8d148d6fe068a0eb029203645e1",
+    "src/server/eval_sampling.cpp": "0f3e3b8496283b24b7baae89cf1e568c4a63f370ff33134d6107fc615f00ae89",
     "src/server/eval_sampling.h": "302cf02ae39a46991578eb59376930c7937bbbcf12525e3d9f63cb1a83c54d74",
     "src/server/eval_stored_inputs.cpp": "fc5abdfa3263efa005b5f67d71343debbba0585ad8afb9def8e084311601d942",
-    "src/server/eval_similarity.cpp": "58c8e024fd1c2802e6d9e63b92f6fc95198c63b9a633450616b51c9f84461a6d"
+    "src/server/eval_similarity.cpp": "58c8e024fd1c2802e6d9e63b92f6fc95198c63b9a633450616b51c9f84461a6d",
+    "src/server/eval_model_grading.cpp": "57969a0bc88253918d573a5a37ee11ba573c9d026f86be8e938d42becc9d764b",
+    "src/server/eval_model_grading.h": "299048641d921f7a2a4a0a30cb9ae476e532617757f5a71730faee5dbb636682"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
