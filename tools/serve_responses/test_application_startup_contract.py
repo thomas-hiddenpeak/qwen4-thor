@@ -51,6 +51,21 @@ class ApplicationStartupContract(unittest.TestCase):
         for n in (-1, '0', False, 0.5):
             self.assertFalse(counter.is_valid(n))
 
+    def test_webhook_delivery_counters_are_complete_when_reported(self):
+        schema = json.loads((ROOT/'docs/serve-config-v1.schema.json').read_text())
+        config = json.loads((ROOT/'docs/evidence/serve-responses-business-20261109'
+                             /'business-01/config.json').read_text())
+        validator = Draft202012Validator(schema)
+        validator.validate(config)
+        counters = dict(acknowledged=2, retries=1, errors=0,
+                        capacity_deferrals=3, capacity_losses=0)
+        validator.validate(dict(config, webhook_delivery=counters))
+        for key in counters:
+            invalid = dict(counters)
+            del invalid[key]
+            self.assertFalse(validator.is_valid(dict(config, webhook_delivery=invalid)))
+            self.assertFalse(validator.is_valid(dict(config, webhook_delivery=dict(counters, **{key:-1}))))
+
     def test_config_accepts_new_diagnostics_and_historical_absence(self):
         schema = json.loads((ROOT / 'docs/serve-config-v1.schema.json').read_text())
         validator = Draft202012Validator(schema)

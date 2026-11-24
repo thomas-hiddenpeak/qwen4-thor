@@ -539,6 +539,17 @@ ObjectReply ObjectStore::ScanResponses(std::string after,
                   false, deadline, cancelled);
 }
 
+ObjectReply ObjectStore::ReconcileWebhooks(
+    std::string cursor, Clock::time_point deadline,
+    const std::function<bool()>& cancelled) {
+  if (state_->options.domain != ObjectStoreDomain::kApplication ||
+      cursor.size() > 320)
+    return Error(400, "invalid_object_domain", "Invalid reconciliation request");
+  return Dispatch(OutputJson(Object({{"operation", String("webhook_reconcile")},
+                                     {"after", String(std::move(cursor))}})),
+                  true, deadline, cancelled);
+}
+
 ObjectReply ObjectStore::ScanBatches(std::string after,
                                     Clock::time_point deadline,
                                     const std::function<bool()>& cancelled) {
@@ -761,6 +772,8 @@ void ObjectStore::RecordAuxiliaryCleanupFailure() noexcept {
 std::string NewObjectId(ObjectKind kind) {
   auto prefix = Kind(kind);
   if (prefix.empty()) return {};
+  if (kind == ObjectKind::kWebhookEndpoint) prefix = "whe";
+  if (kind == ObjectKind::kWebhookEvent) prefix = "evt";
   if (kind == ObjectKind::kSkillVersion) prefix = "skillver";
   if (kind == ObjectKind::kContainer) prefix = "cntr";
   if (kind == ObjectKind::kContainerFile) prefix = "cfile";

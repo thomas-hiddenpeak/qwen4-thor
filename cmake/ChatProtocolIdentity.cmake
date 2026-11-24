@@ -503,6 +503,14 @@ set(protocol_inputs
   src/server/file_fetch_policy.cpp
   src/server/file_fetch_http.cpp
   src/server/sip_webhook.cpp
+  src/server/webhook_transport.cpp
+  src/server/webhook_registry.cpp
+  src/server/webhook_keys.cpp
+  src/server/webhook_events.cpp
+  src/server/webhook_dispatcher.cpp
+  include/q4t/server/webhook_dispatcher.h
+  src/server/webhook_events.h
+  src/server/webhook_keys.h
   include/q4t/server/live_worker.h
   src/service/live_worker_exec.cpp
   src/server/sip_service.cpp
@@ -806,6 +814,9 @@ set(protocol_inputs
   include/q4t/server/agent_automation.h
   src/server/contracts/openai_automation_types_v1.json
   cmake/automation_types.h.in
+  cmake/webhook_types.h.in
+  include/q4t/server/webhook.h
+  src/server/contracts/openai_webhook_types_v1.json
   src/server/agent_session_turn.cpp
   src/server/agent_subagent.cpp
   src/server/agent_session_traces.cpp
@@ -1157,6 +1168,14 @@ if(NOT automation_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/automation_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/automation_types_data.h" @ONLY)
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_webhook_types_v1.json"
+  Q4T_WEBHOOK_TYPES)
+string(FIND "${Q4T_WEBHOOK_TYPES}" ")q4t_types\"" webhook_delimiter)
+if(NOT webhook_delimiter EQUAL -1)
+  message(FATAL_ERROR "Webhook type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/webhook_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/webhook_types_data.h" @ONLY)
 
 file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_agent_registration_types_v1.json"
   Q4T_AGENT_REGISTRATION_TYPES)

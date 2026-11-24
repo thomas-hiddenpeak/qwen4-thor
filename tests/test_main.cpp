@@ -20,6 +20,7 @@
 #include "q4t/server/object_store.h"
 #include "q4t/server/tool_result_schema.h"
 #include "q4t/server/file_fetch.h"
+#include "q4t/server/webhook.h"
 #include "q4t/server/sip_webhook.h"
 #include "q4t/server/web_search.h"
 #include "q4t/server/file_document_worker.h"
@@ -97,6 +98,8 @@ int main(int argc, char** argv) {
   if (sip_owner >= 0) return sip_owner;
   const int sip_webhook = q4t::server::MaybeRunSipWebhookWorker(argc, argv);
   if (sip_webhook >= 0) return sip_webhook;
+  const int webhook_worker = q4t::server::MaybeRunWebhookWorker(argc, argv);
+  if (webhook_worker >= 0) return webhook_worker;
   const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
   if (fetch_worker >= 0) return fetch_worker;
   const int document_worker = q4t::server::MaybeRunFileDocumentWorker(argc, argv);

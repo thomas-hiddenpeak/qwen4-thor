@@ -1,0 +1,178 @@
+{
+  "status": "ACCEPT_RESPONSE_BATCH_NOTIFICATION_AND_CONTROLLED_RESTART",
+  "default_revision": 470,
+  "default_methods": 189,
+  "candidate_methods": 197,
+  "required_methods": 231,
+  "earlier_release_main": {
+    "merge": "75bbd80c4713d65ae6809498a1df2a5ea8ed807b",
+    "head": "bb0d5b916833c6cddcb874ddd81705d94330d90a",
+    "checks": {
+      "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45394559771",
+      "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45394676579"
+    }
+  },
+  "sdk": "7.47.0",
+  "profile": "native TLS, MTP, one model slot, controlled HTTPS receiver",
+  "observations": {
+    "sdk": "7.47.0",
+    "endpoint": "whe_4dcb36dd9e2eb2c70a7d39fffc00fa98",
+    "response": "resp_435f82dab55edaec7c5cbe78982be9a0",
+    "responseAnswer": "470",
+    "batch": "batch_877d49c9e81026c7b4daec32761cef07",
+    "batchAnswer": "470",
+    "peer": 404,
+    "independent_chat": "42",
+    "deliveries": [
+      {
+        "event": {
+          "id": "evt_5513556ece4a601f3eadd74d41916a93",
+          "object": "event",
+          "type": "response.completed",
+          "created_at": 1795525603,
+          "data": {
+            "id": "resp_435f82dab55edaec7c5cbe78982be9a0"
+          }
+        },
+        "message": "evt_5513556ece4a601f3eadd74d41916a93",
+        "status": 503,
+        "received": 1795525604
+      },
+      {
+        "event": {
+          "id": "evt_5513556ece4a601f3eadd74d41916a93",
+          "object": "event",
+          "type": "response.completed",
+          "created_at": 1795525603,
+          "data": {
+            "id": "resp_435f82dab55edaec7c5cbe78982be9a0"
+          }
+        },
+        "message": "evt_5513556ece4a601f3eadd74d41916a93",
+        "status": 202,
+        "received": 1795525638
+      },
+      {
+        "event": {
+          "id": "evt_cb15738da58890ff70772d6d4c7498ab",
+          "object": "event",
+          "type": "batch.completed",
+          "created_at": 1795525638,
+          "data": {
+            "id": "batch_877d49c9e81026c7b4daec32761cef07"
+          }
+        },
+        "message": "evt_cb15738da58890ff70772d6d4c7498ab",
+        "status": 202,
+        "received": 1795525640
+      }
+    ]
+  },
+  "retry_interval_observed_seconds": 34,
+  "retry_claim": [
+    {
+      "endpoint": "whe_4dcb36dd9e2eb2c70a7d39fffc00fa98",
+      "attempts": 1,
+      "status": "pending",
+      "next_attempt_at": 1795525634,
+      "http_status": 503
+    }
+  ],
+  "equal_retry_wire_verified_by_sdk_driver": true,
+  "official_event_schemas_checked": 3,
+  "runtime": {
+    "status": "PASS",
+    "starts": 2,
+    "seconds": 71.841,
+    "unchanged_default": true,
+    "ports_free": true,
+    "binary": "6c3e3e33e4cb7628123be2f383d4584290116364f551bfd1dce324935e954d94",
+    "ingress": "ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46",
+    "protected": {
+      "build/q4t": "0376bcd2759c4040d9c41bd1961785b8e24d06b0dcfd968ea16ecde55dd32d5f",
+      "build/service/manifest.json": "5ee2494c8b615c96179233a25836a6dcc4056575ac10eac0459b888c259f3f0b",
+      "build/service.release.json": "0b1e0c34d680f3e094e93e11fe9e126fde4ff955a3b3bd0eb7845eeca0897c40",
+      "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+    }
+  },
+  "lease": "COMPLETED",
+  "semantics": {
+    "retry": "at least once, same event and message ID",
+    "timeout": "lesser of 72h and configured object retention limit",
+    "subscribers": "owner subscriptions at transition, removed subscriptions skipped on send",
+    "capacity": "receipt deferred into terminal resource on count exhaustion; hard byte exhaustion can lose a notification and increments capacity_losses",
+    "counter_lifetime": "dispatcher or object worker process"
+  },
+  "cpu": {
+    "webhook": 6,
+    "transaction": 6,
+    "application_startup": 2,
+    "batch_terminal": 1,
+    "config": 4,
+    "inventory_mutations": 40
+  },
+  "limitations": [
+    "The two model generations were deliberately stopped and started by the private fixture. Package takeover is separate.",
+    "Only response.completed and batch.completed have real model delivery evidence here. Six other Response/Batch terminal types share the implementation.",
+    "No long outage, day-long load, other application event families or managed publication were qualified.",
+    "The config projection gained optional dispatcher startup health after the live run. Source identity for subsequent package business verification must be captured again."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-lifecycle-01/plan.json",
+      "sha256": "208698ad76df9b432766ab015d7b169331c2cd45f216ac2babdf006b5d59e14e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-lifecycle-01/stored-before-stop.json",
+      "sha256": "108bcc286f8d6fe2dc9867e71ca8d9dc839cd3b1eecad23a3de8dedd70f4e048"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-lifecycle-01/sdk-result.json",
+      "sha256": "b96f49837c89e8f16ba660271191e6895f7fdda8ec801975e648195ebc9efaa0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-lifecycle-01/result.json",
+      "sha256": "ceb5d0921cb918c461686a739a749460c7a89ae6767ff857db067dc11bad9b2f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-lifecycle-lease-01/exit.json",
+      "sha256": "2c759faf6519a86faa70a72d03b1b0657623e87185418f4db881e993004337c1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook_lifecycle_business.py",
+      "sha256": "66e020a1142220711677fda8fd59daf1ea9c9869274291bab0f6be873ba801d4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/pr99-merged.json",
+      "sha256": "0881717d47a6b194c21e8b694cad2b85217f96252f5056f415ea6c8af50d7530"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/outbox-cpu-02.log",
+      "sha256": "781c6fc8f01eee2dd82417392712209878906bdd9b4e65897c3f5ea9d774b783"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/outbox-transactions-01.log",
+      "sha256": "2b9ed4e99812fe708a1a8595b0d31d2801eaa468ccb4246866bc81fe3b1b169a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/outbox-startup-01.log",
+      "sha256": "6c5ad0c3ca476e1cf715128e3663857bd8fdaace840c1d073b856e20f4d96b23"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/outbox-batch-01.log",
+      "sha256": "c28f50aac738cbaa1938fa8f58045a3b23ea0e646c5de5a82d8ad35fb09ef319"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/outbox-config-cpu-01.log",
+      "sha256": "2ee3e30908e3a170393d92882283ca86b683bac8a2710c31756798970ebcb1bd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/outbox-config-cpu-02.log",
+      "sha256": "e12137efc563f4465212fba471d7b78357f22786d4b5499b5a1e7b9a75714cac"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/outbox-inventory-01.json",
+      "sha256": "e6ee5d29e7e00ada5ed46200158a16c3bc471d6770b906b4f591dfeabf27bd6d"
+    }
+  ]
+}

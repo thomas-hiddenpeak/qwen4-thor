@@ -638,6 +638,25 @@
         "required_methods": 231,
         "declared_with_expected_success": 189,
         "long_run_hours": 0
+      },
+      "webhook_management_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/endpoints.json",
+        "default_revision": 470,
+        "verified": "SDK management and sample delivery",
+        "pending": "durable lifecycle events and delivery"
+      },
+      "webhook_lifecycle_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/lifecycle.json",
+        "verified": [
+          "response.completed",
+          "batch.completed",
+          "restart redelivery",
+          "capacity fallback"
+        ],
+        "pending": [
+          "package takeover",
+          "remaining producer families"
+        ]
       }
     },
     {
@@ -2745,6 +2764,25 @@
         "required_methods": 231,
         "declared_with_expected_success": 189,
         "long_run_hours": 0
+      },
+      "webhook_management_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/endpoints.json",
+        "default_revision": 470,
+        "verified": "SDK management and sample delivery",
+        "pending": "durable lifecycle events and delivery"
+      },
+      "webhook_lifecycle_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/lifecycle.json",
+        "verified": [
+          "response.completed",
+          "batch.completed",
+          "restart redelivery",
+          "capacity fallback"
+        ],
+        "pending": [
+          "package takeover",
+          "remaining producer families"
+        ]
       }
     },
     {
@@ -6255,6 +6293,25 @@
         "required_methods": 231,
         "declared_with_expected_success": 189,
         "long_run_hours": 0
+      },
+      "webhook_management_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/endpoints.json",
+        "default_revision": 470,
+        "verified": "SDK management and sample delivery",
+        "pending": "durable lifecycle events and delivery"
+      },
+      "webhook_lifecycle_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/lifecycle.json",
+        "verified": [
+          "response.completed",
+          "batch.completed",
+          "restart redelivery",
+          "capacity fallback"
+        ],
+        "pending": [
+          "package takeover",
+          "remaining producer families"
+        ]
       }
     },
     {
@@ -9575,6 +9632,25 @@
         "required_methods": 231,
         "declared_with_expected_success": 189,
         "long_run_hours": 0
+      },
+      "webhook_management_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/endpoints.json",
+        "default_revision": 470,
+        "verified": "SDK management and sample delivery",
+        "pending": "durable lifecycle events and delivery"
+      },
+      "webhook_lifecycle_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/lifecycle.json",
+        "verified": [
+          "response.completed",
+          "batch.completed",
+          "restart redelivery",
+          "capacity fallback"
+        ],
+        "pending": [
+          "package takeover",
+          "remaining producer families"
+        ]
       }
     },
     {
@@ -11140,8 +11216,8 @@
       }
     }
   ],
-  "next_task": "Implement native webhook endpoints, signed deliveries, retry isolation and real client lifecycle events. Continue remaining inference/application and recovery tasks.",
-  "next": "原生 Webhook 订阅、签名投递、失败隔离与真实生命周期事件，再接续其余推理、应用服务和恢复事项。",
+  "next_task": "Package the native webhook deployment policy, verify managed recovery and implement the remaining inference/application endpoints and event producers.",
+  "next": "Webhook 出站策略封包、受监护恢复及其余应用事件与接口。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

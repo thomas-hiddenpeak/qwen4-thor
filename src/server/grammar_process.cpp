@@ -61,6 +61,7 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
   static auto* programs = new WorkerOwner;
   static auto* mcp = new WorkerOwner;
   static auto* traces = new WorkerOwner;
+  static auto* webhooks = new WorkerOwner;
   switch (domain) {
     case IsolatedWorkerDomain::kObjects: return *objects;
     case IsolatedWorkerDomain::kSessionCache: return *sessions;
@@ -73,6 +74,7 @@ WorkerOwner& Owner(IsolatedWorkerDomain domain) {
     case IsolatedWorkerDomain::kPrograms: return *programs;
     case IsolatedWorkerDomain::kMcp: return *mcp;
     case IsolatedWorkerDomain::kTraces: return *traces;
+    case IsolatedWorkerDomain::kWebhook: return *webhooks;
     default: return *grammar;
   }
 }
@@ -162,6 +164,7 @@ void PollRequestWorkers() {
   PollIsolatedWorkers(IsolatedWorkerDomain::kToolResults);
   PollIsolatedWorkers(IsolatedWorkerDomain::kPrograms);
   PollIsolatedWorkers(IsolatedWorkerDomain::kMcp);
+  PollIsolatedWorkers(IsolatedWorkerDomain::kWebhook);
 }
 
 void PollIsolatedWorkers(IsolatedWorkerDomain domain) {
@@ -209,6 +212,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       control.domain != IsolatedWorkerDomain::kToolResults &&
       control.domain != IsolatedWorkerDomain::kPrograms &&
       control.domain != IsolatedWorkerDomain::kMcp &&
+      control.domain != IsolatedWorkerDomain::kWebhook &&
       control.domain != IsolatedWorkerDomain::kTraces)
     return Status::Fail("invalid isolated worker domain");
   struct sigaction disposition {};
@@ -255,6 +259,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
           &actions, fd, "/dev/null", fd == 0 ? O_RDONLY : O_WRONLY, 0);
     auto parent = std::to_string(getpid());
     auto limit = std::to_string(control.address_space_bytes);
+    char webhook_name[] = "q4t-webhook";
     char grammar_name[] = "q4t-grammar-worker";
     char objects_name[] = "q4t-object-worker";
     char cache_name[] = "q4t-cache-worker";
@@ -274,6 +279,7 @@ Status GrammarProcess::Start(const char* entry, const GrammarControl& control,
       name = tool_result_name;
     if (control.domain == IsolatedWorkerDomain::kPrograms) name = program_name;
     if (control.domain == IsolatedWorkerDomain::kMcp) name = mcp_name;
+    if (control.domain == IsolatedWorkerDomain::kWebhook) name = webhook_name;
     if (control.domain == IsolatedWorkerDomain::kTraces) name = traces_name;
     if (control.domain == IsolatedWorkerDomain::kFileFetch) name = fetch_name;
     if (control.domain == IsolatedWorkerDomain::kFileParse) name = document_name;

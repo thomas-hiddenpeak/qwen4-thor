@@ -1,4 +1,5 @@
 #include "q4t/server/object_store.h"
+#include "webhook_events.h"
 #include "q4t/server/batch_checkpoint.h"
 #include "q4t/server/batch_quota.h"
 #include "q4t/server/batch_state.h"
@@ -151,6 +152,10 @@ Json Public(const Json& record) {
   std::erase_if(result.object, [](const auto& field) {
     return field.first == "owner" || field.first == "format";
   });
+  if (result.GetString("kind") == "response" || result.GetString("kind") == "batch")
+    std::erase_if(Field(result, "data").object, [](const auto& field) {
+      return field.first == "q4t_webhook_deferred";
+    });
   return result;
 }
 struct Metadata {
@@ -159,7 +164,19 @@ struct Metadata {
   uint64_t bytes = 0;
   ObjectRetentionInfo retention;
   BatchQueueCharge batch_charge = {};
+  uint32_t webhook_subscriptions = 0;
+  uint32_t terminal_event = 0;
+  bool webhook_deferred = false;
 };
+void IndexWebhookState(Metadata* metadata, const Json& data) {
+  if (metadata->kind == "webhook_endpoint") {
+    metadata->webhook_subscriptions = webhook_detail::Subscriptions(data);
+  } else if (metadata->kind == "response" || metadata->kind == "batch") {
+    metadata->terminal_event = webhook_detail::EventBit(
+        webhook_detail::TerminalEvent(metadata->kind, data));
+    metadata->webhook_deferred = data.Has("q4t_webhook_deferred");
+  }
+}
 struct Usage {
   uint64_t bytes = 0, count = 0;
 };
@@ -275,6 +292,7 @@ class DiskStore {
     if (!initialized_) return IoError();
     const auto operation = request.GetString("operation");
     if (operation == "retention") return Retention(request);
+    if (operation == "webhook_reconcile") return ReconcileWebhooks(request);
     if (operation == "scan_responses") {
       auto pruned = Prune();
       return pruned.ok() ? ScanResponses(request) : pruned;
@@ -323,9 +341,10 @@ class DiskStore {
       if (kind == "input_snapshot")
         return Error(409, "input_snapshot_immutable",
                      "Private snapshots are reclaimed by reference retention");
-      if (kind == "batch" || request.GetInt("mutate_before", 0)) {
+      const bool project_erase = kind == "batch" || found->second.webhook_deferred;
+      if (project_erase || request.GetInt("mutate_before", 0)) {
         auto reply = Batch(Object({{"mutations", Array({request})}}));
-        if (kind == "batch" && reply.ok()) {
+        if (project_erase && reply.ok()) {
           const auto* rows = reply.value.GetArray("data");
           if (!rows || rows->array.size() != 1) return IoError(true);
           auto deleted = rows->array[0];
@@ -671,7 +690,125 @@ class DiskStore {
     return batch_quota_.Check(owner, charges, options_.batch_model_queue_tokens,
                               options_.batch_client_model_queue_tokens);
   }
+  using Notices = std::map<std::string, Json>;
+  static bool NoCapacity(const ObjectReply& result) {
+    return !result.commit_unknown && (result.code == "object_quota_exceeded" ||
+                                      result.code == "object_too_large");
+  }
+  Json Notification(const Json& write, const std::string& name) {
+    const auto kind = write.GetString("kind");
+    if (kind != "batch" && kind != "response") return {};
+    auto prior = records_.find(name);
+    if (prior != records_.end() && prior->second.webhook_deferred) {
+      Json record;
+      if (ReadKnown(name, prior->second, &record))
+        return Field(Field(record, "data"), "q4t_webhook_deferred");
+      // The ordinary source write also verifies the record before commit.
+      return {};
+    }
+    if (write.GetString("operation") != "put" ||
+        (prior != records_.end() && prior->second.terminal_event)) return {};
+    const auto* data = write.Find("data");
+    const auto type = data ? webhook_detail::TerminalEvent(kind, *data) : "";
+    if (type.empty()) return {};
+    const auto owner = write.GetString("owner"), id = write.GetString("id");
+    const auto bit = webhook_detail::EventBit(type);
+    const auto prefix = owner + ".webhook_endpoint.";
+    auto targets = Array();
+    for (auto it = records_.lower_bound(prefix);
+         it != records_.end() && it->first.starts_with(prefix); ++it)
+      if (it->second.webhook_subscriptions & bit)
+        targets.array.push_back(String(it->second.id));
+    if (targets.array.empty()) return {};
+    return webhook_detail::PendingEvent(owner, id, type, targets, Now(),
+        std::min<int64_t>(72 * 3600, options_.max_ttl_seconds));
+  }
+
+  // An external subscriber never participates in a business commit. Only its
+  // durable notice is included. Preserve the original number of public rows.
   ObjectReply Batch(const Json& request, bool retention = false) {
+    const auto* writes = request.GetArray("mutations");
+    if (!writes || writes->array.size() > kMaxTransactionObjects)
+      return CommitBatch(request, retention);
+    Notices notices;
+    for (const auto& write : writes->array) {
+      const auto kind = write.GetString("kind");
+      if (kind != "response" && kind != "batch") continue;
+      const auto name = Filename(write);
+      auto event = Notification(write, name);
+      if (!event.IsNull()) notices.emplace(name, std::move(event));
+    }
+    if (notices.empty()) return CommitBatch(request, retention);
+    auto extended = request;
+    auto& mutations = Field(extended, "mutations").array;
+    for (const auto& [unused, event] : notices)
+      if (event.GetInt("expires_at") > Now()) mutations.push_back(event);
+    if (mutations.size() <= kMaxTransactionObjects) {
+      auto result = CommitBatch(extended, retention, &notices, true);
+      if (result.ok()) {
+        auto& outputs = Field(result.value, "data").array;
+        if (outputs.size() != mutations.size()) return IoError(true);
+        outputs.resize(writes->array.size());
+        return result;
+      }
+      if (!NoCapacity(result)) return result;
+    }
+    // A full object-count quota can still hold the pending notice in the
+    // terminal resource's existing slot. The reconciler moves it atomically.
+    auto staged = CommitBatch(request, retention, &notices, false);
+    if (staged.ok()) {
+      for (const auto& [name, unused] : notices) {
+        if (records_.contains(name)) ++webhook_capacity_deferrals_;
+        else ++webhook_capacity_losses_;
+      }
+      return staged;
+    }
+    if (!NoCapacity(staged)) return staged;
+    // Even the source plus its small receipt cannot fit. Never block a healthy
+    // model response on notification capacity; expose the actual loss.
+    auto plain = CommitBatch(request, retention);
+    if (plain.ok()) webhook_capacity_losses_ += notices.size();
+    return plain;
+  }
+
+  ObjectReply ReconcileWebhooks(const Json& request) {
+    const auto after = request.GetString("after");
+    if (!after.empty() && !ValidFilename(after))
+      return Error(400, "invalid_object_cursor", "Invalid notification cursor");
+    auto it = records_.upper_bound(after);
+    std::string cursor;
+    for (size_t n = 0; it != records_.end() && n < 64; ++n) {
+      const auto current = it++;
+      cursor = current->first;
+      const auto& m = current->second;
+      if (!m.webhook_deferred) continue;
+      // Do not change a resource's retention while moving the notice.
+      if (m.expires && m.expires <= Now()) continue;
+      Json record;
+      if (!ReadKnown(cursor, m, &record)) return IoError();
+      auto write = Object({{"operation", String("put")}, {"owner", String(m.owner)},
+          {"kind", String(m.kind)}, {"id", String(m.id)}, {"revision", Number(m.revision)},
+          {"ttl", Number(0)}, {"expires_at", Number(m.expires)}, {"data", Field(record, "data")}});
+      auto& data = Field(write, "data");
+      Notices notices{{cursor, Field(data, "q4t_webhook_deferred")}};
+      auto mutations = Array({std::move(write)});
+      const auto& event = notices.begin()->second;
+      if (event.GetInt("expires_at") > Now()) mutations.array.push_back(event);
+      auto moved = CommitBatch(Object({{"mutations", std::move(mutations)}}),
+                               false, &notices, true);
+      if (!moved.ok() && !NoCapacity(moved)) return moved;
+      break;
+    }
+    ObjectReply reply;
+    reply.value = Object({{"after", String(it == records_.end() ? "" : cursor)},
+        {"capacity_deferrals", Number(webhook_capacity_deferrals_)},
+        {"capacity_losses", Number(webhook_capacity_losses_)}});
+    return reply;
+  }
+
+  ObjectReply CommitBatch(const Json& request, bool retention,
+                          const Notices* notices = nullptr,
+                          bool clear = false) {
     const auto* mutations = request.GetArray("mutations");
     if (!mutations || mutations->array.empty() ||
         mutations->array.size() > kMaxTransactionObjects)
@@ -763,6 +900,18 @@ class DiskStore {
                          {"created_at", Number(created)},
                          {"expires_at", Number(expires)},
                          {"data", *data}});
+        if (kind == "response" || kind == "batch") {
+          auto& data = Field(record, "data");
+          std::erase_if(data.object, [](const auto& f) {
+            return f.first == "q4t_webhook_deferred";
+          });
+          if (notices && notices->contains(name)) {
+            if (!clear) Set(&data, "q4t_webhook_deferred", notices->at(name));
+          } else if (const auto* old = previous.Find("data");
+                     old && old->Has("q4t_webhook_deferred")) {
+            Set(&data, "q4t_webhook_deferred", *old->Find("q4t_webhook_deferred"));
+          }
+        }
         const auto bytes =
             OutputJson(Object({{"record", record},
                                {"sha256", String(Digest(OutputJson(record)))}}))
@@ -935,6 +1084,7 @@ class DiskStore {
                                         *content->Find("data")),
                  InspectBatchQueueCharge(content->GetString("kind"),
                                          *content->Find("data"))};
+    IndexWebhookState(metadata, *content->Find("data"));
     *record = *content;
     return true;
   }
@@ -1105,7 +1255,18 @@ class DiskStore {
   ObjectReply Put(const std::string& name, const Json& request) {
     // Conditioned writes use the same final journal check as transactions.
     const auto* proposed = request.Find("data");
-    if (request.GetString("kind") == "batch" ||
+    const auto found = records_.find(name);
+    const bool pending = found != records_.end() && found->second.webhook_deferred;
+    const auto kind = request.GetString("kind");
+    const auto needs_notice = [&] {
+      if (kind != "response" || !proposed ||
+          webhook_detail::TerminalEvent(kind, *proposed).empty())
+        return false;
+      const auto prefix = request.GetString("owner") + ".webhook_endpoint.";
+      const auto next = records_.lower_bound(prefix);
+      return next != records_.end() && next->first.starts_with(prefix);
+    };
+    if (pending || kind == "batch" || needs_notice() ||
         (proposed && IsBatchPage(*proposed)) ||
         request.GetInt("mutate_before", 0)) {
       auto reply = Batch(Object({{"mutations", Array({request})}}));
@@ -1123,7 +1284,6 @@ class DiskStore {
     if (revision < 0 || revision >= (1LL << 53) - 1 || !data || ttl < 0 ||
         ttl > options_.max_ttl_seconds)
       return Error(400, "invalid_object_request", "Invalid object write");
-    const auto found = records_.find(name);
     const bool exists = found != records_.end();
     if ((revision == 0 && exists) ||
         (revision > 0 && (!exists || found->second.revision != revision)))
@@ -1199,9 +1359,11 @@ class DiskStore {
       return IoError();
     }
     if (exists) Remove(found);
-    Add(name, {owner, request.GetString("kind"), request.GetString("id"),
-               digest, revision + 1, created, expires, text.size(),
-               InspectObjectRetention(request.GetString("kind"), *data)});
+    Metadata metadata{owner, request.GetString("kind"), request.GetString("id"),
+                      digest, revision + 1, created, expires, text.size(),
+                      InspectObjectRetention(request.GetString("kind"), *data)};
+    IndexWebhookState(&metadata, *data);
+    Add(name, std::move(metadata));
     if (fsync(root_.Get())) return IoError(true);
     ObjectReply result;
     result.value = Public(record);
@@ -1492,6 +1654,7 @@ class DiskStore {
   BatchQueueQuota batch_quota_;
   Usage total_;
   size_t retention_bytes_ = 0;
+  int64_t webhook_capacity_deferrals_ = 0, webhook_capacity_losses_ = 0;
   int pause_after_ = 0;
 };
 }  // namespace

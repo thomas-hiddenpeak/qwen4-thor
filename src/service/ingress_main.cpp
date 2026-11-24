@@ -435,6 +435,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::ResponsesMethodAllowed(method, path) ||
       server::FileMethodAllowed(method, path) ||
       server::UploadMethodAllowed(method, path) ||
+      server::WebhookMethodAllowed(method, path) ||
       server::BatchMethodAllowed(method, path) ||
       server::VectorStoreMethodAllowed(method, path) ||
       server::StoredChatMethodAllowed(method, path)) {
@@ -443,6 +444,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
                server::IsMcpTunnelMetadata(method, path) ||
                server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||
+               ((method == "GET" || method == "DELETE") && server::IsWebhookTarget(path)) ||
                server::IsBatchObservation(method, path) ||
                server::IsSkillObservation(method, path) ||
                server::IsContainerObservation(method, path) ||

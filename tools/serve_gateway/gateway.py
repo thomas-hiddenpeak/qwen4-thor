@@ -151,6 +151,15 @@ APPLICATION_ROUTES = [
       for method in ('GET', 'POST', 'DELETE')),
     ('POST', '/v1/prompts/{prompt_id}/versions', 'data'),
     ('GET', '/v1/prompts/{prompt_id}/versions/{version}', 'control'),
+    ('GET', '/v1/webhook_event_types', 'control'),
+    *((method, '/v1/webhook_endpoints' + suffix,
+       'data' if method == 'POST' else 'control')
+      for suffix, methods in (
+          ('', ('GET', 'POST')),
+          ('/{webhook_endpoint_id}', ('GET', 'POST', 'DELETE')),
+          ('/{webhook_endpoint_id}/test', ('POST',)),
+          ('/{webhook_endpoint_id}/rotate_secret', ('POST',)))
+      for method in methods),
     *((method, '/v1/batches', 'data') for method in ('GET', 'POST')),
     ('GET', '/v1/batches/{batch_id}', 'control'),
     ('POST', '/v1/batches/{batch_id}/cancel', 'control'),
@@ -291,6 +300,7 @@ def route_map():
     rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
+                           'whe_[A-Za-z0-9_-]{1,124}' if part == '{webhook_endpoint_id}' else
                            'automation_[A-Za-z0-9_-]{1,117}' if part == '{automation_id}' else
                            'invocation_[A-Za-z0-9_-]{1,117}' if part == '{invocation_id}' else
                            'run_[A-Za-z0-9_-]{1,124}' if part == '{run_id}' else

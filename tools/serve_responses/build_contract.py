@@ -132,6 +132,15 @@ def schema(graph):
     page_limit = dict(type='integer', minimum=1, maximum=100, default=20)
     definitions['agents_query'] = obj(dict(limit=page_limit,
         after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
+    webhooks = json.loads((ROOT/'src/server/contracts/openai_webhook_types_v1.json').read_text())
+    assert webhooks['profile'] == 'q4t-openai-webhook-types-v1'
+    definitions.update(graph_definitions(webhooks, 'webhook_'))
+    definitions['webhook_query'] = obj(dict(limit=page_limit, after=dict(type='string')))
+    for operation in ('create', 'update'):
+        definitions['webhook_' + operation] = {'allOf': [definitions['webhook_' + operation], {
+            'properties': {'name': dict(type='string', minLength=1, maxLength=256),
+                           'url': dict(type='string', maxLength=2048, pattern='^https://'),
+                           'event_types': dict(type='array', minItems=1)}}]}
     automations = json.loads((ROOT/'src/server/contracts/openai_automation_types_v1.json').read_text())
     assert automations['profile'] == 'q4t-openai-automation-types-v1'
     definitions.update(graph_definitions(automations, 'automation_'))
@@ -656,6 +665,14 @@ def add_openapi(paths, response, error):
         ('/v1/agents/environments/templates/{environment_template_id}', 'get', None, 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'post', 'hosted_template_update', 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'delete', None, 'hosted_template_deleted', None),
+        ('/v1/webhook_event_types', 'get', None, 'webhook_event_types', None),
+        ('/v1/webhook_endpoints', 'post', 'webhook_create', 'webhook_with_secret', None),
+        ('/v1/webhook_endpoints', 'get', None, 'webhook_endpoint_list', 'webhook_query'),
+        ('/v1/webhook_endpoints/{webhook_endpoint_id}', 'get', None, 'webhook_endpoint', None),
+        ('/v1/webhook_endpoints/{webhook_endpoint_id}', 'post', 'webhook_update', 'webhook_endpoint', None),
+        ('/v1/webhook_endpoints/{webhook_endpoint_id}', 'delete', None, 'webhook_deleted', None),
+        ('/v1/webhook_endpoints/{webhook_endpoint_id}/rotate_secret', 'post', 'webhook_rotate', 'webhook_with_secret', None),
+        ('/v1/webhook_endpoints/{webhook_endpoint_id}/test', 'post', 'webhook_test', 'webhook_test_result', None),
         ('/v1/agents/automations', 'post', 'automation_create', 'automation_resource', None),
         ('/v1/agents/automations', 'get', None, 'automation_list', 'automation_query'),
         ('/v1/agents/automations/{automation_id}', 'get', None, 'automation_resource', None),
@@ -785,7 +802,7 @@ def add_openapi(paths, response, error):
         if body:
             optional = path in ('/v1/threads', '/v1/conversations', '/v1/responses/input_tokens', '/v1/vaults',
                                 '/v1/agents/environments/templates')
-            operation['requestBody'] = dict(required=not optional,
+            operation['requestBody'] = dict(required=not optional and body != 'webhook_rotate',
                 content={'application/json': dict(schema=nullable(external(body))
                     if optional else external(body))})
         if body in ('skill_upload','skill_version_upload'):

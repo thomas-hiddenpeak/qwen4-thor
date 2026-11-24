@@ -45,7 +45,8 @@ enum class IsolatedWorkerDomain {
   kToolResults,
   kPrograms,
   kMcp,
-  kTraces
+  kTraces,
+  kWebhook
 };
 
 // Independent lifetime: deferred cleanup never retains a server/request

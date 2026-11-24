@@ -1,0 +1,2071 @@
+{
+  "profile": "q4t-openai-webhook-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "create": 0,
+    "update": 31,
+    "rotate": 34,
+    "test": 38,
+    "query": 39,
+    "endpoint": 44,
+    "with_secret": 48,
+    "deleted": 49,
+    "endpoint_list": 52,
+    "event_types": 55,
+    "test_result": 56,
+    "event": 58
+  },
+  "nodes": [
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_types",
+          "optional": false,
+          "type": 1
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "url",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 2
+    },
+    {
+      "kind": "union",
+      "variants": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "batch.completed"
+    },
+    {
+      "kind": "literal",
+      "value": "batch.failed"
+    },
+    {
+      "kind": "literal",
+      "value": "batch.expired"
+    },
+    {
+      "kind": "literal",
+      "value": "batch.cancelled"
+    },
+    {
+      "kind": "literal",
+      "value": "response.completed"
+    },
+    {
+      "kind": "literal",
+      "value": "response.failed"
+    },
+    {
+      "kind": "literal",
+      "value": "response.cancelled"
+    },
+    {
+      "kind": "literal",
+      "value": "response.incomplete"
+    },
+    {
+      "kind": "literal",
+      "value": "eval.run.succeeded"
+    },
+    {
+      "kind": "literal",
+      "value": "eval.run.failed"
+    },
+    {
+      "kind": "literal",
+      "value": "eval.run.canceled"
+    },
+    {
+      "kind": "literal",
+      "value": "fine_tuning.job.succeeded"
+    },
+    {
+      "kind": "literal",
+      "value": "fine_tuning.job.failed"
+    },
+    {
+      "kind": "literal",
+      "value": "fine_tuning.job.cancelled"
+    },
+    {
+      "kind": "literal",
+      "value": "realtime.call.incoming"
+    },
+    {
+      "kind": "literal",
+      "value": "video.completed"
+    },
+    {
+      "kind": "literal",
+      "value": "video.failed"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.environment.ready"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.environment.failed"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.environment.suspended"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.environment.expired"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.created"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.action_required"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.in_progress"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.idle"
+    },
+    {
+      "kind": "literal",
+      "value": "agent.session.failed"
+    },
+    {
+      "kind": "literal",
+      "value": "safety.alert.created"
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_types",
+          "optional": true,
+          "type": 32
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 33
+        },
+        {
+          "name": "url",
+          "optional": true,
+          "type": 33
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        1
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        30
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "keep_old_secret_active_for_24_hours",
+          "optional": true,
+          "type": 35
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        36,
+        37
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": false
+    },
+    {
+      "kind": "literal",
+      "value": true
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_type",
+          "optional": false,
+          "type": 2
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 40
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 42
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        30
+      ]
+    },
+    {
+      "kind": "null"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        43
+      ]
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "event_types",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 46
+        },
+        {
+          "name": "signing_secret_hint",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "updated_at",
+          "optional": true,
+          "type": 42
+        },
+        {
+          "name": "url",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 30
+    },
+    {
+      "kind": "literal",
+      "value": "webhook_endpoint"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        41,
+        30
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "event_types",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 46
+        },
+        {
+          "name": "signing_secret",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "signing_secret_hint",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "updated_at",
+          "optional": true,
+          "type": 42
+        },
+        {
+          "name": "url",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 50
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 51
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "boolean"
+    },
+    {
+      "kind": "literal",
+      "value": "webhook_endpoint.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 53
+        },
+        {
+          "name": "first_id",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "has_more",
+          "optional": false,
+          "type": 50
+        },
+        {
+          "name": "last_id",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 54
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 44
+    },
+    {
+      "kind": "literal",
+      "value": "list"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 54
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "event_type",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 57
+        },
+        {
+          "name": "status_code",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "success",
+          "optional": false,
+          "type": 37
+        },
+        {
+          "name": "webhook_endpoint_id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "webhook_endpoint.test"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        59,
+        62,
+        64,
+        66,
+        68,
+        75,
+        79,
+        81,
+        83,
+        85,
+        88,
+        90,
+        92,
+        94,
+        96,
+        98,
+        100,
+        102,
+        104,
+        106,
+        115,
+        121,
+        125,
+        127,
+        129,
+        131,
+        133,
+        135,
+        138,
+        141
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 60
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 23
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "event"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 63
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 21
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 65
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 67
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 22
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 69
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 25
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "required_action",
+          "optional": false,
+          "type": 70
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 71
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        72,
+        73,
+        74
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "computer_use_approval_request"
+    },
+    {
+      "kind": "literal",
+      "value": "function_call"
+    },
+    {
+      "kind": "literal",
+      "value": "environment_connection"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 76
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 24
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "connect",
+          "optional": true,
+          "type": 77
+        },
+        {
+          "name": "environment_id",
+          "optional": true,
+          "type": 33
+        },
+        {
+          "name": "environment_type",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        78
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "remote_url",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 80
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 28
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment_id",
+          "optional": true,
+          "type": 33
+        },
+        {
+          "name": "environment_type",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 82
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 27
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment_id",
+          "optional": true,
+          "type": 33
+        },
+        {
+          "name": "environment_type",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 84
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 26
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "environment_id",
+          "optional": true,
+          "type": 33
+        },
+        {
+          "name": "environment_type",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 86
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 6
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        61
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 89
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 91
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 93
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 4
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 95
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 97
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 12
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 99
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 11
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 101
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 103
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 15
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 105
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 14
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 107
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 114
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "sip_headers",
+          "optional": false,
+          "type": 108
+        },
+        {
+          "name": "sip_media_security",
+          "optional": true,
+          "type": 110
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 109
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        111,
+        112,
+        113
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "rtp"
+    },
+    {
+      "kind": "literal",
+      "value": "srtp"
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "literal",
+      "value": "live.call.incoming"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 116
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 120
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "session_id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "sip_headers",
+          "optional": false,
+          "type": 117
+        },
+        {
+          "name": "sip_media_security",
+          "optional": true,
+          "type": 110
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 119
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 118
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "sip"
+    },
+    {
+      "kind": "literal",
+      "value": "live.transport.incoming"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 122
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 17
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "sip_headers",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "sip_media_security",
+          "optional": true,
+          "type": 110
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 124
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 126
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 9
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 128
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 7
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 130
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 8
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 132
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 87
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 10
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 134
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 29
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 136
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 137
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "safety.deactivation_issued"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 139
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 140
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "safety.org_alert.created"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "data",
+          "optional": false,
+          "type": 142
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 61
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 143
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "safety.warning_issued"
+    }
+  ],
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/webhooks/webhooks.ts": "8bac95c85eeff231315c60c3ba34e297435dd7cbc7e349ebd23e583f8eccf1ad"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}

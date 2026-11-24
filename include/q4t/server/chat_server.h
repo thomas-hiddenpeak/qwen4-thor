@@ -85,6 +85,7 @@
 #include "q4t/server/batch_execution.h"
 #include "q4t/server/batch_jobs.h"
 #include "q4t/server/vector_jobs.h"
+#include "q4t/server/webhook_dispatcher.h"
 #include "q4t/server/application_owner.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
@@ -494,6 +495,7 @@ class ChatServer {
   SipService sip_service_;
   ApplicationOwner<RealtimeTraceStore> realtime_traces_;
   RealtimeTraceStoreOptions realtime_trace_options_;
+  std::shared_ptr<const struct FileFetchOptions> webhook_network_;
   std::shared_ptr<const FileExpansionOptions> file_inputs_;
   std::string file_input_policy_sha256_;
   std::shared_ptr<const McpDeploymentPolicy> mcp_policy_;
@@ -504,6 +506,7 @@ class ChatServer {
   ResponsesJobsOptions background_options_;
   BatchJobsOptions batch_options_;
   ApplicationOwner<ResponsesJobs> background_;
+  ApplicationOwner<WebhookDispatcher> webhook_dispatcher_;
   ApplicationOwner<BatchJobs> batches_;
   ApplicationOwner<VectorJobs> vector_jobs_;
   ApplicationStartup background_scanner_;

@@ -4,6 +4,7 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 
 | 开发接入 | 已验证的业务 | 客户端和部署条件 |
 |---|---|---|
+| Webhook | 候选支持八项管理方法及后台 Responses、Batch 终态通知，独立 HTTPS 发送器验签、重试并可跨进程接手。 | 需部署方显式配置目的地。订阅方按稳定事件 ID 去重。默认 rev470 尚未发行此能力。[实测回执](evidence/serve-webhooks-20261124/lifecycle.json) |
 | Chat、Responses、Agents | 项目资料查询、流式工具事件、工具结果回填、子 Agent 回合及配额恢复 | API Key 区分客户。持久会话跨进程恢复；具体模型、工具及发行组合见[托管业务回执](evidence/serve-agent-workspaces-20261124/subagent-delivery.json)。 |
 | Agents 定时任务 | 通过官方 SDK 管理、手动触发或定时投递任务，查询每次投递。模型可在启用 `automations` 的会话内安排唤醒。 | 当前回合等待客户端工具时，唤醒排队。rev470 验证了工具回填和到期投递跨主轻配置、模型退出及网关换包后的恢复。[发行回执](evidence/serve-agent-automations-20261124/delivery.json) |
 | Assistants v2 | 注册及更新 Assistant，维护 Thread 和 Message，流式创建 Run，按工具调用 ID 回填，读取步骤、取消及恢复待回填的 Run。附件检索已读取真实发布记录。 | 使用客户 API Key 和 `OpenAI-Beta: assistants=v2`。仅可访问本客户的数据。工具回填及崩溃接手见[发行回执](evidence/serve-assistants-20261124/delivery.json)，跨轮输入预算与恢复见[rev464 发行回执](evidence/serve-skills-20261124/delivery.json)，托管代码执行继续跟踪。 |

@@ -46,7 +46,9 @@ enum class ObjectKind {
   kSkill,
   kSkillVersion,
   kAutomation,
-  kAutomationInvocation
+  kAutomationInvocation,
+  kWebhookEndpoint,
+  kWebhookEvent
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 
@@ -171,6 +173,11 @@ class ObjectStore {
                             const std::function<bool()>& cancelled = {});
   // Same trusted bounded scan for native Batch recovery. No request bodies,
   // file manifests, result content, or credentials cross this projection.
+  // Trusted auxiliary reconciler only. Move at most one capacity-deferred
+  // notification into the outbox per bounded scan; return counts and cursor.
+  ObjectReply ReconcileWebhooks(std::string cursor,
+                                std::chrono::steady_clock::time_point deadline,
+                                const std::function<bool()>& cancelled = {});
   ObjectReply ScanBatches(std::string after,
                          std::chrono::steady_clock::time_point deadline,
                          const std::function<bool()>& cancelled = {});

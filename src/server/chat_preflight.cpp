@@ -7,6 +7,7 @@
 
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/chat_file_inputs.h"
+#include "responses_json.h"
 #include "q4t/server/chat_web_search.h"
 #include "q4t/server/media_admission.h"
 #include "q4t/server/request_admission.h"
@@ -113,7 +114,13 @@ void ChatServer::HandleConfig(int fd) {
       ApplicationStartupJson(vector_jobs_.StartupHealth()) +
       R"(,"response_scanner":)" +
       ApplicationStartupJson(background_scanner_.Health()) +
-      R"(,"automation_dispatcher":)" + ApplicationStartupJson(automation_dispatcher_.Health()) + "}," +
+      R"(,"automation_dispatcher":)" +
+      ApplicationStartupJson(automation_dispatcher_.Health()) +
+      R"(,"webhook_dispatcher":)" +
+      ApplicationStartupJson(webhook_dispatcher_.StartupHealth()) + "}," +
+      (webhook_dispatcher_ ? R"("webhook_delivery":)" +
+                                 OutputJson(webhook_dispatcher_->Health()) + ","
+                           : "") +
       R"("application_state_health":{"state":")" +
       detail::JsonEscape(health.state) + '"' + R"(,"key_admin_ready":)" +
       (state_key_admin_ && state_key_admin_->Alive() ? "true" : "false") +
