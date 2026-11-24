@@ -1,0 +1,27 @@
+{
+  "stage": "focused_host_verified",
+  "scope": "historical inference selection and terminal Evals webhooks",
+  "evals_host_cases": 9,
+  "webhook_host_cases": 12,
+  "cpu_sha256": {
+    "evals-stored-cpu-01.log": "2df36b752f375c1d008591a26ad5f794f713e50dadf5d43368847e9d2a2fc53b",
+    "evals-stored-webhooks-cpu.log": "310313ee92b203cd6926cbbd9fe9a48950faf239d7c8a5f53ff1845d8099e160"
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1359,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "compatibility_reference": "https://developers.openai.com/api/reference/resources/evals/subresources/runs/methods/create",
+  "terminal_reference": "https://developers.openai.com/api/docs/guides/evals",
+  "acceptance_pending": [
+    "native TLS business over stored Chat and Responses, signed delivery",
+    "packaged profiles and recovery"
+  ]
+}

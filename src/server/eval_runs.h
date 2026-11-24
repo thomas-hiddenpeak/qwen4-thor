@@ -8,6 +8,9 @@ class ResponsesJobs;
 }
 namespace q4t::server::eval_detail {
 struct SamplingOwner;
+ObjectReply PublishStoredRun(ObjectStore& objects, const StateAccess& access,
+                             const io::Json& config, const io::Json& query,
+                             ObjectRequest run, const ObjectRequest& parent);
 ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
                        const EvalRoute& route, std::string_view method,
                        std::string_view query, const std::string& body,
