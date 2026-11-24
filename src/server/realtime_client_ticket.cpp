@@ -135,4 +135,22 @@ bool VerifyRealtimeTicket(const RealtimeClientTicket& ticket,
                   static_cast<unsigned char>(ticket.signature[i]);
   return difference == 0;
 }
+bool ResolveForwardedChatKit(std::string_view authorization,
+                             std::string_view owner, std::string_view binding,
+                             int64_t now, std::string* bearer) {
+  constexpr std::string_view prefix = "Q4T-ChatKit ";
+  if (!bearer || !authorization.starts_with(prefix)) return false;
+  authorization.remove_prefix(prefix.size());
+  const auto split = authorization.find(' ');
+  if (split != 64) return false;
+  const auto issuer = authorization.substr(0, split);
+  const auto original = authorization.substr(split + 1);
+  RealtimeClientTicket ticket;
+  if (!ReadRealtimeTicket(BearerCredential(original), &ticket,
+                          ClientTicketAudience::kChatKit) ||
+      ticket.owner != owner ||
+      !VerifyRealtimeTicket(ticket, binding, issuer, now)) return false;
+  *bearer = std::string(original);
+  return true;
+}
 }  // namespace q4t::server
