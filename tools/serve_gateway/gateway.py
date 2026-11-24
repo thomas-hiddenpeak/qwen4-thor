@@ -63,6 +63,12 @@ APPLICATION_ROUTES = [
     ('POST', '/v1/tunnels/{tunnel_id}/response', 'tunnel_response'),
     *((method, path, 'data' if method == 'POST' or path.endswith('/content') else 'control')
       for path, methods in (
+          ('/v1/skills', ('GET','POST')),
+          ('/v1/skills/{skill_id}', ('GET','POST','DELETE')),
+          ('/v1/skills/{skill_id}/content', ('GET',)),
+          ('/v1/skills/{skill_id}/versions', ('GET','POST')),
+          ('/v1/skills/{skill_id}/versions/{version}', ('GET','DELETE')),
+          ('/v1/skills/{skill_id}/versions/{version}/content', ('GET',)),
           ('/v1/containers', ('GET','POST')),
           ('/v1/containers/{container_id}', ('GET','DELETE')),
           ('/v1/containers/{container_id}/files', ('GET','POST')),
@@ -276,6 +282,8 @@ def route_map():
                            'step_[A-Za-z0-9_-]{1,123}' if part == '{step_id}' else
                            'thread_[A-Za-z0-9_-]{1,121}' if part == '{thread_id}' else
                            'msg_[A-Za-z0-9_-]{1,124}' if part == '{message_id}' else
+                           'skill_[A-Za-z0-9_-]{1,122}' if part == '{skill_id}' else
+                           '[A-Za-z0-9_-]{1,128}' if part == '{version}' and path.startswith('/v1/skills/') else
                            'cntr_[A-Za-z0-9_-]{1,123}' if part == '{container_id}' else
                            'cfile_[A-Za-z0-9_-]{1,122}' if part == '{file_id}' and path.startswith('/v1/containers/') else
                            'asst_[A-Za-z0-9_-]{1,123}' if part == '{assistant_id}' else
@@ -756,6 +764,7 @@ http {{
       proxy_set_header Host 127.0.0.1;
 {websocket_proxy_headers()}
       proxy_set_header Content-Type $http_content_type;
+      proxy_set_header Accept $http_accept;
       proxy_set_header OpenAI-Beta $q4t_responses_beta;
       proxy_set_header Idempotency-Key $http_idempotency_key;
       proxy_set_header X-Request-Id $http_x_request_id;

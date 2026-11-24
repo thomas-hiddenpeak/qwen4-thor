@@ -556,6 +556,17 @@ set(protocol_inputs
   src/server/file_document.cpp
   include/q4t/server/file_document_worker.h
   src/server/file_document_worker.cpp
+  third_party/libyaml/yaml.h
+  include/q4t/server/skill_worker.h
+  src/server/skill_manifest.h
+  src/server/skill_bundle.h
+  src/server/skill_manifest.cpp
+  src/server/skill_bundle.cpp
+  src/server/skill_worker.cpp
+  include/q4t/server/skills.h
+  src/server/skills.cpp
+  include/q4t/server/skill_upload.h
+  src/server/skill_upload.cpp
   src/server/file_document_sandbox.cpp
   src/server/file_package.h
   src/server/file_package.cpp
@@ -728,6 +739,8 @@ set(protocol_inputs
   src/server/vault_credential_internal.h
   src/server/contracts/openai_assistant_types_v1.json
   cmake/assistant_types.h.in
+  cmake/skill_types.h.in
+  src/server/contracts/openai_skill_types_v1.json
   cmake/container_types.h.in
   src/server/contracts/openai_container_types_v1.json
   include/q4t/server/containers.h
@@ -738,6 +751,7 @@ set(protocol_inputs
   src/server/assistant_registry.cpp
   src/server/containers.cpp
   src/server/container_files.cpp
+  src/server/container_skills.cpp
   src/server/assistant_threads.cpp
   src/server/assistant_run_settings.cpp
   src/server/assistant_run_view.cpp
@@ -1081,6 +1095,15 @@ if(NOT container_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/container_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/container_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_skill_types_v1.json"
+  Q4T_SKILL_TYPES)
+string(FIND "${Q4T_SKILL_TYPES}" ")q4t_types\"" skill_delimiter)
+if(NOT skill_delimiter EQUAL -1)
+  message(FATAL_ERROR "Skill type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/skill_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/skill_types_data.h" @ONLY)
 
 file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_assistant_types_v1.json"
   Q4T_ASSISTANT_TYPES)

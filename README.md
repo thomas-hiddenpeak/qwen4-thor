@@ -10,6 +10,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 文件页缓存、页池、pinned staging 和 GPU scratch 都占统一RAM；
 读取是否被已提交GPU工作掩盖取决于实际调度，不保证固定重叠比例。
 
+
 ## 能力概览
 
 [注册音色](docs/evidence/serve-voice-delivery-20261119/README.md)已进入默认：
@@ -1087,6 +1088,8 @@ MIT (项目代码)。模型权重遵循其发布方条款。
 Charlie Gordon）；保留[来源和逐文件身份](third_party/quickjs/SOURCE.json)及
 [原始许可](third_party/licenses/quickjs/LICENSE)。只在隔离worker内运行，
 不携带qjs/Node或OS模块；实现与验收见[实施计划](docs/SERVE_PROGRAMMATIC_TOOLS_2026-11-13.md)。
+
+技能包导入的独立工作进程按需使用系统 libarchive 和 LibYAML 0.2.5。项目保留 LibYAML 的公开头文件用于构建；解析器不可用时，仅本次技能包导入返回错误。[LibYAML 许可](third_party/libyaml/COPYRIGHT)
 
 Responses/Conversations的item与Realtime消息/事件/会话形状合同派生自OpenAI Node
 SDK 7.47.0类型声明，遵循Apache-2.0，保留[原始许可与来源说明](third_party/licenses/openai-node/README.md)。

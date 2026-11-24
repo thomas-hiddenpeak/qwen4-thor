@@ -22496,6 +22496,393 @@
       ],
       "additionalProperties": false
     },
+    "skill_0": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "integer"
+        },
+        "default_version": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "description": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "id": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "latest_version": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "name": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "object": {
+          "$ref": "#/$defs/skill_3"
+        }
+      },
+      "required": [
+        "created_at",
+        "default_version",
+        "description",
+        "id",
+        "latest_version",
+        "name",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "skill_1": {
+      "type": "number"
+    },
+    "skill_2": {
+      "type": "string"
+    },
+    "skill_3": {
+      "const": "skill"
+    },
+    "skill_4": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/skill_5"
+        },
+        "first_id": {
+          "$ref": "#/$defs/skill_6"
+        },
+        "has_more": {
+          "$ref": "#/$defs/skill_8"
+        },
+        "last_id": {
+          "$ref": "#/$defs/skill_6"
+        },
+        "object": {
+          "$ref": "#/$defs/skill_9"
+        }
+      },
+      "required": [
+        "data",
+        "first_id",
+        "has_more",
+        "last_id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "skill_5": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/skill_0"
+      }
+    },
+    "skill_6": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/skill_7"
+        },
+        {
+          "$ref": "#/$defs/skill_2"
+        }
+      ]
+    },
+    "skill_7": {
+      "type": "null"
+    },
+    "skill_8": {
+      "type": "boolean"
+    },
+    "skill_9": {
+      "const": "list"
+    },
+    "skill_10": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/skill_11"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 20
+        },
+        "order": {
+          "$ref": "#/$defs/skill_13"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "skill_11": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/skill_2"
+        }
+      ]
+    },
+    "skill_12": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/skill_1"
+        }
+      ]
+    },
+    "skill_13": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/skill_14"
+        },
+        {
+          "$ref": "#/$defs/skill_15"
+        }
+      ]
+    },
+    "skill_14": {
+      "const": "asc"
+    },
+    "skill_15": {
+      "const": "desc"
+    },
+    "skill_16": {
+      "type": "object",
+      "properties": {
+        "default_version": {
+          "$ref": "#/$defs/skill_2"
+        }
+      },
+      "required": [
+        "default_version"
+      ],
+      "additionalProperties": false
+    },
+    "skill_17": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/skill_8"
+        },
+        "id": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "object": {
+          "$ref": "#/$defs/skill_18"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "skill_18": {
+      "const": "skill.deleted"
+    },
+    "skill_19": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "type": "integer"
+        },
+        "description": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "id": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "name": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "object": {
+          "$ref": "#/$defs/skill_20"
+        },
+        "skill_id": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "version": {
+          "$ref": "#/$defs/skill_2"
+        }
+      },
+      "required": [
+        "created_at",
+        "description",
+        "id",
+        "name",
+        "object",
+        "skill_id",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "skill_20": {
+      "const": "skill.version"
+    },
+    "skill_21": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/skill_22"
+        },
+        "first_id": {
+          "$ref": "#/$defs/skill_6"
+        },
+        "has_more": {
+          "$ref": "#/$defs/skill_8"
+        },
+        "last_id": {
+          "$ref": "#/$defs/skill_6"
+        },
+        "object": {
+          "$ref": "#/$defs/skill_9"
+        }
+      },
+      "required": [
+        "data",
+        "first_id",
+        "has_more",
+        "last_id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "skill_22": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/skill_19"
+      }
+    },
+    "skill_23": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/skill_11"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 20
+        },
+        "order": {
+          "$ref": "#/$defs/skill_13"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "skill_24": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/skill_8"
+        },
+        "id": {
+          "$ref": "#/$defs/skill_2"
+        },
+        "object": {
+          "$ref": "#/$defs/skill_25"
+        },
+        "version": {
+          "$ref": "#/$defs/skill_2"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "skill_25": {
+      "const": "skill.version.deleted"
+    },
+    "skill_resource": {
+      "$ref": "#/$defs/skill_0"
+    },
+    "skill_list": {
+      "$ref": "#/$defs/skill_4"
+    },
+    "skill_query": {
+      "$ref": "#/$defs/skill_10"
+    },
+    "skill_update": {
+      "$ref": "#/$defs/skill_16"
+    },
+    "skill_deleted": {
+      "$ref": "#/$defs/skill_17"
+    },
+    "skill_version_resource": {
+      "$ref": "#/$defs/skill_19"
+    },
+    "skill_version_list": {
+      "$ref": "#/$defs/skill_21"
+    },
+    "skill_version_query": {
+      "$ref": "#/$defs/skill_23"
+    },
+    "skill_version_deleted": {
+      "$ref": "#/$defs/skill_24"
+    },
+    "skill_upload": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "oneOf": [
+            {
+              "type": "string",
+              "contentEncoding": "base64",
+              "contentMediaType": "application/zip"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "contentEncoding": "base64",
+                "contentMediaType": "application/zip"
+              },
+              "minItems": 1,
+              "maxItems": 1
+            }
+          ]
+        }
+      },
+      "required": [
+        "files"
+      ],
+      "additionalProperties": false
+    },
+    "skill_version_upload": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "oneOf": [
+            {
+              "type": "string",
+              "contentEncoding": "base64",
+              "contentMediaType": "application/zip"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "contentEncoding": "base64",
+                "contentMediaType": "application/zip"
+              },
+              "minItems": 1,
+              "maxItems": 1
+            }
+          ]
+        },
+        "default": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "files"
+      ],
+      "additionalProperties": false
+    },
     "container_0": {
       "type": "object",
       "properties": {

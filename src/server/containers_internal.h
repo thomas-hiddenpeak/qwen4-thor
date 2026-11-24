@@ -29,6 +29,13 @@ ObjectReply PrepareFiles(ObjectStore& objects, const StateAccess& access,
                          const io::Json& ids, Stored* state,
                          std::vector<BinaryRead>* pins,
                          std::vector<ObjectRequest>* writes);
+ObjectReply PrepareSkills(ObjectStore& objects, const StateAccess& access,
+                          const io::Json& skills, Stored* state,
+                          std::vector<BinaryRead>* pins,
+                          std::vector<BinaryStage>* stages,
+                          std::vector<ObjectRequest>* writes);
+void FinishSkillStages(ObjectStore& objects, const StateAccess& access,
+                       std::vector<BinaryStage>* stages);
 void CloseFiles(ObjectStore& objects, const StateAccess& access,
                 std::vector<BinaryRead>* pins);
 

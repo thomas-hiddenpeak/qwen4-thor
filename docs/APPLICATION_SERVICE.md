@@ -6,7 +6,8 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 |---|---|---|
 | Chat、Responses、Agents | 项目资料查询、流式工具事件、工具结果回填、子 Agent 回合及配额恢复 | API Key 区分客户。持久会话跨进程恢复；具体模型、工具及发行组合见[托管业务回执](evidence/serve-agent-workspaces-20261124/subagent-delivery.json)。 |
 | Assistants v2 | 注册及更新 Assistant，维护 Thread 和 Message，流式创建 Run，按工具调用 ID 回填，读取步骤、取消及恢复待回填的 Run。附件检索已读取真实发布记录。 | 使用客户 API Key 和 `OpenAI-Beta: assistants=v2`。仅可访问本客户的数据。工具回填及崩溃接手见[发行回执](evidence/serve-assistants-20261124/delivery.json)，输入预算与代码执行继续跟踪。 |
-| Containers 与容器文件（候选） | 官方 SDK 通过原生 TLS 创建、列举、读取和删除容器，按文件 ID 引入资料，流式上传、下载和删除文件。复制的项目发布记录在源 Files 删除后仍可读取。 | 客户 API Key 隔离数据，过期工作区保留只读元数据。托管 Python 执行、技能挂载以及执行时的内存和网络策略仍待实现。默认 rev462 的接入能力以发行回执为准。[容器业务验收](evidence/serve-containers-20261124/business.json) |
+| Skills 与不可变版本（候选） | 官方 SDK 经原生 TLS 上传目录或 ZIP、分页、指定默认版本、读取版本、下载及删除。按版本复制到容器的内容在源技能删除和存储重开后仍可读取。 | 文件数和展开大小受限，YAML 和 ZIP 在独立工作进程处理。容器内执行托管工具及默认发行仍待验收。 [验收回执](evidence/serve-skills-20261124/business.json) |
+| Containers 与容器文件（候选） | 官方 SDK 通过原生 TLS 创建、列举、读取和删除容器，按文件 ID 引入资料，流式上传、下载和删除文件。复制的项目发布记录在源 Files 删除后仍可读取。 | 客户 API Key 隔离数据，过期工作区保留只读元数据。工作区已支持绑定固定技能内容。托管 Python 执行和执行时的内存及网络策略待验。默认 rev462 的接入能力以发行回执为准。[容器业务验收](evidence/serve-containers-20261124/business.json) |
 | 旧版 Realtime 对话与转写 | Node SDK 7.47.0 在原生 TLS 上完成中文转写、文本增量及终态；两种容量均已验证 | SDK WebSocket 助手使用 WSS，部署时为其配置原生 TLS 或可选 TLS 网关。转写须通过支持 transcription intent 的连接助手并显式传入 beta 头。[SDK 回执](evidence/serve-realtime-legacy-sessions-20261124/beta-resources.json) |
 | 上传语音翻译 | 中文真实录音译为英文，JSON、纯文本、详尽 JSON、SRT 和 VTT 均已通过两种容量短验 | 配置原生 ASR；字幕还需对齐模型。`whisper-1` 是请求别名，实际后端为 Qwen ASR 和本地 Chat。[双配置回执](evidence/serve-audio-translation-20261124/profiles.json) |
 

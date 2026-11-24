@@ -386,6 +386,9 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
         if (comma == remaining.npos) break;
         remaining.remove_prefix(comma + 1);
       }
+    } else if (name == "accept") {
+      if (!headers->accept.empty()) headers->accept += ",";
+      headers->accept += value;
     } else if (name == "content-type") {
       if (seen_type) {
         headers->error_code = "duplicate_content_type";
@@ -453,7 +456,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      *path == "/v1/embeddings" || *path == "/v1/audio/speech" ||
                      IsResponsesTarget(*path) || IsConversationTarget(*path) ||
                      IsAssistantsV2Target(*path) || IsManagedAgentTarget(*path) || IsPromptTarget(*path) ||
-                     IsContainerTarget(*path) || IsUploadTarget(*path)
+                     IsSkillTarget(*path) || IsContainerTarget(*path) || IsUploadTarget(*path)
                  ? kChatBodyBytes
                  : 4096);
   const size_t body_limit = std::min(route_limit, headers->body_limit);

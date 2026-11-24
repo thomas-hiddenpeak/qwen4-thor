@@ -1,0 +1,192 @@
+{
+  "status": "ACCEPT_SKILLS_HTTP_AND_CONTAINER_WORKSPACE_SNAPSHOTS",
+  "public_default": 462,
+  "default_contains_change": false,
+  "engine": "b4b7c740fff78f71907a4358670cbf229ed5946dc0659d00137920bffa04c5dc",
+  "ingress": "8dcbff0906e72c0109a9b36febe529e92a9708d2c2b5cb8d0c934bc27f453572",
+  "sdk": "7.47.0",
+  "source_release": 462,
+  "package_source_sha256": "70f48ee0245e06b75454016976c695b73268410c58b736916e0ef29bd22e2040",
+  "independent_chat": "42",
+  "coverage": {
+    "methods": [
+      "DELETE /skills/{skill_id}",
+      "DELETE /skills/{skill_id}/versions/{version}",
+      "GET /skills",
+      "GET /skills/{skill_id}",
+      "GET /skills/{skill_id}/content",
+      "GET /skills/{skill_id}/versions",
+      "GET /skills/{skill_id}/versions/{version}",
+      "GET /skills/{skill_id}/versions/{version}/content",
+      "POST /skills",
+      "POST /skills/{skill_id}",
+      "POST /skills/{skill_id}/versions"
+    ],
+    "json_responses": 11,
+    "negative_statuses": [
+      400,
+      400,
+      404,
+      404,
+      404,
+      404,
+      404,
+      406,
+      404,
+      404
+    ],
+    "large_zip": {
+      "bytes": 1059281,
+      "sha256": "f0c0725c270276125c713dbb86df5d81d181a8ac9534d9174962aae613c98f6d"
+    },
+    "base64_bytes": 1412376,
+    "release_revision": 462,
+    "receipt_sha256": "70f48ee0245e06b75454016976c695b73268410c58b736916e0ef29bd22e2040",
+    "declared_and_official_match": true
+  },
+  "cpu": {
+    "required": 15,
+    "skips": 0,
+    "schema_tests": 2,
+    "optional_nginx_cases": 1,
+    "reviewed_source_anchors": 1282,
+    "mutation_checks": 38
+  },
+  "archive_worker": "isolated YAML and ZIP; UTF-8 filenames, checksums, bounded expansion and exact file bytes",
+  "native_mount": "original default, latest, and inline package contents read after source deletion and object worker restart; earlier sealed workspace migrates once and retains its domain secrets",
+  "scope": {
+    "required": 231,
+    "declared_with_expected_success": 178,
+    "missing_declarations": 53,
+    "declared_official_query_names": 143
+  },
+  "gpu": {
+    "starts": 1,
+    "seconds": 34.521,
+    "cleanup": true
+  },
+  "previous_failures": [
+    "Unicode ZIP round trip failed in C locale",
+    "inline admission rejected an internal file budget above 4096",
+    "real TLS first download returned 503 because the core binary writer rejected application/zip; base64 output chunks also required bounded splitting"
+  ],
+  "pending": [
+    "materialize the checked workspace files inside the hosted executor and complete model tool use",
+    "current primary/light profile handoff, recovery and rollback publication",
+    "remaining required methods and master ledger"
+  ],
+  "predecessor_merge": {
+    "merge": "14f921256afd7e7a0523c4b572264c6bc1c18db6",
+    "head": "548e6c5e234734d4acc28a16c7066aac6159f786",
+    "checks": {
+      "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45330131946",
+      "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45330160553"
+    }
+  },
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-02/plan.json",
+      "sha256": "79a5ec9c66458fa3d89cd23d1cac3cba828624a24f2a19f6e07d4ed5e29a9663"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-02/result.json",
+      "sha256": "b376bb5407f4e81b5091f1ab32a295ba433cc1b1729ae48bf24fe9b11cbf641b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-02/create/sdk-result.json",
+      "sha256": "357ef5ca95a3d86d6bc6a13cbef3a05219430cc2e5bc5cb91a64aba3edba98f0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-02/create/run-wire.json",
+      "sha256": "bdfb0c2c3471e4f7fe36b02da14ee63757e2f0eb95c8b2af8e2eb5668f918744"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-02/create/directory.zip",
+      "sha256": "0a172c40963aee7b4d4552ea831b33e1398fd4291126dd91c41f0646040c86aa"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-02/version-two.zip",
+      "sha256": "f0c0725c270276125c713dbb86df5d81d181a8ac9534d9174962aae613c98f6d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-lease-02/exit.json",
+      "sha256": "6a1c2967c6dfd5eade311dacc6e28e7ae9b291bea138cbd945fec563ba797441"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-wire-02.json",
+      "sha256": "efa3af8f93c83b2703f2ba77e414eb604dcb4667f57ab94fa6b06183fb0749af"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-inventory-final.json",
+      "sha256": "b749dd5a0165fdc35210da6ef2ed5dd450604009372f08f65055d48cebe0e812"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-methods-final.json",
+      "sha256": "93f7e53ea15334b947a77ffe0a1773b703b1fc92eb0b1e681bc3a1e5466f345e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-queries-final.json",
+      "sha256": "6b4236349f2785e8d8097fe11b794fae5e3de249d4bd0c6f60fd7c0bc684f74e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-required-04.txt",
+      "sha256": "524096feb2e5543586eb819b9b42d82f21fb2685745eca254cdf75dedb0ddbbe"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-cpu-final.log",
+      "sha256": "74df91365db69440ee722255341728d74cf9d5d49551bf60c8ca72f0005c517a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-contract-final.log",
+      "sha256": "ff0d9d76afc3dbb79c6b38117df28de76fbde4ee2cb805be51be5cfb3e97579d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-nginx-03.log",
+      "sha256": "6c25edee3b1a0ace733844070ab2d45a9fead4dc7745f861b1e34952e25a2857"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-native-01.log",
+      "sha256": "159750e82084410ec93dfc67d8ec2a65ca6509e136afb8bb615af554483e4e2a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-native-03.log",
+      "sha256": "4571b963cb2e4676e6054f13d4686c5d40da47e3adeac941bff5b376f5110a15"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-01/plan.json",
+      "sha256": "0a802cd5e6bb9360c501f93b6b90d4ccc836ccdc4789b429618a81b63902c6f7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-01/result.json",
+      "sha256": "df06e46e4d2ee5e40d3d748b7ac74f907616a69222277802206af35791f8c73f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-01/create/sdk.stderr",
+      "sha256": "7b390f367881456c764b36685dbd0fe6f4e704bc33b7632e01e9b6e7119f72b1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-01/actor.mjs",
+      "sha256": "5029223300d5b456f26cfa28efce67158ae1d9177b60d2040be8c16806fa22be"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-business-01/driver.py",
+      "sha256": "3f82a2d4355464a3df6fbf14f8214abbca1e73126ff2d9e14ac9a8af6f44ba84"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill-lease-01/exit.json",
+      "sha256": "f6adbfc71d1164f3635959ab5e45dbabf48041d0f94573745ea1a5bfd718f0ad"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill_business.py",
+      "sha256": "b57afb160e7dba04a1ab3afd95f29919e206c24f391f1e2f227024cbf4eaf3f6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skill_wire_check.py",
+      "sha256": "55bbd180e4299dc5fb17b868528fa6bc87efe167622826b6be8e56ae3222c545"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/pr86-merged.json",
+      "sha256": "4b5de3c2adf11da1baddd96806c9b3e337b27ea067fcac7721936a1bbf31c8c0"
+    }
+  ]
+}

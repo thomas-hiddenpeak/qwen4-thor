@@ -479,6 +479,17 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
   } else if (kind == "live_fork_state" &&
              data.GetString("format") == "q4t.live_fork.v1") {
     inspector.value.collect_when_unreferenced = true;
+  } else if (kind == "skill" && data.GetString("format") == "q4t.skill.v1") {
+    const auto* versions = data.GetArray("versions");
+    if (!versions)
+      inspector.value.uncertain = true;
+    else
+      for (const auto& version : versions->array)
+        inspector.RequiredId(version, "id", "skillver_");
+  } else if (kind == "skill_version" &&
+             data.GetString("format") == "q4t.skill_version.v1") {
+    inspector.Blob(data);
+    inspector.value.collect_when_unreferenced = true;
   } else if (kind == "container" &&
              data.GetString("format") == "q4t.container.v1") {
     // Public metadata survives expiration. It must not retain workspace bytes.
@@ -502,6 +513,14 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       else
         for (const auto& file : files->array)
           inspector.RequiredId(file, "id", "cfile_");
+      if (const auto* mounts = data.Find("mounted_skills")) {
+        if (!mounts->IsArray()) inspector.value.uncertain = true;
+        else for (const auto& mount : mounts->array)
+          inspector.RequiredId(mount, "id", "mount_");
+      }
+    } else if (format == "q4t.container_skill.v1") {
+      inspector.Blob(data);
+      inspector.value.collect_when_unreferenced = true;
     } else if (format == "q4t.environment.creation.v1") {
       inspector.RequiredId(data, "environment_id", "environment_");
       const auto digest = data.GetString("request_sha256");

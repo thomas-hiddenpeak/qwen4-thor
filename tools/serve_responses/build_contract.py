@@ -122,6 +122,19 @@ def schema(graph):
     definitions['vault_update'] = obj(dict(name=nullable(vault_name), metadata=vault_meta))
     definitions['vault_deleted'] = obj(dict(id=dict(type='string'), object=dict(const='vault.deleted'),
                                            deleted=dict(const=True)), ['id', 'object', 'deleted'])
+    skills = json.loads((ROOT/'src/server/contracts/openai_skill_types_v1.json').read_text())
+    assert skills['profile'] == 'q4t-openai-skill-types-v1'
+    definitions.update(graph_definitions(skills, 'skill_'))
+    for name in ('query', 'version_query'):
+        definitions['skill_' + str(skills['roots'][name])]['properties']['limit'] = dict(page_limit, minimum=0)
+    for name in ('resource', 'version_resource'):
+        definitions['skill_' + str(skills['roots'][name])]['properties']['created_at'] = dict(type='integer')
+    encoded = dict(type='string', contentEncoding='base64', contentMediaType='application/zip')
+    for name in ('skill_upload', 'skill_version_upload'):
+        fields = {'files': {'oneOf':[encoded, dict(type='array', items=encoded, minItems=1, maxItems=1)]}}
+        if name == 'skill_version_upload':
+            fields['default'] = dict(type='boolean')
+        definitions[name] = obj(fields, ['files'])
     containers = json.loads((ROOT/'src/server/contracts/openai_container_types_v1.json').read_text())
     assert containers['profile'] == 'q4t-openai-container-types-v1'
     definitions.update(graph_definitions(containers, 'container_'))
@@ -541,6 +554,17 @@ def add_openapi(paths, response, error):
         return result
 
     endpoints = [
+        ('/v1/skills', 'get', None, 'skill_list', 'skill_query'),
+        ('/v1/skills', 'post', 'skill_upload', 'skill_resource', None),
+        ('/v1/skills/{skill_id}', 'get', None, 'skill_resource', None),
+        ('/v1/skills/{skill_id}', 'post', 'skill_update', 'skill_resource', None),
+        ('/v1/skills/{skill_id}', 'delete', None, 'skill_deleted', None),
+        ('/v1/skills/{skill_id}/content', 'get', None, None, None),
+        ('/v1/skills/{skill_id}/versions', 'post', 'skill_version_upload', 'skill_version_resource', None),
+        ('/v1/skills/{skill_id}/versions', 'get', None, 'skill_version_list', 'skill_version_query'),
+        ('/v1/skills/{skill_id}/versions/{version}', 'get', None, 'skill_version_resource', None),
+        ('/v1/skills/{skill_id}/versions/{version}', 'delete', None, 'skill_version_deleted', None),
+        ('/v1/skills/{skill_id}/versions/{version}/content', 'get', None, None, None),
         ('/v1/containers','get',None,'container_list','container_query'),
         ('/v1/containers','post','container_create','container_created',None),
         ('/v1/containers/{container_id}','get',None,'container_resource',None),
@@ -666,7 +690,12 @@ def add_openapi(paths, response, error):
             query_contract = query + ' with optional beta' if query else 'optional beta'
         event_stream = path.endswith('/events') and method == 'get'
         accepted = body == 'agent_session_event_batch'
-        if path.startswith('/v1/containers/') and path.endswith('/content'):
+        if path.startswith('/v1/skills/') and path.endswith('/content'):
+            success = dict(description='Immutable ZIP bundle for the selected skill version', content={
+                'application/zip': dict(schema=dict(type='string', format='binary')),
+                'application/json': dict(schema=dict(type='string', contentEncoding='base64'))})
+            parameters.append(dict(name='Accept', **{'in':'header'}, required=False, schema=dict(type='string')))
+        elif path.startswith('/v1/containers/') and path.endswith('/content'):
             success = dict(description='Immutable container file bytes', content={
                 'application/octet-stream': dict(schema=dict(type='string',format='binary'))})
         elif path.endswith('/artifacts/{artifact_id}/content'):
@@ -715,6 +744,12 @@ def add_openapi(paths, response, error):
             operation['requestBody'] = dict(required=not optional,
                 content={'application/json': dict(schema=nullable(external(body))
                     if optional else external(body))})
+        if body in ('skill_upload','skill_version_upload'):
+            binary = dict(type='string', format='binary')
+            fields = {'files': {'oneOf':[binary, dict(type='array', minItems=1, maxItems=500, items=binary)]}}
+            if body == 'skill_version_upload':
+                fields['default'] = dict(type='boolean')
+            operation['requestBody']['content']['multipart/form-data'] = dict(schema=obj(fields, ['files']))
         if body == 'container_file_create':
             operation['requestBody']['content']['multipart/form-data'] = dict(schema={
                 'type':'object','properties':{'file_id':{'type':'string'},'file':{'type':'string','format':'binary'}},

@@ -1,0 +1,343 @@
+{
+  "profile": "q4t-openai-skill-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "resource": 0,
+    "list": 4,
+    "query": 10,
+    "update": 16,
+    "deleted": 17,
+    "version_resource": 19,
+    "version_list": 21,
+    "version_query": 23,
+    "version_deleted": 24
+  },
+  "nodes": [
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 1
+        },
+        {
+          "name": "default_version",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "description",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "latest_version",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "literal",
+      "value": "skill"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 5
+        },
+        {
+          "name": "first_id",
+          "optional": false,
+          "type": 6
+        },
+        {
+          "name": "has_more",
+          "optional": false,
+          "type": 8
+        },
+        {
+          "name": "last_id",
+          "optional": false,
+          "type": 6
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 9
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 0
+    },
+    {
+      "kind": "union",
+      "variants": [
+        7,
+        2
+      ]
+    },
+    {
+      "kind": "null"
+    },
+    {
+      "kind": "boolean"
+    },
+    {
+      "kind": "literal",
+      "value": "list"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 11
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        1
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        14,
+        15
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "asc"
+    },
+    {
+      "kind": "literal",
+      "value": "desc"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "default_version",
+          "optional": false,
+          "type": 2
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 8
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 18
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "skill.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 1
+        },
+        {
+          "name": "description",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "version",
+          "optional": false,
+          "type": 2
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "skill.version"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 22
+        },
+        {
+          "name": "first_id",
+          "optional": false,
+          "type": 6
+        },
+        {
+          "name": "has_more",
+          "optional": false,
+          "type": 8
+        },
+        {
+          "name": "last_id",
+          "optional": false,
+          "type": 6
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 9
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 19
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 11
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 12
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 13
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 8
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 2
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 25
+        },
+        {
+          "name": "version",
+          "optional": false,
+          "type": 2
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "skill.version.deleted"
+    }
+  ],
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/skills/skills.ts": "fab398edc9136c3360874ed00d1d3300b19039ceae37a8205584593921d16f3f",
+    "src/resources/skills/versions/versions.ts": "d979ceee6ad776b592e3b2ab6c82c5c100580e0c42c20f7a98c7a87288c402ef"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}

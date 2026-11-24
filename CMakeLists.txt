@@ -502,6 +502,11 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/responses_mcp_execution.cpp
   src/server/file_document.cpp
   src/server/file_document_worker.cpp
+  src/server/skill_manifest.cpp
+  src/server/skill_bundle.cpp
+  src/server/skill_worker.cpp
+  src/server/skills.cpp
+  src/server/skill_upload.cpp
   src/server/file_document_sandbox.cpp
   src/server/file_package.cpp
   src/server/file_package_runtime.cpp
@@ -548,6 +553,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/assistant_registry.cpp
   src/server/containers.cpp
   src/server/container_files.cpp
+  src/server/container_skills.cpp
   src/server/assistant_threads.cpp
   src/server/assistant_run_settings.cpp
   src/server/assistant_run_view.cpp

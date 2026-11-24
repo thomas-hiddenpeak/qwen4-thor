@@ -321,6 +321,20 @@ def current_surface(root):
         for method in methods:
             routes.append((path,method))
             native_routes.append((method,path,'false' if method=='POST' or path.endswith('/content') else 'true'))
+    if not all(value in source for source,value in (
+            (dispatch,'IsSkillTarget(path)'), (file_http,'HandleSkills(objects_'),
+            (file_http,'PrepareSkill(content_type, stream)'), (native,'server::SkillMethodAllowed(method, path)'),
+            (native,'server::IsSkillObservation(method, path)'))):
+        raise ValueError('review native skill routing')
+    for path, methods in (('/v1/skills', ('GET','POST')),
+                          ('/v1/skills/{skill_id}', ('GET','POST','DELETE')),
+                          ('/v1/skills/{skill_id}/content', ('GET',)),
+                          ('/v1/skills/{skill_id}/versions', ('GET','POST')),
+                          ('/v1/skills/{skill_id}/versions/{version}', ('GET','DELETE')),
+                          ('/v1/skills/{skill_id}/versions/{version}/content', ('GET',))):
+        for method in methods:
+            routes.append((path,method))
+            native_routes.append((method,path,'false' if method=='POST' or path.endswith('/content') else 'true'))
     if 'HandleAssistantThreads(*objects_' not in dispatch:
         raise ValueError('review assistant thread dispatch')
     if 'ServeAssistantRun(fd, *objects_' not in dispatch:
@@ -575,7 +589,7 @@ def current_surface(root):
                        root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake",
-                       root / "cmake/container_types.h.in",
+                       root / "cmake/container_types.h.in", root / "cmake/skill_types.h.in",
                        root / "tools/serve_responses/generate_item_types.mjs",
                        root / "cmake/RustRegex.cmake",
                        root / "cmake/regex-syntax-0.8.8.sha256",

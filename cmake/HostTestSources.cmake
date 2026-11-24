@@ -358,6 +358,11 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_responses_mcp_binding_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/skill_manifest.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/skill_bundle.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/skill_worker.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/skills.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/skill_upload.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_document_sandbox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_package.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_package_runtime.cpp
@@ -390,6 +395,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_nested_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_source_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_legacy_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_skill_worker_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_office_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_rtf_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_package_test.cpp
@@ -438,6 +444,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_registry.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/containers.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/container_files.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/container_skills.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_threads.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_run_settings.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/assistant_run_view.cpp

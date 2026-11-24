@@ -41,6 +41,7 @@
 #include "q4t/server/mcp_policy.h"
 #include "q4t/server/web_execution.h"
 #include "q4t/server/file_document_worker.h"
+#include "q4t/server/skill_worker.h"
 #include "q4t/server/program_worker.h"
 #include "q4t/server/file_pdf.h"
 #include "q4t/server/file_webp.h"
@@ -982,6 +983,8 @@ int main(int argc, char** argv) {
   const int document_worker =
       q4t::server::MaybeRunFileDocumentWorker(argc, argv);
   if (document_worker >= 0) return document_worker;
+  const int skill_worker = q4t::server::MaybeRunSkillWorker(argc, argv);
+  if (skill_worker >= 0) return skill_worker;
   const int webp_worker = q4t::server::MaybeRunFileWebpWorker(argc, argv);
   if (webp_worker >= 0) return webp_worker;
   const int video_worker = q4t::server::MaybeRunFileVideoWorker(argc, argv);

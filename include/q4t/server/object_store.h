@@ -42,7 +42,9 @@ enum class ObjectKind {
   kEnvironment,
   kThread,
   kContainer,
-  kContainerFile
+  kContainerFile,
+  kSkill,
+  kSkillVersion
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

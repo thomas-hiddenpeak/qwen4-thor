@@ -1,9 +1,13 @@
 #include "q4t/server/files_http.h"
 
 #include "containers_internal.h"
+#include "q4t/io/base64.h"
+#include "q4t/server/http_framing.h"
+#include <charconv>
 
 #include "object_protocol.h"
 #include "q4t/server/containers.h"
+#include "q4t/server/skills.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/http_response.h"
@@ -14,6 +18,57 @@ namespace {
 using namespace object_detail;
 using namespace std::chrono_literals;
 using Clock = std::chrono::steady_clock;
+ObjectReply SkillContentJson(std::string_view accept, bool* json) {
+  if (accept.empty()) return {};
+  struct Score {
+    int specificity = -1;
+    double quality = 0;
+  };
+  Score zip, text;
+  while (!accept.empty()) {
+    const auto comma = accept.find(',');
+    auto item = http::Trim(accept.substr(0, comma));
+    const auto semi = item.find(';');
+    auto type = http::Lower(http::Trim(item.substr(0, semi)));
+    double q = 1;
+    for (auto delimiter = semi; delimiter != item.npos;
+         delimiter = item.find(';')) {
+      item.remove_prefix(delimiter + 1);
+      auto param = http::Lower(http::Trim(item.substr(0, item.find(';'))));
+      if (param.starts_with("q=")) {
+        std::string_view value(param);
+        value.remove_prefix(2);
+        auto result = std::from_chars(value.data(), value.data() + value.size(),
+                                      q, std::chars_format::fixed);
+        if (result.ec != std::errc{} ||
+            result.ptr != value.data() + value.size() || !(q >= 0 && q <= 1))
+          return Error(400, "invalid_request", "Invalid Accept quality");
+      }
+    }
+    const auto offer = [&](Score* score, int specificity) {
+      if (specificity > score->specificity ||
+          (specificity == score->specificity && q > score->quality))
+        *score = {specificity, q};
+    };
+    if (type == "application/json") offer(&text, 2);
+    if (type == "application/zip" || type == "application/binary" ||
+        type == "application/octet-stream")
+      offer(&zip, 2);
+    if (type == "application/*" || type == "*/*") {
+      const int rank = type == "*/*" ? 0 : 1;
+      offer(&text, rank);
+      offer(&zip, rank);
+    }
+    if (comma == accept.npos) break;
+    accept.remove_prefix(comma + 1);
+  }
+  if (zip.quality == 0 && text.quality == 0)
+    return Error(406, "not_acceptable",
+                 "Expected a ZIP or JSON representation");
+  *json = text.quality > zip.quality ||
+          (text.quality == zip.quality && text.specificity > zip.specificity);
+  return {};
+}
 void Reply(int fd, const ObjectReply& reply, const BinaryAccess& access) {
   if (reply.ok())
     detail::SendSimple(fd, 200, "OK", OutputJson(reply.value),
@@ -75,7 +130,19 @@ FileHttpRequest::~FileHttpRequest() {
 ObjectReply FileHttpRequest::Prepare(std::string_view method,
                                      std::string_view target,
                                      std::string_view content_type,
-                                     HttpBodyStream* stream) {
+                                     HttpBodyStream* stream,
+                                     std::string_view accept) {
+  if (IsSkillTarget(target)) {
+    const auto route = ParseSkillRoute(target);
+    if (method == "GET" && (route.kind == SkillRouteKind::kContent ||
+                            route.kind == SkillRouteKind::kVersionContent)) {
+      auto negotiated = SkillContentJson(accept, &skill_json_content_);
+      if (!negotiated.ok()) return negotiated;
+    }
+    skill_target_ = target;
+    method_ = method;
+    return PrepareSkill(content_type, stream);
+  }
   if (IsContainerTarget(target)) {
     container_target_ = target;
     method_ = method;
@@ -145,6 +212,104 @@ void FileHttpRequest::PrepareFileStream(HttpBodyStream* stream) {
     }
     return result.ok();
   };
+}
+
+ObjectReply FileHttpRequest::PrepareSkill(std::string_view type,
+                                          HttpBodyStream* stream) {
+  using Kind = SkillRouteKind;
+  const auto route = ParseSkillRoute(skill_target_);
+  if (!SkillMethodAllowed(method_, skill_target_))
+    return Error(405, "method_not_allowed", "Skill method not allowed");
+  const bool creation = IsSkillCreation(method_, skill_target_);
+  const bool version = route.kind == Kind::kVersions;
+  if (creation && skill_target_.find('?') != skill_target_.npos)
+    return Error(400, "invalid_request", "Unexpected skill upload query");
+  if (creation && version) {
+    auto parent = HandleSkills(
+        objects_, {access_.scope, access_.deadline, access_.cancelled}, "GET",
+        "/v1/skills/" + std::string(route.skill), "");
+    if (!parent.ok()) return parent;
+  }
+  if (creation && IsMultipartForm(type)) {
+    skill_upload_ = std::make_unique<SkillUpload>(type, version);
+    if (!skill_upload_->Result().ok()) return skill_upload_->Result();
+    stream->max_bytes = wire_limit_ = kSkillWireBytes;
+    stream->reservation_bytes = kSkillWireBytes;
+    stream->max_metadata_bytes = 16ULL << 20;
+    stream->consume = [this, stream](auto bytes, auto) {
+      auto reply = skill_upload_->Feed(bytes);
+      if (!reply.ok()) {
+        stream->failure_status = reply.http_status;
+        stream->failure_code = reply.ClientCode();
+      }
+      return reply.ok();
+    };
+  } else if (method_ == "POST") {
+    std::string media(type);
+    std::ranges::transform(media, media.begin(), [](unsigned char c) {
+      return static_cast<char>(c >= 'A' && c <= 'Z' ? c + ('a' - 'A') : c);
+    });
+    const auto end = media.find(';');
+    auto main = std::string_view(media).substr(0, end);
+    main = main.substr(0, main.find_last_not_of(" \t") + 1);
+    auto option = end == media.npos ? std::string_view()
+                                    : std::string_view(media).substr(end + 1);
+    option.remove_prefix(
+        std::min(option.size(), option.find_first_not_of(" \t")));
+    if (main != "application/json" ||
+        (!option.empty() && option != "charset=utf-8" &&
+         option != "charset=\"utf-8\""))
+      return Error(415, "unsupported_media_type",
+                   "Expected UTF-8 JSON or skill files");
+    stream->max_bytes = wire_limit_ = creation ? kChatBodyBytes : 1ULL << 20;
+    stream->reservation_bytes = creation ? kSkillWireBytes : wire_limit_;
+    stream->consume = [this](auto bytes, auto) {
+      json_body_.append(bytes);
+      return true;
+    };
+  } else {
+    stream->max_bytes = wire_limit_ = 1;
+    stream->reservation_bytes =
+        (route.kind == Kind::kContent || route.kind == Kind::kVersionContent)
+            ? kFileWorkingBytes
+            : kFileListWorkingBytes;
+    stream->failure_status = 400;
+    stream->failure_code = "unexpected_body";
+    stream->consume = [](auto, auto) { return false; };
+  }
+  return {};
+}
+
+void FileHttpRequest::ServeSkill(int fd) {
+  const StateAccess access{access_.scope, access_.deadline, access_.cancelled};
+  if (IsSkillCreation(method_, skill_target_)) {
+    SkillPackage input, package;
+    bool make_default = false;
+    auto parsed = skill_upload_
+                      ? skill_upload_->Finish(&input, &make_default)
+                      : DecodeSkillJson(json_body_,
+                                        ParseSkillRoute(skill_target_).kind ==
+                                            SkillRouteKind::kVersions,
+                                        access_, &input, &make_default);
+    std::string().swap(json_body_);
+    if (parsed.ok())
+      parsed = ProcessSkillPackage(std::move(input), false, access_, &package);
+    if (parsed.ok())
+      parsed = HandleSkills(objects_, access, method_, skill_target_, "",
+                            &package, make_default);
+    Reply(fd, parsed, access_);
+    return;
+  }
+  BinaryRead pin;
+  auto result = HandleSkills(objects_, access, method_, skill_target_,
+                             json_body_, nullptr, false, &pin);
+  if (result.ok() && !pin.id.empty()) {
+    BinaryStore binary(objects_);
+    SendPinnedBinary(
+        fd, binary, access_, pin,
+        skill_json_content_ ? "application/json" : "application/zip");
+  } else
+    Reply(fd, result, access_);
 }
 
 ObjectReply FileHttpRequest::PrepareContainer(std::string_view content_type,
@@ -233,6 +398,7 @@ ObjectReply FileHttpRequest::PrepareContainer(std::string_view content_type,
   return {};
 }
 void FileHttpRequest::Serve(int fd) {
+  if (!skill_target_.empty()) { ServeSkill(fd); return; }
   if (!upload_action_.empty()) {
     ServeUpload(fd);
     return;
@@ -389,7 +555,7 @@ void FileHttpRequest::Content(int fd) {
   SendPinnedBinary(fd, binary, access_, read);
 }
 void SendPinnedBinary(int fd, BinaryStore& binary, const BinaryAccess& owner,
-                      BinaryRead& read) {
+                      BinaryRead& read, std::string_view mime_type) {
   ScopeExit cleanup([&] {
     try {
       auto access = owner;
@@ -409,20 +575,47 @@ void SendPinnedBinary(int fd, BinaryStore& binary, const BinaryAccess& owner,
     }
   }
   size_t index = 0;
-  detail::SendBinaryResponse(
-      fd, read.manifest.bytes,
-      [&](std::string* output) {
-        if (index++ == 0) {
-          *output = std::move(first);
-          return true;
-        }
-        auto checked = binary.Read(owner, read, index - 1, output);
-        if (!checked.ok())
-          if (auto* context = detail::HttpResponseContext::Current(fd))
-            context->ObserveError(checked.http_status, checked.ClientMessage(),
-                                  checked.ClientCode());
-        return checked.ok();
-      },
-      {owner.deadline});
+  const bool encode_json = mime_type == "application/json";
+  const auto length = encode_json ? 2 + ((read.manifest.bytes + 2) / 3) * 4
+                                  : read.manifest.bytes;
+  const auto fetch = [&](std::string* bytes) {
+    if (index == 0) {
+      *bytes = std::move(first);
+    } else {
+      auto checked = binary.Read(owner, read, index, bytes);
+      if (!checked.ok()) {
+        if (auto* context = detail::HttpResponseContext::Current(fd))
+          context->ObserveError(checked.http_status, checked.ClientMessage(), checked.ClientCode());
+        return false;
+      }
+    }
+    ++index;
+    return true;
+  };
+  std::string remainder, encoded;
+  size_t offset = 0;
+  detail::SendBinaryResponse(fd, length, [&](std::string* output) {
+    if (!encode_json) return fetch(output);
+    if (read.manifest.chunks.empty()) {
+      *output = "\"\"";
+      return true;
+    }
+    while (offset == encoded.size()) {
+      std::string bytes;
+      if (index >= read.manifest.chunks.size() || !fetch(&bytes)) return false;
+      bytes.insert(0, remainder);
+      const bool last = index == read.manifest.chunks.size();
+      const auto complete = last ? bytes.size() : bytes.size() / 3 * 3;
+      remainder = bytes.substr(complete);
+      if (!io::EncodeBase64(std::string_view(bytes).substr(0, complete),
+                            2 * kBinaryChunkBytes, &encoded)) return false;
+      if (index == 1) encoded.insert(0, 1, '"');
+      if (last) encoded.push_back('"');
+      offset = 0;
+    }
+    output->assign(encoded, offset, kBinaryChunkBytes);
+    offset += output->size();
+    return true;
+  }, {owner.deadline}, mime_type);
 }
 }  // namespace q4t::server
