@@ -1,0 +1,162 @@
+{
+  "status": "ACCEPT_ISSUED_CHATKIT_AND_RECOVERY",
+  "prior_revision": 476,
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 478,
+    "version_revision": 168,
+    "profile_revision": 58,
+    "previous_profile_revision": 57,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "9b0b0c4d5550aa599bdd02e8f5f5b038bc9298331d32427fee6195651c40b75f",
+    "fallback": "537e752868fdb4d53aeed0c4efc912339c540a5d16797e0a3ca586b2cbb3715a",
+    "engine": "3d4638600e708087ad4f2fe910ad609b34db56303bc4dfce0ad302b3fd894044",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "device_cases": {
+    "fallback": {
+      "seconds": 128.672,
+      "model_starts": 2,
+      "guardian_preserved": true,
+      "ports_released": true,
+      "original_thread": "cthr_8a91a90dbf7de29e3137a0d86d52751e",
+      "original_call": "call_resp_745cccdaf650ebc4a7255b0fe487c9ba_0",
+      "original_attachment": "file_231ddbceb3747540452242a8187272a5",
+      "source_deleted": 404,
+      "file_bytes": 830,
+      "file_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+      "proposed_count": 157,
+      "verified_count": 157,
+      "answer": "157",
+      "renewed_user_session": true,
+      "another_project": 404,
+      "another_user": 404,
+      "duplicate_submission": 409,
+      "independent_chat": "42"
+    },
+    "primary": {
+      "seconds": 216.932,
+      "model_starts": 2,
+      "guardian_preserved": true,
+      "ports_released": true,
+      "original_thread": "cthr_9f9bc6d10b264c2bd2cba4b2006c3a9a",
+      "original_call": "call_resp_b43986f648d6cff1579aa7d8873a8f63_0",
+      "original_attachment": "file_fb71c40721738be9c294d057e52dc553",
+      "source_deleted": 404,
+      "file_bytes": 830,
+      "file_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+      "proposed_count": 157,
+      "verified_count": 157,
+      "answer": "157",
+      "renewed_user_session": true,
+      "another_project": 404,
+      "another_user": 404,
+      "duplicate_submission": 409,
+      "independent_chat": "42",
+      "selected_package": "fallback"
+    }
+  },
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "d3a507c584c051f3deeb35587e2963173cf460ccad596f7ee8922cf4e2d9923a"
+        ],
+        "sha256": "f3bfc531f111505edbaf764059cd26b3353f30262640f649e175ac8c157cf8d3",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "16209603-d386-4b70-a233-cd0b201a13c0"
+        ],
+        "sha256": "e464f0a37f2722228cddde28a57a18ac453de3be44faa3f678d3af41f493237c",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "cce4d562-b827-4c96-a693-8e3828a473b2"
+        ],
+        "sha256": "ed77c618b7326f5265aaa3ebbed2f07fb35eecd6828b490def442d41873977a1",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "declarations": {
+    "required": 231,
+    "exact_success": 203,
+    "missing": 28,
+    "comparison": "HTTP declarations only"
+  },
+  "soak": {
+    "source_commit": "355d632a41c7e864bb80b0546f45e949add900aa",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-client-primary-01/bundle",
+      "manifest_sha256": "9b0b0c4d5550aa599bdd02e8f5f5b038bc9298331d32427fee6195651c40b75f"
+    },
+    "revision": 478,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "0bc637a9292ad2d261923644160e8451313dd822b82bba60f7a3f8d1a539a0d6",
+    "handoff_sha256": "6cbddd7439eb04324aac0018cbbdedc17639f2006d86f378bc37e0d6e0367b32",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "source_document_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+  "original_publish_timeout": {
+    "status": "PREPARED_AFTER_DRIVER_TIMEOUT",
+    "timeout_seconds": 420,
+    "revision": 477,
+    "request_id": "bd9d1615-879d-4d4a-9349-cd61d99671d6",
+    "intent_sha256": "111a73228b71acd5e75b46c8534961b809acda4411a8c481ef2292911761fa78",
+    "plan_sha256": "4bdf5398b2d9f66531b92d756d574580b7212f7c6c219415ab5597957d16d828",
+    "desired": "STOPPED"
+  },
+  "prior_attempts": [
+    "The first release driver timed out at 420 seconds with revision 477 prepared. The same request and plan were resumed through publish-resume under a new lease.",
+    "attachments.json preserves the delegated upload authentication failure. profiles.json preserves the separate temperature=1 confirmation response."
+  ],
+  "raw": {
+    ".q4t-work/serve-responses-agents-20261123/chatkit-delivery-delivery/result.json": "bda31485873a66267d7fb4a69d4492e279b4297f48f9cef564e9a502047b4cfe",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-delivery-delivery/check.stdout": "5fc49fa03c6970c7d7d5cd76b9a9489e99169b47dcc6c1ed9d683dedab71f1b3",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-delivery-delivery/version-status.stdout": "95599921633df479720a206058edf9dda26a48a00017af3294b737518e530ffd",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-delivery-maintenance-01/result.json": "1b69ae209fd78fecb91a28f99de881f617043b00454356c753d5e74bf616a1ef",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-delivery-day.json": "9bb1a355eea903824dfd4d4c5f48bade054151f63bc890b32db5e763c7245e8e",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-release-methods.json": "78f667c1a35e7286397b713807765793f68219cc1ea912867e1a80abd718b133",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-chatkit-20261125/profiles.json": "e40a3a83d893d18a31fa899616bc5b08a547a8a3b397c23a1d471b432f601264",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-maintenance-lease-01/exit.json": "8f03a5825102790d644d09e48581128926ddf96808fb614a5fcf6059abe5fa10",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-publish-lease-02/exit.json": "fef508c8564b71b1a0e4031f9e593a6dcc804dda09f0c179868d843762a3a0cc",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-publish-lease-01/exit.json": "a261e4fa65258c9e86b754c830c188445a60dcb727ae9e02be95782fd09e6eed",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-delivery-delivery/original-timeout.json": "5343d4fde21930ce909e20f669dbf9270dc732306b9ed6b8bb107535408a3e35",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-delivery-delivery/plan.json": "4bdf5398b2d9f66531b92d756d574580b7212f7c6c219415ab5597957d16d828",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-delivery-delivery/resume.stdout": "498a6b2c24a20a6768f983e539651b7121d12a302bbe8b7536d426722596cb5b",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/chatkit-publish-01.log": "6acbfd504af2bee73ec3b5dd377a5023cfec449d43b669385a6e52995f566b0a",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-fallback-lease-01/exit.json": "4ff869ed8c5c28eacf41884fafa8fb65e6e5934d7fb327b826cbdedcc98ab0a5",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-fallback-business-01/result.json": "a50fe9c03ead32aa53a4646b63f2099698eabf19a54931db1e6a9178dcbb4028",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-fallback-business-01/prepare-run.json": "8f7f5cb4fc65f89e87e471c25c1d777ff2e9d0cf3b1877f6cbf2ca907da380c2",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-fallback-business-01/restore-run.json": "f0771e529bb690fef2d3b967308eccf2e81bc46a4394e3e1558bd95dd5429ccf",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-fallback-business-01/interruption.json": "6c76aebdc1e0786ec01f40a15df682ef08f92b09b4d64e458494f3800db92280",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-client-fallback-01/origin.json": "f72d992f88ee3415cd43ec8c4281847b0ab85d88b06d1aeb1d3c6b5d90f745f3",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-client-fallback-01/service-acceptance.json": "60f01cfea7d5b6f6efb879e5899fd3db4de5557882d8b64bb734eed76e8c1f03",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-client-fallback-01/service.release.json": "6ca5c50888369300b2354ad20a0f4ba4144a42419506f101a54ce0f5aaed4049",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-chatkit-01/takeover.json": "dad9de91d92da3be0260f381473153a789ddae0bf7dbdee0a20024b9781a5398",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-primary-lease-01/exit.json": "a3c516d22635665b64c5dfc8db3cb0f811f308b4601e74ac956a2decb4441e8a",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-chatkit-01/result.json": "c1eb32342717aca711cc36721d028ba5b2ea1d0b386cb896f2deed5b7d33f7b5",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-chatkit-01/prepare-run.json": "c84913ecd3f79aef09648dbbe5a0559cfdc276511037ac3f5ed90797ace07056",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-chatkit-01/restore-run.json": "29ae5b65e77e0f327015afd9fe7d20293c14ef85ffde578eae6e8d99312a55cf",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-chatkit-01/interruption.json": "1121c8e4848354cea3401693710c426ad2293da79e04bbf553948f88c0fdd6f4",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-client-primary-01/origin.json": "bb6f8898dccbcd5b2c9e93dcd9fbc7f840824796060831f39937616a273f9da9",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-client-primary-01/service-acceptance.json": "9527b7b8386af583bc6c1a813d8d6ea598b5edfa6c3acb9cf4996906b4b818f9",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-client-primary-01/service.release.json": "e806a7905a810404fd81b4cee27b3b2bfa505f134c0bf02a4bf77543fb6427ec"
+  }
+}
