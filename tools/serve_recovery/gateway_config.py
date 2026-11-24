@@ -160,7 +160,8 @@ http {{
   scgi_temp_path {q('scgi')};
   access_log off;
 {g.realtime_issuer_maps(p['clients'])}
-{source_map}  map $http_authorization $q4t_client {{
+{g.chatkit_maps(p['clients'], True)}
+{source_map}  map $http_authorization $q4t_key_client {{
     default "";
 {clients}
   }}
@@ -242,7 +243,7 @@ http {{
       proxy_set_header OpenAI-Beta $q4t_responses_beta;
       proxy_set_header X-Request-Id $http_x_request_id;
 {g.tunnel_headers()}
-      proxy_set_header Authorization $q4t_realtime_issuer;
+      proxy_set_header Authorization $q4t_upstream_credential;
       proxy_set_header X-Q4T-Client-Id $q4t_client;
       proxy_set_header X-Q4T-Gateway-Token $q4t_token;
       proxy_buffering off;

@@ -59,6 +59,23 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access, int limit,
                        OutputJson(wire), {kBinding, kIssuer});
 }
 
+Q4T_TEST(chatkit_forwarded_ticket_binds_current_gateway_key_owner_and_expiry) {
+  const std::string opaque = "cksec_" + std::string(64, 'e');
+  std::string token;
+  Q4T_CHECK(SignRealtimeTicket(kBinding, kIssuer, "alpha", opaque, 120, &token,
+                               ClientTicketAudience::kChatKit));
+  const auto auth = "Q4T-ChatKit " + kIssuer + " Bearer " + token;
+  std::string bearer;
+  Q4T_CHECK(ResolveForwardedChatKit(auth, "alpha", kBinding, 119, &bearer));
+  Q4T_CHECK(bearer == "Bearer " + token);
+  Q4T_CHECK(!ResolveForwardedChatKit(auth, "beta", kBinding, 119, &bearer));
+  Q4T_CHECK(!ResolveForwardedChatKit(auth, "alpha", kBinding, 120, &bearer));
+  const auto rotated = "Q4T-ChatKit " + std::string(64, 'd') + " Bearer " + token;
+  Q4T_CHECK(!ResolveForwardedChatKit(rotated, "alpha", kBinding, 119, &bearer));
+  Q4T_CHECK(!ResolveForwardedChatKit(auth, "alpha", std::string(64, 'f'), 119, &bearer));
+  return true;
+}
+
 Q4T_TEST(chatkit_session_survives_reopen_and_revokes_its_original_client) {
   Fixture fixture;
   auto access = Access();

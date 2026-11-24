@@ -7,6 +7,8 @@ import argparse
 import ctypes
 import hashlib
 import http.client
+import base64
+import hmac
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
@@ -108,7 +110,7 @@ class Stack:
                 self.close_connection = True
             def application_path(self, method):
                 path = self.path.split('?', 1)[0]
-                roots = ('/v1/webhook_endpoints', '/v1/webhook_event_types', '/v1/skills', '/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
+                roots = ('/v1/chatkit', '/v1/webhook_endpoints', '/v1/webhook_event_types', '/v1/skills', '/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
                          '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/translations/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/realtime/translations/calls', '/v1/live/sessions')
@@ -443,6 +445,8 @@ class NginxTests(unittest.TestCase):
                               voice_id='voice_1', trace_id='trace_1', session_id='live_1', call_id='rtc_1')
             self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
                                  identities.keys())
+            if template.startswith('/v1/chatkit/'):
+                identities.update(session_id='cksess_1', thread_id='cthr_1')
             if template.startswith('/v1/agents/sessions/'):
                 identities['session_id'] = 'agent_session_1'
             if template.startswith('/v1/containers/'):
@@ -453,7 +457,7 @@ class NginxTests(unittest.TestCase):
             body = '{"cpu_fixture":true}' if method == 'POST' else ''
             content_type = 'application/json'
             if method == 'POST' and (template in (
-                                      '/v1/files', '/v1/audio/transcriptions', '/v1/audio/translations') or
+                                      '/v1/files', '/v1/chatkit/attachments', '/v1/audio/transcriptions', '/v1/audio/translations') or
                                       template.endswith('/parts')):
                 content_type = 'multipart/form-data; boundary=cpu-route'
                 body = ('--cpu-route\r\nContent-Disposition: form-data; '
@@ -463,12 +467,19 @@ class NginxTests(unittest.TestCase):
             create_call = method == 'POST' and template in ('/v1/realtime/calls', '/v1/realtime/translations/calls')
             if create_call:
                 content_type, body = 'application/sdp', 'v=0\r\ns=fixture\r\n'
+            browser = path in ('/v1/chatkit', '/v1/chatkit/attachments')
+            issuer = hashlib.sha256(b'A'*40).hexdigest()
+            token = 'A'*40
+            if browser:
+                payload = 'cksec_q4t1.alpha.'+str(int(time.time())+120)+'.'+'a'*64
+                signature = hmac.digest(b'e'*64, ('q4t.realtime.client_secret.v1/'+issuer+'/'+payload).encode(), 'sha256')
+                token = payload+'.'+base64.urlsafe_b64encode(signature).decode().rstrip('=')
             with self.subTest(method=method, path=path):
                 connection = http.client.HTTPConnection('127.0.0.1',
                     self.stack.value['policy']['listen_port'], timeout=4)
                 try:
                     connection.request(method, path, body, {
-                        'Authorization': 'Bearer '+'A'*40,
+                        'Authorization': 'Bearer '+token,
                         'Content-Type': content_type})
                     response = connection.getresponse()
                     wire = response.read()
@@ -485,7 +496,10 @@ class NginxTests(unittest.TestCase):
                     self.assertEqual(row['upstream_port'],
                         self.stack.value['policy']['upstream_operations_port'
                             if lane == 'control' else 'upstream_port'])
-                    if path in ('/v1/realtime/client_secrets', '/v1/realtime/translations/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions'):
+                    if browser:
+                        expected = 'Bearer '+token if self.stack.native_ingress else 'Q4T-ChatKit '+issuer+' Bearer '+token
+                        self.assertEqual(row['authorization'], expected)
+                    elif path in ('/v1/chatkit/sessions', '/v1/realtime/client_secrets', '/v1/realtime/translations/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions'):
                         self.assertEqual(row['authorization'], 'Q4T-Issuer ' +
                                          hashlib.sha256(b'A'*40).hexdigest())
                     else:
@@ -600,6 +614,26 @@ class NginxTests(unittest.TestCase):
                 row = self.stack.application_requests[-1]
                 self.assertEqual((row['client'], row['path'], row['method']),
                                  ('alpha', path, 'GET' if body is None else 'POST'))
+
+    def test_chatkit_routes_issue_and_forward_scoped_browser_credential(self):
+        self.ready()
+        issuer = hashlib.sha256(b'A'*40).hexdigest()
+        selector = {'OpenAI-Beta': 'agents=v1, chatkit_beta=v1'}
+        self.assertEqual(self.stack.request({}, path='/v1/chatkit/sessions', extra=selector)[0], 200)
+        issued = self.stack.application_requests[-1]
+        self.assertEqual((issued['client'], issued['openai_beta'], issued['authorization']),
+                         ('alpha', 'chatkit_beta=v1', 'Q4T-Issuer '+issuer))
+        payload = 'cksec_q4t1.alpha.' + str(int(time.time())+120) + '.' + 'a'*64
+        signature = hmac.digest(b'e'*64, ('q4t.realtime.client_secret.v1/'+issuer+'/'+payload).encode(), 'sha256')
+        token = payload + '.' + base64.urlsafe_b64encode(signature).decode().rstrip('=')
+        self.assertEqual(self.stack.request({}, key=token, path='/v1/chatkit')[0], 200)
+        received = self.stack.application_requests[-1]
+        forwarded = 'Bearer '+token
+        if not self.stack.native_ingress:
+            forwarded = 'Q4T-ChatKit '+issuer+' '+forwarded
+        self.assertEqual((received['client'], received['authorization']), ('alpha', forwarded))
+        self.assertEqual(self.stack.request({}, path='/v1/chatkit')[0], 401)
+        self.assertEqual(self.stack.request(key=token, path='/v1/chatkit/threads')[0], 401)
 
     def test_automation_paths_preserve_owner_selector_and_nested_id(self):
         self.ready()
