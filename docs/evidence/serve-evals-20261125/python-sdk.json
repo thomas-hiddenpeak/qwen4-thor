@@ -1,0 +1,389 @@
+{
+  "stage": "actual_native_http_envelopes_replayed_through_official_python_clients",
+  "native_evidence": "model-graders.json",
+  "default": "All four captures parsed on each of three client versions, including both per-row scores.",
+  "strict": "Private _strict_response_validation rejects nullable values on three routes in every inspected release. Successful runs and samples carry error:null, as allowed by the published wire schema. A response that reports an imaginary error cannot be used as a compatibility fix.",
+  "source": "tools/serve_responses/eval_python_sdk_contract.py",
+  "source_sha256": "9e28030e57e4160692915c44fffda823ca259470088d3c2d5cbe237587533b7b",
+  "checked_versions": [
+    "2.8.1",
+    "3.42.1",
+    "3.55.1"
+  ],
+  "matrix": [
+    {
+      "version": "3.42.1",
+      "strict": false,
+      "cases": [
+        {
+          "path": "/evals",
+          "status": 201,
+          "parsed": "EvalCreateResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs",
+          "status": 201,
+          "parsed": "RunCreateResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}",
+          "status": 200,
+          "parsed": "RunRetrieveResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+          "status": 200,
+          "parsed": "SyncCursorPage[OutputItemListResponse]"
+        }
+      ],
+      "capture_sha256": "44ec51a8280ee117417878ddf0c8cf59940e21d86ff5d8c3e538fde5cfab1333"
+    },
+    {
+      "version": "3.42.1",
+      "strict": true,
+      "cases": [
+        {
+          "path": "/evals",
+          "status": 201,
+          "parsed": "EvalCreateResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs",
+          "status": 201,
+          "issues": [
+            {
+              "field": [
+                "error"
+              ],
+              "type": "model_type"
+            },
+            {
+              "field": [
+                "model"
+              ],
+              "type": "string_type"
+            },
+            {
+              "field": [
+                "name"
+              ],
+              "type": "string_type"
+            },
+            {
+              "field": [
+                "per_model_usage"
+              ],
+              "type": "list_type"
+            },
+            {
+              "field": [
+                "per_testing_criteria_results"
+              ],
+              "type": "list_type"
+            }
+          ]
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}",
+          "status": 200,
+          "issues": [
+            {
+              "field": [
+                "error"
+              ],
+              "type": "model_type"
+            },
+            {
+              "field": [
+                "model"
+              ],
+              "type": "string_type"
+            },
+            {
+              "field": [
+                "name"
+              ],
+              "type": "string_type"
+            }
+          ]
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+          "status": 200,
+          "issues": [
+            {
+              "field": [
+                "data",
+                0,
+                "sample",
+                "error"
+              ],
+              "type": "model_type"
+            },
+            {
+              "field": [
+                "data",
+                1,
+                "sample",
+                "error"
+              ],
+              "type": "model_type"
+            }
+          ]
+        }
+      ],
+      "capture_sha256": "44ec51a8280ee117417878ddf0c8cf59940e21d86ff5d8c3e538fde5cfab1333"
+    },
+    {
+      "version": "3.55.1",
+      "strict": false,
+      "cases": [
+        {
+          "path": "/evals",
+          "status": 201,
+          "parsed": "EvalCreateResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs",
+          "status": 201,
+          "parsed": "RunCreateResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}",
+          "status": 200,
+          "parsed": "RunRetrieveResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+          "status": 200,
+          "parsed": "SyncCursorPage[OutputItemListResponse]"
+        }
+      ],
+      "capture_sha256": "44ec51a8280ee117417878ddf0c8cf59940e21d86ff5d8c3e538fde5cfab1333"
+    },
+    {
+      "version": "3.55.1",
+      "strict": true,
+      "cases": [
+        {
+          "path": "/evals",
+          "status": 201,
+          "parsed": "EvalCreateResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs",
+          "status": 201,
+          "issues": [
+            {
+              "field": [
+                "error"
+              ],
+              "type": "model_type"
+            },
+            {
+              "field": [
+                "model"
+              ],
+              "type": "string_type"
+            },
+            {
+              "field": [
+                "name"
+              ],
+              "type": "string_type"
+            },
+            {
+              "field": [
+                "per_model_usage"
+              ],
+              "type": "list_type"
+            },
+            {
+              "field": [
+                "per_testing_criteria_results"
+              ],
+              "type": "list_type"
+            }
+          ]
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}",
+          "status": 200,
+          "issues": [
+            {
+              "field": [
+                "error"
+              ],
+              "type": "model_type"
+            },
+            {
+              "field": [
+                "model"
+              ],
+              "type": "string_type"
+            },
+            {
+              "field": [
+                "name"
+              ],
+              "type": "string_type"
+            }
+          ]
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+          "status": 200,
+          "issues": [
+            {
+              "field": [
+                "data",
+                0,
+                "sample",
+                "error"
+              ],
+              "type": "model_type"
+            },
+            {
+              "field": [
+                "data",
+                1,
+                "sample",
+                "error"
+              ],
+              "type": "model_type"
+            }
+          ]
+        }
+      ],
+      "capture_sha256": "44ec51a8280ee117417878ddf0c8cf59940e21d86ff5d8c3e538fde5cfab1333"
+    },
+    {
+      "version": "2.8.1",
+      "strict": false,
+      "cases": [
+        {
+          "path": "/evals",
+          "status": 201,
+          "parsed": "EvalCreateResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs",
+          "status": 201,
+          "parsed": "RunCreateResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}",
+          "status": 200,
+          "parsed": "RunRetrieveResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+          "status": 200,
+          "parsed": "SyncCursorPage[OutputItemListResponse]"
+        }
+      ],
+      "capture_sha256": "44ec51a8280ee117417878ddf0c8cf59940e21d86ff5d8c3e538fde5cfab1333"
+    },
+    {
+      "version": "2.8.1",
+      "strict": true,
+      "cases": [
+        {
+          "path": "/evals",
+          "status": 201,
+          "parsed": "EvalCreateResponse"
+        },
+        {
+          "path": "/evals/{eval_id}/runs",
+          "status": 201,
+          "issues": [
+            {
+              "field": [
+                "error"
+              ],
+              "type": "model_type"
+            },
+            {
+              "field": [
+                "model"
+              ],
+              "type": "string_type"
+            },
+            {
+              "field": [
+                "name"
+              ],
+              "type": "string_type"
+            },
+            {
+              "field": [
+                "per_model_usage"
+              ],
+              "type": "list_type"
+            },
+            {
+              "field": [
+                "per_testing_criteria_results"
+              ],
+              "type": "list_type"
+            }
+          ]
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}",
+          "status": 200,
+          "issues": [
+            {
+              "field": [
+                "error"
+              ],
+              "type": "model_type"
+            },
+            {
+              "field": [
+                "model"
+              ],
+              "type": "string_type"
+            },
+            {
+              "field": [
+                "name"
+              ],
+              "type": "string_type"
+            }
+          ]
+        },
+        {
+          "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+          "status": 200,
+          "issues": [
+            {
+              "field": [
+                "data",
+                0,
+                "sample",
+                "error"
+              ],
+              "type": "model_type"
+            },
+            {
+              "field": [
+                "data",
+                1,
+                "sample",
+                "error"
+              ],
+              "type": "model_type"
+            }
+          ]
+        }
+      ],
+      "capture_sha256": "44ec51a8280ee117417878ddf0c8cf59940e21d86ff5d8c3e538fde5cfab1333"
+    }
+  ],
+  "limitations": [
+    "Offline replay of real HTTP captures; no Python TLS request in this check.",
+    "This does not establish all Python or Node SDK behavior."
+  ],
+  "actual_model_starts": 0
+}

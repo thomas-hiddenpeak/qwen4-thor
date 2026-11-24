@@ -761,6 +761,11 @@
         "revision": 478,
         "state": "issued_bounded_acceptance",
         "long_run": "user_owned_preflight_only"
+      },
+      "evals_release_20261125": {
+        "evidence": "evidence/serve-evals-20261125/delivery.json",
+        "revision": 480,
+        "state": "issued_bounded_acceptance"
       }
     },
     {
@@ -2666,7 +2671,7 @@
       "chat_storage_evidence": "evidence/serve-chat-storage-20261109/README.md",
       "chat_business_evidence": "evidence/serve-chat-business-20261109/README.md",
       "remaining_required": [
-        "Hosted environment execution, session subagents, automations and remaining in-scope application methods and behaviors"
+        "Complete retained application methods and semantics, including media generation, safety records, grader backends, wider tool/media histories and hosted execution options. Hosted environments, subagents, automations, ChatKit and Evals have issued business-tested subsets."
       ],
       "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md",
       "next": "Complete managed agent session, turn, environment and related application state from the G00 scope mapping.",
@@ -3007,6 +3012,11 @@
         "revision": 478,
         "state": "issued_bounded_acceptance",
         "long_run": "user_owned_preflight_only"
+      },
+      "evals_release_20261125": {
+        "evidence": "evidence/serve-evals-20261125/delivery.json",
+        "revision": 480,
+        "state": "issued_bounded_acceptance"
       }
     },
     {
@@ -6658,6 +6668,11 @@
         "revision": 478,
         "state": "issued_bounded_acceptance",
         "long_run": "user_owned_preflight_only"
+      },
+      "evals_release_20261125": {
+        "evidence": "evidence/serve-evals-20261125/delivery.json",
+        "revision": 480,
+        "state": "issued_bounded_acceptance"
       }
     },
     {
@@ -7582,6 +7597,16 @@
         "status": "accepted_primary_light",
         "evidence": "evidence/serve-chatkit-20261125/profiles.json",
         "issued": false
+      },
+      "evals_python_sdk_20261125": {
+        "evidence": "evidence/serve-evals-20261125/python-sdk.json",
+        "versions": [
+          "2.8.1",
+          "3.42.1",
+          "3.55.1"
+        ],
+        "canonical_default": "all_four_captures_on_each",
+        "private_strict_mode": "known_nullability_divergence"
       }
     },
     {
@@ -8679,6 +8704,11 @@
         "revision": 478,
         "state": "issued_bounded_acceptance",
         "long_run": "user_owned_preflight_only"
+      },
+      "evals_release_20261125": {
+        "evidence": "evidence/serve-evals-20261125/delivery.json",
+        "revision": 480,
+        "state": "issued_bounded_acceptance"
       }
     },
     {
@@ -9096,6 +9126,11 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "evals_release_20261125": {
+        "evidence": "evidence/serve-evals-20261125/delivery.json",
+        "revision": 480,
+        "state": "issued_bounded_acceptance"
       }
     },
     {
@@ -10216,12 +10251,17 @@
           "other graders",
           "release"
         ]
+      },
+      "evals_release_20261125": {
+        "evidence": "evidence/serve-evals-20261125/delivery.json",
+        "revision": 480,
+        "state": "issued_bounded_acceptance"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev478_delivered_remaining_deliveries",
+      "state": "rev480_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -10998,7 +11038,7 @@
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
       "current_mainline_evidence": "evidence/serve-chatkit-20261125/delivery.json",
-      "current_candidate": "Device-qualified Evals definitions, durable runs, model sampling, stored inference snapshots and signed terminal Webhooks; candidate 215/231 HTTP declarations. Published rev478 has 203/231.",
+      "current_candidate": "Issued rev480 includes Evals definitions, runs, sampling, stored sources, graders and notifications. 215/231 HTTP success declarations. Tool trajectory compatibility and other service work continue.",
       "tts_input_delivery_20261118": {
         "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
         "revision": 316,
@@ -11436,6 +11476,11 @@
         "revision": 478,
         "state": "issued_bounded_acceptance",
         "long_run": "user_owned_preflight_only"
+      },
+      "evals_release_20261125": {
+        "evidence": "evidence/serve-evals-20261125/delivery.json",
+        "revision": 480,
+        "state": "issued_bounded_acceptance"
       }
     },
     {
@@ -11541,16 +11586,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "355d632a41c7e864bb80b0546f45e949add900aa",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-delivery-soak-src",
+        "source_commit": "6149036d5ba0673fcba272a2c040ae204b65d87e",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-client-primary-01/bundle",
-          "manifest_sha256": "9b0b0c4d5550aa599bdd02e8f5f5b038bc9298331d32427fee6195651c40b75f"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/bundle",
+          "manifest_sha256": "783ccb40ac667d5378208731cd53e3cf3fb31dc3e247fcf67b3bb8f8b4b5b755"
         },
-        "revision": 478,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "0bc637a9292ad2d261923644160e8451313dd822b82bba60f7a3f8d1a539a0d6",
-        "handoff_sha256": "6cbddd7439eb04324aac0018cbbdedc17639f2006d86f378bc37e0d6e0367b32",
+        "revision": 480,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "38c94f5f9fafc57273ab1a45cda5ce405c5f95a2e8da1936e625ff9844591901",
+        "handoff_sha256": "5992170b8c9c24fd4f2dab3dc3803b0b0224339f43ee61e53c14827db09354e9",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -11856,11 +11901,31 @@
         "revision": 478,
         "state": "issued_bounded_acceptance",
         "long_run": "user_owned_preflight_only"
+      },
+      "evals_release_20261125": {
+        "evidence": "evidence/serve-evals-20261125/delivery.json",
+        "revision": 480,
+        "state": "issued_bounded_acceptance"
+      },
+      "retained_rev478_day_handoff": {
+        "source_commit": "355d632a41c7e864bb80b0546f45e949add900aa",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-delivery-soak-src",
+        "package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-client-primary-01/bundle",
+          "manifest_sha256": "9b0b0c4d5550aa599bdd02e8f5f5b038bc9298331d32427fee6195651c40b75f"
+        },
+        "revision": 478,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "0bc637a9292ad2d261923644160e8451313dd822b82bba60f7a3f8d1a539a0d6",
+        "handoff_sha256": "6cbddd7439eb04324aac0018cbbdedc17639f2006d86f378bc37e0d6e0367b32",
+        "checked": true,
+        "source_files": 700,
+        "hours_executed": 0
       }
     }
   ],
-  "next_task": "Complete remaining native grader families, then qualify package profiles and recovery for Evals while continuing the remaining inference, application, ingress and recovery work.",
-  "next": "补齐 Evals 其余评分器并完成发行配置和恢复验收，继续开放的推理、应用、接入与恢复任务。",
+  "next_task": "Validate stored tool histories and sampled tool-call grading, then complete outstanding graders, application routes and recovery compositions.",
+  "next": "验证带工具历史的 Evals 来源和采样工具调用评分，继续补齐评分器、其余推理和应用接口及恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -17942,6 +18007,13 @@
       "matching_success_sets": 126,
       "missing_declaration": 105,
       "evidence": "docs/evidence/serve-agent-workspaces-20261124/artifact-methods.json"
+    },
+    "rev480": {
+      "required": 231,
+      "declared": 215,
+      "matching_success_sets": 215,
+      "missing_declaration": 16,
+      "evidence": "evidence/serve-evals-20261125/delivery.json"
     }
   },
   "agent_hosted_workspace_20261124": {
@@ -18046,19 +18118,36 @@
     "sampling": "evidence/serve-evals-20261125/sampling.json",
     "stored_sources_and_notifications": "evidence/serve-evals-20261125/stored-sources.json",
     "runtime": "thor_native_tls_focused_business_verified",
-    "issued": false,
+    "issued": true,
     "candidate_declared_methods": 215,
     "required_methods": 231,
     "remaining": [
       "METEOR with lexical resources and cosine with trained embeddings",
       "requested Python grading image and package compatibility",
       "complex message and tool trajectory projection",
-      "package profiles and independent takeover",
-      "remaining inference/application methods and outstanding recovery compositions"
+      "remaining inference/application methods and outstanding recovery compositions",
+      "authenticated rendered evaluation report and absolute report_url"
     ],
     "local_graders": "evidence/serve-evals-20261125/graders.json",
     "model_graders": "evidence/serve-evals-20261125/model-graders.json",
     "interrupted_model_sampling": "evidence/serve-evals-20261125/recovery.json",
-    "qualified_profiles": "evidence/serve-evals-20261125/drain-profiles.json"
+    "qualified_profiles": "evidence/serve-evals-20261125/drain-profiles.json",
+    "publication": "evidence/serve-evals-20261125/delivery.json",
+    "revision": 480,
+    "issued_declared_methods": 215,
+    "long_run": "user_owned_preflight_only",
+    "python_sdk": "evidence/serve-evals-20261125/python-sdk.json",
+    "report_url_gap": {
+      "observed": "Issued run.report_url points to a relative JSON output-item collection. The upstream schema expects a URI for a rendered per-run report.",
+      "implementation": "Serve an authenticated, project-scoped run report and generate a routable absolute URL through native/direct and optional proxy entry points. Validate the URI and content through actual clients."
+    },
+    "mainline": {
+      "112": "fb794a04d1b0d92ed1fbe4da5cccf09d10e1fd3f",
+      "113": "c352c820bbe959eefbd09400d8eb532c22b4f280",
+      "114": "a83c7d72dbabb00e7da4af023280f41b63caee31",
+      "115": "308425574e10e96dcaec689b3d7a7a777fa49b78",
+      "116": "920ab3e86d3e6f9fe641a9b0f0e23169c249dd5f",
+      "117": "1340ae73c3210f6f6321d66b2e5d42c5f27c423a"
+    }
   }
 }
