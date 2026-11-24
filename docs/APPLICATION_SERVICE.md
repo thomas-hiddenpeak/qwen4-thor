@@ -6,7 +6,7 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 |---|---|---|
 | Chat、Responses、Agents | 项目资料查询、流式工具事件、工具结果回填、子 Agent 回合及配额恢复 | API Key 区分客户。持久会话跨进程恢复；具体模型、工具及发行组合见[托管业务回执](evidence/serve-agent-workspaces-20261124/subagent-delivery.json)。 |
 | Assistants v2 | 注册及更新 Assistant，维护 Thread 和 Message，流式创建 Run，按工具调用 ID 回填，读取步骤、取消及恢复待回填的 Run。附件检索已读取真实发布记录。 | 使用客户 API Key 和 `OpenAI-Beta: assistants=v2`。仅可访问本客户的数据。工具回填及崩溃接手见[发行回执](evidence/serve-assistants-20261124/delivery.json)，跨轮输入预算与恢复见[rev464 发行回执](evidence/serve-skills-20261124/delivery.json)，托管代码执行继续跟踪。 |
-| Code Interpreter 工作区（候选） | Responses 和 Assistants 以 Python 读取授权项目文件、写出可下载文件，流式代码、日志与引用可读回。 | 系统 CPython 3.12 仅在隔离子进程加载；持久化文件，预载标准库。主、轻配置已按原 ID 接手文件。可回退发行待验。 [业务回执](evidence/serve-code-interpreter-20261124/business.json) |
+| Code Interpreter 工作区 | Responses 和 Assistants 以 Python 读取授权项目文件、写出可下载文件，流式代码、日志与引用可读回。 | 系统 CPython 3.12 仅在隔离子进程加载；持久化文件，预载标准库。主、轻配置和故障恢复均已按原 ID 接手文件。[rev466 发行回执](evidence/serve-code-interpreter-20261124/delivery.json)。 [业务回执](evidence/serve-code-interpreter-20261124/business.json) |
 | Skills 与版本 | 创建、列举、更新和删除技能，保留不可变版本，按 ZIP 或 Base64 下载，工作区可绑定固定版本。主、轻配置和进程恢复已验证版本内容。 | 原生 TLS 和 API Key 隔离客户。服务通过隔离文档工作进程读取包中的 YAML。模型执行技能仍在开发。[发行回执](evidence/serve-skills-20261124/delivery.json) |
 | Containers 与容器文件 | 官方 SDK 创建和删除工作区，流式上传和下载文件，从 Files 复制发布记录；源文件删除、模型更换及回退后均可读回原内容。 | 原生 API Key 按客户隔离，使用固定的技能快照。托管代码执行及其内存、网络策略待验。[发行回执](evidence/serve-skills-20261124/delivery.json) |
 | 旧版 Realtime 对话与转写 | Node SDK 7.47.0 在原生 TLS 上完成中文转写、文本增量及终态；两种容量均已验证 | SDK WebSocket 助手使用 WSS，部署时为其配置原生 TLS 或可选 TLS 网关。转写须通过支持 transcription intent 的连接助手并显式传入 beta 头。[SDK 回执](evidence/serve-realtime-legacy-sessions-20261124/beta-resources.json) |

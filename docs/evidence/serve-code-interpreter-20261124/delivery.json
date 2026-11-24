@@ -1,0 +1,179 @@
+{
+  "status": "ACCEPT_INTERPRETER_WORKSPACE_RECOVERY_AND_STOPPED_PUBLICATION",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 466,
+    "version_revision": 162,
+    "profile_revision": 52,
+    "previous_profile_revision": 51,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "2239b1708b7381e81ca6214deb448099a2195402147f0d7c2f3a506da1860dc9",
+    "fallback": "eb5e425e75aebc91c09b0b4d5b0e648f703cad2639c67eec461c39e46b521713",
+    "engine": "ff3d2c6b8d19afb0e205c2c82a91e008162b2dbf124e8b10ecbe68d918025f38",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "recovery": {
+    "fallback": {
+      "fault": "owned model SIGKILL",
+      "seconds": 136.008,
+      "starts": 2,
+      "guardian_retained": true,
+      "source_skill_deleted": true,
+      "workspace": "cntr_ea6b4f5204d2ce61d1237bc89e8a4e05",
+      "restored_file": "cfile_5d068c6ec60b5f8f945492e9766fe20b",
+      "initial_output": "464",
+      "successor_output": "465",
+      "scope_miss": 404,
+      "independent_chat": "42"
+    },
+    "primary": {
+      "fault": "owned gateway SIGABRT",
+      "seconds": 181.129,
+      "starts": 2,
+      "guardian_retained": true,
+      "source_skill_deleted": true,
+      "workspace": "cntr_8467008c7471602ac3b79b74d0c2765a",
+      "restored_file": "cfile_300772b592e1c5afe6f562b895e814a9",
+      "initial_output": "464",
+      "successor_output": "465",
+      "scope_miss": 404,
+      "independent_chat": "42",
+      "selected": "fallback",
+      "device_probes": 1
+    }
+  },
+  "scope": {
+    "required_methods": 231,
+    "declared_with_expected_success": 178,
+    "missing_method_declarations": 53
+  },
+  "long_run": {
+    "owner": "user",
+    "hours_executed": 0,
+    "preflighted": true,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interpreter-client-soak-src/.q4t-work/day-01/plan.json",
+    "sha256": "982a7ce1a6feef5aed012163b26d105f205a9b9b09141e92f8f2abdb23c793c4"
+  },
+  "prior_failure": "Model performed an extra file verification and omitted the requested link. Kept original output; the bounded recovery fixture now explicitly requests max_tool_calls=1.",
+  "publication_retry": "First precondition assumed that archiving a retired registration advanced the selection revision. The immutable receipt confirms an unchanged policy. Corrected and retried before publication.",
+  "pending": [
+    "Persistent Python interpreter variables, scientific packages/plots, configured egress and memory tiers.",
+    "Other required inference/application methods and event semantics remain on the master plan."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-client-delivery/result.json",
+      "sha256": "f006beecdeabf7ce1cc33080e88557916c4078730ed30645131718466b93e2ac"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-client-maintenance-01/result.json",
+      "sha256": "6ce01c550644b281745ac2550b44de7b29529f7f7e6acdb7be50bf6f0f0877c0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-publication-lease-01/exit.json",
+      "sha256": "831c147e405cbddae8b47dacb6f80b65a3dd00a73e6e1d50d8ee2f949aa37605"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-publish-01.log",
+      "sha256": "f52ae289c798e3b1f13297f56e0c2c5f2ee3157758eb55c350b5b9aec5f34c9c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-publication-lease-02/exit.json",
+      "sha256": "d6b0e6a4248f4b52c38e54a659b363b83a0b580074e6685f259733f07b6d042b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-client-day.json",
+      "sha256": "69c03c784b4b62fae72934a95e8caadd75bf16c6f622041e4086b90cb11848df"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-released-methods.json",
+      "sha256": "fc3fed9ba3579d2b240f233023ec8b9b4999416526e521c5981dfcdc22804970"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-business-01/result.json",
+      "sha256": "333eb6afbb502fcb2a58eb966ca19d6300bd16f40388ef69bd33ac382a472102"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-business-01/initial.sse",
+      "sha256": "948599bbb757777d273a75736c7b82499afce178f56d26638ad805216ded8b9e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-lease-02/exit.json",
+      "sha256": "2f990d5c07d8210c1647366c4ac2b9bab79b2fb59cf3924b93fdaa88ff3aac50"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-business-02/before-run.json",
+      "sha256": "d81da768e1d75cc9e4ad4339f35a4ed01cd6368e65380e6e8c56d73fd3823c6e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-business-02/after-run.json",
+      "sha256": "73258cdde0eac23390e826607dc8ecf54512a6588a5f98e317e4b6623045c59e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-business-02/initial.sse",
+      "sha256": "99667def45b319826c50e0e8c9734c8679519f56dca81cf8d2cdd7e84a9ac4af"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-business-02/recovered.sse",
+      "sha256": "f2cdc9288f7413a06329e295207fb0df4d274faa80fead5be3158ebeb9e1e756"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-business-02/interruption.json",
+      "sha256": "ce4c8d2c15e355dbd8377f69cf33d6f15c6032a974b54338fb2533802be042f7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-business-02/result.json",
+      "sha256": "8f336439f310ac51184524a9a58c346145116ee904fc155c019327e89465fb34"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-fallback-business-02/chat-after.wire",
+      "sha256": "e04ed285d9b55a1fae915ae5a1e9fb05f21ca4c13bee529c9c1acb8d08a1819a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-client-fallback-01/service-acceptance.json",
+      "sha256": "b1dbcbd6d4f7d92350ec24fe8096f3b085d2c7ccb3836c8bb4e404e7a42695b3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-primary-lease-01/exit.json",
+      "sha256": "563e9e5b0fce0b8a38ec01b6edb98ace29acd391f6789c86ac27e9d0a8aec804"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-interpreter-01/before-run.json",
+      "sha256": "d51b42ebc1f29a741fc3b51e2064c1c19b78361e0a42af59bbf4b98fb0c0c4ed"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-interpreter-01/after-run.json",
+      "sha256": "3a0b8cc4fe7a08578b030da5f228744649ccd428eda21c04f62c694a135c1b5c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-interpreter-01/initial.sse",
+      "sha256": "949b2b5053efc87b2e7b01c6af5a6d60139ac4cb7930f317e1be7970b17b1dd1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-interpreter-01/recovered.sse",
+      "sha256": "e2def3ad3a8cfb3ef554bc06278dbe43a548d5a02993d2f0a18443ebda2ef522"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-interpreter-01/interruption.json",
+      "sha256": "2f0e92615c46eddee30d8bc240ec4456b1f2f8a030ead14aef78be76fe0d76df"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-interpreter-01/result.json",
+      "sha256": "7d73c27f8446b8d860a633fa7bc0737fb2b2dec1f9580895a42e21e12e1b5d36"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-interpreter-01/chat-after.wire",
+      "sha256": "aeb98dbd03026cb1fc2b1b97c0984032e8fae96376b35656f218e0ee4bf55d56"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-client-primary-01/service-acceptance.json",
+      "sha256": "6683fb0b290d1343727ab5ae1812ad9a62088be59f02cc3b3831ad7154b619bc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-interpreter-01/takeover.json",
+      "sha256": "35e91cad6533e9fd955a8e18d0f9de6e261fb74f44609d7be7b0daedbb0acc46"
+    }
+  ]
+}

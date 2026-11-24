@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+rev466 已登记主包和独立回退包，生产期望状态为 STOPPED。两个隔离封包均从已删除源技能的挂载副本读出 464 并生成文件。模型被终止和网关致命退出后，均通过原 Responses ID 取回原文件，从同一自动容器生成 465，跨客户访问返回 404，独立 Chat 答 42。两项各启动两代模型；发布过程启动零次，13 份受保护记录保持原值。24 小时计划已预检，实跑交给用户。当前发行声明 178/231 项方法；其余 53 项及已声明接口的行为差距继续跟进。[恢复与发行回执](evidence/serve-code-interpreter-20261124/delivery.json)
+
 主配置使用自动容器从 rev464 记录读取 464 并生成 version.txt，随后删除上传源。轻配置按原 Responses ID 取得同一自动容器和文件，执行 Python 从原文件计算 465 并下载 next.txt。两侧均验证跨客户 404、独立 Chat 42 和 WebRTC 关闭。GPU 查询 82 次全部正常，34 项迁移用例通过，10 项记录反例均被拒绝。两份 v38 容量记录可逐字节还原 v37。下一项验收封包后的进程恢复。[交接回执](evidence/serve-code-interpreter-20261124/profiles.json)
 
 托管 Python 通过原生 TLS 和官方 Node SDK 7.47.0 短验。模型读取 rev464 发布记录，写出 selected.txt。Responses 的流式结果、GET 和重放一致；Assistants 使用自动工作区，Run 步骤记录实际代码和 stdout，消息所引 Files 副本下载得到 464，两种文件接口均对其他客户返回 404。独立 Chat 答 42。本次单启动 48.160 秒。已修复阶段事件未持久化和 GET 漏空 logprobs 数组，保留三次失败。当前跨调用保留文件；变量会话、绘图、科学包、受控网络与内存档位仍待实现。默认仍为 rev464。[业务回执](evidence/serve-code-interpreter-20261124/business.json)
