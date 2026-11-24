@@ -5,6 +5,7 @@ import {readFileSync} from 'node:fs';
 import https from 'node:https';
 import {setTimeout as delay} from 'node:timers/promises';
 import {loadSdk} from '../serve_protocol/sdk.mjs';
+import {releaseAgent, turnTypes, verifyTurns} from './agent_webhook_turns.mjs';
 
 let input = '';
 for await (const chunk of process.stdin) input += chunk;
@@ -16,6 +17,7 @@ const owner = client(p.key), peer = client(p.other);
 const {environments, sessions} = owner.beta.agents;
 const hidden = error => error instanceof OpenAI.APIError && error.status === 404;
 const types = ['agent.environment.ready', 'agent.session.created'];
+if (p.turns) types.push(...turnTypes);
 const observed = [];
 let secret;
 let failure;
@@ -53,7 +55,7 @@ try {
   assert.deepEqual(await environments.create(config), env);
   await assert.rejects(peer.beta.agents.environments.retrieve(env.id), hidden);
   const session = await sessions.create({
-    agent:{model:p.model,reasoning:{effort:'none'}},
+    agent:{model:p.model,reasoning:{effort:'none'},...(p.turns ? releaseAgent : {})},
     environment:{type:'openai_hosted',environment_id:env.id},
   });
   assert.equal(session.environment.id, env.id);
@@ -69,7 +71,8 @@ try {
   const deadline = Date.now() + 20000;
   while (observed.length < 2 && !failure && Date.now() < deadline) await delay(100);
   if (failure) throw failure;
-  assert.equal(observed.length, 2);
+  const business = p.turns ? await verifyTurns(sessions, session, observed, () => failure, p.cancelTurn) : undefined;
+  assert.equal(observed.length, p.cancelTurn ? 6 : p.turns ? 7 : 2);
   const byType = Object.fromEntries(observed.map(event => [event.type, event]));
   assert.deepEqual(byType[types[0]].data, {id:env.id});
   assert.deepEqual(byType[types[1]].data, {
@@ -80,7 +83,8 @@ try {
   assert.equal((await environments.retrieve(env.id)).status, 'disconnected');
   assert.equal((await owner.webhooks.delete(sub.id)).deleted, true);
   process.stdout.write(JSON.stringify({sdk:version, independent_chat:answer, peer:404,
-    environment:env.id, session:session.id, observed:observed.map(e=>e.type), wire:byType}));
+    environment:env.id, session:session.id, business, observed:observed.map(e=>e.type),
+    wire:p.turns ? observed : byType}));
 } finally {
   receiver.closeAllConnections();
   receiver.close();

@@ -4410,7 +4410,7 @@
     "src/server/object_retention.cpp": "3f7c516dbc203ebe55b93e1eaf474a207fdd6c5e1a75cbaf283e2a35a86b2a3c",
     "src/server/object_store.cpp": "fdaf8e914a4126861f03bc6826b57e0df91bd16a4c5aa94cf65a7d1bb9d16738",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
-    "src/server/object_worker.cpp": "40aa6f2eb679af173306fdcb635226263ab5bda421f0ca716f064d7c83556138",
+    "src/server/object_worker.cpp": "0cefe244b3a79b3ff78bc07a4347b4bed81fd9d7d84907cb97bfc1aa676ae18a",
     "src/server/output_constraints.cpp": "add0daef3ba87df074329f1ed554220023ab0db4211667f27ea723e23c4cacd9",
     "src/server/output_schema.cpp": "f74cd72e27af2095859c1d6f2f2eb51ab2d8d6317f268c15de571c70fba0a358",
     "src/server/overlapping_output.cpp": "bbc75868fc9be368ced28d5000404e86ee9391b071e4f90465b6c681540a9302",
@@ -4906,7 +4906,7 @@
     "src/server/webhook_transport.cpp": "9f404c31c89228ec182d059d77c42bc8495ef90fe68be1b7df299620a46d9e9c",
     "include/q4t/server/webhook_dispatcher.h": "5d9b6f91fc44ce72590c0775daa9796ef1ceb6170505ac9640f189ff82b16ac6",
     "src/server/webhook_dispatcher.cpp": "2dd9a85c7b5c71fcc1bee4929285856ae99926174b750421db268584f64803fe",
-    "src/server/webhook_events.cpp": "72c55959615a4c98995362d69c1b171eeec710a73072579fb583d0e936dfcbe5",
+    "src/server/webhook_events.cpp": "11677cbe7492c30dcb37e4e8c1ba912be5eb3d8a794767d0c3f386119bc36f1a",
     "src/server/webhook_events.h": "1c99b2b446681376e4cd4d900cf625d4436dba92b8d05c0ed044aea38a81e7de"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",

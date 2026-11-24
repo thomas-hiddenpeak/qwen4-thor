@@ -6,11 +6,14 @@
 namespace q4t::server::webhook_detail {
 namespace {
 using namespace object_detail;
-constexpr std::array<std::string_view, 10> kTypes = {
-    "response.completed",     "response.failed", "response.cancelled",
-    "response.incomplete",    "batch.completed", "batch.failed",
-    "batch.cancelled",        "batch.expired",   "agent.session.created",
-    "agent.environment.ready"};
+constexpr std::array<std::string_view, 14> kTypes = {
+    "response.completed",    "response.failed",
+    "response.cancelled",    "response.incomplete",
+    "batch.completed",       "batch.failed",
+    "batch.cancelled",       "batch.expired",
+    "agent.session.created", "agent.environment.ready",
+    "agent.session.idle",    "agent.session.in_progress",
+    "agent.session.failed",  "agent.session.action_required"};
 }  // namespace
 uint32_t EventBit(std::string_view name) {
   for (size_t i = 0; i < kTypes.size(); ++i)
@@ -67,12 +70,22 @@ std::string_view Transition(std::string_view kind, const Json& data,
 Json EventPayload(std::string_view type, const std::string& id,
                   const Json& source) {
   auto data = Object({{"id", String(id)}});
-  if (type == "agent.session.created") {
+  if (type.starts_with("agent.session.")) {
     const auto* session = source.Find("session");
     const auto* env = session ? session->Find("environment") : nullptr;
     if (!env || session->GetString("id") != id ||
         env->GetString("type").empty())
       return {};
+    if (type == "agent.session.action_required") {
+      const auto* actions = session->GetArray("required_actions");
+      if (!actions || actions->array.empty()) return {};
+      const auto action = actions->array.front().GetString("type");
+      if (action != "function_call" && action != "environment_connection" &&
+          action != "computer_use_approval_request")
+        return {};
+      Set(&data, "required_action", Object({{"type", String(action)}}));
+      return data;
+    }
     Set(&data, "environment_type", String(env->GetString("type")));
     if (!env->GetString("id").empty())
       Set(&data, "environment_id", String(env->GetString("id")));
@@ -81,7 +94,11 @@ Json EventPayload(std::string_view type, const std::string& id,
 }
 
 Json SamplePayload(std::string_view type, std::string_view suffix) {
-  if (type == "agent.session.created")
+  if (type == "agent.session.action_required")
+    return Object(
+        {{"id", String("agent_session_test_" + std::string(suffix))},
+         {"required_action", Object({{"type", String("function_call")}})}});
+  if (type.starts_with("agent.session."))
     return Object({{"id", String("agent_session_test_" + std::string(suffix))},
                    {"environment_type", String("none")}});
   std::string prefix = type.starts_with("batch.")          ? "batch_test_"
