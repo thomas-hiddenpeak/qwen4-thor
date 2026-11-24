@@ -140,9 +140,17 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
         Object({{"format", String("q4t.binary_read.v1")}, {"blob", blob}});
     writes.push_back(std::move(lease));
   }
-  writes.push_back(std::move(parent));
-  writes.push_back(std::move(run));
-  auto stored = objects.ExecuteBatch(writes, access.deadline, access.cancelled);
+  ObjectReply stored;
+  if (origin && (origin->GetString("type") == "stored_completions" ||
+                 origin->GetString("type") == "responses")) {
+    const auto& source_config = *definition.Find("data")->Find("resource")->Find("data_source_config");
+    stored = PublishStoredRun(objects, access, source_config, *origin,
+                              std::move(run), parent);
+  } else {
+    writes.push_back(std::move(parent));
+    writes.push_back(std::move(run));
+    stored = objects.ExecuteBatch(writes, access.deadline, access.cancelled);
+  }
   if (!pin.id.empty() && !stored.commit_unknown) {
     auto closed = BinaryStore(objects).Close(binary_access, &pin);
     if (!closed.ok()) objects.RecordAuxiliaryCleanupFailure();

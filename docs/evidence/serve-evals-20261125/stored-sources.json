@@ -1,0 +1,127 @@
+{
+  "stage": "both_stored_sources_and_signed_eval_terminals_verified",
+  "scope": "historical inference selection and terminal Evals webhooks",
+  "evals_host_cases": 10,
+  "webhook_host_cases": 12,
+  "cpu_sha256": {
+    "evals-stored-cpu-01.log": "2df36b752f375c1d008591a26ad5f794f713e50dadf5d43368847e9d2a2fc53b",
+    "evals-stored-webhooks-cpu.log": "310313ee92b203cd6926cbbd9fe9a48950faf239d7c8a5f53ff1845d8099e160"
+  },
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1359,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "compatibility_reference": "https://developers.openai.com/api/reference/resources/evals/subresources/runs/methods/create",
+  "terminal_reference": "https://developers.openai.com/api/docs/guides/evals",
+  "acceptance_pending": [
+    "packaged profiles and independent recovery",
+    "similarity, label-model, score-model and Python graders"
+  ],
+  "first_device": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 36.674,
+    "unchanged_default": true,
+    "phases": [],
+    "completed_output": {
+      "id": "outputitem_371bf6fd0ec2a2852bfd84b8251c3894",
+      "prediction": "157",
+      "score": 1
+    },
+    "runs": {
+      "responses": {
+        "id": "evalrun_bbc740a46a6aa20e1b03628cf713a959",
+        "status": "failed",
+        "result_counts": {
+          "total": 0,
+          "errored": 0,
+          "passed": 0,
+          "failed": 0
+        },
+        "error": {
+          "code": "invalid_request",
+          "message": "Unknown item field"
+        },
+        "per_model_usage": null
+      },
+      "completions": {
+        "id": "evalrun_e1804c48edfaf7fc797c4ba3b9a266c8",
+        "status": "completed",
+        "result_counts": {
+          "total": 1,
+          "errored": 0,
+          "passed": 1,
+          "failed": 0
+        },
+        "error": null,
+        "per_model_usage": [
+          {
+            "model_name": "qwen3.8-flash-next",
+            "invocation_count": 1,
+            "prompt_tokens": 303,
+            "completion_tokens": 4,
+            "total_tokens": 307,
+            "cached_tokens": 0
+          }
+        ]
+      }
+    },
+    "durable_record_sha256": {
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.evalrun.evalrun_bbc740a46a6aa20e1b03628cf713a959.json": "431bbd32d5e31a9b11b95082657869f06992bd9ac73d7e1d98e0fa163742e845",
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.evalrun.evalrun_e1804c48edfaf7fc797c4ba3b9a266c8.json": "28dc2c91e443225cdb1f033dea3cc21b8fe6a4b5245cba82f0f1b693001f963d",
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.outputitem.outputitem_371bf6fd0ec2a2852bfd84b8251c3894.json": "a0794aab41dd591dc76f66bb4ce97cbabe096f7b799bf6441aabd01ccbe586d4"
+    },
+    "failure": "Stored Responses user input carried list-only id and status into EasyInputMessage. Source was deleted and snapshot intact. The model did not start for that row.",
+    "pending_webhook_delivery_at_shutdown": true
+  },
+  "verified_source": "c6b66413b",
+  "fixed_device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.891,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ],
+    "sdk": "7.47.0",
+    "reports": [
+      {
+        "type": "responses",
+        "source": "resp_b92d7ed00b295a6602283a4a8456c993",
+        "run": "evalrun_5d49d1444a582ce95a46121f17c1f414",
+        "answer": "157",
+        "score": 1
+      }
+    ],
+    "independent_chat": "42",
+    "notices": [
+      {
+        "event": "evt_69822eb9612c79e5c73620b8e7613944",
+        "type": "eval.run.failed",
+        "run": "evalrun_567c015fe733f5b9f1c44cc2f449e093"
+      },
+      {
+        "event": "evt_d30c777e6071ae9acb29579ea32c26ab",
+        "type": "eval.run.succeeded",
+        "run": "evalrun_5d49d1444a582ce95a46121f17c1f414"
+      },
+      {
+        "event": "evt_f3ec8b9ccdbe88a9039beacaa9e552c7",
+        "type": "eval.run.canceled",
+        "run": "evalrun_e48fea5fd8d250be53d3c764c3a34446"
+      }
+    ],
+    "wire_objects": 3,
+    "driver_sha256": "bfc8dc074dd762b48950ada0b077ec4bcd71e640325bbfe1d08e611b4548ffe0",
+    "lease": "COMPLETED",
+    "raw_sha256": "9a700da6a9910888d9990dbf5eba7b11ba04dc088d4886d3e689dc3361433e9e"
+  },
+  "evals_cpu_after_repair_sha256": "ebf6c1b230ac394df88bb5a21861887e06575f5be9822d5efc735b2db6b078a9"
+}

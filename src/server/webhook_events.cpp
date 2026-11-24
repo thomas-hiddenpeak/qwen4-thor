@@ -6,7 +6,7 @@
 namespace q4t::server::webhook_detail {
 namespace {
 using namespace object_detail;
-constexpr std::array<std::string_view, 17> kTypes = {
+constexpr std::array<std::string_view, 20> kTypes = {
     "response.completed",        "response.failed",
     "response.cancelled",        "response.incomplete",
     "batch.completed",           "batch.failed",
@@ -15,7 +15,8 @@ constexpr std::array<std::string_view, 17> kTypes = {
     "agent.session.idle",        "agent.session.in_progress",
     "agent.session.failed",      "agent.session.action_required",
     "agent.environment.expired", "agent.environment.suspended",
-    "agent.environment.failed"};
+    "agent.environment.failed",  "eval.run.succeeded",
+    "eval.run.failed",           "eval.run.canceled"};
 }  // namespace
 uint32_t EventBit(std::string_view name) {
   for (size_t i = 0; i < kTypes.size(); ++i)
@@ -39,7 +40,7 @@ uint32_t Subscriptions(const Json& data) {
 }
 bool IsEventSource(std::string_view kind) {
   return kind == "agent_session" || kind == "environment" || kind == "batch" ||
-         kind == "response";
+         kind == "response" || kind == "evalrun";
 }
 
 std::string_view Transition(std::string_view kind, const Json& data,
@@ -61,7 +62,8 @@ std::string_view Transition(std::string_view kind, const Json& data,
       return "agent.environment.ready";
     if (status == "failed") {
       const auto* sessions = data.GetArray("attached_sessions");
-      return sessions && sessions->array.empty() && !data.Has("environment_events")
+      return sessions && sessions->array.empty() &&
+                     !data.Has("environment_events")
                  ? "agent.environment.failed"
                  : "";
     }
@@ -69,7 +71,20 @@ std::string_view Transition(std::string_view kind, const Json& data,
     if (status == "suspended") return "agent.environment.suspended";
     return {};
   }
+  if (kind == "evalrun") {
+    const auto* resource = data.Find("resource");
+    if (!resource || data.GetBool("deleting") ||
+        data.GetString("format") != "q4t.eval_run.v1" ||
+        resource->GetString("object") != "eval.run")
+      return {};
+    const auto status = resource->GetString("status");
+    if (status == "completed") return "eval.run.succeeded";
+    if (status == "failed") return "eval.run.failed";
+    if (status == "canceled") return "eval.run.canceled";
+    return {};
+  }
   if (kind != "response" && kind != "batch") return {};
+  if (kind == "response" && data.Has("eval_run_id")) return {};
   const auto* item = data.Find(kind == "response" ? "response" : "batch");
   if (!item || (kind == "response" && !item->GetBool("background"))) return {};
   const auto status = item->GetString("status");
@@ -112,7 +127,8 @@ Json SamplePayload(std::string_view type, std::string_view suffix) {
   if (type.starts_with("agent.session."))
     return Object({{"id", String("agent_session_test_" + std::string(suffix))},
                    {"environment_type", String("none")}});
-  std::string prefix = type.starts_with("batch.")               ? "batch_test_"
+  std::string prefix = type.starts_with("batch.")      ? "batch_test_"
+                       : type.starts_with("eval.run.") ? "evalrun_test_"
                        : type.starts_with("agent.environment.") ? "env_test_"
                                                                 : "resp_test_";
   return Object({{"id", String(prefix + std::string(suffix))}});

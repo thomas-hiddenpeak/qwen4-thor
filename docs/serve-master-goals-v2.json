@@ -2628,7 +2628,8 @@
         "evidence/serve-agent-environments-20261124/delivery.json",
         "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
         "evidence/serve-agent-workspaces-20261124/subagent-stream.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json",
+        "evidence/serve-evals-20261125/stored-sources.json"
       ],
       "release": {
         "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
@@ -6692,7 +6693,8 @@
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
         "evidence/serve-agent-sessions-20261123/traces.json",
         "evidence/serve-agent-environments-20261124/templates.json",
-        "evidence/serve-agent-environments-20261124/delivery.json"
+        "evidence/serve-agent-environments-20261124/delivery.json",
+        "evidence/serve-evals-20261125/stored-sources.json"
       ],
       "release": null,
       "mcp_tunnel_public_contract_cpu_evidence": "evidence/serve-mcp-tunnel-contract-cpu-20261116/README.md",
@@ -9170,7 +9172,8 @@
         "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
         "evidence/serve-agent-workspaces-20261124/subagent-stream.json",
         "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json",
+        "evidence/serve-evals-20261125/stored-sources.json"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -10218,7 +10221,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev460_delivered_remaining_deliveries",
+      "state": "rev478_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -10245,7 +10248,8 @@
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
         "evidence/serve-agent-workspaces-20261124/delivery.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json",
+        "evidence/serve-evals-20261125/stored-sources.json"
       ],
       "release": {
         "binary_sha256": "0851dab3568ae05f401156270ccaafb4ffa1eb1871c684de71ae626cf4244fcf",
@@ -10993,8 +10997,8 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-chat-audio-delivery-20261118/README.md"
       },
-      "current_mainline_evidence": "evidence/serve-tts-mainline-20261118/README.md",
-      "current_candidate": "Qualified native duplex rev396, credential reissue and PR55 main merge complete; MCP runtime integration in progress",
+      "current_mainline_evidence": "evidence/serve-chatkit-20261125/delivery.json",
+      "current_candidate": "Device-qualified Evals definitions, durable runs, model sampling, stored inference snapshots and signed terminal Webhooks; candidate 215/231 HTTP declarations. Published rev478 has 203/231.",
       "tts_input_delivery_20261118": {
         "status": "ACCEPT_NATIVE_TTS_INPUT_DELIVERY",
         "revision": 316,
@@ -11373,7 +11377,7 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
       },
-      "next": "Implement native Realtime tracing, Live, and all remaining required inference/application and reliability tasks. PR56 MCP is merged and rev416 remains STOPPED; preserve original quality failures and user-owned long-soak/listening.",
+      "next": "Qualify the remaining grader families, validate package profiles and recovery, and publish the candidate. Continue all other plan tasks.",
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
@@ -11451,7 +11455,8 @@
         "evidence/serve-responses-agent-interruption-20261123/delivery.json",
         "evidence/serve-agent-vaults-20261123/oauth-delivery.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-delivery.json",
+        "evidence/serve-chatkit-20261125/delivery.json"
       ],
       "release": null,
       "surface_prose_audit": {
@@ -11536,18 +11541,18 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "59541644bd48719fa098995e19f43425c1a9066f",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/environment-soak-src",
+        "source_commit": "355d632a41c7e864bb80b0546f45e949add900aa",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/environment-primary-01/bundle",
-          "manifest_sha256": "8ca0209d09374f1729817654630269a56dc682211515b79aa2376053d17d4c73"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-client-primary-01/bundle",
+          "manifest_sha256": "9b0b0c4d5550aa599bdd02e8f5f5b038bc9298331d32427fee6195651c40b75f"
         },
-        "revision": 450,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/environment-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "99276f8b9538a5c0480003ef099801624d9b619b36a999616b46b76075942bd7",
-        "handoff_sha256": "46f7d4e134f29146c91daaceb03e229c7f53afbdb5b7b9e2bc50a001f4c4070a",
+        "revision": 478,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "0bc637a9292ad2d261923644160e8451313dd822b82bba60f7a3f8d1a539a0d6",
+        "handoff_sha256": "6cbddd7439eb04324aac0018cbbdedc17639f2006d86f378bc37e0d6e0367b32",
         "checked": true,
-        "source_files": 697,
+        "source_files": 700,
         "hours_executed": 0
       },
       "video_affine_detail_20261117": {
@@ -11854,8 +11859,8 @@
       }
     }
   ],
-  "next_task": "Implement Evals definitions, runs and graded output items, the remaining ChatKit browser operations, environment backends and all other required inference, application, native ingress and recovery work.",
-  "next": "推进 Evals 评估定义、运行与逐条评分，继续 ChatKit 浏览器操作、托管环境后端及其余推理、应用、接入与恢复任务。",
+  "next_task": "Complete remaining native grader families, then qualify package profiles and recovery for Evals while continuing the remaining inference, application, ingress and recovery work.",
+  "next": "补齐 Evals 其余评分器并完成发行配置和恢复验收，继续开放的推理、应用、接入与恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -18034,5 +18039,20 @@
     "recoverable_client_turn_quota": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota.json",
     "quota_primary_light": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json",
     "subagent_delivery": "docs/evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
+  },
+  "native_evals_20261125": {
+    "definitions": "evidence/serve-evals-20261125/definitions.json",
+    "runs": "evidence/serve-evals-20261125/runs.json",
+    "sampling": "evidence/serve-evals-20261125/sampling.json",
+    "stored_sources_and_notifications": "evidence/serve-evals-20261125/stored-sources.json",
+    "runtime": "thor_native_tls_focused_business_verified",
+    "issued": false,
+    "candidate_declared_methods": 215,
+    "required_methods": 231,
+    "remaining": [
+      "text similarity, model and Python graders",
+      "package profiles and independent takeover",
+      "remaining inference/application methods and outstanding recovery compositions"
+    ]
   }
 }

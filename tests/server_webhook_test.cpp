@@ -244,6 +244,50 @@ Q4T_TEST(
   return true;
 }
 
+Q4T_TEST(webhook_eval_run_terminals_are_scoped_and_internal_samples_are_silent) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto scope = Access().scope;
+  for (const auto& [status, type] : std::array{
+           std::pair{"completed", "eval.run.succeeded"},
+           std::pair{"failed", "eval.run.failed"},
+           std::pair{"canceled", "eval.run.canceled"}}) {
+    const auto id = std::string("evalrun_") + status;
+    const auto endpoint = std::string("whe_") + status;
+    Q4T_CHECK(db.Execute(Subscription(scope, endpoint, type), Access().deadline).ok());
+    Q4T_CHECK(db.Execute(Subscription("client:peer", endpoint, type), Access().deadline).ok());
+    ObjectRequest run;
+    run.kind = ObjectKind::kEvalRun;
+    run.scope = scope;
+    run.id = id;
+    run.operation = ObjectOperation::kPut;
+    run.data = Object({{"format", String("q4t.eval_run.v1")}, {"output_ids", Array()},
+                       {"resource", Object({{"id", String(id)}, {"object", String("eval.run")},
+                                            {"status", String("in_progress")}})}});
+    Q4T_CHECK(db.Execute(run, Access().deadline).ok());
+    run.expected_revision = 1;
+    Set(&Field(run.data,"resource"), "status", String(status));
+    Q4T_CHECK(db.Execute(run, Access().deadline).ok());
+    ++run.expected_revision;
+    Q4T_CHECK(db.Execute(run, Access().deadline).ok());
+  }
+  Q4T_CHECK(db.Execute(Subscription(scope, "whe_response", "response.completed"), Access().deadline).ok());
+  auto private_job = Background("resp_evaluation", "completed");
+  Set(&private_job.data, "eval_run_id", String("evalrun_completed"));
+  Q4T_CHECK(db.Execute(private_job, Access().deadline).ok());
+  auto events = Events(db);
+  Q4T_CHECK(events.ok() && events.value.GetArray("data")->array.size() == 3);
+  for (const auto& row : events.value.GetArray("data")->array) {
+    const auto& event = *row.Find("data")->Find("event");
+    Q4T_CHECK(event.GetString("type").starts_with("eval.run."));
+    Q4T_CHECK(event.Find("data")->object.size() == 1 &&
+              event.Find("data")->GetString("id").starts_with("evalrun_"));
+    Q4T_CHECK(row.Find("data")->GetArray("deliveries")->array.size() == 1);
+  }
+  Q4T_CHECK(Events(db, "client:peer").value.GetArray("data")->array.empty());
+  return true;
+}
+
 Q4T_TEST(
     webhook_count_quota_defers_without_breaking_background_and_recovers_on_reopen) {
   Fixture f;

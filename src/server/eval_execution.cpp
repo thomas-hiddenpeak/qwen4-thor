@@ -199,7 +199,7 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
       return InvalidRecord();
     done = static_cast<size_t>(index) == content->array.size();
     if (!done) row = content->array[index];
-  } else if (source_type == "file_id") {
+  } else if (source_type == "file_id" || write.data.Has("blob")) {
     loaded = FileRow(objects, access, &write, &row, &done);
   } else {
     loaded = BadInput("data_source.source",
