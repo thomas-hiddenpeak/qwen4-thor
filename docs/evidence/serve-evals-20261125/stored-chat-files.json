@@ -33,5 +33,21 @@
   "pending": [
     "A real stored Chat PDF replay through the native model and two official SDKs",
     "Package and recovery qualification"
+  ],
+  "device_attempts": [
+    {
+      "result": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 60.751,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "source_file_read_success": true,
+      "retained_error": "400 invalid_request at data_source.source.type",
+      "cause": "The SDK fixture paired stored_completions with the Responses run source. The frozen official schema permits stored_completions only under a completions run.",
+      "sdk_stderr": "0fc61a9752f3829f9bb29fb46e99330762258011663aac6648c477038c716f71",
+      "lease": "314f8de64e5f2b6705b8dc9cbc135486880c095f353913fa172d22b6a31e61f7"
+    }
   ]
 }

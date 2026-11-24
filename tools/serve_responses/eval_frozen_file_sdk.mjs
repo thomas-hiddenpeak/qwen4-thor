@@ -63,7 +63,7 @@ async function observe(path, method, status, call) {
 const collection = '/evals/{eval_id}/runs', detail = collection + '/{run_id}';
 const source = {type: chatHistory ? 'stored_completions' : 'responses', model: p.model, metadata};
 const run = await observe(collection, 'post', 201, owner.evals.runs.create(ev.id, {
-  data_source: {type: 'responses', model: p.model, source, sampling_params:
+  data_source: {type: chatHistory ? 'completions' : 'responses', model: p.model, source, sampling_params:
     {temperature: 0, reasoning_effort: 'none', max_completion_tokens: 48}}}));
 const history = chatHistory ? owner.chat.completions : owner.responses;
 await history.delete(first.id);
