@@ -54,7 +54,13 @@ RealtimeConversationCallbacks ChatServer::MakeRealtimeCallbacks(
         PlanRealtimeChat(current_settings, response, items, planning, &plan,
                          &failure, prompt, native_input, mcp,
                          definitions_only, &history, override_temperature ? override_temperature : legacy_temperature);
-    return status ? ObjectReply{} : Failure(status, failure);
+    if (!status) return Failure(status, failure);
+    ObjectReply prepared;
+    if (override_temperature) {
+      const auto limit = plan.envelope.options.GetInt("max_output_tokens");
+      prepared.value = Object({{"max_output_tokens", Number(limit)}});
+    }
+    return prepared;
   };
   RealtimeConversationCallbacks callbacks;
   callbacks.traces = [this] { return realtime_traces_.Get(); };
@@ -508,6 +514,8 @@ RealtimeGenerationResult ChatServer::RunRealtimeConversation(
         {&plan.generation.chat, accounting ? &*accounting : nullptr,
          delivery ? &native_speech : nullptr},
         &invocation);
+    if (job.legacy_temperature)
+      result.planned_output_tokens = plan.envelope.options.GetInt("max_output_tokens");
     if (result.usage && delivery) {
       if (const auto observed = speech_usage.Total())
         result.usage->output_audio = observed->output;

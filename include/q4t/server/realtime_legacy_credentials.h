@@ -3,6 +3,8 @@
 #include "q4t/server/object_store.h"
 
 namespace q4t::server {
+void CopyLegacyRealtimeAudioFormat(const io::Json& audio, std::string_view key,
+                                   io::Json* result);
 ObjectReply LegacyRealtimeExpiry(const io::Json& body, std::string_view field,
                                  io::Json* expiry);
 ObjectReply LegacyConversationCredential(const io::Json& body, io::Json* grant,

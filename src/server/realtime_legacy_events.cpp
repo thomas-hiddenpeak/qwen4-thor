@@ -73,12 +73,13 @@ ObjectReply DecodeLegacyRealtimeEvent(Json* event,
   return {};
 }
 
-bool EncodeLegacyRealtimeEvent(Json* event, double session_temperature) {
+bool EncodeLegacyRealtimeEvent(Json* event, double temperature,
+                               int max_output_tokens, std::string_view voice) {
   const auto type = event->GetString("type");
   if (type == "conversation.item.done") return false;
   if (type == "session.created" || type == "session.updated") {
     auto& session = Field(*event, "session");
-    session = LegacyConversationResource(session, nullptr, session_temperature);
+    session = LegacyConversationResource(session, nullptr, temperature);
   } else if (type == "conversation.item.added") {
     Set(event, "type", String("conversation.item.created"));
   } else {
@@ -96,6 +97,18 @@ bool EncodeLegacyRealtimeEvent(Json* event, double session_temperature) {
   if (event->Has("part")) ContentPart(&Field(*event, "part"), true);
   if (event->Has("response")) {
     auto& response = Field(*event, "response");
+    Json sampling;
+    sampling.type = Json::Type::kNumber;
+    sampling.number = temperature;
+    Set(&response, "temperature", std::move(sampling));
+    if (max_output_tokens > 0)
+      Set(&response, "max_output_tokens", Number(max_output_tokens));
+    if (response.Has("audio")) {
+      const auto& output = Field(Field(response, "audio"), "output");
+      CopyLegacyRealtimeAudioFormat(output, "output_audio_format", &response);
+      if (!voice.empty()) Set(&response, "voice", String(std::string(voice)));
+      Erase(&response, "audio");
+    }
     if (response.Has("output_modalities")) {
       const auto& modes = Field(response, "output_modalities");
       const bool audio = modes.IsArray() && !modes.array.empty() && modes.array[0].str == "audio";

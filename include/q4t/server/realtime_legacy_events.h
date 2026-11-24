@@ -9,5 +9,6 @@ namespace q4t::server {
 ObjectReply DecodeLegacyRealtimeEvent(io::Json* event,
                                       std::optional<double>* temperature);
 // False denotes the native duplicate of an item already emitted to beta.
-bool EncodeLegacyRealtimeEvent(io::Json* event, double session_temperature);
+bool EncodeLegacyRealtimeEvent(io::Json* event, double temperature,
+                               int max_output_tokens, std::string_view voice);
 }  // namespace q4t::server

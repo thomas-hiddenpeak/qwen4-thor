@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+旧版实时对话的开始帧与终态都返回本次生成温度 0.6、输出上限 32，文本为 42。另一会话通过旧版签发入口取证，官方 SDK 使用转写 intent 和显式 beta 请求头连接；首帧返回扁平音频设置，更新后识别真实录音“请查询当前项目版本号。”，独立 Chat 答 42。同一启动用时 41.573 秒，10 项 CPU 检查通过。三种音频编码的回显已做 CPU 验证；本次业务用例未请求语音合成。下一步进行候选交付并补齐音频翻译。[验收回执](evidence/serve-realtime-legacy-sessions-20261124/beta-resources.json)
+
 官方 Node SDK 7.47.0 已用旧版 WebSocket 完成真实对话。会话签发温度 0.75，更新为 0.9，此次回答单独指定 0.6。客户端读到同一回答的 response.text.delta、response.text.done 和终态，文本为 42，用量 109 tokens。7 项 CPU 检查通过，原生与可选 nginx 均验证 SDK 请求头、浏览器子协议及错误版本。一次模型启动，用时 35.12 秒。后续补齐响应配置回显及转写首帧，默认仍为 rev458。[验收回执](evidence/serve-realtime-legacy-sessions-20261124/beta-wire.json)
 
 PR #77 的两项 host-contracts 已通过，六项子 Agent 查询合入 main（`5c9e531612`）。默认发行已从 rev456 更新至 rev458，登记独立回退包；发布时保持 STOPPED，原有 13 份客户与恢复记录的内容未变。模型退出与网关异常两次业务短验各启动两代模型，子 Agent 的历史在替换后可读，父会话在原 4096 输入配额内取回 457。工具回填返回版本号 442 及当时的 UTC，独立 Chat 答 42。原先一次工具回填得到无关答案，已保留原文与真实输入。24 小时运行计划已通过预检，实跑由用户安排。[发行回执](evidence/serve-agent-workspaces-20261124/subagent-delivery.json)

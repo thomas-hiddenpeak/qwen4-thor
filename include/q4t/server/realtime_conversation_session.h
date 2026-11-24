@@ -47,6 +47,7 @@ struct RealtimeGenerationResult {
   std::optional<RealtimeResponseUsage> usage;
   // Only an actually completed default-context generation may publish a cut.
   std::optional<std::vector<size_t>> retained_input_indices;
+  int planned_output_tokens = 0;
 };
 using RealtimeDeltaSink = std::function<ObjectReply(const ResponseDelta&)>;
 struct RealtimeConversationCallbacks {
@@ -131,7 +132,7 @@ class RealtimeConversationSession {
  private:
   struct Work;
   void ConfigureTracing() noexcept;
-  ObjectReply Emit(io::Json event);
+  ObjectReply Emit(io::Json event, const Work* owner = nullptr);
   bool Flush();
   bool Event(std::string_view type, io::Json fields);
   bool ErrorEvent(ObjectReply reply, std::string_view event_id = {});

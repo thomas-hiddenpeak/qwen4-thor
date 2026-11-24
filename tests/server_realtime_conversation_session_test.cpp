@@ -14,6 +14,7 @@
 #include "q4t/server/output_schema.h"
 #include "q4t/server/schema_graph.h"
 #include "q4t/server/realtime_chat_plan.h"
+#include "q4t/server/realtime_legacy_events.h"
 #include "q4t/server/realtime_shape.h"
 #include "q4t/server/realtime_mcp_history.h"
 #include "q4t/test.h"
@@ -403,6 +404,28 @@ struct InputFixture : Fixture {
 };
 }  // namespace
 
+Q4T_TEST(realtime_beta_audio_response_uses_selected_format_voice_and_limits) {
+  for (const auto& [native, legacy] :
+       {std::pair{"audio/pcm", "pcm16"}, std::pair{"audio/pcmu", "g711_ulaw"},
+        std::pair{"audio/pcma", "g711_alaw"}}) {
+    auto format = Object({{"type", String(native)}});
+    auto out = Object({{"format", std::move(format)}});
+    auto audio = Object({{"output", std::move(out)}});
+    auto response = Object({{"output_modalities", Array({String("audio")})},
+                            {"audio", std::move(audio)}});
+    auto event = Object({{"type", String("response.done")},
+                         {"response", std::move(response)}});
+    Q4T_CHECK(EncodeLegacyRealtimeEvent(&event, 0.7, 77, "vivian"));
+    const auto& result = *event.Find("response");
+    Q4T_CHECK(!result.Has("audio") && !result.Has("output_modalities") &&
+              result.GetString("output_audio_format") == legacy &&
+              result.GetString("voice") == "vivian" &&
+              result.GetInt("max_output_tokens") == 77 &&
+              result.Find("temperature")->number == 0.7);
+  }
+  return true;
+}
+
 Q4T_TEST(realtime_beta_session_updates_sampling_after_validation_and_snapshots_each_response) {
   auto options = [](double temperature) {
     Json value;
@@ -432,9 +455,16 @@ Q4T_TEST(realtime_beta_session_updates_sampling_after_validation_and_snapshots_e
   Q4T_CHECK(f.Add(User("item_query", "hello")) && f.Count("conversation.item.created") == 1);
   auto response = options(0.65);
   Set(&response, "max_response_output_tokens", Number(20));
-  Q4T_CHECK(f.Create(response) && f.Finish());
-  Q4T_CHECK(f.Snapshot(0).legacy_temperature == 0.65);
-  Q4T_CHECK(f.Create() && f.Finish() && f.Snapshot(1).legacy_temperature == 0.9);
+  f.hold = true;
+  Q4T_CHECK(f.Create(response) && f.Wait([&] { return f.entered.load(); }));
+  const auto initial = f.Last("response.created");
+  Q4T_CHECK(initial.Find("response")->Find("temperature")->number == 0.65);
+  Q4T_CHECK(f.Send(update(options(0.8))));
+  f.hold = false;
+  Q4T_CHECK(f.Finish() && f.Snapshot(0).legacy_temperature == 0.65);
+  const auto completed = f.Last("response.done");
+  Q4T_CHECK(completed.Find("response")->Find("temperature")->number == 0.65);
+  Q4T_CHECK(f.Create() && f.Finish() && f.Snapshot(1).legacy_temperature == 0.8);
   Q4T_CHECK(f.Count("response.text.delta") > 0 && f.Count("response.output_text.delta") == 0);
   Q4T_CHECK(f.Count("conversation.item.done") == 0 && f.Count("response.done") == 2);
   return true;
