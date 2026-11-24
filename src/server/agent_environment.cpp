@@ -35,7 +35,8 @@ ObjectReply Resource(const Json& data, const std::string& id) {
   ChatPlanError error;
   if (!info || info->GetString("id") != id ||
       !ValidateEnvironment(*info, EnvironmentShape::kResource, &error) ||
-      data.GetInt("warm_until") <= 0)
+      (info->GetString("status") == "failed" ? !ValidFailedPreparation(data)
+                                             : data.GetInt("warm_until") <= 0))
     return Corrupt();
   ObjectReply out;
   out.value = *info;
@@ -131,7 +132,28 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
   std::shared_ptr<environment_detail::WorkspaceCopies> copies;
   auto prepared = PrepareRecord(objects, access, *body.Find("environment"),
                                 vaults, resource, &copies);
-  if (!prepared.ok()) return prepared;
+  if (!prepared.ok()) {
+    // Only verified defects in a Files source terminate this attempt. A
+    // temporary IO error, a private/missing ID or an uncertain commit retains
+    // the original error, allowing the client to act on it.
+    if (prepared.commit_unknown || prepared.http_status != 503 ||
+        (prepared.code != "file_state_invalid" &&
+         prepared.code != "binary_state_invalid"))
+      return prepared;
+    copies.reset();
+    prepared = {};
+    prepared.value = Object({{"id", String(resource.id)},
+                             {"object", String("agent.environment")},
+                             {"type", String("openai_hosted")},
+                             {"status", String("failed")},
+                             {"files", Array()}, {"plugins", Array()},
+                             {"skills", Array()}});
+    resource.operation = ObjectOperation::kPut;
+    resource.ttl_seconds = kReplaySeconds;
+    resource.data = Object({{"resource", prepared.value},
+                            {"failed_at", Number(std::time(nullptr))},
+                            {"failure_code", String("workspace_source_invalid")}});
+  }
   // Only new standalone environments support multiple live attachments.
   Set(&resource.data, "attached_sessions", Array());
   ObjectReply committed;
@@ -153,7 +175,7 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
       if (old.http_status != 404) return old;
     }
   }
-  copies->Settle(committed);
+  if (copies) copies->Settle(committed);
   if (committed.commit_unknown)
     committed.value = Object({{"id", *prepared.value.Find("id")}});
   return committed.ok() ? prepared : committed;

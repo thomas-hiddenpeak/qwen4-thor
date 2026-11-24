@@ -121,6 +121,11 @@ class Inspector {
     }
     const auto status = resource->GetString("status");
     const auto* attached = data.GetArray("attached_sessions");
+    if (!is_template && status == "failed") {
+      if (!payloads.empty() || !environment_detail::ValidFailedPreparation(data))
+        value.uncertain = true;
+      return;
+    }
     if (!is_template && !attached && status == "disconnected") {
       value.uncertain = sealed || data.Has("bound_session");
       return;

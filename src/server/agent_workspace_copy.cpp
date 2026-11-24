@@ -112,6 +112,10 @@ ObjectReply WorkspaceCopies::CopyFile(const Json& source,
   for (size_t i = 0; i < read.manifest.chunks.size(); ++i) {
     std::string chunk;
     result = binary.Read(access, read, i, &chunk);
+    // The caller already opened and pinned this owned file. Its manifest
+    // references immutable chunks that must exist for the life of the pin.
+    if (result.http_status == 404 && !result.commit_unknown)
+      return Error(503, "binary_state_invalid", "Stored file chunk is missing");
     if (!result.ok()) return result;
     std::string_view bytes(chunk);
     while (!bytes.empty()) {

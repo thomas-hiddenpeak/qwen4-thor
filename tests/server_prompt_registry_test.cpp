@@ -124,6 +124,14 @@ ObjectReply Api(ObjectStore& store, std::string method, std::string path,
                              body.IsNull() ? "" : OutputJson(body), Config(),
                              access);
 }
+ObjectReply UploadReleaseFixture(ObjectStore& db, const BinaryAccess& io) {
+  FileUpload upload(db, io, "multipart/form-data; boundary=f");
+  auto fed = upload.Feed(
+      "--f\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nuser_data\r\n"
+      "--f\r\nContent-Disposition: form-data; name=\"file\";"
+      " filename=\"release\"\r\n\r\n474\n\r\n--f--\r\n", io.deadline);
+  return fed.ok() ? upload.Finish() : fed;
+}
 }  // namespace
 
 Q4T_TEST(hosted_workspace_prewarms_once_and_installs_private_bytes) {
@@ -224,6 +232,132 @@ Q4T_TEST(hosted_workspace_owns_uploaded_bytes_after_source_deletion) {
   Q4T_CHECK(file.GetString("type") == "inline" && file.GetString("data") == "cQB0");
   Q4T_CHECK(!environment_detail::OpenDefinition(
       reopened, Access("client:peer"), environment, envelope, &snapshot).ok());
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_failed_prewarm_preserves_receipt_and_scope) {
+  Fixture f;
+  const auto access = Access("client:alpha");
+  const std::string root = "/v1/agents/environments";
+  const auto request = [](const std::string& id) {
+    return "{\"environment\":{\"type\":\"openai_hosted\",\"files\":["
+           "{\"type\":\"file_id\",\"path\":\"/workspace/release\",\"file_id\":\"" +
+           id + "\"}]}}";
+  };
+  std::string source, failed;
+  {
+    ObjectStore db(f.options);
+    BinaryAccess io{access.scope, access.deadline, {}};
+    auto file = UploadReleaseFixture(db, io);
+    Q4T_CHECK(Ok(file) && file.value.GetInt("bytes") == 4);
+    source = file.value.GetString("id");
+    // Simulate an inconsistent stored length in this fixture's owned file.
+    // The chunk manifest is still valid and retains its original bytes.
+    ObjectRequest change;
+    change.scope = access.scope;
+    change.kind = ObjectKind::kFile;
+    change.id = source;
+    auto row = db.Execute(change, access.deadline);
+    Q4T_CHECK(Ok(row));
+    change.data = *row.value.Find("data");
+    auto metadata = *change.data.Find("file");
+    Set(&metadata, "bytes", Parse("3"));
+    Set(&change.data, "file", std::move(metadata));
+    change.expected_revision = row.value.GetInt("revision");
+    change.created_at = row.value.GetInt("created_at");
+    change.expires_at = row.value.GetInt("expires_at");
+    change.operation = ObjectOperation::kPut;
+    Q4T_CHECK(Ok(db.Execute(change, access.deadline)));
+    BinaryRead read;
+    Q4T_CHECK(Files(db).Open(io, source, &read, nullptr).code ==
+              "file_state_invalid");
+    auto create = [&](const std::string& body, const StateAccess& client) {
+      return HandleHostedEnvironment(db, "POST", root, body, client, "prewarm");
+    };
+    Q4T_CHECK(create(request(source), Access("client:beta")).http_status == 404);
+    Q4T_CHECK(create(request("file_missing"), access).http_status == 404);
+    auto result = create(request(source), access);
+    Q4T_CHECK(Ok(result) && result.http_status == 201 &&
+              result.value.GetString("status") == "failed");
+    failed = result.value.GetString("id");
+    Q4T_CHECK(create(request("file_missing"), access).http_status == 409);
+  }
+  ObjectStore reopened(f.options);
+  auto replay = HandleHostedEnvironment(reopened, "POST", root, request(source),
+                                        access, "prewarm");
+  auto view = HandleHostedEnvironment(reopened, "GET", root + "/" + failed, "",
+                                      access, "");
+  Q4T_CHECK(Ok(view) && Ok(replay) && view.value.GetString("id") == failed &&
+            OutputJson(view.value) == OutputJson(replay.value));
+  auto list = HandleHostedEnvironment(reopened, "GET", root, "", access, "");
+  Q4T_CHECK(Ok(list) && list.value.GetArray("data")->array.empty());
+  ObjectRequest row;
+  row.scope = access.scope;
+  row.kind = ObjectKind::kEnvironment;
+  row.id = failed;
+  auto retained = reopened.Execute(row, access.deadline);
+  Q4T_CHECK(Ok(retained));
+  auto data = *retained.value.Find("data");
+  Q4T_CHECK(environment_detail::ValidFailedPreparation(data));
+  const auto graph = InspectObjectRetention("environment", data);
+  Q4T_CHECK(!graph.uncertain && graph.references.empty() &&
+            retained.value.GetInt("expires_at") >= data.GetInt("failed_at") + 86400);
+  Set(&data, "q4t_webhook_deferred", Parse(R"({"operation":"put"})"));
+  Q4T_CHECK(!InspectObjectRetention("environment", data).uncertain);
+  Set(&data, "input_snapshots", Parse("[]"));
+  Q4T_CHECK(InspectObjectRetention("environment", data).uncertain);
+  const auto binding = Parse("{\"type\":\"openai_hosted\",\"environment_id\":\"" +
+                             failed + "\"}");
+  ObjectRequest attachment;
+  std::shared_ptr<environment_detail::WorkspaceCopies> copies;
+  Q4T_CHECK(environment_detail::PrepareAttachment(
+      reopened, access, binding, "agent_session_test", Parse("[]"),
+      &attachment, &copies).code == "environment_not_ready");
+  const auto handoff = std::filesystem::path(f.options.directory).parent_path();
+  std::ofstream out(handoff / "handoff.json");
+  out << "{\"tenant\":\"alpha\",\"source\":\"" << source << "\"}\n";
+  Q4T_CHECK(out.good());
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_missing_or_damaged_pinned_chunk_fails_only_prewarm) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto access = Access();
+  const BinaryAccess io{access.scope, access.deadline, {}};
+  auto file = UploadReleaseFixture(db, io);
+  Q4T_CHECK(Ok(file));
+  const auto source = file.value.GetString("id");
+  BinaryRead pin;
+  Q4T_CHECK(Ok(Files(db).Open(io, source, &pin)) &&
+            pin.manifest.chunks.size() == 1);
+  ObjectRequest chunk;
+  chunk.scope = access.scope;
+  chunk.kind = ObjectKind::kToolRun;
+  chunk.id = pin.manifest.chunks.front().id;
+  Q4T_CHECK(Ok(BinaryStore(db).Close(io, &pin)));
+  const std::string body = "{\"environment\":{\"type\":\"openai_hosted\","
+      "\"files\":[{\"type\":\"file_id\",\"path\":\"/workspace/release\","
+      "\"file_id\":\"" + source + "\"}]}}";
+  for (const bool missing : {false, true}) {
+    auto stored = db.Execute(chunk, access.deadline);
+    Q4T_CHECK(Ok(stored));
+    auto mutation = chunk;
+    mutation.operation = missing ? ObjectOperation::kErase : ObjectOperation::kPut;
+    mutation.expected_revision = stored.value.GetInt("revision");
+    mutation.data = *stored.value.Find("data");
+    if (!missing) Set(&mutation.data, "base64", Parse(R"("AAAAAA==")"));
+    Q4T_CHECK(Ok(db.Execute(mutation, access.deadline)));
+    auto result = HandleHostedEnvironment(db, "POST", "/v1/agents/environments",
+                                          body, access, "");
+    Q4T_CHECK(Ok(result) && result.value.GetString("status") == "failed");
+  }
+  const std::string root = "/v1/agents/environments";
+  const std::string empty = R"({"environment":{"type":"openai_hosted"}})";
+  const StateAccess cancelled{access.scope, access.deadline, [] { return true; }};
+  Q4T_CHECK(!HandleHostedEnvironment(db, "POST", root, empty, cancelled, "retry").ok());
+  auto retry = HandleHostedEnvironment(db, "POST", root, empty, access, "retry");
+  Q4T_CHECK(Ok(retry) && retry.value.GetString("status") == "ready");
   return true;
 }
 
