@@ -32,6 +32,8 @@ inline std::string Digest(std::string_view text) {
 inline bool ValidId(std::string_view id) { return ValidApplicationId(id); }
 inline std::string Kind(ObjectKind kind) {
   switch (kind) {
+    case ObjectKind::kEval:
+      return "eval";
     case ObjectKind::kChatKitSession:
       return "chatkit_session";
     case ObjectKind::kChatKitThread:
@@ -106,7 +108,7 @@ inline std::string Kind(ObjectKind kind) {
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kChatKitThread); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kEval); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

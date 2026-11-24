@@ -26,6 +26,8 @@
 #include "q4t/server/agent_registration_types_data.h"
 #include "q4t/server/agent_automation.h"
 #include "q4t/server/automation_types_data.h"
+#include "q4t/server/evals.h"
+#include "q4t/server/eval_types_data.h"
 #include "q4t/server/chatkit.h"
 #include "q4t/server/chatkit_types_data.h"
 #include "q4t/server/webhook_types_data.h"
@@ -445,6 +447,11 @@ Status ValidateAssistant(const Json& value, AssistantShape shape,
     case AssistantShape::kStepListQuery: root = "step_list_query"; break;
     case AssistantShape::kStepQuery: root = "step_query"; break;
   }
+  return Validate(graph, value, root, error, "", true);
+}
+
+Status ValidateEval(const Json& value, const char* root, ChatPlanError* error) {
+  static const Graph graph(eval_types::kData, "q4t-openai-eval-types-v1");
   return Validate(graph, value, root, error, "", true);
 }
 

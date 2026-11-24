@@ -23155,6 +23155,1502 @@
       "required": [],
       "additionalProperties": false
     },
+    "eval_130": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "limit": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "order": {
+          "$ref": "#/$defs/eval_131"
+        },
+        "order_by": {
+          "$ref": "#/$defs/eval_134"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_134": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_135"
+        },
+        {
+          "$ref": "#/$defs/eval_136"
+        }
+      ]
+    },
+    "eval_136": {
+      "const": "updated_at"
+    },
+    "eval_135": {
+      "const": "created_at"
+    },
+    "eval_131": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_132"
+        },
+        {
+          "$ref": "#/$defs/eval_133"
+        }
+      ]
+    },
+    "eval_133": {
+      "const": "desc"
+    },
+    "eval_132": {
+      "const": "asc"
+    },
+    "eval_84": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_81"
+        }
+      ]
+    },
+    "eval_81": {
+      "type": "number"
+    },
+    "eval_21": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        }
+      ]
+    },
+    "eval_20": {
+      "type": "string"
+    },
+    "eval_128": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/eval_129"
+        },
+        "eval_id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "object": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "deleted",
+        "eval_id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "eval_129": {
+      "type": "boolean"
+    },
+    "eval_106": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/eval_17"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_21"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_17": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_19"
+        }
+      ]
+    },
+    "eval_19": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_20"
+      }
+    },
+    "eval_18": {
+      "type": "null"
+    },
+    "eval_107": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "data_source_config": {
+          "$ref": "#/$defs/eval_108"
+        },
+        "id": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "metadata": {
+          "$ref": "#/$defs/eval_115"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "object": {
+          "$ref": "#/$defs/eval_116"
+        },
+        "testing_criteria": {
+          "$ref": "#/$defs/eval_117"
+        }
+      },
+      "required": [
+        "created_at",
+        "data_source_config",
+        "id",
+        "metadata",
+        "name",
+        "object",
+        "testing_criteria"
+      ],
+      "additionalProperties": false
+    },
+    "eval_117": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_118"
+      }
+    },
+    "eval_118": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_61"
+        },
+        {
+          "$ref": "#/$defs/eval_119"
+        },
+        {
+          "$ref": "#/$defs/eval_125"
+        },
+        {
+          "$ref": "#/$defs/eval_126"
+        },
+        {
+          "$ref": "#/$defs/eval_127"
+        }
+      ]
+    },
+    "eval_127": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/eval_87"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "pass_threshold": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "range": {
+          "$ref": "#/$defs/eval_92"
+        },
+        "sampling_params": {
+          "$ref": "#/$defs/eval_94"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_105"
+        }
+      },
+      "required": [
+        "input",
+        "model",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_105": {
+      "const": "score_model"
+    },
+    "eval_94": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_95"
+        }
+      ]
+    },
+    "eval_95": {
+      "type": "object",
+      "properties": {
+        "max_completions_tokens": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "reasoning_effort": {
+          "$ref": "#/$defs/eval_97"
+        },
+        "seed": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "temperature": {
+          "$ref": "#/$defs/eval_96"
+        },
+        "top_p": {
+          "$ref": "#/$defs/eval_96"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "eval_96": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_81"
+        }
+      ]
+    },
+    "eval_97": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_98"
+        },
+        {
+          "$ref": "#/$defs/eval_99"
+        },
+        {
+          "$ref": "#/$defs/eval_100"
+        },
+        {
+          "$ref": "#/$defs/eval_101"
+        },
+        {
+          "$ref": "#/$defs/eval_102"
+        },
+        {
+          "$ref": "#/$defs/eval_103"
+        },
+        {
+          "$ref": "#/$defs/eval_104"
+        }
+      ]
+    },
+    "eval_104": {
+      "const": "max"
+    },
+    "eval_103": {
+      "const": "xhigh"
+    },
+    "eval_102": {
+      "const": "high"
+    },
+    "eval_101": {
+      "const": "medium"
+    },
+    "eval_100": {
+      "const": "low"
+    },
+    "eval_99": {
+      "const": "minimal"
+    },
+    "eval_98": {
+      "const": "none"
+    },
+    "eval_92": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_93"
+        }
+      ]
+    },
+    "eval_93": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_81"
+      }
+    },
+    "eval_87": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_88"
+      }
+    },
+    "eval_88": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_89"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_52"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_57"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_57": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_58"
+        }
+      ]
+    },
+    "eval_58": {
+      "const": "message"
+    },
+    "eval_52": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_53"
+        },
+        {
+          "$ref": "#/$defs/eval_54"
+        },
+        {
+          "$ref": "#/$defs/eval_55"
+        },
+        {
+          "$ref": "#/$defs/eval_56"
+        }
+      ]
+    },
+    "eval_56": {
+      "const": "developer"
+    },
+    "eval_55": {
+      "const": "system"
+    },
+    "eval_54": {
+      "const": "assistant"
+    },
+    "eval_53": {
+      "const": "user"
+    },
+    "eval_89": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_30"
+        },
+        {
+          "$ref": "#/$defs/eval_42"
+        },
+        {
+          "$ref": "#/$defs/eval_48"
+        },
+        {
+          "$ref": "#/$defs/eval_90"
+        },
+        {
+          "$ref": "#/$defs/eval_91"
+        }
+      ]
+    },
+    "eval_91": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "image_url": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_41"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_41": {
+      "const": "input_image"
+    },
+    "eval_90": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_39"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_39": {
+      "const": "output_text"
+    },
+    "eval_48": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_49"
+      }
+    },
+    "eval_49": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_30"
+        },
+        {
+          "$ref": "#/$defs/eval_42"
+        },
+        {
+          "$ref": "#/$defs/eval_50"
+        },
+        {
+          "$ref": "#/$defs/eval_51"
+        }
+      ]
+    },
+    "eval_51": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "image_url": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_41"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_50": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_39"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_42": {
+      "type": "object",
+      "properties": {
+        "input_audio": {
+          "$ref": "#/$defs/eval_43"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_47"
+        }
+      },
+      "required": [
+        "input_audio",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_47": {
+      "const": "input_audio"
+    },
+    "eval_43": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "format": {
+          "$ref": "#/$defs/eval_44"
+        }
+      },
+      "required": [
+        "data",
+        "format"
+      ],
+      "additionalProperties": false
+    },
+    "eval_44": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_45"
+        },
+        {
+          "$ref": "#/$defs/eval_46"
+        }
+      ]
+    },
+    "eval_46": {
+      "const": "wav"
+    },
+    "eval_45": {
+      "const": "mp3"
+    },
+    "eval_30": {
+      "type": "object",
+      "properties": {
+        "prompt_cache_breakpoint": {
+          "$ref": "#/$defs/eval_31"
+        },
+        "text": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_37"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_37": {
+      "const": "input_text"
+    },
+    "eval_31": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_32"
+        }
+      ]
+    },
+    "eval_32": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/eval_33"
+        },
+        "ttl": {
+          "$ref": "#/$defs/eval_34"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "eval_34": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_35"
+        },
+        {
+          "$ref": "#/$defs/eval_36"
+        }
+      ]
+    },
+    "eval_36": {
+      "const": "12h"
+    },
+    "eval_35": {
+      "const": "30m"
+    },
+    "eval_33": {
+      "const": "explicit"
+    },
+    "eval_126": {
+      "type": "object",
+      "properties": {
+        "image_tag": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "pass_threshold": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "source": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_85"
+        }
+      },
+      "required": [
+        "name",
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_85": {
+      "const": "python"
+    },
+    "eval_125": {
+      "type": "object",
+      "properties": {
+        "evaluation_metric": {
+          "$ref": "#/$defs/eval_69"
+        },
+        "input": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "pass_threshold": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "reference": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_82"
+        }
+      },
+      "required": [
+        "evaluation_metric",
+        "input",
+        "name",
+        "pass_threshold",
+        "reference",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_82": {
+      "const": "text_similarity"
+    },
+    "eval_69": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_70"
+        },
+        {
+          "$ref": "#/$defs/eval_71"
+        },
+        {
+          "$ref": "#/$defs/eval_72"
+        },
+        {
+          "$ref": "#/$defs/eval_73"
+        },
+        {
+          "$ref": "#/$defs/eval_74"
+        },
+        {
+          "$ref": "#/$defs/eval_75"
+        },
+        {
+          "$ref": "#/$defs/eval_76"
+        },
+        {
+          "$ref": "#/$defs/eval_77"
+        },
+        {
+          "$ref": "#/$defs/eval_78"
+        },
+        {
+          "$ref": "#/$defs/eval_79"
+        },
+        {
+          "$ref": "#/$defs/eval_80"
+        }
+      ]
+    },
+    "eval_80": {
+      "const": "rouge_l"
+    },
+    "eval_79": {
+      "const": "rouge_5"
+    },
+    "eval_78": {
+      "const": "rouge_4"
+    },
+    "eval_77": {
+      "const": "rouge_3"
+    },
+    "eval_76": {
+      "const": "rouge_2"
+    },
+    "eval_75": {
+      "const": "rouge_1"
+    },
+    "eval_74": {
+      "const": "meteor"
+    },
+    "eval_73": {
+      "const": "gleu"
+    },
+    "eval_72": {
+      "const": "bleu"
+    },
+    "eval_71": {
+      "const": "fuzzy_match"
+    },
+    "eval_70": {
+      "const": "cosine"
+    },
+    "eval_119": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/eval_120"
+        },
+        "labels": {
+          "$ref": "#/$defs/eval_59"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "passing_labels": {
+          "$ref": "#/$defs/eval_59"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_60"
+        }
+      },
+      "required": [
+        "input",
+        "labels",
+        "model",
+        "name",
+        "passing_labels",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_60": {
+      "const": "label_model"
+    },
+    "eval_59": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_20"
+      }
+    },
+    "eval_120": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_121"
+      }
+    },
+    "eval_121": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_122"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_52"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_57"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_122": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_30"
+        },
+        {
+          "$ref": "#/$defs/eval_42"
+        },
+        {
+          "$ref": "#/$defs/eval_48"
+        },
+        {
+          "$ref": "#/$defs/eval_123"
+        },
+        {
+          "$ref": "#/$defs/eval_124"
+        }
+      ]
+    },
+    "eval_124": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "image_url": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_41"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_123": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_39"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_61": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "operation": {
+          "$ref": "#/$defs/eval_62"
+        },
+        "reference": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_67"
+        }
+      },
+      "required": [
+        "input",
+        "name",
+        "operation",
+        "reference",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_67": {
+      "const": "string_check"
+    },
+    "eval_62": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_63"
+        },
+        {
+          "$ref": "#/$defs/eval_64"
+        },
+        {
+          "$ref": "#/$defs/eval_65"
+        },
+        {
+          "$ref": "#/$defs/eval_66"
+        }
+      ]
+    },
+    "eval_66": {
+      "const": "ilike"
+    },
+    "eval_65": {
+      "const": "like"
+    },
+    "eval_64": {
+      "const": "ne"
+    },
+    "eval_63": {
+      "const": "eq"
+    },
+    "eval_116": {
+      "const": "eval"
+    },
+    "eval_115": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_18"
+        },
+        {
+          "$ref": "#/$defs/eval_19"
+        }
+      ]
+    },
+    "eval_108": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_109"
+        },
+        {
+          "$ref": "#/$defs/eval_111"
+        },
+        {
+          "$ref": "#/$defs/eval_113"
+        }
+      ]
+    },
+    "eval_113": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/eval_17"
+        },
+        "schema": {
+          "$ref": "#/$defs/eval_114"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_16"
+        }
+      },
+      "required": [
+        "schema",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_16": {
+      "const": "stored_completions"
+    },
+    "eval_114": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_7": {},
+    "eval_111": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/eval_17"
+        },
+        "schema": {
+          "$ref": "#/$defs/eval_112"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_12"
+        }
+      },
+      "required": [
+        "schema",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_12": {
+      "const": "logs"
+    },
+    "eval_112": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_109": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "$ref": "#/$defs/eval_110"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_8"
+        }
+      },
+      "required": [
+        "schema",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_8": {
+      "const": "custom"
+    },
+    "eval_110": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_0": {
+      "type": "object",
+      "properties": {
+        "data_source_config": {
+          "$ref": "#/$defs/eval_1"
+        },
+        "metadata": {
+          "$ref": "#/$defs/eval_17"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "testing_criteria": {
+          "$ref": "#/$defs/eval_22"
+        }
+      },
+      "required": [
+        "data_source_config",
+        "testing_criteria"
+      ],
+      "additionalProperties": false
+    },
+    "eval_22": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_23"
+      }
+    },
+    "eval_23": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_24"
+        },
+        {
+          "$ref": "#/$defs/eval_61"
+        },
+        {
+          "$ref": "#/$defs/eval_68"
+        },
+        {
+          "$ref": "#/$defs/eval_83"
+        },
+        {
+          "$ref": "#/$defs/eval_86"
+        }
+      ]
+    },
+    "eval_86": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/eval_87"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "pass_threshold": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "range": {
+          "$ref": "#/$defs/eval_92"
+        },
+        "sampling_params": {
+          "$ref": "#/$defs/eval_94"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_105"
+        }
+      },
+      "required": [
+        "input",
+        "model",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_83": {
+      "type": "object",
+      "properties": {
+        "image_tag": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "pass_threshold": {
+          "$ref": "#/$defs/eval_84"
+        },
+        "source": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_85"
+        }
+      },
+      "required": [
+        "name",
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_68": {
+      "type": "object",
+      "properties": {
+        "evaluation_metric": {
+          "$ref": "#/$defs/eval_69"
+        },
+        "input": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "pass_threshold": {
+          "$ref": "#/$defs/eval_81"
+        },
+        "reference": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_82"
+        }
+      },
+      "required": [
+        "evaluation_metric",
+        "input",
+        "name",
+        "pass_threshold",
+        "reference",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_24": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/eval_25"
+        },
+        "labels": {
+          "$ref": "#/$defs/eval_59"
+        },
+        "model": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "name": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "passing_labels": {
+          "$ref": "#/$defs/eval_59"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_60"
+        }
+      },
+      "required": [
+        "input",
+        "labels",
+        "model",
+        "name",
+        "passing_labels",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_25": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/eval_26"
+      }
+    },
+    "eval_26": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_27"
+        },
+        {
+          "$ref": "#/$defs/eval_28"
+        }
+      ]
+    },
+    "eval_28": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_29"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_52"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_57"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_29": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_20"
+        },
+        {
+          "$ref": "#/$defs/eval_30"
+        },
+        {
+          "$ref": "#/$defs/eval_38"
+        },
+        {
+          "$ref": "#/$defs/eval_40"
+        },
+        {
+          "$ref": "#/$defs/eval_42"
+        },
+        {
+          "$ref": "#/$defs/eval_48"
+        }
+      ]
+    },
+    "eval_40": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "$ref": "#/$defs/eval_21"
+        },
+        "image_url": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_41"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_38": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_39"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_27": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/eval_20"
+        },
+        "role": {
+          "$ref": "#/$defs/eval_20"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "eval_1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_2"
+        },
+        {
+          "$ref": "#/$defs/eval_9"
+        },
+        {
+          "$ref": "#/$defs/eval_13"
+        }
+      ]
+    },
+    "eval_13": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/eval_14"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_16"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_14": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_15"
+        }
+      ]
+    },
+    "eval_15": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_9": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/eval_10"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_12"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_10": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_11"
+        }
+      ]
+    },
+    "eval_11": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_2": {
+      "type": "object",
+      "properties": {
+        "include_sample_schema": {
+          "$ref": "#/$defs/eval_3"
+        },
+        "item_schema": {
+          "$ref": "#/$defs/eval_6"
+        },
+        "type": {
+          "$ref": "#/$defs/eval_8"
+        }
+      },
+      "required": [
+        "item_schema",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "eval_6": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/eval_7"
+      }
+    },
+    "eval_3": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/eval_4"
+        },
+        {
+          "$ref": "#/$defs/eval_5"
+        }
+      ]
+    },
+    "eval_5": {
+      "const": true
+    },
+    "eval_4": {
+      "const": false
+    },
+    "eval_create": {
+      "$ref": "#/$defs/eval_0"
+    },
+    "eval_eval": {
+      "$ref": "#/$defs/eval_107"
+    },
+    "eval_update": {
+      "$ref": "#/$defs/eval_106"
+    },
+    "eval_deleted": {
+      "$ref": "#/$defs/eval_128"
+    },
+    "eval_query": {
+      "$ref": "#/$defs/eval_130"
+    },
+    "eval_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/eval_eval"
+          }
+        },
+        "first_id": {
+          "type": "string"
+        },
+        "last_id": {
+          "type": "string"
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "first_id",
+        "last_id",
+        "has_more"
+      ],
+      "additionalProperties": false
+    },
     "chatkit_0": {
       "type": "object",
       "properties": {

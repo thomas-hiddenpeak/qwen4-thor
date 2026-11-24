@@ -132,6 +132,14 @@ def schema(graph):
     page_limit = dict(type='integer', minimum=1, maximum=100, default=20)
     definitions['agents_query'] = obj(dict(limit=page_limit,
         after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
+    evals = json.loads((ROOT/'src/server/contracts/openai_eval_types_v1.json').read_text())
+    if evals['profile'] != 'q4t-openai-eval-types-v1':
+        raise ValueError('Unexpected Evals type graph')
+    definitions.update(graph_definitions(evals, 'eval_', ('create', 'eval', 'update', 'deleted', 'query')))
+    definitions['eval_list'] = obj(dict(object=dict(const='list'),
+        data=dict(type='array', items=ref('eval_eval')), first_id=dict(type='string'),
+        last_id=dict(type='string'), has_more=dict(type='boolean')),
+        ['object', 'data', 'first_id', 'last_id', 'has_more'])
     chatkit = json.loads((ROOT/'src/server/contracts/openai_chatkit_types_v1.json').read_text())
     if chatkit['profile'] != 'q4t-openai-chatkit-types-v1':
         raise ValueError('Unexpected ChatKit type graph')
@@ -681,6 +689,11 @@ def add_openapi(paths, response, error):
         ('/v1/agents/environments/templates/{environment_template_id}', 'post', 'hosted_template_update', 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'delete', None, 'hosted_template_deleted', None),
         ('/v1/webhook_event_types', 'get', None, 'webhook_event_types', None),
+        ('/v1/evals', 'get', None, 'eval_list', 'eval_query'),
+        ('/v1/evals', 'post', 'eval_create', 'eval_eval', None),
+        ('/v1/evals/{eval_id}', 'get', None, 'eval_eval', None),
+        ('/v1/evals/{eval_id}', 'post', 'eval_update', 'eval_eval', None),
+        ('/v1/evals/{eval_id}', 'delete', None, 'eval_deleted', None),
         ('/v1/chatkit', 'post', 'chatkit_client_request', 'chatkit_client_result', None),
         ('/v1/chatkit/attachments', 'post', None, 'chatkit_document_attachment', None),
         ('/v1/chatkit/sessions', 'post', 'chatkit_create', 'chatkit_session', None),
@@ -805,7 +818,7 @@ def add_openapi(paths, response, error):
             parameters.append(dict(name='Idempotency-Key', **{'in': 'header'}, required=False,
                 schema=dict(type='string', minLength=1, maxLength=256, pattern=r'^[ -~]+$')))
         success_code = '202' if accepted else '200'
-        if body in {'agents_create', 'automation_create', 'agent_session_create', 'vault_create',
+        if body in {'eval_create', 'agents_create', 'automation_create', 'agent_session_create', 'vault_create',
                     'credential_create', 'hosted_template_create',
                     'hosted_environment_create', 'hosted_file_create'}:
             success_code = '201'

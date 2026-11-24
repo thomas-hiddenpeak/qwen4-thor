@@ -5712,6 +5712,13 @@
         "pending": [
           "independent sealed recovery and publication"
         ]
+      },
+      "eval_definitions_20261125": {
+        "evidence": "evidence/serve-evals-20261125/definitions.json",
+        "methods": 5,
+        "stage": "native_tls_sdk_device_passed",
+        "run_and_output_methods_open": 7,
+        "issued": false
       }
     },
     {
@@ -10170,6 +10177,13 @@
       "chatkit_profile_handoff_20261125": {
         "status": "accepted_primary_light",
         "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
+      },
+      "eval_definitions_20261125": {
+        "evidence": "evidence/serve-evals-20261125/definitions.json",
+        "methods": 5,
+        "stage": "native_tls_sdk_device_passed",
+        "run_and_output_methods_open": 7,
         "issued": false
       },
       "chatkit_release_20261125": {

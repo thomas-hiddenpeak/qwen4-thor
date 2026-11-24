@@ -372,6 +372,15 @@ def current_surface(root):
             ('GET', '/v1/chatkit/threads/{thread_id}/items')):
         routes.append((path, method))
         native_routes.append((method, path, 'false' if path in ('/v1/chatkit', '/v1/chatkit/attachments', '/v1/chatkit/sessions') else 'true'))
+    if ('HandleEval(*objects_, access' not in dispatch or
+            'server::EvalMethodAllowed(method, path)' not in native or
+            'server::IsEvalObservation(method, path)' not in native):
+        raise ValueError('review Evals definition dispatch and admission')
+    for path, methods in (('/v1/evals', ('GET', 'POST')),
+                          ('/v1/evals/{eval_id}', ('GET', 'POST', 'DELETE'))):
+        for method in methods:
+            routes.append((path, method))
+            native_routes.append((method, path, 'false' if method == 'POST' else 'true'))
     if ('HandleWebhook(*objects_, access' not in dispatch or
             'server::WebhookMethodAllowed(method, path)' not in native):
         raise ValueError('review webhook management and native ingress routing')
@@ -639,6 +648,8 @@ def current_surface(root):
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake",
                        root / "cmake/automation_types.h.in",
+                       root / "cmake/eval_types.h.in",
+                       root / "src/server/contracts/openai_eval_types_v1.json",
                        root / "cmake/chatkit_types.h.in",
                        root / "src/server/contracts/openai_chatkit_types_v1.json",
                        root / "cmake/webhook_types.h.in",

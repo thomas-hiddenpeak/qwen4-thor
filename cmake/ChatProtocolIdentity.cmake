@@ -504,6 +504,7 @@ set(protocol_inputs
   src/server/file_fetch_http.cpp
   src/server/sip_webhook.cpp
   src/server/webhook_transport.cpp
+  src/server/evals.cpp
   src/server/chatkit_sessions.cpp
   src/server/chatkit_client.cpp
   src/server/chatkit_attachments.cpp
@@ -827,6 +828,9 @@ set(protocol_inputs
   include/q4t/server/agent_automation.h
   src/server/contracts/openai_automation_types_v1.json
   cmake/automation_types.h.in
+  cmake/eval_types.h.in
+  include/q4t/server/evals.h
+  src/server/contracts/openai_eval_types_v1.json
   cmake/chatkit_types.h.in
   include/q4t/server/chatkit.h
   src/server/contracts/openai_chatkit_types_v1.json
@@ -1184,6 +1188,14 @@ if(NOT automation_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/automation_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/automation_types_data.h" @ONLY)
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_eval_types_v1.json"
+  Q4T_EVAL_TYPES)
+string(FIND "${Q4T_EVAL_TYPES}" ")q4t_types\"" eval_delimiter)
+if(NOT eval_delimiter EQUAL -1)
+  message(FATAL_ERROR "Eval type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/eval_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/eval_types_data.h" @ONLY)
 file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_chatkit_types_v1.json"
   Q4T_CHATKIT_TYPES)
 string(FIND "${Q4T_CHATKIT_TYPES}" ")q4t_types\"" chatkit_delimiter)
