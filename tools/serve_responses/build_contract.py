@@ -108,7 +108,8 @@ def schema(graph):
         data=dict(type='array', items=ref('agents_resource')), has_more=dict(type='boolean'),
         first_id=nullable(dict(type='string')), last_id=nullable(dict(type='string'))),
         ('object', 'data', 'has_more', 'first_id', 'last_id'))
-    definitions['agents_query'] = obj(dict(limit=dict(type='integer', minimum=1, maximum=100),
+    page_limit = dict(type='integer', minimum=1, maximum=100, default=20)
+    definitions['agents_query'] = obj(dict(limit=page_limit,
         after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
     vault_meta = dict(type='object', maxProperties=16,
                       propertyNames=dict(minLength=1, maxLength=64),
@@ -157,6 +158,9 @@ def schema(graph):
     # The SDK moves this option to a header before sending the request.
     creation = 'hosted_' + str(environment['roots']['environment_create'])
     del environment_types[creation]['properties']['Idempotency-Key']
+    for query, limit in [('environment_query', page_limit), ('file_query', nullable(page_limit))]:
+        node = environment_types['hosted_' + str(environment['roots'][query])]
+        node['properties']['limit'] = limit
     definitions.update(environment_types)
     definitions['hosted_environment_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['hosted_environment_list']['properties']['data']['items'] = ref('hosted_environment_resource')
@@ -170,10 +174,9 @@ def schema(graph):
     definitions.update(graph_definitions(sessions, 'agent_session_'))
     definitions['agent_session_event_query'] = obj(dict(
         include_obfuscation=dict(type='boolean', default=True)))
-    artifact_query = definitions['agent_session_'+str(sessions['roots']['artifact_query'])]
-    artifact_query['properties']['limit'] = dict(type='integer', minimum=1, maximum=100, default=20)
-    child_query = definitions['agent_session_'+str(sessions['roots']['subagent_query'])]
-    child_query['properties']['limit'] = dict(type='integer', minimum=1, maximum=100, default=20)
+    for query in ('query', 'artifact_query', 'subagent_query'):
+        node = definitions['agent_session_' + str(sessions['roots'][query])]
+        node['properties']['limit'] = page_limit
     trace = dict(id=dict(type='string'), session_id=dict(type='string'),
                  object=dict(const='agent.session.trace'), created_at=dict(type='integer'),
                  otlp=dict(type='object', required=['resourceSpans'],

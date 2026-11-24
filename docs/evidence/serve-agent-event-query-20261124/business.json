@@ -160,5 +160,17 @@
       "path": ".q4t-work/serve-responses-agents-20261123/query-matrix-after-01.json",
       "sha256": "86cf04f729b541b6dcdb0379e6d0e139867ee1750cdd21c9368160e759b315b3"
     }
-  ]
+  ],
+  "pagination_schema": {
+    "python_tests": 13,
+    "observed": "Native query parser requires an integer. Sessions, environments and workspace files accept 1 through 100, with 20 on omission. The workspace file schema permits null, which SDKs omit from the URL.",
+    "invalid_examples": [
+      0,
+      1.5,
+      101,
+      "20",
+      true
+    ],
+    "test": "tools.serve_responses.test_contract.ApplicationContract.test_agent_list_limits_match_native_integer_boundaries"
+  }
 }

@@ -22355,7 +22355,8 @@
         "limit": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 100
+          "maximum": 100,
+          "default": 20
         },
         "after": {
           "type": "string"
@@ -22546,7 +22547,8 @@
         "limit": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 100
+          "maximum": 100,
+          "default": 20
         },
         "after": {
           "type": "string"
@@ -24901,7 +24903,10 @@
           "$ref": "#/$defs/hosted_71"
         },
         "limit": {
-          "$ref": "#/$defs/hosted_72"
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
         },
         "order": {
           "$ref": "#/$defs/hosted_73"
@@ -25002,7 +25007,17 @@
       "type": "object",
       "properties": {
         "limit": {
-          "$ref": "#/$defs/hosted_115"
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "order": {
           "$ref": "#/$defs/hosted_73"
@@ -28173,7 +28188,10 @@
           "$ref": "#/$defs/agent_session_14"
         },
         "limit": {
-          "$ref": "#/$defs/agent_session_18"
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
         },
         "metadata": {
           "$ref": "#/$defs/agent_session_250"

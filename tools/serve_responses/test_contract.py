@@ -164,6 +164,19 @@ class ApplicationContract(unittest.TestCase):
         self.assertFalse(errors(delta, 'response_event'))
         self.assertTrue(errors(dict(delta, obfuscation=1), 'response_event'))
 
+    def test_agent_list_limits_match_native_integer_boundaries(self):
+        spec = api.openapi()
+        for route, nullable in [('/v1/agents/environments', False),
+                                ('/v1/agents/environments/{environment_id}/files', True),
+                                ('/v1/agents/sessions', False)]:
+            with self.subTest(route=route):
+                query = spec['paths'][route]['get']['parameters']
+                schema = next(p['schema'] for p in query if p['name'] == 'limit')
+                validator = Draft202012Validator(schema)
+                self.assertTrue(all(validator.is_valid(n) for n in (1, 20, 100)))
+                self.assertTrue(all(not validator.is_valid(n) for n in (0, 1.5, 101, '20', True)))
+                self.assertEqual(validator.is_valid(None), nullable)
+
     def test_archived_real_business_wire(self):
         checked, rejected = self.audit(ROOT/'docs/evidence/serve-responses-business-20261109/business-01', legacy=True)
         self.assertGreater(checked, 20)
