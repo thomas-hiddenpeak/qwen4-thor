@@ -1,0 +1,59 @@
+{
+  "source_commit": "093050490da963c746d4859c35185d4e5e1b5baa",
+  "issued_revision": 478,
+  "stage": "optional_nginx_authenticated_tls_device_business_pass",
+  "optional_frontend": "nginx 1.30.6",
+  "model_engine_sha256": "f77597e2af2175f6c8fd2f642a16ada81f8d62a81390dc2907e52de59d46bbaf",
+  "nginx_sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+  "sdk_actor": "tools/serve_responses/chatkit_files_sdk.mjs",
+  "business": {
+    "sdk": "7.47.0",
+    "answers": [
+      "157",
+      "157"
+    ],
+    "peer": 404,
+    "other_user": 404,
+    "disabled": 403,
+    "revoked": 401,
+    "project_file_import": 400,
+    "count_limit": 409,
+    "source_deleted": 404,
+    "reused_slot": true,
+    "items": 4,
+    "independent_chat": "42",
+    "source_bytes": 830,
+    "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+    "wire_objects": 1,
+    "driver_sha256": "8a868ef6ac608106acba1fd38e2ce2d2439bc5f213587a95ca5fd83cc2c1a4e1"
+  },
+  "model_starts": 1,
+  "seconds": 36.492,
+  "ports_released": true,
+  "unchanged_default": true,
+  "protected": {
+    "build/q4t": "3d4638600e708087ad4f2fe910ad609b34db56303bc4dfce0ad302b3fd894044",
+    "build/service/manifest.json": "9b0b0c4d5550aa599bdd02e8f5f5b038bc9298331d32427fee6195651c40b75f",
+    "build/service.release.json": "e806a7905a810404fd81b4cee27b3b2bfa505f134c0bf02a4bf77543fb6427ec",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "cpu_checks": {
+    "native_chatkit": 9,
+    "recovery_gateway_contracts": 19,
+    "actual_nginx_signed_transport": 1,
+    "actual_nginx_route_table": 1
+  },
+  "strict_lease": "COMPLETED",
+  "receipt_files": {
+    "chatkit-optional-business-01/result.json": "d3b1b8419066346e8eb630fbf139231e44bda88a041750ce8bdf30f8d9f27be5",
+    "chatkit-optional-business-01/plan.json": "4e3f0697183db95ca3467150db79604bb53916fc61a4748a8deae1fe869ea659",
+    "chatkit-optional-business-01/create/sdk-result.json": "12fe8a854f0161e99ede00201904a2d19dd010a5612d2fd54fdb50f533808d39",
+    "chatkit-optional-lease-01/exit.json": "84c23906b25923e8e986338ebccb3068bf23f80236a59ec5afe7b90f1b7d54f6",
+    "webhook-dev/chatkit-optional-engine-cpu.log": "60b46c1564c4a31327d81d0cbbb56bb0540d0f4b0935d58206a91e58011b49e4",
+    "webhook-dev/chatkit-optional-gateway-cpu-02.log": "4399eee192fbf45ecc880b0138a8948b658c03da3ec12a37aaca6688faae3f7b",
+    "webhook-dev/chatkit-optional-nginx-02.log": "3ecd479f2d9e70fc02d6b368a9f20aa62e4d19d36a26cd3d36da55d3d7b5b42e",
+    "webhook-dev/chatkit-optional-all-routes-01.log": "1113138f2e1855aed24f0c46b6621eef9dd9db3f9d2d6df46ed0f188ff7471cc",
+    "chatkit_nginx_business.py": "88a9a426780d1e9ace60eb3709987945cbf7ce6cfd54c80e6c1bdfe23c5a4c1f",
+    "nginx_chatkit_fixture.py": "4c072a4dd2e9acd1bc515118f096f72eb622b824b17674bf6081ff8bb6204522"
+  }
+}
