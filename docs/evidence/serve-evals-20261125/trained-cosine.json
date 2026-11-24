@@ -1,5 +1,5 @@
 {
-  "stage": "host_verified",
+  "stage": "native_tls_verified",
   "model": "qwen3-embedding-0.6b",
   "dimensions": 1024,
   "range": [
@@ -34,7 +34,53 @@
   },
   "issued": false,
   "pending": [
-    "Compare with public embeddings via native TLS",
     "Managed recovery, package qualification and issuance"
-  ]
+  ],
+  "sdk": {
+    "sdk": "7.47.0",
+    "model": "qwen3-embedding-0.6b",
+    "answer": "157",
+    "expected": [
+      0.9999999999999993,
+      0.38498399615128187
+    ],
+    "observed": [
+      1,
+      0.38498399615128204
+    ],
+    "threshold": 0.95,
+    "usage": {
+      "model_name": "qwen3-embedding-0.6b",
+      "invocation_count": 2,
+      "prompt_tokens": 59,
+      "completion_tokens": 0,
+      "total_tokens": 59,
+      "cached_tokens": 0
+    },
+    "foreign_status": 404,
+    "independent_chat": "42",
+    "run": "evalrun_4d26d65248337d091d7a06d525e17983",
+    "driver_sha256": "899b30bbcea807867f56c3da00d0e441150e409140811b5e3dd9857473194686"
+  },
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.92,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "runtime_source": "9c6b4fe10",
+  "candidate": {
+    "binary": "6caf7555c0ebe92a0530e708c7aa0704e39d4d38ba0c33bf51ea24848564fb20",
+    "ingress": "1efb565263062c11b682bab1905424da4fdb84fc902c87c67bb3a60e2e57c137",
+    "sdk_driver": "899b30bbcea807867f56c3da00d0e441150e409140811b5e3dd9857473194686"
+  },
+  "lease": {
+    "exit_sha256": "f961ccd833e6c36ab9cbd5f699ae1b22d914afa1ebcbee738a409dca738b13b2",
+    "status": "COMPLETED",
+    "compute_backend": "nvml"
+  },
+  "maximum_absolute_difference": 6.661338147750939e-16
 }

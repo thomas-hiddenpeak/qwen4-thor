@@ -18163,7 +18163,7 @@
       "issued": false
     },
     "trained_cosine": {
-      "stage": "host_verified",
+      "stage": "native_tls_verified",
       "receipt": "docs/evidence/serve-evals-20261125/trained-cosine.json",
       "issued": false
     }
