@@ -49,7 +49,8 @@ ObjectReply VectorStores::ReadMember(const BinaryAccess& access,
 }
 ObjectReply VectorStores::Publish(const BinaryAccess& access,
                                   const Json& before, Json data,
-                                  std::span<const ObjectRequest> children) {
+                                  std::span<const ObjectRequest> children,
+                                  std::vector<ObjectRequest>* prepared) {
   Summarize(&data);
   const auto id = before.GetString("id");
   const auto* previous = before.Find("data");
@@ -74,6 +75,10 @@ ObjectReply VectorStores::Publish(const BinaryAccess& access,
   auto synced = SyncBatches(access, before, requests.front().data, children,
                             &requests);
   if (!synced.ok()) return synced;
+  if (prepared) {
+    *prepared = std::move(requests);
+    return {};
+  }
   auto reply =
       objects_.ExecuteBatch(requests, access.deadline, access.cancelled);
   if (reply.commit_unknown) {
@@ -90,7 +95,8 @@ ObjectReply VectorStores::Create(const BinaryAccess& access,
 }
 ObjectReply VectorStores::Create(const BinaryAccess& access,
                                  const Json& request, const std::string& id,
-                                 std::span<const ObjectRequest> related) {
+                                 std::span<const ObjectRequest> related,
+                                 std::vector<ObjectRequest>* prepared) {
   auto valid = Fields(request, true);
   if (!valid.ok()) return valid;
   if (id.empty())
@@ -129,7 +135,7 @@ ObjectReply VectorStores::Create(const BinaryAccess& access,
     }
   children.insert(children.end(), related.begin(), related.end());
   const auto before = Object({{"id", String(id)}, {"created_at", Number(now)}});
-  return Publish(access, before, std::move(data), children);
+  return Publish(access, before, std::move(data), children, prepared);
 }
 ObjectReply VectorStores::Retrieve(const BinaryAccess& access,
                                    const std::string& id) {

@@ -548,7 +548,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && path != "/v1/realtime/calls" && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" ||
+      if (method == "POST" && path != "/v1/realtime/calls" && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
                                  path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||
                                  IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
@@ -806,6 +806,11 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (IsResponsesTarget(path)) {
       ServeResponsesState(fd, *objects_, method, path, body, access,
                           background_.Get());
+      return;
+    }
+    if (ParseAssistantRunRoute(path).kind != AssistantRunRouteKind::kNone) {
+      ServeAssistantRun(fd, *objects_, background_.Get(), method, path, body,
+                        access, PlanningConfig(fd), !embedding_model_dir_.empty());
       return;
     }
     if (ParseAgentSessionRoute(path).kind != AgentSessionRouteKind::kNone) {

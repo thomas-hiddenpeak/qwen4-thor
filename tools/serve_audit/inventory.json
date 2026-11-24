@@ -2475,6 +2475,96 @@
         "src/server/assistant_messages.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
+    },
+    "GET /v1/threads/{thread_id}/runs": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/threads/{thread_id}/runs/{run_id}": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/threads/{thread_id}/runs/{run_id}/steps": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/threads/runs": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/threads/{thread_id}/runs": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/threads/{thread_id}/runs/{run_id}": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/threads/{thread_id}/runs/{run_id}/cancel": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3089,8 +3179,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "f43dac120ac97518de2ee8bf67d93ba1b241dbf508bf51749b3d323a02054340",
-    "cmake/ChatProtocolIdentity.cmake": "df18efef9b737987f83918e87e0597c61891465575b7261fa8327b0816d39f35",
+    "CMakeLists.txt": "6619903243910ef1a086fc51b760d32af20d23d760ea4fd9ec69d5216e6234af",
+    "cmake/ChatProtocolIdentity.cmake": "6a9a0b393ef8e986770dffdd0ec08e065fdad8ab6e3cd1ed9358b68443b62b1d",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3171,7 +3261,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "b59390c5e8c7ce34622fff98ed5b46b06a8341cf461cd3ad36732760d9b824e9",
+    "include/q4t/server/application_routes.h": "4ca39dff92e862744ca0225f36a1695899c6a74b28ccac2edbdf9b5b26a29fb7",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3182,7 +3272,7 @@
     "include/q4t/server/asr_stream_input.h": "65105c2bb4a4a2ab048d91db624fd4ef58c4777c3002e42e7e26a63634272d3a",
     "include/q4t/server/asr_stream_output.h": "6f461eca473fa7201e85a62796e40e82e0a8b67281c9ee18f3767f5bbdea530d",
     "include/q4t/server/asr_stream_state.h": "11a06cb19a779217414460ba2c4a8208e514938df5da733c256753de5551621b",
-    "include/q4t/server/assistant_registry.h": "c4df1ceadbd5b4e957b06a55af14a0a70d3b025abd667f448e18ab26c9a0516c",
+    "include/q4t/server/assistant_registry.h": "e069a074aa95e369036eff3541e8aac8f0f1bd5a234d2234213d78bc4b8ade98",
     "include/q4t/server/audio_transcript.h": "f6e9756d2883949152b69613671ea67afabd4e5b9dd1e4d55bed8280beda80db",
     "include/q4t/server/auxiliary_resources.h": "ec943f992f3279a656a1668d3d4e718e64e146c19284ce4a538b5e926f28e446",
     "include/q4t/server/batch_api.h": "a678134ea0635ecb31acb0d4df736935cf4e0aa422c97eb6d4106a1360709cb1",
@@ -3389,7 +3479,7 @@
     "include/q4t/server/responses_api.h": "d8e3a8d4f8f25e3cbd3e5ff06c0bd5f19812488c60396d34e8b60689a664021d",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "cf4a849bf6844b3855e50ae485b84636d5127b1d81f8bfbd5fce20ba7547bb95",
+    "include/q4t/server/responses_execution.h": "ced6a847e307b622155e88c8e2c792da4d4fc963dcee75a3f44b21cdaa4760f0",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
     "include/q4t/server/responses_input.h": "9456da1ef5673dd4de669cd80b2f532690815193d466ec5ab97bd4a097b3fc3b",
     "include/q4t/server/responses_item_shape.h": "0d60c4985b05e0cdbf25da8140fd98ec1b176509425be6ca6dbd6c748aa6d5e6",
@@ -3403,7 +3493,7 @@
     "include/q4t/server/responses_plan.h": "4d49d841c0ae1d57e01a229c5ce50adfe91c79c914364836bb77096ba273e702",
     "include/q4t/server/responses_program.h": "3c8c653c9ae3204cf56f029e0be8e83dace56e1b67eeeb088b06a52f89c1baa5",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
-    "include/q4t/server/responses_state.h": "99e0ef9679732f9552efe5dc9a20da3a22badbf0ec44792278d1e3ae1c44b094",
+    "include/q4t/server/responses_state.h": "e314580a75272c5c7bd1484ebc709eafb1bf71115b31a1ffc5890fe996b2e333",
     "include/q4t/server/responses_tokens.h": "9b1fb8cbea6d9fe24e33fa8af6dd4be3bb90af780b40ee4249450cc007f98324",
     "include/q4t/server/responses_tool_search.h": "6f6e7bfaefa71ff621c2db1d24a6f0fff287e4d4e47968cb8665d081d6e8337f",
     "include/q4t/server/responses_web_search.h": "b1378c90e9f3be4aea864820b06682879693940e448e0d58ad3fa9bdcfa05f06",
@@ -3458,7 +3548,7 @@
     "include/q4t/server/vector_search_api.h": "eddbcec311db9ce70445d213bcacd8fa1c7e9e3b1c8c1ed3fd9bd34207a1bcd4",
     "include/q4t/server/vector_search_execution.h": "f3c063d84e14130f72e3eb71c349ac33ba28defb98bb7b23f04802dc827da74e",
     "include/q4t/server/vector_store_api.h": "1f6bf72f96d759d4f2d2883615b6efb0b0a108608d9f987bb6a4d76d90d68adf",
-    "include/q4t/server/vector_stores.h": "3f70b47dbb0d1ee97b50315bbbaa4f13fa83bbb9d50a18188bc010278ad9a205",
+    "include/q4t/server/vector_stores.h": "e330130da32ee04cc57fd248db78ab1ee3119588cc452bbb7f2c26f40685beba",
     "include/q4t/server/voice_api.h": "34baad49c81e603ffce072b7a2eaab1883e9c1cb6244dd3e6447c8285cc01af1",
     "include/q4t/server/voice_registry.h": "cd6b371a7e1db24213bdc5c044057fc4c4b0b6fc6cb5d46da41bcb901e82bb18",
     "include/q4t/server/voice_request.h": "a95b6e0d00ecbd733af7acab8bf0afb79aea269cec0e7c112fe1b658fe649b7e",
@@ -3609,10 +3699,16 @@
     "src/server/asr_stream_input.cpp": "b26c426d39bdcd368aac85c683036bc5ff6fce3f052ef81cbd676abde3b9f0a1",
     "src/server/asr_stream_output.cpp": "fddf40917715bda507c78d7dd2382a143c14ca0f84a261d2921e700b1aff0230",
     "src/server/asr_stream_state.cpp": "6084539816415b2f681f1c9762821461b35a35c379455acc91ba23e83c5801b3",
-    "src/server/assistant_messages.cpp": "d12a63f6416057304cffdabca8dca95b1f60e2f4e5e6905bfa823a248bc1a100",
+    "src/server/assistant_messages.cpp": "8284bd8f417f5f5d9dfa92300e01a89331b2c6dea50c09ba1530fb3772806e00",
     "src/server/assistant_registry.cpp": "88445f0e8ef779e23aed34a7e1c49578cb084ea7e338977e95f59989c6ac0166",
-    "src/server/assistant_threads.cpp": "60f8099a85d6989e35e2e7ca67bd26eb5a177f8953df6731475cfae04a03eabc",
-    "src/server/assistant_threads_internal.h": "4dae8d9d9f5f1ac410d080cd86664dd7abcc111ed859161944d1ada3a8204ff8",
+    "src/server/assistant_run_admission.cpp": "115a0f18689f12e6cd29c02695f1c54b232352270fc046faff32ca8ca3a03496",
+    "src/server/assistant_run_http.cpp": "5f9838de101d1828e54d4bf5cfc839ab8a7665349c83970a08ae209390d6134b",
+    "src/server/assistant_run_settings.cpp": "3c4f5e2f26cee7afdd83c3ea7e0ef5e0eb874b3b4337da1d62e23ced116209ee",
+    "src/server/assistant_run_stream.cpp": "9d3206dfdf7c91a9649b292c4bc1a5ceb64e74d913674d8a6795e57fba00564a",
+    "src/server/assistant_run_view.cpp": "ab7abe41ece544d284ff857d752f7bebefc2903c51027b72a3e3bab6ee32c43e",
+    "src/server/assistant_runs_internal.h": "d4785b73392e3bca7ba5404e182e5f551788c11202a4f897b7bfd58a5c51ef8e",
+    "src/server/assistant_threads.cpp": "5b77163148f7f9c004dcafd63cd598c60b5ff668fde0f09946f61d8710b9f28b",
+    "src/server/assistant_threads_internal.h": "ee5a08432a62c8f6b9fd53427cee09db8a17cb1fa85a3243237e7a7bd94ac5d8",
     "src/server/audio_transcript.cpp": "f1767cedd29fe01888671de6f7cb5b926203508345d47d882e2b7b55bff7a2a7",
     "src/server/batch_api.cpp": "b945aaf5712233dbc6edab4aa694d2e5ebae4e5516fdda60cbc616ee15ccd5bd",
     "src/server/batch_budget.cpp": "bc7af4191a609636baf8e0c3b61a2f5ec6720ae3fdec4578c8e8fa1fc4c3018c",
@@ -3645,7 +3741,7 @@
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
     "src/server/chat_audio_translation.cpp": "e0853dba46a7af885bd31863f5bcc1e6cb9b44af3d69aba8bea8af372ed5d6ce",
-    "src/server/chat_capabilities.cpp": "a11cfaee065dcf724ee27ac694bcc237b7d014b722dec2d645e17e4df0ede7e5",
+    "src/server/chat_capabilities.cpp": "08e689d280ca868050044dbea25c8d3b29d5c8b1cea022355d151f3909c65515",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -3655,7 +3751,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "000afcc92895f2388e09279b6a7274523212ec59b102d2380a3d8158fefca0a3",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "b117099890f0797ddfe8bb38eca4a6658bbda5382a6c4d5e1069f271d89b14dd",
+    "src/server/chat_http.cpp": "9ddd60ff2d9f19e9460a10c811d4c5047e6cdba921a9d54d4a62d7e58eb73a3b",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3708,7 +3804,7 @@
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
     "src/server/contracts/openai_agent_session_types_v1.json": "989cbd668d01c3686b2d38d1bc280bba7c8134328f8f4836f9fa7ce05d1157ab",
-    "src/server/contracts/openai_assistant_types_v1.json": "13649a57066baf33c1832448f1d0ddcf085bbd4d2983caa0bda6998cd9ce1c79",
+    "src/server/contracts/openai_assistant_types_v1.json": "265a9ff4cecaef4b8e81e862a202877ba83b947fe094abd79561e4191edd8fcc",
     "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
     "src/server/contracts/openai_environment_types_v1.json": "e28dc97fbb23877addcfe83e3e7d5cddc05d27383b6378f0cfcfc09c7b6d2ee5",
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
@@ -3871,7 +3967,7 @@
     "src/server/native_crypto.cpp": "9da39bb1de51c80b9a028e4e748a77266a5d145a24173ab5d0fdc192bccde92a",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
     "src/server/object_protocol.h": "0be12f33044bc64e8496a7f161b15dc2a850cffb9ff4d80dea2707c767da67ea",
-    "src/server/object_retention.cpp": "538e956cff3057d61633627a555be4112da07778bdadce17b556e5822e6c7109",
+    "src/server/object_retention.cpp": "d2d17bdd3ae89df84d83ae00d71ee178959359f0daddaa763097e36ece6ea463",
     "src/server/object_store.cpp": "75e4413ceecabe49604cafb8a03d2b8c706f44228e239169e79ac3734b848134",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "675be8530047880b57644e3634deb128386ee3f7973ea98b9c3fa073beb8bd59",
@@ -3951,19 +4047,19 @@
     "src/server/responses_api.cpp": "bd56e65e365295fcc85ca505f3e473aa4a2279a07801e74d7637aa83f191507b",
     "src/server/responses_compaction.cpp": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "71000237d65834579f8e72bfcbda017b24c0bcd6d84e32b2d1b669f91ce21b08",
+    "src/server/responses_execution.cpp": "05cd814ce55c22bd797094f9b0dcbcbdca675743443a6ef5c0ab356319e565ef",
     "src/server/responses_execution_compaction.cpp": "90e519f59a6c00f1e2fdffc1b8c7c261ab139c1646252802ca41b9edb74fb8e1",
     "src/server/responses_execution_files.cpp": "8e2030adeb168b3d8672fee4ad58410f5a21989563d7f788f43ab9b7662ad33b",
     "src/server/responses_execution_inputs.cpp": "c163dd2db6f672d9e18cd6f05f8a219c4f527bb5bbbab45432eaad0dbcb0c885",
     "src/server/responses_execution_mcp_media.cpp": "a7fdf508d409de5c0eae4882b3f4eadd364559dab7f38321e92ade859c52271e",
     "src/server/responses_execution_moderation.cpp": "6b235c9d2956f752d8c5ddb76aa9bc16f152ad6bdf90a1ecbf5a874f5fa86732",
     "src/server/responses_file_citations.cpp": "f92a247c59646a9abea6f540359473ceb5755cbab2f0b869e5e74656adf392e9",
-    "src/server/responses_file_search.cpp": "aa433f9d77245a6947b07b080a1da72058e1710ad882c59f0298199380cee239",
+    "src/server/responses_file_search.cpp": "aa1eabfb6655c692378123ac3dd5886a0f43e4c046b92ae6c5076087498d104a",
     "src/server/responses_file_search_execution.cpp": "5fdea90b27ac7f69699496f45a2555a53df70428ad11a555e0135df25848b9c8",
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "2fb783afdb0d4478647b9b1231db474835697971203966bd8cb1c5a696e85940",
-    "src/server/responses_item_shape.cpp": "fa3dd6a1f5d7c747e9e9ec384540ca6b41def82ce9348e9186ef77f99b5dd99a",
+    "src/server/responses_item_shape.cpp": "f96837e365c99a8efcd61c4270edf6234773fbd0b6bfa62c1d53bdff0a2f283b",
     "src/server/responses_jobs.cpp": "02ba0eb00df0e814216696c04000c848f2b8aa88ca89509b4cbd9bb7e508a5b8",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -3981,7 +4077,7 @@
     "src/server/responses_program_output.cpp": "b3440be7b8d21b0a5488b251979b127e1536bcb47899ead83a2320b4d49c2fc2",
     "src/server/responses_program_plan.cpp": "3980f9a8cbb22904a4cd2f418c4063a781a16b4f95fc6ff97a658aece5e08ff3",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
-    "src/server/responses_state.cpp": "82026916c3e373a924960389b77732ba6bead812a4996216bfbaf0f2ac4ae152",
+    "src/server/responses_state.cpp": "6fa44f812678451dcfac78e97497070768a823b51ea08666c9b1855bf7f3b6c4",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
     "src/server/responses_tokens.cpp": "9ebdf955e1dbe6bacaad748005e8200dff0930a66799ade9c0bff6a7238f32e2",
     "src/server/responses_tool_catalog_history.cpp": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5",
@@ -4058,14 +4154,14 @@
     "src/server/vector_query_rewrite.cpp": "4bbe453babee944abcc9059a1319f6e1a971ea70902e00c3eca03671fc061731",
     "src/server/vector_search_api.cpp": "5152e795bc4a879fff755b738363e643b17c340a7524f21e0f2d5f6d250e3b93",
     "src/server/vector_search_corpus.cpp": "1fe58cd00aa8f985c5cba44e7466c239914b5257c242050d0337b2fa03a74157",
-    "src/server/vector_search_execution.cpp": "a381b9414081803fd81b9d0f15933fed307d15fb20488154bf1aab011c6b75ae",
+    "src/server/vector_search_execution.cpp": "4ae409449d56c9e4bde88fb066430349d56631fb95a77d77f6d11aa0651821b1",
     "src/server/vector_search_plan.cpp": "a3153b74e87cf70797912e83b2a3b9b2fcbaf99c1086e4e00025bfee27b299bf",
     "src/server/vector_search_rank.cpp": "6a0de6a9ad6fd561b40734f4a7423519f9315114f6cff51b1058dd58cf49c5e8",
     "src/server/vector_store_api.cpp": "9baa1ba4b8a3ad2f862a46041799c6dc4742936b1e20a5c144e9cd88a000bb1f",
     "src/server/vector_store_batches.cpp": "eaa8c0ba3e5688cd423d27b840e43b0ffd1a916e34258d3dfb78e57136d203bc",
     "src/server/vector_store_content.cpp": "daa1d7a68af23b28b12b018b7d4b2ea0b767846427aee5364b00ce59e3da5500",
-    "src/server/vector_store_files.cpp": "bf7b827eace68a482e16e2cfe7ed235d57f237ee99628e0e16c0c10799f51393",
-    "src/server/vector_stores.cpp": "89cf6d157b9dca1f0a7cdc2515d426944c8f7ee6bf8477b3bdd1da59f66446ab",
+    "src/server/vector_store_files.cpp": "9e9516a6a0f9651bd3d720c826c79d9d13f8acf05ab8aa7a97e9e401cc85c4af",
+    "src/server/vector_stores.cpp": "99a3bca5b1c26dbfa0e8dda9d88dbcda70105b179ba364906f5982de2c26e210",
     "src/server/vector_stores_internal.cpp": "13cd02c70952dcd417b35469a35deb65449ce31e2ee3bede5e07b30543bc56ef",
     "src/server/vector_stores_internal.h": "b6f67564d6655b2c9de7ac8101c0fd5e8d68527dc00b250baac5d5459366be24",
     "src/server/voice_api.cpp": "221ee68919786c2aa7666bc99cab616ea9a329ad7e6632de068081bdd4d9079f",
@@ -4132,7 +4228,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "7aa2fa2e242a13ba76b2e03a6b154d375f556f56b84b234056f8117fa63ce7b0",
+    "tools/serve_gateway/gateway.py": "67b8515ac518359dc825c75f07f57d3fc4835f1519609be434ca491d45d8899f",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -7631,6 +7727,166 @@
       "evidence": [
         "src/server/assistant_threads.cpp",
         "src/server/assistant_messages.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/threads/{thread_id}/runs": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/threads/{thread_id}/runs/{run_id}": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/threads/{thread_id}/runs/{run_id}/steps": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "GET /v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/threads/runs": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/threads/{thread_id}/runs": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/threads/{thread_id}/runs/{run_id}": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/threads/{thread_id}/runs/{run_id}/cancel": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/threads/{thread_id}/runs/{run_id}/steps": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "OPTIONS /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs": {
+      "semantics": "配置允许的实际路径/方法之原生CORS预检；Origin/method/header与Vary合同。",
+      "boundary": "实际peer CIDR/Host仍检查；不执行模型、对象CRUD或分钟额度操作。后续请求仍需自己的Key/owner/当前准入绑定。",
+      "evidence": [
+        "docs/SERVE_RESPONSES_ADVANCED_2026-11-09.md",
+        "tests/server_prompt_registry_test.cpp",
+        "docs/evidence/serve-access-delivery-20261109/README.md",
+        "docs/SERVE_SURFACE_REAUDIT_2026-11-16.md"
+      ]
+    },
+    "POST /v1/threads/runs": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/threads/{thread_id}/runs": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/threads/{thread_id}/runs/{run_id}": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/threads/{thread_id}/runs/{run_id}/cancel": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
+        "tests/server_prompt_registry_test.cpp"
+      ]
+    },
+    "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs": {
+      "semantics": "在客户自己的会话中创建后台 Run，查询运行与步骤，接收工具输出并继续或取消。",
+      "boundary": "运行状态来自持久化推理记录；每次工具回填须一次提交本轮所有调用的结果。",
+      "evidence": [
+        "src/server/assistant_run_http.cpp",
+        "src/server/assistant_run_admission.cpp",
+        "src/server/assistant_run_stream.cpp",
         "tests/server_prompt_registry_test.cpp"
       ]
     }

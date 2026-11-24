@@ -61,6 +61,14 @@ Q4T_TEST(responses_file_search_definition_preserves_controls_and_owner_ids) {
             plan.search.embedding_weight == 2 && plan.search.text_weight == 1 &&
             OutputJson(plan.search.filters).find("9007199254740993") !=
                 std::string::npos);
+  auto unbound = Definition();
+  Set(&unbound, "vector_store_ids", Array());
+  ResponsesFileSearchTool empty;
+  Q4T_CHECK(PlanResponsesFileSearchTool(unbound, &empty, &error));
+  VectorSearchPlan no_files;
+  Q4T_CHECK(empty.store_ids.empty() &&
+            PlanResponsesFileSearchCall(empty, Read(R"({"queries":["Q4T"]})"),
+                                        &no_files, &error));
   const auto defaults = Tool();
   Q4T_CHECK(defaults.search.max_results == 10 &&
             defaults.search.embedding_weight == 1 &&
@@ -71,7 +79,8 @@ Q4T_TEST(responses_file_search_definition_preserves_controls_and_owner_ids) {
 Q4T_TEST(responses_file_search_bad_definition_never_publishes_partial_plan) {
   for (
       const auto* json :
-      {R"({"type":"file_search","vector_store_ids":[]})",
+      {R"({"type":"file_search"})",
+       R"({"type":"file_search","vector_store_ids":null})",
        R"({"type":"file_search","vector_store_ids":["vs_a","vs_a"]})",
        R"({"type":"file_search","vector_store_ids":["vs_../path"]})",
        R"({"type":"file_search","vector_store_ids":["file_a"]})",

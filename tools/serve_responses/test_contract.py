@@ -210,6 +210,21 @@ class ApplicationContract(unittest.TestCase):
         self.assertEqual(set(query), {'after','before','limit','order','run_id'})
         self.assertEqual(query['limit']['schema']['maximum'], 100)
 
+    def test_assistant_run_tokens_tools_queries_and_step_parent(self):
+        create = dict(assistant_id='asst_q4t', max_prompt_tokens=256,
+                      max_completion_tokens=257, tools=[dict(type='file_search')]*20)
+        self.assertFalse(errors(create, 'assistant_run_create'))
+        self.assertFalse(errors(dict(create, thread={'messages': []}), 'assistant_thread_run_create'))
+        for extra in [dict(max_prompt_tokens=255), dict(max_completion_tokens=256.5),
+                      dict(tools=[dict(type='file_search')]*21), dict(include=[])]:
+            self.assertTrue(errors(dict(create, **extra), 'assistant_run_create'))
+        self.assertFalse(errors(dict(tool_outputs=[dict(tool_call_id='call_a', output='460')]),
+                                'assistant_run_submit'))
+        self.assertTrue(errors(dict(thread_id='thread_a', run_id='run_a'), 'assistant_step_query'))
+        key = 'step_details.tool_calls[*].file_search.results[*].content'
+        self.assertFalse(errors(dict(include=[key]), 'assistant_step_query'))
+        self.assertTrue(errors(dict(include=['unknown']), 'assistant_step_query'))
+
     def test_archived_real_business_wire(self):
         checked, rejected = self.audit(ROOT/'docs/evidence/serve-responses-business-20261109/business-01', legacy=True)
         self.assertGreater(checked, 20)

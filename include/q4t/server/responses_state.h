@@ -33,6 +33,9 @@ struct ResponseStatePlan {
   // The first durable queue receipt publishes the session CAS in the same
   // transaction. Later checkpoints retain just the ID in the private record.
   std::string agent_session_id;
+  std::string assistant_thread_id, assistant_run_id;
+  int64_t assistant_started_at = 0, assistant_finished_at = 0;
+  std::vector<ObjectRequest> assistant_writes;
   // Recorded with the native item checkpoint. Session subagent resources use
   // the actual dispatch time even when queried after a process replacement.
   io::Json agent_item_times;

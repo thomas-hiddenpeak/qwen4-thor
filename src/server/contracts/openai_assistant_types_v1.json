@@ -16,7 +16,17 @@
     "message_update": 248,
     "message_resource": 249,
     "message_deleted": 285,
-    "message_query": 287
+    "message_query": 287,
+    "run_create": 288,
+    "thread_run_create": 315,
+    "run_submit": 349,
+    "run_update": 352,
+    "run_list_query": 353,
+    "run_resource": 354,
+    "step_resource": 387,
+    "step_list_query": 427,
+    "step_query": 428,
+    "run_event": 429
   },
   "nodes": [
     {
@@ -2761,12 +2771,3294 @@
         }
       ],
       "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "additional_instructions",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "additional_messages",
+          "optional": true,
+          "type": 289
+        },
+        {
+          "name": "assistant_id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "instructions",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "max_completion_tokens",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 256
+          }
+        },
+        {
+          "name": "max_prompt_tokens",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 256
+          }
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 302
+        },
+        {
+          "name": "parallel_tool_calls",
+          "optional": true,
+          "type": 303
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": true,
+          "type": 98
+        },
+        {
+          "name": "response_format",
+          "optional": true,
+          "type": 106
+        },
+        {
+          "name": "stream",
+          "optional": true,
+          "type": 118
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 2
+          }
+        },
+        {
+          "name": "tool_choice",
+          "optional": true,
+          "type": 304
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 310,
+          "bounds": {
+            "maxItems": 20
+          }
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        {
+          "name": "truncation_strategy",
+          "optional": true,
+          "type": 311
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        290
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 291
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "attachments",
+          "optional": true,
+          "type": 292
+        },
+        {
+          "name": "content",
+          "optional": false,
+          "type": 197,
+          "bounds": {
+            "minItems": 1
+          }
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 208
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        293
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 294
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 114
+        },
+        {
+          "name": "tools",
+          "optional": false,
+          "type": 295
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        296
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 297
+    },
+    {
+      "kind": "union",
+      "variants": [
+        143,
+        298
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 153
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        300
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 301
+    },
+    {
+      "kind": "literal",
+      "value": "step_details.tool_calls[*].file_search.results[*].content"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        119,
+        120
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        99,
+        107,
+        305,
+        306
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "required"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "function",
+          "optional": true,
+          "type": 307
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 309
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        308
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        158,
+        144,
+        153
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        141
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        312
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "last_messages",
+          "optional": true,
+          "type": 122
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 313
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        107,
+        314
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "last_messages"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "assistant_id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "instructions",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "max_completion_tokens",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 256
+          }
+        },
+        {
+          "name": "max_prompt_tokens",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 256
+          }
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 302
+        },
+        {
+          "name": "parallel_tool_calls",
+          "optional": true,
+          "type": 303
+        },
+        {
+          "name": "response_format",
+          "optional": true,
+          "type": 106
+        },
+        {
+          "name": "stream",
+          "optional": true,
+          "type": 118
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 2
+          }
+        },
+        {
+          "name": "thread",
+          "optional": true,
+          "type": 316
+        },
+        {
+          "name": "tool_choice",
+          "optional": true,
+          "type": 304
+        },
+        {
+          "name": "tool_resources",
+          "optional": true,
+          "type": 341
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 310,
+          "bounds": {
+            "maxItems": 20
+          }
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        {
+          "name": "truncation_strategy",
+          "optional": true,
+          "type": 347
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        317
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "messages",
+          "optional": true,
+          "type": 318
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "tool_resources",
+          "optional": true,
+          "type": 328
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        319
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 320
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "attachments",
+          "optional": true,
+          "type": 321
+        },
+        {
+          "name": "content",
+          "optional": false,
+          "type": 197,
+          "bounds": {
+            "minItems": 1
+          }
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 208
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        322
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 323
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 114
+        },
+        {
+          "name": "tools",
+          "optional": false,
+          "type": 324
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        325
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 326
+    },
+    {
+      "kind": "union",
+      "variants": [
+        143,
+        327
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 153
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        329
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": true,
+          "type": 330
+        },
+        {
+          "name": "file_search",
+          "optional": true,
+          "type": 332
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        331
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 20
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        333
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "vector_store_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 1
+          }
+        },
+        {
+          "name": "vector_stores",
+          "optional": true,
+          "type": 334,
+          "bounds": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        335
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 336
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "chunking_strategy",
+          "optional": true,
+          "type": 337
+        },
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        338,
+        339
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 107
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "static",
+          "optional": false,
+          "type": 340
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 139
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "chunk_overlap_tokens",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "max_chunk_size_tokens",
+          "optional": false,
+          "type": 123
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        342
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": true,
+          "type": 343
+        },
+        {
+          "name": "file_search",
+          "optional": true,
+          "type": 345
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        344
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 20
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        346
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "vector_store_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        348
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "last_messages",
+          "optional": true,
+          "type": 122
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 313
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "stream",
+          "optional": true,
+          "type": 118
+        },
+        {
+          "name": "tool_outputs",
+          "optional": false,
+          "type": 350
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 351
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "output",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "tool_call_id",
+          "optional": true,
+          "type": 114
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "before",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 183
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "assistant_id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "cancelled_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "completed_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "expires_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "failed_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "incomplete_details",
+          "optional": false,
+          "type": 355
+        },
+        {
+          "name": "instructions",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "last_error",
+          "optional": false,
+          "type": 360
+        },
+        {
+          "name": "max_completion_tokens",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "max_prompt_tokens",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 171,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 366
+        },
+        {
+          "name": "parallel_tool_calls",
+          "optional": false,
+          "type": 180
+        },
+        {
+          "name": "required_action",
+          "optional": false,
+          "type": 367
+        },
+        {
+          "name": "response_format",
+          "optional": false,
+          "type": 374
+        },
+        {
+          "name": "started_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 375
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 122
+        },
+        {
+          "name": "thread_id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "tool_choice",
+          "optional": false,
+          "type": 382
+        },
+        {
+          "name": "tools",
+          "optional": false,
+          "type": 141
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 122
+        },
+        {
+          "name": "truncation_strategy",
+          "optional": false,
+          "type": 383
+        },
+        {
+          "name": "usage",
+          "optional": false,
+          "type": 385
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        356
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "reason",
+          "optional": true,
+          "type": 357
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        358,
+        359
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "max_completion_tokens"
+    },
+    {
+      "kind": "literal",
+      "value": "max_prompt_tokens"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        361
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code",
+          "optional": false,
+          "type": 362
+        },
+        {
+          "name": "message",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        363,
+        364,
+        365
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "server_error"
+    },
+    {
+      "kind": "literal",
+      "value": "rate_limit_exceeded"
+    },
+    {
+      "kind": "literal",
+      "value": "invalid_prompt"
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        368
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "submit_tool_outputs",
+          "optional": false,
+          "type": 369
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 373
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "tool_calls",
+          "optional": false,
+          "type": 370
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 371
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "function",
+          "optional": false,
+          "type": 372
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 158
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "arguments",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "submit_tool_outputs"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        107,
+        108,
+        110,
+        112
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        282,
+        283,
+        284,
+        376,
+        377,
+        378,
+        379,
+        380,
+        381
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "queued"
+    },
+    {
+      "kind": "literal",
+      "value": "requires_action"
+    },
+    {
+      "kind": "literal",
+      "value": "cancelling"
+    },
+    {
+      "kind": "literal",
+      "value": "cancelled"
+    },
+    {
+      "kind": "literal",
+      "value": "failed"
+    },
+    {
+      "kind": "literal",
+      "value": "expired"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        99,
+        107,
+        305,
+        306
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        384
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "last_messages",
+          "optional": true,
+          "type": 122
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 313
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        386
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "completion_tokens",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "prompt_tokens",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "total_tokens",
+          "optional": false,
+          "type": 123
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "assistant_id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "cancelled_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "completed_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "expired_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "failed_at",
+          "optional": false,
+          "type": 257
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "last_error",
+          "optional": false,
+          "type": 388
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 171,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 391
+        },
+        {
+          "name": "run_id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 392
+        },
+        {
+          "name": "step_details",
+          "optional": false,
+          "type": 393
+        },
+        {
+          "name": "thread_id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 424
+        },
+        {
+          "name": "usage",
+          "optional": false,
+          "type": 425
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        389
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code",
+          "optional": false,
+          "type": 390
+        },
+        {
+          "name": "message",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        363,
+        364
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.step"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        282,
+        284,
+        379,
+        380,
+        381
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        394,
+        397
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "message_creation",
+          "optional": false,
+          "type": 395
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 396
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "message_id",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "message_creation"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "tool_calls",
+          "optional": false,
+          "type": 398
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 423
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 399
+    },
+    {
+      "kind": "union",
+      "variants": [
+        400,
+        409,
+        421
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": false,
+          "type": 401
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 144
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "outputs",
+          "optional": false,
+          "type": 402
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 403
+    },
+    {
+      "kind": "union",
+      "variants": [
+        404,
+        406
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "logs",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 405
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "logs"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image",
+          "optional": false,
+          "type": 407
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 408
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "image"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_search",
+          "optional": false,
+          "type": 410
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 153
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "ranking_options",
+          "optional": true,
+          "type": 411
+        },
+        {
+          "name": "results",
+          "optional": true,
+          "type": 414
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        412
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "ranker",
+          "optional": false,
+          "type": 413
+        },
+        {
+          "name": "score_threshold",
+          "optional": false,
+          "type": 123
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        107,
+        152
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        415
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 416
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": true,
+          "type": 417
+        },
+        {
+          "name": "file_id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "file_name",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "score",
+          "optional": false,
+          "type": 123
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        418
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 419
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 420
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        109
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "function",
+          "optional": false,
+          "type": 422
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 158
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "arguments",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 170
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "tool_calls"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        396,
+        423
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        426
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "completion_tokens",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "prompt_tokens",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "total_tokens",
+          "optional": false,
+          "type": 123
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "before",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "include",
+          "optional": true,
+          "type": 299
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 183
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "include",
+          "optional": true,
+          "type": 299
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        430,
+        432,
+        434,
+        436,
+        438,
+        440,
+        442,
+        444,
+        446,
+        448,
+        450,
+        452,
+        454,
+        456,
+        482,
+        484,
+        486,
+        488,
+        490,
+        492,
+        494,
+        521,
+        523,
+        525
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 230
+        },
+        {
+          "name": "enabled",
+          "optional": true,
+          "type": 303
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 431
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.created"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 433
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.created"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 435
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.queued"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 437
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.in_progress"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 439
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.requires_action"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 441
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.completed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 443
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.incomplete"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 445
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.failed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 447
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.cancelling"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 449
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.cancelled"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 354
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 451
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.expired"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 387
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 453
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.step.created"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 387
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 455
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.step.in_progress"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 457
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 481
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "delta",
+          "optional": false,
+          "type": 458
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 481
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "step_details",
+          "optional": true,
+          "type": 459
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        460,
+        463
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "message_creation",
+          "optional": true,
+          "type": 461
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 396
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        462
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "message_id",
+          "optional": true,
+          "type": 114
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "tool_calls",
+          "optional": true,
+          "type": 464
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 423
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        465
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 466
+    },
+    {
+      "kind": "union",
+      "variants": [
+        467,
+        477,
+        478
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": true,
+          "type": 468
+        },
+        {
+          "name": "id",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 144
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        469
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "outputs",
+          "optional": true,
+          "type": 470
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        471
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 472
+    },
+    {
+      "kind": "union",
+      "variants": [
+        473,
+        474
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "logs",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 405
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image",
+          "optional": true,
+          "type": 475
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 408
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        476
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": true,
+          "type": 114
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_search",
+          "optional": false,
+          "type": 117
+        },
+        {
+          "name": "id",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 153
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "function",
+          "optional": true,
+          "type": 479
+        },
+        {
+          "name": "id",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 158
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        480
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "arguments",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "output",
+          "optional": true,
+          "type": 1
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.step.delta"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 387
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 483
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.step.completed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 387
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 485
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.step.failed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 387
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 487
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.step.cancelled"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 387
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 489
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.run.step.expired"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 249
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 491
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.message.created"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 249
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 493
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.message.in_progress"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 495
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 520
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "delta",
+          "optional": false,
+          "type": 496
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 520
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": true,
+          "type": 497
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": 519
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        498
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 499
+    },
+    {
+      "kind": "union",
+      "variants": [
+        500,
+        503,
+        515,
+        516
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_file",
+          "optional": true,
+          "type": 501
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 203
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        502
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 202
+        },
+        {
+          "name": "file_id",
+          "optional": true,
+          "type": 114
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "text",
+          "optional": true,
+          "type": 504
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 109
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        505
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "annotations",
+          "optional": true,
+          "type": 506
+        },
+        {
+          "name": "value",
+          "optional": true,
+          "type": 114
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        507
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 508
+    },
+    {
+      "kind": "union",
+      "variants": [
+        509,
+        512
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "end_index",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "file_citation",
+          "optional": true,
+          "type": 510
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "start_index",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "text",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 266
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        511
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "quote",
+          "optional": true,
+          "type": 114
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "end_index",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "file_path",
+          "optional": true,
+          "type": 513
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "start_index",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "text",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 269
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        514
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": true,
+          "type": 114
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "refusal",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 271
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_url",
+          "optional": true,
+          "type": 517
+        },
+        {
+          "name": "index",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 206
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        518
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 202
+        },
+        {
+          "name": "url",
+          "optional": true,
+          "type": 114
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        172,
+        209
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "thread.message.delta"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 249
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 522
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.message.completed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 249
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 524
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "thread.message.incomplete"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 526
+        },
+        {
+          "name": "event",
+          "optional": false,
+          "type": 536
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code",
+          "optional": false,
+          "type": 170
+        },
+        {
+          "name": "message",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "misalignment",
+          "optional": true,
+          "type": 527
+        },
+        {
+          "name": "param",
+          "optional": false,
+          "type": 170
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        528
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detailed_explanation",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "error_type",
+          "optional": true,
+          "type": 529
+        },
+        {
+          "name": "review_target",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "steer",
+          "optional": true,
+          "type": 534
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        7,
+        530,
+        531,
+        532,
+        533
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "potentially_unintended_data_transfer"
+    },
+    {
+      "kind": "literal",
+      "value": "potentially_unintended_data_access"
+    },
+    {
+      "kind": "literal",
+      "value": "potentially_unintended_destructive_activity"
+    },
+    {
+      "kind": "literal",
+      "value": "other"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        535
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "message",
+          "optional": false,
+          "type": 3
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "error"
     }
   ],
   "sources_sha256": {
     "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
     "src/resources/beta/assistants.ts": "8d3d6b04baade1f5d3c597c1b49915e3e2387dac5ab106e5d0f54b95ea4d4716",
     "src/resources/beta/threads/messages.ts": "402598dd86e46e43d92075e988beb1cdf34bb25b49d96474a9cdf52ebe7732a3",
+    "src/resources/beta/threads/runs/runs.ts": "dd6f7b672c6df20aaf2ffcff3d89fbad7fb922623847da5b9e2446ab32769f3e",
+    "src/resources/beta/threads/runs/steps.ts": "64304e95998acdc1d8013cb11009940139622f1654b37333b7e3142f85b13587",
     "src/resources/beta/threads/threads.ts": "73e2e924fb0285385c8032c62de7f3dec6ff64c4ea8cadb3791c57d7ab69e335",
     "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
   },

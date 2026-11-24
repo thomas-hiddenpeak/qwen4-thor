@@ -61,6 +61,16 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/tunnels/{tunnel_id}', 'control'),
     ('GET', '/v1/tunnels/{tunnel_id}/poll', 'tunnel_poll'),
     ('POST', '/v1/tunnels/{tunnel_id}/response', 'tunnel_response'),
+    ('POST', '/v1/threads/runs', 'data'),
+    ('POST', '/v1/threads/{thread_id}/runs/{run_id}/cancel', 'control'),
+    ('POST', '/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs', 'data'),
+    *((method, path, 'data' if method == 'POST' else 'control')
+      for path, methods in (
+          ('/v1/threads/{thread_id}/runs', ('GET','POST')),
+          ('/v1/threads/{thread_id}/runs/{run_id}', ('GET','POST')),
+          ('/v1/threads/{thread_id}/runs/{run_id}/steps', ('GET',)),
+          ('/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}', ('GET',)))
+      for method in methods),
     ('POST', '/v1/threads', 'data'),
     *((method, path, 'data' if method == 'POST' else 'control')
       for path, methods in (
@@ -254,6 +264,8 @@ def route_map():
     rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
+                           'run_[A-Za-z0-9_-]{1,124}' if part == '{run_id}' else
+                           'step_[A-Za-z0-9_-]{1,123}' if part == '{step_id}' else
                            'thread_[A-Za-z0-9_-]{1,121}' if part == '{thread_id}' else
                            'msg_[A-Za-z0-9_-]{1,124}' if part == '{message_id}' else
                            'asst_[A-Za-z0-9_-]{1,123}' if part == '{assistant_id}' else

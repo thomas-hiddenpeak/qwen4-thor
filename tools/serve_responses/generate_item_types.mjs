@@ -33,6 +33,8 @@ const live = resolve(sdk, 'src/resources/live/live.ts');
 const decisions = resolve(sdk, 'src/resources/decisions.ts');
 const threads = resolve(sdk, 'src/resources/beta/threads/threads.ts');
 const messages = resolve(sdk, 'src/resources/beta/threads/messages.ts');
+const runs = resolve(sdk, 'src/resources/beta/threads/runs/runs.ts');
+const steps = resolve(sdk, 'src/resources/beta/threads/runs/steps.ts');
 const assistants = resolve(sdk, 'src/resources/beta/assistants.ts');
 const agents = resolve(sdk, 'src/resources/beta/agents/agents.ts');
 const credentials = resolve(sdk, 'src/resources/beta/agents/vaults/credentials.ts');
@@ -53,7 +55,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--multi-agent' ? [beta] : []),
   ...(mode === '--agents' ? [agents] : []),
-  ...(mode === '--assistants' ? [assistants, threads, messages] : []),
+  ...(mode === '--assistants' ? [assistants, threads, messages, runs, steps] : []),
   ...(mode === '--vault-credentials' ? [credentials] : []),
   ...(mode === '--environments' ? [environments, environmentFiles, templates] : []),
   ...(mode === '--agent-sessions' ? [agents, agentSessions, agentTurns, artifacts, subagents] : []),
@@ -208,6 +210,16 @@ const roots = mode === '--environments' ? {
   message_resource: exported(messages, 'Message'),
   message_deleted: exported(messages, 'MessageDeleted'),
   message_query: exported(messages, 'MessageListParams'),
+  run_create: exported(runs, 'RunCreateParamsBase'),
+  thread_run_create: exported(threads, 'ThreadCreateAndRunParamsBase'),
+  run_submit: exported(runs, 'RunSubmitToolOutputsParamsBase'),
+  run_update: exported(runs, 'RunUpdateParams'),
+  run_list_query: exported(runs, 'RunListParams'),
+  run_resource: exported(runs, 'Run'),
+  step_resource: exported(steps, 'RunStep'),
+  step_list_query: exported(steps, 'StepListParams'),
+  step_query: exported(steps, 'StepRetrieveParams'),
+  run_event: exported(assistants, 'AssistantStreamEvent'),
 } : mode === '--agents' ? {
   create: exported(agents, 'AgentCreateParams'),
   update: exported(agents, 'AgentUpdateParams'),
@@ -304,6 +316,23 @@ if (mode === '--assistants') {
   // MessageUpdateParams includes the parent path parameter on SDK calls.
   const update = nodes[roots.message_update];
   update.fields = update.fields.filter(field => field.name !== 'thread_id');
+  // The SDK combines URL, query and body fields in some method signatures.
+  for (const [root, excluded] of [
+    ['run_create', ['include']], ['run_submit', ['thread_id']],
+    ['run_update', ['thread_id']], ['step_list_query', ['thread_id']],
+    ['step_query', ['thread_id', 'run_id']]]) {
+    const node = nodes[roots[root]];
+    node.fields = node.fields.filter(field => !excluded.includes(field.name));
+  }
+  for (const name of ['run_create', 'thread_run_create']) {
+    for (const field of nodes[roots[name]].fields) {
+      if (['max_prompt_tokens','max_completion_tokens'].includes(field.name))
+        field.bounds = {type:['integer','null'], minimum:256};
+      if (field.name === 'tools')
+        field.bounds = {maxItems:20};
+      if (['temperature','top_p'].includes(field.name)) field.bounds = bounds[field.name];
+    }
+  }
   function requireAttachment(index) {
     const node = nodes[index];
     if (node.kind === 'union') node.variants.forEach(requireAttachment);
@@ -315,7 +344,7 @@ if (mode === '--assistants') {
   }
   for (const node of nodes.slice(roots.thread_create)) {
     const fields = node.fields ?? [];
-    if (fields.some(field => field.name === 'role') &&
+    if (['role','attachments','content'].every(name => fields.some(field => field.name === name)) &&
         !fields.some(field => field.name === 'id')) {
       fields.find(field => field.name === 'content').bounds = {minItems:1};
       requireAttachment(fields.find(field => field.name === 'attachments').type);

@@ -133,6 +133,11 @@ def schema(graph):
     thread_create['properties']['tool_resources'].update(inline_search)
     msg_query = definitions['assistant_' + str(assistants['roots']['message_query'])]
     msg_query['properties']['limit'] = page_limit
+    for family in ('run', 'step'):
+        definitions['assistant_'+family+'_list'] = copy.deepcopy(definitions['agents_list'])
+        definitions['assistant_'+family+'_list']['properties']['data']['items'] = ref('assistant_'+family+'_resource')
+        graph_query = definitions['assistant_' + str(assistants['roots'][family+'_list_query'])]
+        graph_query['properties']['limit'] = page_limit
     definitions['assistant_message_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['assistant_message_list']['properties']['data']['items'] = ref('assistant_message_resource')
     assistant_query = definitions['assistant_' + str(assistants['roots']['query'])]
@@ -520,6 +525,15 @@ def add_openapi(paths, response, error):
         ('/v1/vaults/{vault_id}', 'get', None, 'vault', None),
         ('/v1/vaults/{vault_id}', 'post', 'vault_update', 'vault', None),
         ('/v1/vaults/{vault_id}', 'delete', None, 'vault_deleted', None),
+        ('/v1/threads/runs', 'post', 'assistant_thread_run_create', 'assistant_run_resource', None),
+        ('/v1/threads/{thread_id}/runs', 'post', 'assistant_run_create', 'assistant_run_resource', 'assistant_step_query'),
+        ('/v1/threads/{thread_id}/runs', 'get', None, 'assistant_run_list', 'assistant_run_list_query'),
+        ('/v1/threads/{thread_id}/runs/{run_id}', 'get', None, 'assistant_run_resource', None),
+        ('/v1/threads/{thread_id}/runs/{run_id}', 'post', 'assistant_run_update', 'assistant_run_resource', None),
+        ('/v1/threads/{thread_id}/runs/{run_id}/cancel', 'post', None, 'assistant_run_resource', None),
+        ('/v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs', 'post', 'assistant_run_submit', 'assistant_run_resource', None),
+        ('/v1/threads/{thread_id}/runs/{run_id}/steps', 'get', None, 'assistant_step_list', 'assistant_step_list_query'),
+        ('/v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}', 'get', None, 'assistant_step_resource', 'assistant_step_query'),
         ('/v1/threads', 'post', 'assistant_thread_create', 'assistant_thread_resource', None),
         ('/v1/threads/{thread_id}', 'get', None, 'assistant_thread_resource', None),
         ('/v1/threads/{thread_id}', 'post', 'assistant_thread_update', 'assistant_thread_resource', None),
@@ -625,6 +639,10 @@ def add_openapi(paths, response, error):
             success.pop('content')
         else:
             success = response(external(result))
+        if body in ('assistant_run_create','assistant_thread_run_create','assistant_run_submit'):
+            success['content']['text/event-stream'] = dict(schema=dict(type='string'),
+                description='Assistants v2 named SSE resource and delta events, followed by done.',
+                **{'x-q4t-event-schema': external('assistant_run_event')})
         if event_stream or body == 'agent_session_create':
             success.setdefault('content', {})['text/event-stream'] = dict(
                 schema=dict(type='string'), **{'x-q4t-event-schema': external('agent_session_event')})

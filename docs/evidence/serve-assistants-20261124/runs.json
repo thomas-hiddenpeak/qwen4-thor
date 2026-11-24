@@ -1,0 +1,172 @@
+{
+  "status": "CANDIDATE_BUSINESS_PASS",
+  "engine": "30954b9703d77aa45c4300be1776cc8e1995b926f4873974850e54fda85845ef",
+  "ingress": "f4ef4776b8db25a9a303234f8497a5595ed6082e850d71ec179717c43a481e15",
+  "compiled_sources": "322c6f8803533969d8e3b32f51a42ac91f7cf37d52b6475f56c70507294eeb30",
+  "protocol": "0c17952957372be2e75620d2fd799ccde550c47cf2a6f7b29ecf8c2b03f8b6a4",
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 50.571,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "lease": "COMPLETED",
+  "sdk": {
+    "sdk": "7.47.0",
+    "release_revision": 460,
+    "source_sha256": "c4ab8696bad304fa31e43234139760100b07917507d515f2fb6fac3b507eda65",
+    "answer": "460",
+    "search_answer": "460",
+    "search_filename": "q4t-publication.txt",
+    "independent_chat": "42",
+    "terminal": "completed",
+    "cancelled": "cancelled",
+    "steps": [
+      "tool_calls",
+      "message_creation"
+    ],
+    "usage": {
+      "prompt_tokens": 772,
+      "completion_tokens": 24,
+      "total_tokens": 796
+    },
+    "rejected_submissions": 3,
+    "foreign_statuses": [
+      404,
+      404
+    ],
+    "active_thread_write": 409,
+    "event_counts": {
+      "create": 9,
+      "submit": 13
+    },
+    "wire_objects": 36,
+    "driver_sha256": "a0913c1b2768a51aee3c1eda43829b30835a0ee2ec0863af8c588d2b55a1c79b"
+  },
+  "wire": {
+    "status": "PASS",
+    "validated_http_responses": 36,
+    "validated_stream_events": 22,
+    "wrong_event_shapes_rejected": 2,
+    "routes": [
+      "GET /v1/threads/{thread_id}/runs",
+      "GET /v1/threads/{thread_id}/runs/{run_id}",
+      "GET /v1/threads/{thread_id}/runs/{run_id}/steps",
+      "GET /v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}",
+      "POST /v1/threads/runs",
+      "POST /v1/threads/{thread_id}/runs",
+      "POST /v1/threads/{thread_id}/runs/{run_id}",
+      "POST /v1/threads/{thread_id}/runs/{run_id}/cancel",
+      "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs"
+    ]
+  },
+  "cpu": {
+    "native": 15,
+    "python": 18,
+    "optional_nginx": 1
+  },
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 178,
+    "native_routes": 294,
+    "reviewed_source_anchors": 1262,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "methods": {
+    "declared": 158,
+    "exact_success_declarations": 158,
+    "missing_declaration": 73,
+    "required_methods": 231
+  },
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "queries": {
+    "total": 130,
+    "counts": {
+      "declared": 130,
+      "bracket_name_only": 0,
+      "missing": 0
+    }
+  },
+  "diagnostics": [
+    "The first targeted CPU run exposed different default function strictness in Assistants and Responses. The adapter now keeps advisory definitions advisory. Explicit strict functions still use native constrained decoding. The initial failure is retained.",
+    "The first GPU run verified the function round trip and cancellation. The final candidate adds a submitted step completion event with its actual settlement time, the pinned SDK event schema, and real attachment search. Both leases were released."
+  ],
+  "limits": [
+    "This exercises scoped durable background Runs, client function execution and hosted file_search. Hosted code_interpreter execution remains a separate implementation task.",
+    "Prompt accounting uses actual cumulative Responses usage at terminal projection. A pre-generation hard limit across hosted tool turns still requires execution-level accounting and acceptance.",
+    "Managed primary/light recovery and release are pending. The installed rev460 service declares 135 of 231 required methods. The user owns the 24-hour soak."
+  ],
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-business-02/result.json",
+      "sha256": "616d2670e8f7bd4956556f8f89fe958247a8d4d7cb99c9e9b10e0ddd61a1c2f9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-business-02/plan.json",
+      "sha256": "8ef0dafae75eda378172860ef80bdafe8fabd739e7d099037e831371a5458e97"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-business-02/create/sdk-result.json",
+      "sha256": "fbc3177ec55f47c89973b7951a1721ec0838253da1489f9dffd27f08a3bf2724"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-business-02/create/run-events.json",
+      "sha256": "85f811dbdfd7c6c0f3d3fdaa64f3712a905d41ed278ecc6e784a95b5fc720714"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-business-02/create/run-wire.json",
+      "sha256": "95e3d88ebceebc2a0d208f3231908f9a9c7b5cdfd3e0050cf8ab3f3041d7ed1e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-business-lease-02/exit.json",
+      "sha256": "33092535368a6c4caf670982fb73e8e25b67ee5766d23ed532d96acb7225b3e8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-wire-02.json",
+      "sha256": "710c007795dcd7c8e50fb4af93bb1d4ad2ef35d815a485bcd51265d530018002"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-methods-01.json",
+      "sha256": "f835256b046226fc6b6b35540c6f289fed6945fbd35e5f99bf2d645609984b28"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-query-01.json",
+      "sha256": "d1e20027e87a72d904ca0d1574dbe0de96ccddd5ca95248a2129a01c0babf535"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-source-audit-03.json",
+      "sha256": "6bd830a16fd1684a4d9fde4bcbfb84b1757ac9ab025ec59829f4218bf1d6aab2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-contracts-cpu-01.log",
+      "sha256": "521d5b3b58b772ffec8770d0cccc4f0fd2aac2bbe600a891de9a1a79745e9c2d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-nginx-cpu-01.log",
+      "sha256": "c2059e18f9af3736508280198afb86b884c36841a7f5023250c9c360fc5b436f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-native-cpu-01.log",
+      "sha256": "7b04eb36cde5d75cec33728e3d516dd27dcc67c96eeb4e99b38149ddfc7b7639"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-native-cpu-04.log",
+      "sha256": "0799800dbac91d4df76939795560452f8a722a9edcebc8568bd500a8448bef04"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-business-01/result.json",
+      "sha256": "a21a2c9a75fb879e56e546f8501a21e09282397497bdcd148e01a2ce3b4db028"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/runs-wire-01.json",
+      "sha256": "a154462c4cb6a8743718e86eaaba2f6f3f8d20d9d9ef3fa38aa4424736cee835"
+    }
+  ]
+}

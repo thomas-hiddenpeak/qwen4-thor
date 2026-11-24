@@ -434,7 +434,7 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
+            identities = dict(run_id='run_1', step_id='step_1', thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
@@ -540,6 +540,22 @@ class NginxTests(unittest.TestCase):
         self.assertEqual(self.stack.request(path='/v1/assistants/agent_other')[0], 404)
         self.assertEqual(self.stack.request(path='/v1/threads/thread_1/messages/asst_1')[0], 404)
         self.assertEqual(len(self.stack.application_requests), 5)
+
+    def test_assistant_run_routes_preserve_method_owner_and_beta(self):
+        self.ready()
+        base = '/v1/threads/thread_1/runs'
+        run = base+'/run_1'
+        for path, body in [('/v1/threads/runs', {}), (base, {}), (base, None),
+                           (run, None), (run, {'metadata': {}}), (run+'/cancel', {}),
+                           (run+'/submit_tool_outputs', {'tool_outputs': []}),
+                           (run+'/steps', None), (run+'/steps/step_1', None)]:
+            with self.subTest(path=path, method='GET' if body is None else 'POST'):
+                status, _, _ = self.stack.request(body, path=path,
+                    extra={'OpenAI-Beta': 'assistants=v2'})
+                self.assertEqual(status, 200)
+                row = self.stack.application_requests[-1]
+                self.assertEqual((row['method'], row['path'], row['client'], row['openai_beta']),
+                                 ('GET' if body is None else 'POST', path, 'alpha', 'assistants=v2'))
 
     def test_environment_templates_preserve_identity_and_sdk_selector(self):
         self.ready()

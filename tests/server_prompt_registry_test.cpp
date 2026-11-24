@@ -1,3 +1,5 @@
+#include "../src/server/assistant_runs_internal.h"
+#include "../src/server/responses_json.h"
 #include "../src/server/agent_subagent_internal.h"
 #include "../src/server/agent_artifact_internal.h"
 #include "../src/server/agent_environment_internal.h"
@@ -3200,5 +3202,151 @@ Q4T_TEST(assistant_thread_vector_attachment_rolls_back_message_and_membership) {
   auto saved = HandleAssistantThreads(objects, "GET", "/v1/threads/" + thread, "", who, true);
   Q4T_CHECK(Ok(saved) && saved.value.Find("tool_resources")->Find("code_interpreter")
                 ->GetArray("file_ids")->array.size() == 1);
+  return true;
+}
+
+Q4T_TEST(assistant_run_settings_restore_history_and_normalize_overrides) {
+  using namespace q4t::server::assistant_detail;
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto config = Config();
+  auto asst = HandleAssistantRegistry(
+      objects, "POST", "/v1/assistants",
+      R"({"model":"cpu","instructions":"Find records","reasoning_effort":"low","tools":[{"type":"function","function":{"name":"project_record","parameters":{"type":"object","properties":{}}}}]})",
+      config, Access(), false);
+  Q4T_CHECK(Ok(asst));
+  ObjectRequest lookup;
+  lookup.kind = ObjectKind::kAssistant;
+  lookup.scope = Access().scope;
+  lookup.id = asst.value.GetString("id");
+  auto record = objects.Execute(lookup, Access().deadline);
+  Q4T_CHECK(Ok(record));
+  auto thread = HandleAssistantThreads(
+      objects, "POST", "/v1/threads",
+      R"({"messages":[{"role":"user","content":"old"},{"role":"user","content":"new"}]})",
+      Access(), false);
+  Q4T_CHECK(Ok(thread));
+  ObjectRequest draft;
+  Q4T_CHECK(Ok(LoadThreadDraft(objects, Access(), thread.value.GetString("id"),
+                               &draft)));
+  auto req = Parse(
+      R"({"additional_instructions":"Use tools","truncation_strategy":{"type":"last_messages","last_messages":1},"tool_choice":{"type":"function","function":{"name":"project_record"}},"max_completion_tokens":256})");
+  Set(&req, "assistant_id", *asst.value.Find("id"));
+  Json settings, native;
+  Q4T_CHECK(
+      Ok(PrepareRunSettings(record.value, draft.data, req, config, "run_cpu",
+                            std::time(nullptr), &settings, &native)));
+  Q4T_CHECK(settings.GetString("instructions") == "Find records\n\nUse tools");
+  Q4T_CHECK(native.Find("reasoning")->GetString("effort") == "low" &&
+            native.GetInt("max_output_tokens") == 256);
+  Q4T_CHECK(native.Find("tool_choice")->GetString("name") == "project_record");
+  Q4T_CHECK(native.GetArray("tools")->array.front().GetString("name") ==
+            "project_record");
+  const auto* strict = native.GetArray("tools")->array.front().Find("strict");
+  Q4T_CHECK(strict && strict->IsBool() && !strict->boolean);
+  const auto* history = native.GetArray("input");
+  Q4T_CHECK(history->array.size() == 1 &&
+            history->array[0].GetArray("content")->array[0].GetString("text") ==
+                "new");
+  ChatPlanError error;
+  Q4T_CHECK(ValidateAssistant(req, AssistantShape::kRunCreate, &error));
+  Set(&req, "max_completion_tokens", Parse("256.25"));
+  Q4T_CHECK(!ValidateAssistant(req, AssistantShape::kRunCreate, &error));
+  Set(&req, "max_completion_tokens", Parse("255"));
+  Q4T_CHECK(!ValidateAssistant(req, AssistantShape::kRunCreate, &error));
+  const auto route = ParseAssistantRunRoute(
+      "/v1/threads/thread_test/runs/run_test/steps/step_x?include[]=x");
+  Q4T_CHECK(route.kind == AssistantRunRouteKind::kStep &&
+            route.thread == "thread_test" && route.run == "run_test");
+  Q4T_CHECK(!AssistantRunMethodAllowed(
+      "POST", "/v1/threads/thread_test/runs/run_test/steps"));
+  return true;
+}
+
+Q4T_TEST(assistant_run_queues_thread_atomically_and_projects_real_tool_state) {
+  using namespace q4t::server::assistant_detail;
+  using q4t::server::responses_detail::Array;
+  using q4t::server::responses_detail::Object;
+  using q4t::server::responses_detail::String;
+  Fixture f;
+  ObjectStore objects(f.options);
+  const auto config = Config();
+  auto asst = HandleAssistantRegistry(
+      objects, "POST", "/v1/assistants",
+      R"({"model":"cpu","tools":[{"type":"function","function":{"name":"project_record","parameters":{"type":"object","properties":{}}}}]})",
+      config, Access(), false);
+  Q4T_CHECK(Ok(asst));
+  ObjectRequest lookup;
+  lookup.scope = Access().scope;
+  lookup.kind = ObjectKind::kAssistant;
+  lookup.id = asst.value.GetString("id");
+  auto record = objects.Execute(lookup, Access().deadline);
+  auto t = HandleAssistantThreads(
+      objects, "POST", "/v1/threads",
+      R"({"messages":[{"role":"user","content":"Lookup"}]})", Access(), false);
+  Q4T_CHECK(Ok(record) && Ok(t));
+  const auto thread_id = t.value.GetString("id");
+  ObjectRequest draft;
+  Q4T_CHECK(Ok(LoadThreadDraft(objects, Access(), thread_id, &draft)));
+  Json run, native;
+  const auto now = std::time(nullptr);
+  Q4T_CHECK(
+      Ok(PrepareRunSettings(record.value, draft.data,
+                            Object({{"assistant_id", *asst.value.Find("id")}}),
+                            config, "run_cpu", now, &run, &native)));
+  ResponsesExecution execution(objects);
+  Q4T_CHECK(Ok(execution.Prepare(native, config, Access(), now, true)));
+  const auto entry = Object({{"run", run},
+                             {"response_ids", Array({String(execution.Id())})},
+                             {"submitted", Object()}});
+  Set(&draft.data, "runs", Array({entry}));
+  draft.operation = ObjectOperation::kPut;
+  Q4T_CHECK(Ok(execution.BindAssistantRun(thread_id, "run_cpu", {draft})));
+  execution.BindBackgroundControl(
+      std::make_shared<RequestControl>(execution.Id(), "", Clock::now() + 5s));
+  std::string wire;
+  Q4T_CHECK(Ok(execution.Begin(&wire)) && Ok(execution.StartRunning(&wire)));
+  const auto path = "/v1/threads/" + thread_id;
+  Q4T_CHECK(HandleAssistantThreads(objects, "POST", path + "/messages",
+                                   R"({"role":"user","content":"race"})",
+                                   Access(), false)
+                .http_status == 409);
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call = {0, "call_local", "project_record", "{}"};
+  Q4T_CHECK(execution.Append(delta, {}, &wire));
+  Q4T_CHECK(Ok(execution.Finish(false, 1, {260, 0, 256, 0}, now, &wire)));
+  RunView view;
+  Q4T_CHECK(Ok(ProjectRun(objects, Access(), entry, &view)) &&
+            view.run.GetString("status") == "requires_action");
+  const auto* calls = view.run.Find("required_action")
+                          ->Find("submit_tool_outputs")
+                          ->GetArray("tool_calls");
+  Q4T_CHECK(calls->array.size() == 1 &&
+            calls->array[0].GetString("id") == "call_local");
+  Q4T_CHECK(view.steps.array.size() == 1 &&
+            view.steps.array[0].GetString("status") == "in_progress");
+  for (const auto& [key, used] : {std::pair{"max_prompt_tokens", 260},
+                                  std::pair{"max_completion_tokens", 256}}) {
+    auto capped = entry;
+    auto capped_run = *capped.Find("run");
+    Set(&capped_run, key, q4t::server::responses_detail::Number(used));
+    Set(&capped, "run", capped_run);
+    Q4T_CHECK(Ok(ProjectRun(objects, Access(), capped, &view)));
+    Q4T_CHECK(view.run.GetString("status") == "incomplete");
+    Q4T_CHECK(view.run.Find("incomplete_details")->GetString("reason") == key);
+    Q4T_CHECK(view.steps.array.front().GetString("status") == "cancelled");
+  }
+  Q4T_CHECK(
+      ProjectRun(objects, Access("client:other"), entry, &view).http_status ==
+      404);
+  Q4T_CHECK(HandleAssistantThreads(objects, "DELETE", path, "", Access(), false)
+                .http_status == 409);
+  auto stopped = entry;
+  Set(&stopped, "cancelled_at", q4t::server::responses_detail::Number(now));
+  Q4T_CHECK(Ok(ProjectRun(objects, Access(), stopped, &view)) &&
+            view.run.GetString("status") == "cancelled");
+  Q4T_CHECK(view.steps.array.front().GetString("status") == "cancelled" &&
+            view.run.Find("usage")->GetInt("total_tokens") == 516);
   return true;
 }

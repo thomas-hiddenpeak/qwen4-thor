@@ -77,8 +77,6 @@ ObjectReply ExecuteVectorSearchPlan(
       !std::isfinite(plan.text_weight) || plan.text_weight < 0 ||
       (plan.embedding_weight == 0 && plan.text_weight == 0))
     return Error(400, "invalid_request", "Invalid hybrid ranking weights");
-  if (store_ids.empty())
-    return Error(400, "invalid_request", "Expected vector store IDs");
   if (store_ids.size() > kVectorSearchStores)
     return Error(503, "vector_search_resource_exhausted",
                  "Vector store working set exceeds request budget");

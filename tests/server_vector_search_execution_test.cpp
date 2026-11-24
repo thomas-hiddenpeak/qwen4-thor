@@ -850,8 +850,7 @@ Q4T_TEST(vector_multi_store_invalid_ids_and_plans_do_not_bypass_empty_corpus) {
   Fixture fixture;
   Calls calls;
   VectorSearchUsage usage;
-  for (const auto& ids : {std::vector<std::string>{},
-                          {fixture.id, fixture.id},
+  for (const auto& ids : {std::vector<std::string>{fixture.id, fixture.id},
                           {"vs_../x"},
                           {"file_wrong"}}) {
     const auto reply = Multi(fixture, ids, calls, &usage);
@@ -869,6 +868,12 @@ Q4T_TEST(vector_multi_store_invalid_ids_and_plans_do_not_bypass_empty_corpus) {
     Q4T_CHECK(!Multi(fixture, {fixture.id}, calls, &usage, plan).ok());
   }
   Q4T_CHECK(!calls.encodes && !calls.embeds && !calls.reserves);
+  // An explicitly empty selection must not discover another owned store.
+  fixture.Add("private unselected corpus");
+  auto empty = Multi(fixture, {}, calls, &usage);
+  Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty());
+  Q4T_CHECK(calls.reserves == 1 && !calls.embeds && !calls.encodes &&
+            !usage.committed_input && !usage.admitted_input);
   return true;
 }
 

@@ -1,4 +1,4 @@
-#include "assistant_threads_internal.h"
+#include "assistant_runs_internal.h"
 
 #include <algorithm>
 #include <ctime>
@@ -8,8 +8,7 @@
 #include "q4t/server/vector_stores.h"
 
 namespace q4t::server {
-namespace {
-using namespace assistant_detail;
+namespace assistant_detail {
 using namespace object_detail;
 using Kind = AssistantThreadRouteKind;
 
@@ -47,6 +46,63 @@ ObjectReply ReadThread(const Json& record, Json* data) {
   return {};
 }
 
+ObjectReply LoadThreadDraft(ObjectStore& objects, const StateAccess& access,
+                            std::string_view id, ObjectRequest* draft) {
+  auto& write = *draft;
+  const bool creating = id.empty();
+  write.kind = ObjectKind::kThread;
+  write.scope = access.scope;
+  write.id = creating ? NewObjectId(write.kind) : std::string(id);
+  if (write.id.empty())
+    return Error(503, "object_id_unavailable", "No thread ID");
+  write.ttl_seconds = 0;
+  if (creating) {
+    auto thread = Object({{"id", String(write.id)},
+                          {"object", String("thread")},
+                          {"created_at", Number(std::time(nullptr))},
+                          {"tool_resources", Object()},
+                          {"metadata", Object()}});
+    write.data = Object({{"thread", std::move(thread)}, {"messages", Array()}});
+  } else {
+    auto record = objects.Execute(write, access.deadline, access.cancelled);
+    if (!record.ok()) return record;
+    auto valid = ReadThread(record.value, &write.data);
+    if (!valid.ok()) return valid;
+    write.expected_revision = record.value.GetInt("revision");
+  }
+  return {};
+}
+
+ObjectReply DeleteThread(ObjectStore& objects, ObjectRequest thread,
+                         const StateAccess& access) {
+  std::vector<ObjectRequest> deletes;
+  if (const auto* runs = thread.data.GetArray("runs")) {
+    for (const auto& entry : runs->array) {
+      auto* ids = entry.GetArray("response_ids");
+      if (!ids) return Corrupt();
+      for (const auto& id : ids->array) {
+        ObjectRequest resp;
+        resp.scope = access.scope;
+        resp.kind = ObjectKind::kResponse;
+        resp.id = id.str;
+        auto existing = objects.Execute(resp,access.deadline,access.cancelled);
+        if (!existing.ok()) return existing;
+        const auto* data = existing.value.Find("data");
+        if (!data || data->GetString("assistant_thread_id") != thread.id ||
+            data->GetString("assistant_run_id") != entry.Find("run")->GetString("id"))
+          return Corrupt();
+        resp.operation = ObjectOperation::kErase;
+        resp.expected_revision = existing.value.GetInt("revision");
+        deletes.push_back(std::move(resp));
+      }
+    }
+  }
+  thread.operation = ObjectOperation::kErase;
+  thread.data = {};
+  deletes.push_back(std::move(thread));
+  return objects.ExecuteBatch(deletes,access.deadline,access.cancelled);
+}
+
 Json& ObjectField(Json* object, const char* key) {
   auto& field = Field(*object, key);
   if (field.IsNull()) field = Object();
@@ -66,9 +122,10 @@ void AppendIds(Json* object, const char* key,
 
 // Prepare tool resources before publishing. If file_search creates or extends a
 // store, the thread, its message, the index jobs and membership share one CAS.
-ObjectReply Save(ObjectStore& objects, const BinaryAccess& access,
+ObjectReply SaveThread(ObjectStore& objects, const BinaryAccess& access,
                  bool creating, bool resources_changed, bool ingestion,
-                 const Attachments& files, ObjectRequest* write) {
+                 const Attachments& files, ObjectRequest* write,
+                 std::vector<ObjectRequest>* prepared) {
   auto& thread = Field(write->data, "thread");
   auto& resources = Field(thread, "tool_resources");
   Json inline_store;
@@ -114,13 +171,18 @@ ObjectReply Save(ObjectStore& objects, const BinaryAccess& access,
   if (!valid) return Invalid(valid.message(), error.param);
   if (!new_id.empty())
     return VectorStores(objects).Create(access, inline_store, new_id,
-                                        {write, 1});
+                                        {write, 1}, prepared);
   if (!existing_id.empty())
     return VectorStores(objects).AttachForThread(access, existing_id,
-                                                 files.search, *write);
+                                                 files.search, *write, prepared);
+  if (prepared) {
+    *prepared = {*write};
+    return {};
+  }
   return objects.Execute(*write, access.deadline, access.cancelled);
 }
-}  // namespace
+}  // namespace assistant_detail
+using namespace assistant_detail;
 
 ObjectReply HandleAssistantThreads(ObjectStore& objects,
                                    std::string_view method,
@@ -164,25 +226,11 @@ ObjectReply HandleAssistantThreads(ObjectStore& objects,
     return Invalid("Unexpected body", "body");
   }
   ObjectRequest write;
-  write.kind = ObjectKind::kThread;
-  write.scope = access.scope;
-  write.id = creating ? NewObjectId(write.kind) : std::string(route.thread);
-  if (write.id.empty())
-    return Error(503, "object_id_unavailable", "No thread ID");
-  write.ttl_seconds = 0;
-  if (creating) {
-    auto thread = Object({{"id", String(write.id)},
-                          {"object", String("thread")},
-                          {"created_at", Number(std::time(nullptr))},
-                          {"tool_resources", Object()},
-                          {"metadata", Object()}});
-    write.data = Object({{"thread", std::move(thread)}, {"messages", Array()}});
-  } else {
-    auto record = objects.Execute(write, access.deadline, access.cancelled);
-    if (!record.ok()) return record;
-    auto valid = ReadThread(record.value, &write.data);
-    if (!valid.ok()) return valid;
-    write.expected_revision = record.value.GetInt("revision");
+  auto loaded = LoadThreadDraft(objects, access, route.thread, &write);
+  if (!loaded.ok()) return loaded;
+  if (!creating) {
+    auto observed = ObserveLastRun(objects, access, &write.data, method != "GET");
+    if (!observed.ok()) return observed;
   }
   auto& thread = Field(write.data, "thread");
   auto& messages = Field(write.data, "messages");
@@ -196,8 +244,7 @@ ObjectReply HandleAssistantThreads(ObjectStore& objects,
   if (thread_route) {
     if (method == "GET") return Success(thread);
     if (method == "DELETE") {
-      write.operation = ObjectOperation::kErase;
-      auto result = objects.Execute(write, access.deadline, access.cancelled);
+      auto result = DeleteThread(objects, write, access);
       if (result.ok()) result.value = Deleted(write.id, "thread.deleted");
       if (result.commit_unknown)
         result.value = Object({{"id", String(write.id)}});
@@ -237,7 +284,7 @@ ObjectReply HandleAssistantThreads(ObjectStore& objects,
     }
   }
   write.operation = ObjectOperation::kPut;
-  auto result = Save(objects, binary, creating, input.Has("tool_resources"),
+  auto result = SaveThread(objects, binary, creating, input.Has("tool_resources"),
                      ingestion, files, &write);
   if (result.ok()) result.value = thread_route ? thread : response;
   if (result.commit_unknown)
