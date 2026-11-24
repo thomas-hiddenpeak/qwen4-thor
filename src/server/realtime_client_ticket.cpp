@@ -3,6 +3,7 @@
 #include <charconv>
 
 #include "q4t/server/client_identity.h"
+#include "q4t/server/application_routes.h"
 #include "q4t/server/native_crypto.h"
 
 namespace q4t::server {
@@ -49,6 +50,7 @@ std::string_view BearerCredential(std::string_view auth) {
 bool RealtimeGrantTarget(std::string_view method, std::string_view path) {
   if (method == "POST") return path == "/v1/realtime/calls";
   if (method != "GET") return false;
+  if (ValidRealtimeTranslationTarget(path)) return true;
   if (path == "/v1/realtime" || path == "/v1/realtime?intent=transcription")
     return true;
   constexpr std::string_view prefix = "/v1/realtime?";

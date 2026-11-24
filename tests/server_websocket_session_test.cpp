@@ -804,6 +804,36 @@ Q4T_TEST(websocket_session_completion_drains_all_frames_before_normal_close) {
   return true;
 }
 
+Q4T_TEST(websocket_session_drains_error_before_1011) {
+  Sockets sockets;
+  sockets.Small();
+  WebSocketOutput output;
+  const std::string audio(128 * 1024, 'a');
+  Q4T_CHECK(output.TryPush(WebSocketOpcode::kBinary, audio));
+  Q4T_CHECK(output.TryPush(WebSocketOpcode::kText, "error:tts_output_limit"));
+  int calls = 0, cancels = 0;
+  WebSocketSessionCallbacks cb;
+  cb.message = [&](auto, auto) {
+    ++calls;
+    return true;
+  };
+  cb.cancel = [&] { ++cancels; };
+  cb.failed_after_output = [] { return true; };
+  auto task = std::async(std::launch::async, [&] {
+    return RunWebSocketSession(sockets.f[0], Frame("too late"), output, cb,
+                               Limits());
+  });
+  const auto expected = Frame(audio, WebSocketOpcode::kBinary, false) +
+                        Frame("error:tts_output_limit", WebSocketOpcode::kText, false) +
+                        Frame("\x03\xf3", WebSocketOpcode::kClose, false);
+  Q4T_CHECK(Read(sockets.f[1], expected.size()) == expected);
+  const auto result = task.get();
+  Q4T_CHECK(result.end == WebSocketSessionEnd::kApplication &&
+            result.close_code == 1011 && result.sent_bytes == expected.size());
+  Q4T_CHECK(calls == 0 && cancels == 1 && output.Closed() && !output.Bytes());
+  return true;
+}
+
 Q4T_TEST(websocket_session_completion_in_message_stops_same_batch_dispatch) {
   Sockets sockets;
   WebSocketOutput output;

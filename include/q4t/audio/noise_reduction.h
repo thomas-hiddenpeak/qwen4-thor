@@ -14,7 +14,8 @@ enum class NoiseReduction { kOff, kNearField, kFarField };
 // speakers or promise dereverberation. Full runtime qualification is separate.
 class NoiseStream {
  public:
-  explicit NoiseStream(NoiseReduction mode, uint64_t maximum_samples);
+  explicit NoiseStream(NoiseReduction mode, uint64_t maximum_samples,
+                       double strength = 1);
   bool Valid() const { return valid_; }
   // At most 1024 input samples per call; no allocation or model work. Output
   // pressure leaves unconsumed input with the caller. Validate input first.
@@ -33,6 +34,7 @@ class NoiseStream {
   size_t Drain(std::span<float> output);
   const NoiseReduction mode_;
   const uint64_t maximum_;
+  const double strength_;
   std::array<float, 256> previous_{}, input_{}, pending_{};
   std::array<double, 256> overlap_{};
   std::array<double, 257> smooth_{}, noise_{}, old_power_{}, old_gain_{};

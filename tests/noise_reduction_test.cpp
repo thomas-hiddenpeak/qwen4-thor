@@ -14,8 +14,9 @@
 namespace {
 using namespace q4t::audio;
 std::vector<float> Reduce(std::span<const float> input, NoiseReduction mode,
-                          size_t chunk = 1024, size_t room = 1024) {
-  NoiseStream stream(mode, input.size());
+                          size_t chunk = 1024, size_t room = 1024,
+                          double strength = 1) {
+  NoiseStream stream(mode, input.size(), strength);
   std::vector<float> result;
   std::array<float, 1024> output;
   for (size_t at = 0; at < input.size();) {
@@ -165,5 +166,23 @@ Q4T_TEST(noise_stream_invalid_input_budget_and_cancel_never_drain_success) {
   Q4T_CHECK(!empty.Process({}, output, &p));
   NoiseStream invalid(static_cast<NoiseReduction>(99), 1);
   Q4T_CHECK(!invalid.Valid() && !invalid.Finish(output, &count));
+  return true;
+}
+
+Q4T_TEST(noise_translation_strength_interpolates_the_full_waveform) {
+  std::vector<float> input(4201);
+  for (size_t i = 0; i < input.size(); ++i)
+    input[i] = float(.35 * std::sin(i * .17) + .12 * std::cos(i * .43));
+  const auto mode = NoiseReduction::kNearField;
+  auto dry = Reduce(input, mode, 127, 37, 0);
+  auto wet = Reduce(input, mode, 127, 37, 1);
+  auto middle = Reduce(input, mode, 127, 37, .4);
+  double difference = 0;
+  for (size_t i = 0; i < input.size(); ++i) {
+    Q4T_CHECK(std::abs(dry[i] - input[i]) < 1e-6);
+    Q4T_CHECK(std::abs(std::lerp(dry[i], wet[i], .4) - middle[i]) < 1e-6);
+    difference += std::abs(wet[i] - dry[i]);
+  }
+  Q4T_CHECK(difference > 1 && !NoiseStream(mode, 64, -1).Valid());
   return true;
 }

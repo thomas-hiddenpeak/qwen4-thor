@@ -113,6 +113,10 @@ struct WebSocketSessionCallbacks {
   // Authorization and shutdown still take precedence. Must remain true and
   // prohibit further producer writes once observed.
   std::function<bool()> completed = {};
+  // Terminal application failure with a queued error. Drain once, then send
+  // 1011. While draining, revocation, shutdown and write deadlines still win.
+  std::function<bool()> failed_after_output = {};
+
 };
 
 // Borrowed plain backend socket, no fd flag changes and no ownership transfer.

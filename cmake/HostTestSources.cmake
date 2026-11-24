@@ -107,8 +107,11 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_trace_boundaries_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_trace_store_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_wire_shape.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_translation.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_translation_session.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_conversation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_shape_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_translation_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_live_shape_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_configuration.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_media_policy.cpp

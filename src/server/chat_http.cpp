@@ -325,6 +325,12 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
   bool dispatch_started = false;
   try {
     std::string method, path, body;
+    const auto resolve_realtime = [&](std::string_view key) {
+      const auto audience = IsRealtimeTranslationTarget(path)
+                                ? RealtimeSecretAudience::kTranslation
+                                : RealtimeSecretAudience::kRealtime;
+      return realtime_secrets_.Resolve(key, &grant, RealtimeSecretTime::Now(), audience);
+    };
     HttpBodyLease lease(body_budget_);
     HttpRequestHeaders headers;
     std::string websocket_accept;
@@ -358,7 +364,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         const auto client =
             clients_.Authenticate(headers.client_id, headers.gateway_token);
         if (!RealtimeGrantTarget(method, path) || !client.Allowed() ||
-            !realtime_secrets_.Resolve(credential, &grant).ok() ||
+            !resolve_realtime(credential).ok() ||
             grant.owner != client.Id()) {
           failure_status = 401;
           headers.error_code = "invalid_api_key";
@@ -543,7 +549,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     }
     if (context.RealtimeStartup()) {
       const auto reply =
-          realtime_secrets_.Resolve(BearerCredential(headers.authorization), &grant);
+          resolve_realtime(BearerCredential(headers.authorization));
       if (!reply.ok()) {
         SendError(fd, reply.http_status, reply.ClientMessage(), {}, reply.ClientCode());
         return false;
@@ -598,6 +604,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       HandleSipControl(fd, SipControlId(path, "/refer"), body, true);
     else if (method == "POST" && !SipControlId(path, "/accept").empty())
       HandleLiveMediaCreate(fd, {}, body, admission, SipControlId(path, "/accept"));
+    else if (path == "/v1/realtime/translations/client_secrets" && method == "POST")
+      IssueRealtimeSecret(fd, headers, body, RealtimeCredentialApi::kTranslation);
     else if (path == "/v1/realtime/client_secrets" && method == "POST")
       IssueRealtimeSecret(fd, headers, body);
     else if (path == "/v1/realtime/transcription_sessions" && method == "POST")

@@ -79,11 +79,32 @@ def schema(graph):
     assert realtime['profile'] == 'q4t-openai-realtime-types-v1'
     definitions.update(graph_definitions(realtime, 'realtime_', (
         'session', 'call_accept', 'call_refer', 'call_reject',
-        'client_secret_create', 'client_secret_created')))
-    request = 'realtime_client_secret_create'
-    definitions[request] = {'allOf':[definitions[request], {'properties':{
-        'expires_after':{'properties':{'seconds':dict(type='integer', minimum=10,
-                                                      maximum=7200, default=600)}}}}]}
+        'client_secret_create', 'client_secret_created', 'translation_secret_create',
+        'translation_secret_created', 'translation_session', 'translation_session_create',
+        'translation_session_update', 'translation_client_event', 'translation_server_event')))
+    for request in ('realtime_client_secret_create', 'realtime_translation_secret_create'):
+        definitions[request] = {'allOf':[definitions[request], {'properties':{
+            'expires_after':{'properties':{'seconds':dict(type='integer', minimum=10,
+                                                          maximum=7200, default=600)}}}}]}
+    # The translation wire reference adds suppression strength to the fixed SDK.
+    # Extend only the processor objects reachable from translation configurations.
+    visited = set()
+    pending = [realtime['roots'][name] for name in (
+        'translation_session', 'translation_session_create', 'translation_session_update')]
+    while pending:
+        index = pending.pop()
+        if index in visited:
+            continue
+        visited.add(index)
+        node = realtime['nodes'][index]
+        pending.extend(node.get('variants', []))
+        for field in node.get('fields', []):
+            pending.append(field['type'])
+            if field['name'] == 'noise_reduction':
+                for member in realtime['nodes'][field['type']]['variants']:
+                    if realtime['nodes'][member]['kind'] == 'object':
+                        definitions['realtime_'+str(member)]['properties']['strength'] = dict(
+                            type='number', minimum=0, maximum=1, default=1)
     # Realtime wire settings allow explicitly clearing these processors.
     for index, node in enumerate(realtime['nodes']):
         if node.get('kind') != 'object':

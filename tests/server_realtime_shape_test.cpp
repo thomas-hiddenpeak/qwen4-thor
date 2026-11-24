@@ -45,6 +45,13 @@ Q4T_TEST(realtime_shape_matches_actual_sdk_type_oracle) {
                           ? RealtimeShape::kResponseCreate
                       : shape == "client_secret_create" ? RealtimeShape::kClientSecretCreate
                       : shape == "client_secret_created" ? RealtimeShape::kClientSecretCreated
+                      : shape == "translation_secret_create" ? RealtimeShape::kTranslationSecretCreate
+                      : shape == "translation_secret_created" ? RealtimeShape::kTranslationSecretCreated
+                      : shape == "translation_session_create" ? RealtimeShape::kTranslationSessionCreate
+                      : shape == "translation_session_update" ? RealtimeShape::kTranslationSessionUpdate
+                      : shape == "translation_session" ? RealtimeShape::kTranslationSession
+                      : shape == "translation_client_event" ? RealtimeShape::kTranslationClientEvent
+                      : shape == "translation_server_event" ? RealtimeShape::kTranslationServerEvent
                       : shape == "session" ? RealtimeShape::kSession
                       : shape == "call_accept" ? RealtimeShape::kCallAccept
                       : shape == "call_refer"  ? RealtimeShape::kCallRefer
@@ -280,5 +287,41 @@ Q4T_TEST(realtime_client_secret_capacity_is_scoped_and_expiry_releases_it) {
             429);
   Q4T_CHECK(store.Issue(beta, Object(), resource, {699, {}}).ok());
   Q4T_CHECK(store.Issue(alpha, Object(), resource, {700, {}}).ok());
+  return true;
+}
+
+Q4T_TEST(realtime_translation_secret_redeems_only_on_its_own_transport) {
+  using namespace q4t::server;
+  using namespace q4t::server::object_detail;
+  const RealtimeSecretTime now{1000, {}};
+  auto issuer = alpha;
+  issuer.audience = RealtimeSecretAudience::kTranslation;
+  const auto startup = Object({{"model", String("gpt-realtime-translate")}});
+  auto request = Object({{"session", startup},
+                         {"expires_after", Object({{"seconds", Number(10)}})}});
+  const auto session = Object({{"id", String("sess_translate")},
+                               {"type", String("translation")},
+                               {"audio", Object()},
+                               {"model", String("gpt-realtime-translate")},
+                               {"expires_at", Number(4600)}});
+  RealtimeClientSecrets store;
+  const auto issued = store.Issue(issuer, request, session, now);
+  Q4T_CHECK(issued.ok() && issued.value.GetInt("expires_at") == 1010);
+  RealtimeSecretGrant grant;
+  const auto token = issued.value.GetString("value");
+  Q4T_CHECK(store.Resolve(token, &grant, now).http_status == 401);
+  Q4T_CHECK(store.Resolve(token, &grant, now, issuer.audience).ok());
+  Q4T_CHECK(grant.owner == "alpha" && OutputJson(grant.session) == OutputJson(startup));
+  Q4T_CHECK(store.Resolve(token, &grant, {1010, {}}, issuer.audience).http_status == 401);
+  auto ordinary = Object({{"id", String("sess_chat")},
+                          {"type", String("realtime")},
+                          {"object", String("realtime.session")}});
+  const auto chat = store.Issue(alpha, Object(), ordinary, now);
+  Q4T_CHECK(chat.ok());
+  Q4T_CHECK(store.Resolve(chat.value.GetString("value"), &grant, now,
+                          issuer.audience).http_status == 401);
+  Set(&request, "expires_after", Object({{"seconds", Number(9)}}));
+  Q4T_CHECK(store.Issue(issuer, request, session, now).http_status == 400);
+  Q4T_CHECK(store.Issue(issuer, Object(), session, now).http_status == 400);
   return true;
 }

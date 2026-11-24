@@ -3,9 +3,9 @@
   "sdk_version": "7.47.0",
   "compiler_version": "5.9.3",
   "validation_mode": "concrete-sdk-union-members",
-  "graph_sha256": "4055c325fca57d6de987aa4f9e93bca1fe2f3740d5e65eec23156b23ebfe0d0c",
-  "fixture_sha256": "890ba9594787b38e0dc7ad398ef041ba8bee467b098833929adecb2b1c3a36fe",
-  "concrete_fixture_sha256": "90b744d30c9ce3bcc4cd74a558b9b9a7426c16b558a59c2f9f377cb4365ea440",
+  "graph_sha256": "e7f484477290e1e72c7bd3948f5e397a9a35172a6171cc9dc68707e6141ec83b",
+  "fixture_sha256": "51939c5480c8690b865c7aae293621a86f5301fdeefc8324cd17ed616e379ff1",
+  "concrete_fixture_sha256": "7c04c266b7ffdac0efa46e40bab10a431ea9a63e95266c74860e342d409bf916",
   "member_names": {
     "conversation_item": [
       {
@@ -324,9 +324,83 @@
         "name": "ClientSecretCreateResponse",
         "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/client-secrets.ts\").ClientSecretCreateResponse"
       }
+    ],
+    "translation_secret_create": [
+      {
+        "name": "RealtimeTranslationClientSecretCreateRequest",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationClientSecretCreateRequest"
+      }
+    ],
+    "translation_secret_created": [
+      {
+        "name": "RealtimeTranslationClientSecretCreateResponse",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationClientSecretCreateResponse"
+      }
+    ],
+    "translation_session_create": [
+      {
+        "name": "RealtimeTranslationSessionCreateRequest",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationSessionCreateRequest"
+      }
+    ],
+    "translation_session_update": [
+      {
+        "name": "RealtimeTranslationSessionUpdateRequest",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationSessionUpdateRequest"
+      }
+    ],
+    "translation_session": [
+      {
+        "name": "RealtimeTranslationSession",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationSession"
+      }
+    ],
+    "translation_client_event": [
+      {
+        "name": "RealtimeTranslationSessionUpdateEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationSessionUpdateEvent"
+      },
+      {
+        "name": "RealtimeTranslationInputAudioBufferAppendEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationInputAudioBufferAppendEvent"
+      },
+      {
+        "name": "RealtimeTranslationSessionCloseEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationSessionCloseEvent"
+      }
+    ],
+    "translation_server_event": [
+      {
+        "name": "RealtimeErrorEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeErrorEvent"
+      },
+      {
+        "name": "RealtimeTranslationInputTranscriptDeltaEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationInputTranscriptDeltaEvent"
+      },
+      {
+        "name": "RealtimeTranslationOutputAudioDeltaEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationOutputAudioDeltaEvent"
+      },
+      {
+        "name": "RealtimeTranslationOutputTranscriptDeltaEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationOutputTranscriptDeltaEvent"
+      },
+      {
+        "name": "RealtimeTranslationSessionCreatedEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationSessionCreatedEvent"
+      },
+      {
+        "name": "RealtimeTranslationSessionUpdatedEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationSessionUpdatedEvent"
+      },
+      {
+        "name": "RealtimeTranslationSessionClosedEvent",
+        "type": "import(\"/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-20261119/profile-sdk-01/node_modules/openai/src/resources/realtime/realtime.ts\").RealtimeTranslationSessionClosedEvent"
+      }
     ]
   },
-  "concrete_checks": 2428,
+  "concrete_checks": 2500,
   "vectors": [
     {
       "name": "conversation_item_0_valid",
@@ -9228,6 +9302,1398 @@
       "accepted": false
     },
     {
+      "name": "translation_secret_create_0_valid",
+      "shape": "translation_secret_create",
+      "input": {
+        "session": {
+          "model": "fixture"
+        }
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationClientSecretCreateRequest"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_secret_create_0_extra",
+      "shape": "translation_secret_create",
+      "input": {
+        "session": {
+          "model": "fixture"
+        },
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationClientSecretCreateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_secret_create_0_wrong_root",
+      "shape": "translation_secret_create",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationClientSecretCreateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_secret_create_0_missing_session",
+      "shape": "translation_secret_create",
+      "input": {},
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'session' is missing in type '{}' but required in type 'RealtimeTranslationClientSecretCreateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_secret_created_0_valid",
+      "shape": "translation_secret_created",
+      "input": {
+        "expires_at": 1,
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        },
+        "value": "fixture"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationClientSecretCreateResponse"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_secret_created_0_extra",
+      "shape": "translation_secret_created",
+      "input": {
+        "expires_at": 1,
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        },
+        "value": "fixture",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_secret_created_0_wrong_root",
+      "shape": "translation_secret_created",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_secret_created_0_missing_expires_at",
+      "shape": "translation_secret_created",
+      "input": {
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        },
+        "value": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'expires_at' is missing in type '{ session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; value: string; }' but required in type 'RealtimeTranslationClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_secret_created_0_missing_session",
+      "shape": "translation_secret_created",
+      "input": {
+        "expires_at": 1,
+        "value": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'session' is missing in type '{ expires_at: number; value: string; }' but required in type 'RealtimeTranslationClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_secret_created_0_missing_value",
+      "shape": "translation_secret_created",
+      "input": {
+        "expires_at": 1,
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'value' is missing in type '{ expires_at: number; session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; }' but required in type 'RealtimeTranslationClientSecretCreateResponse'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_create_0_valid",
+      "shape": "translation_session_create",
+      "input": {
+        "model": "fixture"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationSessionCreateRequest"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_session_create_0_extra",
+      "shape": "translation_session_create",
+      "input": {
+        "model": "fixture",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationSessionCreateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_create_0_wrong_root",
+      "shape": "translation_session_create",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationSessionCreateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_create_0_missing_model",
+      "shape": "translation_session_create",
+      "input": {},
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'model' is missing in type '{}' but required in type 'RealtimeTranslationSessionCreateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_update_0_valid",
+      "shape": "translation_session_update",
+      "input": {},
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationSessionUpdateRequest"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_session_update_0_extra",
+      "shape": "translation_session_update",
+      "input": {
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationSessionUpdateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_update_0_wrong_root",
+      "shape": "translation_session_update",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2559,
+          "message": "Type '\"not-an-item\"' has no properties in common with type 'RealtimeTranslationSessionUpdateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_0_valid",
+      "shape": "translation_session",
+      "input": {
+        "audio": {},
+        "expires_at": 1,
+        "id": "fixture",
+        "model": "fixture",
+        "type": "translation"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationSession"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_session_0_extra",
+      "shape": "translation_session",
+      "input": {
+        "audio": {},
+        "expires_at": 1,
+        "id": "fixture",
+        "model": "fixture",
+        "type": "translation",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationSession'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_0_wrong_root",
+      "shape": "translation_session",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationSession'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_0_missing_audio",
+      "shape": "translation_session",
+      "input": {
+        "expires_at": 1,
+        "id": "fixture",
+        "model": "fixture",
+        "type": "translation"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'audio' is missing in type '{ expires_at: number; id: string; model: string; type: \"translation\"; }' but required in type 'RealtimeTranslationSession'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_0_missing_expires_at",
+      "shape": "translation_session",
+      "input": {
+        "audio": {},
+        "id": "fixture",
+        "model": "fixture",
+        "type": "translation"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'expires_at' is missing in type '{ audio: {}; id: string; model: string; type: \"translation\"; }' but required in type 'RealtimeTranslationSession'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_0_missing_id",
+      "shape": "translation_session",
+      "input": {
+        "audio": {},
+        "expires_at": 1,
+        "model": "fixture",
+        "type": "translation"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'id' is missing in type '{ audio: {}; expires_at: number; model: string; type: \"translation\"; }' but required in type 'RealtimeTranslationSession'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_0_missing_model",
+      "shape": "translation_session",
+      "input": {
+        "audio": {},
+        "expires_at": 1,
+        "id": "fixture",
+        "type": "translation"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'model' is missing in type '{ audio: {}; expires_at: number; id: string; type: \"translation\"; }' but required in type 'RealtimeTranslationSession'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_session_0_missing_type",
+      "shape": "translation_session",
+      "input": {
+        "audio": {},
+        "expires_at": 1,
+        "id": "fixture",
+        "model": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2741,
+          "message": "Property 'type' is missing in type '{ audio: {}; expires_at: number; id: string; model: string; }' but required in type 'RealtimeTranslationSession'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_0_valid",
+      "shape": "translation_client_event",
+      "input": {
+        "session": {},
+        "type": "session.update"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationSessionUpdateEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_client_event_0_extra",
+      "shape": "translation_client_event",
+      "input": {
+        "session": {},
+        "type": "session.update",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationSessionUpdateEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_0_wrong_root",
+      "shape": "translation_client_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationClientEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_0_missing_session",
+      "shape": "translation_client_event",
+      "input": {
+        "type": "session.update"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ type: \"session.update\"; }' is not assignable to type 'RealtimeTranslationClientEvent'.\n  Property 'session' is missing in type '{ type: \"session.update\"; }' but required in type 'RealtimeTranslationSessionUpdateEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_0_missing_type",
+      "shape": "translation_client_event",
+      "input": {
+        "session": {}
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ session: {}; }' is not assignable to type 'RealtimeTranslationClientEvent'.\n  Property 'type' is missing in type '{ session: {}; }' but required in type 'RealtimeTranslationSessionUpdateEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_1_valid",
+      "shape": "translation_client_event",
+      "input": {
+        "audio": "fixture",
+        "type": "session.input_audio_buffer.append"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationInputAudioBufferAppendEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_client_event_1_extra",
+      "shape": "translation_client_event",
+      "input": {
+        "audio": "fixture",
+        "type": "session.input_audio_buffer.append",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationInputAudioBufferAppendEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_1_wrong_root",
+      "shape": "translation_client_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationClientEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_1_missing_audio",
+      "shape": "translation_client_event",
+      "input": {
+        "type": "session.input_audio_buffer.append"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ type: \"session.input_audio_buffer.append\"; }' is not assignable to type 'RealtimeTranslationClientEvent'.\n  Property 'audio' is missing in type '{ type: \"session.input_audio_buffer.append\"; }' but required in type 'RealtimeTranslationInputAudioBufferAppendEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_1_missing_type",
+      "shape": "translation_client_event",
+      "input": {
+        "audio": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ audio: string; }' is not assignable to type 'RealtimeTranslationClientEvent'.\n  Property 'type' is missing in type '{ audio: string; }' but required in type 'RealtimeTranslationInputAudioBufferAppendEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_2_valid",
+      "shape": "translation_client_event",
+      "input": {
+        "type": "session.close"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationSessionCloseEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_client_event_2_extra",
+      "shape": "translation_client_event",
+      "input": {
+        "type": "session.close",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationSessionCloseEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_2_wrong_root",
+      "shape": "translation_client_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationClientEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_client_event_2_missing_type",
+      "shape": "translation_client_event",
+      "input": {},
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{}' is not assignable to type 'RealtimeTranslationClientEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_0_valid",
+      "shape": "translation_server_event",
+      "input": {
+        "error": {
+          "message": "fixture",
+          "type": "fixture"
+        },
+        "event_id": "fixture",
+        "type": "error"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeErrorEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_server_event_0_extra",
+      "shape": "translation_server_event",
+      "input": {
+        "error": {
+          "message": "fixture",
+          "type": "fixture"
+        },
+        "event_id": "fixture",
+        "type": "error",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeErrorEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_0_wrong_root",
+      "shape": "translation_server_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationServerEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_0_missing_error",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "type": "error"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ event_id: string; type: \"error\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'error' is missing in type '{ event_id: string; type: \"error\"; }' but required in type 'RealtimeErrorEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_0_missing_event_id",
+      "shape": "translation_server_event",
+      "input": {
+        "error": {
+          "message": "fixture",
+          "type": "fixture"
+        },
+        "type": "error"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ error: { message: string; type: string; }; type: \"error\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'event_id' is missing in type '{ error: { message: string; type: string; }; type: \"error\"; }' but required in type 'RealtimeErrorEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_0_missing_type",
+      "shape": "translation_server_event",
+      "input": {
+        "error": {
+          "message": "fixture",
+          "type": "fixture"
+        },
+        "event_id": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ error: { message: string; type: string; }; event_id: string; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'type' is missing in type '{ error: { message: string; type: string; }; event_id: string; }' but required in type 'RealtimeErrorEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_1_valid",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        },
+        "type": "session.created"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationSessionCreatedEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_server_event_1_extra",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        },
+        "type": "session.created",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationSessionCreatedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_1_wrong_root",
+      "shape": "translation_server_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationServerEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_1_missing_event_id",
+      "shape": "translation_server_event",
+      "input": {
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        },
+        "type": "session.created"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; type: \"session.created\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'event_id' is missing in type '{ session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; type: \"session.created\"; }' but required in type 'RealtimeTranslationSessionCreatedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_1_missing_session",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "type": "session.created"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ event_id: string; type: \"session.created\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'session' is missing in type '{ event_id: string; type: \"session.created\"; }' but required in type 'RealtimeTranslationSessionCreatedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_1_missing_type",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ event_id: string; session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'type' is missing in type '{ event_id: string; session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; }' but required in type 'RealtimeTranslationSessionUpdatedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_2_valid",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        },
+        "type": "session.updated"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationSessionUpdatedEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_server_event_2_extra",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        },
+        "type": "session.updated",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationSessionUpdatedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_2_wrong_root",
+      "shape": "translation_server_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationServerEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_2_missing_event_id",
+      "shape": "translation_server_event",
+      "input": {
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        },
+        "type": "session.updated"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; type: \"session.updated\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'event_id' is missing in type '{ session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; type: \"session.updated\"; }' but required in type 'RealtimeTranslationSessionUpdatedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_2_missing_session",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "type": "session.updated"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ event_id: string; type: \"session.updated\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'session' is missing in type '{ event_id: string; type: \"session.updated\"; }' but required in type 'RealtimeTranslationSessionUpdatedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_2_missing_type",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "session": {
+          "audio": {},
+          "expires_at": 1,
+          "id": "fixture",
+          "model": "fixture",
+          "type": "translation"
+        }
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ event_id: string; session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'type' is missing in type '{ event_id: string; session: { audio: {}; expires_at: number; id: string; model: string; type: \"translation\"; }; }' but required in type 'RealtimeTranslationSessionUpdatedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_3_valid",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "type": "session.closed"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationSessionClosedEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_server_event_3_extra",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "type": "session.closed",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationSessionClosedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_3_wrong_root",
+      "shape": "translation_server_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationServerEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_3_missing_event_id",
+      "shape": "translation_server_event",
+      "input": {
+        "type": "session.closed"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ type: \"session.closed\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'event_id' is missing in type '{ type: \"session.closed\"; }' but required in type 'RealtimeTranslationSessionClosedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_3_missing_type",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ event_id: string; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'type' is missing in type '{ event_id: string; }' but required in type 'RealtimeTranslationSessionClosedEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_4_valid",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "event_id": "fixture",
+        "type": "session.input_transcript.delta"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationInputTranscriptDeltaEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_server_event_4_extra",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "event_id": "fixture",
+        "type": "session.input_transcript.delta",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationInputTranscriptDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_4_wrong_root",
+      "shape": "translation_server_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationServerEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_4_missing_delta",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "type": "session.input_transcript.delta"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ event_id: string; type: \"session.input_transcript.delta\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'delta' is missing in type '{ event_id: string; type: \"session.input_transcript.delta\"; }' but required in type 'RealtimeTranslationInputTranscriptDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_4_missing_event_id",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "type": "session.input_transcript.delta"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ delta: string; type: \"session.input_transcript.delta\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'event_id' is missing in type '{ delta: string; type: \"session.input_transcript.delta\"; }' but required in type 'RealtimeTranslationInputTranscriptDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_4_missing_type",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "event_id": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ delta: string; event_id: string; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'type' is missing in type '{ delta: string; event_id: string; }' but required in type 'RealtimeTranslationOutputTranscriptDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_5_valid",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "event_id": "fixture",
+        "type": "session.output_transcript.delta"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationOutputTranscriptDeltaEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_server_event_5_extra",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "event_id": "fixture",
+        "type": "session.output_transcript.delta",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationOutputTranscriptDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_5_wrong_root",
+      "shape": "translation_server_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationServerEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_5_missing_delta",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "type": "session.output_transcript.delta"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ event_id: string; type: \"session.output_transcript.delta\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'delta' is missing in type '{ event_id: string; type: \"session.output_transcript.delta\"; }' but required in type 'RealtimeTranslationOutputTranscriptDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_5_missing_event_id",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "type": "session.output_transcript.delta"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ delta: string; type: \"session.output_transcript.delta\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'event_id' is missing in type '{ delta: string; type: \"session.output_transcript.delta\"; }' but required in type 'RealtimeTranslationOutputTranscriptDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_5_missing_type",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "event_id": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ delta: string; event_id: string; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'type' is missing in type '{ delta: string; event_id: string; }' but required in type 'RealtimeTranslationOutputTranscriptDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_6_valid",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "event_id": "fixture",
+        "type": "session.output_audio.delta"
+      },
+      "positive": true,
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationOutputAudioDeltaEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_server_event_6_extra",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "event_id": "fixture",
+        "type": "session.output_audio.delta",
+        "q4t_unknown_item_field": 1
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"q4t_unknown_item_field\"' does not exist in type 'RealtimeTranslationOutputAudioDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_6_wrong_root",
+      "shape": "translation_server_event",
+      "input": "not-an-item",
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type 'string' is not assignable to type 'RealtimeTranslationServerEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_6_missing_delta",
+      "shape": "translation_server_event",
+      "input": {
+        "event_id": "fixture",
+        "type": "session.output_audio.delta"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ event_id: string; type: \"session.output_audio.delta\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'delta' is missing in type '{ event_id: string; type: \"session.output_audio.delta\"; }' but required in type 'RealtimeTranslationOutputAudioDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_6_missing_event_id",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "type": "session.output_audio.delta"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ delta: string; type: \"session.output_audio.delta\"; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'event_id' is missing in type '{ delta: string; type: \"session.output_audio.delta\"; }' but required in type 'RealtimeTranslationOutputAudioDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_server_event_6_missing_type",
+      "shape": "translation_server_event",
+      "input": {
+        "delta": "fixture",
+        "event_id": "fixture"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '{ delta: string; event_id: string; }' is not assignable to type 'RealtimeTranslationServerEvent'.\n  Property 'type' is missing in type '{ delta: string; event_id: string; }' but required in type 'RealtimeTranslationOutputTranscriptDeltaEvent'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
       "name": "call_accept_flat",
       "shape": "call_accept",
       "input": {
@@ -9514,6 +10980,119 @@
         "ResponseFunctionCallArgumentsDeltaEvent"
       ],
       "accepted": true
+    },
+    {
+      "name": "translation_credentials_with_transcription",
+      "shape": "translation_secret_create",
+      "positive": true,
+      "input": {
+        "session": {
+          "model": "gpt-realtime-translate",
+          "audio": {
+            "input": {
+              "noise_reduction": null,
+              "transcription": {
+                "model": "gpt-realtime-whisper"
+              }
+            },
+            "output": {
+              "language": "fr"
+            }
+          }
+        }
+      },
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationClientSecretCreateRequest"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_create_with_conversation_type",
+      "shape": "translation_session_create",
+      "input": {
+        "type": "realtime",
+        "model": "gpt-realtime-translate"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"type\"' does not exist in type 'RealtimeTranslationSessionCreateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_update_clears_transcription",
+      "shape": "translation_session_update",
+      "positive": true,
+      "input": {
+        "audio": {
+          "input": {
+            "transcription": null
+          }
+        }
+      },
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationSessionUpdateRequest"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_immutable_model",
+      "shape": "translation_session_update",
+      "input": {
+        "model": "other"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2353,
+          "message": "Object literal may only specify known properties, and '\"model\"' does not exist in type 'RealtimeTranslationSessionUpdateRequest'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
+    },
+    {
+      "name": "translation_pcm_output",
+      "shape": "translation_server_event",
+      "positive": true,
+      "input": {
+        "type": "session.output_audio.delta",
+        "event_id": "ev",
+        "delta": "AAA=",
+        "sample_rate": 24000,
+        "channels": 1,
+        "format": "pcm16"
+      },
+      "union_accepted": true,
+      "diagnostics": [],
+      "concrete_members": [
+        "RealtimeTranslationOutputAudioDeltaEvent"
+      ],
+      "accepted": true
+    },
+    {
+      "name": "translation_conversation_event",
+      "shape": "translation_client_event",
+      "input": {
+        "type": "response.create"
+      },
+      "union_accepted": false,
+      "diagnostics": [
+        {
+          "code": 2322,
+          "message": "Type '\"response.create\"' is not assignable to type '\"session.update\" | \"session.close\" | \"session.input_audio_buffer.append\"'."
+        }
+      ],
+      "concrete_members": [],
+      "accepted": false
     },
     {
       "name": "secret_default",

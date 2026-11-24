@@ -168,7 +168,7 @@ class GatewayTests(unittest.TestCase):
         self.assertEqual(forwarded, ['proxy_set_header Authorization $q4t_realtime_issuer;'])
         self.assertIn('map "$request_method:$request_uri" $q4t_realtime_issuer {\n'
                       '    default "";\n    "POST:/v1/realtime/client_secrets" '
-                      '"Q4T-Issuer $q4t_issuer_digest";\n    "POST:/v1/realtime/transcription_sessions" '
+                      '"Q4T-Issuer $q4t_issuer_digest";\n    "POST:/v1/realtime/translations/client_secrets" "Q4T-Issuer $q4t_issuer_digest";\n    "POST:/v1/realtime/transcription_sessions" '
                       '"Q4T-Issuer $q4t_issuer_digest";\n    "POST:/v1/realtime/sessions" '
                       '"Q4T-Issuer $q4t_issuer_digest";\n  }', text)
         self.assertNotIn('$request_body',text)

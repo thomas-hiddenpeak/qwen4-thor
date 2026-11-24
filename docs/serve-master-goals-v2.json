@@ -5402,6 +5402,15 @@
         "profiles": "evidence/serve-audio-translation-20261124/profiles.json",
         "profile_status": "ACCEPT_TRANSLATION_REALTIME_PRIMARY_LIGHT",
         "delivery": "evidence/serve-audio-translation-20261124/delivery.json"
+      },
+      "realtime_translation_wss_20261124": {
+        "source": "evidence/serve-realtime-translation-20261124/business.json",
+        "candidate_method_count": 179,
+        "issued_method_count": 178,
+        "pending": [
+          "translation WebRTC",
+          "primary/light handoff and managed recovery/release"
+        ]
       }
     },
     {
@@ -9451,6 +9460,15 @@
         "required_methods": 231,
         "accepted_method_declarations": 178,
         "long_run_hours": 0
+      },
+      "realtime_translation_wss_20261124": {
+        "source": "evidence/serve-realtime-translation-20261124/business.json",
+        "candidate_method_count": 179,
+        "issued_method_count": 178,
+        "pending": [
+          "translation WebRTC",
+          "primary/light handoff and managed recovery/release"
+        ]
       }
     },
     {
@@ -10975,11 +10993,20 @@
         "required_methods": 231,
         "accepted_method_declarations": 178,
         "long_run_hours": 0
+      },
+      "realtime_translation_wss_20261124": {
+        "source": "evidence/serve-realtime-translation-20261124/business.json",
+        "candidate_method_count": 179,
+        "issued_method_count": 178,
+        "pending": [
+          "translation WebRTC",
+          "primary/light handoff and managed recovery/release"
+        ]
       }
     }
   ],
-  "next_task": "Complete Realtime translation credentials and a native audio-to-audio WebSocket session, then continue the other inference/application and recovery tasks.",
-  "next": "补齐 Realtime 翻译凭据与原生双向流式翻译，再接续其他推理、应用服务和恢复事项。",
+  "next_task": "Implement translation WebRTC using the native audio pipeline and qualify recovery, then continue the remaining inference/application methods.",
+  "next": "补齐实时翻译浏览器媒体通话，验证主轻接手与可回退发行，接续推理与应用服务总计划。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

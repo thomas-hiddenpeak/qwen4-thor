@@ -16,9 +16,12 @@ struct RealtimeSecretTime {
   static RealtimeSecretTime Now();
 };
 
+enum class RealtimeSecretAudience { kRealtime, kTranslation };
+
 struct RealtimeSecretIssuer {
   std::string_view owner, binding, key_digest;
   std::optional<double> legacy_temperature = std::nullopt;
+  RealtimeSecretAudience audience = RealtimeSecretAudience::kRealtime;
 };
 
 struct RealtimeSecretGrant {
@@ -34,13 +37,16 @@ class RealtimeClientSecrets {
   ObjectReply Issue(RealtimeSecretIssuer issuer, const io::Json& request,
                     const io::Json& resource,
                     RealtimeSecretTime now = RealtimeSecretTime::Now());
-  ObjectReply Resolve(std::string_view token, RealtimeSecretGrant* grant,
-                      RealtimeSecretTime now = RealtimeSecretTime::Now());
+  ObjectReply Resolve(
+      std::string_view token, RealtimeSecretGrant* grant,
+      RealtimeSecretTime now = RealtimeSecretTime::Now(),
+      RealtimeSecretAudience audience = RealtimeSecretAudience::kRealtime);
 
  private:
   struct Entry {
     std::string owner, settings;
     RealtimeSecretTime expires;
+    RealtimeSecretAudience audience = RealtimeSecretAudience::kRealtime;
     std::optional<double> legacy_temperature;
     ~Entry();
   };

@@ -18191,6 +18191,810 @@
     "live_media_created": {
       "$ref": "#/$defs/live_890"
     },
+    "realtime_557": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_315"
+        },
+        {
+          "$ref": "#/$defs/realtime_558"
+        },
+        {
+          "$ref": "#/$defs/realtime_559"
+        },
+        {
+          "$ref": "#/$defs/realtime_560"
+        },
+        {
+          "$ref": "#/$defs/realtime_562"
+        },
+        {
+          "$ref": "#/$defs/realtime_564"
+        },
+        {
+          "$ref": "#/$defs/realtime_566"
+        }
+      ]
+    },
+    "realtime_566": {
+      "type": "object",
+      "properties": {
+        "channels": {
+          "$ref": "#/$defs/realtime_212"
+        },
+        "delta": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "elapsed_ms": {
+          "$ref": "#/$defs/realtime_211"
+        },
+        "event_id": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "format": {
+          "$ref": "#/$defs/realtime_567"
+        },
+        "sample_rate": {
+          "$ref": "#/$defs/realtime_212"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_569"
+        }
+      },
+      "required": [
+        "delta",
+        "event_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_569": {
+      "const": "session.output_audio.delta"
+    },
+    "realtime_212": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_51"
+        }
+      ]
+    },
+    "realtime_51": {
+      "type": "number"
+    },
+    "realtime_567": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_568"
+        }
+      ]
+    },
+    "realtime_568": {
+      "const": "pcm16"
+    },
+    "realtime_5": {
+      "type": "string"
+    },
+    "realtime_211": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_41"
+        },
+        {
+          "$ref": "#/$defs/realtime_51"
+        }
+      ]
+    },
+    "realtime_41": {
+      "type": "null"
+    },
+    "realtime_564": {
+      "type": "object",
+      "properties": {
+        "delta": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "elapsed_ms": {
+          "$ref": "#/$defs/realtime_211"
+        },
+        "event_id": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_565"
+        }
+      },
+      "required": [
+        "delta",
+        "event_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_565": {
+      "const": "session.output_transcript.delta"
+    },
+    "realtime_562": {
+      "type": "object",
+      "properties": {
+        "delta": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "elapsed_ms": {
+          "$ref": "#/$defs/realtime_211"
+        },
+        "event_id": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_563"
+        }
+      },
+      "required": [
+        "delta",
+        "event_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_563": {
+      "const": "session.input_transcript.delta"
+    },
+    "realtime_560": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_561"
+        }
+      },
+      "required": [
+        "event_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_561": {
+      "const": "session.closed"
+    },
+    "realtime_559": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "session": {
+          "$ref": "#/$defs/realtime_529"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_407"
+        }
+      },
+      "required": [
+        "event_id",
+        "session",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_407": {
+      "const": "session.updated"
+    },
+    "realtime_529": {
+      "type": "object",
+      "properties": {
+        "audio": {
+          "$ref": "#/$defs/realtime_530"
+        },
+        "expires_at": {
+          "$ref": "#/$defs/realtime_51"
+        },
+        "id": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "model": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_539"
+        }
+      },
+      "required": [
+        "audio",
+        "expires_at",
+        "id",
+        "model",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_539": {
+      "const": "translation"
+    },
+    "realtime_530": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/realtime_531"
+        },
+        "output": {
+          "$ref": "#/$defs/realtime_537"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_537": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_538"
+        }
+      ]
+    },
+    "realtime_538": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "$ref": "#/$defs/realtime_4"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_4": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_5"
+        }
+      ]
+    },
+    "realtime_531": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_532"
+        }
+      ]
+    },
+    "realtime_532": {
+      "type": "object",
+      "properties": {
+        "noise_reduction": {
+          "$ref": "#/$defs/realtime_533"
+        },
+        "transcription": {
+          "$ref": "#/$defs/realtime_535"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_535": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_41"
+        },
+        {
+          "$ref": "#/$defs/realtime_536"
+        }
+      ]
+    },
+    "realtime_536": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/realtime_5"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_533": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_41"
+        },
+        {
+          "$ref": "#/$defs/realtime_534"
+        }
+      ]
+    },
+    "realtime_534": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/realtime_523"
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_523": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_195"
+        },
+        {
+          "$ref": "#/$defs/realtime_196"
+        }
+      ]
+    },
+    "realtime_196": {
+      "const": "far_field"
+    },
+    "realtime_195": {
+      "const": "near_field"
+    },
+    "realtime_558": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "session": {
+          "$ref": "#/$defs/realtime_529"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_405"
+        }
+      },
+      "required": [
+        "event_id",
+        "session",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_405": {
+      "const": "session.created"
+    },
+    "realtime_315": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "$ref": "#/$defs/realtime_316"
+        },
+        "event_id": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_317"
+        }
+      },
+      "required": [
+        "error",
+        "event_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_317": {
+      "const": "error"
+    },
+    "realtime_316": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/realtime_40"
+        },
+        "event_id": {
+          "$ref": "#/$defs/realtime_40"
+        },
+        "message": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "param": {
+          "$ref": "#/$defs/realtime_40"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_5"
+        }
+      },
+      "required": [
+        "message",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_40": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_41"
+        },
+        {
+          "$ref": "#/$defs/realtime_5"
+        }
+      ]
+    },
+    "realtime_551": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_552"
+        },
+        {
+          "$ref": "#/$defs/realtime_553"
+        },
+        {
+          "$ref": "#/$defs/realtime_555"
+        }
+      ]
+    },
+    "realtime_555": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/realtime_4"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_556"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_556": {
+      "const": "session.close"
+    },
+    "realtime_553": {
+      "type": "object",
+      "properties": {
+        "audio": {
+          "$ref": "#/$defs/realtime_5"
+        },
+        "event_id": {
+          "$ref": "#/$defs/realtime_4"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_554"
+        }
+      },
+      "required": [
+        "audio",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_554": {
+      "const": "session.input_audio_buffer.append"
+    },
+    "realtime_552": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/realtime_4"
+        },
+        "session": {
+          "$ref": "#/$defs/realtime_540"
+        },
+        "type": {
+          "$ref": "#/$defs/realtime_279"
+        }
+      },
+      "required": [
+        "session",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_279": {
+      "const": "session.update"
+    },
+    "realtime_540": {
+      "type": "object",
+      "properties": {
+        "audio": {
+          "$ref": "#/$defs/realtime_541"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_541": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_542"
+        }
+      ]
+    },
+    "realtime_542": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/realtime_543"
+        },
+        "output": {
+          "$ref": "#/$defs/realtime_549"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_549": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_550"
+        }
+      ]
+    },
+    "realtime_550": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "$ref": "#/$defs/realtime_4"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_543": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_544"
+        }
+      ]
+    },
+    "realtime_544": {
+      "type": "object",
+      "properties": {
+        "noise_reduction": {
+          "$ref": "#/$defs/realtime_545"
+        },
+        "transcription": {
+          "$ref": "#/$defs/realtime_547"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_547": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_41"
+        },
+        {
+          "$ref": "#/$defs/realtime_548"
+        }
+      ]
+    },
+    "realtime_548": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/realtime_5"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_545": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_41"
+        },
+        {
+          "$ref": "#/$defs/realtime_546"
+        }
+      ]
+    },
+    "realtime_546": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/realtime_523"
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_516": {
+      "type": "object",
+      "properties": {
+        "audio": {
+          "$ref": "#/$defs/realtime_517"
+        },
+        "model": {
+          "$ref": "#/$defs/realtime_5"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_517": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_518"
+        }
+      ]
+    },
+    "realtime_518": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/realtime_519"
+        },
+        "output": {
+          "$ref": "#/$defs/realtime_526"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_526": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_527"
+        }
+      ]
+    },
+    "realtime_527": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "$ref": "#/$defs/realtime_4"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_519": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_520"
+        }
+      ]
+    },
+    "realtime_520": {
+      "type": "object",
+      "properties": {
+        "noise_reduction": {
+          "$ref": "#/$defs/realtime_521"
+        },
+        "transcription": {
+          "$ref": "#/$defs/realtime_524"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_524": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_41"
+        },
+        {
+          "$ref": "#/$defs/realtime_525"
+        }
+      ]
+    },
+    "realtime_525": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/realtime_5"
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_521": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_41"
+        },
+        {
+          "$ref": "#/$defs/realtime_522"
+        }
+      ]
+    },
+    "realtime_522": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/realtime_523"
+        },
+        "strength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_528": {
+      "type": "object",
+      "properties": {
+        "expires_at": {
+          "$ref": "#/$defs/realtime_51"
+        },
+        "session": {
+          "$ref": "#/$defs/realtime_529"
+        },
+        "value": {
+          "$ref": "#/$defs/realtime_5"
+        }
+      },
+      "required": [
+        "expires_at",
+        "session",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_513": {
+      "type": "object",
+      "properties": {
+        "expires_after": {
+          "$ref": "#/$defs/realtime_514"
+        },
+        "session": {
+          "$ref": "#/$defs/realtime_516"
+        }
+      },
+      "required": [
+        "session"
+      ],
+      "additionalProperties": false
+    },
+    "realtime_514": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_515"
+        }
+      ]
+    },
+    "realtime_515": {
+      "type": "object",
+      "properties": {
+        "anchor": {
+          "$ref": "#/$defs/realtime_470"
+        },
+        "seconds": {
+          "$ref": "#/$defs/realtime_212"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "realtime_470": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/realtime_471"
+        }
+      ]
+    },
+    "realtime_471": {
+      "const": "created_at"
+    },
     "realtime_473": {
       "type": "object",
       "properties": {
@@ -18210,9 +19014,6 @@
         "value"
       ],
       "additionalProperties": false
-    },
-    "realtime_5": {
-      "type": "string"
     },
     "realtime_474": {
       "anyOf": [
@@ -18271,16 +19072,6 @@
     },
     "realtime_223": {
       "const": "item.input_audio_transcription.logprobs"
-    },
-    "realtime_212": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/realtime_51"
-        }
-      ]
-    },
-    "realtime_51": {
-      "type": "number"
     },
     "realtime_505": {
       "anyOf": [
@@ -18367,16 +19158,6 @@
       },
       "required": [],
       "additionalProperties": false
-    },
-    "realtime_4": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/realtime_5"
-        }
-      ]
-    },
-    "realtime_41": {
-      "type": "null"
     },
     "realtime_197": {
       "anyOf": [
@@ -18541,12 +19322,6 @@
           "$ref": "#/$defs/realtime_196"
         }
       ]
-    },
-    "realtime_196": {
-      "const": "far_field"
-    },
-    "realtime_195": {
-      "const": "near_field"
     },
     "realtime_86": {
       "anyOf": [
@@ -19141,16 +19916,6 @@
         "type"
       ],
       "additionalProperties": false
-    },
-    "realtime_40": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/realtime_41"
-        },
-        {
-          "$ref": "#/$defs/realtime_5"
-        }
-      ]
     },
     "realtime_146": {
       "type": "object",
@@ -19874,16 +20639,6 @@
     "realtime_213": {
       "const": "server_vad"
     },
-    "realtime_211": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/realtime_41"
-        },
-        {
-          "$ref": "#/$defs/realtime_51"
-        }
-      ]
-    },
     "realtime_480": {
       "anyOf": [
         {
@@ -20567,16 +21322,6 @@
       "required": [],
       "additionalProperties": false
     },
-    "realtime_470": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/realtime_471"
-        }
-      ]
-    },
-    "realtime_471": {
-      "const": "created_at"
-    },
     "realtime_466": {
       "type": "object",
       "properties": {
@@ -20718,6 +21463,45 @@
     },
     "realtime_client_secret_created": {
       "$ref": "#/$defs/realtime_473"
+    },
+    "realtime_translation_secret_create": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/realtime_513"
+        },
+        {
+          "properties": {
+            "expires_after": {
+              "properties": {
+                "seconds": {
+                  "type": "integer",
+                  "minimum": 10,
+                  "maximum": 7200,
+                  "default": 600
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "realtime_translation_secret_created": {
+      "$ref": "#/$defs/realtime_528"
+    },
+    "realtime_translation_session": {
+      "$ref": "#/$defs/realtime_529"
+    },
+    "realtime_translation_session_create": {
+      "$ref": "#/$defs/realtime_516"
+    },
+    "realtime_translation_session_update": {
+      "$ref": "#/$defs/realtime_540"
+    },
+    "realtime_translation_client_event": {
+      "$ref": "#/$defs/realtime_551"
+    },
+    "realtime_translation_server_event": {
+      "$ref": "#/$defs/realtime_557"
     },
     "agents_0": {
       "type": "object",

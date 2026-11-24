@@ -1,6 +1,7 @@
 #include "chat_server_internal.h"
 
 #include "object_protocol.h"
+#include "q4t/server/realtime_translation.h"
 #include "q4t/server/realtime_legacy_credentials.h"
 #include "q4t/server/realtime_chat_plan.h"
 #include "q4t/server/realtime_conversation_session.h"
@@ -44,6 +45,35 @@ void ChatServer::IssueRealtimeSecret(int fd, const HttpRequestHeaders& headers,
   if (!body.empty() && !io::ParseJson(body, &request, true,
                                       {64, 65536, kWebSocketMessageLimit, true})) {
     detail::SendError(fd, 400, "Invalid credential request JSON", {}, "invalid_request", "body");
+    return;
+  }
+  if (api == RealtimeCredentialApi::kTranslation) {
+    ChatPlanError failure;
+    const auto status = ValidateRealtimeWireShape(
+        request, RealtimeShape::kTranslationSecretCreate, &failure, "body");
+    if (!status) {
+      detail::SendError(fd, failure.http_status, status.message(), {}, failure.code, failure.param);
+      return;
+    }
+    if (asr_model_dir_.empty() || tts_model_dir_.empty()) {
+      detail::SendError(fd, 503, "Translation audio models are unavailable", {}, "translation_unavailable");
+      return;
+    }
+    RealtimeTranslationSettings settings;
+    auto reply = settings.Apply(*request.Find("session"), true);
+    if (reply.ok()) {
+      const auto now = RealtimeSecretTime::Now();
+      const auto effective = settings.Resource(detail::NewRequestId("sess_"), now.unix_seconds + 3600);
+      reply = realtime_secrets_.Issue(
+          {client.Id(), headers.gateway_token, issuer, {}, RealtimeSecretAudience::kTranslation},
+          request, effective, now);
+    }
+    if (!reply.ok()) {
+      detail::SendError(fd, reply.http_status, reply.ClientMessage(), {},
+                        reply.ClientCode(), reply.value.GetString("param"));
+      return;
+    }
+    detail::SendSimple(fd, 200, "OK", OutputJson(reply.value), "application/json", {}, {}, {}, true);
     return;
   }
   std::optional<double> legacy_temperature;

@@ -88,11 +88,16 @@ def current_surface(root):
     if 'HandleRealtime(fd, path, headers, state->pending, websocket_accept)' in dispatch:
         realtime = (root / 'src/server/chat_realtime.cpp').read_text()
         if 'IsRealtimeTarget(path)' not in dispatch or 'CheckWebSocketUpgrade(' not in dispatch or \
-                'RunRealtimeTranscription(client, job, bytes, control, emit)' not in realtime or \
+                'RunRealtimeTranscription(client, job, pcm, control, emit)' not in realtime or \
                 'ClientLane::kData' not in realtime or \
                 not re.search(r'\brate\.Reserve\(\s*clients_,\s*client\b', realtime):
             raise ValueError('review realtime upgrade/native execution/per-turn admission')
         routes.append(("/v1/realtime?intent=transcription", "GET"))
+        translation = (root / 'src/server/chat_realtime_translation.cpp').read_text()
+        if ('HandleRealtimeTranslation(fd, path, headers, initial, accept)' in realtime
+                and 'RunRealtimeTranscription(client, audio, pcm, control, source_delta)' in translation
+                and 'RunRealtimeConversation(client, job, control, text, speech)' in translation):
+            routes.append(("/v1/realtime/translations", "GET"))
         if 'HandleRealtimeConversation(fd, path, headers, initial, accept)' in realtime:
             native_token_observer((root / 'src/server/chat_generation.cpp').read_text())
             conversation = (root / 'src/server/chat_realtime_conversation.cpp').read_text()

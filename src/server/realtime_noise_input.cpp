@@ -12,13 +12,14 @@ Status Invalid() { return Status::Fail("realtime noise input state invalid"); }
 RealtimeNoiseInput::RealtimeNoiseInput(RealtimeAudioFormat format,
                                        audio::NoiseReduction mode,
                                        uint64_t begin_ticks,
-                                       std::function<bool()> cancelled)
+                                       std::function<bool()> cancelled,
+                                       double strength)
     : format_(format),
       mode_(mode),
       origin_(begin_ticks),
       cancelled_(std::move(cancelled)),
       resampler_(format.rate, uint64_t(format.rate) * 3600),
-      noise_(mode, 3600ULL * 16000) {
+      noise_(mode, 3600ULL * 16000, strength) {
   valid_ = format.encoding != RealtimeAudioEncoding::kFloat32 &&
            RealtimeAudioQueue(1, format).Valid() &&
            origin_ <= kRealtimeSessionTicks && resampler_.Valid() &&

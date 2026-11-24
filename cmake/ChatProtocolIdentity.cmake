@@ -113,6 +113,10 @@ set(protocol_inputs
   src/server/realtime_trace_api.cpp
   src/server/realtime_trace_events.cpp
   src/server/realtime_wire_shape.cpp
+  src/server/realtime_translation.cpp
+  src/server/realtime_translation_session.cpp
+  include/q4t/server/realtime_translation.h
+  include/q4t/server/realtime_translation_session.h
   src/server/chat_realtime_stream.cpp
   include/q4t/server/asr_alignment_output.h
   src/server/asr_response.cpp
@@ -943,6 +947,7 @@ set(protocol_inputs
   include/q4t/server/realtime_chat_execution.h
   src/server/realtime_chat_execution.cpp
   src/server/chat_realtime_secrets.cpp
+  src/server/chat_realtime_translation.cpp
   src/server/chat_realtime_conversation.cpp
   src/server/chat_live.cpp
   src/server/chat_live_media.cpp

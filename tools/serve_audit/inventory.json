@@ -2774,6 +2774,26 @@
         "src/server/skill_worker.cpp",
         "tests/server_skill_worker_test.cpp"
       ]
+    },
+    "POST /v1/realtime/translations/client_secrets": {
+      "semantics": "Issue a translation-only short-lived credential.",
+      "boundary": "The permitted model, client, expiry and settings bind redemption.",
+      "evidence": [
+        "src/server/chat_realtime_translation.cpp",
+        "src/server/chat_realtime_secrets.cpp",
+        "src/server/realtime_translation_session.cpp",
+        "tests/server_realtime_shape_test.cpp"
+      ]
+    },
+    "GET /v1/realtime/translations": {
+      "semantics": "Accept PCM16 input and stream native translated speech and transcripts.",
+      "boundary": "The acknowledged session uses the configured ASR, text model and native TTS; WebRTC is separately tracked.",
+      "evidence": [
+        "src/server/chat_realtime_translation.cpp",
+        "src/server/chat_realtime_secrets.cpp",
+        "src/server/realtime_translation_session.cpp",
+        "tests/server_realtime_shape_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3388,8 +3408,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "e9246d8ee9d65d21f060e98ec36334f3fce16a1d3b250b425784bfaf01536707",
-    "cmake/ChatProtocolIdentity.cmake": "8a37ecbd156e0ad3b84b47cb5d3f15da611bedc754385da6c293e25ee763f9cf",
+    "CMakeLists.txt": "8b3d45363de542868796c373aa4c535ab1fddf29c0e7d3272915331ebc2824e9",
+    "cmake/ChatProtocolIdentity.cmake": "75432dfaa83db6cfda3084161e26e6c346478cdc17efacfa9236a8a2120c59a7",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3414,7 +3434,7 @@
     "include/q4t/audio/asr_model.h": "7806defb9a81583df571107e40fecefe8a33b926ef84596679085ec79d7448f8",
     "include/q4t/audio/diarization.h": "154b107107f098f76070a5ae556da4b3cecd194d71c72889da3451da3a0f86cb",
     "include/q4t/audio/features.h": "36b981978ad7750b8f4ede9712abbc8ccebdf12d99aadc503a36e348b68a88c5",
-    "include/q4t/audio/noise_reduction.h": "51bd6454339c33d11195f96c01dbb11f84596d3e51cf5ba9ecd4d9711963b725",
+    "include/q4t/audio/noise_reduction.h": "bf9330428b6627d4db7f47956a28c98a7b305e9b2a62213c1deb562457bd349a",
     "include/q4t/audio/pcm_output.h": "69b5a37f9c7adc536bd3d4a1c2a5b47aebf49e476c6f55a1df55ff2ca39ffc45",
     "include/q4t/audio/separator_config.h": "7375b95971dfb57d315f1d0bb0cdad1e099cf25ca0c8b81edf4604ea96cdae7e",
     "include/q4t/audio/separator_layout.h": "7548353ef57a7a6418a3719c51ea50bf2a1a92c493891f3b0e8b6373de8992d4",
@@ -3473,7 +3493,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "3e9b7322bf5ab04cbb2d9eb2ba19ff71517cbbab621b2b9f21ae4c419329bdbf",
+    "include/q4t/server/application_routes.h": "44a15ef2e1ca5abab20f9c0eda1ab030a1dbae0b7ff186cd6fb35c5e7d87aa51",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3515,7 +3535,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "3e9c97e4dddb726dd0833e80fc494115cff98bac733cf2c2f59676b2e2260dce",
+    "include/q4t/server/chat_server.h": "acbbc643be348715a3d845a43a1754ae6d89883d7cf09873a7037ac9de43c473",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -3641,7 +3661,7 @@
     "include/q4t/server/realtime_audio_queue.h": "d4e004092c8e157c157c6a3bfd3acedbe1a49f77cd8d0215bc2b6cbab732202d",
     "include/q4t/server/realtime_chat_execution.h": "badc3dde61d2f2dba6ac2bd039c2030f2c7dbbbdc27b5356965a42e71e436ad9",
     "include/q4t/server/realtime_chat_plan.h": "b2c3c6423c3f1d05d51555729530709351fec12a01db3598465256c1aa9f1890",
-    "include/q4t/server/realtime_client_secrets.h": "e94a5bdd32ab80f8e781187671083abe4eebbba04ed34229df8adbf1e2a3d828",
+    "include/q4t/server/realtime_client_secrets.h": "ca5d8e6784d79444c1d8c10addd93f985809bf6af16577258e2f62528ca29cc3",
     "include/q4t/server/realtime_client_ticket.h": "5434eedcfa551ee79ac6de405df528541f351da35ed56239d87d1b4849850980",
     "include/q4t/server/realtime_conversation.h": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745",
     "include/q4t/server/realtime_conversation_input.h": "8e7b5cd2ab77caf2bf214b22e7d45a9b1ac0e83f954aeeb7c0755bcdf837adab",
@@ -3659,7 +3679,7 @@
     "include/q4t/server/realtime_mcp_history.h": "423c22077aafde2d9a1e97ff3b68279bff45b32fcae47ac3f1c588abd14e2e45",
     "include/q4t/server/realtime_mcp_imports.h": "ac5ad773b3b8221740e07c2eb9db1c02812624d33b906fb378e77110dddcf172",
     "include/q4t/server/realtime_mcp_item.h": "8264f7d4e6813148316dcaf8a952104caac5d71415661878b14d5970850f4709",
-    "include/q4t/server/realtime_noise_input.h": "b53079e7bb6441067ea0da9a6b48744fce42cfcad48cc4cf72270450eed0ad53",
+    "include/q4t/server/realtime_noise_input.h": "4d2e017b79bf2aaa6b07d4ca7bf77182098237426b61deb4cb21b541971040a1",
     "include/q4t/server/realtime_pcm.h": "ad711d43176381aa6a0240a95b0486ee93ef200739207dec7e5dabe9924d4136",
     "include/q4t/server/realtime_prompt_settings.h": "d283ae872931b8baa582eb44145d4382b3613612678eb36a663ac3d3cda40dcf",
     "include/q4t/server/realtime_response_output.h": "6723964cbbe23db59440f8f84ab2f5b74c5aa8fa64f7b5abe4eeb8087a8f33df",
@@ -3667,7 +3687,7 @@
     "include/q4t/server/realtime_semantic_turn.h": "29b50168cb363f3e84af1754f25b93680b328e962973c2cf0fe12cdec6515871",
     "include/q4t/server/realtime_semantic_vad.h": "83060f9dfeca44382b5ae2956980bbfbd2fe9d71c23475bb424f5233b68c9152",
     "include/q4t/server/realtime_session_pump.h": "f4ca6aa49ae48946db0a18863a34fa665cebf1dbcaa2e81f5462dc0a7568ab61",
-    "include/q4t/server/realtime_shape.h": "6b4a8b1208f2537e371942c3b1bf19333f8a25317a5d42295bf0d0bcc79a6e0f",
+    "include/q4t/server/realtime_shape.h": "753004428f83d02bb6a1a5f87bf0c891f030589b3cb06a143155cd73b1b5e2a0",
     "include/q4t/server/realtime_speech_encoder.h": "d505fcafc7900f10730e9a3fad7789b5e779adef14cfa8562ee26469b833e2d5",
     "include/q4t/server/realtime_speech_execution.h": "ca7a4fe46fa9b58ac38d43fa524973fc6753a74b803926ee8649c4fadcb6d929",
     "include/q4t/server/realtime_speech_history.h": "3dd99a69429f0f69fd82753327631af36cd7946e93123353ea68de1bf98de9ba",
@@ -3679,6 +3699,8 @@
     "include/q4t/server/realtime_transcription_protocol.h": "a5a7fe284153ceb1043f289fda04094995afc1ead822f47b751bfc128de8cec0",
     "include/q4t/server/realtime_transcription_pump.h": "fb5466ca0e10ed20bb8d7e45dadd0ad01dac11287b93c49a1d795253cc0611ef",
     "include/q4t/server/realtime_transcription_session.h": "69c33ed994ecd1990d0225ccf6997fbb8c5fbaf2eef66c6224b239d3e0ebdff3",
+    "include/q4t/server/realtime_translation.h": "a49ca0101b2f9be17d98a1e8228f71aed387f54bb53cbaa802520262bf4f4427",
+    "include/q4t/server/realtime_translation_session.h": "212768e8849ec6d2982a07a35de4130bc421441fceb30691699802285ee1eb13",
     "include/q4t/server/realtime_vad.h": "25c45f7f3a4194f61dbe0024c2991a1078e2e857a50ae79a1596e8e586e38ba8",
     "include/q4t/server/reasoning_options.h": "19fbaf8e6e9f31767ac5dfd485d4cdaca160e5928069741868402ee7639bfe44",
     "include/q4t/server/refusal_frame.h": "1bcc79ecbd0de47d341e0d81fc0ecf2649f0362560da5a9b625b27e283060123",
@@ -3774,8 +3796,8 @@
     "include/q4t/server/web_index.h": "d2432219578c7fd151ac72fc0bcf871de8741380a67f08c4759e6d22f6142219",
     "include/q4t/server/web_search.h": "8a981859f4868072982c6092084e025b20f5a474a8db578be358b851f83ddc0b",
     "include/q4t/server/websocket.h": "fc8e70cd77e5297ef32bfa77160a99318613f4ba73e50f8e2f303e96a71800b9",
-    "include/q4t/server/websocket_protocol.h": "f58b0af3331a85c725165b6ba8e909c812f58650925496ca165b06950f0e4cfa",
-    "include/q4t/server/websocket_session.h": "c6047228b49ef2b1e2c4bde753581cbd328c8a49beddfe29e302b6e0d4fc7b6e",
+    "include/q4t/server/websocket_protocol.h": "6e532c0682dbaf57d5c3021bc7a4a7a6f55d590e2e9b9aac60b55379575622b5",
+    "include/q4t/server/websocket_session.h": "42d8613d395292750ef0c6a1d256b5fb60e781dda9b9dfe13e572ff620f12271",
     "include/q4t/server/worker_io_budget.h": "db59148f2608d73023f01de9ff869f21a925787c1fd9ecdaafd4ebedb4970727",
     "include/q4t/service/device_admission.h": "3f13bf17b693d839f556f1495d4617a0ffe8fff15b611a086f0aac4391936ac9",
     "include/q4t/service/device_filter.h": "260b36b468198b9c2cc41a7125fdeeb37cc22f45dbe89e1a219dabfcef57b5b7",
@@ -3818,7 +3840,7 @@
     "src/audio/features.cpp": "a498a97c6445f4562372f3260a1a856bfb915469424c3e7bb15613ed579b99fc",
     "src/audio/noise_fft.cpp": "55b8e0731aea4d7700503ae23d6f6d57ddebb955e17cac2c38cd12137b9f3f68",
     "src/audio/noise_fft.h": "a2c8729852de2d3ad53fb7cf8562eef09e68a98e8292f2f78ac99a7c578dc10c",
-    "src/audio/noise_reduction.cpp": "fb411aa1f6ce80f6072b0595976f99b036767f29160632fe993fe4b17b23c981",
+    "src/audio/noise_reduction.cpp": "3ac32a7865b734fb155d961d4a7998045c17f482826fb5e346462124472425a1",
     "src/audio/pcm_output.cpp": "8726202cef09be2d838f6d2f917a7b7344a949355fe6f545bcddec138754479b",
     "src/audio/separator_config.cpp": "02b894aad525b38991e65e06aaa8e21af29319a0ba437b863fbf5d6881d47545",
     "src/audio/separator_layout.cpp": "8e2a9dfdd15dbe3fa4fbba5fa6b284ee3aef4e2ae597a5515370534bd46cbaaf",
@@ -3968,7 +3990,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "5722d95c92e64f7ea984f73505f9d64dccaa10b22865790a3bff62f5aebc3b6a",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "0af2846fbb03617db7b1bc9031417b35deb2a8a154372459d4d037a92cafe20b",
+    "src/server/chat_http.cpp": "5cdc34988004bd1c393bc9c147046d9f1d36c830a99a75d225b9acf8f517ace6",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -3983,10 +4005,11 @@
     "src/server/chat_plan.cpp": "8e74bb7eeb9f38b4cc3916077e4b6bdbd63bac12c0390c6b09e347a291c4c5b4",
     "src/server/chat_preflight.cpp": "7f81115de6cb8f8e08b4066734d069058c142575d63a8927c2e4ade2d0cbebcb",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
-    "src/server/chat_realtime.cpp": "011db8ae0020a58462ff7f82d064b1f99e9c96c5987b22f9fc3d08316398aa8b",
+    "src/server/chat_realtime.cpp": "350dcb749ca4d88a97f0a841acbe126b5f936a469a57610b728af8ff2dd2687e",
     "src/server/chat_realtime_conversation.cpp": "0282e9374eee3547632ded324fbc1326b8047bb2c4328d54d57bc30b11d46e46",
-    "src/server/chat_realtime_secrets.cpp": "92b25702fb5a88abd399a81ff35511b7a5c0924dd32cd7f781ffea596ba2b717",
+    "src/server/chat_realtime_secrets.cpp": "c554ac3d2a72176e190916d28738c68a5b8d45ae1e0f40df16d1cc513441f615",
     "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab",
+    "src/server/chat_realtime_translation.cpp": "11fa5a4ea894cede1339c450ec1a13e6d503880bd1d0c726ac0185595f20f47a",
     "src/server/chat_response_parser.cpp": "fdda93a831b6487af815b2f386b9cb8244bf8106f7e1bb8db75838fa5b1547df",
     "src/server/chat_responses.cpp": "1e0d42b60014d1a4bbb8bb7da70c8a9643890161c7b11171bed3615f4d83ca6a",
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
@@ -4033,7 +4056,7 @@
     "src/server/contracts/openai_item_types_v1.json": "d22c6bb9a38868061556ed9dd76d8d51589a965101d4593684ea049f2945de81",
     "src/server/contracts/openai_live_types_v1.json": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
     "src/server/contracts/openai_multi_agent_types_v1.json": "2c07ee92deacfb8c247d6fdd48f6eed1b073c75235065eb6ded5ca23f82f19e6",
-    "src/server/contracts/openai_realtime_types_v1.json": "4055c325fca57d6de987aa4f9e93bca1fe2f3740d5e65eec23156b23ebfe0d0c",
+    "src/server/contracts/openai_realtime_types_v1.json": "e7f484477290e1e72c7bd3948f5e397a9a35172a6171cc9dc68707e6141ec83b",
     "src/server/contracts/openai_skill_types_v1.json": "37485c913a3a5d7593880b72f889c7fe9a00db5dd8623bbb03f223dc50cb9dfe",
     "src/server/contracts/openai_vault_credential_types_v1.json": "f3c5a9a4be6e274325fd214d4e2ea7094f1fa0408f91107384abcfcec72456a2",
     "src/server/conversation_api.cpp": "3c8196c30809f764da5cc714b1f89ec7deefab8ecd86942d7f300bac67e96f41",
@@ -4219,8 +4242,8 @@
     "src/server/realtime_call_pcm.h": "e191f5289a0edac4ba3cc0b1708491adff8c86ad0d8ee1e1f02dc1f0111b75a1",
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
     "src/server/realtime_chat_plan.cpp": "472688e886fbe4dc1221c990913e05485e1e9109ba135e16ca756433328d5e39",
-    "src/server/realtime_client_secrets.cpp": "8cafb669b091f00a0ea7e56b30488362204ccacee182877806ac8c4a544019de",
-    "src/server/realtime_client_ticket.cpp": "56c0485756c0430c40a68e59c14eb2a047ad8a116a9abc52da53a1274e601204",
+    "src/server/realtime_client_secrets.cpp": "a026ff8a3f3d76682384721d3442ba155768a919565571a80a60fb13c95f5490",
+    "src/server/realtime_client_ticket.cpp": "0eddb0205fc80e7f7a3d10b07c56d6526c81a9e1ec98c719f29fe86fa8520b84",
     "src/server/realtime_conversation.cpp": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8",
     "src/server/realtime_conversation_input.cpp": "6e9f6c6eea012b9cb6a8b9573bafdf440e2f5ba0811b364d984375e1b021f490",
     "src/server/realtime_conversation_pump.cpp": "b84b174650a0b38b9e08ad903aedf83dafcacdb23456744eaa4d90b469ff2f2d",
@@ -4239,7 +4262,7 @@
     "src/server/realtime_mcp_item.cpp": "0d3eeb1b7da1d9db3dfb2ce582fdcfa12247a80b41abc5f3a2c8d323e3f8ed59",
     "src/server/realtime_media_call.cpp": "8768330be3ceab8f272657a31ed8544bab80a263610a4cacca24bd1172d92ec3",
     "src/server/realtime_media_call.h": "b2237dcb7d5b80211a284fc72e2a6f4d170351d4307185c087d404bc897930ec",
-    "src/server/realtime_noise_input.cpp": "1382ec96bb9f4fd6ce1fe7002eb9bb421f68246b177af6a8872409536868aeff",
+    "src/server/realtime_noise_input.cpp": "2128eb27a7339e6fb89ce5a3def054e5bbda442802bd9e8a06a700947b2e36e7",
     "src/server/realtime_pcm.cpp": "a7598fa3308b0e2bc124763c0341c771e09b403854384a32f6e067068235b27a",
     "src/server/realtime_prompt_settings.cpp": "8a1e457ab07fd403dda051db2e1026960f72e45943139830412e12f699cb011a",
     "src/server/realtime_response_output.cpp": "cbe344926dd1ced6d2d3e6f453238f5185affa7bd4583081a76bf6eb3b9699f0",
@@ -4260,10 +4283,12 @@
     "src/server/realtime_transcription_protocol.cpp": "35b3c24b83932081621a4fe2f38e528e9533e8607f042d2eb7c957761db076f8",
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
     "src/server/realtime_transcription_session.cpp": "1b9d6d3adaec7cb34ab0aa13e07edf90785fdd2da1a5067292099ca3d05a000a",
+    "src/server/realtime_translation.cpp": "3a2f31ae18aa3b64c91aeb37abbe97fd832ad234f218a694cc5fa9af9316de3d",
+    "src/server/realtime_translation_session.cpp": "2d21d1c5c16ddeb2b5a527d549c11689e40e72168a57da16bacecbdfbb7e0cf9",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
     "src/server/realtime_webrtc_request.cpp": "baa8f19d3637da90a47bfe9d320e1b55a46c1c837b691eac6a89222b3d9a9fff",
     "src/server/realtime_webrtc_request.h": "a9fbcadec507376486cfc021db5f83b793cf346e490314353ac38e8e607c5e4e",
-    "src/server/realtime_wire_shape.cpp": "99ed407183c7f88778c381c913c38eb725e50cabad3df93bd656f3944c8408e6",
+    "src/server/realtime_wire_shape.cpp": "5a36703372edd69787ed46fd5e332087a1a670e6f890461ee3ae41615050d750",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
     "src/server/regex_syntax/lib.rs": "538729c7a0f1ac6c1772e54db6ac33d08502b9e26a45cd11a1dab53eb16eb91f",
     "src/server/regex_syntax/schema_regex.rs": "ad5ecc2fc961a9426068c50452e830da2229c40273088b56f8c6218c26f27fbf",
@@ -4285,7 +4310,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "bb7d8b9fdba46e9e43fdc6f97a23a05ff5ef0233d5bf69c891cdd7fc79f043bb",
-    "src/server/responses_item_shape.cpp": "390d0579e90e9c0b84749a9183c49cd5f82bbe03a7be78ec58d20f848b2ae645",
+    "src/server/responses_item_shape.cpp": "5dcb4ec22d21aaf306d3e6cb7af2c9fdd9ba38b1a896ec3d62b8ad378c73fd44",
     "src/server/responses_jobs.cpp": "02ba0eb00df0e814216696c04000c848f2b8aa88ca89509b4cbd9bb7e508a5b8",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -4415,7 +4440,7 @@
     "src/server/web_search_fetch.cpp": "e477ebcc7abd243f437e9c2ad14cff2ce560702f424a8df74da65370c6ca5c55",
     "src/server/web_search_rank.cpp": "033f5498b89dec7fee33bf69c4012f4d43a916ad5a33e55f521ab991f6adde49",
     "src/server/websocket.cpp": "cca592c1479fe87f90a2df748d8077a2e1615d92793f624d7252f3f542ac1929",
-    "src/server/websocket_session.cpp": "8d4e5664880c1dae3f49ccd9809401f771b2fb5d232435bcc09e6b50bb6f9793",
+    "src/server/websocket_session.cpp": "fad5d850a9c4e6854a57e4faefd91f5cbc2b86815826ab8412c63123795ba90a",
     "src/server/worker_io_broker.cpp": "bb7ead8d038868af5bdca8148bec08d313eeb685fefaf57c502ee97e0a29830a",
     "src/server/worker_io_broker.h": "9a0b353822159b61b40899c5fb78b2691f51a66283ae429d7916f83191b41387",
     "src/server/workspace_python.py": "89151e27af1d440af049a2fa2bf4d6c62cbd2626519d9e998ee8f4572f3a6f56",
@@ -4434,7 +4459,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "722b99f8dd76fe689c3ee67d983274c6d70738a62173e3bb0aabe230e3dee98f",
+    "src/service/ingress_main.cpp": "bfd8a9b12785322bb1d6bb626ed60aa9552357cad79c1937c2e64993284dc322",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -4464,7 +4489,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "ed297fc266d3c2bb2096014d7a4dc1dd2772b6e38f6ef99adf608fe5a268d25b",
+    "tools/serve_gateway/gateway.py": "11bb2bd76e301908ee4b66b2cbdb58ab2ad08c68c394abc694fb3b1b8f439668",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -4641,7 +4666,7 @@
     "tools/serve_recovery/version_registration.py": "8f127f8423fcba9a383232f596ed8e25239953725f092c0680acba9518cecede",
     "tools/serve_recovery/version_runtime.py": "2d3303bb16d919249dc7dedb11e5d4095f8df775a0ae3c2bba70bb1d1a655726",
     "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
-    "tools/serve_responses/generate_item_types.mjs": "1ab2cf7f2baaf3ea951100a8f8679a16da12ea98f3c99a832918b77178145428",
+    "tools/serve_responses/generate_item_types.mjs": "cfd2f9ff006df71405924232716c7d6b1baa228d778ca0d682f0e68f09134038",
     "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
     "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
     "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
@@ -8454,6 +8479,42 @@
         "src/server/files_http.cpp",
         "src/server/skill_worker.cpp",
         "tests/server_skill_worker_test.cpp"
+      ]
+    },
+    "GET /v1/realtime/translations": {
+      "semantics": "Accept PCM16 input and stream native translated speech and transcripts.",
+      "boundary": "The acknowledged session uses the configured ASR, text model and native TTS; WebRTC is separately tracked.",
+      "evidence": [
+        "src/server/chat_realtime_translation.cpp",
+        "src/server/chat_realtime_secrets.cpp",
+        "src/server/realtime_translation_session.cpp",
+        "tests/server_realtime_shape_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/realtime/translations": {
+      "semantics": "Native CORS preflight for the translation route.",
+      "boundary": "Checks origin, method and allowed headers before dispatch.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "POST /v1/realtime/translations/client_secrets": {
+      "semantics": "Issue a translation-only short-lived credential.",
+      "boundary": "The permitted model, client, expiry and settings bind redemption.",
+      "evidence": [
+        "src/server/chat_realtime_translation.cpp",
+        "src/server/chat_realtime_secrets.cpp",
+        "src/server/realtime_translation_session.cpp",
+        "tests/server_realtime_shape_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/realtime/translations/client_secrets": {
+      "semantics": "Native CORS preflight for the translation route.",
+      "boundary": "Checks origin, method and allowed headers before dispatch.",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
       ]
     }
   },

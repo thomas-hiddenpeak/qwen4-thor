@@ -62,16 +62,21 @@ ObjectReply RealtimeClientSecrets::Issue(RealtimeSecretIssuer issuer,
                                          const Json& request,
                                          const Json& resource,
                                          RealtimeSecretTime now) {
+  const bool translation = issuer.audience == RealtimeSecretAudience::kTranslation;
+  const auto create = translation ? RealtimeShape::kTranslationSecretCreate
+                                  : RealtimeShape::kClientSecretCreate;
+  const auto created = translation ? RealtimeShape::kTranslationSecretCreated
+                                   : RealtimeShape::kClientSecretCreated;
   const auto owner = issuer.owner;
   if (!owner.empty() && !ValidClientId(owner)) return Unauthorized();
   if (issuer.legacy_temperature &&
-      !(request.Find("session") &&
+      !(!translation && request.Find("session") &&
         request.Find("session")->GetString("type") == "realtime" &&
         *issuer.legacy_temperature >= 0.6 && *issuer.legacy_temperature <= 1.2))
     return Error(400, "invalid_request_error", "Invalid Realtime temperature");
   ChatPlanError error;
   auto valid = ValidateRealtimeWireShape(
-      request, RealtimeShape::kClientSecretCreate, &error, "body");
+      request, create, &error, "body");
   if (!valid) {
     auto reply = Error(error.http_status, error.code, valid.message());
     reply.value = Object({{"param", String(error.param)}});
@@ -93,16 +98,18 @@ ObjectReply RealtimeClientSecrets::Issue(RealtimeSecretIssuer issuer,
   if (!MeasureRealtimeStorage(*startup, kSettingsBytes, &storage))
     return Error(413, "request_too_large",
                  "Credential settings exceed storage limit");
+  const auto expected = translation ? "translation" : startup->GetString("type");
+  const auto object = expected == "transcription"
+                          ? "realtime.transcription_session"
+                          : "realtime.session";
   if (!MeasureRealtimeStorage(resource, kSettingsBytes, &storage) ||
       PrivateToolFields(resource) ||
       !ValidApplicationId(resource.GetString("id")) ||
       resource.GetString("id").size() <= 5 ||
-      resource.GetString("type") != startup->GetString("type") ||
+      resource.GetString("type") != expected ||
       !resource.GetString("id").starts_with("sess_") ||
-      resource.GetString("object") !=
-          (startup->GetString("type") == "transcription"
-               ? "realtime.transcription_session"
-               : "realtime.session"))
+      (translation ? resource.GetString("model") != startup->GetString("model")
+                   : resource.GetString("object") != object))
     return Error(500, "realtime_session_invalid",
                  "Invalid effective session resource");
   std::string settings = OutputJson(*startup);
@@ -129,7 +136,7 @@ ObjectReply RealtimeClientSecrets::Issue(RealtimeSecretIssuer issuer,
                         {"expires_at", Number(expires.unix_seconds)},
                         {"session", resource}});
   if (!ValidateRealtimeWireShape(
-          reply.value, RealtimeShape::kClientSecretCreated, &error, "response"))
+          reply.value, created, &error, "response"))
     return Error(500, "realtime_session_invalid",
                  "Invalid credential response");
   std::string scope(owner);
@@ -155,6 +162,7 @@ ObjectReply RealtimeClientSecrets::Issue(RealtimeSecretIssuer issuer,
   entry->second.owner.swap(scope);
   entry->second.settings.swap(settings);
   entry->second.expires = expires;
+  entry->second.audience = issuer.audience;
   entry->second.legacy_temperature = issuer.legacy_temperature;
   bytes_ += entry->second.settings.capacity();
   return reply;
@@ -162,7 +170,8 @@ ObjectReply RealtimeClientSecrets::Issue(RealtimeSecretIssuer issuer,
 
 ObjectReply RealtimeClientSecrets::Resolve(std::string_view token,
                                            RealtimeSecretGrant* grant,
-                                           RealtimeSecretTime now) {
+                                           RealtimeSecretTime now,
+                                           RealtimeSecretAudience audience) {
   RealtimeClientTicket ticket;
   const bool scoped = ReadRealtimeTicket(token, &ticket);
   if (!scoped && (token.size() != 67 || !token.starts_with("ek_") ||
@@ -182,6 +191,7 @@ ObjectReply RealtimeClientSecrets::Resolve(std::string_view token,
       entries_.erase(it);
       return Unauthorized();
     }
+    if (it->second.audience != audience) return Unauthorized();
     next.owner = it->second.owner;
     next.legacy_temperature = it->second.legacy_temperature;
     settings = it->second.settings;
