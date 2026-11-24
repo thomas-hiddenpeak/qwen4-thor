@@ -9,6 +9,7 @@
 #include "../src/server/eval_grading.h"
 #include "../src/server/eval_runs.h"
 #include "../src/server/eval_sampling.h"
+#include "../src/server/eval_trajectory.h"
 #include "../src/server/object_protocol.h"
 #include "q4t/server/http_connection.h"
 #include "q4t/server/chat_storage.h"
@@ -143,6 +144,70 @@ Q4T_TEST(evals_stored_response_can_replay_its_input_after_source_erasure) {
   Q4T_CHECK(!message.Has("id") && !message.Has("status"));
   ResponsesExecution replay(objects);
   Q4T_CHECK(replay.Prepare(request,config,access,std::time(nullptr),true).ok());
+  return true;
+}
+
+Q4T_TEST(evals_tool_trajectory_preserves_calls_results_and_legacy_order) {
+  Json input;
+  Q4T_CHECK(io::ParseJson(R"([
+    {"role":"user","content":[{"type":"text","text":"Read the project"}]},
+    {"role":"assistant","content":null,"reasoning_content":"Check both sources","tool_calls":[
+      {"id":"a","type":"function","function":{"name":"read_scope","arguments":"{\"path\":\"scope\"}"}},
+      {"id":"b","type":"custom","custom":{"name":"receipt","input":"original bytes"}}]},
+    {"role":"tool","tool_call_id":"b","content":"complete"},
+    {"role":"tool","tool_call_id":"a","content":"157"},
+    {"role":"user","content":"Which count did the tool return?"}
+  ])", &input));
+  Q4T_CHECK(eval_detail::NormalizeEvalTrajectory(&input).ok());
+  Q4T_CHECK(input.array.size() == 7);
+  Q4T_CHECK(input.array[0].GetArray("content")->array[0].GetString("type") == "input_text");
+  Q4T_CHECK(input.array[1].GetArray("content")->array[0].GetString("text") == "Check both sources");
+  Q4T_CHECK(input.array[2].GetString("arguments") == R"({"path":"scope"})" &&
+            input.array[2].GetString("call_id") == "a");
+  Q4T_CHECK(input.array[3].GetString("type") == "custom_tool_call" &&
+            input.array[3].GetString("input") == "original bytes");
+  Q4T_CHECK(input.array[4].GetString("type") == "custom_tool_call_output" &&
+            input.array[4].GetString("call_id") == "b");
+  Q4T_CHECK(input.array[5].GetString("output") == "157" &&
+            input.array[5].GetString("call_id") == "a");
+  Json historical;
+  Q4T_CHECK(io::ParseJson(R"([{"role":"assistant","content":null,"function_call":{
+    "name":"read_scope","arguments":"{}"}},{"role":"function","name":"read_scope","content":"157"}])",
+    &historical));
+  Q4T_CHECK(eval_detail::NormalizeEvalTrajectory(&historical).ok() &&
+            historical.array.size() == 2 && !historical.array[0].GetString("call_id").empty() &&
+            historical.array[0].GetString("call_id") == historical.array[1].GetString("call_id"));
+  auto orphan = Array({Object({{"role", String("tool")}, {"tool_call_id", String("other")},
+                                {"content", String("157")}})});
+  Q4T_CHECK(eval_detail::NormalizeEvalTrajectory(&orphan).http_status == 400);
+  return true;
+}
+
+Q4T_TEST(evals_grader_tool_variables_match_chat_choices_and_array_paths) {
+  Json response;
+  Q4T_CHECK(io::ParseJson(R"({"model":"cpu","status":"completed","output":[
+    {"type":"function_call","id":"fc_private","call_id":"call_public","name":"read","arguments":"{}"},
+    {"type":"custom_tool_call","call_id":"call_custom","name":"copy","input":"a b"}]})",
+    &response));
+  Json sample;
+  Q4T_CHECK(eval_detail::ProjectEvalSample(response, Object(), &sample).ok());
+  auto row = Object({{"sample", sample}});
+  auto lookup = [&](const char* path) { return eval_detail::ResolveVariable(path, row); };
+  const auto* function = lookup("sample.output_tools[0].function");
+  const auto* custom = lookup("sample.choices[0].message.tool_calls.1.custom");
+  Q4T_CHECK(function && function->GetString("name") == "read" &&
+            function->GetString("arguments") == "{}" && custom && custom->GetString("input") == "a b");
+  Q4T_CHECK(lookup("sample.output_tools[0].id")->str == "call_public" &&
+            lookup("sample.choices[0].message.content")->IsNull() &&
+            lookup("sample.choices.0.finish_reason")->str == "tool_calls");
+  for (const auto path : {"sample.output_tools[-1]", "sample.output_tools[]",
+                          "sample.output_tools[9]", "sample.output_tools[0]tail"})
+    Q4T_CHECK(!lookup(path));
+  Q4T_CHECK(io::ParseJson(R"({"status":"completed","output":[{"type":"message","role":"assistant",
+    "content":[{"type":"output_text","text":"{}"}]}]})", &response));
+  Q4T_CHECK(eval_detail::ProjectEvalSample(response, Object(), &sample).ok() && !sample.Has("output_json"));
+  auto structured = Object({{"text", Object({{"format", Object({{"type", String("json_object")}})}})}});
+  Q4T_CHECK(eval_detail::ProjectEvalSample(response, structured, &sample).ok() && sample.Find("output_json")->IsObject());
   return true;
 }
 

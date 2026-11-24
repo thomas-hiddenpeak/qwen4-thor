@@ -510,7 +510,9 @@ set(protocol_inputs
   src/server/eval_dispatcher.cpp
   include/q4t/server/eval_dispatcher.h
   src/server/eval_sampling.cpp
+  src/server/eval_trajectory.cpp
   src/server/eval_sampling.h
+  src/server/eval_trajectory.h
   src/server/eval_stored_inputs.cpp
   src/server/eval_similarity.cpp
   src/server/eval_execution.cpp

@@ -1,0 +1,32 @@
+{
+  "stage": "focused_host_verified",
+  "scope": [
+    "Sampling an identified Chat tool history via Responses, also normalizing legacy Chat function calls and results",
+    "Chat-shaped function and custom calls in sample.output_tools and choices[].message.tool_calls",
+    "Bracket and dotted array indexes, preserving literal object keys",
+    "sample.output_json requires an explicitly structured sample"
+  ],
+  "cpu_cases": 16,
+  "new_tests": [
+    "evals_tool_trajectory_preserves_calls_results_and_legacy_order",
+    "evals_grader_tool_variables_match_chat_choices_and_array_paths"
+  ],
+  "cpu_sha256": "c14f27c2ab6cee7a0b43ef8b0b201565b6ce0d03cdc0852e85a57763516c371c",
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1364,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "reference": "https://developers.openai.com/api/docs/guides/graders",
+  "pending": [
+    "native TLS model-produced tool call and replay of the real deleted project record",
+    "full multimedia data trajectories and named participant native bridge",
+    "release qualification"
+  ]
+}

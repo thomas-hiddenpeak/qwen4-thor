@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Evals 已按 Chat 结构向评分器提供函数与自定义工具调用，保留调用 ID、参数原文和 choices 下的同一工具调用。采样历史会把工具回填与相应调用关联，支持旧式 function 消息；评分模板可用方括号读取数组。16 项 CPU 检查通过。下一步以真实工具调用、已删除的历史 Chat 和官方 SDK 验证。[主机回执](evidence/serve-evals-20261125/tool-trajectories.json)
+
 模型主配置用 39.767 秒完成设备验收。停机后直接读取对象库，6 行只有 1 行已提交。轻配置在同一运行上保留原结果 ID，完成余下 5 行；六个回答均为 157，正反评分各三项，独立客户答 42。源文件删除后仍为 404。轻配置用时 35.894 秒。两份 v45 容量记录均可还原发行的 v44，历史和当前配置原文通过两份规范。下一步验证受监护进程退出及独立包接管。[设备回执](evidence/serve-evals-20261125/profiles.json)
 
 真实主配置退出时，6 行中已有 1 行持久化；轻配置接手后保留原结果 ID，完成其余 5 行。首轮发行检查同时发现配置 schema 漏报 evaluation_run_errors 和 eval_dispatcher。已补齐两份配置规范，在旧配置兼容检查中验证计数类型、下限和 readiness 隔离；接下来用两份已有 HTTP 原文复验。[初次失败及复核](evidence/serve-evals-20261125/recovery.json)

@@ -66,18 +66,33 @@ const io::Json* ResolveVariable(std::string_view path, const Json& row) {
     const auto dot = path.find('.');
     const auto key = path.substr(0, dot);
     if (key.empty() || ++depth > 64) return nullptr;
-    if (depth == 1 && key != "item" && key != "sample") return nullptr;
-    if (value->IsArray()) {
+    const auto open = key.find('[');
+    const auto field = key.substr(0, open);
+    if (depth == 1 && field != "item" && field != "sample") return nullptr;
+    const auto at = [](const Json* list, std::string_view digits) -> const Json* {
+      if (!list || !list->IsArray() || digits.empty()) return nullptr;
       size_t index = 0;
-      const auto [end, ec] =
-          std::from_chars(key.data(), key.data() + key.size(), index);
-      if (ec != std::errc{} || end != key.data() + key.size() ||
-          index >= value->array.size())
+      const auto [end, ec] = std::from_chars(digits.data(), digits.data() + digits.size(), index);
+      if (ec != std::errc{} || end != digits.data() + digits.size() || index >= list->array.size())
         return nullptr;
-      value = &value->array[index];
+      return &list->array[index];
+    };
+    // Existing literal object keys (including bracket characters) keep precedence.
+    if (const auto* literal = value->Find(std::string(key));
+        literal && (depth != 1 || key == field)) {
+      value = literal;
     } else {
-      value = value->Find(std::string(key));
+      value = value->IsArray() ? at(value, field) : value->Find(std::string(field));
       if (!value) return nullptr;
+      auto brackets = key.substr(field.size());
+      while (!brackets.empty()) {
+        const auto close = brackets.find(']');
+        if (brackets.front() != '[' || close == brackets.npos || ++depth > 64)
+          return nullptr;
+        value = at(value, brackets.substr(1, close - 1));
+        if (!value) return nullptr;
+        brackets.remove_prefix(close + 1);
+      }
     }
     if (dot == path.npos) return value;
     path.remove_prefix(dot + 1);

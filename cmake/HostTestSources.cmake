@@ -319,6 +319,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_runs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_dispatcher.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_sampling.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_trajectory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_stored_inputs.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_similarity.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/eval_execution.cpp

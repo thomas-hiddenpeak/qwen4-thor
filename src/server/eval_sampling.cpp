@@ -6,6 +6,7 @@
 #include <ctime>
 
 #include "eval_grading.h"
+#include "eval_trajectory.h"
 #include "eval_run_state.h"
 #include "q4t/server/request_json.h"
 
@@ -111,22 +112,30 @@ Json Messages(const Json& input) {
   return list;
 }
 
-ObjectReply Projection(const Json& response, const Json& request,
+}  // namespace
+
+ObjectReply ProjectEvalSample(const Json& response, const Json& request,
                        Json* sample) {
   auto output = Array(), tools = Array();
-  std::string text, reasoning;
+  std::string text, reasoning, refusal;
   const auto* items = response.GetArray("output");
   if (!items) return InvalidRecord();
   for (const auto& item : items->array) {
     const auto type = item.GetString("type");
     if (type == "message") {
+      if (const auto* parts = item.GetArray("content"))
+        for (const auto& part : parts->array)
+          if (part.GetString("type") == "refusal") refusal += part.GetString("refusal");
       auto messages = Messages(Array({item}));
       for (auto& entry : messages.array) {
         text += entry.GetString("content");
         output.array.push_back(std::move(entry));
       }
     } else if (type == "function_call" || type == "custom_tool_call") {
-      tools.array.push_back(item);
+      Json tool;
+      auto converted = EvalChatTool(item, &tool);
+      if (!converted.ok()) return converted;
+      tools.array.push_back(std::move(tool));
     } else if (type == "reasoning") {
       if (const auto* summary = item.GetArray("summary"))
         for (const auto& part : summary->array)
@@ -136,6 +145,11 @@ ObjectReply Projection(const Json& response, const Json& request,
   const auto finish = response.GetString("status") == "incomplete"
                           ? "length"
                           : (!tools.array.empty() ? "tool_calls" : "stop");
+  auto choice = Object({{"role", String("assistant")},
+                        {"content", text.empty() && (!tools.array.empty() || !refusal.empty())
+                                        ? Json() : String(text)},
+                        {"refusal", refusal.empty() ? Json() : String(refusal)}});
+  if (!tools.array.empty()) Set(&choice, "tool_calls", tools);
   *sample = Object(
       {{"model", Copy(response, "model")},
        {"input", Messages(Copy(request, "input"))},
@@ -152,18 +166,19 @@ ObjectReply Projection(const Json& response, const Json& request,
        {"seed", Copy(request, "seed", Number(0))},
        {"error", Json()}});
   Json object;
-  if (io::ParseJson(text, &object, true, kApplicationJsonLimits) &&
+  const auto* options = request.Find("text");
+  const auto* format = options ? options->Find("format") : nullptr;
+  if (format && (format->GetString("type") == "json_schema" ||
+                 format->GetString("type") == "json_object") &&
+      io::ParseJson(text, &object, true, kApplicationJsonLimits) &&
       object.IsObject())
     Set(sample, "output_json", std::move(object));
-  auto choice =
-      Object({{"role", String("assistant")}, {"content", String(text)}});
   Set(sample, "choices",
       Array({Object({{"index", Number(0)},
                      {"message", std::move(choice)},
                      {"finish_reason", String(finish)}})}));
   return {};
 }
-}  // namespace
 
 ObjectReply SamplingRequest(const Json& source, const Json& row,
                             const ChatPlanConfig& config, Json* request) {
@@ -187,16 +202,8 @@ ObjectReply SamplingRequest(const Json& source, const Json& row,
   if (!input.IsArray() && !input.IsString())
     return BadInput("input_messages",
                     "Expected an input message array or text");
-  // EvalItem permits a single content part where Responses accepts a list.
-  for (auto& message : input.array) {
-    const auto* part = message.Find("content");
-    if (part && part->IsObject()) Set(&message, "content", Array({*part}));
-    if (auto* array = message.GetArray("content"); array) {
-      for (auto& value : Field(message, "content").array)
-        if (value.IsString())
-          value = Object({{"type", String("input_text")}, {"text", value}});
-    }
-  }
+  auto converted = NormalizeEvalTrajectory(&input);
+  if (!converted.ok()) return converted;
   *request = Object({{"model", String(source.GetString("model", config.model))},
                      {"input", std::move(input)},
                      {"background", Boolean(true)},
@@ -319,7 +326,7 @@ ObjectReply SampleRow(ObjectStore& objects, const StateAccess& access,
   if (!input || !request) return InvalidRecord();
   *row = *input;
   Json sample;
-  auto projected = Projection(*response, *request, &sample);
+  auto projected = ProjectEvalSample(*response, *request, &sample);
   if (!projected.ok()) return projected;
   Set(row, "sample", std::move(sample));
   return {};
