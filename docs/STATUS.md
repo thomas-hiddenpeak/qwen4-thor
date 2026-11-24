@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #111 的远端源码审计通过后，真实子进程 OOM 测试在 100 毫秒的启动时限内提前超时。该用例现使用 2 秒启动时限，并断言只观察到一个进程。15 项资源隔离检查通过；将观测人为延迟 150 毫秒后仍得到 host_resource_oom、零重启和完整清理。干净工作树的夹具会创建所需构建目录。下一步核对更新后的远端两项检查。[复验记录](evidence/serve-chatkit-20261125/optional-ingress.json)
+
 从已删除的历史 Responses 记录重放输入后，模型仍答 157 并得 1 分。订阅者通过官方 SDK 验签成功、失败、取消三类 Evals 通知，均只收到运行 ID；独立客户答 42。补验 39.891 秒，一次模型启动。历史 Chat 来源沿用首轮成功证据。任务表同步了 rev478 的实际发行、长稳预检身份和 Evals 余项，候选仍待发行。[设备与主机回执](evidence/serve-evals-20261125/stored-sources.json)
 
 首轮历史记录设备验证中，源 Chat 删除后仍按快照答出 157 并得 1 分。Responses 来源的用户消息带有列表返回专用的 id 和 status，重新提交时被输入合同拒绝。修正了历史消息投影，保留原失败运行和已通过的 Chat 回执，补验 Responses 来源及签名终态通知。[首轮回执](evidence/serve-evals-20261125/stored-sources.json)
