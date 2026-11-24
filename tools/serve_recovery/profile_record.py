@@ -44,6 +44,8 @@ def shape(value, size):
               value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
              (value.get('format') == 'q4t-profile-business-v28' and
               value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v37' and
+              value['reused_business'].get('format') == 'q4t-skill-workspace-source-v1') or
              (value.get('format') == 'q4t-profile-business-v36' and
               value['reused_business'].get('format') == 'q4t-assistants-run-source-v1') or
              (value.get('format') == 'q4t-profile-business-v35' and
@@ -124,6 +126,7 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_AGENT_RECOVERY_PRIMARY_LIGHT': 'q4t-agent-profile-requalification-v1',
         'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT': 'q4t-agent-registration-profile-source-v1',
         'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT': 'q4t-agent-session-profile-source-v1',
+        'ACCEPT_SKILLS_PRIMARY_LIGHT': 'q4t-skill-workspace-source-v1',
         'ACCEPT_ASSISTANTS_PRIMARY_LIGHT': 'q4t-assistants-run-source-v1',
         'ACCEPT_TRANSLATION_REALTIME_PRIMARY_LIGHT': 'q4t-translation-realtime-source-v1',
         'ACCEPT_TRACING_PRIMARY_LIGHT': 'q4t-tracing-profile-source-reuse-v1',

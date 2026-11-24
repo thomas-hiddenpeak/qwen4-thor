@@ -2690,6 +2690,12 @@
         "default_contains_change": false,
         "hosted_model_tool_execution": "pending",
         "native_workspace_unicode_snapshot": "cpu_verified"
+      },
+      "skill_capacity_handoff_20261124": {
+        "status": "ACCEPT_SKILLS_PRIMARY_LIGHT",
+        "evidence": "evidence/serve-skills-20261124/profiles.json",
+        "default_revision": 462,
+        "remaining": "Managed model and gateway recovery, stopped publication, hosted execution."
       }
     },
     {
@@ -8434,6 +8440,12 @@
         "accepted_methods": 158,
         "required_methods": 231,
         "hours_of_long_run": 0
+      },
+      "skill_capacity_handoff_20261124": {
+        "status": "ACCEPT_SKILLS_PRIMARY_LIGHT",
+        "evidence": "evidence/serve-skills-20261124/profiles.json",
+        "default_revision": 462,
+        "remaining": "Managed model and gateway recovery, stopped publication, hosted execution."
       }
     },
     {
@@ -9319,6 +9331,12 @@
         "default_contains_change": false,
         "hosted_model_tool_execution": "pending",
         "native_workspace_unicode_snapshot": "cpu_verified"
+      },
+      "skill_capacity_handoff_20261124": {
+        "status": "ACCEPT_SKILLS_PRIMARY_LIGHT",
+        "evidence": "evidence/serve-skills-20261124/profiles.json",
+        "default_revision": 462,
+        "remaining": "Managed model and gateway recovery, stopped publication, hosted execution."
       }
     },
     {
@@ -10817,6 +10835,12 @@
         "accepted_methods": 158,
         "required_methods": 231,
         "hours_of_long_run": 0
+      },
+      "skill_capacity_handoff_20261124": {
+        "status": "ACCEPT_SKILLS_PRIMARY_LIGHT",
+        "evidence": "evidence/serve-skills-20261124/profiles.json",
+        "default_revision": 462,
+        "remaining": "Managed model and gateway recovery, stopped publication, hosted execution."
       }
     }
   ],
