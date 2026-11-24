@@ -96,7 +96,7 @@ def prepare_profiles(out, envelope, selected, expected, ingress_sha256, *,
         # Preserve accepted model/backend selections and both exact capacities.
         # Each stage has a fresh client policy and shared private object root.
         core = selected.copy()
-        pkg.require(not (set(core) & {'mcp_policy','web_policy','access_program_policy',
+        pkg.require(not (set(core) & {'mcp_policy','web_policy','webhook_policy','access_program_policy',
                                      'file_input_policy'}), 'additional authorities need isolation')
         settings = dict(core['settings'], profile=envelope['recovery_profiles']['profiles'][name],
                         port=plan['port'], operations_port=plan['operations_port'])
@@ -160,6 +160,8 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'webhook_handoff' in self.plan:
+            self.webhook_subscriber.business(self, capabilities)
         if 'automation_handoff' in self.plan:
             from tools.serve_responses import automation_profiles
             automation_profiles.business(self, capabilities)
@@ -273,11 +275,19 @@ def main():
     pkg.require(all(p['schema'] == SCHEMA for p in plans), 'profile plan identity')
     if args.action == 'run':
         with base.lifecycle.child_subreaper():
+            subscriber = None
+            if any('webhook_handoff' in p for p in plans):
+                from tools.serve_responses.webhook_profiles import Subscriber
+                pkg.require(all('webhook_handoff' in p for p in plans), 'incomplete webhook handoff')
+                subscriber = Subscriber()
             for plan in plans:
                 if 'agent_interruption' in plan:
                     from tools.serve_responses import interruption_profile_acceptance
                     interruption_profile_acceptance.seed(Path(plan['output']), plan)
-                Stage(plan).run()
+                stage = Stage(plan)
+                if subscriber:
+                    stage.webhook_subscriber = subscriber
+                stage.run()
         return
     # Development-only release validation. Neither the model nor its guardian
     # imports the schema validator.

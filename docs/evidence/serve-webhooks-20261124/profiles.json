@@ -1,0 +1,190 @@
+{
+  "status": "ACCEPT_WEBHOOK_PRIMARY_LIGHT",
+  "released": 470,
+  "native_engine": "5e2224c0c4bf28773515149f225ab7ef5524927189a135aced2088fa30a6d351",
+  "protocol": "79d3d777f9d93363a61650eb5ce15f96c0e396a0b1e14ed4b98dfa51fdf71aab",
+  "capacity": {
+    "primary": {
+      "seconds": 40.731,
+      "starts": 1,
+      "mtp": true,
+      "sdk": "7.47.0",
+      "counters": {
+        "acknowledged": 0,
+        "retries": 1,
+        "errors": 0,
+        "capacity_deferrals": 0,
+        "capacity_losses": 0
+      },
+      "ingress": "ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46",
+      "profile": "fb46c5e00a4d9a2d6cfa59e781ebe08fd8d684d8a51c3b9cb12474c5592726e9",
+      "previous": "39378d4ab67df2449d4f0953faf466c3be2d2a413b74c8abe57b79417aafa1d4",
+      "response_answer": "470",
+      "cleanup": true
+    },
+    "light": {
+      "seconds": 97.262,
+      "starts": 1,
+      "mtp": false,
+      "sdk": "7.47.0",
+      "counters": {
+        "acknowledged": 2,
+        "retries": 1,
+        "errors": 0,
+        "capacity_deferrals": 0,
+        "capacity_losses": 0
+      },
+      "ingress": "ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46",
+      "profile": "af923ee17d2cef62d6eefee8033a69b4d3fa4b6fb6400b49568c9cd6fa0b1fb1",
+      "previous": "ded04edfd79a1cd60454ae157a47c0f62ed02ddc81b85e563cfe8bc8b613cede",
+      "response_answer": "470",
+      "cleanup": true
+    }
+  },
+  "accepted": {
+    "status": "ACCEPT_WEBHOOK_PRIMARY_LIGHT",
+    "registry_sha256": "6057f31c7d25100dd4137a01ae4a38de355d8d039bcc344e58b655e881cc2291",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 130,
+      "cleanup_complete": true,
+      "lease_result_sha256": "75e427451f559fa8609c06aa39b478564a4e899cb2aa7deb1e11eb69f99f7b51"
+    },
+    "migration_permit_sha256": "41b85a97de11645616ebbeb076858ec202445974994d3f48fa12b15fde186e94",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "sdk": "7.47.0",
+  "recovered_event": "evt_910496b8410e3db18d12deb50dfa2a12",
+  "restore_interval_seconds": 95,
+  "message_ids": [
+    "evt_910496b8410e3db18d12deb50dfa2a12",
+    "evt_910496b8410e3db18d12deb50dfa2a12",
+    "evt_df144b3a73e0aec5ab2ad518e612c3a8"
+  ],
+  "statuses": [
+    503,
+    202,
+    202
+  ],
+  "independent_chat": "42",
+  "batch_answer": "470",
+  "package_cpu": {
+    "optional_policy_and_recovery": 5,
+    "model_command": 1,
+    "capability_migrations": 2,
+    "native_webhooks": 6,
+    "native_discovery": 18
+  },
+  "limitations": [
+    "The initial subscriber process exits with the primary fixture. Its key stays in private test-controller memory, and the light subscriber verifies the original signing secret.",
+    "Effective primary and light engine commands were exercised. The optional policy was sealed and verified in a CPU package. Managed guardian fault recovery and release are subsequent stages.",
+    "The issued deployment has no operator-selected webhook policy. Keep its egress disabled on upgrade."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/acceptance.json",
+      "sha256": "5c530a6c2de1a1af191645ac0b0c51ee1af38ceacfa36bf6f26fa21d5168abb5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/observations.json",
+      "sha256": "0f3910d6be4cda69249bba265cdb6fecd3a08d75d10dd84f79722435b950054d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/lease/exit.json",
+      "sha256": "75e427451f559fa8609c06aa39b478564a4e899cb2aa7deb1e11eb69f99f7b51"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-qualified-01/acceptance.json",
+      "sha256": "16bd0d8d2fdd5be40ee5ba4f469a73e773b1193226cbc074d8349582fb252883"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-qualified-01/qualified/registry.json",
+      "sha256": "6057f31c7d25100dd4137a01ae4a38de355d8d039bcc344e58b655e881cc2291"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/primary/configuration.wire",
+      "sha256": "17b041e8a7e624bd99f362c318a170d6464eb5810d661863e0cd7b03e15d0948"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/primary/capabilities.json",
+      "sha256": "72089ba4cddf3f39742114100c72c8138db944e7133a64498de4344fae7eb243"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/primary/webhook-handoff.json",
+      "sha256": "7756c925ed0cb7cb8ab2d390021d1f7262b91f52a539f200e7e920b6a0e22081"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/primary/plan.json",
+      "sha256": "6794557b041ed1d7f1379c9fc5e7ebbe2e123609949c6a343c8193442d3b57c2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/primary/result.json",
+      "sha256": "21ae5ef9c2153406122369a73b3a81f63bb1c16c7780ad11af24e2c954bd15c3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/primary/cleanup.json",
+      "sha256": "7739de8701d7facaf8beff7946aaada150ae778ce20a7abbc4fc2af434051b08"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-qualified-01/qualified/primary.json",
+      "sha256": "fb46c5e00a4d9a2d6cfa59e781ebe08fd8d684d8a51c3b9cb12474c5592726e9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/light/configuration.wire",
+      "sha256": "9a4c6d4eae8c4b2a1b0e8fdcc581cf55ca7d32b029449aa85dc837d782188778"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/light/capabilities.json",
+      "sha256": "dba4a5500edb883cf4b195383ae84451b8bbd1ad41f95cb429ce5a3da6809698"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/light/webhook-handoff.json",
+      "sha256": "0996fe226c0271b7ae2d521073663e788ccf9b2be29cb4c864a0540cdd470bf7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/light/plan.json",
+      "sha256": "60fd2e6ea7bd4f7156a1718760620905bebef71560be57f6da5601ce24d1d7dc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/light/result.json",
+      "sha256": "93909ed66d37d78a993943f38fcfa8972c7e7b75748ae1f6465162c36fa423f2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-profiles-02/light/cleanup.json",
+      "sha256": "d26a3856f58d56c01d2454a0fb2a1bc0f36fb8b708dfe349b008e475b5f3f4a8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/webhook-qualified-01/qualified/light.json",
+      "sha256": "af923ee17d2cef62d6eefee8033a69b4d3fa4b6fb6400b49568c9cd6fa0b1fb1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/package-cpu-01.log",
+      "sha256": "2d5446b4ba8c52f8417a597cdd463ad08248ab6e2bbbab94a060121f7994fac2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/package-profile-cpu-01.log",
+      "sha256": "fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/package-migration-cpu-01.log",
+      "sha256": "620f780683229b6add312ee1df9a5e32da79afaf30f8423a4e3f20e82ea0cb9a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/package-webhook-cpu-01.log",
+      "sha256": "781c6fc8f01eee2dd82417392712209878906bdd9b4e65897c3f5ea9d774b783"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/package-capability-cpu-01.log",
+      "sha256": "a3c8364f2af837eb440241863d1f0f5ef8bb535b4f812d0dfb3b996e022e72b0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/package-inventory-01.json",
+      "sha256": "e6ee5d29e7e00ada5ed46200158a16c3bc471d6770b906b4f591dfeabf27bd6d"
+    }
+  ],
+  "foreign_status": 404
+}

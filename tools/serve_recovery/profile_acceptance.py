@@ -457,7 +457,7 @@ def prepare(args):
         plan['separator_audio'] = dict(path=str(clip), sha256=sha(clip))
         plan['sources'][str(clip)] = sha(clip)
     for name in ('access-program-policy.json', 'file-input-policy.json',
-                 'mcp-policy.json', 'web-policy.json'):
+                 'mcp-policy.json', 'web-policy.json', 'webhook-policy.json'):
         if (engine/name).is_file():
             plan['sources'][str(engine/name)] = sha(engine/name)
             shutil.copyfile(engine/name, path.parent/name)

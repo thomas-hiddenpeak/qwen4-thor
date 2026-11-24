@@ -787,6 +787,11 @@ service.main(['resume', '--help'])
              contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(service.main([*arguments, '--web-policy', str(web)]), 0)
         self.assertEqual(prepare.call_args.kwargs['web_policy'], web)
+        webhook = self.directory/'private-webhook-policy.json'
+        with mock.patch.object(service.bundle, 'prepare', return_value={}) as prepare, \
+             contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(service.main([*arguments, '--webhook-policy', str(webhook)]), 0)
+        self.assertEqual(prepare.call_args.kwargs['webhook_policy'], webhook)
 
     def test_cli_carries_application_state_limits_to_sealed_package(self):
         arguments = ['prepare']
