@@ -638,6 +638,12 @@
         "required_methods": 231,
         "declared_with_expected_success": 189,
         "long_run_hours": 0
+      },
+      "webhook_management_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/endpoints.json",
+        "default_revision": 470,
+        "verified": "SDK management and sample delivery",
+        "pending": "durable lifecycle events and delivery"
       }
     },
     {
@@ -2745,6 +2751,12 @@
         "required_methods": 231,
         "declared_with_expected_success": 189,
         "long_run_hours": 0
+      },
+      "webhook_management_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/endpoints.json",
+        "default_revision": 470,
+        "verified": "SDK management and sample delivery",
+        "pending": "durable lifecycle events and delivery"
       }
     },
     {
@@ -6255,6 +6267,12 @@
         "required_methods": 231,
         "declared_with_expected_success": 189,
         "long_run_hours": 0
+      },
+      "webhook_management_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/endpoints.json",
+        "default_revision": 470,
+        "verified": "SDK management and sample delivery",
+        "pending": "durable lifecycle events and delivery"
       }
     },
     {
@@ -9575,6 +9593,12 @@
         "required_methods": 231,
         "declared_with_expected_success": 189,
         "long_run_hours": 0
+      },
+      "webhook_management_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/endpoints.json",
+        "default_revision": 470,
+        "verified": "SDK management and sample delivery",
+        "pending": "durable lifecycle events and delivery"
       }
     },
     {

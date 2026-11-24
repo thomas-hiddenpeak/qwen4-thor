@@ -32,6 +32,7 @@
 #include "q4t/server/object_store.h"
 #include "q4t/server/tool_result_schema.h"
 #include "q4t/server/file_fetch.h"
+#include "q4t/server/webhook.h"
 #include "q4t/server/sip_webhook.h"
 #include "q4t/server/sip_service.h"
 #include "q4t/server/web_search.h"
@@ -119,7 +120,7 @@ void PrintUsage(const char* prog) {
       "[--startup-memory-headroom-mib N] "
       "[--cuda-allocation-limit-mib auto|0|N] "
       "[--client-policy-file FILE] [--access-program-policy-file FILE] "
-      "[--file-input-policy-file FILE] [--mcp-policy-file FILE] "
+      "[--file-input-policy-file FILE] [--webhook-policy-file FILE] [--mcp-policy-file FILE] "
       "[--web-policy-file FILE] "
       "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
       "[--session-cache-dir DIR] [--prefix-cache-dir DIR] "
@@ -978,6 +979,8 @@ int main(int argc, char** argv) {
   if (web_page >= 0) return web_page;
   const int sip_webhook = q4t::server::MaybeRunSipWebhookWorker(argc, argv);
   if (sip_webhook >= 0) return sip_webhook;
+  const int webhook_worker = q4t::server::MaybeRunWebhookWorker(argc, argv);
+  if (webhook_worker >= 0) return webhook_worker;
   const int fetch_worker = q4t::server::MaybeRunFileFetchWorker(argc, argv);
   if (fetch_worker >= 0) return fetch_worker;
   const int document_worker =

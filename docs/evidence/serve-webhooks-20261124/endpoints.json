@@ -1,0 +1,113 @@
+{
+  "status": "ACCEPT_WEBHOOK_MANAGEMENT_AND_SIGNED_TEST_DELIVERY",
+  "issued_default": 470,
+  "methods": {
+    "required": 231,
+    "default_declared": 189,
+    "candidate_declared": 197,
+    "missing_candidate": 34
+  },
+  "official_sdk": "7.47.0",
+  "webhook_http_methods": 8,
+  "wire_responses_checked_against_both": 8,
+  "return_codes_observed": [
+    202,
+    429,
+    200
+  ],
+  "subscriber_timeout": true,
+  "chat_while_subscriber_pending": "42",
+  "foreign_endpoint": 404,
+  "rotations": {
+    "grace_period_seconds": 86400,
+    "old_and_new_verified": true,
+    "previous_key_rejected_on_immediate_rotation": true
+  },
+  "runtime": {
+    "binary": "b3ae85ed13eecb6c77297e2a8bb1e27dda2ff96dd5369fd024b46a04a0b0d721",
+    "ingress": "ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46",
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 37.915,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "limits": [
+    "Only explicit sample delivery was exercised. Source lifecycle emission, durable retries, release profiles and package takeover require their own evidence.",
+    "The fourth observed fixture status in the raw SDK receipt is its configured response. The receiver deliberately sent no headers on the wire; client delivery failed on the timeout.",
+    "After the business run, added endpoint retention recognition. The final targeted CPU tests cover persisted subscriptions and damaged records."
+  ],
+  "failed_attempts": [
+    "First serve process rejected an unregistered CLI option before model initialization. Corrected flag parsing.",
+    "First CLI CPU fixture omitted the required model path. The corrected fixture and the real startup succeeded.",
+    "Initial nginx unittest invocation omitted the executable argument. Repeated with the actual optional binary."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-business-02/create/run-wire.json",
+      "sha256": "99805f1ef4aa07d6b347b0723b61efe85cbe4cb39fada81ba26f07df0f404246"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-business-02/create/sdk-result.json",
+      "sha256": "0becbdaeef83fb0cd57c26e0e06c449ec7df5e8611a1c26d4dd52459d4df8b1e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-business-02/result.json",
+      "sha256": "26cd6d8ee1f3eeb6692b4c39939a37ecf973793b84c31dbcf5e0f785fc4b75fa"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-business-02/plan.json",
+      "sha256": "ccc16550844ec4d7b31b2f064ab186d91eb34684eec54d54cea782d54b5c889d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-business-lease-02/exit.json",
+      "sha256": "4fb6fcda66140cd52624a565084278d12922db70563a04d56a5dddba042a4fe7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-business-01/create/model.log",
+      "sha256": "8684c66007a32b17defdae24dac77aaaf794f1c2e64f3a76cadfbd8b679f9d86"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-business-01/result.json",
+      "sha256": "a07d9b2781b522a20bd2b43364e56de72633ec515f28e9e0112b369c75fc21d3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-business-lease-01/exit.json",
+      "sha256": "2d534791fb67c0a4e0c7622bf328a3344f1f2d66a93948e52b5c9464e97b7e02"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/webhook-cpu-02.log",
+      "sha256": "0d23dafabf513c6aec5c6af9e9642c873a1d0c8fad881dce27c3435b698e90cc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/webhook-cpu-04.log",
+      "sha256": "ebf6473b2393b86bea205b3e80c7491851759f802419cec517492578c43c4dac"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/nginx-01.log",
+      "sha256": "d4e2f9054193ea76c448aa45b1c7c20e6f0bd58c06c6db2708abb141f68f1e9d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/nginx-02.log",
+      "sha256": "13706831684a564d04e21feda651f3617f203403ebd615bca9432c94eddaa219"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/inventory-03.json",
+      "sha256": "6d3c11218782dc1d86acf9adf5477bfab942cb88dce4eea9885c1c3c45c0cb90"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/methods.json",
+      "sha256": "04f67f48e47198a5a78fffdf99907e6525dbf2d9075a8e71f22cf64e1fd80f06"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook_business.py",
+      "sha256": "6a87a61b2f86ce8642b09c5c67c3cc59e2836beba4f951bcac228a4d2d2756d2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/tools/serve_responses/webhook_endpoint_sdk.mjs",
+      "sha256": "49daeaaf32a58cade9b27a820d93173c4a34896786ba493e81017e1fb424afbe"
+    }
+  ]
+}

@@ -669,6 +669,55 @@ inline bool IsAssistantObservation(std::string_view method,
                                   AssistantRunRouteKind::kCancel);
 }
 
+enum class WebhookRouteKind { kNone, kCatalog, kCollection, kEndpoint, kRotate, kTest };
+struct WebhookRoute {
+  WebhookRouteKind kind = WebhookRouteKind::kNone;
+  std::string_view id{};
+};
+inline WebhookRoute ParseWebhookRoute(std::string_view target) {
+  auto path = target.substr(0, target.find('?'));
+  using Kind = WebhookRouteKind;
+  if (path == "/v1/webhook_event_types") return {Kind::kCatalog};
+  constexpr std::string_view root = "/v1/webhook_endpoints";
+  if (path == root) return {Kind::kCollection};
+  if (!path.starts_with(root)) return {};
+  path.remove_prefix(root.size());
+  if (!path.starts_with('/')) return {};
+  path.remove_prefix(1);
+  const auto slash = path.find('/');
+  const auto id = path.substr(0, slash);
+  if (!id.starts_with("whe_") || id.size() == 4 || !ValidApplicationId(id))
+    return {};
+  if (slash == path.npos) return {Kind::kEndpoint, id};
+  if (path.substr(slash) == "/rotate_secret") return {Kind::kRotate, id};
+  if (path.substr(slash) == "/test") return {Kind::kTest, id};
+  return {};
+}
+inline bool IsWebhookTarget(std::string_view target) {
+  return ParseWebhookRoute(target).kind != WebhookRouteKind::kNone;
+}
+inline std::string_view WebhookAllow(WebhookRouteKind kind) {
+  using Kind = WebhookRouteKind;
+  switch (kind) {
+    case Kind::kCatalog: return "GET";
+    case Kind::kCollection: return "GET, POST";
+    case Kind::kEndpoint: return "GET, POST, DELETE";
+    case Kind::kRotate:
+    case Kind::kTest: return "POST";
+    case Kind::kNone: return {};
+  }
+  return {};
+}
+inline bool WebhookMethodAllowed(std::string_view method,
+                                 std::string_view target) {
+  using Kind = WebhookRouteKind;
+  const auto k = ParseWebhookRoute(target).kind;
+  if (method == "GET")
+    return k == Kind::kCatalog || k == Kind::kCollection || k == Kind::kEndpoint;
+  if (method == "POST") return k != Kind::kNone && k != Kind::kCatalog;
+  return method == "DELETE" && k == Kind::kEndpoint;
+}
+
 enum class AutomationRouteKind {
   kNone, kCollection, kResource, kPause, kResume, kInvocations, kInvocation
 };

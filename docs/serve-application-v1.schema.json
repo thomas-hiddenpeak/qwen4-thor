@@ -23155,6 +23155,2115 @@
       "required": [],
       "additionalProperties": false
     },
+    "webhook_0": {
+      "type": "object",
+      "properties": {
+        "event_types": {
+          "$ref": "#/$defs/webhook_1"
+        },
+        "name": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "url": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "event_types",
+        "name",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_1": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/webhook_2"
+      }
+    },
+    "webhook_2": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_3"
+        },
+        {
+          "$ref": "#/$defs/webhook_4"
+        },
+        {
+          "$ref": "#/$defs/webhook_5"
+        },
+        {
+          "$ref": "#/$defs/webhook_6"
+        },
+        {
+          "$ref": "#/$defs/webhook_7"
+        },
+        {
+          "$ref": "#/$defs/webhook_8"
+        },
+        {
+          "$ref": "#/$defs/webhook_9"
+        },
+        {
+          "$ref": "#/$defs/webhook_10"
+        },
+        {
+          "$ref": "#/$defs/webhook_11"
+        },
+        {
+          "$ref": "#/$defs/webhook_12"
+        },
+        {
+          "$ref": "#/$defs/webhook_13"
+        },
+        {
+          "$ref": "#/$defs/webhook_14"
+        },
+        {
+          "$ref": "#/$defs/webhook_15"
+        },
+        {
+          "$ref": "#/$defs/webhook_16"
+        },
+        {
+          "$ref": "#/$defs/webhook_17"
+        },
+        {
+          "$ref": "#/$defs/webhook_18"
+        },
+        {
+          "$ref": "#/$defs/webhook_19"
+        },
+        {
+          "$ref": "#/$defs/webhook_20"
+        },
+        {
+          "$ref": "#/$defs/webhook_21"
+        },
+        {
+          "$ref": "#/$defs/webhook_22"
+        },
+        {
+          "$ref": "#/$defs/webhook_23"
+        },
+        {
+          "$ref": "#/$defs/webhook_24"
+        },
+        {
+          "$ref": "#/$defs/webhook_25"
+        },
+        {
+          "$ref": "#/$defs/webhook_26"
+        },
+        {
+          "$ref": "#/$defs/webhook_27"
+        },
+        {
+          "$ref": "#/$defs/webhook_28"
+        },
+        {
+          "$ref": "#/$defs/webhook_29"
+        }
+      ]
+    },
+    "webhook_3": {
+      "const": "batch.completed"
+    },
+    "webhook_4": {
+      "const": "batch.failed"
+    },
+    "webhook_5": {
+      "const": "batch.expired"
+    },
+    "webhook_6": {
+      "const": "batch.cancelled"
+    },
+    "webhook_7": {
+      "const": "response.completed"
+    },
+    "webhook_8": {
+      "const": "response.failed"
+    },
+    "webhook_9": {
+      "const": "response.cancelled"
+    },
+    "webhook_10": {
+      "const": "response.incomplete"
+    },
+    "webhook_11": {
+      "const": "eval.run.succeeded"
+    },
+    "webhook_12": {
+      "const": "eval.run.failed"
+    },
+    "webhook_13": {
+      "const": "eval.run.canceled"
+    },
+    "webhook_14": {
+      "const": "fine_tuning.job.succeeded"
+    },
+    "webhook_15": {
+      "const": "fine_tuning.job.failed"
+    },
+    "webhook_16": {
+      "const": "fine_tuning.job.cancelled"
+    },
+    "webhook_17": {
+      "const": "realtime.call.incoming"
+    },
+    "webhook_18": {
+      "const": "video.completed"
+    },
+    "webhook_19": {
+      "const": "video.failed"
+    },
+    "webhook_20": {
+      "const": "agent.environment.ready"
+    },
+    "webhook_21": {
+      "const": "agent.environment.failed"
+    },
+    "webhook_22": {
+      "const": "agent.environment.suspended"
+    },
+    "webhook_23": {
+      "const": "agent.environment.expired"
+    },
+    "webhook_24": {
+      "const": "agent.session.created"
+    },
+    "webhook_25": {
+      "const": "agent.session.action_required"
+    },
+    "webhook_26": {
+      "const": "agent.session.in_progress"
+    },
+    "webhook_27": {
+      "const": "agent.session.idle"
+    },
+    "webhook_28": {
+      "const": "agent.session.failed"
+    },
+    "webhook_29": {
+      "const": "safety.alert.created"
+    },
+    "webhook_30": {
+      "type": "string"
+    },
+    "webhook_31": {
+      "type": "object",
+      "properties": {
+        "event_types": {
+          "$ref": "#/$defs/webhook_32"
+        },
+        "name": {
+          "$ref": "#/$defs/webhook_33"
+        },
+        "url": {
+          "$ref": "#/$defs/webhook_33"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "webhook_32": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_1"
+        }
+      ]
+    },
+    "webhook_33": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_30"
+        }
+      ]
+    },
+    "webhook_34": {
+      "type": "object",
+      "properties": {
+        "keep_old_secret_active_for_24_hours": {
+          "$ref": "#/$defs/webhook_35"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "webhook_35": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_36"
+        },
+        {
+          "$ref": "#/$defs/webhook_37"
+        }
+      ]
+    },
+    "webhook_36": {
+      "const": false
+    },
+    "webhook_37": {
+      "const": true
+    },
+    "webhook_38": {
+      "type": "object",
+      "properties": {
+        "event_type": {
+          "$ref": "#/$defs/webhook_2"
+        }
+      },
+      "required": [
+        "event_type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_39": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/webhook_40"
+        },
+        "limit": {
+          "$ref": "#/$defs/webhook_42"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "webhook_40": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_41"
+        },
+        {
+          "$ref": "#/$defs/webhook_30"
+        }
+      ]
+    },
+    "webhook_41": {
+      "type": "null"
+    },
+    "webhook_42": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_43"
+        }
+      ]
+    },
+    "webhook_43": {
+      "type": "number"
+    },
+    "webhook_44": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "event_types": {
+          "$ref": "#/$defs/webhook_45"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "name": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_46"
+        },
+        "signing_secret_hint": {
+          "$ref": "#/$defs/webhook_47"
+        },
+        "updated_at": {
+          "$ref": "#/$defs/webhook_42"
+        },
+        "url": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "created_at",
+        "event_types",
+        "id",
+        "name",
+        "object",
+        "signing_secret_hint",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_45": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/webhook_30"
+      }
+    },
+    "webhook_46": {
+      "const": "webhook_endpoint"
+    },
+    "webhook_47": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_41"
+        },
+        {
+          "$ref": "#/$defs/webhook_30"
+        }
+      ]
+    },
+    "webhook_48": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "event_types": {
+          "$ref": "#/$defs/webhook_45"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "name": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_46"
+        },
+        "signing_secret": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "signing_secret_hint": {
+          "$ref": "#/$defs/webhook_47"
+        },
+        "updated_at": {
+          "$ref": "#/$defs/webhook_42"
+        },
+        "url": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "created_at",
+        "event_types",
+        "id",
+        "name",
+        "object",
+        "signing_secret",
+        "signing_secret_hint",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_49": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/webhook_50"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_51"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_50": {
+      "type": "boolean"
+    },
+    "webhook_51": {
+      "const": "webhook_endpoint.deleted"
+    },
+    "webhook_52": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/webhook_53"
+        },
+        "first_id": {
+          "$ref": "#/$defs/webhook_47"
+        },
+        "has_more": {
+          "$ref": "#/$defs/webhook_50"
+        },
+        "last_id": {
+          "$ref": "#/$defs/webhook_47"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_54"
+        }
+      },
+      "required": [
+        "data",
+        "first_id",
+        "has_more",
+        "last_id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_53": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/webhook_44"
+      }
+    },
+    "webhook_54": {
+      "const": "list"
+    },
+    "webhook_55": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/webhook_45"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_54"
+        }
+      },
+      "required": [
+        "data",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_56": {
+      "type": "object",
+      "properties": {
+        "event_type": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_57"
+        },
+        "status_code": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "success": {
+          "$ref": "#/$defs/webhook_37"
+        },
+        "webhook_endpoint_id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "event_type",
+        "object",
+        "status_code",
+        "success",
+        "webhook_endpoint_id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_57": {
+      "const": "webhook_endpoint.test"
+    },
+    "webhook_58": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_59"
+        },
+        {
+          "$ref": "#/$defs/webhook_62"
+        },
+        {
+          "$ref": "#/$defs/webhook_64"
+        },
+        {
+          "$ref": "#/$defs/webhook_66"
+        },
+        {
+          "$ref": "#/$defs/webhook_68"
+        },
+        {
+          "$ref": "#/$defs/webhook_75"
+        },
+        {
+          "$ref": "#/$defs/webhook_79"
+        },
+        {
+          "$ref": "#/$defs/webhook_81"
+        },
+        {
+          "$ref": "#/$defs/webhook_83"
+        },
+        {
+          "$ref": "#/$defs/webhook_85"
+        },
+        {
+          "$ref": "#/$defs/webhook_88"
+        },
+        {
+          "$ref": "#/$defs/webhook_90"
+        },
+        {
+          "$ref": "#/$defs/webhook_92"
+        },
+        {
+          "$ref": "#/$defs/webhook_94"
+        },
+        {
+          "$ref": "#/$defs/webhook_96"
+        },
+        {
+          "$ref": "#/$defs/webhook_98"
+        },
+        {
+          "$ref": "#/$defs/webhook_100"
+        },
+        {
+          "$ref": "#/$defs/webhook_102"
+        },
+        {
+          "$ref": "#/$defs/webhook_104"
+        },
+        {
+          "$ref": "#/$defs/webhook_106"
+        },
+        {
+          "$ref": "#/$defs/webhook_115"
+        },
+        {
+          "$ref": "#/$defs/webhook_121"
+        },
+        {
+          "$ref": "#/$defs/webhook_125"
+        },
+        {
+          "$ref": "#/$defs/webhook_127"
+        },
+        {
+          "$ref": "#/$defs/webhook_129"
+        },
+        {
+          "$ref": "#/$defs/webhook_131"
+        },
+        {
+          "$ref": "#/$defs/webhook_133"
+        },
+        {
+          "$ref": "#/$defs/webhook_135"
+        },
+        {
+          "$ref": "#/$defs/webhook_138"
+        },
+        {
+          "$ref": "#/$defs/webhook_141"
+        }
+      ]
+    },
+    "webhook_59": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_60"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_23"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_60": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_61": {
+      "const": "event"
+    },
+    "webhook_62": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_63"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_21"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_63": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_64": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_65"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_20"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_65": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_66": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_67"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_22"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_67": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_68": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_69"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_25"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_69": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "required_action": {
+          "$ref": "#/$defs/webhook_70"
+        }
+      },
+      "required": [
+        "id",
+        "required_action"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_70": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/webhook_71"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_71": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_72"
+        },
+        {
+          "$ref": "#/$defs/webhook_73"
+        },
+        {
+          "$ref": "#/$defs/webhook_74"
+        }
+      ]
+    },
+    "webhook_72": {
+      "const": "computer_use_approval_request"
+    },
+    "webhook_73": {
+      "const": "function_call"
+    },
+    "webhook_74": {
+      "const": "environment_connection"
+    },
+    "webhook_75": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_76"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_24"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_76": {
+      "type": "object",
+      "properties": {
+        "connect": {
+          "$ref": "#/$defs/webhook_77"
+        },
+        "environment_id": {
+          "$ref": "#/$defs/webhook_33"
+        },
+        "environment_type": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "environment_type",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_77": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_78"
+        }
+      ]
+    },
+    "webhook_78": {
+      "type": "object",
+      "properties": {
+        "remote_url": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "remote_url"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_79": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_80"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_28"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_80": {
+      "type": "object",
+      "properties": {
+        "environment_id": {
+          "$ref": "#/$defs/webhook_33"
+        },
+        "environment_type": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "environment_type",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_81": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_82"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_27"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_82": {
+      "type": "object",
+      "properties": {
+        "environment_id": {
+          "$ref": "#/$defs/webhook_33"
+        },
+        "environment_type": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "environment_type",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_83": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_84"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_26"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_84": {
+      "type": "object",
+      "properties": {
+        "environment_id": {
+          "$ref": "#/$defs/webhook_33"
+        },
+        "environment_type": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "environment_type",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_85": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_86"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_6"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_86": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_87": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_61"
+        }
+      ]
+    },
+    "webhook_88": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_89"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_3"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_89": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_90": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_91"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_5"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_91": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_92": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_93"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_4"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_93": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_94": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_95"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_13"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_95": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_96": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_97"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_12"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_97": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_98": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_99"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_11"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_99": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_100": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_101"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_16"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_101": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_102": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_103"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_15"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_103": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_104": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_105"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_14"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_105": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_106": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_107"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_114"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_107": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "sip_headers": {
+          "$ref": "#/$defs/webhook_108"
+        },
+        "sip_media_security": {
+          "$ref": "#/$defs/webhook_110"
+        }
+      },
+      "required": [
+        "session_id",
+        "sip_headers"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_108": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/webhook_109"
+      }
+    },
+    "webhook_109": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "value": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_110": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/webhook_111"
+        },
+        {
+          "$ref": "#/$defs/webhook_112"
+        },
+        {
+          "$ref": "#/$defs/webhook_113"
+        }
+      ]
+    },
+    "webhook_111": {
+      "const": "rtp"
+    },
+    "webhook_112": {
+      "const": "srtp"
+    },
+    "webhook_113": {
+      "type": "string"
+    },
+    "webhook_114": {
+      "const": "live.call.incoming"
+    },
+    "webhook_115": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_116"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_120"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_116": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "sip_headers": {
+          "$ref": "#/$defs/webhook_117"
+        },
+        "sip_media_security": {
+          "$ref": "#/$defs/webhook_110"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_119"
+        }
+      },
+      "required": [
+        "session_id",
+        "sip_headers",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_117": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/webhook_118"
+      }
+    },
+    "webhook_118": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "value": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_119": {
+      "const": "sip"
+    },
+    "webhook_120": {
+      "const": "live.transport.incoming"
+    },
+    "webhook_121": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_122"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_17"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_122": {
+      "type": "object",
+      "properties": {
+        "call_id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "sip_headers": {
+          "$ref": "#/$defs/webhook_123"
+        },
+        "sip_media_security": {
+          "$ref": "#/$defs/webhook_110"
+        }
+      },
+      "required": [
+        "call_id",
+        "sip_headers"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_123": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/webhook_124"
+      }
+    },
+    "webhook_124": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "value": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_125": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_126"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_9"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_126": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_127": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_128"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_7"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_128": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_129": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_130"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_8"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_130": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_131": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_132"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_87"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_10"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_132": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_133": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_134"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_29"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_134": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_135": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_136"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_137"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_136": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_137": {
+      "const": "safety.deactivation_issued"
+    },
+    "webhook_138": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_139"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_140"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_139": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_140": {
+      "const": "safety.org_alert.created"
+    },
+    "webhook_141": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/webhook_43"
+        },
+        "data": {
+          "$ref": "#/$defs/webhook_142"
+        },
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        },
+        "object": {
+          "$ref": "#/$defs/webhook_61"
+        },
+        "type": {
+          "$ref": "#/$defs/webhook_143"
+        }
+      },
+      "required": [
+        "created_at",
+        "data",
+        "id",
+        "object",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_142": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/webhook_30"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "webhook_143": {
+      "const": "safety.warning_issued"
+    },
+    "webhook_create": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/webhook_0"
+        },
+        {
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "url": {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^https://"
+            },
+            "event_types": {
+              "type": "array",
+              "minItems": 1
+            }
+          }
+        }
+      ]
+    },
+    "webhook_update": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/webhook_31"
+        },
+        {
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "url": {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^https://"
+            },
+            "event_types": {
+              "type": "array",
+              "minItems": 1
+            }
+          }
+        }
+      ]
+    },
+    "webhook_rotate": {
+      "$ref": "#/$defs/webhook_34"
+    },
+    "webhook_test": {
+      "$ref": "#/$defs/webhook_38"
+    },
+    "webhook_query": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "after": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "webhook_endpoint": {
+      "$ref": "#/$defs/webhook_44"
+    },
+    "webhook_with_secret": {
+      "$ref": "#/$defs/webhook_48"
+    },
+    "webhook_deleted": {
+      "$ref": "#/$defs/webhook_49"
+    },
+    "webhook_endpoint_list": {
+      "$ref": "#/$defs/webhook_52"
+    },
+    "webhook_event_types": {
+      "$ref": "#/$defs/webhook_55"
+    },
+    "webhook_test_result": {
+      "$ref": "#/$defs/webhook_56"
+    },
+    "webhook_event": {
+      "$ref": "#/$defs/webhook_58"
+    },
     "automation_0": {
       "anyOf": [
         {

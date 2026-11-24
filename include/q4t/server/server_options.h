@@ -38,6 +38,7 @@ struct ServerOptions {
   std::string
       client_policy_file;  // Private immutable gateway policy, optional.
   std::string access_program_policy_file;  // Optional native policy snapshot.
+  std::string webhook_policy_file;  // Optional outbound subscriptions.
   std::string file_input_policy_file;  // Optional trusted preparation policy.
   std::string mcp_policy_file;  // Optional trusted MCP routing/network policy.
   std::string web_policy_file;  // Optional native search sources/network policy.

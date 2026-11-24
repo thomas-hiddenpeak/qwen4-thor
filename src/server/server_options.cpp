@@ -208,6 +208,9 @@ Status ValidateServerOptions(const ServerOptions& options) {
     if (!model::ValidEmbeddingAssetDirectory(options.vad_model_dir))
       return Status::Fail("vad-model-dir must be an absolute asset path");
   }
+  if (options.webhook_policy_file.size() > 4096 ||
+      options.webhook_policy_file.find('\0') != std::string::npos)
+    return Status::Fail("invalid webhook-policy-file path");
   if (options.file_input_policy_file.size() > 4096 ||
       options.file_input_policy_file.find('\0') != std::string::npos)
     return Status::Fail("invalid file-input-policy-file path");
@@ -415,7 +418,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--session-cache-dir" && key != "--prefix-cache-dir" &&
         key != "--prefix-cache-checkpoints" && key != "--client-policy-file" &&
         key != "--access-program-policy-file" &&
-        key != "--file-input-policy-file" && key != "--mcp-policy-file" &&
+        key != "--webhook-policy-file" && key != "--file-input-policy-file" && key != "--mcp-policy-file" &&
         key != "--sip-trunks-file" && key != "--sip-trunks-sha256" &&
         key != "--live-worker-sha256" && key != "--web-policy-file" && key != "--served-model-name" &&
         key != "--model-alias" && key != "--object-store-dir")
@@ -476,6 +479,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.sip_trunks_sha256 = value;
     } else if (key == "--sip-trunks-file") {
       parsed.sip_trunks_file = value;
+    } else if (key == "--webhook-policy-file") {
+      parsed.webhook_policy_file = value;
     } else if (key == "--web-policy-file") {
       parsed.web_policy_file = value;
     } else if (key == "--mcp-policy-file") {

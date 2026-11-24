@@ -351,6 +351,9 @@ def current_surface(root):
         raise ValueError('review assistant thread dispatch')
     if 'ServeAssistantRun(fd, *objects_' not in dispatch:
         raise ValueError('review Assistant run routing')
+    if ('HandleWebhook(*objects_, access' not in dispatch or
+            'server::WebhookMethodAllowed(method, path)' not in native):
+        raise ValueError('review webhook management and native ingress routing')
     for path, methods in (('/v1/threads/runs', ('POST',)),
                           ('/v1/threads/{thread_id}/runs', ('GET','POST')),
                           ('/v1/threads/{thread_id}/runs/{run_id}', ('GET','POST')),
@@ -364,6 +367,11 @@ def current_surface(root):
                           ('/v1/threads/{thread_id}/messages/{message_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/assistants', ('GET', 'POST')),
                           ('/v1/assistants/{assistant_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/webhook_event_types', ('GET',)),
+                          ('/v1/webhook_endpoints', ('POST', 'GET')),
+                          ('/v1/webhook_endpoints/{webhook_endpoint_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/webhook_endpoints/{webhook_endpoint_id}/rotate_secret', ('POST',)),
+                          ('/v1/webhook_endpoints/{webhook_endpoint_id}/test', ('POST',)),
                           ('/v1/agents/automations', ('GET', 'POST')),
                           ('/v1/agents/automations/{automation_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/agents/automations/{automation_id}/pause', ('POST',)),
@@ -610,6 +618,8 @@ def current_surface(root):
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake",
                        root / "cmake/automation_types.h.in",
+                       root / "cmake/webhook_types.h.in",
+                       root / "src/server/contracts/openai_webhook_types_v1.json",
                        root / "cmake/container_types.h.in", root / "cmake/skill_types.h.in",
                        root / "tools/serve_responses/generate_item_types.mjs",
                        root / "cmake/RustRegex.cmake",

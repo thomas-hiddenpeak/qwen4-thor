@@ -494,6 +494,7 @@ class ChatServer {
   SipService sip_service_;
   ApplicationOwner<RealtimeTraceStore> realtime_traces_;
   RealtimeTraceStoreOptions realtime_trace_options_;
+  std::shared_ptr<const struct FileFetchOptions> webhook_network_;
   std::shared_ptr<const FileExpansionOptions> file_inputs_;
   std::string file_input_policy_sha256_;
   std::shared_ptr<const McpDeploymentPolicy> mcp_policy_;

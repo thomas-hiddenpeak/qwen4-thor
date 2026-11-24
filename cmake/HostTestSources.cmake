@@ -315,6 +315,9 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_webhook.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_transport.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_registry.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_keys.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_service.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/sip_child.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sip_owner_fixture.cpp
@@ -478,6 +481,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_definition_cipher.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_target.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_agent_automation_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_webhook_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_agent_cron_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_automation_route_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_session_turn.cpp

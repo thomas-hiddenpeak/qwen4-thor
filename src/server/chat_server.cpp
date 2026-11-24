@@ -7,6 +7,7 @@
 #include "chat_server_internal.h"
 #include "q4t/server/file_expansion.h"
 #include "q4t/server/file_input_policy.h"
+#include "q4t/server/webhook.h"
 #include "q4t/server/mcp_policy.h"
 #include "q4t/server/object_store_options.h"
 #include "cuda_memory_backend.h"
@@ -187,6 +188,15 @@ Status ChatServer::Start(const ServerOptions& opts) {
   mcp_tunnels_enabled_ = !tunnel_routes.empty();
   const auto tunnel_status = mcp_tunnels_->Configure(std::move(tunnel_routes));
   if (!tunnel_status) return tunnel_status;
+  webhook_network_.reset();
+  if (!opts.webhook_policy_file.empty()) {
+    auto network = std::make_shared<FileFetchOptions>();
+    if (LoadWebhookPolicy(opts.webhook_policy_file, network.get())) {
+      webhook_network_ = std::move(network);
+    } else {
+      std::fprintf(stderr, "q4t: webhook delivery policy unavailable\n");
+    }
+  }
   FileInputPolicy file_policy;
   if (!opts.file_input_policy_file.empty()) {
     const auto status =

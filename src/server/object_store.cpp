@@ -761,6 +761,8 @@ void ObjectStore::RecordAuxiliaryCleanupFailure() noexcept {
 std::string NewObjectId(ObjectKind kind) {
   auto prefix = Kind(kind);
   if (prefix.empty()) return {};
+  if (kind == ObjectKind::kWebhookEndpoint) prefix = "whe";
+  if (kind == ObjectKind::kWebhookEvent) prefix = "evt";
   if (kind == ObjectKind::kSkillVersion) prefix = "skillver";
   if (kind == ObjectKind::kContainer) prefix = "cntr";
   if (kind == ObjectKind::kContainerFile) prefix = "cfile";

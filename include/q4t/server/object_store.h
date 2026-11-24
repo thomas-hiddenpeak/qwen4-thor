@@ -46,7 +46,9 @@ enum class ObjectKind {
   kSkill,
   kSkillVersion,
   kAutomation,
-  kAutomationInvocation
+  kAutomationInvocation,
+  kWebhookEndpoint,
+  kWebhookEvent
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

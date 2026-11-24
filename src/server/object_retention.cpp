@@ -460,6 +460,15 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     inspector.AgentTools(data.GetArray("tools"));
   } else if (kind == "vault" && data.GetString("object") == "vault") {
     // The container metadata has no content or credential object edges.
+  } else if (kind == "webhook_endpoint") {
+    const auto* endpoint = data.Find("resource");
+    inspector.value.uncertain =
+        data.GetString("format") != "q4t.webhook.endpoint.v1" || !endpoint ||
+        endpoint->GetString("object") != "webhook_endpoint" ||
+        !endpoint->GetString("id").starts_with("whe_") ||
+        data.GetString("sealed_keys").empty();
+    // A subscription remains active until its owner deletes it.
+    inspector.value.active = !inspector.value.uncertain;
   } else if (kind == "automation" || kind == "invocation") {
     const auto* row = data.Find("resource");
     const auto status = row ? row->GetString("status") : "";

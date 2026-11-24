@@ -2894,6 +2894,78 @@
         "src/server/agent_automation_queue.cpp",
         "tests/server_agent_automation_test.cpp"
       ]
+    },
+    "DELETE /v1/webhook_endpoints/{webhook_endpoint_id}": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "GET /v1/webhook_endpoints": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "GET /v1/webhook_endpoints/{webhook_endpoint_id}": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "GET /v1/webhook_event_types": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "POST /v1/webhook_endpoints": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "POST /v1/webhook_endpoints/{webhook_endpoint_id}": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "POST /v1/webhook_endpoints/{webhook_endpoint_id}/rotate_secret": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "POST /v1/webhook_endpoints/{webhook_endpoint_id}/test": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3508,8 +3580,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "7c6c2040dea2aba6f02015566c75b17344348c4d2aa02dfd4563dfb050513d49",
-    "cmake/ChatProtocolIdentity.cmake": "34ce040de8c88e3270b4190c766eb1c9730e981a8207fc7e4e73653048121b47",
+    "CMakeLists.txt": "2cd0ba5da15fb173edd289c7fa2357287f76321cd2d72b6b5b941c52ed1cb7a6",
+    "cmake/ChatProtocolIdentity.cmake": "e103231ec4485a7f3280d627b85689cae0094135533b8e971987b3e158c32e31",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3596,7 +3668,7 @@
     "include/q4t/server/application_owner.h": "722cb383b3cbe48525c7444d852cac99d508679e7099ca9236aab50e8a38f87b",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "5232a69d3a0ea92c80c1c32ac038bb80ec99f8105cd93ef36c2f07b6384ec47c",
+    "include/q4t/server/application_routes.h": "e21e2c2968a679ea0762b853ba6477b2d746dcfe4f89b20cede686fc572b98c0",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3638,7 +3710,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "11af47b51e04c4def45d8d19c3857116433dae15e3cd0c83863f4df1fe7cbf1d",
+    "include/q4t/server/chat_server.h": "7aabce60aa33487a508a7d271845f42122491d68d8cab3cc4b6151a8c8180a47",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -3685,8 +3757,8 @@
     "include/q4t/server/files_http.h": "c4f99307a6846da191fdb00dd80141ad5efcf957eb1393aa82b85766d7104d32",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
-    "include/q4t/server/grammar_process.h": "4f19144867a36c73c9e07c58906ea6da5794fd5b1b17b35f367ba8b9c906f447",
-    "include/q4t/server/http_connection.h": "59ea223a3190fcee359d906b44050605e5558633654171464b7b67d681e02442",
+    "include/q4t/server/grammar_process.h": "5e3f0498408085cf750f070ae7adb242af273ae2ab01bc15982deb5a45a6b886",
+    "include/q4t/server/http_connection.h": "f21de5dde1e5a0152219a87b4fcffae6b2b38680e868f0415dafa2d73eabaf12",
     "include/q4t/server/http_framing.h": "689fd32f9bf2b042c8f8b59cebd92d70d55f7b950c1f475babfe736420765524",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
@@ -3745,7 +3817,7 @@
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "f5dd11a1415b894c8d0b0cd1b38bd04267a932662b7f05a7f84a50ae3061efe5",
-    "include/q4t/server/object_store.h": "b8eb4b00bc66ca2ad0fcef761542a2f9791aa8d07ae1be2f767acf84827f3af9",
+    "include/q4t/server/object_store.h": "dcf22bf99396480932ca57e8d410015b1f8464a1bc095c2440d5607786c659ed",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -3846,7 +3918,7 @@
     "include/q4t/server/separator_service.h": "2a6a435358440f3ea3edb4feb9f76b7826fa84f264e7a244387cdd8e27165c06",
     "include/q4t/server/sequence_admission.h": "ed25a8d14d1b09c9bc2d1f4a50b1ed31796c6024c0442e5777db7b2e44337d91",
     "include/q4t/server/serve_fault.h": "47db4bd8dc12f5713ef42c6c89aeee1151867991d17d9b8529d31b4a11123b3f",
-    "include/q4t/server/server_options.h": "1f1377992e96559222eda67a5362c82ab62f57351db5829a00fab4f63a7c7a88",
+    "include/q4t/server/server_options.h": "2dc27693ff684eb6f85383d14d290a4784547422625064d349c3f531cfee320f",
     "include/q4t/server/service_health.h": "6b95516f0c81386c469360e106b1abe544080c74f439a9525a0910c556f3490f",
     "include/q4t/server/session_cache.h": "3cc4370484238700780acac554442c6d14d0f958c5b179b715c46c32b145064c",
     "include/q4t/server/session_media.h": "7973093f19264f1860def6b2dc3259b451c242d721cc30ff0eca353f8b46a379",
@@ -3981,7 +4053,7 @@
     "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
     "src/audio/vad_chunks.cpp": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "1a7af87df6cf73ab8aee6bf1ce9ac348b8a57b87a1417a214f6574388e5f9226",
+    "src/main.cpp": "c491659443e259d3fbd56219cd619a5e9cc1df059af74897c2e8ba4175a97985",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "35f740f37bcb7fe5eb52f335e71f7d33d5ed498b470e8521acb89e5d0412a67f",
@@ -4108,7 +4180,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "3d7318c7f3721312adbab0b5927177da711d5c00244aca802ce596180def1672",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "193eecdc8484dbf37f8f86f4165bba2cd658b1e86205c7bb0678cde13df2e6bd",
+    "src/server/chat_http.cpp": "33b0d3e8a872ead9d242ee7079612545f9374da8db6018f7aeb851f94a843363",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -4133,7 +4205,7 @@
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
     "src/server/chat_separator_backend.cpp": "092770259109e29b5fc6c9c68310d3202116bd23ffe28f34375bdc0ddd3e4adf",
     "src/server/chat_separator_execution.cpp": "abde3a4315e87a79f6d33a9f89c5074e3e0fcda2454408d79295f46d7aa559dd",
-    "src/server/chat_server.cpp": "2547da62bb04c620f0324343e6ad3cb5edd30992f367d57a4fcf380784363c2a",
+    "src/server/chat_server.cpp": "101aa2b0a37a0895842534d03ffa665cbe9660fc39ca8485e1938ab0ddc7082a",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_speaker_backend.cpp": "c6bbd91640521f96d26051f8e2b5320dd756ce35b631ed367439b230945d906f",
     "src/server/chat_speaker_execution.cpp": "d53c92b11221302bae76287203569667ba770914d0f4dd103a0347f799c000a0",
@@ -4157,7 +4229,7 @@
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "7db68ca1e6e69fed6617f65517ae15f70d1ce694f9fb5de9dc8290d82f9971e5",
+    "src/server/client_request.cpp": "325c26894b4e6678e7cc0a0569a35d6da4ce6779ea1051c141a32802521ad226",
     "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/container_execution.cpp": "0929782c4e1d506a9f18bf06cea18fa0f8c3bae6715fced9b23c9f6ae6045db6",
@@ -4250,10 +4322,10 @@
     "src/server/files.cpp": "4ee20c1ad701b307f443f66c5ea7fc7966434e2c45fd43f7c60d0c4a8c732d5c",
     "src/server/files_http.cpp": "3b70b238e4e3cd9e185baa0fdedd45bfcd3d8773672ae448432d0af434573b0a",
     "src/server/finite_response.cpp": "ce920a476844972506719d688078a3256512024619611d9175cf8b3be38ca7bc",
-    "src/server/grammar_process.cpp": "2548bd70cc8b6d9623352ee9a9894af3803fbd2de25d419cd2eb1c9bf64e2be0",
+    "src/server/grammar_process.cpp": "67ddca7db2f6bcb0e2451c3775382dd63a87d3cc643b091c49a5d31a92622754",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "863880cd99565b563e40123b6b1c08c42bcc31b674e9d5490c7167d1fb30839f",
+    "src/server/http_request.cpp": "f53f5236e219385e39a1653b2e8b2826fa85c28d7f6e2e93d5b730985ea57f5c",
     "src/server/http_response.cpp": "6be2c277addba721d42b2dec79e3756707748765a027282ce471bc006c53ac58",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "bf02124a40904da26697af49b440701b37efd815c70d0be0ad4510c9169d065a",
@@ -4334,9 +4406,9 @@
     "src/server/native_python.cpp": "109858208f4f462a61ef7397d794484eaf2ef5fd97afc8555445af740fd6f0b8",
     "src/server/native_python.h": "ca242b04a6270b905db65dfb1f541b3ea98d283c92dfee9049e7a055c7ebe5b1",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "d24a8f7df35f350e23a2af72a9f4e10c52b2bc22199ad0c3d3a8d08d1c4566d8",
-    "src/server/object_retention.cpp": "665934f19dae03e33057cbcc0433368522e36827f8443910a1e1e450569a3de2",
-    "src/server/object_store.cpp": "d92a1ab5c09cd841223d008dd0b39de1b6deb61e2b3769f297882f928a89d0c9",
+    "src/server/object_protocol.h": "b5b8991c15c60ab2ed1de4865b21548c0d77668ac37f14d5096917f80f531ab2",
+    "src/server/object_retention.cpp": "ddc508764408ca11a3c4be5bde13b63c25f24d9206b6a6e382b48a9d859d84fc",
+    "src/server/object_store.cpp": "3414a35b0d33996c16cbf25e55309b230c3da18ee6f568cfa433bdb7f5c3be4a",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "675be8530047880b57644e3634deb128386ee3f7973ea98b9c3fa073beb8bd59",
     "src/server/output_constraints.cpp": "add0daef3ba87df074329f1ed554220023ab0db4211667f27ea723e23c4cacd9",
@@ -4430,7 +4502,7 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "fcde171c78c3708d3c89da93503bd74c9a5418b98fa112a33d1d29b93f038f9c",
-    "src/server/responses_item_shape.cpp": "7a33947f1de95fc77070eadfabd1b06cca7838ca39951edb139cf94fe9a1e47d",
+    "src/server/responses_item_shape.cpp": "6e0b11549698d751653e35afba5d1d68e4197954a9ed9f6dd76f8710c403461d",
     "src/server/responses_jobs.cpp": "9f9cbe52a2fabaa71550b2ebe6814637e45f1cacee2905690b9766ea20195ce3",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
@@ -4480,7 +4552,7 @@
     "src/server/schema_token_guard.h": "d5943fea23da3d9a36a3662bb1a80da8c75f45dd53cf577e3d1ddaf3b451cdb5",
     "src/server/separator_assets.cpp": "ef5c005d53b81cb9a5d513030c5bcb7a3e6a4253d3707464af5df5ab5c5b8464",
     "src/server/separator_service.cpp": "ab309ca909853d8deacb356efd666cc21c805025e5f8870c149ed0347233ae31",
-    "src/server/server_options.cpp": "e131faa000a478426ea400fe16886e1e9c90082cd742b19b17244dd0ff435be2",
+    "src/server/server_options.cpp": "7e5c68af80d8212c4d5160f659e8465ba8dcc6af49b68ab450731b0a61532c2a",
     "src/server/session_cache.cpp": "9d3d8b0b612fccd2b3e2bf418a3672b4c90736592da7cfc082d80d33b08d9e06",
     "src/server/session_state.cpp": "bc91ec91bb0f27e48ad45f7893f11c52b7b12b404bc6c90af7be22668ce01430",
     "src/server/sip_child.cpp": "6d7c84bc7b164e7a4483d16ee85bd1207fb7613ee4da08626845e6b0133baeb7",
@@ -4581,7 +4653,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "f0cb92067c3a6ca02ffeca4d1020ed30e9deee213c72992589753dd6f36f5822",
+    "src/service/ingress_main.cpp": "5240270aac39cdbc5d415850c2737ad938a8aa224dd6bd6956a6cfb250bb9604",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -4611,7 +4683,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "e111f5608b01038aaa8aeac84446b3af614dc65b70eaa86b14e5b29f4f76fb12",
+    "tools/serve_gateway/gateway.py": "a9d2bdccd535c3777d016eaa8bd4bee711116ecd7bcba15da64a38785935a273",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -4788,7 +4860,7 @@
     "tools/serve_recovery/version_registration.py": "8f127f8423fcba9a383232f596ed8e25239953725f092c0680acba9518cecede",
     "tools/serve_recovery/version_runtime.py": "2d3303bb16d919249dc7dedb11e5d4095f8df775a0ae3c2bba70bb1d1a655726",
     "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
-    "tools/serve_responses/generate_item_types.mjs": "1efde59bb09604feb90dcc5b7380bd444470ab63a271fcded27081701aa42a6b",
+    "tools/serve_responses/generate_item_types.mjs": "8a005235c5e61c55f693ade29155f2bb3cc855930f2a033c066e2d721f14abe1",
     "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
     "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
     "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
@@ -4824,7 +4896,14 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "cmake/webhook_types.h.in": "28e72ab4f25d7ca5b564c244e4db7d9c66668606e25535a2d24b4f944899c65a",
+    "include/q4t/server/webhook.h": "daf8e90e09d87a278b4530f7945cd11aa3813190e85b8531b2d0733fba7590a0",
+    "src/server/contracts/openai_webhook_types_v1.json": "eb26dfeed54d544ca1d820ab2d95b19c3ac811cef50a4f5746839b5b74e9f739",
+    "src/server/webhook_keys.cpp": "49e34361cab195c3a04d00e16dae78873f5cecad87f37f36c6ae2a6de504dc43",
+    "src/server/webhook_keys.h": "9ed339e37b724e307942378369cc6babb2262ccce1a968aeb23aeb5abf24f628",
+    "src/server/webhook_registry.cpp": "310cab65356601f6323934dad87f031314b70f7fba27c27556d8fbd886094ea0",
+    "src/server/webhook_transport.cpp": "fb38041f72dc509b62dc4ec1e4809217687d53809935a7a36f736fc806e56d31"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -8793,6 +8872,118 @@
         "src/server/agent_automation_http.cpp",
         "src/server/agent_automation_queue.cpp",
         "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "DELETE /v1/webhook_endpoints/{webhook_endpoint_id}": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "GET /v1/webhook_endpoints": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "GET /v1/webhook_endpoints/{webhook_endpoint_id}": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "GET /v1/webhook_event_types": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/webhook_endpoints": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/webhook_endpoints/{webhook_endpoint_id}": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/webhook_endpoints/{webhook_endpoint_id}/rotate_secret": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/webhook_endpoints/{webhook_endpoint_id}/test": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/webhook_event_types": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "POST /v1/webhook_endpoints": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "POST /v1/webhook_endpoints/{webhook_endpoint_id}": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "POST /v1/webhook_endpoints/{webhook_endpoint_id}/rotate_secret": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "POST /v1/webhook_endpoints/{webhook_endpoint_id}/test": {
+      "semantics": "管理当前客户的 Webhook 订阅、轮换签名密钥并向已配置订阅方投递测试事件。",
+      "boundary": "签名密钥仅在创建及轮换时返回，发送使用有独立上限的 HTTPS 工作进程。",
+      "evidence": [
+        "src/server/webhook_registry.cpp",
+        "src/server/webhook_transport.cpp",
+        "tests/server_webhook_test.cpp"
       ]
     }
   },
