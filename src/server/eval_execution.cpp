@@ -3,6 +3,7 @@
 #include <ctime>
 
 #include "eval_grading.h"
+#include "eval_model_grading.h"
 #include "eval_sampling.h"
 #include "q4t/server/binary_store.h"
 #include "q4t/server/request_json.h"
@@ -132,8 +133,8 @@ ObjectReply Finish(ObjectStore& objects, const StateAccess& access,
 }
 
 ObjectReply Score(const Json& criteria, const Json& row,
-                  const StateAccess& access, Json* results, Json* totals,
-                  bool* passed) {
+                  const StateAccess& access, const Json* model_results,
+                  Json* results, Json* totals, bool* passed) {
   size_t budget = kChatBodyBytes;
   size_t comparison_work = 8 * 1024 * 1024;
   if (!criteria.IsArray() || !totals->IsArray() ||
@@ -143,7 +144,12 @@ ObjectReply Score(const Json& criteria, const Json& row,
     const auto& grader = criteria.array[i];
     const auto type = grader.GetString("type");
     ObjectReply result;
-    if (type == "string_check")
+    if (ModelCriterion(grader)) {
+      const auto* grade =
+          model_results ? model_results->Find(std::to_string(i)) : nullptr;
+      if (!grade || !grade->IsObject()) return InvalidRecord();
+      result.value = *grade;
+    } else if (type == "string_check")
       result = GradeString(grader, row, &budget);
     else if (type == "python")
       result = GradePython(grader, row, access);
@@ -198,7 +204,10 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
   bool done = false;
   ObjectReply loaded;
   const auto source_type = source->GetString("type");
-  if (write.data.Has("pending_response")) {
+  const auto* grading_row = write.data.Find("grading_row");
+  if (grading_row) {
+    row = *grading_row;
+  } else if (write.data.Has("pending_response")) {
     const auto* saved = write.data.Find("pending_input");
     if (!saved) return InvalidRecord();
     row = *saved;
@@ -222,7 +231,7 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
   auto checked = ValidateRow(*schema, row);
   if (!checked.ok()) return Finish(objects, access, write, resource, checked);
   ObjectRequest consumed;
-  if (data_source->GetString("type") != "jsonl") {
+  if (!grading_row && data_source->GetString("type") != "jsonl") {
     if (!owner)
       return Error(503, "eval_sample_unavailable",
                    "Model sampling owner is unavailable");
@@ -238,27 +247,22 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
     if (sampled.http_status == 202) return sampled;
     const auto& sample = *row.Find("sample");
     Set(&resource, "model", *sample.Find("model"));
-    auto& per_model = Field(resource, "per_model_usage");
-    if (per_model.IsNull()) per_model = Array();
-    const auto name = sample.GetString("model");
-    auto used = std::find_if(
-        per_model.array.begin(), per_model.array.end(),
-        [&](const Json& v) { return v.GetString("model_name") == name; });
-    if (used == per_model.array.end()) {
-      per_model.array.push_back(Object({{"model_name", String(name)}}));
-      used = std::prev(per_model.array.end());
-    }
-    Set(&*used, "invocation_count",
-        Number(used->GetInt("invocation_count") + 1));
-    const auto& usage = *sample.Find("usage");
-    for (const auto* key : {"prompt_tokens", "completion_tokens",
-                            "total_tokens", "cached_tokens"})
-      Set(&*used, key, Number(used->GetInt(key) + usage.GetInt(key)));
+    RecordModelUsage(&resource, sample);
   }
+  auto graded = AdvanceModelGrade(objects, access, owner, write, resource, row,
+                                  &consumed);
+  if (graded.http_status == 413 && !graded.commit_unknown) {
+    auto previous = Update(ObjectKind::kEvalRun, access, record);
+    previous.expected_revision = write.expected_revision;
+    return Finish(objects, access, previous, *previous.data.Find("resource"),
+                  graded);
+  }
+  if (!graded.ok() || graded.http_status == 202) return graded;
   auto results = Array();
   bool passed = true;
-  auto scored = Score(*write.data.GetArray("criteria"), row, access, &results,
-                      &totals, &passed);
+  auto scored =
+      Score(*write.data.GetArray("criteria"), row, access,
+            write.data.Find("model_results"), &results, &totals, &passed);
   auto sample = Sample(row);
   if (!scored.ok())
     Set(&sample, "error",
@@ -297,6 +301,7 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
   Set(&write.data, "resource", std::move(resource));
   Set(&write.data, "row", Number(index + 1));
   Field(write.data, "output_ids").array.push_back(String(id));
+  ClearModelGrades(write.data);
   if (!consumed.id.empty()) ClearSampling(write.data);
   std::vector<ObjectRequest> writes{std::move(write), std::move(output)};
   if (!consumed.id.empty()) writes.push_back(std::move(consumed));

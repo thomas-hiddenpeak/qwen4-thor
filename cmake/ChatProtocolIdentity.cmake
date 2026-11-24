@@ -514,6 +514,8 @@ set(protocol_inputs
   src/server/eval_stored_inputs.cpp
   src/server/eval_similarity.cpp
   src/server/eval_execution.cpp
+  src/server/eval_model_grading.h
+  src/server/eval_model_grading.cpp
   src/server/eval_grading.cpp
   src/server/eval_grading.h
   src/server/evals.cpp
