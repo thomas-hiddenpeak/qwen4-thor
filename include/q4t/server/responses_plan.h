@@ -31,6 +31,7 @@ struct ResponsesEnvelope {
   // Execution-owned budget policy, never accepted from public JSON.
   bool native_tools_exhausted = false;
   bool managed_agent_tools = false;
+  bool session_automations = false;
   bool agent_time_awareness = false;  // Owned Agent settings for this step.
   // Authenticated, prepared content by call ID. Never accepted from public
   // request JSON or serialized as part of a Response item.

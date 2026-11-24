@@ -1,0 +1,189 @@
+{
+  "status": "PASS_HOSTED_SESSION_WAKEUP_NATIVE_TLS",
+  "candidate": {
+    "binary": "0376bcd2759c4040d9c41bd1961785b8e24d06b0dcfd968ea16ecde55dd32d5f",
+    "ingress": "f06eb62270ee8efa305cda7aa7ac6b60780ba790efdb1a545c6bf18861b9a06a",
+    "sdk_driver": "94a1160bd8e2b180a4a30d31b53c5e56afa57fe4568f1bcc78132b793483d061"
+  },
+  "protocol_sources_sha256": "c274852ad52acfb6bd0c8ead549aad45d775bac9121ef796e4383c6db8312f82",
+  "sdk": "7.47.0",
+  "scope": "authenticated creator session",
+  "first_turn": {
+    "id": "turn_6074b4abd23ccad78795c5d98ee5c165",
+    "answer": "468"
+  },
+  "wake_turn": {
+    "id": "turn_1fa1647c00c904c615afcb6a5d493b68",
+    "answer": "469"
+  },
+  "resource": {
+    "type": "once",
+    "id": "automation_2871caf4b1b4d406f97d8cc6e1b1d567",
+    "object": "agent.automation",
+    "created_at": 1795520724,
+    "metadata": {},
+    "status": "active",
+    "created_by": {
+      "type": "agent",
+      "session_id": "agent_session_d5db1e10408f81662711507fb9bc4350",
+      "tool_call_id": "call_resp_cd08fa48660efda4981872a87ca901a2_0"
+    },
+    "name": "Release follow-up",
+    "target": {
+      "type": "existing_session",
+      "session_id": "agent_session_d5db1e10408f81662711507fb9bc4350",
+      "instructions": "Return only the integer 469."
+    },
+    "run_at": 1795520740
+  },
+  "invocation": {
+    "object": "agent.automation.invocation",
+    "id": "invocation_490375d574be464abc5da2eb4c4975ec",
+    "automation_id": "automation_2871caf4b1b4d406f97d8cc6e1b1d567",
+    "created_at": 1795520740,
+    "source": {
+      "type": "automation",
+      "automation": {
+        "type": "once",
+        "id": "automation_2871caf4b1b4d406f97d8cc6e1b1d567",
+        "object": "agent.automation",
+        "created_at": 1795520724,
+        "metadata": {},
+        "status": "active",
+        "created_by": {
+          "type": "agent",
+          "session_id": "agent_session_d5db1e10408f81662711507fb9bc4350",
+          "tool_call_id": "call_resp_cd08fa48660efda4981872a87ca901a2_0"
+        },
+        "name": "Release follow-up",
+        "target": {
+          "type": "existing_session",
+          "session_id": "agent_session_d5db1e10408f81662711507fb9bc4350",
+          "instructions": "Return only the integer 469."
+        },
+        "run_at": 1795520740
+      }
+    },
+    "scheduled_at": 1795520740,
+    "status": "completed",
+    "skip_reason": null,
+    "session_id": "agent_session_d5db1e10408f81662711507fb9bc4350",
+    "error": null
+  },
+  "same_session": "agent_session_d5db1e10408f81662711507fb9bc4350",
+  "sse_events": 16,
+  "independent_chat": "42",
+  "cross_client": 404,
+  "dual_schema_objects": 11,
+  "cpu": {
+    "integration_and_regression": 22,
+    "prior_input_contract": 5
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 211,
+    "native_routes": 347,
+    "reviewed_source_anchors": 1317,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 58.514,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "nvml_samples": 57,
+  "preceding_failures": [
+    "Fixture used a relative store path when no output directory was supplied. The fixture now resolves it before starting the store.",
+    "Agent item.done excludes function results. The SDK now receives the committed function call as output and its receipt as input with null output_index.",
+    "The first GPU run exposed implicit strict schema normalization that required every action field, plus failure to start a second synchronous tool round after complete results. Both changed paths have regression tests."
+  ],
+  "release": {
+    "revision": 468,
+    "methods_in_release": 179,
+    "methods_in_candidate": 189,
+    "required_methods": 231
+  },
+  "remaining": [
+    "cross-process queued invocation and profile handoff",
+    "controlled primary/fallback release and recovery",
+    "other inference and application service obligations"
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-tool-business-02/plan.json",
+      "sha256": "f1a47e18b3038b70c22d022221b52d41be57876aa515d64cceece8259263f6a1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-tool-business-02/result.json",
+      "sha256": "5a2718903b119bae27d165e5d1bdf4863485b8b39abc827b46594b0188c6ada1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-tool-business-02/create/sdk-result.json",
+      "sha256": "9489afc7c32b801f98d0f38921fb0ac82edc312a29e57d3450197f07282aeb84"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-tool-business-02/create/run-wire.json",
+      "sha256": "456c9382a5daa0afeec4c3de2620b2b0764eccdb83fef3b56d2bf27df8e9ea90"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-tool-business-lease-02/exit.json",
+      "sha256": "1d907f3ba3504b2a65ab83f50d6490e47421f7bb6592e68f6f57011f79faed67"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-tool-business-lease-02/nvml-queries.jsonl",
+      "sha256": "e6f264cd305e1426f94ed86b58c3b26fc5c7734ef956688302a78cb870bb6ce1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/hosted-real-schema.json",
+      "sha256": "b8fd8bfd5faddd44406fe08a3aff17d3d36334e1467f8b6a2b89a98bd167828e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/hosted-inventory-03.json",
+      "sha256": "4a33302953417f96b581a404e4bc8de7d62b7c4abc4cade6e45c4b5386161fd2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/hosted-required.txt",
+      "sha256": "cb5dee341b1a9f08c95f98869b2e56da0e3403eebe148cbb8a9b0167387c3231"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/hosted-cpu-04.log",
+      "sha256": "fdf76aa1de222276cb2f0088371d9def1ae9a2dd9fc054c72df942b31bd36410"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/hosted-protected-required.txt",
+      "sha256": "470af2352cacb547a1736034387cd599e958cc8ab398b23554d374f6feb6ea38"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/hosted-protected-cpu.log",
+      "sha256": "ae3958656a285fc640d1d203be3051387e399d7990ac2bd9e883166fd8e785bb"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/hosted-cpu-01.log",
+      "sha256": "1e1c4c874c6e21f9d895846d66474eb55a8cbc9c76d2f78d7c9c607f5c7aabc3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-dev/hosted-cpu-02.log",
+      "sha256": "5cf8d9016f0b2cd38ae29982020077120f29d7d13b116e89ece54e2a75cd1223"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-tool-business-01/result.json",
+      "sha256": "2e8f7adaa46bdbc1e28bdf9dab0b24d2abee21e2917c4e195efc0f51794b6d45"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-tool-business-01/create/sdk.stderr",
+      "sha256": "b8ea6c474d368a715d96d0fa79beec39d312f831ec9e34c5577ef3c342233a5b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-tool-business-lease-01/exit.json",
+      "sha256": "6b72b93126bc996277e175057abc916f80bb098a52ab65444c4e48a5bae23c61"
+    }
+  ]
+}

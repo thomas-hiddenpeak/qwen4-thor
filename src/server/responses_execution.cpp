@@ -206,7 +206,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   }
   bytes += tool_search_argument_bytes_;
   bytes += program_argument_bytes_;
-  bytes += agent_argument_bytes_ + (agents_ ? agents_->StoredText() : 0);
+  bytes += automation_argument_bytes_ + agent_argument_bytes_ +
+           (agents_ ? agents_->StoredText() : 0);
   bytes += mcp_argument_bytes_;
   for (const auto& program : programs_) {
     for (const auto* value : {&program.program, &program.tools,
@@ -362,6 +363,7 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created) {
   envelope_.managed_agent_tools = !agent_session_id_.empty();
+  envelope_.session_automations = session_automations_;
   if (const auto* agents = envelope_.request.Find("multi_agent");
       agents && agents->GetBool("enabled")) {
     // Beyond one response's item capacity every greater requested slot limit

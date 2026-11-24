@@ -176,9 +176,9 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
   *next = {};
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      PendingToolSearch() || PendingPrograms() || PendingMcp() ||
-      PendingWebSearch() || PendingPython() || output_used < 0 ||
-      output_used >= limit)
+      PendingAutomations() || PendingToolSearch() || PendingPrograms() ||
+      PendingMcp() || PendingWebSearch() || PendingPython() ||
+      output_used < 0 || output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid tool continuation");
   auto envelope = envelope_;
   Set(&envelope.options, "max_output_tokens", Number(limit - output_used));
@@ -267,8 +267,9 @@ ObjectReply ResponsesExecution::ContinueAsyncTools(
   wire->clear();
   const auto limit = envelope_.options.GetInt("max_output_tokens");
   if (!begun_ || plan_.finished || commit_unknown_ || PendingFileSearch() ||
-      PendingToolSearch() || PendingPrograms() || PendingWebSearch() ||
-      PendingPython() || output_used < 0 || output_used >= limit)
+      PendingAutomations() || PendingToolSearch() || PendingPrograms() ||
+      PendingWebSearch() || PendingPython() || output_used < 0 ||
+      output_used >= limit)
     return Error(500, "response_state_invalid", "Invalid async continuation");
   if (async_continued_) return {};
   // Completed public dispatch items can still await synchronous client work.

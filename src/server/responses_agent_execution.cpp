@@ -1,3 +1,4 @@
+#include "agent_automation_tool.h"
 #include "q4t/server/responses_execution.h"
 
 #include <algorithm>
@@ -18,7 +19,8 @@ Status ResponsesOutput::AppendAgentItem(const io::Json& item,
   wire->clear();
   const auto* agent = item.Find("agent");
   const auto type = item.GetString("type");
-  const bool managed = agent_detail::IsManagedAgentOperation(item);
+  const bool managed = agent_detail::IsManagedAgentOperation(item) ||
+                       automation_detail::IsToolItem(item);
   if (!started_ || terminal_ ||
       response_.GetString("status") != "in_progress" ||
       Items().array.size() >= kMaxItems ||
@@ -74,27 +76,36 @@ Status ResponsesOutput::AppendAgentItem(const io::Json& item,
 Status ResponsesExecution::AppendAgent(const ResponseDelta& delta,
                                        bool* handled, std::string* wire) {
   *handled = false;
-  if (!agents_ || delta.kind != ResponseDelta::Kind::kTool) return {};
+  if (delta.kind != ResponseDelta::Kind::kTool) return {};
   const auto& call = delta.call;
-  auto found = agent_pending_.find(call.index);
-  if (delta.tool_start &&
-      ResponsesAgentTree::ActionName(call.name, !agent_session_id_.empty())
-          .empty())
-    return found == agent_pending_.end()
-               ? Status{}
-               : Status::Fail("Agent call changed identity");
-  if (!delta.tool_start && found == agent_pending_.end()) return {};
+  const bool wakeup =
+      delta.tool_start
+          ? session_automations_ && call.name == automation_detail::kToolName
+          : automation_pending_.contains(call.index);
+  if (delta.tool_start && (agent_pending_.contains(call.index) ||
+                           automation_pending_.contains(call.index)))
+    return Status::Fail("Duplicate hosted agent call index");
+  auto& pending = wakeup ? automation_pending_ : agent_pending_;
+  auto& bytes = wakeup ? automation_argument_bytes_ : agent_argument_bytes_;
+  auto found = pending.find(call.index);
+  if (delta.tool_start && !wakeup &&
+      (!agents_ ||
+       ResponsesAgentTree::ActionName(call.name, !agent_session_id_.empty())
+           .empty()))
+    return {};
+  if (!delta.tool_start && found == pending.end()) return {};
   *handled = true;
   wire->clear();
-  if (call.custom || call.arguments.size() >
-                         ResponsesOutput::kStorageLimit - agent_argument_bytes_)
+  if (call.custom ||
+      call.arguments.size() > ResponsesOutput::kStorageLimit - bytes)
     return Status::Fail("Agent call exceeds argument capacity");
   if (delta.tool_start) {
-    if (found != agent_pending_.end() || call.id.empty() ||
+    if (found != pending.end() || call.id.empty() ||
         call.arguments.size() > ChatResponseParser::kMaxToolBytes ||
-        agent_pending_.size() >= kMaxNativeToolCalls)
+        automation_pending_.size() + agent_pending_.size() >=
+            kMaxNativeToolCalls)
       return Status::Fail("Invalid agent call");
-    agent_pending_.emplace(call.index, call);
+    pending.emplace(call.index, call);
   } else {
     auto& original = found->second;
     if ((!call.id.empty() && call.id != original.id) ||
@@ -104,7 +115,7 @@ Status ResponsesExecution::AppendAgent(const ResponseDelta& delta,
       return Status::Fail("Agent call changed identity or exceeded capacity");
     original.arguments += call.arguments;
   }
-  agent_argument_bytes_ += call.arguments.size();
+  bytes += call.arguments.size();
   return {};
 }
 

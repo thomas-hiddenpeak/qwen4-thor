@@ -469,6 +469,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_cron.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_clock.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_http.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_tool.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_dispatcher.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_delivery.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_automation_queue.cpp
@@ -664,6 +665,7 @@ set(Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_file_search.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_agent_tree.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_agent_execution.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_automation_execution.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_search.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_context.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../src/server/responses_web_output.cpp

@@ -576,6 +576,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/agent_cron.cpp
   src/server/agent_automation_clock.cpp
   src/server/agent_automation_http.cpp
+  src/server/agent_automation_tool.cpp
   src/server/agent_automation_dispatcher.cpp
   src/server/agent_automation_delivery.cpp
   src/server/agent_automation_queue.cpp
@@ -763,6 +764,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
     src/server/responses_file_search.cpp
     src/server/responses_agent_tree.cpp
     src/server/responses_agent_execution.cpp
+    src/server/responses_automation_execution.cpp
     src/server/responses_web_search.cpp
     src/server/responses_web_context.cpp
     src/server/responses_web_output.cpp

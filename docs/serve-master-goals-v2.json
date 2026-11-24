@@ -2729,7 +2729,8 @@
         "long_run_hours": 0
       },
       "automation_development": "evidence/serve-agent-automations-20261124/development.json",
-      "automation_business": "evidence/serve-agent-automations-20261124/business.json"
+      "automation_business": "evidence/serve-agent-automations-20261124/business.json",
+      "automation_session_tool": "evidence/serve-agent-automations-20261124/session-tool.json"
     },
     {
       "id": "A09",
@@ -6230,7 +6231,8 @@
         "long_run_hours": 0
       },
       "automation_development": "evidence/serve-agent-automations-20261124/development.json",
-      "automation_business": "evidence/serve-agent-automations-20261124/business.json"
+      "automation_business": "evidence/serve-agent-automations-20261124/business.json",
+      "automation_session_tool": "evidence/serve-agent-automations-20261124/session-tool.json"
     },
     {
       "id": "A12",
@@ -9533,7 +9535,8 @@
         "long_run_hours": 0
       },
       "automation_development": "evidence/serve-agent-automations-20261124/development.json",
-      "automation_business": "evidence/serve-agent-automations-20261124/business.json"
+      "automation_business": "evidence/serve-agent-automations-20261124/business.json",
+      "automation_session_tool": "evidence/serve-agent-automations-20261124/session-tool.json"
     },
     {
       "id": "Q02",
@@ -11091,7 +11094,7 @@
       }
     }
   ],
-  "next_task": "Qualify automation delivery across process and capacity changes, implement the model-facing automation tools, and continue the remaining inference, application and recovery tasks.",
+  "next_task": "Qualify the queued invocation across process and capacity changes, deliver the session automation tool and existing developer methods in the reversible package, and continue all remaining inference, application service and recovery tasks.",
   "next": "验证自动化投递跨进程与配置接手，接入模型使用的自动化工具并继续剩余推理、应用及恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
