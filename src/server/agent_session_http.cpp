@@ -9,6 +9,7 @@
 #include "agent_artifact_internal.h"
 #include "agent_environment_bindings.h"
 #include "agent_subagent_internal.h"
+#include "agent_environment_journal.h"
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
 #include "q4t/server/conversation_state.h"
@@ -66,7 +67,11 @@ ObjectReply DeleteSession(ObjectStore& objects, const std::string& id,
       const auto status = resource.GetString("status");
       const bool last_session = peers.empty();
       if (status == "connected") {
-        if (last_session) Set(&resource, "status", String("disconnected"));
+        if (last_session) {
+          Set(&resource, "status", String("disconnected"));
+          environment_detail::AppendEnvironmentStatus(&release.data,
+                                                      "disconnected");
+        }
         Set(&release.data, "last_activity_at", Number(std::time(nullptr)));
       }
       release.ttl_seconds = status == "expired" && last_session ? 86400 : 0;

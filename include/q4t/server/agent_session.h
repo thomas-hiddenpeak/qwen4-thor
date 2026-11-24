@@ -91,6 +91,10 @@ struct AgentEventCursor {
   // cancellation can still produce a logical terminal for this step.
   bool waiting = false;
   bool created_seen = false;
+  // The GET subscription starts at the committed workspace sequence. Its
+  // cursor survives object-worker recovery within the HTTP stream.
+  std::string environment_id;
+  int64_t environment_sequence = 0;
   size_t step = 0;
   size_t sequence = 0;
   std::set<std::string> emitted_child_claims;

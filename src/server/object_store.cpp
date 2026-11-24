@@ -465,8 +465,9 @@ ObjectReply ObjectStore::Execute(const ObjectRequest& request,
   const auto& options = state_->options;
   const auto kind = Kind(request.kind),
              operation = Operation(request.operation);
-  if (!DomainKind(options.domain, request.kind) ||
-      request.scope.empty() || request.scope.size() > 256 || kind.empty() ||
+  if (!DomainKind(options.domain, request.kind) || request.scope.empty() ||
+      request.scope.size() > 256 || kind.empty() ||
+      (operation == "environment_events" && kind != "environment") ||
       operation.empty() || request.expected_revision < 0 ||
       request.expected_revision >= (1LL << 53) - 1 || request.created_at < 0 ||
       request.created_at > (1LL << 53) - 1 || request.expires_at < -1 ||

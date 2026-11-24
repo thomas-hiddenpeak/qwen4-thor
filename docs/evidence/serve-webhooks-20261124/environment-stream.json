@@ -1,0 +1,71 @@
+{
+  "status": "ACCEPT_HOSTED_SESSION_SUSPEND_AND_RESUME_STREAM",
+  "issued": 472,
+  "device_runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 91.412,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "device_binary": "386184c9aa92688a2ec56e59e6e8deb96f4d61751240190f438385be527c0425",
+  "sdk": "7.47.0",
+  "cpu_cases": 16,
+  "official_events": 4,
+  "unique_event_ids": 4,
+  "actor_turn": "turn_7b20ec677a9d2692c74e1c7fd0e015de",
+  "sibling_turn_ids_exposed": 0,
+  "sibling_turns": 0,
+  "independent_chat": "42",
+  "actor_answer": "42",
+  "peer": 404,
+  "clock_fixture": "The preceding activity time is advanced in a native authenticated store; both live SDK connections were open before the production deadline.",
+  "original_cpu_failure": "Old hosted creation expectation required exactly created/idle. The test now checks created, connected with correct IDs, then idle.",
+  "remaining": [
+    "Pending, ready and failed provisioning; further execution backends; candidate qualification/publication and remaining serve plan."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-stream-lease-01/exit.json",
+      "sha256": "aad57e33864f7654ea570cfe342281edec5a677278f5a1f478c5b715397ed156"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-stream-business-01/plan.json",
+      "sha256": "80d0f9c880cc4c3f3cb87a4fbe64520748ece118cd87c419cac4291bb547ccc7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-stream-business-01/result.json",
+      "sha256": "89da931207aa452ffd6c7edd34faac0e069fa8b0bb63f1644eb0e744b1a26c1c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-stream-business-01/create/sdk-result.json",
+      "sha256": "e1b5a06ab7150ed169d1ff3ce2c6ada594c2811546a91edfa8918f5fb5aafeb5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-stream-business-01/create/run-wire.json",
+      "sha256": "823949536f0e7b90373a62575c6ee3f059e8fd997cf855f6a0453edd2bfe520b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-stream-cpu-02.log",
+      "sha256": "9b37a642f764aaf6c6c8e7adf79dc27843ffe2dd104b7d42c38af484015eb1ea"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-stream-tool-01.log",
+      "sha256": "14fd322e8ddf367f95f75d75eb82e1c80c3874fdbef5486bd712cc4c799b4585"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-stream-cpu-01.log",
+      "sha256": "2c3855c33d7332fafb285c765ddaac543a7fdfbfe5605526d9da022430b5a630"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-stream-inventory-01.json",
+      "sha256": "f4f081ad692539a2577dcd49f0c9276080fd856bc9e98aa9e1d66ca0bb0c0081"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment_stream_business.py",
+      "sha256": "3e6036058dc9ef73b825f0a64e619f82d66d4e064f3f6b594bc094fb70e72002"
+    }
+  ]
+}

@@ -22,6 +22,7 @@
 #include <utility>
 #include <vector>
 
+#include "agent_environment_journal.h"
 #include "object_protocol.h"
 #include "q4t/server/application_payload.h"
 #include "q4t/server/grammar_process.h"
@@ -172,6 +173,7 @@ struct Metadata {
   bool agent_started = false;
   bool webhook_deferred = false;
   int64_t environment_wake = 0, agent_finished = 0;
+  int64_t environment_sequence = 0;
   std::string last_response{};
   bool waiting_tool = false;
   int64_t cancelled_at = 0;
@@ -188,6 +190,7 @@ void IndexWebhookState(Metadata* metadata, const Json& data) {
     if (metadata->kind == "environment") {
       const auto* resource = data.Find("resource");
       if (!resource || resource->GetString("type") != "openai_hosted") return;
+      metadata->environment_sequence = data.GetInt("environment_sequence");
       const auto status = resource->GetString("status");
       if (status == "ready") {
         metadata->environment_wake = data.GetInt("warm_until");
@@ -391,6 +394,7 @@ class DiskStore {
       // The workspace is already durable and its encrypted definition is
       // authenticated under its owner and environment ID on resume.
       Set(&resource, "status", String("suspended"));
+      environment_detail::AppendEnvironmentStatus(&data, "suspended");
       Set(&data, "suspended_at", Number(idle));
       Set(&data, "checkpoint_until",
           Number(idle + environment_detail::kCheckpointSeconds));
@@ -407,7 +411,11 @@ class DiskStore {
       const auto* members = data.GetArray("attached_sessions");
       if (members && members->array.empty())
         expires = now + std::min<int64_t>(86400, options_.max_ttl_seconds);
-      data = Object({{"resource", std::move(receipt)},
+      environment_detail::AppendEnvironmentStatus(&data, "expired");
+      data = Object({{"environment_sequence",
+                      Number(data.GetInt("environment_sequence"))},
+                     {"environment_events", Field(data, "environment_events")},
+                     {"resource", std::move(receipt)},
                      {"warm_until", Number(data.GetInt("warm_until"))},
                      {"expired_at", Number(data.GetInt("checkpoint_until"))},
                      {"vault_ids", Array()},
@@ -480,6 +488,40 @@ class DiskStore {
     const auto found = records_.find(name);
     if (found == records_.end())
       return Error(404, "object_not_found", "Object not found");
+    if (operation == "environment_events") {
+      if (kind != "environment")
+        return Error(400, "invalid_object_request", "Invalid event source");
+      const auto* filter = request.Find("data");
+      const auto since = filter ? filter->GetInt("after_sequence", -1) : -1;
+      const auto latest = found->second.environment_sequence;
+      if (since > latest || since < -1)
+        return Error(409, "environment_event_cursor_invalid",
+                     "Invalid environment event boundary");
+      ObjectReply result;
+      result.value =
+          Object({{"sequence", Number(latest)}, {"events", Array()}});
+      // The usual live poll answers entirely from the owner-scoped index.
+      if (since == -1 || since == latest) return result;
+      Json stored;
+      if (!ReadKnown(name, found->second, &stored)) return IoError();
+      const auto* rows = Field(stored, "data").GetArray("environment_events");
+      if (!rows || rows->array.empty() ||
+          rows->array.size() > environment_detail::kEnvironmentEventLimit)
+        return IoError();
+      if (since + 1 < rows->array.front().GetInt("sequence"))
+        return Error(409, "environment_event_cursor_expired",
+                     "Reconnect to the current environment state");
+      auto& events = Field(result.value, "events").array;
+      int64_t next = since + 1;
+      for (const auto& event : rows->array) {
+        const auto n = event.GetInt("sequence");
+        if (n <= since) continue;
+        if (n != next++) return IoError();
+        events.push_back(event);
+      }
+      if (next - 1 != latest) return IoError();
+      return result;
+    }
     Json record;
     if (!ReadKnown(name, found->second, &record)) return IoError();
     ObjectReply result;

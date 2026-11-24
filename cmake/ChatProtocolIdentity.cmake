@@ -755,6 +755,7 @@ set(protocol_inputs
   src/server/agent_artifact_capture.cpp
   src/server/agent_artifact_http.cpp
   src/server/agent_environment_bindings.h
+  src/server/agent_environment_journal.h
   src/server/agent_environment_internal.h
   src/server/agent_artifact_internal.h
   src/server/vault_credential_internal.h

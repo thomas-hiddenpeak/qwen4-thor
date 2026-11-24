@@ -40,6 +40,39 @@ bool Emit(Json* events, const std::string& prefix, const char* type,
   return true;
 }
 
+bool EmitEnvironment(Json* events, const std::string& session,
+                     const std::string& env, const std::string& status,
+                     const std::string& boundary, const std::string& turn) {
+  auto resource = Object({{"id", String(env)},
+                          {"type", String("openai_hosted")},
+                          {"status", String(status)},
+                          {"error", Json{}}});
+  const auto type = "agent.session.environment." + status;
+  return Emit(events, session + "/" + env + "/" + boundary, type.c_str(),
+              Object({{"session_id", String(session)},
+                      {"turn_id", turn.empty() ? Json{} : String(turn)},
+                      {"environment", std::move(resource)}}));
+}
+
+bool EmitCreatedEnvironment(Json* events, const Json& session) {
+  const auto* env = session.Find("environment");
+  if (!env || env->GetString("type") != "openai_hosted") return true;
+  return EmitEnvironment(events, session.GetString("id"), env->GetString("id"),
+                         "connected", "attachment", "");
+}
+
+ObjectReply ReadEnvironmentEvents(ObjectStore& objects,
+                                  const StateAccess& access,
+                                  const std::string& id, int64_t after) {
+  ObjectRequest request;
+  request.kind = ObjectKind::kEnvironment;
+  request.operation = ObjectOperation::kEnvironmentEvents;
+  request.scope = access.scope;
+  request.id = id;
+  request.data = Object({{"after_sequence", Number(after)}});
+  return objects.Execute(request, access.deadline, access.cancelled);
+}
+
 ObjectReply EmitChildEvents(const std::vector<Json>& rows,
                             const std::string& prefix, Json* events,
                             std::set<std::string>* delivered = nullptr) {
@@ -133,7 +166,8 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
     auto resource = Object({{"session", snapshot.session}});
     if (type == "response.created") {
       if (!cursor.step && !cursor.created_seen &&
-          !Emit(events, prefix, "agent.session.created", resource))
+          (!Emit(events, prefix, "agent.session.created", resource) ||
+           !EmitCreatedEnvironment(events, snapshot.session)))
         return Invalid();
       if (first && !Emit(events, prefix, "agent.session.turn.created", loc))
         return Invalid();
@@ -298,6 +332,15 @@ ObjectReply OpenAgentEventSubscription(ObjectStore& objects,
     return Invalid();
   AgentEventCursor next;
   next.created_seen = true;
+  if (data->GetBool("shared_environment")) {
+    const auto* env = session->Find("environment");
+    if (!env || env->GetString("type") != "openai_hosted") return Invalid();
+    next.environment_id = env->GetString("id");
+    auto boundary =
+        ReadEnvironmentEvents(objects, access, next.environment_id, -1);
+    if (!boundary.ok()) return boundary;
+    next.environment_sequence = boundary.value.GetInt("sequence");
+  }
   for (const auto& link : links->array) {
     auto record = ResponsesState(objects).ReadRecord(
         link.GetString("response_id"), access);
@@ -362,9 +405,27 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
   if (!session || session->GetString("id") != id || !links ||
       cursor->step > links->array.size())
     return Invalid();
+  if (!cursor->environment_id.empty()) {
+    auto changes = ReadEnvironmentEvents(
+        objects, access, cursor->environment_id, cursor->environment_sequence);
+    if (!changes.ok()) return changes;
+    const auto* rows = changes.value.GetArray("events");
+    if (!rows) return Invalid();
+    for (const auto& row : rows->array) {
+      const auto status = row.GetString("status");
+      const auto turn =
+          row.GetString("session_id") == id ? row.GetString("turn_id") : "";
+      if (!EmitEnvironment(events, id, cursor->environment_id, status,
+                           std::to_string(row.GetInt("sequence")), turn))
+        return Invalid();
+    }
+    cursor->environment_sequence = changes.value.GetInt("sequence");
+    if (!rows->array.empty()) return {};
+  }
   if (data->GetBool("created_idle") && !cursor->created_seen) {
     const auto at_creation = Object({{"session", *session}});
     if (!Emit(events, id, "agent.session.created", at_creation) ||
+        !EmitCreatedEnvironment(events, *session) ||
         !Emit(events, id, "agent.session.idle", at_creation))
       return Invalid();
     cursor->created_seen = true;

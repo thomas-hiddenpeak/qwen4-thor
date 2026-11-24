@@ -17,7 +17,9 @@ ObjectReply PrepareAttachment(ObjectStore& objects, const StateAccess& access,
 ObjectReply PrepareWorkspaceActivity(ObjectStore& objects,
                                      const StateAccess& access,
                                      const io::Json& stored,
-                                     ObjectRequest* change);
+                                     ObjectRequest* change,
+                                     const std::string& session = {},
+                                     const std::string& turn = {});
 ObjectReply RefreshWorkspaceFiles(ObjectStore& objects,
                                   const StateAccess& access,
                                   const io::Json& record, io::Json* session);

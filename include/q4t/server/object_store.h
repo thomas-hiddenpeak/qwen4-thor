@@ -50,7 +50,14 @@ enum class ObjectKind {
   kWebhookEndpoint,
   kWebhookEvent
 };
-enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
+enum class ObjectOperation {
+  kGet,
+  kPut,
+  kErase,
+  kList,
+  kHealth,
+  kEnvironmentEvents
+};
 
 enum class ObjectStoreDomain { kApplication, kTracing };
 
