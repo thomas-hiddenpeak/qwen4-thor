@@ -34,6 +34,10 @@ class VectorStores {
                      const io::Json& request);
   ObjectReply Erase(const BinaryAccess& access, const std::string& id);
   ObjectReply List(const BinaryAccess& access, ObjectRequest page);
+  // Publish the parent update and all newly referenced files in one commit.
+  ObjectReply AttachForThread(const BinaryAccess& access, const std::string& id,
+                              const std::vector<std::string>& file_ids,
+                              const ObjectRequest& thread);
   ObjectReply Attach(const BinaryAccess& access, const std::string& id,
                      const io::Json& request);
   ObjectReply RetrieveFile(const BinaryAccess& access, const std::string& id,

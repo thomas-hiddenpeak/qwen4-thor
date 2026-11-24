@@ -44,6 +44,34 @@ ObjectReply VectorStores::Attach(const BinaryAccess& access,
   }
   return Error(409, "object_revision_conflict", "Vector store kept changing");
 }
+ObjectReply VectorStores::AttachForThread(
+    const BinaryAccess& access, const std::string& id,
+    const std::vector<std::string>& file_ids, const ObjectRequest& thread) {
+  auto root = Read(access, id, true);
+  if (!root.ok()) return root;
+  auto data = *root.value.Find("data");
+  const auto now = std::time(nullptr);
+  std::vector<ObjectRequest> mutations;
+  for (const auto& file_id : file_ids) {
+    if (Edge(data, file_id)) continue;
+    auto& members = Field(data, "members");
+    if (members.array.size() >= kVectorStoreFiles)
+      return Error(409, "vector_store_capacity", "Vector store file limit reached");
+    Json child, edge;
+    auto prepared = PrepareMember(objects_, access, id,
+                                  Object({{"file_id", String(file_id)}}),
+                                  now, &child, &edge);
+    if (!prepared.ok()) return prepared;
+    auto write = Write(access, ObjectKind::kVectorStoreFile,
+                       edge.GetString("id"), 0, std::move(child));
+    write.created_at = now;
+    mutations.push_back(std::move(write));
+    members.array.push_back(std::move(edge));
+  }
+  mutations.push_back(thread);
+  return Publish(access, root.value, std::move(data), mutations);
+}
+
 ObjectReply VectorStores::LoadRecord(const BinaryAccess& access,
                                    const std::string& id,
                                    const std::string& file_id) {

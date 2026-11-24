@@ -729,7 +729,10 @@ set(protocol_inputs
   src/server/contracts/openai_assistant_types_v1.json
   cmake/assistant_types.h.in
   include/q4t/server/assistant_registry.h
+  src/server/assistant_threads_internal.h
   src/server/assistant_registry.cpp
+  src/server/assistant_threads.cpp
+  src/server/assistant_messages.cpp
   src/server/contracts/openai_agent_registration_types_v1.json
   cmake/agent_registration_types.h.in
   src/server/contracts/openai_agent_session_types_v1.json

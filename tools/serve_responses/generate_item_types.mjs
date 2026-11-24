@@ -31,6 +31,8 @@ const realtimeCalls = resolve(sdk, 'src/resources/realtime/calls.ts');
 const realtimeSecrets = resolve(sdk, 'src/resources/realtime/client-secrets.ts');
 const live = resolve(sdk, 'src/resources/live/live.ts');
 const decisions = resolve(sdk, 'src/resources/decisions.ts');
+const threads = resolve(sdk, 'src/resources/beta/threads/threads.ts');
+const messages = resolve(sdk, 'src/resources/beta/threads/messages.ts');
 const assistants = resolve(sdk, 'src/resources/beta/assistants.ts');
 const agents = resolve(sdk, 'src/resources/beta/agents/agents.ts');
 const credentials = resolve(sdk, 'src/resources/beta/agents/vaults/credentials.ts');
@@ -51,7 +53,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--multi-agent' ? [beta] : []),
   ...(mode === '--agents' ? [agents] : []),
-  ...(mode === '--assistants' ? [assistants] : []),
+  ...(mode === '--assistants' ? [assistants, threads, messages] : []),
   ...(mode === '--vault-credentials' ? [credentials] : []),
   ...(mode === '--environments' ? [environments, environmentFiles, templates] : []),
   ...(mode === '--agent-sessions' ? [agents, agentSessions, agentTurns, artifacts, subagents] : []),
@@ -197,6 +199,15 @@ const roots = mode === '--environments' ? {
   resource: exported(assistants, 'Assistant'),
   deleted: exported(assistants, 'AssistantDeleted'),
   query: exported(assistants, 'AssistantListParams'),
+  thread_create: exported(threads, 'ThreadCreateParams'),
+  thread_update: exported(threads, 'ThreadUpdateParams'),
+  thread_resource: exported(threads, 'Thread'),
+  thread_deleted: exported(threads, 'ThreadDeleted'),
+  message_create: exported(messages, 'MessageCreateParams'),
+  message_update: exported(messages, 'MessageUpdateParams'),
+  message_resource: exported(messages, 'Message'),
+  message_deleted: exported(messages, 'MessageDeleted'),
+  message_query: exported(messages, 'MessageListParams'),
 } : mode === '--agents' ? {
   create: exported(agents, 'AgentCreateParams'),
   update: exported(agents, 'AgentUpdateParams'),
@@ -289,6 +300,28 @@ if (mode === '--assistants') {
         field.bounds = {maxItems:1};
       if (field.name === 'code_interpreter') codeFileLimit(field.type);
     }
+  }
+  // MessageUpdateParams includes the parent path parameter on SDK calls.
+  const update = nodes[roots.message_update];
+  update.fields = update.fields.filter(field => field.name !== 'thread_id');
+  function requireAttachment(index) {
+    const node = nodes[index];
+    if (node.kind === 'union') node.variants.forEach(requireAttachment);
+    if (node.kind === 'array') {
+      for (const field of nodes[node.element].fields) {
+        if (field.name === 'file_id' || field.name === 'tools') field.optional = false;
+      }
+    }
+  }
+  for (const node of nodes.slice(roots.thread_create)) {
+    const fields = node.fields ?? [];
+    if (fields.some(field => field.name === 'role') &&
+        !fields.some(field => field.name === 'id')) {
+      fields.find(field => field.name === 'content').bounds = {minItems:1};
+      requireAttachment(fields.find(field => field.name === 'attachments').type);
+    }
+    const metadata = fields.find(field => field.name === 'metadata');
+    if (metadata) metadata.bounds = bounds.metadata;
   }
   for (const root of [roots.create, roots.update, roots.resource]) {
     for (const field of nodes[root].fields) {

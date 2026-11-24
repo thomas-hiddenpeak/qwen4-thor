@@ -452,7 +452,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      *path == "/v1/decisions" ||
                      *path == "/v1/embeddings" || *path == "/v1/audio/speech" ||
                      IsResponsesTarget(*path) || IsConversationTarget(*path) ||
-                     IsAssistantTarget(*path) || IsManagedAgentTarget(*path) || IsPromptTarget(*path) ||
+                     IsAssistantsV2Target(*path) || IsManagedAgentTarget(*path) || IsPromptTarget(*path) ||
                      IsUploadTarget(*path)
                  ? kChatBodyBytes
                  : 4096);

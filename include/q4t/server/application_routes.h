@@ -381,8 +381,46 @@ inline bool IsAssistantTarget(std::string_view target) {
   return id.starts_with("asst_") && id.size() > 5 && ValidApplicationId(id);
 }
 
+enum class AssistantThreadRouteKind { kNone, kCollection, kThread, kMessages, kMessage };
+struct AssistantThreadRoute {
+  AssistantThreadRouteKind kind = AssistantThreadRouteKind::kNone;
+  std::string_view thread, message;
+};
+
+inline AssistantThreadRoute ParseAssistantThreadRoute(std::string_view target) {
+  using Kind = AssistantThreadRouteKind;
+  if (target.find('#') != target.npos) return {};
+  auto path = target.substr(0, target.find('?'));
+  if (path == "/v1/threads") return {Kind::kCollection, {}, {}};
+  constexpr std::string_view prefix = "/v1/threads/";
+  if (!path.starts_with(prefix)) return {};
+  path.remove_prefix(prefix.size());
+  const auto sep = path.find('/');
+  const auto thread = path.substr(0, sep);
+  if (!thread.starts_with("thread_") || thread.size() == 7 ||
+      !ValidApplicationId(thread)) return {};
+  if (sep == path.npos) return {Kind::kThread, thread, {}};
+  path.remove_prefix(sep + 1);
+  if (path == "messages") return {Kind::kMessages, thread, {}};
+  if (!path.starts_with("messages/")) return {};
+  const auto message = path.substr(9);
+  if (!message.starts_with("msg_") || message.size() == 4 ||
+      !ValidApplicationId(message)) return {};
+  return {Kind::kMessage, thread, message};
+}
+
+inline bool IsAssistantsV2Target(std::string_view target) {
+  return IsAssistantTarget(target) || ParseAssistantThreadRoute(target).kind !=
+                                         AssistantThreadRouteKind::kNone;
+}
+
 inline bool AssistantMethodAllowed(std::string_view method,
                                    std::string_view target) {
+  using Kind = AssistantThreadRouteKind;
+  const auto kind = ParseAssistantThreadRoute(target).kind;
+  if (kind != Kind::kNone)
+    return method == "POST" || (method == "GET" && kind != Kind::kCollection) ||
+           (method == "DELETE" && (kind == Kind::kThread || kind == Kind::kMessage));
   return IsAssistantTarget(target) &&
          (method == "GET" || method == "POST" ||
           (method == "DELETE" && target.starts_with("/v1/assistants/")));

@@ -306,7 +306,13 @@ def current_surface(root):
             'server::AssistantMethodAllowed(method, path)' not in native or
             'context->AssistantsBeta()' not in dispatch):
         raise ValueError('review assistant registry routing and version selector')
-    for path, methods in (('/v1/assistants', ('GET', 'POST')),
+    if 'HandleAssistantThreads(*objects_' not in dispatch:
+        raise ValueError('review assistant thread dispatch')
+    for path, methods in (('/v1/threads', ('POST',)),
+                          ('/v1/threads/{thread_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/threads/{thread_id}/messages', ('GET', 'POST')),
+                          ('/v1/threads/{thread_id}/messages/{message_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/assistants', ('GET', 'POST')),
                           ('/v1/assistants/{assistant_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/agents/environments', ('GET', 'POST')),
                           ('/v1/agents/environments/{environment_id}', ('GET',)),

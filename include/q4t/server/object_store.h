@@ -39,7 +39,8 @@ enum class ObjectKind {
   kVault,
   kEnvironmentTemplate,
   kAssistant,
-  kEnvironment
+  kEnvironment,
+  kThread
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

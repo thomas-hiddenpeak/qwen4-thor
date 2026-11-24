@@ -13,6 +13,7 @@
 #include "q4t/server/files.h"
 #include "q4t/server/prompt_registry.h"
 #include "q4t/server/state_cipher.h"
+#include "q4t/server/vector_stores.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -3092,5 +3093,108 @@ Q4T_TEST(assistant_inline_vector_store_commits_with_owner_or_leaves_neither) {
   const auto id = search->GetArray("vector_store_ids")->array.at(0).str;
   auto page = list(objects, ObjectKind::kVectorStore);
   Q4T_CHECK(Ok(page) && page.value.GetString("first_id") == id);
+  return true;
+}
+
+Q4T_TEST(assistant_threads_reopen_keep_order_metadata_and_message_ownership) {
+  Fixture f;
+  std::string path, first;
+  {
+    ObjectStore objects(f.options);
+    auto created = HandleAssistantThreads(objects, "POST", "/v1/threads",
+        R"({"messages":[{"role":"user","content":"release?"},{"role":"assistant",
+            "content":[{"type":"text","text":"rev460"}]}],"metadata":{"project":"q4t"}})",
+        Access(), false);
+    Q4T_CHECK(Ok(created) && created.value.GetString("id").starts_with("thread_"));
+    path = "/v1/threads/" + created.value.GetString("id");
+    auto page = HandleAssistantThreads(objects, "GET", path + "/messages?order=asc&limit=1",
+                                       "", Access(), false);
+    Q4T_CHECK(Ok(page) && page.value.GetBool("has_more"));
+    first = page.value.GetString("first_id");
+  }
+  ObjectStore objects(f.options);
+  const auto call = [&](std::string method, std::string url, std::string body = "",
+                        StateAccess who = Access()) {
+    return HandleAssistantThreads(objects, method, url, body, who, false);
+  };
+  const auto msgs = path + "/messages";
+  auto row = call("GET", msgs + "/" + first);
+  Q4T_CHECK(Ok(row) && row.value.GetString("status") == "completed" &&
+            row.value.GetArray("content")->array[0].Find("text")->GetString("value") == "release?");
+  auto posted = call("POST", msgs, R"({"role":"user","content":"again"})");
+  Q4T_CHECK(Ok(posted));
+  const auto last = posted.value.GetString("id");
+  auto before = call("GET", msgs + "?order=asc&before=" + last + "&limit=1");
+  Q4T_CHECK(Ok(before) && before.value.GetBool("has_more") &&
+            before.value.GetString("first_id") != first);
+  auto after = call("GET", msgs + "?order=asc&after=" + first);
+  Q4T_CHECK(Ok(after) && after.value.GetArray("data")->array.size() == 2 &&
+            after.value.GetString("last_id") == last);
+  auto filtered = call("GET", msgs + "?run_id=run_unknown");
+  Q4T_CHECK(Ok(filtered) && filtered.value.GetArray("data")->array.empty());
+  auto updated = call("POST", msgs + "/" + last, R"({"metadata":{"record":"460"}})");
+  Q4T_CHECK(Ok(updated) && updated.value.Find("metadata")->GetString("record") == "460");
+  auto thread = call("POST", path, R"({"metadata":null,"tool_resources":null})");
+  Q4T_CHECK(Ok(thread) && thread.value.Find("metadata")->IsNull());
+  Q4T_CHECK(call("GET", msgs + "/" + last, "", Access("client:other")).http_status == 404);
+  auto empty = call("POST", "/v1/threads");
+  Q4T_CHECK(Ok(empty));
+  Q4T_CHECK(call("GET", "/v1/threads/" + empty.value.GetString("id") +
+                            "/messages/" + last).http_status == 404);
+  Q4T_CHECK(call("GET", msgs + "?limit=0").http_status == 400);
+  Q4T_CHECK(call("GET", msgs + "?after=" + first + "&before=" + last).http_status == 400);
+  Q4T_CHECK(call("POST", msgs, R"({"role":"user","content":[]})").http_status == 400);
+  Q4T_CHECK(call("POST", msgs, R"({"role":"user","content":"x","attachments":[{}]})").http_status == 400);
+  Q4T_CHECK(call("POST", msgs + "/" + last, R"({"thread_id":"thread_else"})").http_status == 400);
+  Q4T_CHECK(Ok(call("DELETE", msgs + "/" + last)));
+  Q4T_CHECK(call("GET", msgs + "/" + last).http_status == 404);
+  Q4T_CHECK(Ok(call("DELETE", path)));
+  Q4T_CHECK(call("GET", msgs + "/" + first).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(assistant_thread_vector_attachment_rolls_back_message_and_membership) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  const auto who = Access();
+  const BinaryAccess binary{who.scope, who.deadline, {}};
+  FileUpload upload(objects, binary, "multipart/form-data; boundary=f");
+  Q4T_CHECK(Ok(upload.Feed(
+      "--f\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nassistants\r\n"
+      "--f\r\nContent-Disposition: form-data; name=\"file\"; filename=\"release.txt\"\r\n\r\n"
+      "rev460\r\n--f--\r\n", binary.deadline)));
+  auto file = upload.Finish();
+  Q4T_CHECK(Ok(file));
+  const auto id = file.value.GetString("id");
+  VectorStores stores(objects);
+  auto store = stores.Create(binary, Parse("{}"));
+  Q4T_CHECK(Ok(store));
+  auto vs = store.value.GetString("id");
+  auto created = HandleAssistantThreads(objects, "POST", "/v1/threads",
+      R"({"tool_resources":{"file_search":{"vector_store_ids":[")" + vs +
+      R"("]}}})", who, true);
+  Q4T_CHECK(Ok(created));
+  const auto thread = created.value.GetString("id"), msgs = "/v1/threads/" + thread + "/messages";
+  ObjectRequest stale;
+  stale.kind = ObjectKind::kThread;
+  stale.operation = ObjectOperation::kPut;
+  stale.scope = who.scope;
+  stale.id = thread;
+  stale.expected_revision = 0;
+  stale.data = Parse("{}");
+  Q4T_CHECK(stores.AttachForThread(binary, vs, {id}, stale).http_status == 409);
+  Q4T_CHECK(stores.RetrieveFile(binary, vs, id).http_status == 404);
+  const std::string body = R"({"role":"user","content":"release","attachments":[{"file_id":")" +
+      id + R"(","tools":[{"type":"file_search"},{"type":"code_interpreter"}]}]})";
+  Q4T_CHECK(HandleAssistantThreads(objects, "POST", msgs, body, who, false).http_status == 503);
+  auto rows = HandleAssistantThreads(objects, "GET", msgs, "", who, true);
+  Q4T_CHECK(Ok(rows) && rows.value.GetArray("data")->array.empty());
+  Q4T_CHECK(Ok(HandleAssistantThreads(objects, "POST", msgs, body, who, true)));
+  Q4T_CHECK(Ok(HandleAssistantThreads(objects, "POST", msgs, body, who, true)));
+  auto members = stores.ListFiles(binary, vs, Parse("{}"));
+  Q4T_CHECK(Ok(members) && members.value.GetArray("data")->array.size() == 1);
+  auto saved = HandleAssistantThreads(objects, "GET", "/v1/threads/" + thread, "", who, true);
+  Q4T_CHECK(Ok(saved) && saved.value.Find("tool_resources")->Find("code_interpreter")
+                ->GetArray("file_ids")->array.size() == 1);
   return true;
 }
