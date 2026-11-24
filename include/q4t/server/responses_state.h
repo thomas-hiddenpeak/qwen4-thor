@@ -46,6 +46,7 @@ struct ResponseStatePlan {
   int64_t agent_turn_finished_at = 0;
   std::optional<ObjectRequest> agent_session_write;
   std::string eval_run_id;
+  bool eval_shutdown = false;
   std::string chatkit_thread_id;
   std::optional<ObjectRequest> chatkit_thread_write;
   // Couples one Eval row's pending sample to the first durable response.

@@ -23,6 +23,17 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+EVAL_RECORD = 'q4t-profile-business-v45'
+EVAL_FORMAT = 'q4t-eval-source-v1'
+EVAL_REVIEWED = {}
+EVAL_CAPABILITY = dict(endpoint='/v1/evals',
+    run_sources=['jsonl', 'completions', 'responses'],
+    stored_sources=['stored_completions', 'responses'],
+    graders=['string_check', 'text_similarity', 'python', 'label_model', 'score_model'],
+    text_similarity=['fuzzy_match', 'bleu', 'gleu', 'rouge_1', 'rouge_2',
+                     'rouge_3', 'rouge_4', 'rouge_5', 'rouge_l'],
+    python_profile='local_default', row_checkpoints=True,
+    pure_text_interruption_retries=1)
 CHATKIT_RECORD = 'q4t-profile-business-v44'
 CHATKIT_FORMAT = 'q4t-chatkit-source-v1'
 CHATKIT_CAPABILITY = dict(selector='chatkit_beta=v1', client='/v1/chatkit',
@@ -222,7 +233,8 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 SKILLS_RECORD: SKILLS_FORMAT, CODE_RECORD: CODE_FORMAT,
                 TRANSLATOR_RECORD: TRANSLATOR_FORMAT, AUTOMATION_RECORD: AUTOMATION_FORMAT,
                 WEBHOOK_RECORD: WEBHOOK_FORMAT, HOSTED_LIFECYCLE_RECORD: HOSTED_LIFECYCLE_FORMAT,
-                PREPARATION_RECORD: PREPARATION_FORMAT, CHATKIT_RECORD: CHATKIT_FORMAT}
+                PREPARATION_RECORD: PREPARATION_FORMAT, CHATKIT_RECORD: CHATKIT_FORMAT,
+                EVAL_RECORD: EVAL_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -315,6 +327,13 @@ def automation_session():
 
 
 def format_for(capabilities):
+    if 'evals' in capabilities:
+        prior = dict(capabilities)
+        selected = prior.pop('evals')
+        ledger.require(ledger.canonical(selected) == ledger.canonical(EVAL_CAPABILITY)
+                       and format_for(prior) == CHATKIT_RECORD,
+                       'invalid Evals capabilities or predecessor')
+        return EVAL_RECORD
     if 'chatkit' in capabilities:
         prior = dict(capabilities)
         selected = prior.pop('chatkit')
@@ -476,8 +495,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            EVAL_RECORD: (CHATKIT_RECORD, CHATKIT_REVIEWED, 'evals', 'eval-handoff.json'),
             CHATKIT_RECORD: (PREPARATION_RECORD, PREPARATION_REVIEWED, 'chatkit', 'chatkit-handoff.json'),
             PREPARATION_RECORD: (HOSTED_LIFECYCLE_RECORD, HOSTED_LIFECYCLE_REVIEWED,
                                  'hosted_environment_preparation', 'preparation-handoff.json'),
@@ -709,8 +729,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            EVAL_RECORD: (EVAL_REVIEWED, CHATKIT_REVIEWED),
             CHATKIT_RECORD: (CHATKIT_REVIEWED, PREPARATION_REVIEWED),
             PREPARATION_RECORD: (PREPARATION_REVIEWED, HOSTED_LIFECYCLE_REVIEWED),
             HOSTED_LIFECYCLE_RECORD: (HOSTED_LIFECYCLE_REVIEWED, WEBHOOK_REVIEWED),

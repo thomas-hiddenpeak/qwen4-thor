@@ -1,0 +1,35 @@
+{
+  "stage": "host_verified",
+  "observed": [
+    "one retry after confirmed shutdown for private text-only model samples",
+    "the frozen request, original row, seed and selected budget survive reopen",
+    "explicit cancellation, linked tools and a second interruption stay terminal",
+    "parent cancellation between attempts clears frozen inputs"
+  ],
+  "cpu_cases": 14,
+  "profile_migrations": 2,
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1362,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "receipts": {
+    "eval-interruption-cpu-03.log": "0e1f4b79b83578a6bca59df67f97a4115bf6d744fdcee25ed1686f9b2f1c1657",
+    "eval-profile-migration-cpu-02.log": "b72ec94cdbf0e57efb6483ae9167a0c56ba2e33d31f8f63ca1e40c7b0ee16f32"
+  },
+  "fixture_diagnostics": [
+    "Initial CPU case used a tool declaration while structured processing in the CPU plan was disabled. The test now enables it and reaches the guarded interruption.",
+    "The sparse worktree initially lacked four tracked migration fixture files. Their original Git blobs were checked out and the two affected migration cases passed."
+  ],
+  "pending": [
+    "real in-flight capacity change",
+    "managed model restart and independent rollback",
+    "default release and day handoff"
+  ]
+}

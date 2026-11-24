@@ -244,6 +244,9 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
+        if 'eval_handoff' in self.plan:
+            from tools.serve_responses import eval_profiles
+            eval_profiles.business(self, capabilities)
         pkg.save(self.out/'observation.json', dict(profile=name, protocol=cfg['protocol_source_sha256'],
             capacity=cap, mtp_enabled=cfg['runtime']['mtp_enabled'], returned_chat='42',
             media_created=201, session_closed=True, recordings_enabled=True,
@@ -290,6 +293,9 @@ def main():
                 if 'agent_interruption' in plan:
                     from tools.serve_responses import interruption_profile_acceptance
                     interruption_profile_acceptance.seed(Path(plan['output']), plan)
+                if 'eval_handoff' in plan and plan['name'] == 'light':
+                    from tools.serve_responses import eval_profiles
+                    eval_profiles.capture_stopped_run(Path(plan['output']))
                 stage = Stage(plan)
                 if subscriber:
                     stage.webhook_subscriber = subscriber

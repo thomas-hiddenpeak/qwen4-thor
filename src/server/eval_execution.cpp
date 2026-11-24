@@ -207,7 +207,7 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
   const auto* grading_row = write.data.Find("grading_row");
   if (grading_row) {
     row = *grading_row;
-  } else if (write.data.Has("pending_response")) {
+  } else if (write.data.Has("pending_input")) {
     const auto* saved = write.data.Find("pending_input");
     if (!saved) return InvalidRecord();
     row = *saved;

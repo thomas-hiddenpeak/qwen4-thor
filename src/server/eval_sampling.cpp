@@ -1,6 +1,7 @@
 #include "eval_sampling.h"
 
 #include <algorithm>
+#include <array>
 #include <charconv>
 #include <ctime>
 
@@ -38,6 +39,27 @@ ObjectReply Pending() {
   ObjectReply result;
   result.http_status = 202;
   return result;
+}
+
+bool ReplayableText(const Json& request) {
+  const auto* tools = request.Find("tools");
+  if (tools && (!tools->IsArray() || !tools->array.empty())) return false;
+  const auto* input = request.Find("input");
+  if (!input) return false;
+  if (input->IsString()) return true;
+  if (!input->IsArray()) return false;
+  for (const auto& message : input->array) {
+    if (!message.Has("role") || message.GetString("type", "message") != "message")
+      return false;
+    const auto* content = message.Find("content");
+    if (!content) return false;
+    if (content->IsString()) continue;
+    if (!content->IsArray()) return false;
+    for (const auto& part : content->array)
+      if (part.GetString("type") != "input_text" || !part.Has("text"))
+        return false;
+  }
+  return true;
 }
 
 ObjectReply CompletionTools(const Json& tools, Json* normalized) {
@@ -211,8 +233,15 @@ ObjectReply SampleRow(ObjectStore& objects, const StateAccess& access,
   const auto id = write.data.GetString("pending_response");
   if (id.empty()) {
     Json request;
-    auto translated = SamplingRequest(source, *row, owner.config, &request);
-    if (!translated.ok()) return translated;
+    if (const auto* frozen = write.data.Find("sampling_request")) {
+      if (!write.data.Has("pending_input") ||
+          write.data.GetInt("interruption_retries") != 1)
+        return InvalidRecord();
+      request = *frozen;
+    } else {
+      auto translated = SamplingRequest(source, *row, owner.config, &request);
+      if (!translated.ok()) return translated;
+    }
     if (!request.Has("seed")) {
       std::string identity =
           write.id + ":" + std::to_string(write.data.GetInt("row"));
@@ -264,6 +293,24 @@ ObjectReply SampleRow(ObjectStore& objects, const StateAccess& access,
   consumed->expected_revision = observed.value.GetInt("revision");
   if (state != "completed" && state != "incomplete") {
     const auto error = Copy(*response, "error");
+    const auto* request = write.data.Find("sampling_request");
+    const bool interrupted =
+        (state == "cancelled" && data->GetBool("eval_shutdown")) ||
+        (state == "failed" &&
+         error.GetString("code") == "background_execution_interrupted");
+    if (interrupted && request && ReplayableText(*request) &&
+        !write.data.Has("interruption_retries")) {
+      // Retain the frozen input, seed, budget and advanced JSONL cursor.
+      // Parent CAS prevents a cancellation or deletion from reviving the row.
+      std::erase_if(write.data.object, [](const auto& field) {
+        return field.first == "pending_response";
+      });
+      Set(&write.data, "interruption_retries", Number(1));
+      const std::array changes{write, *consumed};
+      auto saved = objects.ExecuteBatch(changes, access.deadline,
+                                        access.cancelled);
+      return saved.ok() ? Pending() : saved;
+    }
     return Error(422, error.GetString("code", "eval_sample_failed"),
                  error.GetString("message", "Evaluation model sample failed"));
   }
@@ -282,14 +329,21 @@ void ClearSampling(Json& data) {
   std::erase_if(data.object, [](const auto& field) {
     return field.first == "pending_input" ||
            field.first == "sampling_request" ||
-           field.first == "pending_response";
+           field.first == "pending_response" ||
+           field.first == "interruption_retries";
   });
 }
 
 ObjectReply ReleaseSampling(ObjectStore& objects, const StateAccess& access,
                             ResponsesJobs* jobs, ObjectRequest& parent) {
   const auto id = parent.data.GetString("pending_response");
-  if (id.empty()) return {};
+  if (id.empty()) {
+    if (!parent.data.Has("pending_input")) return {};
+    ClearSampling(parent.data);
+    auto result = objects.Execute(parent, access.deadline, access.cancelled);
+    if (result.ok()) ++parent.expected_revision;
+    return result;
+  }
   auto erase = Read(ObjectKind::kResponse, access, id);
   for (;;) {
     auto current = objects.Execute(erase, access.deadline, access.cancelled);

@@ -91,6 +91,7 @@ void EvalDispatcher::Run(ObjectStore& objects, ClientAdmission& clients,
           }
           const auto status = run->GetString("status");
           if (!data->GetBool("deleting") && !data->Has("pending_response") &&
+              !data->Has("pending_input") &&
               status != "in_progress" &&
               status != "queued")
             continue;
