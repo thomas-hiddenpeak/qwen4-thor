@@ -1,0 +1,24 @@
+{
+  "status": "PASS_TARGETED_LOST_RECEIPT_FIXTURES",
+  "previous_revision": "a110a5c8a9d3436183d6ec1d332d3310a7e6ba14",
+  "failed_push_job": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45450778328/job/138646947668",
+  "passing_pull_request_job": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45450794362/job/138646999175",
+  "runtime_changes": 0,
+  "tests": [
+    "responses_foreground_unknown_checkpoint_preserves_partial_output",
+    "vector_stores_lost_create_and_claim_receipts_recover_original_identity"
+  ],
+  "repetitions_each": 4,
+  "passes": 8,
+  "observations": [
+    "100 ms expired on Begin before the injected second write. Only the checkpoint uses the 100 ms user deadline. Closing uses its normal deadline.",
+    "250 ms expired creating the healthy store before claim injection. The vector fixture now uses the ordinary 2 s I/O deadline. The worker still withholds the receipt only after the actual durable write. Both original object and claim identities are checked."
+  ],
+  "local_build": "Exact branch public Linux host target built with g++-14 and -Werror on Thor, using the existing local optional system headers.",
+  "files": {
+    "pr108-a110-push.log": "da5879d88143396862669fec1d9bf3fb82a4e2e4a3a0038f8859c475b112d279",
+    "receipt-ci-targeted-01.log": "33eb25341f9bde7db92f4e3349fef42797ff4cb46842e883849868a612f93a13",
+    "server_responses_jobs_test.cpp": "b00456aaf77a857fbe19b9e48d8bd08ea71119cb5f70fa6742615a37fc46ba52",
+    "server_vector_stores_test.cpp": "96b3f27cc16ac84dcc5aa644e62764f9efd43c4a31f9903b9648ef95a632aa25"
+  }
+}

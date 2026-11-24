@@ -362,11 +362,12 @@ Q4T_TEST(
 Q4T_TEST(
     vector_stores_lost_create_and_claim_receipts_recover_original_identity) {
   Fixture first;
-  first.options.io_timeout_ms = 250;
   {
     Injection injection("--q4t-object-worker-application-lost-ack");
     ObjectStore objects(first.options);
     VectorStores stores(objects);
+    // The worker suppresses the receipt only after committing. Reads and
+    // cold starts within these operations use the normal storage deadline.
     const auto reply = stores.Create(Access(), Object());
     Q4T_CHECK(reply.commit_unknown &&
               reply.value.GetString("id").starts_with("vs_"));
@@ -375,7 +376,6 @@ Q4T_TEST(
               1);
   }
   Fixture second;
-  second.options.io_timeout_ms = 250;
   std::string id, file;
   {
     ObjectStore objects(second.options);
