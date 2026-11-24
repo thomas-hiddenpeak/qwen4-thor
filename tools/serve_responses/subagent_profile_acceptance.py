@@ -14,21 +14,35 @@ STANDALONE_SDK = 'tools/serve_responses/agent_session_subagent_sdk.mjs'
 HELPER = 'tools/serve_responses/subagent_profile_acceptance.py'
 PROOF = ROOT/'docs/evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json'
 PUBLICATION = PROOF.with_name('session-tools-delivery.json')
+QUOTA_PROOF = PROOF.with_name('subagent-quota.json')
+QUOTA_SDK = 'tools/serve_responses/agent_quota_recovery_sdk.mjs'
 
 
-def candidate(build, protocol):
-    proof = pkg.read(PROOF)
+def candidate(build, protocol, source=PROOF):
+    proof = pkg.read(source)
     sdk = proof['sdk']
-    closed, active = sdk['transitions']
     pkg.require(proof['business']['status'] == 'PASS' and proof['lease'] == 'COMPLETED'
-                and proof['driver'] == pkg.sha(ROOT/STANDALONE_SDK)
                 and proof['previous_release_sha256'] == pkg.sha(PUBLICATION)
-                and proof['engine'] == pkg.sha(build/'q4t') and proof['ingress'] == pkg.sha(build/'q4t-ingress')
-                and proof['protocol'] == protocol and closed['state'] == 'closed' and active['state'] == 'active'
-                and closed['closed_at'] >= closed['opened_at'] == active['opened_at'] and active['closed_at'] is None
-                and sdk['foreign'] == 404 and sdk['secondAnswer'] == str(sdk['revision']+1)
-                and proof['independent_chat']['answer'] == '42', 'standalone subagent witness differs')
-    return dict(receipt_sha256=pkg.sha(PROOF), binary=proof['engine'], ingress=proof['ingress'], protocol=protocol,
+                and proof['engine'] == pkg.sha(build/'q4t')
+                and proof['ingress'] == pkg.sha(build/'q4t-ingress')
+                and proof['protocol'] == protocol and sdk['foreign'] == 404,
+                'standalone subagent identity or ownership differs')
+    if source == QUOTA_PROOF:
+        pkg.require(sdk['original_error']['code'] == 'invalid_request' and sdk['limit'] == 4096
+                    and 0 < sdk['actual_input'] <= sdk['limit']
+                    and sdk['parent_answer'] == sdk['child_answer'] == '457'
+                    and sdk['child_turns'] == 2 and sdk['new_tool_calls'] == 0 and sdk['idle'] == 1
+                    and sdk['original_data_untouched'] and sdk['independent_chat'] == '42'
+                    and sdk['driver_sha256'] == pkg.sha(ROOT/QUOTA_SDK),
+                    'actual subagent quota continuation differs')
+    else:
+        closed, active = sdk['transitions']
+        pkg.require(source == PROOF and proof['driver'] == pkg.sha(ROOT/STANDALONE_SDK)
+                    and closed['state'] == 'closed' and active['state'] == 'active'
+                    and closed['closed_at'] >= closed['opened_at'] == active['opened_at']
+                    and active['closed_at'] is None and sdk['secondAnswer'] == str(sdk['revision'] + 1)
+                    and proof['independent_chat']['answer'] == '42', 'standalone subagent lifecycle differs')
+    return dict(receipt_sha256=pkg.sha(source), binary=proof['engine'], ingress=proof['ingress'], protocol=protocol,
                 renewal=True, environment_templates=True, hosted_workspaces=True, session_artifacts=True,
                 session_tools=True, subagents=True)
 

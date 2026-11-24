@@ -71,7 +71,7 @@ async function primary() {
     agent.tools[0].defer_loading = true;
     agent.tools.unshift({ type: 'tool_search' });
     agent.experimental = { time_awareness: true };
-    agent.instructions = 'For a release lookup first use server tool search to discover read_release_record, then call it. After it returns, give the revision.';
+    agent.instructions = 'For a release lookup first use server tool search to discover read_release_record, then call it. Report the revision returned by the tool. On a follow-up requesting time, report both the stored revision and the current UTC time from the system reminder.';
     input = 'Discover read_release_record with tool search, call it with {}, and report its revision.';
     selector = { agent_id: (await agents.create(agent)).id };
   }

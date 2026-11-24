@@ -46,8 +46,12 @@ async function history(session, child) {
   const owner = { session_id: session, order: 'asc' };
   const result = [];
   for (const turn of (await api.subagents.turns.list(child, owner)).data) {
-    const items = (await api.subagents.turns.items.list(turn.id, { ...owner, subagent_id: child })).data;
-    result.push({ id: turn.id, status: turn.status, items_sha256: digest(items), answer: answer(items) });
+    const items = [];
+    for await (const item of api.subagents.turns.items.list(turn.id, { ...owner, subagent_id: child })) {
+      items.push(item);
+    }
+    const outputs = items.filter(i => i.role !== 'user').map(i => i.id);
+    result.push({ id: turn.id, status: turn.status, items_sha256: digest(items), outputs, answer: answer(items) });
   }
   return result;
 }
@@ -55,7 +59,15 @@ function checkOutput(events, turn) {
   const own = events.filter(e => e.turn_id === turn.id);
   assert.deepEqual(own.filter(e => e.turn).map(e => e.turn.status), ['queued','in_progress','completed']);
   const deltas = own.filter(e => e.type === 'agent.session.turn.output_text.delta');
-  assert.ok(deltas.length && deltas.every(e => e.output_index === 0));
+  const completed = own.filter(e => e.type === 'agent.session.turn.item.done');
+  assert.deepEqual(completed.map(e => e.item.id), turn.outputs);
+  assert.deepEqual(completed.map(e => e.output_index), turn.outputs.map((_, i) => i));
+  assert.ok(deltas.length > 0);
+  for (const delta of deltas) {
+    const output = completed[delta.output_index];
+    assert.equal(output?.item.role, 'assistant');
+    assert.equal(output.item.id, delta.item_id);
+  }
   assert.equal(deltas.map(e => e.delta).join('').trim(), turn.answer);
 }
 async function lifecycle(session, child, action, state) {
@@ -79,7 +91,7 @@ if (primary) {
     agent: { model: 'qwen3.8-flash-next', reasoning: { effort: 'none' },
       multi_agent: { enabled: true, max_concurrent_subagents: 1 },
       instructions: 'Use multi-agent functions for each explicit action. First spawn one child named reader and wait_agent on root/reader. For close or resume, call close_subagent or resume_subagent on root/reader. For recall, use followup_task on the same reader and wait for its answer. Never spawn another child.' },
-    input: 'Delegate this exact task to reader: Read the release record {"publication_revision":' + p.revision +
+    input: 'Delegate this exact task to reader: Extract the integer from this inline JSON record: {"publication_revision":' + p.revision +
       '}. Report only its publication_revision number. Wait for reader, then answer with the number.' }));
   session = events.find(e => e.type === 'agent.session.created').session.id;
   const created = events.find(e => e.type === 'agent.session.subagent.created').subagent;

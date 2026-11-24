@@ -26,8 +26,14 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 SUBAGENT_RECORD = 'q4t-profile-business-v34'
 SUBAGENT_FORMAT = 'q4t-managed-subagent-source-v1'
 SUBAGENT_REVIEWED = {
-    'primary': 'bc31006134f64f662919accea942c0d675d9ef9e5ad4fee50879eb3c1f66a292',
-    'light': '6929d4f5200e4e59e3c4402cc531029c069214c5f581ab318affde4804b67822',
+    'primary': {
+        'bc31006134f64f662919accea942c0d675d9ef9e5ad4fee50879eb3c1f66a292',
+        'aefe830b6cafa11377e50e22e9fe4775bf42df2b9c9a6a459b24dd62befd0a73',
+    },
+    'light': {
+        '6929d4f5200e4e59e3c4402cc531029c069214c5f581ab318affde4804b67822',
+        'c325c73cc2584ec49f03a24e5a9ae09e2162ec49d9c84726cd70fab9faf5cd6c',
+    },
 }
 SUBAGENT_CAPABILITY = dict(selector='agents=v1', endpoint='/v1/agents/sessions/{session_id}/subagents',
                            reads=['list','retrieve','items','turns','turn','turn_items'],
@@ -140,6 +146,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '82f102fbf86efb6c7a861ae3fb0243f64402988507d8ba4748251f5642d4e433':
+        '9e72f5309977c0f7ae4f3e7c192b12029a8ba6a1d845da688fc6b140c66c8f87',
     '1de6946fe64e0d94905bf146bc242b483cb07e9e0a3a83d15b0ab01d94dd57dc':
         'f5ad763378beeec259b3df29aa14a2e39cf7906440a0b6fe5cafb9a61b9b9c37',
     '555452009732e11ab1859f4e4996b23c69669691396be2d943850b40cb55e4f9':
@@ -425,7 +433,7 @@ def validate(value):
     from tools.serve_recovery import profile_trace_reuse
     if value['format'] == SUBAGENT_RECORD:
         name = value['profile']
-        ledger.require(record_hash(value) == SUBAGENT_REVIEWED.get(name),
+        ledger.require(record_hash(value) in SUBAGENT_REVIEWED.get(name, ()),
                        'subagent qualification differs from the reviewed capacity handoff')
         prior = previous_record(value)
         ledger.require(record_hash(prior) == MANAGED_TOOL_REVIEWED.get(name),

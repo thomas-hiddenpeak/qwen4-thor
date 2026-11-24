@@ -16746,6 +16746,7 @@
       "previous_release": 456,
       "identity_and_turn_history_preserved": true
     },
-    "recoverable_client_turn_quota": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota.json"
+    "recoverable_client_turn_quota": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota.json",
+    "quota_primary_light": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json"
   }
 }
