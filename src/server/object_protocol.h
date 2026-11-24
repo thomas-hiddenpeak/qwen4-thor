@@ -74,6 +74,8 @@ inline std::string Kind(ObjectKind kind) {
       return "environment_template";
     case ObjectKind::kVault:
       return "vault";
+    case ObjectKind::kAssistant:
+      return "assistant";
     case ObjectKind::kAgent:
       return "agent";
     case ObjectKind::kLiveForkState:

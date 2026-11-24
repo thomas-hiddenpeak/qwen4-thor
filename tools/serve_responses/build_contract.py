@@ -122,6 +122,17 @@ def schema(graph):
     definitions['vault_update'] = obj(dict(name=nullable(vault_name), metadata=vault_meta))
     definitions['vault_deleted'] = obj(dict(id=dict(type='string'), object=dict(const='vault.deleted'),
                                            deleted=dict(const=True)), ['id', 'object', 'deleted'])
+    assistants = json.loads((ROOT/'src/server/contracts/openai_assistant_types_v1.json').read_text())
+    assert assistants['profile'] == 'q4t-openai-assistant-types-v1'
+    definitions.update(graph_definitions(assistants, 'assistant_'))
+    create_assistant = definitions['assistant_' + str(assistants['roots']['create'])]
+    inline_search = {'properties': {'file_search': {'oneOf': [
+        {'required': ['vector_store_ids']}, {'required': ['vector_stores']}]}}}
+    create_assistant['properties']['tool_resources'].update(inline_search)
+    assistant_query = definitions['assistant_' + str(assistants['roots']['query'])]
+    assistant_query['properties']['limit'] = page_limit
+    definitions['assistant_list'] = copy.deepcopy(definitions['agents_list'])
+    definitions['assistant_list']['properties']['data']['items'] = ref('assistant_resource')
     definitions['vault_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['vault_list']['properties']['data']['items'] = ref('vault')
     definitions['vault_query'] = copy.deepcopy(definitions['agents_query'])
@@ -503,6 +514,11 @@ def add_openapi(paths, response, error):
         ('/v1/vaults/{vault_id}', 'get', None, 'vault', None),
         ('/v1/vaults/{vault_id}', 'post', 'vault_update', 'vault', None),
         ('/v1/vaults/{vault_id}', 'delete', None, 'vault_deleted', None),
+        ('/v1/assistants', 'post', 'assistant_create', 'assistant_resource', None),
+        ('/v1/assistants', 'get', None, 'assistant_list', 'assistant_query'),
+        ('/v1/assistants/{assistant_id}', 'get', None, 'assistant_resource', None),
+        ('/v1/assistants/{assistant_id}', 'post', 'assistant_update', 'assistant_resource', None),
+        ('/v1/assistants/{assistant_id}', 'delete', None, 'assistant_deleted', None),
         ('/v1/agents', 'post', 'agents_create', 'agents_resource', None),
         ('/v1/agents', 'get', None, 'agents_list', 'agents_query'),
         ('/v1/agents/{agent_id}', 'get', None, 'agents_resource', None),
@@ -614,6 +630,10 @@ def add_openapi(paths, response, error):
                 'default': response(error, 'Native error; unknown/other-client identities return 404')},
             **{'x-q4t-query-contract': query_contract,
                'x-q4t-body-contract': body or 'empty body only'})
+        if path.startswith('/v1/assistants'):
+            parameters.append(dict(name='OpenAI-Beta', **{'in':'header'}, required=True,
+                schema=dict(type='string', pattern=r'(^|,)[ \t]*assistants=v2[ \t]*(,|$)'),
+                example='assistants=v2'))
         if path.startswith(('/v1/agents', '/v1/vaults')):
             operation.setdefault('parameters', []).append(dict(name='OpenAI-Beta',
                 **{'in':'header'}, required=True, schema=dict(type='string',

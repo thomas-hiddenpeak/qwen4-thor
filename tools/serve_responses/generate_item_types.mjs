@@ -8,9 +8,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--agent-sessions', '--vault-credentials', '--environments'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--assistants', '--agent-sessions', '--vault-credentials', '--environments'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--agent-sessions|--vault-credentials|--environments]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--assistants|--agent-sessions|--vault-credentials|--environments]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -31,6 +31,7 @@ const realtimeCalls = resolve(sdk, 'src/resources/realtime/calls.ts');
 const realtimeSecrets = resolve(sdk, 'src/resources/realtime/client-secrets.ts');
 const live = resolve(sdk, 'src/resources/live/live.ts');
 const decisions = resolve(sdk, 'src/resources/decisions.ts');
+const assistants = resolve(sdk, 'src/resources/beta/assistants.ts');
 const agents = resolve(sdk, 'src/resources/beta/agents/agents.ts');
 const credentials = resolve(sdk, 'src/resources/beta/agents/vaults/credentials.ts');
 const environments = resolve(sdk, 'src/resources/beta/agents/environments/environments.ts');
@@ -50,6 +51,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--multi-agent' ? [beta] : []),
   ...(mode === '--agents' ? [agents] : []),
+  ...(mode === '--assistants' ? [assistants] : []),
   ...(mode === '--vault-credentials' ? [credentials] : []),
   ...(mode === '--environments' ? [environments, environmentFiles, templates] : []),
   ...(mode === '--agent-sessions' ? [agents, agentSessions, agentTurns, artifacts, subagents] : []),
@@ -189,6 +191,12 @@ const roots = mode === '--environments' ? {
   artifact_query: exported(artifacts, 'ArtifactListParams'),
   subagent: exported(agents, 'Subagent'),
   subagent_query: exported(subagents, 'SubagentListParams'),
+} : mode === '--assistants' ? {
+  create: exported(assistants, 'AssistantCreateParams'),
+  update: exported(assistants, 'AssistantUpdateParams'),
+  resource: exported(assistants, 'Assistant'),
+  deleted: exported(assistants, 'AssistantDeleted'),
+  query: exported(assistants, 'AssistantListParams'),
 } : mode === '--agents' ? {
   create: exported(agents, 'AgentCreateParams'),
   update: exported(agents, 'AgentUpdateParams'),
@@ -258,12 +266,43 @@ if (mode === '--api') Object.assign(roots, {
   input_tokens_request: exported(inputTokens, 'InputTokenCountParams'),
   input_tokens_response: exported(inputTokens, 'InputTokenCountResponse'),
 });
+if (mode === '--assistants') {
+  // TypeScript numbers and strings do not encode the HTTP request bounds.
+  const bounds = { name: {maxLength:256}, description: {maxLength:512},
+    instructions: {maxLength:256000}, tools: {maxItems:128},
+    temperature: {minimum:0, maximum:2}, top_p: {minimum:0, maximum:1},
+    metadata: {maxProperties:16, propertyNames:{maxLength:64},
+               additionalProperties:{maxLength:512}} };
+  // The scoped SDK graph is for this resource family only. Array restrictions
+  // belong to the field, never to a shared primitive or arbitrary tool schema.
+  function codeFileLimit(index) {
+    const node = nodes[index];
+    if (node.kind === 'union') {
+      for (const variant of node.variants) codeFileLimit(variant);
+    }
+    const files = node.fields?.find(field => field.name === 'file_ids');
+    if (files) files.bounds = {maxItems:20};
+  }
+  for (const node of nodes) {
+    for (const field of node.fields ?? []) {
+      if (field.name === 'vector_stores' || field.name === 'vector_store_ids')
+        field.bounds = {maxItems:1};
+      if (field.name === 'code_interpreter') codeFileLimit(field.type);
+    }
+  }
+  for (const root of [roots.create, roots.update, roots.resource]) {
+    for (const field of nodes[root].fields) {
+      if (Object.hasOwn(bounds, field.name)) field.bounds = bounds[field.name];
+    }
+  }
+}
 if (mode === '--environments') addTemplateBounds(nodes, roots);
 const result = {
   profile: mode === '--environments' ? 'q4t-openai-environment-types-v1' :
     mode === '--vault-credentials' ? 'q4t-openai-vault-credential-types-v1' :
     mode === '--agent-sessions' ? 'q4t-openai-agent-session-types-v1' :
     mode === '--agents' ? 'q4t-openai-agent-registration-types-v1' :
+    mode === '--assistants' ? 'q4t-openai-assistant-types-v1' :
     mode === '--multi-agent' ? 'q4t-openai-multi-agent-types-v1' :
     mode === '--decisions' ? 'q4t-openai-decision-types-v1' :
     mode === '--live' ? 'q4t-openai-live-types-v1' : mode === '--realtime' ? 'q4t-openai-realtime-types-v1' :

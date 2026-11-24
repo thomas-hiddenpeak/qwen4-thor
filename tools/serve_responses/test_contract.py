@@ -177,6 +177,21 @@ class ApplicationContract(unittest.TestCase):
                 self.assertTrue(all(not validator.is_valid(n) for n in (0, 1.5, 101, '20', True)))
                 self.assertEqual(validator.is_valid(None), nullable)
 
+    def test_assistant_registry_tool_resources_and_field_bounds(self):
+        valid = dict(model='qwen', name='业'*256, temperature=0, top_p=1)
+        self.assertFalse(errors(valid, 'assistant_create'))
+        for extra in [dict(name='业'*257),dict(temperature=2.01),dict(top_p=-0.01),
+                      dict(tools=[{'type':'file_search'}]*129),
+                      dict(tool_resources={'code_interpreter':{'file_ids':['file_1']*21}}),
+                      dict(tool_resources={'file_search':{}}),
+                      dict(tool_resources={'file_search':{'vector_store_ids':['vs_1','vs_2']}}),
+                      dict(tool_resources={'file_search':{'vector_store_ids':[], 'vector_stores':[]}})]:
+            with self.subTest(field=list(extra)):
+                self.assertTrue(errors(dict(valid, **extra), 'assistant_create'))
+        self.assertFalse(errors(dict(tool_resources={'file_search':{}}), 'assistant_update'))
+        self.assertFalse(errors(dict(valid, tool_resources={'file_search':{
+            'vector_stores':[{'file_ids':[]}]}}), 'assistant_create'))
+
     def test_archived_real_business_wire(self):
         checked, rejected = self.audit(ROOT/'docs/evidence/serve-responses-business-20261109/business-01', legacy=True)
         self.assertGreater(checked, 20)

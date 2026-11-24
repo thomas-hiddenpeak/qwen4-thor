@@ -17,6 +17,8 @@
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/vault_credential_types_data.h"
 #include "vault_credential_internal.h"
+#include "q4t/server/assistant_registry.h"
+#include "q4t/server/assistant_types_data.h"
 #include "q4t/server/agent_registration_types_data.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/responses_item_types_data.h"
@@ -191,6 +193,9 @@ class Validator {
            count <= bounds.GetInt("maxLength");
   }
   static bool WithinBounds(const Json& item, const Json& bounds) {
+    if (item.IsNumber() && bounds.Has("maximum"))
+      return item.number >= bounds.GetNumber("minimum") &&
+             item.number <= bounds.GetNumber("maximum");
     if (item.IsString() && bounds.Has("maxLength"))
       return TextWithinBounds(item.str, bounds);
     if (item.IsArray()) {
@@ -344,6 +349,20 @@ Status ValidateAgentSession(const Json& value, AgentSessionShape shape,
     case AgentSessionShape::kSubagent: root = "subagent"; break;
   }
   return Validate(graph, value, root, error, "");
+}
+
+Status ValidateAssistant(const Json& value, AssistantShape shape,
+                         ChatPlanError* error) {
+  static const Graph graph(assistant_types::kData,
+                           "q4t-openai-assistant-types-v1");
+  const char* root = "";
+  switch (shape) {
+    case AssistantShape::kCreate: root = "create"; break;
+    case AssistantShape::kUpdate: root = "update"; break;
+    case AssistantShape::kResource: root = "resource"; break;
+    case AssistantShape::kQuery: root = "query"; break;
+  }
+  return Validate(graph, value, root, error, "", true);
 }
 
 Status ValidateAgentRegistration(const Json& value, AgentRegistrationShape shape,

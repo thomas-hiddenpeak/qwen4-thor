@@ -25,6 +25,10 @@ class VectorStores {
  public:
   explicit VectorStores(ObjectStore& objects) : objects_(objects) {}
   ObjectReply Create(const BinaryAccess& access, const io::Json& request);
+  // Commit related new application state with the store and all its members.
+  ObjectReply Create(const BinaryAccess& access, const io::Json& request,
+                     const std::string& id,
+                     std::span<const ObjectRequest> related);
   ObjectReply Retrieve(const BinaryAccess& access, const std::string& id);
   ObjectReply Update(const BinaryAccess& access, const std::string& id,
                      const io::Json& request);

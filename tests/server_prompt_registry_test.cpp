@@ -7,6 +7,7 @@
 #include "../src/server/vault_credential_internal.h"
 #include "q4t/server/agent_environment.h"
 #include "q4t/server/agent_registration.h"
+#include "q4t/server/assistant_registry.h"
 #include "q4t/server/agent_session.h"
 #include "q4t/server/agent_vault.h"
 #include "q4t/server/files.h"
@@ -3005,5 +3006,91 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
   const auto* controls = plain.Generation().generation_request.GetArray("tools");
   Q4T_CHECK(!controls || controls->array.empty());
   Q4T_CHECK(Ok(read(resource + "/turns/" + turn)));
+  return true;
+}
+
+Q4T_TEST(assistant_registry_preserves_identity_settings_and_owner_after_reopen) {
+  Fixture fixture;
+  const std::string root = "/v1/assistants";
+  std::string id;
+  {
+    ObjectStore objects(fixture.options);
+    auto result = HandleAssistantRegistry(objects, "POST", root,
+        R"({"model":"cpu","name":"records","reasoning_effort":"low",
+            "tools":[{"type":"function","function":{"name":"records"}}]})",
+        Config(), Access(), false);
+    Q4T_CHECK(Ok(result) && result.http_status == 200);
+    id = result.value.GetString("id");
+    Q4T_CHECK(id.starts_with("asst_") && !result.value.Has("reasoning_effort"));
+  }
+  ObjectStore objects(fixture.options);
+  auto call = [&](std::string method, std::string path, std::string body = "",
+                  StateAccess access = Access()) {
+    return HandleAssistantRegistry(objects, method, path, body, Config(), access, false);
+  };
+  auto path = root + "/" + id;
+  auto saved = call("GET", path);
+  Q4T_CHECK(Ok(saved) && saved.value.GetString("name") == "records");
+  auto updated = call("POST", path, R"({"description":"published","temperature":0})");
+  Q4T_CHECK(Ok(updated) && updated.value.GetString("id") == id &&
+            updated.value.GetString("name") == "records");
+  ObjectRequest read;
+  read.kind = ObjectKind::kAssistant;
+  read.scope = Access().scope;
+  read.id = id;
+  auto raw = objects.Execute(read, Access().deadline);
+  Q4T_CHECK(Ok(raw) && raw.value.Find("data")->GetString("reasoning_effort") == "low");
+  Q4T_CHECK(call("GET", path, "", Access("client:other")).http_status == 404);
+  Q4T_CHECK(call("POST", root, R"({"model":"missing"})").http_status == 404);
+  Q4T_CHECK(call("POST", path, R"({"temperature":2.1})").http_status == 400);
+  Q4T_CHECK(call("POST", path, R"({"top_p":-0.1})").http_status == 400);
+  Q4T_CHECK(call("POST", path, R"({"created_at":3})").http_status == 400);
+  Q4T_CHECK(call("GET", root+"?limit=1.5").http_status == 400);
+  Q4T_CHECK(call("GET", root+"?limit=0").http_status == 400);
+  Q4T_CHECK(call("GET", path+"?order=asc").http_status == 400);
+  Q4T_CHECK(Ok(call("POST",root,R"({"model":"cpu"})")));
+  auto first = call("GET", root+"?order=asc&limit=1");
+  Q4T_CHECK(Ok(first) && first.value.GetBool("has_more"));
+  auto last = call("GET", root+"?order=asc&after="+first.value.GetString("last_id"));
+  Q4T_CHECK(Ok(last) && !last.value.GetBool("has_more"));
+  auto before = call("GET", root+"?order=asc&before="+last.value.GetString("first_id"));
+  Q4T_CHECK(Ok(before) && before.value.GetString("last_id")==first.value.GetString("last_id"));
+  Q4T_CHECK(call("DELETE",path).value.GetBool("deleted") && call("GET",path).http_status==404);
+  return true;
+}
+
+Q4T_TEST(assistant_inline_vector_store_commits_with_owner_or_leaves_neither) {
+  Fixture fixture;
+  fixture.options.max_client_objects = 1;
+  const std::string input = R"({"model":"cpu","tools":[{"type":"file_search"}],
+      "tool_resources":{"file_search":{"vector_stores":[{"file_ids":[]}]}}})";
+  const auto create = [&](ObjectStore& objects) {
+    return HandleAssistantRegistry(objects, "POST", "/v1/assistants", input,
+                                   Config(), Access(), false);
+  };
+  const auto list = [&](ObjectStore& objects, ObjectKind kind) {
+    ObjectRequest page;
+    page.scope = Access().scope;
+    page.kind = kind;
+    page.operation = ObjectOperation::kList;
+    return objects.Execute(page, Access().deadline);
+  };
+  {
+    ObjectStore objects(fixture.options);
+    Q4T_CHECK(!create(objects).ok());
+    for (auto kind : {ObjectKind::kAssistant, ObjectKind::kVectorStore}) {
+      auto page = list(objects, kind);
+      Q4T_CHECK(Ok(page) && page.value.GetArray("data")->array.empty());
+    }
+  }
+  fixture.options.max_client_objects = 2;
+  ObjectStore objects(fixture.options);
+  auto assistant = create(objects);
+  Q4T_CHECK(Ok(assistant));
+  const auto* search = assistant.value.Find("tool_resources")->Find("file_search");
+  Q4T_CHECK(search && !search->Has("vector_stores"));
+  const auto id = search->GetArray("vector_store_ids")->array.at(0).str;
+  auto page = list(objects, ObjectKind::kVectorStore);
+  Q4T_CHECK(Ok(page) && page.value.GetString("first_id") == id);
   return true;
 }

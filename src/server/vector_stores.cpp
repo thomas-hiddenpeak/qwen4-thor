@@ -86,9 +86,13 @@ ObjectReply VectorStores::Publish(const BinaryAccess& access,
 }
 ObjectReply VectorStores::Create(const BinaryAccess& access,
                                  const Json& request) {
+  return Create(access, request, NewObjectId(ObjectKind::kVectorStore), {});
+}
+ObjectReply VectorStores::Create(const BinaryAccess& access,
+                                 const Json& request, const std::string& id,
+                                 std::span<const ObjectRequest> related) {
   auto valid = Fields(request, true);
   if (!valid.ok()) return valid;
-  const auto id = NewObjectId(ObjectKind::kVectorStore);
   if (id.empty())
     return Error(503, "object_id_unavailable", "No vector store ID");
   const auto now = std::time(nullptr);
@@ -123,6 +127,7 @@ ObjectReply VectorStores::Create(const BinaryAccess& access,
       children.push_back(std::move(write));
       Field(data, "members").array.push_back(std::move(edge));
     }
+  children.insert(children.end(), related.begin(), related.end());
   const auto before = Object({{"id", String(id)}, {"created_at", Number(now)}});
   return Publish(access, before, std::move(data), children);
 }

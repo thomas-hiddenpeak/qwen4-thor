@@ -726,6 +726,10 @@ set(protocol_inputs
   src/server/agent_environment_internal.h
   src/server/agent_artifact_internal.h
   src/server/vault_credential_internal.h
+  src/server/contracts/openai_assistant_types_v1.json
+  cmake/assistant_types.h.in
+  include/q4t/server/assistant_registry.h
+  src/server/assistant_registry.cpp
   src/server/contracts/openai_agent_registration_types_v1.json
   cmake/agent_registration_types.h.in
   src/server/contracts/openai_agent_session_types_v1.json
@@ -1053,6 +1057,15 @@ if(NOT environment_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/environment_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/environment_types_data.h" @ONLY)
+
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_assistant_types_v1.json"
+  Q4T_ASSISTANT_TYPES)
+string(FIND "${Q4T_ASSISTANT_TYPES}" ")q4t_types\"" assistant_delimiter)
+if(NOT assistant_delimiter EQUAL -1)
+  message(FATAL_ERROR "Assistant type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/assistant_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/assistant_types_data.h" @ONLY)
 
 file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_agent_registration_types_v1.json"
   Q4T_AGENT_REGISTRATION_TYPES)

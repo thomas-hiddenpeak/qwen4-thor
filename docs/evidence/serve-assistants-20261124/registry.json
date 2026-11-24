@@ -1,0 +1,103 @@
+{
+  "status": "CANDIDATE_BUSINESS_PASS",
+  "binary": "88202732380cf68a2efec716f953de9cc49531c051bbaa661870c0a897eb234b",
+  "ingress": "441f67d0cfb7ad548251baf799ac21ebb64660ce70fc7b6e51563ab2d336831a",
+  "sdk": {
+    "sdk": "7.47.0",
+    "v2_header_required": 400,
+    "created": 2,
+    "deleted": 2,
+    "persisted_tools": 3,
+    "indexed_file": "completed",
+    "retrieved_revision": 460,
+    "source_sha256": "c4ab8696bad304fa31e43234139760100b07917507d515f2fb6fac3b507eda65",
+    "inline_store_visible": true,
+    "file_bound": true,
+    "foreign_statuses": [
+      404,
+      404,
+      404
+    ],
+    "bidirectional_pagination": true,
+    "invalid_model": 404,
+    "invalid_updates": [
+      400,
+      400
+    ],
+    "independent_chat": "42",
+    "driver_sha256": "bedd49a0cc68b15e2489be8c5c3218def71fae072e8546bb774c98527d4bf7c7"
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 38.778,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "protocol_sources_sha256": "2eb34eb250ffff98557b97cca0524d3cc7618d0ff0410370a0f6e914b2a4bdcd",
+  "frozen_official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "methods": {
+    "declared": 140,
+    "exact_success_declarations": 140,
+    "required_methods": 231,
+    "missing_declaration": 91
+  },
+  "storage": "Persisted configuration and private reasoning setting, owner isolation, optimistic revision updates, inline vector store and assistant committed in one object transaction.",
+  "cpu": {
+    "native": 6,
+    "python": 18,
+    "optional_nginx": 1
+  },
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 160,
+    "native_routes": 265,
+    "reviewed_source_anchors": 1253,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "limits": [
+    "Threads, message history, Runs and tool-output continuation remain separate implementation tasks.",
+    "The real indexed lookup exercised one file. Existing vector-store create, object-store and deployment limits apply.",
+    "The stored code interpreter and function definitions were round-tripped. This test searched the actual vector store and did not execute those other tools."
+  ],
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-business-01/result.json",
+      "sha256": "2e70234559dcbafdbf3cf6266a733b55f6de8e553e7cc37b64a3575a9538de60"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-business-01/create/sdk-result.json",
+      "sha256": "0d758c235b497da15f9efa968f151c903f29c0d06fc82921fe133ad33079d183"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-business-lease-01/exit.json",
+      "sha256": "3d133bd8e37851a4da2a868044406d9c8ca8422d899a57fcbb84c25cc2932e37"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-native-cpu-01.log",
+      "sha256": "38c0cca7427f51b3f98d2268ad88f97daaa15165a0f407d9cd71797d3c6144be"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-contracts-cpu-02.log",
+      "sha256": "d14e4d728badd04758ea77bb326fab8c9072007181fcf84bef2c1a41cc50ae06"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-nginx-cpu-01.log",
+      "sha256": "d5a4ecd80819c125bfebf18915a6f135093f42f3f7221f0b61fcfba16ee60425"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-methods-01.json",
+      "sha256": "600862fb48c2d186d697c8887e2b6399ee837e15a59b1181136eb4befccb4ad7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-source-audit-final.json",
+      "sha256": "869b9ae543678c4509c6ae55d58b5c9d2067cb69de17ce85c9ede1033604800e"
+    }
+  ]
+}

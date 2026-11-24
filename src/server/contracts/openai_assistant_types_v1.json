@@ -1,0 +1,1568 @@
+{
+  "profile": "q4t-openai-assistant-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "create": 0,
+    "update": 159,
+    "resource": 169,
+    "deleted": 179,
+    "query": 182
+  },
+  "nodes": [
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": true,
+          "type": 1,
+          "bounds": {
+            "maxLength": 512
+          }
+        },
+        {
+          "name": "instructions",
+          "optional": true,
+          "type": 1,
+          "bounds": {
+            "maxLength": 256000
+          }
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 6
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 1,
+          "bounds": {
+            "maxLength": 256
+          }
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": true,
+          "type": 98
+        },
+        {
+          "name": "response_format",
+          "optional": true,
+          "type": 106
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 2
+          }
+        },
+        {
+          "name": "tool_resources",
+          "optional": true,
+          "type": 124
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 140,
+          "bounds": {
+            "maxItems": 128
+          }
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "null"
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        5
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 3
+    },
+    {
+      "kind": "union",
+      "variants": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97
+      ]
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-6-astra"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-6.1-sol"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-6.1-terra"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-6-sol"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-6-luna"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.6-sol"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.6-terra"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.6-luna"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.5"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.5-2026-04-23"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.4"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.4-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.4-nano"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.4-mini-2026-03-17"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.4-nano-2026-03-17"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.3-chat-latest"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.2"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.2-2025-12-11"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.2-chat-latest"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.2-pro"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.2-pro-2025-12-11"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.1"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.1-2025-11-13"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.1-codex"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.1-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5.1-chat-latest"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5-nano"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5-2025-08-07"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5-mini-2025-08-07"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5-nano-2025-08-07"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-5-chat-latest"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4.1"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4.1-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4.1-nano"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4.1-2025-04-14"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4.1-mini-2025-04-14"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4.1-nano-2025-04-14"
+    },
+    {
+      "kind": "literal",
+      "value": "o4-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "o4-mini-2025-04-16"
+    },
+    {
+      "kind": "literal",
+      "value": "o3"
+    },
+    {
+      "kind": "literal",
+      "value": "o3-2025-04-16"
+    },
+    {
+      "kind": "literal",
+      "value": "o3-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "o3-mini-2025-01-31"
+    },
+    {
+      "kind": "literal",
+      "value": "o1"
+    },
+    {
+      "kind": "literal",
+      "value": "o1-2024-12-17"
+    },
+    {
+      "kind": "literal",
+      "value": "o1-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "o1-preview-2024-09-12"
+    },
+    {
+      "kind": "literal",
+      "value": "o1-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "o1-mini-2024-09-12"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-2024-11-20"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-2024-08-06"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-2024-05-13"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-audio-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-audio-mini-2025-12-15"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-audio-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-audio-preview-2024-10-01"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-audio-preview-2024-12-17"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-audio-preview-2025-06-03"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-mini-audio-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-mini-audio-preview-2024-12-17"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-search-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-mini-search-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-search-preview-2025-03-11"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-mini-search-preview-2025-03-11"
+    },
+    {
+      "kind": "literal",
+      "value": "chatgpt-4o-latest"
+    },
+    {
+      "kind": "literal",
+      "value": "codex-mini-latest"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4o-mini-2024-07-18"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-turbo"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-turbo-2024-04-09"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-0125-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-turbo-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-1106-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-vision-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-0314"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-0613"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-32k"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-32k-0314"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4-32k-0613"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-3.5-turbo"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-3.5-turbo-16k"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-3.5-turbo-0301"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-3.5-turbo-0613"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-3.5-turbo-1106"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-3.5-turbo-0125"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-3.5-turbo-16k-0613"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "none"
+    },
+    {
+      "kind": "literal",
+      "value": "minimal"
+    },
+    {
+      "kind": "literal",
+      "value": "low"
+    },
+    {
+      "kind": "literal",
+      "value": "medium"
+    },
+    {
+      "kind": "literal",
+      "value": "high"
+    },
+    {
+      "kind": "literal",
+      "value": "xhigh"
+    },
+    {
+      "kind": "literal",
+      "value": "max"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        107,
+        108,
+        110,
+        112
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "auto"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 109
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "text"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 111
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "json_object"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "json_schema",
+          "optional": false,
+          "type": 113
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 121
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "schema",
+          "optional": true,
+          "type": 115
+        },
+        {
+          "name": "strict",
+          "optional": true,
+          "type": 118
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        3
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        116
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 117
+    },
+    {
+      "kind": "any"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        119,
+        120
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": false
+    },
+    {
+      "kind": "literal",
+      "value": true
+    },
+    {
+      "kind": "literal",
+      "value": "json_schema"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        123
+      ]
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        125
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": true,
+          "type": 126
+        },
+        {
+          "name": "file_search",
+          "optional": true,
+          "type": 130
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        127
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 20
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        129
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 3
+    },
+    {
+      "kind": "union",
+      "variants": [
+        131
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "vector_store_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 1
+          }
+        },
+        {
+          "name": "vector_stores",
+          "optional": true,
+          "type": 132,
+          "bounds": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        133
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 134
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "chunking_strategy",
+          "optional": true,
+          "type": 135
+        },
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        136,
+        137
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 107
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "static",
+          "optional": false,
+          "type": 138
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 139
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "chunk_overlap_tokens",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "max_chunk_size_tokens",
+          "optional": false,
+          "type": 123
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "static"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        141
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 142
+    },
+    {
+      "kind": "union",
+      "variants": [
+        143,
+        145,
+        154
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 144
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "code_interpreter"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_search",
+          "optional": true,
+          "type": 146
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 153
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        147
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "max_num_results",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "ranking_options",
+          "optional": true,
+          "type": 149
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        123
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        150
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "ranker",
+          "optional": true,
+          "type": 151
+        },
+        {
+          "name": "score_threshold",
+          "optional": false,
+          "type": 123
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        107,
+        152
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "default_2024_08_21"
+    },
+    {
+      "kind": "literal",
+      "value": "file_search"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "function",
+          "optional": false,
+          "type": 155
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 158
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "parameters",
+          "optional": true,
+          "type": 156
+        },
+        {
+          "name": "strict",
+          "optional": true,
+          "type": 118
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        157
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 117
+    },
+    {
+      "kind": "literal",
+      "value": "function"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": true,
+          "type": 1,
+          "bounds": {
+            "maxLength": 512
+          }
+        },
+        {
+          "name": "instructions",
+          "optional": true,
+          "type": 1,
+          "bounds": {
+            "maxLength": 256000
+          }
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 4,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 160
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 1,
+          "bounds": {
+            "maxLength": 256
+          }
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": true,
+          "type": 98
+        },
+        {
+          "name": "response_format",
+          "optional": true,
+          "type": 106
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 2
+          }
+        },
+        {
+          "name": "tool_resources",
+          "optional": true,
+          "type": 163
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 140,
+          "bounds": {
+            "maxItems": 128
+          }
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        7,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        51,
+        52,
+        53,
+        54,
+        59,
+        60,
+        61,
+        62,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        94,
+        95,
+        96,
+        97,
+        161,
+        162
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4.5-preview"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-4.5-preview-2025-02-27"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        164
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": true,
+          "type": 165
+        },
+        {
+          "name": "file_search",
+          "optional": true,
+          "type": 167
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        166
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 20
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        168
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "vector_store_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 123
+        },
+        {
+          "name": "description",
+          "optional": false,
+          "type": 170,
+          "bounds": {
+            "maxLength": 512
+          }
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "instructions",
+          "optional": false,
+          "type": 170,
+          "bounds": {
+            "maxLength": 256000
+          }
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 171,
+          "bounds": {
+            "maxProperties": 16,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 512
+            }
+          }
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 170,
+          "bounds": {
+            "maxLength": 256
+          }
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 172
+        },
+        {
+          "name": "response_format",
+          "optional": true,
+          "type": 106
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 2
+          }
+        },
+        {
+          "name": "tool_resources",
+          "optional": true,
+          "type": 173
+        },
+        {
+          "name": "tools",
+          "optional": false,
+          "type": 141,
+          "bounds": {
+            "maxItems": 128
+          }
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 122,
+          "bounds": {
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        5
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "assistant"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        174
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code_interpreter",
+          "optional": true,
+          "type": 175
+        },
+        {
+          "name": "file_search",
+          "optional": true,
+          "type": 177
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        176
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 20
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        178
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "vector_store_ids",
+          "optional": true,
+          "type": 128,
+          "bounds": {
+            "maxItems": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 180
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 3
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 181
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "boolean"
+    },
+    {
+      "kind": "literal",
+      "value": "assistant.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "before",
+          "optional": true,
+          "type": 114
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 148
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 183
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        184,
+        185
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "asc"
+    },
+    {
+      "kind": "literal",
+      "value": "desc"
+    }
+  ],
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/beta/assistants.ts": "8d3d6b04baade1f5d3c597c1b49915e3e2387dac5ab106e5d0f54b95ea4d4716",
+    "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}

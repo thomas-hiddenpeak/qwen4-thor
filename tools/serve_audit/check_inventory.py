@@ -302,7 +302,13 @@ def current_surface(root):
             'ParseHostedRoute(target)' not in application_routes or
             'environment_detail::WorkspaceFiles(' not in (root/'src/server/agent_environment.cpp').read_text()):
         raise ValueError("review native hosted workspace routing")
-    for path, methods in (('/v1/agents/environments', ('GET', 'POST')),
+    if ('HandleAssistantRegistry(*objects_' not in dispatch or
+            'server::AssistantMethodAllowed(method, path)' not in native or
+            'context->AssistantsBeta()' not in dispatch):
+        raise ValueError('review assistant registry routing and version selector')
+    for path, methods in (('/v1/assistants', ('GET', 'POST')),
+                          ('/v1/assistants/{assistant_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/agents/environments', ('GET', 'POST')),
                           ('/v1/agents/environments/{environment_id}', ('GET',)),
                           ('/v1/agents/environments/{environment_id}/files', ('GET', 'POST')),
                           ('/v1/agents/environments/templates', ('GET', 'POST')),

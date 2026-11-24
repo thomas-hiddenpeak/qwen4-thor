@@ -4816,6 +4816,385 @@
         "x-q4t-body-contract": "empty body only"
       }
     },
+    "/v1/assistants": {
+      "post": {
+        "operationId": "post_v1_assistants",
+        "parameters": [
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "assistant_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_create"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_v1_assistants",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "assistant_query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/assistants/{assistant_id}": {
+      "get": {
+        "operationId": "get_v1_assistants_assistant_id",
+        "parameters": [
+          {
+            "name": "assistant_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_assistants_assistant_id",
+        "parameters": [
+          {
+            "name": "assistant_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_resource"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "assistant_update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_assistants_assistant_id",
+        "parameters": [
+          {
+            "name": "assistant_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "OpenAI-Beta",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "(^|,)[ \\t]*assistants=v2[ \\t]*(,|$)"
+            },
+            "example": "assistants=v2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
     "/v1/agents": {
       "post": {
         "operationId": "post_v1_agents",
@@ -43777,6 +44156,1727 @@
               "id",
               "object",
               "deleted"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_0": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_1",
+                "maxLength": 512
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_1",
+                "maxLength": 256000
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_4",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_6"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_1",
+                "maxLength": 256
+              },
+              "reasoning_effort": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_98"
+              },
+              "response_format": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_106"
+              },
+              "temperature": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_122",
+                "minimum": 0,
+                "maximum": 2
+              },
+              "tool_resources": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_124",
+                "properties": {
+                  "file_search": {
+                    "oneOf": [
+                      {
+                        "required": [
+                          "vector_store_ids"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "vector_stores"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_140",
+                "maxItems": 128
+              },
+              "top_p": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_122",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "model"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_1": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              }
+            ]
+          },
+          "assistant_2": {
+            "type": "null"
+          },
+          "assistant_3": {
+            "type": "string"
+          },
+          "assistant_4": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_5"
+              }
+            ]
+          },
+          "assistant_5": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+            }
+          },
+          "assistant_6": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_7"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_8"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_9"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_10"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_11"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_12"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_13"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_14"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_15"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_16"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_17"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_18"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_19"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_22"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_23"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_24"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_25"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_26"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_27"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_28"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_29"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_30"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_31"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_32"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_33"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_34"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_35"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_36"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_37"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_38"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_39"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_40"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_42"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_43"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_44"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_45"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_46"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_47"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_48"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_49"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_50"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_51"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_52"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_53"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_54"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_55"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_56"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_57"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_58"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_59"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_60"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_61"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_62"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_63"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_64"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_65"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_66"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_67"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_68"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_69"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_70"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_71"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_72"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_73"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_74"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_75"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_76"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_77"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_78"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_79"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_80"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_81"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_82"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_83"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_84"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_85"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_86"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_87"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_88"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_89"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_90"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_91"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_92"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_93"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_94"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_95"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_96"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_97"
+              }
+            ]
+          },
+          "assistant_7": {
+            "type": "string"
+          },
+          "assistant_8": {
+            "const": "gpt-6-astra"
+          },
+          "assistant_9": {
+            "const": "gpt-6.1-sol"
+          },
+          "assistant_10": {
+            "const": "gpt-6.1-terra"
+          },
+          "assistant_11": {
+            "const": "gpt-6-sol"
+          },
+          "assistant_12": {
+            "const": "gpt-6-luna"
+          },
+          "assistant_13": {
+            "const": "gpt-5.6-sol"
+          },
+          "assistant_14": {
+            "const": "gpt-5.6-terra"
+          },
+          "assistant_15": {
+            "const": "gpt-5.6-luna"
+          },
+          "assistant_16": {
+            "const": "gpt-5.5"
+          },
+          "assistant_17": {
+            "const": "gpt-5.5-2026-04-23"
+          },
+          "assistant_18": {
+            "const": "gpt-5.4"
+          },
+          "assistant_19": {
+            "const": "gpt-5.4-mini"
+          },
+          "assistant_20": {
+            "const": "gpt-5.4-nano"
+          },
+          "assistant_21": {
+            "const": "gpt-5.4-mini-2026-03-17"
+          },
+          "assistant_22": {
+            "const": "gpt-5.4-nano-2026-03-17"
+          },
+          "assistant_23": {
+            "const": "gpt-5.3-chat-latest"
+          },
+          "assistant_24": {
+            "const": "gpt-5.2"
+          },
+          "assistant_25": {
+            "const": "gpt-5.2-2025-12-11"
+          },
+          "assistant_26": {
+            "const": "gpt-5.2-chat-latest"
+          },
+          "assistant_27": {
+            "const": "gpt-5.2-pro"
+          },
+          "assistant_28": {
+            "const": "gpt-5.2-pro-2025-12-11"
+          },
+          "assistant_29": {
+            "const": "gpt-5.1"
+          },
+          "assistant_30": {
+            "const": "gpt-5.1-2025-11-13"
+          },
+          "assistant_31": {
+            "const": "gpt-5.1-codex"
+          },
+          "assistant_32": {
+            "const": "gpt-5.1-mini"
+          },
+          "assistant_33": {
+            "const": "gpt-5.1-chat-latest"
+          },
+          "assistant_34": {
+            "const": "gpt-5"
+          },
+          "assistant_35": {
+            "const": "gpt-5-mini"
+          },
+          "assistant_36": {
+            "const": "gpt-5-nano"
+          },
+          "assistant_37": {
+            "const": "gpt-5-2025-08-07"
+          },
+          "assistant_38": {
+            "const": "gpt-5-mini-2025-08-07"
+          },
+          "assistant_39": {
+            "const": "gpt-5-nano-2025-08-07"
+          },
+          "assistant_40": {
+            "const": "gpt-5-chat-latest"
+          },
+          "assistant_41": {
+            "const": "gpt-4.1"
+          },
+          "assistant_42": {
+            "const": "gpt-4.1-mini"
+          },
+          "assistant_43": {
+            "const": "gpt-4.1-nano"
+          },
+          "assistant_44": {
+            "const": "gpt-4.1-2025-04-14"
+          },
+          "assistant_45": {
+            "const": "gpt-4.1-mini-2025-04-14"
+          },
+          "assistant_46": {
+            "const": "gpt-4.1-nano-2025-04-14"
+          },
+          "assistant_47": {
+            "const": "o4-mini"
+          },
+          "assistant_48": {
+            "const": "o4-mini-2025-04-16"
+          },
+          "assistant_49": {
+            "const": "o3"
+          },
+          "assistant_50": {
+            "const": "o3-2025-04-16"
+          },
+          "assistant_51": {
+            "const": "o3-mini"
+          },
+          "assistant_52": {
+            "const": "o3-mini-2025-01-31"
+          },
+          "assistant_53": {
+            "const": "o1"
+          },
+          "assistant_54": {
+            "const": "o1-2024-12-17"
+          },
+          "assistant_55": {
+            "const": "o1-preview"
+          },
+          "assistant_56": {
+            "const": "o1-preview-2024-09-12"
+          },
+          "assistant_57": {
+            "const": "o1-mini"
+          },
+          "assistant_58": {
+            "const": "o1-mini-2024-09-12"
+          },
+          "assistant_59": {
+            "const": "gpt-4o"
+          },
+          "assistant_60": {
+            "const": "gpt-4o-2024-11-20"
+          },
+          "assistant_61": {
+            "const": "gpt-4o-2024-08-06"
+          },
+          "assistant_62": {
+            "const": "gpt-4o-2024-05-13"
+          },
+          "assistant_63": {
+            "const": "gpt-audio-mini"
+          },
+          "assistant_64": {
+            "const": "gpt-audio-mini-2025-12-15"
+          },
+          "assistant_65": {
+            "const": "gpt-4o-audio-preview"
+          },
+          "assistant_66": {
+            "const": "gpt-4o-audio-preview-2024-10-01"
+          },
+          "assistant_67": {
+            "const": "gpt-4o-audio-preview-2024-12-17"
+          },
+          "assistant_68": {
+            "const": "gpt-4o-audio-preview-2025-06-03"
+          },
+          "assistant_69": {
+            "const": "gpt-4o-mini-audio-preview"
+          },
+          "assistant_70": {
+            "const": "gpt-4o-mini-audio-preview-2024-12-17"
+          },
+          "assistant_71": {
+            "const": "gpt-4o-search-preview"
+          },
+          "assistant_72": {
+            "const": "gpt-4o-mini-search-preview"
+          },
+          "assistant_73": {
+            "const": "gpt-4o-search-preview-2025-03-11"
+          },
+          "assistant_74": {
+            "const": "gpt-4o-mini-search-preview-2025-03-11"
+          },
+          "assistant_75": {
+            "const": "chatgpt-4o-latest"
+          },
+          "assistant_76": {
+            "const": "codex-mini-latest"
+          },
+          "assistant_77": {
+            "const": "gpt-4o-mini"
+          },
+          "assistant_78": {
+            "const": "gpt-4o-mini-2024-07-18"
+          },
+          "assistant_79": {
+            "const": "gpt-4-turbo"
+          },
+          "assistant_80": {
+            "const": "gpt-4-turbo-2024-04-09"
+          },
+          "assistant_81": {
+            "const": "gpt-4-0125-preview"
+          },
+          "assistant_82": {
+            "const": "gpt-4-turbo-preview"
+          },
+          "assistant_83": {
+            "const": "gpt-4-1106-preview"
+          },
+          "assistant_84": {
+            "const": "gpt-4-vision-preview"
+          },
+          "assistant_85": {
+            "const": "gpt-4"
+          },
+          "assistant_86": {
+            "const": "gpt-4-0314"
+          },
+          "assistant_87": {
+            "const": "gpt-4-0613"
+          },
+          "assistant_88": {
+            "const": "gpt-4-32k"
+          },
+          "assistant_89": {
+            "const": "gpt-4-32k-0314"
+          },
+          "assistant_90": {
+            "const": "gpt-4-32k-0613"
+          },
+          "assistant_91": {
+            "const": "gpt-3.5-turbo"
+          },
+          "assistant_92": {
+            "const": "gpt-3.5-turbo-16k"
+          },
+          "assistant_93": {
+            "const": "gpt-3.5-turbo-0301"
+          },
+          "assistant_94": {
+            "const": "gpt-3.5-turbo-0613"
+          },
+          "assistant_95": {
+            "const": "gpt-3.5-turbo-1106"
+          },
+          "assistant_96": {
+            "const": "gpt-3.5-turbo-0125"
+          },
+          "assistant_97": {
+            "const": "gpt-3.5-turbo-16k-0613"
+          },
+          "assistant_98": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_99"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_100"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_101"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_102"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_103"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_104"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_105"
+              }
+            ]
+          },
+          "assistant_99": {
+            "const": "none"
+          },
+          "assistant_100": {
+            "const": "minimal"
+          },
+          "assistant_101": {
+            "const": "low"
+          },
+          "assistant_102": {
+            "const": "medium"
+          },
+          "assistant_103": {
+            "const": "high"
+          },
+          "assistant_104": {
+            "const": "xhigh"
+          },
+          "assistant_105": {
+            "const": "max"
+          },
+          "assistant_106": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_107"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_108"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_110"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_112"
+              }
+            ]
+          },
+          "assistant_107": {
+            "const": "auto"
+          },
+          "assistant_108": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_109"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_109": {
+            "const": "text"
+          },
+          "assistant_110": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_111"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_111": {
+            "const": "json_object"
+          },
+          "assistant_112": {
+            "type": "object",
+            "properties": {
+              "json_schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_113"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_121"
+              }
+            },
+            "required": [
+              "json_schema",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_113": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_115"
+              },
+              "strict": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_118"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_114": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              }
+            ]
+          },
+          "assistant_115": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_116"
+              }
+            ]
+          },
+          "assistant_116": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_117"
+            }
+          },
+          "assistant_117": {},
+          "assistant_118": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_119"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_120"
+              }
+            ]
+          },
+          "assistant_119": {
+            "const": false
+          },
+          "assistant_120": {
+            "const": true
+          },
+          "assistant_121": {
+            "const": "json_schema"
+          },
+          "assistant_122": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              }
+            ]
+          },
+          "assistant_123": {
+            "type": "number"
+          },
+          "assistant_124": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_125"
+              }
+            ]
+          },
+          "assistant_125": {
+            "type": "object",
+            "properties": {
+              "code_interpreter": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_126"
+              },
+              "file_search": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_130"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_126": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_127"
+              }
+            ]
+          },
+          "assistant_127": {
+            "type": "object",
+            "properties": {
+              "file_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 20
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_128": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_129"
+              }
+            ]
+          },
+          "assistant_129": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+            }
+          },
+          "assistant_130": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_131"
+              }
+            ]
+          },
+          "assistant_131": {
+            "type": "object",
+            "properties": {
+              "vector_store_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 1
+              },
+              "vector_stores": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_132",
+                "maxItems": 1
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_132": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_133"
+              }
+            ]
+          },
+          "assistant_133": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_134"
+            }
+          },
+          "assistant_134": {
+            "type": "object",
+            "properties": {
+              "chunking_strategy": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_135"
+              },
+              "file_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_4"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_135": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_136"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_137"
+              }
+            ]
+          },
+          "assistant_136": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_107"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_137": {
+            "type": "object",
+            "properties": {
+              "static": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_138"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_139"
+              }
+            },
+            "required": [
+              "static",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_138": {
+            "type": "object",
+            "properties": {
+              "chunk_overlap_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              },
+              "max_chunk_size_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              }
+            },
+            "required": [
+              "chunk_overlap_tokens",
+              "max_chunk_size_tokens"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_139": {
+            "const": "static"
+          },
+          "assistant_140": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_141"
+              }
+            ]
+          },
+          "assistant_141": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_142"
+            }
+          },
+          "assistant_142": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_143"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_145"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_154"
+              }
+            ]
+          },
+          "assistant_143": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_144"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_144": {
+            "const": "code_interpreter"
+          },
+          "assistant_145": {
+            "type": "object",
+            "properties": {
+              "file_search": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_146"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_153"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_146": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_147"
+              }
+            ]
+          },
+          "assistant_147": {
+            "type": "object",
+            "properties": {
+              "max_num_results": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_148"
+              },
+              "ranking_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_149"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_148": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              }
+            ]
+          },
+          "assistant_149": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_150"
+              }
+            ]
+          },
+          "assistant_150": {
+            "type": "object",
+            "properties": {
+              "ranker": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_151"
+              },
+              "score_threshold": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              }
+            },
+            "required": [
+              "score_threshold"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_151": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_107"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_152"
+              }
+            ]
+          },
+          "assistant_152": {
+            "const": "default_2024_08_21"
+          },
+          "assistant_153": {
+            "const": "file_search"
+          },
+          "assistant_154": {
+            "type": "object",
+            "properties": {
+              "function": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_155"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_158"
+              }
+            },
+            "required": [
+              "function",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_155": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "parameters": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_156"
+              },
+              "strict": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_118"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_156": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_157"
+              }
+            ]
+          },
+          "assistant_157": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_117"
+            }
+          },
+          "assistant_158": {
+            "const": "function"
+          },
+          "assistant_159": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_1",
+                "maxLength": 512
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_1",
+                "maxLength": 256000
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_4",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_160"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_1",
+                "maxLength": 256
+              },
+              "reasoning_effort": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_98"
+              },
+              "response_format": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_106"
+              },
+              "temperature": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_122",
+                "minimum": 0,
+                "maximum": 2
+              },
+              "tool_resources": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_163"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_140",
+                "maxItems": 128
+              },
+              "top_p": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_122",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_160": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_7"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_34"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_35"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_36"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_37"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_38"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_39"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_41"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_42"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_43"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_44"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_45"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_46"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_51"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_52"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_53"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_54"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_59"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_60"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_61"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_62"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_77"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_78"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_79"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_80"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_81"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_82"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_83"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_84"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_85"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_86"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_87"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_88"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_89"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_90"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_91"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_92"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_94"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_95"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_96"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_97"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_161"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_162"
+              }
+            ]
+          },
+          "assistant_161": {
+            "const": "gpt-4.5-preview"
+          },
+          "assistant_162": {
+            "const": "gpt-4.5-preview-2025-02-27"
+          },
+          "assistant_163": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_164"
+              }
+            ]
+          },
+          "assistant_164": {
+            "type": "object",
+            "properties": {
+              "code_interpreter": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_165"
+              },
+              "file_search": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_167"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_165": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_166"
+              }
+            ]
+          },
+          "assistant_166": {
+            "type": "object",
+            "properties": {
+              "file_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 20
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_167": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_168"
+              }
+            ]
+          },
+          "assistant_168": {
+            "type": "object",
+            "properties": {
+              "vector_store_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 1
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_169": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_123"
+              },
+              "description": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_170",
+                "maxLength": 512
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "instructions": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_170",
+                "maxLength": 256000
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_171",
+                "maxProperties": 16,
+                "propertyNames": {
+                  "maxLength": 64
+                },
+                "additionalProperties": {
+                  "maxLength": 512
+                }
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_170",
+                "maxLength": 256
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_172"
+              },
+              "response_format": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_106"
+              },
+              "temperature": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_122",
+                "minimum": 0,
+                "maximum": 2
+              },
+              "tool_resources": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_173"
+              },
+              "tools": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_141",
+                "maxItems": 128
+              },
+              "top_p": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_122",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": [
+              "created_at",
+              "description",
+              "id",
+              "instructions",
+              "metadata",
+              "model",
+              "name",
+              "object",
+              "tools"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_170": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              }
+            ]
+          },
+          "assistant_171": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_5"
+              }
+            ]
+          },
+          "assistant_172": {
+            "const": "assistant"
+          },
+          "assistant_173": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_174"
+              }
+            ]
+          },
+          "assistant_174": {
+            "type": "object",
+            "properties": {
+              "code_interpreter": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_175"
+              },
+              "file_search": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_177"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_175": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_176"
+              }
+            ]
+          },
+          "assistant_176": {
+            "type": "object",
+            "properties": {
+              "file_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 20
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_177": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_178"
+              }
+            ]
+          },
+          "assistant_178": {
+            "type": "object",
+            "properties": {
+              "vector_store_ids": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_128",
+                "maxItems": 1
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_179": {
+            "type": "object",
+            "properties": {
+              "deleted": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_180"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_3"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_181"
+              }
+            },
+            "required": [
+              "deleted",
+              "id",
+              "object"
+            ],
+            "additionalProperties": false
+          },
+          "assistant_180": {
+            "type": "boolean"
+          },
+          "assistant_181": {
+            "const": "assistant.deleted"
+          },
+          "assistant_182": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              },
+              "before": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100,
+                "default": 20
+              },
+              "order": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "assistant_183": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_184"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_185"
+              }
+            ]
+          },
+          "assistant_184": {
+            "const": "asc"
+          },
+          "assistant_185": {
+            "const": "desc"
+          },
+          "assistant_create": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_0"
+          },
+          "assistant_update": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_159"
+          },
+          "assistant_resource": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_169"
+          },
+          "assistant_deleted": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_179"
+          },
+          "assistant_query": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_182"
+          },
+          "assistant_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_resource"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "first_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "last_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "has_more",
+              "first_id",
+              "last_id"
             ],
             "additionalProperties": false
           },

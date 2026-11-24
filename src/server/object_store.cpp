@@ -761,6 +761,7 @@ void ObjectStore::RecordAuxiliaryCleanupFailure() noexcept {
 std::string NewObjectId(ObjectKind kind) {
   auto prefix = Kind(kind);
   if (prefix.empty()) return {};
+  if (kind == ObjectKind::kAssistant) prefix = "asst";
   if (kind == ObjectKind::kResponse) prefix = "resp";
   if (kind == ObjectKind::kConversation) prefix = "conv";
   if (kind == ObjectKind::kChat) prefix = "chatcmpl";
