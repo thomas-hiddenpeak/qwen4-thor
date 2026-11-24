@@ -26,8 +26,8 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 EVAL_RECORD = 'q4t-profile-business-v45'
 EVAL_FORMAT = 'q4t-eval-source-v1'
 EVAL_REVIEWED = {
-    'primary': '4c5278816adb6accb8e731158f96204d849658379062e87b972f6b4a6a974f43',
-    'light': '5219f75947f0f38367de3ed3aa9d626e7331d090cfcdfdfa2c5e1f102a6ebd58',
+    'primary': 'bd258166e4b8719408474b18aac3a5cf684722753f1bfc7e75709d53097cfe8e',
+    'light': 'f8d8c92cab7612628fb1c105afdea20a9c081b77289e6a745367aded9db4a95b',
 }
 EVAL_CAPABILITY = dict(endpoint='/v1/evals',
     run_sources=['jsonl', 'completions', 'responses'],
@@ -259,6 +259,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'dcb959dc77dcbd23b96df4c56d5d3c6a86386a342f4dd8de4cc244e9bb265c0e':
+        '69a8c51d99aaaf17574cef5e5d688c808925cf5eeb69d2642125d22480e7174e',
     'b65198bc23c0b545f11ed565601fa9942c8a1ca960d0613a385de251168073e4':
         '69a8c51d99aaaf17574cef5e5d688c808925cf5eeb69d2642125d22480e7174e',
     'b4250176a3bdf3c94fab37921aadf211e9c29edef1da7e83965f8e0aaf8f049e':
