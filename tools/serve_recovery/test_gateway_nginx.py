@@ -110,7 +110,7 @@ class Stack:
                 self.close_connection = True
             def application_path(self, method):
                 path = self.path.split('?', 1)[0]
-                roots = ('/v1/evals', '/v1/chatkit', '/v1/webhook_endpoints', '/v1/webhook_event_types', '/v1/skills', '/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
+                roots = ('/v1/safety', '/v1/evals', '/v1/chatkit', '/v1/webhook_endpoints', '/v1/webhook_event_types', '/v1/skills', '/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
                          '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/translations/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/realtime/translations/calls', '/v1/live/sessions')
@@ -436,7 +436,7 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(output_item_id='outputitem_1', eval_id='eval_1', webhook_endpoint_id='whe_1', automation_id='automation_1', invocation_id='invocation_1',
+            identities = dict(id='C-1', output_item_id='outputitem_1', eval_id='eval_1', webhook_endpoint_id='whe_1', automation_id='automation_1', invocation_id='invocation_1',
                               run_id='run_1', step_id='step_1', thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1', container_id='cntr_1', skill_id='skill_1',
@@ -445,6 +445,8 @@ class NginxTests(unittest.TestCase):
                               voice_id='voice_1', trace_id='trace_1', session_id='live_1', call_id='rtc_1')
             self.assertLessEqual(set(re.findall(r'\{([^}]+)\}', template)),
                                  identities.keys())
+            if template.startswith('/v1/safety/alerts/'):
+                identities['id'] = 'alert_' + 'a'*32
             if template.startswith('/v1/chatkit/'):
                 identities.update(session_id='cksess_1', thread_id='cthr_1')
             if template.startswith('/v1/agents/sessions/'):
@@ -602,6 +604,18 @@ class NginxTests(unittest.TestCase):
                 row = self.stack.application_requests[-1]
                 self.assertEqual((row['method'], row['path'], row['client'], row['openai_beta']),
                                  ('GET' if body is None else 'POST', path, 'alpha', 'assistants=v2'))
+
+    def test_safety_reads_forward_only_authenticated_project(self):
+        self.ready()
+        for path in ('/v1/safety/alerts/alert_'+32*'a', '/v1/safety/cases/C-qa'):
+            with self.subTest(path=path):
+                self.assertEqual(self.stack.request(path=path)[0], 200)
+                request = self.stack.application_requests[-1]
+                self.assertEqual((request['client'], request['method'], request['path']),
+                                 ('alpha', 'GET', path))
+                before = len(self.stack.application_requests)
+                self.assertEqual(self.stack.request({}, path=path)[0], 404)
+                self.assertEqual(len(self.stack.application_requests), before)
 
     def test_webhook_management_preserves_owner_and_query(self):
         self.ready()

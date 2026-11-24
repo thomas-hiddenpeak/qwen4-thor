@@ -2,6 +2,8 @@
 #include "../src/server/webhook_keys.h"
 #include "../src/server/webhook_events.h"
 #include "q4t/server/webhook.h"
+#include "q4t/server/safety_records.h"
+#include "q4t/server/state_key_admin.h"
 #include "q4t/server/agent_session.h"
 #include "q4t/server/agent_environment.h"
 #include "q4t/server/server_options.h"
@@ -662,6 +664,153 @@ Q4T_TEST(environment_list_paginates_visible_resources_around_expired_entries) {
   const auto empty = list("?after=environment_1&order=desc&limit=1");
   Q4T_CHECK(empty.ok() && empty.value.GetArray("data")->array.empty() &&
             !empty.value.GetBool("has_more"));
+  return true;
+}
+
+Json SafetyCommand(bool alert, std::string id) {
+  Json resource =
+      Object({{"object", String(alert ? "safety.alert" : "safety.case")},
+              {"id", String(std::move(id))},
+              {"created_at", Number(std::time(nullptr) - 10)},
+              {"reason", Json()}});
+  if (alert) {
+    Set(&resource, "model", String("qwen3.8-flash-next"));
+    Set(&resource, "request_id", String("req_reviewed"));
+    Set(&resource, "response_id", String("resp_reviewed"));
+    Set(&resource, "request_paused", Boolean(false));
+    Set(&resource, "error_type", String("other"));
+  } else {
+    Set(&resource, "entity_identifier", String("regression-tenant"));
+    Set(&resource, "notice", Object({{"type", String("warning")}}));
+  }
+  return Object({{"version", Number(1)},
+                 {"action", String("safety_publish")},
+                 {"client_id", String("one")},
+                 {"resource", std::move(resource)}});
+}
+constexpr auto kAlert = "alert_0123456789abcdef0123456789abcdef";
+
+Q4T_TEST(
+    safety_records_local_approval_reopen_deduplication_and_tenant_isolation) {
+  Fixture f;
+  const auto approved = SafetyCommand(true, kAlert);
+  const std::string path = std::string("/v1/safety/alerts/") + kAlert;
+  {
+    ObjectStore db(f.options);
+    Q4T_CHECK(PublishSafetyRecord(db, approved, Access()).http_status == 403);
+    Q4T_CHECK(
+        db.Execute(Subscription("client:one", "whe_a", "safety.alert.created"),
+                   Access().deadline)
+            .ok());
+    auto admin = StateKeyAdmin::Start(db, f.options.directory);
+    Q4T_CHECK(admin);
+    auto first = ExchangeStateKeyCommand(f.options.directory, approved,
+                                         Access().deadline);
+    Q4T_CHECK(first.ok() && first.value.GetString("id") == kAlert);
+    auto read = GetSafetyRecord(db, Access(), "GET", path, "");
+    Q4T_CHECK(read.ok() &&
+              OutputJson(read.value) == OutputJson(*approved.Find("resource")));
+    Q4T_CHECK(!read.value.GetBool("request_paused"));
+    Q4T_CHECK(GetSafetyRecord(db, Access("client:peer"), "GET", path, "")
+                  .http_status == 404);
+    Q4T_CHECK(GetSafetyRecord(db, Access(), "POST", path, "").http_status ==
+              405);
+    Q4T_CHECK(GetSafetyRecord(db, Access(), "GET", path, "{}").http_status ==
+              400);
+    Q4T_CHECK(GetSafetyRecord(db, Access(), "GET", path + "?project=one", "")
+                  .http_status == 400);
+    Q4T_CHECK(
+        GetSafetyRecord(db, Access(), "GET", path + "0", "").http_status ==
+        400);
+    Q4T_CHECK(
+        GetSafetyRecord(db, Access(), "GET", "/v1/safety/alerts/unknown", "")
+            .http_status == 404);
+  }
+  ObjectStore db(f.options);
+  auto again = approved;
+  auto& fields = Field(again, "resource").object;
+  std::reverse(fields.begin(), fields.end());
+  Q4T_CHECK(PublishSafetyRecord(db, again, Access("local:key-admin")).ok());
+  Set(&Field(again, "resource"), "request_paused", Boolean(true));
+  Q4T_CHECK(
+      PublishSafetyRecord(db, again, Access("local:key-admin")).http_status ==
+      409);
+  auto events = Events(db);
+  Q4T_CHECK(events.ok() && events.value.GetArray("data")->array.size() == 1);
+  const auto wire = OutputJson(events.value);
+  Q4T_CHECK(wire.find(kAlert) != wire.npos &&
+            wire.find("safety.alert.created") != wire.npos &&
+            wire.find("req_reviewed") == wire.npos);
+  Q4T_CHECK(Events(db, "client:peer").value.GetArray("data")->array.empty());
+  return true;
+}
+
+Q4T_TEST(safety_records_case_notice_contract_and_event_identity) {
+  Fixture f;
+  ObjectStore db(f.options);
+  for (const auto* notice : {"warning", "deactivation"}) {
+    const auto type = "safety." + std::string(notice) + "_issued";
+    const auto id = "C-" + std::string(notice);
+    auto cmd = SafetyCommand(false, id);
+    Set(&Field(Field(cmd, "resource"), "notice"), "type", String(notice));
+    Q4T_CHECK(db.Execute(Subscription("client:one",
+                                      "whe_" + std::string(notice), type),
+                         Access().deadline)
+                  .ok());
+    Q4T_CHECK(PublishSafetyRecord(db, cmd, Access("local:key-admin")).ok());
+    const auto path = "/v1/safety/cases/" + id;
+    auto read = GetSafetyRecord(db, Access(), "GET", path, "");
+    Q4T_CHECK(read.ok() &&
+              read.value.Find("notice")->GetString("type") == notice);
+    Q4T_CHECK(read.value.Find("reason")->IsNull() &&
+              GetSafetyRecord(db, Access("client:peer"), "GET", path, "")
+                      .http_status == 404);
+    Q4T_CHECK(OutputJson(Events(db).value).find(type) != std::string::npos);
+  }
+  auto invalid = SafetyCommand(false, "C-invalid");
+  Set(&Field(Field(invalid, "resource"), "notice"), "type",
+      String("unreviewed"));
+  Q4T_CHECK(
+      PublishSafetyRecord(db, invalid, Access("local:key-admin")).http_status ==
+      400);
+  auto expired = SafetyCommand(false, "C-expired");
+  Set(&expired, "record_expires_at", Number(std::time(nullptr) - 1));
+  Q4T_CHECK(
+      PublishSafetyRecord(db, expired, Access("local:key-admin")).http_status ==
+      400);
+  Q4T_CHECK(Events(db).value.GetArray("data")->array.size() == 2);
+  return true;
+}
+
+Q4T_TEST(
+    safety_records_temporary_explanation_expires_independently_of_summary) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto admin = Access("local:key-admin");
+  auto cmd = SafetyCommand(true, kAlert);
+  Set(&Field(cmd, "resource"), "detailed_explanation",
+      String("temporary review"));
+  Q4T_CHECK(PublishSafetyRecord(db, cmd, admin).http_status == 400);
+  Set(&cmd, "explanation_expires_at", Number(std::time(nullptr) + 3));
+  Q4T_CHECK(PublishSafetyRecord(db, cmd, admin).ok());
+  ObjectRequest summary;
+  summary.id = kAlert;
+  summary.kind = ObjectKind::kSafetyAlert;
+  summary.scope = "client:one";
+  auto saved = db.Execute(summary, Access().deadline);
+  Q4T_CHECK(saved.ok() && OutputJson(saved.value).find("temporary review") ==
+                              std::string::npos);
+  const std::string path = std::string("/v1/safety/alerts/") + kAlert;
+  auto first = GetSafetyRecord(db, Access(), "GET", path, "");
+  Q4T_CHECK(first.ok() && first.value.GetString("detailed_explanation") ==
+                              "temporary review");
+  std::this_thread::sleep_until(std::chrono::system_clock::from_time_t(
+      cmd.GetInt("explanation_expires_at")));
+  auto after = GetSafetyRecord(db, Access(), "GET", path, "");
+  Q4T_CHECK(after.ok() && !after.value.Has("detailed_explanation"));
+  Q4T_CHECK(PublishSafetyRecord(db, cmd, admin).ok());
+  summary.kind = ObjectKind::kSafetyDetail;
+  Q4T_CHECK(db.Execute(summary, Access().deadline).http_status == 404);
   return true;
 }
 

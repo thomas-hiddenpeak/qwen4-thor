@@ -53,7 +53,10 @@ enum class ObjectKind {
   kChatKitThread,
   kEval,
   kEvalRun,
-  kEvalOutput
+  kEvalOutput,
+  kSafetyAlert,
+  kSafetyCase,
+  kSafetyDetail
 };
 enum class ObjectOperation {
   kGet,

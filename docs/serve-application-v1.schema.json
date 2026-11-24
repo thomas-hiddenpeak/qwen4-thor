@@ -30278,6 +30278,125 @@
       ],
       "additionalProperties": false
     },
+    "safety_case": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "unixtime"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "object": {
+          "const": "safety.case"
+        },
+        "entity_identifier": {
+          "type": "string"
+        },
+        "notice": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "warning",
+                "deactivation"
+              ]
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "created_at",
+        "reason",
+        "object",
+        "entity_identifier",
+        "notice"
+      ],
+      "additionalProperties": false
+    },
+    "safety_alert": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "unixtime"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "object": {
+          "const": "safety.alert"
+        },
+        "model": {
+          "type": "string"
+        },
+        "request_id": {
+          "type": "string"
+        },
+        "response_id": {
+          "type": "string"
+        },
+        "request_paused": {
+          "type": "boolean"
+        },
+        "error_type": {
+          "enum": [
+            "potentially_unintended_data_access",
+            "potentially_unintended_data_transfer",
+            "potentially_unintended_destructive_activity",
+            "other"
+          ]
+        },
+        "detailed_explanation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "created_at",
+        "reason",
+        "object",
+        "model",
+        "request_id",
+        "response_id",
+        "request_paused",
+        "error_type"
+      ],
+      "additionalProperties": false
+    },
     "webhook_0": {
       "type": "object",
       "properties": {

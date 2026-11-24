@@ -1,0 +1,49 @@
+{
+  "stage": "targeted_host_verified",
+  "issued": false,
+  "methods": [
+    "GET /v1/safety/alerts/{id}",
+    "GET /v1/safety/cases/{id}"
+  ],
+  "scope": "authenticated project",
+  "operator": "same-UID live Unix command; stable review ID, create-only transaction",
+  "notifications": [
+    "safety.alert.created",
+    "safety.warning_issued",
+    "safety.deactivation_issued"
+  ],
+  "host_checks": {
+    "records": 3,
+    "webhooks": 12,
+    "openapi": 3,
+    "optional_nginx": 1
+  },
+  "receipts": {
+    "webhook-dev/safety-host-build-02.log": "d904e22d61862f65e6466bf280290050ab9cd99b32250613192a7115a8c5476b",
+    "webhook-dev/safety-records-01.log": "be764c5fb853ec273eb65beb38a5fe65e853af0b5c95280377befa6c52bf15d5",
+    "webhook-dev/safety-webhooks-01.log": "310313ee92b203cd6926cbbd9fe9a48950faf239d7c8a5f53ff1845d8099e160",
+    "webhook-dev/safety-contract-01.log": "98800759b13a22531fa06ec8930cf93cc9988685fc18b9f51f986a3477f8d7e8",
+    "webhook-dev/safety-nginx-01.log": "77c0af7040408c593cbf2d3591bdad17ed0b7b5411e97467d26729b4aac6f30c",
+    "webhook-dev/safety-inventory.json": "f891319cf7bee128df18fbf0c739e00cc866155b89984d689af72370a3dde09e",
+    "safety-candidate-methods.json": "c451cfbb4eb2548b1cb9a5a30c2d29e083ad1d73872d7bcd4d7fb1e4fdaca890",
+    "official-methods/openapi.json": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+  },
+  "candidate_declarations": {
+    "required": 231,
+    "matching": 217,
+    "missing": 14
+  },
+  "negative_checks": [
+    "foreign project",
+    "invalid action and overlong ID",
+    "altered duplicate",
+    "expired summary",
+    "temporary explanation expiry and independent summary",
+    "unapproved notice",
+    "optional frontend public mutations refused"
+  ],
+  "pending": [
+    "native TLS and official SDK with a real project request",
+    "reversible issuance"
+  ]
+}

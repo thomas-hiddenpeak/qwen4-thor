@@ -52,6 +52,7 @@
 #include "q4t/server/speech_encode.h"
 #include "q4t/server/speech_codec_stream.h"
 #include "q4t/server/file_legacy.h"
+#include "q4t/server/safety_records.h"
 #include "q4t/server/state_key_admin.h"
 #include "q4t/server/cache_io.h"
 #include "q4t/service/service_cli.h"
@@ -84,6 +85,7 @@ void PrintUsage(const char* prog) {
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
       "  service   Manage native service lifecycle and deployment\n"
       "            (q4t service --help)\n"
+      "  safety    Publish a reviewed project safety record (q4t safety --help)\n"
       "  state-keys  Inspect/rotate native encrypted-state keys\n"
       "              (q4t state-keys --help)\n"
       "  state-retention  Inspect/collect protected application state\n"
@@ -1008,6 +1010,8 @@ int main(int argc, char** argv) {
   if (pdf_worker >= 0) return pdf_worker;
   const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);
   if (legacy_worker >= 0) return legacy_worker;
+  const int safety = q4t::server::MaybeRunSafetyCommand(argc, argv);
+  if (safety >= 0) return safety;
   const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
   if (state_keys >= 0) return state_keys;
   const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);

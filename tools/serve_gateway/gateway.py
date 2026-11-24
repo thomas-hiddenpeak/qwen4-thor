@@ -172,6 +172,8 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/chatkit/threads/{thread_id}/items', 'control'),
     *((method, path, 'data' if method == 'POST' and not path.endswith('/cancel') else 'control')
       for path, methods in EVAL_ROUTES for method in methods),
+    ('GET', '/v1/safety/alerts/{id}', 'control'),
+    ('GET', '/v1/safety/cases/{id}', 'control'),
     ('GET', '/v1/webhook_event_types', 'control'),
     *((method, '/v1/webhook_endpoints' + suffix,
        'data' if method == 'POST' else 'control')
@@ -322,6 +324,7 @@ def route_map():
     for method, path, lane in APPLICATION_ROUTES:
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
                            'eval_[A-Za-z0-9_-]{1,123}' if part == '{eval_id}' else
+                           '[A-Za-z0-9_-]+' if part == '{id}' and path.startswith('/v1/safety/') else
                            'whe_[A-Za-z0-9_-]{1,124}' if part == '{webhook_endpoint_id}' else
                            'automation_[A-Za-z0-9_-]{1,117}' if part == '{automation_id}' else
                            'invocation_[A-Za-z0-9_-]{1,117}' if part == '{invocation_id}' else

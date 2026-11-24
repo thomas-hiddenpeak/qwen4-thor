@@ -317,6 +317,7 @@ set(protocol_inputs
   src/server/native_crypto.cpp
   include/q4t/server/state_cipher.h
   src/server/state_cipher.cpp
+  include/q4t/server/safety_records.h
   include/q4t/server/state_key_admin.h
   src/server/state_key_admin.cpp
   src/server/state_key_cli.cpp
@@ -531,6 +532,8 @@ set(protocol_inputs
   src/server/chatkit_threads.cpp
   src/server/chatkit_credentials.cpp
   src/server/chatkit_credentials.h
+  src/server/safety_records.cpp
+  src/server/safety_cli.cpp
   src/server/webhook_registry.cpp
   src/server/webhook_keys.cpp
   src/server/webhook_events.cpp
