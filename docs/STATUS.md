@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+真实主配置退出时，6 行中已有 1 行持久化；轻配置接手后保留原结果 ID，完成其余 5 行。首轮发行检查同时发现配置 schema 漏报 evaluation_run_errors 和 eval_dispatcher。已补齐两份配置规范，在旧配置兼容检查中验证计数类型、下限和 readiness 隔离；接下来用两份已有 HTTP 原文复验。[初次失败及复核](evidence/serve-evals-20261125/recovery.json)
+
 评估运行现在可以在确认服务退出或执行进程中断后，对没有工具的纯文本采样按原种子、预算和数据行重试一次。显式取消、父运行已撤销、涉及工具和再次中断均有回归覆盖。14 项 Evals 主机检查和两项容量迁移合同通过。下一步在真实未完成的评估运行上切换容量配置，核对先前逐条结果 ID 与剩余推理。[恢复回执](evidence/serve-evals-20261125/recovery.json)
 
 在 Thor 原生 TLS 上，官方 SDK 提交了项目记录中的 157 及反例 158。两类评分模型共调用四次，分别给出 correct / incorrect 和 0.75 / 0.25；逐条原始样本均保留。四份原始 HTTP 响应通过冻结规范校验，跨客户为 404，独立 Chat 返回 42。一次模型启动用时 55.731 秒。下一步验证发行包在容量切换及进程中断时续跑同一个评估。[验收回执](evidence/serve-evals-20261125/model-graders.json)

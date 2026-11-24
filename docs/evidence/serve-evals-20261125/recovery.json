@@ -31,5 +31,11 @@
     "real in-flight capacity change",
     "managed model restart and independent rollback",
     "default release and day handoff"
-  ]
+  ],
+  "initial_config_failure": {
+    "status": "FAIL",
+    "reason": "The standalone schema rejected evaluation_run_errors. The native configuration also included the new eval_dispatcher health group.",
+    "raw_sha256": "d759a8936447dfda5aef2e88eaec1aa248c4954b3f0eb192139865b117e87ebd",
+    "cpu_regression_sha256": "76e4dd0da49684bfecf1d0b1e43bef5ffc0afd07b37a4a33fcb60d2406e7b8d3"
+  }
 }
