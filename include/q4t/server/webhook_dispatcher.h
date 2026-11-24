@@ -23,7 +23,7 @@ class WebhookDispatcher {
   std::mutex mutex_;
   std::condition_variable_any changed_;
   std::atomic<int64_t> acknowledged_{0}, retries_{0}, errors_{0}, deferred_{0},
-      dropped_{0};
+      dropped_{0}, expiry_errors_{0};
   std::jthread thread_;
 };
 }  // namespace q4t::server

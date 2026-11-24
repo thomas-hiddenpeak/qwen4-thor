@@ -164,7 +164,8 @@ class Inspector {
     }
     if (status == "connected")
       RequiredId(data, "bound_session", "agent_session_");
-    else if (status != "ready")
+    else if ((status != "ready" && status != "expired") ||
+             data.Has("bound_session"))
       value.uncertain = true;
     for (const auto& vault : vaults->array) {
       if (!vault.IsString() || !vault.str.starts_with("vault_"))

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+两个真实托管环境分别保持空置和绑定。空置环境在生产默认的 300 秒时限到达后主动投递签名 expired，客户端在秒级时钟上同秒收到，期间没有轮询该环境。已绑定环境仍 connected，过期环境拒绝接入为 409，另一客户读取 404 并在 Chat 答 42。一次模型启动耗时 341.260 秒。CPU 另验证空闲进程自行提交、过期对象分页与保留引用，共 13 项。默认仍为 rev472。后续按上游新建独立环境的约定补齐 128 个会话共享、20 分钟闲置挂起、7 天检查点恢复以及预热失败事件。[业务回执](evidence/serve-webhooks-20261124/environment-expiry.json) [上游环境约定](https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed)
+
 官方 SDK 订阅方从签名通知得知 Agent 等待工具，随后读取同一会话、回填真实发行记录，模型答 472；另一轮取消等待中的工具后收到 idle，同一幂等键重放均为 202。两个短验分别收到 7 条和 6 条通知，13 份载荷通过官方 schema，耗时 40.166 秒和 40.123 秒。10 项 CPU 检查覆盖单空位逐条恢复双通知、永久与可重试的回合失败。独立 Chat 两次均答 42。PR #101 已合入主线，默认仍为 rev472。下一项为预热环境过期和其他生产端状态。[真实回执](evidence/serve-webhooks-20261124/agent-turns.json)
 
 原生 TLS 订阅方已用官方 SDK 验签两个真实 Agent 通知。托管环境预热产生 ready，同一幂等键重放返回原环境；创建会话产生 created，通知携带同一环境 ID。三项跨客户读取均返回 404，独立 Chat 答 42。单次模型启动用时 35.819 秒。两份通知通过官方 schema，8 项 Webhook CPU 用例通过。默认仍为 rev472。下一项覆盖同一会话多轮状态变化，以及存储容量紧张时的多条通知。[业务回执](evidence/serve-webhooks-20261124/agent-events.json)

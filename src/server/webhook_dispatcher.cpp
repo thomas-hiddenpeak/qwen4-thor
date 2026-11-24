@@ -140,7 +140,7 @@ void WebhookDispatcher::Join() {
 Json WebhookDispatcher::Health() const {
   return Object({{"acknowledged", Number(acknowledged_.load())},
                  {"retries", Number(retries_.load())},
-                 {"errors", Number(errors_.load())},
+                 {"errors", Number(errors_.load() + expiry_errors_.load())},
                  {"capacity_deferrals", Number(deferred_.load())},
                  {"capacity_losses", Number(dropped_.load())}});
 }
@@ -159,6 +159,7 @@ void WebhookDispatcher::Run(ObjectStore& objects, ClientAdmission& clients,
       if (diag.ok()) {
         deferred_ = diag.value.GetInt("capacity_deferrals");
         dropped_ = diag.value.GetInt("capacity_losses");
+        expiry_errors_ = diag.value.GetInt("environment_expiry_retries");
         cursor = diag.value.GetString("after");
       } else if (!cancelled()) {
         ++errors_;

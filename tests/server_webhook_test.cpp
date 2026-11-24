@@ -3,6 +3,7 @@
 #include "../src/server/webhook_events.h"
 #include "q4t/server/webhook.h"
 #include "q4t/server/agent_session.h"
+#include "q4t/server/agent_environment.h"
 #include "q4t/server/server_options.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/test.h"
@@ -12,6 +13,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <set>
+#include <thread>
 
 namespace q4t::server {
 namespace {
@@ -518,6 +520,104 @@ Q4T_TEST(webhook_session_failure_and_retryable_turn_follow_public_state) {
               payload.object.size() == 2);
     Q4T_CHECK(OutputJson(event).find("private error") == std::string::npos);
   }
+  return true;
+}
+
+Q4T_TEST(webhook_warm_expiry_commits_on_idle_worker_and_skips_attached) {
+  Fixture f;
+  ObjectStore db(f.options);
+  Q4T_CHECK(db.Execute(Subscription(Access().scope, "whe_expiry",
+                                    "agent.environment.expired"),
+                       Access().deadline)
+                .ok());
+  const auto due = std::time(nullptr) + 2;
+  ObjectRequest env;
+  env.kind = ObjectKind::kEnvironment;
+  env.operation = ObjectOperation::kPut;
+  env.id = "environment_unused";
+  env.scope = Access().scope;
+  env.ttl_seconds = 60;
+  env.data =
+      Object({{"resource", Object({{"id", String(env.id)},
+                                   {"object", String("agent.environment")},
+                                   {"type", String("openai_hosted")},
+                                   {"status", String("ready")}})},
+              {"warm_until", Number(due)}});
+  auto created = db.Execute(env, Access().deadline);
+  Q4T_CHECK(created.ok());
+  auto bound = env;
+  bound.id = "environment_bound";
+  Set(&Field(bound.data, "resource"), "id", String(bound.id));
+  Q4T_CHECK(db.Execute(bound, Access().deadline).ok());
+  bound.expected_revision = 1;
+  Set(&Field(bound.data, "resource"), "status", String("connected"));
+  Q4T_CHECK(db.Execute(bound, Access().deadline).ok());
+  // Inspect the fixture's own directory without sending a request that could
+  // wake the object worker. The worker itself must commit the notice.
+  const auto limit = std::chrono::steady_clock::now() + 5s;
+  const auto notified = [&] {
+    for (const auto& item :
+         std::filesystem::directory_iterator(f.options.directory))
+      if (item.path().filename().string().find(".webhook_event.") !=
+          std::string::npos)
+        return true;
+    return false;
+  };
+  while (!notified() && std::chrono::steady_clock::now() < limit)
+    std::this_thread::sleep_for(20ms);
+  Q4T_CHECK(notified());
+  env.operation = ObjectOperation::kGet;
+  auto saved = db.Execute(env, Access().deadline);
+  Q4T_CHECK(saved.ok() && saved.value.GetInt("expires_at") ==
+                              created.value.GetInt("expires_at"));
+  Q4T_CHECK(saved.value.Find("data")->Find("resource")->GetString("status") ==
+            "expired");
+  const auto page = Events(db);
+  Q4T_CHECK(page.ok() && page.value.GetArray("data")->array.size() == 1);
+  const auto& event =
+      *page.value.GetArray("data")->array[0].Find("data")->Find("event");
+  Q4T_CHECK(event.GetString("type") == "agent.environment.expired" &&
+            event.GetInt("created_at") == due &&
+            event.Find("data")->GetString("id") == env.id);
+  bound.operation = ObjectOperation::kGet;
+  Q4T_CHECK(db.Execute(bound, Access().deadline)
+                .value.Find("data")
+                ->Find("resource")
+                ->GetString("status") == "connected");
+  return true;
+}
+
+Q4T_TEST(environment_list_paginates_visible_resources_around_expired_entries) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto now = std::time(nullptr);
+  for (int i = 0; i < 5; ++i) {
+    ObjectRequest env;
+    env.kind = ObjectKind::kEnvironment;
+    env.operation = ObjectOperation::kPut;
+    env.id = "environment_" + std::to_string(i);
+    env.scope = Access().scope;
+    env.created_at = now - 10 + i;
+    const auto state = i == 0 || i == 2 || i == 4 ? "expired" : "connected";
+    env.data = Object({{"resource", Object({{"id", String(env.id)},
+        {"object", String("agent.environment")}, {"type", String("openai_hosted")},
+        {"status", String(state)}, {"files", Array()}, {"skills", Array()},
+        {"plugins", Array()}})}, {"warm_until", Number(now - 1)}});
+    Q4T_CHECK(db.Execute(env, Access().deadline).ok());
+  }
+  auto list = [&](const std::string& query) {
+    return HandleHostedEnvironment(db, "GET", "/v1/agents/environments" + query, "", Access(), "");
+  };
+  const auto one = list("?order=asc&limit=1");
+  Q4T_CHECK(one.ok() && one.value.GetBool("has_more") &&
+            one.value.GetString("first_id") == "environment_1");
+  const auto two = list("?order=asc&limit=1&after=environment_1");
+  Q4T_CHECK(two.ok() && !two.value.GetBool("has_more") &&
+            two.value.GetString("last_id") == "environment_3");
+  Q4T_CHECK(list("?type=self_hosted").http_status == 400);
+  const auto empty = list("?after=environment_1&order=desc&limit=1");
+  Q4T_CHECK(empty.ok() && empty.value.GetArray("data")->array.empty() &&
+            !empty.value.GetBool("has_more"));
   return true;
 }
 

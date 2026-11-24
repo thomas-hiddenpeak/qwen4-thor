@@ -6,14 +6,15 @@
 namespace q4t::server::webhook_detail {
 namespace {
 using namespace object_detail;
-constexpr std::array<std::string_view, 14> kTypes = {
-    "response.completed",    "response.failed",
-    "response.cancelled",    "response.incomplete",
-    "batch.completed",       "batch.failed",
-    "batch.cancelled",       "batch.expired",
-    "agent.session.created", "agent.environment.ready",
-    "agent.session.idle",    "agent.session.in_progress",
-    "agent.session.failed",  "agent.session.action_required"};
+constexpr std::array<std::string_view, 15> kTypes = {
+    "response.completed",       "response.failed",
+    "response.cancelled",       "response.incomplete",
+    "batch.completed",          "batch.failed",
+    "batch.cancelled",          "batch.expired",
+    "agent.session.created",    "agent.environment.ready",
+    "agent.session.idle",       "agent.session.in_progress",
+    "agent.session.failed",     "agent.session.action_required",
+    "agent.environment.expired"};
 }  // namespace
 uint32_t EventBit(std::string_view name) {
   for (size_t i = 0; i < kTypes.size(); ++i)
@@ -51,12 +52,13 @@ std::string_view Transition(std::string_view kind, const Json& data,
   }
   if (kind == "environment") {
     const auto* resource = data.Find("resource");
-    return creating && resource &&
-                   resource->GetString("object") == "agent.environment" &&
-                   resource->GetString("type") == "openai_hosted" &&
-                   resource->GetString("status") == "ready"
-               ? "agent.environment.ready"
-               : "";
+    if (!resource || resource->GetString("object") != "agent.environment" ||
+        resource->GetString("type") != "openai_hosted")
+      return {};
+    const auto status = resource->GetString("status");
+    if (creating && status == "ready") return "agent.environment.ready";
+    if (status == "expired") return "agent.environment.expired";
+    return {};
   }
   if (kind != "response" && kind != "batch") return {};
   const auto* item = data.Find(kind == "response" ? "response" : "batch");
@@ -101,9 +103,9 @@ Json SamplePayload(std::string_view type, std::string_view suffix) {
   if (type.starts_with("agent.session."))
     return Object({{"id", String("agent_session_test_" + std::string(suffix))},
                    {"environment_type", String("none")}});
-  std::string prefix = type.starts_with("batch.")          ? "batch_test_"
-                       : type == "agent.environment.ready" ? "env_test_"
-                                                           : "resp_test_";
+  std::string prefix = type.starts_with("batch.")               ? "batch_test_"
+                       : type.starts_with("agent.environment.") ? "env_test_"
+                                                                : "resp_test_";
   return Object({{"id", String(prefix + std::string(suffix))}});
 }
 

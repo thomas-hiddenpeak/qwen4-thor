@@ -1,5 +1,6 @@
 #include "q4t/server/agent_environment.h"
 
+#include <algorithm>
 #include <ctime>
 
 #include "agent_environment_internal.h"
@@ -9,6 +10,7 @@
 #include "q4t/server/application_routes.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/server/input_snapshot_bindings.h"
 
 namespace q4t::server {
@@ -155,6 +157,7 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access, Json query) {
   ChatPlanError error;
   auto shape = ValidateEnvironment(query, EnvironmentShape::kQuery, &error);
   if (!shape) return Invalid(shape.message(), error.param);
+  const auto type = query.GetString("type", "openai_hosted");
   std::erase_if(query.object,
                 [](const auto& entry) { return entry.first == "type"; });
   ItemViewOptions page;
@@ -165,16 +168,49 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access, Json query) {
   req.kind = ObjectKind::kEnvironment;
   req.operation = ObjectOperation::kList;
   req.after = page.after;
-  req.limit = page.limit;
+  req.limit = std::min(8, page.limit + 1);
   req.descending = page.descending;
-  auto list = objects.Execute(req, access.deadline, access.cancelled);
-  if (!list.ok()) return list;
-  for (auto& row : Field(list.value, "data").array) {
-    auto view = Resource(Field(row, "data"), row.GetString("id"));
-    if (!view.ok()) return view;
-    row = std::move(view.value);
+  auto visible = Array();
+  bool more = false;
+  size_t page_bytes = 0;
+  for (;;) {
+    auto list = objects.Execute(req, access.deadline, access.cancelled);
+    if (!list.ok()) return list;
+    for (auto& row : Field(list.value, "data").array) {
+      auto view = Resource(Field(row, "data"), row.GetString("id"));
+      if (!view.ok()) return view;
+      const auto status = view.value.GetString("status");
+      if (status == "expired" || status == "failed" ||
+          view.value.GetString("type") != type) continue;
+      if (visible.array.size() == static_cast<size_t>(page.limit)) {
+        more = true;
+        break;
+      }
+      const auto bytes = OutputJson(view.value).size();
+      if (bytes > kChatBodyBytes - page_bytes) {
+        if (visible.array.empty())
+          return Error(413, "environment_view_limit", "Environment exceeds the list budget");
+        more = true;
+        break;
+      }
+      page_bytes += bytes;
+      visible.array.push_back(std::move(view.value));
+    }
+    if (more || !list.value.GetBool("has_more")) break;
+    auto next = list.value.GetString("last_id");
+    if (next.empty() || next == req.after) return Corrupt();
+    req.after = std::move(next);
   }
-  return list;
+  const auto edge = [&](bool first) {
+    if (visible.array.empty()) return Json{};
+    return *(first ? visible.array.front() : visible.array.back()).Find("id");
+  };
+  auto first = edge(true), last = edge(false);
+  ObjectReply result;
+  result.value = Object({{"object", String("list")}, {"data", std::move(visible)},
+                         {"has_more", Boolean(more)}, {"first_id", std::move(first)},
+                         {"last_id", std::move(last)}});
+  return result;
 }
 }  // namespace
 

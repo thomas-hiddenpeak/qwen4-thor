@@ -687,6 +687,17 @@
         "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
         "signed_envelopes": 13,
         "cpu_cases": 10
+      },
+      "prewarm_expiry_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-expiry.json",
+        "deadline_seconds": 300,
+        "remaining": [
+          "Multiple attachments and retained shared workspaces",
+          "Idle compute suspension and checkpoint resume for seven days",
+          "Prewarm setup failure"
+        ],
+        "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
       }
     },
     {
@@ -2843,6 +2854,17 @@
         "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
         "signed_envelopes": 13,
         "cpu_cases": 10
+      },
+      "prewarm_expiry_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-expiry.json",
+        "deadline_seconds": 300,
+        "remaining": [
+          "Multiple attachments and retained shared workspaces",
+          "Idle compute suspension and checkpoint resume for seven days",
+          "Prewarm setup failure"
+        ],
+        "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
       }
     },
     {
@@ -6402,6 +6424,17 @@
         "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
         "signed_envelopes": 13,
         "cpu_cases": 10
+      },
+      "prewarm_expiry_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-expiry.json",
+        "deadline_seconds": 300,
+        "remaining": [
+          "Multiple attachments and retained shared workspaces",
+          "Idle compute suspension and checkpoint resume for seven days",
+          "Prewarm setup failure"
+        ],
+        "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
       }
     },
     {
@@ -9794,6 +9827,17 @@
         "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
         "signed_envelopes": 13,
         "cpu_cases": 10
+      },
+      "prewarm_expiry_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-expiry.json",
+        "deadline_seconds": 300,
+        "remaining": [
+          "Multiple attachments and retained shared workspaces",
+          "Idle compute suspension and checkpoint resume for seven days",
+          "Prewarm setup failure"
+        ],
+        "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
       }
     },
     {
@@ -11375,8 +11419,8 @@
       }
     }
   ],
-  "next_task": "Complete hosted environment expiry and remaining lifecycle producers and continue the inference and application API scopes and recovery tasks.",
-  "next": "补齐托管环境过期等实际生产端事件，再继续其余推理、应用服务与恢复项。",
+  "next_task": "Implement new standalone hosted environment sharing across up to 128 sessions, idle suspension and resumption, and setup failures. Continue all remaining service goals.",
+  "next": "后续按上游新建独立环境的约定补齐 128 个会话共享、20 分钟闲置挂起、7 天检查点恢复以及预热失败事件。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
