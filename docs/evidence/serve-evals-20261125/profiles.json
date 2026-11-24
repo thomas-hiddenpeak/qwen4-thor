@@ -1,0 +1,175 @@
+{
+  "status": "ACCEPT_EVAL_PRIMARY_LIGHT",
+  "issued": false,
+  "previous_revision": 478,
+  "verified_source": "f3bc244c9",
+  "profiles": {
+    "primary": {
+      "seconds": 39.767,
+      "model_starts": 1,
+      "previous": "62288a6044e8239640fa01bc9b1d52c43baaeac60a21fd890e5dabd5dfafd994",
+      "profile": "4c5278816adb6accb8e731158f96204d849658379062e87b972f6b4a6a974f43"
+    },
+    "light": {
+      "seconds": 35.894,
+      "model_starts": 1,
+      "previous": "5ba0f338da57899669e6db3954c4124c98ffdc5d602819dee9921ecb92aa716c",
+      "profile": "5219f75947f0f38367de3ed3aa9d626e7331d090cfcdfdfa2c5e1f102a6ebd58"
+    }
+  },
+  "registry": "2ed32c628b3596fcfbd6c2a93ae685b3b55527c04d1d9faf9b77a2387ba7ad37",
+  "engine": "f4f4629af730ee6d1d8c43ae8701409eb46d70bdc276dba117371d64ee0e3f02",
+  "ingress": "69a8c51d99aaaf17574cef5e5d688c808925cf5eeb69d2642125d22480e7174e",
+  "completed_at_stop": 1,
+  "completed_after_restart": 5,
+  "primary": {
+    "sdk": "7.47.0",
+    "phase": "primary",
+    "evaluation": "eval_c91ec50f28449ccd5824891be2c97b40",
+    "run": "evalrun_c49ca4e2444f4fb2c23a209057b0cefc",
+    "file": "file_7b3c81cfd207618e1af9d0ff3bccfa2a",
+    "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+    "source_deleted": 404,
+    "peer": 404,
+    "status": "in_progress",
+    "items": [
+      {
+        "id": "outputitem_cd7913cafda4537600c750468c44e8e6",
+        "index": 0,
+        "answer": "157",
+        "score": 1,
+        "seed": 1854287148621975,
+        "created_at": 1795554737
+      }
+    ],
+    "counts": {
+      "total": 1,
+      "errored": 0,
+      "passed": 1,
+      "failed": 0
+    },
+    "usage": [
+      {
+        "model_name": "qwen3.8-flash-next",
+        "invocation_count": 1,
+        "prompt_tokens": 309,
+        "completion_tokens": 4,
+        "total_tokens": 313,
+        "cached_tokens": 0
+      }
+    ]
+  },
+  "light": {
+    "sdk": "7.47.0",
+    "phase": "light",
+    "evaluation": "eval_c91ec50f28449ccd5824891be2c97b40",
+    "run": "evalrun_c49ca4e2444f4fb2c23a209057b0cefc",
+    "file": "file_7b3c81cfd207618e1af9d0ff3bccfa2a",
+    "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+    "source_deleted": 404,
+    "peer": 404,
+    "status": "completed",
+    "items": [
+      {
+        "id": "outputitem_cd7913cafda4537600c750468c44e8e6",
+        "index": 0,
+        "answer": "157",
+        "score": 1,
+        "seed": 1854287148621975,
+        "created_at": 1795554737
+      },
+      {
+        "id": "outputitem_ebba9de31a2599ad7b2dd3ab0e79a5cc",
+        "index": 1,
+        "answer": "157",
+        "score": 0,
+        "seed": 3631322751800429,
+        "created_at": 1795554770
+      },
+      {
+        "id": "outputitem_85fa53645c2d0030251a8041dd774a3a",
+        "index": 2,
+        "answer": "157",
+        "score": 1,
+        "seed": 3916201406094334,
+        "created_at": 1795554771
+      },
+      {
+        "id": "outputitem_ebee87eb7884633057a002e617a248c8",
+        "index": 3,
+        "answer": "157",
+        "score": 0,
+        "seed": 2465221121728162,
+        "created_at": 1795554771
+      },
+      {
+        "id": "outputitem_15f3b8ab68be2e5da711b670d444c21e",
+        "index": 4,
+        "answer": "157",
+        "score": 1,
+        "seed": 4202404519466083,
+        "created_at": 1795554772
+      },
+      {
+        "id": "outputitem_ac21672c5c75ed6daa1f6b3f07910fad",
+        "index": 5,
+        "answer": "157",
+        "score": 0,
+        "seed": 312988547579134,
+        "created_at": 1795554773
+      }
+    ],
+    "counts": {
+      "total": 6,
+      "errored": 0,
+      "passed": 3,
+      "failed": 3
+    },
+    "usage": [
+      {
+        "model_name": "qwen3.8-flash-next",
+        "invocation_count": 6,
+        "prompt_tokens": 1854,
+        "completion_tokens": 24,
+        "total_tokens": 1878,
+        "cached_tokens": 0
+      }
+    ],
+    "chat": "42",
+    "stopped": {
+      "run": "evalrun_c49ca4e2444f4fb2c23a209057b0cefc",
+      "items": [
+        "outputitem_cd7913cafda4537600c750468c44e8e6"
+      ],
+      "total": 1
+    }
+  },
+  "raw": {
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-qualified-01/qualified/registry.json": "2ed32c628b3596fcfbd6c2a93ae685b3b55527c04d1d9faf9b77a2387ba7ad37",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-qualified-01/acceptance.json": "cf847347cacea378b858003fa8513396ec6d95cf0fb7a47b3482958fe54a105c",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/acceptance.json": "b65198bc23c0b545f11ed565601fa9942c8a1ca960d0613a385de251168073e4",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/profile-observations.json": "a47ff6ba370e4a90f7bbdd5e9d3c5cdd0741c58b41c4716e23dc6bcad685f505",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/lease/exit.json": "b2400bd4cc86fd8df1707bf2344459b75b281c6567cfd8c355145d34157b35eb",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/light/eval-stopped.json": "504e3206cbfd9400ae445b3bf1f2ab74473aeb1bab6c64b7ee44e40c8f728279",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/eval-profile-pins-inventory.json": "1421f5938157d85fa84a5cf1f5fb15a7cc459b7d41c67bfbfe61a9a06b6ed938",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/primary/configuration.wire": "49d065a2d57f1d55b31f0fff73e5f1e7e625ededc687607bff31cb4d735d4b47",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/primary/cleanup.json": "5321f0de7f624fa7af02babd806b2d50d0b1d4260d94411ba269a60c41938291",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/primary/plan.json": "aceaf944d06ffba62bbd7f5cb922e3550b6bf883664c6b31a6224e6560f211f9",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/primary/result.json": "bb9c89f3e5ee0011d74a0c9ecb51144b7029212b8eac35db7e3250b8f3648661",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/primary/eval-handoff.json": "0cc649ca2591be22622d1ae6504cd591e4cd0706029dde7605c7f63ed05fcce2",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/light/configuration.wire": "fd823bc62cf012d7a1f4e8254dd6979423cc1591a9bb8ef46ccc5877a03bfa77",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/light/cleanup.json": "c62592dabf3d99bfdabcc428a63c37aa8f4a320c0d57dd58b25c003e1fb5ce7c",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/light/plan.json": "966f077e6a3dbbec4591a55afb52d740440b0995413db7e3bd5d6308f84e6521",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/light/result.json": "388604d89da84e78b138c133dd4b4364ef2e82bd30f322eaf1fc3a1fa0e69f94",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/eval-profiles-01/light/eval-handoff.json": "d7d21f3e2aed3e0715eb476a7404a10478878d171a3c6c5f64533fc5622b9f36"
+  },
+  "configuration": {
+    "revisions": [
+      44,
+      45
+    ],
+    "original_frames": 4,
+    "validators": 2,
+    "first_failure": "recovery.json"
+  }
+}

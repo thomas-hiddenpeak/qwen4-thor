@@ -18058,6 +18058,7 @@
     ],
     "local_graders": "evidence/serve-evals-20261125/graders.json",
     "model_graders": "evidence/serve-evals-20261125/model-graders.json",
-    "interrupted_model_sampling": "evidence/serve-evals-20261125/recovery.json"
+    "interrupted_model_sampling": "evidence/serve-evals-20261125/recovery.json",
+    "qualified_profiles": "evidence/serve-evals-20261125/profiles.json"
   }
 }
