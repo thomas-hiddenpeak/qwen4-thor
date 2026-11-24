@@ -1,0 +1,147 @@
+{
+  "status": "ACCEPT_INTERPRETER_PRIMARY_LIGHT",
+  "engine_sha256": "ff3d2c6b8d19afb0e205c2c82a91e008162b2dbf124e8b10ecbe68d918025f38",
+  "ingress_sha256": "8dcbff0906e72c0109a9b36febe529e92a9708d2c2b5cb8d0c934bc27f453572",
+  "qualification": {
+    "status": "ACCEPT_INTERPRETER_PRIMARY_LIGHT",
+    "registry_sha256": "ee72dc72b02344196a90db4e8ffb3cefb5a58b8959ad4a71a5617a60b15c59c2",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 82,
+      "cleanup_complete": true,
+      "lease_result_sha256": "1f586f9ad48d7067cfe5c41057c65b5d02fa4c8f58f604125b9fd4eb6e9b6e6b"
+    },
+    "migration_permit_sha256": "99b7ed380c20d6fdceeed81f4e86c88de525514deba0cf01ad7c031ff069cd75",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "profiles": {
+    "primary": {
+      "seconds": 45.456,
+      "mtp": true,
+      "stdout": "464",
+      "container": "cntr_e6d700bffea87212a279801c9cdbf076",
+      "response": "resp_14a87235d23ab4b8648ca0de36d3ad7b",
+      "file": "cfile_03470755e1adad379923a023972f6175",
+      "foreign": 404,
+      "chat": "42",
+      "live_session_closed": true,
+      "predecessor": "dab417dc1d87af8a07f9636a2748e5ae5da0528ffdaa9ed02426c6d8a5c1874d",
+      "record": "9f9b7800cfc6e92efe0ce6009767c4dc4d6237cafdc526c31bf2db8fec4c2a44"
+    },
+    "light": {
+      "seconds": 41.171,
+      "mtp": false,
+      "stdout": "465",
+      "container": "cntr_e6d700bffea87212a279801c9cdbf076",
+      "response": "resp_c4692afe8a4fbf2a0ae3713dd46a6524",
+      "file": "cfile_84d98a88d3bb373c25324bbb5afca811",
+      "foreign": 404,
+      "chat": "42",
+      "live_session_closed": true,
+      "predecessor": "00985afbf62b8a7d2521003e6830763ff35073ef53e1fef862e27c84c8501e90",
+      "record": "a841cfa9cacd791bd8425eebb5652c87a72ce7328d44f079c9a547d5f17a55f0"
+    }
+  },
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 82,
+    "cleanup_complete": true
+  },
+  "rejected": [
+    "primary altered SDK receipt",
+    "primary wrong gateway",
+    "light altered SDK receipt",
+    "light wrong gateway",
+    "light stdout",
+    "light container",
+    "light prior_file",
+    "light prior_response",
+    "light foreign_status",
+    "light source_removed"
+  ],
+  "first_attempt": "Primary passed; a newly edited CPU migration test file changed the frozen source manifest before light startup. Retained and repeated the two-profile handoff with frozen sources.",
+  "pending": [
+    "Managed recovery on both independently sealed packages.",
+    "Rollback-protected publication."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/acceptance.json",
+      "sha256": "5429ed3286976393ee139a6a848ed81c8981335c373789bcb0d4a96f059fc6f3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/profile-observations.json",
+      "sha256": "54a17f81b1a05814dca196dca053a156f5f003018023a4ed990d4d758f0de390"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-qualified-01/acceptance.json",
+      "sha256": "19964735eb0c4652736100234526fabc68066040a2d831d9bf6076f3a4ec44b1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-qualified-01/plan.json",
+      "sha256": "ce0077634892f73809f46bbd2647ffaebb883a7d0afd664e4d115d7ee81551bd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-profile-lease-02/exit.json",
+      "sha256": "1f586f9ad48d7067cfe5c41057c65b5d02fa4c8f58f604125b9fd4eb6e9b6e6b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-migration-cpu-01.log",
+      "sha256": "55b454a01b3e19387d4950d0d8474399046a67a7163d034f73605fba681e9108"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-profile-run-01.log",
+      "sha256": "5b584f48ad2f9bc736b13869b7c4a8edfca5db8b8d17b6eae4292c233c57ebaf"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/interpreter-profile-lease-01/exit.json",
+      "sha256": "1536ac689ad32501a65b6cf0ab5ed6ce0f62b802e08d3057599ed1316888c215"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-qualified-01/qualified/primary.json",
+      "sha256": "9f9b7800cfc6e92efe0ce6009767c4dc4d6237cafdc526c31bf2db8fec4c2a44"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/primary/code-handoff.json",
+      "sha256": "037bec393659dcb55d73052685c6abe7b5cbf1e1ce3af576b51b20ac3d1a8a13"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/primary/observation.json",
+      "sha256": "91b5e9bded2c3ef9bd8363e0953abaf063b4a100e50dd1eae5721f12a7c932fc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/primary/result.json",
+      "sha256": "eedaf19df5e1555dd8710323dbdfe67ab9f0bfca41a3255b89bb0c631e8586ff"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/primary/cleanup.json",
+      "sha256": "49434122926d1cfdffe7102d9813dd9775b3497d62971d1f8ba56cc07039954e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-qualified-01/qualified/light.json",
+      "sha256": "a841cfa9cacd791bd8425eebb5652c87a72ce7328d44f079c9a547d5f17a55f0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/light/code-handoff.json",
+      "sha256": "a8e0e3ff4e2b952b03a98658aa59ccc956096d35b9a59fb535c75cb3f821e4e8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/light/observation.json",
+      "sha256": "b71a5f03c2cbbb564decd12bc98d6244dec6c01ef4820dabea210c1bb8012393"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/light/result.json",
+      "sha256": "e4b5c43ad53421d7f785d1bc6f6922df45f2633367860844317d765ff6e03429"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/interpreter-profiles-02/light/cleanup.json",
+      "sha256": "4ecbace91ed257ee420539963b520ffb6225558b5fb430b41991852d7b658053"
+    }
+  ]
+}

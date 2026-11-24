@@ -6168,6 +6168,12 @@
           "Container tier / configured egress, programmatic tool invocations and a hosted shell.",
           "Capacity handoff, managed recovery, installed release and remaining serving interfaces."
         ]
+      },
+      "interpreter_capacity_handoff_20261124": {
+        "status": "ACCEPT_INTERPRETER_PRIMARY_LIGHT",
+        "receipt": "evidence/serve-code-interpreter-20261124/profiles.json",
+        "installed_revision": 464,
+        "remaining": "Sealed-package recovery and rollback-protected publication."
       }
     },
     {
@@ -8497,6 +8503,12 @@
         "accepted_methods": 178,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "interpreter_capacity_handoff_20261124": {
+        "status": "ACCEPT_INTERPRETER_PRIMARY_LIGHT",
+        "receipt": "evidence/serve-code-interpreter-20261124/profiles.json",
+        "installed_revision": 464,
+        "remaining": "Sealed-package recovery and rollback-protected publication."
       }
     },
     {
@@ -9405,6 +9417,12 @@
           "Container tier / configured egress, programmatic tool invocations and a hosted shell.",
           "Capacity handoff, managed recovery, installed release and remaining serving interfaces."
         ]
+      },
+      "interpreter_capacity_handoff_20261124": {
+        "status": "ACCEPT_INTERPRETER_PRIMARY_LIGHT",
+        "receipt": "evidence/serve-code-interpreter-20261124/profiles.json",
+        "installed_revision": 464,
+        "remaining": "Sealed-package recovery and rollback-protected publication."
       }
     },
     {
@@ -10916,6 +10934,12 @@
         "accepted_methods": 178,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "interpreter_capacity_handoff_20261124": {
+        "status": "ACCEPT_INTERPRETER_PRIMARY_LIGHT",
+        "receipt": "evidence/serve-code-interpreter-20261124/profiles.json",
+        "installed_revision": 464,
+        "remaining": "Sealed-package recovery and rollback-protected publication."
       }
     }
   ],

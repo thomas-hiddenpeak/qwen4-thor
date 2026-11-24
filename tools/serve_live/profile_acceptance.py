@@ -160,6 +160,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'code_handoff' in self.plan:
+            from tools.serve_responses import code_profiles
+            code_profiles.business(self, capabilities)
         if 'skill_handoff' in self.plan:
             from tools.serve_responses import skill_profiles
             skill_profiles.business(self, capabilities)

@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'hosted_python' in declared or 'code_handoff' in plan:
+            from tools.serve_responses import code_profiles
+            profiles[name]['evidence_sha256'].update(code_profiles.verify(phase, plan, declared))
+            continue
         if 'container_workspaces' in declared or 'skill_handoff' in plan:
             from tools.serve_responses import skill_profiles
             profiles[name]['evidence_sha256'].update(skill_profiles.verify(phase, plan, declared))
