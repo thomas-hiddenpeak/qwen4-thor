@@ -1644,7 +1644,8 @@ def validate(value, registry, name, digest):
                            'q4t-profile-business-v30', 'q4t-profile-business-v31',
                            'q4t-profile-business-v32', 'q4t-profile-business-v33', 'q4t-profile-business-v34',
                            'q4t-profile-business-v35', 'q4t-profile-business-v36',
-                           'q4t-profile-business-v37', 'q4t-profile-business-v38'):
+                           'q4t-profile-business-v37', 'q4t-profile-business-v38',
+                           'q4t-profile-business-v39'):
         from tools.serve_recovery import profile_duplex_reuse
         observed = dict(observed, realtime_duplex=profile_duplex_reuse.unpack_text(
             observed['realtime_duplex']))

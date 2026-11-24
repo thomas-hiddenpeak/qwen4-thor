@@ -1,0 +1,119 @@
+{
+  "status": "ACCEPT_TRANSLATION_TRANSPORTS_PRIMARY_LIGHT",
+  "qualifications": {
+    "status": "ACCEPT_TRANSLATION_TRANSPORTS_PRIMARY_LIGHT",
+    "registry_sha256": "88309bcb1957288c8ef509fdb24bc564f546220a51a4f40ce4eccaf09ee4c8b9",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 138,
+      "cleanup_complete": true,
+      "lease_result_sha256": "290c99a2c5ec7d7d9f64ea4bba6096637806e108c9d072bd4ba43830705cc51c"
+    },
+    "migration_permit_sha256": "d5c3f8b6e1e8681e6215bf290745c5ab4f6ceda13dfeeec868e2ca82dc50686b",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "profiles": {
+    "primary": {
+      "seconds": 76.987,
+      "mtp": true,
+      "predecessor": "9f9b7800cfc6e92efe0ce6009767c4dc4d6237cafdc526c31bf2db8fec4c2a44",
+      "record": "2845a42aa6265ef5dc85a6c7bff236e6147067166bee588623a46795ed340a3e",
+      "translation": {
+        "sdk": "7.47.0",
+        "input": "甚至出现交易几乎停滞的情况。",
+        "english": "There were even cases where trading nearly came to a standstill.",
+        "spoken": "But even cases where trading nearly came to a standstill.",
+        "wav_sha256": "fb8127c671d34b1e4df1e4ef9fe7ffc6ff55f5bce254c287735e85e014d05e6d",
+        "pcm_bytes": 168960,
+        "before_close": 27,
+        "limited_error": "tts_output_limit",
+        "limited_close": 1011,
+        "grant_audiences": [
+          401,
+          401
+        ],
+        "independent_chat": "42",
+        "wire_events": 121,
+        "transport": "socket",
+        "old_seconds": null,
+        "revoked": false
+      },
+      "ordinary_chat": "42",
+      "regular_media_closed": true
+    },
+    "light": {
+      "seconds": 70.504,
+      "mtp": false,
+      "predecessor": "a841cfa9cacd791bd8425eebb5652c87a72ce7328d44f079c9a547d5f17a55f0",
+      "record": "ad144a7a4324c52b3caea26fb7270ab8a4c831999215cfa192602303506ce478",
+      "translation": {
+        "location": "/v1/realtime/calls/rtc_235bf5ca09bc570a9e72aebeb13229a6",
+        "inbound": {
+          "packets": 335,
+          "decodedSamples": 366720,
+          "energy": 0.37662804287745577
+        },
+        "peak": 15282,
+        "streamCount": 1,
+        "receivedBeforeClose": true,
+        "inputOfferCandidates": 0,
+        "browser": "148.0.7778.0",
+        "input": "甚至出现交易几乎停滞的情况。",
+        "english": "There have even been instances where trading has nearly come to a standstill.",
+        "spoken": "There have even been instances where trading has nearly come to a standstill.",
+        "pcm_bytes": 369646,
+        "grant_audiences": [
+          401,
+          401
+        ],
+        "independent_chat": "42",
+        "wav_sha256": "b29ca030bcd477a88afa274ee87c39870e84f9184645d8e51c408e7b5f70916f",
+        "wire_events": 24,
+        "transport": "browser",
+        "old_seconds": 565,
+        "revoked": true
+      },
+      "ordinary_chat": "42",
+      "regular_media_closed": true
+    }
+  },
+  "rejected": [
+    "primary output track",
+    "primary limited_close",
+    "primary limited_error",
+    "light output track",
+    "light revoked",
+    "light old_seconds"
+  ],
+  "earlier": [
+    "Initial primary model refusal surfaced as a generic output error. See sampling.json for the subsequent diagnosis and runtime change.",
+    "Primary completed translation and issued a credential in the second attempt. The acceptance helper failed while opening its private storage file; it was corrected and the full handoff was repeated."
+  ],
+  "cpu_migration_tests": 35,
+  "pending": [
+    "Managed primary and fallback process recovery",
+    "Rollback-protected stopped publication"
+  ],
+  "raw": {
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/acceptance.json": "315bf9fd8172b37e40c0ad7de0e9ae46a98db4f2c6d9914a59306032ff43aa44",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-qualified-01/acceptance.json": "63f24b8b103d2044b7fe6dc00a3d11ceffb8619ffccfc5a1d99fe73e76ec3e17",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/profile-observations.json": "fb666c92cbbfa8bfe5e46a7ce8b03a49bc2b47c883a36d49cfc5fe579a1a9368",
+    ".q4t-work/serve-responses-agents-20261123/translator-profile-lease-03/exit.json": "290c99a2c5ec7d7d9f64ea4bba6096637806e108c9d072bd4ba43830705cc51c",
+    ".q4t-work/serve-responses-agents-20261123/translation-webrtc-dev/migration.log": "1dc8f2321825c02d716738470c5ef9c4c17a5d37fe979d752d441204eb31e677",
+    ".q4t-work/serve-responses-agents-20261123/translator-profile-lease-02/exit.json": "346bb20d1af6dac5d70e3b9c897e5d17117f048397526eb46d421c9bd2287e9d",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-qualified-01/qualified/primary.json": "2845a42aa6265ef5dc85a6c7bff236e6147067166bee588623a46795ed340a3e",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/primary/translation-transport.json": "15a128b19dc79a526eecb6c1569a254cbdc03de377f64dbfbb1b5e4a61d20b2c",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/primary/result.json": "cc974a698a5cc80d5fdb13e84cdc091a21ce41a8cdbc0b0572987a81c217d2b4",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/primary/translated.wav": "fb8127c671d34b1e4df1e4ef9fe7ffc6ff55f5bce254c287735e85e014d05e6d",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/primary/cleanup.json": "e6d07a0f3f05cc007d87ce8109bf31f2d1ec0e7a8b4489b71460ccea2661b25b",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-qualified-01/qualified/light.json": "ad144a7a4324c52b3caea26fb7270ab8a4c831999215cfa192602303506ce478",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/light/translation-transport.json": "7e707a57a42c2eda0b601cca87545eee5f16140fd858f5a716cfed65c58ce82e",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/light/result.json": "aef7bc2902c8f3fde69aa2d31b7a4892d00a51273f7099cbbe3a839f8a31b159",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/light/translated.wav": "b29ca030bcd477a88afa274ee87c39870e84f9184645d8e51c408e7b5f70916f",
+    ".q4t-work/serve-responses-agents-20261123/skills-src/.q4t-work/translator-profiles-03/light/cleanup.json": "a6cd24d0d242bc8fb4a91d4a7c5d33cb10f2b386c588f0418158ac9302187f69"
+  }
+}

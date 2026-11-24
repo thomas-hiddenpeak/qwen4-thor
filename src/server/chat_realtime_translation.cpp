@@ -11,9 +11,8 @@
 namespace q4t::server {
 namespace {
 using namespace object_detail;
-ObjectReply LostOutput() {
-  return Error(502, "translation_output_incomplete",
-               "Translation output did not finish");
+ObjectReply LostOutput(std::string message) {
+  return Error(502, "translation_output_incomplete", std::move(message));
 }
 }  // namespace
 
@@ -47,11 +46,12 @@ RealtimeTranslationNative ChatServer::MakeRealtimeTranslationNative(
         RunRealtimeTranscription(client, audio, pcm, control, source_delta);
     if (!reply.ok()) return reply;
     const auto transcript = reply.value.GetString("text");
-    if (!transcript.starts_with(source)) return LostOutput();
+    if (!transcript.starts_with(source))
+      return LostOutput("Source transcription changed after delivery");
     if (!settings.transcription.empty() && transcript.size() > source.size() &&
         !delta("session.input_transcript.delta",
                transcript.substr(source.size())))
-      return LostOutput();
+      return LostOutput("Source transcript tail could not be delivered");
     if (transcript.empty()) return {};
 
     // Only the source clause enters this request's user message. Each turn
@@ -70,30 +70,36 @@ RealtimeTranslationNative ChatServer::MakeRealtimeTranslationNative(
     Set(&job.settings, "output_modalities", Array({String("audio")}));
     job.response = Object();
     job.in_conversation = false;
-    job.snapshot.items = Array({Object(
-        {{"type", String("message")},
-         {"role", String("user")},
-         {"content", Array({Object({{"type", String("input_text")},
-                                    {"text", String(transcript)}})})}})});
+    job.snapshot.items = Array(
+        {Object({{"type", String("message")},
+                 {"role", String("user")},
+                 {"content",
+                  Array({Object({{"type", String("input_text")},
+                                 {"text", String("Translate into " + language +
+                                                 ":\n" + transcript)}})})}})});
     std::string translated;
     bool speech_done = false, audio_sent = false;
     const auto text = [&](const ResponseDelta& piece) -> ObjectReply {
       if (piece.kind == ResponseDelta::Kind::kReasoning) return {};
-      if (piece.kind != ResponseDelta::Kind::kContent ||
-          piece.text.size() > kAsrTranscriptBytes - translated.size())
-        return LostOutput();
+      if (piece.kind == ResponseDelta::Kind::kRefusal)
+        return Error(422, "translation_refused",
+                     "The model declined to translate this clause");
+      if (piece.kind != ResponseDelta::Kind::kContent)
+        return LostOutput("The translation model returned a non-text item");
+      if (piece.text.size() > kAsrTranscriptBytes - translated.size())
+        return LostOutput("Target transcript exceeds its byte limit");
       translated += piece.text;
       return piece.text.empty() ||
                      delta("session.output_transcript.delta", piece.text)
                  ? ObjectReply{}
-                 : LostOutput();
+                 : LostOutput("Target transcript could not be delivered");
     };
     const auto speech = [&](const RealtimeSpeechEvent& event) -> ObjectReply {
       if (event.kind == RealtimeSpeechEvent::Kind::kChunk) {
         std::string encoded;
         if (event.bytes.empty() || event.bytes.size() % 2 ||
             !io::EncodeBase64(event.bytes, kWebSocketMessageLimit, &encoded))
-          return LostOutput();
+          return LostOutput("Invalid PCM from the speech encoder");
         audio_sent = true;
         return emit(Object({{"type", String("session.output_audio.delta")},
                             {"delta", String(std::move(encoded))},
@@ -101,22 +107,26 @@ RealtimeTranslationNative ChatServer::MakeRealtimeTranslationNative(
                             {"sample_rate", Number(24000)},
                             {"format", String("pcm16")}}))
                    ? ObjectReply{}
-                   : LostOutput();
+                   : LostOutput("Translated audio could not be delivered");
       }
       if (!event.transcript.starts_with(translated) || event.transcript.empty())
-        return LostOutput();
+        return LostOutput(
+            "Spoken transcript differs from the delivered target text");
       if (event.transcript.size() > translated.size() &&
           !delta("session.output_transcript.delta",
                  event.transcript.substr(translated.size())))
-        return LostOutput();
+        return LostOutput("Target transcript tail could not be delivered");
       speech_done = true;
       return {};
     };
-    auto result = RunRealtimeConversation(client, job, control, text, speech);
+    // Translation has no public sampling parameter. Use the same greedy
+    // default as audio translations for the internal text generation.
+    auto result = RunRealtimeConversation(client, job, control, text, speech,
+                                          /*temperature=*/0.0);
     if (!result.reply.ok()) return result.reply;
     if (result.state != RealtimeResponseEnd::State::kCompleted || !audio_sent ||
         !speech_done)
-      return LostOutput();
+      return LostOutput("Translation ended without completed speech");
     return {};
   };
   return native;
@@ -162,7 +172,8 @@ void ChatServer::HandleRealtimeTranslation(int fd, std::string_view path,
     return output.Push(WebSocketOpcode::kText, OutputJson(event), write);
   };
   auto session = std::make_shared<RealtimeTranslationSession>(
-      detail::NewRequestId("sess_"), send, MakeRealtimeTranslationNative(client), limit,
+      detail::NewRequestId("sess_"), send,
+      MakeRealtimeTranslationNative(client), limit,
       asr_limits_.max_audio_seconds);
   RealtimeTranslationPump pump(session, limit);
   const auto ready = pump.Start(http->RealtimeStartup());

@@ -5420,6 +5420,12 @@
         "pending": [
           "primary/light and managed recovery/publication"
         ]
+      },
+      "translation_profiles_20261124": {
+        "evidence": "evidence/serve-realtime-translation-20261124/profiles.json",
+        "pending": [
+          "independent sealed recovery and publication"
+        ]
       }
     },
     {
@@ -9487,6 +9493,12 @@
         "pending": [
           "primary/light and managed recovery/publication"
         ]
+      },
+      "translation_profiles_20261124": {
+        "evidence": "evidence/serve-realtime-translation-20261124/profiles.json",
+        "pending": [
+          "independent sealed recovery and publication"
+        ]
       }
     },
     {
@@ -11029,11 +11041,17 @@
         "pending": [
           "primary/light and managed recovery/publication"
         ]
+      },
+      "translation_profiles_20261124": {
+        "evidence": "evidence/serve-realtime-translation-20261124/profiles.json",
+        "pending": [
+          "independent sealed recovery and publication"
+        ]
       }
     }
   ],
-  "next_task": "Qualify the translation socket and browser media across release capacities and sealed recovery, then continue the remaining inference/application methods.",
-  "next": "验证两种翻译传输的主轻配置与整包恢复，继续推理和应用服务的其余缺口。",
+  "next_task": "Qualify sealed translation recovery and publish the stopped primary/fallback pair, then continue the remaining required inference/application methods.",
+  "next": "验收翻译封包故障接手并发布可回退版本，继续应用服务其余缺口。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

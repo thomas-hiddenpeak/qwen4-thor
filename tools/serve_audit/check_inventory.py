@@ -96,7 +96,7 @@ def current_surface(root):
         translation = (root / 'src/server/chat_realtime_translation.cpp').read_text()
         if ('HandleRealtimeTranslation(fd, path, headers, initial, accept)' in realtime
                 and 'RunRealtimeTranscription(client, audio, pcm, control, source_delta)' in translation
-                and 'RunRealtimeConversation(client, job, control, text, speech)' in translation):
+                and re.search(r'RunRealtimeConversation\(client, job, control, text, speech,\s*/\*temperature=\*/0\.0\)', translation)):
             routes.append(("/v1/realtime/translations", "GET"))
         if 'HandleRealtimeConversation(fd, path, headers, initial, accept)' in realtime:
             native_token_observer((root / 'src/server/chat_generation.cpp').read_text())
