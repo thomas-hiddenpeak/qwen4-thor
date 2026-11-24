@@ -1,0 +1,254 @@
+{
+  "status": "ACCEPT_TRANSLATION_REALTIME_PRIMARY_LIGHT",
+  "engine": "c1c4b359c063d68a0d17e8c13c97a72ea47da0fc5a84af22a4beefe72bf41873",
+  "ingress": "458b028f02d936beb055a4ffe1d4c6a55bc7766082c039339d3c2b4b05bc6919",
+  "qualification": {
+    "status": "ACCEPT_TRANSLATION_REALTIME_PRIMARY_LIGHT",
+    "registry_sha256": "193602447c19e6ffaf2e87277f4e3eac2f342c8d48b292e218a26da869aea738",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 102,
+      "cleanup_complete": true,
+      "lease_result_sha256": "423963e815222c766b347146d38e851b17e15bbd0175fcda713e62e591f3b7ef"
+    },
+    "migration_permit_sha256": "4d5e04e6f01f45f1b1ab7a9e20be8fe98c9ec95fb8f77a93ff3f36136af735fb",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "profiles": {
+    "primary": {
+      "mtp": true,
+      "elapsed_seconds": 55.222,
+      "starts": 1,
+      "prior_profile": "aefe830b6cafa11377e50e22e9fe4775bf42df2b9c9a6a459b24dd62befd0a73",
+      "profile": "75d0e41fe4033bca234cffebed3163869a3e2b5cebf1315ba639c0c36461ac96",
+      "translations": {
+        "sdk": "7.47.0",
+        "formats": {
+          "json": {
+            "status": 200,
+            "content_type": "application/json",
+            "wire": "{\"text\":\"Please check the current project version number.\"}"
+          },
+          "text": {
+            "status": 200,
+            "content_type": "text/plain; charset=utf-8",
+            "wire": "Please check the current project version number."
+          },
+          "verbose_json": {
+            "status": 200,
+            "content_type": "application/json",
+            "wire": "{\"text\":\"Please check the current project version number.\",\"language\":\"english\",\"duration\":2.8799999999999999}"
+          },
+          "srt": {
+            "status": 200,
+            "content_type": "application/x-subrip; charset=utf-8",
+            "wire": "1\n00:00:00,640 --> 00:00:02,800\nPlease check the current project version number.\n\n"
+          },
+          "vtt": {
+            "status": 200,
+            "content_type": "text/vtt; charset=utf-8",
+            "wire": "WEBVTT\n\n1\n00:00:00.640 --> 00:00:02.800\nPlease check the current project version number.\n\n"
+          }
+        },
+        "negative": {
+          "unknown_model": 404,
+          "unknown_field": 400,
+          "bad_format": 400
+        },
+        "independent_chat": "42",
+        "status": "PASS"
+      },
+      "beta_conversation": {
+        "sdk": "7.47.0",
+        "beta_session": true,
+        "issued_temperature": 0.75,
+        "updated_temperature": 0.9,
+        "requested_temperature": 0.6,
+        "reported_temperature": 0.6,
+        "max_output_tokens": 32,
+        "delta": "response.text.delta",
+        "completed": "response.text.done",
+        "answer": "42",
+        "tokens": 109
+      },
+      "beta_transcription": {
+        "sdk": "7.47.0",
+        "issued": 200,
+        "invalid_ttl": 400,
+        "invalid_format": 400,
+        "recursive_issue": 401,
+        "models": 401,
+        "requested_ttl": 15,
+        "language": "zh",
+        "transcript": "请查询当前项目版本号。",
+        "independent_chat": "42",
+        "beta_start": "session.created",
+        "beta_update": "transcription_session.updated"
+      },
+      "web_rtc_status": 201,
+      "closed": true,
+      "conversation": "created",
+      "core_chat": "42"
+    },
+    "light": {
+      "mtp": false,
+      "elapsed_seconds": 52.336,
+      "starts": 1,
+      "prior_profile": "c325c73cc2584ec49f03a24e5a9ae09e2162ec49d9c84726cd70fab9faf5cd6c",
+      "profile": "b7951dcde8dcbb1b3d75886640f23c218a5f77003d534c16fbd1b5e7b81d5b69",
+      "translations": {
+        "sdk": "7.47.0",
+        "formats": {
+          "json": {
+            "status": 200,
+            "content_type": "application/json",
+            "wire": "{\"text\":\"Please check the current project version number.\"}"
+          },
+          "text": {
+            "status": 200,
+            "content_type": "text/plain; charset=utf-8",
+            "wire": "Please check the current project version number."
+          },
+          "verbose_json": {
+            "status": 200,
+            "content_type": "application/json",
+            "wire": "{\"text\":\"Please check the current project version number.\",\"language\":\"english\",\"duration\":2.8799999999999999}"
+          },
+          "srt": {
+            "status": 200,
+            "content_type": "application/x-subrip; charset=utf-8",
+            "wire": "1\n00:00:00,640 --> 00:00:02,800\nPlease check the current project version number.\n\n"
+          },
+          "vtt": {
+            "status": 200,
+            "content_type": "text/vtt; charset=utf-8",
+            "wire": "WEBVTT\n\n1\n00:00:00.640 --> 00:00:02.800\nPlease check the current project version number.\n\n"
+          }
+        },
+        "negative": {
+          "unknown_model": 404,
+          "unknown_field": 400,
+          "bad_format": 400
+        },
+        "independent_chat": "42",
+        "status": "PASS"
+      },
+      "beta_conversation": {
+        "sdk": "7.47.0",
+        "beta_session": true,
+        "issued_temperature": 0.75,
+        "updated_temperature": 0.9,
+        "requested_temperature": 0.6,
+        "reported_temperature": 0.6,
+        "max_output_tokens": 32,
+        "delta": "response.text.delta",
+        "completed": "response.text.done",
+        "answer": "42",
+        "tokens": 109
+      },
+      "beta_transcription": {
+        "sdk": "7.47.0",
+        "issued": 200,
+        "invalid_ttl": 400,
+        "invalid_format": 400,
+        "recursive_issue": 401,
+        "models": 401,
+        "requested_ttl": 15,
+        "language": "zh",
+        "transcript": "请查询当前项目版本号。",
+        "independent_chat": "42",
+        "beta_start": "session.created",
+        "beta_update": "transcription_session.updated"
+      },
+      "web_rtc_status": 201,
+      "closed": true,
+      "conversation": "recovered",
+      "core_chat": "42"
+    }
+  },
+  "targeted_cpu_tests": 31,
+  "predecessor": "rev458",
+  "historical_business": "Previously qualified Agent and Responses observations remain bound to their original unchanged receipt hashes. This run re-exercised audio translation, beta Realtime conversation and transcription, native WebRTC session closure, stored conversation continuity and Chat at both capacities.",
+  "artifacts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/acceptance.json",
+      "sha256": "92a0ac0c3d173820cdb36c1002ed4f46b0063fba3bb5727f655db05f7e827cfe"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/profile-observations.json",
+      "sha256": "620975efab2cbfd02842edf774da5ce4b530481b5c0385be3aa5b78c1c1d6186"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-qualified-final-01/acceptance.json",
+      "sha256": "50d6f61b4bf4a52b6093b86ee38e7d00835cf0fbbc234d87510f70221a8dbc4b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-lease-01/exit.json",
+      "sha256": "423963e815222c766b347146d38e851b17e15bbd0175fcda713e62e591f3b7ef"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-migration-pinned-01.log",
+      "sha256": "b7d407f013d855613806ad46e69e0347477e12f2429ddbea50a19d66a4facc4a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-qualified-final-01/qualified/primary.json",
+      "sha256": "75d0e41fe4033bca234cffebed3163869a3e2b5cebf1315ba639c0c36461ac96"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/primary/translations.json",
+      "sha256": "288c9a9476d22c2b1dc0617d6221a96a222722c11327b7f320de9918bf70f785"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/primary/beta-conversation.json",
+      "sha256": "79ea18ccb652fc3032caaee56fb7923fd80d1f7b4a6b2559ebd41e9b55e28fc9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/primary/beta-transcription.json",
+      "sha256": "0d7333cf28a6c9abb623091a551e0882f7afb3b940c083153c4fef92109cc246"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/primary/observation.json",
+      "sha256": "a1cebd110af7c193c5cbcb34b59477cc7c6542ce1c07a17e48e990630b341ce8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/primary/result.json",
+      "sha256": "ce8fedf60a857ee1bbbd858fc742fe47c454a57f315dd616be541171fe8b9854"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/primary/cleanup.json",
+      "sha256": "1fb6c7f74d7c308c48a1600d625206e9a651f4fffc47882abe59d8bd50148365"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-qualified-final-01/qualified/light.json",
+      "sha256": "b7951dcde8dcbb1b3d75886640f23c218a5f77003d534c16fbd1b5e7b81d5b69"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/light/translations.json",
+      "sha256": "288c9a9476d22c2b1dc0617d6221a96a222722c11327b7f320de9918bf70f785"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/light/beta-conversation.json",
+      "sha256": "79ea18ccb652fc3032caaee56fb7923fd80d1f7b4a6b2559ebd41e9b55e28fc9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/light/beta-transcription.json",
+      "sha256": "0d7333cf28a6c9abb623091a551e0882f7afb3b940c083153c4fef92109cc246"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/light/observation.json",
+      "sha256": "23a4a8057d734f3dacef5814cb3a3bc727b908e28c656c90f89659f31138bda1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/light/result.json",
+      "sha256": "a5076759b734aaf59aef3804b1e44132dbf4762702bb57bdbe938063f96785a9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-profiles-01/light/cleanup.json",
+      "sha256": "4f336f58d3f6c0340ad0572b56eb9f41fea3dc81ac2d254c6eccc61abf9ef15a"
+    }
+  ]
+}

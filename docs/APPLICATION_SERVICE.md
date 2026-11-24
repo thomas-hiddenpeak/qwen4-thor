@@ -1,9 +1,16 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
-更新：2026-11-08；客户端、托管与任务交接已完成各自独立短验。当前为单台Thor、单模型的
-文本Chat服务，以及只读项目资料查询应用。工具调用、有限结构化输出、
-错误/取消、运行保障和持久任务恢复已有分阶段短验；不宣称全部OpenAI
-接口、所有客户端、任意配置组合或长期生产负载已验。
+q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖官方接口目录中的 157 条推理与应用路径，共 231 个必做 HTTP 方法。组织管理、云账单和微调训练由范围决定排除。逐方法对照区分接口声明和真实业务验收。[范围决定](evidence/serve-scope-decision-20261120/README.md) · [实际进展和发行身份](STATUS.md)
+
+| 开发接入 | 已验证的业务 | 客户端和部署条件 |
+|---|---|---|
+| Chat、Responses、Agents | 项目资料查询、流式工具事件、工具结果回填、子 Agent 回合及配额恢复 | API Key 区分客户。持久会话跨进程恢复；具体模型、工具及发行组合见[托管业务回执](evidence/serve-agent-workspaces-20261124/subagent-delivery.json)。 |
+| 旧版 Realtime 对话与转写 | Node SDK 7.47.0 在原生 TLS 上完成中文转写、文本增量及终态；两种容量均已验证 | SDK WebSocket 助手使用 WSS，部署时为其配置原生 TLS 或可选 TLS 网关。转写须通过支持 transcription intent 的连接助手并显式传入 beta 头。[SDK 回执](evidence/serve-realtime-legacy-sessions-20261124/beta-resources.json) |
+| 上传语音翻译 | 中文真实录音译为英文，JSON、纯文本、详尽 JSON、SRT 和 VTT 均已通过两种容量短验 | 配置原生 ASR；字幕还需对齐模型。`whisper-1` 是请求别名，实际后端为 Qwen ASR 和本地 Chat。[双配置回执](evidence/serve-audio-translation-20261124/profiles.json) |
+
+## 2026-11-08 文本与视觉 v1 验收范围
+
+当时验收了文本 Chat、只读项目资料查询、工具调用、结构化输出、错误与取消，以及分阶段的运行保障与任务恢复。
 
 视觉v1新增显式单槽no-MTP图片/工具/JSON及媒体展开配额组合；
 视频方向任务、硬解码未接受，旧托管/持久任务不自动迁移。
@@ -15,10 +22,9 @@
 只核对源码与证据；后续[03c锁等待取消](SERVE_PREPARE_LOCK_RESULT_2026-11-04.md)
 已新增原生/真实工具短验并交付默认。
 
-当前默认服务封装已完成[原生入口及有界自恢复](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：
+该阶段的默认服务封装已完成[原生入口及有界自恢复](SERVE_NATIVE_INGRESS_RESULT_2026-11-08.md)：
 Bearer鉴权、模型/控制器/入口恢复无需nginx或systemd；Python控制面
-仍保留。151项不同CPU及3启动/18Chat真实短验通过，现安装为STOPPED，
-PR #22尚未合main。旧客户端、托管与持久任务仍按各自已验身份使用，
+仍保留。151项不同CPU及3启动/18Chat真实短验通过，当时登记的服务意图为 STOPPED。旧客户端、托管与持久任务仍按各自已验身份使用，
 不因新服务入口交付而自动完成协议迁移或视觉恢复组合验收。
 
 ## 边界与成熟度

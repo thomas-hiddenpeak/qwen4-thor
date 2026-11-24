@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'translations' in declared or 'media_client_change' in plan:
+            from tools.native_asr import translation_profiles
+            profiles[name]['evidence_sha256'].update(translation_profiles.verify(phase, plan, declared))
+            continue
         if 'beta_query_selector' in declared.get('responses', {}) or 'beta_change' in plan:
             from tools.serve_responses import beta_profile_acceptance
             proofs = beta_profile_acceptance.verify(phase, plan, declared)

@@ -1,0 +1,220 @@
+{
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 460,
+    "version_revision": 159,
+    "profile_revision": 49,
+    "previous_profile_revision": 48,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "93894d5ac86937051ba9f9fc4ad842820e9e1eb51c892a0c938f48666ed055a4",
+    "fallback": "dfbea8b67f413a737b4cba20068695dd67f70b56a3320d66ca16cf176f902c37",
+    "engine": "c1c4b359c063d68a0d17e8c13c97a72ea47da0fc5a84af22a4beefe72bf41873",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "managed": {
+    "model_exit": {
+      "seconds": 133.711,
+      "starts": 2,
+      "guardian_same": true,
+      "beta_delta": "response.text.delta",
+      "beta_done": "response.text.done",
+      "beta_answer": "42",
+      "credential_sdk": "7.47.0",
+      "transport": "loopback_ws",
+      "independent_chat": "42",
+      "source_timed_vtt": "WEBVTT\n\n1\n00:00:00.640 --> 00:00:02.800\nPlease check the current project version number.",
+      "masked_prior_credential_status": 401,
+      "seconds_remaining": 529,
+      "cross_tenant": 404,
+      "cleanup": true,
+      "sources": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-fallback-business-02/result.json",
+          "sha256": "d8100b1d0a394056f10c08689d8b546cd8cf4da3a6fb40fba64889e24d44d1e4"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-fallback-business-02/interruption.json",
+          "sha256": "ecca30540573ab9f1d3911cbf5ff349e9c979c701815ec2dbd03ea1d36e48d39"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-fallback-business-02/before-subtitle.wire",
+          "sha256": "99f7752e1e277caa3b8682001b05fef5914b370350c259910e0c7b44fb39bd90"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-fallback-business-02/after-subtitle.wire",
+          "sha256": "99f7752e1e277caa3b8682001b05fef5914b370350c259910e0c7b44fb39bd90"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-fallback-business-02/after-beta.json",
+          "sha256": "5ff07a45b7cbac5674ca3c70735498a71b2760ccc65cabd88dbf398d25d85f41"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-fallback-business-02/chat-after.wire",
+          "sha256": "2a06974b7013e5a14af56a857c537477957576710c4d3e1550ab1f6f44cd7348"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-fallback-lease-02/exit.json",
+          "sha256": "2bdae1dbb7aebc80f6c02950410a8e5d6a5746498bbd754813e56bea80811287"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-client-fallback-01/service-acceptance.json",
+          "sha256": "6983d0cc1da9768a1f977810bbdc75790f7c47169c62e9a6b98b12a3d29624e2"
+        }
+      ]
+    },
+    "gateway_takeover": {
+      "seconds": 173.213,
+      "starts": 2,
+      "guardian_same": true,
+      "beta_delta": "response.text.delta",
+      "beta_done": "response.text.done",
+      "beta_answer": "42",
+      "credential_sdk": "7.47.0",
+      "transport": "loopback_ws",
+      "independent_chat": "42",
+      "source_timed_vtt": "WEBVTT\n\n1\n00:00:00.640 --> 00:00:02.800\nPlease check the current project version number.",
+      "masked_prior_credential_status": 401,
+      "seconds_remaining": 540,
+      "cross_tenant": 404,
+      "cleanup": true,
+      "sources": [
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-media-02/result.json",
+          "sha256": "5b44ea8c839a0101cc8a78ebe1a86438a827842c9638b3dfc2f8c36b665d2805"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-media-02/interruption.json",
+          "sha256": "d44cd5fe6df7233f7d0fc976ef0d65d839e81ae6dd135330b7088233818e97c7"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-media-02/before-subtitle.wire",
+          "sha256": "99f7752e1e277caa3b8682001b05fef5914b370350c259910e0c7b44fb39bd90"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-media-02/after-subtitle.wire",
+          "sha256": "99f7752e1e277caa3b8682001b05fef5914b370350c259910e0c7b44fb39bd90"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-media-02/after-beta.json",
+          "sha256": "5ff07a45b7cbac5674ca3c70735498a71b2760ccc65cabd88dbf398d25d85f41"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-media-02/chat-after.wire",
+          "sha256": "db287ff9a6a4f26af00f5e739575383039fc343060d490437b87293c862e6db6"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-primary-lease-02/exit.json",
+          "sha256": "be8190f6a5fc07e5794bf9561abd3e7afdd380733289ab1262a2fa314b219ade"
+        },
+        {
+          "path": ".q4t-work/serve-responses-agents-20261123/media-client-primary-01/service-acceptance.json",
+          "sha256": "3ad2dc4e1a869d8c38ce6828ab83b7a3deeb1ac83b1d766a673bf1249c3f25e9"
+        }
+      ],
+      "fallback_consumed": true,
+      "device_probes": 1,
+      "fixture": "Fatal gateway exit on the owned isolated primary wrapper, then real registered fallback.",
+      "takeover": {
+        "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-media-02/takeover.json",
+        "sha256": "11122225d8ffc5663ce87acd75244a1fe8889e53fd16098bc9a99b86f578c225"
+      }
+    }
+  },
+  "retained_failed_runs": [
+    {
+      "starts": 1,
+      "cause": "Pinned Node beta WebSocket helper required WSS in the managed plaintext loopback fixture. The profile runs used native TLS/WSS. The managed retry used the same SDK credential issuance plus loopback WebSocket.",
+      "original": {
+        "path": ".q4t-work/serve-responses-agents-20261123/media-fallback-business-01/result.json",
+        "sha256": "61295d123ae4336a9de1fd21ea17c69f86d2cd996a0d4a26e13fc03bc584051d"
+      }
+    },
+    {
+      "starts": 0,
+      "cause": "The isolated gateway fault fixture rejected its output path before starting a model. The retry used the required private fatal-business directory.",
+      "original": {
+        "path": ".q4t-work/serve-responses-agents-20261123/media-primary-business-01/result.json",
+        "sha256": "02429a52162411cf49f17991c6b5daf3829fb47cb23de3a24e9c84e75a9b09a2"
+      }
+    }
+  ],
+  "maintenance": {
+    "transfer_sha256": "c5419fe468eb2989c2710b3e8a8ba0497343a7da32f6fdc2eb518d9ed99ffda0",
+    "checkpoint_sha256": [
+      "683bf38e8805f89a778d452401e7c1ebdb30864007e04ac13f9836aba3ca9a32",
+      "760fff26c9fe7a37fd3b9816c3ddc58eb3819d1f0456b179a1ccc513b2229732"
+    ],
+    "transfer_source": {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-retirement-04/archive/root-version-transfer.json",
+      "sha256": "c5419fe468eb2989c2710b3e8a8ba0497343a7da32f6fdc2eb518d9ed99ffda0"
+    },
+    "archived_bytes_and_inode_preserved": true,
+    "cpu_cases": 17,
+    "previous_deployment_revision": 216,
+    "archive_entry": "Source-tree utility, delivered separately from the sealed service payload.",
+    "generation": {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-client-maintenance-01/archive-generations/retired.json",
+      "sha256": "2fbd69c1476e27d6fda2c8043b5b2c768078fdf97b89e645028beef2d1af64eb"
+    },
+    "version": {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-client-maintenance-versions-03/result.json",
+      "sha256": "6edf4ce8067b3d23d93f30e1ce0fd8be5babf9cfc9ae72b5a0348d02347aea0a"
+    },
+    "intent": {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-client-maintenance-intents-01/result.json",
+      "sha256": "a2d18689475e797b32e476c104b415b3bddf2dd6f17e16b70bb5d845fe56ac18"
+    },
+    "source_audit": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 155,
+      "native_routes": 258,
+      "reviewed_source_anchors": 1250,
+      "mutation_checks": 38,
+      "errors": []
+    },
+    "previous_source_audit": "The offline helper was initially missing its reviewed digest. The checker detected it; the CI root-transfer group now runs its tests."
+  },
+  "profiles": {
+    "path": "docs/evidence/serve-audio-translation-20261124/profiles.json",
+    "sha256": "6922c02f2345d196f79bbe4ac803f98f66c10dd79e4766a9768998d6c112552b"
+  },
+  "main": {
+    "path": "docs/evidence/serve-audio-translation-20261124/main.json",
+    "sha256": "9fdb2024bbdada65fcd0a69e8b5918362d536207dc5c396bfcddb3bdf9a5e654"
+  },
+  "issued_methods": {
+    "declared": 135,
+    "exact_success_declarations": 135,
+    "missing_declaration": 96,
+    "required_methods": 231,
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "issued": "5a8acdbbae033ae606285e94e7fad12f53aeb63f4a8482d2a5b103b99ce2f04f"
+    }
+  },
+  "day": {
+    "status": "PREPARED_AND_CHECKED",
+    "owner": "user",
+    "hours_executed": 0,
+    "plan": {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-client-soak-src/.q4t-work/day-01/plan.json",
+      "sha256": "e5c280a5c5b4425fc96a26c14ca589c261371022969904b9bd3fbfd4e9da2014"
+    },
+    "handoff": {
+      "path": ".q4t-work/serve-responses-agents-20261123/media-client-soak-src/.q4t-work/day-01/handoff.json",
+      "sha256": "9307b4da17b5e2b71494756de86f3999c9993e26c2708f72415d8b6cf06f8e8d"
+    },
+    "source_commit": "df362d58db5f732ec4e43770adb1a3bc37c70d81",
+    "source_files": 698
+  },
+  "publication_lease": {
+    "path": ".q4t-work/serve-responses-agents-20261123/media-publication-lease-04/exit.json",
+    "sha256": "ce61ccb9e29a2fed7fc6273d7e6ce953722abf896d03c27951e34428994af076"
+  }
+}

@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+离线归档工具已登记到来源清单，新增的归档用例已接入主机 CI 的整包回退组。首次来源检查报告缺少该工具摘要，修正后 1,250 个来源及 38 项反例通过。rev460 的服务包身份沿用原发布。[记录](evidence/serve-audio-translation-20261124/delivery.json)
+
+默认服务包已发布 **rev460**，版本登记 159，配置登记 49。回退包发生模型退出和主包发生致命网关故障后，两个托管场景都能继续读取原会话，译出的 VTT 字幕与故障前逐字节相同，独立 Chat 均答 42。尚余 529 秒、540 秒的旧凭据分别被拒绝。发布时生产意图为 STOPPED，启动模型 0 次，13 份客户和恢复记录摘要一致。已预检 24 小时运行计划，由用户实跑。发行包声明 135/231 个必做方法，仍缺 96 个。下一步验证 Agent 会话两个订阅端的独立事件填充。[发行与预检回执](evidence/serve-audio-translation-20261124/delivery.json)
+
+PR #79 的两项 host-contracts 均已通过，旧版实时对话、实时转写和语音翻译随 `ec21f3a22` 合入 main。本机版本登记 18 槽曾全部受保护；查到 rev216 的整包交接仍引用两个已完成检查点。新增离线归档入口验证两个检查点和后续部署、周期，17 项 CPU 检查通过。现场按原字节和 inode 归档旧交接，再由正式维护命令分别释放一个版本及意图槽位。下一步核对新包的发布、登记与长稳预检。[合入记录](evidence/serve-audio-translation-20261124/main.json)
+
+主、轻两套发行配置已分别通过五种英译格式、旧版实时对话和中文转写，独立 Chat 均回答 42。主配置开启 MTP，用时 55.2 秒；轻配置关闭 MTP，用时 52.3 秒，并从磁盘读回主配置创建的会话。两次均完成原生 WebRTC 握手与关闭，端口和子进程已释放。31 项迁移用例通过，两份新资格记录均可逐字节还原 rev458 前驱。当前默认仍为 rev458，下一步封包并检验托管恢复。[配置验收](evidence/serve-audio-translation-20261124/profiles.json)
+
 PR #78 两项 host-contracts 均通过，已随 `5c054f0d7` 合入 main。主线包含子 Agent 单回合配额恢复和旧版实时对话凭据签发。旧版 WebSocket 事件及语音翻译属于后续候选。[合入记录](evidence/serve-realtime-legacy-sessions-20261124/issuance-main.json)
 
 原生 POST /v1/audio/translations 已通过官方 Node SDK 的五种格式。2.88 秒中文录音被译为“Please check the current project version number.”；SRT 与 VTT 均保留 0.640 至 2.800 秒的源语音边界。未知模型返回 404，错误字段和格式返回 400，独立 Chat 答 42。首次请求实际返回 502，模型拒绝了 JSON 包装的翻译指令；改为独立原文消息及翻译示例后，一次启动 47.336 秒通过。8 项 CPU、7 项合同及可选 nginx 真实转发通过。候选声明 135/231，默认 rev458 仍为 133/231，主轻配置与封包交付待验。[验收回执](evidence/serve-audio-translation-20261124/business.json)

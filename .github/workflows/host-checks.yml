@@ -164,6 +164,7 @@ jobs:
           tools.serve_recovery.test_root_version_policy
           tools.serve_recovery.test_root_transfer
           tools.serve_recovery.test_root_checkpoint_archive
+          tools.serve_recovery.test_retire_root_transfer
           tools.serve_recovery.test_native_bundle.BundleTests.test_v2_source_inventory_is_frozen_and_cannot_claim_isolated_io
           tools.serve_recovery.test_native_bundle.BundleTests.test_historical_source_inventory_versions_remain_verifiable
           tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_v18_source_imports_every_cold_management_module
