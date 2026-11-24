@@ -604,6 +604,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         IsMcpTunnelTarget(path)) {
       if (method == "POST" && !IsChatKitUpload(method, path) && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
                                  IsAutomationAction(path) ||
+                                 ParseEvalRoute(path).kind == EvalRouteKind::kCancel ||
                                  ParseChatKitRoute(path).kind == ChatKitRouteKind::kCancel ||
                                  ParseWebhookRoute(path).kind == WebhookRouteKind::kRotate ||
                                  path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||

@@ -28,5 +28,16 @@
     "evals-runs-cpu-04.log": "1b613910d49b1a31f75c609f1c98cfa3b7e833ce8e2b4c89cb3c220a1b8577bf",
     "evals-runs-optional-all-routes-02.log": "e19106d0a3b7dbcd8e63553fc9907c1bab3b4c96893d13e4ee3c9a1d9851fad8",
     "evals-runs-methods-02.json": "87fa0fdac3bb016a00a9cb76cde3a59ba7ba90690d590af582997fa8a6490fb2"
+  },
+  "first_device_run": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 36.131,
+    "unchanged_default": true,
+    "phases": [],
+    "failed_operation": "POST /v1/evals/{eval_id}/runs/{run_id}/cancel",
+    "http_status": 415,
+    "observation": "Official SDK sends no JSON body and no Content-Type when canceling. Passed file snapshot and both scoring rows before cancellation.",
+    "result_sha256": "7054c0f5615c07fefaa5766b00de17dac3f8ce98a0766d843a2dde6f9c4d88ee"
   }
 }
