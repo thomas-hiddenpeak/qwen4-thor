@@ -1,6 +1,10 @@
 #include "eval_run_state.h"
 
 #include <algorithm>
+#include <charconv>
+#include <tuple>
+
+#include "eval_trajectory.h"
 #include <map>
 
 #include "q4t/server/binary_store.h"
@@ -74,9 +78,53 @@ bool Matches(const Json& query, const Json& config, const Json& response,
   return true;
 }
 
+struct DatasetSnapshots {
+  InputSnapshotStore store;
+  const BinaryAccess& access;
+  std::map<std::string, Json> roots;
+  std::map<std::tuple<std::string, std::string, std::string>, InputSnapshotRef>
+      aliases;
+  std::vector<InputSnapshotHold> holds;
+};
+
+ObjectReply ChatBinding(DatasetSnapshots* snapshots, const Json& original,
+                        const Json& target, Json* binding) {
+  const auto path = binding->GetString("path");
+  const auto* parts = original.GetArray("content");
+  if (!path.starts_with("/content/") || !parts ||
+      original.GetString("role") != "user")
+    return InvalidRecord();
+  const auto index = std::string_view(path).substr(9);
+  size_t part = 0;
+  const auto [end, error] =
+      std::from_chars(index.data(), index.data() + index.size(), part);
+  if (error != std::errc{} || end != index.data() + index.size() ||
+      part >= parts->array.size())
+    return InvalidRecord();
+  InputSnapshotRef source;
+  if (!ParseInputSnapshotReference(*binding->Find("snapshot"), &source))
+    return InvalidRecord();
+  const auto key = std::tuple{source.id, source.sha256,
+                              binding->GetString("binding_sha256")};
+  auto found = snapshots->aliases.find(key);
+  if (found == snapshots->aliases.end()) {
+    if (snapshots->holds.size() >= 4096)
+      return Error(413, "eval_snapshot_capacity",
+                   "Dataset exceeds snapshot capacity");
+    InputSnapshotRef alias;
+    InputSnapshotHold hold;
+    auto mapped = snapshots->store.ProjectChat(
+        snapshots->access, source, parts->array[part], 900, &alias, &hold);
+    if (!mapped.ok()) return mapped;
+    snapshots->holds.push_back(std::move(hold));
+    found = snapshots->aliases.emplace(key, std::move(alias)).first;
+  }
+  return BindInputSnapshot(target, path, found->second, binding);
+}
+
 ObjectReply DatasetRow(const Json& record, const Json& config,
                        const Json& query, bool chat, Json* row,
-                       std::map<std::string, Json>* roots) {
+                       DatasetSnapshots* snapshots) {
   const auto* data = record.Find("data");
   const auto* response = data ? data->Find("response") : nullptr;
   if (!response || response->GetString("id") != record.GetString("id"))
@@ -154,32 +202,59 @@ ObjectReply DatasetRow(const Json& record, const Json& config,
   if (const auto* metadata = response->Find("metadata"))
     Set(&item, "metadata", *metadata);
   *row = Object({{"item", std::move(item)}});
-  if (!roots) return {};
+  if (!snapshots) return {};
   // Positions survive reissuing an easy message with a fresh storage ID.
   // The binding still authenticates the exact typed part and immutable root.
   auto indexed = Array();
   const auto* stored = data->Find("input_snapshots");
   if (stored && !stored->IsNull() && !stored->IsArray()) return InvalidRecord();
   if (stored && !stored->array.empty()) {
-    Json checked;
-    auto valid = MergeInputSnapshots(*stored, *messages, &checked);
+    Json checked, original, normalized;
+    const Json* source_items = messages;
+    std::vector<size_t> normalized_positions;
+    if (chat) {
+      // The public Chat messages view separates text from content_parts.
+      // Reconstruct exactly the content on which StoredChats verified IDs and
+      // bindings.
+      original = *messages;
+      for (auto& message : original.array)
+        if (const auto* parts = message.GetArray("content_parts"))
+          Set(&message, "content", *parts);
+      source_items = &original;
+      normalized = *row->Find("item")->GetArray("input_trajectory");
+      auto projected =
+          NormalizeEvalTrajectory(&normalized, &normalized_positions);
+      if (!projected.ok()) return projected;
+      if (normalized_positions.size() != original.array.size())
+        return InvalidRecord();
+    }
+    auto valid = MergeInputSnapshots(*stored, *source_items, &checked);
     if (!valid.ok()) return valid;
     std::map<std::string, size_t> positions;
-    for (size_t i = 0; i < messages->array.size(); ++i)
-      positions.emplace(messages->array[i].GetString("id"), i);
+    for (size_t i = 0; i < source_items->array.size(); ++i)
+      positions.emplace(source_items->array[i].GetString("id"), i);
     for (auto& binding : checked.array) {
-      const auto position = positions.at(binding.GetString("item_id"));
+      auto position = positions.at(binding.GetString("item_id"));
+      if (chat) {
+        const auto& message = original.array[position];
+        position = normalized_positions[position];
+        if (position >= normalized.array.size()) return InvalidRecord();
+        auto& target = normalized.array[position];
+        Set(&target, "id", *message.Find("id"));
+        auto projected = ChatBinding(snapshots, message, target, &binding);
+        if (!projected.ok()) return projected;
+      }
       const auto& snapshot = *binding.Find("snapshot");
       const auto id = snapshot.GetString("id");
       const auto digest = binding.GetString("binding_sha256");
-      auto [previous, added] = roots->try_emplace(
+      auto [previous, added] = snapshots->roots.try_emplace(
           id,
           Object({{"snapshot", snapshot}, {"binding_sha256", String(digest)}}));
       if (!added && (previous->second.GetString("binding_sha256") != digest ||
                      previous->second.Find("snapshot")->GetString("sha256") !=
                          snapshot.GetString("sha256")))
         return InvalidRecord();
-      if (roots->size() > 4096)
+      if (snapshots->roots.size() > 4096)
         return Error(413, "eval_snapshot_capacity",
                      "Dataset exceeds the private snapshot reference limit");
       indexed.array.push_back(Object(
@@ -191,10 +266,12 @@ ObjectReply DatasetRow(const Json& record, const Json& config,
 }
 }  // namespace
 
-bool ReplaysStoredResponse(const Json& source) {
+bool ReplaysStoredTrajectory(const Json& source) {
   const auto* origin = source.Find("source");
   const auto* messages = source.Find("input_messages");
-  return origin && origin->GetString("type") == "responses" &&
+  return origin &&
+         (origin->GetString("type") == "responses" ||
+          origin->GetString("type") == "stored_completions") &&
          (!messages || messages->IsNull() ||
           messages->GetString("item_reference") == "item.input_trajectory");
 }
@@ -230,9 +307,19 @@ ObjectReply PublishStoredRun(ObjectStore& objects, const StateAccess& access,
   page.descending = true;
   page.limit = 8;
   std::string buffer;
-  std::map<std::string, Json> roots;
+  DatasetSnapshots snapshots{InputSnapshotStore(objects), auth, {}, {}, {}};
   const auto& source = *run.data.Find("resource")->Find("data_source");
-  const bool freeze = ReplaysStoredResponse(source);
+  const bool freeze = ReplaysStoredTrajectory(source);
+  ScopeExit release_aliases([&] {
+    const BinaryAccess cleanup{
+        auth.scope,
+        std::chrono::steady_clock::now() + std::chrono::milliseconds(500),
+        {}};
+    for (auto& hold : snapshots.holds)
+      if (!hold.commit_unknown && !stage.commit_unknown &&
+          !snapshots.store.Release(cleanup, &hold).ok())
+        objects.RecordAuxiliaryCleanupFailure();
+  });
   int64_t rows = 0;
   while (rows < limit) {
     auto records = objects.Execute(page, access.deadline, access.cancelled);
@@ -242,7 +329,7 @@ ObjectReply PublishStoredRun(ObjectStore& objects, const StateAccess& access,
     for (const auto& record : entries->array) {
       Json row;
       auto selected = DatasetRow(record, config, query, chat, &row,
-                                 freeze ? &roots : nullptr);
+                                 freeze ? &snapshots : nullptr);
       if (!selected.ok()) return selected;
       if (row.IsNull()) continue;
       auto line = OutputJson(row);
@@ -272,9 +359,9 @@ ObjectReply PublishStoredRun(ObjectStore& objects, const StateAccess& access,
     auto appended = binary.Append(auth, &stage, buffer);
     if (!appended.ok()) return appended;
   }
-  if (!roots.empty()) {
+  if (!snapshots.roots.empty()) {
     auto dependencies = Array();
-    for (auto& entry : roots)
+    for (auto& entry : snapshots.roots)
       dependencies.array.push_back(std::move(entry.second));
     Set(&run.data, "input_snapshots", std::move(dependencies));
   }

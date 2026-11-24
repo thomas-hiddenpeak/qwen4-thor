@@ -5,6 +5,8 @@
 #include <ctime>
 
 #include "object_protocol.h"
+#include "q4t/server/file_input.h"
+#include "q4t/server/input_snapshot_bindings.h"
 
 namespace q4t::server {
 namespace {
@@ -331,6 +333,68 @@ ObjectReply InputSnapshotStore::Pin(const BinaryAccess& parent_access,
     *hold = {access.scope, lease.id, lease.expires_at, false,
              reply.commit_unknown};
   return reply;
+}
+
+ObjectReply InputSnapshotStore::ProjectChat(const BinaryAccess& parent,
+                                            const InputSnapshotRef& source,
+                                            const Json& chat_part,
+                                            int hold_seconds,
+                                            InputSnapshotRef* projected,
+                                            InputSnapshotHold* hold) {
+  if (hold && hold->commit_unknown)
+    return Error(503, "input_snapshot_commit_unknown",
+                 "Snapshot commit unknown", true);
+  if (!projected || !projected->id.empty() || !hold || !hold->id.empty() ||
+      hold_seconds < 1 || hold_seconds > 3600)
+    return Invalid();
+  InputSnapshotRef validated;
+  if (!ParseInputSnapshotReference(InputSnapshotReference(source), &validated))
+    return Invalid();
+  Json mapped;
+  auto result = ProjectChatMediaPart(chat_part, &mapped);
+  if (!result.ok()) return result;
+  std::string before, after;
+  if (!InputValueIdentity(chat_part, &before) ||
+      !InputValueIdentity(mapped, &after))
+    return Capacity();
+  auto access = parent;
+  access.deadline = std::min(parent.deadline,
+                             Clock::now() + std::chrono::seconds(hold_seconds));
+  result = Active(access);
+  if (!result.ok()) return result;
+  auto read = Request(access, ObjectKind::kInputSnapshot, source.id);
+  read.operation = ObjectOperation::kGet;
+  auto stored = objects_.Execute(read, access.deadline, access.cancelled);
+  if (!stored.ok()) return stored;
+  const auto* data = stored.value.Find("data");
+  if (!data || data->GetString("format") != "q4t.input_snapshot.v1" ||
+      data->GetString("binding_sha256") != before ||
+      Digest(OutputJson(*data)) != source.sha256)
+    return Corrupt();
+  auto root = Request(access, ObjectKind::kInputSnapshot,
+                      NewObjectId(ObjectKind::kInputSnapshot));
+  auto lease =
+      Request(access, ObjectKind::kToolRun, NewObjectId(ObjectKind::kToolRun));
+  if (root.id.empty() || lease.id.empty())
+    return Error(503, "object_entropy_unavailable", "No secure snapshot ID");
+  root.data = *data;
+  Set(&root.data, "binding_sha256", String(after));
+  Set(&root.data, "input_snapshots",
+      Array({Object({{"snapshot", InputSnapshotReference(source)},
+                     {"binding_sha256", String(before)}})}));
+  lease.expires_at = std::time(nullptr) + hold_seconds;
+  lease.mutate_before = root.mutate_before = lease.expires_at;
+  lease.data = Object({{"format", String("q4t.input_snapshot_hold.v1")},
+                       {"snapshot_id", String(root.id)}});
+  InputSnapshotRef next{root.id, Digest(OutputJson(root.data))};
+  result = objects_.ExecuteBatch(std::array{root, lease}, access.deadline,
+                                 access.cancelled);
+  if (result.ok() || result.commit_unknown) {
+    *hold = {access.scope, lease.id, lease.expires_at, false,
+             result.commit_unknown};
+    *projected = std::move(next);
+  }
+  return result;
 }
 
 ObjectReply InputSnapshotStore::Release(const BinaryAccess& access,

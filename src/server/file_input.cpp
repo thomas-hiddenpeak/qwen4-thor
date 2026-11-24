@@ -130,6 +130,34 @@ ObjectReply Decode(const FileInputSource& source, const BinaryAccess& access,
 }
 }  // namespace
 
+ObjectReply ProjectChatMediaPart(const Json& chat, Json* responses) {
+  if (!responses)
+    return Error(500, "file_input_state_invalid", "Missing projection");
+  const bool file = chat.GetString("type") == "file";
+  FileInputSource source;
+  auto parsed = file ? ParseFileInputSource(chat, FileInputProfile::kChat,
+                                            "file", &source)
+                     : ParseImageInputSource(chat, FileInputProfile::kChat,
+                                             "image", &source);
+  if (!parsed.ok()) return parsed;
+  Json output;
+  if (file) {
+    output = *chat.Find("file");
+    Set(&output, "type", String("input_file"));
+  } else {
+    const auto& image = *chat.Find("image_url");
+    output =
+        Object({{"type", String("input_image")},
+                {"image_url", image.IsObject() ? *image.Find("url") : image}});
+    if (const auto* detail = image.Find("detail"))
+      Set(&output, "detail", *detail);
+  }
+  if (const auto* boundary = chat.Find("prompt_cache_breakpoint"))
+    Set(&output, "prompt_cache_breakpoint", *boundary);
+  *responses = std::move(output);
+  return {};
+}
+
 ObjectReply ParseFileInputSource(const Json& part, FileInputProfile profile,
                                  std::string_view param,
                                  FileInputSource* source) {

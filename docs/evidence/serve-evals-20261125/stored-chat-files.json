@@ -1,0 +1,37 @@
+{
+  "stage": "host_verified",
+  "issued": false,
+  "cpu": {
+    "cases": 25,
+    "sha256": "4c0d842cf15a228d98367568e513c079678d5896c9aef84734d8fc8429c104ba",
+    "first_attempt": {
+      "cases": 25,
+      "passed": 24,
+      "failure": "The image test used a cache breakpoint from a different API instead of q4t explicit mode.",
+      "sha256": "0f351b0725aa29222d878661b0189aff85b7faba4c60b24a61cd0b363405e277"
+    }
+  },
+  "design": "Verify the original stored Chat content and immutable snapshot, derive the equivalent typed Responses part, preserve the prior binary manifest under an owner-scoped alias, and verify the projected binding before replay.",
+  "evidence": [
+    "unchanged binary chunk IDs and retained original root",
+    "source and Chat deletion, object store reopen",
+    "foreign scope and changed part rejected",
+    "message index after tool calls and reasoning expansion",
+    "image URL, detail and explicit cache breakpoint"
+  ],
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 240,
+    "native_routes": 396,
+    "reviewed_source_anchors": 1365,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "pending": [
+    "A real stored Chat PDF replay through the native model and two official SDKs",
+    "Package and recovery qualification"
+  ]
+}

@@ -18231,6 +18231,11 @@
       "issued": true,
       "issued_revision": 482
     },
-    "prior_evals_publication": "evidence/serve-evals-20261125/delivery.json"
+    "prior_evals_publication": "evidence/serve-evals-20261125/delivery.json",
+    "stored_chat_files": {
+      "stage": "host_verified",
+      "receipt": "docs/evidence/serve-evals-20261125/stored-chat-files.json",
+      "issued": false
+    }
   }
 }

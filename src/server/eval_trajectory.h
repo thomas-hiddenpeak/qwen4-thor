@@ -5,6 +5,7 @@
 namespace q4t::server::eval_detail {
 // The native sampler consumes Responses input. Graders observe Chat-shaped
 // calls.
-ObjectReply NormalizeEvalTrajectory(io::Json* messages);
+ObjectReply NormalizeEvalTrajectory(io::Json* messages,
+                                    std::vector<size_t>* positions = nullptr);
 ObjectReply EvalChatTool(const io::Json& item, io::Json* tool);
 }  // namespace q4t::server::eval_detail

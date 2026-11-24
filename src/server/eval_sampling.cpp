@@ -269,7 +269,7 @@ ObjectReply SampleRow(ObjectStore& objects, const StateAccess& access,
                    "Evaluation client is at capacity");
     auto child =
         std::make_unique<ResponsesExecution>(objects, &owner.jobs, true);
-    const auto* frozen = ReplaysStoredResponse(source)
+    const auto* frozen = ReplaysStoredTrajectory(source)
                              ? row->Find("frozen_response_parts")
                              : nullptr;
     auto prepared = child->Prepare(request, config, access, std::time(nullptr),
