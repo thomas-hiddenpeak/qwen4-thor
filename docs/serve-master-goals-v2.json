@@ -5299,8 +5299,8 @@
       },
       "audio_translation_20261124": {
         "evidence": "evidence/serve-audio-translation-20261124/business.json",
-        "status": "CANDIDATE_BUSINESS_PASS",
-        "release_pending": true,
+        "status": "DELIVERED_REV460",
+        "release_pending": false,
         "formats": [
           "json",
           "text",
@@ -5309,7 +5309,8 @@
           "vtt"
         ],
         "profiles": "evidence/serve-audio-translation-20261124/profiles.json",
-        "profile_status": "ACCEPT_TRANSLATION_REALTIME_PRIMARY_LIGHT"
+        "profile_status": "ACCEPT_TRANSLATION_REALTIME_PRIMARY_LIGHT",
+        "delivery": "evidence/serve-audio-translation-20261124/delivery.json"
       }
     },
     {
@@ -9151,7 +9152,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev458_delivered_remaining_deliveries",
+      "state": "rev460_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -10335,6 +10336,13 @@
         "fallback_registered": true,
         "desired": "STOPPED",
         "evidence": "evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
+      },
+      "audio_translation_release": {
+        "revision": 460,
+        "version_revision": 159,
+        "fallback_registered": true,
+        "desired": "STOPPED",
+        "evidence": "evidence/serve-audio-translation-20261124/delivery.json"
       }
     },
     {
@@ -10616,7 +10624,15 @@
       },
       "agent_registration_delivery_20261123": "docs/evidence/serve-agent-registration-20261123/delivery.json",
       "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json",
-      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json"
+      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json",
+      "rev460_day_handoff": {
+        "profile": "day",
+        "prepared": true,
+        "checked": true,
+        "hours_run": 0,
+        "owner": "user",
+        "evidence": "evidence/serve-audio-translation-20261124/delivery.json"
+      }
     }
   ],
   "next_task": "Reconcile the frozen HTTP method contracts and implement hosted environment provisioning, workspace access and remaining Serve master tasks.",
