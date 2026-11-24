@@ -23,7 +23,7 @@ from bounded_log import BoundedLog, open_log
 class Case(unittest.TestCase):
     def setUp(self):
         parent = ROOT/'build/managed-service-tests'
-        parent.mkdir(exist_ok=True)
+        parent.mkdir(parents=True, exist_ok=True)
         self.temp = tempfile.TemporaryDirectory(dir=parent)
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)

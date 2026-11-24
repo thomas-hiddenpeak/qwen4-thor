@@ -755,6 +755,12 @@
         "revision": 476,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "chatkit_release_20261125": {
+        "evidence": "evidence/serve-chatkit-20261125/delivery.json",
+        "revision": 478,
+        "state": "issued_bounded_acceptance",
+        "long_run": "user_owned_preflight_only"
       }
     },
     {
@@ -2989,6 +2995,17 @@
         "state": "targeted_candidate_accepted",
         "evidence": "evidence/serve-chatkit-20261125/attachments.json",
         "issued": false
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
+      },
+      "chatkit_release_20261125": {
+        "evidence": "evidence/serve-chatkit-20261125/delivery.json",
+        "revision": 478,
+        "state": "issued_bounded_acceptance",
+        "long_run": "user_owned_preflight_only"
       }
     },
     {
@@ -6616,6 +6633,12 @@
         "revision": 476,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "chatkit_release_20261125": {
+        "evidence": "evidence/serve-chatkit-20261125/delivery.json",
+        "revision": 478,
+        "state": "issued_bounded_acceptance",
+        "long_run": "user_owned_preflight_only"
       }
     },
     {
@@ -7533,6 +7556,11 @@
       "chatkit_direct_document_20261125": {
         "state": "targeted_candidate_accepted",
         "evidence": "evidence/serve-chatkit-20261125/attachments.json",
+        "issued": false
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
         "issued": false
       }
     },
@@ -8620,6 +8648,17 @@
         "revision": 476,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
+      },
+      "chatkit_release_20261125": {
+        "evidence": "evidence/serve-chatkit-20261125/delivery.json",
+        "revision": 478,
+        "state": "issued_bounded_acceptance",
+        "long_run": "user_owned_preflight_only"
       }
     },
     {
@@ -10127,6 +10166,17 @@
         "state": "targeted_candidate_accepted",
         "evidence": "evidence/serve-chatkit-20261125/attachments.json",
         "issued": false
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
+      },
+      "chatkit_release_20261125": {
+        "evidence": "evidence/serve-chatkit-20261125/delivery.json",
+        "revision": 478,
+        "state": "issued_bounded_acceptance",
+        "long_run": "user_owned_preflight_only"
       }
     },
     {
@@ -11335,6 +11385,17 @@
         "revision": 476,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "chatkit_profile_handoff_20261125": {
+        "status": "accepted_primary_light",
+        "evidence": "evidence/serve-chatkit-20261125/profiles.json",
+        "issued": false
+      },
+      "chatkit_release_20261125": {
+        "evidence": "evidence/serve-chatkit-20261125/delivery.json",
+        "revision": 478,
+        "state": "issued_bounded_acceptance",
+        "long_run": "user_owned_preflight_only"
       }
     },
     {
@@ -11748,11 +11809,17 @@
         "revision": 476,
         "status": "issued_bounded_acceptance",
         "long_steady_run": "user_owned_preflight_only"
+      },
+      "chatkit_release_20261125": {
+        "evidence": "evidence/serve-chatkit-20261125/delivery.json",
+        "revision": 478,
+        "state": "issued_bounded_acceptance",
+        "long_run": "user_owned_preflight_only"
       }
     }
   ],
-  "next_task": "Implement ChatKit sessions, threads and real client turns, remaining hosted-environment backends, and the other required inference, application, ingress and recovery tasks.",
-  "next": "补齐 ChatKit 附件、其余浏览器动作、容量及恢复交付，继续剩余 28 项方法和未完成的接口业务语义。",
+  "next_task": "Implement Evals definitions, runs and graded output items, the remaining ChatKit browser operations, environment backends and all other required inference, application, native ingress and recovery work.",
+  "next": "推进 Evals 评估定义、运行与逐条评分，继续 ChatKit 浏览器操作、托管环境后端及其余推理、应用、接入与恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

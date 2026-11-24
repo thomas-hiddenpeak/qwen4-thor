@@ -23,6 +23,15 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+CHATKIT_RECORD = 'q4t-profile-business-v44'
+CHATKIT_FORMAT = 'q4t-chatkit-source-v1'
+CHATKIT_CAPABILITY = dict(selector='chatkit_beta=v1', client='/v1/chatkit',
+    uploads='/v1/chatkit/attachments', grant_scope='project_user_workflow',
+    client_tools='serial', thread_history=True, direct_document_upload=True)
+CHATKIT_REVIEWED = {
+    'primary': '62288a6044e8239640fa01bc9b1d52c43baaeac60a21fd890e5dabd5dfafd994',
+    'light': '5ba0f338da57899669e6db3954c4124c98ffdc5d602819dee9921ecb92aa716c',
+}
 PREPARATION_RECORD = 'q4t-profile-business-v43'
 PREPARATION_FORMAT = 'q4t-hosted-preparation-source-v1'
 PREPARATION_CAPABILITY = dict(min_file_entries=2, max_files=50, source_pin_seconds=3600,
@@ -213,7 +222,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 SKILLS_RECORD: SKILLS_FORMAT, CODE_RECORD: CODE_FORMAT,
                 TRANSLATOR_RECORD: TRANSLATOR_FORMAT, AUTOMATION_RECORD: AUTOMATION_FORMAT,
                 WEBHOOK_RECORD: WEBHOOK_FORMAT, HOSTED_LIFECYCLE_RECORD: HOSTED_LIFECYCLE_FORMAT,
-                PREPARATION_RECORD: PREPARATION_FORMAT}
+                PREPARATION_RECORD: PREPARATION_FORMAT, CHATKIT_RECORD: CHATKIT_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -235,6 +244,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'b4250176a3bdf3c94fab37921aadf211e9c29edef1da7e83965f8e0aaf8f049e':
+        'a1d1070beabbe1b26dce51e4261143ee966ac0ef1a8b9c64e2d745f7af5b9c32',
     'cd0d8ac581bde958758caf1b8dde20c470b3606b5562d73581cce376483d4c41':
         'ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46',
     '3280676f47c89ff879f88386e7ff954fc91e583d873525e3571eb5c1c12aa237':
@@ -304,6 +315,13 @@ def automation_session():
 
 
 def format_for(capabilities):
+    if 'chatkit' in capabilities:
+        prior = dict(capabilities)
+        selected = prior.pop('chatkit')
+        ledger.require(ledger.canonical(selected) == ledger.canonical(CHATKIT_CAPABILITY)
+                       and format_for(prior) == PREPARATION_RECORD,
+                       'invalid ChatKit capability or predecessor')
+        return CHATKIT_RECORD
     if 'hosted_environment_preparation' in capabilities:
         prior = dict(capabilities)
         selected = prior.pop('hosted_environment_preparation')
@@ -458,8 +476,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            CHATKIT_RECORD: (PREPARATION_RECORD, PREPARATION_REVIEWED, 'chatkit', 'chatkit-handoff.json'),
             PREPARATION_RECORD: (HOSTED_LIFECYCLE_RECORD, HOSTED_LIFECYCLE_REVIEWED,
                                  'hosted_environment_preparation', 'preparation-handoff.json'),
             HOSTED_LIFECYCLE_RECORD: (WEBHOOK_RECORD, WEBHOOK_REVIEWED, 'hosted_environment_lifecycle',
@@ -690,8 +709,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            CHATKIT_RECORD: (CHATKIT_REVIEWED, PREPARATION_REVIEWED),
             PREPARATION_RECORD: (PREPARATION_REVIEWED, HOSTED_LIFECYCLE_REVIEWED),
             HOSTED_LIFECYCLE_RECORD: (HOSTED_LIFECYCLE_REVIEWED, WEBHOOK_REVIEWED),
             WEBHOOK_RECORD: (WEBHOOK_REVIEWED, AUTOMATION_REVIEWED),

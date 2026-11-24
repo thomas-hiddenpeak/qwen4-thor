@@ -526,6 +526,11 @@ def extends(previous, target):
 
 def explicit_extension(previous, target):
     """Compare qualified semantics when a declared pending capability ships."""
+    if 'chatkit' not in previous and 'chatkit' in target:
+        from tools.serve_recovery import profile_live_reuse as live
+        if (not package.same_json(target['chatkit'], live.CHATKIT_CAPABILITY) or
+                not package.same_json(previous.get('hosted_environment_preparation'), live.PREPARATION_CAPABILITY)):
+            return False
     if 'hosted_environment_preparation' not in previous and 'hosted_environment_preparation' in target:
         from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['hosted_environment_preparation'], live.PREPARATION_CAPABILITY) or

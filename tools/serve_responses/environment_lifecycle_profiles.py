@@ -27,13 +27,7 @@ def prepare(out, build, deployment, preparation=False):
     proof_path = PREPARATION_PROOF if preparation else PROOF
     reviewed = reuse.HOSTED_LIFECYCLE_REVIEWED if preparation else reuse.WEBHOOK_REVIEWED
     key = 'preparation_handoff' if preparation else 'environment_handoff'
-    release = pkg.read(release_path)['publication']
-    source = deployment/'build/service'
-    manifest = bundle.verify(source, release['primary'])
-    engine = pkg.verify(source/'engine', manifest['engine_manifest_sha256'])
     proof = pkg.read(proof_path)
-    identity = build/'generated/q4t/server/chat_protocol_sources.json'
-    sources = pkg.read(identity)
     if preparation:
         pkg.require(proof['status'] == 'ACCEPT_DURABLE_MULTI_FILE_PREPARATION_AND_SESSION_EVENTS'
                     and proof['official_payloads'] == 9 and proof['device']['fair']['runtime']['status'] == 'PASS',
@@ -42,6 +36,16 @@ def prepare(out, build, deployment, preparation=False):
         pkg.require(proof['status'] == 'ACCEPT_HOSTED_SESSION_SUSPEND_AND_RESUME_STREAM'
                     and proof['official_events'] == 4 and proof['device_runtime']['status'] == 'PASS',
                     'missing qualified workspace lifecycle')
+    sources = (ACTOR, ACTOR.with_name('agent_webhook_turns.mjs'), Path(__file__), proof_path, release_path)
+    prepare_candidate(out, build, deployment, release_path, reviewed, key, sources)
+
+
+def prepare_candidate(out, build, deployment, release_path, reviewed, key, drivers):
+    release = pkg.read(release_path)['publication']
+    source = deployment/'build/service'
+    manifest = bundle.verify(source, release['primary'])
+    engine = pkg.verify(source/'engine', manifest['engine_manifest_sha256'])
+    sources = pkg.read(build/'generated/q4t/server/chat_protocol_sources.json')
     pkg.require(all(pkg.sha(ROOT/name) == digest for name,digest in sources.items()),
                 'workspace profiles require current source identity')
     candidate = dict(binary=pkg.sha(build/'q4t'), ingress=pkg.sha(build/'q4t-ingress'))
@@ -75,7 +79,7 @@ def prepare(out, build, deployment, preparation=False):
         plan.update(ingress=str(ingress),
                     client_policy_sha256=pkg.sha(phase/'client-policy.json'),
                     installed_policy_sha256=pkg.sha(phase/'engine/client-policy.json'))
-        for path in (ACTOR, ACTOR.with_name('agent_webhook_turns.mjs'), Path(__file__), proof_path, release_path):
+        for path in drivers:
             plan['sources'][str(path.relative_to(ROOT))] = pkg.sha(path)
         pkg.save(phase/'plan.json',plan)
 
