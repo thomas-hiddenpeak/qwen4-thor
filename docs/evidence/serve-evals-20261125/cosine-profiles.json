@@ -1,10 +1,85 @@
 {
-  "stage": "prepared",
+  "stage": "retry_prepared",
   "predecessor_revision": 480,
   "profile_format": "q4t-profile-business-v46",
   "pending": [
     "Scoped migration checks",
     "Partial evaluation, deleted dataset, retained scored items and metered embedding calls across both issued capacities",
     "Qualification and release"
-  ]
+  ],
+  "previous_attempt": {
+    "primary": {
+      "sdk": "7.47.0",
+      "phase": "primary",
+      "evaluation": "eval_a4bc12681b85b8002f9f51f0862baf69",
+      "run": "evalrun_0fedc56982f0d64d6b567bb1224f9888",
+      "file": "file_cf4522c5f3f418ca25c4bf283504aead",
+      "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+      "source_deleted": 404,
+      "peer": 404,
+      "status": "in_progress",
+      "items": [
+        {
+          "id": "outputitem_5555619e41a8d66e0d4ceac76b6e59eb",
+          "index": 0,
+          "answer": "157",
+          "cosine": 1,
+          "score": 1,
+          "seed": 940146715777652,
+          "created_at": 1795560150
+        }
+      ],
+      "counts": {
+        "total": 1,
+        "errored": 0,
+        "passed": 1,
+        "failed": 0
+      },
+      "usage": [
+        {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 1,
+          "prompt_tokens": 309,
+          "completion_tokens": 4,
+          "total_tokens": 313,
+          "cached_tokens": 0
+        },
+        {
+          "model_name": "qwen3-embedding-0.6b",
+          "invocation_count": 1,
+          "prompt_tokens": 8,
+          "completion_tokens": 0,
+          "total_tokens": 8,
+          "cached_tokens": 0
+        }
+      ],
+      "cosine": {
+        "model": "qwen3-embedding-0.6b",
+        "baseline": [
+          1,
+          0.47933263119300346
+        ],
+        "tokens": [
+          8,
+          19
+        ],
+        "owner_report": 200,
+        "peer_report": 404
+      }
+    },
+    "stopped": {
+      "run": "evalrun_0fedc56982f0d64d6b567bb1224f9888",
+      "items": [
+        "outputitem_5555619e41a8d66e0d4ceac76b6e59eb"
+      ],
+      "total": 1
+    },
+    "light": {
+      "status": 429,
+      "code": "client_capacity_exhausted",
+      "stderr_sha256": "24b826614c5e454d3c2b09c6435f3002da632a3cd0970aceae5dce65b3ea47e2"
+    },
+    "cause": "The light deployment resumed pending work and occupied its single data slot. The SDK driver requested two independent oracle embeddings on that same account before waiting for completion."
+  },
+  "cpu_cases_passed": 42
 }

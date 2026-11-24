@@ -23,8 +23,7 @@ const rows = 6, model = 'qwen3.8-flash-next';
 const runs = owner.evals.runs;
 const embeddingModel = 'qwen3-embedding-0.6b';
 const references = [String(count), 'Overlapping speech requires a diarization model to identify who spoke.'];
-let cosine;
-if (options.cosine) {
+async function publicCosine() {
   const baseline = [], tokens = [];
   for (const reference of references) {
     const result = await owner.embeddings.create({model: embeddingModel,
@@ -38,8 +37,10 @@ if (options.cosine) {
     tokens.push(result.usage.prompt_tokens);
   }
   assert.ok(baseline[0] === 1 && baseline[1] < 0.95);
-  cosine = {model: embeddingModel, baseline, tokens};
+  return {model: embeddingModel, baseline, tokens};
 }
+let cosine;
+if (options.cosine && options.phase === 'primary') cosine = await publicCosine();
 let {evaluation, run, file} = options.previous ?? {};
 if (options.phase === 'primary') {
   const definition = await owner.evals.create({
@@ -78,6 +79,12 @@ do {
   if (options.phase === 'primary' && state.result_counts.total > 0) break;
   await sleep(140);
 } while (Date.now() < expires);
+// On a single-slot deployment the resumed evaluation owns the client's data
+// permit. Recompute its independent public reference after completion.
+if (options.cosine && options.phase === 'light') {
+  assert.equal(state.status, 'completed', JSON.stringify(state.error));
+  cosine = await publicCosine();
+}
 const page = await runs.outputItems.list(run, {eval_id: evaluation, limit: rows + 1});
 const items = page.data.map(item => ({
   id: item.id, index: item.datasource_item.index, answer: item.sample.output[0].content,
