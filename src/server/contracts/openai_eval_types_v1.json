@@ -1,0 +1,5452 @@
+{
+  "profile": "q4t-openai-eval-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "create": 0,
+    "update": 106,
+    "eval": 107,
+    "deleted": 128,
+    "query": 130,
+    "run_create": 137,
+    "run": 433,
+    "run_deleted": 466,
+    "run_query": 467,
+    "output_item": 474,
+    "output_query": 487
+  },
+  "nodes": [
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data_source_config",
+          "optional": false,
+          "type": 1
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "testing_criteria",
+          "optional": false,
+          "type": 22
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2,
+        9,
+        13
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "include_sample_schema",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "item_schema",
+          "optional": false,
+          "type": 6
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 8
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4,
+        5
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": false
+    },
+    {
+      "kind": "literal",
+      "value": true
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "any"
+    },
+    {
+      "kind": "literal",
+      "value": "custom"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 10
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 12
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        11
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "literal",
+      "value": "logs"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        15
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "literal",
+      "value": "stored_completions"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        19
+      ]
+    },
+    {
+      "kind": "null"
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 20
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 23
+    },
+    {
+      "kind": "union",
+      "variants": [
+        24,
+        61,
+        68,
+        83,
+        86
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": false,
+          "type": 25
+        },
+        {
+          "name": "labels",
+          "optional": false,
+          "type": 59
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "passing_labels",
+          "optional": false,
+          "type": 59
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 60
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 26
+    },
+    {
+      "kind": "union",
+      "variants": [
+        27,
+        28
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 29
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 52
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 57
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        30,
+        38,
+        40,
+        42,
+        48
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "prompt_cache_breakpoint",
+          "optional": true,
+          "type": 31
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 37
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        32
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "mode",
+          "optional": false,
+          "type": 33
+        },
+        {
+          "name": "ttl",
+          "optional": true,
+          "type": 34
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "explicit"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        35,
+        36
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "30m"
+    },
+    {
+      "kind": "literal",
+      "value": "12h"
+    },
+    {
+      "kind": "literal",
+      "value": "input_text"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "output_text"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 41
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "input_image"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input_audio",
+          "optional": false,
+          "type": 43
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 47
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "format",
+          "optional": false,
+          "type": 44
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        45,
+        46
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "mp3"
+    },
+    {
+      "kind": "literal",
+      "value": "wav"
+    },
+    {
+      "kind": "literal",
+      "value": "input_audio"
+    },
+    {
+      "kind": "array",
+      "element": 49
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        30,
+        42,
+        50,
+        51
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 41
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        53,
+        54,
+        55,
+        56
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "user"
+    },
+    {
+      "kind": "literal",
+      "value": "assistant"
+    },
+    {
+      "kind": "literal",
+      "value": "system"
+    },
+    {
+      "kind": "literal",
+      "value": "developer"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        58
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "message"
+    },
+    {
+      "kind": "array",
+      "element": 20
+    },
+    {
+      "kind": "literal",
+      "value": "label_model"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "operation",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "reference",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 67
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        63,
+        64,
+        65,
+        66
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "eq"
+    },
+    {
+      "kind": "literal",
+      "value": "ne"
+    },
+    {
+      "kind": "literal",
+      "value": "like"
+    },
+    {
+      "kind": "literal",
+      "value": "ilike"
+    },
+    {
+      "kind": "literal",
+      "value": "string_check"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "evaluation_metric",
+          "optional": false,
+          "type": 69
+        },
+        {
+          "name": "input",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "pass_threshold",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "reference",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 82
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "cosine"
+    },
+    {
+      "kind": "literal",
+      "value": "fuzzy_match"
+    },
+    {
+      "kind": "literal",
+      "value": "bleu"
+    },
+    {
+      "kind": "literal",
+      "value": "gleu"
+    },
+    {
+      "kind": "literal",
+      "value": "meteor"
+    },
+    {
+      "kind": "literal",
+      "value": "rouge_1"
+    },
+    {
+      "kind": "literal",
+      "value": "rouge_2"
+    },
+    {
+      "kind": "literal",
+      "value": "rouge_3"
+    },
+    {
+      "kind": "literal",
+      "value": "rouge_4"
+    },
+    {
+      "kind": "literal",
+      "value": "rouge_5"
+    },
+    {
+      "kind": "literal",
+      "value": "rouge_l"
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "literal",
+      "value": "text_similarity"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_tag",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "pass_threshold",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 85
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        81
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "python"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": false,
+          "type": 87
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "pass_threshold",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "range",
+          "optional": true,
+          "type": 92
+        },
+        {
+          "name": "sampling_params",
+          "optional": true,
+          "type": 94
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 105
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 88
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 89
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 52
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 57
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        30,
+        42,
+        48,
+        90,
+        91
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 41
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        93
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 81
+    },
+    {
+      "kind": "union",
+      "variants": [
+        95
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "max_completions_tokens",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": true,
+          "type": 97
+        },
+        {
+          "name": "seed",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 96
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        81
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "none"
+    },
+    {
+      "kind": "literal",
+      "value": "minimal"
+    },
+    {
+      "kind": "literal",
+      "value": "low"
+    },
+    {
+      "kind": "literal",
+      "value": "medium"
+    },
+    {
+      "kind": "literal",
+      "value": "high"
+    },
+    {
+      "kind": "literal",
+      "value": "xhigh"
+    },
+    {
+      "kind": "literal",
+      "value": "max"
+    },
+    {
+      "kind": "literal",
+      "value": "score_model"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 21
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "data_source_config",
+          "optional": false,
+          "type": 108
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 115
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 116
+        },
+        {
+          "name": "testing_criteria",
+          "optional": false,
+          "type": 117
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        109,
+        111,
+        113
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "schema",
+          "optional": false,
+          "type": 110
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 8
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "schema",
+          "optional": false,
+          "type": 112
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 12
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "schema",
+          "optional": false,
+          "type": 114
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        19
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "eval"
+    },
+    {
+      "kind": "array",
+      "element": 118
+    },
+    {
+      "kind": "union",
+      "variants": [
+        61,
+        119,
+        125,
+        126,
+        127
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": false,
+          "type": 120
+        },
+        {
+          "name": "labels",
+          "optional": false,
+          "type": 59
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "passing_labels",
+          "optional": false,
+          "type": 59
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 60
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 121
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 122
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 52
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 57
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        30,
+        42,
+        48,
+        123,
+        124
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 41
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "evaluation_metric",
+          "optional": false,
+          "type": 69
+        },
+        {
+          "name": "input",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "pass_threshold",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "reference",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 82
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "image_tag",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "pass_threshold",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 85
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input",
+          "optional": false,
+          "type": 87
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "pass_threshold",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "range",
+          "optional": true,
+          "type": 92
+        },
+        {
+          "name": "sampling_params",
+          "optional": true,
+          "type": 94
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 105
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 129
+        },
+        {
+          "name": "eval_id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "boolean"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 131
+        },
+        {
+          "name": "order_by",
+          "optional": true,
+          "type": 134
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        132,
+        133
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "asc"
+    },
+    {
+      "kind": "literal",
+      "value": "desc"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        135,
+        136
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "created_at"
+    },
+    {
+      "kind": "literal",
+      "value": "updated_at"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data_source",
+          "optional": false,
+          "type": 138
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "name",
+          "optional": true,
+          "type": 21
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        139,
+        151,
+        212
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "source",
+          "optional": false,
+          "type": 140
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 150
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        141,
+        148
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 142
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 147
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 143
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "item",
+          "optional": false,
+          "type": 144
+        },
+        {
+          "name": "sample",
+          "optional": true,
+          "type": 145
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        146
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "literal",
+      "value": "file_content"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 149
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "file_id"
+    },
+    {
+      "kind": "literal",
+      "value": "jsonl"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input_messages",
+          "optional": true,
+          "type": 152
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "sampling_params",
+          "optional": true,
+          "type": 182
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 202
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 211
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        153,
+        180
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "template",
+          "optional": false,
+          "type": 154
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 179
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 155
+    },
+    {
+      "kind": "union",
+      "variants": [
+        156,
+        175
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 157
+        },
+        {
+          "name": "phase",
+          "optional": true,
+          "type": 172
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 52
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 57
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        158
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 159
+    },
+    {
+      "kind": "union",
+      "variants": [
+        30,
+        160,
+        167
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": false,
+          "type": 161
+        },
+        {
+          "name": "file_id",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "image_url",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "prompt_cache_breakpoint",
+          "optional": true,
+          "type": 165
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 41
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        100,
+        102,
+        162,
+        163
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "auto"
+    },
+    {
+      "kind": "literal",
+      "value": "original"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        20
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        166
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "mode",
+          "optional": false,
+          "type": 33
+        },
+        {
+          "name": "ttl",
+          "optional": true,
+          "type": 34
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 168
+        },
+        {
+          "name": "file_data",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "file_id",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "file_url",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "filename",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "prompt_cache_breakpoint",
+          "optional": true,
+          "type": 169
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 171
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        100,
+        102,
+        162
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        170
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "mode",
+          "optional": false,
+          "type": 33
+        },
+        {
+          "name": "ttl",
+          "optional": true,
+          "type": 34
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "input_file"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        173,
+        174
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "commentary"
+    },
+    {
+      "kind": "literal",
+      "value": "final_answer"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 176
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 52
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 57
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        30,
+        42,
+        48,
+        177,
+        178
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 41
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "template"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "item_reference",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 181
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "item_reference"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        183
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "max_completion_tokens",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": true,
+          "type": 97
+        },
+        {
+          "name": "response_format",
+          "optional": true,
+          "type": 184
+        },
+        {
+          "name": "seed",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 195
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 84
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        185,
+        187,
+        193
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 186
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "text"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "json_schema",
+          "optional": false,
+          "type": 188
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 192
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "schema",
+          "optional": true,
+          "type": 189
+        },
+        {
+          "name": "strict",
+          "optional": true,
+          "type": 191
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        190
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        4,
+        5
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "json_schema"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 194
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "json_object"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        196
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 197
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "function",
+          "optional": false,
+          "type": 198
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 201
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "parameters",
+          "optional": true,
+          "type": 199
+        },
+        {
+          "name": "strict",
+          "optional": true,
+          "type": 191
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        200
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "literal",
+      "value": "function"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        203,
+        209,
+        210
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 204
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 147
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 205
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "item",
+          "optional": false,
+          "type": 206
+        },
+        {
+          "name": "sample",
+          "optional": true,
+          "type": 207
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        208
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 149
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_after",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "created_before",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 16
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "completions"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input_messages",
+          "optional": true,
+          "type": 213
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "sampling_params",
+          "optional": true,
+          "type": 223
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 423
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 432
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        214,
+        222
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "template",
+          "optional": false,
+          "type": 215
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 179
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 216
+    },
+    {
+      "kind": "union",
+      "variants": [
+        217,
+        218
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 219
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 52
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 57
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        30,
+        42,
+        48,
+        220,
+        221
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 41
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "item_reference",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 181
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        224
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "max_completion_tokens",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": true,
+          "type": 97
+        },
+        {
+          "name": "seed",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "text",
+          "optional": true,
+          "type": 225
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 230
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 84
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        226
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "format",
+          "optional": true,
+          "type": 227
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        185,
+        193,
+        228
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "schema",
+          "optional": false,
+          "type": 229
+        },
+        {
+          "name": "strict",
+          "optional": true,
+          "type": 191
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 192
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        231
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 232
+    },
+    {
+      "kind": "union",
+      "variants": [
+        233,
+        244,
+        269,
+        271,
+        279,
+        291,
+        315,
+        332,
+        334,
+        367,
+        369,
+        391,
+        399,
+        406,
+        411,
+        421
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_callers",
+          "optional": true,
+          "type": 234
+        },
+        {
+          "name": "async",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "defer_loading",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "output_schema",
+          "optional": true,
+          "type": 239
+        },
+        {
+          "name": "parameters",
+          "optional": false,
+          "type": 241
+        },
+        {
+          "name": "strict",
+          "optional": false,
+          "type": 243
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 201
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        235
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 236
+    },
+    {
+      "kind": "union",
+      "variants": [
+        237,
+        238
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "direct"
+    },
+    {
+      "kind": "literal",
+      "value": "programmatic"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        240
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        242
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        4,
+        5
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "filters",
+          "optional": true,
+          "type": 245
+        },
+        {
+          "name": "max_num_results",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "ranking_options",
+          "optional": true,
+          "type": 262
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 268
+        },
+        {
+          "name": "vector_store_ids",
+          "optional": false,
+          "type": 59
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        246,
+        257
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "key",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 247
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 254
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        63,
+        64,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "gt"
+    },
+    {
+      "kind": "literal",
+      "value": "gte"
+    },
+    {
+      "kind": "literal",
+      "value": "lt"
+    },
+    {
+      "kind": "literal",
+      "value": "lte"
+    },
+    {
+      "kind": "literal",
+      "value": "in"
+    },
+    {
+      "kind": "literal",
+      "value": "nin"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        81,
+        4,
+        5,
+        255
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 256
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        81
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "filters",
+          "optional": false,
+          "type": 258
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 259
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        260,
+        261
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "and"
+    },
+    {
+      "kind": "literal",
+      "value": "or"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        263
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "hybrid_search",
+          "optional": true,
+          "type": 264
+        },
+        {
+          "name": "ranker",
+          "optional": true,
+          "type": 266
+        },
+        {
+          "name": "score_threshold",
+          "optional": true,
+          "type": 84
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        265
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "embedding_weight",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "text_weight",
+          "optional": false,
+          "type": 81
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        162,
+        267
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "default-2024-11-15"
+    },
+    {
+      "kind": "literal",
+      "value": "file_search"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 270
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "computer"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "display_height",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "display_width",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "environment",
+          "optional": false,
+          "type": 272
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 278
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        273,
+        274,
+        275,
+        276,
+        277
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "windows"
+    },
+    {
+      "kind": "literal",
+      "value": "mac"
+    },
+    {
+      "kind": "literal",
+      "value": "linux"
+    },
+    {
+      "kind": "literal",
+      "value": "ubuntu"
+    },
+    {
+      "kind": "literal",
+      "value": "browser"
+    },
+    {
+      "kind": "literal",
+      "value": "computer_use_preview"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "external_web_access",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "filters",
+          "optional": true,
+          "type": 280
+        },
+        {
+          "name": "search_context_size",
+          "optional": true,
+          "type": 283
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 284
+        },
+        {
+          "name": "user_location",
+          "optional": true,
+          "type": 287
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        281
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": true,
+          "type": 282
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        59
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        100,
+        101,
+        102
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        285,
+        286
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "web_search"
+    },
+    {
+      "kind": "literal",
+      "value": "web_search_2025_08_26"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        288
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "city",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "country",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "region",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "timezone",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 289
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        290
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "approximate"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_callers",
+          "optional": true,
+          "type": 234
+        },
+        {
+          "name": "allowed_tools",
+          "optional": true,
+          "type": 292
+        },
+        {
+          "name": "authorization",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "connector_id",
+          "optional": true,
+          "type": 295
+        },
+        {
+          "name": "defer_loading",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "headers",
+          "optional": true,
+          "type": 304
+        },
+        {
+          "name": "require_approval",
+          "optional": true,
+          "type": 306
+        },
+        {
+          "name": "server_description",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "server_label",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "server_url",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "tunnel_id",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 314
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        59,
+        293
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "read_only",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "tool_names",
+          "optional": true,
+          "type": 294
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        59
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "connector_dropbox"
+    },
+    {
+      "kind": "literal",
+      "value": "connector_gmail"
+    },
+    {
+      "kind": "literal",
+      "value": "connector_googlecalendar"
+    },
+    {
+      "kind": "literal",
+      "value": "connector_googledrive"
+    },
+    {
+      "kind": "literal",
+      "value": "connector_microsoftteams"
+    },
+    {
+      "kind": "literal",
+      "value": "connector_outlookcalendar"
+    },
+    {
+      "kind": "literal",
+      "value": "connector_outlookemail"
+    },
+    {
+      "kind": "literal",
+      "value": "connector_sharepoint"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        305
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 20
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        307,
+        312,
+        313
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "always",
+          "optional": true,
+          "type": 308
+        },
+        {
+          "name": "never",
+          "optional": true,
+          "type": 310
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        309
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "read_only",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "tool_names",
+          "optional": true,
+          "type": 294
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        311
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "read_only",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "tool_names",
+          "optional": true,
+          "type": 294
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "always"
+    },
+    {
+      "kind": "literal",
+      "value": "never"
+    },
+    {
+      "kind": "literal",
+      "value": "mcp"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_callers",
+          "optional": true,
+          "type": 234
+        },
+        {
+          "name": "container",
+          "optional": false,
+          "type": 316
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 331
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        317
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 294
+        },
+        {
+          "name": "memory_limit",
+          "optional": true,
+          "type": 318
+        },
+        {
+          "name": "network_policy",
+          "optional": true,
+          "type": 323
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 162
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        319,
+        320,
+        321,
+        322
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "1g"
+    },
+    {
+      "kind": "literal",
+      "value": "4g"
+    },
+    {
+      "kind": "literal",
+      "value": "16g"
+    },
+    {
+      "kind": "literal",
+      "value": "64g"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        324,
+        326
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 325
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "disabled"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_domains",
+          "optional": false,
+          "type": 59
+        },
+        {
+          "name": "domain_secrets",
+          "optional": true,
+          "type": 327
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 330
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        328
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 329
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "domain",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "allowlist"
+    },
+    {
+      "kind": "literal",
+      "value": "code_interpreter"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 333
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "programmatic_tool_calling"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "action",
+          "optional": true,
+          "type": 335
+        },
+        {
+          "name": "background",
+          "optional": true,
+          "type": 338
+        },
+        {
+          "name": "input_fidelity",
+          "optional": true,
+          "type": 341
+        },
+        {
+          "name": "input_image_mask",
+          "optional": true,
+          "type": 342
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 344
+        },
+        {
+          "name": "moderation",
+          "optional": true,
+          "type": 356
+        },
+        {
+          "name": "output_compression",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "output_format",
+          "optional": true,
+          "type": 357
+        },
+        {
+          "name": "partial_images",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "quality",
+          "optional": true,
+          "type": 361
+        },
+        {
+          "name": "size",
+          "optional": true,
+          "type": 362
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 366
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        162,
+        336,
+        337
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "generate"
+    },
+    {
+      "kind": "literal",
+      "value": "edit"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        162,
+        339,
+        340
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "transparent"
+    },
+    {
+      "kind": "literal",
+      "value": "opaque"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        100,
+        102
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        343
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_id",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "image_url",
+          "optional": true,
+          "type": 21
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355
+      ]
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-image-1"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-image-1-mini"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-image-2"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-image-2-2026-04-21"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-image-2.5-sunburst"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-image-2.5-sunburst-2026-09-08"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-image-2.5-flare"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-image-2.5-flare-2026-09-08"
+    },
+    {
+      "kind": "literal",
+      "value": "gpt-image-1.5"
+    },
+    {
+      "kind": "literal",
+      "value": "chatgpt-image-latest"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        100,
+        162
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        358,
+        359,
+        360
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "png"
+    },
+    {
+      "kind": "literal",
+      "value": "webp"
+    },
+    {
+      "kind": "literal",
+      "value": "jpeg"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        162
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        162,
+        345,
+        363,
+        364,
+        365
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "1024x1024"
+    },
+    {
+      "kind": "literal",
+      "value": "1024x1536"
+    },
+    {
+      "kind": "literal",
+      "value": "1536x1024"
+    },
+    {
+      "kind": "literal",
+      "value": "image_generation"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 368
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "local_shell"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_callers",
+          "optional": true,
+          "type": 234
+        },
+        {
+          "name": "environment",
+          "optional": true,
+          "type": 370
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 390
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        371,
+        383,
+        388
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "file_ids",
+          "optional": true,
+          "type": 294
+        },
+        {
+          "name": "memory_limit",
+          "optional": true,
+          "type": 318
+        },
+        {
+          "name": "network_policy",
+          "optional": true,
+          "type": 323
+        },
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 372
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 382
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        373
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 374
+    },
+    {
+      "kind": "union",
+      "variants": [
+        375,
+        377
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "skill_id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 376
+        },
+        {
+          "name": "version",
+          "optional": true,
+          "type": 21
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "skill_reference"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 378
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 381
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "media_type",
+          "optional": false,
+          "type": 379
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 380
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "application/zip"
+    },
+    {
+      "kind": "literal",
+      "value": "base64"
+    },
+    {
+      "kind": "literal",
+      "value": "inline"
+    },
+    {
+      "kind": "literal",
+      "value": "container_auto"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "skills",
+          "optional": true,
+          "type": 384
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 387
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        385
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 386
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "path",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "local"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "container_id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 389
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "container_reference"
+    },
+    {
+      "kind": "literal",
+      "value": "shell"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_callers",
+          "optional": true,
+          "type": 234
+        },
+        {
+          "name": "async",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "defer_loading",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "format",
+          "optional": true,
+          "type": 392
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 8
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        393,
+        394
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 186
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "definition",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "syntax",
+          "optional": false,
+          "type": 395
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 398
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        396,
+        397
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "lark"
+    },
+    {
+      "kind": "literal",
+      "value": "regex"
+    },
+    {
+      "kind": "literal",
+      "value": "grammar"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "tools",
+          "optional": false,
+          "type": 400
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 405
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 401
+    },
+    {
+      "kind": "union",
+      "variants": [
+        391,
+        402
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_callers",
+          "optional": true,
+          "type": 234
+        },
+        {
+          "name": "async",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "defer_loading",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "description",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "output_schema",
+          "optional": true,
+          "type": 403
+        },
+        {
+          "name": "parameters",
+          "optional": true,
+          "type": 7
+        },
+        {
+          "name": "strict",
+          "optional": true,
+          "type": 191
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 201
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        404
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "literal",
+      "value": "namespace"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "description",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "execution",
+          "optional": true,
+          "type": 407
+        },
+        {
+          "name": "parameters",
+          "optional": true,
+          "type": 7
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 410
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        408,
+        409
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "server"
+    },
+    {
+      "kind": "literal",
+      "value": "client"
+    },
+    {
+      "kind": "literal",
+      "value": "tool_search"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "search_content_types",
+          "optional": true,
+          "type": 412
+        },
+        {
+          "name": "search_context_size",
+          "optional": true,
+          "type": 283
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 416
+        },
+        {
+          "name": "user_location",
+          "optional": true,
+          "type": 419
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        413
+      ]
+    },
+    {
+      "kind": "array",
+      "element": 414
+    },
+    {
+      "kind": "union",
+      "variants": [
+        186,
+        415
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "image"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        417,
+        418
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "web_search_preview"
+    },
+    {
+      "kind": "literal",
+      "value": "web_search_preview_2025_03_11"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        420
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "city",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "country",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "region",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "timezone",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 290
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "allowed_callers",
+          "optional": true,
+          "type": 234
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 422
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "apply_patch"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        424,
+        430,
+        431
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 425
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 147
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 426
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "item",
+          "optional": false,
+          "type": 427
+        },
+        {
+          "name": "sample",
+          "optional": true,
+          "type": 428
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        429
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 149
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_after",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "created_before",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "instructions_search",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 7
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": true,
+          "type": 97
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 282
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 432
+        },
+        {
+          "name": "users",
+          "optional": true,
+          "type": 282
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "responses"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "data_source",
+          "optional": false,
+          "type": 434
+        },
+        {
+          "name": "error",
+          "optional": false,
+          "type": 459
+        },
+        {
+          "name": "eval_id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "metadata",
+          "optional": false,
+          "type": 115
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 460
+        },
+        {
+          "name": "per_model_usage",
+          "optional": false,
+          "type": 461
+        },
+        {
+          "name": "per_testing_criteria_results",
+          "optional": false,
+          "type": 463
+        },
+        {
+          "name": "report_url",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "result_counts",
+          "optional": false,
+          "type": 465
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        139,
+        151,
+        435
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "input_messages",
+          "optional": true,
+          "type": 436
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "sampling_params",
+          "optional": true,
+          "type": 446
+        },
+        {
+          "name": "source",
+          "optional": false,
+          "type": 450
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 432
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        437,
+        445
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "template",
+          "optional": false,
+          "type": 438
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 179
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 439
+    },
+    {
+      "kind": "union",
+      "variants": [
+        440,
+        441
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 442
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 52
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 57
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        20,
+        30,
+        42,
+        48,
+        443,
+        444
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 39
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "detail",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "image_url",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 41
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "item_reference",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 181
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        447
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "max_completion_tokens",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": true,
+          "type": 97
+        },
+        {
+          "name": "seed",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "text",
+          "optional": true,
+          "type": 448
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 230
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 84
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        449
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "format",
+          "optional": true,
+          "type": 227
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        451,
+        457,
+        458
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 452
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 147
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 453
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "item",
+          "optional": false,
+          "type": 454
+        },
+        {
+          "name": "sample",
+          "optional": true,
+          "type": 455
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        456
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 149
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_after",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "created_before",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "instructions_search",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "metadata",
+          "optional": true,
+          "type": 7
+        },
+        {
+          "name": "model",
+          "optional": true,
+          "type": 164
+        },
+        {
+          "name": "reasoning_effort",
+          "optional": true,
+          "type": 97
+        },
+        {
+          "name": "temperature",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "tools",
+          "optional": true,
+          "type": 282
+        },
+        {
+          "name": "top_p",
+          "optional": true,
+          "type": 96
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 432
+        },
+        {
+          "name": "users",
+          "optional": true,
+          "type": 282
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "code",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "message",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "eval.run"
+    },
+    {
+      "kind": "array",
+      "element": 462
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "cached_tokens",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "completion_tokens",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "invocation_count",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "model_name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "prompt_tokens",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "total_tokens",
+          "optional": false,
+          "type": 81
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 464
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "failed",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "passed",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "testing_criteria",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "errored",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "failed",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "passed",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "total",
+          "optional": false,
+          "type": 81
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "object",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "run_id",
+          "optional": true,
+          "type": 21
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 131
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": 468
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        469,
+        470,
+        471,
+        472,
+        473
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "queued"
+    },
+    {
+      "kind": "literal",
+      "value": "in_progress"
+    },
+    {
+      "kind": "literal",
+      "value": "completed"
+    },
+    {
+      "kind": "literal",
+      "value": "canceled"
+    },
+    {
+      "kind": "literal",
+      "value": "failed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "datasource_item",
+          "optional": false,
+          "type": 475
+        },
+        {
+          "name": "datasource_item_id",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "eval_id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 476
+        },
+        {
+          "name": "results",
+          "optional": false,
+          "type": 477
+        },
+        {
+          "name": "run_id",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "sample",
+          "optional": false,
+          "type": 481
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "literal",
+      "value": "eval.run.output_item"
+    },
+    {
+      "kind": "array",
+      "element": 478
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "passed",
+          "optional": false,
+          "type": 129
+        },
+        {
+          "name": "sample",
+          "optional": true,
+          "type": 479
+        },
+        {
+          "name": "score",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "type",
+          "optional": true,
+          "type": 21
+        }
+      ],
+      "additional": 7
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18,
+        480
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 7
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "error",
+          "optional": false,
+          "type": 459
+        },
+        {
+          "name": "finish_reason",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "input",
+          "optional": false,
+          "type": 482
+        },
+        {
+          "name": "max_completion_tokens",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "model",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 484
+        },
+        {
+          "name": "seed",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "temperature",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "top_p",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "usage",
+          "optional": false,
+          "type": 486
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 483
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 20
+        },
+        {
+          "name": "role",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 485
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "role",
+          "optional": true,
+          "type": 21
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "cached_tokens",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "completion_tokens",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "prompt_tokens",
+          "optional": false,
+          "type": 81
+        },
+        {
+          "name": "total_tokens",
+          "optional": false,
+          "type": 81
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 21
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 84
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 131
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": 488
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        489,
+        490
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "fail"
+    },
+    {
+      "kind": "literal",
+      "value": "pass"
+    }
+  ],
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/chat/completions/completions.ts": "c42d4f538cef710809b2eea7bf1193f8093207aefc7a4d3ba3754324f3d85f91",
+    "src/resources/evals/evals.ts": "9f5ba52d9ae142623bf4bc1ed4b987ad1252e4573bf5a793a4e2b7aa1d38aec2",
+    "src/resources/evals/runs/output-items.ts": "6e2164033ff520feb2b2ff5725a0642be9efc9eee2bcce907464d0bfece1367f",
+    "src/resources/evals/runs/runs.ts": "51d2f6ad116b28d2252d2a61df0e7744bfe1982b87bdc2f6038909a31c755de9",
+    "src/resources/graders/grader-models.ts": "be76da9508d463b5201d7a85ca728c2f7eaaef466c5341dd0867dafdee330545",
+    "src/resources/responses/responses.ts": "f84e394bf08d71403c054ccb4d41d278861f2d19db3ea426e7aec789f3eb5dbb",
+    "src/resources/shared.ts": "15cf6803634242502525c52098acddea16b9c2bb2439f85aa388dd43fa837455"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}

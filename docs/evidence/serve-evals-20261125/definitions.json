@@ -1,0 +1,53 @@
+{
+  "status": "ACCEPT_EVAL_DEFINITIONS_CPU",
+  "sdk": "7.47.0",
+  "schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "methods": [
+    {
+      "operation": "create",
+      "http": 201
+    },
+    {
+      "operation": "retrieve",
+      "http": 200
+    },
+    {
+      "operation": "update",
+      "http": 200
+    },
+    {
+      "operation": "list",
+      "http": 200
+    },
+    {
+      "operation": "delete",
+      "http": 200
+    }
+  ],
+  "negative": {
+    "other_project": 404,
+    "deleted": 404
+  },
+  "cpu_cases": 3,
+  "mutation_checks": 40,
+  "candidate_declarations": {
+    "expected": 231,
+    "exact": 208,
+    "missing": 23
+  },
+  "model_starts": 0,
+  "issued": false,
+  "scope": "Official SDK over loopback HTTP to native object handler and real file-backed worker. Includes restart, metadata, per-tenant cursors, stable timestamp ordering and direct validation of all five wire responses against the frozen HTTP specification. Native TLS business acceptance and all seven run/outcome methods remain open.",
+  "development_corrections": [
+    "Local host configure required the previously provisioned libarchive headers. The schema publication check initially ran before its new routes entered the inventory; the refreshed assertions and both schema drift gates later passed."
+  ],
+  "raw_sha256": {
+    ".q4t-work/serve-responses-agents-20261123/evals-src/.q4t-work/evals-sdk-01/result.json": "a1e67b21293d2a344b060e360fb77031fbd6b6329b8660ad9031a8559f41a05c",
+    ".q4t-work/serve-responses-agents-20261123/evals-src/.q4t-work/evals-sdk-01/sdk.json": "467ceaa77698012845ea09d742b42c9a7c109f0439e3735454306390f9d1438b",
+    ".q4t-work/serve-responses-agents-20261123/evals-src/.q4t-work/evals-sdk-01/requests.jsonl": "499831b0284ece886a700426efc40ba353c95f227e171fa4bb4591c8ff8d162d",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/evals-definition-cpu-02.log": "08328ed1204d9b58b46af24a497fa2af47e39a3000033e9a5ed660c394ec9aa8",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/evals-definition-methods.json": "434d4bc4177fae3c5ea95ad10bbc32551f01ab7cab3b905fced1c18379d89c2b",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/evals-inventory-02.json": "a84f34fd1d60fe637345b0e28d85cafb562a3f5d409eb159c8c598ad89a3781a",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/curated-evals-graph-02.log": "919d13666f830b9fcd2edf7ca72233a3efa0bc88d3f6792a603ee412f5ce215f"
+  }
+}

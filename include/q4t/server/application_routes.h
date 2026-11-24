@@ -1056,6 +1056,25 @@ inline bool IsManagedAgentObservation(std::string_view method,
          !IsAgentEventStream(method, target) && ManagedAgentMethodAllowed(method, target);
 }
 
+inline bool IsEvalTarget(std::string_view target) {
+  if (target.find('#') != target.npos) return false;
+  const auto path = target.substr(0, target.find('?'));
+  if (path == "/v1/evals") return true;
+  if (!path.starts_with("/v1/evals/")) return false;
+  const auto id = path.substr(10);
+  return id.starts_with("eval_") && id.size() > 5 && ValidApplicationId(id);
+}
+
+inline bool EvalMethodAllowed(std::string_view method, std::string_view target) {
+  return IsEvalTarget(target) &&
+         (method == "GET" || method == "POST" ||
+          (method == "DELETE" && target.substr(0, target.find('?')) != "/v1/evals"));
+}
+
+inline bool IsEvalObservation(std::string_view method, std::string_view target) {
+  return (method == "GET" || method == "DELETE") && EvalMethodAllowed(method, target);
+}
+
 inline bool IsPromptTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/prompts" || path.starts_with("/v1/prompts/");

@@ -8,9 +8,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--chatkit', '--webhooks', '--automations', '--assistants', '--containers', '--skills', '--agent-sessions', '--vault-credentials', '--environments'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--evals', '--chatkit', '--webhooks', '--automations', '--assistants', '--containers', '--skills', '--agent-sessions', '--vault-credentials', '--environments'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--chatkit|--webhooks|--automations|--assistants|--containers|--skills|--agent-sessions|--vault-credentials|--environments]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--evals|--chatkit|--webhooks|--automations|--assistants|--containers|--skills|--agent-sessions|--vault-credentials|--environments]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -41,6 +41,9 @@ const skillVersions = resolve(sdk, 'src/resources/skills/versions/versions.ts');
 const containers = resolve(sdk, 'src/resources/containers/containers.ts');
 const containerFiles = resolve(sdk, 'src/resources/containers/files/files.ts');
 const agents = resolve(sdk, 'src/resources/beta/agents/agents.ts');
+const evals = resolve(sdk, 'src/resources/evals/evals.ts');
+const evalRuns = resolve(sdk, 'src/resources/evals/runs/runs.ts');
+const evalItems = resolve(sdk, 'src/resources/evals/runs/output-items.ts');
 const chatkitSessions = resolve(sdk, 'src/resources/beta/chatkit/sessions.ts');
 const chatkitThreads = resolve(sdk, 'src/resources/beta/chatkit/threads.ts');
 const webhooks = resolve(sdk, 'src/resources/webhooks/webhooks.ts');
@@ -63,6 +66,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--realtime' ? [realtime, realtimeCalls, realtimeSecrets] : []),
   ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--multi-agent' ? [beta] : []),
+  ...(mode === '--evals' ? [evals, evalRuns, evalItems] : []),
   ...(mode === '--chatkit' ? [chatkitSessions, chatkitThreads] : []),
   ...(mode === '--webhooks' ? [webhooks] : []),
   ...(mode === '--automations' ? [automations, invocations] : []),
@@ -254,6 +258,18 @@ const roots = mode === '--environments' ? {
   step_list_query: exported(steps, 'StepListParams'),
   step_query: exported(steps, 'StepRetrieveParams'),
   run_event: exported(assistants, 'AssistantStreamEvent'),
+} : mode === '--evals' ? {
+  create: exported(evals, 'EvalCreateParams'),
+  update: exported(evals, 'EvalUpdateParams'),
+  eval: exported(evals, 'EvalRetrieveResponse'),
+  deleted: exported(evals, 'EvalDeleteResponse'),
+  query: exported(evals, 'EvalListParams'),
+  run_create: exported(evalRuns, 'RunCreateParams'),
+  run: exported(evalRuns, 'RunRetrieveResponse'),
+  run_deleted: exported(evalRuns, 'RunDeleteResponse'),
+  run_query: exported(evalRuns, 'RunListParams'),
+  output_item: exported(evalItems, 'OutputItemRetrieveResponse'),
+  output_query: exported(evalItems, 'OutputItemListParams'),
 } : mode === '--chatkit' ? {
   create: exported(chatkitSessions, 'SessionCreateParams'),
   session: exported(chatkitThreads, 'ChatSession'),
@@ -428,6 +444,11 @@ if (mode === '--assistants') {
     }
   }
 }
+// The SDK takes eval_id in the options object and places it in the URL.
+if (mode === '--evals') {
+  const query = nodes[roots.output_query];
+  query.fields = query.fields.filter(field => field.name !== 'eval_id');
+}
 // The frozen HTTP definition supplies value limits absent from TypeScript.
 if (mode === '--chatkit') {
   function field(root, path) {
@@ -463,6 +484,7 @@ const result = {
   profile: mode === '--environments' ? 'q4t-openai-environment-types-v1' :
     mode === '--vault-credentials' ? 'q4t-openai-vault-credential-types-v1' :
     mode === '--agent-sessions' ? 'q4t-openai-agent-session-types-v1' :
+    mode === '--evals' ? 'q4t-openai-eval-types-v1' :
     mode === '--chatkit' ? 'q4t-openai-chatkit-types-v1' :
     mode === '--webhooks' ? 'q4t-openai-webhook-types-v1' :
     mode === '--automations' ? 'q4t-openai-automation-types-v1' :

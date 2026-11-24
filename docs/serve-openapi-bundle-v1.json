@@ -9475,6 +9475,331 @@
         "x-q4t-body-contract": "empty body only"
       }
     },
+    "/v1/evals": {
+      "get": {
+        "operationId": "get_v1_evals",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_84"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131"
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_134"
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_list"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "eval_query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_evals",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_eval"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "eval_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_create"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/evals/{eval_id}": {
+      "get": {
+        "operationId": "get_v1_evals_eval_id",
+        "parameters": [
+          {
+            "name": "eval_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_eval"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      },
+      "post": {
+        "operationId": "post_v1_evals_eval_id",
+        "parameters": [
+          {
+            "name": "eval_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_eval"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "eval_update",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_update"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_v1_evals_eval_id",
+        "parameters": [
+          {
+            "name": "eval_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_deleted"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
     "/v1/chatkit": {
       "post": {
         "operationId": "post_v1_chatkit",
@@ -49940,6 +50265,1502 @@
               }
             },
             "required": [],
+            "additionalProperties": false
+          },
+          "eval_130": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+              },
+              "limit": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_84"
+              },
+              "order": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131"
+              },
+              "order_by": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_134"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "eval_134": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_135"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_136"
+              }
+            ]
+          },
+          "eval_136": {
+            "const": "updated_at"
+          },
+          "eval_135": {
+            "const": "created_at"
+          },
+          "eval_131": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_132"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_133"
+              }
+            ]
+          },
+          "eval_133": {
+            "const": "desc"
+          },
+          "eval_132": {
+            "const": "asc"
+          },
+          "eval_84": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_81"
+              }
+            ]
+          },
+          "eval_81": {
+            "type": "number"
+          },
+          "eval_21": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              }
+            ]
+          },
+          "eval_20": {
+            "type": "string"
+          },
+          "eval_128": {
+            "type": "object",
+            "properties": {
+              "deleted": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_129"
+              },
+              "eval_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              }
+            },
+            "required": [
+              "deleted",
+              "eval_id",
+              "object"
+            ],
+            "additionalProperties": false
+          },
+          "eval_129": {
+            "type": "boolean"
+          },
+          "eval_106": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_17"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "eval_17": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_18"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_19"
+              }
+            ]
+          },
+          "eval_19": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+            }
+          },
+          "eval_18": {
+            "type": "null"
+          },
+          "eval_107": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_81"
+              },
+              "data_source_config": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_108"
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_115"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "object": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_116"
+              },
+              "testing_criteria": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_117"
+              }
+            },
+            "required": [
+              "created_at",
+              "data_source_config",
+              "id",
+              "metadata",
+              "name",
+              "object",
+              "testing_criteria"
+            ],
+            "additionalProperties": false
+          },
+          "eval_117": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_118"
+            }
+          },
+          "eval_118": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_61"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_119"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_125"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_126"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_127"
+              }
+            ]
+          },
+          "eval_127": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_87"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "pass_threshold": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_84"
+              },
+              "range": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_92"
+              },
+              "sampling_params": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_94"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_105"
+              }
+            },
+            "required": [
+              "input",
+              "model",
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_105": {
+            "const": "score_model"
+          },
+          "eval_94": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_95"
+              }
+            ]
+          },
+          "eval_95": {
+            "type": "object",
+            "properties": {
+              "max_completions_tokens": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_96"
+              },
+              "reasoning_effort": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_97"
+              },
+              "seed": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_96"
+              },
+              "temperature": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_96"
+              },
+              "top_p": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_96"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "eval_96": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_18"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_81"
+              }
+            ]
+          },
+          "eval_97": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_18"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_98"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_99"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_100"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_101"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_102"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_103"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_104"
+              }
+            ]
+          },
+          "eval_104": {
+            "const": "max"
+          },
+          "eval_103": {
+            "const": "xhigh"
+          },
+          "eval_102": {
+            "const": "high"
+          },
+          "eval_101": {
+            "const": "medium"
+          },
+          "eval_100": {
+            "const": "low"
+          },
+          "eval_99": {
+            "const": "minimal"
+          },
+          "eval_98": {
+            "const": "none"
+          },
+          "eval_92": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_93"
+              }
+            ]
+          },
+          "eval_93": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_81"
+            }
+          },
+          "eval_87": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_88"
+            }
+          },
+          "eval_88": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_89"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_52"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_57"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "eval_57": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_58"
+              }
+            ]
+          },
+          "eval_58": {
+            "const": "message"
+          },
+          "eval_52": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_53"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_54"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_55"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_56"
+              }
+            ]
+          },
+          "eval_56": {
+            "const": "developer"
+          },
+          "eval_55": {
+            "const": "system"
+          },
+          "eval_54": {
+            "const": "assistant"
+          },
+          "eval_53": {
+            "const": "user"
+          },
+          "eval_89": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_30"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_42"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_48"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_90"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_91"
+              }
+            ]
+          },
+          "eval_91": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_41"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_41": {
+            "const": "input_image"
+          },
+          "eval_90": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_39"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_39": {
+            "const": "output_text"
+          },
+          "eval_48": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_49"
+            }
+          },
+          "eval_49": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_30"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_42"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_50"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_51"
+              }
+            ]
+          },
+          "eval_51": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_41"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_50": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_39"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_42": {
+            "type": "object",
+            "properties": {
+              "input_audio": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_43"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_47"
+              }
+            },
+            "required": [
+              "input_audio",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_47": {
+            "const": "input_audio"
+          },
+          "eval_43": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "format": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_44"
+              }
+            },
+            "required": [
+              "data",
+              "format"
+            ],
+            "additionalProperties": false
+          },
+          "eval_44": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_45"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_46"
+              }
+            ]
+          },
+          "eval_46": {
+            "const": "wav"
+          },
+          "eval_45": {
+            "const": "mp3"
+          },
+          "eval_30": {
+            "type": "object",
+            "properties": {
+              "prompt_cache_breakpoint": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_31"
+              },
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_37"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_37": {
+            "const": "input_text"
+          },
+          "eval_31": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_32"
+              }
+            ]
+          },
+          "eval_32": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_33"
+              },
+              "ttl": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_34"
+              }
+            },
+            "required": [
+              "mode"
+            ],
+            "additionalProperties": false
+          },
+          "eval_34": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_35"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_36"
+              }
+            ]
+          },
+          "eval_36": {
+            "const": "12h"
+          },
+          "eval_35": {
+            "const": "30m"
+          },
+          "eval_33": {
+            "const": "explicit"
+          },
+          "eval_126": {
+            "type": "object",
+            "properties": {
+              "image_tag": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "pass_threshold": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_84"
+              },
+              "source": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_85"
+              }
+            },
+            "required": [
+              "name",
+              "source",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_85": {
+            "const": "python"
+          },
+          "eval_125": {
+            "type": "object",
+            "properties": {
+              "evaluation_metric": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_69"
+              },
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "pass_threshold": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_81"
+              },
+              "reference": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_82"
+              }
+            },
+            "required": [
+              "evaluation_metric",
+              "input",
+              "name",
+              "pass_threshold",
+              "reference",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_82": {
+            "const": "text_similarity"
+          },
+          "eval_69": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_70"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_71"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_72"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_73"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_74"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_75"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_76"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_77"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_78"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_79"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_80"
+              }
+            ]
+          },
+          "eval_80": {
+            "const": "rouge_l"
+          },
+          "eval_79": {
+            "const": "rouge_5"
+          },
+          "eval_78": {
+            "const": "rouge_4"
+          },
+          "eval_77": {
+            "const": "rouge_3"
+          },
+          "eval_76": {
+            "const": "rouge_2"
+          },
+          "eval_75": {
+            "const": "rouge_1"
+          },
+          "eval_74": {
+            "const": "meteor"
+          },
+          "eval_73": {
+            "const": "gleu"
+          },
+          "eval_72": {
+            "const": "bleu"
+          },
+          "eval_71": {
+            "const": "fuzzy_match"
+          },
+          "eval_70": {
+            "const": "cosine"
+          },
+          "eval_119": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_120"
+              },
+              "labels": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_59"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "passing_labels": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_59"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_60"
+              }
+            },
+            "required": [
+              "input",
+              "labels",
+              "model",
+              "name",
+              "passing_labels",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_60": {
+            "const": "label_model"
+          },
+          "eval_59": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+            }
+          },
+          "eval_120": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_121"
+            }
+          },
+          "eval_121": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_122"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_52"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_57"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "eval_122": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_30"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_42"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_48"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_123"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_124"
+              }
+            ]
+          },
+          "eval_124": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_41"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_123": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_39"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_61": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "operation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_62"
+              },
+              "reference": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_67"
+              }
+            },
+            "required": [
+              "input",
+              "name",
+              "operation",
+              "reference",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_67": {
+            "const": "string_check"
+          },
+          "eval_62": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_63"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_64"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_65"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_66"
+              }
+            ]
+          },
+          "eval_66": {
+            "const": "ilike"
+          },
+          "eval_65": {
+            "const": "like"
+          },
+          "eval_64": {
+            "const": "ne"
+          },
+          "eval_63": {
+            "const": "eq"
+          },
+          "eval_116": {
+            "const": "eval"
+          },
+          "eval_115": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_18"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_19"
+              }
+            ]
+          },
+          "eval_108": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_109"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_111"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_113"
+              }
+            ]
+          },
+          "eval_113": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_17"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_114"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_16"
+              }
+            },
+            "required": [
+              "schema",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_16": {
+            "const": "stored_completions"
+          },
+          "eval_114": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_7"
+            }
+          },
+          "eval_7": {},
+          "eval_111": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_17"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_112"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_12"
+              }
+            },
+            "required": [
+              "schema",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_12": {
+            "const": "logs"
+          },
+          "eval_112": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_7"
+            }
+          },
+          "eval_109": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_110"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_8"
+              }
+            },
+            "required": [
+              "schema",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_8": {
+            "const": "custom"
+          },
+          "eval_110": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_7"
+            }
+          },
+          "eval_0": {
+            "type": "object",
+            "properties": {
+              "data_source_config": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_1"
+              },
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_17"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+              },
+              "testing_criteria": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_22"
+              }
+            },
+            "required": [
+              "data_source_config",
+              "testing_criteria"
+            ],
+            "additionalProperties": false
+          },
+          "eval_22": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_23"
+            }
+          },
+          "eval_23": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_24"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_61"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_68"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_83"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_86"
+              }
+            ]
+          },
+          "eval_86": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_87"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "pass_threshold": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_84"
+              },
+              "range": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_92"
+              },
+              "sampling_params": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_94"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_105"
+              }
+            },
+            "required": [
+              "input",
+              "model",
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_83": {
+            "type": "object",
+            "properties": {
+              "image_tag": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "pass_threshold": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_84"
+              },
+              "source": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_85"
+              }
+            },
+            "required": [
+              "name",
+              "source",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_68": {
+            "type": "object",
+            "properties": {
+              "evaluation_metric": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_69"
+              },
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "pass_threshold": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_81"
+              },
+              "reference": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_82"
+              }
+            },
+            "required": [
+              "evaluation_metric",
+              "input",
+              "name",
+              "pass_threshold",
+              "reference",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_24": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_25"
+              },
+              "labels": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_59"
+              },
+              "model": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "passing_labels": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_59"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_60"
+              }
+            },
+            "required": [
+              "input",
+              "labels",
+              "model",
+              "name",
+              "passing_labels",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_25": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_26"
+            }
+          },
+          "eval_26": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_27"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_28"
+              }
+            ]
+          },
+          "eval_28": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_29"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_52"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_57"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "eval_29": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_30"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_38"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_40"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_42"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_48"
+              }
+            ]
+          },
+          "eval_40": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_21"
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_41"
+              }
+            },
+            "required": [
+              "image_url",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_38": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_39"
+              }
+            },
+            "required": [
+              "text",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_27": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              },
+              "role": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_20"
+              }
+            },
+            "required": [
+              "content",
+              "role"
+            ],
+            "additionalProperties": false
+          },
+          "eval_1": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_2"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_9"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_13"
+              }
+            ]
+          },
+          "eval_13": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_14"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_16"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_14": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_15"
+              }
+            ]
+          },
+          "eval_15": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_7"
+            }
+          },
+          "eval_9": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_10"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_12"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_10": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_11"
+              }
+            ]
+          },
+          "eval_11": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_7"
+            }
+          },
+          "eval_2": {
+            "type": "object",
+            "properties": {
+              "include_sample_schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_3"
+              },
+              "item_schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_6"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_8"
+              }
+            },
+            "required": [
+              "item_schema",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          "eval_6": {
+            "type": "object",
+            "properties": {},
+            "required": [],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_7"
+            }
+          },
+          "eval_3": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_4"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_5"
+              }
+            ]
+          },
+          "eval_5": {
+            "const": true
+          },
+          "eval_4": {
+            "const": false
+          },
+          "eval_create": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_0"
+          },
+          "eval_eval": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_107"
+          },
+          "eval_update": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_106"
+          },
+          "eval_deleted": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_128"
+          },
+          "eval_query": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_130"
+          },
+          "eval_list": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "const": "list"
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_eval"
+                }
+              },
+              "first_id": {
+                "type": "string"
+              },
+              "last_id": {
+                "type": "string"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "object",
+              "data",
+              "first_id",
+              "last_id",
+              "has_more"
+            ],
             "additionalProperties": false
           },
           "chatkit_0": {

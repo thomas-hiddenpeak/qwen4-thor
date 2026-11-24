@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <fstream>
 
+#include "q4t/server/evals.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/chat_choices.h"
@@ -161,8 +162,9 @@ Q4T_TEST(conversation_api_large_inline_body_round_trips_after_store_restart) {
 int ConversationApiFixture(int argc, char** argv) {
   const bool chat =
       argc == 3 && std::string_view(argv[1]) == "--chat-storage-api-fixture";
+  const bool evals = argc == 3 && std::string_view(argv[1]) == "--evals-api-fixture";
   if (argc != 3 ||
-      (!chat && std::string_view(argv[1]) != "--conversation-api-fixture"))
+      (!evals && !chat && std::string_view(argv[1]) != "--conversation-api-fixture"))
     return -1;
   try {
     const auto directory = fs::absolute(argv[2]);
@@ -220,7 +222,8 @@ int ConversationApiFixture(int argc, char** argv) {
       }
       const StateAccess access{scope, Clock::now() + 5s, {}};
       bool stream = false;
-      auto result = chat ? (method == "POST" && target == "/v1/chat/completions"
+      auto result = evals ? HandleEval(objects, access, method, target, body)
+                         : chat ? (method == "POST" && target == "/v1/chat/completions"
                                 ? FixtureChat(objects, body, access, &stream)
                                 : HandleStoredChatRequest(objects, method,
                                                           target, body, access))

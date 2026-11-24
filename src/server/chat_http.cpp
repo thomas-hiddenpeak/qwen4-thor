@@ -37,6 +37,7 @@
 #include "q4t/server/agent_session.h"
 #include "q4t/server/files_http.h"
 #include "q4t/server/agent_automation.h"
+#include "q4t/server/evals.h"
 #include "q4t/server/chatkit.h"
 #include "q4t/server/webhook.h"
 #include "q4t/server/live_recording_store.h"
@@ -484,7 +485,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
             IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
             IsAssistantsV2Target(path) || IsManagedAgentTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
-            IsChatKitClient(method, path) || IsChatKitTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+            IsChatKitClient(method, path) || IsChatKitTarget(path) || IsEvalTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
             IsSkillTarget(path) || IsContainerTarget(path) || IsFileTarget(path) ||
             IsUploadTarget(path))) ||
           (method == "GET" &&
@@ -582,7 +583,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
         IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
-        IsChatKitClient(method, path) || IsChatKitTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+        IsChatKitClient(method, path) || IsChatKitTarget(path) || IsEvalTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
       if (method == "POST" && !IsChatKitUpload(method, path) && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
                                  IsAutomationAction(path) ||
@@ -816,7 +817,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
        !(method == "POST" &&
          path.substr(0, path.find('?')) == "/v1/chat/completions")) ||
       IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
-      IsChatKitClient(method, path) || IsChatKitTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+      IsChatKitClient(method, path) || IsChatKitTarget(path) || IsEvalTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
       (IsResponsesTarget(path) &&
        path.substr(0, path.find('?')) != "/v1/responses")) {
     const auto* context = detail::HttpResponseContext::Current(fd);
@@ -877,6 +878,8 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                   *objects_, clients_, !embedding_model_dir_.empty(), method,
                   path, body, client,
                   {access.scope, access.deadline, access.cancelled})
+        : IsEvalTarget(path)
+            ? HandleEval(*objects_, access, method, path, body)
         : IsChatKitTarget(path)
             ? HandleChatKit(*objects_, access, method, path, body,
                 {headers.gateway_token, headers.authorization.starts_with("Q4T-Issuer ")

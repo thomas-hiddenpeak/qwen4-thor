@@ -785,6 +785,7 @@ std::string NewObjectId(ObjectKind kind) {
   auto prefix = Kind(kind);
   if (prefix.empty()) return {};
   if (kind == ObjectKind::kChatKitSession) prefix = "cksess";
+  if (kind == ObjectKind::kEval) prefix = "eval";
   if (kind == ObjectKind::kChatKitThread) prefix = "cthr";
   if (kind == ObjectKind::kWebhookEndpoint) prefix = "whe";
   if (kind == ObjectKind::kWebhookEvent) prefix = "evt";
