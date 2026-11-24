@@ -17,9 +17,9 @@ class Stage(ice.Stage):
                   controls=2000, seconds=300)
 
     @staticmethod
-    def prepare_fixture(out, plan):
+    def prepare_fixture(out, plan, installed=None):
         ice.Stage.prepare_fixture(out, plan)
-        installed = Path(os.environ['Q4T_INSTALLED_LIVE_WORKERS']).resolve(strict=True)
+        installed = Path(installed or os.environ['Q4T_INSTALLED_LIVE_WORKERS']).resolve(strict=True)
         artifacts = pkg.read(ROOT/'docs/evidence/serve-live-worker-install-20261123/artifacts.json')
         files = {n:artifacts[n]['sha256'] for n in pkg.LIVE_WORKERS}
         directory = out/'engine'

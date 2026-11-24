@@ -1,0 +1,161 @@
+{
+  "status": "ACCEPT_ASSISTANTS_PRIMARY_LIGHT",
+  "engine": "30954b9703d77aa45c4300be1776cc8e1995b926f4873974850e54fda85845ef",
+  "ingress": "f4ef4776b8db25a9a303234f8497a5595ed6082e850d71ec179717c43a481e15",
+  "qualification": {
+    "status": "ACCEPT_ASSISTANTS_PRIMARY_LIGHT",
+    "registry_sha256": "5d643b7f7829d781f5aae3f397e554fc3e12f534078fff5d4784b01a85ee2e91",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 72,
+      "cleanup_complete": true,
+      "lease_result_sha256": "f3888985664c14399afc6f0089a60ee60200ed41e185591f7b6200ff6c5b3ebf"
+    },
+    "migration_permit_sha256": "88ac3678af188f15527d6080f2db1948ba916063f4ea0c962aac67d3135ef121",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "profiles": {
+    "primary": {
+      "mtp": true,
+      "seconds": 40.503,
+      "starts": 1,
+      "previous": "75d0e41fe4033bca234cffebed3163869a3e2b5cebf1315ba639c0c36461ac96",
+      "profile": "2016b070e7fb19a74b4bd421d27141642de84336dd1f0b6f09de948677628881",
+      "status": "requires_action",
+      "events": [
+        "thread.run.created",
+        "thread.run.queued",
+        "thread.run.in_progress",
+        "thread.run.step.created",
+        "thread.run.step.in_progress",
+        "thread.run.step.delta",
+        "thread.run.step.delta",
+        "thread.run.step.delta",
+        "thread.run.requires_action"
+      ],
+      "core_chat": "42",
+      "media_created": 201,
+      "session_closed": true,
+      "foreign_status": 404
+    },
+    "light": {
+      "mtp": false,
+      "seconds": 35.2,
+      "starts": 1,
+      "previous": "b7951dcde8dcbb1b3d75886640f23c218a5f77003d534c16fbd1b5e7b81d5b69",
+      "profile": "a43a354cc03ef066bbd100712284a6dccdfe3b332b4f02b3dd9a879e41d8f58d",
+      "status": "completed",
+      "events": [
+        "thread.run.queued",
+        "thread.run.step.completed",
+        "thread.run.in_progress",
+        "thread.run.step.created",
+        "thread.run.step.in_progress",
+        "thread.message.created",
+        "thread.message.in_progress",
+        "thread.message.delta",
+        "thread.message.delta",
+        "thread.message.delta",
+        "thread.message.completed",
+        "thread.run.step.completed",
+        "thread.run.completed"
+      ],
+      "core_chat": "42",
+      "media_created": 201,
+      "session_closed": true,
+      "foreign_status": 404
+    }
+  },
+  "handoff": {
+    "preserved": [
+      "assistant_id",
+      "thread_id",
+      "run_id",
+      "step_id",
+      "tool_call_id",
+      "arguments"
+    ],
+    "query_revision": 460,
+    "answer": "460",
+    "resumed_usage": 782
+  },
+  "cpu": 32,
+  "predecessor": "rev460",
+  "diagnostics": [
+    "The first preparation lacked the environment-selected worker location. The Assistants release driver now takes its exact workers from the verified predecessor package; the first preparation never loaded a model."
+  ],
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-lease-02/exit.json",
+      "sha256": "f3888985664c14399afc6f0089a60ee60200ed41e185591f7b6200ff6c5b3ebf"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/acceptance.json",
+      "sha256": "432ffbbea808303224305fdbc043548f7366d175dd8c8f7bd4657c9091aa43c8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/profile-observations.json",
+      "sha256": "ba8dfc819d6f1c61e5cd165e594036d278b5825ac54355aada89b966f1924f4b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-qualified-02/acceptance.json",
+      "sha256": "5d28b8aa8f3e37f087fb9b8fad008ffcb08115b35f90967469526c69903654d1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-migration-pinned-02.log",
+      "sha256": "588bf164dcf7192b4c9f05bf2544050b56e746e6b24eb9d98c6df975ed2e66e7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profile-inventory-02.json",
+      "sha256": "6bd830a16fd1684a4d9fde4bcbfb84b1757ac9ab025ec59829f4218bf1d6aab2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-prepare-01.log",
+      "sha256": "7a5ea7864acdcc3779588ae519190811ed959da7f3c4d0cb49dc2f486644ba72"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-qualified-02/qualified/primary.json",
+      "sha256": "2016b070e7fb19a74b4bd421d27141642de84336dd1f0b6f09de948677628881"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/primary/assistant-handoff.json",
+      "sha256": "32be33da9f3868f0fcaa930370232eb018da8878f63ccdd11f1a71437024e9c0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/primary/observation.json",
+      "sha256": "44e4ff08c02f5d39a3db36a6ee25e62dac0920200a757d0afd065126157026f0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/primary/result.json",
+      "sha256": "5c5e32f470b1087e0e4eaf1f47980c1ef2c59e1629ff0b4a4e1bb16e5bf9bc0b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/primary/cleanup.json",
+      "sha256": "64302d44461f87046e3d4f41541ccb146797f70d5455b8499073ee93a619ecea"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-qualified-02/qualified/light.json",
+      "sha256": "a43a354cc03ef066bbd100712284a6dccdfe3b332b4f02b3dd9a879e41d8f58d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/light/assistant-handoff.json",
+      "sha256": "8cba8bf03ffec45b7f60a4f7168ac0e54547f95b544136d46c401261849621fc"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/light/observation.json",
+      "sha256": "f545a02b40116c616d77c09848a078819a3c121b4be51153070543fab685f443"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/light/result.json",
+      "sha256": "792e5a3378e98870119270ec69d0d3943e580f9fdf06343c3a08e7734753ab02"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/assistant-profiles-02/light/cleanup.json",
+      "sha256": "1a12c61e17d98a76f89dcd0e9b10fe5e02d6ca5a4e8e8bc0a209be7922f2fe45"
+    }
+  ]
+}

@@ -23,6 +23,15 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+ASSISTANTS_RECORD = 'q4t-profile-business-v36'
+ASSISTANTS_FORMAT = 'q4t-assistants-run-source-v1'
+ASSISTANTS_CAPABILITY = dict(selector='assistants=v2', endpoint='/v1/assistants', threads='/v1/threads',
+    messages='/v1/threads/{thread_id}/messages', runs='/v1/threads/{thread_id}/runs',
+    run_steps=True, submit_tool_outputs=True)
+ASSISTANTS_REVIEWED = {
+    'primary': '2016b070e7fb19a74b4bd421d27141642de84336dd1f0b6f09de948677628881',
+    'light': 'a43a354cc03ef066bbd100712284a6dccdfe3b332b4f02b3dd9a879e41d8f58d',
+}
 TRANSLATION_RECORD = 'q4t-profile-business-v35'
 TRANSLATION_FORMAT = 'q4t-translation-realtime-source-v1'
 TRANSLATION_CAPABILITY = dict(endpoint='/v1/audio/translations', models=['whisper-1', 'qwen3-asr-0.6b'],
@@ -134,7 +143,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 OAUTH_RECORD: OAUTH_FORMAT, ENVIRONMENT_RECORD: ENVIRONMENT_FORMAT,
                 WORKSPACE_RECORD: WORKSPACE_FORMAT, ARTIFACT_RECORD: ARTIFACT_FORMAT,
                 MANAGED_TOOL_RECORD: MANAGED_TOOL_FORMAT, SUBAGENT_RECORD: SUBAGENT_FORMAT,
-                TRANSLATION_RECORD: TRANSLATION_FORMAT}
+                TRANSLATION_RECORD: TRANSLATION_FORMAT, ASSISTANTS_RECORD: ASSISTANTS_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -156,6 +165,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '432ffbbea808303224305fdbc043548f7366d175dd8c8f7bd4657c9091aa43c8':
+        'f4ef4776b8db25a9a303234f8497a5595ed6082e850d71ec179717c43a481e15',
     '92a0ac0c3d173820cdb36c1002ed4f46b0063fba3bb5727f655db05f7e827cfe':
         '458b028f02d936beb055a4ffe1d4c6a55bc7766082c039339d3c2b4b05bc6919',
     '82f102fbf86efb6c7a861ae3fb0243f64402988507d8ba4748251f5642d4e433':
@@ -204,6 +215,13 @@ def record_hash(value):
 
 
 def format_for(capabilities):
+    if 'assistants' in capabilities:
+        previous = dict(capabilities)
+        declaration = previous.pop('assistants')
+        ledger.require(ledger.canonical(declaration) == ledger.canonical(ASSISTANTS_CAPABILITY)
+                       and format_for(previous) == TRANSLATION_RECORD,
+                       'Assistants qualification requires native Runs and the released predecessor')
+        return ASSISTANTS_RECORD
     if 'translations' in capabilities:
         previous = dict(capabilities)
         declaration = previous.pop('translations')
@@ -301,7 +319,18 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] == TRANSLATION_RECORD:
+    if value['format'] == ASSISTANTS_RECORD:
+        proofs = value['business']['live']['evidence_sha256']
+        old_proofs = prior['business']['live']['evidence_sha256']
+        ledger.require(prior['format'] == TRANSLATION_RECORD and
+                       record_hash(prior) == TRANSLATION_REVIEWED.get(prior['profile']) and
+                       previous['added'] == ['assistants'] and
+                       set(previous['capabilities']) == {'protocol_source_sha256'} and
+                       format_for(after) == ASSISTANTS_RECORD and
+                       old_proofs.keys() | {'assistant-handoff.json'} == proofs.keys() and
+                       ledger.HASH.fullmatch(proofs['assistant-handoff.json']),
+                       'Assistants qualification requires the reviewed predecessor and SDK handoff')
+    elif value['format'] == TRANSLATION_RECORD:
         proofs = value['business']['live']['evidence_sha256']
         old_proofs = prior['business']['live']['evidence_sha256']
         additions = {'translations.json', 'beta-conversation.json', 'beta-transcription.json'}
@@ -462,6 +491,15 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
+    if value['format'] == ASSISTANTS_RECORD:
+        name = value['profile']
+        ledger.require(record_hash(value) == ASSISTANTS_REVIEWED.get(name),
+                       'Assistants qualification differs from the reviewed capacity')
+        prior = previous_record(value)
+        ledger.require(record_hash(prior) == TRANSLATION_REVIEWED.get(name),
+                       'Assistants qualification lost its released predecessor')
+        validate(prior)
+        return value['reused_business']
     if value['format'] == TRANSLATION_RECORD:
         name = value['profile']
         ledger.require(record_hash(value) == TRANSLATION_REVIEWED.get(name),
