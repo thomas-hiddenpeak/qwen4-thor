@@ -149,14 +149,19 @@ struct Fixture {
       Json event;
       if (!io::ParseJson(std::string(decoder.Event().payload), &event))
         return false;
-      ChatPlanError error;
-      auto status =
-          ValidateRealtimeWireShape(event, RealtimeShape::kServerEvent, &error);
-      if (!status) {
-        std::fprintf(stderr, "Session SDK mismatch %s at %s: %s\n",
-                     event.GetString("type").c_str(), error.param.c_str(),
-                     status.message().c_str());
-        return false;
+      if (cb.legacy_wire_temperature) {
+        if (!event.IsObject() || event.GetString("event_id").empty() ||
+            event.GetString("type").empty()) return false;
+      } else {
+        ChatPlanError error;
+        auto status =
+            ValidateRealtimeWireShape(event, RealtimeShape::kServerEvent, &error);
+        if (!status) {
+          std::fprintf(stderr, "Session SDK mismatch %s at %s: %s\n",
+                       event.GetString("type").c_str(), error.param.c_str(),
+                       status.message().c_str());
+          return false;
+        }
       }
       if (event.GetString("type") == "error")
         std::fprintf(stderr, "Fixture received %s\n",
@@ -397,6 +402,43 @@ struct InputFixture : Fixture {
   }
 };
 }  // namespace
+
+Q4T_TEST(realtime_beta_session_updates_sampling_after_validation_and_snapshots_each_response) {
+  auto options = [](double temperature) {
+    Json value;
+    value.type = Json::Type::kNumber;
+    value.number = temperature;
+    return Object({{"temperature", value}});
+  };
+  Fixture f;
+  f.cb.legacy_wire_temperature = 0.75;
+  Q4T_CHECK(f.Start());
+  const auto created = f.Last("session.created");
+  const auto* session = created.Find("session");
+  Q4T_CHECK(session && session->Has("modalities") &&
+            !session->Has("output_modalities") && session->Find("temperature")->number == 0.75);
+  auto update = [](const Json& options) {
+    return Object({{"type", String("session.update")}, {"session", options}});
+  };
+  auto valid = options(0.9);
+  Set(&valid, "instructions", String("new"));
+  Q4T_CHECK(f.Send(update(valid)));
+  Q4T_CHECK(f.Count("session.updated") == 1);
+  Q4T_CHECK(f.Last("session.updated").Find("session")->Find("temperature")->number == 0.9);
+  auto invalid = options(1.1);
+  Set(&invalid, "instructions", String("reject"));
+  Q4T_CHECK(f.Send(update(invalid)));
+  Q4T_CHECK(f.Count("session.updated") == 1 && f.Count("error") == 1);
+  Q4T_CHECK(f.Add(User("item_query", "hello")) && f.Count("conversation.item.created") == 1);
+  auto response = options(0.65);
+  Set(&response, "max_response_output_tokens", Number(20));
+  Q4T_CHECK(f.Create(response) && f.Finish());
+  Q4T_CHECK(f.Snapshot(0).legacy_temperature == 0.65);
+  Q4T_CHECK(f.Create() && f.Finish() && f.Snapshot(1).legacy_temperature == 0.9);
+  Q4T_CHECK(f.Count("response.text.delta") > 0 && f.Count("response.output_text.delta") == 0);
+  Q4T_CHECK(f.Count("conversation.item.done") == 0 && f.Count("response.done") == 2);
+  return true;
+}
 
 Q4T_TEST(realtime_session_item_order_retrieve_delete_and_sdk_events) {
   Fixture f;

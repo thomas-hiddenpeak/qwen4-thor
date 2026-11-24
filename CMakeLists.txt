@@ -634,6 +634,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/realtime_duplex_input.cpp
   src/server/realtime_conversation_input.cpp
   src/server/realtime_legacy_credentials.cpp
+  src/server/realtime_legacy_events.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_session_pump.cpp
@@ -1112,6 +1113,7 @@ if(Q4T_BUILD_TESTS)
     src/server/realtime_duplex_input.cpp
     src/server/realtime_conversation_input.cpp
     src/server/realtime_legacy_credentials.cpp
+    src/server/realtime_legacy_events.cpp
     src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_session_pump.cpp

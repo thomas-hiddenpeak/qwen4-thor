@@ -270,6 +270,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
           return false;
         }
         protocols.emplace_back(token);
+        if (token == "openai-beta.realtime-v1") headers->realtime_beta = true;
         if (comma == remaining.npos) break;
         remaining.remove_prefix(comma + 1);
       }
@@ -377,6 +378,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       for (;;) {
         const auto comma = remaining.find(',');
         const auto beta = Trim(remaining.substr(0, comma));
+        if (beta == "realtime=v1") headers->realtime_beta = true;
         if (beta == "agents=v1") headers->agents_beta = true;
         if (beta == "responses_multi_agent=v1")
           headers->responses_multi_agent = true;

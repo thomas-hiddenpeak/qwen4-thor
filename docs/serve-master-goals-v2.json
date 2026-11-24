@@ -16529,6 +16529,14 @@
         "legacy_beta_websocket_wire",
         "qualified_delivery"
       ]
+    },
+    "legacy_beta_conversation_wire": {
+      "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/beta-wire.json",
+      "status": "CANDIDATE_BUSINESS_PASS",
+      "sdk": "7.47.0",
+      "starts": 1,
+      "answer": "42",
+      "tokens": 109
     }
   },
   "responses_beta_selector_20261123": {

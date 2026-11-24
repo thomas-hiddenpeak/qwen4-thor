@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 Node SDK 7.47.0 已用旧版 WebSocket 完成真实对话。会话签发温度 0.75，更新为 0.9，此次回答单独指定 0.6。客户端读到同一回答的 response.text.delta、response.text.done 和终态，文本为 42，用量 109 tokens。7 项 CPU 检查通过，原生与可选 nginx 均验证 SDK 请求头、浏览器子协议及错误版本。一次模型启动，用时 35.12 秒。后续补齐响应配置回显及转写首帧，默认仍为 rev458。[验收回执](evidence/serve-realtime-legacy-sessions-20261124/beta-wire.json)
+
 PR #77 的两项 host-contracts 已通过，六项子 Agent 查询合入 main（`5c9e531612`）。默认发行已从 rev456 更新至 rev458，登记独立回退包；发布时保持 STOPPED，原有 13 份客户与恢复记录的内容未变。模型退出与网关异常两次业务短验各启动两代模型，子 Agent 的历史在替换后可读，父会话在原 4096 输入配额内取回 457。工具回填返回版本号 442 及当时的 UTC，独立 Chat 答 42。原先一次工具回填得到无关答案，已保留原文与真实输入。24 小时运行计划已通过预检，实跑由用户安排。[发行回执](evidence/serve-agent-workspaces-20261124/subagent-delivery.json)
 
 顶层 CMake 的 q4t_host_tests 已恢复可构建。该目标编译 program_vm.cpp 时遗漏了项目已有的 QuickJS 目标，导致缺少 quickjs.h。已对齐独立 tests/host 构建的依赖声明，顶层构建成功，6 项受影响的 Realtime 用例全部通过。 下一步继续旧版实时协议接入。[构建回执](evidence/serve-realtime-legacy-sessions-20261124/host-build.json)

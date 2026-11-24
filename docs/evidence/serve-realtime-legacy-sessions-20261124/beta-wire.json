@@ -1,0 +1,80 @@
+{
+  "status": "CANDIDATE_BUSINESS_PASS",
+  "engine": "87017fa669b7400d828a50bd82f4069abd43a3743a4a6402015542b720f736c3",
+  "ingress": "d1fafdd5e7dbfcaadea5988837aa7d73f349e2271236735bac8f07d358b539af",
+  "compiled_sources": "14d4490d6390f270419d28e1ae5d22849b728daec345f5012c2319fb703083d8",
+  "sdk": {
+    "sdk": "7.47.0",
+    "beta_session": true,
+    "issued_temperature": 0.75,
+    "updated_temperature": 0.9,
+    "requested_temperature": 0.6,
+    "delta": "response.text.delta",
+    "completed": "response.text.done",
+    "answer": "42",
+    "tokens": 109,
+    "driver_sha256": "f13a4f82a8d5163f5cde970bd7ce33284e02733810a48c020759a8b14dffeab4"
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 35.12,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "targeted_cpu": 7,
+  "gateway_transport_checks": 2,
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 154,
+    "native_routes": 256,
+    "reviewed_source_anchors": 1248,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "lease": "COMPLETED",
+  "scope": "Official beta conversation socket, text output, one request-level temperature override. Response metadata and legacy transcription startup are tracked separately. Production default remains rev458.",
+  "artifacts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-ws-business-01/plan.json",
+      "sha256": "bc6253a82e04f44098b46f6e76861e2c8e138656b0da4bfa81648c1cfd63e337"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-ws-business-01/result.json",
+      "sha256": "59dbbca319f972f02a60ef5789d600c3dcb1aa4e4d6b7483cf18e540bf173114"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-ws-business-01/create/sdk-result.json",
+      "sha256": "fd9c5b500434b5e090f64756f624f38c4771e104a7ae14bcea11f848bc6745db"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-ws-lease-01/exit.json",
+      "sha256": "ac0276f07107403587bb0ea841c34385d8c391209d473b917df3e1db147a80db"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-ws-cpu-01.log",
+      "sha256": "caccc36f130c8c2d2c7acf93a5c0160415cd5f6d9f633040506a732af41e9dee"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-native-wire-01.log",
+      "sha256": "de483381b4619200613a5a140f1e10d23ca973a9f3321c2cddeb1f7e964565f7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-nginx-wire-01.log",
+      "sha256": "f8b69f85792edeeceafd9ba30a912715e9edfe54822ab9ca32164c6782057b76"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/beta-wire-audit-01.json",
+      "sha256": "e3d19296a1d660d045d7947fc530be841311789d577cbf739df77934991fd4be"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/legacy_wire_business.py",
+      "sha256": "213473ce849d8d31d64ffc26473387df56dcccb622a8edd986184fe1bef39ee4"
+    }
+  ]
+}

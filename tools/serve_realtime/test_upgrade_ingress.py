@@ -178,6 +178,24 @@ class NativeUpgrade(unittest.TestCase):
         self.assertEqual(read_frame(client.read), (8, b'\x03\xe8'))
         client.sock.close()
 
+    def test_beta_selector_reaches_realtime_peer_for_header_and_browser_protocol(self):
+        self.ready()
+        for fields, expected in (
+            ('OpenAI-Beta: other=v1, realtime=v1\r\n', 'realtime=v1'),
+            ('Sec-WebSocket-Protocol: realtime, openai-beta.realtime-v1\r\n', 'realtime=v1'),
+            ('OpenAI-Beta: realtime=v10\r\n', None),
+        ):
+            client, status, _ = self.connect(path='/v1/realtime?model=qwen3.8-flash-next',
+                                               fields=fields)
+            self.assertEqual(status, 101)
+            self.assertEqual(read_frame(client.read), (1, b'cpu-ready'))
+            headers = {k.lower():v for k,v in self.rows[-1]['headers'].items()}
+            self.assertEqual(headers.get('openai-beta'), expected)
+            self.assertEqual(headers['x-q4t-client-id'], 'alpha')
+            client.sock.sendall(frame(bytes([3,232]), opcode=8, masked=True))
+            self.assertEqual(read_frame(client.read), (8, bytes([3,232])))
+            client.sock.close()
+
     def test_upgrade_preserves_both_coalesced_first_frames_and_internal_owner(self):
         self.ready()
         client, status, headers = self.connect(prefix=frame(b'first', masked=True))
@@ -387,6 +405,9 @@ class OptionalNginxUpgrade(unittest.TestCase):
         self.addCleanup(self.patch.stop)
         self.stack = fixture.Stack(self.output)
         self.install_peer()
+
+    test_beta_selector_reaches_realtime_peer_for_header_and_browser_protocol = (
+        NativeUpgrade.test_beta_selector_reaches_realtime_peer_for_header_and_browser_protocol)
 
     def test_scoped_primary_upgrades_relay_commands_events_and_normal_close(self):
         self.ready()
