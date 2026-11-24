@@ -1,7 +1,7 @@
 {
-  "stage": "focused_host_verified",
+  "stage": "both_stored_sources_and_signed_eval_terminals_verified",
   "scope": "historical inference selection and terminal Evals webhooks",
-  "evals_host_cases": 9,
+  "evals_host_cases": 10,
   "webhook_host_cases": 12,
   "cpu_sha256": {
     "evals-stored-cpu-01.log": "2df36b752f375c1d008591a26ad5f794f713e50dadf5d43368847e9d2a2fc53b",
@@ -21,8 +21,8 @@
   "compatibility_reference": "https://developers.openai.com/api/reference/resources/evals/subresources/runs/methods/create",
   "terminal_reference": "https://developers.openai.com/api/docs/guides/evals",
   "acceptance_pending": [
-    "native TLS business over stored Chat and Responses, signed delivery",
-    "packaged profiles and recovery"
+    "packaged profiles and independent recovery",
+    "similarity, label-model, score-model and Python graders"
   ],
   "first_device": {
     "status": "FAIL",
@@ -80,5 +80,48 @@
     },
     "failure": "Stored Responses user input carried list-only id and status into EasyInputMessage. Source was deleted and snapshot intact. The model did not start for that row.",
     "pending_webhook_delivery_at_shutdown": true
-  }
+  },
+  "verified_source": "c6b66413b",
+  "fixed_device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.891,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ],
+    "sdk": "7.47.0",
+    "reports": [
+      {
+        "type": "responses",
+        "source": "resp_b92d7ed00b295a6602283a4a8456c993",
+        "run": "evalrun_5d49d1444a582ce95a46121f17c1f414",
+        "answer": "157",
+        "score": 1
+      }
+    ],
+    "independent_chat": "42",
+    "notices": [
+      {
+        "event": "evt_69822eb9612c79e5c73620b8e7613944",
+        "type": "eval.run.failed",
+        "run": "evalrun_567c015fe733f5b9f1c44cc2f449e093"
+      },
+      {
+        "event": "evt_d30c777e6071ae9acb29579ea32c26ab",
+        "type": "eval.run.succeeded",
+        "run": "evalrun_5d49d1444a582ce95a46121f17c1f414"
+      },
+      {
+        "event": "evt_f3ec8b9ccdbe88a9039beacaa9e552c7",
+        "type": "eval.run.canceled",
+        "run": "evalrun_e48fea5fd8d250be53d3c764c3a34446"
+      }
+    ],
+    "wire_objects": 3,
+    "driver_sha256": "bfc8dc074dd762b48950ada0b077ec4bcd71e640325bbfe1d08e611b4548ffe0",
+    "lease": "COMPLETED",
+    "raw_sha256": "9a700da6a9910888d9990dbf5eba7b11ba04dc088d4886d3e689dc3361433e9e"
+  },
+  "evals_cpu_after_repair_sha256": "ebf6c1b230ac394df88bb5a21861887e06575f5be9822d5efc735b2db6b078a9"
 }
