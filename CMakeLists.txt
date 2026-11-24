@@ -469,6 +469,11 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/file_fetch_http.cpp
   src/server/sip_webhook.cpp
   src/server/webhook_transport.cpp
+  src/server/chatkit_sessions.cpp
+  src/server/chatkit_client.cpp
+  src/server/chatkit_thread_state.cpp
+  src/server/chatkit_threads.cpp
+  src/server/chatkit_credentials.cpp
   src/server/webhook_registry.cpp
   src/server/webhook_keys.cpp
   src/server/webhook_events.cpp

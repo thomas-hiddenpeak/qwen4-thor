@@ -2019,6 +2019,14 @@ class DiskStore {
             Number(blob ? blob->GetInt("bytes", -1) : -1));
         Set(&record, "data", std::move(metadata_only));
       }
+      if (metadata.kind == "chatkit_thread") {
+        const auto* stored = record.Find("data");
+        const auto* thread = stored ? stored->Find("thread") : nullptr;
+        if (!thread || !thread->IsObject()) return IoError();
+        // Thread lists only need public metadata. Item history stays in the
+        // owning record and is fetched explicitly by the items operation.
+        Set(&record, "data", Object({{"thread", *thread}}));
+      }
       if (request.GetString("kind") == "trace") {
         const auto* data = record.Find("data");
         const auto* trace = data ? data->Find("trace") : nullptr;

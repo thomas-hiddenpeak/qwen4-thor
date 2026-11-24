@@ -749,6 +749,16 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
   auto mutation = Write(ObjectKind::kResponse, plan->id, access, 0,
                         SavedResponse(*plan, snapshot, events),
                         !plan->conversation_id.empty(), plan->ephemeral);
+  if (plan->chatkit_thread_write) {
+    if (plan->agent_session_write || !plan->assistant_writes.empty())
+      return StateError("Conflicting ChatKit thread admission");
+    const std::array writes{std::move(*plan->chatkit_thread_write),
+                            std::move(mutation)};
+    auto result = objects_.ExecuteBatch(writes, access.deadline, access.cancelled);
+    plan->chatkit_thread_write.reset();
+    if (result.ok()) plan->response_revision = 1;
+    return result;
+  }
   if (!plan->assistant_thread_id.empty()) {
     if (plan->assistant_writes.empty() || plan->agent_session_write)
       return StateError("Missing Assistant run admission");

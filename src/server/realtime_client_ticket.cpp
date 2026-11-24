@@ -12,9 +12,13 @@ bool Hex64(std::string_view value) {
   return value.size() == 64 &&
          value.find_first_not_of("0123456789abcdef") == value.npos;
 }
-std::string Payload(std::string_view owner, std::string_view nonce,
+std::string_view Prefix(ClientTicketAudience audience) {
+  return audience == ClientTicketAudience::kChatKit ? kChatKitTicketPrefix
+                                                   : kRealtimeTicketPrefix;
+}
+std::string Payload(ClientTicketAudience audience, std::string_view owner, std::string_view nonce,
                     int64_t expiry) {
-  return std::string(kRealtimeTicketPrefix) + std::string(owner) + "." +
+  return std::string(Prefix(audience)) + std::string(owner) + "." +
          std::to_string(expiry) + "." + std::string(nonce);
 }
 bool Sign(std::string_view binding, std::string_view issuer,
@@ -70,10 +74,12 @@ bool RealtimeGrantTarget(std::string_view method, std::string_view path) {
   return false;
 }
 
-bool ReadRealtimeTicket(std::string_view token, RealtimeClientTicket* result) {
-  if (!token.starts_with(kRealtimeTicketPrefix) || token.size() > 176)
+bool ReadRealtimeTicket(std::string_view token, RealtimeClientTicket* result,
+                        ClientTicketAudience audience) {
+  const auto prefix = Prefix(audience);
+  if (!token.starts_with(prefix) || token.size() > 176 + prefix.size() - kRealtimeTicketPrefix.size())
     return false;
-  token.remove_prefix(kRealtimeTicketPrefix.size());
+  token.remove_prefix(prefix.size());
   const auto split = [&]() -> std::string_view {
     const auto dot = token.find('.');
     if (dot == token.npos) return {};
@@ -94,17 +100,19 @@ bool ReadRealtimeTicket(std::string_view token, RealtimeClientTicket* result) {
   if (parsed.ec != std::errc{} || parsed.ptr != end || expiry < 1 ||
       expiry > 9007199254740991LL)
     return false;
-  *result = {owner, nonce, token, expiry};
+  *result = {owner, nonce, token, expiry, audience};
   return true;
 }
 
 bool SignRealtimeTicket(std::string_view binding, std::string_view issuer,
                         std::string_view owner, std::string_view opaque,
-                        int64_t expiry, std::string* token) {
-  if (!ValidClientId(owner) || !opaque.starts_with("ek_") ||
-      !Hex64(opaque.substr(3)) || expiry < 1 || expiry > 9007199254740991LL)
+                        int64_t expiry, std::string* token,
+                        ClientTicketAudience audience) {
+  const std::string_view prefix = audience == ClientTicketAudience::kChatKit ? "cksec_" : "ek_";
+  if (!ValidClientId(owner) || !opaque.starts_with(prefix) ||
+      !Hex64(opaque.substr(prefix.size())) || expiry < 1 || expiry > 9007199254740991LL)
     return false;
-  auto payload = Payload(owner, opaque.substr(3), expiry);
+  auto payload = Payload(audience, owner, opaque.substr(prefix.size()), expiry);
   std::string signature;
   if (!Sign(binding, issuer, payload, &signature)) return false;
   *token = std::move(payload) + "." + signature;
@@ -119,7 +127,7 @@ bool VerifyRealtimeTicket(const RealtimeClientTicket& ticket,
     return false;
   std::string expected;
   if (!Sign(binding, issuer,
-            Payload(ticket.owner, ticket.nonce, ticket.expires_at), &expected))
+            Payload(ticket.audience, ticket.owner, ticket.nonce, ticket.expires_at), &expected))
     return false;
   unsigned difference = 0;
   for (size_t i = 0; i < expected.size(); ++i)

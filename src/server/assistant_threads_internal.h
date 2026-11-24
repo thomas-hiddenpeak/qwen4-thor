@@ -24,6 +24,7 @@ ObjectReply SaveThread(ObjectStore& objects, const BinaryAccess& access,
 ObjectReply CreateMessage(ObjectStore& objects, const BinaryAccess& access,
                           const std::string& thread, const io::Json& input,
                           Attachments* attachments, io::Json* message);
-ObjectReply PageAssistantRows(const io::Json& rows, const io::Json& page);
+ObjectReply PageAssistantRows(const io::Json& rows, const io::Json& page,
+                              bool allow_empty_page = false);
 ObjectReply ListMessages(const io::Json& messages, std::string_view query);
 }  // namespace q4t::server::assistant_detail

@@ -435,6 +435,8 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::ResponsesMethodAllowed(method, path) ||
       server::FileMethodAllowed(method, path) ||
       server::UploadMethodAllowed(method, path) ||
+      server::IsChatKitClient(method, path) ||
+      server::ChatKitMethodAllowed(method, path) ||
       server::WebhookMethodAllowed(method, path) ||
       server::BatchMethodAllowed(method, path) ||
       server::VectorStoreMethodAllowed(method, path) ||
@@ -444,6 +446,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
                server::IsMcpTunnelMetadata(method, path) ||
                server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||
+               server::IsChatKitTarget(path) ||
                ((method == "GET" || method == "DELETE") && server::IsWebhookTarget(path)) ||
                server::IsBatchObservation(method, path) ||
                server::IsSkillObservation(method, path) ||
@@ -529,7 +532,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
            "\r\nX-Q4T-Gateway-Token: " + binding.token + "\r\n" +
            (!delegated.empty() ? "Authorization: Bearer " + std::string(delegated) + "\r\n"
-             : server::IsRealtimeCredentialTarget(path)
+             : (server::IsRealtimeCredentialTarget(path) ||
+                path == "/v1/chatkit/sessions")
                  ? "Authorization: Q4T-Issuer " + std::string(identity.IssuerDigest()) + "\r\n" : "") +
            (server::IsSkillTarget(path) && !headers.accept.empty()
                 ? "Accept: " + headers.accept + "\r\n" : "") +
@@ -543,6 +547,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
                 ? "OpenAI-Beta: realtime=v1\r\n" : "") +
            (headers.assistants_beta && server::IsAssistantsV2Target(path)
                 ? "OpenAI-Beta: assistants=v2\r\n" : "") +
+           (headers.chatkit_beta && server::IsChatKitTarget(path)
+                ? "OpenAI-Beta: chatkit_beta=v1\r\n" : "") +
            (headers.agents_beta && server::IsManagedAgentTarget(path)
                 ? "OpenAI-Beta: agents=v1\r\n" : "") +
            (headers.responses_multi_agent && server::IsResponsesTarget(path)
@@ -634,8 +640,11 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       server::RealtimeClientTicket ticket;
       const auto now = std::chrono::duration_cast<std::chrono::seconds>(
           std::chrono::system_clock::now().time_since_epoch()).count();
-      if (!server::RealtimeGrantTarget(method, path) ||
-          !server::ReadRealtimeTicket(credential, &ticket) || ticket.expires_at <= now)
+      const bool chatkit = server::IsChatKitClient(method, path);
+      const auto audience = chatkit ? server::ClientTicketAudience::kChatKit
+                                    : server::ClientTicketAudience::kRealtime;
+      if ((!chatkit && !server::RealtimeGrantTarget(method, path)) ||
+          !server::ReadRealtimeTicket(credential, &ticket, audience) || ticket.expires_at <= now)
         return reject(401, "gateway_unauthorized");
       binding = Authorize(config.address, config.parent.pid, ticket.owner,
                           false, config.backend);
@@ -644,6 +653,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       if (!identity.Allowed()) return reject(401, "gateway_unauthorized");
       delegated = credential;
     }
+    if (server::IsChatKitClient(method, path) && delegated.empty())
+      return reject(401, "invalid_client_secret");
     lease.client = identity.Index();
     if (!headers.client_id.empty() || !headers.gateway_token.empty())
       return reject(400, "invalid_client_header");
@@ -798,7 +809,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     return Relay(upstream.Get(), client, config.idle_seconds, request_id,
                  started);
   }
-  if ((!delegated.empty() || server::IsRealtimeCredentialTarget(path)) &&
+  if ((!delegated.empty() || server::IsRealtimeCredentialTarget(path) ||
+       path == "/v1/chatkit/sessions") &&
       !access.StillActive(identity)) {
     Error(client, 401, "gateway_unauthorized", request_id, started);
     return false;

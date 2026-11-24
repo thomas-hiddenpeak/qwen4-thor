@@ -48,7 +48,9 @@ enum class ObjectKind {
   kAutomation,
   kAutomationInvocation,
   kWebhookEndpoint,
-  kWebhookEvent
+  kWebhookEvent,
+  kChatKitSession,
+  kChatKitThread
 };
 enum class ObjectOperation {
   kGet,

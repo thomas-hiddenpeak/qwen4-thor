@@ -199,7 +199,7 @@ class ChatServer {
   void StartConnection(int fd, bool operations);
   void FinishConnection(int fd, bool operations) noexcept;
   void Dispatch(int fd, const std::string& method, const std::string& path,
-                const std::string& body);
+                const std::string& body, const HttpRequestHeaders& headers);
   void HandleHealth(int fd);
   void HandleReadiness(int fd, bool liveness);
   bool CheckMemoryAdmission(int fd, MemoryCheckpoint checkpoint);

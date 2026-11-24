@@ -26,6 +26,8 @@
 #include "q4t/server/agent_registration_types_data.h"
 #include "q4t/server/agent_automation.h"
 #include "q4t/server/automation_types_data.h"
+#include "q4t/server/chatkit.h"
+#include "q4t/server/chatkit_types_data.h"
 #include "q4t/server/webhook_types_data.h"
 #include "q4t/server/webhook.h"
 #include "q4t/server/realtime_conversation.h"
@@ -198,7 +200,7 @@ class Validator {
     const auto count = std::count_if(text.begin(), text.end(),
         [](unsigned char byte) { return (byte & 0xc0) != 0x80; });
     return count >= bounds.GetInt("minLength") &&
-           count <= bounds.GetInt("maxLength");
+           (!bounds.Has("maxLength") || count <= bounds.GetInt("maxLength"));
   }
   static bool WithinBounds(const Json& item, const Json& bounds) {
     if (item.IsNumber()) {
@@ -209,7 +211,7 @@ class Validator {
       return (!bounds.Has("minimum") || item.number >= bounds.GetNumber("minimum")) &&
              (!bounds.Has("maximum") || item.number <= bounds.GetNumber("maximum"));
     }
-    if (item.IsString() && bounds.Has("maxLength"))
+    if (item.IsString() && (bounds.Has("minLength") || bounds.Has("maxLength")))
       return TextWithinBounds(item.str, bounds);
     if (item.IsArray()) {
       if ((bounds.Has("maxItems") && item.array.size() >
@@ -443,6 +445,12 @@ Status ValidateAssistant(const Json& value, AssistantShape shape,
     case AssistantShape::kStepListQuery: root = "step_list_query"; break;
     case AssistantShape::kStepQuery: root = "step_query"; break;
   }
+  return Validate(graph, value, root, error, "", true);
+}
+
+Status ValidateChatKit(const Json& value, const char* root,
+                       ChatPlanError* error) {
+  static const Graph graph(chatkit_types::kData, "q4t-openai-chatkit-types-v1");
   return Validate(graph, value, root, error, "", true);
 }
 

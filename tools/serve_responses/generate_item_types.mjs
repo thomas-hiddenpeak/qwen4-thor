@@ -8,9 +8,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--webhooks', '--automations', '--assistants', '--containers', '--skills', '--agent-sessions', '--vault-credentials', '--environments'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--chatkit', '--webhooks', '--automations', '--assistants', '--containers', '--skills', '--agent-sessions', '--vault-credentials', '--environments'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--webhooks|--automations|--assistants|--containers|--skills|--agent-sessions|--vault-credentials|--environments]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--chatkit|--webhooks|--automations|--assistants|--containers|--skills|--agent-sessions|--vault-credentials|--environments]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -41,6 +41,8 @@ const skillVersions = resolve(sdk, 'src/resources/skills/versions/versions.ts');
 const containers = resolve(sdk, 'src/resources/containers/containers.ts');
 const containerFiles = resolve(sdk, 'src/resources/containers/files/files.ts');
 const agents = resolve(sdk, 'src/resources/beta/agents/agents.ts');
+const chatkitSessions = resolve(sdk, 'src/resources/beta/chatkit/sessions.ts');
+const chatkitThreads = resolve(sdk, 'src/resources/beta/chatkit/threads.ts');
 const webhooks = resolve(sdk, 'src/resources/webhooks/webhooks.ts');
 const automations = resolve(sdk, 'src/resources/beta/agents/automations/automations.ts');
 const invocations = resolve(sdk, 'src/resources/beta/agents/automations/invocations.ts');
@@ -61,6 +63,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--realtime' ? [realtime, realtimeCalls, realtimeSecrets] : []),
   ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--multi-agent' ? [beta] : []),
+  ...(mode === '--chatkit' ? [chatkitSessions, chatkitThreads] : []),
   ...(mode === '--webhooks' ? [webhooks] : []),
   ...(mode === '--automations' ? [automations, invocations] : []),
   ...(mode === '--agents' ? [agents] : []),
@@ -251,6 +254,14 @@ const roots = mode === '--environments' ? {
   step_list_query: exported(steps, 'StepListParams'),
   step_query: exported(steps, 'StepRetrieveParams'),
   run_event: exported(assistants, 'AssistantStreamEvent'),
+} : mode === '--chatkit' ? {
+  create: exported(chatkitSessions, 'SessionCreateParams'),
+  session: exported(chatkitThreads, 'ChatSession'),
+  thread: exported(chatkitThreads, 'ChatKitThread'),
+  deleted: exported(chatkitThreads, 'ThreadDeleteResponse'),
+  thread_query: exported(chatkitThreads, 'ThreadListParams'),
+  item_query: exported(chatkitThreads, 'ThreadListItemsParams'),
+  items: exported(chatkitThreads, 'ChatKitThreadItemList'),
 } : mode === '--webhooks' ? {
   create: exported(webhooks, 'WebhookCreateParams'),
   update: exported(webhooks, 'WebhookUpdateParams'),
@@ -417,11 +428,42 @@ if (mode === '--assistants') {
     }
   }
 }
+// The frozen HTTP definition supplies value limits absent from TypeScript.
+if (mode === '--chatkit') {
+  function field(root, path) {
+    function locate(index, [name, ...rest]) {
+      const node = nodes[index];
+      if (node.kind === 'union')
+        return node.variants.flatMap(variant => locate(variant, [name, ...rest]));
+      const entry = node.fields?.find(item => item.name === name);
+      if (!entry) return [];
+      return rest.length ? locate(entry.type, rest) : [entry];
+    }
+    const selected = [...new Set(locate(roots[root], path.split('.')))];
+    if (selected.length !== 1)
+      throw new Error('Expected one ChatKit HTTP field '+root+'.'+path);
+    return selected[0];
+  }
+  const positive = {type:['integer'], minimum:1};
+  field('create', 'expires_after.seconds').bounds = {...positive, maximum:600};
+  field('create', 'rate_limits.max_requests_per_1_minute').bounds = positive;
+  field('create', 'chatkit_configuration.file_upload.max_files').bounds = positive;
+  field('create', 'chatkit_configuration.file_upload.max_file_size').bounds = {...positive, maximum:512};
+  field('create', 'chatkit_configuration.history.recent_threads').bounds = positive;
+  field('create', 'user').bounds = {minLength:1};
+  field('create', 'workflow.state_variables').bounds = {
+    maxProperties:64, propertyNames:{maxLength:64}, additionalProperties:{maxLength:10485760}
+  };
+  field('thread_query', 'user').bounds = {minLength:1, maxLength:512};
+  for (const root of ['thread_query', 'item_query'])
+    field(root, 'limit').bounds = {type:['integer'], minimum:0, maximum:100};
+}
 if (mode === '--environments') addTemplateBounds(nodes, roots);
 const result = {
   profile: mode === '--environments' ? 'q4t-openai-environment-types-v1' :
     mode === '--vault-credentials' ? 'q4t-openai-vault-credential-types-v1' :
     mode === '--agent-sessions' ? 'q4t-openai-agent-session-types-v1' :
+    mode === '--chatkit' ? 'q4t-openai-chatkit-types-v1' :
     mode === '--webhooks' ? 'q4t-openai-webhook-types-v1' :
     mode === '--automations' ? 'q4t-openai-automation-types-v1' :
     mode === '--agents' ? 'q4t-openai-agent-registration-types-v1' :

@@ -132,6 +132,14 @@ def schema(graph):
     page_limit = dict(type='integer', minimum=1, maximum=100, default=20)
     definitions['agents_query'] = obj(dict(limit=page_limit,
         after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
+    chatkit = json.loads((ROOT/'src/server/contracts/openai_chatkit_types_v1.json').read_text())
+    if chatkit['profile'] != 'q4t-openai-chatkit-types-v1':
+        raise ValueError('Unexpected ChatKit type graph')
+    definitions.update(graph_definitions(chatkit, 'chatkit_'))
+    definitions['chatkit_threads'] = obj(dict(object=dict(const='list'),
+        data=dict(type='array', items=ref('chatkit_thread')),
+        first_id=nullable(dict(type='string')), last_id=nullable(dict(type='string')),
+        has_more=dict(type='boolean')), ['object','data','first_id','last_id','has_more'])
     webhooks = json.loads((ROOT/'src/server/contracts/openai_webhook_types_v1.json').read_text())
     assert webhooks['profile'] == 'q4t-openai-webhook-types-v1'
     definitions.update(graph_definitions(webhooks, 'webhook_'))
@@ -666,6 +674,12 @@ def add_openapi(paths, response, error):
         ('/v1/agents/environments/templates/{environment_template_id}', 'post', 'hosted_template_update', 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'delete', None, 'hosted_template_deleted', None),
         ('/v1/webhook_event_types', 'get', None, 'webhook_event_types', None),
+        ('/v1/chatkit/sessions', 'post', 'chatkit_create', 'chatkit_session', None),
+        ('/v1/chatkit/sessions/{session_id}/cancel', 'post', None, 'chatkit_session', None),
+        ('/v1/chatkit/threads', 'get', None, 'chatkit_threads', 'chatkit_thread_query'),
+        ('/v1/chatkit/threads/{thread_id}', 'get', None, 'chatkit_thread', None),
+        ('/v1/chatkit/threads/{thread_id}', 'delete', None, 'chatkit_deleted', None),
+        ('/v1/chatkit/threads/{thread_id}/items', 'get', None, 'chatkit_items', 'chatkit_item_query'),
         ('/v1/webhook_endpoints', 'post', 'webhook_create', 'webhook_with_secret', None),
         ('/v1/webhook_endpoints', 'get', None, 'webhook_endpoint_list', 'webhook_query'),
         ('/v1/webhook_endpoints/{webhook_endpoint_id}', 'get', None, 'webhook_endpoint', None),
@@ -836,6 +850,11 @@ def add_openapi(paths, response, error):
                    'x-q4t-stream-contract': 'Native sequenced Responses events. No Chat DONE. Persisted original replay with starting_after; background requires original stream=true. Disconnect does not cancel a background job. Cancelled resource retains partial items and ends original events without a fabricated completed/cancelled event.'})
         if path.endswith('/cancel'):
             operation['description'] = 'Idempotent native background cancellation, empty body, 200 real resource. Independent bounded cancellation admission.'
+        if path.startswith('/v1/chatkit/'):
+            operation.setdefault('parameters', []).append(dict(name='OpenAI-Beta',
+                **{'in':'header'}, required=True, schema=dict(type='string', const='chatkit_beta=v1')))
+            if path.endswith('/cancel'):
+                operation['description'] = 'Cancel the session and revoke future use of its client secret.'
         if path.startswith('/v1/prompts'):
             operation['description'] = 'q4t native Prompt registry, scoped to authenticated client. Immutable versions; revision-conditional append/default selection; durable effective request snapshots. Does not access hosted prompt accounts.'
         paths.setdefault(path, {})[method] = operation
