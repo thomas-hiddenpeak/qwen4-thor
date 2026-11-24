@@ -1,0 +1,10 @@
+{
+  "stage": "prepared",
+  "predecessor_revision": 480,
+  "profile_format": "q4t-profile-business-v46",
+  "pending": [
+    "Scoped migration checks",
+    "Partial evaluation, deleted dataset, retained scored items and metered embedding calls across both issued capacities",
+    "Qualification and release"
+  ]
+}

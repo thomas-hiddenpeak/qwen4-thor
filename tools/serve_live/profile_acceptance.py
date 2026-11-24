@@ -244,7 +244,7 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
-        if 'eval_handoff' in self.plan:
+        if 'eval_handoff' in self.plan or 'eval_cosine_handoff' in self.plan:
             from tools.serve_responses import eval_profiles
             eval_profiles.business(self, capabilities)
         pkg.save(self.out/'observation.json', dict(profile=name, protocol=cfg['protocol_source_sha256'],
@@ -293,9 +293,9 @@ def main():
                 if 'agent_interruption' in plan:
                     from tools.serve_responses import interruption_profile_acceptance
                     interruption_profile_acceptance.seed(Path(plan['output']), plan)
-                if 'eval_handoff' in plan and plan['name'] == 'light':
+                if ('eval_handoff' in plan or 'eval_cosine_handoff' in plan) and plan['name'] == 'light':
                     from tools.serve_responses import eval_profiles
-                    eval_profiles.capture_stopped_run(Path(plan['output']))
+                    eval_profiles.capture_stopped_run(Path(plan['output']), plan)
                 stage = Stage(plan)
                 if subscriber:
                     stage.webhook_subscriber = subscriber

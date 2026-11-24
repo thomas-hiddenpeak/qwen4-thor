@@ -526,6 +526,14 @@ def extends(previous, target):
 
 def explicit_extension(previous, target):
     """Compare qualified semantics when a declared pending capability ships."""
+    if 'eval_embedding_grader' not in previous and 'eval_embedding_grader' in target:
+        from tools.serve_recovery import profile_live_reuse as live
+        if (not package.same_json(previous.get('evals'), live.EVAL_CAPABILITY)
+                or not package.same_json(target.get('evals'), live.COSINE_EVALS)
+                or target.get('vector_stores', {}).get('native_embedding_configured') is not True
+                or not package.same_json(target['eval_embedding_grader'], live.COSINE_GRADER)):
+            return False
+        previous = dict(previous, evals=live.COSINE_EVALS)
     if 'evals' not in previous and 'evals' in target:
         from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['evals'], live.EVAL_CAPABILITY) or
