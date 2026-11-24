@@ -18148,6 +18148,11 @@
       "115": "308425574e10e96dcaec689b3d7a7a777fa49b78",
       "116": "920ab3e86d3e6f9fe641a9b0f0e23169c249dd5f",
       "117": "1340ae73c3210f6f6321d66b2e5d42c5f27c423a"
+    },
+    "tool_trajectories": {
+      "stage": "native_tls_verified",
+      "receipt": "docs/evidence/serve-evals-20261125/tool-trajectories.json",
+      "issued": false
     }
   }
 }

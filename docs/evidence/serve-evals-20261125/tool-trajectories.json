@@ -1,0 +1,66 @@
+{
+  "stage": "native_tls_verified",
+  "scope": [
+    "Sampling an identified Chat tool history via Responses, also normalizing legacy Chat function calls and results",
+    "Chat-shaped function and custom calls in sample.output_tools and choices[].message.tool_calls",
+    "Bracket and dotted array indexes, preserving literal object keys",
+    "sample.output_json requires an explicitly structured sample"
+  ],
+  "cpu_cases": 17,
+  "new_tests": [
+    "evals_tool_trajectory_preserves_calls_results_and_legacy_order",
+    "evals_grader_tool_variables_match_chat_choices_and_array_paths"
+  ],
+  "cpu_sha256": "c73cb8caeeaee8c89fe09d77abd61e9efbf1aac8598f8c04d27b912b54b5f13b",
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 239,
+    "native_routes": 394,
+    "reviewed_source_anchors": 1364,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "reference": "https://developers.openai.com/api/docs/guides/graders",
+  "pending": [
+    "full multimedia data trajectories and named participant native bridge",
+    "release qualification"
+  ],
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.966,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "independent_chat": "42",
+    "history_answer": "157",
+    "history_call": "call_chatcmpl-auto-be1cbe90e57cc41de449a7ba5b32b719_0",
+    "sampled_finish": "tool_calls",
+    "grades": [
+      1,
+      1,
+      1
+    ],
+    "wire_objects": 6,
+    "driver_sha256": "ce3bfc1f5198073d7a978e87af5c3d8ad99e06465df7b95e6b44f44169089ba2"
+  },
+  "lease": {
+    "backend": "nvml",
+    "status": "COMPLETED",
+    "exit_sha256": "5ca574f3e4b1240af922310fea7941bf75687af6726c220e8db64c8d9fad74e8"
+  },
+  "candidate": {
+    "binary": "ae78d741b12aab5346055c93e49246e00f3867b03d8d6a46feecd7952ee23bab",
+    "ingress": "69a8c51d99aaaf17574cef5e5d688c808925cf5eeb69d2642125d22480e7174e",
+    "sdk_driver": "ce3bfc1f5198073d7a978e87af5c3d8ad99e06465df7b95e6b44f44169089ba2"
+  },
+  "wire_sha256": "3f5285b3a0bceead159b249160f1bb9140efbf58151aa274fc8b1905e2349327",
+  "issued": false
+}

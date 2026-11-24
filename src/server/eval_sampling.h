@@ -10,6 +10,8 @@ struct SamplingOwner {
   ResponsesJobs& jobs;
   const ChatPlanConfig& config;
 };
+ObjectReply ProjectEvalSample(const io::Json& response, const io::Json& request,
+                              io::Json* sample);
 ObjectReply SamplingRequest(const io::Json& source, const io::Json& row,
                             const ChatPlanConfig& config, io::Json* request);
 // 202 means the row is durably coupled to a pending native model response.
