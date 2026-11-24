@@ -673,6 +673,14 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "agent_webhook_creation_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-events.json",
+        "event_types": [
+          "agent.environment.ready",
+          "agent.session.created"
+        ]
       }
     },
     {
@@ -2815,6 +2823,14 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "agent_webhook_creation_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-events.json",
+        "event_types": [
+          "agent.environment.ready",
+          "agent.session.created"
+        ]
       }
     },
     {
@@ -6360,6 +6376,14 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "agent_webhook_creation_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-events.json",
+        "event_types": [
+          "agent.environment.ready",
+          "agent.session.created"
+        ]
       }
     },
     {
@@ -9738,6 +9762,14 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "agent_webhook_creation_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-events.json",
+        "event_types": [
+          "agent.environment.ready",
+          "agent.session.created"
+        ]
       }
     },
     {
@@ -11319,7 +11351,7 @@
       }
     }
   ],
-  "next_task": "Connect Agent session and environment lifecycle transitions to signed subscriptions. Continue the remaining inference and application endpoints, recovery and delivery tasks.",
+  "next_task": "Deliver repeated Agent session state changes, preserve simultaneous notices under bounded storage, and continue the remaining application and reliability tasks.",
   "next": "实现 Agent 会话与执行环境的真实生命周期通知，再接续其余推理、应用服务和恢复事项。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",

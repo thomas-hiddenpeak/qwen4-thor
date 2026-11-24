@@ -1,5 +1,6 @@
 #include "../src/server/object_protocol.h"
 #include "../src/server/webhook_keys.h"
+#include "../src/server/webhook_events.h"
 #include "q4t/server/webhook.h"
 #include "q4t/server/server_options.h"
 #include "q4t/server/object_retention.h"
@@ -292,6 +293,116 @@ Q4T_TEST(webhook_byte_limit_reports_loss_without_losing_the_response) {
   auto diagnostic = db.ReconcileWebhooks("", Access().deadline);
   Q4T_CHECK(diagnostic.ok() && diagnostic.value.GetInt("capacity_losses") == 1);
   Q4T_CHECK(diagnostic.value.GetInt("capacity_deferrals") == 0);
+  return true;
+}
+
+Q4T_TEST(webhook_agent_creations_project_only_public_routing_fields_once) {
+  Fixture f;
+  ObjectStore store(f.options);
+  for (auto type : {"agent.session.created", "agent.environment.ready"}) {
+    auto id =
+        type == std::string_view("agent.session.created") ? "whe_s" : "whe_e";
+    Q4T_CHECK(
+        store.Execute(Subscription(Access().scope, id, type), Access().deadline)
+            .ok());
+  }
+  ObjectRequest session;
+  session.operation = ObjectOperation::kPut;
+  session.kind = ObjectKind::kAgentSession;
+  session.scope = Access().scope;
+  session.id = "agent_session_demo";
+  session.data =
+      Object({{"session",
+               Object({{"id", String(session.id)},
+                       {"object", String("agent.session")},
+                       {"environment",
+                        Object({{"type", String("openai_hosted")},
+                                {"id", String("env_warm")},
+                                {"network", String("private-setting")}})},
+                       {"metadata",
+                        Object({{"private", String("sensitive-value")}})}})}});
+  ObjectRequest env = session;
+  env.id = "env_warm";
+  env.kind = ObjectKind::kEnvironment;
+  env.data =
+      Object({{"resource", Object({{"id", String(env.id)},
+                                   {"object", String("agent.environment")},
+                                   {"type", String("openai_hosted")},
+                                   {"status", String("ready")}})},
+              {"warm_until", Number(std::time(nullptr) + 300)}});
+  const std::array writes{env, session};
+  auto created = store.ExecuteBatch(writes, Access().deadline);
+  Q4T_CHECK(created.ok() && created.value.GetArray("data")->array.size() == 2);
+  session.expected_revision = 1;
+  Q4T_CHECK(store.Execute(session, Access().deadline).ok());
+  env.expected_revision = 1;
+  Q4T_CHECK(store.Execute(env, Access().deadline).ok());
+  auto events = Events(store);
+  Q4T_CHECK(events.ok() && events.value.GetArray("data")->array.size() == 2);
+  for (const auto& row : events.value.GetArray("data")->array) {
+    const auto& notice = *row.Find("data");
+    const auto& event = *notice.Find("event");
+    const auto& payload = *event.Find("data");
+    const auto type = event.GetString("type");
+    ChatPlanError error;
+    Q4T_CHECK(ValidateWebhook(event, "event", &error).ok());
+    auto sample = event;
+    Set(&sample, "data", webhook_detail::SamplePayload(type, "example"));
+    Q4T_CHECK(ValidateWebhook(sample, "event", &error).ok());
+    const auto& deliveries = notice.GetArray("deliveries")->array;
+    Q4T_CHECK(deliveries.size() == 1);
+    if (type == "agent.session.created") {
+      Q4T_CHECK(payload.object.size() == 3 &&
+                payload.GetString("id") == session.id);
+      Q4T_CHECK(payload.GetString("environment_type") == "openai_hosted" &&
+                payload.GetString("environment_id") == env.id &&
+                deliveries[0].GetString("endpoint") == "whe_s");
+    } else {
+      Q4T_CHECK(type == "agent.environment.ready" &&
+                payload.object.size() == 1 &&
+                payload.GetString("id") == env.id &&
+                deliveries[0].GetString("endpoint") == "whe_e");
+    }
+    Q4T_CHECK(OutputJson(event).find("private") == std::string::npos &&
+              OutputJson(event).find("sensitive") == std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(
+    webhook_source_transition_filters_progress_and_connected_environments) {
+  using webhook_detail::Transition;
+  for (const auto kind : {"response", "batch"}) {
+    for (const auto status : {"completed", "failed", "cancelled", "incomplete",
+                              "expired", "in_progress"}) {
+      auto source = Object({{kind, Object({{"background", Boolean(true)},
+                                           {"status", String(status)}})}});
+      const bool valid = status != std::string_view("in_progress") &&
+                         !(kind == std::string_view("batch") &&
+                           status == std::string_view("incomplete")) &&
+                         !(kind == std::string_view("response") &&
+                           status == std::string_view("expired"));
+      const auto expected = valid ? std::string(kind) + "." + status : "";
+      Q4T_CHECK(Transition(kind, source, false) == expected);
+    }
+  }
+  const auto connected =
+      Object({{"resource", Object({{"object", String("agent.environment")},
+                                   {"type", String("openai_hosted")},
+                                   {"status", String("connected")}})}});
+  Q4T_CHECK(Transition("environment", connected, true).empty());
+  auto other = connected;
+  Set(&Field(other, "resource"), "status", String("ready"));
+  Set(&Field(other, "resource"), "type", String("self_hosted"));
+  Q4T_CHECK(Transition("environment", other, true).empty());
+  const auto local =
+      Object({{"session",
+               Object({{"id", String("agent_session_x")},
+                       {"environment", Object({{"type", String("none")}})}})}});
+  const auto event = webhook_detail::EventPayload("agent.session.created",
+                                                  "agent_session_x", local);
+  Q4T_CHECK(event.object.size() == 2 &&
+            event.GetString("environment_type") == "none");
   return true;
 }
 

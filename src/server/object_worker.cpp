@@ -152,7 +152,7 @@ Json Public(const Json& record) {
   std::erase_if(result.object, [](const auto& field) {
     return field.first == "owner" || field.first == "format";
   });
-  if (result.GetString("kind") == "response" || result.GetString("kind") == "batch")
+  if (webhook_detail::IsEventSource(result.GetString("kind")))
     std::erase_if(Field(result, "data").object, [](const auto& field) {
       return field.first == "q4t_webhook_deferred";
     });
@@ -171,9 +171,9 @@ struct Metadata {
 void IndexWebhookState(Metadata* metadata, const Json& data) {
   if (metadata->kind == "webhook_endpoint") {
     metadata->webhook_subscriptions = webhook_detail::Subscriptions(data);
-  } else if (metadata->kind == "response" || metadata->kind == "batch") {
+  } else if (webhook_detail::IsEventSource(metadata->kind)) {
     metadata->terminal_event = webhook_detail::EventBit(
-        webhook_detail::TerminalEvent(metadata->kind, data));
+        webhook_detail::Transition(metadata->kind, data, false));
     metadata->webhook_deferred = data.Has("q4t_webhook_deferred");
   }
 }
@@ -697,7 +697,7 @@ class DiskStore {
   }
   Json Notification(const Json& write, const std::string& name) {
     const auto kind = write.GetString("kind");
-    if (kind != "batch" && kind != "response") return {};
+    if (!webhook_detail::IsEventSource(kind)) return {};
     auto prior = records_.find(name);
     if (prior != records_.end() && prior->second.webhook_deferred) {
       Json record;
@@ -709,7 +709,9 @@ class DiskStore {
     if (write.GetString("operation") != "put" ||
         (prior != records_.end() && prior->second.terminal_event)) return {};
     const auto* data = write.Find("data");
-    const auto type = data ? webhook_detail::TerminalEvent(kind, *data) : "";
+    if (!data) return {};
+    const auto type =
+        webhook_detail::Transition(kind, *data, prior == records_.end());
     if (type.empty()) return {};
     const auto owner = write.GetString("owner"), id = write.GetString("id");
     const auto bit = webhook_detail::EventBit(type);
@@ -720,7 +722,10 @@ class DiskStore {
       if (it->second.webhook_subscriptions & bit)
         targets.array.push_back(String(it->second.id));
     if (targets.array.empty()) return {};
-    return webhook_detail::PendingEvent(owner, id, type, targets, Now(),
+    auto payload = webhook_detail::EventPayload(type, id, *data);
+    if (payload.IsNull()) return {};
+    return webhook_detail::PendingEvent(
+        owner, id, type, std::move(payload), targets, Now(),
         std::min<int64_t>(72 * 3600, options_.max_ttl_seconds));
   }
 
@@ -733,7 +738,7 @@ class DiskStore {
     Notices notices;
     for (const auto& write : writes->array) {
       const auto kind = write.GetString("kind");
-      if (kind != "response" && kind != "batch") continue;
+      if (!webhook_detail::IsEventSource(kind)) continue;
       const auto name = Filename(write);
       auto event = Notification(write, name);
       if (!event.IsNull()) notices.emplace(name, std::move(event));
@@ -900,7 +905,7 @@ class DiskStore {
                          {"created_at", Number(created)},
                          {"expires_at", Number(expires)},
                          {"data", *data}});
-        if (kind == "response" || kind == "batch") {
+        if (webhook_detail::IsEventSource(kind)) {
           auto& data = Field(record, "data");
           std::erase_if(data.object, [](const auto& f) {
             return f.first == "q4t_webhook_deferred";
@@ -1259,8 +1264,8 @@ class DiskStore {
     const bool pending = found != records_.end() && found->second.webhook_deferred;
     const auto kind = request.GetString("kind");
     const auto needs_notice = [&] {
-      if (kind != "response" || !proposed ||
-          webhook_detail::TerminalEvent(kind, *proposed).empty())
+      if (!webhook_detail::IsEventSource(kind) || !proposed ||
+          webhook_detail::Transition(kind, *proposed, found == records_.end()).empty())
         return false;
       const auto prefix = request.GetString("owner") + ".webhook_endpoint.";
       const auto next = records_.lower_bound(prefix);

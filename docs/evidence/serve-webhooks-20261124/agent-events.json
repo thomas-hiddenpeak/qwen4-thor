@@ -1,0 +1,81 @@
+{
+  "status": "ACCEPT_SIGNED_HOSTED_ENVIRONMENT_AND_SESSION_CREATION",
+  "issued": 472,
+  "sdk": "7.47.0",
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 35.819,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "engine": "38ff417e623d328f0a2eb56857cf74d163599d45ee933bbc448a6b47e4df75da",
+  "ingress": "ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46",
+  "signed_events": {
+    "agent.environment.ready": {
+      "id": "evt_1d2d61acf113e0110e6ca736f2604cbb",
+      "object": "event",
+      "type": "agent.environment.ready",
+      "created_at": 1795529175,
+      "data": {
+        "id": "environment_fd19d564b603cf834276643934fbb6c5"
+      }
+    },
+    "agent.session.created": {
+      "id": "evt_dd9ac35fdf652ba51c9a8c4ff5277f97",
+      "object": "event",
+      "type": "agent.session.created",
+      "created_at": 1795529175,
+      "data": {
+        "id": "agent_session_89aa25fa3c8a8a9614cd507680a7c772",
+        "environment_type": "openai_hosted",
+        "environment_id": "environment_fd19d564b603cf834276643934fbb6c5"
+      }
+    }
+  },
+  "peer": 404,
+  "independent_chat": "42",
+  "cpu_cases": 8,
+  "inventory_mutation_checks": 40,
+  "official_schema_checks": 2,
+  "sdk_driver_sha256": "b64b28bf0973ecd4b884c9be774e2aed2be6cc4b8238f0e1b01ee5d67c73ab91",
+  "limits": [
+    "Subsequent session transitions, prewarm failure, suspension and expiry still require producer integration."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-webhook-lease-01/exit.json",
+      "sha256": "95871fe9929773077593fd0be8c473384c9c8268276da0e135a15d9a1a63b622"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/agent-event-cpu-01.log",
+      "sha256": "19daaa83763fb5f49d5c8cdb344e2987fc076d8cb8564f4da6b8719ca75c737f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/agent-event-inventory-01.json",
+      "sha256": "e6ee5d29e7e00ada5ed46200158a16c3bc471d6770b906b4f591dfeabf27bd6d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-webhook-business-01/create/sdk-result.json",
+      "sha256": "0639155564e1a930a9fab0985d35b4507f06879e373ecb414d065960db889684"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-webhook-business-01/plan.json",
+      "sha256": "4a2e9fb72da7a1d26566fa6e9fc9f27cdefdd295339ac5be43847d2a934dba85"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-webhook-business-01/result.json",
+      "sha256": "d339e585fad8ea72c3b140876a84f0883d470df6d860d0f8cd4f34bdd106351f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-webhook-business-01/create/run-wire.json",
+      "sha256": "35cb08b8a23aae2ccdb1078ab56cab6721d789230976e635a68f0e42fc34329a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent_webhook_business.py",
+      "sha256": "09cc1c5a77fc93c42ee7e4348e7732cd1f3838b0d6489945b40ed61ba76b4f5c"
+    }
+  ]
+}
