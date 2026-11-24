@@ -168,6 +168,8 @@ def schema(graph):
     sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
     assert sessions['profile'] == 'q4t-openai-agent-session-types-v1'
     definitions.update(graph_definitions(sessions, 'agent_session_'))
+    definitions['agent_session_event_query'] = obj(dict(
+        include_obfuscation=dict(type='boolean', default=True)))
     artifact_query = definitions['agent_session_'+str(sessions['roots']['artifact_query'])]
     artifact_query['properties']['limit'] = dict(type='integer', minimum=1, maximum=100, default=20)
     child_query = definitions['agent_session_'+str(sessions['roots']['subagent_query'])]
@@ -231,12 +233,13 @@ def schema(graph):
     # The pinned SDK describes include_obfuscation on streaming deltas but
     # omits that optional property from most delta interfaces. Preserve the
     # documented wire field only for delta events, with strict other events.
-    for index in graph['nodes'][graph['roots']['response_event']]['variants']:
-        node = graph['nodes'][index]
-        tag = next((graph['nodes'][field['type']].get('value')
-                    for field in node.get('fields', []) if field['name'] == 'type'), None)
-        if isinstance(tag, str) and tag.endswith('.delta'):
-            definitions[str(index)]['properties']['obfuscation'] = dict(type='string')
+    for types, event_root, prefix in ((graph, 'response_event', ''), (sessions, 'event', 'agent_session_')):
+        for index in types['nodes'][types['roots'][event_root]]['variants']:
+            node = types['nodes'][index]
+            tag = next((types['nodes'][field['type']].get('value')
+                        for field in node.get('fields', []) if field['name'] == 'type'), None)
+            if isinstance(tag, str) and tag.endswith('.delta'):
+                definitions[prefix+str(index)]['properties']['obfuscation'] = dict(type='string')
 
     # output_text is added by the SDK after parsing; it is not a wire field.
     response = root('response')
@@ -479,9 +482,11 @@ def add_openapi(paths, response, error):
             return value
         result = []
         for key, value in shape(name)['properties'].items():
-            result.append(dict(name='include[]' if key == 'include' else key,
+            result.append(dict(name=key,
                 **{'in': 'query'}, required=False, schema=rewrite(value),
                 style='deepObject' if key == 'metadata' else 'form', explode=True))
+            if key == 'include':
+                result.append(dict(result[-1], name='include[]', **{'x-q4t-alias-for':'include'}))
         return result
 
     endpoints = [
@@ -515,7 +520,7 @@ def add_openapi(paths, response, error):
         ('/v1/agents/sessions/{session_id}', 'get', None, 'agent_session_resource', None),
         ('/v1/agents/sessions/{session_id}', 'post', 'agent_session_update', 'agent_session_resource', None),
         ('/v1/agents/sessions/{session_id}', 'delete', None, 'agent_session_deleted', None),
-        ('/v1/agents/sessions/{session_id}/events', 'get', None, None, None),
+        ('/v1/agents/sessions/{session_id}/events', 'get', None, None, 'agent_session_event_query'),
         ('/v1/agents/sessions/{session_id}/events', 'post', 'agent_session_event_batch', None, None),
         ('/v1/agents/sessions/{session_id}/turns', 'get', None, 'agent_session_turn_list', 'agents_query'),
         ('/v1/agents/sessions/{session_id}/turns/{turn_id}', 'get', None, 'agent_session_turn', None),

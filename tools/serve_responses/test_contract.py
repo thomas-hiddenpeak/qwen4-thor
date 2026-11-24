@@ -130,7 +130,7 @@ class ApplicationContract(unittest.TestCase):
         Draft202012Validator.check_schema(SCHEMA)
         fields = {row['field'] for row in json.loads((ROOT/'docs/serve-responses-fields-v1.json').read_text())['fields']}
         self.assertEqual(set(resolve(app.ref('response_create'))['properties']),
-                         fields | {'request_id', 'cancel_token', 'request_timeout_ms', 'seed'})
+                         fields | {'request_id', 'cancel_token', 'request_timeout_ms', 'seed', 'personality'})
         for request in [dict(input='hi'), dict(input='hi', background=True, store=False),
                         dict(input='hi', tool_choice='none', max_output_tokens=1)]:
             self.assertFalse(errors(request, 'response_create'))
@@ -184,13 +184,17 @@ class ApplicationContract(unittest.TestCase):
 
     def test_openapi_routes_queries_and_no_external_reference_bundle(self):
         spec = api.openapi()
-        self.assertEqual({method.upper()+' '+path for path, methods in spec['paths'].items()
-            for method in methods}, set(json.loads((ROOT/'tools/serve_audit/inventory.json').read_text())['routes']))
+        self.assertEqual(api.runtime_routes(spec), set(json.loads((ROOT/'tools/serve_audit/inventory.json').read_text())['routes']))
         cancel = spec['paths']['/v1/responses/{response_id}/cancel']['post']
         self.assertIn('200', cancel['responses'])
         self.assertNotIn('requestBody', cancel)
         self.assertEqual([p['name'] for p in spec['paths']['/v1/responses/{response_id}']['get']['parameters']],
-            ['response_id', 'include[]', 'include_obfuscation', 'starting_after', 'stream'])
+            ['response_id', 'include', 'include[]', 'include_obfuscation', 'starting_after', 'stream',
+             'beta', 'OpenAI-Beta'])
+        subscription = spec['paths']['/v1/agents/sessions/{session_id}/events']['get']
+        self.assertEqual([p['schema'] for p in subscription['parameters']
+                          if p['in'] == 'query' and p['name'] == 'include_obfuscation'],
+                         [dict(type='boolean', default=True)])
         self.assertNotIn('text/event-stream', cancel['responses']['200']['content'])
         bundled = app.standalone_openapi(spec)
         def visit(value):

@@ -624,7 +624,14 @@
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       },
-      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
+      "event_query_contract": {
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "issued_default_revision": 460,
+        "covered_declared_methods": 135,
+        "official_query_names": 110,
+        "evidence": "evidence/serve-agent-event-query-20261124/business.json"
+      }
     },
     {
       "id": "A02",

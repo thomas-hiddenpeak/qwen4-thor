@@ -965,3 +965,22 @@ Q4T_TEST(responses_custom_output_projection_all_terminal_states) {
   }
   return true;
 }
+
+Q4T_TEST(agent_session_delta_padding_is_per_subscription) {
+  q4t::io::Json delta;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"type":"agent.session.turn.output_text.delta","delta":"42","event_id":"evt_same"})",
+      &delta));
+  const auto retained = q4t::server::OutputJson(delta);
+  q4t::server::ApplyDeltaObfuscation(&delta, true);
+  Q4T_CHECK(!delta.GetString("obfuscation").empty());
+  Q4T_CHECK(delta.GetString("event_id") == "evt_same");
+  q4t::server::ApplyDeltaObfuscation(&delta, false);
+  Q4T_CHECK(q4t::server::OutputJson(delta) == retained);
+  q4t::io::Json done;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"type":"agent.session.turn.item.done","obfuscation":"old"})", &done));
+  q4t::server::ApplyDeltaObfuscation(&done, true);
+  Q4T_CHECK(!done.Has("obfuscation"));
+  return true;
+}

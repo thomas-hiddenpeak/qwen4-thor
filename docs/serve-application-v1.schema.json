@@ -28858,6 +28858,9 @@
         },
         "type": {
           "$ref": "#/$defs/agent_session_300"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -31337,6 +31340,9 @@
         },
         "type": {
           "$ref": "#/$defs/agent_session_475"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -31523,6 +31529,9 @@
         },
         "type": {
           "$ref": "#/$defs/agent_session_484"
+        },
+        "obfuscation": {
+          "type": "string"
         }
       },
       "required": [
@@ -31731,6 +31740,17 @@
     },
     "agent_session_subagent_query": {
       "$ref": "#/$defs/agent_session_492"
+    },
+    "agent_session_event_query": {
+      "type": "object",
+      "properties": {
+        "include_obfuscation": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": [],
+      "additionalProperties": false
     },
     "agent_session_trace": {
       "type": "object",

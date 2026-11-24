@@ -6401,6 +6401,17 @@
             }
           },
           {
+            "name": "include_obfuscation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
             "name": "OpenAI-Beta",
             "in": "header",
             "required": true,
@@ -6454,7 +6465,7 @@
             }
           }
         },
-        "x-q4t-query-contract": "no query",
+        "x-q4t-query-contract": "agent_session_event_query",
         "x-q4t-body-contract": "empty body only"
       },
       "post": {
@@ -8763,7 +8774,7 @@
             }
           },
           {
-            "name": "include[]",
+            "name": "include",
             "in": "query",
             "required": false,
             "schema": {
@@ -8771,6 +8782,17 @@
             },
             "style": "form",
             "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1110"
+            },
+            "style": "form",
+            "explode": true,
+            "x-q4t-alias-for": "include"
           },
           {
             "name": "include_obfuscation",
@@ -9062,7 +9084,7 @@
             "explode": true
           },
           {
-            "name": "include[]",
+            "name": "include",
             "in": "query",
             "required": false,
             "schema": {
@@ -9070,6 +9092,17 @@
             },
             "style": "form",
             "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1110"
+            },
+            "style": "form",
+            "explode": true,
+            "x-q4t-alias-for": "include"
           },
           {
             "name": "limit",
@@ -9419,7 +9452,7 @@
             }
           },
           {
-            "name": "include[]",
+            "name": "include",
             "in": "query",
             "required": false,
             "schema": {
@@ -9427,6 +9460,17 @@
             },
             "style": "form",
             "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1110"
+            },
+            "style": "form",
+            "explode": true,
+            "x-q4t-alias-for": "include"
           }
         ],
         "responses": {
@@ -9505,7 +9549,7 @@
             "explode": true
           },
           {
-            "name": "include[]",
+            "name": "include",
             "in": "query",
             "required": false,
             "schema": {
@@ -9513,6 +9557,17 @@
             },
             "style": "form",
             "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1110"
+            },
+            "style": "form",
+            "explode": true,
+            "x-q4t-alias-for": "include"
           },
           {
             "name": "limit",
@@ -9604,7 +9659,7 @@
             }
           },
           {
-            "name": "include[]",
+            "name": "include",
             "in": "query",
             "required": false,
             "schema": {
@@ -9612,6 +9667,17 @@
             },
             "style": "form",
             "explode": true
+          },
+          {
+            "name": "include[]",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1110"
+            },
+            "style": "form",
+            "explode": true,
+            "x-q4t-alias-for": "include"
           }
         ],
         "responses": {
@@ -50052,6 +50118,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_300"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -52531,6 +52600,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_475"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -52717,6 +52789,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_484"
+              },
+              "obfuscation": {
+                "type": "string"
               }
             },
             "required": [
@@ -52925,6 +53000,17 @@
           },
           "agent_session_subagent_query": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_492"
+          },
+          "agent_session_event_query": {
+            "type": "object",
+            "properties": {
+              "include_obfuscation": {
+                "type": "boolean",
+                "default": true
+              }
+            },
+            "required": [],
+            "additionalProperties": false
           },
           "agent_session_trace": {
             "type": "object",
