@@ -81,5 +81,10 @@
     },
     "cause": "The light deployment resumed pending work and occupied its single data slot. The SDK driver requested two independent oracle embeddings on that same account before waiting for completion."
   },
-  "cpu_cases_passed": 42
+  "cpu_cases_passed": 42,
+  "history_encoding_failure": {
+    "cause": "Recompressing the entire already compressed v45 history together with the v46 delta exceeded the 128 KiB witness limit.",
+    "log_sha256": "0ddc1b583172dea94962ffe83f078c2d97f408de783d5affc347ea9bfc1387c4",
+    "repair": "Retain the signed v45 envelope verbatim and compress only the new reconstruction fields. Keep both the existing single-frame and profile file limits."
+  }
 }

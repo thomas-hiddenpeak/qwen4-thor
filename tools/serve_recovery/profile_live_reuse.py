@@ -714,15 +714,21 @@ def attach(value, prior):
         original.pop('multi_agent')
         ledger.require(original == before['responses'], 'unreviewed Responses capability difference')
         del previous['capabilities']['responses']
-    value['reused_business'] = dict(format=AGENT_REFRESH if refresh else REUSE_FORMAT[value['format']],
-                                    previous=codec.pack(previous))
+    envelope = dict(format=AGENT_REFRESH if refresh else REUSE_FORMAT[value['format']])
+    if value['format'] == COSINE_RECORD:
+        # Prior releases already compressed their history. Keep those signed
+        # bytes once and compress only this release's reconstruction fields.
+        envelope['history'] = previous.pop('reused_business')
+    envelope['previous'] = codec.pack(previous)
+    value['reused_business'] = envelope
     ledger.require(record_hash(previous_record(value)) == record_hash(prior),
                    'Live qualification cannot reconstruct its accepted source')
 
 
 def previous_record(value):
     reuse = value['reused_business']
-    ledger.keys(reuse, ('format', 'previous'))
+    separate_history = value['format'] == COSINE_RECORD
+    ledger.keys(reuse, ('format', 'previous', 'history') if separate_history else ('format', 'previous'))
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and reuse['format'] == AGENT_REFRESH
     registration = value['format'] == REGISTRATION_RECORD
@@ -731,6 +737,13 @@ def previous_record(value):
     ledger.require(refresh or reuse['format'] == REUSE_FORMAT.get(value['format']),
                    'incorrect Live qualification source')
     previous = codec.unpack(reuse['previous'])
+    if separate_history:
+        ledger.require('reused_business' not in previous and
+                       type(reuse['history']) is dict and
+                       reuse['history'].get('format') == EVAL_FORMAT,
+                       'expected the issued Evals predecessor history')
+        ledger.keys(reuse['history'], ('format', 'previous'))
+        previous['reused_business'] = reuse['history']
     fields = (*METADATA, 'engine', 'ctimes', 'capabilities', 'added')
     ledger.keys(previous, (*fields, 'live') if revision else fields)
     original = copy.deepcopy(value)
