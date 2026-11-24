@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'agent_automations' in declared or 'automation_handoff' in plan:
+            from tools.serve_responses import automation_profiles
+            profiles[name]['evidence_sha256'].update(automation_profiles.verify(phase, plan, declared))
+            continue
         if 'translations' in declared['realtime'] or 'translation_transport' in plan:
             from tools.serve_realtime import translation_profiles
             profiles[name]['evidence_sha256'].update(translation_profiles.verify(phase, plan, declared))

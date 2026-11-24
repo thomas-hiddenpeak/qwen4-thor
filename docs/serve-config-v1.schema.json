@@ -2319,6 +2319,11 @@
         "rate_deferrals": {
           "type": "integer",
           "minimum": 0
+        },
+        "automation_errors": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Errors observed by the session automation dispatcher since startup."
         }
       },
       "required": [
@@ -3533,6 +3538,57 @@
           ]
         },
         "tracing": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "uninitialized",
+                "starting",
+                "backoff",
+                "ready",
+                "stopping"
+              ]
+            },
+            "readiness_dependency": {
+              "const": false
+            },
+            "attempts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "failures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "recoveries": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "retry_after_ms": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "last_failure": {
+              "enum": [
+                "none",
+                "host_memory",
+                "thread_or_system",
+                "initialization_exception"
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "readiness_dependency",
+            "attempts",
+            "failures",
+            "recoveries",
+            "retry_after_ms",
+            "last_failure"
+          ]
+        },
+        "automation_dispatcher": {
           "type": "object",
           "additionalProperties": false,
           "properties": {

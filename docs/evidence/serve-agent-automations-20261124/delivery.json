@@ -1,0 +1,208 @@
+{
+  "status": "ACCEPT_AUTOMATION_RECOVERY_AND_STOPPED_PUBLICATION",
+  "previous": {
+    "revision": 468,
+    "primary": "984a9774aba9da6a300f5af69f9e6e72ff5245cc5f04142d3fdc3206f3732326",
+    "fallback": "995ea3abf98f41a75218b5184dfd71da4fa9757624c2c6d2bacc2341f660d777"
+  },
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 470,
+    "version_revision": 164,
+    "profile_revision": 54,
+    "previous_profile_revision": 53,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "5ee2494c8b615c96179233a25836a6dcc4056575ac10eac0459b888c259f3f0b",
+    "fallback": "a695a5a2fb88a40af712d4dbcb08ea5e59d01ed806016b6bf31853195eda2475",
+    "engine": "0376bcd2759c4040d9c41bd1961785b8e24d06b0dcfd968ea16ecde55dd32d5f",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "source_commit": "408d6afa5bd219907ccd44faaad3ab1b5b0ccdbf",
+  "recovery": {
+    "fallback": {
+      "fault": "owned model SIGKILL",
+      "fault_generations": [
+        1,
+        2
+      ],
+      "wall_seconds": 136.137,
+      "model_starts": 2,
+      "processes_remaining": 0,
+      "sdk": "7.47.0",
+      "session": "agent_session_d34a17c09031e06999c1a14b5db46e20",
+      "original_tool_call": "call_resp_30905050089db1ead07a84e20ad19baf_0",
+      "original_invocation": "invocation_1c237b67e6d90037fb848426f19d83fb",
+      "final_invocation_count": 1,
+      "answers": [
+        "468",
+        "469"
+      ],
+      "independent_chat": "42",
+      "foreign_read": 404,
+      "guardian_retained": true
+    },
+    "primary": {
+      "fault": "owned ingress SIGABRT",
+      "fault_generations": [
+        1,
+        2
+      ],
+      "wall_seconds": 185.211,
+      "model_starts": 2,
+      "processes_remaining": 0,
+      "sdk": "7.47.0",
+      "session": "agent_session_331bdda914012a6e37c55f0068bb5028",
+      "original_tool_call": "call_resp_aa5853139dfa54a29b3d05e8dc5ca619_0",
+      "original_invocation": "invocation_27bd4ad736773f61fca20901c2ff3f84",
+      "final_invocation_count": 1,
+      "answers": [
+        "468",
+        "469"
+      ],
+      "independent_chat": "42",
+      "foreign_read": 404,
+      "guardian_retained": true,
+      "selected": "fallback",
+      "device_probes": 1
+    }
+  },
+  "declarations": {
+    "required": 231,
+    "declared_with_expected_success": 189,
+    "missing": 42
+  },
+  "long_run": {
+    "owner": "user",
+    "checked": true,
+    "executed_hours": 0,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/automation-client-soak-src/.q4t-work/day-01/plan.json",
+    "sha256": "f0cad93f423d4b4992523b26dc7d3c8b5b469ae04fdde2578c25ded0b580e244"
+  },
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-client-delivery/result.json",
+      "sha256": "421bf82595b20cb0aa9aaa798cb708d0d91264b9f65d42690dc6f5fbd74bba85"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-client-maintenance-01/result.json",
+      "sha256": "8252a78c62d86e566cac8cccecdfb47a1670d9ac79b007e06a543d73f4c05401"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-client-day.json",
+      "sha256": "9fd459300ba64581966fb2325c2d0ee6f4d7fdbd11911d0b8b1a2d8d6f4dae41"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-released-methods.json",
+      "sha256": "8a5568456a48f61d43d3f057f2eab99fea4828485677273389b9967b4c1585b4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-maintenance-lease-01/exit.json",
+      "sha256": "6f45911778dfd95988424b846c745c071497d31ac97f70eb13e06b47edc42747"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-publication-lease-01/exit.json",
+      "sha256": "7685af131888413da966039b4b185ef68d718efe6bd95823081a64e452943acd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-fallback-lease-01/exit.json",
+      "sha256": "c988eb65475fbf429f1acab90b4bf29aaab6d0772ca6cfbfadccd6df2276c2b4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-client-fallback-01/origin.json",
+      "sha256": "2aab644f3108a4e3683593cecd10ba976c6b88ca556139b00eeeed9f2924c1e8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-client-fallback-01/service-acceptance.json",
+      "sha256": "fe6def9ce5278cd2b07b541bda620b4f336a769e5ea324edc6878e025af842ee"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-client-fallback-01/service.release.json",
+      "sha256": "13bac3c56f2fb54190a9b12bc9d8433d1d3147b7921672985920aea1a4e824fe"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-fallback-business-01/prepare-run.json",
+      "sha256": "ee90959525e99091cdb9518a5897fb1ada38a46fc1a164ea7f0f67f1ab2a8b45"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-fallback-business-01/restore-run.json",
+      "sha256": "e599c0a6699d997ebc1ef69ba9013032806c92a03f4eed1418e1c1ee0cc6e488"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-fallback-business-01/result.json",
+      "sha256": "91dcf1fc329e09ebb98bc1d14202c47c58a71934d5a6ed0c1d227c7009477de5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-fallback-business-01/interruption.json",
+      "sha256": "e97674b2937ebc6350d051d4ee8c02778e6de6935f195d7ab2e8a9518ae12727"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-fallback-business-01/chat-after.wire",
+      "sha256": "c262372f0272afc9a4e00f93051f875ce685998b7eea222448ea54cdfbcc66d6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-primary-lease-01/exit.json",
+      "sha256": "c61c4558a0fdca8df3266b04508de3ae925c309058418224ecf0339dbede6657"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-client-primary-01/origin.json",
+      "sha256": "b474c7bc7966eca2a314cd645d1379a0066f7b8a88f2d10feedb3598d4df0cf2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-client-primary-01/service-acceptance.json",
+      "sha256": "ded987a5b23271ff1e5762c2b513e2cb8dec528543c69300fb5c037af0932aeb"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/automation-client-primary-01/service.release.json",
+      "sha256": "0b1e0c34d680f3e094e93e11fe9e126fde4ff955a3b3bd0eb7845eeca0897c40"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-automation-01/prepare-run.json",
+      "sha256": "3f79e43b3620e3358ee562bb8dc66d9579cc2f17a90e190ac68cb199f2c81a58"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-automation-01/restore-run.json",
+      "sha256": "38fceaca82354e5868d8381b32aca13f5bb1b65767ffe17633ac33962bcb05ff"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-automation-01/result.json",
+      "sha256": "fe12f21e53b0483ec91f667e2582bb33352b81d582fad9b3867dce98dce9c361"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-automation-01/interruption.json",
+      "sha256": "af75b6b6b55c574732877de1d13344d1f0c1551e80e8d70dfb748e1d15c4949f"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-automation-01/chat-after.wire",
+      "sha256": "e4e5abbde3fbba3ec515ac917870b97ecf2ff7becf44c75828d162c0fd528350"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-automation-01/takeover.json",
+      "sha256": "4777d6a23f803154276b979a9486a604d078a487183ce05f5104a9dbca24ea8f"
+    }
+  ],
+  "implementation_prs": {
+    "97": {
+      "merge": "42857658ba60887e8c220af20b70086ee3bdf9f3",
+      "head": "f427c3cea1a72906dee7098d819af8e5a2d24b32",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45382940638",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45383036935"
+      }
+    },
+    "98": {
+      "merge": "9f64a79247645944b4552f1c5d80b8abfba2c90d",
+      "head": "99e5f379ff6e6aaa51f08df6f058579f07f0e52a",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45387703462",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45387738586"
+      }
+    }
+  },
+  "remote_retest": {
+    "pull_request": 97,
+    "first_attempt": "Four batch fixtures failed after their object worker hit the 250 ms I/O deadline. The same four cases passed locally. The unchanged PR workflow passed on its second attempt.",
+    "local_log": ".q4t-work/serve-responses-agents-20261123/automation-dev/pr97-batch-local.log"
+  }
+}

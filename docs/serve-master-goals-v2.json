@@ -631,6 +631,13 @@
         "covered_declared_methods": 135,
         "official_query_names": 110,
         "evidence": "evidence/serve-agent-event-query-20261124/business.json"
+      },
+      "automation_delivery_20261124": {
+        "revision": 470,
+        "evidence": "evidence/serve-agent-automations-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 189,
+        "long_run_hours": 0
       }
     },
     {
@@ -2730,7 +2737,15 @@
       },
       "automation_development": "evidence/serve-agent-automations-20261124/development.json",
       "automation_business": "evidence/serve-agent-automations-20261124/business.json",
-      "automation_session_tool": "evidence/serve-agent-automations-20261124/session-tool.json"
+      "automation_session_tool": "evidence/serve-agent-automations-20261124/session-tool.json",
+      "automation_capacity_handoff": "evidence/serve-agent-automations-20261124/profiles.json",
+      "automation_delivery_20261124": {
+        "revision": 470,
+        "evidence": "evidence/serve-agent-automations-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 189,
+        "long_run_hours": 0
+      }
     },
     {
       "id": "A09",
@@ -6232,7 +6247,15 @@
       },
       "automation_development": "evidence/serve-agent-automations-20261124/development.json",
       "automation_business": "evidence/serve-agent-automations-20261124/business.json",
-      "automation_session_tool": "evidence/serve-agent-automations-20261124/session-tool.json"
+      "automation_session_tool": "evidence/serve-agent-automations-20261124/session-tool.json",
+      "automation_capacity_handoff": "evidence/serve-agent-automations-20261124/profiles.json",
+      "automation_delivery_20261124": {
+        "revision": 470,
+        "evidence": "evidence/serve-agent-automations-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 189,
+        "long_run_hours": 0
+      }
     },
     {
       "id": "A12",
@@ -8349,7 +8372,8 @@
         "Unified physical DRAM/GPU charge hard boundary platform evidence",
         "Cold and pressure composition beyond delivered normal-NVML resource subset"
       ],
-      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
+      "automation_capacity_handoff": "evidence/serve-agent-automations-20261124/profiles.json"
     },
     {
       "id": "R09",
@@ -8580,6 +8604,13 @@
         "evidence": "evidence/serve-realtime-translation-20261124/delivery.json",
         "required_methods": 231,
         "declared_with_expected_success": 179,
+        "long_run_hours": 0
+      },
+      "automation_delivery_20261124": {
+        "revision": 470,
+        "evidence": "evidence/serve-agent-automations-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 189,
         "long_run_hours": 0
       }
     },
@@ -9536,7 +9567,15 @@
       },
       "automation_development": "evidence/serve-agent-automations-20261124/development.json",
       "automation_business": "evidence/serve-agent-automations-20261124/business.json",
-      "automation_session_tool": "evidence/serve-agent-automations-20261124/session-tool.json"
+      "automation_session_tool": "evidence/serve-agent-automations-20261124/session-tool.json",
+      "automation_capacity_handoff": "evidence/serve-agent-automations-20261124/profiles.json",
+      "automation_delivery_20261124": {
+        "revision": 470,
+        "evidence": "evidence/serve-agent-automations-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 189,
+        "long_run_hours": 0
+      }
     },
     {
       "id": "Q02",
@@ -11091,11 +11130,18 @@
         "required_methods": 231,
         "declared_with_expected_success": 179,
         "long_run_hours": 0
+      },
+      "automation_delivery_20261124": {
+        "revision": 470,
+        "evidence": "evidence/serve-agent-automations-20261124/delivery.json",
+        "required_methods": 231,
+        "declared_with_expected_success": 189,
+        "long_run_hours": 0
       }
     }
   ],
-  "next_task": "Qualify the queued invocation across process and capacity changes, deliver the session automation tool and existing developer methods in the reversible package, and continue all remaining inference, application service and recovery tasks.",
-  "next": "验证自动化投递跨进程与配置接手，接入模型使用的自动化工具并继续剩余推理、应用及恢复任务。",
+  "next_task": "Implement native webhook endpoints, signed deliveries, retry isolation and real client lifecycle events. Continue remaining inference/application and recovery tasks.",
+  "next": "原生 Webhook 订阅、签名投递、失败隔离与真实生命周期事件，再接续其余推理、应用服务和恢复事项。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

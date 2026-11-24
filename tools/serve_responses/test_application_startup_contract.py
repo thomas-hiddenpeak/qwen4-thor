@@ -34,6 +34,23 @@ class ApplicationStartupContract(unittest.TestCase):
             del bad[key]
             self.assertFalse(validator.is_valid(bad), key)
 
+    def test_automation_reports_optional_startup_and_nonnegative_errors(self):
+        schema = json.loads((ROOT/'docs/serve-config-v1.schema.json').read_text())
+        group = schema['properties']['application_startup']
+        self.assertNotIn('automation_dispatcher', group['required'])
+        info = dict(state='ready', readiness_dependency=False, attempts=1,
+                    failures=0, recoveries=0, retry_after_ms=0, last_failure='none')
+        dispatcher = Draft202012Validator(group['properties']['automation_dispatcher'])
+        dispatcher.validate(info)
+        self.assertFalse(dispatcher.is_valid(dict(info, readiness_dependency=True)))
+        background = schema['properties']['responses_background']
+        self.assertNotIn('automation_errors', background['required'])
+        counter = Draft202012Validator(background['properties']['automation_errors'])
+        for n in (0, 1, 23):
+            counter.validate(n)
+        for n in (-1, '0', False, 0.5):
+            self.assertFalse(counter.is_valid(n))
+
     def test_config_accepts_new_diagnostics_and_historical_absence(self):
         schema = json.loads((ROOT / 'docs/serve-config-v1.schema.json').read_text())
         validator = Draft202012Validator(schema)
