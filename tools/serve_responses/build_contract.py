@@ -701,6 +701,7 @@ def add_openapi(paths, response, error):
         ('/v1/evals/{eval_id}/runs/{run_id}', 'get', None, 'eval_run', None),
         ('/v1/evals/{eval_id}/runs/{run_id}', 'delete', None, 'eval_run_deleted', None),
         ('/v1/evals/{eval_id}/runs/{run_id}/cancel', 'post', None, 'eval_run', None),
+        ('/v1/evals/{eval_id}/runs/{run_id}/report', 'get', None, None, None),
         ('/v1/evals/{eval_id}/runs/{run_id}/output_items', 'get', None, 'eval_output_list', 'eval_output_query'),
         ('/v1/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}', 'get', None, 'eval_output_item', None),
         ('/v1/chatkit', 'post', 'chatkit_client_request', 'chatkit_client_result', None),
@@ -796,7 +797,10 @@ def add_openapi(paths, response, error):
             query_contract = query + ' with optional beta' if query else 'optional beta'
         event_stream = path.endswith('/events') and method == 'get'
         accepted = body == 'agent_session_event_batch'
-        if path.startswith('/v1/skills/') and path.endswith('/content'):
+        if path.endswith('/report') and path.startswith('/v1/evals/'):
+            success = dict(description='Authenticated evaluation run report', content={
+                'text/html': dict(schema=dict(type='string'))})
+        elif path.startswith('/v1/skills/') and path.endswith('/content'):
             success = dict(description='Immutable ZIP bundle for the selected skill version', content={
                 'application/zip': dict(schema=dict(type='string', format='binary')),
                 'application/json': dict(schema=dict(type='string', contentEncoding='base64'))})

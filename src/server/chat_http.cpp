@@ -897,6 +897,20 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                         PlanningConfig(fd), access);
       return;
     }
+    std::string report_base;
+    const auto eval_route = ParseEvalRoute(path).kind;
+    if (eval_route == EvalRouteKind::kRuns || eval_route == EvalRouteKind::kRun ||
+        eval_route == EvalRouteKind::kCancel) {
+      const char* configured = std::getenv("Q4T_EVAL_PUBLIC_BASE");
+      report_base = EvalReportBase(headers, client.Scoped(),
+          "127.0.0.1:" + std::to_string(port_), configured ? configured : "");
+      if (report_base.empty()) {
+        SendError(fd, configured && *configured ? 503 : 400,
+                  "Invalid evaluation report origin", {access.deadline},
+                  "invalid_report_origin");
+        return;
+      }
+    }
     auto reply =
         IsVectorStoreTarget(path)
             ? HandleVectorStoreRequest(
@@ -904,7 +918,8 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                   path, body, client,
                   {access.scope, access.deadline, access.cancelled})
         : IsEvalTarget(path)
-            ? HandleEval(*objects_, access, method, path, body, background_.Get())
+            ? HandleEval(*objects_, access, method, path, body, background_.Get(),
+                         report_base)
         : IsChatKitTarget(path)
             ? HandleChatKit(*objects_, access, method, path, body,
                 {headers.gateway_token, headers.authorization.starts_with("Q4T-Issuer ")
@@ -944,7 +959,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
             : HandleConversationRequest(*objects_, method, path, body, access);
     if (create_eval_run && (reply.ok() || reply.commit_unknown))
       eval_dispatcher_->Wake();
-    if (reply.ok())
+    if (reply.ok() && eval_route == EvalRouteKind::kReport)
+      SendSimple(fd, 200, "OK", reply.value.str, "text/html; charset=utf-8",
+                 {access.deadline}, {}, {}, true);
+    else if (reply.ok())
       SendSimple(fd, reply.http_status, reply.http_status == 201 ? "Created" : "OK",
                  OutputJson(reply.value), "application/json",
                  {access.deadline});

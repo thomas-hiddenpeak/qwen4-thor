@@ -500,6 +500,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   Lease lease{capacity};
   AccessIdentity identity;
   Decision binding;
+  std::string eval_forwarding;
   std::string_view delegated;
   int64_t delegated_expires_at = 0;
   int status = 400;
@@ -531,6 +532,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
                            ? "" : "Sec-WebSocket-Protocol: " +
                                       websocket_protocol + "\r\n")
                 : "Connection: keep-alive\r\n") +
+           eval_forwarding +
            framing + "\r\nX-Request-Id: " + request_id +
            "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
            "\r\nX-Q4T-Gateway-Token: " + binding.token + "\r\n" +
@@ -614,6 +616,12 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     if (!source_allowed) return reject(403, "gateway_source_denied");
     if (!HostMatches(resolved.host, config.host))
       return reject(400, "gateway_bad_request");
+    if (server::IsEvalTarget(path)) {
+      eval_forwarding = "X-Forwarded-Host: " + resolved.host +
+                        "\r\nX-Forwarded-Proto: " + resolved.scheme + "\r\n";
+      if (!config.http.path_prefix.empty())
+        eval_forwarding += "X-Forwarded-Prefix: " + config.http.path_prefix + "\r\n";
+    }
     if (!config.cors.Response(headers.origin, &client.extra_headers))
       return reject(403, "cors_origin_denied");
     if (method == "OPTIONS") {

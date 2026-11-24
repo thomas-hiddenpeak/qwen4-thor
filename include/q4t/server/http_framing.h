@@ -8,6 +8,26 @@
 
 namespace q4t::server::http {
 
+inline bool ValidPathPrefix(std::string_view value) {
+  if (value.empty()) return true;
+  if (value.size() > 512 || value.front() != '/' || value.back() == '/')
+    return false;
+  value.remove_prefix(1);
+  while (!value.empty()) {
+    const auto end = value.find('/');
+    const auto part = value.substr(0, end);
+    if (part.empty() || part == "." || part == "..") return false;
+    for (unsigned char c : part)
+      if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+            (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.' ||
+            c == '~'))
+        return false;
+    if (end == value.npos) break;
+    value.remove_prefix(end + 1);
+  }
+  return true;
+}
+
 inline bool IsToken(unsigned char c) {
   return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
          (c >= '0' && c <= '9') ||

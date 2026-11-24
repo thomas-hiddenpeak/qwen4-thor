@@ -207,7 +207,8 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access,
 
 ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
                        std::string_view method, std::string_view target,
-                       const std::string& body, ResponsesJobs* jobs) {
+                       const std::string& body, ResponsesJobs* jobs,
+                       std::string_view report_base) {
   const auto route = ParseEvalRoute(target);
   if (route.kind == EvalRouteKind::kNone)
     return Error(404, "route_not_found", "Unknown eval route");
@@ -221,10 +222,15 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
     return error;
   }
   if (route.kind != EvalRouteKind::kCollection &&
-      route.kind != EvalRouteKind::kEval)
-    return eval_detail::RunRequest(
-        objects, access, route, method,
-        split == target.npos ? "" : target.substr(split + 1), body, jobs);
+      route.kind != EvalRouteKind::kEval) {
+    auto reply = eval_detail::RunRequest(objects, access, route, method,
+        split == target.npos ? "" : target.substr(split + 1), body, jobs, report_base);
+    if (reply.ok() && (route.kind == EvalRouteKind::kRun ||
+                       route.kind == EvalRouteKind::kCancel ||
+                       (route.kind == EvalRouteKind::kRuns && method == "POST")))
+      eval_detail::ProjectRun(&reply.value, report_base);
+    return reply;
+  }
   if (method != "POST" && !body.empty())
     return Invalid("body", "Unexpected body");
   if (collection && method == "GET")

@@ -45,7 +45,8 @@ def unused_operations_port(listener, upstream):
 
 class NativeIngress:
     def __init__(self, directory, binary, port, backend_port, operations_port,
-                 token, clients, tls, backend_alive, *, client_inflight=2, body_bytes=1048576):
+                 token, clients, tls, backend_alive, *, client_inflight=2, body_bytes=1048576,
+                 http_policy=None):
         self.directory = Path(directory)
         self.directory.mkdir(mode=0o700)
         if operations_port is None:
@@ -60,7 +61,8 @@ class NativeIngress:
             return dict(port=operations_port if lane == 'control' else backend_port, token=token)
         self.server = AdmissionSocket(address, clients, decide,
             lambda: self.process.pid if self.process is not None and self.process.poll() is None else None)
-        policy = files.policy(dict(version=2, listen_host='127.0.0.1', listen_port=port,
+        policy = files.policy(dict(version=2 if http_policy is None else 4,
+            **({} if http_policy is None else {"http": http_policy}), listen_host='127.0.0.1', listen_port=port,
             server_name='127.0.0.1', upstream_port=backend_port,
             upstream_operations_port=operations_port, allowed_client_cidrs=['127.0.0.1/32'],
             clients=[dict(id=name, api_key=key) for name,key in clients.items()],

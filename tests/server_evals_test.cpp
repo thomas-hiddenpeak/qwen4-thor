@@ -12,6 +12,7 @@
 #include "../src/server/eval_trajectory.h"
 #include "../src/server/object_protocol.h"
 #include "q4t/server/http_connection.h"
+#include "q4t/server/http_request.h"
 #include "q4t/server/chat_storage.h"
 #include "q4t/server/files.h"
 #include "q4t/test.h"
@@ -690,6 +691,45 @@ Q4T_TEST(evals_text_budget_and_missing_fields_never_publish_partial_text) {
   return true;
 }
 
+Q4T_TEST(evals_report_origin_follows_the_authenticated_request) {
+  HttpRequestHeaders h;
+  h.host = "localhost:8100";
+  h.forwarded_host = "scope.example:8443";
+  h.forwarded_proto = "https";
+  h.forwarded_prefix = "/tenant/api";
+  Q4T_CHECK(EvalReportBase(h, false, {}, {}) == "http://localhost:8100");
+  Q4T_CHECK(EvalReportBase(h, true, {}, {}) ==
+            "https://scope.example:8443/tenant/api");
+  Q4T_CHECK(EvalReportBase(h, false, {}, "https://public.example/service") ==
+            "https://public.example/service");
+  h.forwarded_prefix = "/tenant/../other";
+  Q4T_CHECK(EvalReportBase(h, true, {}, {}).empty());
+  h = {};
+  Q4T_CHECK(EvalReportBase(h, false, "[::1]:8123", {}) == "http://[::1]:8123");
+  for (const auto* host : {"host/other", "user@host", "host:70000",
+                           "localhost?query", "host#fragment"}) {
+    h.host = host;
+    Q4T_CHECK(EvalReportBase(h, false, {}, {}).empty());
+  }
+  return true;
+}
+
+Q4T_TEST(evals_report_bounds_large_unicode_names_and_many_criteria) {
+  auto grades = Array();
+  for (int i = 0; i < 101; ++i)
+    grades.array.push_back(Object({{"testing_criteria", String("Grade " +
+        std::to_string(i))}, {"passed", Number(i)}, {"failed", Number(0)}}));
+  auto report = eval_detail::RenderRunReport(Object({
+      {"id", String("evalrun_r")}, {"eval_id", String("eval_e")},
+      {"name", String(std::string(1023, 'a') + "演示")},
+      {"per_testing_criteria_results", std::move(grades)}}));
+  Q4T_CHECK(report.find(std::string(1023, 'a') + "…</h2>") != report.npos);
+  Q4T_CHECK(report.find("Grade 99</th>") != report.npos);
+  Q4T_CHECK(report.find("Grade 100</th>") == report.npos);
+  Q4T_CHECK(report.find("Showing the first 100") != report.npos);
+  return true;
+}
+
 Q4T_TEST(evals_runs_persist_real_pass_fail_outputs_and_filter_by_parent) {
   Fixture fixture;
   ObjectStore store(fixture.options);
@@ -698,7 +738,7 @@ Q4T_TEST(evals_runs_persist_real_pass_fail_outputs_and_filter_by_parent) {
   const auto eval = "/v1/evals/" + definition.value.GetString("id");
   const auto collection = eval + "/runs";
   const std::string body =
-      R"({"name":"Project record","data_source":{"type":"jsonl","source":{
+      R"({"name":"Project <draft> & review","data_source":{"type":"jsonl","source":{
     "type":"file_content","content":[{"item":{"count":157},"sample":{"output_text":"157"}},
     {"item":{"count":88},"sample":{"output_text":"87"}}]}}})";
   auto created = Request(store, "POST", collection, body);
@@ -711,10 +751,22 @@ Q4T_TEST(evals_runs_persist_real_pass_fail_outputs_and_filter_by_parent) {
   const auto path = collection + "/" + id;
   Q4T_CHECK(created.value.GetString("status") == "queued");
   Q4T_CHECK(Request(store, "GET", path, {}, "client:beta").http_status == 404);
+  Q4T_CHECK(Request(store, "GET", path + "/report", {}, "client:beta")
+                .http_status == 404);
+  Q4T_CHECK(Request(store, "POST", path + "/report", "{}").http_status == 405);
+  Q4T_CHECK(Request(store, "GET", path + "/report?limit=1").http_status == 400);
   const auto before = Request(store, "GET", collection + "?status=queued");
   Q4T_CHECK(before.ok() && before.value.GetArray("data")->array.size() == 1);
   StateAccess access{
       "client:alpha", std::chrono::steady_clock::now() + 10s, {}};
+  auto listed = HandleEval(store, access, "GET", collection, {}, nullptr,
+                           "https://first.example/prefix");
+  Q4T_CHECK(listed.ok() && listed.value.GetArray("data")->array[0]
+      .GetString("report_url") == "https://first.example/prefix" + path + "/report");
+  auto redirected = HandleEval(store, access, "GET", path, {}, nullptr,
+                               "https://second.example");
+  Q4T_CHECK(redirected.value.GetString("report_url") ==
+            "https://second.example" + path + "/report");
   ObjectRequest read;
   read.kind = ObjectKind::kEvalRun;
   read.scope = access.scope;
@@ -734,6 +786,12 @@ Q4T_TEST(evals_runs_persist_real_pass_fail_outputs_and_filter_by_parent) {
   const auto& counts = Field(final.value, "result_counts");
   Q4T_CHECK(counts.GetInt("passed") == 1 && counts.GetInt("failed") == 1 &&
             counts.GetInt("total") == 2 && counts.GetInt("errored") == 0);
+  auto report = Request(store, "GET", path + "/report");
+  Q4T_CHECK(report.ok() && report.value.IsString() &&
+            report.value.str.find("Project &lt;draft&gt; &amp; review") !=
+                std::string::npos &&
+            report.value.str.find("Count check</th><td>1</td><td>1") !=
+                std::string::npos);
   auto outputs = Request(store, "GET", path + "/output_items?limit=1");
   Q4T_CHECK(outputs.ok() && outputs.value.GetBool("has_more"));
   const auto first = outputs.value.GetString("last_id");

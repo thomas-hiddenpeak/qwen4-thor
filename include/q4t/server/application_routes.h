@@ -1057,7 +1057,7 @@ inline bool IsManagedAgentObservation(std::string_view method,
 }
 
 enum class EvalRouteKind { kNone, kCollection, kEval, kRuns, kRun, kCancel,
-                           kOutputs, kOutput };
+                           kOutputs, kOutput, kReport };
 struct EvalRoute {
   EvalRouteKind kind = EvalRouteKind::kNone;
   std::string_view eval{}, run{}, output{};
@@ -1083,6 +1083,7 @@ inline EvalRoute ParseEvalRoute(std::string_view target) {
   path.remove_prefix(run.size());
   if (path.empty()) return {Kind::kRun, eval, run};
   if (path == "/cancel") return {Kind::kCancel, eval, run};
+  if (path == "/report") return {Kind::kReport, eval, run};
   if (path == "/output_items") return {Kind::kOutputs, eval, run};
   if (!path.starts_with("/output_items/")) return {};
   path.remove_prefix(14);
@@ -1102,6 +1103,7 @@ inline std::string_view EvalAllow(EvalRouteKind kind) {
     case Kind::kRun: return "GET, DELETE";
     case Kind::kCancel: return "POST";
     case Kind::kOutputs:
+    case Kind::kReport:
     case Kind::kOutput: return "GET";
     case Kind::kNone: return {};
   }

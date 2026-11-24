@@ -1,0 +1,26 @@
+{
+  "stage": "implementation_pending_qualification",
+  "issued": false,
+  "focus": [
+    "Per-request absolute report links for new and old runs",
+    "Read-only project-scoped rendered run and grading summary",
+    "Direct HTTP, native TLS with mount prefix, optional authenticated nginx",
+    "Preserve paging budgets and bound HTML output"
+  ],
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 240,
+    "native_routes": 396,
+    "reviewed_source_anchors": 1365,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "pending": [
+    "Focused host contracts",
+    "Three application entry points against the same Thor run",
+    "Release qualification"
+  ]
+}
