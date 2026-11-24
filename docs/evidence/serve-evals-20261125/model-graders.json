@@ -1,5 +1,5 @@
 {
-  "stage": "focused_host_verified",
+  "stage": "native_tls_model_graders_verified",
   "features": [
     "label_model with enumerated labels and passing subset",
     "score_model with structured numeric result, reasoning steps, sampling options and range",
@@ -20,7 +20,75 @@
     "errors": []
   },
   "pending": [
-    "native TLS with positive and negative examples",
-    "delivery profiles and independent recovery"
-  ]
+    "packaged capacity profiles and independent recovery"
+  ],
+  "verified_source": "c18a5b40a",
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 55.731,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ],
+    "sdk": "7.47.0",
+    "report": [
+      {
+        "prediction": "157",
+        "status": "pass",
+        "grades": [
+          {
+            "score": 1,
+            "passed": true,
+            "sample": {
+              "label": "correct"
+            }
+          },
+          {
+            "score": 0.75,
+            "passed": true,
+            "sample": {
+              "result": 0.75,
+              "steps": []
+            }
+          }
+        ]
+      },
+      {
+        "prediction": "158",
+        "status": "fail",
+        "grades": [
+          {
+            "score": 0,
+            "passed": false,
+            "sample": {
+              "label": "incorrect"
+            }
+          },
+          {
+            "score": 0.25,
+            "passed": false,
+            "sample": {
+              "result": 0.25,
+              "steps": []
+            }
+          }
+        ]
+      }
+    ],
+    "independent_chat": "42",
+    "usage": {
+      "model_name": "qwen3.8-flash-next",
+      "invocation_count": 4,
+      "prompt_tokens": 1116,
+      "completion_tokens": 195,
+      "total_tokens": 1311,
+      "cached_tokens": 0
+    },
+    "wire_objects": 4,
+    "driver_sha256": "b0fc792b6b5ae2c3cc11a96c405dfe4b713c56857044f60faea7cb53804a2416",
+    "lease": "COMPLETED",
+    "wire_sha256": "44ec51a8280ee117417878ddf0c8cf59940e21d86ff5d8c3e538fde5cfab1333",
+    "cross_project_status": 404
+  }
 }
