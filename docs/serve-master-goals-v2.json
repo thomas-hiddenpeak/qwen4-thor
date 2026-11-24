@@ -714,6 +714,21 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
         "official_events": 4
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
+      },
+      "shared_environment_release_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-delivery.json",
+        "revision": 474,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -2897,6 +2912,21 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
         "official_events": 4
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
+      },
+      "shared_environment_release_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-delivery.json",
+        "revision": 474,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -6483,6 +6513,21 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
         "official_events": 4
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
+      },
+      "shared_environment_release_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-delivery.json",
+        "revision": 474,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -8446,6 +8491,21 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
+      },
+      "shared_environment_release_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-delivery.json",
+        "revision": 474,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -9902,6 +9962,21 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-stream.json",
         "official_events": 4
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
+      },
+      "shared_environment_release_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-delivery.json",
+        "revision": 474,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -11098,6 +11173,12 @@
         "fallback_registered": true,
         "desired": "STOPPED",
         "evidence": "evidence/serve-audio-translation-20261124/delivery.json"
+      },
+      "shared_environment_release_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-delivery.json",
+        "revision": 474,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     },
     {
@@ -11480,11 +11561,26 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "shared_environment_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-profiles.json",
+        "installed": 472,
+        "verified": [
+          "shared workspace file and pending client call across capacities",
+          "v42 to issued v41 reconstruction"
+        ],
+        "pending": "managed restart, takeover and release"
+      },
+      "shared_environment_release_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/environment-delivery.json",
+        "revision": 474,
+        "status": "issued_bounded_acceptance",
+        "long_steady_run": "user_owned_preflight_only"
       }
     }
   ],
-  "next_task": "Complete asynchronous environment preparation, real setup failures, guarded delivery and remaining inference, application and recovery tasks.",
-  "next": "补齐异步预热、真实准备失败、可恢复发行与其余推理应用任务。",
+  "next_task": "Implement pending preparation, genuine environment setup failures and required backends plus the remaining owned inference, application, ingress and recovery tasks.",
+  "next": "优先补齐托管环境实际准备与失败生命周期，持续推进其他推理、应用、接入与恢复任务。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

@@ -408,9 +408,11 @@ Q4T_TEST(trace_store_exporter_exception_recovers_in_same_bounded_owner) {
   Advance(collector);
   Q4T_CHECK(Submit(store, producer, collector));
   Q4T_CHECK(Read(store, producer->Id()).ok());
-  const auto health = store.Health();
-  Q4T_CHECK(health.controller_failures == 1 &&
-            health.controller_recoveries == 1);
+  Q4T_CHECK(Wait([&] {
+    const auto health = store.Health();
+    return health.snapshot_available && health.controller_failures == 1 &&
+           health.controller_recoveries == 1;
+  }));
   return true;
 }
 
@@ -425,7 +427,10 @@ Q4T_TEST(trace_store_thread_construction_failure_recovers_with_backoff) {
   Q4T_CHECK(Read(store, producer->Id()).http_status == 404);
   Q4T_CHECK(Submit(store, producer, Collector()));
   Q4T_CHECK(Read(store, producer->Id()).ok());
-  Q4T_CHECK(store.Health().controller_recoveries == 1);
+  Q4T_CHECK(Wait([&] {
+    const auto health = store.Health();
+    return health.snapshot_available && health.controller_recoveries == 1;
+  }));
   return true;
 }
 
@@ -443,8 +448,11 @@ Q4T_TEST(trace_session_exporter_start_recovers_on_idle_tick_without_query) {
   }));
   const auto record = Read(store, "trace_" + Digest("sess_start"));
   Q4T_CHECK(record.ok() && record.value.GetInt("revision") == 1);
-  Q4T_CHECK(store.Health().controller_recoveries == 1 &&
-            store.Health().accepted == 1);
+  Q4T_CHECK(Wait([&] {
+    const auto health = store.Health();
+    return health.snapshot_available && health.controller_recoveries == 1 &&
+           health.accepted == 1;
+  }));
   return true;
 }
 

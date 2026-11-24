@@ -1,0 +1,216 @@
+{
+  "route_declarations": {
+    "expected": 231,
+    "exact_http_success": 197,
+    "missing": 34,
+    "runtime_qualification": false
+  },
+  "status": "ACCEPT_ISSUED_HOSTED_ENVIRONMENT_LIFECYCLE_AND_NATIVE_AGENT_EVENTS",
+  "issued_binary": "2ef2b5fe03677ea20bd289408ca3793590af435994ccd1abbf6ee29a5c24a865",
+  "prior_publication_revision": 472,
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 474,
+    "version_revision": 166,
+    "profile_revision": 56,
+    "previous_profile_revision": 55,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "acbf9aa89f8b2ae16e71b10f51b25c89381c1965b3368025e0383c8a09300601",
+    "fallback": "50d773ab9c63963a95a4ed41de20663a40247ac793f9df7e95c2a1be64e67042",
+    "engine": "2ef2b5fe03677ea20bd289408ca3793590af435994ccd1abbf6ee29a5c24a865",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "device_cases": {
+    "primary": {
+      "seconds": 199.454,
+      "model_starts": 2,
+      "ports_released": true,
+      "guardian_same": true,
+      "workspace": "environment_a3cf8bdbea57931f67de841e25bd4840",
+      "original_turn": "turn_45999d56adc7dc2ba1849eed74c53144",
+      "original_call": "call_resp_08b7ce85769fe9e5b5fa972276ed73b1_0",
+      "revision_answer": "The actual published revision is 472.I'll call the tool now.",
+      "file_bytes": 10686,
+      "sha256": "437568bb061898f2d3f7e24c41aae310c07e7380c1dd4712586e31ca07bfee5e",
+      "independent_chat": "42",
+      "version_takeover": true
+    },
+    "fallback": {
+      "seconds": 126.186,
+      "model_starts": 2,
+      "ports_released": true,
+      "guardian_same": true,
+      "workspace": "environment_141bb4b6c938dd1d072ad7c357426c5d",
+      "original_turn": "turn_fd42ec680fa1903f61e2d5462fad6c2c",
+      "original_call": "call_resp_4f8be6cb4561618165efa4b2d007a46b_0",
+      "revision_answer": "The actual published revision is 472.",
+      "file_bytes": 10686,
+      "sha256": "437568bb061898f2d3f7e24c41aae310c07e7380c1dd4712586e31ca07bfee5e",
+      "independent_chat": "42"
+    }
+  },
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "83ebe819944f1667b644df35ea47dbdfb6756131fd58ac62983f4292ab6d0127"
+        ],
+        "sha256": "272f1e97886077139e05b8cc7fe1cbdb68901be84c9d48468184d65e19a9cfdb",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "5b673f7b-b18b-4322-998a-5d7c4bd7aebd"
+        ],
+        "sha256": "b6096823a5c9534cc60e9f1927fab382a12ef04eac505d7dff28a826c9c6075a",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "5d854285-6534-42f2-b365-4b431fceedb3"
+        ],
+        "sha256": "1514f3cabdc1c6a60f4b8b32bb0c1b8ff17f86560ab2ae9a934010fb5d92b692",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "soak": {
+    "source_commit": "30ade9c9f6108bc8234cb1ee588e9896d99f95bb",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/shared-environment-client-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/environment-client-primary-01/bundle",
+      "manifest_sha256": "acbf9aa89f8b2ae16e71b10f51b25c89381c1965b3368025e0383c8a09300601"
+    },
+    "revision": 474,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/shared-environment-client-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "46a605fa503011b23192f1b1d48e0d8f6c90602006a27e42b6a0b8b40689915e",
+    "handoff_sha256": "9a0525e487260263ab2598d502d7ec599cc79ab8f5dff395dbbe706b64a9bcda",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "auxiliary_dependencies": "Outbound delivery disabled in default, deployment policy remains optional. Upstream provisioning backends remain separate work.",
+  "preserved_attempts": [
+    "Profile preflight detected changed test source before model load; input plan frozen again.",
+    "One guard invocation saw a pre-existing historical result directory and exited before lease or model acquisition. The original directory was preserved and a unique output was used."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-client-delivery/result.json",
+      "sha256": "da5c029afeda7b93bbcb742a2a60ef6357c5a475f32718df83c53c6992e1ec97"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-client-delivery/check.stdout",
+      "sha256": "8d7f18861c7a517f818a14e28c5a0d40617ea3c8e872a1fbe5a5384ba47552cb"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-client-delivery/status.stdout",
+      "sha256": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-client-delivery/version-status.stdout",
+      "sha256": "46587abcb9699ca07009e9562ee9528ea381163e822a25dbc973110afcbb0c0d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-client-maintenance-01/result.json",
+      "sha256": "10894c4c5d01e903d396b57792fdff751f3bcd988f970749c806f6a906699600"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-maintenance-lease-01/exit.json",
+      "sha256": "61c6d7dc398c4d6a4d7d9bf28121daac44cb4327df35b8290bc10c9e12e48d8c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-publish-lease-01/exit.json",
+      "sha256": "0439575310ba04695e7ee41ba2ac4b1916c9484c281fe9ecc231d8dd2283a9c2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-client-day.json",
+      "sha256": "1791f572897d52d82a18ddc1fa1f9fde6d2546690278c08e027670f988dbd25c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-webhooks-20261124/environment-profiles.json",
+      "sha256": "dcab98a5588aac1c8e2ecf9b6ec497a07a626d0de94d3c3529b8236faf3b0e0c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-shared-environment-01/takeover.json",
+      "sha256": "9aa78085e57db29cd2352e3bbf89dde4eb33d7753298d4ff8016b640796a4ece"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-primary-lease-01/exit.json",
+      "sha256": "0f7314a6828e3008ec8717ddb7a34d713a2241528fb9ebbef72555335c5563f3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-shared-environment-01/result.json",
+      "sha256": "b8aa5f2e9e72080965efe03cca397c0dea0c986b05eb74caa12baee64cf30a92"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-shared-environment-01/interruption.json",
+      "sha256": "59ec89de939f3f0a2d3cfb6335213a2ee9768ce55cf0ac188d8b5f8bfe2ac0d9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-shared-environment-01/prepare-run.json",
+      "sha256": "6ddefb70c827958bb8e88a27571dd3a88aead8e401627d6f63fd930384ac1421"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/fatal-business-shared-environment-01/restore-run.json",
+      "sha256": "9bab3cdc9aa09bd68fda546698a2dbbb74697d3705453bfd4c6ab25b86802915"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-client-primary-01/origin.json",
+      "sha256": "0bfe9b3aa0fa54506c41aba22700463367d15ebcf80f92658bf161f7facc8969"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-client-primary-01/service-acceptance.json",
+      "sha256": "2ed071480efd5926eaee28f2ed411a6d333ab1fae0ee98cd19fbced16548f918"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-client-primary-01/service.release.json",
+      "sha256": "058a3e1887301ac9fdd0fa45bcbfda02613da603822d9a0a0eaa12b2a4edfc12"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-fallback-lease-01/exit.json",
+      "sha256": "be80b7cd99e47c16927f0c948412b1d1bb58dc675862778dab6c48212e58ecb5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-fallback-business-01/result.json",
+      "sha256": "31d1731c36b58f0aa2089a28296a7b013bcf3dd3852d4c2bb1a8eb829d84a853"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-fallback-business-01/interruption.json",
+      "sha256": "ffae21f518bec8868963900a9bd53c496f9502c289e48c3e7d9d5544f28d88d8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-fallback-business-01/prepare-run.json",
+      "sha256": "96a8ee049f9678f80f578a2e1b0e73e08ad082f40790da45e93e19bffdd99ca1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-fallback-business-01/restore-run.json",
+      "sha256": "10d3fd53dcb724e1da5138ff768046073a91c421e81bf7aabf14d8d4da232249"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-client-fallback-01/origin.json",
+      "sha256": "4b3c2c33e2ec84fadd86f963f8b7e3f4ba5324fb5da51ee3a0744b08399a2a83"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-client-fallback-01/service-acceptance.json",
+      "sha256": "e7cfb9f240a5c73196d61c1e0992f2b0c6dbd732aa05571f9990600a6bac89ac"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-client-fallback-01/service.release.json",
+      "sha256": "3f85b2ec6adba8b60baca236476bd3355f56d4c3b8d62c1063f21ced107a7d54"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/shared-environment-release-methods.json",
+      "sha256": "f501b16453f8424ae1067c62be8534dcd0ccef1e8a2d5cf9f2366759f4785481"
+    }
+  ]
+}

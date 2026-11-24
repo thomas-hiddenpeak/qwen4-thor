@@ -1,0 +1,117 @@
+{
+  "status": "ACCEPT_HOSTED_ENVIRONMENT_LIFECYCLE_PRIMARY_LIGHT",
+  "installed_revision": 472,
+  "profiles": {
+    "primary": {
+      "seconds": 40.136,
+      "model_starts": 1,
+      "mtp": true,
+      "profile": "68481ee9e52c56bc0bd993214a52da4d1ebe654a28ab79ada05d7e30a5fbb1b0",
+      "previous": "fb46c5e00a4d9a2d6cfa59e781ebe08fd8d684d8a51c3b9cb12474c5592726e9",
+      "sdk": "7.47.0",
+      "bytes": 10686,
+      "artifact_sha256": "437568bb061898f2d3f7e24c41aae310c07e7380c1dd4712586e31ca07bfee5e"
+    },
+    "light": {
+      "seconds": 37.291,
+      "model_starts": 1,
+      "mtp": false,
+      "profile": "99a16787d773574d10009467ccec6aaeeed421e365fbf22bde69a77d109e8ee7",
+      "previous": "af923ee17d2cef62d6eefee8033a69b4d3fa4b6fb6400b49568c9cd6fa0b1fb1",
+      "sdk": "7.47.0",
+      "bytes": 10686,
+      "artifact_sha256": "437568bb061898f2d3f7e24c41aae310c07e7380c1dd4712586e31ca07bfee5e"
+    }
+  },
+  "candidate": {
+    "binary": "2ef2b5fe03677ea20bd289408ca3793590af435994ccd1abbf6ee29a5c24a865",
+    "ingress": "ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46"
+  },
+  "file_and_pending_call_preserved": true,
+  "first_session": "agent_session_018307aa7d8460ae3bfd0807aea3e0dc",
+  "environment": "environment_131995b16ff2a6c7aab89495c7942d46",
+  "turn": "turn_eec32137f11468eee5f4edc338dedf55",
+  "call": "call_resp_248a48320cb80821f0c940b926564ee0_0",
+  "answer": "The actual published revision is **472**.",
+  "independent_chat": "42",
+  "original_attempt": "Source preflight caught a changed migration test. No model started; evidence preserved. Inputs frozen again for the successful run.",
+  "managed_delivery": false,
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/lease/exit.json",
+      "sha256": "d9bf430b67d576b1989f50b776f8f567b38e78137f86027d32295bd65de32fdb"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/observations.json",
+      "sha256": "fc2100a9f19c3d127f12abecc40c0a04384c654a645bb2da7e488f77b323258a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/acceptance.json",
+      "sha256": "3280676f47c89ff879f88386e7ff954fc91e583d873525e3571eb5c1c12aa237"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-qualified-01/acceptance.json",
+      "sha256": "e741d38bd74fa7a77a1e81aa2308bacca896964e72716e8f78afc640b41e8720"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-qualified-01/qualified/registry.json",
+      "sha256": "05afd9157a17c056c7a65bc0ff3e1b15f86ef7202214824a4358e97fa40fc363"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-profile-pinned-cpu.log",
+      "sha256": "b7830e67d61b451b902dcd12e4ef9244bd4afd9ed931be59cf980647e2f2344a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-profile-inventory.json",
+      "sha256": "f4f081ad692539a2577dcd49f0c9276080fd856bc9e98aa9e1d66ca0bb0c0081"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-lifecycle-profile-lease-01/exit.json",
+      "sha256": "d747c16279858ed44e4718e09300f2ef603579f6462b04c351fa47fbd21038b3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-profile-run-01.log",
+      "sha256": "48d7230399323dcf301bbdbc74865deac010edd9d95f8c36855768a5bf2caa5c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/primary/environment-handoff.json",
+      "sha256": "663081b2b5dda6e71ef4b1dcc0a3a113abbdc7de9384f33a7fcd730b598f5dc6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/primary/result.json",
+      "sha256": "14938b722b76b964e907796abe6c757c27074959512c672e940c35e4f2ffd62a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/primary/cleanup.json",
+      "sha256": "8615ad3b581ce334639defff2a286e28f160db854c8fbab6d29cca40d9b15627"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/primary/capabilities.json",
+      "sha256": "66335772d694a96d050b40f0abe73a21d26188c5b3d8b93412f2c03c80e3e89c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/primary/plan.json",
+      "sha256": "c019ad106b7259f4e0bb4e8d61412b912570fd9389a3a611aab9eec1de5b8fac"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/light/environment-handoff.json",
+      "sha256": "ab0bb7577fb7cbc4ea460931deb7ca7245404be3ea61090e7fe945f1666a7b93"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/light/result.json",
+      "sha256": "2729657b65735f9c38f01a15fc67914c8ed91b507cc24bc924ecedd003a8d207"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/light/cleanup.json",
+      "sha256": "3df35e71de9161c438493cdfc9cda16f0e23d23efb2c5e0ad7077faf734bfe51"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/light/capabilities.json",
+      "sha256": "8de19b93713cf44a9659c2abf7a9110d7c1116ba5dc0af8b2624af792f9d0978"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/environment-lifecycle-profiles-02/light/plan.json",
+      "sha256": "ef0abd4c891de2095d06386bb9ce80492ba33c438b02d6a89fece0aad57971df"
+    }
+  ]
+}

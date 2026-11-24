@@ -96,6 +96,23 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     live.format_for(bad)
 
+    def test_shared_environment_requires_issued_webhooks_and_exact_lifecycle(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(webhooks=live.WEBHOOK_CAPABILITY)
+        new = dict(old, hosted_environment_lifecycle=live.HOSTED_LIFECYCLE_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension({}, new))
+        for key, changed in dict(max_sessions=1, idle_seconds=600,
+                                 checkpoint_seconds=3600, live_event_retention=0,
+                                 shared_files=False, turn_scoped_resume=False,
+                                 pending_tool_keeps_active=False).items():
+            with self.subTest(field=key):
+                bad = dict(new, hosted_environment_lifecycle={
+                    **live.HOSTED_LIFECYCLE_CAPABILITY, key: changed})
+                self.assertFalse(migration.explicit_extension(old, bad))
+                with self.assertRaises(ValueError):
+                    live.format_for(bad)
+
     def test_webhook_extension_preserves_retry_and_deployment_boundaries(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(agent_automations=live.AUTOMATION_CAPABILITY)
