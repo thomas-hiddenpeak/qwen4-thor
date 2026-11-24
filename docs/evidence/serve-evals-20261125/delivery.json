@@ -1,0 +1,280 @@
+{
+  "status": "ACCEPT_ISSUED_EVALS_AND_RECOVERY",
+  "prior_revision": 478,
+  "engine_source": "6149036d5ba0673fcba272a2c040ae204b65d87e",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 480,
+    "version_revision": 169,
+    "profile_revision": 59,
+    "previous_profile_revision": 58,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "783ccb40ac667d5378208731cd53e3cf3fb31dc3e247fcf67b3bb8f8b4b5b755",
+    "fallback": "5111a1e10b3fc12d5d8099559bb07b103caef0743c0d488df465281a18cf2221",
+    "engine": "47f1e846dca2f7bf628ec32d572c2e105a0f4c871b9dbaf56d8609ad0d32500e",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "mainline": {
+    "112": {
+      "merge": "fb794a04d1b0d92ed1fbe4da5cccf09d10e1fd3f",
+      "head": "ae6f78eda119176afde3b827ae290fb1b51b981e",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45484977015",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45484992226"
+      }
+    },
+    "113": {
+      "merge": "c352c820bbe959eefbd09400d8eb532c22b4f280",
+      "head": "e93003beb2ac8950615de4ee774623e31fc09a34",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45484983843",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45485004009"
+      }
+    },
+    "114": {
+      "merge": "a83c7d72dbabb00e7da4af023280f41b63caee31",
+      "head": "1ba4c9d96ae5fc319ac8d4e922d190999ebf136b",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45484989825",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45485009479"
+      }
+    },
+    "115": {
+      "merge": "308425574e10e96dcaec689b3d7a7a777fa49b78",
+      "head": "4dbd6ccebde023e2725e96b38a1e99249c7d67f2",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45484999293",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45485018996"
+      }
+    },
+    "116": {
+      "merge": "920ab3e86d3e6f9fe641a9b0f0e23169c249dd5f",
+      "head": "24099b20309a57e03dfc11f589bf117975c07071",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45485065928",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45485133867"
+      }
+    },
+    "117": {
+      "merge": "1340ae73c3210f6f6321d66b2e5d42c5f27c423a",
+      "head": "0aab927615b800c1ee4326d4a1a77d02116155ca",
+      "checks": {
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45486597886"
+      }
+    }
+  },
+  "python_clients": "python-sdk.json",
+  "device_cases": {
+    "fallback": {
+      "seconds": 131.737,
+      "model_starts": 2,
+      "guardian_preserved": true,
+      "ports_released": true,
+      "evaluation": "eval_64f46f9a5086b8e3174cdc8f3399faae",
+      "run": "evalrun_9d3b3693ff6404c1848d43632785f625",
+      "completed_before": 1,
+      "unchanged_prefix_ids": [
+        "outputitem_00d722368dd587756242448b84ce730b"
+      ],
+      "item_ids": [
+        "outputitem_00d722368dd587756242448b84ce730b",
+        "outputitem_ea027e8424d5645bd944b3d6f4a3ebe9",
+        "outputitem_814f73b991f5509fb42b4a7d6224fd66",
+        "outputitem_0f1cf7f8d6f98955053f92eeef9e56dd",
+        "outputitem_bf6ef51fa93c2fd5a98e24f0bad6d114",
+        "outputitem_725fdd0151c0c0e189845201ee1a04ae"
+      ],
+      "answers": [
+        "157",
+        "157",
+        "157",
+        "157",
+        "157",
+        "157"
+      ],
+      "counts": {
+        "total": 6,
+        "errored": 0,
+        "passed": 3,
+        "failed": 3
+      },
+      "usage": [
+        {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 6,
+          "prompt_tokens": 1854,
+          "completion_tokens": 24,
+          "total_tokens": 1878,
+          "cached_tokens": 0
+        }
+      ],
+      "source_deleted": 404,
+      "foreign_project": 404,
+      "independent_chat": "42"
+    },
+    "primary": {
+      "seconds": 222.431,
+      "model_starts": 2,
+      "guardian_preserved": true,
+      "ports_released": true,
+      "evaluation": "eval_d855c81ddb676dcf60f5f10fa3ddae43",
+      "run": "evalrun_60ab2b1668b6b3fa80aaf744eb025326",
+      "completed_before": 1,
+      "unchanged_prefix_ids": [
+        "outputitem_81cdbb3bedc37562aee94ca5a115927a"
+      ],
+      "item_ids": [
+        "outputitem_81cdbb3bedc37562aee94ca5a115927a",
+        "outputitem_0fb133d4d4f5a70faf784d4f98f41bfe",
+        "outputitem_3dcd2edbde8bdb013aa4d6a07631c133",
+        "outputitem_19e5c32fd688c6b07021c53284d3d74e",
+        "outputitem_f3aed5111395720a0fbde392b33b65d4",
+        "outputitem_1f1f556eed5143394798ab589684bf81"
+      ],
+      "answers": [
+        "157",
+        "157",
+        "157",
+        "157",
+        "157",
+        "157"
+      ],
+      "counts": {
+        "total": 6,
+        "errored": 0,
+        "passed": 3,
+        "failed": 3
+      },
+      "usage": [
+        {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 6,
+          "prompt_tokens": 1854,
+          "completion_tokens": 24,
+          "total_tokens": 1878,
+          "cached_tokens": 0
+        }
+      ],
+      "source_deleted": 404,
+      "foreign_project": 404,
+      "independent_chat": "42",
+      "selected_package": "fallback"
+    }
+  },
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "665ffc5e96d36fa37afd26bd0086f7a020e718ac1307fcd1f47fa1322c36afa6"
+        ],
+        "sha256": "53028b641ede7989a6944c1bf66da8d3dac82e00714260c992b0d920803c4830",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "3f60844f-d462-413b-9336-5e2eb1f502c6"
+        ],
+        "sha256": "8de93f45ce50b209acfdfaa4097431e271a6c02a8b7d5437e28cbf5cf109262e",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "4876bb11-173b-4106-a992-c8bb30566bf3"
+        ],
+        "sha256": "3baa579da3fde45e1cae401d6d7f11d8ee22d15908c24d85f0aa70d10fd98b9b",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "declarations": {
+    "required": 231,
+    "exact_success": 215,
+    "missing": [
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "GET /safety/alerts/{id}",
+      "GET /safety/cases/{id}",
+      "POST /videos",
+      "GET /videos",
+      "POST /videos/characters",
+      "GET /videos/characters/{character_id}",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "GET /videos/{video_id}",
+      "DELETE /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /videos/{video_id}/remix"
+    ],
+    "comparison": "HTTP success declarations only"
+  },
+  "soak": {
+    "source_commit": "6149036d5ba0673fcba272a2c040ae204b65d87e",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/bundle",
+      "manifest_sha256": "783ccb40ac667d5378208731cd53e3cf3fb31dc3e247fcf67b3bb8f8b4b5b755"
+    },
+    "revision": 480,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "38c94f5f9fafc57273ab1a45cda5ce405c5f95a2e8da1936e625ff9844591901",
+    "handoff_sha256": "5992170b8c9c24fd4f2dab3dc3803b0b0224339f43ee61e53c14827db09354e9",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "source_document_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+  "retained_failures": [
+    "recovery.json records the previous service_draining row failure on independent takeover.",
+    "drain-profiles.json retains the prior schema and capacity evidence."
+  ],
+  "raw": {
+    ".q4t-work/serve-responses-agents-20261123/eval2-delivery-delivery/result.json": "a573ac9d57468a96c21cbc02c5652c582c894489c3b6cdf76254cdaf7e497cce",
+    ".q4t-work/serve-responses-agents-20261123/eval2-delivery-delivery/plan.json": "ee9ba7caab1fc58915bf02b518e5e17f531bb206d49c7e22632cc466a6cc2469",
+    ".q4t-work/serve-responses-agents-20261123/eval2-delivery-delivery/check.stdout": "bb65674aa4d2e1ac72103a99fd2e608503dc0f03d184e2d3367121cac8540f23",
+    ".q4t-work/serve-responses-agents-20261123/eval2-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/eval2-delivery-delivery/version-status.stdout": "bd7ca75de8da2d0fce8c615eeb8ad1c9fd1c639ca2eec106225dee625b44ae6d",
+    ".q4t-work/serve-responses-agents-20261123/eval2-delivery-maintenance-01/result.json": "0595cc9e1e808ffce3bc6655b7c4d65131b7299334e24c5c8d206b6d1cf140a3",
+    ".q4t-work/serve-responses-agents-20261123/eval2-delivery-day.json": "1ac594fba0e74483111012b60d9e5ede9b8ccea36a91b639ad11b4318619100a",
+    ".q4t-work/serve-responses-agents-20261123/eval2-release-methods.json": "38b117fe9fd9684a6196a2e03cc9c3e225b9506334f6acf7fd5c5af9713ad9af",
+    ".q4t-work/serve-responses-agents-20261123/evals-src/docs/evidence/serve-evals-20261125/drain-profiles.json": "aa3ea363e16df2e47289d94b50e3bbbadde7dda5bd99e5ffec5bbedf07938ae9",
+    ".q4t-work/serve-responses-agents-20261123/evals-src/docs/evidence/serve-evals-20261125/recovery.json": "412e51a6acebe0e009ebf9efb9a8e0116dae1c67891b74d6bf6027bf5963aa69",
+    ".q4t-work/serve-responses-agents-20261123/eval2-maintenance-lease-01/exit.json": "2e211d209e0431acf0ae783d6c719b5ffef052551000e667c090d36f0d9e2831",
+    ".q4t-work/serve-responses-agents-20261123/eval2-publish-lease-01/exit.json": "0537aa55b05d80a84292f8dd98c65a464681f38ce8620fa06a3f6d00124df34d",
+    ".q4t-work/serve-responses-agents-20261123/evals-src/docs/evidence/serve-evals-20261125/python-sdk.json": "90dae81a9770b01c4543bf44b76170499dd8e57caf8a966e15c6c19c30713914",
+    ".q4t-work/serve-responses-agents-20261123/pr112-merged.json": "3c3efab6487d6de14b93535d06417b4e7eaa7d873fa2d9a9b00abc2c06eda9dd",
+    ".q4t-work/serve-responses-agents-20261123/pr113-merged.json": "e9605200ab29bf267e1c97a59b544215ea4e3cccd3b93233e880fe5e1e26ccfa",
+    ".q4t-work/serve-responses-agents-20261123/pr114-merged.json": "a4c5f25ef5cd9cb0a523667ec5717605c4424ea620081e453accbac0a88178a0",
+    ".q4t-work/serve-responses-agents-20261123/pr115-merged.json": "ea79afebe45d02280ee5f46b0510047ad6288d850981596e264770bcb2ecdd0e",
+    ".q4t-work/serve-responses-agents-20261123/pr116-merged.json": "68b9d7c83035910e5f718f32aca1dfd910d65f4ad93029893df6f75ab472adec",
+    ".q4t-work/serve-responses-agents-20261123/pr117-merged.json": "1b5a6ee36ca0d7698360d55fe88d32ba770b62e4bcdd91dbe509ef2b3177e110",
+    ".q4t-work/serve-responses-agents-20261123/pr117-main-qualified.json": "c4a19d2eace6b1d8c2f1e0640590fd71cd1c6f8a5ea7661ae51716d14905919e",
+    ".q4t-work/serve-responses-agents-20261123/eval2-fallback-lease-01/exit.json": "730bcef6f2ece06840c1817c075f1ae30392b0f421e75719a861353db49a2798",
+    ".q4t-work/serve-responses-agents-20261123/eval2-fallback-business-01/result.json": "041462c127db5e6de0ff7e93bf66c131a1fec39d36b94cf331345b3e5fcf435c",
+    ".q4t-work/serve-responses-agents-20261123/eval2-fallback-business-01/prepare-run.json": "6ce9f027965be934a24262484807d5add647b53b390056db37b5af925b584ba3",
+    ".q4t-work/serve-responses-agents-20261123/eval2-fallback-business-01/restore-run.json": "a6b017cebc5e1cd472d0a565a2cfe0779551c612b7bb4acb6674d129c5cf867f",
+    ".q4t-work/serve-responses-agents-20261123/eval2-fallback-business-01/interruption.json": "dc1773f73490d735b83b4219a6bcd8103f366960e6ee70d4c16dbfce2c60cfcc",
+    ".q4t-work/serve-responses-agents-20261123/eval2-client-fallback-01/origin.json": "f94ee110cbb8caf934753756652682efbc137ca929fa71d7bce6e9efb02f9e74",
+    ".q4t-work/serve-responses-agents-20261123/eval2-client-fallback-01/service-acceptance.json": "557cabc72b8b93de63514c88b4b4a697982c5a684fb33b91f0bab8fe23466937",
+    ".q4t-work/serve-responses-agents-20261123/eval2-client-fallback-01/service.release.json": "6a7a47496b526d3558ac03c66925e98f1b782befb53e49d9e33f586208487c35",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval2-01/takeover.json": "ae3aace7ae589adcce4ceaa83489282d95c82fc33b546cdb4b18a6c562e74c81",
+    ".q4t-work/serve-responses-agents-20261123/eval2-primary-lease-01/exit.json": "5992ac1ad19bbdd872dc8227cad63925e1c5848bdfbf470488eb428b0c20a376",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval2-01/result.json": "23f7e14a88b1270d28be33fac82ef38525dd30ae6cb985874649e25980a7332e",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval2-01/prepare-run.json": "5bae09145ab2601f8ec058879e0d6e1bf479273503df574281a53d59aed238ec",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval2-01/restore-run.json": "e4d8610d6bc4dab37bba2b5cf4b5ad57007300546aa45afc2ab520ce5c1827c8",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval2-01/interruption.json": "4fcf6990e2d7840bdacd3be1b340aab185bf17ef4294299c175fc9b13fb4d6f1",
+    ".q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/origin.json": "a11892a49da2f8cff665cdcb6e7f44433b7b3117a104d4bb8226e10f67069548",
+    ".q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/service-acceptance.json": "e483b8a49522e29c320d3601535577d61b2a3854d5650cdfac41541146864932",
+    ".q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/service.release.json": "e094464fdf26ce4d0ed8be732af685dc890dec6a04b95064476c0bf0ff20a559"
+  }
+}
