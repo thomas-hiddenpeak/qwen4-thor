@@ -1052,6 +1052,7 @@ class DiskStore {
       const bool suspended = type == "agent.environment.suspended";
       const auto occurred =
           suspended ? data->GetInt("suspended_at")
+          : type == "agent.environment.failed" ? data->GetInt("failed_at")
           : type == "agent.environment.expired"
               ? data->GetInt("expired_at", data->GetInt("warm_until"))
               : 0;

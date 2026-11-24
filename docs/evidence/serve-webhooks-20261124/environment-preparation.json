@@ -1,0 +1,54 @@
+{
+  "status": "ACCEPT_STANDALONE_PREPARATION_FAILURE",
+  "issued_revision": 474,
+  "installed_candidate": false,
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 36.259,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "source_binary": "06053488b1719f89a387b0702c29bcca673b49878a49e9f8667f0bd66c038074",
+  "sdk": {
+    "sdk": "7.47.0",
+    "peer": 404,
+    "independent_chat": "42",
+    "denied_attachment": 409,
+    "replayed": true,
+    "healthy_environment": "ready",
+    "observed": [
+      "agent.environment.failed"
+    ],
+    "wire_objects": 3,
+    "driver_sha256": "af1152fd1585e9f5fae34cf5011e9dbd8ea443d9ae99f8d1bb72337b471133f5"
+  },
+  "validated_resources": 3,
+  "event_id": "evt_9299b2d3bd4aa4a466af9c4615d75b7a",
+  "scope": "Standalone preparation of an owned Files source with invalid stored metadata, a damaged chunk or a missing pinned chunk. The device used a fixture upload with inconsistent stored length. No other production data was modified.",
+  "cpu": [
+    "17 hosted workspace cases",
+    "11 webhook cases"
+  ],
+  "initial_failure": "CPU fixture root contained a literal parent component. The native worker refused it. The rerun uses a canonical absolute path.",
+  "remaining": [
+    "Asynchronous prewarm and pending attachment",
+    "Session environment ready and failed events during setup",
+    "Provisioned setup commands, packages and other execution features",
+    "Other required inference and application methods"
+  ],
+  "raw_sha256": {
+    "environment-preparation-lease-01/exit.json": "1606c3919d351c532f951094db65d6d7941277fd0ac54cab9453b7624525405d",
+    "environment-preparation-business-01/plan.json": "ecde639615cd47abf8ade18b5e7649ea54cdb89c8087f07fa52f4680efe94b19",
+    "environment-preparation-business-01/result.json": "995cb79771f0b200e459427d3b91578c17bb6e5061431d94b05f649777800ed1",
+    "environment-preparation-business-01/create/run-wire.json": "883025b5d6f2208c051fc2ff315ab65871221c6a83cb92b3f9ebfc74a76b71ea",
+    "environment-preparation-business-01/create/sdk-result.json": "567e0daf93f18981c01aa792549b02acbce13041d074fc7d444237e60a470f20",
+    "webhook-dev/preparation-cpu-02.log": "c0ec705abe98c10553fcc95c7fc1e2ade6a0c8ad6c9ca8d8dbc0c7759ac35c87",
+    "webhook-dev/preparation-cpu-01.log": "63d9492b392b8eb784ca862e82669e7d58b25ac60dda1eff5d7acfec6b4d81c7",
+    "webhook-dev/preparation-hooks-01.log": "bd9d22571d9b80235d1ce25fcda5865936a8e24ed0bc9703a6c639b0cc2d3396",
+    "webhook-dev/preparation-inventory-02.json": "f4f081ad692539a2577dcd49f0c9276080fd856bc9e98aa9e1d66ca0bb0c0081",
+    "environment_preparation_business.py": "0750fde682dadc46106ebdd52a925390c657836dc11cf7cbf844f745adc9aace"
+  }
+}
