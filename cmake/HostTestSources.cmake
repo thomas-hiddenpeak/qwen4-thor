@@ -117,6 +117,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_media_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/live_media_call.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_media_call.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/translation_media_call.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_client_ticket.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_client_secrets.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_webrtc_request.cpp

@@ -3,6 +3,10 @@
 #include <cmath>
 
 #include "../src/server/object_protocol.h"
+#include "../src/server/realtime_webrtc_request.h"
+#include "../src/server/translation_media_call.h"
+#include "q4t/server/application_routes.h"
+#include "q4t/server/realtime_client_ticket.h"
 #include "q4t/io/base64.h"
 #include "q4t/test.h"
 
@@ -119,5 +123,75 @@ Q4T_TEST(realtime_translation_flushes_before_close_and_preserves_update_order) {
   Q4T_CHECK(session.Completed() && events.back() == "session.closed");
   Q4T_CHECK(languages.size() == 3 && languages.back() == "fr");
   Q4T_CHECK(acquired == 3 && released == acquired);
+  return true;
+}
+
+Q4T_TEST(realtime_translation_webrtc_offer_and_ticket_use_exact_call_route) {
+  RealtimeWebRtcOffer offer;
+  const auto reply = ParseRealtimeWebRtcOffer("application/sdp", "v=0\r\n",
+                                              &offer, true);
+  Q4T_CHECK(reply.ok() && !offer.explicit_session &&
+            offer.session.GetString("model") == kRealtimeTranslationModel);
+  const std::string path = "/v1/realtime/translations/calls";
+  Q4T_CHECK(IsLiveMediaCreate("POST", path) && RealtimeGrantTarget("POST", path));
+  for (auto other : {path + "/", path + "?model=x", path + "/id/hangup"}) {
+    Q4T_CHECK(!IsTranslationCall(other) && !RealtimeGrantTarget("POST", other));
+  }
+  Q4T_CHECK(!IsRealtimeUpgrade("GET", path) && !RealtimeGrantTarget("GET", path));
+  return true;
+}
+
+Q4T_TEST(realtime_translation_webrtc_keeps_audio_on_track_and_drains_before_close) {
+  using namespace std::chrono_literals;
+  RealtimeTranslationNative native;
+  native.acquire = [](const std::string& id) {
+    return std::make_shared<RequestControl>(id, "", IMediaCall::Clock::now() + 5s);
+  };
+  native.release = [](const auto&) {};
+  const std::string expected(2880, char(26));
+  native.execute = [&](auto pcm, const auto& settings, const auto&,
+                       const auto& emit) -> ObjectReply {
+    std::string encoded;
+    if (pcm.size() < 240 || settings.language != "en" ||
+        !q4t::io::EncodeBase64(expected, 65536, &encoded) ||
+        !emit(Object({{"type", String("session.output_audio.delta")},
+                      {"delta", String(std::move(encoded))}})))
+      return Error(500, "fixture", "Invalid queued audio");
+    return {};
+  };
+  std::vector<std::string> wire;
+  std::string played;
+  const auto send = [&](char type, std::string_view payload) {
+    if (type == 'P') {
+      if (payload.size() != 960) return false;
+      played += payload;
+    } else if (type == 'D') {
+      auto kind = Parsed(std::string(payload)).GetString("type");
+      if (kind == "session.closed" && played != expected) return false;
+      wire.push_back(kind);
+    } else {
+      return false;
+    }
+    return true;
+  };
+  TranslationMediaCall call(std::move(native), 30, 65536, send, true);
+  Q4T_CHECK(call.Start(Parsed(R"({"model":"gpt-realtime-translate"})")).ok());
+  Q4T_CHECK(!call.Receive('P', "aa") && call.Receive('V', {}) &&
+            call.Receive('R', {}) && !call.Receive('P', "a"));
+  std::string pcm;
+  for (int i = 0; i < 7200; ++i) {
+    const int16_t sample = 8000 * std::sin(i * .2);
+    pcm.append(reinterpret_cast<const char*>(&sample), sizeof(sample));
+  }
+  for (size_t at = 0; at < pcm.size(); at += 960)
+    Q4T_CHECK(call.Receive('P', std::string_view(pcm).substr(at, 960)));
+  Q4T_CHECK(call.Receive('D', R"({"type":"session.close"})"));
+  const auto deadline = IMediaCall::Clock::now() + 3s;
+  while (!call.Finished() && IMediaCall::Clock::now() < deadline) {
+    Q4T_CHECK(call.Tick(IMediaCall::Clock::now()));
+    std::this_thread::sleep_for(2ms);
+  }
+  Q4T_CHECK(call.Finished() && call.Succeeded() && played == expected);
+  Q4T_CHECK(wire == std::vector<std::string>({"session.created", "session.closed"}));
   return true;
 }

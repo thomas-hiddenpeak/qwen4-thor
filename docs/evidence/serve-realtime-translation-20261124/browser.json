@@ -1,0 +1,147 @@
+{
+  "status": "ACCEPT_NATIVE_TRANSLATION_BROWSER_MEDIA",
+  "browser": "148.0.7778.0",
+  "source_guide": "https://developers.openai.com/api/docs/guides/realtime-translation",
+  "production_revision": 466,
+  "candidate": {
+    "binary": "00483cbe8c07c91e00115caa99ab765bce1d3d7e3cf4f89091ff18395149b7b1",
+    "ingress": "7b9770f3784c047bce10342b5a085c2b6ca3a231be285f7fae3580fffe60ec36",
+    "worker": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+    "driver": "fc8ac225fc04b315ae14bf642b1d18a9a557c1b95c5452a52d9497225617dfb9",
+    "browser_js": "e35d94a51aa1dab20d53b32686c4733af2102670e50796a4517991fab7b071ff"
+  },
+  "protocol_sources_sha256": "c71841a9f497c0aedefc93f9ecb411ad6aa73b73d5611e347cd6d4a55e7330e0",
+  "source_pcm_sha256": "1a14e32fabaa9602179352659aabfd65ba85ff0e2daab337389cb04ec8d95fbc",
+  "observation": {
+    "inbound": {
+      "packets": 303,
+      "decodedSamples": 334080,
+      "energy": 0.33340710658089345
+    },
+    "peak": 17013,
+    "streamCount": 1,
+    "receivedBeforeClose": true,
+    "inputOfferCandidates": 0,
+    "browser": "148.0.7778.0",
+    "input": "甚至出现交易几乎停滞的情况。",
+    "english": "There were even situations where trading nearly came to a standstill.",
+    "spoken": "There were even situations where trading nearly came to a standstill.",
+    "pcm_bytes": 338424,
+    "grant_audiences": [
+      401,
+      401
+    ],
+    "independent_chat": "42",
+    "wav_sha256": "53344daa41ad2fd76b84bbe73a90d04624729ff58f2e7dac75d57bb3cf7d531d",
+    "wire_objects": 22
+  },
+  "schema": [
+    {
+      "capture": "events.json",
+      "events": 22,
+      "types": {
+        "session.created": 1,
+        "session.input_transcript.delta": 7,
+        "session.output_transcript.delta": 13,
+        "session.closed": 1
+      }
+    }
+  ],
+  "host_cases": [
+    "chat_capabilities_reports_live_calls_and_credential_scope",
+    "live_media_frontend_authority_and_bidirectional_audio_after_close",
+    "live_media_http_start_returns_errors_and_one_owned_backend",
+    "live_media_native_plan_uses_private_pcm_without_exposing_wire_format",
+    "live_media_permissions_reject_257_before_startup",
+    "live_media_policy_separates_frontend_controls_from_rtp_and_sideband",
+    "realtime_translation_flushes_before_close_and_preserves_update_order",
+    "realtime_translation_secret_redeems_only_on_its_own_transport",
+    "realtime_translation_settings_preserve_effective_audio_contract",
+    "realtime_translation_webrtc_keeps_audio_on_track_and_drains_before_close",
+    "realtime_translation_webrtc_offer_and_ticket_use_exact_call_route",
+    "realtime_webrtc_offer_accepts_sdk_and_browser_encodings_atomically",
+    "realtime_webrtc_verified_sctp_and_sideband_share_one_conversation"
+  ],
+  "optional_gateway_cases": 10,
+  "one_lease": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 71.103,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "original": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 127.316,
+    "unchanged_default": true,
+    "phases": []
+  },
+  "initial_failure": "SDP and translated subtitles arrived. Chromium Web Audio capture without an HTML audio playback element recorded silence. A native-worker CPU tone isolated this: 189 RTP packets in both runs, 0 decoded samples without playback and 221760 with playback. The acceptance client now attaches streams[0] to an autoplay audio element as in the official guide.",
+  "cpu_browser_playback": [
+    {
+      "answer": [
+        "m=audio 9 UDP/TLS/RTP/SAVPF 111",
+        "a=sendrecv",
+        "m=application 9 UDP/DTLS/SCTP webrtc-datachannel"
+      ],
+      "packets": 190,
+      "obs": {
+        "streams": 1,
+        "frames": 109,
+        "peak": 0,
+        "track": "audio",
+        "state": "connected",
+        "inbound": {
+          "packets": 189,
+          "samples": 0,
+          "energy": 0
+        }
+      }
+    },
+    {
+      "answer": [
+        "m=audio 9 UDP/TLS/RTP/SAVPF 111",
+        "a=sendrecv",
+        "m=application 9 UDP/DTLS/SCTP webrtc-datachannel"
+      ],
+      "packets": 190,
+      "obs": {
+        "streams": 1,
+        "frames": 109,
+        "peak": 0.215631365776062,
+        "track": "audio",
+        "state": "connected",
+        "inbound": {
+          "packets": 189,
+          "samples": 221760,
+          "energy": 0.16481402013153781
+        }
+      }
+    }
+  ],
+  "boundaries": [
+    "One real Chromium loopback peer and one Chinese-to-English recording.",
+    "Browser playback and recording were verified automatically. Human listening and 24 h duration remain delegated.",
+    "Current installed default lacks the browser translation route. Capacity and sealed primary/fallback release verification follow.",
+    "The published guide describes this route outside the pinned OpenAPI path count. Candidate remains 179/231 exact success declarations."
+  ],
+  "raw": {
+    ".q4t-work/serve-responses-agents-20261123/translation-browser-business-02/create/sdk-result.json": "308e7bfeda52e158831912082e8e53bf0e620e97062a47a0e89111fd7fb4e172",
+    ".q4t-work/serve-responses-agents-20261123/translation-browser-business-02/create/events.json": "ca494577ec78c7a23e05c74ac4d61ad5467c7f2676690b2aa9ff416560603141",
+    ".q4t-work/serve-responses-agents-20261123/translation-browser-business-02/create/translated.wav": "53344daa41ad2fd76b84bbe73a90d04624729ff58f2e7dac75d57bb3cf7d531d",
+    ".q4t-work/serve-responses-agents-20261123/translation-browser-business-02/plan.json": "ab68ca28da96b72cf13e29a4bb79003b1b30d9f434bd1c886e6fc1e0f98ad021",
+    ".q4t-work/serve-responses-agents-20261123/translation-browser-business-02/result.json": "8f356ac975f862578795fbf2ed776a806ef6f367b883aa04a36e87d26a10777f",
+    ".q4t-work/serve-responses-agents-20261123/translation-browser-lease-02/exit.json": "91f92d2b8bdfe079be76639445f7c630b8101815791e16c177f3fb583f1b1c5d",
+    ".q4t-work/serve-responses-agents-20261123/translation-browser-business-01/result.json": "48cb76f729031f16640456661f27726c331bb5f8cf5c4f9c3983987493e5b3fb",
+    ".q4t-work/serve-responses-agents-20261123/translation-browser-lease-01/exit.json": "b6ab11081a868479a12cb05d2beb9a8faf46b70cc0a3d381370f7d8eb87cc068",
+    ".q4t-work/serve-responses-agents-20261123/translation-webrtc-dev/browser-track-cpu-01.json": "47ea51541da3613330059f92e1c53786ffe5a3e40c8611a236e753d7f609bd57",
+    ".q4t-work/serve-responses-agents-20261123/translation-webrtc-dev/browser-track-cpu-02.json": "c47697743422d1c52bb379658781d9f973bc2c93b1ba2fa5b4911c4ae2cff152",
+    ".q4t-work/serve-responses-agents-20261123/translation-webrtc-dev/schema.json": "b636b9a8e0013b0150614b7ec1a3ddbdf2cad094efc3f606297be9aa90f38723",
+    ".q4t-work/serve-responses-agents-20261123/translation-webrtc-dev/audit-02.json": "7233551dd875e3bf47ab3e4fc06dce3b6bc0af0ff5772a3bca80810f40ffc1a0",
+    ".q4t-work/serve-responses-agents-20261123/translation-webrtc-dev/gateway.log": "074db9efe0c26ea97f8761cc250936d3842d70f2e26c31f7d090c764fac8e54e",
+    ".q4t-work/serve-responses-agents-20261123/translation-webrtc-dev/methods.json": "90ecfe6a8bee7dbd7001fd56ab59381bb1284c3045f3f5bb2e4be3822da69846"
+  }
+}

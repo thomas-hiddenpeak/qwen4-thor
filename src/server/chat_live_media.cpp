@@ -9,6 +9,7 @@
 
 #include "object_protocol.h"
 #include "realtime_media_call.h"
+#include "translation_media_call.h"
 #include "realtime_webrtc_request.h"
 #include "q4t/server/realtime_chat_plan.h"
 #include "q4t/runtime/system_memory.h"
@@ -71,7 +72,7 @@ struct MediaOwner {
       }
       if (!call->Tick(Clock::now())) return false;
       if (call->Finished()) {
-        const bool drained = closing || process.Drain(stop);
+        const bool drained = (closing || process.Drain(stop)) && call->Succeeded();
         if (sideband) sideband->Finish(drained);
         return drained;
       }
@@ -189,7 +190,8 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
                                        const std::string& body,
                                        std::atomic<int>*& admission,
                                        std::string_view sip_id,
-                                       std::optional<std::string_view> offer_type) {
+                                       std::optional<std::string_view> offer_type,
+                                       bool translation) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) return;
   const auto client = http->Client();
@@ -211,7 +213,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
   }
   RealtimeWebRtcOffer offer;
   if (offer_type) {
-    const auto reply = ParseRealtimeWebRtcOffer(*offer_type, body, &offer);
+    const auto reply = ParseRealtimeWebRtcOffer(*offer_type, body, &offer, translation);
     if (!reply.ok()) {
       detail::SendError(fd, reply.http_status, reply.ClientMessage(), {}, reply.ClientCode(),
                         reply.value.GetString("param"));
@@ -219,7 +221,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     }
     request = std::move(offer.session);
     if (const auto* grant = http->RealtimeStartup()) {
-      if (offer.explicit_session &&
+      if (!translation && offer.explicit_session &&
           grant->GetString("type") != request.GetString("type")) {
         detail::SendError(fd, 400, "Call and credential session types differ", {},
                           "realtime_session_type_invalid", "session.type");
@@ -315,7 +317,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
                            .count();
   constexpr auto journal_budget =
       LiveSideband::kReplayBytes + LiveSideband::kCommandBytes + (8ULL << 20);
-  if (client.Scoped()) {
+  if (client.Scoped() && !translation) {
     try {
       auto memory = std::make_unique<HttpBodyLease>(realtime_host_budget_);
       if (memory->Acquire(journal_budget + (realtime ? 2 * kWebSocketMessageLimit : 0)))
@@ -324,7 +326,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
       // Only attaching a sideband requires a replay owner.
     }
   }
-  if (client.Scoped() && realtime && !owner->sideband) {
+  if (client.Scoped() && realtime && !translation && !owner->sideband) {
     detail::SendError(fd, 503, "Call control memory unavailable", {}, "memory_pressure");
     return;
   }
@@ -333,7 +335,11 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
   };
   const auto* startup = realtime ? &request : request.Find("session");
   const bool data_channel = !sip && answer.find("\nm=application ") != answer.npos;
-  if (transcription) {
+  if (translation) {
+    owner->call = std::make_unique<TranslationMediaCall>(
+        MakeRealtimeTranslationNative(client), asr_limits_.max_audio_seconds,
+        message_bytes, output, data_channel);
+  } else if (transcription) {
     owner->call = std::make_unique<RealtimeMediaCall>(
         PrepareRealtimeInput(client), asr_limits_.max_audio_seconds, message_bytes,
         output, owner->sideband, data_channel);
@@ -398,7 +404,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     slot->hangup.store(false);
     std::promise<bool> completion;
     slot->completion = completion.get_future().share();
-    slot->attachable.store(!sip);
+    slot->attachable.store(!sip && !translation);
     slot->sideband = owner->sideband;
     slot->finished.store(false);
     try {

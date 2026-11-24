@@ -48,7 +48,7 @@ std::string_view BearerCredential(std::string_view auth) {
 }
 
 bool RealtimeGrantTarget(std::string_view method, std::string_view path) {
-  if (method == "POST") return path == "/v1/realtime/calls";
+  if (method == "POST") return IsRealtimeOffer(path);
   if (method != "GET") return false;
   if (ValidRealtimeTranslationTarget(path)) return true;
   if (path == "/v1/realtime" || path == "/v1/realtime?intent=transcription")

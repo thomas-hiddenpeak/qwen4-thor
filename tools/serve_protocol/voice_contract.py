@@ -155,15 +155,17 @@ def add_voice_routes(paths, response, error):
               body=content('application/json', legacy_body))
     paths[conversation]['post']['requestBody']['required'] = False
     sdp = dict(type='string',minLength=1,maxLength=65535)
-    form = obj(dict(sdp=sdp, session={'$ref':realtime+'session'}), ['sdp'])
-    operation('post','/v1/realtime/calls', {'201':dict(description='WebRTC SDP answer',
-              headers={'Location':dict(required=True, schema=dict(type='string',
-                  pattern='^/v1/realtime/calls/rtc_[A-Za-z0-9_-]+$'))},
-              content=content('application/sdp',sdp))}, body={
-                  **content('application/sdp',sdp),
-                  'multipart/form-data':dict(schema=form, encoding={
-                      'sdp':dict(contentType='application/sdp'),
-                      'session':dict(contentType='application/json')})})
+    for path, session_shape in (('/v1/realtime/calls', 'session'),
+                                ('/v1/realtime/translations/calls', 'translation_session_create')):
+        form = obj(dict(sdp=sdp, session={'$ref':realtime+session_shape}), ['sdp'])
+        operation('post',path, {'201':dict(description='WebRTC SDP answer',
+                  headers={'Location':dict(required=True, schema=dict(type='string',
+                      pattern='^/v1/realtime/calls/rtc_[A-Za-z0-9_-]+$'))},
+                  content=content('application/sdp',sdp))}, body={
+                      **content('application/sdp',sdp),
+                      'multipart/form-data':dict(schema=form, encoding={
+                          'sdp':dict(contentType='application/sdp'),
+                          'session':dict(contentType='application/json')})})
     operation('post', '/v1/realtime/calls/{call_id}/accept',
               {'200': {'description': 'Realtime session ready and SIP answer acknowledged; empty body'}},
               body=content('application/json', {'$ref':realtime+'call_accept'}))

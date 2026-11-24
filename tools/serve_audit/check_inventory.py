@@ -153,8 +153,12 @@ def current_surface(root):
             'ReadLiveForkState(*objects_, access, std::string(source))' not in live or
             not all('LoadLiveFork(fd, client, source, &state)' in unit for unit in (live, media))):
         raise ValueError('review owner-scoped fork dispatch and checkpoint loading')
-    if ('HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type)' not in dispatch or
-            'ParseRealtimeWebRtcOffer(*offer_type, body, &offer)' not in media or
+    if ('HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type,' not in dispatch or
+            'IsTranslationCall(path));' not in dispatch or
+            'return target == "/v1/realtime/calls" || IsTranslationCall(target);' not in application_routes or
+            'owner->call = std::make_unique<TranslationMediaCall>(' not in media or
+            'slot->attachable.store(!sip && !translation);' not in media or
+            'ParseRealtimeWebRtcOffer(*offer_type, body, &offer, translation)' not in media or
             'slot.session != id || slot.client != http->Client().Id()' not in media or
             'RealtimeCarrier::kWebRtcData' not in media):
         raise ValueError('review SDP negotiation, data channel and call ownership')
@@ -169,7 +173,7 @@ def current_surface(root):
             'access.AuthenticateRealtime(ticket, binding.token, now)' not in native or
             'access.StillActive(identity)' not in native):
         raise ValueError('review Realtime credential issuing key, verified owner and allowed targets')
-    routes.append(('/v1/realtime/calls', 'POST'))
+    routes.extend((path, 'POST') for path in ('/v1/realtime/calls', '/v1/realtime/translations/calls'))
     routes.append(('/v1/live/sessions', 'POST'))
     fork = '/v1/live/sessions/{session_id}/fork'
     for method in ('GET', 'POST'):
