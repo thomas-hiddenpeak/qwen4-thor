@@ -24,6 +24,8 @@
 #include "q4t/server/container_types_data.h"
 #include "q4t/server/containers.h"
 #include "q4t/server/agent_registration_types_data.h"
+#include "q4t/server/agent_automation.h"
+#include "q4t/server/automation_types_data.h"
 #include "q4t/server/realtime_conversation.h"
 #include "q4t/server/responses_item_types_data.h"
 #include "q4t/server/realtime_shape.h"
@@ -440,6 +442,22 @@ Status ValidateAssistant(const Json& value, AssistantShape shape,
     case AssistantShape::kStepQuery: root = "step_query"; break;
   }
   return Validate(graph, value, root, error, "", true);
+}
+
+Status ValidateAutomation(const Json& value, AutomationShape shape,
+                          ChatPlanError* error) {
+  static const Graph graph(automation_types::kData, "q4t-openai-automation-types-v1");
+  const char* root = "";
+  switch (shape) {
+    case AutomationShape::kCreate: root = "create"; break;
+    case AutomationShape::kUpdate: root = "update"; break;
+    case AutomationShape::kResource: root = "resource"; break;
+    case AutomationShape::kDeleted: root = "deleted"; break;
+    case AutomationShape::kQuery: root = "query"; break;
+    case AutomationShape::kInvocation: root = "invocation"; break;
+    case AutomationShape::kInvocationQuery: root = "invocation_query"; break;
+  }
+  return Validate(graph, value, root, error, "");
 }
 
 Status ValidateAgentRegistration(const Json& value, AgentRegistrationShape shape,

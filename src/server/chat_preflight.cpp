@@ -112,7 +112,8 @@ void ChatServer::HandleConfig(int fd) {
       R"(,"vector_ingestion":)" +
       ApplicationStartupJson(vector_jobs_.StartupHealth()) +
       R"(,"response_scanner":)" +
-      ApplicationStartupJson(background_scanner_.Health()) + "}," +
+      ApplicationStartupJson(background_scanner_.Health()) +
+      R"(,"automation_dispatcher":)" + ApplicationStartupJson(automation_dispatcher_.Health()) + "}," +
       R"("application_state_health":{"state":")" +
       detail::JsonEscape(health.state) + '"' + R"(,"key_admin_ready":)" +
       (state_key_admin_ && state_key_admin_->Alive() ? "true" : "false") +
@@ -158,6 +159,7 @@ void ChatServer::HandleConfig(int fd) {
       R"(,"recovery_pending":)" + std::to_string(jobs.recovery_pending) +
       R"(,"recovered":)" + std::to_string(jobs.recovered) +
       R"(,"interrupted":)" + std::to_string(jobs.interrupted) +
+      R"(,"automation_errors":)" + std::to_string(jobs.automation_errors) +
       R"(,"recovery_errors":)" + std::to_string(jobs.recovery_errors) + "}," +
       R"("responses_reconciliation":{"state":")" + jobs_state +
       R"(","readiness_dependency":false,"owned":)" +

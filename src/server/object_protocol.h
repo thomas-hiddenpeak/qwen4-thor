@@ -66,6 +66,10 @@ inline std::string Kind(ObjectKind kind) {
       return "trace";
     case ObjectKind::kLiveRecording:
       return "live_recording";
+    case ObjectKind::kAutomation:
+      return "automation";
+    case ObjectKind::kAutomationInvocation:
+      return "invocation";
     case ObjectKind::kAgentSession:
       return "agent_session";
     case ObjectKind::kEnvironment:
@@ -94,7 +98,7 @@ inline std::string Kind(ObjectKind kind) {
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kSkillVersion); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kAutomationInvocation); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

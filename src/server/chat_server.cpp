@@ -1112,6 +1112,8 @@ void ChatServer::RecoverApplicationJobs() noexcept {
   if (auto* background = background_.Get()) {
     background_scanner_.Try(
         [&] { background->StartRecovery(clients_, PlanningConfig()); });
+    automation_dispatcher_.Try(
+        [&] { background->StartAutomations(clients_, PlanningConfig()); });
   }
 }
 

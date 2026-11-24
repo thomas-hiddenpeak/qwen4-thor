@@ -669,6 +669,71 @@ inline bool IsAssistantObservation(std::string_view method,
                                   AssistantRunRouteKind::kCancel);
 }
 
+enum class AutomationRouteKind {
+  kNone, kCollection, kResource, kPause, kResume, kInvocations, kInvocation
+};
+struct AutomationRoute {
+  AutomationRouteKind kind = AutomationRouteKind::kNone;
+  std::string_view automation{};
+  std::string_view invocation{};
+};
+
+inline AutomationRoute ParseAutomationRoute(std::string_view target) {
+  using Kind = AutomationRouteKind;
+  if (target.find('#') != target.npos) return {};
+  auto path = target.substr(0, target.find('?'));
+  constexpr std::string_view root = "/v1/agents/automations";
+  if (path == root) return {Kind::kCollection};
+  if (!path.starts_with(root) || path.size() <= root.size() ||
+      path[root.size()] != '/')
+    return {};
+  path.remove_prefix(root.size() + 1);
+  const auto slash = path.find('/');
+  const auto id = path.substr(0, slash);
+  if (!id.starts_with("automation_") || id.size() <= std::string_view("automation_").size() ||
+      !ValidApplicationId(id))
+    return {};
+  if (slash == path.npos) return {Kind::kResource, id};
+  path.remove_prefix(slash + 1);
+  if (path == "pause") return {Kind::kPause, id};
+  if (path == "resume") return {Kind::kResume, id};
+  if (path == "invocations") return {Kind::kInvocations, id};
+  constexpr std::string_view invocations = "invocations/";
+  if (!path.starts_with(invocations)) return {};
+  path.remove_prefix(invocations.size());
+  return path.starts_with("invocation_") && path.size() > std::string_view("invocation_").size() &&
+                 ValidApplicationId(path)
+             ? AutomationRoute{Kind::kInvocation, id, path}
+             : AutomationRoute{};
+}
+
+inline bool IsAutomationAction(std::string_view target) {
+  const auto kind = ParseAutomationRoute(target).kind;
+  return kind == AutomationRouteKind::kPause ||
+         kind == AutomationRouteKind::kResume ||
+         kind == AutomationRouteKind::kInvocations;
+}
+
+inline bool AutomationMethodAllowed(std::string_view method,
+                                    AutomationRouteKind kind) {
+  using Kind = AutomationRouteKind;
+  switch (kind) {
+    case Kind::kCollection:
+    case Kind::kInvocations:
+      return method == "POST" || method == "GET";
+    case Kind::kResource:
+      return method == "GET" || method == "POST" || method == "DELETE";
+    case Kind::kPause:
+    case Kind::kResume:
+      return method == "POST";
+    case Kind::kInvocation:
+      return method == "GET";
+    case Kind::kNone:
+      return false;
+  }
+  return false;
+}
+
 inline bool IsAgentRegistrationTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   if (target.find('#') != target.npos) return false;
@@ -830,7 +895,8 @@ inline HostedRoute ParseHostedRoute(std::string_view target) {
 }
 
 inline bool IsManagedAgentTarget(std::string_view target) {
-  return ParseHostedRoute(target).kind != HostedRouteKind::kNone ||
+  return ParseAutomationRoute(target).kind != AutomationRouteKind::kNone ||
+         ParseHostedRoute(target).kind != HostedRouteKind::kNone ||
          IsVaultTarget(target) || IsEnvironmentTemplateTarget(target) ||
          IsAgentRegistrationTarget(target) ||
          ParseAgentSessionRoute(target).kind != AgentSessionRouteKind::kNone;
@@ -839,6 +905,9 @@ inline bool IsManagedAgentTarget(std::string_view target) {
 inline bool ManagedAgentMethodAllowed(std::string_view method,
                                       std::string_view target) {
   using Kind = AgentSessionRouteKind;
+  const auto automation = ParseAutomationRoute(target).kind;
+  if (automation != AutomationRouteKind::kNone)
+    return AutomationMethodAllowed(method, automation);
   const auto hosted = ParseHostedRoute(target).kind;
   if (hosted != HostedRouteKind::kNone)
     return method == "GET" || (method == "POST" && hosted != HostedRouteKind::kResource);

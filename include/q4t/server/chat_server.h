@@ -507,6 +507,7 @@ class ChatServer {
   ApplicationOwner<BatchJobs> batches_;
   ApplicationOwner<VectorJobs> vector_jobs_;
   ApplicationStartup background_scanner_;
+  ApplicationStartup automation_dispatcher_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
   void FreeSeqId(int seq_id);

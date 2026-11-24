@@ -36,6 +36,7 @@
 #include "q4t/server/agent_environment.h"
 #include "q4t/server/agent_session.h"
 #include "q4t/server/files_http.h"
+#include "q4t/server/agent_automation.h"
 #include "q4t/server/live_recording_store.h"
 #include "q4t/server/batch_api.h"
 #include "q4t/server/vector_store_api.h"
@@ -563,6 +564,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
       if (method == "POST" && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
+                                 IsAutomationAction(path) ||
                                  path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||
                                  IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
@@ -859,6 +861,9 @@ void ChatServer::Dispatch(int fd, const std::string& method,
             ? HandleAssistantRegistry(*objects_, method, path, body,
                                       PlanningConfig(fd), access,
                                       !embedding_model_dir_.empty())
+        : ParseAutomationRoute(path).kind != AutomationRouteKind::kNone
+            ? HandleAgentAutomation(*objects_, background_.Get(),
+                                    PlanningConfig(fd), access, method, path, body)
         : IsAgentRegistrationTarget(path)
             ? HandleAgentRegistration(*objects_, method, path, body,
                                       PlanningConfig(fd), access)

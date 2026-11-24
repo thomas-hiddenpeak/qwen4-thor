@@ -23155,6 +23155,3375 @@
       "required": [],
       "additionalProperties": false
     },
+    "automation_0": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_1"
+        },
+        {
+          "$ref": "#/$defs/automation_156"
+        }
+      ]
+    },
+    "automation_1": {
+      "type": "object",
+      "properties": {
+        "expression": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "metadata": {
+          "$ref": "#/$defs/automation_3"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "target": {
+          "$ref": "#/$defs/automation_5"
+        },
+        "timezone": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_155"
+        }
+      },
+      "required": [
+        "expression",
+        "name",
+        "target",
+        "timezone",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_2": {
+      "type": "string"
+    },
+    "automation_3": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_4"
+        }
+      ]
+    },
+    "automation_4": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_5": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_6"
+        },
+        {
+          "$ref": "#/$defs/automation_153"
+        }
+      ]
+    },
+    "automation_6": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "$ref": "#/$defs/automation_7"
+        },
+        "agent_id": {
+          "$ref": "#/$defs/automation_19"
+        },
+        "environment": {
+          "$ref": "#/$defs/automation_95"
+        },
+        "input": {
+          "$ref": "#/$defs/automation_139"
+        },
+        "metadata": {
+          "$ref": "#/$defs/automation_150"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_152"
+        },
+        "vault_ids": {
+          "$ref": "#/$defs/automation_66"
+        }
+      },
+      "required": [
+        "environment",
+        "input",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_7": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_8"
+        }
+      ]
+    },
+    "automation_8": {
+      "type": "object",
+      "properties": {
+        "compaction": {
+          "$ref": "#/$defs/automation_9"
+        },
+        "experimental": {
+          "$ref": "#/$defs/automation_15"
+        },
+        "instructions": {
+          "$ref": "#/$defs/automation_18"
+        },
+        "model": {
+          "$ref": "#/$defs/automation_19"
+        },
+        "multi_agent": {
+          "$ref": "#/$defs/automation_20"
+        },
+        "reasoning": {
+          "$ref": "#/$defs/automation_25"
+        },
+        "service_tier": {
+          "$ref": "#/$defs/automation_39"
+        },
+        "text": {
+          "$ref": "#/$defs/automation_45"
+        },
+        "tools": {
+          "$ref": "#/$defs/automation_55"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_9": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_11"
+        }
+      ]
+    },
+    "automation_10": {
+      "type": "null"
+    },
+    "automation_11": {
+      "type": "object",
+      "properties": {
+        "async": {
+          "$ref": "#/$defs/automation_12"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_12": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_13"
+        },
+        {
+          "$ref": "#/$defs/automation_14"
+        }
+      ]
+    },
+    "automation_13": {
+      "const": false
+    },
+    "automation_14": {
+      "const": true
+    },
+    "automation_15": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_16"
+        }
+      ]
+    },
+    "automation_16": {
+      "type": "object",
+      "properties": {
+        "time_awareness": {
+          "$ref": "#/$defs/automation_17"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_17": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_13"
+        },
+        {
+          "$ref": "#/$defs/automation_14"
+        }
+      ]
+    },
+    "automation_18": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_2"
+        }
+      ]
+    },
+    "automation_19": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_2"
+        }
+      ]
+    },
+    "automation_20": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_21"
+        }
+      ]
+    },
+    "automation_21": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/automation_22"
+        },
+        "max_concurrent_subagents": {
+          "$ref": "#/$defs/automation_23"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "automation_22": {
+      "type": "boolean"
+    },
+    "automation_23": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_24"
+        }
+      ]
+    },
+    "automation_24": {
+      "type": "number"
+    },
+    "automation_25": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_26"
+        }
+      ]
+    },
+    "automation_26": {
+      "type": "object",
+      "properties": {
+        "effort": {
+          "$ref": "#/$defs/automation_27"
+        },
+        "summary": {
+          "$ref": "#/$defs/automation_35"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_27": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_28"
+        },
+        {
+          "$ref": "#/$defs/automation_29"
+        },
+        {
+          "$ref": "#/$defs/automation_30"
+        },
+        {
+          "$ref": "#/$defs/automation_31"
+        },
+        {
+          "$ref": "#/$defs/automation_32"
+        },
+        {
+          "$ref": "#/$defs/automation_33"
+        },
+        {
+          "$ref": "#/$defs/automation_34"
+        }
+      ]
+    },
+    "automation_28": {
+      "const": "none"
+    },
+    "automation_29": {
+      "const": "minimal"
+    },
+    "automation_30": {
+      "const": "low"
+    },
+    "automation_31": {
+      "const": "medium"
+    },
+    "automation_32": {
+      "const": "high"
+    },
+    "automation_33": {
+      "const": "xhigh"
+    },
+    "automation_34": {
+      "const": "max"
+    },
+    "automation_35": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_36"
+        },
+        {
+          "$ref": "#/$defs/automation_37"
+        },
+        {
+          "$ref": "#/$defs/automation_38"
+        }
+      ]
+    },
+    "automation_36": {
+      "const": "concise"
+    },
+    "automation_37": {
+      "const": "detailed"
+    },
+    "automation_38": {
+      "const": "auto"
+    },
+    "automation_39": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_38"
+        },
+        {
+          "$ref": "#/$defs/automation_40"
+        },
+        {
+          "$ref": "#/$defs/automation_41"
+        },
+        {
+          "$ref": "#/$defs/automation_42"
+        },
+        {
+          "$ref": "#/$defs/automation_43"
+        },
+        {
+          "$ref": "#/$defs/automation_44"
+        }
+      ]
+    },
+    "automation_40": {
+      "const": "default"
+    },
+    "automation_41": {
+      "const": "flex"
+    },
+    "automation_42": {
+      "const": "priority"
+    },
+    "automation_43": {
+      "const": "fast"
+    },
+    "automation_44": {
+      "const": "ultrafast"
+    },
+    "automation_45": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_46"
+        }
+      ]
+    },
+    "automation_46": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "$ref": "#/$defs/automation_47"
+        },
+        "verbosity": {
+          "$ref": "#/$defs/automation_54"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_47": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_48"
+        },
+        {
+          "$ref": "#/$defs/automation_50"
+        }
+      ]
+    },
+    "automation_48": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/automation_49"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_49": {
+      "const": "text"
+    },
+    "automation_50": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "$ref": "#/$defs/automation_51"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_53"
+        }
+      },
+      "required": [
+        "schema",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_51": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_52"
+      }
+    },
+    "automation_52": {},
+    "automation_53": {
+      "const": "json_schema"
+    },
+    "automation_54": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_30"
+        },
+        {
+          "$ref": "#/$defs/automation_31"
+        },
+        {
+          "$ref": "#/$defs/automation_32"
+        }
+      ]
+    },
+    "automation_55": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_56"
+        }
+      ]
+    },
+    "automation_56": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_57"
+      }
+    },
+    "automation_57": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_58"
+        },
+        {
+          "$ref": "#/$defs/automation_61"
+        },
+        {
+          "$ref": "#/$defs/automation_63"
+        },
+        {
+          "$ref": "#/$defs/automation_65"
+        },
+        {
+          "$ref": "#/$defs/automation_83"
+        },
+        {
+          "$ref": "#/$defs/automation_91"
+        },
+        {
+          "$ref": "#/$defs/automation_93"
+        }
+      ]
+    },
+    "automation_58": {
+      "type": "object",
+      "properties": {
+        "defer_loading": {
+          "$ref": "#/$defs/automation_17"
+        },
+        "description": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "parameters": {
+          "$ref": "#/$defs/automation_59"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_60"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "parameters",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_59": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_52"
+      }
+    },
+    "automation_60": {
+      "const": "function"
+    },
+    "automation_61": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/automation_62"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_62": {
+      "const": "tool_search"
+    },
+    "automation_63": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/automation_17"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_64"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_64": {
+      "const": "programmatic_tool_calling"
+    },
+    "automation_65": {
+      "type": "object",
+      "properties": {
+        "allowed_tools": {
+          "$ref": "#/$defs/automation_66"
+        },
+        "connection_origin": {
+          "$ref": "#/$defs/automation_68"
+        },
+        "credential_id": {
+          "$ref": "#/$defs/automation_18"
+        },
+        "request_metadata": {
+          "$ref": "#/$defs/automation_71"
+        },
+        "required": {
+          "$ref": "#/$defs/automation_17"
+        },
+        "server_label": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "transport": {
+          "$ref": "#/$defs/automation_73"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_82"
+        }
+      },
+      "required": [
+        "server_label",
+        "transport",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_66": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_67"
+        }
+      ]
+    },
+    "automation_67": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_68": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_69"
+        },
+        {
+          "$ref": "#/$defs/automation_70"
+        }
+      ]
+    },
+    "automation_69": {
+      "const": "service"
+    },
+    "automation_70": {
+      "const": "environment"
+    },
+    "automation_71": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_72"
+        }
+      ]
+    },
+    "automation_72": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_52"
+      }
+    },
+    "automation_73": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_74"
+        },
+        {
+          "$ref": "#/$defs/automation_78"
+        }
+      ]
+    },
+    "automation_74": {
+      "type": "object",
+      "properties": {
+        "authorization": {
+          "$ref": "#/$defs/automation_18"
+        },
+        "headers": {
+          "$ref": "#/$defs/automation_75"
+        },
+        "server_url": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_77"
+        }
+      },
+      "required": [
+        "server_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_75": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_76"
+        }
+      ]
+    },
+    "automation_76": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_77": {
+      "const": "http"
+    },
+    "automation_78": {
+      "type": "object",
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/automation_66"
+        },
+        "command": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "cwd": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "env": {
+          "$ref": "#/$defs/automation_79"
+        },
+        "env_vars": {
+          "$ref": "#/$defs/automation_66"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_81"
+        }
+      },
+      "required": [
+        "command",
+        "cwd",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_79": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_80"
+        }
+      ]
+    },
+    "automation_80": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_81": {
+      "const": "stdio"
+    },
+    "automation_82": {
+      "const": "mcp"
+    },
+    "automation_83": {
+      "type": "object",
+      "properties": {
+        "allowed_domains": {
+          "$ref": "#/$defs/automation_66"
+        },
+        "context_size": {
+          "$ref": "#/$defs/automation_54"
+        },
+        "location": {
+          "$ref": "#/$defs/automation_84"
+        },
+        "mode": {
+          "$ref": "#/$defs/automation_86"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_90"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_84": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_85"
+        }
+      ]
+    },
+    "automation_85": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "$ref": "#/$defs/automation_18"
+        },
+        "country": {
+          "$ref": "#/$defs/automation_18"
+        },
+        "region": {
+          "$ref": "#/$defs/automation_18"
+        },
+        "timezone": {
+          "$ref": "#/$defs/automation_18"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_86": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_87"
+        },
+        {
+          "$ref": "#/$defs/automation_88"
+        },
+        {
+          "$ref": "#/$defs/automation_89"
+        }
+      ]
+    },
+    "automation_87": {
+      "const": "disabled"
+    },
+    "automation_88": {
+      "const": "cached"
+    },
+    "automation_89": {
+      "const": "live"
+    },
+    "automation_90": {
+      "const": "web_search"
+    },
+    "automation_91": {
+      "type": "object",
+      "properties": {
+        "include_screenshots": {
+          "$ref": "#/$defs/automation_17"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_92"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_92": {
+      "const": "computer_use"
+    },
+    "automation_93": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/automation_94"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_94": {
+      "const": "automations"
+    },
+    "automation_95": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_96"
+        },
+        {
+          "$ref": "#/$defs/automation_97"
+        },
+        {
+          "$ref": "#/$defs/automation_136"
+        },
+        {
+          "$ref": "#/$defs/automation_138"
+        }
+      ]
+    },
+    "automation_96": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/automation_28"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_97": {
+      "type": "object",
+      "properties": {
+        "capability_directories": {
+          "$ref": "#/$defs/automation_66"
+        },
+        "container_size": {
+          "$ref": "#/$defs/automation_98"
+        },
+        "desktop": {
+          "$ref": "#/$defs/automation_101"
+        },
+        "env": {
+          "$ref": "#/$defs/automation_103"
+        },
+        "environment_id": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "environment_template_id": {
+          "$ref": "#/$defs/automation_19"
+        },
+        "files": {
+          "$ref": "#/$defs/automation_106"
+        },
+        "network": {
+          "$ref": "#/$defs/automation_113"
+        },
+        "packages": {
+          "$ref": "#/$defs/automation_118"
+        },
+        "plugins": {
+          "$ref": "#/$defs/automation_120"
+        },
+        "setup_commands": {
+          "$ref": "#/$defs/automation_126"
+        },
+        "skills": {
+          "$ref": "#/$defs/automation_129"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_135"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_98": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_31"
+        },
+        {
+          "$ref": "#/$defs/automation_99"
+        },
+        {
+          "$ref": "#/$defs/automation_100"
+        }
+      ]
+    },
+    "automation_99": {
+      "const": "small"
+    },
+    "automation_100": {
+      "const": "large"
+    },
+    "automation_101": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_102"
+        }
+      ]
+    },
+    "automation_102": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/automation_22"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "automation_103": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_104"
+        }
+      ]
+    },
+    "automation_104": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_105": false,
+    "automation_106": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_107"
+        }
+      ]
+    },
+    "automation_107": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_108"
+      }
+    },
+    "automation_108": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_109"
+        },
+        {
+          "$ref": "#/$defs/automation_111"
+        }
+      ]
+    },
+    "automation_109": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "path": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_110"
+        }
+      },
+      "required": [
+        "file_id",
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_110": {
+      "const": "file_id"
+    },
+    "automation_111": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "path": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_112"
+        }
+      },
+      "required": [
+        "data",
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_112": {
+      "const": "inline"
+    },
+    "automation_113": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_114"
+        }
+      ]
+    },
+    "automation_114": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/automation_115"
+        },
+        "allowed_domains": {
+          "$ref": "#/$defs/automation_66"
+        },
+        "blocked_domains": {
+          "$ref": "#/$defs/automation_66"
+        }
+      },
+      "required": [
+        "access"
+      ],
+      "additionalProperties": false
+    },
+    "automation_115": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_87"
+        },
+        {
+          "$ref": "#/$defs/automation_116"
+        },
+        {
+          "$ref": "#/$defs/automation_117"
+        }
+      ]
+    },
+    "automation_116": {
+      "const": "enabled"
+    },
+    "automation_117": {
+      "const": "restricted"
+    },
+    "automation_118": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_119"
+        }
+      ]
+    },
+    "automation_119": {
+      "type": "object",
+      "properties": {
+        "npm": {
+          "$ref": "#/$defs/automation_66"
+        },
+        "python": {
+          "$ref": "#/$defs/automation_66"
+        },
+        "system": {
+          "$ref": "#/$defs/automation_66"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_120": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_121"
+        }
+      ]
+    },
+    "automation_121": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_122"
+      }
+    },
+    "automation_122": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "source": {
+          "$ref": "#/$defs/automation_123"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_112"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_123": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "media_type": {
+          "$ref": "#/$defs/automation_124"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_125"
+        }
+      },
+      "required": [
+        "data",
+        "media_type",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_124": {
+      "const": "application/zip"
+    },
+    "automation_125": {
+      "const": "base64"
+    },
+    "automation_126": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_127"
+        }
+      ]
+    },
+    "automation_127": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_128"
+      }
+    },
+    "automation_128": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "cwd": {
+          "$ref": "#/$defs/automation_18"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "automation_129": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_130"
+        }
+      ]
+    },
+    "automation_130": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_131"
+      }
+    },
+    "automation_131": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_132"
+        },
+        {
+          "$ref": "#/$defs/automation_134"
+        }
+      ]
+    },
+    "automation_132": {
+      "type": "object",
+      "properties": {
+        "skill_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_133"
+        },
+        "version": {
+          "$ref": "#/$defs/automation_18"
+        }
+      },
+      "required": [
+        "skill_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_133": {
+      "const": "skill_reference"
+    },
+    "automation_134": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "source": {
+          "$ref": "#/$defs/automation_123"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_112"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_135": {
+      "const": "openai_hosted"
+    },
+    "automation_136": {
+      "type": "object",
+      "properties": {
+        "capability_directories": {
+          "$ref": "#/$defs/automation_66"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_137"
+        },
+        "workspace_directory": {
+          "$ref": "#/$defs/automation_2"
+        }
+      },
+      "required": [
+        "type",
+        "workspace_directory"
+      ],
+      "additionalProperties": false
+    },
+    "automation_137": {
+      "const": "self_hosted"
+    },
+    "automation_138": {
+      "type": "object",
+      "properties": {
+        "capability_directories": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "container_size": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "desktop": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "env": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "environment_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "environment_template_id": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "files": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "network": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "packages": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "plugins": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "setup_commands": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "skills": {
+          "$ref": "#/$defs/automation_105"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_135"
+        }
+      },
+      "required": [
+        "environment_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_139": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_140"
+      }
+    },
+    "automation_140": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/automation_141"
+        },
+        "role": {
+          "$ref": "#/$defs/automation_147"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_148"
+        }
+      },
+      "required": [
+        "content",
+        "role"
+      ],
+      "additionalProperties": false
+    },
+    "automation_141": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_142"
+      }
+    },
+    "automation_142": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_143"
+        },
+        {
+          "$ref": "#/$defs/automation_145"
+        }
+      ]
+    },
+    "automation_143": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_144"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_144": {
+      "const": "input_text"
+    },
+    "automation_145": {
+      "type": "object",
+      "properties": {
+        "image_url": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_146"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_146": {
+      "const": "input_image"
+    },
+    "automation_147": {
+      "const": "user"
+    },
+    "automation_148": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_149"
+        }
+      ]
+    },
+    "automation_149": {
+      "const": "message"
+    },
+    "automation_150": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_151"
+        }
+      ]
+    },
+    "automation_151": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_152": {
+      "const": "new_session"
+    },
+    "automation_153": {
+      "type": "object",
+      "properties": {
+        "instructions": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "session_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_154"
+        }
+      },
+      "required": [
+        "instructions",
+        "session_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_154": {
+      "const": "existing_session"
+    },
+    "automation_155": {
+      "const": "periodic"
+    },
+    "automation_156": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/$defs/automation_157"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "run_at": {
+          "$ref": "#/$defs/automation_24"
+        },
+        "target": {
+          "$ref": "#/$defs/automation_5"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_159"
+        }
+      },
+      "required": [
+        "name",
+        "run_at",
+        "target",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_157": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_158"
+        }
+      ]
+    },
+    "automation_158": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_159": {
+      "const": "once"
+    },
+    "automation_160": {
+      "type": "object",
+      "properties": {
+        "expression": {
+          "$ref": "#/$defs/automation_19"
+        },
+        "metadata": {
+          "$ref": "#/$defs/automation_161"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_19"
+        },
+        "run_at": {
+          "$ref": "#/$defs/automation_23"
+        },
+        "target": {
+          "$ref": "#/$defs/automation_163"
+        },
+        "timezone": {
+          "$ref": "#/$defs/automation_19"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_161": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_162"
+        }
+      ]
+    },
+    "automation_162": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_163": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_6"
+        },
+        {
+          "$ref": "#/$defs/automation_153"
+        }
+      ]
+    },
+    "automation_164": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_165"
+        },
+        {
+          "$ref": "#/$defs/automation_247"
+        }
+      ]
+    },
+    "automation_165": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/automation_24"
+        },
+        "created_by": {
+          "$ref": "#/$defs/automation_166"
+        },
+        "expression": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "metadata": {
+          "$ref": "#/$defs/automation_171"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "object": {
+          "$ref": "#/$defs/automation_172"
+        },
+        "status": {
+          "$ref": "#/$defs/automation_173"
+        },
+        "target": {
+          "$ref": "#/$defs/automation_176"
+        },
+        "timezone": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_155"
+        }
+      },
+      "required": [
+        "created_at",
+        "created_by",
+        "expression",
+        "id",
+        "metadata",
+        "name",
+        "object",
+        "status",
+        "target",
+        "timezone",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_166": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_167"
+        },
+        {
+          "$ref": "#/$defs/automation_169"
+        }
+      ]
+    },
+    "automation_167": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/automation_168"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_168": {
+      "const": "developer"
+    },
+    "automation_169": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "tool_call_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_170"
+        }
+      },
+      "required": [
+        "session_id",
+        "tool_call_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_170": {
+      "const": "agent"
+    },
+    "automation_171": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_172": {
+      "const": "agent.automation"
+    },
+    "automation_173": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_174"
+        },
+        {
+          "$ref": "#/$defs/automation_175"
+        }
+      ]
+    },
+    "automation_174": {
+      "const": "active"
+    },
+    "automation_175": {
+      "const": "paused"
+    },
+    "automation_176": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_177"
+        },
+        {
+          "$ref": "#/$defs/automation_246"
+        }
+      ]
+    },
+    "automation_177": {
+      "type": "object",
+      "properties": {
+        "agent": {
+          "$ref": "#/$defs/automation_178"
+        },
+        "agent_id": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "environment": {
+          "$ref": "#/$defs/automation_215"
+        },
+        "input": {
+          "$ref": "#/$defs/automation_239"
+        },
+        "metadata": {
+          "$ref": "#/$defs/automation_245"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_152"
+        },
+        "vault_ids": {
+          "$ref": "#/$defs/automation_67"
+        }
+      },
+      "required": [
+        "agent",
+        "agent_id",
+        "environment",
+        "input",
+        "metadata",
+        "type",
+        "vault_ids"
+      ],
+      "additionalProperties": false
+    },
+    "automation_178": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_179"
+        }
+      ]
+    },
+    "automation_179": {
+      "type": "object",
+      "properties": {
+        "compaction": {
+          "$ref": "#/$defs/automation_180"
+        },
+        "experimental": {
+          "$ref": "#/$defs/automation_182"
+        },
+        "instructions": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "model": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "multi_agent": {
+          "$ref": "#/$defs/automation_185"
+        },
+        "reasoning": {
+          "$ref": "#/$defs/automation_187"
+        },
+        "service_tier": {
+          "$ref": "#/$defs/automation_190"
+        },
+        "text": {
+          "$ref": "#/$defs/automation_191"
+        },
+        "tools": {
+          "$ref": "#/$defs/automation_197"
+        }
+      },
+      "required": [
+        "instructions",
+        "model",
+        "multi_agent",
+        "reasoning",
+        "service_tier",
+        "text",
+        "tools"
+      ],
+      "additionalProperties": false
+    },
+    "automation_180": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_181"
+        }
+      ]
+    },
+    "automation_181": {
+      "type": "object",
+      "properties": {
+        "async": {
+          "$ref": "#/$defs/automation_22"
+        }
+      },
+      "required": [
+        "async"
+      ],
+      "additionalProperties": false
+    },
+    "automation_182": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_183"
+        }
+      ]
+    },
+    "automation_183": {
+      "type": "object",
+      "properties": {
+        "time_awareness": {
+          "$ref": "#/$defs/automation_22"
+        }
+      },
+      "required": [
+        "time_awareness"
+      ],
+      "additionalProperties": false
+    },
+    "automation_184": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_2"
+        }
+      ]
+    },
+    "automation_185": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/automation_22"
+        },
+        "max_concurrent_subagents": {
+          "$ref": "#/$defs/automation_186"
+        }
+      },
+      "required": [
+        "enabled",
+        "max_concurrent_subagents"
+      ],
+      "additionalProperties": false
+    },
+    "automation_186": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_24"
+        }
+      ]
+    },
+    "automation_187": {
+      "type": "object",
+      "properties": {
+        "effort": {
+          "$ref": "#/$defs/automation_188"
+        },
+        "summary": {
+          "$ref": "#/$defs/automation_189"
+        }
+      },
+      "required": [
+        "effort",
+        "summary"
+      ],
+      "additionalProperties": false
+    },
+    "automation_188": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_28"
+        },
+        {
+          "$ref": "#/$defs/automation_29"
+        },
+        {
+          "$ref": "#/$defs/automation_30"
+        },
+        {
+          "$ref": "#/$defs/automation_31"
+        },
+        {
+          "$ref": "#/$defs/automation_32"
+        },
+        {
+          "$ref": "#/$defs/automation_33"
+        },
+        {
+          "$ref": "#/$defs/automation_34"
+        }
+      ]
+    },
+    "automation_189": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_36"
+        },
+        {
+          "$ref": "#/$defs/automation_37"
+        },
+        {
+          "$ref": "#/$defs/automation_38"
+        }
+      ]
+    },
+    "automation_190": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_38"
+        },
+        {
+          "$ref": "#/$defs/automation_40"
+        },
+        {
+          "$ref": "#/$defs/automation_41"
+        },
+        {
+          "$ref": "#/$defs/automation_42"
+        },
+        {
+          "$ref": "#/$defs/automation_43"
+        },
+        {
+          "$ref": "#/$defs/automation_44"
+        }
+      ]
+    },
+    "automation_191": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "$ref": "#/$defs/automation_192"
+        },
+        "verbosity": {
+          "$ref": "#/$defs/automation_196"
+        }
+      },
+      "required": [
+        "format",
+        "verbosity"
+      ],
+      "additionalProperties": false
+    },
+    "automation_192": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_193"
+        },
+        {
+          "$ref": "#/$defs/automation_194"
+        }
+      ]
+    },
+    "automation_193": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/automation_49"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_194": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "$ref": "#/$defs/automation_195"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_53"
+        }
+      },
+      "required": [
+        "schema",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_195": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_52"
+      }
+    },
+    "automation_196": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_30"
+        },
+        {
+          "$ref": "#/$defs/automation_31"
+        },
+        {
+          "$ref": "#/$defs/automation_32"
+        }
+      ]
+    },
+    "automation_197": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_198"
+      }
+    },
+    "automation_198": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_199"
+        },
+        {
+          "$ref": "#/$defs/automation_201"
+        },
+        {
+          "$ref": "#/$defs/automation_202"
+        },
+        {
+          "$ref": "#/$defs/automation_209"
+        },
+        {
+          "$ref": "#/$defs/automation_213"
+        },
+        {
+          "$ref": "#/$defs/automation_214"
+        }
+      ]
+    },
+    "automation_199": {
+      "type": "object",
+      "properties": {
+        "defer_loading": {
+          "$ref": "#/$defs/automation_22"
+        },
+        "description": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "parameters": {
+          "$ref": "#/$defs/automation_200"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_60"
+        }
+      },
+      "required": [
+        "defer_loading",
+        "description",
+        "name",
+        "parameters",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_200": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_52"
+      }
+    },
+    "automation_201": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/automation_22"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_64"
+        }
+      },
+      "required": [
+        "enabled",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_202": {
+      "type": "object",
+      "properties": {
+        "allowed_tools": {
+          "$ref": "#/$defs/automation_203"
+        },
+        "connection_origin": {
+          "$ref": "#/$defs/automation_204"
+        },
+        "credential_id": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "request_metadata": {
+          "$ref": "#/$defs/automation_205"
+        },
+        "required": {
+          "$ref": "#/$defs/automation_22"
+        },
+        "server_label": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "transport": {
+          "$ref": "#/$defs/automation_206"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_82"
+        }
+      },
+      "required": [
+        "allowed_tools",
+        "connection_origin",
+        "credential_id",
+        "request_metadata",
+        "required",
+        "server_label",
+        "transport",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_203": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_67"
+        }
+      ]
+    },
+    "automation_204": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_69"
+        },
+        {
+          "$ref": "#/$defs/automation_70"
+        }
+      ]
+    },
+    "automation_205": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_52"
+      }
+    },
+    "automation_206": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_207"
+        },
+        {
+          "$ref": "#/$defs/automation_208"
+        }
+      ]
+    },
+    "automation_207": {
+      "type": "object",
+      "properties": {
+        "server_url": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_77"
+        }
+      },
+      "required": [
+        "server_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_208": {
+      "type": "object",
+      "properties": {
+        "args": {
+          "$ref": "#/$defs/automation_67"
+        },
+        "command": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "cwd": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "env_vars": {
+          "$ref": "#/$defs/automation_67"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_81"
+        }
+      },
+      "required": [
+        "args",
+        "command",
+        "cwd",
+        "env_vars",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_209": {
+      "type": "object",
+      "properties": {
+        "allowed_domains": {
+          "$ref": "#/$defs/automation_203"
+        },
+        "context_size": {
+          "$ref": "#/$defs/automation_196"
+        },
+        "location": {
+          "$ref": "#/$defs/automation_210"
+        },
+        "mode": {
+          "$ref": "#/$defs/automation_212"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_90"
+        }
+      },
+      "required": [
+        "allowed_domains",
+        "context_size",
+        "location",
+        "mode",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_210": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_211"
+        }
+      ]
+    },
+    "automation_211": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "country": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "region": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "timezone": {
+          "$ref": "#/$defs/automation_184"
+        }
+      },
+      "required": [
+        "city",
+        "country",
+        "region",
+        "timezone"
+      ],
+      "additionalProperties": false
+    },
+    "automation_212": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_87"
+        },
+        {
+          "$ref": "#/$defs/automation_88"
+        },
+        {
+          "$ref": "#/$defs/automation_89"
+        }
+      ]
+    },
+    "automation_213": {
+      "type": "object",
+      "properties": {
+        "include_screenshots": {
+          "$ref": "#/$defs/automation_22"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_92"
+        }
+      },
+      "required": [
+        "include_screenshots",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_214": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/automation_94"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_215": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_216"
+        },
+        {
+          "$ref": "#/$defs/automation_217"
+        },
+        {
+          "$ref": "#/$defs/automation_238"
+        }
+      ]
+    },
+    "automation_216": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/automation_28"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_217": {
+      "type": "object",
+      "properties": {
+        "capability_directories": {
+          "$ref": "#/$defs/automation_203"
+        },
+        "container_size": {
+          "$ref": "#/$defs/automation_218"
+        },
+        "desktop": {
+          "$ref": "#/$defs/automation_219"
+        },
+        "environment_id": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "environment_template_id": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "files": {
+          "$ref": "#/$defs/automation_221"
+        },
+        "network": {
+          "$ref": "#/$defs/automation_226"
+        },
+        "packages": {
+          "$ref": "#/$defs/automation_228"
+        },
+        "plugins": {
+          "$ref": "#/$defs/automation_230"
+        },
+        "skills": {
+          "$ref": "#/$defs/automation_233"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_135"
+        }
+      },
+      "required": [
+        "capability_directories",
+        "container_size",
+        "desktop",
+        "environment_id",
+        "environment_template_id",
+        "files",
+        "network",
+        "packages",
+        "plugins",
+        "skills",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_218": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_31"
+        },
+        {
+          "$ref": "#/$defs/automation_99"
+        },
+        {
+          "$ref": "#/$defs/automation_100"
+        }
+      ]
+    },
+    "automation_219": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_220"
+        }
+      ]
+    },
+    "automation_220": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/automation_22"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "automation_221": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_222"
+        }
+      ]
+    },
+    "automation_222": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_223"
+      }
+    },
+    "automation_223": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_224"
+        },
+        {
+          "$ref": "#/$defs/automation_225"
+        }
+      ]
+    },
+    "automation_224": {
+      "type": "object",
+      "properties": {
+        "file_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "path": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_110"
+        }
+      },
+      "required": [
+        "file_id",
+        "path",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_225": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "size_bytes": {
+          "$ref": "#/$defs/automation_24"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_112"
+        }
+      },
+      "required": [
+        "path",
+        "size_bytes",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_226": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_227"
+        }
+      ]
+    },
+    "automation_227": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/automation_115"
+        },
+        "allowed_domains": {
+          "$ref": "#/$defs/automation_67"
+        }
+      },
+      "required": [
+        "access",
+        "allowed_domains"
+      ],
+      "additionalProperties": false
+    },
+    "automation_228": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_229"
+        }
+      ]
+    },
+    "automation_229": {
+      "type": "object",
+      "properties": {
+        "npm": {
+          "$ref": "#/$defs/automation_67"
+        },
+        "python": {
+          "$ref": "#/$defs/automation_67"
+        },
+        "system": {
+          "$ref": "#/$defs/automation_67"
+        }
+      },
+      "required": [
+        "npm",
+        "python",
+        "system"
+      ],
+      "additionalProperties": false
+    },
+    "automation_230": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_231"
+        }
+      ]
+    },
+    "automation_231": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_232"
+      }
+    },
+    "automation_232": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_112"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_233": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_234"
+        }
+      ]
+    },
+    "automation_234": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_235"
+      }
+    },
+    "automation_235": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_236"
+        },
+        {
+          "$ref": "#/$defs/automation_237"
+        }
+      ]
+    },
+    "automation_236": {
+      "type": "object",
+      "properties": {
+        "skill_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_133"
+        },
+        "version": {
+          "$ref": "#/$defs/automation_184"
+        }
+      },
+      "required": [
+        "skill_id",
+        "type",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "automation_237": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_112"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_238": {
+      "type": "object",
+      "properties": {
+        "capability_directories": {
+          "$ref": "#/$defs/automation_67"
+        },
+        "environment_id": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_137"
+        },
+        "workspace_directory": {
+          "$ref": "#/$defs/automation_2"
+        }
+      },
+      "required": [
+        "capability_directories",
+        "environment_id",
+        "type",
+        "workspace_directory"
+      ],
+      "additionalProperties": false
+    },
+    "automation_239": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_240"
+      }
+    },
+    "automation_240": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/automation_241"
+        },
+        "role": {
+          "$ref": "#/$defs/automation_147"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_149"
+        }
+      },
+      "required": [
+        "content",
+        "role",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_241": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/automation_242"
+      }
+    },
+    "automation_242": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_243"
+        },
+        {
+          "$ref": "#/$defs/automation_244"
+        }
+      ]
+    },
+    "automation_243": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_144"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_244": {
+      "type": "object",
+      "properties": {
+        "image_url": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_146"
+        }
+      },
+      "required": [
+        "image_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_245": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_246": {
+      "type": "object",
+      "properties": {
+        "instructions": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "session_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_154"
+        }
+      },
+      "required": [
+        "instructions",
+        "session_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_247": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/automation_24"
+        },
+        "created_by": {
+          "$ref": "#/$defs/automation_166"
+        },
+        "id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "metadata": {
+          "$ref": "#/$defs/automation_248"
+        },
+        "name": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "object": {
+          "$ref": "#/$defs/automation_172"
+        },
+        "run_at": {
+          "$ref": "#/$defs/automation_24"
+        },
+        "status": {
+          "$ref": "#/$defs/automation_249"
+        },
+        "target": {
+          "$ref": "#/$defs/automation_176"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_159"
+        }
+      },
+      "required": [
+        "created_at",
+        "created_by",
+        "id",
+        "metadata",
+        "name",
+        "object",
+        "run_at",
+        "status",
+        "target",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_248": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/automation_2"
+      }
+    },
+    "automation_249": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_174"
+        },
+        {
+          "$ref": "#/$defs/automation_175"
+        },
+        {
+          "$ref": "#/$defs/automation_250"
+        }
+      ]
+    },
+    "automation_250": {
+      "const": "completed"
+    },
+    "automation_251": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/automation_22"
+        },
+        "id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "object": {
+          "$ref": "#/$defs/automation_252"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "automation_252": {
+      "const": "agent.automation.deleted"
+    },
+    "automation_253": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/automation_19"
+        },
+        "limit": {
+          "$ref": "#/$defs/automation_23"
+        },
+        "order": {
+          "$ref": "#/$defs/automation_254"
+        },
+        "session_id": {
+          "$ref": "#/$defs/automation_19"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_254": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_255"
+        },
+        {
+          "$ref": "#/$defs/automation_256"
+        }
+      ]
+    },
+    "automation_255": {
+      "const": "asc"
+    },
+    "automation_256": {
+      "const": "desc"
+    },
+    "automation_257": {
+      "type": "object",
+      "properties": {
+        "automation_id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "created_at": {
+          "$ref": "#/$defs/automation_24"
+        },
+        "error": {
+          "$ref": "#/$defs/automation_258"
+        },
+        "id": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "object": {
+          "$ref": "#/$defs/automation_260"
+        },
+        "scheduled_at": {
+          "$ref": "#/$defs/automation_186"
+        },
+        "session_id": {
+          "$ref": "#/$defs/automation_184"
+        },
+        "skip_reason": {
+          "$ref": "#/$defs/automation_261"
+        },
+        "source": {
+          "$ref": "#/$defs/automation_263"
+        },
+        "status": {
+          "$ref": "#/$defs/automation_268"
+        }
+      },
+      "required": [
+        "automation_id",
+        "created_at",
+        "error",
+        "id",
+        "object",
+        "scheduled_at",
+        "session_id",
+        "skip_reason",
+        "source",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "automation_258": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_259"
+        }
+      ]
+    },
+    "automation_259": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/automation_2"
+        },
+        "message": {
+          "$ref": "#/$defs/automation_2"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "automation_260": {
+      "const": "agent.automation.invocation"
+    },
+    "automation_261": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_10"
+        },
+        {
+          "$ref": "#/$defs/automation_262"
+        }
+      ]
+    },
+    "automation_262": {
+      "const": "pending_delivery"
+    },
+    "automation_263": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_264"
+        },
+        {
+          "$ref": "#/$defs/automation_266"
+        }
+      ]
+    },
+    "automation_264": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/automation_265"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_265": {
+      "const": "manual"
+    },
+    "automation_266": {
+      "type": "object",
+      "properties": {
+        "automation": {
+          "$ref": "#/$defs/automation_164"
+        },
+        "type": {
+          "$ref": "#/$defs/automation_267"
+        }
+      },
+      "required": [
+        "automation",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "automation_267": {
+      "const": "automation"
+    },
+    "automation_268": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/automation_250"
+        },
+        {
+          "$ref": "#/$defs/automation_269"
+        },
+        {
+          "$ref": "#/$defs/automation_270"
+        },
+        {
+          "$ref": "#/$defs/automation_271"
+        }
+      ]
+    },
+    "automation_269": {
+      "const": "queued"
+    },
+    "automation_270": {
+      "const": "failed"
+    },
+    "automation_271": {
+      "const": "skipped"
+    },
+    "automation_272": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/automation_19"
+        },
+        "limit": {
+          "$ref": "#/$defs/automation_23"
+        },
+        "order": {
+          "$ref": "#/$defs/automation_254"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_create": {
+      "$ref": "#/$defs/automation_0"
+    },
+    "automation_update": {
+      "$ref": "#/$defs/automation_160"
+    },
+    "automation_resource": {
+      "$ref": "#/$defs/automation_164"
+    },
+    "automation_deleted": {
+      "$ref": "#/$defs/automation_251"
+    },
+    "automation_query": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "after": {
+          "type": "string"
+        },
+        "order": {
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        },
+        "session_id": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_invocation": {
+      "$ref": "#/$defs/automation_257"
+    },
+    "automation_invocation_query": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "after": {
+          "type": "string"
+        },
+        "order": {
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "automation_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/automation_resource"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
+    "automation_invocation_list": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/automation_invocation"
+          }
+        },
+        "has_more": {
+          "type": "boolean"
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "has_more",
+        "first_id",
+        "last_id"
+      ],
+      "additionalProperties": false
+    },
     "vault": {
       "type": "object",
       "properties": {

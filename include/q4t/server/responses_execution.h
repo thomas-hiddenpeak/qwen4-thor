@@ -134,6 +134,9 @@ class ResponsesExecution {
     return access_.deadline;
   }
   // Trusted service origin. It cannot be changed once execution is published.
+  // Commit the invocation's delivery receipt in the same transaction as the
+  // session and its first queued response.
+  ObjectReply BindAutomationDelivery(ObjectRequest write);
   ObjectReply BindAgentSession(ObjectRequest mutation,
                                std::optional<ObjectRequest> environment = {},
                                std::shared_ptr<environment_detail::WorkspaceCopies> workspace_copies = {});

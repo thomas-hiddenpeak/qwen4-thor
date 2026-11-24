@@ -532,3 +532,37 @@ Q4T_TEST(object_retention_partial_atomic_collection_recovers_without_replay) {
   return true;
 }
 #endif
+
+Q4T_TEST(automation_retention_tracks_target_dependencies_and_orphaned_history) {
+  const auto target = InspectAutomationTarget(Parse(R"({
+    "type":"new_session", "agent_id":"agent_a", "agent":null,
+    "environment":{"environment_template_id":"environment_template_a",
+      "files":[{"type":"file_id","file_id":"file_a"}]},
+    "vault_ids":["vault_a"], "input":[{"role":"user","content":[
+      {"type":"input_text","text":"file_not_a_reference"}]}]})"));
+  const std::vector<std::string> ids{"agent_a","environment_template_a","file_a","vault_a"};
+  Q4T_CHECK(!target.uncertain && target.references == ids);
+  auto pending = InspectObjectRetention("invocation", Parse(R"({
+    "resource":{"object":"agent.automation.invocation","status":"queued",
+      "automation_id":"automation_a","session_id":null},
+    "sealed_target":"opaque","target_references":["agent_a"]})"));
+  auto done = InspectObjectRetention("invocation", Parse(R"({
+    "resource":{"object":"agent.automation.invocation","status":"completed",
+      "automation_id":"automation_a","session_id":"agent_session_a"}})"));
+  Q4T_CHECK(pending.active && !pending.uncertain && !done.active && !done.uncertain);
+  Q4T_CHECK(pending.references == std::vector<std::string>{"agent_a"});
+  Q4T_CHECK(done.references == std::vector<std::string>{"agent_session_a"});
+  ObjectRetentionInfo normal;
+  std::vector<ObjectRetentionNode> nodes{
+      Node("invocation_done",done,0,"invocation"),
+      Node("invocation_pending",pending,0,"invocation"),
+      Node("automation_a",normal,0,"automation",kOther),
+      Node("automation_a",normal,0,"file")};
+  ObjectRetentionPlan plan;
+  Q4T_CHECK(PlanObjectRetention(nodes,20,0,8,&plan));
+  Q4T_CHECK(plan.selected == std::vector<size_t>{0});
+  nodes.push_back(Node("automation_a",normal,0,"automation"));
+  Q4T_CHECK(PlanObjectRetention(nodes,20,0,8,&plan));
+  Q4T_CHECK(plan.selected.empty());
+  return true;
+}

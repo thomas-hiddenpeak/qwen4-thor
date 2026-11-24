@@ -44,7 +44,9 @@ enum class ObjectKind {
   kContainer,
   kContainerFile,
   kSkill,
-  kSkillVersion
+  kSkillVersion,
+  kAutomation,
+  kAutomationInvocation
 };
 enum class ObjectOperation { kGet, kPut, kErase, kList, kHealth };
 

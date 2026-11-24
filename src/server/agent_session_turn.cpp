@@ -268,7 +268,8 @@ using namespace agent_detail;
 
 ObjectReply PrepareAgentSessionExecution(
     ObjectStore& objects, const Json& request, const ChatPlanConfig& config,
-    const StateAccess& access, int64_t created, ResponsesExecution& run) {
+    const StateAccess& access, int64_t created, ResponsesExecution& run,
+    std::optional<ObjectRequest> delivery) {
   const auto id = NewObjectId(ObjectKind::kAgentSession);
   const auto nonce = NewObjectId(ObjectKind::kAgentSession);
   if (id.empty() || nonce.empty())
@@ -287,11 +288,20 @@ ObjectReply PrepareAgentSessionExecution(
   if (start.tool_search) Set(&mutation.data, "tool_search", Boolean(true));
   if (!start.sealed_http.empty())
     Set(&mutation.data, "sealed_http", String(start.sealed_http));
+  if (delivery) {
+    if (delivery->kind != ObjectKind::kAutomationInvocation ||
+        delivery->scope != access.scope || delivery->expected_revision < 1 ||
+        delivery->operation != ObjectOperation::kPut)
+      return Error(500, "automation_delivery_invalid", "Invalid delivery receipt");
+    Set(&Field(delivery->data, "resource"), "session_id", String(id));
+  }
   if (start.input.array.empty()) {
     if (!start.environment_write) return InvalidRecord();
     Set(&mutation.data, "created_idle", Boolean(true));
-    const ObjectRequest writes[]{std::move(mutation),
-                                 std::move(*start.environment_write)};
+    std::vector<ObjectRequest> writes;
+    writes.push_back(std::move(mutation));
+    writes.push_back(std::move(*start.environment_write));
+    if (delivery) writes.push_back(std::move(*delivery));
     result = objects.ExecuteBatch(writes, access.deadline, access.cancelled);
     if (start.workspace_copies) start.workspace_copies->Settle(result);
     if (result.commit_unknown) result.value = Object({{"id", String(id)}});
@@ -313,6 +323,8 @@ ObjectReply PrepareAgentSessionExecution(
     Field(mutation.data, "turns").array.push_back(std::move(link));
     result = run.BindAgentSession(std::move(mutation),
                                   std::move(start.environment_write), std::move(start.workspace_copies));
+    if (result.ok() && delivery)
+      result = run.BindAutomationDelivery(std::move(*delivery));
   }
   if (result.ok()) result.value = std::move(start.session);
   return result;

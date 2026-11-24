@@ -12,6 +12,7 @@
 #include <thread>
 #include <unordered_map>
 
+#include "agent_automation_dispatcher.h"
 #include "object_protocol.h"
 #include "q4t/server/application_owner.h"
 #include "q4t/server/lifetime.h"
@@ -62,6 +63,7 @@ struct ResponsesJobs::State {
   std::deque<std::shared_ptr<Job>> queue;
   std::vector<std::thread> workers;
   std::thread recovery;
+  std::unique_ptr<AutomationDispatcher> automations;
   bool recovery_configured = false;
   std::atomic<bool> recovery_scanned{false};
   std::atomic<uint64_t> recovered{0}, interrupted{0}, recovery_errors{0};
@@ -491,6 +493,26 @@ ObjectReply AdmitBackgroundBatchRate(ClientAdmission& clients,
                  "Background Batch rate admission is unavailable");
   job.rate = std::move(rate);
   return {};
+}
+
+void ResponsesJobs::StartAutomations(ClientAdmission& clients,
+                                     ChatPlanConfig config) {
+  const std::lock_guard lock(state_->mutex);
+  if (state_->stopping || state_->automations)
+    throw std::logic_error("Automation dispatcher unavailable or already started");
+  ApplicationThreadStart(ApplicationThreadKind::kAutomationDispatcher);
+  state_->automations = std::make_unique<AutomationDispatcher>(
+      state_->objects, clients, *this, std::move(config));
+}
+
+bool ResponsesJobs::AutomationsAvailable() const {
+  std::lock_guard lock(state_->mutex);
+  return state_->automations && !state_->stopping;
+}
+
+void ResponsesJobs::WakeAutomations() {
+  std::lock_guard lock(state_->mutex);
+  if (state_->automations && !state_->stopping) state_->automations->Wake();
 }
 
 void ResponsesJobs::StartRecovery(ClientAdmission& clients,
@@ -953,6 +975,7 @@ void ResponsesJobs::RequestStop() noexcept {
   state_->stopping.store(true);
   try {
     const std::lock_guard lock(state_->mutex);
+    if (state_->automations) state_->automations->RequestStop();
     for (const auto& [_, job] : state_->jobs)
       job->control->Cancel(RequestControl::State::kShutdown);
   } catch (...) {
@@ -962,6 +985,7 @@ void ResponsesJobs::RequestStop() noexcept {
 }
 
 void ResponsesJobs::Join() {
+  if (state_->automations) state_->automations->Join();
   if (state_->recovery.joinable()) state_->recovery.join();
   for (auto& worker : state_->workers)
     if (worker.joinable()) worker.join();
@@ -976,6 +1000,7 @@ ResponsesJobsHealth ResponsesJobs::Health() const {
   health.failed = state_->failed;
   health.recovery_configured = state_->recovery_configured;
   health.recovery_scanned = state_->recovery_scanned;
+  if (state_->automations) health.automation_errors = state_->automations->Errors();
   health.recovered = state_->recovered;
   health.interrupted = state_->interrupted;
   health.recovery_errors = state_->recovery_errors;

@@ -8,9 +8,9 @@ import { resolve, relative } from 'node:path';
 
 const [sdkDirectory, compilerDirectory, output, mode] = process.argv.slice(2);
 if (!sdkDirectory || !compilerDirectory || !output ||
-    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--assistants', '--containers', '--skills', '--agent-sessions', '--vault-credentials', '--environments'].includes(mode)) ||
+    (mode !== undefined && !['--api', '--realtime', '--live', '--decisions', '--multi-agent', '--agents', '--automations', '--assistants', '--containers', '--skills', '--agent-sessions', '--vault-credentials', '--environments'].includes(mode)) ||
     process.argv.length > 6)
-  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--assistants|--containers|--skills|--agent-sessions|--vault-credentials|--environments]');
+  throw new Error('usage: node generate_item_types.mjs SDK_DIR TYPESCRIPT_DIR OUTPUT [--api|--realtime|--live|--decisions|--multi-agent|--agents|--automations|--assistants|--containers|--skills|--agent-sessions|--vault-credentials|--environments]');
 const sdk = realpathSync(resolve(sdkDirectory, 'node_modules/openai'));
 const compiler = realpathSync(resolve(compilerDirectory, 'node_modules/typescript'));
 const read = file => readFileSync(file, 'utf8');
@@ -41,6 +41,8 @@ const skillVersions = resolve(sdk, 'src/resources/skills/versions/versions.ts');
 const containers = resolve(sdk, 'src/resources/containers/containers.ts');
 const containerFiles = resolve(sdk, 'src/resources/containers/files/files.ts');
 const agents = resolve(sdk, 'src/resources/beta/agents/agents.ts');
+const automations = resolve(sdk, 'src/resources/beta/agents/automations/automations.ts');
+const invocations = resolve(sdk, 'src/resources/beta/agents/automations/invocations.ts');
 const credentials = resolve(sdk, 'src/resources/beta/agents/vaults/credentials.ts');
 const environments = resolve(sdk, 'src/resources/beta/agents/environments/environments.ts');
 const environmentFiles = resolve(sdk, 'src/resources/beta/agents/environments/files.ts');
@@ -58,6 +60,7 @@ const program = ts.createProgram([source, conversation,
   ...(mode === '--realtime' ? [realtime, realtimeCalls, realtimeSecrets] : []),
   ...(mode === '--decisions' ? [decisions] : []),
   ...(mode === '--multi-agent' ? [beta] : []),
+  ...(mode === '--automations' ? [automations, invocations] : []),
   ...(mode === '--agents' ? [agents] : []),
   ...(mode === '--assistants' ? [assistants, threads, messages, runs, steps] : []),
   ...(mode === '--containers' ? [containers, containerFiles] : []),
@@ -246,6 +249,14 @@ const roots = mode === '--environments' ? {
   step_list_query: exported(steps, 'StepListParams'),
   step_query: exported(steps, 'StepRetrieveParams'),
   run_event: exported(assistants, 'AssistantStreamEvent'),
+} : mode === '--automations' ? {
+  create: exported(automations, 'AutomationCreateParams'),
+  update: exported(automations, 'AutomationUpdateParams'),
+  resource: exported(automations, 'Automation'),
+  deleted: exported(automations, 'AutomationDeleted'),
+  query: exported(automations, 'AutomationListParams'),
+  invocation: exported(invocations, 'AutomationInvocation'),
+  invocation_query: exported(invocations, 'InvocationListParams'),
 } : mode === '--agents' ? {
   create: exported(agents, 'AgentCreateParams'),
   update: exported(agents, 'AgentUpdateParams'),
@@ -396,6 +407,7 @@ const result = {
   profile: mode === '--environments' ? 'q4t-openai-environment-types-v1' :
     mode === '--vault-credentials' ? 'q4t-openai-vault-credential-types-v1' :
     mode === '--agent-sessions' ? 'q4t-openai-agent-session-types-v1' :
+    mode === '--automations' ? 'q4t-openai-automation-types-v1' :
     mode === '--agents' ? 'q4t-openai-agent-registration-types-v1' :
     mode === '--assistants' ? 'q4t-openai-assistant-types-v1' :
     mode === '--containers' ? 'q4t-openai-container-types-v1' :

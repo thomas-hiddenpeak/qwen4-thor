@@ -36,6 +36,7 @@ struct ResponsesJobsHealth {
   uint64_t recovered = 0;
   uint64_t interrupted = 0;
   uint64_t recovery_errors = 0;
+  uint64_t automation_errors = 0;
   size_t recovery_pending = 0;
   size_t rate_waiting = 0;
   uint64_t rate_deferrals = 0;
@@ -91,6 +92,9 @@ class ResponsesJobs : public IResponsesCleanup {
   // One bounded scanner, independent of request/model workers. Client policy
   // must remain immutable and outlive the manager. No process is signalled.
   void StartRecovery(ClientAdmission& clients, ChatPlanConfig config);
+  void StartAutomations(ClientAdmission& clients, ChatPlanConfig config);
+  bool AutomationsAvailable() const;
+  void WakeAutomations();
   // Private Batch observation: signals cancellation without blocking a row
   // worker. Only a matching terminal whose executor has drained is returned.
   ObjectReply ObserveBatch(const BatchResponseLink& link,

@@ -760,13 +760,18 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
   }
   if (plan->agent_session_write) {
     std::vector<ObjectRequest> writes;
-    writes.reserve(plan->agent_environment_write ? 3 : 2);
+    writes.reserve(2 + plan->agent_environment_write.has_value() +
+                   plan->automation_delivery_write.has_value());
     writes.push_back(std::move(mutation));
     writes.push_back(std::move(*plan->agent_session_write));
     plan->agent_session_write.reset();
     if (plan->agent_environment_write) {
       writes.push_back(std::move(*plan->agent_environment_write));
       plan->agent_environment_write.reset();
+    }
+    if (plan->automation_delivery_write) {
+      writes.push_back(std::move(*plan->automation_delivery_write));
+      plan->automation_delivery_write.reset();
     }
     auto result = objects_.ExecuteBatch(writes, access.deadline, access.cancelled);
     if (plan->workspace_copies) {

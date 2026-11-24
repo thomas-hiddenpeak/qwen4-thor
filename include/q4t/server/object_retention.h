@@ -23,9 +23,13 @@ struct ObjectRetentionInfo {
   // An Upload retains its receipt after expiration, but no longer retains
   // unfinished parts. Zero leaves ordinary durable references unchanged.
   int64_t references_before = 0;
+  // Completed invocation history follows the owning automation's lifetime.
+  std::string owning_automation{};
   size_t Bytes() const;
 };
 
+// References needed to deliver a sealed automation target after edits or deletion.
+ObjectRetentionInfo InspectAutomationTarget(const io::Json& target);
 ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
                                            const io::Json& data);
 

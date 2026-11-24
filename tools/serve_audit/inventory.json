@@ -2804,6 +2804,96 @@
         "tests/server_realtime_translation_test.cpp",
         "tools/serve_realtime/translation_browser.js"
       ]
+    },
+    "DELETE /v1/agents/automations/{automation_id}": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "GET /v1/agents/automations": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "GET /v1/agents/automations/{automation_id}": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "GET /v1/agents/automations/{automation_id}/invocations": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "GET /v1/agents/automations/{automation_id}/invocations/{invocation_id}": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "POST /v1/agents/automations": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "POST /v1/agents/automations/{automation_id}": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "POST /v1/agents/automations/{automation_id}/invocations": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "POST /v1/agents/automations/{automation_id}/pause": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "POST /v1/agents/automations/{automation_id}/resume": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3418,8 +3508,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "17f8df5adb79cb73e32c7cb5816e9aa29d143ad64451e52fa487fb2be04787b8",
-    "cmake/ChatProtocolIdentity.cmake": "d5646bc1dcfdf7b309c55a3c268029063ee8ce1d3f26939f629fa529bec66073",
+    "CMakeLists.txt": "078a61bd027dee2e3e4e66775952d654945a6e68f8dfb5be41492584c953245d",
+    "cmake/ChatProtocolIdentity.cmake": "a63c7fb9128e105f73271ff3b5c2755dfbc4d40f44fa1764b711de472d570c0d",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3431,6 +3521,7 @@
     "cmake/RecoveryProbe.cmake": "b10bd71c92a8c9a9f6545da89ab06585f7c1398a978eb01aae9e18eb716c0271",
     "cmake/RustRegex.cmake": "99d9e977c34f48ae74d54ef33b432ce5287d668e7573d0b7bac0b7a5655924c3",
     "cmake/StructuredOutput.cmake": "66f791cc30c164e2a3b40c639a699e13077774d9bacf59b3b55a924e134f5b84",
+    "cmake/automation_types.h.in": "f5dc4ef0fced6a1eacf19052fbaa65f65defeb0aa273d0a42660645652efec41",
     "cmake/container_types.h.in": "d5a483b0117c4cb9fd602c557cdaaabe2414ad522b93b3f1d56ad62f9aa6109b",
     "cmake/regex-syntax-0.8.8.sha256": "6eba6c50e6a79adfb56202c75e8a3b551fe384f84e8bb7e3f2634fe2791a7880",
     "cmake/skill_types.h.in": "ba3dd016ca17609c3f92194e1d99ce31cc235922bf89b7f10324d829b7972f3f",
@@ -3494,16 +3585,18 @@
     "include/q4t/server/access_program.h": "389d4e152faf16fbfd626e1c1b7045acb28a72822e4968a14f02dc06b096614e",
     "include/q4t/server/actual_usage.h": "8eb8a2ca44a418184b1d6248e9859cd9962b127a23305fa19544771d1be6a61b",
     "include/q4t/server/actual_usage_step.h": "8acae1e5d8d0343a22ae1363b69bf0b6d76564cd447ef112cf5f788a8b9af3f3",
+    "include/q4t/server/agent_automation.h": "b683b7027e2e51a06863858ddf96c8d3164d814a03a8a8928d56bcb92156739a",
+    "include/q4t/server/agent_cron.h": "dff7d3ca1282eb4070d904dc2b85058c6e43f20347a5c91e98981940b6557288",
     "include/q4t/server/agent_environment.h": "0055c412139a5a599e68505e0d00bc033d0024b4613d4779d93e7df80624b4d9",
     "include/q4t/server/agent_registration.h": "bd7f1d973343cb56c87bc5de50fbbb8c71593cfb7e39d766718ce3193144ef21",
-    "include/q4t/server/agent_session.h": "c0ee5ef8434c9e0d66a4e136283371baa1a95d8dfe9e47fb4b44d1f32e704c64",
+    "include/q4t/server/agent_session.h": "48f21e3d62d4e1d62ecf9e585055bb6ee5c7fe74cd2b21c220eeb8e4aefe003e",
     "include/q4t/server/agent_vault.h": "1f060f615cd2b07698c4b22dcd464c20758616352d5d7f9b5523c69cf31e3ee7",
     "include/q4t/server/aligner_assets.h": "183daf183416a4a2d73c39ccb43e9e2c308db30220e68108163511744ec30443",
     "include/q4t/server/aligner_service.h": "6e3bd5218668a6ea21c52963743be5da8d488e02ae0d77d8d29114a34876c017",
-    "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
+    "include/q4t/server/application_owner.h": "722cb383b3cbe48525c7444d852cac99d508679e7099ca9236aab50e8a38f87b",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "53a84aba5c5c463235460bb3944d60c29ab81ee32e4ed8eb5e21f2b5d0277e0d",
+    "include/q4t/server/application_routes.h": "5232a69d3a0ea92c80c1c32ac038bb80ec99f8105cd93ef36c2f07b6384ec47c",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3545,7 +3638,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "5164e3125b0985d8d4a336d37b7e544ad82e5c37c1ef77ce678922941df30f38",
+    "include/q4t/server/chat_server.h": "11af47b51e04c4def45d8d19c3857116433dae15e3cd0c83863f4df1fe7cbf1d",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -3651,8 +3744,8 @@
     "include/q4t/server/native_crypto.h": "50f49acef3a19917d30f5f1dcad99ca914cd7cd2ff97a479522a99561ef7527c",
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
-    "include/q4t/server/object_retention.h": "94a2339c1de9c1adbcc7f8b8f2766243a287c4294da721c7f9654e0741734774",
-    "include/q4t/server/object_store.h": "abeebc4d8555c8f83df8784f764ea71ee0b1aac7ead20592852f654b2692125d",
+    "include/q4t/server/object_retention.h": "f5dd11a1415b894c8d0b0cd1b38bd04267a932662b7f05a7f84a50ae3061efe5",
+    "include/q4t/server/object_store.h": "b8eb4b00bc66ca2ad0fcef761542a2f9791aa8d07ae1be2f767acf84827f3af9",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -3724,11 +3817,11 @@
     "include/q4t/server/responses_api.h": "d8e3a8d4f8f25e3cbd3e5ff06c0bd5f19812488c60396d34e8b60689a664021d",
     "include/q4t/server/responses_compaction.h": "3c6f96d0bf5fa86b3976566bd6da819e9a389cf7c16e6f67a165f103e832e6e4",
     "include/q4t/server/responses_crypto.h": "5a8bd0449fed6c5551e00b48ecd571fa579739389c5944952fe791d4d524cc78",
-    "include/q4t/server/responses_execution.h": "2904cb2a8da8a3e7398768e6da8c43ba5eeb5c2419d6f85d23546d09a59e687e",
+    "include/q4t/server/responses_execution.h": "1aa2f3ada27736eff1ee311e85d0c45ff3351fcff39c55b60e74d06c82913acf",
     "include/q4t/server/responses_file_search.h": "ea8d3d44355934fe5e70cefb431225c5b79f6c2eb780be202d6030a39b6ab03c",
     "include/q4t/server/responses_input.h": "9456da1ef5673dd4de669cd80b2f532690815193d466ec5ab97bd4a097b3fc3b",
     "include/q4t/server/responses_item_shape.h": "0d60c4985b05e0cdbf25da8140fd98ec1b176509425be6ca6dbd6c748aa6d5e6",
-    "include/q4t/server/responses_jobs.h": "93decc52d696da78aad94165307b1e4701520fc1b51e300f036993bd278520ff",
+    "include/q4t/server/responses_jobs.h": "d37c0bfdd95fa39d811af173b8a0ef82382b79c758fd06f767494997796703a1",
     "include/q4t/server/responses_mcp.h": "f1fc1e4d33f0fb310b352362d5c19a0fed8c596d84e04652320a64f6ba2d9b9f",
     "include/q4t/server/responses_mcp_binding.h": "3cc504c8132fbc94f934138f5b64eeff5d24e0f8227880a439c23420fafbaaa7",
     "include/q4t/server/responses_mcp_media.h": "49f332687353cbb07141081409e8236ef15033768564efaea25b3008aefc5c4c",
@@ -3739,7 +3832,7 @@
     "include/q4t/server/responses_program.h": "c04b360487c0dad191a47420bf697afa2b00207adaf313cbd7b52b5aa16b41fd",
     "include/q4t/server/responses_python.h": "95807fef9a4b39311cd9208aa3f97abf2ee691e079894dfe5e86ffb42f29cb45",
     "include/q4t/server/responses_reasoning.h": "d15d08e23a6734189b1241584f1e04200db5ecbbeef167f603da8c512281a5c7",
-    "include/q4t/server/responses_state.h": "a3d0b56b5e0fced78957861f011bd5c3e0794d5a94d912c71d7047f95b81f3c8",
+    "include/q4t/server/responses_state.h": "48c3d432c14fda90a00c74881dba723a7c5e463afdee12affbddd593cfccb822",
     "include/q4t/server/responses_tokens.h": "9b1fb8cbea6d9fe24e33fa8af6dd4be3bb90af780b40ee4249450cc007f98324",
     "include/q4t/server/responses_tool_search.h": "6f6e7bfaefa71ff621c2db1d24a6f0fff287e4d4e47968cb8665d081d6e8337f",
     "include/q4t/server/responses_web_search.h": "b1378c90e9f3be4aea864820b06682879693940e448e0d58ad3fa9bdcfa05f06",
@@ -3911,9 +4004,22 @@
     "src/server/agent_artifact_capture.cpp": "5ec839fee52862cf11891dc553f1dfa0865bfc00c54c7923c7f196982ab03db4",
     "src/server/agent_artifact_http.cpp": "a43bfe022c60dc511b87426146f2049bbbce363aa622081bd6b8d85feebd331b",
     "src/server/agent_artifact_internal.h": "20a954ec139940f03c99a4c1436db164beefaedaa5b15e3664f4166a83ec5128",
+    "src/server/agent_automation_clock.cpp": "fe31152e97e63e84c1242ed976187649fb0a3226a6bde67299f23ac8460f4dab",
+    "src/server/agent_automation_delivery.cpp": "fef3b50a3590b36a604f069c5fcad5ada9d944a55ec30115bf5efeb485dc8c8c",
+    "src/server/agent_automation_dispatcher.cpp": "37071a31abc6a03cbc8da089ca55dd7420606e1df69a28b991009b7b04a050f2",
+    "src/server/agent_automation_dispatcher.h": "fc46fb3c92f9b6c2c436368e3b347d0bbb2e78c47af8ccd0a65cc51849136070",
+    "src/server/agent_automation_http.cpp": "12555540ca0f5e6c2ef013a1774e16ee7ea6fa430403c927fa5de268ba5f121c",
+    "src/server/agent_automation_internal.h": "9ae33578736193398cdea56b7a57a2f2dca1f5f63fe7dcd24e2fa4c126ef4bc1",
+    "src/server/agent_automation_list.cpp": "b537d57e00e64128091159fa3b6812b302bec5276d7a11a5946e48d3066559ef",
+    "src/server/agent_automation_queue.cpp": "6415ce40a51e8971da597a82f41ea3eeb3cd787f172a5d0e7bee27f450748938",
+    "src/server/agent_automation_registry.cpp": "0a77be5e23fe38717bc1e8d38c105fc9948133501289610b89666ea0a5a9bddc",
+    "src/server/agent_automation_target.cpp": "d93e16f9eb0446608884e5582282b42ab10debaaec130d7dc6ab4ea889ef7f6d",
+    "src/server/agent_cron.cpp": "679458f53bd0e96ae28e0b8bcca13aa84f146f4a15e9f20a87fc25db08dab30d",
+    "src/server/agent_definition_cipher.cpp": "e5a1c5c12b4ba1fa4bf01f369972ee9740e95e56fb0365c5890b0e0d6a6521c3",
+    "src/server/agent_definition_cipher.h": "c5531d747c27d6409ef6400a39a4bb5a6289769b1790ccfc3acb406bc59b558b",
     "src/server/agent_environment.cpp": "c3e8ec03c77091406f9b4c23bb7ecc9c85756006ffaf3c2695c63a04786a89a9",
     "src/server/agent_environment_config.cpp": "d27979347355adc5bd22f057a034fafe29d4053353c36c956c0910a575f2fc51",
-    "src/server/agent_environment_definition.cpp": "85a6b773bbb07f972f62e1a329bfb3834e92dd190483542350c4db8849041b68",
+    "src/server/agent_environment_definition.cpp": "deb2989cc56c2ead96563c77c6f00256b71db343205f223f9934f67864121b3b",
     "src/server/agent_environment_files.cpp": "4b9c688f3cd92a1c33730a1def8d448657f8982cec8391ecd469fb72e00561da",
     "src/server/agent_environment_internal.h": "daf14b793a9c535ad41bce0a020800174db70f9a737c4d2254fbce7eb27df4bf",
     "src/server/agent_environment_template.cpp": "2741476414ee24c77812f1e30012784eb4fce5a12132299b1e3951cfc7ad23dc",
@@ -3927,7 +4033,7 @@
     "src/server/agent_session_mcp.cpp": "b261ce09eb9fedbcc2c448affdf717a9b2b218a61ce673566dce6d0977705ff4",
     "src/server/agent_session_settings.cpp": "69423427f4fa41a770b816a50e5d7bf784c7107aeae5f315a1b8e679f5dbe06f",
     "src/server/agent_session_traces.cpp": "a9a660892710ee4a91b532e00078d2052e4ded32a08d8488d34c7eb518a078c8",
-    "src/server/agent_session_turn.cpp": "24fccaa2b3c4dab68a4b8ca96f3e3e2fef6a8f97de4b9162dfb138a8e25abee9",
+    "src/server/agent_session_turn.cpp": "6e03838bd906839ecbeb2c7f015364660a9b937a4f047e818aee366c3add4a05",
     "src/server/agent_subagent.cpp": "aed3f6e8a5f314d6fa6fadb362b0fe369b41acb285925e916ecb89dd6577d89d",
     "src/server/agent_subagent_internal.h": "67454f9ac70aa219838e27733a02c53ac1b4845f3ee056af1ce1993d40467113",
     "src/server/agent_vault.cpp": "b87ce82b04798721c6137540cac7d47a8bc54b1453e619dc5eca8b2e8761bc8a",
@@ -3936,7 +4042,7 @@
     "src/server/aligner_assets.cpp": "80fdb6af8262fe6d1ef86318915941cc319a507eb1a33c37db86bd16b3df1a9b",
     "src/server/aligner_service.cpp": "5f971cb849b343934b620d7966994807484d765b0ba2bdcc8402e55bd7c56bba",
     "src/server/application_owner.cpp": "15796bb55a96ae0f74e7b271d21f3e734e5d251903fd00d5f3155294ba8cfdf1",
-    "src/server/application_payload.cpp": "e1d98bbe36bc92d3b61b394b07ed99b33d766959e7f0140ec8106a9872958119",
+    "src/server/application_payload.cpp": "66510d21d2dc26f9c4daf99873cc0513b4138402de235af16a206be909f04d73",
     "src/server/application_query.cpp": "ad98565f23796c3c6f5995d4b969be8b915328b4cc69f67422456ef10a7932c9",
     "src/server/asr_alignment_output.cpp": "57987e1cd7474b4f9cb06535e17fdbc973e260a34f51024f093e8d92b94b1597",
     "src/server/asr_assets.cpp": "a42df736701e1a063f9747c3bc92718707804272b06122358451efffc4144648",
@@ -4000,7 +4106,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "5722d95c92e64f7ea984f73505f9d64dccaa10b22865790a3bff62f5aebc3b6a",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "9f1f6429f62e327ae2164e32d13f704252908ede9eddb8592989bef35ad7b46b",
+    "src/server/chat_http.cpp": "193eecdc8484dbf37f8f86f4165bba2cd658b1e86205c7bb0678cde13df2e6bd",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -4013,7 +4119,7 @@
     "src/server/chat_moderation.cpp": "0c7dc6c4ac42b1bd8bd904056344f58418a60e0e5879b20255ecad208d7ac5a5",
     "src/server/chat_moderations.cpp": "8f8b89dbfa7503b618e96083e2a6867a6a53c057360ea04030dc46d10da3c455",
     "src/server/chat_plan.cpp": "8e74bb7eeb9f38b4cc3916077e4b6bdbd63bac12c0390c6b09e347a291c4c5b4",
-    "src/server/chat_preflight.cpp": "7f81115de6cb8f8e08b4066734d069058c142575d63a8927c2e4ade2d0cbebcb",
+    "src/server/chat_preflight.cpp": "35126d2c9bd58bf81d2c3300789b5f60468923ff23d3550918335f3d91696cfa",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
     "src/server/chat_realtime.cpp": "350dcb749ca4d88a97f0a841acbe126b5f936a469a57610b728af8ff2dd2687e",
     "src/server/chat_realtime_conversation.cpp": "3515546723d710738b80bd01652e8d87a87e0c5dc44ab9a7d9792cf78f25e1ab",
@@ -4025,7 +4131,7 @@
     "src/server/chat_scheduler.cpp": "a0844e61f23629d574b1ef9515cf59427cbddf55058453e95f07eda2917f42f6",
     "src/server/chat_separator_backend.cpp": "092770259109e29b5fc6c9c68310d3202116bd23ffe28f34375bdc0ddd3e4adf",
     "src/server/chat_separator_execution.cpp": "abde3a4315e87a79f6d33a9f89c5074e3e0fcda2454408d79295f46d7aa559dd",
-    "src/server/chat_server.cpp": "56749be7b8fcf8e8c5e3d9ca873953112d53b894e5173eb96f62e2e3ff72b278",
+    "src/server/chat_server.cpp": "2547da62bb04c620f0324343e6ad3cb5edd30992f367d57a4fcf380784363c2a",
     "src/server/chat_server_internal.h": "6f051dc4614996c581f24d37939ae9067a7342779432d75f079759208e378408",
     "src/server/chat_speaker_backend.cpp": "c6bbd91640521f96d26051f8e2b5320dd756ce35b631ed367439b230945d906f",
     "src/server/chat_speaker_execution.cpp": "d53c92b11221302bae76287203569667ba770914d0f4dd103a0347f799c000a0",
@@ -4060,6 +4166,7 @@
     "src/server/contracts/openai_agent_registration_types_v1.json": "3b22b6a509b2d9e5fe2d1c5721668c2a8f4a7b25e34d0b090f8219e28fe061d0",
     "src/server/contracts/openai_agent_session_types_v1.json": "989cbd668d01c3686b2d38d1bc280bba7c8134328f8f4836f9fa7ce05d1157ab",
     "src/server/contracts/openai_assistant_types_v1.json": "265a9ff4cecaef4b8e81e862a202877ba83b947fe094abd79561e4191edd8fcc",
+    "src/server/contracts/openai_automation_types_v1.json": "a686f2eb4ef0c58b65d831a80d3c2e1c4691094fdf2889013c490683c41fc326",
     "src/server/contracts/openai_container_types_v1.json": "e24a221e48e74a6c8556f0273477e6a1a45a74b9af2012eefe3e83682bb4ef52",
     "src/server/contracts/openai_decision_types_v1.json": "1886330cc530cd7765b8a3a2c929241ea501ca97b3a0d0480350eb36992a4277",
     "src/server/contracts/openai_environment_types_v1.json": "e28dc97fbb23877addcfe83e3e7d5cddc05d27383b6378f0cfcfc09c7b6d2ee5",
@@ -4225,8 +4332,8 @@
     "src/server/native_python.cpp": "109858208f4f462a61ef7397d794484eaf2ef5fd97afc8555445af740fd6f0b8",
     "src/server/native_python.h": "ca242b04a6270b905db65dfb1f541b3ea98d283c92dfee9049e7a055c7ebe5b1",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "59bee8c8dcc27b9c697a8c3a50e47e9b9c5a99986f081d68a9b3fee9f82356d6",
-    "src/server/object_retention.cpp": "a3c0a44d1dd7bed8496d0e4e1c1ab1b854656ceb6df867a1551089471035752d",
+    "src/server/object_protocol.h": "d24a8f7df35f350e23a2af72a9f4e10c52b2bc22199ad0c3d3a8d08d1c4566d8",
+    "src/server/object_retention.cpp": "665934f19dae03e33057cbcc0433368522e36827f8443910a1e1e450569a3de2",
     "src/server/object_store.cpp": "d92a1ab5c09cd841223d008dd0b39de1b6deb61e2b3769f297882f928a89d0c9",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "675be8530047880b57644e3634deb128386ee3f7973ea98b9c3fa073beb8bd59",
@@ -4308,7 +4415,7 @@
     "src/server/responses_api.cpp": "00cef31c64c860e0553755da82ffe8c7dc9164ddeabbfdaabe150cea471f5e0f",
     "src/server/responses_compaction.cpp": "28c22a3eac592c44cf75d4535e66016de85a609ab3cf1662e0c68867a9efef7d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
-    "src/server/responses_execution.cpp": "5cceb38a6736e634c89f5a8842b28356d39e1a137646f410ced35cbb347cceb4",
+    "src/server/responses_execution.cpp": "b5d41c958c309477ce29587a573e5280c2f70cf49f21d101075e7c7f77a8ff4b",
     "src/server/responses_execution_compaction.cpp": "90e519f59a6c00f1e2fdffc1b8c7c261ab139c1646252802ca41b9edb74fb8e1",
     "src/server/responses_execution_files.cpp": "8e2030adeb168b3d8672fee4ad58410f5a21989563d7f788f43ab9b7662ad33b",
     "src/server/responses_execution_inputs.cpp": "c163dd2db6f672d9e18cd6f05f8a219c4f527bb5bbbab45432eaad0dbcb0c885",
@@ -4320,8 +4427,8 @@
     "src/server/responses_file_search_output.cpp": "70734679d62a5c624ab52ff89f78e9fe857c309a6ae35656972fc87610a376c1",
     "src/server/responses_file_search_view.cpp": "9a3eb15f33f2e1067bf897f972023d02802fd89c3ab8b0c5e074ebd525c7f851",
     "src/server/responses_input.cpp": "bb7d8b9fdba46e9e43fdc6f97a23a05ff5ef0233d5bf69c891cdd7fc79f043bb",
-    "src/server/responses_item_shape.cpp": "5dcb4ec22d21aaf306d3e6cb7af2c9fdd9ba38b1a896ec3d62b8ad378c73fd44",
-    "src/server/responses_jobs.cpp": "02ba0eb00df0e814216696c04000c848f2b8aa88ca89509b4cbd9bb7e508a5b8",
+    "src/server/responses_item_shape.cpp": "7a33947f1de95fc77070eadfabd1b06cca7838ca39951edb139cf94fe9a1e47d",
+    "src/server/responses_jobs.cpp": "9f9cbe52a2fabaa71550b2ebe6814637e45f1cacee2905690b9766ea20195ce3",
     "src/server/responses_json.h": "4a294c22ea40b8344fca9c238ad432cbcc6a5b93a77e05a7d49cb250fa0864b2",
     "src/server/responses_mcp.cpp": "5fa0ce764003189499c5101fce75d20917240d4ef89f0ba71302de4629c22f04",
     "src/server/responses_mcp_binding.cpp": "1c2336a1458e9feb90a4dd7af51f019fcf38ca00771f410f11b69b13a2bfeded",
@@ -4340,7 +4447,7 @@
     "src/server/responses_python.cpp": "185081f43e8457562e97e554d4d5b6479a2530f4a61d15c9630f8e9b9527f454",
     "src/server/responses_python_execution.cpp": "dcd96969a10944cd90d90d6e039c72e22c27fab1fc89f3b5d30c90b5a44b9462",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
-    "src/server/responses_state.cpp": "8b7ff667b8ed0f1a2b2b0bfa0d4af73b5265dae1ec3b7039de7a752c2dd1a77b",
+    "src/server/responses_state.cpp": "ecded56b0b35003ece207332c880ab463bf0fac61e709cab9a6e158d391a1fda",
     "src/server/responses_summary.cpp": "7412535fe9bd0d316bd54b0ef43eea688a554865fe27fe86eef425a6f15689b7",
     "src/server/responses_tokens.cpp": "9ebdf955e1dbe6bacaad748005e8200dff0930a66799ade9c0bff6a7238f32e2",
     "src/server/responses_tool_catalog_history.cpp": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5",
@@ -4501,7 +4608,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "9ce8cb9cce0edc38caac7c6678272694bf49d3c71e1edc574ede8edc51bcea5e",
+    "tools/serve_gateway/gateway.py": "e111f5608b01038aaa8aeac84446b3af614dc65b70eaa86b14e5b29f4f76fb12",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -4678,7 +4785,7 @@
     "tools/serve_recovery/version_registration.py": "8f127f8423fcba9a383232f596ed8e25239953725f092c0680acba9518cecede",
     "tools/serve_recovery/version_runtime.py": "2d3303bb16d919249dc7dedb11e5d4095f8df775a0ae3c2bba70bb1d1a655726",
     "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
-    "tools/serve_responses/generate_item_types.mjs": "cfd2f9ff006df71405924232716c7d6b1baa228d778ca0d682f0e68f09134038",
+    "tools/serve_responses/generate_item_types.mjs": "1efde59bb09604feb90dcc5b7380bd444470ab63a271fcded27081701aa42a6b",
     "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
     "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",
     "tools/serve_service/backend.py": "49a37862d8040aceed14df796cb24535cacfeced3fe779773ec6925b04eeefa9",
@@ -8545,6 +8652,144 @@
       "evidence": [
         "src/service/ingress_cors.cpp",
         "src/service/ingress_main.cpp"
+      ]
+    },
+    "DELETE /v1/agents/automations/{automation_id}": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "GET /v1/agents/automations": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "GET /v1/agents/automations/{automation_id}": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "GET /v1/agents/automations/{automation_id}/invocations": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "GET /v1/agents/automations/{automation_id}/invocations/{invocation_id}": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/agents/automations": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/agents/automations/{automation_id}": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/agents/automations/{automation_id}/invocations": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/agents/automations/{automation_id}/invocations/{invocation_id}": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/agents/automations/{automation_id}/pause": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/agents/automations/{automation_id}/resume": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "POST /v1/agents/automations": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "POST /v1/agents/automations/{automation_id}": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "POST /v1/agents/automations/{automation_id}/invocations": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "POST /v1/agents/automations/{automation_id}/pause": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
+      ]
+    },
+    "POST /v1/agents/automations/{automation_id}/resume": {
+      "semantics": "按客户管理定时任务，查询或手动触发会话投递。",
+      "boundary": "同一计划时刻通过持久化版本比较领取。",
+      "evidence": [
+        "src/server/agent_automation_http.cpp",
+        "src/server/agent_automation_queue.cpp",
+        "tests/server_agent_automation_test.cpp"
       ]
     }
   },
