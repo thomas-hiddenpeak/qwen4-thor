@@ -371,8 +371,21 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         headers.failure = HttpReceiveFailure::kRoute;
         return false;
       }
-      const auto credential = BearerCredential(headers.authorization);
       const bool chatkit_client = IsChatKitClient(method, path);
+      if (headers.authorization.starts_with("Q4T-ChatKit ")) {
+        std::string bearer;
+        if (!chatkit_client || headers.client_id.empty() ||
+            !clients_.Authenticate(headers.client_id, headers.gateway_token).Allowed() ||
+            !ResolveForwardedChatKit(headers.authorization, headers.client_id,
+                                     headers.gateway_token, std::time(nullptr), &bearer)) {
+          failure_status = 401;
+          headers.error_code = "invalid_client_secret";
+          headers.failure = HttpReceiveFailure::kAdmission;
+          return false;
+        }
+        headers.authorization = std::move(bearer);
+      }
+      const auto credential = BearerCredential(headers.authorization);
       if (chatkit_client != credential.starts_with("cksec_")) {
         failure_status = 401;
         headers.error_code = "invalid_client_secret";

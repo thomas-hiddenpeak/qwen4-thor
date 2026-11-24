@@ -151,6 +151,14 @@ APPLICATION_ROUTES = [
       for method in ('GET', 'POST', 'DELETE')),
     ('POST', '/v1/prompts/{prompt_id}/versions', 'data'),
     ('GET', '/v1/prompts/{prompt_id}/versions/{version}', 'control'),
+    ('POST', '/v1/chatkit', 'data'),
+    ('POST', '/v1/chatkit/attachments', 'data'),
+    ('POST', '/v1/chatkit/sessions', 'data'),
+    ('POST', '/v1/chatkit/sessions/{session_id}/cancel', 'control'),
+    ('GET', '/v1/chatkit/threads', 'control'),
+    ('GET', '/v1/chatkit/threads/{thread_id}', 'control'),
+    ('DELETE', '/v1/chatkit/threads/{thread_id}', 'control'),
+    ('GET', '/v1/chatkit/threads/{thread_id}/items', 'control'),
     ('GET', '/v1/webhook_event_types', 'control'),
     *((method, '/v1/webhook_endpoints' + suffix,
        'data' if method == 'POST' else 'control')
@@ -305,6 +313,8 @@ def route_map():
                            'invocation_[A-Za-z0-9_-]{1,117}' if part == '{invocation_id}' else
                            'run_[A-Za-z0-9_-]{1,124}' if part == '{run_id}' else
                            'step_[A-Za-z0-9_-]{1,123}' if part == '{step_id}' else
+                           'cthr_[A-Za-z0-9_-]{1,123}' if part == '{thread_id}' and path.startswith('/v1/chatkit/') else
+                           'cksess_[A-Za-z0-9_-]{1,121}' if part == '{session_id}' and path.startswith('/v1/chatkit/') else
                            'thread_[A-Za-z0-9_-]{1,121}' if part == '{thread_id}' else
                            'msg_[A-Za-z0-9_-]{1,124}' if part == '{message_id}' else
                            'skill_[A-Za-z0-9_-]{1,122}' if part == '{skill_id}' else
@@ -380,6 +390,10 @@ def responses_beta_maps():
     default "";
     "~(^|,)[ \t]*assistants=v2[ \t]*(,|$)" assistants=v2;
   }
+  map $http_openai_beta $q4t_chatkit_beta {
+    default "";
+    "~(^|,)[ \t]*chatkit_beta=v1[ \t]*(,|$)" chatkit_beta=v1;
+  }
   map $http_openai_beta $q4t_agent_config {
     default "";
     "~(^|,)[ \t]*agents=v1[ \t]*(,|$)" agents=v1;
@@ -395,6 +409,7 @@ def responses_beta_maps():
   map $uri $q4t_responses_beta {
     default "";
     /v1/realtime $q4t_realtime_selector;
+    ~^/v1/chatkit/(sessions|threads)(/|$) $q4t_chatkit_beta;
     ~^/v1/responses(/|$) $q4t_multi_agent;
     ~^/v1/(assistants|threads)(/|$) $q4t_assistants_beta;
     ~^/v1/(agents|vaults)(/|$) $q4t_agent_config;
@@ -455,6 +470,36 @@ def realtime_issuer_maps(clients):
             '    default "";\n    "POST:/v1/realtime/client_secrets" "Q4T-Issuer $q4t_issuer_digest";\n    "POST:/v1/realtime/translations/client_secrets" "Q4T-Issuer $q4t_issuer_digest";\n'
             '    "POST:/v1/realtime/transcription_sessions" "Q4T-Issuer $q4t_issuer_digest";\n'
             '    "POST:/v1/realtime/sessions" "Q4T-Issuer $q4t_issuer_digest";\n  }')
+
+
+def chatkit_maps(clients, scoped):
+    # Routing reads only the configured owner. The engine verifies the signed
+    # ticket with this owner's active key digest before reserving its capacity.
+    scheme = '[Bb][Ee][Aa][Rr][Ee][Rr] '
+    owner_rows, proof_rows = [], []
+    if scoped:
+        for entry in clients:
+            owner = entry['id']
+            pattern = scheme + r'cksec_q4t1\.' + owner + r'\.[1-9][0-9]{0,15}\.[0-9a-f]{64}\.[A-Za-z0-9_-]{43}'
+            owner_rows.append(f'    "~^{pattern}$" {owner};')
+            digest = hashlib.sha256(entry['api_key'].encode('ascii')).hexdigest()
+            proof_rows.append(f'    {owner} "Q4T-ChatKit {digest} $http_authorization";')
+    else:
+        owner_rows.append(f'    "~^{scheme}cksec_[0-9a-f]{{64}}$" local;')
+        proof_rows.append('    local $http_authorization;')
+    return ('  map $http_authorization $q4t_chatkit_owner {\n    default "";\n' +
+            '\n'.join(owner_rows) + '\n  }\n' +
+            '  map $q4t_chatkit_owner $q4t_chatkit_proof {\n    default "";\n' +
+            '\n'.join(proof_rows) + '\n  }\n' +
+            '  map "$request_method:$request_uri" $q4t_client {\n' +
+            '    default $q4t_key_client;\n' +
+            '    "POST:/v1/chatkit" $q4t_chatkit_owner;\n' +
+            '    "POST:/v1/chatkit/attachments" $q4t_chatkit_owner;\n  }\n' +
+            '  map "$request_method:$request_uri" $q4t_upstream_credential {\n' +
+            '    default $q4t_realtime_issuer;\n' +
+            '    "POST:/v1/chatkit/sessions" "Q4T-Issuer $q4t_issuer_digest";\n' +
+            '    "POST:/v1/chatkit" $q4t_chatkit_proof;\n' +
+            '    "POST:/v1/chatkit/attachments" $q4t_chatkit_proof;\n  }')
 
 
 def tunnel_headers():
@@ -731,7 +776,8 @@ http {{
   log_format q4t escape=json '{{"gateway_id":"$request_id","client":"$q4t_client","lane":"$q4t_lane","status":$status,"bytes":$body_bytes_sent,"seconds":$request_time,"upstream_status":"$upstream_status","connection_limit":"$limit_conn_status","rate_limit":"$limit_req_status"{source_log}}}';
   access_log /dev/stdout q4t;
 {realtime_issuer_maps(p['clients'])}
-{source_map}{upstream_map}  map $http_authorization $q4t_client {{
+{chatkit_maps(p['clients'], backend_policy is not None)}
+{source_map}{upstream_map}  map $http_authorization $q4t_key_client {{
     default "";
 {clients}
   }}
@@ -794,7 +840,7 @@ http {{
       proxy_set_header Idempotency-Key $http_idempotency_key;
       proxy_set_header X-Request-Id $http_x_request_id;
 {tunnel_headers()}
-      proxy_set_header Authorization $q4t_realtime_issuer;
+      proxy_set_header Authorization $q4t_upstream_credential;
       {identity_headers}
       proxy_buffering off;
       proxy_request_buffering on;

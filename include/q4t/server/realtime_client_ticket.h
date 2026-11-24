@@ -23,6 +23,11 @@ bool SignRealtimeTicket(std::string_view binding, std::string_view issuer,
                         std::string_view owner, std::string_view opaque,
                         int64_t expires_at, std::string* token,
                         ClientTicketAudience audience = ClientTicketAudience::kRealtime);
+// Verify the scoped optional frontend's attestation against the currently
+// configured issuer key before admitting a browser on its owner's lane.
+bool ResolveForwardedChatKit(std::string_view authorization,
+                             std::string_view owner, std::string_view binding,
+                             int64_t now, std::string* bearer);
 bool VerifyRealtimeTicket(const RealtimeClientTicket& ticket,
                           std::string_view binding, std::string_view issuer,
                           int64_t now);
