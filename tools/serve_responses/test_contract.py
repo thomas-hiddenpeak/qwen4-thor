@@ -130,7 +130,7 @@ class ApplicationContract(unittest.TestCase):
         Draft202012Validator.check_schema(SCHEMA)
         fields = {row['field'] for row in json.loads((ROOT/'docs/serve-responses-fields-v1.json').read_text())['fields']}
         self.assertEqual(set(resolve(app.ref('response_create'))['properties']),
-                         fields | {'request_id', 'cancel_token', 'request_timeout_ms', 'seed'})
+                         fields | {'request_id', 'cancel_token', 'request_timeout_ms', 'seed', 'personality'})
         for request in [dict(input='hi'), dict(input='hi', background=True, store=False),
                         dict(input='hi', tool_choice='none', max_output_tokens=1)]:
             self.assertFalse(errors(request, 'response_create'))
@@ -164,6 +164,34 @@ class ApplicationContract(unittest.TestCase):
         self.assertFalse(errors(delta, 'response_event'))
         self.assertTrue(errors(dict(delta, obfuscation=1), 'response_event'))
 
+    def test_agent_list_limits_match_native_integer_boundaries(self):
+        spec = api.openapi()
+        for route, nullable in [('/v1/agents/environments', False),
+                                ('/v1/agents/environments/{environment_id}/files', True),
+                                ('/v1/agents/sessions', False)]:
+            with self.subTest(route=route):
+                query = spec['paths'][route]['get']['parameters']
+                schema = next(p['schema'] for p in query if p['name'] == 'limit')
+                validator = Draft202012Validator(schema)
+                self.assertTrue(all(validator.is_valid(n) for n in (1, 20, 100)))
+                self.assertTrue(all(not validator.is_valid(n) for n in (0, 1.5, 101, '20', True)))
+                self.assertEqual(validator.is_valid(None), nullable)
+
+    def test_assistant_registry_tool_resources_and_field_bounds(self):
+        valid = dict(model='qwen', name='业'*256, temperature=0, top_p=1)
+        self.assertFalse(errors(valid, 'assistant_create'))
+        for extra in [dict(name='业'*257),dict(temperature=2.01),dict(top_p=-0.01),
+                      dict(tools=[{'type':'file_search'}]*129),
+                      dict(tool_resources={'code_interpreter':{'file_ids':['file_1']*21}}),
+                      dict(tool_resources={'file_search':{}}),
+                      dict(tool_resources={'file_search':{'vector_store_ids':['vs_1','vs_2']}}),
+                      dict(tool_resources={'file_search':{'vector_store_ids':[], 'vector_stores':[]}})]:
+            with self.subTest(field=list(extra)):
+                self.assertTrue(errors(dict(valid, **extra), 'assistant_create'))
+        self.assertFalse(errors(dict(tool_resources={'file_search':{}}), 'assistant_update'))
+        self.assertFalse(errors(dict(valid, tool_resources={'file_search':{
+            'vector_stores':[{'file_ids':[]}]}}), 'assistant_create'))
+
     def test_archived_real_business_wire(self):
         checked, rejected = self.audit(ROOT/'docs/evidence/serve-responses-business-20261109/business-01', legacy=True)
         self.assertGreater(checked, 20)
@@ -184,13 +212,17 @@ class ApplicationContract(unittest.TestCase):
 
     def test_openapi_routes_queries_and_no_external_reference_bundle(self):
         spec = api.openapi()
-        self.assertEqual({method.upper()+' '+path for path, methods in spec['paths'].items()
-            for method in methods}, set(json.loads((ROOT/'tools/serve_audit/inventory.json').read_text())['routes']))
+        self.assertEqual(api.runtime_routes(spec), set(json.loads((ROOT/'tools/serve_audit/inventory.json').read_text())['routes']))
         cancel = spec['paths']['/v1/responses/{response_id}/cancel']['post']
         self.assertIn('200', cancel['responses'])
         self.assertNotIn('requestBody', cancel)
         self.assertEqual([p['name'] for p in spec['paths']['/v1/responses/{response_id}']['get']['parameters']],
-            ['response_id', 'include[]', 'include_obfuscation', 'starting_after', 'stream'])
+            ['response_id', 'include', 'include[]', 'include_obfuscation', 'starting_after', 'stream',
+             'beta', 'OpenAI-Beta'])
+        subscription = spec['paths']['/v1/agents/sessions/{session_id}/events']['get']
+        self.assertEqual([p['schema'] for p in subscription['parameters']
+                          if p['in'] == 'query' and p['name'] == 'include_obfuscation'],
+                         [dict(type='boolean', default=True)])
         self.assertNotIn('text/event-stream', cancel['responses']['200']['content'])
         bundled = app.standalone_openapi(spec)
         def visit(value):

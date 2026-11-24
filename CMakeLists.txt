@@ -545,6 +545,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/prompt_cache_diagnostics.cpp
   src/server/prompt_registry.cpp
   src/server/prompt_api.cpp
+  src/server/assistant_registry.cpp
   src/server/agent_registration.cpp
   src/server/agent_vault.cpp
   src/server/vault_credential_auth.cpp

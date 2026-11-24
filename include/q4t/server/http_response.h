@@ -117,6 +117,8 @@ class HttpResponseContext {
   const io::Json* RealtimeStartup() const { return realtime_startup_; }
   const std::string& AgentEventKey() const { return agent_event_key_; }
   void SetAgentEventKey(std::string key) { agent_event_key_ = std::move(key); }
+  bool AssistantsBeta() const { return assistants_beta_; }
+  void SetAssistantsBeta(bool enabled) { assistants_beta_ = enabled; }
   bool AgentsBeta() const { return agents_beta_; }
   void SetAgentsBeta(bool enabled) { agents_beta_ = enabled; }
   bool ResponsesMultiAgent() const { return responses_multi_agent_; }
@@ -269,6 +271,7 @@ class HttpResponseContext {
   std::optional<double> realtime_temperature_;
   const io::Json* realtime_startup_ = nullptr;
   bool responses_multi_agent_ = false;
+  bool assistants_beta_ = false;
   bool agents_beta_ = false;
   std::string agent_event_key_;
   ClientRateDomain rate_domain_ = ClientRateDomain::kOnline;

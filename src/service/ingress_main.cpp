@@ -423,6 +423,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::RealtimeTraceMethodAllowed(method, path) ||
       server::VoiceMethodAllowed(method, path) ||
       server::ConversationMethodAllowed(method, path) ||
+      server::AssistantMethodAllowed(method, path) ||
       server::ManagedAgentMethodAllowed(method, path) ||
       server::PromptMethodAllowed(method, path) ||
       server::McpTunnelMethodAllowed(method, path) ||
@@ -438,6 +439,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
                server::IsResponsesObservation(method, path) ||
                server::IsVectorStoreObservation(method, path) ||
                server::IsBatchObservation(method, path) ||
+               server::IsAssistantObservation(method, path) ||
                server::IsManagedAgentObservation(method, path) ||
                server::IsPromptObservation(method, path) ||
                server::IsCancellationRequest(method, path) ||
@@ -527,6 +529,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            (headers.realtime_beta && method == "GET" &&
                     path.substr(0, path.find('?')) == "/v1/realtime"
                 ? "OpenAI-Beta: realtime=v1\r\n" : "") +
+           (headers.assistants_beta && server::IsAssistantTarget(path)
+                ? "OpenAI-Beta: assistants=v2\r\n" : "") +
            (headers.agents_beta && server::IsManagedAgentTarget(path)
                 ? "OpenAI-Beta: agents=v1\r\n" : "") +
            (headers.responses_multi_agent && server::IsResponsesTarget(path)

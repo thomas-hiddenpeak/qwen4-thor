@@ -33,6 +33,9 @@ using ResponsesReasoningSeal =
 // use the base type; Responses input_items preserves the Item lifecycle.
 io::Json ResponsesPublicValue(io::Json value);
 
+// Apply the connection's padding choice after projecting a public SSE event.
+void ApplyDeltaObfuscation(io::Json* event, bool enabled);
+
 class ResponsesOutput {
  public:
   static constexpr size_t kStorageLimit = 32 * 1024 * 1024;

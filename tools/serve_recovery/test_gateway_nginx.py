@@ -108,7 +108,7 @@ class Stack:
                 self.close_connection = True
             def application_path(self, method):
                 path = self.path.split('?', 1)[0]
-                roots = ('/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
+                roots = ('/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
                          '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/live/sessions')
@@ -434,7 +434,7 @@ class NginxTests(unittest.TestCase):
             if lane == 'control':
                 # Both real entrypoints enforce the control rate independently.
                 time.sleep(0.11)
-            identities = dict(subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
+            identities = dict(assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
                               upload_id='upload_1', file_id='file_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
@@ -524,6 +524,20 @@ class NginxTests(unittest.TestCase):
 
     def ready(self):
         self.stack.wait(lambda: self.stack.bound == self.stack.generation)
+
+    def test_assistant_registry_preserves_beta_and_owned_metadata_lane(self):
+        self.ready()
+        for path, body in [('/v1/assistants', {'model':'cpu'}),
+                           ('/v1/assistants/asst_1', {'name':'updated'}),
+                           ('/v1/assistants?limit=1&before=asst_1', None)]:
+            status, _, _ = self.stack.request(body, path=path,
+                extra={'OpenAI-Beta':'agents=v1, assistants=v2'})
+            self.assertEqual(status, 200)
+            row = self.stack.application_requests[-1]
+            self.assertEqual((row['path'],row['client'],row['openai_beta']),
+                             (path,'alpha','assistants=v2'))
+        self.assertEqual(self.stack.request(path='/v1/assistants/agent_other')[0], 404)
+        self.assertEqual(len(self.stack.application_requests), 3)
 
     def test_environment_templates_preserve_identity_and_sdk_selector(self):
         self.ready()

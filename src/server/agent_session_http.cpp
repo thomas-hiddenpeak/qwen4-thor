@@ -14,6 +14,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_jobs.h"
+#include "q4t/server/responses_output.h"
 
 namespace q4t::server {
 namespace {
@@ -121,7 +122,7 @@ struct Subscriber {
 };
 
 void Stream(int fd, ObjectStore& objects, const std::string& id, bool follow,
-            const StateAccess& access) {
+            bool obfuscation, const StateAccess& access) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http) return;
   Subscriber subscriber{id};
@@ -165,7 +166,8 @@ void Stream(int fd, ObjectStore& objects, const std::string& id, bool follow,
           !detail::BeginStreamingResponse(fd, http->State(), {access.deadline}, status))
         return;
       started = true;
-      for (const auto& event : events.array) {
+      for (auto& event : events.array) {
+        ApplyDeltaObfuscation(&event, obfuscation);
         const auto wire = "id: " + event.GetString("event_id") +
                           "\r\nevent: " + event.GetString("type") +
                           "\r\ndata: " + OutputJson(event) + "\r\n\r\n";
@@ -232,6 +234,21 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
         split == target.npos ? "" : target.substr(split + 1));
     return query.ok() ? ListAgentSessions(objects, query.value, access) : query;
   }
+  if (route.kind == Kind::kEvents && method == "GET") {
+    if (!body.empty()) return Invalid("Unexpected body", "body");
+    auto query = ParseApplicationQuery(
+        split == target.npos ? "" : target.substr(split + 1));
+    if (!query.ok()) return query;
+    for (const auto& field : query.value.object)
+      if (field.first != "include_obfuscation")
+        return Invalid("Unexpected event subscription field", field.first);
+    *stream = true;
+    ObjectReply result;
+    result.value = Object({{"id", String(std::string(route.session))}});
+    Set(&result.value, "include_obfuscation",
+        Boolean(query.value.GetBool("include_obfuscation", true)));
+    return result;
+  }
   if (split != target.npos &&
       (route.kind == Kind::kCollection || route.kind == Kind::kEvents ||
        route.kind == Kind::kSession || route.kind == Kind::kTurn ||
@@ -243,13 +260,6 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
     if (!parsed) return Invalid(parsed.message(), "body");
     return UpdateAgentSession(objects, std::string(route.session), request,
                               config, access);
-  }
-  if (route.kind == Kind::kEvents && method == "GET") {
-    if (!body.empty()) return Invalid("Unexpected body", "body");
-    *stream = true;
-    ObjectReply result;
-    result.value = Object({{"id", String(std::string(route.session))}});
-    return result;
   }
   if (route.kind == Kind::kCollection || route.kind == Kind::kEvents) {
     auto* http = detail::HttpResponseContext::Current(fd);
@@ -366,7 +376,8 @@ void ServeAgentSession(int fd, ObjectStore& objects, ClientAdmission& clients,
                       access, &stream, &sent);
   if (sent) return;
   if (reply.ok() && stream) {
-    Stream(fd, objects, reply.value.GetString("id"), method == "GET", access);
+    Stream(fd, objects, reply.value.GetString("id"), method == "GET",
+           reply.value.GetBool("include_obfuscation", true), access);
     return;
   }
   const auto kind = ParseAgentSessionRoute(target).kind;

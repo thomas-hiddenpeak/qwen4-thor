@@ -155,6 +155,19 @@ Status ResponsesOutput::Charge(size_t bytes) {
   return {};
 }
 
+void ApplyDeltaObfuscation(io::Json* event, bool enabled) {
+  std::erase_if(event->object,
+                [](const auto& field) { return field.first == "obfuscation"; });
+  if (!enabled || !event->GetString("type").ends_with(".delta")) return;
+  const auto random = detail::NewRequestId("");
+  const size_t size = 128 - ((OutputJson(*event).size() + 18) % 128) +
+                      ((random[0] & 1) ? 128 : 0);
+  std::string padding;
+  while (padding.size() < size) padding += detail::NewRequestId("");
+  padding.resize(size);
+  Set(event, "obfuscation", String(std::move(padding)));
+}
+
 void ResponsesOutput::Event(std::string_view type, io::Json fields,
                             std::string* wire) {
   if (const auto* index = fields.Find("output_index"); index && index->IsNumber()) {
@@ -166,16 +179,7 @@ void ResponsesOutput::Event(std::string_view type, io::Json fields,
   Set(&fields, "type", String(std::string(type)));
   Set(&fields, "sequence_number", Number(sequence_++));
   fields = ResponsesPublicValue(std::move(fields));
-  // The public stream option pads delta events, not lifecycle snapshots.
-  if (obfuscation_ && type.ends_with(".delta")) {
-    const auto random = detail::NewRequestId("");
-    const size_t size = 128 - ((OutputJson(fields).size() + 18) % 128) +
-                        ((random[0] & 1) ? 128 : 0);
-    std::string padding;
-    while (padding.size() < size) padding += detail::NewRequestId("");
-    padding.resize(size);
-    Set(&fields, "obfuscation", String(std::move(padding)));
-  }
+  ApplyDeltaObfuscation(&fields, obfuscation_);
   *wire += "event: " + std::string(type) + "\r\ndata: " + OutputJson(fields) +
            "\r\n\r\n";
 }

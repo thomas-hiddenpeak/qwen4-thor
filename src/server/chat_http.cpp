@@ -30,6 +30,7 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/client_request.h"
 #include "q4t/server/conversation_api.h"
+#include "q4t/server/assistant_registry.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/agent_vault.h"
 #include "q4t/server/agent_environment.h"
@@ -338,6 +339,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
     const auto admit = [&] {
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
       NormalizeResponsesPostTarget(method, path);
+      context.SetAssistantsBeta(headers.assistants_beta);
       context.SetAgentsBeta(headers.agents_beta);
       context.SetAgentEventKey(std::move(headers.agent_event_key));
       context.SetResponsesMultiAgent(headers.responses_multi_agent &&
@@ -455,7 +457,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
             path == "/v1/decisions" || path == "/v1/embeddings" ||
             path == "/v1/audio/speech" || IsTranscriptionTarget(path) ||
             IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
-            IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
+            IsAssistantTarget(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
             IsBatchTarget(path) || IsVectorStoreTarget(path) ||
             IsFileTarget(path) || IsUploadTarget(path))) ||
           (method == "GET" && (!LiveRecordingId(path).empty() ||
@@ -543,7 +545,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
-        IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
+        IsAssistantTarget(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
       if (method == "POST" && path != "/v1/realtime/calls" && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" ||
@@ -770,7 +772,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   if ((IsStoredChatTarget(path) &&
        !(method == "POST" &&
          path.substr(0, path.find('?')) == "/v1/chat/completions")) ||
-      IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
+      IsAssistantTarget(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
       IsBatchTarget(path) || IsVectorStoreTarget(path) ||
       (IsResponsesTarget(path) &&
        path.substr(0, path.find('?')) != "/v1/responses")) {
@@ -778,6 +780,11 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (!objects_ || !context || !context->Client().Allowed()) {
       SendError(fd, 503, "Authenticated application state unavailable", {},
                 "object_scope_unavailable");
+      return;
+    }
+    if (IsAssistantTarget(path) && !context->AssistantsBeta()) {
+      SendError(fd, 400, "Assistants require OpenAI-Beta assistants=v2", {},
+                "beta_required", "OpenAI-Beta");
       return;
     }
     if (IsManagedAgentTarget(path) && !context->AgentsBeta()) {
@@ -823,6 +830,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
             ? HandleEnvironmentTemplate(*objects_, method, path, body, access)
         : IsVaultTarget(path)
             ? HandleAgentVault(*objects_, method, path, body, access)
+        : IsAssistantTarget(path)
+            ? HandleAssistantRegistry(*objects_, method, path, body,
+                                      PlanningConfig(fd), access,
+                                      !embedding_model_dir_.empty())
         : IsAgentRegistrationTarget(path)
             ? HandleAgentRegistration(*objects_, method, path, body,
                                       PlanningConfig(fd), access)

@@ -624,7 +624,14 @@
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       },
-      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
+      "event_query_contract": {
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "issued_default_revision": 460,
+        "covered_declared_methods": 135,
+        "official_query_names": 110,
+        "evidence": "evidence/serve-agent-event-query-20261124/business.json"
+      }
     },
     {
       "id": "A02",
@@ -2629,7 +2636,18 @@
       "agent_session_cancellation_20261123": "docs/evidence/serve-agent-sessions-20261123/cancel.json",
       "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json",
       "session_artifacts_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/artifact-delivery.json",
-      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json"
+      "session_tools_delivery_20261124": "docs/evidence/serve-agent-workspaces-20261124/session-tools-delivery.json",
+      "assistants_registry_20261124": {
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "methods": 5,
+        "remaining": [
+          "Threads",
+          "Runs",
+          "tool output continuation",
+          "release"
+        ],
+        "evidence": "evidence/serve-assistants-20261124/registry.json"
+      }
     },
     {
       "id": "A09",
@@ -6019,7 +6037,18 @@
         "merge_commit": "60f5ae9081fcd68ab53d1ad448532dab3c8dac1a",
         "evidence": "evidence/serve-pr56-merged-20261120/README.md"
       },
-      "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json"
+      "agent_registration_candidate_20261123": "docs/evidence/serve-agent-registration-20261123/checks.json",
+      "assistants_registry_20261124": {
+        "status": "CANDIDATE_BUSINESS_PASS",
+        "methods": 5,
+        "remaining": [
+          "Threads",
+          "Runs",
+          "tool output continuation",
+          "release"
+        ],
+        "evidence": "evidence/serve-assistants-20261124/registry.json"
+      }
     },
     {
       "id": "A12",

@@ -124,16 +124,7 @@ Json ViewEvent(Json event, const ResponsesReadPlan& plan) {
     if (event.Has("logprobs")) Set(&event, "logprobs", Array());
     if (event.Has("part")) Remove(&Field(event, "part"), "logprobs");
   }
-  Remove(&event, "obfuscation");
-  if (plan.obfuscation && event.GetString("type").ends_with(".delta")) {
-    const auto random = detail::NewRequestId("");
-    const size_t size = 128 - ((OutputJson(event).size() + 18) % 128) +
-                        ((random[0] & 1) ? 128 : 0);
-    std::string padding;
-    while (padding.size() < size) padding += detail::NewRequestId("");
-    padding.resize(size);
-    Set(&event, "obfuscation", String(std::move(padding)));
-  }
+  ApplyDeltaObfuscation(&event, plan.obfuscation);
   return event;
 }
 struct StreamState {

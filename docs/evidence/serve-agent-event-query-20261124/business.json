@@ -1,0 +1,176 @@
+{
+  "scope": "Agent session event subscription, delta projection, and query-name declarations. Current default rev460 predates this candidate.",
+  "candidate": {
+    "binary": "01ea85ce48c0327965637b731cdcfb4f42de85299b145473908be2de92c44c5e",
+    "ingress": "458b028f02d936beb055a4ffe1d4c6a55bc7766082c039339d3c2b4b05bc6919",
+    "sdk_driver": "70229eb140e8e7e873aff6f93fcaef106d44874d0e48e3db5de80d0c3dad04df"
+  },
+  "frozen_official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "method_count": 135,
+  "required_methods": 231,
+  "comparison": {
+    "before": {
+      "declared": 102,
+      "bracket_name_only": 7,
+      "missing": 1
+    },
+    "after": {
+      "declared": 110,
+      "bracket_name_only": 0,
+      "missing": 0
+    },
+    "previously_missing_or_alias_only": [
+      {
+        "method": "GET",
+        "path": "/agents/sessions/{session_id}/events",
+        "query": "include_obfuscation",
+        "state": "missing"
+      },
+      {
+        "method": "POST",
+        "path": "/conversations/{conversation_id}/items",
+        "query": "include",
+        "state": "bracket_name_only"
+      },
+      {
+        "method": "GET",
+        "path": "/conversations/{conversation_id}/items",
+        "query": "include",
+        "state": "bracket_name_only"
+      },
+      {
+        "method": "GET",
+        "path": "/conversations/{conversation_id}/items/{item_id}",
+        "query": "include",
+        "state": "bracket_name_only"
+      },
+      {
+        "method": "GET",
+        "path": "/responses/{response_id}",
+        "query": "include",
+        "state": "bracket_name_only"
+      },
+      {
+        "method": "GET",
+        "path": "/responses/{response_id}/input_items",
+        "query": "include",
+        "state": "bracket_name_only"
+      },
+      {
+        "method": "GET",
+        "path": "/responses/{response_id}/input_items?beta=true",
+        "query": "include",
+        "state": "bracket_name_only"
+      },
+      {
+        "method": "GET",
+        "path": "/responses/{response_id}?beta=true",
+        "query": "include",
+        "state": "bracket_name_only"
+      }
+    ]
+  },
+  "native_tls_business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 36.547,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "official_node_sdk": {
+    "sdk": "7.47.0",
+    "events": 12,
+    "deltas": 2,
+    "text": "42",
+    "initial": "2",
+    "identical_event_ids_and_payloads": true,
+    "foreign": 404,
+    "rejected_query_statuses": [
+      400,
+      400,
+      400
+    ],
+    "include_projections_equal": true,
+    "independent_chat": "42",
+    "driver_sha256": "70229eb140e8e7e873aff6f93fcaef106d44874d0e48e3db5de80d0c3dad04df"
+  },
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 155,
+    "native_routes": 258,
+    "reviewed_source_anchors": 1249,
+    "mutation_checks": 38,
+    "errors": []
+  },
+  "cpu": {
+    "selected": [
+      "agent_session_delta_padding_is_per_subscription",
+      "responses_api_query_contract_and_routes_before_storage",
+      "responses_api_replay_uses_original_sequence_and_obfuscation_choice",
+      "http_session_created_and_subscription_streams_keep_distinct_statuses",
+      "responses_output_obfuscation_and_malformed_probabilities",
+      "agent_session_turn_shares_queue_receipt_and_reopens_native_output"
+    ],
+    "native_tests": 6,
+    "python_contract_tests": 12
+  },
+  "original_failures": [
+    "First Python invocation lacked archived fixture directories and the native wire environment. Two older assertions also predated the Realtime intent selector and personality field.",
+    "Second Python invocation exposed stale expected beta query/header names on Responses retrieve. Reviewed actual schema and serializer before correcting the fixture."
+  ],
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/query-business-01/result.json",
+      "sha256": "d8f58c2d0fbd80e68075dfcbea4e16afb4660dcefc53d97dba6182134e9bb160"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/query-business-01/create/sdk-result.json",
+      "sha256": "366982275975cc38c88ef6d2a312fb178a72f80436f4c393b32c87cb9629991c"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/query-business-lease-01/exit.json",
+      "sha256": "287c51b33545aff3be7615e8c527a78adc7e34fe8ab38787e0322851fe413913"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/query-contract-01.log",
+      "sha256": "70da724640f97ce08a794de05e650b298a18bf002f26dc31913bd6a1860008d8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/query-contract-02.log",
+      "sha256": "484e1771afaf83d07bd3b208f7783280ac12dcd061b11413b8e5a44b9c796af3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/query-contract-03.log",
+      "sha256": "4824f100acee114ac119cd46dda6c78294411ceb3784d6ea2592128852822ef3"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/query-native-cpu-01.log",
+      "sha256": "f2d0faf5fb41b54590f574e83e72dec385bfc48acac7d0a31fb5204d66b63bf0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/query-matrix-before-01.json",
+      "sha256": "64cff6e0eb2cf464e7378860dac4a9915d490678fb44f51c4855642b27ff42bd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/query-matrix-after-01.json",
+      "sha256": "86cf04f729b541b6dcdb0379e6d0e139867ee1750cdd21c9368160e759b315b3"
+    }
+  ],
+  "pagination_schema": {
+    "python_tests": 13,
+    "observed": "Native query parser requires an integer. Sessions, environments and workspace files accept 1 through 100, with 20 on omission. The workspace file schema permits null, which SDKs omit from the URL.",
+    "invalid_examples": [
+      0,
+      1.5,
+      101,
+      "20",
+      true
+    ],
+    "test": "tools.serve_responses.test_contract.ApplicationContract.test_agent_list_limits_match_native_integer_boundaries"
+  }
+}

@@ -108,7 +108,8 @@ def schema(graph):
         data=dict(type='array', items=ref('agents_resource')), has_more=dict(type='boolean'),
         first_id=nullable(dict(type='string')), last_id=nullable(dict(type='string'))),
         ('object', 'data', 'has_more', 'first_id', 'last_id'))
-    definitions['agents_query'] = obj(dict(limit=dict(type='integer', minimum=1, maximum=100),
+    page_limit = dict(type='integer', minimum=1, maximum=100, default=20)
+    definitions['agents_query'] = obj(dict(limit=page_limit,
         after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
     vault_meta = dict(type='object', maxProperties=16,
                       propertyNames=dict(minLength=1, maxLength=64),
@@ -121,6 +122,17 @@ def schema(graph):
     definitions['vault_update'] = obj(dict(name=nullable(vault_name), metadata=vault_meta))
     definitions['vault_deleted'] = obj(dict(id=dict(type='string'), object=dict(const='vault.deleted'),
                                            deleted=dict(const=True)), ['id', 'object', 'deleted'])
+    assistants = json.loads((ROOT/'src/server/contracts/openai_assistant_types_v1.json').read_text())
+    assert assistants['profile'] == 'q4t-openai-assistant-types-v1'
+    definitions.update(graph_definitions(assistants, 'assistant_'))
+    create_assistant = definitions['assistant_' + str(assistants['roots']['create'])]
+    inline_search = {'properties': {'file_search': {'oneOf': [
+        {'required': ['vector_store_ids']}, {'required': ['vector_stores']}]}}}
+    create_assistant['properties']['tool_resources'].update(inline_search)
+    assistant_query = definitions['assistant_' + str(assistants['roots']['query'])]
+    assistant_query['properties']['limit'] = page_limit
+    definitions['assistant_list'] = copy.deepcopy(definitions['agents_list'])
+    definitions['assistant_list']['properties']['data']['items'] = ref('assistant_resource')
     definitions['vault_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['vault_list']['properties']['data']['items'] = ref('vault')
     definitions['vault_query'] = copy.deepcopy(definitions['agents_query'])
@@ -157,6 +169,9 @@ def schema(graph):
     # The SDK moves this option to a header before sending the request.
     creation = 'hosted_' + str(environment['roots']['environment_create'])
     del environment_types[creation]['properties']['Idempotency-Key']
+    for query, limit in [('environment_query', page_limit), ('file_query', nullable(page_limit))]:
+        node = environment_types['hosted_' + str(environment['roots'][query])]
+        node['properties']['limit'] = limit
     definitions.update(environment_types)
     definitions['hosted_environment_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['hosted_environment_list']['properties']['data']['items'] = ref('hosted_environment_resource')
@@ -168,10 +183,11 @@ def schema(graph):
     sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
     assert sessions['profile'] == 'q4t-openai-agent-session-types-v1'
     definitions.update(graph_definitions(sessions, 'agent_session_'))
-    artifact_query = definitions['agent_session_'+str(sessions['roots']['artifact_query'])]
-    artifact_query['properties']['limit'] = dict(type='integer', minimum=1, maximum=100, default=20)
-    child_query = definitions['agent_session_'+str(sessions['roots']['subagent_query'])]
-    child_query['properties']['limit'] = dict(type='integer', minimum=1, maximum=100, default=20)
+    definitions['agent_session_event_query'] = obj(dict(
+        include_obfuscation=dict(type='boolean', default=True)))
+    for query in ('query', 'artifact_query', 'subagent_query'):
+        node = definitions['agent_session_' + str(sessions['roots'][query])]
+        node['properties']['limit'] = page_limit
     trace = dict(id=dict(type='string'), session_id=dict(type='string'),
                  object=dict(const='agent.session.trace'), created_at=dict(type='integer'),
                  otlp=dict(type='object', required=['resourceSpans'],
@@ -231,12 +247,13 @@ def schema(graph):
     # The pinned SDK describes include_obfuscation on streaming deltas but
     # omits that optional property from most delta interfaces. Preserve the
     # documented wire field only for delta events, with strict other events.
-    for index in graph['nodes'][graph['roots']['response_event']]['variants']:
-        node = graph['nodes'][index]
-        tag = next((graph['nodes'][field['type']].get('value')
-                    for field in node.get('fields', []) if field['name'] == 'type'), None)
-        if isinstance(tag, str) and tag.endswith('.delta'):
-            definitions[str(index)]['properties']['obfuscation'] = dict(type='string')
+    for types, event_root, prefix in ((graph, 'response_event', ''), (sessions, 'event', 'agent_session_')):
+        for index in types['nodes'][types['roots'][event_root]]['variants']:
+            node = types['nodes'][index]
+            tag = next((types['nodes'][field['type']].get('value')
+                        for field in node.get('fields', []) if field['name'] == 'type'), None)
+            if isinstance(tag, str) and tag.endswith('.delta'):
+                definitions[prefix+str(index)]['properties']['obfuscation'] = dict(type='string')
 
     # output_text is added by the SDK after parsing; it is not a wire field.
     response = root('response')
@@ -479,9 +496,11 @@ def add_openapi(paths, response, error):
             return value
         result = []
         for key, value in shape(name)['properties'].items():
-            result.append(dict(name='include[]' if key == 'include' else key,
+            result.append(dict(name=key,
                 **{'in': 'query'}, required=False, schema=rewrite(value),
                 style='deepObject' if key == 'metadata' else 'form', explode=True))
+            if key == 'include':
+                result.append(dict(result[-1], name='include[]', **{'x-q4t-alias-for':'include'}))
         return result
 
     endpoints = [
@@ -495,6 +514,11 @@ def add_openapi(paths, response, error):
         ('/v1/vaults/{vault_id}', 'get', None, 'vault', None),
         ('/v1/vaults/{vault_id}', 'post', 'vault_update', 'vault', None),
         ('/v1/vaults/{vault_id}', 'delete', None, 'vault_deleted', None),
+        ('/v1/assistants', 'post', 'assistant_create', 'assistant_resource', None),
+        ('/v1/assistants', 'get', None, 'assistant_list', 'assistant_query'),
+        ('/v1/assistants/{assistant_id}', 'get', None, 'assistant_resource', None),
+        ('/v1/assistants/{assistant_id}', 'post', 'assistant_update', 'assistant_resource', None),
+        ('/v1/assistants/{assistant_id}', 'delete', None, 'assistant_deleted', None),
         ('/v1/agents', 'post', 'agents_create', 'agents_resource', None),
         ('/v1/agents', 'get', None, 'agents_list', 'agents_query'),
         ('/v1/agents/{agent_id}', 'get', None, 'agents_resource', None),
@@ -515,7 +539,7 @@ def add_openapi(paths, response, error):
         ('/v1/agents/sessions/{session_id}', 'get', None, 'agent_session_resource', None),
         ('/v1/agents/sessions/{session_id}', 'post', 'agent_session_update', 'agent_session_resource', None),
         ('/v1/agents/sessions/{session_id}', 'delete', None, 'agent_session_deleted', None),
-        ('/v1/agents/sessions/{session_id}/events', 'get', None, None, None),
+        ('/v1/agents/sessions/{session_id}/events', 'get', None, None, 'agent_session_event_query'),
         ('/v1/agents/sessions/{session_id}/events', 'post', 'agent_session_event_batch', None, None),
         ('/v1/agents/sessions/{session_id}/turns', 'get', None, 'agent_session_turn_list', 'agents_query'),
         ('/v1/agents/sessions/{session_id}/turns/{turn_id}', 'get', None, 'agent_session_turn', None),
@@ -606,6 +630,10 @@ def add_openapi(paths, response, error):
                 'default': response(error, 'Native error; unknown/other-client identities return 404')},
             **{'x-q4t-query-contract': query_contract,
                'x-q4t-body-contract': body or 'empty body only'})
+        if path.startswith('/v1/assistants'):
+            parameters.append(dict(name='OpenAI-Beta', **{'in':'header'}, required=True,
+                schema=dict(type='string', pattern=r'(^|,)[ \t]*assistants=v2[ \t]*(,|$)'),
+                example='assistants=v2'))
         if path.startswith(('/v1/agents', '/v1/vaults')):
             operation.setdefault('parameters', []).append(dict(name='OpenAI-Beta',
                 **{'in':'header'}, required=True, schema=dict(type='string',
