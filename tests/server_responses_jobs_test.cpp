@@ -1501,7 +1501,6 @@ Q4T_TEST(responses_foreground_unknown_checkpoint_preserves_partial_output) {
   ResetForegroundWorker reset;
   ObjectWorkerEntryForTesting("--q4t-object-worker-second-put-lost-ack");
   Fixture f;
-  f.options.io_timeout_ms = 100;
   ObjectStore objects(f.options);
   ResponsesJobs jobs(objects, {}, [](auto&) {
     throw std::runtime_error("unexpected execution");
@@ -1511,8 +1510,10 @@ Q4T_TEST(responses_foreground_unknown_checkpoint_preserves_partial_output) {
   std::string wire;
   Q4T_CHECK(Ok(run.Begin(&wire)) &&
             run.Append(ForegroundText(), "null", &wire));
+  run.BindCancellation(Clock::now() + 100ms, {});
   const auto checkpoint = run.Checkpoint();
   Q4T_CHECK(!checkpoint.ok() && checkpoint.commit_unknown);
+  run.BindCancellation(Clock::now() + 5s, {});
   Q4T_CHECK(Ok(run.CloseUnfinished()));
   Q4T_CHECK(Wait([&] { return jobs.Health().foreground_owned == 0; }));
   const auto actual = ResponsesState(objects).Retrieve(run.Id(), Access());

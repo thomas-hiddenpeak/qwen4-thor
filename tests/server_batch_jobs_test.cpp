@@ -48,7 +48,6 @@ struct Fixture {
     objects.directory = path + "/objects";
     objects.restart_backoff_ms = 0;
     objects.restart_limit = 10;
-    objects.io_timeout_ms = 250;
     config.model = "jobs-fixture";
     config.structured = true;
     jobs.retry_delay = 5ms;
@@ -219,7 +218,6 @@ bool LostReceipt(const char* entry, int expected_calls, int failed) {
   // Real post-commit receipt loss can occur four times for two rows. Use the
   // production storage budget for healthy IO and account for those actual
   // timeouts in this helper's terminal wait; ordinary cases remain at 5s.
-  fixture.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   std::string file;
   {
     ObjectStore objects(fixture.objects);
@@ -859,7 +857,8 @@ Q4T_TEST(
                  Native(calls, {}, &fixture.clients), {}, RatePlanner());
   const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
   Q4T_CHECK(Ok(accepted));
-  const auto final = Finished(objects, jobs, accepted.value.GetString("id"));
+  const auto final = Finished(objects, jobs, accepted.value.GetString("id"),
+                              "client:alpha", 12s);
   Q4T_CHECK(Ok(final) && calls == 0 &&
             final.value.Find("request_counts")->GetInt("failed") == 1 &&
             BatchUsage(fixture).reserved == 0 &&
@@ -1495,7 +1494,8 @@ Q4T_TEST(batch_background_actual_lost_start_begin_and_finish_never_resubmit) {
                    {}, RatePlanner(), Observe(responses));
     const auto accepted = jobs.Submit(Access(), Options(file), fixture.alpha);
     Q4T_CHECK(Ok(accepted));
-    const auto final = Finished(objects, jobs, accepted.value.GetString("id"));
+    const auto final = Finished(objects, jobs, accepted.value.GetString("id"),
+                                "client:alpha", 15s);
     const bool start = std::string_view(selector).find("batch-start") !=
                        std::string_view::npos;
     const bool finish = std::string_view(selector).find("batch-result") !=
@@ -1587,9 +1587,6 @@ Q4T_TEST(batch_background_binding_is_private_immutable_and_retains_result) {
 namespace {
 bool RecoverBackground(const std::string& mode) {
   Fixture fixture(10, 100);
-  // Owner recovery is not an I/O timeout test. Normal durable setup and
-  // recovery use the production deadline, including cold worker startup.
-  fixture.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   int channel[2];
   Q4T_CHECK(pipe(channel) == 0);
   const auto pid = fork();
@@ -1718,8 +1715,6 @@ Q4T_TEST(batch_background_actual_dead_owner_cancelled_parent_never_executes) {
 
 Q4T_TEST(batch_background_actual_ttl_retains_until_result_copy_then_collects) {
   Fixture fixture;
-  // Real TTL/retention, not an injected storage deadline.
-  fixture.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   ObjectStore objects(fixture.objects);
   const auto bound = PrepareBoundBackground(objects, fixture);
   ResponsesExecution run(objects);
@@ -1771,7 +1766,6 @@ Q4T_TEST(batch_background_actual_ttl_retains_until_result_copy_then_collects) {
 
 Q4T_TEST(batch_background_original_parent_expiry_cancels_queued_execution) {
   Fixture fixture;
-  fixture.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   ObjectStore objects(fixture.objects);
   auto bound = PrepareBoundBackground(objects, fixture);
   const auto old = bound.link;
@@ -1863,7 +1857,6 @@ Q4T_TEST(
     batch_background_absent_observer_closes_only_proven_missing_submission) {
   for (bool callback : {false, true}) {
     Fixture fixture;
-    fixture.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
     ObjectStore objects(fixture.objects);
     const auto file = File(objects, BackgroundInput());
     std::atomic<int> calls = 0;

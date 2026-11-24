@@ -12,7 +12,8 @@ ObjectReply PrepareAttachment(ObjectStore& objects, const StateAccess& access,
                               const io::Json& input,
                               const std::string& session_id,
                               const io::Json& vaults, ObjectRequest* write,
-                              std::shared_ptr<WorkspaceCopies>* copies);
+                              std::shared_ptr<WorkspaceCopies>* copies,
+                              bool allow_pending = false);
 // Resolve shared files from the single workspace record for current views.
 ObjectReply PrepareWorkspaceActivity(ObjectStore& objects,
                                      const StateAccess& access,
@@ -36,9 +37,10 @@ ObjectReply WorkspaceFiles(ObjectStore& objects, const StateAccess& access,
 ObjectReply SnapshotFile(const io::Json& source, WorkspaceCopies& copies,
                          std::string param, io::Json* installed,
                          io::Json* content);
-ObjectReply PrepareWorkspace(ObjectStore& objects, const StateAccess& access,
-                             const std::string& id, const io::Json& input,
-                             io::Json* private_definition,
+ObjectReply CheckWorkspaceSettings(const io::Json& definition,
+                                   const io::Json& settings);
+io::Json EnvironmentResource(const std::string& id, const char* status);
+ObjectReply InstallWorkspace(const std::string& id, io::Json* definition,
                              WorkspaceCopies& copies);
 ObjectReply SealDefinition(ObjectStore& objects, const StateAccess& access,
                            const std::string& id, const io::Json& definition,

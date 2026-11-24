@@ -57,8 +57,14 @@ std::string_view Transition(std::string_view kind, const Json& data,
         resource->GetString("type") != "openai_hosted")
       return {};
     const auto status = resource->GetString("status");
-    if (creating && status == "ready") return "agent.environment.ready";
-    if (status == "failed") return "agent.environment.failed";
+    if (status == "ready" && (creating || data.GetInt("prepared_at") > 0))
+      return "agent.environment.ready";
+    if (status == "failed") {
+      const auto* sessions = data.GetArray("attached_sessions");
+      return sessions && sessions->array.empty() && !data.Has("environment_events")
+                 ? "agent.environment.failed"
+                 : "";
+    }
     if (status == "expired") return "agent.environment.expired";
     if (status == "suspended") return "agent.environment.suspended";
     return {};

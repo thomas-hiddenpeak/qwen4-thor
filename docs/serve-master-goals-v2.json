@@ -734,6 +734,11 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-preparation.json",
         "official_payloads": 3
+      },
+      "multi_file_prewarm_20261125": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
+        "official_payloads": 9
       }
     },
     {
@@ -2937,6 +2942,11 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-preparation.json",
         "official_payloads": 3
+      },
+      "multi_file_prewarm_20261125": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
+        "official_payloads": 9
       }
     },
     {
@@ -6543,6 +6553,11 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-preparation.json",
         "official_payloads": 3
+      },
+      "multi_file_prewarm_20261125": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
+        "official_payloads": 9
       }
     },
     {
@@ -9997,6 +10012,11 @@
         "state": "targeted_acceptance",
         "evidence": "evidence/serve-webhooks-20261124/environment-preparation.json",
         "official_payloads": 3
+      },
+      "multi_file_prewarm_20261125": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/pending-environment.json",
+        "official_payloads": 9
       }
     },
     {
@@ -11599,8 +11619,8 @@
       }
     }
   ],
-  "next_task": "Implement asynchronous hosted environment preparation, pending attachment and remaining application, inference, delivery and recovery tasks.",
-  "next": "补齐异步预热、等待中的会话接入及其余应用、推理和恢复任务。",
+  "next_task": "Qualify durable prewarming across capacity profiles and supervised packages, then advance remaining required inference and application methods.",
+  "next": "验收多文件预热主轻容量接手、恢复和发行，继续其余必做推理与应用方法。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

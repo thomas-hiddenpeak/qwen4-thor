@@ -117,7 +117,12 @@ void ChatServer::HandleConfig(int fd) {
       R"(,"automation_dispatcher":)" +
       ApplicationStartupJson(automation_dispatcher_.Health()) +
       R"(,"webhook_dispatcher":)" +
-      ApplicationStartupJson(webhook_dispatcher_.StartupHealth()) + "}," +
+      ApplicationStartupJson(webhook_dispatcher_.StartupHealth()) +
+      R"(,"environment_preparer":)" +
+      ApplicationStartupJson(environment_preparer_.StartupHealth()) + "}," +
+      (environment_preparer_ ? R"("environment_preparation":)" +
+                               OutputJson(environment_preparer_->Health()) + ","
+                             : "") +
       (webhook_dispatcher_ ? R"("webhook_delivery":)" +
                                  OutputJson(webhook_dispatcher_->Health()) + ","
                            : "") +

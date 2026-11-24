@@ -41,7 +41,8 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
   const bool idle = !input || input->IsNull() ||
                     (input->IsString() && input->str.empty()) ||
                     (input->IsArray() && input->array.empty());
-  if (idle && (kind == "none" || (request.GetBool("stream") && kind != "self_hosted")))
+  if (idle && (kind == "none" || (request.GetBool("stream") &&
+      kind != "self_hosted" && !environment->Has("environment_id"))))
     return Invalid("This session requires initial input", "input");
 
   Json private_http;
@@ -87,7 +88,7 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
   if (kind == "openai_hosted") {
     auto attached = environment_detail::PrepareAttachment(
         objects, access, *environment, std::string(session_id),
-        *session.Find("vault_ids"), &attachment.emplace(), &copies);
+        *session.Find("vault_ids"), &attachment.emplace(), &copies, idle);
     if (!attached.ok()) return attached;
     Set(&session, "environment", std::move(attached.value));
   }

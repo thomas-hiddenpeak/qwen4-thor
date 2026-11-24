@@ -1,0 +1,110 @@
+{
+  "status": "ACCEPT_DURABLE_MULTI_FILE_PREPARATION_AND_SESSION_EVENTS",
+  "installed_revision": 474,
+  "installed_candidate": false,
+  "device": {
+    "pending": {
+      "runtime": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 37.938,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "binary": "3726bbfd9a431b07651305c7aa17dd1004565ca6447d798e2474c06d9a43e52d",
+      "sdk": {
+        "sdk": "7.47.0",
+        "peer": 404,
+        "independent_chat": "42",
+        "answer": "42",
+        "success": [
+          "pending",
+          "ready",
+          "connected"
+        ],
+        "failure": [
+          "pending",
+          "failed"
+        ],
+        "bytes": 9937,
+        "large_source_bytes": 837666,
+        "release_sha256": "0b897eab130615e1f8cf1a616bd504962b4f1905ee9a5b19d0b14698d35cd577",
+        "wire_objects": 5,
+        "driver_sha256": "03ae5587fbf9486c6166ce6d365279a912f7ac821aa26ed2070452147fc37818"
+      }
+    },
+    "fair": {
+      "runtime": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 42.925,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "binary": "01f9a1e88fe69dfdc57e26e7188bc6c6e68fbe221b4254b3bdd433c5dcf26f80",
+      "sdk": {
+        "sdk": "7.47.0",
+        "peer": 404,
+        "independent_chat": "42",
+        "original_deleted": 2,
+        "ready_jobs": 2,
+        "source_bytes": [
+          837666,
+          9937
+        ],
+        "wire_objects": 4,
+        "driver_sha256": "a262b8a2984e830edc90a41290c641a3c2b3bd3c1f8726ef220d05ff705c9a42"
+      }
+    }
+  },
+  "official_payloads": 9,
+  "final_cpu_cases": 32,
+  "initial_link_failure": "The native host tests use a separate source list. Added the actual provisioner there and relinked.",
+  "data": {
+    "release_bytes": 9937,
+    "plan_bytes": 837666,
+    "deletion_verified": true
+  },
+  "limits": [
+    "Multi-file prewarm queues when the definition contains at least two Files entries. Simple prewarms remain immediate.",
+    "One provisioning worker rotates tenants and jobs; source pins expire after one hour. CPU exercised the absolute expiry using a stored deadline.",
+    "Detached or inactive tenants, retries, packages, shell setup, network, skills and desktop have separate lifecycle requirements. Shell setup and packages are not provisioned by this change.",
+    "Both binary identities are retained. The final binary passed two-tenant HTTP; the first device case also exercised subscriber-ready and subscriber-failed."
+  ],
+  "raw_sha256": {
+    "pending-environment-lease-01/exit.json": "cba2c850705efe8bcc1f1c9369217aa7341b6b5afe8b1541e800d14dadc1912b",
+    "pending-environment-business-01/result.json": "cbe54bb9a3108b5cfbfe5bc51a2045996d797dcdcb20237e936c39f887ac302f",
+    "pending-environment-business-01/plan.json": "5dfaea19958f25abdb78af75a1e95b873c88e7fa8c2bc3c5624ce6c90602f6af",
+    "pending-environment-business-01/create/sdk-result.json": "b1650eb1b9ae45ad1ebbe0f86f9d382d18af7bd5f712207562143481b6fc7f55",
+    "pending-environment-business-01/create/run-wire.json": "0e777522e1ce01c597031215089ce61da8a8e927b7c8fe037f85cd40c4139cde",
+    "fair-environment-lease-01/exit.json": "bf80a7ad0fb1a6917de332ea464c4034050b2640d2b78b325f40916ce430c850",
+    "fair-environment-business-01/result.json": "d63211a3c2e278f7d6de911e7d705c14b655b3e99e4093ad3bbeca9084c141a8",
+    "fair-environment-business-01/plan.json": "ba689c86fb5e42d5866efcabbf4618e4b6d023647eab8ac3e6e98c64eb02ca08",
+    "fair-environment-business-01/create/sdk-result.json": "0089efdfe429ccfa7670eeb81b3ce65be9d0539dd58d28398f4ac3387d140c7c",
+    "fair-environment-business-01/create/run-wire.json": "bcd224d392bcbce92c199436ac2350c01bc64964a1621387b99acf0228401c47",
+    "webhook-dev/async-cpu-02.log": "9ad08c42dc6cdac19c0fa5de920457c9b8b572ffdefca8ee41ed83211625ecbc",
+    "webhook-dev/async-cpu-04.log": "84624c17a07e5c5c5c8d59d1fa26f82e3193161c6eedb9d3843a19b093b28aeb",
+    "webhook-dev/async-hooks-04.log": "bd9d22571d9b80235d1ce25fcda5865936a8e24ed0bc9703a6c639b0cc2d3396",
+    "webhook-dev/async-build-02.log": "1b08c1c54b18e74b5ac727aefd7cf5f167fc61d9e8a0349aa3ce6a41f32573a5",
+    "webhook-dev/async-inventory-04.json": "df309d90d6ea84d6cee6960f2e1320bdb0786b2b3a7d328aeb452e2840ff0177",
+    "environment_pending_business.py": "c696e05d91c6f00815efc872bbbb6cc181020b1d3d4d7df9a313f28420aa0366",
+    "environment_fair_preparation_business.py": "9dfd40f385392a4f3f78e7ec3f3cf2ce855e941051d358a1786941597d762afe"
+  },
+  "diagnostics_contract": {
+    "native_startup_cases": 1,
+    "config_schema_cases": 5,
+    "legacy_configurations_accepted": true,
+    "source_fixture_setup_failures": 2,
+    "runtime_changes": 0,
+    "raw_sha256": {
+      "async-startup-owner-01.log": "7b3edb0fc9529f79d97e429d1dbd60bdc1f2d8a7f310f758b3fc38d1427125a4",
+      "async-diagnostics-cpu-01.log": "4707683dd32b157798caff422d97fcffb5c92b739adac394c87a2ae21df7e35c",
+      "async-diagnostics-cpu-02.log": "40746a1b6971c18bc7295b48b73ebdfa4205322badffed30a68805489e363754",
+      "async-diagnostics-cpu-03.log": "aae2ede6a13ece0aa9b78816b166018b79291fffb53ce0c201e5691c216d798c"
+    }
+  }
+}

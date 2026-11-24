@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <ctime>
+#include <thread>
 
 #include "agent_environment_internal.h"
 #include "agent_environment_journal.h"
@@ -33,10 +34,12 @@ ObjectReply Corrupt() {
 ObjectReply Resource(const Json& data, const std::string& id) {
   const auto* info = data.Find("resource");
   ChatPlanError error;
+  const auto state = info ? info->GetString("status") : "";
   if (!info || info->GetString("id") != id ||
       !ValidateEnvironment(*info, EnvironmentShape::kResource, &error) ||
-      (info->GetString("status") == "failed" ? !ValidFailedPreparation(data)
-                                             : data.GetInt("warm_until") <= 0))
+      (state == "failed" ? !ValidFailedPreparation(data)
+       : state == "pending" ? data.GetInt("prepare_before") <= 0
+                            : data.GetInt("warm_until") <= 0))
     return Corrupt();
   ObjectReply out;
   out.value = *info;
@@ -55,6 +58,22 @@ ObjectReply Read(ObjectStore& objects, const StateAccess& access,
   read.scope = access.scope;
   read.id = id;
   return objects.Execute(read, access.deadline, access.cancelled);
+}
+// Initial input needs the workspace before model admission. Poll only its
+// owner-scoped status index while the provisioner installs the source files.
+ObjectReply WaitForPreparation(ObjectStore& objects, const StateAccess& access,
+                               const std::string& id) {
+  ObjectRequest state;
+  state.scope = access.scope;
+  state.id = id;
+  state.kind = ObjectKind::kEnvironment;
+  state.operation = ObjectOperation::kEnvironmentEvents;
+  state.data = Object({{"after_sequence", Number(-1)}});
+  for (;;) {
+    auto observed = objects.Execute(state, access.deadline, access.cancelled);
+    if (!observed.ok() || !observed.value.GetBool("preparing")) return observed;
+    std::this_thread::sleep_for(std::chrono::milliseconds(25));
+  }
 }
 ObjectReply Replay(ObjectStore& objects, const StateAccess& access,
                    const Json& receipt, const std::string& digest) {
@@ -79,17 +98,37 @@ ObjectReply Replay(ObjectStore& objects, const StateAccess& access,
 ObjectReply PrepareRecord(ObjectStore& objects, const StateAccess& access,
                           const Json& input, const Json& vaults,
                           ObjectRequest& resource,
-                          std::shared_ptr<environment_detail::WorkspaceCopies>* copies) {
+                          std::shared_ptr<environment_detail::WorkspaceCopies>* copies,
+                          bool queue_files = false) {
   resource.kind = ObjectKind::kEnvironment;
   resource.scope = access.scope;
   resource.id = NewObjectId(resource.kind);
   if (resource.id.empty())
     return Error(503, "environment_id_unavailable", "No environment ID");
   Json config, sealed;
-  *copies = std::make_shared<environment_detail::WorkspaceCopies>(objects, access, resource.id);
-  auto prepared = PrepareWorkspace(objects, access, resource.id,
-                                   input, &config, **copies);
-  if (!prepared.ok()) return prepared;
+  auto settings = ResolveDefinition(objects, access, input, &config);
+  if (!settings.ok()) return settings;
+  auto valid = CheckWorkspaceSettings(config, settings.value);
+  if (!valid.ok()) return valid;
+  *copies = std::make_shared<WorkspaceCopies>(objects, access, resource.id);
+  const auto* files = config.GetArray("files");
+  // Fan-out copies are performed by the worker. Pin all Files inputs before
+  // acknowledging the job so client deletion cannot alter the result.
+  const bool queued = queue_files && files &&
+      std::ranges::count_if(files->array, [](const Json& f) {
+        return f.GetString("type") == "file_id";
+      }) >= 2;
+  ObjectReply prepared;
+  Json pins;
+  int64_t prepare_before = 0;
+  if (queued) {
+    auto pinned = (*copies)->PinSources(*files, &pins, &prepare_before);
+    if (!pinned.ok()) return pinned;
+    prepared.value = EnvironmentResource(resource.id, "pending");
+  } else {
+    prepared = InstallWorkspace(resource.id, &config, **copies);
+    if (!prepared.ok()) return prepared;
+  }
   auto secure = SealDefinition(objects, access, resource.id, config, &sealed);
   if (!secure.ok()) return secure;
   resource.operation = ObjectOperation::kPut;
@@ -97,14 +136,19 @@ ObjectReply PrepareRecord(ObjectStore& objects, const StateAccess& access,
   resource.data =
       Object({{"resource", prepared.value},
               {"sealed_definition", std::move(sealed)},
-              {"warm_until", Number(std::time(nullptr) + kWarmSeconds)},
               {"vault_ids", vaults}});
+  if (queued) {
+    Set(&resource.data, "preparation_sources", std::move(pins));
+    Set(&resource.data, "prepare_before", Number(prepare_before));
+  } else {
+    Set(&resource.data, "warm_until", Number(std::time(nullptr) + kWarmSeconds));
+  }
   (*copies)->Bind(&resource.data);
   return prepared;
 }
 
 ObjectReply Create(ObjectStore& objects, const StateAccess& access,
-                   const Json& body, std::string_view key) {
+                   const Json& body, std::string_view key, bool queue_files) {
   if (body.Has("Idempotency-Key"))
     return Invalid("Supply Idempotency-Key as a header", "Idempotency-Key");
   ChatPlanError error;
@@ -131,7 +175,7 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
   ObjectRequest resource;
   std::shared_ptr<environment_detail::WorkspaceCopies> copies;
   auto prepared = PrepareRecord(objects, access, *body.Find("environment"),
-                                vaults, resource, &copies);
+                                vaults, resource, &copies, queue_files);
   if (!prepared.ok()) {
     // Only verified defects in a Files source terminate this attempt. A
     // temporary IO error, a private/missing ID or an uncertain commit retains
@@ -142,12 +186,7 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
       return prepared;
     copies.reset();
     prepared = {};
-    prepared.value = Object({{"id", String(resource.id)},
-                             {"object", String("agent.environment")},
-                             {"type", String("openai_hosted")},
-                             {"status", String("failed")},
-                             {"files", Array()}, {"plugins", Array()},
-                             {"skills", Array()}});
+    prepared.value = EnvironmentResource(resource.id, "failed");
     resource.operation = ObjectOperation::kPut;
     resource.ttl_seconds = kReplaySeconds;
     resource.data = Object({{"resource", prepared.value},
@@ -255,6 +294,14 @@ ObjectReply environment_detail::PrepareWorkspaceActivity(
   auto view = Resource(*data, stored.GetString("id"));
   if (!view.ok()) return view;
   const auto status = view.value.GetString("status");
+  if (status == "pending") {
+    auto available = WaitForPreparation(objects, access, stored.GetString("id"));
+    if (!available.ok()) return available;
+    auto ready = Read(objects, access, ObjectKind::kEnvironment,
+                      stored.GetString("id"));
+    if (!ready.ok()) return ready;
+    return PrepareWorkspaceActivity(objects, access, ready.value, change, session, turn);
+  }
   if (status != "connected" && status != "suspended")
     return Error(409, "environment_not_connected", "Workspace is unavailable");
   change->scope = access.scope;
@@ -285,7 +332,7 @@ ObjectReply environment_detail::PrepareWorkspaceActivity(
 ObjectReply environment_detail::PrepareAttachment(
     ObjectStore& objects, const StateAccess& access, const Json& input,
     const std::string& session_id, const Json& vaults, ObjectRequest* write,
-    std::shared_ptr<WorkspaceCopies>* copies) {
+    std::shared_ptr<WorkspaceCopies>* copies, bool allow_pending) {
   auto& req = *write;
   const auto* existing = input.Find("environment_id");
   if (existing) {
@@ -300,12 +347,18 @@ ObjectReply environment_detail::PrepareAttachment(
     req.id = existing->str;
     auto row = objects.Execute(req, access.deadline, access.cancelled);
     if (!row.ok()) return row;
+    if (!allow_pending && Field(Field(row.value, "data"), "resource").GetString("status") == "pending") {
+      auto available = WaitForPreparation(objects, access, req.id);
+      if (!available.ok()) return available;
+      row = objects.Execute(req, access.deadline, access.cancelled);
+      if (!row.ok()) return row;
+    }
     req.data = std::move(Field(row.value, "data"));
     auto view = Resource(req.data, req.id);
     if (!view.ok()) return view;
     const auto state = view.value.GetString("status");
     const auto* sessions = req.data.GetArray("attached_sessions");
-    if (state != "ready" &&
+    if (state != "ready" && !(allow_pending && sessions && state == "pending") &&
         !(sessions && (state == "connected" || state == "disconnected" ||
                        state == "suspended")))
       return Error(409, "environment_not_ready",
@@ -315,6 +368,7 @@ ObjectReply environment_detail::PrepareAttachment(
     if (sessions && sessions->array.size() >= kMaxAttachedSessions)
       return Error(409, "environment_session_limit",
                    "Environment has 128 attached sessions");
+    if (state == "pending") req.mutate_before = req.data.GetInt("prepare_before");
     if (state == "ready") req.mutate_before = req.data.GetInt("warm_until");
     if (state == "suspended")
       req.mutate_before = req.data.GetInt("checkpoint_until");
@@ -343,8 +397,8 @@ ObjectReply environment_detail::PrepareAttachment(
                           "capability_directories", "desktop"})
     Set(&session, key, *settings.value.Find(key));
   const auto previous_status = resource.GetString("status");
-  Set(&resource, "status", String("connected"));
-  if (req.data.Has("attached_sessions") && previous_status != "connected")
+  if (previous_status != "pending") Set(&resource, "status", String("connected"));
+  if (previous_status != "pending" && req.data.Has("attached_sessions") && previous_status != "connected")
     AppendEnvironmentStatus(&req.data, "connected");
   if (auto* sessions = req.data.Find("attached_sessions")) {
     if (!sessions->IsArray() || HasAttachedSession(req.data, session_id))
@@ -353,7 +407,8 @@ ObjectReply environment_detail::PrepareAttachment(
     std::erase_if(req.data.object, [](const auto& field) {
       return field.first == "suspended_at" || field.first == "checkpoint_until";
     });
-    Set(&req.data, "last_activity_at", Number(std::time(nullptr)));
+    if (previous_status != "pending")
+      Set(&req.data, "last_activity_at", Number(std::time(nullptr)));
   } else {
     Set(&req.data, "bound_session", String(session_id));
   }
@@ -365,7 +420,7 @@ ObjectReply environment_detail::PrepareAttachment(
 
 ObjectReply HandleHostedEnvironment(
     ObjectStore& objects, std::string_view method, std::string_view target,
-    const std::string& body, const StateAccess& access, std::string_view key) {
+    const std::string& body, const StateAccess& access, std::string_view key, bool queue_files) {
   const auto route = ParseHostedRoute(target);
   if (route.kind == HostedRouteKind::kNone ||
       !ManagedAgentMethodAllowed(method, target))
@@ -381,7 +436,7 @@ ObjectReply HandleHostedEnvironment(
   }
   if (route.kind == HostedRouteKind::kCollection) {
     if (method == "POST") {
-      auto created = Create(objects, access, input, key);
+      auto created = Create(objects, access, input, key, queue_files);
       if (created.ok()) created.http_status = 201;
       return created;
     }

@@ -316,6 +316,8 @@ ObjectReply BinaryStore::Open(const BinaryAccess& access, ObjectKind kind,
   auto lease = Request(access, next.id);
   lease.expires_at = next.expires;
   lease.data = Object({{"format", String("q4t.binary_read.v1")},
+                       {"source_kind", String(Kind(kind))},
+                       {"source_id", String(id)},
                        {"blob", BinaryManifestJson(next.manifest)}});
   // CAS the source in the same transaction: deletion/expiry between the read
   // and pin cannot publish a dangling reader after unreferenced chunks retire.
@@ -330,6 +332,36 @@ ObjectReply BinaryStore::Open(const BinaryAccess& access, ObjectKind kind,
   if (reply.ok() && pinned_data) *pinned_data = *data;
   return reply;
 }
+ObjectReply BinaryStore::ResumeRead(const BinaryAccess& access,
+                                    ObjectKind source_kind,
+                                    const std::string& source_id,
+                                    const std::string& pin_id,
+                                    BinaryRead* read) {
+  auto allowed = Access(access);
+  if (!allowed.ok()) return allowed;
+  if (!read || !read->id.empty() || !ValidId(pin_id) || !ValidId(source_id))
+    return Invalid("Invalid binary pin identity");
+  auto row = objects_.Execute(Request(access, pin_id, ObjectOperation::kGet),
+                              access.deadline, access.cancelled);
+  if (!row.ok()) return row;
+  const auto& data = Field(row.value, "data");
+  if (data.GetString("format") != "q4t.binary_read.v1" ||
+      data.GetString("source_kind") != Kind(source_kind) ||
+      data.GetString("source_id") != source_id)
+    return Corrupt();
+  BinaryRead opened;
+  const auto* blob = data.Find("blob");
+  if (!blob || !ParseBinaryManifest(*blob, &opened.manifest)) return Corrupt();
+  opened.scope = access.scope;
+  opened.id = pin_id;
+  opened.expires = row.value.GetInt("expires_at");
+  auto valid = State(access, opened.scope, opened.id, opened.expires, false,
+                     false);
+  if (!valid.ok()) return valid;
+  *read = std::move(opened);
+  return {};
+}
+
 ObjectReply BinaryStore::Read(const BinaryAccess& access,
                               const BinaryRead& read, size_t chunk,
                               std::string* bytes) {

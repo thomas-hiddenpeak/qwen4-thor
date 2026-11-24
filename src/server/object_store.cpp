@@ -551,6 +551,17 @@ ObjectReply ObjectStore::ReconcileWebhooks(
                   true, deadline, cancelled);
 }
 
+ObjectReply ObjectStore::NextEnvironmentPreparation(
+    std::string after, Clock::time_point deadline,
+    const std::function<bool()>& cancelled) {
+  if (state_->options.domain != ObjectStoreDomain::kApplication ||
+      after.size() > 320)
+    return Error(400, "invalid_object_cursor", "Invalid preparation cursor");
+  return Dispatch(OutputJson(Object({{"operation", String("next_environment")},
+                                     {"after", String(std::move(after))}})),
+                  false, deadline, cancelled);
+}
+
 ObjectReply ObjectStore::ScanBatches(std::string after,
                                     Clock::time_point deadline,
                                     const std::function<bool()>& cancelled) {

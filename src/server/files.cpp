@@ -279,7 +279,7 @@ ObjectReply Files::Erase(const BinaryAccess& access, const std::string& id) {
 }
 ObjectReply Files::Open(const BinaryAccess& access, const std::string& id,
                         BinaryRead* read, std::string* mime_type,
-                        uint64_t max_bytes) {
+                        uint64_t max_bytes, int pin_seconds) {
   if (mime_type) mime_type->clear();
   auto stored = Stored(access, id);
   if (!stored.ok()) return stored;
@@ -293,8 +293,14 @@ ObjectReply Files::Open(const BinaryAccess& access, const std::string& id,
   const auto remaining = std::chrono::ceil<std::chrono::seconds>(
                              access.deadline - std::chrono::steady_clock::now())
                              .count();
-  auto pinned = binary.Open(access, ObjectKind::kFile, id,
-                            std::clamp<int64_t>(remaining + 1, 1, 3600), read);
+  const auto lifetime = pin_seconds ? pin_seconds
+                                    : std::clamp<int64_t>(remaining + 1, 1, 3600);
+  auto pinned = binary.Open(access, ObjectKind::kFile, id, lifetime, read);
+  if (pinned.ok() && read->manifest.bytes !=
+                         static_cast<uint64_t>(metadata.value.GetInt("bytes"))) {
+    binary.Close(access, read);
+    return Error(503, "file_state_invalid", "Pinned file length changed");
+  }
   if (pinned.ok() && mime_type) *mime_type = mime;
   return pinned.ok() ? metadata : pinned;
 }

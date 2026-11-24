@@ -93,6 +93,7 @@ struct AgentEventCursor {
   bool created_seen = false;
   // The GET subscription starts at the committed workspace sequence. Its
   // cursor survives object-worker recovery within the HTTP stream.
+  bool waiting_environment = false;
   std::string environment_id;
   int64_t environment_sequence = 0;
   size_t step = 0;

@@ -42,11 +42,16 @@ bool Emit(Json* events, const std::string& prefix, const char* type,
 
 bool EmitEnvironment(Json* events, const std::string& session,
                      const std::string& env, const std::string& status,
-                     const std::string& boundary, const std::string& turn) {
+                     const std::string& boundary, const std::string& turn,
+                     const std::string& code = {}) {
   auto resource = Object({{"id", String(env)},
                           {"type", String("openai_hosted")},
                           {"status", String(status)},
                           {"error", Json{}}});
+  if (status == "failed")
+    Set(&resource, "error", Object({{"type", String("environment_error")},
+                                    {"code", String(code)},
+                                    {"message", String("Hosted workspace preparation failed")}}));
   const auto type = "agent.session.environment." + status;
   return Emit(events, session + "/" + env + "/" + boundary, type.c_str(),
               Object({{"session_id", String(session)},
@@ -54,11 +59,12 @@ bool EmitEnvironment(Json* events, const std::string& session,
                       {"environment", std::move(resource)}}));
 }
 
-bool EmitCreatedEnvironment(Json* events, const Json& session) {
+bool EmitCreatedEnvironment(Json* events, const Json& session,
+                            const std::string& status = "connected") {
   const auto* env = session.Find("environment");
   if (!env || env->GetString("type") != "openai_hosted") return true;
   return EmitEnvironment(events, session.GetString("id"), env->GetString("id"),
-                         "connected", "attachment", "");
+                         status, "attachment", "");
 }
 
 ObjectReply ReadEnvironmentEvents(ObjectStore& objects,
@@ -416,20 +422,30 @@ ObjectReply ReplayAgentSessionEvents(ObjectStore& objects,
       const auto turn =
           row.GetString("session_id") == id ? row.GetString("turn_id") : "";
       if (!EmitEnvironment(events, id, cursor->environment_id, status,
-                           std::to_string(row.GetInt("sequence")), turn))
+                           std::to_string(row.GetInt("sequence")), turn,
+                           row.GetString("code")))
         return Invalid();
+      if (cursor->waiting_environment && (status == "connected" || status == "failed")) {
+        cursor->waiting_environment = false;
+        *settled = true;
+      }
     }
     cursor->environment_sequence = changes.value.GetInt("sequence");
     if (!rows->array.empty()) return {};
   }
   if (data->GetBool("created_idle") && !cursor->created_seen) {
     const auto at_creation = Object({{"session", *session}});
+    const bool pending = data->GetString("environment_at_creation") == "pending";
     if (!Emit(events, id, "agent.session.created", at_creation) ||
-        !EmitCreatedEnvironment(events, *session) ||
+        !EmitCreatedEnvironment(events, *session, pending ? "pending" : "connected") ||
         !Emit(events, id, "agent.session.idle", at_creation))
       return Invalid();
     cursor->created_seen = true;
-    *settled = true;
+    if (pending) {
+      cursor->environment_id = session->Find("environment")->GetString("id");
+      cursor->waiting_environment = true;
+    }
+    *settled = !pending;
     return {};
   }
   if (cursor->step == links->array.size()) return {};

@@ -294,6 +294,9 @@ ObjectReply PrepareAgentSessionExecution(
   if (start.environment_write &&
       start.environment_write->data.Has("attached_sessions"))
     Set(&mutation.data, "shared_environment", Boolean(true));
+  if (start.environment_write &&
+      Field(start.environment_write->data, "resource").GetString("status") == "pending")
+    Set(&mutation.data, "environment_at_creation", String("pending"));
   if (start.tool_search) Set(&mutation.data, "tool_search", Boolean(true));
   if (!start.sealed_http.empty())
     Set(&mutation.data, "sealed_http", String(start.sealed_http));

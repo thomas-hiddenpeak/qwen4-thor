@@ -10,6 +10,7 @@
 #include "../src/server/mcp_transport_internal.h"
 #include "../src/server/vault_credential_internal.h"
 #include "q4t/server/agent_environment.h"
+#include "q4t/server/agent_environment_preparer.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/assistant_registry.h"
 #include "q4t/server/agent_session.h"
@@ -796,6 +797,184 @@ ObjectReply SeedAttachedWorkspace(ObjectStore& db, const StateAccess& access,
   return AttachWorkspace(db, access, model, *env);
 }
 }  // namespace
+
+Q4T_TEST(hosted_workspace_pending_files_survive_deletion_and_worker_reopen) {
+  Fixture f;
+  const auto access = Access("client:alpha");
+  const BinaryAccess io{access.scope, access.deadline, {}};
+  const std::string root = "/v1/agents/environments";
+  std::string id, sid, source, body;
+  {
+    ObjectStore db(f.options);
+    auto file = UploadReleaseFixture(db, io);
+    Q4T_CHECK(Ok(file));
+    source = file.value.GetString("id");
+    body = "{\"environment\":{\"type\":\"openai_hosted\",\"files\":["
+        "{\"type\":\"file_id\",\"path\":\"/workspace/a\",\"file_id\":\"" + source +
+        "\"},{\"type\":\"file_id\",\"path\":\"/workspace/b\",\"file_id\":\"" + source + "\"}]}}";
+    Q4T_CHECK(HandleHostedEnvironment(db, "POST", root, body, Access("client:beta"),
+                                      "group", true).http_status == 404);
+    auto pending = HandleHostedEnvironment(db, "POST", root, body, access, "group", true);
+    Q4T_CHECK(Ok(pending) && pending.value.GetString("status") == "pending");
+    id = pending.value.GetString("id");
+    auto queued = WorkspaceRecord(db, id, access);
+    auto graph = InspectObjectRetention("environment", queued.data);
+    Q4T_CHECK(!graph.uncertain && graph.active && graph.references.size() == 1);
+    Q4T_CHECK(Ok(Files(db).Erase(io, source)));
+    auto session = AttachWorkspace(db, access, "cpu", id);
+    Q4T_CHECK(Ok(session));
+    sid = session.value.GetString("id");
+    auto replay = HandleHostedEnvironment(db, "POST", root, body, access, "group", true);
+    Q4T_CHECK(Ok(replay) && replay.value.GetString("id") == id &&
+              replay.value.GetString("status") == "pending");
+  }
+  ObjectStore reopened(f.options);
+  auto head = reopened.NextEnvironmentPreparation("", access.deadline);
+  Q4T_CHECK(Ok(head) && head.value.GetString("id") == id &&
+            !head.value.Has("preparation_sources"));
+  AgentEventCursor cursor;
+  Json rows;
+  bool settled = false;
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(reopened, sid, access, &cursor, &rows, &settled)) &&
+            !settled && rows.array.size() == 3 &&
+            rows.array[1].GetString("type") == "agent.session.environment.pending");
+  Q4T_CHECK(Ok(CompleteEnvironmentPreparation(reopened, access, id)));
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(reopened, sid, access, &cursor, &rows, &settled)) &&
+            settled && rows.array.size() == 2 &&
+            rows.array[0].GetString("type") == "agent.session.environment.ready" &&
+            rows.array[1].GetString("type") == "agent.session.environment.connected");
+  auto ready = HandleHostedEnvironment(reopened, "GET", root + "/" + id, "", access, "");
+  Q4T_CHECK(Ok(ready) && ready.value.GetString("status") == "connected");
+  const auto& files = ready.value.GetArray("files")->array;
+  Q4T_CHECK(files.size() == 2 && files.front().GetString("file_id") == source &&
+            files.front().GetString("id") != files.back().GetString("id"));
+  auto installed = WorkspaceRecord(reopened, id, access);
+  Json definition;
+  Q4T_CHECK(Ok(environment_detail::OpenDefinition(reopened, access, id,
+      *installed.data.Find("sealed_definition"), &definition)));
+  for (const auto& file : definition.GetArray("files")->array)
+    Q4T_CHECK(file.GetString("data") == "NDc0Cg==");
+  Q4T_CHECK(!installed.data.Has("preparation_sources") &&
+            reopened.NextEnvironmentPreparation("", access.deadline).value.GetString("id").empty());
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_pending_index_rotates_clients_and_their_jobs) {
+  Fixture f;
+  ObjectStore db(f.options);
+  for (const auto* scope : {"client:alpha", "client:beta"}) {
+    const auto access = Access(scope);
+    const BinaryAccess io{access.scope, access.deadline, {}};
+    const auto upload = UploadReleaseFixture(db, io);
+    Q4T_CHECK(Ok(upload));
+    const auto id = upload.value.GetString("id");
+    const auto input = "{\"environment\":{\"type\":\"openai_hosted\",\"files\":["
+        "{\"type\":\"file_id\",\"path\":\"/workspace/a\",\"file_id\":\"" + id +
+        "\"},{\"type\":\"file_id\",\"path\":\"/workspace/b\",\"file_id\":\"" + id + "\"}]}}";
+    for (int i = 0; i < 2; ++i)
+      Q4T_CHECK(Ok(HandleHostedEnvironment(db, "POST", "/v1/agents/environments",
+                                           input, access, "", true)));
+  }
+  std::string cursor;
+  std::set<std::string> jobs;
+  std::vector<std::string> owners;
+  for (int i = 0; i < 4; ++i) {
+    auto item = db.NextEnvironmentPreparation(cursor, Access().deadline);
+    Q4T_CHECK(Ok(item) && jobs.insert(item.value.GetString("id")).second);
+    owners.push_back(item.value.GetString("owner"));
+    cursor = item.value.GetString("after");
+  }
+  Q4T_CHECK(owners[0] != owners[1] && owners[0] == owners[2] &&
+            owners[1] == owners[3]);
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_expired_preparation_releases_valid_source_pins) {
+  Fixture f;
+  ObjectStore db(f.options);
+  const auto access = Access();
+  const BinaryAccess io{access.scope, access.deadline, {}};
+  const auto uploaded = UploadReleaseFixture(db, io);
+  Q4T_CHECK(Ok(uploaded));
+  const auto id = uploaded.value.GetString("id");
+  const auto body = "{\"environment\":{\"type\":\"openai_hosted\",\"files\":["
+      "{\"type\":\"file_id\",\"path\":\"/workspace/a\",\"file_id\":\"" + id +
+      "\"},{\"type\":\"file_id\",\"path\":\"/workspace/b\",\"file_id\":\"" + id + "\"}]}}";
+  for (const bool expired : {false, true}) {
+    auto pending = HandleHostedEnvironment(db, "POST", "/v1/agents/environments",
+                                           body, access, "", true);
+    Q4T_CHECK(Ok(pending));
+    const auto env = pending.value.GetString("id");
+    auto change = WorkspaceRecord(db, env, access);
+    const auto pin = change.data.GetArray("preparation_sources")->array[0].GetString("pin");
+    if (expired) Set(&change.data, "prepare_before", Parse("1"));
+    else Set(&change.data, "sealed_definition", Parse(R"("invalid")"));
+    Q4T_CHECK(Ok(db.Execute(change, access.deadline)) &&
+              Ok(CompleteEnvironmentPreparation(db, access, env)));
+    auto terminal = WorkspaceRecord(db, env, access);
+    Q4T_CHECK(environment_detail::ValidFailedPreparation(terminal.data));
+    Q4T_CHECK(terminal.data.GetString("failure_code") ==
+              (expired ? "workspace_preparation_expired" : "workspace_definition_invalid"));
+    BinaryRead closed;
+    Q4T_CHECK(BinaryStore(db).ResumeRead(io, ObjectKind::kFile, id, pin, &closed)
+                  .http_status == 404);
+  }
+  return true;
+}
+
+Q4T_TEST(hosted_workspace_pending_checksum_failure_reaches_session_subscription) {
+  Fixture f;
+  const auto access = Access("client:alpha");
+  const BinaryAccess io{access.scope, access.deadline, {}};
+  const std::string root = "/v1/agents/environments";
+  ObjectStore db(f.options);
+  auto file = UploadReleaseFixture(db, io);
+  Q4T_CHECK(Ok(file));
+  const auto source = file.value.GetString("id");
+  BinaryRead pin;
+  Q4T_CHECK(Ok(Files(db).Open(io, source, &pin)) && pin.manifest.chunks.size() == 1);
+  ObjectRequest bad;
+  bad.kind = ObjectKind::kToolRun;
+  bad.id = pin.manifest.chunks.front().id;
+  bad.scope = access.scope;
+  auto stored = db.Execute(bad, access.deadline);
+  Q4T_CHECK(Ok(stored));
+  bad.operation = ObjectOperation::kPut;
+  bad.expected_revision = stored.value.GetInt("revision");
+  bad.data = *stored.value.Find("data");
+  Set(&bad.data, "base64", Parse(R"("AAAAAA==")"));
+  Q4T_CHECK(Ok(db.Execute(bad, access.deadline)));
+  Q4T_CHECK(Ok(BinaryStore(db).Close(io, &pin)));
+  const auto body = "{\"environment\":{\"type\":\"openai_hosted\",\"files\":["
+      "{\"type\":\"file_id\",\"path\":\"/workspace/a\",\"file_id\":\"" + source +
+      "\"},{\"type\":\"file_id\",\"path\":\"/workspace/b\",\"file_id\":\"" + source + "\"}]}}";
+  auto queued = HandleHostedEnvironment(db, "POST", root, body, access, "bad", true);
+  Q4T_CHECK(Ok(queued) && queued.value.GetString("status") == "pending");
+  const auto id = queued.value.GetString("id");
+  auto session = AttachWorkspace(db, access, "cpu", id);
+  Q4T_CHECK(Ok(session));
+  const auto sid = session.value.GetString("id");
+  AgentEventCursor cursor;
+  Q4T_CHECK(Ok(OpenAgentEventSubscription(db, sid, access, &cursor)));
+  Q4T_CHECK(Ok(CompleteEnvironmentPreparation(db, access, id)));
+  Json rows;
+  bool settled = false;
+  Q4T_CHECK(Ok(ReplayAgentSessionEvents(db, sid, access, &cursor, &rows, &settled)) &&
+            rows.array.size() == 1 &&
+            rows.array[0].GetString("type") == "agent.session.environment.failed" &&
+            rows.array[0].Find("environment")->Find("error")->GetString("code") ==
+                "workspace_source_invalid");
+  auto result = HandleHostedEnvironment(db, "POST", root, body, access, "bad", true);
+  Q4T_CHECK(Ok(result) && result.value.GetString("status") == "failed");
+  const auto record = WorkspaceRecord(db, id, access);
+  auto graph = InspectObjectRetention("environment", record.data);
+  Q4T_CHECK(!graph.uncertain && graph.references == std::vector<std::string>{sid});
+  const auto handoff = std::filesystem::path(f.options.directory).parent_path();
+  std::ofstream out(handoff / "handoff.json");
+  out << "{\"tenant\":\"alpha\",\"damaged\":\"" << source << "\"}\n";
+  Q4T_CHECK(out.good());
+  return true;
+}
 
 Q4T_TEST(hosted_workspace_checkpoint_preserves_files_and_expires_content) {
   Fixture f;

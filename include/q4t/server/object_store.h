@@ -185,6 +185,11 @@ class ObjectStore {
   ObjectReply ReconcileWebhooks(std::string cursor,
                                 std::chrono::steady_clock::time_point deadline,
                                 const std::function<bool()>& cancelled = {});
+  // Trusted recovery projection of one pending hosted workspace, with only
+  // the owner digest and object ID. Private definitions stay in the store.
+  ObjectReply NextEnvironmentPreparation(
+      std::string after, std::chrono::steady_clock::time_point deadline,
+      const std::function<bool()>& cancelled = {});
   ObjectReply ScanBatches(std::string after,
                          std::chrono::steady_clock::time_point deadline,
                          const std::function<bool()>& cancelled = {});

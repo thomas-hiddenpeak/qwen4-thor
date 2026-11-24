@@ -104,6 +104,10 @@ ObjectReply RefreshWorkspaceFiles(ObjectStore& objects,
     return Error(503, "environment_record_invalid",
                  "Shared workspace binding changed");
   Set(&Field(*session, "environment"), "files", *files);
+  if (resource->GetString("status") == "failed") {
+    Set(session, "status", String("failed"));
+    Set(session, "error", String("Hosted workspace preparation failed"));
+  }
   return {};
 }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+
 #include "q4t/server/input_snapshot.h"
 #include "q4t/server/responses_state.h"
 
@@ -17,6 +19,11 @@ class WorkspaceCopies {
   WorkspaceCopies(const WorkspaceCopies&) = delete;
   WorkspaceCopies& operator=(const WorkspaceCopies&) = delete;
   ~WorkspaceCopies();
+  // The receipts in the pending environment own these pins after commit.
+  ObjectReply PinSources(const io::Json& files, io::Json* receipts,
+                         int64_t* deadline);
+  ObjectReply ResumeSources(const io::Json& receipts);
+  void ReleaseSources(const io::Json* receipts = nullptr);
   void Settle(const ObjectReply& result);
   ObjectReply CopyFile(const io::Json& source, const std::string& installed_id,
                        std::string param, uint64_t* size, io::Json* content);
@@ -28,6 +35,8 @@ class WorkspaceCopies {
   ObjectStore& objects_;
   StateAccess access_;
   std::string workspace_;
+  std::map<std::string, BinaryRead> sources_;
+  bool release_sources_ = true;
   std::vector<InputSnapshotHold> holds_;
   std::vector<io::Json> references_;
 };

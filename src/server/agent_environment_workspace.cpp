@@ -35,20 +35,13 @@ ObjectReply SnapshotFile(const Json& source, WorkspaceCopies& copies,
   return {};
 }
 
-ObjectReply PrepareWorkspace(ObjectStore& objects, const StateAccess& access,
-                             const std::string& id, const Json& input,
-                             Json* private_definition,
-                             WorkspaceCopies& copies) {
-  Json definition;
-  auto result = ResolveDefinition(objects, access, input, &definition);
-  if (!result.ok()) return result;
+ObjectReply CheckWorkspaceSettings(const Json& definition, const Json& settings) {
   // Record only equipment actually provisioned. Installing packages, starting
   // desktop services or running a setup command requires its execution owner.
   const auto nonempty = [](const Json& value, const char* field) {
     const auto* list = value.GetArray(field);
     return list && !list->array.empty();
   };
-  const auto& settings = result.value;
   const auto& packages = *settings.Find("packages");
   if (settings.Find("desktop")->GetBool("enabled") ||
       nonempty(definition, "setup_commands") || nonempty(settings, "skills") ||
@@ -60,13 +53,25 @@ ObjectReply PrepareWorkspace(ObjectStore& objects, const StateAccess& access,
     return Error(
         503, "environment_executor_unavailable",
         "Requested environment features require a provisioned executor");
+  const auto* files = definition.GetArray("files");
+  if (files && files->array.size() > 50) {
+    auto failure = Error(400, "invalid_request", "Expected at most 50 workspace files");
+    failure.value = Object({{"param", String("environment.files")}});
+    return failure;
+  }
+  return {};
+}
+
+Json EnvironmentResource(const std::string& id, const char* status) {
+  return Object({{"id", String(id)}, {"object", String("agent.environment")},
+                 {"type", String("openai_hosted")}, {"status", String(status)},
+                 {"files", Array()}, {"plugins", Array()}, {"skills", Array()}});
+}
+
+ObjectReply InstallWorkspace(const std::string& id, Json* definition,
+                             WorkspaceCopies& copies) {
   auto metadata = Array(), snapshots = Array();
-  if (const auto* files = definition.GetArray("files")) {
-    if (files->array.size() > 50) {
-      auto failure = Error(400, "invalid_request", "Expected at most 50 workspace files");
-      failure.value = Object({{"param",String("environment.files")}});
-      return failure;
-    }
+  if (const auto* files = definition->GetArray("files")) {
     for (const auto& file : files->array) {
       Json installed, content;
       auto copy =
@@ -79,19 +84,14 @@ ObjectReply PrepareWorkspace(ObjectStore& objects, const StateAccess& access,
       snapshots.array.push_back(std::move(content));
     }
   }
-  Set(&definition, "files", std::move(snapshots));
-  Json resource = Object({{"id", String(id)},
-                          {"object", String("agent.environment")},
-                          {"type", String("openai_hosted")},
-                          {"status", String("ready")},
-                          {"files", std::move(metadata)},
-                          {"plugins", Array()},
-                          {"skills", Array()}});
+  Set(definition, "files", std::move(snapshots));
+  Json resource = EnvironmentResource(id, "ready");
+  Set(&resource, "files", std::move(metadata));
   ChatPlanError error;
   if (!ValidateEnvironment(resource, EnvironmentShape::kResource, &error))
     return Error(503, "environment_record_invalid",
                  "Invalid installed environment metadata");
-  *private_definition = std::move(definition);
+  ObjectReply result;
   result.value = std::move(resource);
   return result;
 }

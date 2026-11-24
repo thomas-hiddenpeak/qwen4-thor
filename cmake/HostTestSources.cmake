@@ -493,6 +493,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_environment_definition.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_environment_config.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_environment.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_environment_preparer.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_environment_files.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_environment_workspace.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/agent_workspace_copy.cpp

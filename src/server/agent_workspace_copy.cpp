@@ -1,6 +1,7 @@
 #include "agent_workspace_copy.h"
 
 #include <algorithm>
+#include <ctime>
 
 #include "object_protocol.h"
 #include "q4t/io/base64.h"
@@ -41,6 +42,7 @@ StateCipherBinding Part(const std::string& binding, size_t index) {
 }  // namespace
 
 WorkspaceCopies::~WorkspaceCopies() {
+  if (release_sources_) ReleaseSources();
   auto access = Cleanup(access_);
   InputSnapshotStore store(objects_);
   for (auto& hold : holds_) {
@@ -52,8 +54,79 @@ WorkspaceCopies::~WorkspaceCopies() {
     }
   }
 }
+ObjectReply WorkspaceCopies::PinSources(const Json& files, Json* receipts,
+                                       int64_t* deadline) {
+  *receipts = Array();
+  *deadline = std::time(nullptr) + 3600;
+  for (size_t index = 0; index < files.array.size(); ++index) {
+    const auto& file = files.array[index];
+    if (file.GetString("type") != "file_id") continue;
+    const auto id = file.GetString("file_id");
+    if (sources_.contains(id)) continue;
+    auto& pin = sources_[id];
+    auto result = Files(objects_).Open(Binary(access_), id, &pin, nullptr,
+                                       kSourceBytes, 3600);
+    if (result.code == "file_input_capacity_exceeded") {
+      auto invalid = Error(400, "invalid_request", "Files source exceeds 50 MiB");
+      invalid.value = Object({{"param", String("environment.files[" +
+          std::to_string(index) + "].file_id")}});
+      return invalid;
+    }
+    if (!result.ok()) return result;
+    *deadline = std::min(*deadline, pin.expires);
+    receipts->array.push_back(
+        Object({{"source", String(id)}, {"pin", String(pin.id)}}));
+  }
+  return {};
+}
+
+ObjectReply WorkspaceCopies::ResumeSources(const Json& receipts) {
+  // The pending row owns the pins until completion commits. Losing a CAS
+  // race must leave all of them available for the winning worker.
+  release_sources_ = false;
+  if (!receipts.IsArray() || receipts.array.empty() || receipts.array.size() > 50)
+    return Corrupt();
+  for (const auto& receipt : receipts.array) {
+    const auto id = receipt.GetString("source");
+    if (!id.starts_with("file_") || !ValidId(id) || sources_.contains(id))
+      return Corrupt();
+    auto result = BinaryStore(objects_).ResumeRead(
+        Binary(access_), ObjectKind::kFile, id, receipt.GetString("pin"),
+        &sources_[id]);
+    if (!result.ok()) return result;
+  }
+  return {};
+}
+
+void WorkspaceCopies::ReleaseSources(const Json* receipts) {
+  const auto cleanup = Cleanup(access_);
+  BinaryStore binary(objects_);
+  // Some handles may not have opened when one failed or the job expired.
+  // Release surviving handles only after matching their original Files ID.
+  if (receipts) {
+    for (const auto& receipt : receipts->array) {
+      if (std::chrono::steady_clock::now() >= cleanup.deadline) break;
+      const auto source = receipt.GetString("source");
+      auto& pin = sources_[source];
+      if (!pin.id.empty()) continue;
+      binary.ResumeRead(cleanup, ObjectKind::kFile, source,
+                        receipt.GetString("pin"), &pin);
+    }
+  }
+  for (auto& [id, pin] : sources_) {
+    if (pin.id.empty() || pin.closed || pin.commit_unknown) continue;
+    try {
+      binary.Close(cleanup, &pin);
+    } catch (...) {
+      // An interrupted cleanup is bounded by the original pin expiration.
+    }
+  }
+  sources_.clear();
+}
+
 void WorkspaceCopies::Settle(const ObjectReply& result) {
   if (result.commit_unknown) holds_.clear();
+  if (result.ok() || result.commit_unknown) release_sources_ = false;
 }
 void WorkspaceCopies::Bind(Json* record, std::string_view replaced) const {
   if (!record->Has("input_snapshots") && references_.empty()) return;
@@ -75,9 +148,14 @@ ObjectReply WorkspaceCopies::CopyFile(const Json& source,
                                       Json* content) {
   const auto access = Binary(access_);
   BinaryStore binary(objects_);
-  BinaryRead read;
+  BinaryRead local;
+  const auto id = source.GetString("file_id");
+  const auto found = sources_.find(id);
+  const bool borrowed = found != sources_.end();
+  if (!release_sources_ && !borrowed) return Corrupt();
+  auto& read = borrowed ? found->second : local;
   ScopeExit cleanup([&] {
-    if (!read.id.empty() && !read.closed && !read.commit_unknown) {
+    if (!borrowed && !read.id.empty() && !read.closed && !read.commit_unknown) {
       try {
         binary.Close(Cleanup(access_), &read);
       } catch (...) {
@@ -85,8 +163,9 @@ ObjectReply WorkspaceCopies::CopyFile(const Json& source,
     }
   });
   const auto path = source.GetString("path");
-  const auto id = source.GetString("file_id");
-  auto result = Files(objects_).Open(access, id, &read, nullptr, kSourceBytes);
+  ObjectReply result;
+  if (!borrowed)
+    result = Files(objects_).Open(access, id, &read, nullptr, kSourceBytes);
   if (!result.ok()) {
     if (result.code == "file_input_capacity_exceeded") {
       result = Error(400, "invalid_request", "Files source exceeds 50 MiB");

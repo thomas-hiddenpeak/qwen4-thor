@@ -122,8 +122,15 @@ class Inspector {
     const auto status = resource->GetString("status");
     const auto* attached = data.GetArray("attached_sessions");
     if (!is_template && status == "failed") {
-      if (!payloads.empty() || !environment_detail::ValidFailedPreparation(data))
+      if (!payloads.empty() || !environment_detail::ValidFailedPreparation(data)) {
         value.uncertain = true;
+        return;
+      }
+      for (const auto& member : attached->array) {
+        if (!member.IsString() || !member.str.starts_with("agent_session_"))
+          value.uncertain = true;
+        Reference(&member);
+      }
       return;
     }
     if (!is_template && !attached && status == "disconnected") {
@@ -169,7 +176,18 @@ class Inspector {
     }
     if (is_template) return;
     const auto* vaults = data.GetArray("vault_ids");
-    if (!vaults || data.GetInt("warm_until") <= 0) {
+    if (status == "pending") {
+      const auto* pins = data.GetArray("preparation_sources");
+      value.active = true;
+      if (!pins || pins->array.empty() || pins->array.size() > 50 ||
+          !attached || !vaults || data.GetInt("prepare_before") <= 0 ||
+          !files->array.empty()) {
+        value.uncertain = true;
+        return;
+      }
+      for (const auto& row : pins->array) RequiredId(row, "pin", "tool_run_");
+    }
+    if (!vaults || (status != "pending" && data.GetInt("warm_until") <= 0)) {
       value.uncertain = true;
       return;
     }
@@ -180,7 +198,8 @@ class Inspector {
           ((status == "ready" || status == "disconnected") &&
            !attached->array.empty()) ||
           (status != "connected" && status != "disconnected" &&
-           status != "expired" && status != "ready" && status != "suspended"))
+           status != "expired" && status != "ready" && status != "pending" &&
+           status != "suspended"))
         value.uncertain = true;
       std::unordered_set<std::string_view> unique;
       for (const auto& id : attached->array) {
