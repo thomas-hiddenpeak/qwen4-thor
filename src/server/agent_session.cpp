@@ -41,9 +41,8 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
   const bool idle = !input || input->IsNull() ||
                     (input->IsString() && input->str.empty()) ||
                     (input->IsArray() && input->array.empty());
-  if (kind == "none" && idle)
-    return Invalid("A session without an environment needs initial input",
-                   "input");
+  if (idle && (kind == "none" || (request.GetBool("stream") && kind != "self_hosted")))
+    return Invalid("This session requires initial input", "input");
 
   Json private_http;
   bool tool_search = false;

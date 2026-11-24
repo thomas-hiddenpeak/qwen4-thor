@@ -301,6 +301,12 @@ Q4T_TEST(hosted_workspace_session_turn_and_file_commit_share_revision) {
   const std::string root = "/v1/agents/environments";
   ResponsesExecution idle(store);
   auto request = Parse(R"({"agent":{"model":"cpu"},"environment":{"type":"openai_hosted"}})");
+  auto empty_stream = request;
+  Set(&empty_stream, "stream", Parse("true"));
+  auto missing = PrepareAgentSessionExecution(store, empty_stream, Config(), Access(),
+                                              std::time(nullptr), idle);
+  Q4T_CHECK(missing.http_status == 400 && missing.value.GetString("param") == "input" &&
+            !idle.Prepared());
   auto opened = PrepareAgentSessionExecution(store, request, Config(), Access(),
                                              std::time(nullptr), idle);
   Q4T_CHECK(Ok(opened) && !idle.Prepared());
@@ -956,6 +962,8 @@ Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
       {429, "client_rpm_exhausted", "rate_limit_exceeded", true},
       {429, "client_tpm_exhausted", "rate_limit_exceeded", true},
       {408, "request_deadline_exceeded", "request_timeout", true},
+      {400, "client_prompt_limit_exceeded", "invalid_request", true},
+      {400, "client_output_limit_exceeded", "invalid_request", true},
       {400, "context_length_exceeded", "context_length_exceeded", false},
       {503, "service_draining", "server_overloaded", true},
       {429, "client_capacity_exhausted", "server_overloaded", true},
@@ -983,6 +991,18 @@ Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
     Q4T_CHECK(view.turn.GetString("status") == "failed" && error &&
               error->GetString("code") == item.projected &&
               error->GetString("message") == "original message");
+    AgentEventCursor cursor;
+    Json events;
+    bool settled = false;
+    Q4T_CHECK(Ok(ReplayAgentSessionEvents(store, id, Access(), &cursor,
+                                          &events, &settled)));
+    Q4T_CHECK(settled && events.array.size() >= 2);
+    const auto& failure = events.array[events.array.size() - 2];
+    Q4T_CHECK(failure.GetString("type") == "agent.session.turn.failed" &&
+              failure.Find("turn")->Find("error")->GetString("code") ==
+                  item.projected);
+    Q4T_CHECK(events.array.back().GetString("type") ==
+              (item.retryable ? "agent.session.idle" : "agent.session.failed"));
     auto traces = ListAgentSessionTraces(store, id, {}, Access());
     Q4T_CHECK(Ok(traces) && traces.value.GetArray("data")->array.size() == 1);
     const auto* resources = traces.value.GetArray("data")->array.front()
@@ -2789,6 +2809,12 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
                        turn.messages.array[1].GetString("content") != "452" ||
                        turn.messages.array[2].GetString("content") != "recall")))
         throw std::runtime_error("Child did not recover its own transcript");
+      Json child_request = Parse("{}");
+      run.ConfigureAgentModelStep(turn, true, &child_request);
+      if (child_request.GetArray("tools")->array.size() != 2 ||
+          child_request.GetArray("messages")->array.front().GetString("role") != "system" ||
+          child_request.GetArray("messages")->array.front().GetString("content").find(turn.name) == std::string::npos)
+        throw std::runtime_error("Incorrect delegated identity or impossible operation advertised");
       if (inspect_claim && !inspect_claim()) throw std::runtime_error("Incorrect live child claim boundary");
       ++invoked;
       *assistant = Parse(R"({"role":"assistant","content":"452"})");
@@ -2926,5 +2952,58 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
   Q4T_CHECK(read(resource + "/items", "client:prompt-a", page).http_status == 400);
   page.after = items.value.GetString("last_id");
   Q4T_CHECK(read(resource + "/turns/" + second + "/items", "client:prompt-a", page).http_status == 400);
+  for (const bool close : {true, false}) {
+    AgentEventCursor live;
+    Q4T_CHECK(Ok(OpenAgentEventSubscription(reopened, id, Access(), &live)));
+    ResponsesExecution action(reopened);
+    const std::string operation = close ? "close_subagent" : "resume_subagent";
+    Q4T_CHECK(Ok(PrepareAgentSessionEvents(reopened, id, event, operation, config,
+                                           Access(), action, &replay)) && !replay);
+    const auto& tools = action.Generation().generation_request.GetArray("tools")->array;
+    Q4T_CHECK(std::any_of(tools.begin(), tools.end(), [&](const Json& t) {
+      return t.Find("function")->GetString("name") == "multi_agent_" + operation;
+    }));
+    Q4T_CHECK(begin(action));
+    ResponseDelta delta;
+    delta.kind = ResponseDelta::Kind::kTool;
+    delta.call = {0, "call_" + operation, "multi_agent_" + operation, R"({"target":"root/reader"})"};
+    Q4T_CHECK(action.Append(delta, {}, &wire));
+    const auto unexpected = [](const ResponsesAgentTree::Turn&, bool, Json*, bool*) -> ObjectReply {
+      throw std::runtime_error("Closing or reopening scheduled unsolicited child generation");
+    };
+    Q4T_CHECK(Ok(action.RunAgents(1, unexpected, {})) && end(action));
+    auto current = read(resource);
+    Q4T_CHECK(Ok(current) && current.value.GetInt("opened_at") == item.value.GetInt("opened_at") &&
+              current.value.GetString("status") == (close ? "closed" : "active") &&
+              current.value.Find("closed_at")->IsNull() != close);
+    Q4T_CHECK(Ok(read(resource + "/turns/" + turn + "/items")) &&
+              read(resource, "client:other").http_status == 404);
+    Json flow = Parse("[]");
+    Q4T_CHECK(drain(reopened, live, &flow, true));
+    size_t transitions = 0, calls = 0;
+    for (const auto& e : flow.array) {
+      if (const auto* sub = e.Find("subagent")) {
+        Q4T_CHECK(e.GetString("type") == (close ? "agent.session.subagent.closed" : "agent.session.subagent.active"));
+        Q4T_CHECK(OutputJson(*sub) == OutputJson(current.value));
+        ++transitions;
+      }
+      const auto* op = e.Find("item");
+      if (!op || e.GetString("type") != "agent.session.turn.item.done" ||
+          op->GetString("type") != operation + "_call") continue;
+      Q4T_CHECK(op->GetString("recipient_agent_id") == child && op->GetString("sender_agent_id") == parent);
+      ++calls;
+    }
+    Q4T_CHECK(transitions == 1 && calls == 1);
+  }
+  const auto off = Parse(R"({"agent":{"multi_agent":{"enabled":false}}})");
+  // multi_agent belongs to Agent creation. The SDK session update contract
+  // accepts model, reasoning, service tier and tools.
+  Q4T_CHECK(UpdateAgentSession(reopened, id, off, config, Access()).http_status == 400);
+  ResponsesExecution plain(reopened);
+  auto single = Parse(R"({"agent":{"model":"cpu"},"environment":{"type":"none"},"input":"hello"})");
+  Q4T_CHECK(Ok(PrepareAgentSessionExecution(reopened, single, config, Access(), now, plain)));
+  const auto* controls = plain.Generation().generation_request.GetArray("tools");
+  Q4T_CHECK(!controls || controls->array.empty());
+  Q4T_CHECK(Ok(read(resource + "/turns/" + turn)));
   return true;
 }

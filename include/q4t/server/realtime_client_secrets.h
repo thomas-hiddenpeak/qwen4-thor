@@ -5,6 +5,7 @@
 #include <chrono>
 #include <map>
 #include <mutex>
+#include <optional>
 
 #include "q4t/server/object_store.h"
 
@@ -17,11 +18,13 @@ struct RealtimeSecretTime {
 
 struct RealtimeSecretIssuer {
   std::string_view owner, binding, key_digest;
+  std::optional<double> legacy_temperature = std::nullopt;
 };
 
 struct RealtimeSecretGrant {
   std::string owner;
   io::Json session;
+  std::optional<double> legacy_temperature = std::nullopt;
 };
 
 class RealtimeClientSecrets {
@@ -38,6 +41,7 @@ class RealtimeClientSecrets {
   struct Entry {
     std::string owner, settings;
     RealtimeSecretTime expires;
+    std::optional<double> legacy_temperature;
     ~Entry();
   };
   void Expire(RealtimeSecretTime now);

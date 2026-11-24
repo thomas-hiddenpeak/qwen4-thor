@@ -80,6 +80,21 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 live.format_for(altered)
 
+    def test_managed_subagent_requires_owned_history_and_complete_lifecycle(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(agent_sessions=live.MANAGED_TOOL_SESSION, agent_session_artifacts=live.ARTIFACT_CAPABILITY)
+        new = dict(old, agent_session_subagents=live.SUBAGENT_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        for key in old:
+            self.assertFalse(migration.explicit_extension({k:v for k,v in old.items() if k != key}, new))
+        for change in (dict(session_memory=1), dict(turn_events=False), dict(lifecycle=['create']),
+                       dict(reads=['list']), dict(selector='none')):
+            altered = dict(new, agent_session_subagents=dict(live.SUBAGENT_CAPABILITY, **change))
+            self.assertFalse(migration.explicit_extension(old, altered))
+            with self.assertRaises(ValueError):
+                live.format_for(altered)
+
     def test_managed_tool_handoff_preserves_artifacts_and_hosted_workspace(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(agent_sessions=live.WORKSPACE_SESSION, agent_environments=live.WORKSPACE_CAPABILITY,

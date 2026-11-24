@@ -71,7 +71,7 @@ async function primary() {
     agent.tools[0].defer_loading = true;
     agent.tools.unshift({ type: 'tool_search' });
     agent.experimental = { time_awareness: true };
-    agent.instructions = 'For a release lookup first use server tool search to discover read_release_record, then call it. After it returns, give the revision.';
+    agent.instructions = 'For a release lookup first use server tool search to discover read_release_record, then call it. Report the revision returned by the tool. On a follow-up requesting time, report both the stored revision and the current UTC time from the system reminder.';
     input = 'Discover read_release_record with tool search, call it with {}, and report its revision.';
     selector = { agent_id: (await agents.create(agent)).id };
   }
@@ -206,7 +206,7 @@ async function light() {
   assert.equal(results[0].output, output);
   const follow = () => sessions.stream(id, {
     input: 'Repeat the revision number from the tool result. Do not call a tool.' +
-      (plan.session_tools ? ' Then give the current UTC minute from your system reminder as YYYY-MM-DDTHH:MMZ.' : ''),
+      (plan.session_tools ? ' Reply in two lines. Line 1: the revision number. Line 2: copy the current UTC time from the system reminder in ISO 8601 format including the trailing Z. Include both values.' : ''),
     toolHandlers: { [tool]() { throw Error('Unexpected tool dispatch during follow-up'); } },
   }).finalResult();
   // The profile deliberately keeps the original 3 RPM limit. Beta, hosted

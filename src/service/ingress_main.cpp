@@ -384,6 +384,8 @@ constexpr RouteSpec kRoutes[] = {
     {"GET", "/v1/live/sessions", false},
     {"POST", "/v1/live/sessions", false},
     {"POST", "/v1/realtime/client_secrets", false},
+    {"POST", "/v1/realtime/transcription_sessions", false},
+    {"POST", "/v1/realtime/sessions", false},
     {"POST", "/v1/realtime/calls", false},
     {"POST", "/v1/audio/speech", false},
     {"POST", "/v1/audio/transcriptions", false},
@@ -514,7 +516,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
            "\r\nX-Q4T-Gateway-Token: " + binding.token + "\r\n" +
            (!delegated.empty() ? "Authorization: Bearer " + std::string(delegated) + "\r\n"
-             : path == "/v1/realtime/client_secrets"
+             : server::IsRealtimeCredentialTarget(path)
                  ? "Authorization: Q4T-Issuer " + std::string(identity.IssuerDigest()) + "\r\n" : "") +
            (headers.content_type.empty()
                 ? ""
@@ -776,7 +778,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     return Relay(upstream.Get(), client, config.idle_seconds, request_id,
                  started);
   }
-  if ((!delegated.empty() || path == "/v1/realtime/client_secrets") &&
+  if ((!delegated.empty() || server::IsRealtimeCredentialTarget(path)) &&
       !access.StillActive(identity)) {
     Error(client, 401, "gateway_unauthorized", request_id, started);
     return false;

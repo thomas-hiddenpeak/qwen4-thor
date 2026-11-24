@@ -7,6 +7,7 @@
 #include "object_protocol.h"
 #include "q4t/io/base64.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/realtime_legacy_credentials.h"
 #include "q4t/server/websocket.h"
 
 namespace q4t::server {
@@ -361,6 +362,45 @@ ObjectReply UpdateRealtimeTranscriptionSettings(
     }
   }
   *output = std::move(settings);
+  return {};
+}
+
+ObjectReply LegacyTranscriptionCredential(const Json& body, Json* request) {
+  auto reply = Fields(body, {"include", "input_audio_format",
+                             "input_audio_noise_reduction", "input_audio_transcription",
+                             "turn_detection", "modalities", "client_secret"}, "body");
+  if (!reply.ok()) return reply;
+  if (const auto* modes = body.Find("modalities");
+      modes && (!modes->IsArray() || modes->array.size() != 1 ||
+                !modes->array[0].IsString() || modes->array[0].str != "text"))
+    return Invalid("modalities", "Transcription outputs text");
+  Json expiry;
+  reply = LegacyRealtimeExpiry(body, "expires_at", &expiry);
+  if (!reply.ok()) return reply;
+  auto options = Object();
+  for (const auto& [key, value] : body.object)
+    if (key != "modalities" && key != "client_secret") Set(&options, key, value);
+  RealtimeTranscriptionSettings settings;
+  reply = UpdateRealtimeTranscriptionSettings(options, true, {}, &settings);
+  if (!reply.ok()) return reply;
+  auto startup = Object({{"type", String("transcription")}});
+  if (const auto* include = body.Find("include"))
+    Set(&startup, "include", *include);
+  auto input = Object();
+  for (const auto& [old, modern] :
+       {std::pair{"input_audio_noise_reduction", "noise_reduction"},
+        std::pair{"input_audio_transcription", "transcription"},
+        std::pair{"turn_detection", "turn_detection"}}) {
+    if (const auto* value = body.Find(old)) Set(&input, modern, *value);
+  }
+  if (body.Has("input_audio_format")) {
+    const auto effective = RealtimeTranscriptionSettingsJson(settings, false);
+    Set(&input, "format", *effective.Find("audio")->Find("input")->Find("format"));
+  }
+  if (!input.object.empty())
+    Set(&startup, "audio", Object({{"input", std::move(input)}}));
+  *request = Object({{"session", std::move(startup)},
+                     {"expires_after", std::move(expiry)}});
   return {};
 }
 

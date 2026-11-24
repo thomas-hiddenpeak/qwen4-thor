@@ -155,7 +155,9 @@ def current_surface(root):
             'grant.owner != client.Id()' not in dispatch or
             'realtime_secrets_.Resolve(' not in dispatch or
             'PreviewCredential(startup, &resource)' not in issuer or
-            'realtime_secrets_.Issue({client.Id(), headers.gateway_token, issuer}' not in issuer or
+            'realtime_secrets_.Issue({client.Id(), headers.gateway_token, issuer, legacy_temperature}' not in issuer or
+            'LegacyConversationCredential(request, &request, &temperature)' not in issuer or
+            'context.SetRealtimeStartup(&grant.session, grant.legacy_temperature)' not in dispatch or
             'access.AuthenticateRealtime(ticket, binding.token, now)' not in native or
             'access.StillActive(identity)' not in native):
         raise ValueError('review Realtime credential issuing key, verified owner and allowed targets')

@@ -1,0 +1,72 @@
+{
+  "decision": "ACCEPT_LEGACY_TRANSCRIPTION_SDK_CANDIDATE",
+  "status": "candidate_business_pass",
+  "endpoint": "POST /v1/realtime/transcription_sessions",
+  "served_by": "native TLS + native ASR WSS",
+  "business": {
+    "sdk": "7.47.0",
+    "issued": 200,
+    "invalid_ttl": 400,
+    "invalid_format": 400,
+    "recursive_issue": 401,
+    "models": 401,
+    "requested_ttl": 15,
+    "language": "zh",
+    "transcript": "请查询当前项目版本号。",
+    "independent_chat": "42",
+    "waveform_sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483",
+    "driver_sha256": "1bde27c5b0a44466b1b1023d385a140d77662b791cc18f1562630038d8ccd38e"
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 38.053,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "engine": "4e08036221fa8fa7395dc8d28cf44f9536a4620a7ed900959579c93585afd76a",
+  "ingress": "9e72f5309977c0f7ae4f3e7c192b12029a8ba6a1d845da688fc6b140c66c8f87",
+  "compiled_sources_sha256": "ba4bf3bd5553839e256bd38d34a733dc62a7088ab092c7db36109c4f6a8bae8e",
+  "targeted_checks": {
+    "transcription_cpu": 4,
+    "protocol_and_gateway": 19,
+    "optional_nginx_wire": 1,
+    "audit_mutations": 38
+  },
+  "method_matrix": {
+    "declared": 133,
+    "required_methods": 231,
+    "missing_declaration": 98,
+    "exact_success_declarations": 133,
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "issued": "d5d90b170da0b6fd21bc5e727abfb3afac3f00a12af51b5c4dddd0eeabe3e69b"
+    }
+  },
+  "default_at_verification": {
+    "revision": 456,
+    "registered_version": 157,
+    "desired": "STOPPED",
+    "declared_methods": 126
+  },
+  "earlier_attempts": [
+    "First host test build exposed a lambda return-type error; corrected before the four passing checks.",
+    "Initial gateway route comparison exposed six missing subagent routes in the optional frontend; repaired and verified in PR 77."
+  ],
+  "evidence": {
+    "legacy-transcription-business-01/plan.json": "62be8cf6eb38c4a4340da17760519776ee9188472ed3ec37b6a6e793097259dc",
+    "legacy-transcription-business-01/result.json": "10546debf8d4e32e835c34e40e96cc00267af40f832607b1dd39535876a5fc58",
+    "legacy-transcription-business-01/create/sdk-result.json": "504d80e5d7343d52119d3ec2fd27ea2ec938eabded23584c8560edd571128905",
+    "legacy-transcription-lease-01/exit.json": "88fafb4e79c5702bf186b18614f6e20122221ecb1c44863e916e9e8dfec20498",
+    "legacy-transcription-four-01.log": "4cc9da5c67034a462d7eee58f05e857274b9a65d57e710fc816324b2263da6d2",
+    "legacy-transcription-contracts-03.log": "276d4466f6f3d4b74ff0cd6b0bfba0dbbc0460be608c4144ea69758a612919fe",
+    "legacy-wire-03.log": "13909e067e75e7507d936632f4c9614f99837ff8a050b3f15144a3232d7dba7b",
+    "legacy-transcription-integrated-audit-01.json": "92b9533fdfa14d32389964c0ca97643978d5fd6a9462488f1b9454b974515911",
+    "legacy-methods-01.json": "b9b3f63b65ea8ea795c86902cc812dac6ce597a28f8da930643c771538209720",
+    "legacy_transcription_business.py": "ba9ac2c9734ba0cb1ec0bb5b4f07a15e2f10cc7ebaee62ccefc0478ebe1c9f02"
+  },
+  "raw_root": ".q4t-work/serve-responses-agents-20261123"
+}

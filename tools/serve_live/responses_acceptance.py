@@ -36,10 +36,12 @@ def current_model_assets(model, previous):
 DEFAULT_QUALIFICATION = ROOT / 'docs/evidence/serve-live-responses-execution-cpu-20261123/result.json'
 
 
-def prepare(out, qualification=DEFAULT_QUALIFICATION, *, protected=None):
+def prepare(out, qualification=DEFAULT_QUALIFICATION, *, protected=None, build=None):
     previous = fixture.WORK / 'fixture-business-01'
     require(read(previous / 'acceptance.json')['observation']['fixture']['source_equal'], 'prior native WSS qualification')
     plan = read(previous / 'plan.json')
+    if build is not None:
+        plan.update(binary=str(build/'q4t'), ingress=str(build/'q4t-ingress'))
     if protected is not None:
         require(set(protected) == set(plan['protected']), 'protected deployment file set')
         plan['protected'] = protected

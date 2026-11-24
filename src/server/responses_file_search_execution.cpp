@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "object_protocol.h"
+#include "agent_subagent_internal.h"
 #include "q4t/model/embedding_config.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/request_json.h"
@@ -185,8 +186,7 @@ ObjectReply ResponsesExecution::ContinueFileSearch(
   for (const auto& item : output) {
     // Child-only exchanges are visible to the client; their transcripts never
     // impersonate the root. The root receives the authenticated wait result.
-    if (const auto* owner = item.Find("agent");
-        owner && owner->GetString("agent_name") != "root") continue;
+    if (agent_detail::IsChildAgentOutput(item)) continue;
     if (item.GetString("type").starts_with("mcp_") &&
         std::any_of(history.array.begin(), history.array.end(),
                     [&](const auto& old) {

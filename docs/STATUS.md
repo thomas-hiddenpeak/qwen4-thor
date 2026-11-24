@@ -7,9 +7,23 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+顶层 CMake 的 q4t_host_tests 已恢复可构建。该目标编译 program_vm.cpp 时遗漏了项目已有的 QuickJS 目标，导致缺少 quickjs.h。已对齐独立 tests/host 构建的依赖声明，顶层构建成功，6 项受影响的 Realtime 用例全部通过。 下一步继续旧版实时协议接入。[构建回执](evidence/serve-realtime-legacy-sessions-20261124/host-build.json)
+
+新候选已通过旧版 POST /v1/realtime/sessions 签发和真实 WSS 对话。官方 Node SDK 7.47.0 领取 15 秒凭据，指定温度 0.75、输出上限 32，原生会话返回 42，总用量 109 tokens，独立 Chat 返回 42。存储和生成计划用例验证温度实际传给模型；临时凭据再次签发、读取模型列表均为 401。6 项 CPU 用例、20 项协议及网关检查、2 项真实网关检查通过。一次启动 35.084 秒。该候选覆盖 134/231 个必做 HTTP 方法的成功状态声明；仍需验收旧版 WebSocket 事件及发行。[验收](evidence/serve-realtime-legacy-sessions-20261124/conversation.json)
+
+主、轻两套配置已验证修复后的同一二进制。各启动一次模型，分别用时 75.2、147.2 秒。子 Agent 在主配置读出真实版本号 456，轻配置回读同一历史并答出 457。另一个客户读取均为 404，独立 Chat 均答 42。轻配置工具回填同时返回 442 和当时的 UTC 时间。保存的非零输出下标回放中，工具项在 0，答案在 1。30 项迁移检查通过。下一步验证两个封包的进程替换与接管。[配置与回放](evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json)
+
 子 Agent 归属检查已分别在真实原生网关与可选 nginx 验证。两个入口对其他客户都返回 404。原生入口先拒绝外部传入的身份头（400，后端收到零次请求），nginx 覆盖该头并按密钥对应的客户转发，后端返回 404。修正 CI 对两个入口共用同一状态码的预期，四项 CPU 网络检查通过。 下一步复核远端检查。[回执](evidence/serve-agent-workspaces-20261124/subagent-gateway-policies.json)
 
+修复了单回合客户 token 配额超限后，Agents 将整个会话报为服务器故障的问题。从真实故障对象库的副本启动，原失败回合保留 invalid_request 和用量，SDK 读到会话 idle，同一客户使用 1793/4096 输入 token 取回子 Agent 已算出的 457。子回合仍为两个，没有再次派发；其他客户读取返回 404。真实转写与独立 Chat 同机验证通过，一次启动 41.592 秒。六项 CPU 测试覆盖投影、SSE、重开及取消。下一步重新验证此二进制的主轻配置和封包恢复。[真实失败与恢复](evidence/serve-agent-workspaces-20261124/subagent-quota.json)
+
+官方 Node SDK 7.47.0 经原生 TLS 从旧版实时转写入口领取 15 秒临时密钥，再经 WSS 发送真实录音，识别出“请查询当前项目版本号。”。越权签发与模型列表均返回 401，错误期限和音频格式返回 400，随后 Chat 返回 42。一次模型启动，38.053 秒。4 项针对性 C++ 检查、19 项协议及网关检查和真实可选 nginx 转发通过。该候选声明 133/231 个方法，验收时默认 rev456 声明 126 个。待验证同族会话接口及封包交付。[转写验收](evidence/serve-realtime-legacy-sessions-20261124/transcription.json)
+
 已补齐可选 nginx 前置遗漏的六项子 Agent 查询。真实 nginx 转发了原始分页游标、客户身份和 Agents beta 选择器；另一个客户伪造身份头时，CPU 后端收到真实身份并返回 404。错误方法、畸形 ID 和无效密钥均在前置被拒绝。10 项配置测试和 2 项真实 nginx 转发测试通过，后续复核 PR 检查。[前置验收](evidence/serve-agent-workspaces-20261124/subagent-nginx.json)
+
+主、轻配置各启动一次模型，分别用时 69.6 和 138.2 秒。主配置读取 456 后关闭子 Agent；轻配置在推理前读回同一身份、关闭时间及首回合内容摘要，恢复时没有新增子回合，随后依靠原有记忆回答 457。两个配置的独立 Chat 都返回 42，跨客户读取均为 404。30 项迁移检查通过，两份新资格都能逐字节还原 rev456 的前驱。保留两次失败：夹具为三个排队槽配置四个客户，以及旧工具回合中模型只输出版本号、漏答 UTC 时间。下一步验证独立封包的模型退出和网关接管。[配置接续回执](evidence/serve-agent-workspaces-20261124/subagent-profiles.json)
+
+托管子 Agent 关闭与恢复已通过原生 TLS 上的官方 SDK 四回合验收。先委派读取 456，再依次关闭、恢复，最后用同一子 Agent 的记忆回答 457。关闭期间可以回读历史，恢复后的身份与首次打开时间一致。SSE、存储中的原生函数对、跨客户 404 及独立 Chat 42 均已核对。耗时 67.203 秒，启动模型一次。18 项 CPU 检查覆盖迟到结果隔离与旧记录迁移。首轮模型在单槽内反复尝试派生，现按实际槽位和子 Agent 状态提供工具。下一步验证主、轻配置间接续及可回退交付。[生命周期验收](evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json)
 
 PR #76 两项 host-contracts 检查通过，rev456 的发布与回退记录已随 `38bc57402` 合入 main。合并树与受检提交一致。子 Agent 的查询和事件验收位于后续工作分支。[主线回执](evidence/serve-agent-workspaces-20261124/session-tools-main.json)
 

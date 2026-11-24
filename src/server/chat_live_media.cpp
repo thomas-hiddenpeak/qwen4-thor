@@ -349,7 +349,7 @@ void ChatServer::HandleLiveMediaCreate(int fd, std::string_view source,
     if (http->RealtimeStartup())
       defaults = RealtimeClientDefaults(fd, request.GetString("model"));
     owner->call = std::make_unique<RealtimeMediaCall>(
-        std::move(defaults), MakeRealtimeCallbacks(client), message_bytes,
+        std::move(defaults), MakeRealtimeCallbacks(client, http->RealtimeTemperature()), message_bytes,
         output, owner->sideband, sip ? RealtimeCarrier::kSip : data_channel ? RealtimeCarrier::kWebRtcData : RealtimeCarrier::kWebRtcAudio);
   } else {
     auto callbacks =

@@ -363,14 +363,14 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           headers.failure = HttpReceiveFailure::kAdmission;
           return false;
         }
-        context.SetRealtimeStartup(&grant.session);
+        context.SetRealtimeStartup(&grant.session, grant.legacy_temperature);
       }
       ClientIdentity identity;
       if (!AdmitClientRequest(method, path, &headers, clients_, &client_lease,
                               &identity, &failure_status))
         return false;
       context.SetClient(identity, &client_lease);
-      if (method == "POST" && path == "/v1/realtime/client_secrets")
+      if (method == "POST" && IsRealtimeCredentialTarget(path))
         headers.body_limit = std::min<uint64_t>(headers.body_limit,
                                                 kWebSocketMessageLimit);
       if (IsRealtimeTarget(path) && !IsLiveMediaCreate(method, path)) {
@@ -539,14 +539,14 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         return false;
       }
     }
-    if (path == "/v1/realtime/client_secrets" || IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
+    if (IsRealtimeCredentialTarget(path) || IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path) || IsLiveMediaCreate(method, path) || IsStoredChatTarget(path) || path == "/v1/chat/preflight" ||
         path == "/v1/completions" || path == "/v1/moderations" || path == "/v1/decisions" ||
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
         IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
         IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && path != "/v1/realtime/calls" && !((path == "/v1/realtime/client_secrets" || path == "/v1/vaults" ||
+      if (method == "POST" && path != "/v1/realtime/calls" && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" ||
                                  path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||
                                  IsSipHangup(method, path) ||
                                  IsResponsesTokenCount(path) ||
@@ -590,6 +590,10 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       HandleLiveMediaCreate(fd, {}, body, admission, SipControlId(path, "/accept"));
     else if (path == "/v1/realtime/client_secrets" && method == "POST")
       IssueRealtimeSecret(fd, headers, body);
+    else if (path == "/v1/realtime/transcription_sessions" && method == "POST")
+      IssueRealtimeSecret(fd, headers, body, RealtimeCredentialApi::kTranscription);
+    else if (path == "/v1/realtime/sessions" && method == "POST")
+      IssueRealtimeSecret(fd, headers, body, RealtimeCredentialApi::kConversation);
     else if (method == "POST" && path == "/v1/realtime/calls") {
       HandleLiveMediaCreate(fd, {}, body, admission, {}, headers.content_type);
     } else if (IsLiveMediaCreate(method, path))

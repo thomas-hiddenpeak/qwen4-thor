@@ -50,6 +50,81 @@ function open(account, target) {
 async function status(pending) {
   try {return (await pending.asResponse()).status;} catch (e) {return e.status;}
 }
+async function legacyTranscription() {
+  const sessions = parent.beta.realtime.transcriptionSessions;
+  check(await status(sessions.create({client_secret:{expires_at:{seconds:9}}})) === 400, 'expiry minimum');
+  check(await status(sessions.create({input_audio_format:'mp3'})) === 400, 'invalid wire encoding');
+  const before = Math.floor(Date.now()/1000);
+  const {data:session,response} = await sessions.create({input_audio_format:'pcm16',
+    input_audio_transcription:{model:'qwen3-asr-0.6b',language:'zh'}, turn_detection:null,
+    client_secret:{expires_at:{anchor:'created_at',seconds:15}}}).withResponse();
+  const {value,expires_at:expires} = session.client_secret;
+  check(response.status===200 && session.object==='realtime.transcription_session' &&
+    session.input_audio_format==='pcm16' && session.input_audio_transcription.language==='zh' &&
+    value.startsWith('ek_') && expires>=before+15 && expires<=Math.floor(Date.now()/1000)+15,
+    'typed issuance and expiry');
+  const delegated = client(value);
+  check(await status(delegated.beta.realtime.transcriptionSessions.create({}))===401, 'recursive issuance');
+  check(await status(delegated.models.list())===401, 'credential scope');
+  const connection = open(delegated,{intent:'transcription'});
+  try {
+    const created = (await connection.wait('session.created')).session;
+    check(created.audio.input.transcription.language==='zh' && created.audio.input.turn_detection===null &&
+      created.audio.input.format.type==='audio/pcm', 'inherited transcription settings');
+    connection.send({type:'input_audio_buffer.append',audio:fs.readFileSync(args.pcm).toString('base64')});
+    connection.send({type:'input_audio_buffer.commit'});
+    const event = await connection.wait('conversation.item.input_audio_transcription.completed');
+    const modelReply = await parent.chat.completions.create({model,
+      messages:[{role:'user',content:'What is 6 times 7? Reply with only the number.'}],
+      temperature:0,reasoning_effort:'none',max_tokens:20});
+    const reply = modelReply.choices[0].message.content.trim();
+    check(reply==='42','fresh Chat');
+    return {sdk:'7.47.0',issued:200,invalid_ttl:400,invalid_format:400,recursive_issue:401,
+      models:401,requested_ttl:15,language:'zh',transcript:event.transcript,independent_chat:reply};
+  } finally {connection.close();}
+}
+
+async function legacyConversation() {
+  const issue = body => parent.beta.realtime.sessions.create(body);
+  check(await status(issue({temperature:1.21}))===400, 'temperature upper bound');
+  check(await status(issue({client_secret:{expires_at:{seconds:15}}}))===400, 'expiry spelling');
+  const instructions = 'Answer arithmetic with only the resulting integer.';
+  const {data, response} = await issue({model, instructions, modalities:['text'],
+    max_response_output_tokens:32, temperature:.75, turn_detection:null,
+    client_secret:{expires_after:{anchor:'created_at',seconds:15}}}).withResponse();
+  check(response.status===200 && response.headers.get('cache-control')?.includes('no-store'),
+    'private legacy credential');
+  check(data.object==='realtime.session' && data.instructions===instructions &&
+    data.temperature===.75 && data.max_response_output_tokens===32 &&
+    data.modalities.length===1 && data.modalities[0]==='text', 'legacy effective settings');
+  const {value, expires_at:expires} = data.client_secret;
+  check(value.startsWith('ek_') && expires > Date.now()/1000 &&
+    expires <= Math.floor(Date.now()/1000)+15, 'owner credential lifetime');
+  const delegated = client(value);
+  check(await status(delegated.beta.realtime.sessions.create({}))===401, 'recursive issuance');
+  check(await status(delegated.models.list())===401, 'credential scope');
+  const socket = open(delegated,{model});
+  try {
+    const created = (await socket.wait('session.created')).session;
+    check(created.instructions===instructions && created.max_output_tokens===32 &&
+      created.output_modalities[0]==='text' && !('temperature' in created), 'native startup');
+    socket.send({type:'conversation.item.create',item:{type:'message',role:'user',
+      content:[{type:'input_text',text:'What is 6 times 7? Reply with only the number.'}]}});
+    socket.send({type:'response.create'});
+    const result = (await socket.wait('response.done')).response;
+    check(result.status==='completed' && text(result).trim()==='42' && usage(result)>0,
+      'legacy credential conversation');
+    const modelReply = await parent.chat.completions.create({model,
+      messages:[{role:'user',content:'What is 6 times 7? Reply with only the number.'}],
+      temperature:0,reasoning_effort:'none',max_tokens:20});
+    const reply = modelReply.choices[0].message.content.trim();
+    check(reply==='42','separate Chat');
+    return {sdk:'7.47.0',issued:200,requested_ttl:15,recursive_issue:401,models:401,
+      invalid_temperature:400,invalid_expiry:400,temperature:.75,max_output_tokens:32,
+      socket_answer:'42', tokens:usage(result), independent_chat:reply};
+  } finally { socket.close(); }
+}
+
 async function run() {
   const instructions = 'Reply with the exact requested number.';
   const {data:grant,response} = await parent.realtime.clientSecrets.create({
@@ -95,7 +170,8 @@ async function run() {
           models:401, existing_session_reply:'42', actual_tokens:total, transcript};
 }
 try {
-  console.log(JSON.stringify(await run()));
+  console.log(JSON.stringify(args.legacy_transcription ? await legacyTranscription() :
+    args.legacy_conversation ? await legacyConversation() : await run()));
 } catch (e) {
   // SDK error objects may hold request metadata; never print them wholesale.
   console.error('SDK check failed', e.status || '', e.code || '', String(e.message).slice(0,320));

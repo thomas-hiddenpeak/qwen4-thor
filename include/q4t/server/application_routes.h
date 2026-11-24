@@ -68,6 +68,12 @@ inline std::string_view LiveForkId(std::string_view path) {
   return LiveResourceId(path, "/fork");
 }
 // Exact WebSocket targets; adapters validate their own query semantics.
+inline bool IsRealtimeCredentialTarget(std::string_view path) {
+  return path == "/v1/realtime/client_secrets" ||
+         path == "/v1/realtime/transcription_sessions" ||
+         path == "/v1/realtime/sessions";
+}
+
 inline bool IsRealtimeTarget(std::string_view target) {
   const auto path = target.substr(0, target.find('?'));
   return path == "/v1/realtime" || path == "/v1/live/sessions" ||

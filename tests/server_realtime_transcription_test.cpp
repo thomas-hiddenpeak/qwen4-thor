@@ -129,6 +129,44 @@ const Json& Content(const Json& event) {
 }
 }  // namespace
 
+Q4T_TEST(legacy_transcription_ticket_roundtrip_keeps_only_supplied_settings) {
+  Json grant;
+  const auto legacy = Parse(R"({"input_audio_format":"g711_alaw","turn_detection":null,"input_audio_transcription":{"language":"en"},"include":[]})");
+  Q4T_CHECK(LegacyTranscriptionCredential(legacy, &grant).ok());
+  Q4T_CHECK(grant.Find("expires_after")->GetInt("seconds") == 60);
+  const auto& session = *grant.Find("session");
+  const auto& input = *session.Find("audio")->Find("input");
+  Q4T_CHECK(input.Find("format")->GetString("type") == "audio/pcma");
+  Q4T_CHECK(input.Find("turn_detection")->IsNull());
+  Q4T_CHECK(!input.Has("noise_reduction"));
+  RealtimeTranscriptionSettings previous, resumed;
+  Q4T_CHECK(UpdateRealtimeTranscriptionSettings(legacy, true, {}, &previous).ok());
+  Q4T_CHECK(UpdateRealtimeTranscriptionSettings(session, false, {}, &resumed).ok());
+  Q4T_CHECK(OutputJson(RealtimeTranscriptionSettingsJson(resumed, true)) ==
+            OutputJson(RealtimeTranscriptionSettingsJson(previous, true)));
+  auto retained = OutputJson(grant);
+  for (const auto* bad : {R"({"input_audio_format":"mp3"})",
+                          R"({"session":{"type":"realtime"}})",
+                          R"({"client_secret":{"value":"untrusted"}})"}) {
+    Q4T_CHECK(!LegacyTranscriptionCredential(Parse(bad), &grant).ok());
+    Q4T_CHECK(OutputJson(grant) == retained);
+  }
+  Q4T_CHECK(LegacyTranscriptionCredential(Parse("{}"), &grant).ok());
+  Q4T_CHECK(!grant.Find("session")->Has("audio"));
+  const auto seconds = Parse(R"({"client_secret":{"expires_at":{"seconds":10}}})");
+  Q4T_CHECK(LegacyTranscriptionCredential(seconds, &grant).ok());
+  Q4T_CHECK(grant.Find("expires_after")->GetInt("seconds") == 10);
+  Q4T_CHECK(!grant.Find("session")->Has("client_secret"));
+  for (const auto* bad : {R"({"client_secret":{"expires_at":{"seconds":9}}})",
+                          R"({"client_secret":{"expires_at":{"seconds":7201}}})",
+                          R"({"client_secret":{"expires_at":{"seconds":true}}})",
+                          R"({"client_secret":{"expires_at":{"anchor":"now"}}})"}) {
+    Q4T_CHECK(!LegacyTranscriptionCredential(Parse(bad), &grant).ok());
+    Q4T_CHECK(grant.Find("expires_after")->GetInt("seconds") == 10);
+  }
+  return true;
+}
+
 Q4T_TEST(realtime_transcription_composed_configure_precedes_only_one_ack) {
   Fixture f;
   RealtimeTranscriptionSettings seen;

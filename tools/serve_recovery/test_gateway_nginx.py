@@ -111,7 +111,7 @@ class Stack:
                 roots = ('/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
-                         '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/calls', '/v1/live/sessions')
+                         '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/live/sessions')
                 return (any(path == root or path.startswith(root+'/')
                             for root in roots) or
                         (method == 'POST' and
@@ -482,7 +482,7 @@ class NginxTests(unittest.TestCase):
                     self.assertEqual(row['upstream_port'],
                         self.stack.value['policy']['upstream_operations_port'
                             if lane == 'control' else 'upstream_port'])
-                    if path == '/v1/realtime/client_secrets':
+                    if path in ('/v1/realtime/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions'):
                         self.assertEqual(row['authorization'], 'Q4T-Issuer ' +
                                          hashlib.sha256(b'A'*40).hexdigest())
                     else:

@@ -97,6 +97,38 @@ class VoiceContract(unittest.TestCase):
         for invalid in ({'session':{'type':'realtime'}},{'type':'live'},None):
             self.assertFalse(validator.is_valid(invalid))
 
+    def test_legacy_conversation_credential_uses_sampling_and_relative_expiry(self):
+        bundled = standalone_openapi(self.spec)
+        op = bundled['paths']['/v1/realtime/sessions']['post']
+        schema = op['requestBody']['content']['application/json']['schema']
+        wire = Draft202012Validator({'components':bundled['components'], **schema})
+        self.assertFalse(op['requestBody']['required'])
+        self.assertTrue(wire.is_valid(dict(modalities=['text','audio'], temperature=.75,
+            input_audio_format='g711_ulaw', client_secret={'expires_after':{'seconds':15}})))
+        for bad in ({'temperature':.59}, {'temperature':1.21}, {'modalities':['text','text']},
+                    {'client_secret':{'expires_at':{'seconds':15}}}, {'client_secret':{'value':'x'}}):
+            self.assertFalse(wire.is_valid(bad), bad)
+
+    def test_legacy_transcription_credentials_bind_format_and_expiry(self):
+        op = self.paths['/v1/realtime/transcription_sessions']['post']
+        bundled = standalone_openapi(self.spec)
+        wire = bundled['paths']['/v1/realtime/transcription_sessions']['post']
+        def check(schema,value):
+            return Draft202012Validator({'components':bundled['components'],**schema}).is_valid(value)
+        body = wire['requestBody']['content']['application/json']['schema']
+        result = wire['responses']['200']['content']['application/json']['schema']
+        self.assertFalse(op['requestBody']['required'])
+        for value in ({}, {'input_audio_format':'g711_alaw', 'turn_detection':None},
+                      {'modalities':['text'], 'client_secret':{'expires_at':{'anchor':'created_at','seconds':10}}}):
+            self.assertTrue(check(body,value), value)
+        for value in ({'client_secret':{'value':'ek_fake'}}, {'client_secret':{'expires_at':{'seconds':9}}},
+                      {'input_audio_format':'mp3'}, {'modalities':['audio']}, {'session':{}}):
+            self.assertFalse(check(body,value), value)
+        issued = dict(id='sess_1', object='realtime.transcription_session', input_audio_format='pcm16',
+                      modalities=['text'], client_secret={'expires_at':123,'value':'ek_fixture'})
+        self.assertTrue(check(result,issued))
+        self.assertFalse(check(result,dict(issued,client_secret={'value':'ek_fixture'})))
+
     def test_realtime_client_secret_request_and_response_definitions(self):
         def valid(root, value):
             return Draft202012Validator({'$defs':self.defs, '$ref':'#/$defs/realtime_client_secret_'+root}).is_valid(value)

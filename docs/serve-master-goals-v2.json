@@ -2490,7 +2490,8 @@
         "evidence/serve-agent-environments-20261124/templates.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
         "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-stream.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-stream.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json"
       ],
       "release": {
         "engine_binary_sha256": "6a90506e72fd25d5bfdd654a7916ece863b958b5cb6e27e5c7d599d36949dc3a",
@@ -5333,7 +5334,8 @@
         "evidence/serve-agent-environments-20261124/templates.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
         "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-stream.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-stream.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json"
       ],
       "release": null,
       "security_requirements": [
@@ -8355,7 +8357,8 @@
         "evidence/serve-agent-environments-20261124/templates.json",
         "evidence/serve-agent-environments-20261124/delivery.json",
         "evidence/serve-agent-workspaces-20261124/subagent-queries.json",
-        "evidence/serve-agent-workspaces-20261124/subagent-stream.json"
+        "evidence/serve-agent-workspaces-20261124/subagent-stream.json",
+        "evidence/serve-agent-workspaces-20261124/subagent-lifecycle.json"
       ],
       "release": null,
       "mcp_business_progress": {
@@ -16503,7 +16506,20 @@
     "sealed_live_profiles": "evidence/serve-live-registry-20261123/README.md",
     "managed_optional_workers": "evidence/serve-live-managed-workers-20261123/README.md",
     "default_and_registered_failover": "evidence/serve-live-default-20261123/README.md",
-    "sideband_metrics_and_soak_delivery": "evidence/serve-live-stability-handoff-20261123/README.md"
+    "sideband_metrics_and_soak_delivery": "evidence/serve-live-stability-handoff-20261123/README.md",
+    "legacy_transcription_session_issuance": {
+      "status": "candidate_business_pass",
+      "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/transcription.json",
+      "remaining_methods": 98
+    },
+    "legacy_conversation_session_issuance": {
+      "status": "candidate_business_pass",
+      "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/conversation.json",
+      "remaining": [
+        "legacy_beta_websocket_wire",
+        "qualified_delivery"
+      ]
+    }
   },
   "responses_beta_selector_20261123": {
     "status": "DEFAULT_REV434_REGISTERED_TAKEOVER_PASSED",
@@ -16730,6 +16746,15 @@
         "publish and register rollback",
         "managed subagent execution and remaining scoped application interfaces"
       ]
-    }
+    },
+    "managed_subagent_profile_handoff": {
+      "state": "qualified_primary_light_before_default_delivery",
+      "evidence": "evidence/serve-agent-workspaces-20261124/subagent-profiles.json",
+      "actual_starts": 2,
+      "previous_release": 456,
+      "identity_and_turn_history_preserved": true
+    },
+    "recoverable_client_turn_quota": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota.json",
+    "quota_primary_light": "docs/evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json"
   }
 }
