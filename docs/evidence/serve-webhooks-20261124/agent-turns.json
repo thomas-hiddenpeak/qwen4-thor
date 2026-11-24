@@ -1,0 +1,140 @@
+{
+  "status": "ACCEPT_NOTIFICATION_DRIVEN_AGENT_FUNCTION_AND_CANCELLATION",
+  "issued_default": 472,
+  "sdk": "7.47.0",
+  "runs": {
+    "tool_result": {
+      "runtime": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 40.166,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "binary": "49cfd5833be9be3446f96d2d0c4cbebeb84065a7fb566c8f7477bd51fca4995c",
+      "actor": "f491c75f4bf3f167de04355b2fdf6e6408d6dae4e96b33722f66f2cb5690903c",
+      "event_counts": {
+        "agent.environment.ready": 1,
+        "agent.session.created": 1,
+        "agent.session.idle": 2,
+        "agent.session.action_required": 1,
+        "agent.session.in_progress": 2
+      },
+      "business": {
+        "answer": "The actual published revision is **472**.",
+        "revision": 472,
+        "replay": 202,
+        "action": "read_release_record"
+      },
+      "independent_chat": "42",
+      "foreign": 404,
+      "schema_checks": 7
+    },
+    "cancel_waiting": {
+      "runtime": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 40.123,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "binary": "3a103c9d920abf0fa2360c04f3190ca7f456129770226f0eb5b94f01d59a655f",
+      "actor": "9c1537b96148ac1cc7b94ec3f19c6e23f1b2593de0500917161b40f4bda5a9c7",
+      "event_counts": {
+        "agent.environment.ready": 1,
+        "agent.session.created": 1,
+        "agent.session.idle": 2,
+        "agent.session.action_required": 1,
+        "agent.session.in_progress": 1
+      },
+      "business": {
+        "cancelled": true,
+        "replay": 202,
+        "action": "read_release_record"
+      },
+      "independent_chat": "42",
+      "foreign": 404,
+      "schema_checks": 6
+    }
+  },
+  "official_envelopes": 13,
+  "cpu_cases": 10,
+  "inventory_mutation_checks": 40,
+  "cpu_regressions": [
+    "A single free object slot drains two deferred notices in sequence after reopening the store.",
+    "A failed model step emits session.failed or session.idle according to the error category used by session retrieval."
+  ],
+  "remaining": [
+    "Environment expiry, suspension, setup failure and additional producer families. Actual server-side failure classification is CPU verified."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/pr101-merged.json",
+      "sha256": "42beb1241f69effb1f165cc96b5aa8e88c04ed705ad807ffc86c046e1a91644b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-states-business-01/plan.json",
+      "sha256": "a61fff8cfe306d0149e70bc7ec2a2fbf58bf916e4b05f22bd29710b42fbffe93"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-states-business-01/result.json",
+      "sha256": "d98da45a4a47731c9e647e732af43dec02e4e62e52cdd6d59c574c802e46d414"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-states-business-01/create/sdk-result.json",
+      "sha256": "365ed927e67857af01a36dc9270f4dc73706726e826043c3a59a0af990ad7863"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-states-business-01/create/run-wire.json",
+      "sha256": "5d1174e649819410a9c769cac3bd66ff23321d8417550a3a4aa61e25849358c2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-states-lease-01/exit.json",
+      "sha256": "df9fe0f82d5b872467277f4a81d1317193f65ffa300007e659d45cb44a6db2f5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/agent-states-cpu-01.log",
+      "sha256": "f43b71b6b54a0fcf0932ca0f3a0f4e0bcc5050de09abd17c09e14f8147fdad7a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-cancel-business-01/plan.json",
+      "sha256": "cb95c9727401d1eaf7a19bebf01196bf271eb503a8594752354fd74e859eca9a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-cancel-business-01/result.json",
+      "sha256": "4db8b3f2791c4403ba98d28ee6e9d382ed4440dbd554c32d7d38a12e1f862bd1"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-cancel-business-01/create/sdk-result.json",
+      "sha256": "7258c4b943d8f024c542c9aad4d99763c5998d3120e3a84549bba4351dce852e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-cancel-business-01/create/run-wire.json",
+      "sha256": "b027b5ab69e4d8bbd8ecb62cc4e642aa30b513187051d57dbee0d2882e9b089b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-cancel-lease-01/exit.json",
+      "sha256": "040ff8504a6659f08aa47300487e1d31d6f945ca009435ade060960fddac3a51"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/agent-cancel-cpu-01.log",
+      "sha256": "a89e1efb782fd18af71fa7eeb8d7042036b36793160ba7a3e285d8930ba4636d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/agent-states-inventory-01.json",
+      "sha256": "e6ee5d29e7e00ada5ed46200158a16c3bc471d6770b906b4f591dfeabf27bd6d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent_webhook_turns.py",
+      "sha256": "2cb6e76ef5a5a70a27d3707a829dd41a3711f95967c4a1e6d9958c64df5601b2"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent_webhook_cancel.py",
+      "sha256": "666cdf895420416b8f73da28bf1d41382810f92cc7ed791c8acd887471361226"
+    }
+  ]
+}

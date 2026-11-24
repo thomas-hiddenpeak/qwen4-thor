@@ -673,6 +673,20 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "agent_webhook_creation_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-events.json",
+        "event_types": [
+          "agent.environment.ready",
+          "agent.session.created"
+        ]
+      },
+      "agent_webhook_turns_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
+        "signed_envelopes": 13,
+        "cpu_cases": 10
       }
     },
     {
@@ -2815,6 +2829,20 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "agent_webhook_creation_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-events.json",
+        "event_types": [
+          "agent.environment.ready",
+          "agent.session.created"
+        ]
+      },
+      "agent_webhook_turns_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
+        "signed_envelopes": 13,
+        "cpu_cases": 10
       }
     },
     {
@@ -6360,6 +6388,20 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "agent_webhook_creation_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-events.json",
+        "event_types": [
+          "agent.environment.ready",
+          "agent.session.created"
+        ]
+      },
+      "agent_webhook_turns_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
+        "signed_envelopes": 13,
+        "cpu_cases": 10
       }
     },
     {
@@ -9738,6 +9780,20 @@
         "declared_with_expected_success": 197,
         "required_methods": 231,
         "long_run_hours": 0
+      },
+      "agent_webhook_creation_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-events.json",
+        "event_types": [
+          "agent.environment.ready",
+          "agent.session.created"
+        ]
+      },
+      "agent_webhook_turns_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
+        "signed_envelopes": 13,
+        "cpu_cases": 10
       }
     },
     {
@@ -11319,8 +11375,8 @@
       }
     }
   ],
-  "next_task": "Connect Agent session and environment lifecycle transitions to signed subscriptions. Continue the remaining inference and application endpoints, recovery and delivery tasks.",
-  "next": "实现 Agent 会话与执行环境的真实生命周期通知，再接续其余推理、应用服务和恢复事项。",
+  "next_task": "Complete hosted environment expiry and remaining lifecycle producers and continue the inference and application API scopes and recovery tasks.",
+  "next": "补齐托管环境过期等实际生产端事件，再继续其余推理、应用服务与恢复项。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

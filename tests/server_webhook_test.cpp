@@ -1,6 +1,8 @@
 #include "../src/server/object_protocol.h"
 #include "../src/server/webhook_keys.h"
+#include "../src/server/webhook_events.h"
 #include "q4t/server/webhook.h"
+#include "q4t/server/agent_session.h"
 #include "q4t/server/server_options.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/test.h"
@@ -9,6 +11,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <filesystem>
+#include <set>
 
 namespace q4t::server {
 namespace {
@@ -292,6 +295,229 @@ Q4T_TEST(webhook_byte_limit_reports_loss_without_losing_the_response) {
   auto diagnostic = db.ReconcileWebhooks("", Access().deadline);
   Q4T_CHECK(diagnostic.ok() && diagnostic.value.GetInt("capacity_losses") == 1);
   Q4T_CHECK(diagnostic.value.GetInt("capacity_deferrals") == 0);
+  return true;
+}
+
+Q4T_TEST(webhook_agent_creations_project_only_public_routing_fields_once) {
+  Fixture f;
+  ObjectStore store(f.options);
+  for (auto type : {"agent.session.created", "agent.environment.ready"}) {
+    auto id =
+        type == std::string_view("agent.session.created") ? "whe_s" : "whe_e";
+    Q4T_CHECK(
+        store.Execute(Subscription(Access().scope, id, type), Access().deadline)
+            .ok());
+  }
+  ObjectRequest session;
+  session.operation = ObjectOperation::kPut;
+  session.kind = ObjectKind::kAgentSession;
+  session.scope = Access().scope;
+  session.id = "agent_session_demo";
+  session.data =
+      Object({{"session",
+               Object({{"id", String(session.id)},
+                       {"object", String("agent.session")},
+                       {"environment",
+                        Object({{"type", String("openai_hosted")},
+                                {"id", String("env_warm")},
+                                {"network", String("private-setting")}})},
+                       {"metadata",
+                        Object({{"private", String("sensitive-value")}})}})}});
+  ObjectRequest env = session;
+  env.id = "env_warm";
+  env.kind = ObjectKind::kEnvironment;
+  env.data =
+      Object({{"resource", Object({{"id", String(env.id)},
+                                   {"object", String("agent.environment")},
+                                   {"type", String("openai_hosted")},
+                                   {"status", String("ready")}})},
+              {"warm_until", Number(std::time(nullptr) + 300)}});
+  const std::array writes{env, session};
+  auto created = store.ExecuteBatch(writes, Access().deadline);
+  Q4T_CHECK(created.ok() && created.value.GetArray("data")->array.size() == 2);
+  session.expected_revision = 1;
+  Q4T_CHECK(store.Execute(session, Access().deadline).ok());
+  env.expected_revision = 1;
+  Q4T_CHECK(store.Execute(env, Access().deadline).ok());
+  auto events = Events(store);
+  Q4T_CHECK(events.ok() && events.value.GetArray("data")->array.size() == 2);
+  for (const auto& row : events.value.GetArray("data")->array) {
+    const auto& notice = *row.Find("data");
+    const auto& event = *notice.Find("event");
+    const auto& payload = *event.Find("data");
+    const auto type = event.GetString("type");
+    ChatPlanError error;
+    Q4T_CHECK(ValidateWebhook(event, "event", &error).ok());
+    auto sample = event;
+    Set(&sample, "data", webhook_detail::SamplePayload(type, "example"));
+    Q4T_CHECK(ValidateWebhook(sample, "event", &error).ok());
+    const auto& deliveries = notice.GetArray("deliveries")->array;
+    Q4T_CHECK(deliveries.size() == 1);
+    if (type == "agent.session.created") {
+      Q4T_CHECK(payload.object.size() == 3 &&
+                payload.GetString("id") == session.id);
+      Q4T_CHECK(payload.GetString("environment_type") == "openai_hosted" &&
+                payload.GetString("environment_id") == env.id &&
+                deliveries[0].GetString("endpoint") == "whe_s");
+    } else {
+      Q4T_CHECK(type == "agent.environment.ready" &&
+                payload.object.size() == 1 &&
+                payload.GetString("id") == env.id &&
+                deliveries[0].GetString("endpoint") == "whe_e");
+    }
+    Q4T_CHECK(OutputJson(event).find("private") == std::string::npos &&
+              OutputJson(event).find("sensitive") == std::string::npos);
+  }
+  return true;
+}
+
+Q4T_TEST(
+    webhook_source_transition_filters_progress_and_connected_environments) {
+  using webhook_detail::Transition;
+  for (const auto kind : {"response", "batch"}) {
+    for (const auto status : {"completed", "failed", "cancelled", "incomplete",
+                              "expired", "in_progress"}) {
+      auto source = Object({{kind, Object({{"background", Boolean(true)},
+                                           {"status", String(status)}})}});
+      const bool valid = status != std::string_view("in_progress") &&
+                         !(kind == std::string_view("batch") &&
+                           status == std::string_view("incomplete")) &&
+                         !(kind == std::string_view("response") &&
+                           status == std::string_view("expired"));
+      const auto expected = valid ? std::string(kind) + "." + status : "";
+      Q4T_CHECK(Transition(kind, source, false) == expected);
+    }
+  }
+  const auto connected =
+      Object({{"resource", Object({{"object", String("agent.environment")},
+                                   {"type", String("openai_hosted")},
+                                   {"status", String("connected")}})}});
+  Q4T_CHECK(Transition("environment", connected, true).empty());
+  auto other = connected;
+  Set(&Field(other, "resource"), "status", String("ready"));
+  Set(&Field(other, "resource"), "type", String("self_hosted"));
+  Q4T_CHECK(Transition("environment", other, true).empty());
+  const auto local =
+      Object({{"session",
+               Object({{"id", String("agent_session_x")},
+                       {"environment", Object({{"type", String("none")}})}})}});
+  const auto event = webhook_detail::EventPayload("agent.session.created",
+                                                  "agent_session_x", local);
+  Q4T_CHECK(event.object.size() == 2 &&
+            event.GetString("environment_type") == "none");
+  return true;
+}
+
+Q4T_TEST(webhook_reconciles_two_creation_events_one_free_slot_at_a_time) {
+  Fixture f;
+  f.options.max_client_objects = 3;
+  auto created =
+      Subscription(Access().scope, "whe_created", "agent.session.created");
+  auto idle = Subscription(Access().scope, "whe_idle", "agent.session.idle");
+  ObjectRequest session;
+  session.kind = ObjectKind::kAgentSession;
+  session.operation = ObjectOperation::kPut;
+  session.scope = Access().scope;
+  session.id = "agent_session_full";
+  session.ttl_seconds = 0;
+  session.data =
+      Object({{"session",
+               Object({{"object", String("agent.session")},
+                       {"id", String(session.id)},
+                       {"environment", Object({{"type", String("none")}})}})},
+              {"created_idle", Boolean(true)},
+              {"turns", Array()}});
+  {
+    ObjectStore db(f.options);
+    Q4T_CHECK(db.Execute(created, Access().deadline).ok());
+    Q4T_CHECK(db.Execute(idle, Access().deadline).ok());
+    auto result = db.Execute(session, Access().deadline);
+    Q4T_CHECK(result.ok() &&
+              !result.value.Find("data")->Has("q4t_webhook_deferred"));
+    Q4T_CHECK(Events(db).value.GetArray("data")->array.empty());
+    auto counts = db.ReconcileWebhooks("", Access().deadline);
+    Q4T_CHECK(counts.ok() && counts.value.GetInt("capacity_deferrals") == 2);
+  }
+  ObjectStore db(f.options);
+  for (auto* sub : {&created, &idle}) {
+    sub->operation = ObjectOperation::kErase;
+    Q4T_CHECK(db.Execute(*sub, Access().deadline).ok());
+    Q4T_CHECK(db.ReconcileWebhooks("", Access().deadline).ok());
+    auto page = Events(db);
+    Q4T_CHECK(page.ok() && page.value.GetArray("data")->array.size() ==
+                               (sub == &created ? 1U : 2U));
+  }
+  auto final = Events(db);
+  std::set<std::string> types;
+  for (const auto& row : final.value.GetArray("data")->array) {
+    const auto& notice = *row.Find("data");
+    const auto& event = *notice.Find("event");
+    types.insert(event.GetString("type"));
+    Q4T_CHECK(event.Find("data")->GetString("id") == session.id);
+    Q4T_CHECK(notice.GetArray("deliveries")->array.size() == 1);
+  }
+  Q4T_CHECK(types.contains("agent.session.idle") &&
+            types.contains("agent.session.created"));
+  return true;
+}
+
+Q4T_TEST(webhook_session_failure_and_retryable_turn_follow_public_state) {
+  Fixture f;
+  ObjectStore db(f.options);
+  for (const auto type : {"agent.session.failed", "agent.session.idle"}) {
+    auto id =
+        type == std::string_view("agent.session.failed") ? "whe_f" : "whe_i";
+    Q4T_CHECK(
+        db.Execute(Subscription(Access().scope, id, type), Access().deadline)
+            .ok());
+  }
+  for (const auto code : {"kernel_error", "service_draining"}) {
+    auto run = Background(std::string("resp_") + code, "failed");
+    const auto sid = std::string("agent_session_") + code;
+    auto& response = Field(run.data, "response");
+    Set(&response, "error",
+        Object({{"code", String(code)},
+                {"message", String("private error details")}}));
+    Set(&response, "created_at", Number(100));
+    Set(&response, "output", Array());
+    Set(&run.data, "agent_session_id", String(sid));
+    Set(&run.data, "agent_turn_finished_at", Number(102));
+    Set(&run.data, "own_input", Array());
+    ChatPlanConfig config;
+    config.model = "local";
+    AgentSessionStart start;
+    auto create = Object({{"agent", Object({{"model", String("local")}})},
+                          {"environment", Object({{"type", String("none")}})},
+                          {"input", String("project lookup")}});
+    Q4T_CHECK(PrepareDirectAgentSession(db, create, config, Access(), sid, 100,
+                                        &start)
+                  .ok());
+    ObjectRequest session;
+    session.kind = ObjectKind::kAgentSession;
+    session.operation = ObjectOperation::kPut;
+    session.scope = Access().scope;
+    session.id = sid;
+    session.data =
+        Object({{"session", start.session},
+                {"turns", Array({Object({{"id", String("turn_example")},
+                                         {"response_id", String(run.id)}})})}});
+    // Recovery can commit the response before the session mutation within
+    // the same atomic batch. The projection must work in either row order.
+    const std::array writes{run, session};
+    Q4T_CHECK(db.ExecuteBatch(writes, Access().deadline).ok());
+  }
+  const auto page = Events(db);
+  Q4T_CHECK(page.ok() && page.value.GetArray("data")->array.size() == 2);
+  for (const auto& row : page.value.GetArray("data")->array) {
+    const auto& event = *row.Find("data")->Find("event");
+    const auto& payload = *event.Find("data");
+    const bool failed = payload.GetString("id") == "agent_session_kernel_error";
+    Q4T_CHECK(event.GetString("type") ==
+              (failed ? "agent.session.failed" : "agent.session.idle"));
+    Q4T_CHECK(payload.GetString("environment_type") == "none" &&
+              payload.object.size() == 2);
+    Q4T_CHECK(OutputJson(event).find("private error") == std::string::npos);
+  }
   return true;
 }
 

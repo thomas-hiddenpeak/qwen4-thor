@@ -109,14 +109,11 @@ ObjectReply Test(ObjectStore& objects, const StateAccess& access,
     return Invalid("event_type", "Event is unavailable to this project");
   const auto id = NewObjectId(ObjectKind::kWebhookEvent);
   if (id.empty()) return Error(503, "webhook_id_unavailable", "No event ID");
-  const auto sample =
-      std::string(type.starts_with("batch.") ? "batch_test_" : "resp_test_") +
-      id.substr(4);
   auto event = Object({{"object", String("event")},
                        {"id", String(id)},
                        {"type", String(type)},
                        {"created_at", Number(now)},
-                       {"data", Object({{"id", String(sample)}})}});
+                       {"data", webhook_detail::SamplePayload(type, id.substr(4))}});
   Json keys;
   auto opened = webhook_detail::ReadKeys(
       objects, access, endpoint.GetString("id"), record, now, &keys);

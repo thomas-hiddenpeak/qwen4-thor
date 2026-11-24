@@ -1,5 +1,6 @@
 #include "q4t/server/object_store.h"
 #include "webhook_events.h"
+#include "agent_session_internal.h"
 #include "q4t/server/batch_checkpoint.h"
 #include "q4t/server/batch_quota.h"
 #include "q4t/server/batch_state.h"
@@ -152,7 +153,7 @@ Json Public(const Json& record) {
   std::erase_if(result.object, [](const auto& field) {
     return field.first == "owner" || field.first == "format";
   });
-  if (result.GetString("kind") == "response" || result.GetString("kind") == "batch")
+  if (webhook_detail::IsEventSource(result.GetString("kind")))
     std::erase_if(Field(result, "data").object, [](const auto& field) {
       return field.first == "q4t_webhook_deferred";
     });
@@ -166,14 +167,17 @@ struct Metadata {
   BatchQueueCharge batch_charge = {};
   uint32_t webhook_subscriptions = 0;
   uint32_t terminal_event = 0;
+  bool agent_started = false;
   bool webhook_deferred = false;
 };
 void IndexWebhookState(Metadata* metadata, const Json& data) {
   if (metadata->kind == "webhook_endpoint") {
     metadata->webhook_subscriptions = webhook_detail::Subscriptions(data);
-  } else if (metadata->kind == "response" || metadata->kind == "batch") {
+  } else if (webhook_detail::IsEventSource(metadata->kind)) {
+    metadata->agent_started = metadata->kind == "response" &&
+                              data.GetInt("agent_turn_started_at") > 0;
     metadata->terminal_event = webhook_detail::EventBit(
-        webhook_detail::TerminalEvent(metadata->kind, data));
+        webhook_detail::Transition(metadata->kind, data, false));
     metadata->webhook_deferred = data.Has("q4t_webhook_deferred");
   }
 }
@@ -695,24 +699,19 @@ class DiskStore {
     return !result.commit_unknown && (result.code == "object_quota_exceeded" ||
                                       result.code == "object_too_large");
   }
-  Json Notification(const Json& write, const std::string& name) {
-    const auto kind = write.GetString("kind");
-    if (kind != "batch" && kind != "response") return {};
-    auto prior = records_.find(name);
-    if (prior != records_.end() && prior->second.webhook_deferred) {
-      Json record;
-      if (ReadKnown(name, prior->second, &record))
-        return Field(Field(record, "data"), "q4t_webhook_deferred");
-      // The ordinary source write also verifies the record before commit.
-      return {};
-    }
-    if (write.GetString("operation") != "put" ||
-        (prior != records_.end() && prior->second.terminal_event)) return {};
-    const auto* data = write.Find("data");
-    const auto type = data ? webhook_detail::TerminalEvent(kind, *data) : "";
-    if (type.empty()) return {};
-    const auto owner = write.GetString("owner"), id = write.GetString("id");
+  // Earlier releases stored a single deferred event directly in the source.
+  // Preserve its exact identity and recipient snapshot across upgrades.
+  static Json DeferredEvents(const Json& data) {
+    const auto* saved = data.Find("q4t_webhook_deferred");
+    if (!saved) return Array();
+    return saved->IsArray() ? *saved : Array({*saved});
+  }
+
+  // All recipients come from the owner's committed subscription index.
+  Json Notice(const std::string& owner, const std::string& identity,
+              std::string_view type, Json payload) {
     const auto bit = webhook_detail::EventBit(type);
+    if (!bit || payload.IsNull()) return {};
     const auto prefix = owner + ".webhook_endpoint.";
     auto targets = Array();
     for (auto it = records_.lower_bound(prefix);
@@ -720,8 +719,156 @@ class DiskStore {
       if (it->second.webhook_subscriptions & bit)
         targets.array.push_back(String(it->second.id));
     if (targets.array.empty()) return {};
-    return webhook_detail::PendingEvent(owner, id, type, targets, Now(),
+    return webhook_detail::PendingEvent(
+        owner, identity, type, std::move(payload), targets, Now(),
         std::min<int64_t>(72 * 3600, options_.max_ttl_seconds));
+  }
+
+  bool AgentPhaseChanged(const Json& data, const Metadata* prior) const {
+    if (data.GetString("agent_session_id").empty() ||
+        (prior && prior->terminal_event))
+      return false;
+    const auto* response = data.Find("response");
+    if (!response) return false;
+    if (response->GetString("status") == "in_progress")
+      return !prior || !prior->agent_started;
+    return !webhook_detail::Transition("response", data, false).empty();
+  }
+
+  bool Subscribed(const std::string& owner, uint32_t mask) const {
+    const auto prefix = owner + ".webhook_endpoint.";
+    for (auto it = records_.lower_bound(prefix);
+         it != records_.end() && it->first.starts_with(prefix); ++it)
+      if (it->second.webhook_subscriptions & mask) return true;
+    return false;
+  }
+
+  Json SessionPhase(const std::string& owner, const std::string& response,
+                    const Json& data, const Json& session, const Json& link,
+                    bool cancelled_wait = false) {
+    auto settings = agent_detail::SessionSettings(session, &link);
+    AgentSessionView view;
+    if (!settings.ok() ||
+        !agent_detail::ProjectStep(settings.value, link, data, &view).ok() ||
+        (cancelled_wait && view.turn.GetString("status") != "cancelled"))
+      return {};
+    auto status = view.session.GetString("status");
+    const auto type =
+        "agent.session." +
+        (status == "requires_action" ? "action_required" : status);
+    return Notice(owner, response, type,
+                  webhook_detail::EventPayload(
+                      type, data.GetString("agent_session_id"),
+                      Object({{"session", std::move(view.session)}})));
+  }
+
+  // Use the same session/turn projection as public GET and SSE. Most writes
+  // are incremental model output and never enter this path.
+  Json AgentTurnNotice(const std::string& owner, const std::string& response,
+                       const Json& data, const Json& writes) {
+    const auto session_id = data.GetString("agent_session_id");
+    if (!ValidId(session_id)) return {};
+    static const auto phases =
+        webhook_detail::EventBit("agent.session.idle") |
+        webhook_detail::EventBit("agent.session.in_progress") |
+        webhook_detail::EventBit("agent.session.failed") |
+        webhook_detail::EventBit("agent.session.action_required");
+    if (!Subscribed(owner, phases)) return {};
+    const Json* session = nullptr;
+    for (const auto& row : writes.array) {
+      if (row.GetString("kind") == "agent_session" &&
+          row.GetString("id") == session_id &&
+          row.GetString("owner") == owner) {
+        if (row.GetString("operation") != "put") return {};
+        session = row.Find("data");
+        break;
+      }
+    }
+    Json stored;
+    if (!session) {
+      auto name = owner + ".agent_session." + session_id + ".json";
+      auto it = records_.find(name);
+      if (it == records_.end() || !ReadKnown(name, it->second, &stored))
+        return {};
+      session = stored.Find("data");
+    }
+    const auto* turns = session ? session->GetArray("turns") : nullptr;
+    if (!turns || turns->array.empty()) return {};
+    const auto& link = turns->array.back();
+    if (link.GetString("response_id") != response) return {};
+    return SessionPhase(owner, response, data, *session, link);
+  }
+
+  static const Json* CancelledLink(const Json& session) {
+    const auto* turns = session.GetArray("turns");
+    if (!turns || turns->array.empty()) return nullptr;
+    const auto& link = turns->array.back();
+    return link.GetInt("cancel_requested_at") > 0 ? &link : nullptr;
+  }
+
+  // A waiting tool call is already a completed native Response. Cancelling
+  // it changes session state in the session CAS without another model write.
+  Json CancelNotice(const std::string& name, const Metadata& prior,
+                    const Json& session) {
+    const auto* link = CancelledLink(session);
+    if (!link || !Subscribed(prior.owner,
+                             webhook_detail::EventBit("agent.session.idle")))
+      return {};
+    const auto response_id = link->GetString("response_id");
+    if (!ValidId(response_id)) return {};
+    Json before;
+    if (!ReadKnown(name, prior, &before)) return {};
+    const auto* old = CancelledLink(Field(before, "data"));
+    if (old && old->GetString("response_id") == response_id) return {};
+    const auto key = prior.owner + ".response." + response_id + ".json";
+    const auto it = records_.find(key);
+    Json stored;
+    if (it == records_.end() || !it->second.terminal_event ||
+        !ReadKnown(key, it->second, &stored))
+      return {};
+    const auto& data = Field(stored, "data");
+    const auto* response = data.Find("response");
+    if (!response || response->GetString("status") != "completed" ||
+        data.GetString("agent_session_id") != prior.id)
+      return {};
+    return SessionPhase(prior.owner, response_id, data, session, *link, true);
+  }
+
+  Json Notifications(const Json& write, const std::string& name,
+                     const Json& writes, size_t* added) {
+    auto events = Array();
+    const auto kind = write.GetString("kind");
+    const auto prior = records_.find(name);
+    const bool creating = prior == records_.end();
+    if (!creating && prior->second.webhook_deferred) {
+      Json record;
+      if (!ReadKnown(name, prior->second, &record)) return events;
+      events = DeferredEvents(Field(record, "data"));
+    }
+    const auto* data = write.Find("data");
+    if (!data || write.GetString("operation") != "put") return events;
+    const auto owner = write.GetString("owner"), id = write.GetString("id");
+    auto append = [&](Json event) {
+      if (event.IsNull()) return;
+      events.array.push_back(std::move(event));
+      ++*added;
+    };
+    const auto type = webhook_detail::Transition(kind, *data, creating);
+    if (!type.empty() && (creating || !prior->second.terminal_event)) {
+      append(Notice(owner, id, type,
+                    webhook_detail::EventPayload(type, id, *data)));
+      if (type == "agent.session.created" && data->GetBool("created_idle"))
+        append(Notice(
+            owner, id, "agent.session.idle",
+            webhook_detail::EventPayload("agent.session.idle", id, *data)));
+    }
+    if (kind == "response" &&
+        AgentPhaseChanged(*data, creating ? nullptr : &prior->second)) {
+      append(AgentTurnNotice(owner, id, *data, writes));
+    } else if (kind == "agent_session" && !creating) {
+      append(CancelNotice(name, prior->second, *data));
+    }
+    return events;
   }
 
   // An external subscriber never participates in a business commit. Only its
@@ -731,18 +878,21 @@ class DiskStore {
     if (!writes || writes->array.size() > kMaxTransactionObjects)
       return CommitBatch(request, retention);
     Notices notices;
+    size_t added = 0;
     for (const auto& write : writes->array) {
       const auto kind = write.GetString("kind");
-      if (kind != "response" && kind != "batch") continue;
+      if (!webhook_detail::IsEventSource(kind)) continue;
       const auto name = Filename(write);
-      auto event = Notification(write, name);
-      if (!event.IsNull()) notices.emplace(name, std::move(event));
+      auto events = Notifications(write, name, *writes, &added);
+      if (!events.array.empty()) notices.emplace(name, std::move(events));
     }
     if (notices.empty()) return CommitBatch(request, retention);
     auto extended = request;
     auto& mutations = Field(extended, "mutations").array;
-    for (const auto& [unused, event] : notices)
-      if (event.GetInt("expires_at") > Now()) mutations.push_back(event);
+    const auto now = Now();
+    for (const auto& [name, events] : notices)
+      for (const auto& event : events.array)
+        if (event.GetInt("expires_at") > now) mutations.push_back(event);
     if (mutations.size() <= kMaxTransactionObjects) {
       auto result = CommitBatch(extended, retention, &notices, true);
       if (result.ok()) {
@@ -757,17 +907,22 @@ class DiskStore {
     // terminal resource's existing slot. The reconciler moves it atomically.
     auto staged = CommitBatch(request, retention, &notices, false);
     if (staged.ok()) {
-      for (const auto& [name, unused] : notices) {
-        if (records_.contains(name)) ++webhook_capacity_deferrals_;
-        else ++webhook_capacity_losses_;
-      }
+      webhook_capacity_deferrals_ += added;
+      for (const auto& [name, events] : notices)
+        if (!records_.contains(name))
+          webhook_capacity_losses_ += events.array.size();
       return staged;
     }
     if (!NoCapacity(staged)) return staged;
     // Even the source plus its small receipt cannot fit. Never block a healthy
     // model response on notification capacity; expose the actual loss.
     auto plain = CommitBatch(request, retention);
-    if (plain.ok()) webhook_capacity_losses_ += notices.size();
+    if (plain.ok()) {
+      webhook_capacity_losses_ += added;
+      for (const auto& [name, events] : notices)
+        if (!records_.contains(name))
+          webhook_capacity_losses_ += events.array.size();
+    }
     return plain;
   }
 
@@ -790,12 +945,20 @@ class DiskStore {
           {"kind", String(m.kind)}, {"id", String(m.id)}, {"revision", Number(m.revision)},
           {"ttl", Number(0)}, {"expires_at", Number(m.expires)}, {"data", Field(record, "data")}});
       auto& data = Field(write, "data");
-      Notices notices{{cursor, Field(data, "q4t_webhook_deferred")}};
+      auto pending = DeferredEvents(data);
+      const auto now = Now();
+      std::erase_if(pending.array, [&](const Json& notice) {
+        return notice.GetInt("expires_at") <= now;
+      });
       auto mutations = Array({std::move(write)});
-      const auto& event = notices.begin()->second;
-      if (event.GetInt("expires_at") > Now()) mutations.array.push_back(event);
+      // A single free object slot suffices to make durable progress.
+      if (!pending.array.empty()) {
+        mutations.array.push_back(std::move(pending.array.front()));
+        pending.array.erase(pending.array.begin());
+      }
+      Notices remaining{{cursor, std::move(pending)}};
       auto moved = CommitBatch(Object({{"mutations", std::move(mutations)}}),
-                               false, &notices, true);
+                               false, &remaining);
       if (!moved.ok() && !NoCapacity(moved)) return moved;
       break;
     }
@@ -900,13 +1063,16 @@ class DiskStore {
                          {"created_at", Number(created)},
                          {"expires_at", Number(expires)},
                          {"data", *data}});
-        if (kind == "response" || kind == "batch") {
+        if (webhook_detail::IsEventSource(kind)) {
           auto& data = Field(record, "data");
           std::erase_if(data.object, [](const auto& f) {
             return f.first == "q4t_webhook_deferred";
           });
           if (notices && notices->contains(name)) {
-            if (!clear) Set(&data, "q4t_webhook_deferred", notices->at(name));
+            const auto& pending = notices->at(name).array;
+            if (!clear && !pending.empty())
+              Set(&data, "q4t_webhook_deferred",
+                  pending.size() == 1 ? pending.front() : notices->at(name));
           } else if (const auto* old = previous.Find("data");
                      old && old->Has("q4t_webhook_deferred")) {
             Set(&data, "q4t_webhook_deferred", *old->Find("q4t_webhook_deferred"));
@@ -1259,8 +1425,12 @@ class DiskStore {
     const bool pending = found != records_.end() && found->second.webhook_deferred;
     const auto kind = request.GetString("kind");
     const auto needs_notice = [&] {
-      if (kind != "response" || !proposed ||
-          webhook_detail::TerminalEvent(kind, *proposed).empty())
+      if (!webhook_detail::IsEventSource(kind) || !proposed) return false;
+      const bool creating = found == records_.end();
+      if (webhook_detail::Transition(kind, *proposed, creating).empty() &&
+          !(kind == "agent_session" && !creating && CancelledLink(*proposed)) &&
+          !(kind == "response" &&
+            AgentPhaseChanged(*proposed, creating ? nullptr : &found->second)))
         return false;
       const auto prefix = request.GetString("owner") + ".webhook_endpoint.";
       const auto next = records_.lower_bound(prefix);
