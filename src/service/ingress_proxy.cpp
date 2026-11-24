@@ -11,26 +11,6 @@ namespace q4t::service::ingress {
 namespace {
 namespace h = server::http;
 
-bool Prefix(std::string_view value) {
-  if (value.empty()) return true;
-  if (value.size() > 512 || value.front() != '/' || value.back() == '/')
-    return false;
-  value.remove_prefix(1);
-  while (!value.empty()) {
-    const auto end = value.find('/');
-    const auto part = value.substr(0, end);
-    if (part.empty() || part == "." || part == "..") return false;
-    for (unsigned char c : part)
-      if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-            (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.' ||
-            c == '~'))
-        return false;
-    if (end == value.npos) break;
-    value.remove_prefix(end + 1);
-  }
-  return true;
-}
-
 bool Node(std::string_view value, Address* address) {
   *address = Address::Parse(std::string(value));
   if (address->family != AF_UNSPEC) return true;
@@ -163,7 +143,7 @@ bool HttpPolicy::Load(const io::Json& value) {
       timeout < 1 || timeout > 120)
     return false;
   const auto* prefix = value.Find("path_prefix");
-  if (!prefix || !prefix->IsString() || !Prefix(prefix->str)) return false;
+  if (!prefix || !prefix->IsString() || !h::ValidPathPrefix(prefix->str)) return false;
   result.path_prefix = prefix->str;
   result.keep_alive_requests = requests;
   result.keep_alive_idle_ms = idle * 1000;

@@ -32,6 +32,7 @@ EVAL_ROUTES = (
     ('/v1/evals/{eval_id}/runs', ('GET', 'POST')),
     ('/v1/evals/{eval_id}/runs/{run_id}', ('GET', 'DELETE')),
     ('/v1/evals/{eval_id}/runs/{run_id}/cancel', ('POST',)),
+    ('/v1/evals/{eval_id}/runs/{run_id}/report', ('GET',)),
     ('/v1/evals/{eval_id}/runs/{run_id}/output_items', ('GET',)),
     ('/v1/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}', ('GET',)),
 )
@@ -856,6 +857,8 @@ http {{
       proxy_set_header X-Request-Id $http_x_request_id;
 {tunnel_headers()}
       proxy_set_header Authorization $q4t_upstream_credential;
+      proxy_set_header X-Forwarded-Host $http_host;
+      proxy_set_header X-Forwarded-Proto $scheme;
       {identity_headers}
       proxy_buffering off;
       proxy_request_buffering on;

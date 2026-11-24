@@ -9,13 +9,15 @@ class ResponsesJobs;
 namespace q4t::server::eval_detail {
 struct SamplingOwner;
 bool ReplaysStoredResponse(const io::Json& source);
+std::string RenderRunReport(const io::Json& run);
+void ProjectRun(io::Json* run, std::string_view base);
 ObjectReply PublishStoredRun(ObjectStore& objects, const StateAccess& access,
                              const io::Json& config, const io::Json& query,
                              ObjectRequest run, const ObjectRequest& parent);
 ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
                        const EvalRoute& route, std::string_view method,
                        std::string_view query, const std::string& body,
-                       ResponsesJobs* jobs);
+                       ResponsesJobs* jobs, std::string_view report_base);
 ObjectReply RemoveChildren(ObjectStore& objects, const StateAccess& access,
                            ObjectRequest* parent, io::Json* record,
                            ResponsesJobs* jobs);

@@ -244,6 +244,8 @@ http {{
       proxy_set_header X-Request-Id $http_x_request_id;
 {g.tunnel_headers()}
       proxy_set_header Authorization $q4t_upstream_credential;
+      proxy_set_header X-Forwarded-Host $http_host;
+      proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header X-Q4T-Client-Id $q4t_client;
       proxy_set_header X-Q4T-Gateway-Token $q4t_token;
       proxy_buffering off;

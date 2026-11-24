@@ -92,7 +92,7 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
               {"model", model ? *model : Json()},
               {"created_at", Number(run.created_at)},
               {"report_url", String("/v1/evals/" + parent.id + "/runs/" +
-                                    run.id + "/output_items")},
+                                    run.id + "/report")},
               {"result_counts", Object({{"total", Number(0)},
                                         {"errored", Number(0)},
                                         {"passed", Number(0)},
@@ -167,7 +167,7 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
 }
 ObjectReply List(ObjectStore& objects, const StateAccess& access,
                  const EvalRoute& route, const Json& parent,
-                 std::string_view raw, bool output) {
+                 std::string_view raw, bool output, std::string_view report_base) {
   auto query = ParseApplicationQuery(raw);
   if (!query.ok()) return query;
   auto valid = Shape(query.value, output ? "output_query" : "run_query");
@@ -201,6 +201,7 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access,
     if (item.http_status == 404) continue;
     if (!item.ok()) return item;
     if (!filter.empty() && item.value.GetString("status") != filter) continue;
+    if (!output) ProjectRun(&item.value, report_base);
     auto size = OutputJson(item.value).size();
     if (items.array.size() >= static_cast<size_t>(limit) ||
         size > kMaxFrame - bytes) {
@@ -315,7 +316,7 @@ ObjectReply RemoveChildren(ObjectStore& objects, const StateAccess& access,
 ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
                        const EvalRoute& route, std::string_view method,
                        std::string_view query, const std::string& body,
-                       ResponsesJobs* jobs) {
+                       ResponsesJobs* jobs, std::string_view report_base) {
   using Kind = EvalRouteKind;
   const bool list = method == "GET" &&
                     (route.kind == Kind::kRuns || route.kind == Kind::kOutputs);
@@ -325,7 +326,7 @@ ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
   auto parent = Get(objects, access, ObjectKind::kEval, route.eval);
   if (!parent.ok()) return parent;
   if (route.kind == Kind::kRuns) {
-    if (list) return List(objects, access, route, parent.value, query, false);
+    if (list) return List(objects, access, route, parent.value, query, false, report_base);
     Json input;
     auto parsed = io::ParseJson(body, &input, true, kApplicationJsonLimits);
     if (!parsed) return BadInput("body", parsed.message());
@@ -337,9 +338,13 @@ ObjectReply RunRequest(ObjectStore& objects, const StateAccess& access,
     return DeleteRun(objects, access, parent.value, run.value, jobs);
   auto result = Public(run.value, route, false);
   if (!result.ok()) return result;
+  if (route.kind == Kind::kReport) {
+    result.value = String(RenderRunReport(result.value));
+    return result;
+  }
   if (route.kind == Kind::kRun) return result;
   if (route.kind == Kind::kOutputs)
-    return List(objects, access, route, run.value, query, true);
+    return List(objects, access, route, run.value, query, true, report_base);
   if (route.kind == Kind::kOutput) {
     auto row = Get(objects, access, ObjectKind::kEvalOutput, route.output);
     return row.ok() ? Public(row.value, route, true) : row;

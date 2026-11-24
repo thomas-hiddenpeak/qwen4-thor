@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 SDK 通过直接 HTTP、带 /project/serve 前缀的原生 TLS 和可选 nginx 读取同一个运行。三份 1,012 字节的 HTML 内容一致，评分页正确显示一条通过、一条失败。各入口跨客户读取均为 404。一次启动模型，用时 35.058 秒。20 项主机检查通过，另将 rev480 的旧链接写入持久化记录，验证读取时生成新链接且原记录不变。候选待并入与发行。[验证记录](evidence/serve-evals-20261125/run-reports.json)
+
+已接入按项目鉴权的 HTML 报告，公开链接在读取时按当前入口生成，兼容旧运行。页面展示运行状态、成功与失败计数、各项评分和原始结果入口。正在验证原生 TLS 前缀、直接 HTTP 和可选 nginx 是否能读到同一份报告。[验证记录](evidence/serve-evals-20261125/run-reports.json)
+
 先删除上传的项目范围文件，再从历史 Responses 创建 Evals，随后删除原 Responses。Thor 上首次和重放都答 157，得 1 分。Node 7.47.0 与 Python 3.42.1 读到同一运行和结果，跨用户与删除后读取均返回 404。一次模型启动用时 37.694 秒，独立 Chat 答 42。下一步补齐运行报告和其他文件历史兼容。[验证记录](evidence/serve-evals-20261125/frozen-file-inputs.json)
 
 源文件删除后，Evals 仍可从已保存的 Responses 取回模型当时看到的文件内容。运行持有快照直到结果可回收，重开对象库会复核所有者、文件绑定及内容。18 项主机用例通过。首轮夹具误用了仅限历史 Chat 的 limit，修正后重验该项。下一步用两种官方 SDK 验证真实请求。[验证记录](evidence/serve-evals-20261125/frozen-file-inputs.json)
