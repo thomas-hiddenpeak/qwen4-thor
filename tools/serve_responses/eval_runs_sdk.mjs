@@ -25,6 +25,23 @@ async function observe(path, method, status, call) {
   wire.push({path, method, status, value});
   return value;
 }
+let recovery;
+if (plan.resume) {
+  const found = (await owner.evals.list()).data.filter(row => row.name === 'Scope approval check');
+  assert.equal(found.length, 1);
+  const original = found[0].id;
+  const candidates = (await owner.evals.runs.list(original)).data.filter(row => row.name === 'Qualified project scope');
+  assert.equal(candidates.length, 1);
+  const completed = candidates[0];
+  assert.equal(completed.status, 'completed');
+  const outputs = await owner.evals.runs.outputItems.list(completed.id, {eval_id: original});
+  assert.deepEqual(outputs.data.map(item => item.results[0].score), [1, 0]);
+  await assert.rejects(owner.files.retrieve(completed.data_source.source.id), err => err.status === 404);
+  recovery = {evaluation: original, run: completed.id, outputs: outputs.data.map(item => item.id),
+              prediction: outputs.data[0].sample.output[0].content};
+  assert.equal(recovery.prediction, String(correct));
+  await owner.evals.delete(original);
+}
 const evaluation = await owner.evals.create({
   name: 'Scope approval check', data_source_config: {type: 'custom', item_schema: {
     type: 'object', properties: {expected: {type: 'integer'}}, required: ['expected']}},
@@ -35,10 +52,13 @@ const eval_id = evaluation.id;
 const runs = owner.evals.runs;
 const collection = '/evals/{eval_id}/runs', detail = collection+'/{run_id}';
 const outputPath = detail+'/output_items';
-const read = await owner.chat.completions.create({model: plan.model, temperature: 0,
-  max_tokens: 64, reasoning_effort: 'none', messages: [{role: 'user', content:
-    'Read counts.required_inference_or_application_service in this JSON. Reply with only its integer value. '+JSON.stringify(record)}]});
-const prediction = read.choices[0].message.content.trim();
+let prediction = recovery?.prediction;
+if (!recovery) {
+  const read = await owner.chat.completions.create({model: plan.model, temperature: 0,
+    max_tokens: 64, reasoning_effort: 'none', messages: [{role: 'user', content:
+      'Read counts.required_inference_or_application_service in this JSON. Reply with only its integer value. '+JSON.stringify(record)}]});
+  prediction = read.choices[0].message.content.trim();
+}
 assert.equal(prediction, String(correct));
 const rows = [{item:{expected:correct}, sample:{output_text:prediction}},
               {item:{expected:excluded}, sample:{output_text:String(excluded+1)}}];
@@ -90,6 +110,6 @@ const check = await other.chat.completions.create({model:plan.model,temperature:
   max_tokens:32,reasoning_effort:'none',messages:[{role:'user',content:'Return only the answer to 6 times 7.'}]});
 const independent=check.choices[0].message.content.trim();
 assert.equal(independent,'42');
-process.stdout.write(JSON.stringify({sdk:version,model_answer:prediction,independent_chat:independent,
+process.stdout.write(JSON.stringify({sdk:version,model_answer:prediction,independent_chat:independent,recovery,
   scores:[firstItem.results[0].score,failed.data[0].results[0].score],counts:terminal.result_counts,
   foreign_project:404,foreign_run:404,deleted_file:404,deleted_run:404,canceled:canceled.status,wire}));
