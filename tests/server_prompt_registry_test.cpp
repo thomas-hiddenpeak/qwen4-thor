@@ -2772,6 +2772,10 @@ Q4T_TEST(prompt_realtime_token_limit_does_not_accept_fraction_or_overflow) {
 }
 
 Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
+  // The parent check scans the complete JSON, including random hexadecimal IDs.
+  const auto private_reply =
+      Parse(R"({"role":"assistant","content":"q4t-private-reader-reply-452"})");
+  const auto private_answer = private_reply.GetString("content");
   Fixture fixture;
   auto config = Config();
   config.structured = true;
@@ -2807,7 +2811,7 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
     auto step = [&](const ResponsesAgentTree::Turn& turn, bool, Json* assistant, bool* done) {
       if (turn.name != "root/reader" || turn.messages.array.front().GetString("content") != "lookup" ||
           (followup && (turn.messages.array.size() != 3 ||
-                       turn.messages.array[1].GetString("content") != "452" ||
+                       turn.messages.array[1].GetString("content") != private_answer ||
                        turn.messages.array[2].GetString("content") != "recall")))
         throw std::runtime_error("Child did not recover its own transcript");
       Json child_request = Parse("{}");
@@ -2818,7 +2822,7 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
         throw std::runtime_error("Incorrect delegated identity or impossible operation advertised");
       if (inspect_claim && !inspect_claim()) throw std::runtime_error("Incorrect live child claim boundary");
       ++invoked;
-      *assistant = Parse(R"({"role":"assistant","content":"452"})");
+      *assistant = private_reply;
       *done = true;
       return ObjectReply{};
     };
@@ -2900,7 +2904,7 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
       if (kind == "output_text.delta") child_text += e.GetString("delta");
       if (kind == "completed" && OutputJson(*e.Find("turn")) != OutputJson(detail.value)) return false;
     }
-    return child_text == "452" &&
+    return child_text == private_answer &&
         edges == (subscribed_late ? std::vector<std::string>{"completed"}
                                   : std::vector<std::string>{"created_child", "created", "in_progress", "completed"});
   };
@@ -2916,7 +2920,7 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
   bool saw_call = false;
   for (const auto& row : view.items.array) {
     Q4T_CHECK(row.GetString("type") != "multi_agent_call" &&
-              OutputJson(row).find("452") == std::string::npos);
+              OutputJson(row).find(private_answer) == std::string::npos);
     if (row.GetString("type") == "create_subagent_call") {
       saw_call = true;
       Q4T_CHECK(row.GetString("agent_id") == item.value.GetString("parent_agent_id"));

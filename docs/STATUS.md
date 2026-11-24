@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #80 两项远端主机检查通过，已合入 main（fe5aa10d3），合并树与受检提交相同。#81 的一次远端检查中，旧的子会话隔离测试在整段父记录中搜索三位数字 452，随机 ID 也有可能命中。子回答现使用唯一文字标记；完整父记录仍须无该标记，子流和恢复的子会话均须返回完整标记。同一项针对性 CPU 测试连续八次通过。下一步继续 #81 和 Threads 的合入与 Runs 业务验证。[主线核验](evidence/serve-audio-translation-20261124/pr80-main.json)
+
 Assistants v2 的五项注册表操作已通过官方 Node SDK 和原生 TLS。客户端上传 rev460 发布记录，创建 Assistant 时同步创建向量库，真实索引完成后查到 460。另一客户读取 Assistant、绑定该文件及向量库均为 404。前后分页、更新、删除后读取、超限与独立 Chat 均通过。单次模型启动耗时 38.778 秒，6 项原生、18 项 Python 及 1 项可选 nginx 检查通过。候选声明 140/231，仍缺 91 项；默认 rev460 声明 135 项。后续接续 Threads、Runs 与工具回填以及可回退发行。[验收回执](evidence/serve-assistants-20261124/registry.json)
 
 修正了 Agent 会话、环境及工作区文件的列表声明。客户端现在能从合同读到整数页长 1 至 100，以及省略时使用 20。13 项 Python 检查覆盖边界、分数、字符串、布尔值和可空文件选项。此次只改合同，沿用已验运行时。 [验证记录](evidence/serve-agent-event-query-20261124/business.json)
