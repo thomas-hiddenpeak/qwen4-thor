@@ -1325,6 +1325,9 @@ BoundBackground PrepareBoundBackground(ObjectStore& objects, Fixture& fixture) {
 
 Q4T_TEST(batch_background_waits_for_terminal_and_actual_cleanup_before_copy) {
   Fixture fixture(10, 100);
+  // The result file is durable once the background owner drains. Reading it
+  // exercises normal disk I/O, including acquiring its binary read lease.
+  fixture.objects.io_timeout_ms = ObjectStoreOptions{}.io_timeout_ms;
   fixture.jobs.max_result_bytes = kChatBodyBytes;
   ObjectStore objects(fixture.objects);
   const auto file = File(objects, BackgroundInput());

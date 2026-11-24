@@ -1,0 +1,26 @@
+{
+  "status": "PASS_TARGETED_BATCH_RESULT_READ_AFTER_DRAIN",
+  "source": "tests/server_batch_jobs_test.cpp",
+  "ci_failure": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45442921203/job/138618708238",
+  "original_core_passes": 3837,
+  "original_core_tests": 3838,
+  "successful_push_check": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45442824595/job/138618351254",
+  "observation": "The 250 ms fixture deadline expired while acquiring a read lease for the completed batch output file.",
+  "change": "The positive lifecycle test uses the production 2000 ms object I/O timeout. Its terminal, cleanup, result contents, usage and count assertions are unchanged. Fault-injection tests still control their own timeouts.",
+  "CPU": {
+    "repetitions": 4,
+    "tests": [
+      "batch_background_waits_for_terminal_and_actual_cleanup_before_copy",
+      "batch_background_cancel_and_revocation_reach_original_owner_and_drain"
+    ],
+    "passes": 8
+  },
+  "runtime_changes": 0,
+  "first_local_selection": "An unrecognized --filter argument exited before running tests. Repeated using the positional test-name filter.",
+  "receipts": {
+    "pr108-ci-01.log": "63364b1f00c36355a919343cd415cf150467358c120bfd3b59af3df1b802b82a",
+    "pr108-ci-targeted-01.log": "411abb543ac27baa6fb1500c1db46a987e3597d27407299698e1ed11d536d4aa",
+    "pr108-ci-targeted-02.log": "d0b66dbc28909b0546e06a26aefb8b3310c54a8130f484a481dd6c1c1771f805",
+    "server_batch_jobs_test.cpp": "a72a90cb2376aa98ccfde10e67024185e616ddc125105864cf6c1ae81a3f2f7f"
+  }
+}
