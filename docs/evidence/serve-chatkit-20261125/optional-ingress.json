@@ -55,5 +55,14 @@
     "webhook-dev/chatkit-optional-all-routes-01.log": "1113138f2e1855aed24f0c46b6621eef9dd9db3f9d2d6df46ed0f188ff7471cc",
     "chatkit_nginx_business.py": "88a9a426780d1e9ace60eb3709987945cbf7ce6cfd54c80e6c1bdfe23c5a4c1f",
     "nginx_chatkit_fixture.py": "4c072a4dd2e9acd1bc515118f096f72eb622b824b17674bf6081ff8bb6204522"
+  },
+  "ci_profile_review": {
+    "push_job": 138716213737,
+    "pr_job": 138716262522,
+    "finding": "Stale audit fingerprint for profile_live_reuse.py. Reviewed ChatKit v44 additions and v43 predecessor reconstruction.",
+    "sha256": "0bbd2183cf3664153a1f9a8a02c24af403a67613825fb2a4c4d1cbcc1b34976a",
+    "reviewed_sources": 1344,
+    "mutation_checks": 40,
+    "inventory_current": true
   }
 }
