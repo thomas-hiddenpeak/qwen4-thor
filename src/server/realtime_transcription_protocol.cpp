@@ -7,6 +7,7 @@
 #include "object_protocol.h"
 #include "q4t/io/base64.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/realtime_legacy_credentials.h"
 #include "q4t/server/websocket.h"
 
 namespace q4t::server {
@@ -373,22 +374,9 @@ ObjectReply LegacyTranscriptionCredential(const Json& body, Json* request) {
       modes && (!modes->IsArray() || modes->array.size() != 1 ||
                 !modes->array[0].IsString() || modes->array[0].str != "text"))
     return Invalid("modalities", "Transcription outputs text");
-  auto expiry = Object({{"anchor", String("created_at")}, {"seconds", Number(60)}});
-  if (const auto* secret = body.Find("client_secret")) {
-    reply = Fields(*secret, {"expires_at"}, "client_secret");
-    if (!reply.ok()) return reply;
-    if (const auto* when = secret->Find("expires_at")) {
-      reply = Fields(*when, {"anchor", "seconds"}, "client_secret.expires_at");
-      if (!reply.ok()) return reply;
-      if (when->Has("anchor") && when->GetString("anchor") != "created_at")
-        return Invalid("client_secret.expires_at.anchor", "Expected created_at");
-      if (const auto* ttl = when->Find("seconds")) {
-        if (!IsInputInteger(*ttl) || ttl->AsInt() < 10 || ttl->AsInt() > 7200)
-          return Invalid("client_secret.expires_at.seconds", "Expected 10 to 7200 seconds");
-        Set(&expiry, "seconds", *ttl);
-      }
-    }
-  }
+  Json expiry;
+  reply = LegacyRealtimeExpiry(body, "expires_at", &expiry);
+  if (!reply.ok()) return reply;
   auto options = Object();
   for (const auto& [key, value] : body.object)
     if (key != "modalities" && key != "client_secret") Set(&options, key, value);

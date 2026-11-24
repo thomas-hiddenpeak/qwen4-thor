@@ -546,6 +546,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_duplex_input_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_conversation_input.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_realtime_conversation_input_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_legacy_credentials.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_protocol.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_transcription_pump.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/realtime_session_pump.cpp

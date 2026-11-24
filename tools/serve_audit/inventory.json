@@ -2333,6 +2333,16 @@
         "src/server/realtime_client_secrets.cpp",
         "src/service/ingress_main.cpp"
       ]
+    },
+    "POST /v1/realtime/sessions": {
+      "semantics": "Issue an owner-bound transcription credential from the flat beta session settings.",
+      "boundary": "Issue a short-lived owner-scoped conversation credential, flattening the validated effective native session and binding legacy sampling to its redemption.",
+      "evidence": [
+        "src/server/chat_realtime_secrets.cpp",
+        "src/server/realtime_transcription_protocol.cpp",
+        "src/server/realtime_client_secrets.cpp",
+        "src/service/ingress_main.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -2947,8 +2957,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "4e2ad86148f64db1b031cad525c8a275d32a565385fd1b64deda2a02bcd6f59c",
-    "cmake/ChatProtocolIdentity.cmake": "639ea120255992404bd558489b9501729f72cd6836272e6f6f5b8a50edd314cc",
+    "CMakeLists.txt": "2ac06e993175987da68830d4ea0338ce88ddfb3cff25a47705b875ed19c8a903",
+    "cmake/ChatProtocolIdentity.cmake": "8dbb15675a181804a3fdd303ee87dfe9eba2677f9d75b191d851e7ad42b59c30",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3029,7 +3039,7 @@
     "include/q4t/server/application_owner.h": "61b594f537dbb3612cc40045e93ccf51d23bc6cfe93da4f2613d33c2a3bdf1dc",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "785fec1b8f16352b4e04f9544434c230ca6415762e6c54255c3dbb02c50f067d",
+    "include/q4t/server/application_routes.h": "0fac656a418cf17e494cb48587533e1db6ff9c09a04493c01c8073c99071ad3e",
     "include/q4t/server/asr_alignment_output.h": "4193e0deb6f5c678c37df9a0a9eb952e98b0504754a1adc770b41005b6e15051",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3070,7 +3080,7 @@
     "include/q4t/server/chat_plan_error.h": "cfd647bd93badba6118dcd294a31ce0882a95b1726edbbaa32221699e5da58b7",
     "include/q4t/server/chat_prompt.h": "3e4655e56c275885ec8e82625b91c4918e3b8f932f56998fbf0aa1259c268b30",
     "include/q4t/server/chat_response_parser.h": "48d6d29e6f600cccbd90bcca174bba018962633749d346a6f033fe7b3f27b19c",
-    "include/q4t/server/chat_server.h": "24794f8bb9710e4ba62aa3b170380adfc06c3aff904365500278cc8cfff237ca",
+    "include/q4t/server/chat_server.h": "9b1dc9d2e126a7ba608291e59142e86abf53b652b75b0afb18b14ea0c77f0a30",
     "include/q4t/server/chat_storage.h": "69f2a0bd43af6615866c93c4c29865ebc47625d6a5ffd054c00531cc75a7551f",
     "include/q4t/server/chat_template.h": "f40c73d841fe76c09c8e6d75b5098c33291c3e53532ce8a4ed83d8d4e32ec79c",
     "include/q4t/server/chat_tool_history.h": "655110859390e1dcb8b8aa87dc64887d0a5ce7f169175001cf62596178f0fc0c",
@@ -3122,7 +3132,7 @@
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
     "include/q4t/server/http_request.h": "ec5b83482a084eb7ac7f9f8c80bbe77280d7bf4dfbc69260a6cf4012e22a8dc4",
-    "include/q4t/server/http_response.h": "119247262f71ea520069bae3bca1c967e4357452346819f2d50bf798cc4c4ebb",
+    "include/q4t/server/http_response.h": "3d71b3a0bd2dcc3ceed6b915962de39e06a1b713569dcaa795d3864abd653c17",
     "include/q4t/server/input_contract.h": "af0929dfa050a137da35156e2fa4398f3710eee05cc3db0c5538ffa7825c6209",
     "include/q4t/server/input_snapshot.h": "4082f92bbd039afe29c1e87894b29b8dd447ca152e8628ad91d2900988fa781b",
     "include/q4t/server/input_snapshot_bindings.h": "d856b9d2be400c9ed24a31a6689ae935c1bbdecb8647d303a6a809db13d96f37",
@@ -3194,8 +3204,8 @@
     "include/q4t/server/realtime_audio_history.h": "9f6557845b00a5d451bdd5393d20475280e5b8a1d12c73da60c46a38376a7ef7",
     "include/q4t/server/realtime_audio_queue.h": "d4e004092c8e157c157c6a3bfd3acedbe1a49f77cd8d0215bc2b6cbab732202d",
     "include/q4t/server/realtime_chat_execution.h": "badc3dde61d2f2dba6ac2bd039c2030f2c7dbbbdc27b5356965a42e71e436ad9",
-    "include/q4t/server/realtime_chat_plan.h": "b71c0bd43b6b30d86e3513067013ac9b4f944b3932e287755b4d2824e79579aa",
-    "include/q4t/server/realtime_client_secrets.h": "ce25dd19654ea2a7390392f59670f4c8990aa352602a20cff727bdfa87badb89",
+    "include/q4t/server/realtime_chat_plan.h": "b2c3c6423c3f1d05d51555729530709351fec12a01db3598465256c1aa9f1890",
+    "include/q4t/server/realtime_client_secrets.h": "e94a5bdd32ab80f8e781187671083abe4eebbba04ed34229df8adbf1e2a3d828",
     "include/q4t/server/realtime_client_ticket.h": "5434eedcfa551ee79ac6de405df528541f351da35ed56239d87d1b4849850980",
     "include/q4t/server/realtime_conversation.h": "254a9f8846e4c17007ad732df4cd1b5e02569f94245d8333bb51108b9fd0f745",
     "include/q4t/server/realtime_conversation_input.h": "8e7b5cd2ab77caf2bf214b22e7d45a9b1ac0e83f954aeeb7c0755bcdf837adab",
@@ -3203,6 +3213,7 @@
     "include/q4t/server/realtime_conversation_session.h": "4abb23ce6b0c869e9eaba3efd5254ec08fd5e20316a7fffd4036c6f70d395ca6",
     "include/q4t/server/realtime_duplex_input.h": "e1d7ae2a4c0a3f5ae411817d4932c24e33ce5a7fa89a05b37205de1a232cf494",
     "include/q4t/server/realtime_file_inputs.h": "847b0918693b37c2bc25b840a50e4a4b7c003d6d63109b80b13767f6c273e5c3",
+    "include/q4t/server/realtime_legacy_credentials.h": "885f6018df11f7216b295953dffcccd517fde453c63373c0f0216c75b849045b",
     "include/q4t/server/realtime_mcp_calls.h": "019b4f6894de6baf7dc45dea1fc736868e41c37a9be02882c0681c0b299ad84e",
     "include/q4t/server/realtime_mcp_catalog.h": "ad8d3db24f6b373cb122e5888ec6e0542a30262a9de1dc5c9adeae6fe5eb8ead",
     "include/q4t/server/realtime_mcp_context.h": "ff0ec45632de3eb497b7244e20c1294b018183eeb5e1105b8a9c601675a5bcbc",
@@ -3505,11 +3516,11 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "000afcc92895f2388e09279b6a7274523212ec59b102d2380a3d8158fefca0a3",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "a6effe1d3237b66824b3679e302f908273287f4af13e6d9f29c66d2259ebcb0d",
+    "src/server/chat_http.cpp": "8f772baeef083ceb68e30e0d2064a185dbab5acab45342043b40f5c1fd9477b5",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
-    "src/server/chat_live_media.cpp": "4cbc9c7afd92d38214393a431486a5007b434b2026794e7a33a5a05d72757841",
+    "src/server/chat_live_media.cpp": "bd95ef9ee662403aa60c2ab830276fdf62a8afbafdc776ea01b3c90deb3bd4a9",
     "src/server/chat_live_sideband.cpp": "b7e92aad7e42e98ff9efcc46b01706996f2c06902653855b1209458ca5c20d24",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "0623a6552ba0ea9538fedb2222563b0cf545dda071f78353186049df2f9010e7",
@@ -3521,8 +3532,8 @@
     "src/server/chat_preflight.cpp": "7f81115de6cb8f8e08b4066734d069058c142575d63a8927c2e4ade2d0cbebcb",
     "src/server/chat_prompt.cpp": "d134ec75f72d7705b0c2f75da027e141b95f8645eae79b6eb7832294e49e99b0",
     "src/server/chat_realtime.cpp": "c08ba5af5f0d2ff7e6dfead669abcd86ef69a226f589efb73be3751734dc38bc",
-    "src/server/chat_realtime_conversation.cpp": "07e031b4fc226f5a08482bf6cca2b09846f93b7bed0d5e1e64504ac725d2dbc0",
-    "src/server/chat_realtime_secrets.cpp": "3c01dc26ddd249d20d1dada22347b5c876d95fa09d648586c052dbe4c1f42bf1",
+    "src/server/chat_realtime_conversation.cpp": "99cd4b2d7f1b90ddf8a366a303e210f8b2197663c78d90218373fa9efc7543e5",
+    "src/server/chat_realtime_secrets.cpp": "92b25702fb5a88abd399a81ff35511b7a5c0924dd32cd7f781ffea596ba2b717",
     "src/server/chat_realtime_stream.cpp": "6732f242ebecede07e1823ae8cbdac40db0a97eadac85de28292702500ebb4ab",
     "src/server/chat_response_parser.cpp": "fdda93a831b6487af815b2f386b9cb8244bf8106f7e1bb8db75838fa5b1547df",
     "src/server/chat_responses.cpp": "1e0d42b60014d1a4bbb8bb7da70c8a9643890161c7b11171bed3615f4d83ca6a",
@@ -3745,8 +3756,8 @@
     "src/server/realtime_call_pcm.cpp": "ec7235f582baedada2ab8887fb2ce9cd4e37c20382f36ec3531ee67c4d9cc738",
     "src/server/realtime_call_pcm.h": "e191f5289a0edac4ba3cc0b1708491adff8c86ad0d8ee1e1f02dc1f0111b75a1",
     "src/server/realtime_chat_execution.cpp": "9482e32920c8aa0c245b079628aea45e67e386ecf6be70e1aa274865e53dcaf7",
-    "src/server/realtime_chat_plan.cpp": "08c7e69f2dee04d63268dc20a9dab523743ec2625542d6ba05f5c5751e139ce9",
-    "src/server/realtime_client_secrets.cpp": "2744cc8adc3570c6cc3548abfe767e4c109eec621a833ab774e990611bf70924",
+    "src/server/realtime_chat_plan.cpp": "472688e886fbe4dc1221c990913e05485e1e9109ba135e16ca756433328d5e39",
+    "src/server/realtime_client_secrets.cpp": "8cafb669b091f00a0ea7e56b30488362204ccacee182877806ac8c4a544019de",
     "src/server/realtime_client_ticket.cpp": "56c0485756c0430c40a68e59c14eb2a047ad8a116a9abc52da53a1274e601204",
     "src/server/realtime_conversation.cpp": "609c0e98d415b3df6f5bec849a5702da730e988b9d9fef8aedf204de72e18be8",
     "src/server/realtime_conversation_input.cpp": "6e9f6c6eea012b9cb6a8b9573bafdf440e2f5ba0811b364d984375e1b021f490",
@@ -3754,6 +3765,7 @@
     "src/server/realtime_conversation_session.cpp": "9278615b01227f62344f87e91841914d8a6dca8294bd57ff1fd31f4e5acb380d",
     "src/server/realtime_duplex_input.cpp": "b20cca2cc059d57306f395e43b148eab29fb7a9e0777acd36881195ac99885af",
     "src/server/realtime_file_inputs.cpp": "5f4418fe3567b6e83fc4a94701d87714e01702cc0ad9be5451e7202e022dcc01",
+    "src/server/realtime_legacy_credentials.cpp": "b0371a2d463e52cd77bf42db53d021502824ab580fda2ac2d07ca96ba2139412",
     "src/server/realtime_mcp_calls.cpp": "9d1d68fe7cdf80a96a1fc5abe27f49c7198eb9f2e1bf01edd62021c52489fc39",
     "src/server/realtime_mcp_catalog.cpp": "e1cd8c3e2be79be373f1ded4145391abf1861b64f0df775af82866e7c73be305",
     "src/server/realtime_mcp_context.cpp": "81e777b20558160ed0d61fee5a84b0851a7e5136f502227e24455798f1dd78a3",
@@ -3782,7 +3794,7 @@
     "src/server/realtime_trace_session.cpp": "739c2e2d340acb1865e238d94fa67c59783fae928cc7373655d4097bb85bf5ac",
     "src/server/realtime_trace_store.cpp": "e1b1ade794248bb7f58270f42839d9f80dd9f17805cbf7dcd68c3189dbc3dce1",
     "src/server/realtime_transcript_history.cpp": "82395bfcece8c08a9d62b7dbe30198f7bc49d2f136420bd28bdf86b2668492f6",
-    "src/server/realtime_transcription_protocol.cpp": "537a46b3f29c4050475b578a0462b4a726ad712c8f9c3fe096abf536c8ea2d4c",
+    "src/server/realtime_transcription_protocol.cpp": "35b3c24b83932081621a4fe2f38e528e9533e8607f042d2eb7c957761db076f8",
     "src/server/realtime_transcription_pump.cpp": "d49e4dbd8b767abb1d902808518483633874bf6f9355efeeb7cbcb7a9c0130c6",
     "src/server/realtime_transcription_session.cpp": "43f0c052233f8b3df4c27e42d4c67ca17c4bcd4a922cdf4a8f118d6edeb3ce06",
     "src/server/realtime_vad.cpp": "c1068d57c5285946cfe5845c6793fa26e239e6b47ced1f38eed09874861222b8",
@@ -3949,7 +3961,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "a9dfe3ac1c0781af80ff20e91dbdcd8eb63d3c92ef0f4d0661a2d39db599a6e6",
+    "src/service/ingress_main.cpp": "aa9d02817da81391640ce58799cb818a790489a347ce24efeb51f40f5f4fe378",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -3979,7 +3991,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "b78c43185f00841ea05dbf141fdfe837d3b8f421d20cd518e16207349212689b",
+    "tools/serve_gateway/gateway.py": "9bf8f34fa1b9e341acd759b73773a1e447512b343aeeff078856590f2ca3e0c4",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -7251,7 +7263,25 @@
         "src/service/ingress_main.cpp"
       ]
     },
+    "POST /v1/realtime/sessions": {
+      "semantics": "Issue an owner-bound transcription credential from the flat beta session settings.",
+      "boundary": "Issue a short-lived owner-scoped conversation credential, flattening the validated effective native session and binding legacy sampling to its redemption.",
+      "evidence": [
+        "src/server/chat_realtime_secrets.cpp",
+        "src/server/realtime_transcription_protocol.cpp",
+        "src/server/realtime_client_secrets.cpp",
+        "src/service/ingress_main.cpp"
+      ]
+    },
     "OPTIONS /v1/realtime/transcription_sessions": {
+      "semantics": "Configured CORS preflight for issuing Realtime client credentials.",
+      "boundary": "Origin, method and request headers must be allowed by the deployment.",
+      "evidence": [
+        "src/service/ingress_cors.cpp",
+        "src/service/ingress_main.cpp"
+      ]
+    },
+    "OPTIONS /v1/realtime/sessions": {
       "semantics": "Configured CORS preflight for issuing Realtime client credentials.",
       "boundary": "Origin, method and request headers must be allowed by the deployment.",
       "evidence": [

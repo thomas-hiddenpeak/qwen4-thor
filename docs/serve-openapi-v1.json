@@ -11496,6 +11496,334 @@
         }
       }
     },
+    "/v1/realtime/sessions": {
+      "post": {
+        "operationId": "post_v1_realtime_sessions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "model": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/model"
+                    },
+                    "instructions": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/instructions"
+                    },
+                    "prompt": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/prompt"
+                    },
+                    "tools": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/tools"
+                    },
+                    "tool_choice": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/tool_choice"
+                    },
+                    "tracing": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/tracing"
+                    },
+                    "truncation": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/truncation"
+                    },
+                    "input_audio_format": {
+                      "enum": [
+                        "pcm16",
+                        "g711_ulaw",
+                        "g711_alaw"
+                      ]
+                    },
+                    "input_audio_transcription": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_198"
+                    },
+                    "input_audio_noise_reduction": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_508/properties/noise_reduction"
+                    },
+                    "turn_detection": {
+                      "anyOf": [
+                        {
+                          "$ref": "serve-application-v1.schema.json#/$defs/realtime_508/properties/turn_detection"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "const": "semantic_vad"
+                            },
+                            "eagerness": {
+                              "enum": [
+                                "auto",
+                                "low",
+                                "medium",
+                                "high"
+                              ]
+                            }
+                          },
+                          "additionalProperties": false,
+                          "required": [
+                            "type"
+                          ]
+                        }
+                      ]
+                    },
+                    "modalities": {
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 2,
+                      "uniqueItems": true,
+                      "items": {
+                        "enum": [
+                          "text",
+                          "audio"
+                        ]
+                      }
+                    },
+                    "output_audio_format": {
+                      "enum": [
+                        "pcm16",
+                        "g711_ulaw",
+                        "g711_alaw"
+                      ]
+                    },
+                    "temperature": {
+                      "type": "number",
+                      "minimum": 0.6,
+                      "maximum": 1.2,
+                      "default": 0.8
+                    },
+                    "speed": {
+                      "type": "number",
+                      "minimum": 0.25,
+                      "maximum": 1.5
+                    },
+                    "voice": {
+                      "$ref": "serve-application-v1.schema.json#/$defs/realtime_218/properties/voice"
+                    },
+                    "max_response_output_tokens": {
+                      "anyOf": [
+                        {
+                          "const": "inf"
+                        },
+                        {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 4096
+                        }
+                      ]
+                    },
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "object": {
+                      "const": "realtime.session"
+                    },
+                    "client_secret": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "expires_at": {
+                          "type": "integer"
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "expires_at"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "client_secret",
+                    "id",
+                    "object",
+                    "temperature",
+                    "modalities"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native API error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/model"
+                  },
+                  "instructions": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/instructions"
+                  },
+                  "prompt": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/prompt"
+                  },
+                  "tools": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/tools"
+                  },
+                  "tool_choice": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/tool_choice"
+                  },
+                  "tracing": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/tracing"
+                  },
+                  "truncation": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_187/properties/truncation"
+                  },
+                  "input_audio_format": {
+                    "enum": [
+                      "pcm16",
+                      "g711_ulaw",
+                      "g711_alaw"
+                    ]
+                  },
+                  "input_audio_transcription": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_198"
+                  },
+                  "input_audio_noise_reduction": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_508/properties/noise_reduction"
+                  },
+                  "turn_detection": {
+                    "anyOf": [
+                      {
+                        "$ref": "serve-application-v1.schema.json#/$defs/realtime_508/properties/turn_detection"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "const": "semantic_vad"
+                          },
+                          "eagerness": {
+                            "enum": [
+                              "auto",
+                              "low",
+                              "medium",
+                              "high"
+                            ]
+                          }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                          "type"
+                        ]
+                      }
+                    ]
+                  },
+                  "modalities": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 2,
+                    "uniqueItems": true,
+                    "items": {
+                      "enum": [
+                        "text",
+                        "audio"
+                      ]
+                    }
+                  },
+                  "output_audio_format": {
+                    "enum": [
+                      "pcm16",
+                      "g711_ulaw",
+                      "g711_alaw"
+                    ]
+                  },
+                  "temperature": {
+                    "type": "number",
+                    "minimum": 0.6,
+                    "maximum": 1.2,
+                    "default": 0.8
+                  },
+                  "speed": {
+                    "type": "number",
+                    "minimum": 0.25,
+                    "maximum": 1.5
+                  },
+                  "voice": {
+                    "$ref": "serve-application-v1.schema.json#/$defs/realtime_218/properties/voice"
+                  },
+                  "max_response_output_tokens": {
+                    "anyOf": [
+                      {
+                        "const": "inf"
+                      },
+                      {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 4096
+                      }
+                    ]
+                  },
+                  "client_secret": {
+                    "type": "object",
+                    "properties": {
+                      "expires_after": {
+                        "type": "object",
+                        "properties": {
+                          "anchor": {
+                            "const": "created_at"
+                          },
+                          "seconds": {
+                            "type": "integer",
+                            "minimum": 10,
+                            "maximum": 7200
+                          }
+                        },
+                        "additionalProperties": false,
+                        "required": []
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": []
+                  }
+                },
+                "additionalProperties": false,
+                "required": []
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/realtime/calls": {
       "post": {
         "operationId": "post_v1_realtime_calls",

@@ -64,6 +64,11 @@ ObjectReply RealtimeClientSecrets::Issue(RealtimeSecretIssuer issuer,
                                          RealtimeSecretTime now) {
   const auto owner = issuer.owner;
   if (!owner.empty() && !ValidClientId(owner)) return Unauthorized();
+  if (issuer.legacy_temperature &&
+      !(request.Find("session") &&
+        request.Find("session")->GetString("type") == "realtime" &&
+        *issuer.legacy_temperature >= 0.6 && *issuer.legacy_temperature <= 1.2))
+    return Error(400, "invalid_request_error", "Invalid Realtime temperature");
   ChatPlanError error;
   auto valid = ValidateRealtimeWireShape(
       request, RealtimeShape::kClientSecretCreate, &error, "body");
@@ -150,6 +155,7 @@ ObjectReply RealtimeClientSecrets::Issue(RealtimeSecretIssuer issuer,
   entry->second.owner.swap(scope);
   entry->second.settings.swap(settings);
   entry->second.expires = expires;
+  entry->second.legacy_temperature = issuer.legacy_temperature;
   bytes_ += entry->second.settings.capacity();
   return reply;
 }
@@ -177,6 +183,7 @@ ObjectReply RealtimeClientSecrets::Resolve(std::string_view token,
       return Unauthorized();
     }
     next.owner = it->second.owner;
+    next.legacy_temperature = it->second.legacy_temperature;
     settings = it->second.settings;
   }
   if (!io::ParseJson(settings, &next.session, true,

@@ -16517,9 +16517,18 @@
     "default_and_registered_failover": "evidence/serve-live-default-20261123/README.md",
     "sideband_metrics_and_soak_delivery": "evidence/serve-live-stability-handoff-20261123/README.md",
     "legacy_transcription_session_issuance": {
-      "status": "candidate_business_pass",
+      "status": "rev458_delivered",
       "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/transcription.json",
-      "remaining_methods": 98
+      "remaining_methods": 98,
+      "release": "docs/evidence/serve-agent-workspaces-20261124/subagent-delivery.json"
+    },
+    "legacy_conversation_session_issuance": {
+      "status": "candidate_business_pass",
+      "evidence": "docs/evidence/serve-realtime-legacy-sessions-20261124/conversation.json",
+      "remaining": [
+        "legacy_beta_websocket_wire",
+        "qualified_delivery"
+      ]
     }
   },
   "responses_beta_selector_20261123": {

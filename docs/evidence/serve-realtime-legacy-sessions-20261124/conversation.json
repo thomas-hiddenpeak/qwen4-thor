@@ -1,0 +1,92 @@
+{
+  "status": "CANDIDATE_BUSINESS_PASS",
+  "engine": "c9bdd8e931804f3ed5b1795b7f4891eac52529df069af604c9df822cf048c0ff",
+  "ingress": "ead67312a21834b208fd6f8f9eca7c86d79b1621c479ac1c42e04b66c30d4670",
+  "sdk": {
+    "sdk": "7.47.0",
+    "issued": 200,
+    "requested_ttl": 15,
+    "recursive_issue": 401,
+    "models": 401,
+    "invalid_temperature": 400,
+    "invalid_expiry": 400,
+    "temperature": 0.75,
+    "max_output_tokens": 32,
+    "socket_answer": "42",
+    "tokens": 109,
+    "independent_chat": "42",
+    "driver_sha256": "394898fe515ee295de40bd40d68d3102f6190f606d91e878dbc662f02ed5c300"
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 35.084,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "compiled_sources": "c8f38c305501c85c4da2632ce969c6acea8d78aed42cde79885df76550671029",
+  "audit": {
+    "required_methods": 231,
+    "declared": 134,
+    "exact_success_declarations": 134,
+    "missing_declaration": 97,
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "issued": "0a88b4bf00549630a193c6b2ce6036e32abc3c32fe84bebdeea1a296d613cd0a"
+    }
+  },
+  "scope": "Legacy session creation using the pinned beta SDK, native GA WSS redemption and a separate Chat. Legacy beta WebSocket event dialect and alternate audio generation were not exercised by this case.",
+  "targeted_cpu": 6,
+  "contract_checks": 20,
+  "gateway_wire_checks": 2,
+  "lease": "COMPLETED",
+  "artifacts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-sdk-business-01/plan.json",
+      "sha256": "f0ee30f7c3fab05f95e930151b0faee07031d72dea01e1a36c619af8fe2e0ebd"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-sdk-business-01/result.json",
+      "sha256": "22a7b5b6f6b6004b47804f2bd7bcc706096f4792700fedd3a29f958daf2b972e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-sdk-business-01/create/sdk-result.json",
+      "sha256": "fb866b07500825736a055af51a9a59378deb8d9573809901787aa7ac00a65747"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-sdk-lease-01/exit.json",
+      "sha256": "cf5080d2d3aaf4472ee3c5424aed3e6014bdecc61dfabbd7e643d501a5e53533"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-cpu-01.log",
+      "sha256": "5793e21a9d5327b8c50ff2346c2c85422fdecfa13f47b483d38a52ce3762731e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-contract-02.log",
+      "sha256": "15af85451b4abb64a4cf17f245cb5f81ee697120472267aa6b1230492669b503"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-native-wire-01.log",
+      "sha256": "9888b642fa6779be1f9fe4a394446d907e3d9b498321bcaaef1fb72747acdbab"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-nginx-wire-01.log",
+      "sha256": "bb9b81c666ca92a1571eaf68797d277b2a9ba8c574f2513d34e88f20379219af"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-audit-02.json",
+      "sha256": "96d07ecf2921940c17165526176e98a903fec2b0a0196e2c4598df75d566f560"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/conversation-methods-02.json",
+      "sha256": "bb9894496a839ea5d798a5fb019ece1a051db860a43f1b55c15c04d890318d49"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/legacy_conversation_business.py",
+      "sha256": "184331971ff28ea7a65f5de0ad671b7cd5ec3ea620dc8bc60a0832c3693aeb48"
+    }
+  ]
+}

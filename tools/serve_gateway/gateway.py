@@ -42,6 +42,7 @@ APPLICATION_ROUTES = [
     ('POST', '/v1/live/sessions', 'data'),
     ('POST', '/v1/realtime/client_secrets', 'data'),
     ('POST', '/v1/realtime/transcription_sessions', 'data'),
+    ('POST', '/v1/realtime/sessions', 'data'),
     ('POST', '/v1/realtime/calls', 'data'),
     ('POST', '/v1/live/sessions/{session_id}/accept', 'data'),
     ('POST', '/v1/realtime/calls/{call_id}/accept', 'data'),
@@ -368,7 +369,8 @@ def realtime_issuer_maps(clients):
     return ('  map $http_authorization $q4t_issuer_digest {\n    default "";\n'+rows+
             '\n  }\n  map "$request_method:$request_uri" $q4t_realtime_issuer {\n'
             '    default "";\n    "POST:/v1/realtime/client_secrets" "Q4T-Issuer $q4t_issuer_digest";\n'
-            '    "POST:/v1/realtime/transcription_sessions" "Q4T-Issuer $q4t_issuer_digest";\n  }')
+            '    "POST:/v1/realtime/transcription_sessions" "Q4T-Issuer $q4t_issuer_digest";\n'
+            '    "POST:/v1/realtime/sessions" "Q4T-Issuer $q4t_issuer_digest";\n  }')
 
 
 def tunnel_headers():

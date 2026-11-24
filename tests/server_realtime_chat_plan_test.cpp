@@ -54,6 +54,20 @@ PromptSnapshot Prompt(Json input) {
 }
 }  // namespace
 
+Q4T_TEST(realtime_legacy_temperature_reaches_native_generation_plan) {
+  Fixture f;
+  for (const double value : {0.6, 0.85, 1.2}) {
+    Q4T_CHECK(PlanRealtimeChat(f.settings, Object(), Array({Message()}),
+        f.config, &f.plan, &f.error, nullptr, false, nullptr, false, nullptr, value));
+    Q4T_CHECK(f.plan.generation.chat.sampling.temperature == value);
+  }
+  auto invalid = f.settings;
+  Set(&invalid, "temperature", Number(1));
+  Q4T_CHECK(!PlanRealtimeChat(invalid, Object(), Array({Message()}),
+                              f.config, &f.plan, &f.error));
+  return true;
+}
+
 Q4T_TEST(realtime_chat_defaults_and_per_response_override_are_effective) {
   Fixture f;
   Q4T_CHECK(f.Build(Parse(R"({"instructions":"use this instruction",

@@ -234,5 +234,16 @@
         "result": "SUCCESS"
       }
     ]
+  },
+  "issued_api_methods": {
+    "declared": 133,
+    "required_methods": 231,
+    "missing_declaration": 98,
+    "exact_success_declarations": 133,
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "issued": "d5d90b170da0b6fd21bc5e727abfb3afac3f00a12af51b5c4dddd0eeabe3e69b"
+    }
   }
 }

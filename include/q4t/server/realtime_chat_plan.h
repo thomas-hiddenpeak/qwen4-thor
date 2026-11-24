@@ -24,7 +24,8 @@ Status PlanRealtimeChat(const io::Json& settings, const io::Json& response,
                         bool native_input = false,
                         const RealtimeMcpContext* mcp = nullptr,
                         bool mcp_definitions_only = false,
-                        const io::Json* native_mcp_items = nullptr);
+                        const io::Json* native_mcp_items = nullptr,
+                        std::optional<double> legacy_temperature = std::nullopt);
 // Complete an envelope using owned, resolved content. File preparation must
 // preserve the outer item ordering and count, so history indices remain valid.
 // The media proof is internal and never parsed from a client's JSON.

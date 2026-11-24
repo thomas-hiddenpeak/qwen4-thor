@@ -633,6 +633,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/websocket.cpp
   src/server/realtime_duplex_input.cpp
   src/server/realtime_conversation_input.cpp
+  src/server/realtime_legacy_credentials.cpp
   src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_session_pump.cpp
@@ -1110,6 +1111,7 @@ if(Q4T_BUILD_TESTS)
     src/server/websocket.cpp
     src/server/realtime_duplex_input.cpp
     src/server/realtime_conversation_input.cpp
+    src/server/realtime_legacy_credentials.cpp
     src/server/realtime_transcription_protocol.cpp
   src/server/realtime_transcription_pump.cpp
   src/server/realtime_session_pump.cpp
@@ -1367,7 +1369,8 @@ if(Q4T_BUILD_TESTS)
   target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
   q4t_link_structured_output(q4t_host_tests)
   q4t_link_native_crypto(q4t_host_tests)
-q4t_link_native_documents(q4t_host_tests)
+  q4t_link_native_documents(q4t_host_tests)
+  q4t_link_native_programmatic(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE include)
   target_include_directories(q4t_host_tests SYSTEM PRIVATE third_party)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})

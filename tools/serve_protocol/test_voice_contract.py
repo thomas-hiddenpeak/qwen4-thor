@@ -97,6 +97,18 @@ class VoiceContract(unittest.TestCase):
         for invalid in ({'session':{'type':'realtime'}},{'type':'live'},None):
             self.assertFalse(validator.is_valid(invalid))
 
+    def test_legacy_conversation_credential_uses_sampling_and_relative_expiry(self):
+        bundled = standalone_openapi(self.spec)
+        op = bundled['paths']['/v1/realtime/sessions']['post']
+        schema = op['requestBody']['content']['application/json']['schema']
+        wire = Draft202012Validator({'components':bundled['components'], **schema})
+        self.assertFalse(op['requestBody']['required'])
+        self.assertTrue(wire.is_valid(dict(modalities=['text','audio'], temperature=.75,
+            input_audio_format='g711_ulaw', client_secret={'expires_after':{'seconds':15}})))
+        for bad in ({'temperature':.59}, {'temperature':1.21}, {'modalities':['text','text']},
+                    {'client_secret':{'expires_at':{'seconds':15}}}, {'client_secret':{'value':'x'}}):
+            self.assertFalse(wire.is_valid(bad), bad)
+
     def test_legacy_transcription_credentials_bind_format_and_expiry(self):
         op = self.paths['/v1/realtime/transcription_sessions']['post']
         bundled = standalone_openapi(self.spec)

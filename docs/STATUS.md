@@ -9,6 +9,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 PR #77 的两项 host-contracts 已通过，六项子 Agent 查询合入 main（`5c9e531612`）。默认发行已从 rev456 更新至 rev458，登记独立回退包；发布时保持 STOPPED，原有 13 份客户与恢复记录的内容未变。模型退出与网关异常两次业务短验各启动两代模型，子 Agent 的历史在替换后可读，父会话在原 4096 输入配额内取回 457。工具回填返回版本号 442 及当时的 UTC，独立 Chat 答 42。原先一次工具回填得到无关答案，已保留原文与真实输入。24 小时运行计划已通过预检，实跑由用户安排。[发行回执](evidence/serve-agent-workspaces-20261124/subagent-delivery.json)
 
+顶层 CMake 的 q4t_host_tests 已恢复可构建。该目标编译 program_vm.cpp 时遗漏了项目已有的 QuickJS 目标，导致缺少 quickjs.h。已对齐独立 tests/host 构建的依赖声明，顶层构建成功，6 项受影响的 Realtime 用例全部通过。 下一步继续旧版实时协议接入。[构建回执](evidence/serve-realtime-legacy-sessions-20261124/host-build.json)
+
+新候选已通过旧版 POST /v1/realtime/sessions 签发和真实 WSS 对话。官方 Node SDK 7.47.0 领取 15 秒凭据，指定温度 0.75、输出上限 32，原生会话返回 42，总用量 109 tokens，独立 Chat 返回 42。存储和生成计划用例验证温度实际传给模型；临时凭据再次签发、读取模型列表均为 401。6 项 CPU 用例、20 项协议及网关检查、2 项真实网关检查通过。一次启动 35.084 秒。该候选覆盖 134/231 个必做 HTTP 方法的成功状态声明；仍需验收旧版 WebSocket 事件及发行。[验收](evidence/serve-realtime-legacy-sessions-20261124/conversation.json)
+
 主、轻两套配置已验证修复后的同一二进制。各启动一次模型，分别用时 75.2、147.2 秒。子 Agent 在主配置读出真实版本号 456，轻配置回读同一历史并答出 457。另一个客户读取均为 404，独立 Chat 均答 42。轻配置工具回填同时返回 442 和当时的 UTC 时间。保存的非零输出下标回放中，工具项在 0，答案在 1。30 项迁移检查通过。下一步验证两个封包的进程替换与接管。[配置与回放](evidence/serve-agent-workspaces-20261124/subagent-quota-profiles.json)
 
 子 Agent 归属检查已分别在真实原生网关与可选 nginx 验证。两个入口对其他客户都返回 404。原生入口先拒绝外部传入的身份头（400，后端收到零次请求），nginx 覆盖该头并按密钥对应的客户转发，后端返回 404。修正 CI 对两个入口共用同一状态码的预期，四项 CPU 网络检查通过。 下一步复核远端检查。[回执](evidence/serve-agent-workspaces-20261124/subagent-gateway-policies.json)
