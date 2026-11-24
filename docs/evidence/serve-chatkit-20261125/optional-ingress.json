@@ -64,5 +64,14 @@
     "reviewed_sources": 1344,
     "mutation_checks": 40,
     "inventory_current": true
+  },
+  "resource_control_ci": {
+    "job": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45477075393/job/138740008012",
+    "first_error": "startup deadline exceeded before OOM classification in the 100 ms CPU fixture",
+    "fix": "2 s launch tolerance for the OOM scenario, assert exactly one backend identity, keep actual OOM classification/cleanup and no-restart assertions",
+    "targeted_cases": 15,
+    "delayed_observer_seconds": 0.15,
+    "delayed_observer": "PASS",
+    "production_changes": 0
   }
 }

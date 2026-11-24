@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #111 的远端源码审计通过后，真实子进程 OOM 测试在 100 毫秒的启动时限内提前超时。该用例现使用 2 秒启动时限，并断言只观察到一个进程。15 项资源隔离检查通过；将观测人为延迟 150 毫秒后仍得到 host_resource_oom、零重启和完整清理。干净工作树的夹具会创建所需构建目录。下一步核对更新后的远端两项检查。[复验记录](evidence/serve-chatkit-20261125/optional-ingress.json)
+
 真实模型从项目记录回答 157 后，同一行的两个文本与两个 Python 评分分别得到 6/7、1、0.75、0。最后一项返回 NaN，明确记录无效且未通过。四份官方 SDK 原始响应通过 HTTP 规范验证，跨客户为 404，独立 Chat 答 42。设备一次启动用时 36.258 秒。下一步接入模型标签与数值评分及其持久化。[设备验收](evidence/serve-evals-20261125/graders.json)
 
 Evals 已实现 9 种有界文本相似度指标，并复用隔离 CPython 工作进程执行 grade(sample, item)。重复 n-gram、Unicode 字符、空输入与计算上限通过针对性检查。独立 RapidFuzz、NLTK 和 Google rouge-score 对照的分数误差小于 1e-12。Python 的 0.75 部分分保留，异常、非数值和 NaN 明确标记无效，得零分。下一步验证真实数据行、HTTP 逐条分数和独立客户。[数值与隔离验证](evidence/serve-evals-20261125/graders.json)
