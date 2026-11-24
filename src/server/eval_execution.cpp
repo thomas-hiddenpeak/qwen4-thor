@@ -1,5 +1,6 @@
 #include "eval_run_state.h"
 
+#include <algorithm>
 #include <ctime>
 
 #include "eval_grading.h"
@@ -184,7 +185,17 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
     return ReleaseSampling(objects, access, owner ? &owner->jobs : nullptr, write);
   auto& totals = Field(resource, "per_testing_criteria_results");
   const auto* criteria = write.data.GetArray("criteria");
-  if (!criteria) return InvalidRecord();
+  const auto* data_source = resource.Find("data_source");
+  if (!criteria || !data_source) return InvalidRecord();
+  // A frozen rate snapshot belongs to the retiring service generation. Allow
+  // cancellation/deletion above, but leave model work for the next owner.
+  if (owner && owner->clients.RatesFrozen() &&
+      (data_source->GetString("type") != "jsonl" ||
+       std::any_of(criteria->array.begin(), criteria->array.end(), ModelCriterion))) {
+    ObjectReply waiting;
+    waiting.http_status = 202;
+    return waiting;
+  }
   if (status == "queued") {
     totals = Array();
     for (const auto& grader : criteria->array)
@@ -196,8 +207,7 @@ ObjectReply AdvanceRun(ObjectStore& objects, const StateAccess& access,
     Set(&write.data, "resource", std::move(resource));
     return objects.Execute(write, access.deadline, access.cancelled);
   }
-  const auto* data_source = resource.Find("data_source");
-  const auto* source = data_source ? data_source->Find("source") : nullptr;
+  const auto* source = data_source->Find("source");
   const auto index = write.data.GetInt("row", -1);
   if (!source || index < 0) return InvalidRecord();
   Json row;

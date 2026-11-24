@@ -297,7 +297,8 @@ ObjectReply SampleRow(ObjectStore& objects, const StateAccess& access,
     const bool interrupted =
         (state == "cancelled" && data->GetBool("eval_shutdown")) ||
         (state == "failed" &&
-         error.GetString("code") == "background_execution_interrupted");
+         (error.GetString("code") == "background_execution_interrupted" ||
+          error.GetString("code") == "service_draining"));
     if (interrupted && request && ReplayableText(*request) &&
         !write.data.Has("interruption_retries")) {
       // Retain the frozen input, seed, budget and advanced JSONL cursor.
