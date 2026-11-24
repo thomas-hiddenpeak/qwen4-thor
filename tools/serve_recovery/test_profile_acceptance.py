@@ -80,7 +80,7 @@ class QualificationDriverTests(unittest.TestCase):
     def test_commands_preserve_actual_selected_capacity_and_private_state(self):
         profile = capacity.normalize(dict(version=1))
         base = dict(model_dir='/readonly/model', client_policy={}, mcp_policy={},
-            web_policy={}, settings=dict(
+            web_policy={}, webhook_policy={}, settings=dict(
             profile=profile, port=18162, operations_port=18163,
             application_state=dict(package.APPLICATION_LIMITS,
                 profile='q4t-objects-v1', directory=''),
@@ -101,6 +101,7 @@ class QualificationDriverTests(unittest.TestCase):
                 ('--client-policy-file', '/private/qualification/client-policy.json'),
                 ('--mcp-policy-file', '/private/qualification/mcp-policy.json'),
                 ('--web-policy-file', '/private/qualification/web-policy.json'),
+                ('--webhook-policy-file', '/private/qualification/webhook-policy.json'),
                 ('--embedding-model-dir', '/readonly/embedding'),
                 ('--operations-port', '19070')]:
                 self.assertEqual(args.count(flag), 1)

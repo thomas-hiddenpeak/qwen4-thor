@@ -231,6 +231,7 @@ def main():
     p.add_argument('--file-input-policy', type=Path)
     p.add_argument('--mcp-policy', type=Path)
     p.add_argument('--web-policy', type=Path)
+    p.add_argument('--webhook-policy', type=Path)
     p.add_argument('--served-model-name')
     p.add_argument('--model-alias', action='append', default=[])
     pkg.add_application_options(p)
@@ -265,6 +266,7 @@ def main():
                              file_input_policy=args.file_input_policy,
                              mcp_policy=args.mcp_policy,
                              web_policy=args.web_policy,
+                             webhook_policy=args.webhook_policy,
                              sip_trunks_file=args.sip_trunks_file,
                              live_webrtc_address=args.live_webrtc_address,
                              live_workers_dir=args.live_workers_dir,

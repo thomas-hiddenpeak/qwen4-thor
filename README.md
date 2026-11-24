@@ -449,6 +449,23 @@ Realtime会话也已接通MCP：`session.tools`和`response.tools`使用真实
 [公开wire schema](docs/serve-mcp-tunnel-v1.schema.json)描述接入合同。
 具体云提供方原生适配及剩余兼容任务继续按总计划实现。
 
+## 原生 Webhook 订阅
+
+客户端可通过 OpenAI SDK 的 `webhooks` 资源订阅后台 Responses 和 Batch 的终态。
+部署方用 `q4t webhook-policy-check FILE` 检查出站策略，运行时用
+`q4t serve --webhook-policy-file FILE` 或在 `service prepare` 时传入
+`--webhook-policy FILE`。策略文件使用 0600 或 0400 权限，例如：
+
+```json
+{"version":1,"network":{"public_networks":false,"allowed_hosts":["events.example.internal"],"allowed_networks":["10.2.0.0/16"],"ports":[443],"timeout_ms":3000}}
+```
+
+订阅方应验签，按 `webhook-id` 去重，成功接收后返回 2xx。发送器仅用 HTTPS，
+保留已持久化的待投递记录，可在进程恢复后重试。重试窗口取 72 小时与对象保留期的较短者。
+运维可在 `/v1/config` 的 `webhook_delivery` 查看确认、重试与容量丢失计数。
+部署方可以省略出站策略继续提供推理服务。默认发行与候选验收进度见
+[当前状态](docs/STATUS.md)。
+
 ## 原生网页搜索
 
 默认rev234已交付原生网页搜索，实际主线合并状态见[STATUS](docs/STATUS.md)。Chat通过

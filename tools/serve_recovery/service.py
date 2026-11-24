@@ -358,6 +358,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
     prepare.add_argument('--file-input-policy', type=Path)
     prepare.add_argument('--mcp-policy', type=Path)
     prepare.add_argument('--web-policy', type=Path)
+    prepare.add_argument('--webhook-policy', type=Path)
     prepare.add_argument('--embedding-model-dir', type=Path)
     prepare.add_argument('--tts-model-dir', type=Path)
     prepare.add_argument('--tts-base-model-dir', type=Path)
@@ -479,6 +480,7 @@ def main(argv=None, *, package=None, digest=None, workspace=None):
                 file_input_policy=args.file_input_policy,
                 mcp_policy=args.mcp_policy,
                 web_policy=args.web_policy,
+                webhook_policy=args.webhook_policy,
                 sip_trunks_file=args.sip_trunks_file,
                 live_webrtc_address=args.live_webrtc_address,
                 live_workers_dir=args.live_workers_dir,

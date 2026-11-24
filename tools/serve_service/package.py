@@ -720,6 +720,11 @@ def mcp_policy_binding(binary, path, raw):
         'q4t-mcp-deployment-policy-v1', 'MCP deployment policy')
 
 
+def webhook_policy_binding(binary, path, raw):
+    return _native_policy_binding(binary, path, raw, 'webhook-policy-check',
+        'q4t-webhook-delivery-policy-v1', 'webhook delivery policy')
+
+
 def web_policy_binding(binary, path, raw):
     return _native_policy_binding(binary, path, raw, 'web-policy-check',
         'q4t-web-deployment-policy-v1', 'web search deployment policy',
@@ -734,7 +739,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             embedding_model_dir=None, mcp_policy=None, web_policy=None,
             asr_model_dir=None, asr_limits=None, asr_auxiliary=None,
             tts_model_dir=None, tts_limits=None, tts_base_model_dir=None,
-            sip_trunks_file=None, live_webrtc_address=None, live_workers_dir=None):
+            sip_trunks_file=None, live_webrtc_address=None, live_workers_dir=None,
+            webhook_policy=None):
     check_python_runtime()
     repository = ROOT if repository is None else Path(repository).resolve(strict=True)
     profile = None
@@ -792,6 +798,10 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     if mcp_policy is not None:
         from tools.serve_gateway import client_policy as cp
         mcp_raw = cp.read_private(mcp_policy)
+    webhook_raw, webhook_binding = None, None
+    if webhook_policy is not None:
+        from tools.serve_gateway import client_policy as cp
+        webhook_raw = cp.read_private(webhook_policy)
     web_raw, web_binding = None, None
     if web_policy is not None:
         from tools.serve_gateway import client_policy as cp
@@ -852,6 +862,11 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
                 .get('policy_profile') == 'q4t-web-deployment-policy-v1',
                 'accepted engine lacks native web search deployment policy')
         web_binding = web_policy_binding(binary, web_policy, web_raw)
+    if webhook_raw is not None:
+        require(read(declarations/'capabilities.json').get('webhooks', {})
+                .get('policy_profile') == 'q4t-webhook-delivery-policy-v1',
+                'accepted engine lacks native webhook delivery policy')
+        webhook_binding = webhook_policy_binding(binary, webhook_policy, webhook_raw)
     observed_state = metadata.get('observed_configuration', {}).get('application_state')
     if observed_state is not None:
         require(type(observed_state) is dict and
@@ -927,11 +942,12 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
             stream.write(mcp_raw)
         (target/'mcp-policy.json').chmod(0o400)
         names.append('mcp-policy.json')
-    if web_raw is not None:
-        with (target/'web-policy.json').open('xb') as stream:
-            stream.write(web_raw)
-        (target/'web-policy.json').chmod(0o400)
-        names.append('web-policy.json')
+    for name, raw in (('web-policy.json', web_raw), ('webhook-policy.json', webhook_raw)):
+        if raw is not None:
+            with (target/name).open('xb') as stream:
+                stream.write(raw)
+            (target/name).chmod(0o400)
+            names.append(name)
     python = Path(sys.executable).resolve()
     manifest = dict(version=3, repository=str(repository), model_dir=str(model),
         model_files=model_files, protocol_sha256=protocol, settings=config,
@@ -950,6 +966,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         manifest['mcp_policy'] = mcp_binding
     if web_binding is not None:
         manifest['web_policy'] = web_binding
+    if webhook_binding is not None:
+        manifest['webhook_policy'] = webhook_binding
     manifest['release_declarations'] = metadata['release_declarations']['profile']
     manifest['third_party_notices'] = dict(profile='q4t-notices-v1', files=list(NOTICE_FILES))
     if policy_raw is not None:
@@ -1053,6 +1071,8 @@ def verify(package, digest):
         expected.add('mcp-policy.json')
     if 'web_policy' in manifest:
         expected.add('web-policy.json')
+    if 'webhook_policy' in manifest:
+        expected.add('webhook-policy.json')
     require(set(manifest['files']) == expected, 'package inventory differs')
     for name, wanted in manifest['files'].items():
         path = package/name
@@ -1108,6 +1128,14 @@ def verify(package, digest):
         require(manifest['web_policy'] == web_policy_binding(
             package/'q4t', web_path, cp.read_private(web_path)),
             'web search deployment policy binding differs')
+    if 'webhook_policy' in manifest:
+        from tools.serve_gateway import client_policy as cp
+        require(read(package/'declarations/capabilities.json').get('webhooks', {})
+                .get('policy_profile') == 'q4t-webhook-delivery-policy-v1',
+                'engine webhook delivery declaration absent')
+        path = package/'webhook-policy.json'
+        require(manifest['webhook_policy'] == webhook_policy_binding(
+            package/'q4t', path, cp.read_private(path)), 'webhook delivery policy binding differs')
     if 'application_state' in config:
         require(metadata.get('observed_configuration', {}).get('application_state', {})
             .get('profile') == 'q4t-objects-v1', 'application state engine declaration absent')
@@ -1310,6 +1338,8 @@ def command(package, manifest, *, state_directory=None):
         args += ['--mcp-policy-file', str(Path(package)/'mcp-policy.json')]
     if 'web_policy' in manifest:
         args += ['--web-policy-file', str(Path(package)/'web-policy.json')]
+    if 'webhook_policy' in manifest:
+        args += ['--webhook-policy-file', str(Path(package)/'webhook-policy.json')]
     if cfg.get('operations_port', 0):
         args += ['--operations-port', str(cfg['operations_port'])]
     if 'model_names' in cfg:

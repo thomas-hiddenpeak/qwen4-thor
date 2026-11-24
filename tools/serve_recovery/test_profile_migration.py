@@ -96,6 +96,21 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     live.format_for(bad)
 
+    def test_webhook_extension_preserves_retry_and_deployment_boundaries(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(agent_automations=live.AUTOMATION_CAPABILITY)
+        new = dict(old,webhooks=live.WEBHOOK_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old,new))
+        self.assertFalse(migration.explicit_extension(new,old))
+        self.assertFalse(migration.explicit_extension({},new))
+        for change in (dict(https_only=False),dict(request_override=True),
+                       dict(delivery='exactly_once'),dict(max_retry_seconds=0)):
+            with self.subTest(change=change):
+                candidate = dict(new,webhooks=dict(live.WEBHOOK_CAPABILITY,**change))
+                self.assertFalse(migration.explicit_extension(old,candidate))
+                with self.assertRaises(ValueError):
+                    live.format_for(candidate)
+
     def test_automation_requires_both_owned_tool_and_qualified_translation(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(agent_sessions=live.MANAGED_TOOL_SESSION,

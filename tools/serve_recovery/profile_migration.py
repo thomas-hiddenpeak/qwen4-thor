@@ -526,6 +526,11 @@ def extends(previous, target):
 
 def explicit_extension(previous, target):
     """Compare qualified semantics when a declared pending capability ships."""
+    if 'webhooks' not in previous and 'webhooks' in target:
+        from tools.serve_recovery import profile_live_reuse as live
+        if (not package.same_json(target['webhooks'], live.WEBHOOK_CAPABILITY) or
+                not package.same_json(previous.get('agent_automations'), live.AUTOMATION_CAPABILITY)):
+            return False
     if 'agent_automations' not in previous and 'agent_automations' in target:
         from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['agent_automations'], live.AUTOMATION_CAPABILITY) or

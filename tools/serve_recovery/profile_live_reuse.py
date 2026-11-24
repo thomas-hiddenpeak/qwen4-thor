@@ -23,6 +23,16 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+WEBHOOK_RECORD = 'q4t-profile-business-v41'
+WEBHOOK_FORMAT = 'q4t-webhook-source-v1'
+WEBHOOK_CAPABILITY = dict(policy_profile='q4t-webhook-delivery-policy-v1',
+    endpoint='/v1/webhook_endpoints', event_types='/v1/webhook_event_types',
+    delivery='at_least_once', max_retry_seconds=259200, https_only=True,
+    request_override=False, core_readiness_dependency=False)
+WEBHOOK_REVIEWED = {
+    'primary': 'fb46c5e00a4d9a2d6cfa59e781ebe08fd8d684d8a51c3b9cb12474c5592726e9',
+    'light': 'af923ee17d2cef62d6eefee8033a69b4d3fa4b6fb6400b49568c9cd6fa0b1fb1',
+}
 AUTOMATION_REVIEWED = {
     'primary': '39378d4ab67df2449d4f0953faf466c3be2d2a413b74c8abe57b79417aafa1d4',
     'light': 'ded04edfd79a1cd60454ae157a47c0f62ed02ddc81b85e563cfe8bc8b613cede',
@@ -183,7 +193,8 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 MANAGED_TOOL_RECORD: MANAGED_TOOL_FORMAT, SUBAGENT_RECORD: SUBAGENT_FORMAT,
                 TRANSLATION_RECORD: TRANSLATION_FORMAT, ASSISTANTS_RECORD: ASSISTANTS_FORMAT,
                 SKILLS_RECORD: SKILLS_FORMAT, CODE_RECORD: CODE_FORMAT,
-                TRANSLATOR_RECORD: TRANSLATOR_FORMAT, AUTOMATION_RECORD: AUTOMATION_FORMAT}
+                TRANSLATOR_RECORD: TRANSLATOR_FORMAT, AUTOMATION_RECORD: AUTOMATION_FORMAT,
+                WEBHOOK_RECORD: WEBHOOK_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -205,6 +216,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '5c530a6c2de1a1af191645ac0b0c51ee1af38ceacfa36bf6f26fa21d5168abb5':
+        'ac71057cdb01b81bb3f5ba5509fe1f7e16821ac7e385676977bfe7c8be7b9f46',
     '97196543bab99ad9654f62e9ff56d591580d951abfe54d9336c0b42ada918264':
         'f06eb62270ee8efa305cda7aa7ac6b60780ba790efdb1a545c6bf18861b9a06a',
     '315bf9fd8172b37e40c0ad7de0e9ae46a98db4f2c6d9914a59306032ff43aa44':
@@ -268,6 +281,13 @@ def automation_session():
 
 
 def format_for(capabilities):
+    if 'webhooks' in capabilities:
+        previous = dict(capabilities)
+        declaration = previous.pop('webhooks')
+        ledger.require(ledger.canonical(declaration) == ledger.canonical(WEBHOOK_CAPABILITY)
+                       and format_for(previous) == AUTOMATION_RECORD,
+                       'invalid webhook declaration or predecessor')
+        return WEBHOOK_RECORD
     if 'agent_automations' in capabilities:
         previous = dict(capabilities)
         declaration = previous.pop('agent_automations')
@@ -401,20 +421,26 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] == AUTOMATION_RECORD:
+    if value['format'] in (WEBHOOK_RECORD, AUTOMATION_RECORD):
+        webhook = value['format'] == WEBHOOK_RECORD
+        previous_format = AUTOMATION_RECORD if webhook else TRANSLATOR_RECORD
+        reviewed = AUTOMATION_REVIEWED if webhook else TRANSLATOR_REVIEWED
+        added = 'webhooks' if webhook else 'agent_automations'
+        changed = {'protocol_source_sha256'} if webhook else {'protocol_source_sha256','agent_sessions'}
+        receipt = 'webhook-handoff.json' if webhook else 'automation-handoff.json'
         proofs = value['business']['live']['evidence_sha256']
         old = prior['business']['live']['evidence_sha256']
-        ledger.require(prior['format'] == TRANSLATOR_RECORD and
-                       record_hash(prior) == TRANSLATOR_REVIEWED.get(prior['profile']) and
-                       previous['added'] == ['agent_automations'] and
-                       set(previous['capabilities']) == {'protocol_source_sha256','agent_sessions'} and
-                       format_for(after) == AUTOMATION_RECORD and
-                       old.keys() | {'automation-handoff.json'} == proofs.keys() and
+        ledger.require(prior['format'] == previous_format and
+                       record_hash(prior) == reviewed.get(prior['profile']) and
+                       previous['added'] == [added] and
+                       set(previous['capabilities']) == changed and
+                       format_for(after) == value['format'] and
+                       old.keys() | {receipt} == proofs.keys() and
                        all(proofs[k] == v for k,v in old.items() if k not in
                            ('configuration.wire','capabilities.json','core-after.wire',
                             'observation.json','result.json','cleanup.json','plan.json')) and
-                       ledger.HASH.fullmatch(proofs['automation-handoff.json']),
-                       'automation qualification needs the issued profile and pending delivery handoff')
+                       ledger.HASH.fullmatch(proofs[receipt]),
+                       'qualification needs the issued profile and pending delivery handoff')
     elif value['format'] == TRANSLATOR_RECORD:
         proofs = value['business']['live']['evidence_sha256']
         old = prior['business']['live']['evidence_sha256']
@@ -621,19 +647,22 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] == AUTOMATION_RECORD:
-        ledger.require(record_hash(value) == AUTOMATION_REVIEWED.get(value['profile']),
-                       'automation profile differs from the qualified queue handoff')
+    if value['format'] in (WEBHOOK_RECORD, AUTOMATION_RECORD):
+        webhook = value['format'] == WEBHOOK_RECORD
+        current = WEBHOOK_REVIEWED if webhook else AUTOMATION_REVIEWED
+        previous = AUTOMATION_REVIEWED if webhook else TRANSLATOR_REVIEWED
+        ledger.require(record_hash(value) == current.get(value['profile']),
+                       'profile differs from the qualified delivery handoff')
         prior = previous_record(value)
-        ledger.require(record_hash(prior) == TRANSLATOR_REVIEWED.get(value['profile']),
-                       'automation handoff lost its issued predecessor')
+        ledger.require(record_hash(prior) == previous.get(value['profile']),
+                       'delivery handoff lost its issued predecessor')
         # Reconstruct the allowed migration from the retained predecessor.
         # The profile registry already binds this complete record by digest.
         reproduced = copy.deepcopy(value)
         attach(reproduced, prior)
         ledger.require(ledger.canonical(reproduced['reused_business']) ==
                        ledger.canonical(value['reused_business']),
-                       'automation handoff predecessor differs')
+                       'delivery handoff predecessor differs')
         validate(prior)
         return value['reused_business']
     if value['format'] == TRANSLATOR_RECORD:

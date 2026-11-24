@@ -657,6 +657,15 @@
           "package takeover",
           "remaining producer families"
         ]
+      },
+      "webhook_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/profiles.json",
+        "installed": 470,
+        "verified": [
+          "optional native policy binding",
+          "primary to light redelivery"
+        ],
+        "pending": "managed interruption and release"
       }
     },
     {
@@ -2783,6 +2792,15 @@
           "package takeover",
           "remaining producer families"
         ]
+      },
+      "webhook_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/profiles.json",
+        "installed": 470,
+        "verified": [
+          "optional native policy binding",
+          "primary to light redelivery"
+        ],
+        "pending": "managed interruption and release"
       }
     },
     {
@@ -6312,6 +6330,15 @@
           "package takeover",
           "remaining producer families"
         ]
+      },
+      "webhook_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/profiles.json",
+        "installed": 470,
+        "verified": [
+          "optional native policy binding",
+          "primary to light redelivery"
+        ],
+        "pending": "managed interruption and release"
       }
     },
     {
@@ -8259,6 +8286,15 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
+      },
+      "webhook_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/profiles.json",
+        "installed": 470,
+        "verified": [
+          "optional native policy binding",
+          "primary to light redelivery"
+        ],
+        "pending": "managed interruption and release"
       }
     },
     {
@@ -9651,6 +9687,15 @@
           "package takeover",
           "remaining producer families"
         ]
+      },
+      "webhook_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/profiles.json",
+        "installed": 470,
+        "verified": [
+          "optional native policy binding",
+          "primary to light redelivery"
+        ],
+        "pending": "managed interruption and release"
       }
     },
     {
@@ -11213,6 +11258,15 @@
         "required_methods": 231,
         "declared_with_expected_success": 189,
         "long_run_hours": 0
+      },
+      "webhook_profiles_20261124": {
+        "evidence": "evidence/serve-webhooks-20261124/profiles.json",
+        "installed": 470,
+        "verified": [
+          "optional native policy binding",
+          "primary to light redelivery"
+        ],
+        "pending": "managed interruption and release"
       }
     }
   ],

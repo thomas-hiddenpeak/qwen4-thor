@@ -66,7 +66,8 @@ def compatible(first, second, *, fallback_acceptance=None, read_bundle=bundle.ve
             ('access_program_policy', 'access-program-policy.json'),
             ('file_input_policy', 'file-input-policy.json'),
             ('mcp_policy', 'mcp-policy.json'),
-            ('web_policy', 'web-policy.json')):
+            ('web_policy', 'web-policy.json'),
+            ('webhook_policy', 'webhook-policy.json')):
         ledger.require(a.get(key) == b.get(key) and
             a['files'].get(filename) == b['files'].get(filename),
             'automatic recovery would change private application policy: '+key)

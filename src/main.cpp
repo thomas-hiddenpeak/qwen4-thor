@@ -90,6 +90,7 @@ void PrintUsage(const char* prog) {
       "              (q4t state-retention --help)\n"
       "  mcp-policy-check FILE  Validate MCP deployment without a model\n"
       "  live-transport-check IPV4 [FILE]  Validate media settings offline\n"
+      "  webhook-policy-check FILE  Validate webhook destinations offline\n"
       "  web-policy-check FILE  Validate web search sources without a model\n"
       "  mcp-tunnel-agent (check|run) FILE  Native private MCP agent\n"
       "  file-input-policy-check FILE  Validate file policy without a model\n"
@@ -121,7 +122,7 @@ void PrintUsage(const char* prog) {
       "[--cuda-allocation-limit-mib auto|0|N] "
       "[--client-policy-file FILE] [--access-program-policy-file FILE] "
       "[--file-input-policy-file FILE] [--webhook-policy-file FILE] [--mcp-policy-file FILE] "
-      "[--web-policy-file FILE] "
+      "[--web-policy-file FILE] [--webhook-policy-file FILE] "
       "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
       "[--session-cache-dir DIR] [--prefix-cache-dir DIR] "
       "[--sip-trunks-file PATH] [--live-webrtc-address IPv4] [--live-recordings] [--object-store-dir DIR] [--object-max-object-mib "
@@ -955,6 +956,8 @@ int main(int argc, char** argv) {
     return q4t::server::RunPinnedLiveWorker(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "live-transport-check") == 0)
     return q4t::server::RunLiveTransportCheck(argc, argv);
+  if (argc > 1 && std::strcmp(argv[1], "webhook-policy-check") == 0)
+    return q4t::server::RunWebhookPolicyCheck(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "web-policy-check") == 0)
     return q4t::server::RunWebDeploymentPolicyCheck(argc, argv);
   if (argc > 1 && std::strcmp(argv[1], "file-input-policy-check") == 0)

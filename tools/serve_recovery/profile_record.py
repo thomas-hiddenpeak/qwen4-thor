@@ -44,6 +44,8 @@ def shape(value, size):
               value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
              (value.get('format') == 'q4t-profile-business-v28' and
               value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v41' and
+              value['reused_business'].get('format') == 'q4t-webhook-source-v1') or
              (value.get('format') == 'q4t-profile-business-v40' and
               value['reused_business'].get('format') == 'q4t-agent-automation-source-v1') or
              (value.get('format') == 'q4t-profile-business-v39' and
@@ -133,6 +135,7 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT': 'q4t-agent-registration-profile-source-v1',
         'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT': 'q4t-agent-session-profile-source-v1',
         'ACCEPT_AUTOMATION_PRIMARY_LIGHT': 'q4t-agent-automation-source-v1',
+        'ACCEPT_WEBHOOK_PRIMARY_LIGHT': 'q4t-webhook-source-v1',
         'ACCEPT_TRANSLATION_TRANSPORTS_PRIMARY_LIGHT': 'q4t-translation-transport-source-v1',
         'ACCEPT_INTERPRETER_PRIMARY_LIGHT': 'q4t-interpreter-workspace-source-v1',
         'ACCEPT_SKILLS_PRIMARY_LIGHT': 'q4t-skill-workspace-source-v1',

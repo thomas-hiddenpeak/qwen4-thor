@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdio>
 #include <cstring>
 #include <ctime>
 
@@ -82,7 +83,8 @@ ObjectReply Send(const Json& request) {
 }
 }  // namespace
 
-Status LoadWebhookPolicy(const std::string& path, FileFetchOptions* network) {
+Status LoadWebhookPolicy(const std::string& path, FileFetchOptions* network,
+                         std::string* source_sha256) {
   std::string raw;
   Json config;
   FileFetchOptions parsed;
@@ -94,8 +96,30 @@ Status LoadWebhookPolicy(const std::string& path, FileFetchOptions* network) {
     return Status::Fail("Invalid webhook delivery policy");
   parsed.allow_http = false;
   parsed.max_redirects = 0;
+  if (source_sha256) *source_sha256 = Digest(raw);
   *network = std::move(parsed);
   return {};
+}
+
+int RunWebhookPolicyCheck(int argc, char** argv) {
+  if (argc != 3) {
+    std::fprintf(stderr, "Usage: q4t webhook-policy-check FILE\n");
+    return 2;
+  }
+  FileFetchOptions network;
+  std::string digest;
+  if (!LoadWebhookPolicy(argv[2], &network, &digest).ok()) {
+    std::fprintf(stderr, "Invalid webhook delivery policy\n");
+    return 2;
+  }
+  const auto binding = Object({
+      {"profile", String("q4t-webhook-delivery-policy-v1")},
+      {"configured", Boolean(true)}, {"sha256", String(digest)},
+      {"request_override", Boolean(false)}, {"https_only", Boolean(true)},
+      {"redirects", Number(0)}, {"allowed_host_count", Number(network.allowed_hosts.size())},
+      {"core_readiness_dependency", Boolean(false)}});
+  std::printf("%s\n", OutputJson(binding).c_str());
+  return 0;
 }
 
 ObjectReply DeliverWebhook(const StateAccess& access,
