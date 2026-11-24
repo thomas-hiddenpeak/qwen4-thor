@@ -3029,6 +3029,15 @@
         "src/server/chatkit_threads.cpp",
         "tests/server_chatkit_test.cpp"
       ]
+    },
+    "POST /v1/chatkit/attachments": {
+      "semantics": "使用已开启文件上传的会话流式接收文档，为该会话提供模型可读取的附件。",
+      "boundary": "文件数据、计数和会话身份在同一事务确认，限期和大小均需满足。",
+      "evidence": [
+        "src/server/chatkit_attachments.cpp",
+        "src/server/files_http.cpp",
+        "tests/server_chatkit_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3643,8 +3652,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "c55edfa2e3fbe768aee491aef1fdbbddaa3439d64d0b172c6a10cfa0befdfc74",
-    "cmake/ChatProtocolIdentity.cmake": "a2f39680cba66bf38c9544a0f92e605d655f05b2b8305691b48313d7042ee5af",
+    "CMakeLists.txt": "d3e39042e515146c5795012100a0c441a4a6d3a45437079a5fdb53f4ac969f4f",
+    "cmake/ChatProtocolIdentity.cmake": "09e77e114eb6da588874f85954d5c303f70a0053c47e3c9505cf645d75951a15",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3734,7 +3743,7 @@
     "include/q4t/server/application_owner.h": "722cb383b3cbe48525c7444d852cac99d508679e7099ca9236aab50e8a38f87b",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "528c2ca1d8e0cb62f2306f107cd436797cc8ebff9c7881f33e54861560726b25",
+    "include/q4t/server/application_routes.h": "3ef8e27e87a0d0303883b8c8bc553df5d976e0923d4a478782704e96fa1f9e3f",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3820,8 +3829,8 @@
     "include/q4t/server/file_source.h": "d6c365c754368537b687238864b0dcdd8444b6b093d48145455b87faa95b263b",
     "include/q4t/server/file_video.h": "ba312dd94c738ba4717bb3cb0e3356e24b319c4748d13e9722d7e7a3b08546e6",
     "include/q4t/server/file_webp.h": "b7fa99598fcce0ed0d1feb3016cfe5936944d2910167472c53ff3c92c44ba0cd",
-    "include/q4t/server/files.h": "60e3269aa4c023cc5e29a6e147315ba985745c887a11e837d5a994817d97c9f3",
-    "include/q4t/server/files_http.h": "c4f99307a6846da191fdb00dd80141ad5efcf957eb1393aa82b85766d7104d32",
+    "include/q4t/server/files.h": "f9df43134107483ebc863e484bbbd2271a3f2f1323fef0a18e2acdc9a7d4cfc6",
+    "include/q4t/server/files_http.h": "2d743f68bb3f7543bc25647b004ac27790936475984ae990c3f37c2df106f9f4",
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
     "include/q4t/server/grammar_process.h": "5e3f0498408085cf750f070ae7adb242af273ae2ab01bc15982deb5a45a6b886",
@@ -4252,7 +4261,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "3d7318c7f3721312adbab0b5927177da711d5c00244aca802ce596180def1672",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "bd56fd2859ef30bbaadd02f6533fb3d7b8d126b5e3c0db3c3f4481211631a915",
+    "src/server/chat_http.cpp": "3e89bf13599af19dd157207ec11bb29c3bb3a40409f65d6d3bc82f0fc4388a27",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -4298,13 +4307,15 @@
     "src/server/chat_voice_execution.cpp": "c320fcf36617c571f144fae0e658edf3c4cc5ec410f673ab203ed6c4c3331037",
     "src/server/chat_voices.cpp": "285c0e993868fbbec87499677aa1485d5a445639691b29c8bb1a806dc4bf3732",
     "src/server/chat_web_search.cpp": "93f2f40aa60902df2fc90e37818d6257d5a9548e16d2df44e08016b079106906",
-    "src/server/chatkit_client.cpp": "670bc942222df1d1ebe9054b43f5456177be0f8d06c5dbb896068ce9ba3cd19d",
+    "src/server/chatkit_attachments.cpp": "d2f7b5ddb30bebf4ca5a9a0b48894cdfd467e086eb4bca390b47e16ebac77ffe",
+    "src/server/chatkit_attachments.h": "26705bbda141d05ee1985b22c899fd698bcc5737ecde5590e13858116855bedb",
+    "src/server/chatkit_client.cpp": "e24b65093d3887b4e2cc13fff8ded8814a5daaf6d819451786ac9ea8782cfc73",
     "src/server/chatkit_credentials.cpp": "baf0fb8f16a6f56fe7370167be49720853eded5c98b6bb86c45ff68c33b2dbbb",
     "src/server/chatkit_credentials.h": "49a7364596fb434229a78a99fa06f01a88d00635fc6f6590c298458614f0b184",
     "src/server/chatkit_sessions.cpp": "b393f512c684fee34adbbc1ebfd9eea21f188763aaa8c6989d1aa90d270496af",
     "src/server/chatkit_thread_state.cpp": "3a14a5d4e10642fbb7f63b6fcd182197883edaec57ae5969838a40e65054edf1",
     "src/server/chatkit_thread_state.h": "8eae8cdb0dd6a5b57eddc7f53b157a754b0892097919ed9e4c9f158a1c9956eb",
-    "src/server/chatkit_threads.cpp": "0dfdfe1764a8f02cf7e90d8631a1766602dfcffdce88fd289303e2b0eb5eb101",
+    "src/server/chatkit_threads.cpp": "4942c6d27b2073ad2fbf3005cf0cdea768ec923c00a0dfe2dc959d82fac9a5b2",
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
@@ -4400,8 +4411,8 @@
     "src/server/file_webp.cpp": "0e8994aee25358847f5732a6fe68fd708dfc74b46b5c3a85673006be50e0357d",
     "src/server/file_webp_protocol.h": "ae236906fdcdf4cae176be4c313729cda618802894eecc099f10b5735d089d24",
     "src/server/file_webp_worker.cpp": "ed6ca89514b2f2c1123ea89775b53e8c709e92dd79a5338579494fb0368cc5a3",
-    "src/server/files.cpp": "3bf144977dd2a9c5f9253c0f76009cb1b12b82f0d7beb5d57f2d90a19589a30c",
-    "src/server/files_http.cpp": "3b70b238e4e3cd9e185baa0fdedd45bfcd3d8773672ae448432d0af434573b0a",
+    "src/server/files.cpp": "429395de7b47590611d8742ca89c3ad199d9729c38aad2a43e83620725622c7e",
+    "src/server/files_http.cpp": "dec84b2618ee016b0fc01372a496dcb45fac0aa19856fe1627ef9553fa635b41",
     "src/server/finite_response.cpp": "ce920a476844972506719d688078a3256512024619611d9175cf8b3be38ca7bc",
     "src/server/grammar_process.cpp": "67ddca7db2f6bcb0e2451c3775382dd63a87d3cc643b091c49a5d31a92622754",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
@@ -4741,7 +4752,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "cde10e31f17aff131bb61a39d91365ccb1766bcf16a9aa6619e2eba938a613a1",
+    "src/service/ingress_main.cpp": "d48271443f206fcae691845540ca6d980cd368f60f3f8f0caa69eecf7c820120",
     "src/service/ingress_proxy.cpp": "2ee7ea1d89fb17402feb2d7c3125dde322b61145161b244da35f7b6ddba7372c",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -9175,6 +9186,23 @@
       "evidence": [
         "src/server/chatkit_sessions.cpp",
         "src/server/chatkit_threads.cpp",
+        "tests/server_chatkit_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/chatkit/attachments": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "POST /v1/chatkit/attachments": {
+      "semantics": "使用已开启文件上传的会话流式接收文档，为该会话提供模型可读取的附件。",
+      "boundary": "文件数据、计数和会话身份在同一事务确认，限期和大小均需满足。",
+      "evidence": [
+        "src/server/chatkit_attachments.cpp",
+        "src/server/files_http.cpp",
         "tests/server_chatkit_test.cpp"
       ]
     }

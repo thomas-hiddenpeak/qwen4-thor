@@ -18,12 +18,14 @@ class FileUpload {
   using ContainerSink = std::function<ObjectReply(
       BinaryStage*, std::string_view, std::string_view)>;
   FileUpload(ObjectStore& objects, BinaryAccess access,
-             std::string_view content_type, ContainerSink container_sink = {});
+             std::string_view content_type, ContainerSink container_sink = {},
+             uint64_t max_file_bytes = kFileBytes);
   const ObjectReply& Result() const { return result_; }
   ObjectReply Feed(std::string_view bytes,
                    std::chrono::steady_clock::time_point deadline);
   ObjectReply Finish();
   ObjectReply Abort(const BinaryAccess& cleanup);
+  std::string_view MimeType() const { return mime_type_; }
   const std::string& StageId() const { return stage_.id; }
 
  private:
@@ -33,6 +35,7 @@ class FileUpload {
   Status Flush();
   Status Failure(ObjectReply reply);
   ContainerSink container_sink_;
+  uint64_t max_file_bytes_;
   std::string source_file_;
   BinaryStore binary_;
   BinaryAccess access_;

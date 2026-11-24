@@ -70,8 +70,9 @@ ObjectReply Public(const Json& stored, bool* hidden = nullptr,
 
 FileUpload::FileUpload(ObjectStore& objects, BinaryAccess access,
                        std::string_view content_type,
-                       ContainerSink container_sink)
+                       ContainerSink container_sink, uint64_t max_file_bytes)
     : container_sink_(std::move(container_sink)),
+      max_file_bytes_(std::min<uint64_t>(max_file_bytes, kFileBytes)),
       binary_(objects),
       access_(std::move(access)) {
   std::string boundary;
@@ -109,7 +110,7 @@ Status FileUpload::BeginPart(const MultipartPart& part) {
     // This string is metadata only, even if it contains path separators.
     filename_ = part.filename;
     mime_type_ = part.content_type;
-    auto result = binary_.Begin(access_, kFileBytes, 3600, &stage_);
+    auto result = binary_.Begin(access_, max_file_bytes_, 3600, &stage_);
     if (!result.ok()) return Failure(std::move(result));
     buffer_.reserve(kBinaryChunkBytes);
     return {};

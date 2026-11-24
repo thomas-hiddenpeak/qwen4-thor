@@ -3,6 +3,7 @@
 #include "assistant_threads_internal.h"
 #include "chatkit_thread_state.h"
 #include "chatkit_credentials.h"
+#include "chatkit_attachments.h"
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
 
@@ -149,6 +150,9 @@ ObjectReply ClientPage(const Json& rows, const Json& params, bool threads) {
 ObjectReply BrowserOperation(ObjectStore& objects, const StateAccess& access,
                              const Grant& grant, std::string_view operation,
                              const Json& params) {
+  if (operation == "attachments.delete")
+    return RemoveAttachment(objects, access, grant,
+                            params.GetString("attachment_id"));
   if (operation == "threads.list") {
     auto history = BrowserHistory(objects, access, grant);
     if (!history.ok()) return history;

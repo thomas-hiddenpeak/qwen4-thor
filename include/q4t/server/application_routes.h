@@ -535,11 +535,16 @@ inline bool IsMultipartForm(std::string_view type) {
   return true;
 }
 
+inline bool IsChatKitUpload(std::string_view method, std::string_view target) {
+  return method == "POST" && target == "/v1/chatkit/attachments";
+}
+
 inline bool IsBinaryUpload(std::string_view method, std::string_view target,
                            std::string_view content_type = {}) {
   const auto path = target.substr(0, target.find('?'));
   return (method == "POST" &&
           (path == "/v1/files" || IsTranscriptionTarget(target) ||
+           IsChatKitUpload(method, target) ||
            IsVoiceCreation(method, target) ||
            (IsSkillCreation(method,target) && IsMultipartForm(content_type)) ||
            (ParseContainerRoute(target).kind == ContainerRouteKind::kFiles &&
@@ -672,7 +677,7 @@ inline bool IsAssistantObservation(std::string_view method,
 // Self-hosted ChatKit clients configure this POST URL for session-bound
 // messages and history. Project administration uses the separate REST routes.
 inline bool IsChatKitClient(std::string_view method, std::string_view path) {
-  return method == "POST" && path == "/v1/chatkit";
+  return (method == "POST" && path == "/v1/chatkit") || IsChatKitUpload(method, path);
 }
 
 enum class ChatKitRouteKind { kNone, kSessions, kCancel, kThreads, kThread, kItems };

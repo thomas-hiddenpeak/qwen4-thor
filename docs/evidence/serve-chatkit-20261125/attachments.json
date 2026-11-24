@@ -1,0 +1,75 @@
+{
+  "status": "ACCEPT_NATIVE_CHATKIT_DIRECT_DOCUMENT_UPLOAD",
+  "deployed": false,
+  "issued_revision": 476,
+  "candidate": {
+    "binary": "dbaa73b5d82e82fd3d5e0aaf33fa45c8a35be509e5e9fb665f11b6cade2ed1f9",
+    "ingress": "a1d1070beabbe1b26dce51e4261143ee966ac0ef1a8b9c64e2d745f7af5b9c32",
+    "sdk_driver": "8a868ef6ac608106acba1fd38e2ce2d2439bc5f213587a95ca5fd83cc2c1a4e1"
+  },
+  "business": {
+    "sdk": "7.47.0",
+    "answers": [
+      "157",
+      "157"
+    ],
+    "peer": 404,
+    "other_user": 404,
+    "disabled": 403,
+    "revoked": 401,
+    "project_file_import": 400,
+    "count_limit": 409,
+    "source_deleted": 404,
+    "reused_slot": true,
+    "items": 4,
+    "independent_chat": "42",
+    "source_bytes": 830,
+    "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5"
+  },
+  "model_starts": 1,
+  "seconds": 38.519,
+  "official_schema_validated_before_redaction": 1,
+  "upstream": "926a7b8133226630bac025350e84b0ca5c31d45a",
+  "protected_default_unchanged": true,
+  "cpu": {
+    "chatkit": 8,
+    "files_transport": 3,
+    "invalid_form": 1,
+    "actual_sdk_files": 1,
+    "inventory_mutations": 40
+  },
+  "previous": [
+    {
+      "attempt": 1,
+      "result": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 36.373,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "lease": "COMMAND_FAILED"
+    }
+  ],
+  "repaired": "The native ingress accepted a delegated ChatKit ticket at headers, then treated it as a project key when beginning the streamed upload. It now checks the original issuer, ticket expiry and unchanged backend binding at upload start and completion.",
+  "fixture": "Initial local Files SDK check lacked the committed multipart samples in the sparse checkout. The exact samples were restored and the single affected check passed.",
+  "remaining": [
+    "browser two-phase upload descriptors and image previews",
+    "other browser operations and workflow tracing",
+    "issued primary/light profiles and recovery"
+  ],
+  "raw": {
+    "webhook-dev/chatkit-files-cpu-01.log": "844b06586265c06e5c4731ab1ab031714adbe97c5f35ce610e39078b04138286",
+    "webhook-dev/chatkit-files-cpu-02.log": "ff738dffa645b640e9692fec79ac9b36553ea601bd546a8458dff1e2cec7b045",
+    "webhook-dev/chatkit-file-audit-04.json": "0ddfdcc9e5ab5499cb92fd120c02abb7791de1fd0fcf6b84a548964f69e13d3e",
+    "webhook-dev/chatkit-file-contract-04.log": "e0d413243f33507d7bcb2f5fd906d81af94b1f7109f6c6f6ddb6e1607c46050e",
+    "chatkit-files-business-02/result.json": "2c179c3f862a43388d1f8ee574e95676a151f6910c5cbc9a196072d793dc6eac",
+    "chatkit-files-business-02/plan.json": "b2ab679fda7865d0726a8c3d68717d48c8010c218a8182acfdab8e5c77925907",
+    "chatkit-files-business-02/create/sdk-result.json": "12fe8a854f0161e99ede00201904a2d19dd010a5612d2fd54fdb50f533808d39",
+    "chatkit-files-business-02/create/run-wire.json": "9aed41abf1d0526709fa2589f3d9d51990f019272f5ccebbb77bd7e281537d1b",
+    "chatkit-files-lease-02/exit.json": "d770117c95656c690288026b4bcb6249dcb4b967bcf76e85bc099f7cf5461957",
+    "chatkit-files-business-01/result.json": "e391a6ab6b110578d8a8567c1521f2050ed4e9027cdedea811b9a0af13324f2c",
+    "chatkit-files-lease-01/exit.json": "0b00dd89a414e08049dcd45221e79106388af877453bb73fa2dcf71086eb0f75",
+    "chatkit-files-business-01/create/sdk.stderr": "1351dcbb5dbe0015db6f390121c97d7d47cc4964c713ef47809e11960465f23a"
+  }
+}

@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "chatkit_credentials.h"
+#include "chatkit_attachments.h"
 #include "chatkit_thread_state.h"
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
@@ -21,19 +22,22 @@ ObjectReply Invalid(std::string message) {
   return Error(400, "invalid_request", std::move(message));
 }
 
-ObjectReply UserInput(const Json& input, const std::string& id,
-                      const std::string& thread_id, int64_t now, Json* user,
-                      Json* model_message) {
+ObjectReply UserInput(ObjectStore& objects, const StateAccess& access,
+                      const Grant& grant, const Json& input,
+                      const std::string& id, const std::string& thread_id,
+                      int64_t now, Json* user, Json* model_message) {
   const auto* parts = input.GetArray("content");
   const auto* attachments = input.GetArray("attachments");
   const auto* options = input.Find("inference_options");
-  if (!parts || parts->array.empty() || !attachments || !options ||
+  if (!parts || !attachments ||
+      (parts->array.empty() && attachments->array.empty()) || !options ||
       !options->IsObject())
     return Invalid(
         "Expected message content, attachments and inference options");
-  if (!attachments->array.empty())
-    return Invalid("Expected an attachment uploaded for this ChatKit user");
-  Json content = Array(), model = Array();
+  Json content = Array(), model = Array(), files = Array();
+  auto attached = chatkit_detail::ResolveAttachments(
+      objects, access, grant, *attachments, &files, &model);
+  if (!attached.ok()) return attached;
   if (const auto* quote = input.Find("quoted_text");
       quote && !quote->IsNull()) {
     if (!quote->IsString()) return Invalid("Expected quoted text");
@@ -57,7 +61,7 @@ ObjectReply UserInput(const Json& input, const std::string& id,
        {"object", String("chatkit.thread_item")},
        {"created_at", Number(now)},
        {"content", std::move(content)},
-       {"attachments", Array()},
+       {"attachments", std::move(files)},
        {"inference_options",
         options->object.empty()
             ? Json{}
@@ -144,7 +148,8 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
     const auto id = NewObjectId(ObjectKind::kConversationItem);
     if (id.empty())
       return Error(503, "chatkit_id_unavailable", "No message ID");
-    auto prepared = UserInput(*input, id, write.id, now, user, &model_message);
+    auto prepared = UserInput(objects, access, grant, *input, id, write.id, now,
+                              user, &model_message);
     if (!prepared.ok()) return prepared;
     items.push_back(*user);
   }
@@ -189,7 +194,7 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
   if (const auto previous = write.data.GetString("last_response");
       !previous.empty())
     Set(&request, "previous_response_id", String(previous));
-  if (create &&
+  if (create && !input->GetArray("content")->array.empty() &&
       features->Find("automatic_thread_titling")->GetBool("enabled")) {
     const auto title =
         input->GetArray("content")->array.front().GetString("text");

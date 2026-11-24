@@ -1,4 +1,7 @@
 #include "../src/server/chatkit_credentials.h"
+#include "../src/server/chatkit_attachments.h"
+#include "q4t/server/files.h"
+#include "q4t/server/files_http.h"
 #include "../src/server/chatkit_thread_state.h"
 #include "../src/server/object_protocol.h"
 #include "q4t/server/object_retention.h"
@@ -34,18 +37,24 @@ StateAccess Access(std::string scope = "client:alpha") {
   return {std::move(scope), std::chrono::steady_clock::now() + 10s, {}};
 }
 const std::string kBinding(64, 'a'), kIssuer(64, 'c');
-ObjectReply Create(ObjectStore& objects, const StateAccess& access, int limit) {
+ObjectReply Create(ObjectStore& objects, const StateAccess& access, int limit,
+                   bool upload = false) {
   ChatPlanConfig config;
   config.model = "model-cpu";
   auto agent =
       HandleAgentRegistration(objects, "POST", "/v1/agents",
                               R"({"model":"model-cpu"})", config, access);
   if (!agent.ok()) return agent;
-  const auto wire = Object(
+  auto wire = Object(
       {{"workflow", Object({{"id", String(agent.value.GetString("id"))}})},
        {"user", String("reader")},
        {"rate_limits",
         Object({{"max_requests_per_1_minute", Number(limit)}})}});
+  if (upload)
+    Set(&wire, "chatkit_configuration",
+        Object({{"file_upload", Object({{"enabled", Boolean(true)},
+                                        {"max_files", Number(1)},
+                                        {"max_file_size", Number(1)}})}}));
   return HandleChatKit(objects, access, "POST", "/v1/chatkit/sessions",
                        OutputJson(wire), {kBinding, kIssuer});
 }
@@ -309,5 +318,116 @@ Q4T_TEST(chatkit_tool_call_preserves_sdk_and_browser_shapes_and_user_quotes) {
             projected.GetArray("content")->array.size() == 1);
   return true;
 }
+Q4T_TEST(
+    chatkit_attachment_publication_requires_a_live_owner_and_actual_binary) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  const auto access = Access();
+  const BinaryAccess binary_access{access.scope, access.deadline,
+                                   access.cancelled};
+  auto create_grant = [&](bool upload, chatkit_detail::Grant* grant) {
+    auto created = Create(objects, access, 16, upload);
+    if (!created.ok()) return created;
+    return chatkit_detail::Redeem(objects, access,
+                                  created.value.GetString("client_secret"),
+                                  std::time(nullptr), grant);
+  };
+  chatkit_detail::Grant grant, other, disabled;
+  Q4T_CHECK(create_grant(true, &grant).ok() &&
+            create_grant(true, &other).ok() &&
+            create_grant(false, &disabled).ok());
+  uint64_t limit = 0;
+  Q4T_CHECK(chatkit_detail::AttachmentLimit(disabled, &limit).http_status ==
+            403);
+  Q4T_CHECK(chatkit_detail::AttachmentLimit(grant, &limit).ok() &&
+            limit == (1U << 20));
+  BinaryStore binary(objects);
+  BinaryStage stage;
+  Q4T_CHECK(binary.Begin(binary_access, limit, 60, &stage).ok());
+  Q4T_CHECK(binary.Append(binary_access, &stage, "project revision 476").ok());
+  auto first = chatkit_detail::PublishAttachment(
+      objects, binary_access, grant, &stage, "release.txt", "text/plain");
+  Q4T_CHECK(first.ok() && stage.closed);
+  const auto id = first.value.GetString("id");
+  Json public_files = Array(), model = Array();
+  auto resolve = [&](const chatkit_detail::Grant& owner,
+                     const std::string& identity) {
+    return chatkit_detail::ResolveAttachments(objects, access, owner,
+                                              Array({String(identity)}),
+                                              &public_files, &model);
+  };
+  Q4T_CHECK(resolve(other, id).http_status == 404 &&
+            public_files.array.empty() && model.array.empty());
+  Q4T_CHECK(resolve(grant, id).ok() &&
+            model.array.back().GetString("file_id") == id &&
+            public_files.array.back().GetString("mime_type") == "text/plain");
+  BinaryRead read;
+  Q4T_CHECK(Files(objects).Open(binary_access, id, &read).ok());
+  std::string bytes;
+  Q4T_CHECK(binary.Read(binary_access, read, 0, &bytes).ok() &&
+            bytes == "project revision 476");
+  Q4T_CHECK(binary.Close(binary_access, &read).ok());
+  BinaryStage second;
+  Q4T_CHECK(binary.Begin(binary_access, limit, 60, &second).ok());
+  Q4T_CHECK(binary.Append(binary_access, &second, "second file").ok());
+  auto publish = [&] {
+    return chatkit_detail::PublishAttachment(objects, binary_access, grant,
+                                             &second, "next.txt", "text/plain");
+  };
+  Q4T_CHECK(publish().code == "chatkit_attachment_limit" && !second.closed);
+  Q4T_CHECK(chatkit_detail::RemoveAttachment(objects, access, other, id)
+                .http_status == 404);
+  Q4T_CHECK(chatkit_detail::RemoveAttachment(objects, access, grant, id).ok());
+  Q4T_CHECK(resolve(grant, id).http_status == 404);
+  Q4T_CHECK(publish().ok() && second.closed);
+  BinaryStage revoked;
+  Q4T_CHECK(binary.Begin(binary_access, limit, 60, &revoked).ok());
+  Q4T_CHECK(binary.Append(binary_access, &revoked, "unfinished").ok());
+  Q4T_CHECK(HandleChatKit(objects, access, "POST",
+                          "/v1/chatkit/sessions/" + grant.session + "/cancel",
+                          "")
+                .ok());
+  Q4T_CHECK(chatkit_detail::PublishAttachment(objects, binary_access, grant,
+                                              &revoked, "lost.txt",
+                                              "text/plain")
+                .http_status == 401);
+  Q4T_CHECK(binary.Abort(binary_access, &revoked).ok());
+  return true;
+}
+Q4T_TEST(chatkit_upload_enforces_session_bytes_before_publication) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto access = Access();
+  auto session = Create(objects, access, 8, true);
+  Q4T_CHECK(session.ok());
+  const auto secret = session.value.GetString("client_secret");
+  BinaryAccess binary{access.scope, access.deadline, access.cancelled};
+  constexpr std::string_view type = "multipart/form-data; boundary=f";
+  const auto limit = 1U << 20;
+  {
+    FileHttpRequest request(objects, binary);
+    HttpBodyStream stream;
+    Q4T_CHECK(request.PrepareChatKit("missing", type, &stream).http_status ==
+                  401 &&
+              !stream.consume);
+    Q4T_CHECK(request.PrepareChatKit(secret, "application/json", &stream)
+                      .http_status == 415 &&
+              !stream.consume);
+    Q4T_CHECK(request.PrepareChatKit(secret, type, &stream).ok() &&
+              stream.max_bytes == limit + (kFileWireBytes - kFileBytes));
+    const std::string header =
+        "--f\r\nContent-Disposition: form-data; name=\"file\"; "
+        "filename=\"readme.txt\"\r\nContent-Type: text/plain\r\n\r\n";
+    Q4T_CHECK(stream.consume(header, access.deadline));
+    Q4T_CHECK(!stream.consume(std::string(limit + 1, 'x') + "\r\n--f--\r\n",
+                              access.deadline));
+    Q4T_CHECK(stream.failure_status == 413 && request.UploadFailure() &&
+              request.UploadFailure()->http_status == 413);
+  }
+  auto listed = Files(objects).List(binary, Object());
+  Q4T_CHECK(listed.ok() && listed.value.GetArray("data")->array.empty());
+  return true;
+}
+
 }  // namespace
 }  // namespace q4t::server

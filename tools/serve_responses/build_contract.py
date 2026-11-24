@@ -138,9 +138,11 @@ def schema(graph):
     definitions.update(graph_definitions(chatkit, 'chatkit_'))
     definitions['chatkit_client_request'] = obj(dict(type=dict(type='string', enum=[
         'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output', 'threads.get_by_id',
-        'threads.list', 'threads.delete', 'threads.update', 'items.list']),
+        'threads.list', 'threads.delete', 'threads.update', 'items.list', 'attachments.delete']),
         params=dict(type='object'), metadata=dict(type='object')), ['type', 'params'])
     definitions['chatkit_client_result'] = dict(type='object')
+    definitions['chatkit_document_attachment'] = obj(dict(id=dict(type='string'),name=dict(type='string'),
+        type=dict(const='file'),mime_type=dict(type='string')), ['id','name','type','mime_type'])
     definitions['chatkit_threads'] = obj(dict(object=dict(const='list'),
         data=dict(type='array', items=ref('chatkit_thread')),
         first_id=nullable(dict(type='string')), last_id=nullable(dict(type='string')),
@@ -680,6 +682,7 @@ def add_openapi(paths, response, error):
         ('/v1/agents/environments/templates/{environment_template_id}', 'delete', None, 'hosted_template_deleted', None),
         ('/v1/webhook_event_types', 'get', None, 'webhook_event_types', None),
         ('/v1/chatkit', 'post', 'chatkit_client_request', 'chatkit_client_result', None),
+        ('/v1/chatkit/attachments', 'post', None, 'chatkit_document_attachment', None),
         ('/v1/chatkit/sessions', 'post', 'chatkit_create', 'chatkit_session', None),
         ('/v1/chatkit/sessions/{session_id}/cancel', 'post', None, 'chatkit_session', None),
         ('/v1/chatkit/threads', 'get', None, 'chatkit_threads', 'chatkit_thread_query'),
@@ -859,7 +862,12 @@ def add_openapi(paths, response, error):
         if path == '/v1/chatkit':
             operation['description'] = 'Self-hosted browser endpoint. Requires a session client secret. Message submissions stream ChatKit events, history operations return JSON.'
             success['content']['text/event-stream'] = dict(schema=dict(type='string'))
-        if path.startswith('/v1/chatkit/'):
+        if path == '/v1/chatkit/attachments':
+            operation['description'] = 'Upload a document with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.'
+            operation['x-q4t-body-contract'] = 'one multipart file'
+            operation['requestBody'] = dict(required=True, content={'multipart/form-data':dict(
+                schema=obj(dict(file=dict(type='string',format='binary')), ['file']))})
+        elif path.startswith('/v1/chatkit/'):
             operation.setdefault('parameters', []).append(dict(name='OpenAI-Beta',
                 **{'in':'header'}, required=True, schema=dict(type='string', const='chatkit_beta=v1')))
             if path.endswith('/cancel'):

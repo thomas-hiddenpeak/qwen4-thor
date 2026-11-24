@@ -2984,6 +2984,11 @@
         "state": "targeted_candidate_accepted",
         "evidence": "evidence/serve-chatkit-20261125/business.json",
         "issued": false
+      },
+      "chatkit_direct_document_20261125": {
+        "state": "targeted_candidate_accepted",
+        "evidence": "evidence/serve-chatkit-20261125/attachments.json",
+        "issued": false
       }
     },
     {
@@ -7524,6 +7529,11 @@
         "state": "targeted_candidate_accepted",
         "evidence": "evidence/serve-chatkit-20261125/business.json",
         "issued": false
+      },
+      "chatkit_direct_document_20261125": {
+        "state": "targeted_candidate_accepted",
+        "evidence": "evidence/serve-chatkit-20261125/attachments.json",
+        "issued": false
       }
     },
     {
@@ -10111,6 +10121,11 @@
       "chatkit_text_and_functions_20261125": {
         "state": "targeted_candidate_accepted",
         "evidence": "evidence/serve-chatkit-20261125/business.json",
+        "issued": false
+      },
+      "chatkit_direct_document_20261125": {
+        "state": "targeted_candidate_accepted",
+        "evidence": "evidence/serve-chatkit-20261125/attachments.json",
         "issued": false
       }
     },

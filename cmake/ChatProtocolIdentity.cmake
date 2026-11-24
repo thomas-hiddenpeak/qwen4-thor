@@ -506,6 +506,8 @@ set(protocol_inputs
   src/server/webhook_transport.cpp
   src/server/chatkit_sessions.cpp
   src/server/chatkit_client.cpp
+  src/server/chatkit_attachments.cpp
+  src/server/chatkit_attachments.h
   src/server/chatkit_thread_state.cpp
   src/server/chatkit_thread_state.h
   src/server/chatkit_threads.cpp

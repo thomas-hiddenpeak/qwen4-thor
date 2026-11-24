@@ -507,8 +507,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           return false;
         }
       }
-      if (IsSkillTarget(path) || IsContainerTarget(path) || IsFileTarget(path) ||
-          IsUploadTarget(path)) {
+      if (IsChatKitUpload(method, path) || IsSkillTarget(path) ||
+          IsContainerTarget(path) || IsFileTarget(path) || IsUploadTarget(path)) {
         if (!objects_) {
           failure_status = 503;
           headers.error_code = "object_scope_unavailable";
@@ -524,9 +524,12 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                      detail::ClientConnectionFailed(fd);
             }};
         file_request = std::make_unique<FileHttpRequest>(*objects_, access);
-        const auto ready = file_request->Prepare(method, path,
-                                                  headers.content_type,
-                                                  &body_stream, headers.accept);
+        const auto ready =
+            IsChatKitUpload(method, path)
+                ? file_request->PrepareChatKit(credential, headers.content_type,
+                                               &body_stream)
+                : file_request->Prepare(method, path, headers.content_type,
+                                        &body_stream, headers.accept);
         if (!ready.ok()) {
           file_preparation = ready;
           failure_status = ready.http_status;
@@ -581,7 +584,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
         IsChatKitClient(method, path) || IsChatKitTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
+      if (method == "POST" && !IsChatKitUpload(method, path) && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
                                  IsAutomationAction(path) ||
                                  ParseChatKitRoute(path).kind == ChatKitRouteKind::kCancel ||
                                  ParseWebhookRoute(path).kind == WebhookRouteKind::kRotate ||

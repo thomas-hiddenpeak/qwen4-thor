@@ -499,6 +499,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   AccessIdentity identity;
   Decision binding;
   std::string_view delegated;
+  int64_t delegated_expires_at = 0;
   int status = 400;
   bool rejected = false;
   bool preflight = false;
@@ -565,8 +566,12 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
            "\r\n";
   };
   const auto upload_binding = [&] {
-    const auto current_identity = access.Authenticate(headers.authorization);
-    if (!current_identity.Allowed() || current_identity.Id() != identity.Id()) {
+    // Admission already bound the original credential to its issuer. Recheck
+    // that issuer and the ticket deadline before forwarding and finalizing.
+    const auto now = std::chrono::system_clock::to_time_t(
+        std::chrono::system_clock::now());
+    if (!access.StillActive(identity) ||
+        (!delegated.empty() && now >= delegated_expires_at)) {
       upload.failure_status = 401;
       upload.failure_code = "gateway_unauthorized";
       return false;
@@ -652,6 +657,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       identity = access.AuthenticateRealtime(ticket, binding.token, now);
       if (!identity.Allowed()) return reject(401, "gateway_unauthorized");
       delegated = credential;
+      delegated_expires_at = ticket.expires_at;
     }
     if (server::IsChatKitClient(method, path) && delegated.empty())
       return reject(401, "invalid_client_secret");

@@ -4,6 +4,7 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 
 | 开发接入 | 已验证的业务 | 客户端和部署条件 |
 |---|---|---|
+| ChatKit 文档直传 | 浏览器按会话配置分段上传文件，模型读取真实文件，同一线程可在删除上传源后续谈。 | 已验收权限、容量、附件删除和标准历史返回。两阶段上传、图片预览和部署接管继续推进。[业务回执](evidence/serve-chatkit-20261125/attachments.json) |
 | ChatKit 候选 | 官方 SDK 六项会话和线程管理操作；浏览器消息与函数结果回填、流式回答和历史分页。 | 同项目按用户、工作流及历史策略过滤。当前已验收文本与客户端函数，附件和生产包恢复仍在推进。[设备回执](evidence/serve-chatkit-20261125/business.json) |
 | Webhook | rev472 提供八项管理方法及后台 Responses、Batch 终态通知，独立 HTTPS 发送器验签、重试并可跨进程接手。 | 需部署方显式配置目的地。订阅方按稳定事件 ID 去重。默认部署关闭出站，订阅和待投递记录可以跨故障接手。[发行回执](evidence/serve-webhooks-20261124/delivery.json)。[实测回执](evidence/serve-webhooks-20261124/lifecycle.json) |
 | Agents 托管工作区 | rev474 支持共享工作区、空闲挂起和检查点恢复。候选支持含至少两项 Files 引用的异步预热，准备期间可接入会话。 | 客户可订阅就绪或失败事件。创建成功后可删除原文件；准备任务按客户、任务轮转，源文件固定最长一小时。候选的部署恢复验收仍在推进。[设备回执](evidence/serve-webhooks-20261124/pending-environment.json) |

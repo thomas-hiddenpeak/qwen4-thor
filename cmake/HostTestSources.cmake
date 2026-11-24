@@ -318,6 +318,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_transport.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_sessions.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_client.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_attachments.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_thread_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_threads.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_credentials.cpp

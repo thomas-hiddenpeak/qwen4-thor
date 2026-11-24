@@ -1,5 +1,8 @@
 #include "q4t/server/files_http.h"
 
+#include <ctime>
+
+#include "chatkit_attachments.h"
 #include "containers_internal.h"
 #include "q4t/io/base64.h"
 #include "q4t/server/http_framing.h"
@@ -127,6 +130,35 @@ FileHttpRequest::~FileHttpRequest() {
     }
   }
 }
+ObjectReply FileHttpRequest::PrepareChatKit(std::string_view token,
+                                            std::string_view content_type,
+                                            HttpBodyStream* stream) {
+  if (!IsMultipartForm(content_type))
+    return Error(415, "unsupported_media_type",
+                 "Expected a multipart attachment");
+  chatkit_detail::Grant grant;
+  const StateAccess state{access_.scope, access_.deadline, access_.cancelled};
+  auto auth = chatkit_detail::Redeem(objects_, state, token, std::time(nullptr),
+                                     &grant);
+  if (!auth.ok()) return auth;
+  uint64_t limit = 0;
+  auto allowed = chatkit_detail::AttachmentLimit(grant, &limit);
+  if (!allowed.ok()) return allowed;
+  upload_ = std::make_unique<FileUpload>(
+      objects_, access_, content_type,
+      [this, grant = std::move(grant)](
+          BinaryStage* stage, std::string_view name, std::string_view) {
+        return chatkit_detail::PublishAttachment(
+            objects_, access_, grant, stage, name, upload_->MimeType());
+      },
+      limit);
+  if (!upload_->Result().ok()) return upload_->Result();
+  PrepareFileStream(stream);
+  wire_limit_ = limit + (kFileWireBytes - kFileBytes);
+  stream->max_bytes = wire_limit_;
+  return {};
+}
+
 ObjectReply FileHttpRequest::Prepare(std::string_view method,
                                      std::string_view target,
                                      std::string_view content_type,

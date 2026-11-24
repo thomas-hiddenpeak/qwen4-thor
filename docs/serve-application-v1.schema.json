@@ -24524,7 +24524,8 @@
             "threads.list",
             "threads.delete",
             "threads.update",
-            "items.list"
+            "items.list",
+            "attachments.delete"
           ]
         },
         "params": {
@@ -24542,6 +24543,30 @@
     },
     "chatkit_client_result": {
       "type": "object"
+    },
+    "chatkit_document_attachment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "const": "file"
+        },
+        "mime_type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "mime_type"
+      ],
+      "additionalProperties": false
     },
     "chatkit_threads": {
       "type": "object",
