@@ -93,9 +93,11 @@ ObjectReply ListMessages(const Json& messages, std::string_view raw) {
   return PageAssistantRows(messages, page);
 }
 
-ObjectReply PageAssistantRows(const Json& messages, const Json& page) {
+ObjectReply PageAssistantRows(const Json& messages, const Json& page,
+                              bool allow_empty_page) {
   const auto limit = page.GetInt("limit", 20);
-  if (limit < 1 || limit > 100) return Invalid("Expected 1 to 100", "limit");
+  if (limit < (allow_empty_page ? 0 : 1) || limit > 100)
+    return Invalid(allow_empty_page ? "Expected 0 to 100" : "Expected 1 to 100", "limit");
   if (page.Has("after") && page.Has("before"))
     return Invalid("Choose one cursor", "before");
   std::vector<const Json*> rows;

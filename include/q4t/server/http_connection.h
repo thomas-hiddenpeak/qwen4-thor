@@ -57,6 +57,7 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
   if (RealtimeTraceMethodAllowed(method, path) ||
       IsResponsesObservation(method, path) ||
       IsVectorStoreObservation(method, path) ||
+      IsChatKitObservation(method, path) ||
       ((method == "GET" || method == "DELETE") && IsWebhookTarget(path)) ||
       IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
       IsVoiceMetadata(method, path) ||

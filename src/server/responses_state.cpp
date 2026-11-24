@@ -93,6 +93,8 @@ Json SavedResponse(ResponseStatePlan& plan, const Json& response,
                                                                    : "online")},
               {"conversation_id", String(plan.conversation_id)},
               {"conversation_revision", Number(plan.conversation_revision)}}));
+  if (!plan.chatkit_thread_id.empty())
+    Set(&result, "chatkit_thread_id", String(plan.chatkit_thread_id));
   if (!plan.assistant_thread_id.empty()) {
     if (!plan.assistant_started_at && response.GetString("status") == "in_progress")
       plan.assistant_started_at = std::time(nullptr);
@@ -545,6 +547,12 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
     return StateError("Stored response cannot restore execution state");
   plan->id = id;
   plan->scope = access.scope;
+  if (const auto* thread = data->Find("chatkit_thread_id")) {
+    if (!thread->IsString() || !thread->str.starts_with("cthr_") ||
+        !ValidId(thread->str) || !response->GetBool("background"))
+      return StateError("Invalid stored ChatKit thread binding");
+    plan->chatkit_thread_id = thread->str;
+  }
   if (data->Has("assistant_thread_id") || data->Has("assistant_run_id")) {
     auto thread = data->GetString("assistant_thread_id");
     auto run = data->GetString("assistant_run_id");
@@ -749,6 +757,16 @@ ObjectReply ResponsesState::Begin(const Json& snapshot, const Json& events,
   auto mutation = Write(ObjectKind::kResponse, plan->id, access, 0,
                         SavedResponse(*plan, snapshot, events),
                         !plan->conversation_id.empty(), plan->ephemeral);
+  if (plan->chatkit_thread_write) {
+    if (plan->agent_session_write || !plan->assistant_writes.empty())
+      return StateError("Conflicting ChatKit thread admission");
+    const std::array writes{std::move(*plan->chatkit_thread_write),
+                            std::move(mutation)};
+    auto result = objects_.ExecuteBatch(writes, access.deadline, access.cancelled);
+    plan->chatkit_thread_write.reset();
+    if (result.ok()) plan->response_revision = 1;
+    return result;
+  }
   if (!plan->assistant_thread_id.empty()) {
     if (plan->assistant_writes.empty() || plan->agent_session_write)
       return StateError("Missing Assistant run admission");
@@ -1051,6 +1069,19 @@ ObjectReply ResponsesState::Erase(std::string id, const StateAccess& access) {
   if (!Terminal(response.value))
     return Error(409, "response_not_completed",
                  "Cancel an active response before deletion");
+  if (const auto* thread = existing.value.Find("data")->Find("chatkit_thread_id")) {
+    if (!thread->IsString() || !thread->str.starts_with("cthr_") || !ValidId(thread->str))
+      return StateError("Invalid stored ChatKit thread binding");
+    auto row = Get(ObjectKind::kChatKitThread, thread->str, access);
+    if (!row.ok() && row.http_status != 404) return row;
+    // Each new turn has a fresh response ID. Once a thread has advanced past
+    // this ID it can never reacquire an older response as pending or last.
+    if (row.ok()) {
+      const auto& data = *row.value.Find("data");
+      if (data.GetString("pending_response") == id || data.GetString("last_response") == id)
+        return Error(409, "chatkit_thread_owns_response", "The thread still uses this response");
+    }
+  }
   if (existing.value.Find("data")->Has("assistant_thread_id"))
     return Error(409, "assistant_thread_owns_response",
                  "Delete the owning Assistant thread to release this run");

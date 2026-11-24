@@ -35,6 +35,7 @@ struct HttpRequestHeaders {
   bool responses_multi_agent = false;
   bool assistants_beta = false;
   bool agents_beta = false;
+  bool chatkit_beta = false;
   bool realtime_beta = false;
   std::string agent_event_key;
   std::string client_id;

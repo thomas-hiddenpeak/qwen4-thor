@@ -535,11 +535,16 @@ inline bool IsMultipartForm(std::string_view type) {
   return true;
 }
 
+inline bool IsChatKitUpload(std::string_view method, std::string_view target) {
+  return method == "POST" && target == "/v1/chatkit/attachments";
+}
+
 inline bool IsBinaryUpload(std::string_view method, std::string_view target,
                            std::string_view content_type = {}) {
   const auto path = target.substr(0, target.find('?'));
   return (method == "POST" &&
           (path == "/v1/files" || IsTranscriptionTarget(target) ||
+           IsChatKitUpload(method, target) ||
            IsVoiceCreation(method, target) ||
            (IsSkillCreation(method,target) && IsMultipartForm(content_type)) ||
            (ParseContainerRoute(target).kind == ContainerRouteKind::kFiles &&
@@ -667,6 +672,66 @@ inline bool IsAssistantObservation(std::string_view method,
   return (method != "POST" && AssistantMethodAllowed(method, target)) ||
          (method == "POST" && ParseAssistantRunRoute(target).kind ==
                                   AssistantRunRouteKind::kCancel);
+}
+
+// Self-hosted ChatKit clients configure this POST URL for session-bound
+// messages and history. Project administration uses the separate REST routes.
+inline bool IsChatKitClient(std::string_view method, std::string_view path) {
+  return (method == "POST" && path == "/v1/chatkit") || IsChatKitUpload(method, path);
+}
+
+enum class ChatKitRouteKind { kNone, kSessions, kCancel, kThreads, kThread, kItems };
+struct ChatKitRoute {
+  ChatKitRouteKind kind = ChatKitRouteKind::kNone;
+  std::string_view id{};
+};
+
+inline ChatKitRoute ParseChatKitRoute(std::string_view target) {
+  using Kind = ChatKitRouteKind;
+  if (target.find('#') != target.npos) return {};
+  auto path = target.substr(0, target.find('?'));
+  if (path == "/v1/chatkit/sessions") return {Kind::kSessions};
+  if (path == "/v1/chatkit/threads") return {Kind::kThreads};
+  constexpr std::string_view sessions = "/v1/chatkit/sessions/";
+  constexpr std::string_view threads = "/v1/chatkit/threads/";
+  if (path.starts_with(sessions) && path.ends_with("/cancel")) {
+    path.remove_prefix(sessions.size());
+    if (path.size() <= 7) return {};
+    path.remove_suffix(7);
+    if (path.starts_with("cksess_") && path.size() > 7 && ValidApplicationId(path))
+      return {Kind::kCancel, path};
+  } else if (path.starts_with(threads)) {
+    path.remove_prefix(threads.size());
+    const bool items = path.ends_with("/items");
+    if (items) path.remove_suffix(6);
+    if (path.starts_with("cthr_") && path.size() > 5 && ValidApplicationId(path))
+      return {items ? Kind::kItems : Kind::kThread, path};
+  }
+  return {};
+}
+inline std::string_view ChatKitAllow(ChatKitRouteKind kind) {
+  using Kind = ChatKitRouteKind;
+  switch (kind) {
+    case Kind::kSessions:
+    case Kind::kCancel: return "POST";
+    case Kind::kThreads:
+    case Kind::kItems: return "GET";
+    case Kind::kThread: return "GET, DELETE";
+    case Kind::kNone: return {};
+  }
+  return {};
+}
+inline bool IsChatKitTarget(std::string_view path) {
+  return ParseChatKitRoute(path).kind != ChatKitRouteKind::kNone;
+}
+inline bool ChatKitMethodAllowed(std::string_view method, std::string_view path) {
+  const auto kind = ParseChatKitRoute(path).kind;
+  if (kind == ChatKitRouteKind::kThread) return method == "GET" || method == "DELETE";
+  return kind != ChatKitRouteKind::kNone && method == ChatKitAllow(kind);
+}
+
+inline bool IsChatKitObservation(std::string_view method, std::string_view target) {
+  return (method == "GET" || method == "DELETE") && ChatKitMethodAllowed(method, target);
 }
 
 enum class WebhookRouteKind { kNone, kCatalog, kCollection, kEndpoint, kRotate, kTest };
@@ -1077,6 +1142,7 @@ inline bool IsCancellationRequest(std::string_view method,
   return (method == "POST" && ParseAssistantRunRoute(target).kind ==
                                   AssistantRunRouteKind::kCancel) ||
          (method == "POST" && target == "/v1/requests/cancel") ||
+         (method == "POST" && ParseChatKitRoute(target).kind == ChatKitRouteKind::kCancel) ||
          IsResponseCancellation(method, target) ||
          IsBatchCancellation(method, target) ||
          IsVectorStoreCancellation(method, target) ||

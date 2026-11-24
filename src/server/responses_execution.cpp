@@ -100,6 +100,22 @@ ObjectReply ResponsesExecution::BindAgentSession(
   return {};
 }
 
+ObjectReply ResponsesExecution::BindChatKitThread(ObjectRequest mutation) {
+  const auto* thread = mutation.data.Find("thread");
+  if (!prepared_ || begun_ || !plan_.store || plan_.ephemeral ||
+      !envelope_.background || plan_.chatkit_thread_write ||
+      plan_.agent_session_write || !plan_.assistant_writes.empty() ||
+      mutation.operation != ObjectOperation::kPut ||
+      mutation.kind != ObjectKind::kChatKitThread || mutation.scope != Scope() ||
+      !mutation.id.starts_with("cthr_") || !ValidId(mutation.id) ||
+      !thread || thread->GetString("id") != mutation.id ||
+      mutation.data.GetString("pending_response") != Id())
+    return Error(500, "chatkit_binding_invalid", "Invalid ChatKit thread handoff");
+  plan_.chatkit_thread_id = mutation.id;
+  plan_.chatkit_thread_write = std::move(mutation);
+  return {};
+}
+
 ObjectReply ResponsesExecution::BindAssistantRun(
     std::string thread_id, std::string run_id, std::vector<ObjectRequest> writes) {
   if (!prepared_ || begun_ || !plan_.store || !envelope_.background ||
@@ -139,6 +155,8 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   size_t bytes = plan_.agent_session_write
                      ? OutputJson(plan_.agent_session_write->data).size()
                      : 0;
+  if (plan_.chatkit_thread_write)
+    bytes += OutputJson(plan_.chatkit_thread_write->data).size();
   if (plan_.automation_delivery_write)
     bytes += OutputJson(plan_.automation_delivery_write->data).size();
   for (const auto& write : plan_.assistant_writes)

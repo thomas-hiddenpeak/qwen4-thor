@@ -1,0 +1,1413 @@
+{
+  "profile": "q4t-openai-chatkit-types-v1",
+  "sdk_version": "7.47.0",
+  "compiler_version": "5.9.3",
+  "roots": {
+    "create": 0,
+    "session": 27,
+    "thread": 46,
+    "deleted": 54,
+    "thread_query": 56,
+    "item_query": 60,
+    "items": 61
+  },
+  "nodes": [
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "chatkit_configuration",
+          "optional": true,
+          "type": 1
+        },
+        {
+          "name": "expires_after",
+          "optional": true,
+          "type": 14
+        },
+        {
+          "name": "rate_limits",
+          "optional": true,
+          "type": 17
+        },
+        {
+          "name": "user",
+          "optional": false,
+          "type": 19,
+          "bounds": {
+            "minLength": 1
+          }
+        },
+        {
+          "name": "workflow",
+          "optional": false,
+          "type": 20
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        2
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "automatic_thread_titling",
+          "optional": true,
+          "type": 3
+        },
+        {
+          "name": "file_upload",
+          "optional": true,
+          "type": 8
+        },
+        {
+          "name": "history",
+          "optional": true,
+          "type": 12
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        4
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": true,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        6,
+        7
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": false
+    },
+    {
+      "kind": "literal",
+      "value": true
+    },
+    {
+      "kind": "union",
+      "variants": [
+        9
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": true,
+          "type": 5
+        },
+        {
+          "name": "max_file_size",
+          "optional": true,
+          "type": 10,
+          "bounds": {
+            "type": [
+              "integer"
+            ],
+            "minimum": 1,
+            "maximum": 512
+          }
+        },
+        {
+          "name": "max_files",
+          "optional": true,
+          "type": 10,
+          "bounds": {
+            "type": [
+              "integer"
+            ],
+            "minimum": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        11
+      ]
+    },
+    {
+      "kind": "number"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        13
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": true,
+          "type": 5
+        },
+        {
+          "name": "recent_threads",
+          "optional": true,
+          "type": 10,
+          "bounds": {
+            "type": [
+              "integer"
+            ],
+            "minimum": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        15
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "anchor",
+          "optional": false,
+          "type": 16
+        },
+        {
+          "name": "seconds",
+          "optional": false,
+          "type": 11,
+          "bounds": {
+            "type": [
+              "integer"
+            ],
+            "minimum": 1,
+            "maximum": 600
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "created_at"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        18
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "max_requests_per_1_minute",
+          "optional": true,
+          "type": 10,
+          "bounds": {
+            "type": [
+              "integer"
+            ],
+            "minimum": 1
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "string"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "state_variables",
+          "optional": true,
+          "type": 21,
+          "bounds": {
+            "maxProperties": 64,
+            "propertyNames": {
+              "maxLength": 64
+            },
+            "additionalProperties": {
+              "maxLength": 10485760
+            }
+          }
+        },
+        {
+          "name": "tracing",
+          "optional": true,
+          "type": 24
+        },
+        {
+          "name": "version",
+          "optional": true,
+          "type": 26
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        22
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 23
+    },
+    {
+      "kind": "union",
+      "variants": [
+        19,
+        11,
+        6,
+        7
+      ]
+    },
+    {
+      "kind": "union",
+      "variants": [
+        25
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": true,
+          "type": 5
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        19
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "chatkit_configuration",
+          "optional": false,
+          "type": 28
+        },
+        {
+          "name": "client_secret",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "expires_at",
+          "optional": false,
+          "type": 11
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "max_requests_per_1_minute",
+          "optional": false,
+          "type": 11
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 35
+        },
+        {
+          "name": "rate_limits",
+          "optional": false,
+          "type": 36
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 37
+        },
+        {
+          "name": "user",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "workflow",
+          "optional": false,
+          "type": 41
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "automatic_thread_titling",
+          "optional": false,
+          "type": 29
+        },
+        {
+          "name": "file_upload",
+          "optional": false,
+          "type": 31
+        },
+        {
+          "name": "history",
+          "optional": false,
+          "type": 34
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "boolean"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "max_file_size",
+          "optional": false,
+          "type": 32
+        },
+        {
+          "name": "max_files",
+          "optional": false,
+          "type": 32
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        33,
+        11
+      ]
+    },
+    {
+      "kind": "null"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "recent_threads",
+          "optional": false,
+          "type": 32
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.session"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "max_requests_per_1_minute",
+          "optional": false,
+          "type": 11
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        38,
+        39,
+        40
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "active"
+    },
+    {
+      "kind": "literal",
+      "value": "expired"
+    },
+    {
+      "kind": "literal",
+      "value": "cancelled"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "state_variables",
+          "optional": false,
+          "type": 42
+        },
+        {
+          "name": "tracing",
+          "optional": false,
+          "type": 44
+        },
+        {
+          "name": "version",
+          "optional": false,
+          "type": 45
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        33,
+        43
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [],
+      "additional": 23
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "enabled",
+          "optional": false,
+          "type": 30
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        33,
+        19
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 11
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 47
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 48
+        },
+        {
+          "name": "title",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "user",
+          "optional": false,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.thread"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        49,
+        50,
+        52
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 38
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "reason",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 51
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "locked"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "reason",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 53
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "closed"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "deleted",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 55
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.thread.deleted"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "before",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 10,
+          "bounds": {
+            "type": [
+              "integer"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 57
+        },
+        {
+          "name": "user",
+          "optional": true,
+          "type": 26,
+          "bounds": {
+            "minLength": 1,
+            "maxLength": 512
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        58,
+        59
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "asc"
+    },
+    {
+      "kind": "literal",
+      "value": "desc"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "after",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "before",
+          "optional": true,
+          "type": 26
+        },
+        {
+          "name": "limit",
+          "optional": true,
+          "type": 10,
+          "bounds": {
+            "type": [
+              "integer"
+            ],
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        {
+          "name": "order",
+          "optional": true,
+          "type": 57
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "data",
+          "optional": false,
+          "type": 62
+        },
+        {
+          "name": "first_id",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "has_more",
+          "optional": false,
+          "type": 30
+        },
+        {
+          "name": "last_id",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 110
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 63
+    },
+    {
+      "kind": "union",
+      "variants": [
+        64,
+        82,
+        94,
+        96,
+        101,
+        106
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "attachments",
+          "optional": false,
+          "type": 65
+        },
+        {
+          "name": "content",
+          "optional": false,
+          "type": 70
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 11
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "inference_options",
+          "optional": false,
+          "type": 76
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 80
+        },
+        {
+          "name": "thread_id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 81
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 66
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "mime_type",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "preview_url",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 67
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        68,
+        69
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "image"
+    },
+    {
+      "kind": "literal",
+      "value": "file"
+    },
+    {
+      "kind": "array",
+      "element": 71
+    },
+    {
+      "kind": "union",
+      "variants": [
+        72,
+        74
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 73
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "input_text"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "text",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 75
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "quoted_text"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        33,
+        77
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "model",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "tool_choice",
+          "optional": false,
+          "type": 78
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        33,
+        79
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.thread_item"
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.user_message"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "content",
+          "optional": false,
+          "type": 83
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 11
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 80
+        },
+        {
+          "name": "thread_id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 93
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 84
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "annotations",
+          "optional": false,
+          "type": 85
+        },
+        {
+          "name": "text",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 92
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 86
+    },
+    {
+      "kind": "union",
+      "variants": [
+        87,
+        89
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "source",
+          "optional": false,
+          "type": 88
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 69
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "filename",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 69
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "source",
+          "optional": false,
+          "type": 90
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 91
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "type",
+          "optional": false,
+          "type": 91
+        },
+        {
+          "name": "url",
+          "optional": false,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "url"
+    },
+    {
+      "kind": "literal",
+      "value": "output_text"
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.assistant_message"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 11
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 80
+        },
+        {
+          "name": "thread_id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 95
+        },
+        {
+          "name": "widget",
+          "optional": false,
+          "type": 19
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.widget"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "arguments",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "call_id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 11
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 80
+        },
+        {
+          "name": "output",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "status",
+          "optional": false,
+          "type": 97
+        },
+        {
+          "name": "thread_id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 100
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        98,
+        99
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "in_progress"
+    },
+    {
+      "kind": "literal",
+      "value": "completed"
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.client_tool_call"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 11
+        },
+        {
+          "name": "heading",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 80
+        },
+        {
+          "name": "summary",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "task_type",
+          "optional": false,
+          "type": 102
+        },
+        {
+          "name": "thread_id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 105
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        103,
+        104
+      ]
+    },
+    {
+      "kind": "literal",
+      "value": "custom"
+    },
+    {
+      "kind": "literal",
+      "value": "thought"
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.task"
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "created_at",
+          "optional": false,
+          "type": 11
+        },
+        {
+          "name": "id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "object",
+          "optional": false,
+          "type": 80
+        },
+        {
+          "name": "tasks",
+          "optional": false,
+          "type": 107
+        },
+        {
+          "name": "thread_id",
+          "optional": false,
+          "type": 19
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 109
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "array",
+      "element": 108
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "heading",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "summary",
+          "optional": false,
+          "type": 45
+        },
+        {
+          "name": "type",
+          "optional": false,
+          "type": 102
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "chatkit.task_group"
+    },
+    {
+      "kind": "literal",
+      "value": "list"
+    }
+  ],
+  "sources_sha256": {
+    "src/core/pagination.ts": "9982e3f76b145841d466fe8c9a56e9eea08b869b3d5901d84fe600ea5c7e3da6",
+    "src/resources/beta/chatkit/chatkit.ts": "0d8bbbf8e66bebacbe2509cf13c3714db69d40c9f61445e99beef042fed76b5f",
+    "src/resources/beta/chatkit/sessions.ts": "9d1f2f3e668fe7be95827aee2ee8b9e3687c7dd87faae0bd6d8a554a77d520e8",
+    "src/resources/beta/chatkit/threads.ts": "73cab2aedc556f874cd68cb48f9d77a0021a183354a749cffc8a8a98970ed891"
+  },
+  "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+  "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675"
+}

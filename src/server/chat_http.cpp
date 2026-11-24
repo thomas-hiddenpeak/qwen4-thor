@@ -37,6 +37,7 @@
 #include "q4t/server/agent_session.h"
 #include "q4t/server/files_http.h"
 #include "q4t/server/agent_automation.h"
+#include "q4t/server/chatkit.h"
 #include "q4t/server/webhook.h"
 #include "q4t/server/live_recording_store.h"
 #include "q4t/server/batch_api.h"
@@ -357,6 +358,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       NormalizeResponsesPostTarget(method, path);
       context.SetAssistantsBeta(headers.assistants_beta);
       context.SetAgentsBeta(headers.agents_beta);
+      context.SetChatKitBeta(headers.chatkit_beta);
       context.SetAgentEventKey(std::move(headers.agent_event_key));
       context.SetResponsesMultiAgent(headers.responses_multi_agent &&
                                      IsResponsesTarget(path));
@@ -369,7 +371,27 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         headers.failure = HttpReceiveFailure::kRoute;
         return false;
       }
+      const bool chatkit_client = IsChatKitClient(method, path);
+      if (headers.authorization.starts_with("Q4T-ChatKit ")) {
+        std::string bearer;
+        if (!chatkit_client || headers.client_id.empty() ||
+            !clients_.Authenticate(headers.client_id, headers.gateway_token).Allowed() ||
+            !ResolveForwardedChatKit(headers.authorization, headers.client_id,
+                                     headers.gateway_token, std::time(nullptr), &bearer)) {
+          failure_status = 401;
+          headers.error_code = "invalid_client_secret";
+          headers.failure = HttpReceiveFailure::kAdmission;
+          return false;
+        }
+        headers.authorization = std::move(bearer);
+      }
       const auto credential = BearerCredential(headers.authorization);
+      if (chatkit_client != credential.starts_with("cksec_")) {
+        failure_status = 401;
+        headers.error_code = "invalid_client_secret";
+        headers.failure = HttpReceiveFailure::kAdmission;
+        return false;
+      }
       if (credential.starts_with("ek_")) {
         const auto client =
             clients_.Authenticate(headers.client_id, headers.gateway_token);
@@ -475,7 +497,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
             IsVoiceCreation(method, path) || IsResponsesTarget(path) ||
             IsAssistantsV2Target(path) || IsManagedAgentTarget(path) ||
             IsConversationTarget(path) || IsPromptTarget(path) ||
-            IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+            IsChatKitClient(method, path) || IsChatKitTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
             IsSkillTarget(path) || IsContainerTarget(path) || IsFileTarget(path) ||
             IsUploadTarget(path))) ||
           (method == "GET" &&
@@ -498,8 +520,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
           return false;
         }
       }
-      if (IsSkillTarget(path) || IsContainerTarget(path) || IsFileTarget(path) ||
-          IsUploadTarget(path)) {
+      if (IsChatKitUpload(method, path) || IsSkillTarget(path) ||
+          IsContainerTarget(path) || IsFileTarget(path) || IsUploadTarget(path)) {
         if (!objects_) {
           failure_status = 503;
           headers.error_code = "object_scope_unavailable";
@@ -515,9 +537,12 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                      detail::ClientConnectionFailed(fd);
             }};
         file_request = std::make_unique<FileHttpRequest>(*objects_, access);
-        const auto ready = file_request->Prepare(method, path,
-                                                  headers.content_type,
-                                                  &body_stream, headers.accept);
+        const auto ready =
+            IsChatKitUpload(method, path)
+                ? file_request->PrepareChatKit(credential, headers.content_type,
+                                               &body_stream)
+                : file_request->Prepare(method, path, headers.content_type,
+                                        &body_stream, headers.accept);
         if (!ready.ok()) {
           file_preparation = ready;
           failure_status = ready.http_status;
@@ -570,10 +595,11 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         path == "/v1/embeddings" || path == "/v1/audio/speech" ||
         IsResponsesTarget(path) || path == "/v1/requests/cancel" ||
         IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
-        IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+        IsChatKitClient(method, path) || IsChatKitTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
         IsMcpTunnelTarget(path)) {
-      if (method == "POST" && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
+      if (method == "POST" && !IsChatKitUpload(method, path) && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
                                  IsAutomationAction(path) ||
+                                 ParseChatKitRoute(path).kind == ChatKitRouteKind::kCancel ||
                                  ParseWebhookRoute(path).kind == WebhookRouteKind::kRotate ||
                                  path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||
                                  IsSipHangup(method, path) ||
@@ -675,7 +701,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
                   {access.deadline}, reply.ClientCode(), {},
                   reply.value.GetString("allow"));
     } else
-      Dispatch(fd, method, path, body);
+      Dispatch(fd, method, path, body, headers);
     static const bool access_log = std::getenv("Q4T_ACCESS_LOG") != nullptr;
     if (access_log) {
       const double ms = std::chrono::duration<double, std::milli>(
@@ -699,7 +725,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
 }
 
 void ChatServer::Dispatch(int fd, const std::string& method,
-                          const std::string& path, const std::string& body) {
+                          const std::string& path, const std::string& body,
+                          const HttpRequestHeaders& headers) {
   const auto rejected = [&](HttpReceiveFailure reason, int status) {
     if (auto* context = detail::HttpResponseContext::Current(fd))
       context->RecordReceiveFailure(reason, status);
@@ -802,7 +829,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
        !(method == "POST" &&
          path.substr(0, path.find('?')) == "/v1/chat/completions")) ||
       IsAssistantsV2Target(path) || IsManagedAgentTarget(path) || IsConversationTarget(path) || IsPromptTarget(path) ||
-      IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
+      IsChatKitClient(method, path) || IsChatKitTarget(path) || IsWebhookTarget(path) || IsBatchTarget(path) || IsVectorStoreTarget(path) ||
       (IsResponsesTarget(path) &&
        path.substr(0, path.find('?')) != "/v1/responses")) {
     const auto* context = detail::HttpResponseContext::Current(fd);
@@ -814,6 +841,11 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (IsAssistantsV2Target(path) && !context->AssistantsBeta()) {
       SendError(fd, 400, "Assistants require OpenAI-Beta assistants=v2", {},
                 "beta_required", "OpenAI-Beta");
+      return;
+    }
+    if (IsChatKitTarget(path) && !context->ChatKitBeta()) {
+      SendError(fd, 400, "ChatKit requires OpenAI-Beta chatkit_beta=v1",
+                {}, "beta_required", "OpenAI-Beta");
       return;
     }
     if (IsManagedAgentTarget(path) && !context->AgentsBeta()) {
@@ -832,6 +864,11 @@ void ChatServer::Dispatch(int fd, const std::string& method,
           return (!cancellation && stop_requested_.load()) ||
                  detail::ClientConnectionFailed(fd);
         }};
+    if (IsChatKitClient(method, path)) {
+      ServeChatKitClient(fd, *objects_, background_.Get(), PlanningConfig(fd),
+                         access, BearerCredential(headers.authorization), body);
+      return;
+    }
     if (IsResponsesTarget(path)) {
       ServeResponsesState(fd, *objects_, method, path, body, access,
                           background_.Get());
@@ -853,6 +890,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                   *objects_, clients_, !embedding_model_dir_.empty(), method,
                   path, body, client,
                   {access.scope, access.deadline, access.cancelled})
+        : IsChatKitTarget(path)
+            ? HandleChatKit(*objects_, access, method, path, body,
+                {headers.gateway_token, headers.authorization.starts_with("Q4T-Issuer ")
+                     ? std::string_view(headers.authorization).substr(11) : std::string_view{}})
         : IsWebhookTarget(path)
             ? HandleWebhook(*objects_, access, webhook_network_.get(), method, path, body)
         : IsBatchTarget(path)

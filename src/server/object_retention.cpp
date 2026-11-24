@@ -378,6 +378,22 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
       const auto* id = continuation->Find("conversation_id");
       if (id && id->IsString() && !id->str.empty()) inspector.Reference(id);
     }
+  } else if (kind == "chatkit_thread") {
+    const auto* thread = data.Find("thread");
+    inspector.value.uncertain = !thread || !thread->GetString("id").starts_with("cthr_") ||
+                                !data.GetArray("items");
+    for (const char* key : {"pending_response", "last_response"})
+      if (const auto* id = data.Find(key); id && !id->IsNull())
+        inspector.RequiredId(data, key, "resp_");
+  } else if (kind == "chatkit_session") {
+    const auto* session = data.Find("session");
+    const auto* dependencies = data.GetArray("credential_ids");
+    inspector.value.uncertain = !session || !session->GetString("id").starts_with("cksess_") ||
+                                !dependencies || data.GetString("workflow_snapshot").empty();
+    if (!inspector.value.uncertain && session->GetString("status") == "active") {
+      inspector.value.references_before = session->GetInt("expires_at");
+      for (const auto& id : dependencies->array) inspector.Reference(&id);
+    }
   } else if (kind == "conversation") {
     inspector.value.uncertain = !data.GetArray("items");
     inspector.Items(data.Find("items"));

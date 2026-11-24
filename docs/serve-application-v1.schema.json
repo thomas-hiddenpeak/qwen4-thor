@@ -23155,6 +23155,1464 @@
       "required": [],
       "additionalProperties": false
     },
+    "chatkit_0": {
+      "type": "object",
+      "properties": {
+        "chatkit_configuration": {
+          "$ref": "#/$defs/chatkit_1"
+        },
+        "expires_after": {
+          "$ref": "#/$defs/chatkit_14"
+        },
+        "rate_limits": {
+          "$ref": "#/$defs/chatkit_17"
+        },
+        "user": {
+          "$ref": "#/$defs/chatkit_19",
+          "minLength": 1
+        },
+        "workflow": {
+          "$ref": "#/$defs/chatkit_20"
+        }
+      },
+      "required": [
+        "user",
+        "workflow"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_1": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_2"
+        }
+      ]
+    },
+    "chatkit_2": {
+      "type": "object",
+      "properties": {
+        "automatic_thread_titling": {
+          "$ref": "#/$defs/chatkit_3"
+        },
+        "file_upload": {
+          "$ref": "#/$defs/chatkit_8"
+        },
+        "history": {
+          "$ref": "#/$defs/chatkit_12"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "chatkit_3": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_4"
+        }
+      ]
+    },
+    "chatkit_4": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/chatkit_5"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "chatkit_5": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_6"
+        },
+        {
+          "$ref": "#/$defs/chatkit_7"
+        }
+      ]
+    },
+    "chatkit_6": {
+      "const": false
+    },
+    "chatkit_7": {
+      "const": true
+    },
+    "chatkit_8": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_9"
+        }
+      ]
+    },
+    "chatkit_9": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/chatkit_5"
+        },
+        "max_file_size": {
+          "$ref": "#/$defs/chatkit_10",
+          "type": [
+            "integer"
+          ],
+          "minimum": 1,
+          "maximum": 512
+        },
+        "max_files": {
+          "$ref": "#/$defs/chatkit_10",
+          "type": [
+            "integer"
+          ],
+          "minimum": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "chatkit_10": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_11"
+        }
+      ]
+    },
+    "chatkit_11": {
+      "type": "number"
+    },
+    "chatkit_12": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_13"
+        }
+      ]
+    },
+    "chatkit_13": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/chatkit_5"
+        },
+        "recent_threads": {
+          "$ref": "#/$defs/chatkit_10",
+          "type": [
+            "integer"
+          ],
+          "minimum": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "chatkit_14": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_15"
+        }
+      ]
+    },
+    "chatkit_15": {
+      "type": "object",
+      "properties": {
+        "anchor": {
+          "$ref": "#/$defs/chatkit_16"
+        },
+        "seconds": {
+          "$ref": "#/$defs/chatkit_11",
+          "type": [
+            "integer"
+          ],
+          "minimum": 1,
+          "maximum": 600
+        }
+      },
+      "required": [
+        "anchor",
+        "seconds"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_16": {
+      "const": "created_at"
+    },
+    "chatkit_17": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_18"
+        }
+      ]
+    },
+    "chatkit_18": {
+      "type": "object",
+      "properties": {
+        "max_requests_per_1_minute": {
+          "$ref": "#/$defs/chatkit_10",
+          "type": [
+            "integer"
+          ],
+          "minimum": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "chatkit_19": {
+      "type": "string"
+    },
+    "chatkit_20": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "state_variables": {
+          "$ref": "#/$defs/chatkit_21",
+          "maxProperties": 64,
+          "propertyNames": {
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "maxLength": 10485760
+          }
+        },
+        "tracing": {
+          "$ref": "#/$defs/chatkit_24"
+        },
+        "version": {
+          "$ref": "#/$defs/chatkit_26"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_21": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_22"
+        }
+      ]
+    },
+    "chatkit_22": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/chatkit_23"
+      }
+    },
+    "chatkit_23": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        {
+          "$ref": "#/$defs/chatkit_6"
+        },
+        {
+          "$ref": "#/$defs/chatkit_7"
+        }
+      ]
+    },
+    "chatkit_24": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_25"
+        }
+      ]
+    },
+    "chatkit_25": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/chatkit_5"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "chatkit_26": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_19"
+        }
+      ]
+    },
+    "chatkit_27": {
+      "type": "object",
+      "properties": {
+        "chatkit_configuration": {
+          "$ref": "#/$defs/chatkit_28"
+        },
+        "client_secret": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "expires_at": {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "max_requests_per_1_minute": {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_35"
+        },
+        "rate_limits": {
+          "$ref": "#/$defs/chatkit_36"
+        },
+        "status": {
+          "$ref": "#/$defs/chatkit_37"
+        },
+        "user": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "workflow": {
+          "$ref": "#/$defs/chatkit_41"
+        }
+      },
+      "required": [
+        "chatkit_configuration",
+        "client_secret",
+        "expires_at",
+        "id",
+        "max_requests_per_1_minute",
+        "object",
+        "rate_limits",
+        "status",
+        "user",
+        "workflow"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_28": {
+      "type": "object",
+      "properties": {
+        "automatic_thread_titling": {
+          "$ref": "#/$defs/chatkit_29"
+        },
+        "file_upload": {
+          "$ref": "#/$defs/chatkit_31"
+        },
+        "history": {
+          "$ref": "#/$defs/chatkit_34"
+        }
+      },
+      "required": [
+        "automatic_thread_titling",
+        "file_upload",
+        "history"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_29": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/chatkit_30"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_30": {
+      "type": "boolean"
+    },
+    "chatkit_31": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/chatkit_30"
+        },
+        "max_file_size": {
+          "$ref": "#/$defs/chatkit_32"
+        },
+        "max_files": {
+          "$ref": "#/$defs/chatkit_32"
+        }
+      },
+      "required": [
+        "enabled",
+        "max_file_size",
+        "max_files"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_32": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_33"
+        },
+        {
+          "$ref": "#/$defs/chatkit_11"
+        }
+      ]
+    },
+    "chatkit_33": {
+      "type": "null"
+    },
+    "chatkit_34": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/chatkit_30"
+        },
+        "recent_threads": {
+          "$ref": "#/$defs/chatkit_32"
+        }
+      },
+      "required": [
+        "enabled",
+        "recent_threads"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_35": {
+      "const": "chatkit.session"
+    },
+    "chatkit_36": {
+      "type": "object",
+      "properties": {
+        "max_requests_per_1_minute": {
+          "$ref": "#/$defs/chatkit_11"
+        }
+      },
+      "required": [
+        "max_requests_per_1_minute"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_37": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_38"
+        },
+        {
+          "$ref": "#/$defs/chatkit_39"
+        },
+        {
+          "$ref": "#/$defs/chatkit_40"
+        }
+      ]
+    },
+    "chatkit_38": {
+      "const": "active"
+    },
+    "chatkit_39": {
+      "const": "expired"
+    },
+    "chatkit_40": {
+      "const": "cancelled"
+    },
+    "chatkit_41": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "state_variables": {
+          "$ref": "#/$defs/chatkit_42"
+        },
+        "tracing": {
+          "$ref": "#/$defs/chatkit_44"
+        },
+        "version": {
+          "$ref": "#/$defs/chatkit_45"
+        }
+      },
+      "required": [
+        "id",
+        "state_variables",
+        "tracing",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_42": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_33"
+        },
+        {
+          "$ref": "#/$defs/chatkit_43"
+        }
+      ]
+    },
+    "chatkit_43": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/chatkit_23"
+      }
+    },
+    "chatkit_44": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "$ref": "#/$defs/chatkit_30"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_45": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_33"
+        },
+        {
+          "$ref": "#/$defs/chatkit_19"
+        }
+      ]
+    },
+    "chatkit_46": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_47"
+        },
+        "status": {
+          "$ref": "#/$defs/chatkit_48"
+        },
+        "title": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "user": {
+          "$ref": "#/$defs/chatkit_19"
+        }
+      },
+      "required": [
+        "created_at",
+        "id",
+        "object",
+        "status",
+        "title",
+        "user"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_47": {
+      "const": "chatkit.thread"
+    },
+    "chatkit_48": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_49"
+        },
+        {
+          "$ref": "#/$defs/chatkit_50"
+        },
+        {
+          "$ref": "#/$defs/chatkit_52"
+        }
+      ]
+    },
+    "chatkit_49": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/chatkit_38"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_50": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_51"
+        }
+      },
+      "required": [
+        "reason",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_51": {
+      "const": "locked"
+    },
+    "chatkit_52": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_53"
+        }
+      },
+      "required": [
+        "reason",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_53": {
+      "const": "closed"
+    },
+    "chatkit_54": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "$ref": "#/$defs/chatkit_30"
+        },
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_55"
+        }
+      },
+      "required": [
+        "deleted",
+        "id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_55": {
+      "const": "chatkit.thread.deleted"
+    },
+    "chatkit_56": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/chatkit_26"
+        },
+        "before": {
+          "$ref": "#/$defs/chatkit_26"
+        },
+        "limit": {
+          "$ref": "#/$defs/chatkit_10",
+          "type": [
+            "integer"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "order": {
+          "$ref": "#/$defs/chatkit_57"
+        },
+        "user": {
+          "$ref": "#/$defs/chatkit_26",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "chatkit_57": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_58"
+        },
+        {
+          "$ref": "#/$defs/chatkit_59"
+        }
+      ]
+    },
+    "chatkit_58": {
+      "const": "asc"
+    },
+    "chatkit_59": {
+      "const": "desc"
+    },
+    "chatkit_60": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "$ref": "#/$defs/chatkit_26"
+        },
+        "before": {
+          "$ref": "#/$defs/chatkit_26"
+        },
+        "limit": {
+          "$ref": "#/$defs/chatkit_10",
+          "type": [
+            "integer"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "order": {
+          "$ref": "#/$defs/chatkit_57"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "chatkit_61": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/chatkit_62"
+        },
+        "first_id": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "has_more": {
+          "$ref": "#/$defs/chatkit_30"
+        },
+        "last_id": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_110"
+        }
+      },
+      "required": [
+        "data",
+        "first_id",
+        "has_more",
+        "last_id",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_62": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chatkit_63"
+      }
+    },
+    "chatkit_63": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_64"
+        },
+        {
+          "$ref": "#/$defs/chatkit_82"
+        },
+        {
+          "$ref": "#/$defs/chatkit_94"
+        },
+        {
+          "$ref": "#/$defs/chatkit_96"
+        },
+        {
+          "$ref": "#/$defs/chatkit_101"
+        },
+        {
+          "$ref": "#/$defs/chatkit_106"
+        }
+      ]
+    },
+    "chatkit_64": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "$ref": "#/$defs/chatkit_65"
+        },
+        "content": {
+          "$ref": "#/$defs/chatkit_70"
+        },
+        "created_at": {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "inference_options": {
+          "$ref": "#/$defs/chatkit_76"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_80"
+        },
+        "thread_id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_81"
+        }
+      },
+      "required": [
+        "attachments",
+        "content",
+        "created_at",
+        "id",
+        "inference_options",
+        "object",
+        "thread_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_65": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chatkit_66"
+      }
+    },
+    "chatkit_66": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "mime_type": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "name": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "preview_url": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_67"
+        }
+      },
+      "required": [
+        "id",
+        "mime_type",
+        "name",
+        "preview_url",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_67": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_68"
+        },
+        {
+          "$ref": "#/$defs/chatkit_69"
+        }
+      ]
+    },
+    "chatkit_68": {
+      "const": "image"
+    },
+    "chatkit_69": {
+      "const": "file"
+    },
+    "chatkit_70": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chatkit_71"
+      }
+    },
+    "chatkit_71": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_72"
+        },
+        {
+          "$ref": "#/$defs/chatkit_74"
+        }
+      ]
+    },
+    "chatkit_72": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_73"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_73": {
+      "const": "input_text"
+    },
+    "chatkit_74": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_75"
+        }
+      },
+      "required": [
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_75": {
+      "const": "quoted_text"
+    },
+    "chatkit_76": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_33"
+        },
+        {
+          "$ref": "#/$defs/chatkit_77"
+        }
+      ]
+    },
+    "chatkit_77": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "tool_choice": {
+          "$ref": "#/$defs/chatkit_78"
+        }
+      },
+      "required": [
+        "model",
+        "tool_choice"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_78": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_33"
+        },
+        {
+          "$ref": "#/$defs/chatkit_79"
+        }
+      ]
+    },
+    "chatkit_79": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_80": {
+      "const": "chatkit.thread_item"
+    },
+    "chatkit_81": {
+      "const": "chatkit.user_message"
+    },
+    "chatkit_82": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "$ref": "#/$defs/chatkit_83"
+        },
+        "created_at": {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_80"
+        },
+        "thread_id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_93"
+        }
+      },
+      "required": [
+        "content",
+        "created_at",
+        "id",
+        "object",
+        "thread_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_83": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chatkit_84"
+      }
+    },
+    "chatkit_84": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/chatkit_85"
+        },
+        "text": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_92"
+        }
+      },
+      "required": [
+        "annotations",
+        "text",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_85": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chatkit_86"
+      }
+    },
+    "chatkit_86": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_87"
+        },
+        {
+          "$ref": "#/$defs/chatkit_89"
+        }
+      ]
+    },
+    "chatkit_87": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/chatkit_88"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_69"
+        }
+      },
+      "required": [
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_88": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_69"
+        }
+      },
+      "required": [
+        "filename",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_89": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/chatkit_90"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_91"
+        }
+      },
+      "required": [
+        "source",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_90": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/chatkit_91"
+        },
+        "url": {
+          "$ref": "#/$defs/chatkit_19"
+        }
+      },
+      "required": [
+        "type",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_91": {
+      "const": "url"
+    },
+    "chatkit_92": {
+      "const": "output_text"
+    },
+    "chatkit_93": {
+      "const": "chatkit.assistant_message"
+    },
+    "chatkit_94": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_80"
+        },
+        "thread_id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_95"
+        },
+        "widget": {
+          "$ref": "#/$defs/chatkit_19"
+        }
+      },
+      "required": [
+        "created_at",
+        "id",
+        "object",
+        "thread_id",
+        "type",
+        "widget"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_95": {
+      "const": "chatkit.widget"
+    },
+    "chatkit_96": {
+      "type": "object",
+      "properties": {
+        "arguments": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "call_id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "created_at": {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "name": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_80"
+        },
+        "output": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "status": {
+          "$ref": "#/$defs/chatkit_97"
+        },
+        "thread_id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_100"
+        }
+      },
+      "required": [
+        "arguments",
+        "call_id",
+        "created_at",
+        "id",
+        "name",
+        "object",
+        "output",
+        "status",
+        "thread_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_97": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_98"
+        },
+        {
+          "$ref": "#/$defs/chatkit_99"
+        }
+      ]
+    },
+    "chatkit_98": {
+      "const": "in_progress"
+    },
+    "chatkit_99": {
+      "const": "completed"
+    },
+    "chatkit_100": {
+      "const": "chatkit.client_tool_call"
+    },
+    "chatkit_101": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        "heading": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_80"
+        },
+        "summary": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "task_type": {
+          "$ref": "#/$defs/chatkit_102"
+        },
+        "thread_id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_105"
+        }
+      },
+      "required": [
+        "created_at",
+        "heading",
+        "id",
+        "object",
+        "summary",
+        "task_type",
+        "thread_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_102": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/chatkit_103"
+        },
+        {
+          "$ref": "#/$defs/chatkit_104"
+        }
+      ]
+    },
+    "chatkit_103": {
+      "const": "custom"
+    },
+    "chatkit_104": {
+      "const": "thought"
+    },
+    "chatkit_105": {
+      "const": "chatkit.task"
+    },
+    "chatkit_106": {
+      "type": "object",
+      "properties": {
+        "created_at": {
+          "$ref": "#/$defs/chatkit_11"
+        },
+        "id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "object": {
+          "$ref": "#/$defs/chatkit_80"
+        },
+        "tasks": {
+          "$ref": "#/$defs/chatkit_107"
+        },
+        "thread_id": {
+          "$ref": "#/$defs/chatkit_19"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_109"
+        }
+      },
+      "required": [
+        "created_at",
+        "id",
+        "object",
+        "tasks",
+        "thread_id",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_107": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/chatkit_108"
+      }
+    },
+    "chatkit_108": {
+      "type": "object",
+      "properties": {
+        "heading": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "summary": {
+          "$ref": "#/$defs/chatkit_45"
+        },
+        "type": {
+          "$ref": "#/$defs/chatkit_102"
+        }
+      },
+      "required": [
+        "heading",
+        "summary",
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_109": {
+      "const": "chatkit.task_group"
+    },
+    "chatkit_110": {
+      "const": "list"
+    },
+    "chatkit_create": {
+      "$ref": "#/$defs/chatkit_0"
+    },
+    "chatkit_session": {
+      "$ref": "#/$defs/chatkit_27"
+    },
+    "chatkit_thread": {
+      "$ref": "#/$defs/chatkit_46"
+    },
+    "chatkit_deleted": {
+      "$ref": "#/$defs/chatkit_54"
+    },
+    "chatkit_thread_query": {
+      "$ref": "#/$defs/chatkit_56"
+    },
+    "chatkit_item_query": {
+      "$ref": "#/$defs/chatkit_60"
+    },
+    "chatkit_items": {
+      "$ref": "#/$defs/chatkit_61"
+    },
+    "chatkit_client_request": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "threads.create",
+            "threads.add_user_message",
+            "threads.add_client_tool_output",
+            "threads.get_by_id",
+            "threads.list",
+            "threads.delete",
+            "threads.update",
+            "items.list",
+            "attachments.delete"
+          ]
+        },
+        "params": {
+          "type": "object"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "type",
+        "params"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_client_result": {
+      "type": "object"
+    },
+    "chatkit_document_attachment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "const": "file"
+        },
+        "mime_type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "mime_type"
+      ],
+      "additionalProperties": false
+    },
+    "chatkit_threads": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "const": "list"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/chatkit_thread"
+          }
+        },
+        "first_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "object",
+        "data",
+        "first_id",
+        "last_id",
+        "has_more"
+      ],
+      "additionalProperties": false
+    },
     "webhook_0": {
       "type": "object",
       "properties": {

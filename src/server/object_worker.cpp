@@ -2019,6 +2019,17 @@ class DiskStore {
             Number(blob ? blob->GetInt("bytes", -1) : -1));
         Set(&record, "data", std::move(metadata_only));
       }
+      if (metadata.kind == "chatkit_thread") {
+        const auto* stored = record.Find("data");
+        const auto* thread = stored ? stored->Find("thread") : nullptr;
+        if (!thread || !thread->IsObject()) return IoError();
+        // Internal list projection. Browser visibility and cursor selection
+        // depend on the originating workflow and session, never on item text.
+        auto projection = Object({{"thread", *thread}});
+        for (const char* key : {"workflow", "created_by", "session_only"})
+          if (const auto* value = stored->Find(key)) Set(&projection, key, *value);
+        Set(&record, "data", std::move(projection));
+      }
       if (request.GetString("kind") == "trace") {
         const auto* data = record.Find("data");
         const auto* trace = data ? data->Find("trace") : nullptr;

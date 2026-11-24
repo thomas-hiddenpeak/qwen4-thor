@@ -22,6 +22,9 @@ class FileHttpRequest {
   ~FileHttpRequest();
   ObjectReply Prepare(std::string_view method, std::string_view target,
                       std::string_view content_type, HttpBodyStream* stream, std::string_view accept = {});
+  ObjectReply PrepareChatKit(std::string_view token,
+                             std::string_view content_type,
+                             HttpBodyStream* stream);
   uint64_t WireLimit() const { return wire_limit_; }
   const ObjectReply* UploadFailure() const {
     if (skill_upload_ && !skill_upload_->Result().ok()) return &skill_upload_->Result();

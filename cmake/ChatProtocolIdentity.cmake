@@ -504,6 +504,15 @@ set(protocol_inputs
   src/server/file_fetch_http.cpp
   src/server/sip_webhook.cpp
   src/server/webhook_transport.cpp
+  src/server/chatkit_sessions.cpp
+  src/server/chatkit_client.cpp
+  src/server/chatkit_attachments.cpp
+  src/server/chatkit_attachments.h
+  src/server/chatkit_thread_state.cpp
+  src/server/chatkit_thread_state.h
+  src/server/chatkit_threads.cpp
+  src/server/chatkit_credentials.cpp
+  src/server/chatkit_credentials.h
   src/server/webhook_registry.cpp
   src/server/webhook_keys.cpp
   src/server/webhook_events.cpp
@@ -818,6 +827,9 @@ set(protocol_inputs
   include/q4t/server/agent_automation.h
   src/server/contracts/openai_automation_types_v1.json
   cmake/automation_types.h.in
+  cmake/chatkit_types.h.in
+  include/q4t/server/chatkit.h
+  src/server/contracts/openai_chatkit_types_v1.json
   cmake/webhook_types.h.in
   include/q4t/server/webhook.h
   src/server/contracts/openai_webhook_types_v1.json
@@ -1172,6 +1184,14 @@ if(NOT automation_delimiter EQUAL -1)
 endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/automation_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/automation_types_data.h" @ONLY)
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_chatkit_types_v1.json"
+  Q4T_CHATKIT_TYPES)
+string(FIND "${Q4T_CHATKIT_TYPES}" ")q4t_types\"" chatkit_delimiter)
+if(NOT chatkit_delimiter EQUAL -1)
+  message(FATAL_ERROR "ChatKit type graph collides with C++ raw string delimiter")
+endif()
+configure_file("${CMAKE_CURRENT_LIST_DIR}/chatkit_types.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/chatkit_types_data.h" @ONLY)
 file(READ "${Q4T_PROTOCOL_ROOT}/src/server/contracts/openai_webhook_types_v1.json"
   Q4T_WEBHOOK_TYPES)
 string(FIND "${Q4T_WEBHOOK_TYPES}" ")q4t_types\"" webhook_delimiter)
