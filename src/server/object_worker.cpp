@@ -687,7 +687,8 @@ class DiskStore {
     if (!data || !data->IsObject()) return {};
     const auto kind = record.GetString("kind");
     const bool page = kind == "tool_run" && IsBatchPage(*data);
-    if (!SupportsApplicationPayload(kind) && kind != "input_snapshot" && !page)
+    if (!SupportsApplicationPayload(kind) && kind != "input_snapshot" &&
+        kind != "evalrun" && !page)
       return {};
     struct Dependency {
       InputSnapshotRef reference;

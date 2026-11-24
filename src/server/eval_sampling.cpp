@@ -183,6 +183,7 @@ ObjectReply ProjectEvalSample(const Json& response, const Json& request,
 ObjectReply SamplingRequest(const Json& source, const Json& row,
                             const ChatPlanConfig& config, Json* request) {
   const auto* messages = source.Find("input_messages");
+  if (messages && messages->IsNull()) messages = nullptr;
   Json input;
   if (messages && messages->GetString("type") == "template") {
     input = Copy(*messages, "template");
@@ -268,8 +269,11 @@ ObjectReply SampleRow(ObjectStore& objects, const StateAccess& access,
                    "Evaluation client is at capacity");
     auto child =
         std::make_unique<ResponsesExecution>(objects, &owner.jobs, true);
-    auto prepared =
-        child->Prepare(request, config, access, std::time(nullptr), true);
+    const auto* frozen = ReplaysStoredResponse(source)
+                             ? row->Find("frozen_response_parts")
+                             : nullptr;
+    auto prepared = child->Prepare(request, config, access, std::time(nullptr),
+                                   true, nullptr, frozen);
     if (!prepared.ok()) return prepared;
     const auto* budget = child->Envelope().options.Find("max_output_tokens");
     if (!budget || !budget->IsNumber()) return InvalidRecord();
