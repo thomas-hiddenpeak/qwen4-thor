@@ -3208,6 +3208,93 @@
         }
       }
     },
+    "/v1/audio/translations": {
+      "post": {
+        "operationId": "createTranslation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/translation_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/translation_response"
+                    },
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/translation_verbose_response"
+                    }
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/vtt": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/x-subrip": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Audio translation error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t": {
+          "backend": "qwen3-asr-0.6b followed by the resident native Chat model",
+          "accepted_model_ids": [
+            "whisper-1",
+            "qwen3-asr-0.6b"
+          ],
+          "output_language": "english",
+          "required_for_subtitles": "aligner-model-dir",
+          "quota": "one request and one cumulative source and translation budget"
+        }
+      }
+    },
     "/v1/files": {
       "post": {
         "operationId": "post_v1_files",
@@ -57302,6 +57389,76 @@
             ],
             "additionalProperties": false
           },
+          "translation_create": {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string",
+                "format": "binary"
+              },
+              "model": {
+                "type": "string",
+                "minLength": 1
+              },
+              "prompt": {
+                "type": "string",
+                "x-q4t-max-utf8-bytes": 65536
+              },
+              "temperature": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "response_format": {
+                "enum": [
+                  "json",
+                  "text",
+                  "srt",
+                  "verbose_json",
+                  "vtt"
+                ]
+              }
+            },
+            "required": [
+              "file",
+              "model"
+            ],
+            "additionalProperties": false
+          },
+          "translation_response": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
+          },
+          "translation_verbose_response": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "language": {
+                "const": "english"
+              },
+              "duration": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 600
+              }
+            },
+            "required": [
+              "text",
+              "language",
+              "duration"
+            ],
+            "additionalProperties": false
+          },
           "transcription_create": {
             "type": "object",
             "properties": {
@@ -62963,7 +63120,8 @@
             "src/resources/vector-stores/vector-stores.ts": "0c00de16d61f78119003d7523c5c854c132c81bc08ef6b956f9f948e751721e9",
             "src/resources/vector-stores/files.ts": "66a73e8d347b3058eaeb1055eaa0cb9a7bf66e0414031039ecd583febf8ffc6e",
             "src/resources/vector-stores/file-batches.ts": "6bf7f8d32ecebb25dbf490e9ea193ae845240021aec4b977e3f333c7a63a8638",
-            "src/resources/audio/transcriptions.ts": "8a81d4cb4c975cf027f78b8d86feb2fb39e7860b265433a91ebf13bef9f61d80"
+            "src/resources/audio/transcriptions.ts": "8a81d4cb4c975cf027f78b8d86feb2fb39e7860b265433a91ebf13bef9f61d80",
+            "src/resources/audio/translations.ts": "1868adba37b8cc402975ad3a51f23ae506520abf4bdfb5314b9ed7656bbc404d"
           },
           "license_sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
           "compiler_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",

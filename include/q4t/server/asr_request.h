@@ -48,7 +48,8 @@ struct AsrRequest {
 // preserves the previous plan. Parsed advanced fields remain explicit until
 // their execution path is selected; no parameter is silently discarded.
 Status ParseAsrRequest(std::string_view content_type, std::string_view body,
-                       AsrRequest* out, ChatPlanError* error);
+                       AsrRequest* out, ChatPlanError* error,
+                       bool translation = false);
 std::string_view AsrLanguageName(std::string_view code);
 std::string_view AsrLanguageCode(std::string_view name);
 

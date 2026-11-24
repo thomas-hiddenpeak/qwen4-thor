@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <span>
 #include <string>
 #include <string_view>
@@ -36,5 +37,7 @@ Status AlignedAsrSubtitle(std::string_view text, int64_t duration_ms,
                           const audio::AlignerTimes& times, bool vtt,
                           std::string* out, int64_t origin_ms = 0,
                           size_t first_cue = 1, bool header = true,
-                          size_t* cue_count = nullptr);
+                          size_t* cue_count = nullptr,
+                          const std::function<Status(std::string_view,
+                                                     std::string*)>& translate = {});
 }  // namespace q4t::server

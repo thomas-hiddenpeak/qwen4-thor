@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #78 两项 host-contracts 均通过，已随 `5c054f0d7` 合入 main。主线包含子 Agent 单回合配额恢复和旧版实时对话凭据签发。旧版 WebSocket 事件及语音翻译属于后续候选。[合入记录](evidence/serve-realtime-legacy-sessions-20261124/issuance-main.json)
+
+原生 POST /v1/audio/translations 已通过官方 Node SDK 的五种格式。2.88 秒中文录音被译为“Please check the current project version number.”；SRT 与 VTT 均保留 0.640 至 2.800 秒的源语音边界。未知模型返回 404，错误字段和格式返回 400，独立 Chat 答 42。首次请求实际返回 502，模型拒绝了 JSON 包装的翻译指令；改为独立原文消息及翻译示例后，一次启动 47.336 秒通过。8 项 CPU、7 项合同及可选 nginx 真实转发通过。候选声明 135/231，默认 rev458 仍为 133/231，主轻配置与封包交付待验。[验收回执](evidence/serve-audio-translation-20261124/business.json)
+
 旧版实时对话的开始帧与终态都返回本次生成温度 0.6、输出上限 32，文本为 42。另一会话通过旧版签发入口取证，官方 SDK 使用转写 intent 和显式 beta 请求头连接；首帧返回扁平音频设置，更新后识别真实录音“请查询当前项目版本号。”，独立 Chat 答 42。同一启动用时 41.573 秒，10 项 CPU 检查通过。三种音频编码的回显已做 CPU 验证；本次业务用例未请求语音合成。下一步进行候选交付并补齐音频翻译。[验收回执](evidence/serve-realtime-legacy-sessions-20261124/beta-resources.json)
 
 官方 Node SDK 7.47.0 已用旧版 WebSocket 完成真实对话。会话签发温度 0.75，更新为 0.9，此次回答单独指定 0.6。客户端读到同一回答的 response.text.delta、response.text.done 和终态，文本为 42，用量 109 tokens。7 项 CPU 检查通过，原生与可选 nginx 均验证 SDK 请求头、浏览器子协议及错误版本。一次模型启动，用时 35.12 秒。后续补齐响应配置回显及转写首帧，默认仍为 rev458。[验收回执](evidence/serve-realtime-legacy-sessions-20261124/beta-wire.json)

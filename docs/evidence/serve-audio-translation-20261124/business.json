@@ -1,0 +1,143 @@
+{
+  "status": "CANDIDATE_BUSINESS_PASS",
+  "engine": "c1c4b359c063d68a0d17e8c13c97a72ea47da0fc5a84af22a4beefe72bf41873",
+  "ingress": "458b028f02d936beb055a4ffe1d4c6a55bc7766082c039339d3c2b4b05bc6919",
+  "compiled_sources": "d2826735441f0cdd0493aad4eeefdc039eaca143a22139814075258e39a880b7",
+  "protocol": "c582be6363c13f3dd81aa3fdfe17a5a8c47138561b891fbb98c162503e545157",
+  "sdk": {
+    "sdk": "7.47.0",
+    "formats": {
+      "json": {
+        "status": 200,
+        "content_type": "application/json",
+        "wire": "{\"text\":\"Please check the current project version number.\"}"
+      },
+      "text": {
+        "status": 200,
+        "content_type": "text/plain; charset=utf-8",
+        "wire": "Please check the current project version number."
+      },
+      "verbose_json": {
+        "status": 200,
+        "content_type": "application/json",
+        "wire": "{\"text\":\"Please check the current project version number.\",\"language\":\"english\",\"duration\":2.8799999999999999}"
+      },
+      "srt": {
+        "status": 200,
+        "content_type": "application/x-subrip; charset=utf-8",
+        "wire": "1\n00:00:00,640 --> 00:00:02,800\nPlease check the current project version number.\n\n"
+      },
+      "vtt": {
+        "status": 200,
+        "content_type": "text/vtt; charset=utf-8",
+        "wire": "WEBVTT\n\n1\n00:00:00.640 --> 00:00:02.800\nPlease check the current project version number.\n\n"
+      }
+    },
+    "negative": {
+      "unknown_model": 404,
+      "unknown_field": 400,
+      "bad_format": 400
+    },
+    "independent_chat": "42",
+    "status": "PASS",
+    "driver_sha256": "08c296ac0732756c63675b918c0704dd5153cb8c34439d3c32ba8c0e80ffa913",
+    "source_pcm_sha256": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483",
+    "wav_sha256": "3195ed0fec2e4ec7867d6c4b7528f390b390d4ff9d82af76a8e9ac40939c0282"
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 47.336,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "lease": "COMPLETED",
+  "targeted_cpu": 8,
+  "contract_tests": 7,
+  "optional_nginx_forwarding": "PASS",
+  "previous_attempt": {
+    "run": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 40.701,
+      "unchanged_default": true,
+      "phases": []
+    },
+    "error": {
+      "type": "Error",
+      "code": "input_preparation_refused",
+      "status": 502,
+      "message": "502 Preparation model refused its internal task"
+    },
+    "formats_completed": 0
+  },
+  "audit": {
+    "required_methods": 231,
+    "declared": 135,
+    "exact_success_declarations": 135,
+    "missing_declaration": 96,
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "issued": "3b131c8eda41846c98464ee8009bf14f2c72ec7420323cd5d4fc9364db690dec"
+    }
+  },
+  "scope": "One retained 2.88-second Mandarin question from authorized native speech. No transcript or English answer was passed to the recognizer or translator. Model ID whisper-1 is a compatibility alias for native Qwen ASR plus the resident native Chat model. The five wire formats, client errors, actual aligned timestamps and a fresh Chat were checked. No new external runtime dependency. Packaged recovery and long-running operation have not been demonstrated by this case.",
+  "retained_fixture_issue": "First contract run lacked the pinned SDK in the isolated checkout. Bound the already installed fixture, compared both SDK source files, and reran all seven.",
+  "artifacts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-business-02/result.json",
+      "sha256": "dc2473d5026ab8686bc3a286872d84abbecea7737365052e220425c32a890486"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-business-02/plan.json",
+      "sha256": "e98608110170a8787a92ce05635ef40daf4a320635b330719db87ef810e85dbf"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-business-02/create/sdk-result.json",
+      "sha256": "2cfd41ecdefed645da20e50bbcd6fd20b08433340c6a0c2eb5b7d0944f40d5df"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-lease-02/exit.json",
+      "sha256": "f4f114f046fa1f26a526df1ba7f2f2d4b45255f7335a959274a642c58ff6941a"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-business-01/result.json",
+      "sha256": "7cf1e4a359050c1556a51643a5ad11d316a2d53234339ef878bcd3a7a190ca46"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-business-01/create/sdk-result.json",
+      "sha256": "80e33f3f06a3e8b933ffcd3daaed3084be8827904e8e894b920da4ffa7af1060"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-lease-01/exit.json",
+      "sha256": "232302d8a1c34a1cabd500201e2575f61545fa5627dd83bb49b40d652c4e7d51"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-cpu-01.log",
+      "sha256": "7417cb7b6982b98fa682f7ad4be5b01f19fff4e8eb778aaf69ba4abd920da6ce"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-contract-01.log",
+      "sha256": "08cbd917896da90244fd687f6003e83748e657fc2d56039776efe7f1934005e6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-contract-03.log",
+      "sha256": "0aa0b6c928b3ab69f284f984466d979b4b14f170ea185d39a4ae812d6df1eaf6"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-nginx-01.log",
+      "sha256": "fffcf0347bf69b5bafa64c3619d5c0d98aafed2566ab045e3415bc79477138c5"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation-methods-01.json",
+      "sha256": "9dae25d4f5e0c45b96373dd937360d28f5083b198a10def7a6081e5e23a66805"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/translation_business.py",
+      "sha256": "fd5c5f1253021ef484762ef5d8ba32d3b2112a2a86d9a3f5e83eeb04f852b59f"
+    }
+  ]
+}

@@ -3208,6 +3208,93 @@
         }
       }
     },
+    "/v1/audio/translations": {
+      "post": {
+        "operationId": "createTranslation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "serve-application-v1.schema.json#/$defs/translation_create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "serve-application-v1.schema.json#/$defs/translation_response"
+                    },
+                    {
+                      "$ref": "serve-application-v1.schema.json#/$defs/translation_verbose_response"
+                    }
+                  ]
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/vtt": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/x-subrip": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Audio translation error",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t": {
+          "backend": "qwen3-asr-0.6b followed by the resident native Chat model",
+          "accepted_model_ids": [
+            "whisper-1",
+            "qwen3-asr-0.6b"
+          ],
+          "output_language": "english",
+          "required_for_subtitles": "aligner-model-dir",
+          "quota": "one request and one cumulative source and translation budget"
+        }
+      }
+    },
     "/v1/files": {
       "post": {
         "operationId": "post_v1_files",

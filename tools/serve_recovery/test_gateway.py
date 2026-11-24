@@ -64,12 +64,14 @@ class RouteInventoryTests(unittest.TestCase):
         def lanes(request):
             return [lane for pattern, lane in patterns if pattern.match(request)]
         for request in ('POST:/v1/audio/transcriptions',
-                        'POST:/v1/audio/transcriptions?trace=1'):
+                        'POST:/v1/audio/transcriptions?trace=1',
+                        'POST:/v1/audio/translations', 'POST:/v1/audio/translations?trace=1'):
             self.assertEqual(lanes(request), ['data'])
         for request in ('GET:/v1/audio/transcriptions',
                         'DELETE:/v1/audio/transcriptions',
                         'POST:/v1/audio/transcriptions/private',
                         'POST:/v1/audio/transcriptions#hidden',
+                        'GET:/v1/audio/translations', 'POST:/v1/audio/translations/private',
                         'POST:/v1/config'):
             self.assertEqual(lanes(request), [])
 

@@ -28,6 +28,7 @@ DYNAMIC_ROUTES = {'/v1/models/{model}': ('GET', 'DELETE')}
 # These route declarations are shared by standalone and supervised nginx modes.
 APPLICATION_ROUTES = [
     ('POST', '/v1/audio/transcriptions', 'data'),
+    ('POST', '/v1/audio/translations', 'data'),
     ('POST', '/v1/audio/speech', 'data'),
     ('POST', '/v1/decisions', 'data'),
     ('POST', '/v1/audio/voices', 'data'),

@@ -390,6 +390,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/asr_alignment_output.cpp
   src/server/asr_chunk_output.cpp
   src/server/chat_asr_alignment.cpp
+  src/server/chat_audio_translation.cpp
   src/server/chat_asr.cpp
   src/server/chat_realtime.cpp
   src/server/chat_realtime_secrets.cpp

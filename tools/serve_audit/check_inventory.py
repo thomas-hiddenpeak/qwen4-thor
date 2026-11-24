@@ -70,13 +70,16 @@ def current_surface(root):
     completion_fields = re.findall(r'"([a-z_]+)"', match[1])
     dispatch = (root / "src/server/chat_http.cpp").read_text()
     routes = re.findall(r'path == "([^"]+)" && method == "([A-Z]+)"', dispatch)
-    if 'HandleTranscription(fd, headers.content_type, body)' in dispatch:
+    if 'HandleTranscription(fd, headers.content_type, body,' in dispatch:
         reader = (root / 'src/server/http_request.cpp').read_text()
         if 'IsTranscriptionTarget(path)' not in dispatch or \
                 'IsTranscriptionTarget(*path) ? kTranscriptionBodyBytes' not in reader or \
                 'headers.body_limit, kAsrFormBytes' not in dispatch:
             raise ValueError('review native transcription body/dispatch contract')
-        routes.append(("/v1/audio/transcriptions", "POST"))
+        if 'path == "/v1/audio/translations"' not in dispatch:
+            raise ValueError('review native audio translation execution')
+        routes.extend((path, "POST") for path in
+                      ("/v1/audio/transcriptions", "/v1/audio/translations"))
     if 'if (IsModelDetailPath(path))' not in dispatch or \
             'method != "GET" && method != "DELETE"' not in dispatch or \
             'HandleModel(fd, method, path)' not in dispatch:
@@ -197,7 +200,7 @@ def current_surface(root):
               ("DELETE", "/v1/realtime/traces/{trace_id}")]
     routes.extend((path, method) for method, path in traces)
     native_routes.extend((method, path, "true") for method, path in traces)
-    if 'HandleTranscription(fd, headers.content_type, body)' in dispatch:
+    if 'HandleTranscription(fd, headers.content_type, body,' in dispatch:
         if 'path == "/v1/files" || IsTranscriptionTarget(target)' not in application_routes or \
                 'server::IsTranscriptionTarget(path)' not in native or \
                 'std::min(headers.body_limit, server::kTranscriptionBodyBytes)' not in native or \
