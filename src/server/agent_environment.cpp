@@ -1,5 +1,6 @@
 #include "q4t/server/agent_environment.h"
 
+#include <algorithm>
 #include <ctime>
 
 #include "agent_environment_internal.h"
@@ -9,6 +10,7 @@
 #include "q4t/server/application_routes.h"
 #include "q4t/server/conversation_state.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/request_limits.h"
 #include "q4t/server/input_snapshot_bindings.h"
 
 namespace q4t::server {
@@ -36,6 +38,9 @@ ObjectReply Resource(const Json& data, const std::string& id) {
     return Corrupt();
   ObjectReply out;
   out.value = *info;
+  if (info->GetString("status") == "suspended" &&
+      std::time(nullptr) >= data.GetInt("checkpoint_until"))
+    Set(&out.value, "status", String("expired"));
   if (info->GetString("status") == "ready" &&
       std::time(nullptr) >= data.GetInt("warm_until"))
     Set(&out.value, "status", String("expired"));
@@ -126,6 +131,8 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
   auto prepared = PrepareRecord(objects, access, *body.Find("environment"),
                                 vaults, resource, &copies);
   if (!prepared.ok()) return prepared;
+  // Only new standalone environments support multiple live attachments.
+  Set(&resource.data, "attached_sessions", Array());
   ObjectReply committed;
   if (key.empty()) {
     committed = objects.Execute(resource, access.deadline, access.cancelled);
@@ -155,6 +162,7 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access, Json query) {
   ChatPlanError error;
   auto shape = ValidateEnvironment(query, EnvironmentShape::kQuery, &error);
   if (!shape) return Invalid(shape.message(), error.param);
+  const auto type = query.GetString("type", "openai_hosted");
   std::erase_if(query.object,
                 [](const auto& entry) { return entry.first == "type"; });
   ItemViewOptions page;
@@ -165,18 +173,89 @@ ObjectReply List(ObjectStore& objects, const StateAccess& access, Json query) {
   req.kind = ObjectKind::kEnvironment;
   req.operation = ObjectOperation::kList;
   req.after = page.after;
-  req.limit = page.limit;
+  req.limit = std::min(8, page.limit + 1);
   req.descending = page.descending;
-  auto list = objects.Execute(req, access.deadline, access.cancelled);
-  if (!list.ok()) return list;
-  for (auto& row : Field(list.value, "data").array) {
-    auto view = Resource(Field(row, "data"), row.GetString("id"));
-    if (!view.ok()) return view;
-    row = std::move(view.value);
+  auto visible = Array();
+  bool more = false;
+  size_t page_bytes = 0;
+  for (;;) {
+    auto list = objects.Execute(req, access.deadline, access.cancelled);
+    if (!list.ok()) return list;
+    for (auto& row : Field(list.value, "data").array) {
+      auto view = Resource(Field(row, "data"), row.GetString("id"));
+      if (!view.ok()) return view;
+      const auto status = view.value.GetString("status");
+      if (status == "expired" || status == "failed" ||
+          view.value.GetString("type") != type) continue;
+      if (visible.array.size() == static_cast<size_t>(page.limit)) {
+        more = true;
+        break;
+      }
+      const auto bytes = OutputJson(view.value).size();
+      if (bytes > kChatBodyBytes - page_bytes) {
+        if (visible.array.empty())
+          return Error(413, "environment_view_limit", "Environment exceeds the list budget");
+        more = true;
+        break;
+      }
+      page_bytes += bytes;
+      visible.array.push_back(std::move(view.value));
+    }
+    if (more || !list.value.GetBool("has_more")) break;
+    auto next = list.value.GetString("last_id");
+    if (next.empty() || next == req.after) return Corrupt();
+    req.after = std::move(next);
   }
-  return list;
+  const auto edge = [&](bool first) {
+    if (visible.array.empty()) return Json{};
+    return *(first ? visible.array.front() : visible.array.back()).Find("id");
+  };
+  auto first = edge(true), last = edge(false);
+  ObjectReply result;
+  result.value = Object({{"object", String("list")}, {"data", std::move(visible)},
+                         {"has_more", Boolean(more)}, {"first_id", std::move(first)},
+                         {"last_id", std::move(last)}});
+  return result;
 }
 }  // namespace
+
+ObjectReply environment_detail::PrepareWorkspaceActivity(
+    ObjectStore& objects, const StateAccess& access, const Json& stored,
+    ObjectRequest* change) {
+  const auto* data = stored.Find("data");
+  if (!data) return Corrupt();
+  const auto* members = data->GetArray("attached_sessions");
+  if (!members || members->array.empty())
+    return Error(409, "environment_not_connected",
+                 "Environment has no attached session");
+  auto view = Resource(*data, stored.GetString("id"));
+  if (!view.ok()) return view;
+  const auto status = view.value.GetString("status");
+  if (status != "connected" && status != "suspended")
+    return Error(409, "environment_not_connected", "Workspace is unavailable");
+  change->scope = access.scope;
+  change->kind = ObjectKind::kEnvironment;
+  change->id = stored.GetString("id");
+  change->operation = ObjectOperation::kPut;
+  change->expected_revision = stored.GetInt("revision");
+  change->expires_at = stored.GetInt("expires_at");
+  change->data = *data;
+  if (status == "suspended") {
+    change->mutate_before = data->GetInt("checkpoint_until");
+    const auto* sealed = data->Find("sealed_definition");
+    if (!sealed || change->mutate_before <= 0) return Corrupt();
+    Json definition;
+    auto opened =
+        OpenDefinition(objects, access, change->id, *sealed, &definition);
+    if (!opened.ok()) return opened;
+    Set(&Field(change->data, "resource"), "status", String("connected"));
+    std::erase_if(change->data.object, [](const auto& field) {
+      return field.first == "suspended_at" || field.first == "checkpoint_until";
+    });
+  }
+  Set(&change->data, "last_activity_at", Number(std::time(nullptr)));
+  return {};
+}
 
 ObjectReply environment_detail::PrepareAttachment(
     ObjectStore& objects, const StateAccess& access, const Json& input,
@@ -199,12 +278,21 @@ ObjectReply environment_detail::PrepareAttachment(
     req.data = std::move(Field(row.value, "data"));
     auto view = Resource(req.data, req.id);
     if (!view.ok()) return view;
-    if (view.value.GetString("status") != "ready")
+    const auto state = view.value.GetString("status");
+    const auto* sessions = req.data.GetArray("attached_sessions");
+    if (state != "ready" &&
+        !(sessions && (state == "connected" || state == "disconnected" ||
+                       state == "suspended")))
       return Error(409, "environment_not_ready",
                    "Environment is no longer available for attachment");
     req.operation = ObjectOperation::kPut;
     req.expected_revision = row.value.GetInt("revision");
-    req.mutate_before = req.data.GetInt("warm_until");
+    if (sessions && sessions->array.size() >= kMaxAttachedSessions)
+      return Error(409, "environment_session_limit",
+                   "Environment has 128 attached sessions");
+    if (state == "ready") req.mutate_before = req.data.GetInt("warm_until");
+    if (state == "suspended")
+      req.mutate_before = req.data.GetInt("checkpoint_until");
     const auto* ids = req.data.GetArray("vault_ids");
     if (!ids) return Corrupt();
     auto checked = CheckAgentVaults(objects, access, *ids);
@@ -230,7 +318,17 @@ ObjectReply environment_detail::PrepareAttachment(
                           "capability_directories", "desktop"})
     Set(&session, key, *settings.value.Find(key));
   Set(&resource, "status", String("connected"));
-  Set(&req.data, "bound_session", String(session_id));
+  if (auto* sessions = req.data.Find("attached_sessions")) {
+    if (!sessions->IsArray() || HasAttachedSession(req.data, session_id))
+      return Corrupt();
+    Field(req.data, "attached_sessions").array.push_back(String(session_id));
+    std::erase_if(req.data.object, [](const auto& field) {
+      return field.first == "suspended_at" || field.first == "checkpoint_until";
+    });
+    Set(&req.data, "last_activity_at", Number(std::time(nullptr)));
+  } else {
+    Set(&req.data, "bound_session", String(session_id));
+  }
   req.ttl_seconds = 0;
   ObjectReply result;
   result.value = std::move(session);
@@ -266,11 +364,18 @@ ObjectReply HandleHostedEnvironment(
   if (route.kind == HostedRouteKind::kResource && split != target.npos)
     return Invalid("Unexpected query", "query");
   const std::string id(route.id);
-  auto saved = Read(objects, access, ObjectKind::kEnvironment, id);
-  if (!saved.ok()) return saved;
-  auto view = Resource(Field(saved.value, "data"), id);
-  if (!view.ok() || route.kind == HostedRouteKind::kResource) return view;
-  return environment_detail::WorkspaceFiles(objects, access, method, target,
-                                            input, saved.value, view.value);
+  // A read can race with another session updating the same workspace clock.
+  // Re-read its file list and membership before retrying the touch.
+  for (int attempt = 0;; ++attempt) {
+    auto saved = Read(objects, access, ObjectKind::kEnvironment, id);
+    if (!saved.ok()) return saved;
+    auto view = Resource(Field(saved.value, "data"), id);
+    if (!view.ok() || route.kind == HostedRouteKind::kResource) return view;
+    auto result = environment_detail::WorkspaceFiles(
+        objects, access, method, target, input, saved.value, view.value);
+    if (method != "GET" || result.code != "object_revision_conflict" ||
+        result.commit_unknown || attempt >= 2)
+      return result;
+  }
 }
 }  // namespace q4t::server

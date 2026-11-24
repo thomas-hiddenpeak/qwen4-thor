@@ -1,5 +1,6 @@
 #pragma once
 
+#include "agent_environment_bindings.h"
 #include "agent_workspace_copy.h"
 #include "q4t/server/agent_environment.h"
 #include "q4t/server/file_input.h"
@@ -12,6 +13,14 @@ ObjectReply PrepareAttachment(ObjectStore& objects, const StateAccess& access,
                               const std::string& session_id,
                               const io::Json& vaults, ObjectRequest* write,
                               std::shared_ptr<WorkspaceCopies>* copies);
+// Resolve shared files from the single workspace record for current views.
+ObjectReply PrepareWorkspaceActivity(ObjectStore& objects,
+                                     const StateAccess& access,
+                                     const io::Json& stored,
+                                     ObjectRequest* change);
+ObjectReply RefreshWorkspaceFiles(ObjectStore& objects,
+                                  const StateAccess& access,
+                                  const io::Json& record, io::Json* session);
 ObjectReply ResolveDefinition(ObjectStore& objects, const StateAccess& access,
                               const io::Json& environment,
                               io::Json* definition);

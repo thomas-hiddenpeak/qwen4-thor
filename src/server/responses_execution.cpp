@@ -8,6 +8,7 @@
 #include <ctime>
 
 #include "agent_session_internal.h"
+#include "agent_environment_bindings.h"
 #include "assistant_runs_internal.h"
 #include "agent_subagent_internal.h"
 #include "object_protocol.h"
@@ -86,7 +87,8 @@ ObjectReply ResponsesExecution::BindAgentSession(
       (environment->kind != ObjectKind::kEnvironment ||
        environment->operation != ObjectOperation::kPut ||
        environment->scope != mutation.scope ||
-       environment->data.GetString("bound_session") != mutation.id ||
+       !environment_detail::HasAttachedSession(environment->data,
+                                               mutation.id) ||
        !session->Find("environment") ||
        session->Find("environment")->GetString("id") != environment->id))
     return Error(500, "agent_environment_binding_invalid",

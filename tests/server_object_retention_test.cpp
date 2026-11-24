@@ -164,6 +164,12 @@ Q4T_TEST(object_retention_hosted_workspace_edges_allow_unrelated_collection) {
   Q4T_CHECK(!plan.uncertain && plan.eligible == 2 &&
             std::ranges::find(plan.selected, 4) != plan.selected.end() &&
             std::ranges::find(plan.selected, 5) != plan.selected.end());
+  const auto expired = InspectObjectRetention("environment", Parse(R"({
+    "resource":{"object":"agent.environment","id":"environment_x","status":"expired",
+      "files":[],"skills":[]},"warm_until":10,"vault_ids":["vault_x"],
+    "sealed_definition":"opaque"})"));
+  Q4T_CHECK(!expired.uncertain &&
+            expired.references == std::vector<std::string>{"vault_x"});
   const auto closed = InspectObjectRetention("environment", Parse(R"({
     "resource":{"object":"agent.environment","id":"environment_x","status":"disconnected",
       "files":[],"skills":[]},"warm_until":10,"vault_ids":["vault_x"]})"));

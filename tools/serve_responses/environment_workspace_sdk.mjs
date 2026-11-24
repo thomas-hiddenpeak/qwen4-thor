@@ -51,7 +51,18 @@ const session = events[0].session;
 assert.deepEqual(session.environment.files,warm.files);
 assert.equal(session.environment.id,env);
 assert.equal((await environments.create(config)).status,'connected');
-await assert.rejects(sessions.create({agent,environment:binding}),denied(409));
+let secondAttach;
+if (plan.legacyStandalone) {
+  await assert.rejects(sessions.create({agent,environment:binding}),denied(409));
+  secondAttach = 409;
+} else {
+  const second = await sessions.create({agent,environment:binding}).withResponse();
+  secondAttach = second.response.status;
+  assert.equal(secondAttach,201);
+  assert.equal(second.data.environment.id,env);
+  assert.equal((await sessions.delete(second.data.id)).deleted,true);
+  assert.equal((await environments.retrieve(env)).status,'connected');
+}
 assert.deepEqual((await sessions.turns.list(session.id)).data,[]);
 const name = '/workspace/records/notes.txt';
 const write = data => environments.files.create(env,{type:'inline',data,path:name});
@@ -85,5 +96,5 @@ await assert.rejects(environments.files.list(env),denied(409));
 process.stdout.write(JSON.stringify({sdk:version,source_bytes:release.length,
   states:['ready','connected','disconnected'],copied_before_source_deletion:true,
   create:201,stream_create:201,idle_events:events.map(e=>e.type),file_create:201,
-  replaced_bytes:0,pages:2,tenant:404,key_conflict:409,second_attach:409,
+  replaced_bytes:0,pages:2,tenant:404,key_conflict:409,second_attach:secondAttach,
   turn_answer:answer,deleted:true})+'\n');

@@ -1,0 +1,108 @@
+{
+  "status": "ACCEPT_REAL_PREWARM_EXPIRATION",
+  "issued": 472,
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 341.26,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "device_engine": "e6bf5c18f04f1654d24c0783c2eaa813c03bd1584f8a8f6dd53584e32d21690c",
+  "sdk": "7.47.0",
+  "signed_events": [
+    {
+      "id": "evt_2f06258ce5d2ef3336223d1f51d23fc5",
+      "object": "event",
+      "type": "agent.environment.ready",
+      "created_at": 1795530171,
+      "data": {
+        "id": "environment_0b58c4b07f9341cc9ea49eee82b5a6a5"
+      }
+    },
+    {
+      "id": "evt_619f2e9917c2e9fe53345d39fe3a41c2",
+      "object": "event",
+      "type": "agent.environment.ready",
+      "created_at": 1795530171,
+      "data": {
+        "id": "environment_2de1b2926d90e719bb48c0e0798482d3"
+      }
+    },
+    {
+      "id": "evt_57956f3197dab4c395f4c4bec748ea58",
+      "object": "event",
+      "type": "agent.environment.expired",
+      "created_at": 1795530471,
+      "data": {
+        "id": "environment_2de1b2926d90e719bb48c0e0798482d3"
+      }
+    }
+  ],
+  "untouched_until_callback": true,
+  "expiry_seconds": 300,
+  "observed_delivery_lag_seconds": 0,
+  "clock_resolution_seconds": 1,
+  "expired_attach_http": 409,
+  "peer": 404,
+  "independent_chat": "42",
+  "cpu": {
+    "environment-expiry-cpu-02.log": 11,
+    "environment-expiry-list-01.log": 1,
+    "environment-expiry-retention-01.log": 1
+  },
+  "official_source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed",
+  "remaining": [
+    "Multiple attachments and retained shared workspaces",
+    "Idle compute suspension and checkpoint resume for seven days",
+    "Prewarm setup failure"
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-expiry-lease-01/exit.json",
+      "sha256": "d44692ba817a7cddf520ded911583d0257d83084046ccdeed3b3b2cfffa89160"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-expiry-business-01/plan.json",
+      "sha256": "1aa62c4ee8e2d7e0033799a5fbbe17819fc15d5512f3da6655f7c7f85f73ae79"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-expiry-business-01/result.json",
+      "sha256": "94bc5d2be83fac9eb6f35623991ba317e659b0d2617294ea14f07ade6f1a9794"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-expiry-business-01/create/sdk-result.json",
+      "sha256": "8e2ecc8d7f4fe3202903ac9e3438bb60229ace62336e826926d871d40b6fb674"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-expiry-business-01/create/run-wire.json",
+      "sha256": "192c0843908d598913e364afa0b0e8297199e7a6b8e474c726d650a74fe2ffda"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment_expiry_business.py",
+      "sha256": "b444a01603e50a7efa5981dab8b297300739f7c610de12f2c6c6cf4e48f2c00b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-expiry-tested-source.patch",
+      "sha256": "9a240ce3d8666e8db60a43597042d8cebe93598fcb5e5abe1f766b26c0a5d337"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-expiry-inventory-01.json",
+      "sha256": "e6ee5d29e7e00ada5ed46200158a16c3bc471d6770b906b4f591dfeabf27bd6d"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-expiry-cpu-02.log",
+      "sha256": "bd9d22571d9b80235d1ce25fcda5865936a8e24ed0bc9703a6c639b0cc2d3396"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-expiry-list-01.log",
+      "sha256": "4f44392490a867fc5fed463f05934ee632db720d37ff077fa1744ad604433cc0"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-expiry-retention-01.log",
+      "sha256": "ea9473a46870f272098a080df7f92871446a31346112a657fd7e495daf5f05ad"
+    }
+  ]
+}

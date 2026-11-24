@@ -1,4 +1,5 @@
 #include "q4t/server/object_retention.h"
+#include "agent_environment_bindings.h"
 
 #include <algorithm>
 #include <deque>
@@ -119,7 +120,8 @@ class Inspector {
       return;
     }
     const auto status = resource->GetString("status");
-    if (!is_template && status == "disconnected") {
+    const auto* attached = data.GetArray("attached_sessions");
+    if (!is_template && !attached && status == "disconnected") {
       value.uncertain = sealed || data.Has("bound_session");
       return;
     }
@@ -138,7 +140,11 @@ class Inspector {
                           payloads))
           value.uncertain = true;
     } else if (!StoredString(sealed, {"sealed_definition"}, payloads)) {
-      value.uncertain = true;
+      const bool discarded = !is_template && attached && status == "expired" &&
+                             !sealed && data.GetInt("expired_at") > 0 &&
+                             !data.Has("input_snapshots") && payloads.empty() &&
+                             files->array.empty() && skills->array.empty();
+      if (!discarded) value.uncertain = true;
     }
     for (const auto& file : files->array) {
       const auto type = file.GetString("type");
@@ -162,9 +168,27 @@ class Inspector {
       value.uncertain = true;
       return;
     }
-    if (status == "connected")
+    if (attached) {
+      if (data.Has("bound_session") ||
+          attached->array.size() > environment_detail::kMaxAttachedSessions ||
+          (status == "connected" && attached->array.empty()) ||
+          ((status == "ready" || status == "disconnected") &&
+           !attached->array.empty()) ||
+          (status != "connected" && status != "disconnected" &&
+           status != "expired" && status != "ready" && status != "suspended"))
+        value.uncertain = true;
+      std::unordered_set<std::string_view> unique;
+      for (const auto& id : attached->array) {
+        if (!id.IsString() || !id.str.starts_with("agent_session_") ||
+            !ValidApplicationId(id.str) || !unique.insert(id.str).second)
+          value.uncertain = true;
+        else
+          Reference(&id);
+      }
+    } else if (status == "connected")
       RequiredId(data, "bound_session", "agent_session_");
-    else if (status != "ready")
+    else if ((status != "ready" && status != "expired") ||
+             data.Has("bound_session"))
       value.uncertain = true;
     for (const auto& vault : vaults->array) {
       if (!vault.IsString() || !vault.str.starts_with("vault_"))

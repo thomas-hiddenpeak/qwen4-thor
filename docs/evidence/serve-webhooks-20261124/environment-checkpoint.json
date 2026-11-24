@@ -1,0 +1,78 @@
+{
+  "status": "ACCEPT_TARGETED_HOSTED_CHECKPOINT_LIFECYCLE",
+  "issued": 472,
+  "device_runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 93.292,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "device_binary": "81e75c5aadcebca151224c016d926709324ebdafe01414fdde34d435a6405829",
+  "sdk": "7.47.0",
+  "cpu_verified_binary": "a33e1ac6f1cb51361de75e37bc97921eb776ec465e1f80128e020418787bb955",
+  "device_seed": "Authentic native owner-scoped store with last activity moved to 90 seconds before its 20 minute idle deadline",
+  "device_seconds": 93.292,
+  "official_shapes": 4,
+  "webhook_at_persisted_deadline": true,
+  "session_answer": "42",
+  "independent_chat": "42",
+  "peer": 404,
+  "restored_bytes": 4,
+  "restored_sha256": "9d2e5837df4ee69fa41a72177a4747c74b6b83c45845ef16bd78827bca0f18a0",
+  "cpu_cases": 13,
+  "cpu_coverage": [
+    "7 day cutoff with durable timestamps and private payload release",
+    "Corrupt private checkpoint denied without reactivation",
+    "Running inference and external tool wait retain workspace, cancel counts as new activity",
+    "Unattached expired receipt has bounded TTL",
+    "Legacy single-owner and 128 shared members"
+  ],
+  "original_failed_test": "First checkpoint CPU attempt failed at suspension. Changing siblings invalidated a reference to the status node. The corrected transaction commits status first.",
+  "device_identity_note": "Subsequent cancellation-clock, same-second read and unattached receipt refinements have focused CPU evidence. This GPU receipt is for its recorded binary.",
+  "elapsed_idle_20min": false,
+  "elapsed_retention_7days": false,
+  "remaining": [
+    "Session environment SSE, provisioning failures and the remaining serve plan."
+  ],
+  "raw": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-checkpoint-lease-01/exit.json",
+      "sha256": "f3c36b654930ca07afb2cb77e856b922a4a6c648b6f7830a4bc0ffee3c651872"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-checkpoint-business-01/plan.json",
+      "sha256": "aaad66d8e01287e6c8f7e624be201efd3ad8abeeb03fb9a40da4bceeac0c2d7e"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-checkpoint-business-01/result.json",
+      "sha256": "a637f107cef71cbcf33bc7e6ff41f4726f4b7b5a0ddeb3cefb980585950534b9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-checkpoint-business-01/create/sdk-result.json",
+      "sha256": "b19b0795fb423b16eda468f20041e79741e43efe3a16d2eaa0aee9ef7617b4db"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment-checkpoint-business-01/create/run-wire.json",
+      "sha256": "ce7238f267dec5e39ce9e7b20c096fafee2244d971cacead04d640bfce711988"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/checkpoint-cpu-05.log",
+      "sha256": "e56a253489aa246da4c8abebfef8739f286ca18092309ffa98e7310490a6f7da"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/checkpoint-cpu-01.log",
+      "sha256": "504acbece439d3892237c760bef0f33b3ddacc9ba34b64538228d579cf0d9557"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/webhook-dev/checkpoint-inventory-01.json",
+      "sha256": "690a128a87bb4555b134619eb20aa620243861bfde2d1b9ba3477a6c474d080b"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/environment_checkpoint_business.py",
+      "sha256": "68660601f4117cfef5f19f2e6d1341d9200af06c2363d34a5eea48beaab5f210"
+    }
+  ]
+}

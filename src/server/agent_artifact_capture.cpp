@@ -121,7 +121,8 @@ ObjectReply TurnArtifacts::Prepare(const std::string& session,
   const auto is_output = [](const Json& file) {
     return file.GetString("path").starts_with(kOutputs);
   };
-  if (std::ranges::none_of(files->array, is_output)) return {};
+  const bool shared = source.GetBool("shared_environment");
+  if (!shared && std::ranges::none_of(files->array, is_output)) return {};
   AgentSessionView view;
   auto projected = ProjectStep(settings.value, *link, record, &view);
   if (!projected.ok() || view.turn.GetString("status") != "completed")
@@ -135,7 +136,14 @@ ObjectReply TurnArtifacts::Prepare(const std::string& session,
   if (!row.ok()) return row;
   const auto& stored = Field(row.value, "data");
   const auto* sealed = stored.Find("sealed_definition");
-  if (!sealed || stored.GetString("bound_session") != session) return Invalid();
+  if (!sealed || !environment_detail::HasAttachedSession(stored, session))
+    return Invalid();
+  if (shared) {
+    const auto* resource = stored.Find("resource");
+    files = resource ? resource->GetArray("files") : nullptr;
+    if (!files) return Invalid();
+    if (std::ranges::none_of(files->array, is_output)) return {};
+  }
   Json definition;
   auto opened = environment_detail::OpenDefinition(
       objects_, access_, workspace.id, *sealed, &definition);

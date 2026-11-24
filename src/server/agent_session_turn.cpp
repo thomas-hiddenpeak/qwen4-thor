@@ -10,6 +10,7 @@
 #include "q4t/server/input_snapshot_bindings.h"
 
 #include "agent_session_internal.h"
+#include "agent_environment_internal.h"
 #include "agent_automation_tool.h"
 #include "agent_subagent_internal.h"
 #include "agent_workspace_copy.h"
@@ -290,6 +291,9 @@ ObjectReply PrepareAgentSessionExecution(
   mutation.scope = access.scope;
   mutation.ttl_seconds = 0;
   mutation.data = Object({{"session", start.session}, {"turns", Array()}});
+  if (start.environment_write &&
+      start.environment_write->data.Has("attached_sessions"))
+    Set(&mutation.data, "shared_environment", Boolean(true));
   if (start.tool_search) Set(&mutation.data, "tool_search", Boolean(true));
   if (!start.sealed_http.empty())
     Set(&mutation.data, "sealed_http", String(start.sealed_http));
@@ -520,7 +524,8 @@ ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
     auto settings = SessionSettings(data);
     if (!settings.ok()) return settings;
     *view = {std::move(settings.value), {}, Array(), Array()};
-    return {};
+    return environment_detail::RefreshWorkspaceFiles(objects, access, data,
+                                                     &view->session);
   }
   const std::string selected = turn_id.empty()
                                    ? links->array.back().GetString("id")
@@ -592,7 +597,8 @@ ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
     }
   }
   *view = std::move(result);
-  return {};
+  return environment_detail::RefreshWorkspaceFiles(objects, access, data,
+                                                   &view->session);
 }
 }  // namespace agent_detail
 
@@ -884,8 +890,20 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
   std::erase_if(data.object, [](const auto& field) {
     return field.first == "pending_tool_results";
   });
+  std::optional<ObjectRequest> workspace;
+  if (data.GetBool("shared_environment")) {
+    ObjectRequest lookup;
+    lookup.kind = ObjectKind::kEnvironment;
+    lookup.scope = access.scope;
+    lookup.id = execution_settings.Find("environment")->GetString("id");
+    auto stored = objects.Execute(lookup, access.deadline, access.cancelled);
+    if (!stored.ok()) return stored;
+    auto active = environment_detail::PrepareWorkspaceActivity(
+        objects, access, stored.value, &workspace.emplace());
+    if (!active.ok()) return active;
+  }
   mutation.data = std::move(data);
-  return run.BindAgentSession(std::move(mutation));
+  return run.BindAgentSession(std::move(mutation), std::move(workspace));
 }
 ObjectReply ReconcileAgentEventReceipt(
     ObjectStore& objects, const std::string& id, const Json& request,

@@ -687,6 +687,28 @@
         "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
         "signed_envelopes": 13,
         "cpu_cases": 10
+      },
+      "prewarm_expiry_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-expiry.json",
+        "deadline_seconds": 300,
+        "remaining": [
+          "Multiple attachments and retained shared workspaces",
+          "Idle compute suspension and checkpoint resume for seven days",
+          "Prewarm setup failure"
+        ],
+        "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
+      },
+      "standalone_shared_workspaces_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
+        "max_sessions": 128
+      },
+      "hosted_checkpoint_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
+        "idle_seconds": 1200,
+        "retention_seconds": 604800
       }
     },
     {
@@ -2843,6 +2865,28 @@
         "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
         "signed_envelopes": 13,
         "cpu_cases": 10
+      },
+      "prewarm_expiry_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-expiry.json",
+        "deadline_seconds": 300,
+        "remaining": [
+          "Multiple attachments and retained shared workspaces",
+          "Idle compute suspension and checkpoint resume for seven days",
+          "Prewarm setup failure"
+        ],
+        "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
+      },
+      "standalone_shared_workspaces_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
+        "max_sessions": 128
+      },
+      "hosted_checkpoint_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
+        "idle_seconds": 1200,
+        "retention_seconds": 604800
       }
     },
     {
@@ -6402,6 +6446,28 @@
         "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
         "signed_envelopes": 13,
         "cpu_cases": 10
+      },
+      "prewarm_expiry_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-expiry.json",
+        "deadline_seconds": 300,
+        "remaining": [
+          "Multiple attachments and retained shared workspaces",
+          "Idle compute suspension and checkpoint resume for seven days",
+          "Prewarm setup failure"
+        ],
+        "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
+      },
+      "standalone_shared_workspaces_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
+        "max_sessions": 128
+      },
+      "hosted_checkpoint_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
+        "idle_seconds": 1200,
+        "retention_seconds": 604800
       }
     },
     {
@@ -9794,6 +9860,28 @@
         "evidence": "evidence/serve-webhooks-20261124/agent-turns.json",
         "signed_envelopes": 13,
         "cpu_cases": 10
+      },
+      "prewarm_expiry_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-expiry.json",
+        "deadline_seconds": 300,
+        "remaining": [
+          "Multiple attachments and retained shared workspaces",
+          "Idle compute suspension and checkpoint resume for seven days",
+          "Prewarm setup failure"
+        ],
+        "source": "https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed"
+      },
+      "standalone_shared_workspaces_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/shared-environment.json",
+        "max_sessions": 128
+      },
+      "hosted_checkpoint_20261124": {
+        "state": "targeted_acceptance",
+        "evidence": "evidence/serve-webhooks-20261124/environment-checkpoint.json",
+        "idle_seconds": 1200,
+        "retention_seconds": 604800
       }
     },
     {
@@ -11375,8 +11463,8 @@
       }
     }
   ],
-  "next_task": "Complete hosted environment expiry and remaining lifecycle producers and continue the inference and application API scopes and recovery tasks.",
-  "next": "补齐托管环境过期等实际生产端事件，再继续其余推理、应用服务与恢复项。",
+  "next_task": "Implement and verify session environment SSE, real environment provisioning failures and remaining inference, application and recovery tasks.",
+  "next": "补齐会话 SSE 环境事件、真实预热失败，继续其余推理、应用与恢复项。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
