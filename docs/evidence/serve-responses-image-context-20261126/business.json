@@ -1,0 +1,107 @@
+{
+  "implementation_commit": "4ae1cf64422a80adf28ae89d2a1266a2d0ecf277",
+  "engine": "125c2a5b5b3c60e6da30fee0e4e3763bb86fe7b6021c199a8519edfdc6152cc5",
+  "sdk_actor": "5c9e60788d6a50bdacda7d55349b8f13d5e4cbbc547cf326bd639ad0c1c2d87a",
+  "sdk": "7.47.0",
+  "transport": "Native TLS, pinned official Node SDK; 896 by 896 solid blue RGB PNG",
+  "first_attempt": {
+    "run": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 46.974,
+      "unchanged_default": true,
+      "phases": []
+    },
+    "status": "incomplete",
+    "reason": {
+      "reason": "max_output_tokens"
+    },
+    "usage": {
+      "input_tokens": 959,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 16,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 975
+    },
+    "content": [
+      {
+        "type": "refusal",
+        "refusal": "\nThe image is a solid blue color."
+      }
+    ]
+  },
+  "structured": {
+    "run": {
+      "status": "PASS",
+      "starts": 1,
+      "seconds": 61.999,
+      "unchanged_default": true,
+      "phases": [
+        "create"
+      ]
+    },
+    "rows": [
+      {
+        "family": "stable",
+        "policy": "disabled",
+        "id": "resp_8a06fee9d8c3589a25d9ef64db7a3f8d",
+        "text": "{\"color\": \"blue\"}",
+        "tokens": 1078,
+        "compact": "resp_124f7ce7720fd143c9ed98c43abc41cf",
+        "source_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+        "peer": 404
+      },
+      {
+        "family": "beta",
+        "policy": "enabled",
+        "id": "resp_48acdd4b7854b160a3c62d35c6edc497",
+        "text": "{\"color\": \"blue\"}",
+        "tokens": 550,
+        "compact": "resp_14631376ae977d4c94486651bd16f0ac",
+        "source_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+        "peer": 404
+      }
+    ],
+    "output_choices": [
+      "red",
+      "green",
+      "blue",
+      "yellow",
+      "black",
+      "white"
+    ],
+    "expected_input_token_difference": 528,
+    "original_detail_and_png_roundtrip_both": true,
+    "unknown_policy_status": 400
+  },
+  "ordinary_retry": {
+    "id": "resp_454b8e7c84cc12982909f6073d4fa779",
+    "status": "completed",
+    "usage": {
+      "input_tokens": 959,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 25,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 984
+    },
+    "parts": [
+      {
+        "type": "refusal",
+        "refusal": "\nThe image is a solid blue color.\n"
+      }
+    ]
+  },
+  "ordinary_quality": "Unconstrained greedy completion repeated a correct color inside a refusal block. Increasing the cap fixed truncation only. The ordinary output contract remains a separate quality failure.",
+  "issued": false,
+  "production_revision": 520
+}

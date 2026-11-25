@@ -1296,6 +1296,12 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
+      },
+      "responses_image_context_20261126": {
+        "stage": "native_tls_sdk_geometry_and_source_verified",
+        "receipt": "evidence/serve-responses-image-context-20261126/business.json",
+        "ordinary_refusal": "quality failure recorded on both unconstrained attempts",
+        "issued": false
       }
     },
     {

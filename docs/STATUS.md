@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+同一张 896×896 蓝色图片经官方 SDK、原生 TLS 分别走 stable 和 beta Responses。六选一的结构化结果都为 blue；启用上下文压缩后输入从 1078 降为 550 tokens，两边 compact 均保留原图，跨客户读取均返回 404。普通回答在 16 tokens 截断，给到 96 后用 25 tokens 完成，但正文仍被标为 refusal。两条普通结果均保留为质量失败；尚待整包交接。[业务回执](evidence/serve-responses-image-context-20261126/business.json)
+
 Responses 与 beta Responses 的图像上下文选项候选已通过 3 项原生 CPU 用例和 1 项应用合同用例。显式启用时，自动细节图片使用 512 像素上限，high 使用 1024，original 按原规则保留；自动策略在同一请求有多张用户图片时启用。原始图像和 detail 留在会话记录中。初版夹具自称 PNG 却只有一个字节，已换为有效 PNG。来源清单 40 项变异检查通过。下一步用合成色块通过真实 TLS 比对图像回答、用量和 compact 回读。[CPU 验证记录](evidence/serve-responses-image-context-20261126/cpu.json)
 
 公开 JSON Schema 已在主、轻配置间实际生效。主配置查到真实发行号 518，创建流关闭填充。轻配置按原会话、回合和回答 ID 读回记录，订阅恢复默认填充，下一回合答出 42。独立检查两个持久 Responses 的请求与生效缓存寿命分别为 12h 和 30m。清除设置后可读回模型默认状态，两个配置的跨客户读取均为 404。每种配置各启动一次模型，分别耗时 41.504 和 35.994 秒。两份 v65 记录均逐字节还原各自的 v64 前驱。 下一步是托管服务故障接手及可回退发行。[配置交接回执](evidence/serve-agent-structured-format-20261126/profiles.json)

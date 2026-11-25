@@ -21,14 +21,29 @@ const image = {type:'input_image', detail:'auto', image_url:'data:image/png;base
 const message = {role:'user', content:[image, {type:'input_text',text:'What is the single solid color in this image? Answer with one English color word.'}]};
 const textOf = response => response.output.filter(i => i.type === 'message')
   .flatMap(i => i.content).filter(p => p.type === 'output_text').map(p => p.text).join('');
+// Six choices keep the image informative while making the output shape testable.
+const colorFormat = {type:'json_schema',name:'observed_color',strict:true,
+  schema:{type:'object',properties:{color:{type:'string',enum:['red','green','blue','yellow','black','white']}},
+    required:['color'],additionalProperties:false}};
 const rows = [];
+let ordinary;
+
 for (const [family, api, policy] of [['stable', owner.responses, 'disabled'], ['beta', owner.beta.responses, 'enabled']]) {
   const format = {context_compression:policy};
   const body = {model:plan.model, input:[message], image:format};
-  const answer = await api.create({...body, temperature:0, reasoning:{effort:'none'}, max_output_tokens:16});
+  const options = {temperature:0, reasoning:{effort:'none'}, max_output_tokens:96};
+  if (family === 'stable') {
+    const raw = await api.create({...body,...options});
+    ordinary = {id:raw.id,status:raw.status,reason:raw.incomplete_details?.reason,
+      usage:raw.usage,parts:raw.output.filter(x=>x.type==='message').flatMap(x=>x.content)};
+    process.stderr.write(JSON.stringify({ordinary})+'\n');
+  }
+  const answer = await api.create({...body,...options,text:{format:colorFormat}});
+  process.stderr.write(JSON.stringify({family,id:answer.id,status:answer.status,usage:answer.usage,
+    parts:answer.output.filter(x=>x.type==='message').flatMap(x=>x.content)})+'\n');
   assert.equal(answer.status, 'completed');
   assert.deepEqual(answer.image, format);
-  assert.match(textOf(answer).trim(), /^blue[.!]?$/i);
+  assert.deepEqual(JSON.parse(textOf(answer)), {color:'blue'});
   const stored = await api.retrieve(answer.id);
   assert.equal(textOf(stored), textOf(answer));
   assert.deepEqual(stored.image, format);
@@ -46,4 +61,4 @@ for (const [family, api, policy] of [['stable', owner.responses, 'disabled'], ['
 assert.equal(rows[0].tokens - rows[1].tokens, plan.expected_delta);
 await assert.rejects(owner.responses.create({model:plan.model,input:'x',image:{context_compression:'invalid'}}),
   e => e.status === 400 && e.param === 'image.context_compression');
-process.stdout.write(JSON.stringify({sdk:version,rows,expected_delta:plan.expected_delta}));
+process.stdout.write(JSON.stringify({sdk:version,ordinary,rows,expected_delta:plan.expected_delta}));

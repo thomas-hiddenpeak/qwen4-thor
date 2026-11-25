@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+同一张 896×896 蓝色图片经官方 SDK、原生 TLS 分别走 stable 和 beta Responses。六选一的结构化结果都为 blue；启用上下文压缩后输入从 1078 降为 550 tokens，两边 compact 均保留原图，跨客户读取均返回 404。普通回答在 16 tokens 截断，给到 96 后用 25 tokens 完成，但正文仍被标为 refusal。两条普通结果均保留为质量失败；尚待整包交接。[业务回执](evidence/serve-responses-image-context-20261126/business.json)
+
 Agents 的结构化输出格式只有 type 和 schema。原版本把该配置直接交给 Responses，合法请求会因缺少 text.format.name 失败。现由内部适配器命名并开启严格校验。官方 SDK 通过原生 TLS 收到整数 518 与 42，持久配置保留客户原始 schema，后端两回合均实际启用 strict。模型此前两次对普通发行号查询拒答，保留质量失败。用同一 107-token 请求做两次独立启动，贪心和固定种子采样的正文、逐 token 概率及用量各自相同，均得到 518。 默认仍为 rev518，下一步验证修订包的配置和托管交接。[业务与对照记录](evidence/serve-agent-structured-format-20261126/business.json)
 
 第一次托管短验留下了真实的拒答格式错误。修复后，失败回合保留原错误，Agent 会话返回 idle，下一回合继承原用户输入和缓存寿命，并在模型历史中标明前一回合已失败。首次复放有两个连续用户输入，模型在拒答字段返回了上一题的发行号；增加回合边界后，SDK 从同一失败记录恢复，后续算术题和独立 Chat 均答 42，原失败记录逐字节一致，跨客户读取为 404。仅对三种模型输出格式错误应用此规则，依赖和运行时错误继续走原故障路径。 当前默认仍是 rev518，接续修订版的配置交接及托管恢复。[复放回执](evidence/serve-agent-turn-output-recovery-20261126/business.json)
