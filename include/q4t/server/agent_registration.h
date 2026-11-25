@@ -6,6 +6,9 @@ enum class AgentRegistrationShape { kCreate, kUpdate, kResource, kDeleted };
 Status ValidateAgentRegistration(const io::Json& value,
                                  AgentRegistrationShape shape,
                                  ChatPlanError* error);
+// Translate a normalized Agent web-search declaration for Responses.
+// A disabled declaration contributes no executable tool.
+io::Json NativeAgentWebSearch(const io::Json& tool);
 ObjectReply HandleAgentRegistration(ObjectStore& objects,
                                     std::string_view method,
                                     std::string_view target,

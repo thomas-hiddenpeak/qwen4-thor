@@ -1,0 +1,121 @@
+{
+  "stage": "candidate_http",
+  "issued": false,
+  "issued_revision": 510,
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 88.76,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "lease_sha256": "285ec9bc135128e0e3c469721bae5f9ae5745a2d9226c03ede51377d7fa002cd",
+  "sdk": "7.47.0",
+  "binary": "68b83bcbbd3295ccd18b2f9b3068010061adbbdfbb7381aa1f6a5194088f4be0",
+  "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+  "serving_protocol_sha256": "ee651d2ae4e2896d158c9311d511135814afd790a98c92877bd2b19811b7859b",
+  "actor_sha256": "c593d9b9eec94f60f929ee20ec6b076f4ccdf78c398d8921ff5794d8b5ee6a16",
+  "source": {
+    "record": "docs/evidence/serve-chatkit-actions-20261125/delivery.json",
+    "sha256": "7b627122d4eb4e61a4537ff84a23be24093a373d02ba7d46bcd67381f28f9910",
+    "revision": 508,
+    "title": "Q4T publication record",
+    "actual_requests": 1
+  },
+  "recorded_replay": {
+    "upstream": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "converter_sha256": "5d83facb3089135d52d6469e459c1986f0cd76061b725e2fe53178ad49bf0df0",
+    "rows": [
+      {
+        "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-file-search-20261112/business-01/included-stored.sdk.json",
+        "sha256": "35c4ab19977ae4ecc8c0170c74f8c5d05faa690b203c548ed3770431c2bbdd7c",
+        "response_id": "resp_9f1b04e0f8e3ed29c41cb03948d1155c",
+        "sources": [
+          "file_citation",
+          "file_citation"
+        ]
+      },
+      {
+        "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-web-search-20261117/business-03/included.sdk.json",
+        "sha256": "4a28f70c6ac14f601e1fed4e5464c5f90090e6572d2189de5e6b12e66fc3936a",
+        "response_id": "resp_3290f2d21e5067ffe77b76fdde1bf99b",
+        "sources": [
+          "url_citation"
+        ]
+      },
+      {
+        "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-interpreter-01/state/application-objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_01273df2dd6675a22f010d087e0309f6.json",
+        "sha256": "8e3fd92fa31275bbef094a5f80bccb0c318b26266b6be96d60b3762b767eb160",
+        "response_id": "resp_01273df2dd6675a22f010d087e0309f6",
+        "sources": [
+          "container_file_citation"
+        ]
+      }
+    ],
+    "projection_binary_sha256": "32180ddebc4263d3f7c0f405079cae6aeef9c1c73d470c26e1a0d5cfbf80b660"
+  },
+  "wire": {
+    "actual_stream_events": 392,
+    "groups": [
+      {
+        "mode": "live",
+        "thread": "cthr_cd8e6417af040cc150beffd3786ecf69",
+        "item": "msg_b0bd0ab74fd0d5279da66f1968e8d83d",
+        "events": 44,
+        "url": "http://127.0.0.1:45945/record",
+        "source_title": "Q4T publication record",
+        "index": 103,
+        "answer": "The Q4T publication record gives publication revision **508** [source](<http://127.0.0.1:45945/record>).",
+        "response": "resp_ac83e083ccb2cb7c79610d96b51bde54",
+        "original_sha256": "a0f06f6b4005eb0eaa65892bc71e87c219490c921dd2479f42cf0ab26ba4b007",
+        "foreign": 404
+      },
+      {
+        "mode": "cached",
+        "thread": "cthr_1cabfef9f08c3cc2b5275e3e1ca0ec1c",
+        "item": "msg_393fdcd11b11ce7a10a3ce275e6b93b4",
+        "events": 45,
+        "url": "http://127.0.0.1:45945/record",
+        "source_title": "Q4T publication record",
+        "index": 104,
+        "answer": "The Q4T publication record gives **publication revision 508**. [source](<http://127.0.0.1:45945/record>)",
+        "response": "resp_c95144d2f51f79ba6a7b5dab66e71309",
+        "original_sha256": "212faf07ec346b56a92f1db2d583c51f2b02d0cf62ec460c3b2b225f7254ecc9",
+        "foreign": 404
+      }
+    ],
+    "terminal": {
+      "events": 303,
+      "last": {
+        "type": "error",
+        "code": "custom",
+        "message": "Object not found",
+        "allow_retry": true
+      },
+      "deleted": "cthr_59addd4fad01b2cb9bc191d3032a143e"
+    },
+    "wire_sha256": "41005d88895828412dc1e806c07c4e5ab10733b0d7b5de92c7f0af237c410ce1"
+  },
+  "checks": {
+    "native": 8,
+    "transport_regressions": 8,
+    "inventory_counterexamples": 40,
+    "reference_strict_events": 392,
+    "bundle_events": 392,
+    "full_thread_pages": 2,
+    "actual_core_chat": "42",
+    "other_client_status": 404
+  },
+  "before": {
+    "test": "chatkit_generation_preserves_browser_and_management_citation_sources",
+    "failed": "expected 3 citations, received empty array",
+    "baseline_log_sha256": "d7a96482f8cdf703a6f2b6810b1a85cd713a4bef1ccf21f9d62ae1da823e6c1e"
+  },
+  "limits": [
+    "Real ChatKit HTTP covered URL citations. File and container citations were replayed from retained native Responses records.",
+    "Client disconnect during ordinary model generation, unfinished-item persistence and remaining nested item kinds still require implementation and qualification.",
+    "Cross-profile managed release of this engine is pending."
+  ]
+}

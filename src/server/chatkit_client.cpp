@@ -6,11 +6,13 @@
 
 #include "chatkit_credentials.h"
 #include "chatkit_actions.h"
+#include "chatkit_generation_stream.h"
 #include "chatkit_retry.h"
 #include "chatkit_structured.h"
 #include "chatkit_attachments.h"
 #include "chatkit_thread_state.h"
 #include "object_protocol.h"
+#include "q4t/server/agent_registration.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_jobs.h"
@@ -227,9 +229,19 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
                          {"background", Boolean(true)},
                          {"store", Boolean(true)},
                          {"input", Array({std::move(model_message)})}});
-  for (const auto* key : {"instructions", "reasoning", "text", "tools"})
+  for (const auto* key : {"instructions", "reasoning", "text"})
     if (const auto* v = definition.Find(key); v && !v->IsNull())
       Set(&request, key, *v);
+  if (const auto* registered = definition.GetArray("tools")) {
+    auto tools = Array();
+    for (const auto& tool : registered->array) {
+      auto native = tool.GetString("type") == "web_search"
+                        ? NativeAgentWebSearch(tool)
+                        : tool;
+      if (!native.IsNull()) tools.array.push_back(std::move(native));
+    }
+    Set(&request, "tools", std::move(tools));
+  }
   if (const auto* vars = workflow.Find("state_variables");
       vars && !vars->object.empty()) {
     auto instructions = request.GetString("instructions");
@@ -250,10 +262,26 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
       model && !model->IsNull() &&
       (!model->IsString() || model->str != definition.GetString("model")))
     return Invalid("Model is outside the session workflow");
-  if (const auto* tool = supplied.Find("tool_choice"); tool && !tool->IsNull())
-    Set(&request, "tool_choice",
-        Object({{"type", String("function")},
-                {"name", String(tool->GetString("id"))}}));
+  if (const auto* choice = supplied.Find("tool_choice");
+      choice && !choice->IsNull()) {
+    const auto id = choice->GetString("id");
+    const auto* tools = request.GetArray("tools");
+    auto selector =
+        Object({{"type", String("function")}, {"name", String(id)}});
+    if (id == "web_search" && tools) {
+      const auto named = [&](const Json& tool) {
+        return tool.GetString("type") == "function" &&
+               tool.GetString("name") == id;
+      };
+      const auto web = [](const Json& tool) {
+        return tool.GetString("type") == "web_search";
+      };
+      if (!std::ranges::any_of(tools->array, named) &&
+          std::ranges::any_of(tools->array, web))
+        selector = Object({{"type", String("web_search")}});
+    }
+    Set(&request, "tool_choice", std::move(selector));
+  }
   if (const auto previous = write.data.GetString("last_response");
       !retry && !previous.empty())
     Set(&request, "previous_response_id", String(previous));
@@ -283,8 +311,20 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
       http->TakeBatchRate());
 }
 
-Json StreamEvent(const Json& event, const std::string& thread,
-                 int64_t created) {
+void Fail(int fd, const StateAccess& access, const ObjectReply& error) {
+  detail::SendError(fd, error.http_status, error.ClientMessage(),
+                    {access.deadline}, error.ClientCode(),
+                    error.value.GetString("param"));
+}
+bool Emit(int fd, const Json& event, const StateAccess& access) {
+  return detail::WriteAll(fd, "data: " + OutputJson(event) + "\r\n\r\n",
+                          {access.deadline});
+}
+}  // namespace
+
+Json chatkit_detail::GenerationStream::Event(const Json& event,
+                                             const std::string& thread,
+                                             int64_t created) {
   const auto type = event.GetString("type");
   if (type == "response.output_item.added") {
     const auto* item = event.Find("item");
@@ -309,17 +349,24 @@ Json StreamEvent(const Json& event, const std::string& thread,
              type == "response.content_part.done") {
     const auto* part = event.Find("part");
     if (!part) return {};
-    const bool refusal = part->GetString("type") == "refusal";
-    if (!refusal && part->GetString("type") != "output_text") return {};
+    auto content = AssistantContent(*part);
+    if (content.IsNull()) return {};
     Set(&update, "type",
         String(type.ends_with("added")
                    ? "assistant_message.content_part.added"
                    : "assistant_message.content_part.done"));
-    Set(&update, "content",
-        Object(
-            {{"type", String("output_text")},
-             {"annotations", Array()},
-             {"text", String(part->GetString(refusal ? "refusal" : "text"))}}));
+    Set(&update, "content", std::move(content));
+  } else if (type == "response.output_text.annotation.added") {
+    const auto* raw = event.Find("annotation");
+    if (!raw) return {};
+    auto ref = BrowserAnnotation(*raw);
+    if (ref.IsNull()) return {};
+    auto& next = annotation_counts_[{event.GetString("item_id"),
+                                     event.GetInt("content_index")}];
+    Set(&update, "type",
+        String("assistant_message.content_part.annotation_added"));
+    Set(&update, "annotation_index", Number(next++));
+    Set(&update, "annotation", std::move(ref));
   } else
     return {};
   return Object({{"type", String("thread.item.updated")},
@@ -327,16 +374,22 @@ Json StreamEvent(const Json& event, const std::string& thread,
                  {"update", std::move(update)}});
 }
 
-void Fail(int fd, const StateAccess& access, const ObjectReply& error) {
-  detail::SendError(fd, error.http_status, error.ClientMessage(),
-                    {access.deadline}, error.ClientCode(),
-                    error.value.GetString("param"));
+void chatkit_detail::FinishStreamError(int fd, const StateAccess& access,
+                                       const ObjectReply& error,
+                                       bool allow_retry) {
+  auto* http = detail::HttpResponseContext::Current(fd);
+  const auto message = error.ClientMessage();
+  http->ObserveError(error.http_status, message, error.ClientCode());
+  http->BeforeTerminal();
+  *http->State() = detail::ResponseState::kTerminal;
+  if (Emit(fd,
+           Object({{"type", String("error")},
+                   {"code", String("custom")},
+                   {"message", String(message)},
+                   {"allow_retry", Boolean(allow_retry)}}),
+           access))
+    *http->State() = detail::ResponseState::kComplete;
 }
-bool Emit(int fd, const Json& event, const StateAccess& access) {
-  return detail::WriteAll(fd, "data: " + OutputJson(event) + "\r\n\r\n",
-                          {access.deadline});
-}
-}  // namespace
 
 void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                         const ChatPlanConfig& config, const StateAccess& access,
@@ -367,6 +420,7 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     transcribe(params);
     return;
   }
+  http->SetChatKitStream();
   const bool stream_action = type == "threads.custom_action";
   if (stream_action || type == "threads.sync_custom_action") {
     bool started = false;
@@ -404,13 +458,9 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
       }
       // Once provisional progress is on the wire the status line is final.
       // A failed action never sends a success item or a second HTTP response.
-      if (!Emit(fd,
-                Object({{"type", String("error")},
-                        {"code", String("custom")},
-                        {"message", String(result.ClientMessage())},
-                        {"allow_retry", Boolean(result.http_status == 409)}}),
-                access))
-        return;
+      chatkit_detail::FinishStreamError(fd, access, result,
+                                        result.http_status == 409);
+      return;
     } else if (stream_action) {
       const auto& events = result.value.array;
       const bool entered =
@@ -498,6 +548,7 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
       return;
   } else if (!retry && !done(user))
     return;
+  chatkit_detail::GenerationStream stream;
   size_t next = 0;
   ResponsesState state(objects);
   auto heartbeat = Clock::now() + std::chrono::seconds(5);
@@ -507,46 +558,36 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     // original Response journal, including its terminal outcome.
     auto record = state.ReadRecord(response_id, access);
     if (!record.ok()) {
-      Emit(fd,
-           Object({{"type", String("error")},
-                   {"code", String("custom")},
-                   {"message", String(record.ClientMessage())},
-                   {"allow_retry", Boolean(true)}}),
-           access);
+      chatkit_detail::FinishStreamError(fd, access, record, true);
       return;
     }
     const auto& response = *record.value.Find("response");
     const auto& events = record.value.GetArray("events")->array;
     while (next < events.size()) {
       auto wire =
-          StreamEvent(events[next++], id, response.GetInt("created_at"));
+          stream.Event(events[next++], id, response.GetInt("created_at"));
       if (!wire.IsNull() && !Emit(fd, wire, access)) return;
     }
     const auto status = response.GetString("status");
     if (status != "queued" && status != "in_progress") {
       row = chatkit_detail::ReadThread(objects, access, id, &grant);
       if (!row.ok()) {
-        Emit(fd,
-             Object({{"type", String("error")},
-                     {"code", String("custom")},
-                     {"message", String(row.ClientMessage())},
-                     {"allow_retry", Boolean(true)}}),
-             access);
+        chatkit_detail::FinishStreamError(fd, access, row, true);
         return;
       }
       auto projected = chatkit_detail::ProjectOutput(response, id, form_tool);
-      if (!projected.ok()) return;
+      if (!projected.ok()) {
+        chatkit_detail::FinishStreamError(fd, access, projected, true);
+        return;
+      }
       for (const auto& item : projected.value.array)
         if (!done(item)) return;
-      if (status != "completed" &&
-          !Emit(fd,
-                Object({{"type", String("error")},
-                        {"code", String("custom")},
-                        {"message",
-                         String("Model response ended before completion")},
-                        {"allow_retry", Boolean(true)}}),
-                access))
+      if (status != "completed") {
+        const auto error = Error(502, "chatkit_generation_failed",
+                                 "Model response ended before completion");
+        chatkit_detail::FinishStreamError(fd, access, error, true);
         return;
+      }
       http->BeforeTerminal();
       *http->State() = detail::ResponseState::kComplete;
       return;

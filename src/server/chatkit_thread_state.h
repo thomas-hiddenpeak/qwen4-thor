@@ -13,6 +13,8 @@ ObjectReply BrowserHistory(ObjectStore& objects, const StateAccess& access,
 ObjectReply BrowserOperation(ObjectStore& objects, const StateAccess& access,
                              const Grant& grant, std::string_view operation,
                              const io::Json& params);
+io::Json BrowserAnnotation(const io::Json& annotation);
+io::Json AssistantContent(const io::Json& part);
 ObjectReply ProjectOutput(const io::Json& response,
                           const std::string& thread_id,
                           std::string_view form_tool = {});
