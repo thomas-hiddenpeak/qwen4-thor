@@ -40,11 +40,13 @@ for (const [i, sample] of samples.entries()) {
   assert.equal(row.content_parts, null);
   assert.equal(row.refusal, sample.field ?? sample.part);
   assert.deepEqual(row.original_content_parts, parts);
-  const reverse = await list({order: 'desc', limit: 1, after: page.last_id});
+  const lastId = page.data.at(-1).id;
+  assert.equal(page.body.last_id, lastId);
+  const reverse = await list({order: 'desc', limit: 1, after: lastId});
   assert.ok(reverse.has_more);
   assert.deepEqual(reverse.data, [row]);
   await assert.rejects(peer.chat.completions.messages.list(id), err => err.status === 404);
   cases.push({id, message_id: row.id, refusal: row.refusal, original_content_parts: parts,
-              last_id: page.last_id, peer: 404, recovered: Boolean(plan.previous)});
+              last_id: lastId, peer: 404, recovered: Boolean(plan.previous)});
 }
 process.stdout.write(JSON.stringify({sdk: version, cases}));

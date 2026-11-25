@@ -1,0 +1,20 @@
+{
+  "stage": "sdk_cursor_fixed",
+  "original_device": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 36.122,
+    "unchanged_default": true,
+    "phases": []
+  },
+  "original_assertion_sha256": "12c62fca4c00e51bd9a42d8cffe8e70680becf35b571a139cf24230dd015b9c1",
+  "sdk_cpu": {
+    "version": "7.47.0",
+    "actual_pages": 3,
+    "old_cursor_undefined": true,
+    "corrected_order_and_rows": true
+  },
+  "sdk_wire_sha256": "5de6c3e84fbe84af02ab847c4afe446d2d012ff4d6c81a0ffc54c34e44aa8139",
+  "root_cause": "Node CursorPage exposes the wire cursor on body.last_id and the last item ID in data. Reading page.last_id returned undefined, so the client omitted after and requested the first descending row.",
+  "pending": "Repeat both end-to-end pages with the original model and ingress."
+}
