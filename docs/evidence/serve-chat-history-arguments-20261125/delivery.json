@@ -1,0 +1,141 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 486,
+    "version_revision": 172,
+    "profile_revision": 62,
+    "previous_profile_revision": 61,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "613023e81511e1169c3246bd4c06c4176b1594cb30b5d1294cf5017fcbbe73ce",
+    "fallback": "8ec5ebfd9768d4af9f70a46b0de6c1cfdf201c29140a311dc183d0605c977a94",
+    "engine": "50b734e0ff4b8f80aee5dd5cbe2ad15f677c990e87548ccd58f014ef9d91629f",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "8cdcad1c4d4dd40b0cf7a40f4ccc234c24b538984da2cdd7ed16e88d301fff67",
+  "recovery": {
+    "fallback": {
+      "seconds": 133.214,
+      "starts": 2,
+      "recovered": {
+        "sdk": "7.47.0",
+        "stored": "chatcmpl-auto-7783bbc1bbd1d676df964f20fe369cd4",
+        "source_call": "call_previous",
+        "corrected_call": "call_chatcmpl-auto-7783bbc1bbd1d676df964f20fe369cd4_0",
+        "corrected_arguments": {
+          "record": "scope"
+        },
+        "original_text": "{\"record\":",
+        "capability": {
+          "identified_results": "complete_unique_batch",
+          "unordered_text_results": true,
+          "unordered_media_results": false,
+          "legacy_without_ids": true,
+          "legacy_shape_validation": true,
+          "arguments": "object_or_original_identified_argument_text",
+          "unidentified_arguments": "required_object_or_json_object_text",
+          "non_mapping_text": "quoted_assistant_history",
+          "result_content": "required_string_or_array"
+        },
+        "peer_status": 404,
+        "response": "resp_bcab14ac03ccdb04175d023d978ee95c",
+        "response_answer": "157",
+        "answer": "157",
+        "terminal": "stop"
+      },
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "seconds": 259.173,
+      "starts": 2,
+      "recovered": {
+        "sdk": "7.47.0",
+        "stored": "chatcmpl-auto-23e6ad1e6330ba4fc2b62615d18b8df7",
+        "source_call": "call_previous",
+        "corrected_call": "call_chatcmpl-auto-23e6ad1e6330ba4fc2b62615d18b8df7_0",
+        "corrected_arguments": {
+          "record": "scope"
+        },
+        "original_text": "{\"record\":",
+        "capability": {
+          "identified_results": "complete_unique_batch",
+          "unordered_text_results": true,
+          "unordered_media_results": false,
+          "legacy_without_ids": true,
+          "legacy_shape_validation": true,
+          "arguments": "object_or_original_identified_argument_text",
+          "unidentified_arguments": "required_object_or_json_object_text",
+          "non_mapping_text": "quoted_assistant_history",
+          "result_content": "required_string_or_array"
+        },
+        "peer_status": 404,
+        "response": "resp_6a8c7b1c25b799a5a3cf570429f9905d",
+        "response_answer": "157",
+        "answer": "157",
+        "terminal": "stop"
+      },
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "soak": {
+    "source_commit": "f356b33a2887c168715ff87daa349c3df2c09016",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/history-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/history-client-primary-01/bundle",
+      "manifest_sha256": "613023e81511e1169c3246bd4c06c4176b1594cb30b5d1294cf5017fcbbe73ce"
+    },
+    "revision": 486,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/history-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "c9cd6bab09ea50b2ce5298ebaf31fd876394ea2101e1f1d321d71b442786f7dc",
+    "handoff_sha256": "fde02156486debb516d41a5d7fbe1a2327160ec4ff16719575775d0337d61d8e",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "method_declarations": {
+    "matched": 217,
+    "required": 231,
+    "remaining": 14
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/history-delivery-delivery/plan.json": "70566b4de1dfe68117550c3731f02032c6d084943ca35db685aa5edbac6d125b",
+    ".q4t-work/serve-responses-agents-20261123/history-delivery-delivery/result.json": "2e20ecfef84042f4fa40991d6bdccdc1e06150a0c9c0bd90d868b9184a6b6c3d",
+    ".q4t-work/serve-responses-agents-20261123/history-delivery-delivery/check.stdout": "312810e5951b6796fbeb6c54521ee6a42969968b056a497bf4943ee9ba8466e8",
+    ".q4t-work/serve-responses-agents-20261123/history-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/history-delivery-delivery/version-status.stdout": "45aabd6800f74427288d77eae9ca770753fcecc9473f2cce46ad0f57c941826b",
+    ".q4t-work/serve-responses-agents-20261123/history-delivery-day.json": "29f3d9949afc19e1ab02bffd0e2e27ffa341f5900de9ecad601f620cea1fb748",
+    ".q4t-work/serve-responses-agents-20261123/history-release-methods.json": "322ea18e1ce8cf2a966369dc708e2d43ef13411f39840c43d297bbac47c36cf8",
+    ".q4t-work/serve-responses-agents-20261123/history-delivery-maintenance-01/result.json": "948511926343364e4da040fcc0af1fb9b8089b8645babcaba5c658c9018efc4f",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-chat-history-arguments-20261125/profiles.json": "3e76f66991bbfacd5821ecad834bd2beefe22533a5c664b6548272a8950e53ac",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-chat-history-arguments-20261125/business.json": "c4141ad0286f299a8ed520eb12b5935ebbac110e076505d414d3d2be38c10072",
+    ".q4t-work/serve-responses-agents-20261123/history-maintenance-lease-01/exit.json": "bbb8acc78a815c236244c123144ff7d6e947c8a435d3e83c63b5bddf22fe8533",
+    ".q4t-work/serve-responses-agents-20261123/history-publish-lease-01/exit.json": "d4b18120f9bf9d64eb7b658c91cf6682463dce4cea8bc8610d05c7b9b88fc85d",
+    ".q4t-work/serve-responses-agents-20261123/history-fallback-lease-01/exit.json": "c327b6309a2ea3fd5879a53e9cfc59907856b82cac68445e5518a725450e8a9a",
+    ".q4t-work/serve-responses-agents-20261123/history-fallback-business-01/prepare-run.json": "07de2ae72106892e18cb58dc9f4ea4706e653c613e51732d076b469441d2d912",
+    ".q4t-work/serve-responses-agents-20261123/history-fallback-business-01/restore-run.json": "c50728d9f696c7a5336f05231da1dac68537976b6379fcb3ab001b7693c1d4f1",
+    ".q4t-work/serve-responses-agents-20261123/history-fallback-business-01/result.json": "9a6c7b8cdfe96c6b6dce96a0f3d73f85e54470b4488b26a43902d13bd48b31a9",
+    ".q4t-work/serve-responses-agents-20261123/history-fallback-business-01/interruption.json": "9d1023b8f35708ab3e6be03b90c3b63af8d48a0af36387fffca2d6077375bbdf",
+    ".q4t-work/serve-responses-agents-20261123/history-fallback-business-01/chat-after.wire": "af41ab4bf4244ef52056c2ecb09984864227bd09033a72e23989dca028504309",
+    ".q4t-work/serve-responses-agents-20261123/history-client-fallback-01/origin.json": "6549810993cc6ccb9af39f9a86bc4aed7c828e64e05fc95ae9636b7922a307c3",
+    ".q4t-work/serve-responses-agents-20261123/history-client-fallback-01/service.release.json": "9bb071166b871dab3d99c0480696a6da0534a6c36876f7526d111a51aaccfb91",
+    ".q4t-work/serve-responses-agents-20261123/history-client-fallback-01/service-acceptance.json": "148795ba67d92a2bfc5a9772752630a9544dc5de93fe97e8d6dca3d2fa666fe1",
+    ".q4t-work/serve-responses-agents-20261123/history-primary-lease-01/exit.json": "779305e7a6b5536cd72cab6f89137fc548931f7d745a7f90fac6e7b6c529fc4e",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-history-01/prepare-run.json": "9a34b8dae94e927f5d4a5bb905d1d245af296b95529a5d858f854567be146dc4",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-history-01/restore-run.json": "7e913f3828ad93da29dab11415d35a229710b456af3bca5a36abb9e5a47f1dbc",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-history-01/result.json": "856dcd9276e1698a9e9e3ba5936c6b3fc4b0001980e38bf3a240b0e06b9dc9e2",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-history-01/interruption.json": "89acf1006aaf5fe01cffd3f5cbaf98271f56d232c90979691800ebe062d6e850",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-history-01/chat-after.wire": "2eb3c3d1c9b69a3ac3de76d21671cbd3d677a237352c9133ea698208ea4dca0b",
+    ".q4t-work/serve-responses-agents-20261123/history-client-primary-01/origin.json": "e11f42ee41eb100f9e11afb3e1cb55bd60c45bae3b3654137019e69e0ae2ea57",
+    ".q4t-work/serve-responses-agents-20261123/history-client-primary-01/service.release.json": "af8aac89221cd9bded2400dd1dc44e3f5bd58f357b9a93f0d9b68cf992f0bc38",
+    ".q4t-work/serve-responses-agents-20261123/history-client-primary-01/service-acceptance.json": "6669b1ccc4354245e9a91995cfe5e743cf22589ce07503806ba5d9f0674acef3",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-history-01/takeover.json": "6773aa7826edc5738b1f9f5edf8cc948baf747f7d8a0b0ee1bfbd34dabc0d70b"
+  }
+}

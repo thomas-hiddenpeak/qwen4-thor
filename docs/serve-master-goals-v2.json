@@ -770,6 +770,10 @@
       "project_safety_delivery_20261125": {
         "publication": 484,
         "receipt": "evidence/serve-project-safety-20261125/delivery.json"
+      },
+      "history_arguments_delivery_20261125": {
+        "revision": 486,
+        "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
       }
     },
     {
@@ -1126,8 +1130,14 @@
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       },
       "invalid_historical_arguments_20261125": {
-        "stage": "device_verified",
-        "receipt": "evidence/serve-chat-history-arguments-20261125/business.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-chat-history-arguments-20261125/business.json",
+        "profiles": "evidence/serve-chat-history-arguments-20261125/profiles.json",
+        "delivery": "evidence/serve-chat-history-arguments-20261125/delivery.json"
+      },
+      "history_arguments_delivery_20261125": {
+        "revision": 486,
+        "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
       }
     },
     {
@@ -2620,6 +2630,10 @@
       "project_safety_delivery_20261125": {
         "publication": 484,
         "receipt": "evidence/serve-project-safety-20261125/delivery.json"
+      },
+      "history_arguments_delivery_20261125": {
+        "revision": 486,
+        "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
       }
     },
     {
@@ -8845,6 +8859,12 @@
         "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
         "model_starts": 0,
         "qualified_cold_run": false
+      },
+      "current_cold_preflight": {
+        "revision": 486,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev486-preflight.json",
+        "model_starts": 0,
+        "executed": false
       }
     },
     {
@@ -9182,6 +9202,10 @@
         "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
         "model_starts": 0,
         "qualified_cold_run": false
+      },
+      "history_arguments_delivery_20261125": {
+        "revision": 486,
+        "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
       }
     },
     {
@@ -10315,12 +10339,16 @@
       "project_safety_delivery_20261125": {
         "publication": 484,
         "receipt": "evidence/serve-project-safety-20261125/delivery.json"
+      },
+      "history_arguments_delivery_20261125": {
+        "revision": 486,
+        "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev484_delivered_remaining_deliveries",
+      "state": "rev486_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -11548,6 +11576,10 @@
       "project_safety_delivery_20261125": {
         "publication": 484,
         "receipt": "evidence/serve-project-safety-20261125/delivery.json"
+      },
+      "history_arguments_delivery_20261125": {
+        "revision": 486,
+        "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
       }
     },
     {
@@ -12011,11 +12043,15 @@
       "project_safety_delivery_20261125": {
         "publication": 484,
         "receipt": "evidence/serve-project-safety-20261125/delivery.json"
+      },
+      "history_arguments_delivery_20261125": {
+        "revision": 486,
+        "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
       }
     }
   ],
-  "next_task": "Complete the historical function-argument repair loop, remaining grader and media/provenance methods, and the R07–R09 managed recovery compositions.",
-  "next": "完成历史函数参数错误后的真实重试；继续剩余评分器、图像／视频生成和来源验证接口，并推进 R07—R09 资源与恢复组合。",
+  "next_task": "Complete METEOR, media/provenance methods and the remaining resource and recovery compositions.",
+  "next": "完成 METEOR 评分、其余媒体与来源验证方法，并继续资源和恢复组合。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",

@@ -1,5 +1,11 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+管理员只读检查已确认 rev486 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev486-preflight.json)
+
+模型退出和主包故障后均恢复同一客户的原 Chat 及纠正后的函数调用，工具查询结果为 157。流式 Chat 正常结束，Responses 原样保留截断文本，其他客户读取返回 404。发布保持 STOPPED，独立回退包已登记，13 份受保护记录一致。24 小时预检完成，实跑交用户。下一步完成剩余评分和媒体接口。[验证记录](evidence/serve-chat-history-arguments-20261125/delivery.json)
+
+主配置保存了被拒绝的参数和纠正后的真实调用。轻配置使用原 Chat 和同一调用 ID 接手，流式 Chat 和 Responses 都答出 157，另一客户读取返回 404。两份 v48 配置均可逐字节还原已发行的 v47 前驱。下一步验证模型退出及独立回退包接管。[验证记录](evidence/serve-chat-history-arguments-20261125/profiles.json)
+
 Node SDK 经原生 TLS 回填了截断参数的工具错误，模型重新生成可执行调用。真实查询得到 157，Chat 流正常结束，Responses 独立回答同一结果。两个入口均从存储原样读回截断文本，跨客户读取返回 404。此轮启动一次，用时 38.017 秒。下一步验证两种容量交接后继续使用同一个原调用。[验证记录](evidence/serve-chat-history-arguments-20261125/business.json)
 
 rev484 的独立冷启动计划和管理员只读来源核验已完成，实际维护仍待相机、监控服务可暂时停止的窗口。R08 本机核对确认 CUDA 13.3 且没有 dmem/misc 控制器；NVIDIA 新的设备内存分区要求 CUDA 13.4 或更高版本。此次未启动模型、安装设备规则或改动外部服务。下一步在获准窗口执行 R07，并以真实分配验证后续平台的物理边界。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json)
