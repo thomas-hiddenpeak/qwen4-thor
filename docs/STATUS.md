@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+两套配置都返回相同的中文 WAV 和 WebM/Opus 转写，独立 Chat 各答 42。轻配置读取同一个已取消 Eval，跨客户返回 404，报告地址指向本次入口，其余响应字段摘要相同。配置登记已核实 56 项检查与两份 rev494 前驱还原。下一步封包验证进程退出后的恢复并登记独立回退版本。[验证记录](evidence/serve-chatkit-composer-20261125/profiles.json)
+
 第一次主轻交接在比较取消记录的完整摘要时失败。用同一份磁盘记录，分别填入两个服务的真实 TLS 端口，可逐字复算两份原摘要。验收客户端现逐端校验完整报告 URL，保留原始摘要，再比较同一路径和其余全部字段。两个错误地址反例已通过 CPU 验证。[验证记录](evidence/serve-chatkit-composer-20261125/report-origin.json)
 
 客户端可从 chatkit.input_transcribe.configured 得知当前原生 ASR 是否可用。两项 C++ 回归覆盖启用与关闭，55 项配置迁移及交接检查覆盖既有能力、录音身份和取消运行。设备转写至此次构建的协议源差异只有能力声明。下一步在主、轻两套容量中核对实际发现值、同一取消记录和两种音频。[验证记录](evidence/serve-chatkit-composer-20261125/profiles.json)

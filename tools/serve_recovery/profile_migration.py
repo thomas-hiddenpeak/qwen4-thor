@@ -534,10 +534,18 @@ def explicit_extension(previous, target):
     if ('input_transcribe' in target.get('chatkit', {}) and
             'input_transcribe' not in previous.get('chatkit', {})):
         configured = previous.get('transcriptions', {}).get('configured')
+        # permit() compares semantic_capabilities(), which represents a configured
+        # ASR as a feature set. The browser capability retains its wire boolean.
+        if type(configured) is dict:
+            if not (package.same_json(configured, {}) or
+                    package.same_json(configured, {'enabled': True})):
+                return False
+            configured = bool(configured)
         if (type(configured) is not bool or
                 not package.same_json(previous.get('transcriptions'), target.get('transcriptions')) or
                 not package.same_json(previous.get('chatkit'), live.UPLOAD_CHATKIT) or
-                not package.same_json(target['chatkit'], live.composer_capability(previous))):
+                not package.same_json(target['chatkit'], live.composer_capability(
+                    {'transcriptions': {'configured': configured}}))):
             return False
         previous = dict(previous, chatkit=target['chatkit'])
     if not live.has_upload_reservations(previous) and live.has_upload_reservations(target):

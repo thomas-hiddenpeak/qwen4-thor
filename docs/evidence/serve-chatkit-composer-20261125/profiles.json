@@ -1,5 +1,5 @@
 {
-  "stage": "targeted_cpu_verified",
+  "stage": "profile_verified",
   "issued": false,
   "source_change_since_device": [
     "src/server/chat_capabilities.cpp"
@@ -34,7 +34,101 @@
     "The first preflight required a tracked worker manifest missing from the sparse checkout; it was restored from Git."
   ],
   "pending": [
-    "Actual configured discovery, Chinese speech and canceled Eval across primary and light capacities",
-    "Managed delivery and rollback"
-  ]
+    "Managed model restart, independent fallback and stopped publication"
+  ],
+  "openapi_sha256": "117e721535352752ad6ec7a017d23f515717a17f23ee89eca1fed08feef085bf",
+  "device": {
+    "primary": {
+      "seconds": 46.169,
+      "starts": 1,
+      "sdk": "7.47.0",
+      "transcripts": {
+        "wav": "请查询当前项目版本号。",
+        "webm": "请查询当前项目版本号。"
+      },
+      "inputs": {
+        "wav": "3195ed0fec2e4ec7867d6c4b7528f390b390d4ff9d82af76a8e9ac40939c0282",
+        "webm": "ac04442880ca74bc2796acc23a2554d5fde9a4715cda2e437dc0ba1d85ef15a8"
+      },
+      "canceled_run": {
+        "eval_id": "eval_6b6062a1d2dd4ad076f65cfeabf961fb",
+        "run_id": "evalrun_88b7360acafed968868d3af30dd4c3c3",
+        "status": "canceled",
+        "foreign_status": 404,
+        "sha256": "fd221ced9f99fe25c59c06927b805ad11dfaf6448cf54ebfbf7da38e4c57eddd"
+      },
+      "report_url": "https://127.0.0.1:38137/v1/evals/eval_6b6062a1d2dd4ad076f65cfeabf961fb/runs/evalrun_88b7360acafed968868d3af30dd4c3c3/report",
+      "raw_result_sha256": "74a720d654bf8fe46219cfc9d42f39f7abc4bd9aeb01bd5ea48d6f86e1e65738",
+      "profile": "a2a84dafd898a1ed1c8bae6cb6cd6333ff0a5dc6cb7f689befc106a604b36c10",
+      "reconstructed": "10c882afa094a33b3608843a03eb90eb4a366c8f9b20d9100ed110f67b38e203",
+      "independent": "42"
+    },
+    "light": {
+      "seconds": 40.753,
+      "starts": 1,
+      "sdk": "7.47.0",
+      "transcripts": {
+        "wav": "请查询当前项目版本号。",
+        "webm": "请查询当前项目版本号。"
+      },
+      "inputs": {
+        "wav": "3195ed0fec2e4ec7867d6c4b7528f390b390d4ff9d82af76a8e9ac40939c0282",
+        "webm": "ac04442880ca74bc2796acc23a2554d5fde9a4715cda2e437dc0ba1d85ef15a8"
+      },
+      "canceled_run": {
+        "eval_id": "eval_6b6062a1d2dd4ad076f65cfeabf961fb",
+        "run_id": "evalrun_88b7360acafed968868d3af30dd4c3c3",
+        "status": "canceled",
+        "foreign_status": 404,
+        "sha256": "fd221ced9f99fe25c59c06927b805ad11dfaf6448cf54ebfbf7da38e4c57eddd"
+      },
+      "report_url": "https://127.0.0.1:58517/v1/evals/eval_6b6062a1d2dd4ad076f65cfeabf961fb/runs/evalrun_88b7360acafed968868d3af30dd4c3c3/report",
+      "raw_result_sha256": "0afdf719ebd977d71df8c0a2cf59e0247f56c4657f4894246e3b44f76a092797",
+      "profile": "e3f170a3f64539e75ce3902f37f05d07f47cdc54fdebfcd3ed4492b4c8f6dbc9",
+      "reconstructed": "2820381c6a1cc285b5df2c1bfe6aafaee42b3caf06092877c4b43d23d8c2673e",
+      "independent": "42"
+    }
+  },
+  "acceptance": {
+    "status": "ACCEPT_CHATKIT_DICTATION_PRIMARY_LIGHT",
+    "registry_sha256": "d44b26c815bea09b2f17d74d9b56ebecdd9e9bf8dee539c3854c5c793b7ce4bb",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 82,
+      "cleanup_complete": true,
+      "lease_result_sha256": "4c6cd3c93959dac82dfab2354e23c2243960d6cf262408de1616ba81d92616c7"
+    },
+    "migration_permit_sha256": "bea79a14a532ed2e830c82ae43a4af0a4d16a9dbc4d0842dcd6d91b7c28efb37",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "evidence": {
+    ".q4t-work/serve-responses-agents-20261123/dictation-profiles-lease-04/exit.json": "4c6cd3c93959dac82dfab2354e23c2243960d6cf262408de1616ba81d92616c7",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/acceptance.json": "608fc278b963de946a12f658cb749b330686de151472292bf5d23d6f36628502",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/profile-observations.json": "5801314408a89d03ab979da7cc96d544032033ff2caf0699dbe754975fca3550",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-qualified-01/acceptance.json": "061a68af96b8e4878bc9e323c3063bd63049d847550348b0cdb178b2d017d1bc",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-qualified-01/qualified/registry.json": "d44b26c815bea09b2f17d74d9b56ebecdd9e9bf8dee539c3854c5c793b7ce4bb",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/dictation-record-review.json": "6b0a58889cc2b1fb78183dc3c8fbd352f85dd3c0790e968139b4d32f72e530d4",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/primary/plan.json": "765921d017f3fb88f6ca6f0c5903134dfc05c5a4782dd537976d1178d998f28d",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/primary/result.json": "9a40e717d86481380ef84f50080ed48bb2e79724c1da2e25cf653d16d13df787",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/primary/cleanup.json": "32be75c1de89aa1b3f47b2bc4668c876eddde1f2e83767f1288f4745301af1e7",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/primary/chatkit-dictation-handoff.json": "f7df481955e23991f0c67c62f8f5c23b447614e7582de4c2854502be032a2adc",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/primary/configuration.wire": "db2963ae279552a9c2072fdb3e818313d1edba5260194debb7f74ab6b226d41d",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/light/plan.json": "6a7b5348753e3239eaf4d64b447641df4e885164e90a291491f376f903036516",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/light/result.json": "7c03aa87481e826cc81ee4d9591e1e896965dbf2c90480feeaf0db98b8abbf96",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/light/cleanup.json": "a4bf3ea875b9857ce9ae7108da8153ac8db50b0664a1fa226ce2e8948b3c12ae",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/light/chatkit-dictation-handoff.json": "2b7fb5d91b63b78c5c82fb2bf94f2a8a61c7458b68328ecdd942e50723ff4c71",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/.q4t-work/dictation-profiles-04/light/configuration.wire": "def1d6916f79e98fdfe9a7384291cf7d94fc63236acc4b7721458bd7c02d757c"
+  },
+  "initial_scope": "report-origin.json",
+  "migration": {
+    "prior_failure": "Registry permit received normalized ASR feature maps where the new comparison expected wire booleans.",
+    "reject_sha256": "07ed3064064d1b1e596df92370b2e6f7a38f57673d1eed083fa53448de07bf91",
+    "tests": 56,
+    "log_sha256": "b4f042fdca1646d03a5b4578c6718feb58284796cd3f40ed3c29193117cf7cf9",
+    "registry_valid": true
+  }
 }

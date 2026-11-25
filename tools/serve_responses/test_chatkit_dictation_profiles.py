@@ -21,6 +21,18 @@ class DictationProfiles(unittest.TestCase):
                                                                      configured=not enabled))
             self.assertFalse(profile_migration.explicit_extension(old, dict(target, chatkit=incorrect)))
 
+    def test_semantic_asr_settings_used_by_registry_permit(self):
+        for enabled in (False, True):
+            semantics = {'enabled': True} if enabled else {}
+            old = dict(chatkit=reuse.UPLOAD_CHATKIT, transcriptions=dict(configured=semantics))
+            browser = reuse.composer_capability(dict(transcriptions=dict(configured=enabled)))
+            target = dict(old, chatkit=browser)
+            self.assertTrue(profile_migration.explicit_extension(old, target))
+            for bad in ({'enabled': 1}, {'enabled': False}, {'unreviewed': True}):
+                changed = dict(transcriptions=dict(configured=bad))
+                self.assertFalse(profile_migration.explicit_extension(dict(old, **changed),
+                                                                      dict(target, **changed)))
+
     def test_recovery_receipt_checks_original_job_authority_and_both_formats(self):
         proof = package.read(profiles.PROOF)['sdk']
         row = dict(proof, canceled_run=dict(eval_id='eval_'+'a'*32, run_id='evalrun_'+'b'*32,

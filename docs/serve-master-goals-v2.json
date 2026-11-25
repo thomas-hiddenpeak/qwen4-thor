@@ -3149,7 +3149,7 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       },
       "dictation_handoff_20261125": {
-        "stage": "targeted_cpu_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json"
       }
     },
@@ -5895,7 +5895,7 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       },
       "dictation_handoff_20261125": {
-        "stage": "targeted_cpu_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json"
       }
     },
@@ -7814,7 +7814,7 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       },
       "dictation_handoff_20261125": {
-        "stage": "targeted_cpu_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json"
       }
     },
@@ -11833,7 +11833,7 @@
         "receipt": "evidence/serve-observation-admission-20261125/business.json"
       },
       "dictation_handoff_20261125": {
-        "stage": "targeted_cpu_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json"
       }
     },
