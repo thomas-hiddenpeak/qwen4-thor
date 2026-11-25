@@ -3061,7 +3061,7 @@
       "chatkit_feedback_20261125": {
         "stage": "targeted_native_cpu_verified",
         "receipt": "evidence/serve-chatkit-20261125/feedback.json",
-        "entity_mentions": "implemented_host_compiled"
+        "entity_mentions": "targeted_native_cpu_verified"
       }
     },
     {

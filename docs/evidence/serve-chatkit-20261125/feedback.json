@@ -14,12 +14,11 @@
   "host_binary": "8b850bbc120be6fb4ae86b10db429b5686129d80ea5d3aa062fdc51a854ba349",
   "sdk_driver": "e4526b1ab61d6a1a12b20b14bf3cca9200c9a2b36bca425cc53e4b432e49bdef",
   "pending": [
-    "Targeted C++ entity, feedback and history tests",
-    "Actual TLS schema, model and storage checks",
-    "Profile and managed recovery and stopped publication"
+    "Actual TLS and SDK verification including stored votes and entity history",
+    "Candidate profile handoff, managed recovery and publication"
   ],
   "entity_mentions": {
-    "stage": "implemented_host_compiled",
+    "stage": "targeted_native_cpu_verified",
     "reference": "https://openai.github.io/chatkit-python/concepts/entities/",
     "management_reference": "UserMessageItem.content accepts UserMessageInputText and UserMessageQuotedText in the frozen OpenAPI.",
     "behavior": "The browser stores and replays the scoped tag, its ID, text and metadata. The model receives the user-visible mention as text; the management history projects it into its official input_text type.",
@@ -42,13 +41,20 @@
       "sha256": "5ed8f3e62bce656ae905178c34b2bff6ff0461ff6c967c6d95ec5eae390a6d1a"
     },
     "native_sources": {
+      "src/server/chat_capabilities.cpp": "da0bf7f2f42d45133bdcbaa94efde26487a9b6d3d2cd01f08c5d9beb1327b064",
       "src/server/chatkit_client.cpp": "230e9b395a5e660d505fd5e41fb8745617fd10492a4b49f95019c7430e7268d1",
-      "src/server/chatkit_threads.cpp": "fa35d8fcb7324e5091e31a285e4dfcf9c2558aa58ef033731a70ae4990432b5c",
-      "src/server/chatkit_thread_state.cpp": "e48765e053670e794ed5d5faf0cc9615be8eb1a448d694a6260c67ac26a88aba",
-      "tests/server_chatkit_test.cpp": "ef009792f6dee1e486890d2d8748d9a41bb77b14e14771e42c0423eef24f8f1e",
+      "src/server/chatkit_threads.cpp": "129660fda24a4542dff5b6ee2e11417a2aa77e315049fe45a492fafc8c92aa94",
+      "src/server/chatkit_thread_state.cpp": "cb1b8bbd2f8c842849d8f9f9e0a7c2fd45ee5b58398b0d7afbea890edf2674a7",
+      "tests/server_chatkit_test.cpp": "078620cfd1c4bbf39500a56959782593917085fe402f384b45f8c72aca1b6b65",
       "src/server/chatkit_thread_state.h": "639a75366df639e9d954fad25e52da784ab693128cd4fe2260019e813060348b"
     },
-    "host_binary": "2a8191c3dd2405ea11a2b7bba1f2d9cc0ab604430d563cbb25b4f2383ef48bd1"
+    "host_binary": "0b73695bded5e245889b8e93d840bacb99f45b57e73a474b89d9673b038f0c95",
+    "native_cases": {
+      "chatkit_entity_mentions_": "6046adadc55199d2422e48f46a52ab81d0bd338a55cd3df2a380423c88c26970",
+      "chatkit_feedback_": "fb1d60775e77aea47b86ebee3ef39fdb96caee76259fe5d79268e008fb95f258",
+      "chatkit_tool_call_preserves_": "45056d203f65739c981b581f5ce809c5a980a852d7991d5920575631aa0561c7",
+      "chatkit_thread_history_": "a71bd504396e54c178f2bc8d265c93ea0ab0adcc29a289c47a9d7f7007ba47b9"
+    }
   },
   "input_contract": "A missing or non-string feedback thread ID is a malformed request (400). A well-typed inaccessible thread or absent item returns 404."
 }

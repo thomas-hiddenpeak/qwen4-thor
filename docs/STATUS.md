@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+四个原生用例验证浏览器标签保真、模型提及文本、管理 SDK 历史、逐项反馈与已有工具回填行为。下一步通过原生 TLS 验证实际项目版本、客户隔离及存储。[验证记录](evidence/serve-chatkit-20261125/feedback.json)
+
 管理员只读检查已确认 rev488 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev488-preflight.json)
 
 受监护的模型退出及独立回退包接管后，原评估、输出 ID、模型答案和四项分数均一致。主包和独立回退包均携带词库与词干实现的许可。发布保持 STOPPED，13 份受保护记录一致，24 小时计划已交接。下一步完成浏览器反馈、剩余媒体及恢复验收。[验证记录](evidence/serve-evals-20261125/meteor-delivery.json)
