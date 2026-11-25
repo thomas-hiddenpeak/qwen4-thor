@@ -1,5 +1,5 @@
 {
-  "stage": "qualification_prepared",
+  "stage": "profile_verified",
   "issued": false,
   "prior_revision": 496,
   "tests": {
@@ -51,5 +51,186 @@
     "primary creates the reference using the original encoded clip",
     "light retrieves the same character and tool result",
     "peer lookup returns 404; independent Chat returns 42"
-  ]
+  ],
+  "build": {
+    "engine": "cfaf8d682f053bab3087f120b32f14e2974004007d32cde7929195cc4f80cd07",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "openapi_sha256": "5d244546b8498b66382275810a5a324525966f1035b28e3f4e17b4ebe11abd04",
+  "runs": {
+    "primary": {
+      "resource": {
+        "id": "char_7af173fde5b5f5547b89fdf180fee40f",
+        "name": "项目视频角色",
+        "created_at": 1795589587
+      },
+      "lookup": {
+        "function": "get_video_character",
+        "argument_id": "char_7af173fde5b5f5547b89fdf180fee40f",
+        "resolved": {
+          "name": "项目视频角色"
+        }
+      },
+      "clip_sha256": "9c520d80f7451718cdab6361e3bdc17af7a56cfd3e8443f9727d4fb312df3de7",
+      "wire_methods": [
+        "post",
+        "get"
+      ],
+      "foreign": 404,
+      "independent": "42",
+      "raw_sha256": "6ed262fac4a1a17e75f8c4c3c2c77f761cfc1b2bd2a3bc104a056a3f79cac077"
+    },
+    "light": {
+      "resource": {
+        "id": "char_7af173fde5b5f5547b89fdf180fee40f",
+        "name": "项目视频角色",
+        "created_at": 1795589587
+      },
+      "lookup": {
+        "function": "get_video_character",
+        "argument_id": "char_7af173fde5b5f5547b89fdf180fee40f",
+        "resolved": {
+          "name": "项目视频角色"
+        }
+      },
+      "clip_sha256": "9c520d80f7451718cdab6361e3bdc17af7a56cfd3e8443f9727d4fb312df3de7",
+      "wire_methods": [
+        "get"
+      ],
+      "foreign": 404,
+      "independent": "42",
+      "raw_sha256": "bb706931ff73dae63fc3b7ac10a3dd64a67e595b258db14a1961534e5a65c0b9"
+    }
+  },
+  "registry": {
+    "status": "ACCEPT_VIDEO_CHARACTER_PRIMARY_LIGHT",
+    "registry_sha256": "0615b8d085ea3f72cab0cf5a33416eeba70872bd3eb3f17d8ce91ad823cdee4c",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 81,
+      "cleanup_complete": true,
+      "lease_result_sha256": "338b64047badaa6f13abe0b809b30d2a9c12b7787ebf711d906fed48e436b864"
+    },
+    "migration_permit_sha256": "081303754dc241c66e0e4eed1acee7c9768eb28bf2c7b193d1560272f579f931",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "review": {
+    "pins": {
+      "primary": "0383b5f9b4029b4df1d5f2d17d1d605c213cfb8e025fd55d9a309c16cf82c9de",
+      "light": "d86869c161d3c401ed6a70278644983d9dba262439b2842d45fec11154f03518"
+    },
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+    "acceptance": "09f823b3e0a2cdb7ed841f66085f1eb3875c050ee80151f4352f2d1782079533"
+  },
+  "device": {
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 81,
+      "cleanup_complete": true
+    },
+    "results": [
+      {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 72
+        },
+        "seconds": 44.617716687731445,
+        "binary_sha256": "cfaf8d682f053bab3087f120b32f14e2974004007d32cde7929195cc4f80cd07"
+      },
+      {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 70
+        },
+        "seconds": 40.793690093792975,
+        "binary_sha256": "cfaf8d682f053bab3087f120b32f14e2974004007d32cde7929195cc4f80cd07"
+      }
+    ],
+    "profiles": {
+      "primary": {
+        "profile": "primary",
+        "protocol": "0be00557a9481f70fe3a66e3668a6af61800148028606622c99aa37465369658",
+        "capacity": {
+          "name": "native-managed-capacity-v2",
+          "host": "127.0.0.1",
+          "max_seq": 1,
+          "max_len": 8192,
+          "max_prefill": 2048,
+          "max_tokens": 256,
+          "mtp_k": 3,
+          "max_inflight_requests": 8,
+          "max_queued_requests": 3,
+          "min_available_memory_mib": 2048,
+          "memory_recovery_margin_mib": 512,
+          "startup_memory_headroom_mib": 2048,
+          "mtp_enabled": true,
+          "request_deadline_ms": 1200000,
+          "allow_media": true
+        },
+        "mtp_enabled": true,
+        "returned_chat": "42",
+        "media_created": 201,
+        "session_closed": true,
+        "recordings_enabled": true,
+        "conversation": "created",
+        "worker_files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      },
+      "light": {
+        "profile": "light",
+        "protocol": "0be00557a9481f70fe3a66e3668a6af61800148028606622c99aa37465369658",
+        "capacity": {
+          "name": "native-managed-capacity-v2",
+          "host": "127.0.0.1",
+          "max_seq": 1,
+          "max_len": 8192,
+          "max_prefill": 2048,
+          "max_tokens": 256,
+          "mtp_k": 3,
+          "max_inflight_requests": 8,
+          "max_queued_requests": 3,
+          "min_available_memory_mib": 2048,
+          "memory_recovery_margin_mib": 512,
+          "startup_memory_headroom_mib": 2048,
+          "mtp_enabled": false,
+          "request_deadline_ms": 1200000,
+          "allow_media": true
+        },
+        "mtp_enabled": false,
+        "returned_chat": "42",
+        "media_created": 201,
+        "session_closed": true,
+        "recordings_enabled": true,
+        "conversation": "recovered",
+        "worker_files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      }
+    },
+    "engine_sha256": "cfaf8d682f053bab3087f120b32f14e2974004007d32cde7929195cc4f80cd07",
+    "ingress_sha256": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+    "disclosure_update": null
+  },
+  "lease_sha256": "338b64047badaa6f13abe0b809b30d2a9c12b7787ebf711d906fed48e436b864"
 }

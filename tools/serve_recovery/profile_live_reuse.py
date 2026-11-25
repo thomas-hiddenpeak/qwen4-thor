@@ -26,7 +26,10 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 CHARACTER_RECORD = 'q4t-profile-business-v54'
 CHARACTER_FORMAT = 'q4t-video-character-source-v1'
 CHARACTER_RECEIPT = 'video-character-handoff.json'
-CHARACTER_REVIEWED = {}
+CHARACTER_REVIEWED = {
+    'primary': '0383b5f9b4029b4df1d5f2d17d1d605c213cfb8e025fd55d9a309c16cf82c9de',
+    'light': 'd86869c161d3c401ed6a70278644983d9dba262439b2842d45fec11154f03518',
+}
 CHARACTER_CAPABILITY = dict(endpoint='/v1/videos/characters', operations=['create', 'retrieve'],
                             scope='authenticated_client', source='original_encoded_clip',
                             max_name_characters=80, max_source_bytes=32 << 20, decoder_compiled=True)
@@ -338,6 +341,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '09f823b3e0a2cdb7ed841f66085f1eb3875c050ee80151f4352f2d1782079533':
+        '3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87',
     '608fc278b963de946a12f658cb749b330686de151472292bf5d23d6f36628502':
         '3fc018c2dcfd69433ddff22ac2b4e99cbba525e72f26d0e56433967f86d92d4a',
     '6b14a6aebbb7e7ab254ebf230440b3bcb79f09dcab616df314bd781c8722816e':

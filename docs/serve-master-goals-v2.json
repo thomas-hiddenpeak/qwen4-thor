@@ -799,9 +799,10 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "real_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
-        "business": "evidence/serve-video-characters-20261125/business.json"
+        "business": "evidence/serve-video-characters-20261125/business.json",
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
       }
     },
     {
@@ -3173,9 +3174,10 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "real_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
-        "business": "evidence/serve-video-characters-20261125/business.json"
+        "business": "evidence/serve-video-characters-20261125/business.json",
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
       }
     },
     {
@@ -5930,9 +5932,10 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "real_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
-        "business": "evidence/serve-video-characters-20261125/business.json"
+        "business": "evidence/serve-video-characters-20261125/business.json",
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
       }
     },
     {
@@ -7861,9 +7864,10 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "real_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
-        "business": "evidence/serve-video-characters-20261125/business.json"
+        "business": "evidence/serve-video-characters-20261125/business.json",
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
       }
     },
     {
@@ -10624,9 +10628,10 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "real_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
-        "business": "evidence/serve-video-characters-20261125/business.json"
+        "business": "evidence/serve-video-characters-20261125/business.json",
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
       }
     },
     {
