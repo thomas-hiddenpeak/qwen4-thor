@@ -172,6 +172,9 @@ class ChatServer {
   // single-use server to release partial model/scheduler resources. Start,
   // Run and destruction must be sequenced by the owner, never concurrent.
   Status Start(const ServerOptions& opts);
+  bool StartupMemoryInsufficient() const {
+    return startup_memory_.Insufficient();
+  }
 
   // Accept loop: blocks, spawning one thread per client (concurrent requests;
   // see the B1 scheduling note above), until an error or closed. Returns the

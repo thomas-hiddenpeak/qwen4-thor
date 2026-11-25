@@ -266,6 +266,15 @@ Status ChatServer::Start(const ServerOptions& opts) {
                  "[q4t][startup-memory] {\"checkpoint\":\"%s\","
                  "\"admission\":%s}\n",
                  checkpoint, StartupMemorySnapshotJson(*snapshot).c_str());
+    if (snapshot->state == StartupMemoryState::kInsufficient &&
+        progress_publisher_) {
+      // A before-ready refusal sees RAM after allocation. Preflight runs
+      // after cleanup and must still cover the cold allocation requirement.
+      progress_publisher_->StartupMemoryRefused(
+          snapshot->memory.total_bytes, snapshot->memory.available_bytes,
+          std::max(snapshot->required_bytes,
+                   startup_memory_.before_allocations.required_bytes));
+    }
     return snapshot->Allowed() ? Status()
                                : Status::Fail(std::string(snapshot->Reason()) +
                                               ": " + checkpoint);

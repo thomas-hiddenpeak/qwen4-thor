@@ -20,6 +20,21 @@ from tools.serve_service import package as engine
 
 
 def cpu_backend(args):
+    # Inject the native refusal only for the selected generation of this fixture.
+    generation = os.environ.get('Q4T_MODEL_GENERATION')
+    if generation and (args.directory/('refuse-memory-'+generation)).is_file():
+        if os.environ.get('Q4T_MANAGED_STARTUP_STATUS') != '1':
+            raise RuntimeError('managed startup status was not negotiated')
+        if (args.directory/'report-memory-floor').exists():
+            with socket.socket(fileno=int(os.environ['Q4T_PROGRESS_FD'])) as sock:
+                pid = os.getpid()
+                sock.send(progress.STARTUP_MEMORY.pack(b'Q4TMEM01', pid,
+                    journal.process_start(pid), Path('/proc/self/ns/pid').stat().st_ino,
+                    int(os.environ['Q4T_CONTROLLER_GENERATION']), int(generation),
+                    128 << 30, 96 << 30, 112 << 30,
+                    Path('/proc/sys/kernel/random/boot_id').read_text().strip().encode(),
+                    os.environ['Q4T_SERVICE_ID'].encode()))
+        raise SystemExit(os.EX_TEMPFAIL)
     value = config(args.directory, ports=(1, args.port, args.operations_port))
     value['backend_policy'] = json.loads(args.client_policy_file.read_text())
     observation = dict(active=0, successes=0)
@@ -121,6 +136,13 @@ def run_controller(directory):
         model_dir=str(directory), protocol_sha256='c'*64,
         files=dict(q4t=hashlib.sha256(Path('/proc/self/exe').read_bytes()).hexdigest()),
         client_policy=dict(enabled=True))
+    read_memory = controller.memory.read
+    def observed_memory():
+        if (directory/'report-memory-floor').exists():
+            free = 112 if (directory/'restore-memory').exists() else 96
+            return dict(total_bytes=128 << 30, available_bytes=free << 30)
+        return read_memory()
+    controller.memory.read = observed_memory
     controller.bundle.verify = lambda *_args: dict(version=1, engine_manifest_sha256='a'*64, model_assets={})
     controller.bundle.check_assets = lambda *_args, **_kwargs: None
     controller.engine.verify = lambda *_args: base

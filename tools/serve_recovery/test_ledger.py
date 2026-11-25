@@ -79,6 +79,36 @@ class LedgerTests(unittest.TestCase):
         self.m.clock.advance(delay)
         return self.m.start('model')
 
+    def test_startup_memory_wait_keeps_unknown_history_and_charges_retries(self):
+        self.m.start('model')
+        self.fault('killed', unknown=True)
+        self.m.retire('model')
+        self.m.clock.advance(5)
+        failures = deepcopy(self.m.state['failures'])
+        for seconds in (20, 60, 60):
+            self.assertTrue(self.m.start('model')['allowed'])
+            ticket = self.m.state['active']['model']['ticket']
+            self.m.send('retired', role='model', ticket=ticket, verified=True,
+                        startup_wait='memory')
+            self.assertIsNone(self.m.state['quarantine'])
+            self.assertEqual(self.m.state['failures'], failures)
+            self.assertEqual(self.m.start('model')['reason'], 'cooldown')
+            self.m.clock.advance(seconds)
+        self.assertEqual(self.m.start('model')['reason'], 'budget_exhausted')
+        self.assertEqual(len(self.m.state['attempts']['model']), 3)
+
+    def test_only_verified_unready_models_may_retire_for_startup_pressure(self):
+        self.m.start('model')
+        ticket = self.m.state['active']['model']['ticket']
+        args = dict(role='model', ticket=ticket, verified=True, startup_wait='memory')
+        for changed in (dict(verified=False), dict(ticket=str(uuid.uuid4())),
+                        dict(startup_wait=True), dict(role='controller')):
+            with self.assertRaises(l.LedgerError):
+                self.m.send('retired', **(args | changed))
+        self.m.send('ready', role='model', ticket=ticket, verified=True)
+        with self.assertRaises(l.LedgerError):
+            self.m.send('retired', **args)
+
     def test_initial_start_is_single_and_replacement_is_charged_before_spawn(self):
         result = self.m.send('authorize', role='model', proof=PROOF)
         self.assertTrue(result['allowed'])

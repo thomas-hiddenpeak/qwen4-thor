@@ -247,6 +247,24 @@ class RuntimeTests(unittest.TestCase):
         self.until(self.runtime.ready)
         self.assertEqual(self.runtime.state['pending']['target'], 'light')
 
+    def test_refused_start_requests_qualified_light_with_refused_generation(self):
+        actor = SimpleNamespace(base=copy.deepcopy(self.fixture.base),
+            manifest=dict(model_assets=self.registry['identity']['model_assets'],
+                          recovery_profile_policy=profile_policy.DEFAULTS))
+        profiles = profile_controller.Profiles(actor, self.registry, self.binding)
+        self.runtime.close()
+        self.runtime = profiles.selection
+        self.runtime.nanos = lambda:self.now
+        self.until(self.runtime.ready)
+        profiles.startup_pressure(2)
+        observation = dict(total_bytes=128*1024**3, available_bytes=120*1024**3)
+        self.assertFalse(profiles.prepare_launch(actor, observation))
+        self.until(self.runtime.ready)
+        pending = self.runtime.state['pending']
+        self.assertEqual((pending['target'], pending['reason'], pending['source_generation']),
+                         ('light', 'confirmed_memory_fault', 2))
+        self.assertEqual(self.runtime.state['selected'], 'primary')
+
     def test_controller_parks_io_before_launch_and_confirms_only_new_live_generation(self):
         actor = SimpleNamespace(base=copy.deepcopy(self.fixture.base),
             manifest=dict(model_assets=self.registry['identity']['model_assets'],

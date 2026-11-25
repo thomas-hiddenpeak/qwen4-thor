@@ -32,6 +32,7 @@ class ControllerTests(unittest.TestCase):
         actor.ownership_unknown = False
         actor.monitor = SimpleNamespace(job=None, visibility='UNKNOWN')
         actor.profiles = None
+        actor.startup_memory_floors = {}
         actor.base = dict(model_dir=str(self.path))
         actor.manifest = dict(model_assets={})
         actor.settings = {}
@@ -55,6 +56,36 @@ class ControllerTests(unittest.TestCase):
         path.write_text('#!'+sys.executable+'\nprint('+repr(json.dumps(value))+')\n')
         path.chmod(0o500)
         self.actor.transaction.return_value = dict(ok=True, result=dict(allowed=True, generation=1))
+
+    def test_unreadable_or_invalid_ram_snapshot_waits_then_recovers(self):
+        a = self.actor
+        a.continuous = True
+        a.monitor.visibility = 'AVAILABLE'
+        with mock.patch.object(controller.memory, 'read', side_effect=[
+                OSError('offline'), ValueError('malformed'),
+                dict(total_bytes=128 << 30, available_bytes=120 << 30)]):
+            for _ in range(2):
+                self.assertIsNone(a.preflight())
+                self.assertEqual((a.phase, a.reason), ('WAIT_DEPENDENCY', 'memory_unknown'))
+            a.quarantine.assert_not_called()
+            a.transaction.assert_not_called()
+            self.assertTrue(a.preflight()['device_usable'])
+
+    def test_native_startup_floor_waits_only_for_the_matching_capacity(self):
+        a = self.actor
+        a.continuous = True
+        a.monitor.visibility = 'AVAILABLE'
+        a.startup_memory_floors[None] = (128 << 30, 112 << 30)
+        with mock.patch.object(controller.memory, 'read') as read:
+            read.return_value = dict(total_bytes=128 << 30, available_bytes=(112 << 30)-1)
+            for _ in range(3):
+                self.assertIsNone(a.preflight())
+                self.assertEqual(a.reason, 'startup_memory_floor')
+            a.transaction.assert_not_called()
+            read.return_value['available_bytes'] += 1
+            self.assertTrue(a.preflight()['resources_safe'])
+            read.return_value = dict(total_bytes=64 << 30, available_bytes=60 << 30)
+            self.assertTrue(a.preflight()['resources_safe'])
 
     def test_absent_cold_credential_preserves_wait_without_probe_or_grant(self):
         self.actor.cold_device_recovery = False
