@@ -1,5 +1,9 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+管理员只读检查已确认 rev500 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev500-preflight.json)
+
+模型进程退出与主网关失效后，Node 和 Python 均读取原角色，Python 也读取了自己先前上传的另一角色。五个应用列表的页长声明已包含在发行包中。默认服务停在 rev500，独立回退已登记，13 份保护记录原样保留。24 小时计划已预检，实跑由用户安排。[验证记录](evidence/serve-video-track-selection-20261125/delivery.json)
+
 Python SDK 3.42.1 和 3.55.1 各通过五次本地请求回放，核对了严格响应类型、multipart 的名称与完整视频字节；2.8.1 缺少这两个类型化方法。后续将用 3.42.1 实际读取 Node 建立的角色，并验证 Python 自建角色在恢复前后仍能读取。[验证记录](evidence/serve-video-track-selection-20261125/python-sdk.json)
 
 主配置上传双轨原片，轻配置读取同一角色，模型按该 ID 调工具并复述正确的名称。两种容量的其他客户都收到 404，独立 Chat 都答 42。两次实际启动通过，留下完整的 rev498 恢复前驱。[验证记录](evidence/serve-video-track-selection-20261125/profiles.json)

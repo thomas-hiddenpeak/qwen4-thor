@@ -1,5 +1,5 @@
 {
-  "stage": "cpu_wire_replay",
+  "stage": "managed_device_verified",
   "scope": "Typed methods, strict response parsing and multipart serialization. The source display name is adapted in the creation replay. Actual managed service recovery is pending.",
   "sdk": {
     "3.42.1": {
@@ -29,5 +29,40 @@
   "captures": {
     "character-business-01/create/character-http.json": "9e77d986563e5ecbe75e063a3b56bcc883acb66181298fba6c90325808c9843f",
     "track-business-01/create/character-http.json": "e583ee5a32231ff78fe7b599997db851e484a0c0141eb131682a6569a483c6a4"
+  },
+  "actual": {
+    "on_device_version": "3.42.1",
+    "transport": "owned loopback HTTP",
+    "recoveries": {
+      "fallback": {
+        "version": "3.42.1",
+        "node_resource": {
+          "id": "char_a053b43ed7cbae8623c39c98b91dd829",
+          "name": "项目视频角色",
+          "created_at": 1795594319
+        },
+        "python_resource": {
+          "id": "char_0a31378ae0db6c528bfa534fd2a2912e",
+          "created_at": 1795594326,
+          "name": "Python 双轨参考"
+        },
+        "retrieved_type": "VideoGetCharacterResponse"
+      },
+      "primary": {
+        "version": "3.42.1",
+        "node_resource": {
+          "id": "char_9ca7e9c6e7140ed141c941c1f4724776",
+          "name": "项目视频角色",
+          "created_at": 1795594687
+        },
+        "python_resource": {
+          "id": "char_3fd659b60330a42c09792f0a4db12e00",
+          "created_at": 1795594695,
+          "name": "Python 双轨参考"
+        },
+        "retrieved_type": "VideoGetCharacterResponse"
+      }
+    },
+    "source": "evidence/serve-video-track-selection-20261125/delivery.json"
   }
 }
