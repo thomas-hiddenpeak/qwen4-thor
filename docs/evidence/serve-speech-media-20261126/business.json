@@ -1,0 +1,210 @@
+{
+  "stage": "targeted_cpu_native_tls_and_official_sdk_verified",
+  "issued": false,
+  "production_revision": 520,
+  "build_parent": "4ae1cf64422a80adf28ae89d2a1266a2d0ecf277",
+  "build": {
+    "binary": "f1c4cb96243294b1c72f6b2024caab2e24f5ac437f3fd1b1b7e781902cec3549",
+    "ingress": "7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb",
+    "sdk_driver": "b62198ee4e5e2a4b178ed6828c8ee41c6c145b9f2ec66af7500ce97088da6162"
+  },
+  "cpu": {
+    "native": 8,
+    "native_ingress": 2,
+    "optional_nginx": 2,
+    "contracts": 2,
+    "inventory": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 246,
+      "native_routes": 408,
+      "reviewed_source_anchors": 1389,
+      "mutation_checks": 40,
+      "errors": []
+    }
+  },
+  "initial_failures": {
+    "optional_managed_nginx": "The real nginx forwarded the owner but dropped Accept; the generated configuration now explicitly forwards the header.",
+    "native_speech": {
+      "run": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 47.681,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "first_octet_bytes": 9455,
+      "second_status": 409,
+      "code": "response_write_failed",
+      "cause": "Native binary chunked writer excluded audio/opus. Added that exact type and a socket test for every negotiated type."
+    },
+    "fixture_setup": "An initial nginx invocation omitted the fixture ELF and one initial schema selection used an incorrect Python class name; the recorded passing cases used the proper entrypoints."
+  },
+  "wire": {
+    "original_driver": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 50.006,
+      "unchanged_default": true,
+      "phases": []
+    },
+    "original_lease": "COMMAND_FAILED",
+    "http_result": "Official SDK finished all six calls before the offline converter failed",
+    "offline_decode": "PASS_RETAINED_HTTP_BYTES_AND_DECODE",
+    "offline_failure": "Offline ffmpeg raw PCM muxer unavailable after the SDK successfully completed all six HTTP calls",
+    "offline_model_starts": 0,
+    "owned_shutdown": true,
+    "monitor_events": [
+      "child_started",
+      "cleanup_capabilities",
+      "lease_acquired",
+      "lease_released",
+      "monitor",
+      "preflight"
+    ],
+    "sdk": {
+      "sdk": "7.47.0",
+      "rows": [
+        {
+          "name": "sdk",
+          "accept": "application/octet-stream",
+          "mime": "application/octet-stream",
+          "bytes": 9455,
+          "sha256": "88279546f01d5bae7102542007833d616e6ee9f879cfe111a05fc4e1cf0394bb"
+        },
+        {
+          "name": "opus",
+          "accept": "audio/opus",
+          "mime": "audio/opus",
+          "bytes": 9455,
+          "sha256": "5012db41f0020b4ae35213c444ede5fa7913797262b3b75790375b4ecdca170f"
+        },
+        {
+          "name": "wildcard",
+          "accept": "audio/*",
+          "mime": "audio/ogg",
+          "bytes": 9455,
+          "sha256": "16853b807a99942baae407df662763852a60d956ae5f3671fbb3d6afd1b57cf9"
+        },
+        {
+          "name": "events",
+          "accept": "application/octet-stream",
+          "mime": "text/event-stream",
+          "bytes": 9455,
+          "sha256": "155c15e97bac71260fc19cb78a276602108fe34a58e171d46e02b049cc953ee0"
+        }
+      ],
+      "negative": [
+        406,
+        400
+      ]
+    },
+    "decoded": [
+      {
+        "name": "sdk",
+        "codec": "opus",
+        "sample_rate": 24000,
+        "samples": 28800,
+        "peak": 11214,
+        "pcm_sha256": "8e278b6113d974e0a7476fd2394d7d5dfbb458053e634001f38949c506fb2337"
+      },
+      {
+        "name": "opus",
+        "codec": "opus",
+        "sample_rate": 24000,
+        "samples": 28800,
+        "peak": 11214,
+        "pcm_sha256": "8e278b6113d974e0a7476fd2394d7d5dfbb458053e634001f38949c506fb2337"
+      },
+      {
+        "name": "wildcard",
+        "codec": "opus",
+        "sample_rate": 24000,
+        "samples": 28800,
+        "peak": 11214,
+        "pcm_sha256": "8e278b6113d974e0a7476fd2394d7d5dfbb458053e634001f38949c506fb2337"
+      },
+      {
+        "name": "events",
+        "codec": "opus",
+        "sample_rate": 24000,
+        "samples": 28800,
+        "peak": 11214,
+        "pcm_sha256": "8e278b6113d974e0a7476fd2394d7d5dfbb458053e634001f38949c506fb2337"
+      }
+    ],
+    "transport": "native TLS with pinned official Node SDK, ffprobe identification and independent ffmpeg PCM decode",
+    "encoding": "All four bodies contain an Ogg Opus file; the SSE case concatenates actual audio delta bytes through its terminal event.",
+    "human_listening_performed": false
+  },
+  "media_contract": {
+    "methods": 219,
+    "deferred": 12,
+    "counts": {
+      "request_representations": 89,
+      "response_representations": 232,
+      "response_exact": 231,
+      "request_exact": 89
+    },
+    "inputs": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "issued": "63d41abe51f1a111b4468855ce1d2a2b79fc25be7599313acf3265f46fb3682d"
+    },
+    "literal_difference": {
+      "official": "*/*",
+      "issued": "application/octet-stream",
+      "assessment": "The wildcard admits this concrete byte representation. It is a literal declaration difference; successful download is independently recorded."
+    },
+    "container_upload": {
+      "official_request_body_types": [
+        "application/json",
+        "multipart/form-data"
+      ],
+      "literal_schema_discrepancy": true,
+      "sdk_transport_capture": {
+        "sdk": "7.47.0",
+        "transport_only": true,
+        "network_requests": 0,
+        "sent": [
+          {
+            "media_type": "application/json",
+            "part": "file_id",
+            "keys": [
+              "file_id"
+            ]
+          },
+          {
+            "media_type": "multipart/form-data",
+            "part": "file",
+            "bytes": 1048773,
+            "sha256": "95dcc2a805e5d4faf62d1b185636b4d61494b3a75c4c4697f0240a0f281fc8df"
+          }
+        ]
+      },
+      "real_https_archive": {
+        "source_sha256": "d24c7e14e91016fc8c0778aeda8609dc28bc51595fb1ec94969ee7c7354c4361",
+        "sdk_actor_sha256": "cadfcc22c6af4f8873802bd1c36fe83cf68c553f1f56714fa02ff2af959eca83",
+        "json_responses": 16,
+        "negative_statuses": [
+          404,
+          404,
+          404,
+          404,
+          404,
+          400,
+          400,
+          404,
+          404
+        ],
+        "download": {
+          "bytes": 1048773,
+          "sha256": "95dcc2a805e5d4faf62d1b185636b4d61494b3a75c4c4697f0240a0f281fc8df"
+        },
+        "core_file_handler_sha256": "e442730a05aa9f27c82d57fb5d07425aafdc40952b4300f19b543bd125b7c1a4"
+      }
+    }
+  }
+}

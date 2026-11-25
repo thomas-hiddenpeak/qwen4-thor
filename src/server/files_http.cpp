@@ -5,8 +5,8 @@
 #include "chatkit_attachments.h"
 #include "containers_internal.h"
 #include "q4t/io/base64.h"
+#include "q4t/server/http_accept.h"
 #include "q4t/server/http_framing.h"
-#include <charconv>
 
 #include "object_protocol.h"
 #include "q4t/server/containers.h"
@@ -23,53 +23,24 @@ using namespace std::chrono_literals;
 using Clock = std::chrono::steady_clock;
 ObjectReply SkillContentJson(std::string_view accept, bool* json) {
   if (accept.empty()) return {};
-  struct Score {
-    int specificity = -1;
-    double quality = 0;
-  };
-  Score zip, text;
-  while (!accept.empty()) {
-    const auto comma = accept.find(',');
-    auto item = http::Trim(accept.substr(0, comma));
-    const auto semi = item.find(';');
-    auto type = http::Lower(http::Trim(item.substr(0, semi)));
-    double q = 1;
-    for (auto delimiter = semi; delimiter != item.npos;
-         delimiter = item.find(';')) {
-      item.remove_prefix(delimiter + 1);
-      auto param = http::Lower(http::Trim(item.substr(0, item.find(';'))));
-      if (param.starts_with("q=")) {
-        std::string_view value(param);
-        value.remove_prefix(2);
-        auto result = std::from_chars(value.data(), value.data() + value.size(),
-                                      q, std::chars_format::fixed);
-        if (result.ec != std::errc{} ||
-            result.ptr != value.data() + value.size() || !(q >= 0 && q <= 1))
-          return Error(400, "invalid_request", "Invalid Accept quality");
-      }
-    }
-    const auto offer = [&](Score* score, int specificity) {
-      if (specificity > score->specificity ||
-          (specificity == score->specificity && q > score->quality))
-        *score = {specificity, q};
-    };
-    if (type == "application/json") offer(&text, 2);
-    if (type == "application/zip" || type == "application/binary" ||
-        type == "application/octet-stream")
-      offer(&zip, 2);
-    if (type == "application/*" || type == "*/*") {
-      const int rank = type == "*/*" ? 0 : 1;
-      offer(&text, rank);
-      offer(&zip, rank);
-    }
-    if (comma == accept.npos) break;
-    accept.remove_prefix(comma + 1);
-  }
+  http::MediaPreference zip, text;
+  const bool valid =
+      http::VisitAcceptRanges(accept, [&](const auto& type, double q) {
+        if (type == "application/json") text.Offer(2, q);
+        if (type == "application/zip" || type == "application/binary" ||
+            type == "application/octet-stream")
+          zip.Offer(2, q);
+        if (type == "application/*" || type == "*/*") {
+          const int rank = type == "*/*" ? 0 : 1;
+          text.Offer(rank, q);
+          zip.Offer(rank, q);
+        }
+      });
+  if (!valid) return Error(400, "invalid_request", "Invalid Accept quality");
   if (zip.quality == 0 && text.quality == 0)
     return Error(406, "not_acceptable",
                  "Expected a ZIP or JSON representation");
-  *json = text.quality > zip.quality ||
-          (text.quality == zip.quality && text.specificity > zip.specificity);
+  *json = text.PreferredTo(zip);
   return {};
 }
 void Reply(int fd, const ObjectReply& reply, const BinaryAccess& access) {

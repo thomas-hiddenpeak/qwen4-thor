@@ -1,9 +1,10 @@
 #include "q4t/server/speech_request.h"
-#include "q4t/io/json.h"
 
 #include <algorithm>
 #include <cmath>
 
+#include "q4t/io/json.h"
+#include "q4t/server/http_accept.h"
 
 namespace q4t::server {
 namespace {
@@ -49,6 +50,47 @@ std::string_view SpeechContentType(SpeechFormat format) {
     case SpeechFormat::kPcm:
       return "audio/pcm";
   }
+  return {};
+}
+
+Status NegotiateSpeechContentType(SpeechFormat format, std::string_view accept,
+                                  std::string_view* selected,
+                                  ChatPlanError* error) {
+  const auto canonical = SpeechContentType(format);
+  if (accept.empty()) {
+    *selected = canonical;
+    return {};
+  }
+  // Opus is delivered as an Ogg file. Keep the existing file type for
+  // wildcard clients and offer the codec type declared by the Speech API.
+  const bool opus = format == SpeechFormat::kOpus;
+  http::MediaPreference codec, opus_alias, binary;
+  const bool valid =
+      http::VisitAcceptRanges(accept, [&](const auto& type, double q) {
+        if (type == canonical) codec.Offer(2, q);
+        if (opus && type == "audio/opus") opus_alias.Offer(2, q);
+        if (type == "application/octet-stream") binary.Offer(2, q);
+        if (type == "audio/*" || type == "*/*") {
+          const int rank = type == "*/*" ? 0 : 1;
+          codec.Offer(rank, q);
+          if (opus) opus_alias.Offer(rank, q);
+        }
+        if (type == "application/*" || type == "*/*")
+          binary.Offer(type == "*/*" ? 0 : 1, q);
+      });
+  if (!valid ||
+      (codec.quality == 0 && opus_alias.quality == 0 && binary.quality == 0)) {
+    error->http_status = valid ? 406 : 400;
+    error->code = valid ? "not_acceptable" : "invalid_request";
+    return Status::Fail(valid ? "No acceptable speech representation"
+                              : "Invalid Accept quality");
+  }
+  *selected = canonical;
+  if (opus_alias.PreferredTo(codec)) {
+    *selected = "audio/opus";
+    codec = opus_alias;
+  }
+  if (binary.PreferredTo(codec)) *selected = "application/octet-stream";
   return {};
 }
 

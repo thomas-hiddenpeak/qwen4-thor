@@ -236,7 +236,7 @@ class ChatServer {
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
   std::string NativeEmbeddingHealthJson() const;
-  void HandleSpeech(int fd, const std::string& body);
+  void HandleSpeech(int fd, const std::string& body, std::string_view accept);
   ObjectReply SynthesizeChatAudio(
       int fd, const ChatAudioOptions& options, uint64_t output_limit,
       std::span<const uint64_t> choice_tokens,

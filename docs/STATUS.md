@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+语音合成已对官方 SDK 默认的 application/octet-stream 和显式 audio/opus 返回协商后的类型。audio/* 客户仍取得 audio/ogg，显式 SSE 收到音频增量与终态。四条原生 TLS 响应均由独立解码器识别为单声道 Opus 并解出非静默波形；不匹配和非法权重分别返回 406、400。首次真实请求暴露写出层漏列 audio/opus，已修复并保留 409 回执。可选托管 nginx 已能转发 Accept。第二次驱动在六个 HTTP 请求通过后遇到本机 FFmpeg 缺少裸 PCM 复用器，直接从保留字节解码为 WAV 完成校验，额外模型启动 0 次。下一步为整包交接。[语音回执](evidence/serve-speech-media-20261126/business.json)
+
 Responses 与 beta Responses 的图像上下文选项候选已通过 3 项原生 CPU 用例和 1 项应用合同用例。显式启用时，自动细节图片使用 512 像素上限，high 使用 1024，original 按原规则保留；自动策略在同一请求有多张用户图片时启用。原始图像和 detail 留在会话记录中。初版夹具自称 PNG 却只有一个字节，已换为有效 PNG。来源清单 40 项变异检查通过。下一步用合成色块通过真实 TLS 比对图像回答、用量和 compact 回读。[CPU 验证记录](evidence/serve-responses-image-context-20261126/cpu.json)
 
 公开 JSON Schema 已在主、轻配置间实际生效。主配置查到真实发行号 518，创建流关闭填充。轻配置按原会话、回合和回答 ID 读回记录，订阅恢复默认填充，下一回合答出 42。独立检查两个持久 Responses 的请求与生效缓存寿命分别为 12h 和 30m。清除设置后可读回模型默认状态，两个配置的跨客户读取均为 404。每种配置各启动一次模型，分别耗时 41.504 和 35.994 秒。两份 v65 记录均逐字节还原各自的 v64 前驱。 下一步是托管服务故障接手及可回退发行。[配置交接回执](evidence/serve-agent-structured-format-20261126/profiles.json)

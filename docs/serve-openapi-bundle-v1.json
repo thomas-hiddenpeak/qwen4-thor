@@ -16886,6 +16886,12 @@
                   "format": "binary"
                 }
               },
+              "audio/opus": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
               "audio/aac": {
                 "schema": {
                   "type": "string",
@@ -16905,6 +16911,12 @@
                 }
               },
               "audio/pcm": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/octet-stream": {
                 "schema": {
                   "type": "string",
                   "format": "binary"

@@ -173,6 +173,8 @@ class Stack:
                     token=self.headers.get('X-Q4T-Gateway-Token'),
                     client=self.headers.get('X-Q4T-Client-Id'),
                     authorization=self.headers.get('Authorization'))
+                if self.headers.get('Accept') is not None:
+                    row['accept'] = self.headers['Accept']
                 if self.headers.get('OpenAI-Beta') is not None:
                     row['openai_beta'] = self.headers['OpenAI-Beta']
                 if self.path.startswith('/v1/tunnels/'):
@@ -570,6 +572,16 @@ class NginxTests(unittest.TestCase):
     def ready(self):
         self.stack.wait(lambda: self.stack.bound == self.stack.generation)
 
+    def test_speech_preserves_representation_preferences(self):
+        self.ready()
+        for mime in ('application/octet-stream', 'audio/opus, audio/ogg;q=0.5'):
+            status, _, _ = self.stack.request(
+                {'input': 'hello', 'voice': 'vivian', 'model': 'tts'},
+                path='/v1/audio/speech', extra={'Accept': mime})
+            self.assertEqual(status, 200)
+            row = self.stack.application_requests[-1]
+            self.assertEqual((row.get('accept'), row['client']), (mime, 'alpha'))
+
     def test_skill_versions_and_content_preserve_owner_and_query(self):
         self.ready()
         root = '/v1/skills/skill_1'
@@ -580,9 +592,11 @@ class NginxTests(unittest.TestCase):
             self.assertEqual(self.stack.request(body, path=path)[0], 200)
             row = self.stack.application_requests[-1]
             self.assertEqual((row['client'],row['path']),('alpha',path))
+        self.assertEqual(self.stack.request(path=root+'/content', extra={'Accept':'application/json'})[0], 200)
+        self.assertEqual(self.stack.application_requests[-1].get('accept'), 'application/json')
         for path in (root+'/versions/1/unknown',root+'/versions/1/content/extra','/v1/skills/cntr_1'):
             self.assertEqual(self.stack.request(path=path)[0],404)
-        self.assertEqual(len(self.stack.application_requests),5)
+        self.assertEqual(len(self.stack.application_requests),6)
 
     def test_container_file_paths_keep_owner_and_distinguish_file_ids(self):
         self.ready()

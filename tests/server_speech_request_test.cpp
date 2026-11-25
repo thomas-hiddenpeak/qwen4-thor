@@ -75,3 +75,48 @@ Q4T_TEST(speech_request_counts_unicode_and_rejects_ambiguous_controls) {
   Q4T_CHECK(error.http_status == 413);
   return true;
 }
+
+Q4T_TEST(speech_binary_media_respects_codec_quality_and_sdk_accept) {
+  for (const auto format :
+       {SpeechFormat::kMp3, SpeechFormat::kOpus, SpeechFormat::kWav,
+        SpeechFormat::kAac, SpeechFormat::kFlac, SpeechFormat::kPcm}) {
+    std::string_view media;
+    ChatPlanError error;
+    for (const auto header : {"", "*/*", "audio/*"}) {
+      Q4T_CHECK(NegotiateSpeechContentType(format, header, &media, &error));
+      Q4T_CHECK(media == SpeechContentType(format));
+    }
+    Q4T_CHECK(NegotiateSpeechContentType(format, "application/octet-stream",
+                                         &media, &error));
+    Q4T_CHECK(media == "application/octet-stream");
+  }
+  std::string_view media;
+  ChatPlanError error;
+  struct Case {
+    std::string_view accept, expected;
+  };
+  for (const auto& row :
+       {Case{" audio/OPUS ", "audio/opus"},
+        Case{"audio/*;q=0.4, application/octet-stream;q=0.9",
+             "application/octet-stream"},
+        Case{"audio/opus;q=0, audio/*", "audio/ogg"},
+        Case{"audio/ogg;q=0, audio/*", "audio/opus"},
+        Case{"*/*, audio/opus;q=1", "audio/opus"},
+        Case{"audio/*;q=0, */*;q=0.5", "application/octet-stream"}}) {
+    Q4T_CHECK(NegotiateSpeechContentType(SpeechFormat::kOpus, row.accept,
+                                         &media, &error));
+    Q4T_CHECK(media == row.expected);
+  }
+  for (const auto* header : {"audio/opus", "audio/mpeg;q=0, audio/*",
+                             "text/event-stream", "*/*;q=0"}) {
+    media = "previous";
+    Q4T_CHECK(!NegotiateSpeechContentType(SpeechFormat::kMp3, header, &media,
+                                          &error));
+    Q4T_CHECK(error.http_status == 406 && error.code == "not_acceptable");
+    Q4T_CHECK(media == "previous");
+  }
+  Q4T_CHECK(!NegotiateSpeechContentType(SpeechFormat::kOpus, "audio/opus;q=bad",
+                                        &media, &error));
+  Q4T_CHECK(error.http_status == 400 && error.code == "invalid_request");
+  return true;
+}

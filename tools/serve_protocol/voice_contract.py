@@ -50,7 +50,8 @@ def add_voice_routes(paths, response, error):
         speed=dict(type='number',minimum=.25,maximum=4,default=1),
         response_format=dict(enum=['mp3','opus','aac','flac','wav','pcm'],default='mp3'),
         stream_format=dict(enum=['audio','sse'],default='audio')), ['model','input','voice'])
-    speech_types = ('audio/mpeg','audio/ogg','audio/aac','audio/flac','audio/wav','audio/pcm')
+    speech_types = ('audio/mpeg','audio/ogg','audio/opus','audio/aac','audio/flac',
+                    'audio/wav','audio/pcm','application/octet-stream')
     body = {mime:dict(schema=binary) for mime in speech_types}
     body.update(content('text/event-stream',text))
     operation('post','/v1/audio/speech',{'200':dict(description='Audio or server-sent speech events',
