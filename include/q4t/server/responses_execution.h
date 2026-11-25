@@ -25,6 +25,9 @@
 #include "q4t/server/vector_search_execution.h"
 
 namespace q4t::server {
+namespace chatkit_detail {
+struct RetryHistory;
+}
 
 // Internal ownership proof, never an HTTP action. Reserve before the first
 // durable mutation; Close only after model/grammar execution has drained.
@@ -61,7 +64,8 @@ class ResponsesExecution {
                       StateAccess access, int64_t created,
                       bool background_executor = false,
                       const CancelledAgentHistory* cancelled = nullptr,
-                      const io::Json* frozen_eval_parts = nullptr);
+                      const io::Json* frozen_eval_parts = nullptr,
+                      const chatkit_detail::RetryHistory* retry = nullptr);
   ObjectReply RestoreQueued(const std::string& id, const ChatPlanConfig& config,
                             StateAccess access);
   // Private, unexecuted queue state. Freeze publishes no Response resource;
@@ -288,7 +292,7 @@ class ResponsesExecution {
   ObjectReply BindMutationResult(ObjectReply reply);
   ObjectReply RequiredExecutors(bool background_executor) const;
   ObjectReply PlanGeneration(const ChatPlanConfig& config, int64_t created,
-                             bool require_frozen_files = false);
+                             const char* frozen_input_error = nullptr);
   ObjectReply BuildPreparedGeneration(const ChatPlanConfig& config);
   ObjectReply PersistPreparedInputs();
   void ReleasePreparedInputs() noexcept;

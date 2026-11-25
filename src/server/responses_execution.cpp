@@ -11,6 +11,7 @@
 #include "agent_environment_bindings.h"
 #include "assistant_runs_internal.h"
 #include "agent_subagent_internal.h"
+#include "chatkit_retry.h"
 #include "object_protocol.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/input_contract.h"
@@ -278,7 +279,8 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
                                         StateAccess access, int64_t created,
                                         bool background_executor,
                                         const CancelledAgentHistory* cancelled,
-                                        const Json* frozen_eval_parts) {
+                                        const Json* frozen_eval_parts,
+                                        const chatkit_detail::RetryHistory* retry) {
   if (prepared_ || begun_)
     return Error(500, "response_state_invalid", "Response already prepared");
   access_ = std::move(access);
@@ -322,6 +324,10 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
   }
   auto resolved = state_.Resolve(envelope_, access_, &plan_, cancelled, agent_session_id_);
   if (!resolved.ok()) return resolved;
+  if (retry) {
+    auto restored = chatkit_detail::ApplyRetryHistory(*retry, &plan_);
+    if (!restored.ok()) return restored;
+  }
   if (frozen_eval_parts) {
     // This comes only from the scoped, server-authored Evals dataset. Keep
     // canonical IDs assigned by this execution; recheck the part digest at
@@ -351,7 +357,10 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
       return Error(422, "eval_frozen_input_invalid",
                    "Stored file binding does not match its replayed part");
   }
-  return PlanGeneration(config, created, frozen_eval_parts != nullptr);
+  const char* frozen_input_error = nullptr;
+  if (frozen_eval_parts) frozen_input_error = "eval_frozen_input_invalid";
+  if (retry) frozen_input_error = "chatkit_retry_input_invalid";
+  return PlanGeneration(config, created, frozen_input_error);
 }
 
 ObjectReply ResponsesExecution::RequiredExecutors(
@@ -426,7 +435,7 @@ ObjectReply ResponsesExecution::FitContext(const ChatPlanConfig& config,
 
 ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
                                                int64_t created,
-                                               bool require_frozen_files) {
+                                               const char* frozen_input_error) {
   envelope_.managed_agent_tools = !agent_session_id_.empty();
   envelope_.session_automations = session_automations_;
   if (const auto* agents = envelope_.request.Find("multi_agent");
@@ -545,9 +554,9 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
         files_->Prepare(file_history_, FileInputProfile::kResponsesStored,
                         plan_.input_snapshots,
                         {access_.scope, access_.deadline, access_.cancelled},
-                        require_frozen_inputs_ || require_frozen_files);
-    if (require_frozen_files && prepared.code == "file_expansion_invalid")
-      return Error(422, "eval_frozen_input_invalid",
+                        require_frozen_inputs_ || frozen_input_error);
+    if (frozen_input_error && prepared.code == "file_expansion_invalid")
+      return Error(422, frozen_input_error,
                    "Stored file input has no matching immutable snapshot");
     if (!prepared.ok()) return prepared;
   }

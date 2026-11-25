@@ -30200,6 +30200,7 @@
             "threads.create",
             "threads.add_user_message",
             "threads.add_client_tool_output",
+            "threads.retry_after_item",
             "threads.get_by_id",
             "threads.list",
             "threads.delete",
@@ -30392,6 +30393,34 @@
                 },
                 "required": [
                   "thread_id"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "threads.retry_after_item"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "type": "object",
+                "properties": {
+                  "thread_id": {
+                    "type": "string"
+                  },
+                  "item_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "thread_id",
+                  "item_id"
                 ]
               }
             }
