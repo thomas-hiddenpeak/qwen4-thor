@@ -1126,7 +1126,7 @@
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       },
       "invalid_historical_arguments_20261125": {
-        "stage": "cpu_verified",
+        "stage": "device_verified",
         "receipt": "evidence/serve-chat-history-arguments-20261125/business.json"
       }
     },
