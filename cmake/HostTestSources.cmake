@@ -224,6 +224,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_rate_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/client_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_client_policy_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_observation_admission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/guardian_quota_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/runtime_cleanup_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/runtime/system_memory.cpp
@@ -330,6 +331,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_sessions.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_client.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_attachments.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_transcription.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_thread_state.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_threads.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_credentials.cpp

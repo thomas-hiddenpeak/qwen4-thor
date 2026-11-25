@@ -1,0 +1,41 @@
+{
+  "stage": "targeted_cpu_verified",
+  "issued": false,
+  "reference": {
+    "repository": "openai/chatkit-python",
+    "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "files": {
+      "chatkit/types.py": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+      "chatkit/server.py": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+      "LICENSE": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+    }
+  },
+  "tests": [
+    "chatkit_composer_audio_uses_native_asr_and_preserves_failed_input",
+    "asr_form_preserves_binary_and_real_multipart_fields",
+    "asr_form_required_duplicate_unknown_and_atomic_failure",
+    "audio_translation_form_preserves_only_translation_input_fields"
+  ],
+  "tests_log_sha256": "2f6a39c17087659d3837a73cff6c222d082f66aacab5e9b937ff606f06a639be",
+  "schema": {
+    "status": "PASS",
+    "valid": 2,
+    "invalid": 7
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 243,
+    "native_routes": 402,
+    "reviewed_source_anchors": 1374,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "public_actor_sha256": "963beedd5f7f226ebce7d9e6185fad442b77d7423e40ea0ce6855cdf06affb15",
+  "pending": [
+    "WAV and WebM/Opus speech on the real authenticated HTTPS browser endpoint",
+    "Reversible delivery"
+  ]
+}

@@ -10588,6 +10588,9 @@
         "x-q4t-result-by-request-type": {
           "attachments.create": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_reserved_document"
+          },
+          "input.transcribe": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_transcription_result"
           }
         }
       }
@@ -58831,7 +58834,8 @@
                   "items.list",
                   "items.feedback",
                   "attachments.create",
-                  "attachments.delete"
+                  "attachments.delete",
+                  "input.transcribe"
                 ]
               },
               "params": {
@@ -58877,6 +58881,40 @@
                         "size",
                         "mime_type"
                       ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "input.transcribe"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "params": {
+                      "type": "object",
+                      "properties": {
+                        "audio_base64": {
+                          "type": "string",
+                          "minLength": 4,
+                          "maxLength": 34952536,
+                          "contentEncoding": "base64"
+                        },
+                        "mime_type": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 255
+                        }
+                      },
+                      "required": [
+                        "audio_base64",
+                        "mime_type"
+                      ],
+                      "additionalProperties": false
                     }
                   }
                 }
@@ -59065,6 +59103,18 @@
           },
           "chatkit_client_result": {
             "type": "object"
+          },
+          "chatkit_transcription_result": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ],
+            "additionalProperties": false
           },
           "chatkit_document_attachment": {
             "type": "object",

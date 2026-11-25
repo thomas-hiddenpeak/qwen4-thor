@@ -1,5 +1,13 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+官方 SDK 签发的会话经原生 HTTPS 发送 WAV 和 WebM/Opus，两次均逐字返回“请查询当前项目版本号。”。音源为有记录的 2.88 秒合成语音，ASR 未收到原文。损坏编码、媒体类型不符、项目密钥和撤销的会话分别返回 400、415、401、401。另一客户 Chat 答 42，模型启动一次，42.302 秒，默认发行保持 rev494。[验证记录](evidence/serve-chatkit-composer-20261125/business.json)
+
+ChatKit 会话可以提交带媒体类型的 base64 录音，转写沿用原生 ASR 与客户配额，浏览器收到仅含 text 的 JSON。四项 CPU 回归、两项有效和七项无效 schema 输入均已验证。下一步通过实际 TLS 会话提交两种编码的同一段语音。[验证记录](evidence/serve-chatkit-composer-20261125/cpu.json)
+
+官方 Node SDK 通过原生 TLS 运行两种 Evals，各读出项目资料中的 157，正反评分分别为 1 和 0。第三个真实运行成功取消，跨客户访问返回 404，独立 Chat 答 42。数据与控制并发各限 1，单次模型启动共 39.033 秒。7 个响应同时通过官方和本地合同。[验证记录](evidence/serve-observation-admission-20261125/business.json)
+
+旧原生网关被四个普通状态查询占满后，Evals 取消返回 429。候选在相同条件下通过操作端口返回 200；取消名额已被占用时仍返回 429。240 个常规方法的前后分类逐项对照，唯一变化是 Evals 取消进入专用通道。三处入口共用应用观测判断。下一步验证真实评估运行取消和可回退交付。[验证记录](evidence/serve-observation-admission-20261125/cpu.json)
+
 管理员只读检查已确认 rev494 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev494-preflight.json)
 
 主包与独立回退包均已验收。模型进程退出及主包故障后，SDK 读回原始 Run、消息与步骤，两组各 8 个页面摘要保持一致，跨客户查询返回 404。发行核对 13 项受保护状态，默认服务保持停止。长稳计划已预检，实跑由用户安排。下一步继续检查其他入口的准入与实际响应。[验证记录](evidence/serve-assistant-pagination-20261125/delivery.json)

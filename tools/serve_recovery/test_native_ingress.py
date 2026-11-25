@@ -254,9 +254,14 @@ class NativeTests(fixture.NginxTests):
             self.assertEqual(self.raw(auth, method='GET', path=paths[4])[0], 429)
             self.assertEqual(self.raw(auth, method='POST',
                 path='/v1/responses/resp_free/cancel')[0], 200)
+            eval_cancel = '/v1/evals/eval_a/runs/evalrun_a/cancel'
+            self.assertEqual(self.raw(auth, method='POST', path=eval_cancel)[0], 200)
+            self.assertEqual(self.stack.application_requests[-1]['upstream_port'],
+                             self.stack.value['policy']['upstream_operations_port'])
             streams.append(open_stream('POST', held_cancel))
             self.assertEqual(self.raw(auth, method='POST',
                 path='/v1/responses/resp_free/cancel')[0], 429)
+            self.assertEqual(self.raw(auth, method='POST', path=eval_cancel)[0], 429)
             self.assertEqual(self.raw('Authorization: Bearer '+'B'*40+'\r\n',
                 method='POST', path='/v1/responses/resp_free/cancel')[0], 200)
         finally:

@@ -37,7 +37,8 @@ bool Language(const Json& value) {
            std::all_of(value.str.begin(), value.str.end(),
                        [](char c) { return c >= 'a' && c <= 'z'; })));
 }
-ObjectReply DecodeAudio(std::string_view text, std::string* output) {
+ObjectReply DecodeAudio(std::string_view text, std::string* output,
+                        size_t byte_limit = 15ULL << 20) {
   if (text.size() % 4)
     return Invalid("audio", "Audio must be canonical base64");
   const size_t groups = text.size() / 4;
@@ -47,7 +48,7 @@ ObjectReply DecodeAudio(std::string_view text, std::string* output) {
           : size_t(text.back() == '=') +
                 size_t(text.size() > 1 && text[text.size() - 2] == '=');
   const size_t size = groups * 3 - padding;
-  if (size > 15ULL << 20)
+  if (size > byte_limit)
     return Invalid("audio", "Audio append exceeds its byte budget",
                    "audio_too_large");
   std::string decoded;
@@ -205,7 +206,11 @@ ObjectReply Turn(const Json& value, RealtimeTranscriptionSettings* settings,
 
 ObjectReply DecodeRealtimeAudioBase64(std::string_view text,
                                       std::string* output) {
-  return output ? DecodeAudio(text, output)
+  return DecodeAudioBase64(text, 15ULL << 20, output);
+}
+ObjectReply DecodeAudioBase64(std::string_view text, size_t byte_limit,
+                              std::string* output) {
+  return output ? DecodeAudio(text, output, byte_limit)
                 : Invalid("audio", "Audio output owner is missing");
 }
 ObjectReply ParseRealtimeTranscriptionCommand(

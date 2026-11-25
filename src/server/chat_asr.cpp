@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "q4t/server/chatkit.h"
 #include "q4t/server/file_audio.h"
 #include "q4t/server/asr_chunk_output.h"
 #include "q4t/server/overlapping_output.h"
@@ -10,7 +11,8 @@
 
 namespace q4t::server {
 void ChatServer::HandleTranscription(int fd, std::string_view content_type,
-                                     std::string_view body, bool translation) {
+                                     std::string_view body, bool translation,
+                                     const io::Json* composer) {
   using Clock = std::chrono::steady_clock;
   auto* http = detail::HttpResponseContext::Current(fd);
   metrics_.requests_total.fetch_add(1);
@@ -51,7 +53,10 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
     }
     AsrRequest request;
     ChatPlanError error;
-    auto status = ParseAsrRequest(content_type, body, &request, &error, translation);
+    auto status = composer
+                      ? ParseChatKitTranscription(*composer, &request, &error)
+                      : ParseAsrRequest(content_type, body, &request, &error,
+                                        translation);
     if (!status) {
       detail::SendError(fd, error.http_status, status.message(), {}, error.code,
                         error.param);
@@ -453,6 +458,10 @@ void ChatServer::HandleTranscription(int fd, std::string_view content_type,
           fd, "event: transcript.text.done\r\ndata: " + response + "\r\n\r\n",
           write);
       if (success) *http->State() = detail::ResponseState::kComplete;
+    } else if (composer) {
+      success = detail::SendSimple(fd, 200, "OK",
+          "{\"text\":\"" + detail::JsonEscape(response) + "\"}",
+          "application/json", write, {}, {}, true);
     } else {
       const bool text = request.format == AsrFormat::kText;
       const char* content_type = request.format == AsrFormat::kVtt

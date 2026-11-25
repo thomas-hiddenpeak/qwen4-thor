@@ -271,7 +271,8 @@ bool Emit(int fd, const Json& event, const StateAccess& access) {
 void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                         const ChatPlanConfig& config, const StateAccess& access,
                         std::string_view token, const std::string& body,
-                        ChatKitIssuer issuer, std::string_view origin) {
+                        ChatKitIssuer issuer, std::string_view origin,
+                        const std::function<void(const Json&)>& transcribe) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) {
     Fail(fd, access, Error(401, "invalid_client_secret", "Invalid session"));
@@ -292,6 +293,10 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
   }
   const auto& params = *input.Find("params");
   const auto type = input.GetString("type");
+  if (type == "input.transcribe") {
+    transcribe(params);
+    return;
+  }
   const bool create = type == "threads.create";
   if (!create && type != "threads.add_user_message" &&
       type != "threads.add_client_tool_output") {

@@ -3139,6 +3139,14 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "eval_cancel_admission_20261125": {
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-observation-admission-20261125/business.json"
+      },
+      "chatkit_composer_20261125": {
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       }
     },
     {
@@ -5877,6 +5885,10 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "chatkit_composer_20261125": {
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       }
     },
     {
@@ -7784,6 +7796,14 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "eval_cancel_admission_20261125": {
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-observation-admission-20261125/business.json"
+      },
+      "chatkit_composer_20261125": {
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       }
     },
     {
@@ -10524,6 +10544,14 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "eval_cancel_admission_20261125": {
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-observation-admission-20261125/business.json"
+      },
+      "chatkit_composer_20261125": {
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       }
     },
     {
@@ -11787,6 +11815,10 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "eval_cancel_admission_20261125": {
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-observation-admission-20261125/business.json"
       }
     },
     {

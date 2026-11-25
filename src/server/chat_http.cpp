@@ -889,7 +889,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
           "127.0.0.1:" + std::to_string(port_), configured ? configured : "");
       ServeChatKitClient(fd, *objects_, background_.Get(), PlanningConfig(fd), access,
                          BearerCredential(headers.authorization), body,
-                         {headers.gateway_token, headers.chatkit_issuer}, origin);
+                         {headers.gateway_token, headers.chatkit_issuer}, origin,
+                         [this, fd](const io::Json& params) {
+                           HandleTranscription(fd, {}, {}, false, &params);
+                         });
       return;
     }
     if (IsResponsesTarget(path)) {

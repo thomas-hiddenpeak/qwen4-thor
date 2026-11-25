@@ -483,6 +483,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chatkit_sessions.cpp
   src/server/chatkit_client.cpp
   src/server/chatkit_attachments.cpp
+  src/server/chatkit_transcription.cpp
   src/server/chatkit_thread_state.cpp
   src/server/chatkit_threads.cpp
   src/server/chatkit_credentials.cpp

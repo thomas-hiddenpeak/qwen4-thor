@@ -339,7 +339,8 @@ class ChatServer {
       std::vector<audio::AlignerWord>* aligned_words = nullptr,
       audio::AlignerTimes* aligned_times = nullptr);
   void HandleTranscription(int fd, std::string_view content_type,
-                           std::string_view body, bool translation);
+                           std::string_view body, bool translation,
+                           const io::Json* composer = nullptr);
   ObjectReply TranslateTranscript(
       int fd, const AsrRequest& request, std::string_view guidance,
       const AsrTranscript& transcript, int64_t duration_ms, uint64_t budget,
