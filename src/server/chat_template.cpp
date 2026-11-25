@@ -29,8 +29,7 @@ bool HasVisualParts(const io::Json& messages) {
     const auto* parts = message.GetArray("content");
     if (!parts) continue;
     for (const auto& part : parts->array) {
-      const auto type = part.GetString("type");
-      if (type == "image_url" || type == "video_url") return true;
+      if (part.Has("image_url") || part.Has("video_frames")) return true;
     }
   }
   return false;

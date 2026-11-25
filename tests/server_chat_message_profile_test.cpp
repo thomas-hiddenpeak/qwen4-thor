@@ -365,12 +365,18 @@ Q4T_TEST(chat_schema_prompt_preserves_contract_and_message_boundaries) {
 
 Q4T_TEST(chat_plain_visual_answers_keep_observations_separate_from_refusals) {
   constexpr auto guidance = "For a visual observation, begin directly";
-  for (const auto* part :
-       {R"({"type":"image_url","image_url":{"url":"data:image/png;base64,YQ=="}})",
-        R"({"type":"video_url","video_url":{"url":"data:video/mp4;base64,YQ=="}})"}) {
-    const auto messages =
-        std::string(R"([{"role":"user","content":[)") + part +
-        R"(,{"type":"text","text":"Describe it"}]}])";
+  const std::string image =
+      R"("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNgYPgPAAEDAQAIicLsAAAAAElFTkSuQmCC")";
+  const std::string frames = "[" + image + "," + image + "]";
+  for (const auto& [part, video] :
+       std::vector<std::pair<std::string, bool>>{
+           {R"({"type":"image_url","image_url":{"url":)" + image + "}}", false},
+           {R"({"image_url":)" + image + "}", false},
+           {R"({"type":"video_frames","video_frames":)" + frames + "}", true},
+           {R"({"video_frames":)" + frames + R"(,"video_timestamps":[0,1]})",
+            true}}) {
+    const auto messages = R"([{"role":"user","content":[)" + part +
+                          R"(,{"type":"text","text":"Describe it"}]}])";
     for (const auto& [options, expected] :
          std::vector<std::pair<std::string, bool>>{
              {"", true}, {R"(,"response_format":{"type":"text"})", true},
@@ -381,8 +387,16 @@ Q4T_TEST(chat_plain_visual_answers_keep_observations_separate_from_refusals) {
       Json request;
       Q4T_CHECK(q4t::io::ParseJson("{\"messages\":" + messages + options + "}",
                                    &request, true));
-      std::string prompt;
-      Q4T_CHECK(RenderChatPrompt(request, {"Describe it"}, &prompt));
+      std::string prompt, param;
+      std::vector<q4t::server::VisionItem> items;
+      Q4T_CHECK(ValidateChatContract(request, "m", true, &param));
+      Q4T_CHECK(q4t::server::PrepareChatPrompt(request, {}, &prompt, &items,
+                                              &param));
+      Q4T_CHECK(items.size() == 1);
+      Q4T_CHECK(items[0].kind == (video ? q4t::server::VisionItem::kVideo
+                                       : q4t::server::VisionItem::kImage));
+      Q4T_CHECK(prompt.find(video ? "<|video_pad|>" : "<|image_pad|>") !=
+                prompt.npos);
       Q4T_CHECK((prompt.find(guidance) != prompt.npos) == expected);
       Q4T_CHECK((prompt.find(q4t::server::kRefusalInstruction) != prompt.npos) ==
                 request.GetBool("parse_response", true));

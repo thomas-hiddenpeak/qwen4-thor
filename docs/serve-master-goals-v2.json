@@ -833,6 +833,11 @@
         "issued": true,
         "revision": 506,
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
+      },
+      "visual_frame_parts_20261126": {
+        "stage": "public_input_regression_verified",
+        "issued": false,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json"
       }
     },
     {
@@ -1322,6 +1327,11 @@
         "stage": "managed_profiles_validated",
         "issued": false,
         "receipt": "evidence/serve-visual-answer-encoding-20261126/profiles.json"
+      },
+      "visual_frame_parts_20261126": {
+        "stage": "public_input_regression_verified",
+        "issued": false,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json"
       }
     },
     {
@@ -6337,6 +6347,11 @@
         "business": "evidence/serve-image-speech-recovery-20261126/combined.json",
         "revision": 522,
         "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
+      },
+      "visual_frame_parts_20261126": {
+        "stage": "public_input_regression_verified",
+        "issued": false,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json"
       }
     },
     {
@@ -11393,6 +11408,11 @@
         "stage": "managed_profiles_validated",
         "issued": false,
         "receipt": "evidence/serve-visual-answer-encoding-20261126/profiles.json"
+      },
+      "visual_frame_parts_20261126": {
+        "stage": "public_input_regression_verified",
+        "issued": false,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json"
       }
     },
     {

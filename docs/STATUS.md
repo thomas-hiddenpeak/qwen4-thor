@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+复查发现此前的 video_url 用例直接调用渲染器，绕过了 Chat 对该输入的拒绝。真实入口按 image_url 和 video_frames 内容字段接收媒体，type 可省略。候选依照相同字段生成普通视觉回答的提示；新用例经过公开请求校验及媒体准备，检查有类型和无类型的图像与视频、原始模式、工具和 JSON。旧程序在该用例失败，候选 8 项原生用例及 40 项来源变异检查通过。下一步对真实视频帧和 H.264 文件做原生 TLS 短验。[CPU 回执](evidence/serve-visual-frame-parts-20261126/cpu.json)
+
 主、轻配置分别从原生 TLS 取得 Blue 和 Green，并保留真实拒答。轻配置按原 ID 读回主配置两条普通视觉回答和一条拒答，逐项相同；另一客户读这三项均收到 404。两套配置还分别拒绝了数值 user，独立 Chat 均返回 42。两套配置各启动一次，耗时 66.997 秒和 62.549 秒。首轮主配置 SDK 已通过，但验收器仍要求旧模板摘要而报错；修正后核对了实际新模板及其余全部声明。下一步验证托管包故障接手。[配置回执](evidence/serve-visual-answer-encoding-20261126/profiles.json)
 
 Responses 已在候选中接受官方 HTTP 合同允许的 user:null。省略和显式 null 产生相同的生成请求与执行选项，原请求仍可区分两者。原生 TLS 下，stable 和 beta 客户端都成功生成并取回图像回答，保留独立的 safety_identifier，跨客户读取均为 404。两个入口传入数值 user 均先返回 400 并定位到该字段。7 项原生、5 项协议检查通过，单次 GPU 启动用时 61.657 秒。默认包为 rev522，下一步检验候选的托管交接。[回执](evidence/serve-visual-answer-encoding-20261126/nullable-user.json)
