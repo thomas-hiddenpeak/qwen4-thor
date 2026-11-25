@@ -2837,10 +2837,12 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "fresh_public_summaries": 1,
-        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json",
+        "revision": 514,
+        "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       }
     },
     {
@@ -3422,10 +3424,12 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "fresh_public_summaries": 1,
-        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json",
+        "revision": 514,
+        "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       }
     },
     {
@@ -8260,10 +8264,12 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "fresh_public_summaries": 1,
-        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json",
+        "revision": 514,
+        "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       }
     },
     {
@@ -9485,8 +9491,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 504,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev504-preflight.json",
+        "revision": 514,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev514-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -9888,6 +9894,10 @@
       "chatkit_generation_delivery_20261125": {
         "revision": 512,
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
+      },
+      "chatkit_summary_recovery_delivery_20261126": {
+        "revision": 514,
+        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       }
     },
     {
@@ -11125,16 +11135,18 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "fresh_public_summaries": 1,
-        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json",
+        "revision": 514,
+        "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev512_delivered_remaining_deliveries",
+      "state": "rev514_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12441,10 +12453,16 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "fresh_public_summaries": 1,
-        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json",
+        "revision": 514,
+        "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
+      },
+      "chatkit_summary_recovery_delivery_20261126": {
+        "revision": 514,
+        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       }
     },
     {
@@ -12964,6 +12982,19 @@
       "chatkit_generation_delivery_20261125": {
         "revision": 512,
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
+      },
+      "chatkit_summary_recovery_delivery_20261126": {
+        "revision": 514,
+        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
+      },
+      "current_day_handoff": {
+        "revision": 514,
+        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json",
+        "plan_sha256": "35eafadf8197ad25c9253dcd861fdfed71f0ffa6a23c7a010b615af3e7c7bdc6",
+        "hours_run": 0,
+        "owner": "user",
+        "prepared": true,
+        "checked": true
       }
     }
   ],
