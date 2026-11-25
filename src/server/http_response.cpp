@@ -883,6 +883,12 @@ std::string HttpResponseContext::StreamError(int status,
 void SendError(int fd, int code, const std::string& message,
                const WriteOptions& options, std::string_view error_code,
                std::string_view param, std::string_view allow) {
+  SendError(fd, code, message, options, error_code, param, allow, false);
+}
+
+void SendError(int fd, int code, const std::string& message,
+               const WriteOptions& options, std::string_view error_code,
+               std::string_view param, std::string_view allow, bool no_store) {
   if (error_code.empty()) error_code = ErrorForStatus(code).code;
   if (auto* context = HttpResponseContext::Current(fd)) {
     context->ObserveError(code, message, error_code);
@@ -903,7 +909,7 @@ void SendError(int fd, int code, const std::string& message,
   }
   SendSimple(fd, code, ErrorForStatus(code).reason,
              ErrorJson(code, message, error_code, param), "application/json",
-             options, allow);
+             options, allow, {}, no_store);
 }
 
 void SendStreamError(int fd, ResponseState* state, int status,

@@ -638,6 +638,17 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     if (lease.websocket && !WebSocketCredentials(&headers))
       return reject(401, "gateway_unauthorized");
     if (!access.Configured()) return reject(503, "access_policy_unavailable");
+    const bool preview =
+        !server::ParseChatKitPreview(method, path).file.empty();
+    if (preview) {
+      const auto mark = path.find('?');
+      if (mark == path.npos || !headers.authorization.empty())
+        return reject(401, "gateway_unauthorized");
+      headers.authorization =
+          "Bearer " +
+          path.substr(mark + 1 + std::string_view("ticket=").size());
+      path.resize(mark);
+    }
     identity = access.Authenticate(headers.authorization);
     if (!identity.Allowed()) {
       const auto credential = server::BearerCredential(headers.authorization);
@@ -645,10 +656,12 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       const auto now = std::chrono::duration_cast<std::chrono::seconds>(
           std::chrono::system_clock::now().time_since_epoch()).count();
       const bool chatkit = server::IsChatKitClient(method, path);
-      const auto audience = !server::ParseChatKitTransfer(method, path).file.empty()
-                                ? server::ClientTicketAudience::kChatKitUpload
-                                : chatkit ? server::ClientTicketAudience::kChatKit
-                                    : server::ClientTicketAudience::kRealtime;
+      const auto audience =
+          preview ? server::ClientTicketAudience::kChatKitPreview
+          : !server::ParseChatKitTransfer(method, path).file.empty()
+              ? server::ClientTicketAudience::kChatKitUpload
+          : chatkit ? server::ClientTicketAudience::kChatKit
+                    : server::ClientTicketAudience::kRealtime;
       if ((!chatkit && !server::RealtimeGrantTarget(method, path)) ||
           !server::ReadRealtimeTicket(credential, &ticket, audience) || ticket.expires_at <= now)
         return reject(401, "gateway_unauthorized");

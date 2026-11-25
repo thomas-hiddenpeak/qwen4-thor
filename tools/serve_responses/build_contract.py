@@ -14,7 +14,7 @@ DRAFT = 'https://json-schema.org/draft/2020-12/schema'
 
 # The browser POST multiplexes these JSON replies and six SSE operations.
 CHATKIT_BROWSER_JSON = {
-    'attachments.create': 'chatkit_reserved_document',
+    'attachments.create': 'chatkit_reserved_attachment',
     'attachments.delete': 'chatkit_empty_result',
     'input.transcribe': 'chatkit_transcription_result',
     'items.feedback': 'chatkit_empty_result',
@@ -251,6 +251,10 @@ def schema(graph):
         upload_descriptor=obj(dict(url=dict(type='string',format='uri'), method=dict(const='PUT'),
             headers=obj({'Authorization': string, 'Content-Type': string}, ['Authorization','Content-Type'])),
             ['url','method','headers'])), ['id','name','type','mime_type','upload_descriptor'])
+    reserved_image = dict(definitions['chatkit_reserved_document']['properties'])
+    reserved_image.update(type=dict(const='image'), preview_url=dict(type='string', format='uri'))
+    definitions['chatkit_reserved_attachment'] = dict(oneOf=[
+        ref('chatkit_reserved_document'), obj(reserved_image, list(reserved_image))])
     definitions['chatkit_threads'] = obj(dict(object=dict(const='list'),
         data=dict(type='array', items=ref('chatkit_thread')),
         first_id=nullable(dict(type='string')), last_id=nullable(dict(type='string')),
@@ -832,6 +836,7 @@ def add_openapi(paths, response, error):
         ('/v1/chatkit', 'post', 'chatkit_client_request', 'chatkit_client_result', None),
         ('/v1/chatkit/attachments', 'post', None, 'chatkit_uploaded_attachment', None),
         ('/v1/chatkit/attachments/{session_id}/{file_id}', 'put', None, 'chatkit_uploaded_attachment', None),
+        ('/v1/chatkit/attachments/{session_id}/{file_id}/preview', 'get', None, None, None),
         ('/v1/chatkit/sessions', 'post', 'chatkit_create', 'chatkit_session', None),
         ('/v1/chatkit/sessions/{session_id}/cancel', 'post', None, 'chatkit_session', None),
         ('/v1/chatkit/threads', 'get', None, 'chatkit_threads', 'chatkit_thread_query'),
@@ -928,6 +933,13 @@ def add_openapi(paths, response, error):
         if path.endswith('/report') and path.startswith('/v1/evals/'):
             success = dict(description='Authenticated evaluation run report', content={
                 'text/html': dict(schema=dict(type='string'))})
+        elif path == '/v1/chatkit/attachments/{session_id}/{file_id}/preview':
+            success = dict(description='Completed raster preview', content={
+                'image/png': dict(schema=dict(type='string', format='binary'))},
+                headers={'Cache-Control': dict(schema=dict(type='string', const='no-store'))})
+            parameters.append(dict(name='ticket', **{'in': 'query'}, required=True,
+                                   schema=dict(type='string', pattern='^ckpv_[A-Za-z0-9._-]+$')))
+            query_contract = 'one attachment-scoped read ticket'
         elif path.startswith('/v1/skills/') and path.endswith('/content'):
             success = dict(description='Immutable ZIP bundle for the selected skill version', content={
                 'application/zip': dict(schema=dict(type='string', format='binary')),
@@ -1025,16 +1037,24 @@ def add_openapi(paths, response, error):
             operation['requestBody'] = dict(required=True, content={'multipart/form-data':
                 dict(schema=external('video_character_create'))})
         if path == '/v1/chatkit/attachments':
-            operation['description'] = 'Upload a document with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.'
+            operation['description'] = 'Upload an attachment with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.'
             operation['x-q4t-body-contract'] = 'one multipart file'
             operation['requestBody'] = dict(required=True, content={'multipart/form-data':dict(
                 schema=obj(dict(file=dict(type='string',format='binary')), ['file']))})
+        elif path == '/v1/chatkit/attachments/{session_id}/{file_id}/preview':
+            operation['description'] = ('Read the PNG from the reserved image URL after upload. '
+                'The query ticket is bound to this file and the active session. '
+                'Before publication or after file deletion the response is 404.')
+            patterns = {'session_id': '^cksess_[0-9a-f]{64}$', 'file_id': '^file_[0-9a-f]{32}$'}
+            for param in operation['parameters']:
+                if param['in'] == 'path':
+                    param['schema']['pattern'] = patterns[param['name']]
         elif path == '/v1/chatkit/attachments/{session_id}/{file_id}':
             patterns = {'session_id': '^cksess_[0-9a-f]{64}$', 'file_id': '^file_[0-9a-f]{32}$'}
             for param in operation['parameters']:
                 if param['in'] == 'path':
                     param['schema']['pattern'] = patterns[param['name']]
-            operation['description'] = 'Complete the reserved document with its upload credential and the media type returned by attachments.create.'
+            operation['description'] = 'Complete the reserved attachment with its upload credential and the media type returned by attachments.create.'
             operation['x-q4t-body-contract'] = 'raw bytes of the reserved size and media type'
             operation['requestBody'] = dict(required=True, content={'*/*': dict(
                 schema=dict(type='string', format='binary'))})

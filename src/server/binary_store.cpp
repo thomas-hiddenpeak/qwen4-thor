@@ -11,7 +11,6 @@
 namespace q4t::server {
 namespace {
 using namespace object_detail;
-constexpr auto kBase64 = io::kBase64Alphabet;
 std::string Encode(std::string_view bytes) {
   std::string out;
   if (!io::EncodeBase64(bytes, (kBinaryChunkBytes + 2) / 3 * 4, &out))
@@ -22,24 +21,7 @@ bool Decode(std::string_view text, uint64_t expected, std::string* out) {
   if (!expected || expected > kBinaryChunkBytes ||
       text.size() != (expected + 2) / 3 * 4)
     return false;
-  std::string decoded;
-  decoded.reserve(expected);
-  for (size_t i = 0; i < text.size(); i += 4) {
-    uint32_t packed = 0;
-    for (size_t j = 0; j < 4; ++j) {
-      const auto c = text[i + j];
-      const auto digit = kBase64.find(c);
-      if (digit == kBase64.npos && c != '=') return false;
-      packed = (packed << 6) | (c == '=' ? 0 : digit);
-    }
-    for (int shift : {16, 8, 0})
-      if (decoded.size() < expected)
-        decoded += static_cast<char>((packed >> shift) & 255);
-  }
-  // Enforces canonical padding and unused bits, including '=' placement.
-  if (Encode(decoded) != text) return false;
-  *out = std::move(decoded);
-  return true;
+  return io::DecodeBase64(text, expected, out) && out->size() == expected;
 }
 bool Hex(std::string_view value) {
   return value.size() == 64 &&

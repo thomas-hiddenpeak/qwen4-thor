@@ -90,6 +90,29 @@ Json Attachment(const std::string& id, std::string_view name,
                  {"type", String("file")}});
 }
 
+ObjectReply IssueTicket(const StateAccess& access, ChatKitIssuer issuer,
+                        ClientTicketAudience audience, int64_t expires,
+                        std::string_view prefix, std::string* token) {
+  CryptoKey entropy;
+  if (CryptoRandom(entropy) != CryptoResult::kOk)
+    return Error(503, "object_entropy_unavailable", "No attachment entropy");
+  *token = std::string(prefix) + trace::HexDigest(entropy);
+  CryptoWipe(entropy);
+  if (access.scope == "local:anonymous") return {};
+  std::string signed_token;
+  const bool issued =
+      access.scope.starts_with("client:") &&
+      SignRealtimeTicket(issuer.binding, issuer.key_digest,
+                         std::string_view(access.scope).substr(7), *token,
+                         expires, &signed_token, audience);
+  CryptoWipe(token);
+  if (!issued)
+    return Error(503, "chatkit_issuer_unavailable",
+                 "Attachment issuer unavailable");
+  *token = std::move(signed_token);
+  return {};
+}
+
 ObjectReply CheckReservation(const ObjectRequest& session, std::string_view id,
                              std::string_view token, ReservedFile* file) {
   const auto& pending = *session.data.Find("pending_attachments");
@@ -153,29 +176,16 @@ ObjectReply ReserveAttachment(ObjectStore& objects, const StateAccess& access,
     return Error(400, "invalid_upload_origin",
                  "Invalid attachment upload origin");
   const auto id = NewObjectId(ObjectKind::kFile);
-  CryptoKey entropy;
-  if (id.empty() || CryptoRandom(entropy) != CryptoResult::kOk)
-    return Error(503, "object_entropy_unavailable",
-                 "No attachment upload entropy");
-  std::string token = "ckup_" + trace::HexDigest(entropy);
-  CryptoWipe(entropy);
+  if (id.empty())
+    return Error(503, "object_entropy_unavailable", "No attachment ID");
+  const auto session_expires = grant.data.Find("session")->GetInt("expires_at");
   const auto expires =
-      std::min<int64_t>(std::time(nullptr) + 300,
-                        grant.data.Find("session")->GetInt("expires_at"));
-  if (access.scope != "local:anonymous") {
-    std::string signed_token;
-    if (!access.scope.starts_with("client:") ||
-        !SignRealtimeTicket(issuer.binding, issuer.key_digest,
-                            std::string_view(access.scope).substr(7), token,
-                            expires, &signed_token,
-                            ClientTicketAudience::kChatKitUpload)) {
-      CryptoWipe(&token);
-      return Error(503, "chatkit_issuer_unavailable",
-                   "Attachment issuer unavailable");
-    }
-    CryptoWipe(&token);
-    token = std::move(signed_token);
-  }
+      std::min<int64_t>(std::time(nullptr) + 300, session_expires);
+  std::string token;
+  auto issued =
+      IssueTicket(access, issuer, ClientTicketAudience::kChatKitUpload, expires,
+                  "ckup_", &token);
+  if (!issued.ok()) return issued;
   const auto hash = Digest(token);
   auto resource = Attachment(id, name, mime);
   const auto url =
@@ -186,6 +196,20 @@ ObjectReply ReserveAttachment(ObjectStore& objects, const StateAccess& access,
               {"headers", Object({{"Authorization", String("Bearer " + token)},
                                   {"Content-Type", String(mime)}})}}));
   CryptoWipe(&token);
+  auto reservation = Object({{"name", String(name)},
+                             {"mime_type", String(mime)},
+                             {"size", *size},
+                             {"expires_at", Number(expires)},
+                             {"token_sha256", String(hash)}});
+  if (AttachmentModelInput(resource).GetString("type") == "input_image") {
+    issued = IssueTicket(access, issuer, ClientTicketAudience::kChatKitPreview,
+                         session_expires, "ckpv_", &token);
+    if (!issued.ok()) return issued;
+    Set(&reservation, "preview_sha256", String(Digest(token)));
+    Set(&resource, "type", String("image"));
+    Set(&resource, "preview_url", String(url + "/preview?ticket=" + token));
+    CryptoWipe(&token);
+  }
   for (int attempt = 0; attempt < 4; ++attempt) {
     ObjectRequest session;
     auto found = LiveSession(objects, access, grant, &session);
@@ -196,12 +220,7 @@ ObjectReply ReserveAttachment(ObjectStore& objects, const StateAccess& access,
       return Error(409, "chatkit_attachment_limit",
                    "Session file count reached");
     ids.push_back(String(id));
-    Set(&Field(session.data, "pending_attachments"), id,
-        Object({{"name", String(name)},
-                {"mime_type", String(mime)},
-                {"size", *size},
-                {"expires_at", Number(expires)},
-                {"token_sha256", String(hash)}}));
+    Set(&Field(session.data, "pending_attachments"), id, reservation);
     session.mutate_before = expires;
     auto saved = objects.Execute(session, access.deadline, access.cancelled);
     if (saved.ok()) {
@@ -257,6 +276,7 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
     if (!live.ok()) return live;
     auto& ids = Field(session.data, "attachments").array;
     const auto file_expiry = session.mutate_before;
+    std::string preview_digest;
     if (reserved_id.empty()) {
       if (ids.size() >=
           static_cast<uint64_t>(UploadSettings(grant).GetInt("max_files")))
@@ -272,6 +292,7 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
         return Error(400, "chatkit_attachment_mismatch",
                      "Upload differs from its reservation");
       auto& pending = Field(session.data, "pending_attachments");
+      preview_digest = pending.Find(id)->GetString("preview_sha256");
       session.mutate_before = std::min(session.mutate_before,
                                        pending.Find(id)->GetInt("expires_at"));
       std::erase_if(pending.object,
@@ -316,6 +337,8 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
                         {"mime_type", String(type)},
                         {"chatkit_session", String(grant.session)},
                         {"chatkit_attachment", resource}});
+    if (!preview_digest.empty())
+      Set(&file.data, "chatkit_preview_sha256", String(preview_digest));
     auto written =
         binary.Publish(access, stage, std::move(file), {&session, 1});
     if (written.ok()) {
@@ -327,6 +350,85 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
   }
   return Error(409, "chatkit_session_busy",
                "Session changed during file publication");
+}
+
+namespace {
+ObjectReply AuthorizedPreviewFile(ObjectStore& objects,
+                                  const StateAccess& access,
+                                  std::string_view session_id,
+                                  std::string_view file_id,
+                                  std::string_view token) {
+  if (!token.starts_with("ckpv_")) return Missing();
+  auto file = objects.Execute(File(access, std::string(file_id)),
+                              access.deadline, access.cancelled);
+  if (!file.ok()) return file;
+  const auto& data = Field(file.value, "data");
+  if (data.GetString("chatkit_session") != session_id ||
+      data.GetString("chatkit_preview_sha256") != Digest(token))
+    return Missing();
+  Grant grant;
+  grant.session = session_id;
+  ObjectRequest session;
+  auto live = LiveSession(objects, access, grant, &session);
+  if (!live.ok()) return live;
+  if (std::ranges::none_of(Field(session.data, "attachments").array,
+                           [&](const Json& value) {
+                             return value.IsString() && value.str == file_id;
+                           }))
+    return Missing();
+  return file;
+}
+}  // namespace
+
+ObjectReply ReadAttachmentPreview(ObjectStore& objects,
+                                  const StateAccess& access,
+                                  std::string_view session_id,
+                                  std::string_view file_id,
+                                  std::string_view token, std::string* png) {
+  png->clear();
+  const auto authorized = [&] {
+    return AuthorizedPreviewFile(objects, access, session_id, file_id, token);
+  };
+  auto file = authorized();
+  if (!file.ok()) return file;
+  const auto* attachment = Field(file.value, "data").Find("chatkit_attachment");
+  if (!attachment || attachment->GetString("id") != file_id)
+    return Error(503, "chatkit_record_invalid", "Invalid stored attachment");
+  if (attachment->GetString("type") == "file") {
+    // An unavailable thumbnail worker may have left a valid original at PUT.
+    // Retry only this bounded read. Never mutate the file through a read
+    // ticket.
+    FileInputSource source;
+    source.kind = FileInputSource::Kind::kStored;
+    source.value = file_id;
+    FileInputBudget budget;
+    budget.max_bytes = FileImageLimits{}.max_bytes;
+    FileInputContent content;
+    const BinaryAccess binary{access.scope, access.deadline, access.cancelled};
+    auto read = ReadLocalFileInput(&objects, binary, source, &budget, &content);
+    if (!read.ok()) return read;
+    std::string rendered;
+    auto converted = MakeRasterPreview(content.bytes, binary, &rendered);
+    if (!converted.ok()) return converted;
+    auto live = authorized();
+    if (!live.ok()) return live;
+    *png = std::move(rendered);
+    return {};
+  }
+  if (attachment->GetString("type") != "image")
+    return Error(503, "chatkit_record_invalid",
+                 "Invalid stored attachment type");
+  const auto* url = attachment->Find("preview_url");
+  constexpr std::string_view prefix = "data:image/png;base64,";
+  if (!url || !url->IsString() || !url->str.starts_with(prefix) ||
+      !io::DecodeBase64(std::string_view(url->str).substr(prefix.size()),
+                        48U << 10, png) ||
+      !png->starts_with("\x89PNG\r\n\x1a\n")) {
+    png->clear();
+    return Error(503, "chatkit_record_invalid",
+                 "Invalid stored attachment preview");
+  }
+  return {};
 }
 
 ObjectReply RemoveAttachment(ObjectStore& objects, const StateAccess& access,

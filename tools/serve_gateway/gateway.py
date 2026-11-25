@@ -165,6 +165,7 @@ APPLICATION_ROUTES = [
     ('POST', '/v1/chatkit', 'data'),
     ('POST', '/v1/chatkit/attachments', 'data'),
     ('PUT', '/v1/chatkit/attachments/{session_id}/{file_id}', 'data'),
+    ('GET', '/v1/chatkit/attachments/{session_id}/{file_id}/preview', 'data'),
     ('POST', '/v1/chatkit/sessions', 'data'),
     ('POST', '/v1/chatkit/sessions/{session_id}/cancel', 'control'),
     ('GET', '/v1/chatkit/threads', 'control'),
@@ -325,6 +326,9 @@ def route_map():
     # Keep this before the general Realtime primary rule (first regex wins).
     rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
+        if path == '/v1/chatkit/attachments/{session_id}/{file_id}/preview':
+            rows.append(f'    "~^{CHATKIT_PREVIEW}$" {lane};')
+            continue
         if path == '/v1/chatkit/attachments/{session_id}/{file_id}':
             rows.append(f'    "~^{CHATKIT_TRANSFER}$" {lane};')
             continue
@@ -501,12 +505,20 @@ def realtime_issuer_maps(clients):
 CHATKIT_TRANSFER = 'PUT:/v1/chatkit/attachments/cksess_[0-9a-f]{64}/file_[0-9a-f]{32}'
 
 
+CHATKIT_PREVIEW = (r'GET:/v1/chatkit/attachments/cksess_[0-9a-f]{64}/file_[0-9a-f]{32}'
+                   r'/preview[?]ticket=ckpv_[A-Za-z0-9._-]{64,180}')
+
+
 def chatkit_maps(clients, scoped):
     # Core verifies the active issuer signature and the exact reservation
     # before it accepts bytes. Each credential reaches only its own route.
     scheme = '[Bb][Ee][Aa][Rr][Ee][Rr] '
     tables = []
-    for lane, prefix in [('chatkit', 'cksec_'), ('chatkit_upload', 'ckup_')]:
+    tables += ['  map "$http_authorization:$arg_ticket" $q4t_preview_authorization {',
+               '    default "";', '    "~^:ckpv_[A-Za-z0-9._-]{64,180}$" "Bearer $arg_ticket";', '  }']
+    for lane, prefix in [('chatkit', 'cksec_'), ('chatkit_upload', 'ckup_'),
+                         ('chatkit_preview', 'ckpv_')]:
+        bearer = '$q4t_preview_authorization' if lane == 'chatkit_preview' else '$http_authorization'
         owners, proofs = [], []
         if scoped:
             for entry in clients:
@@ -514,11 +526,11 @@ def chatkit_maps(clients, scoped):
                 pattern = scheme + prefix + r'q4t1\.' + owner + r'\.[1-9][0-9]{0,15}\.[0-9a-f]{64}\.[A-Za-z0-9_-]{43}'
                 owners.append(f'    "~^{pattern}$" {owner};')
                 digest = hashlib.sha256(entry['api_key'].encode('ascii')).hexdigest()
-                proofs.append(f'    {owner} "Q4T-ChatKit {digest} $http_authorization";')
+                proofs.append(f'    {owner} "Q4T-ChatKit {digest} {bearer}";')
         else:
             owners.append(f'    "~^{scheme}{prefix}[0-9a-f]{{64}}$" local;')
-            proofs.append('    local $http_authorization;')
-        tables += [f'  map $http_authorization $q4t_{lane}_owner {{', '    default "";',
+            proofs.append(f'    local {bearer};')
+        tables += [f'  map {bearer} $q4t_{lane}_owner {{', '    default "";',
                    *owners, '  }', f'  map $q4t_{lane}_owner $q4t_{lane}_proof {{',
                    '    default "";', *proofs, '  }']
     for field, default, value in [('client', 'key_client', 'owner'),
@@ -529,7 +541,8 @@ def chatkit_maps(clients, scoped):
             tables.append('    "POST:/v1/chatkit/sessions" "Q4T-Issuer $q4t_issuer_digest";')
         for path in ['/v1/chatkit', '/v1/chatkit/attachments']:
             tables.append(f'    "POST:{path}" $q4t_chatkit_{value};')
-        tables += [f'    "~^{CHATKIT_TRANSFER}$" $q4t_chatkit_upload_{value};', '  }']
+        tables += [f'    "~^{CHATKIT_TRANSFER}$" $q4t_chatkit_upload_{value};',
+                   f'    "~^{CHATKIT_PREVIEW}$" $q4t_chatkit_preview_{value};', '  }']
     return '\n'.join(tables)
 
 

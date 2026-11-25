@@ -6,6 +6,7 @@
 #include "../src/server/chatkit_credentials.h"
 #include "../src/server/chatkit_retry.h"
 #include "../src/server/chatkit_attachments.h"
+#include "q4t/io/base64.h"
 #include "q4t/server/file_image.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/vision/processor.h"
@@ -1433,6 +1434,36 @@ Q4T_TEST(chatkit_preview_codec_outage_keeps_scoped_image_input) {
                 .ok());
   Q4T_CHECK(model.array[0].GetString("type") == "input_image" &&
             model.array[0].GetString("file_id") == id);
+  Q4T_CHECK(chatkit_detail::RemoveAttachment(objects, access, owner, id).ok());
+  auto reserved = chatkit_detail::ReserveAttachment(
+      objects, access, owner,
+      Object({{"name", String("recover.webp")},
+              {"mime_type", String("image/webp")},
+              {"size", Number(original.size())}}),
+      {kBinding, kIssuer}, "https://example.test");
+  Q4T_CHECK(reserved.ok());
+  const auto read_url = reserved.value.GetString("preview_url");
+  const auto mark = read_url.find("?ticket=");
+  Q4T_CHECK(mark != read_url.npos);
+  const auto ticket = read_url.substr(mark + 8);
+  const auto reserved_id = reserved.value.GetString("id");
+  const auto authorization = reserved.value.Find("upload_descriptor")
+                                 ->Find("headers")
+                                 ->GetString("Authorization");
+  BinaryStage next;
+  Q4T_CHECK(store.Begin(binary, 1U << 20, 60, &next).ok() &&
+            store.Append(binary, &next, original).ok());
+  auto put = chatkit_detail::PublishAttachment(
+      objects, binary, owner, &next, "recover.webp", "image/webp", reserved_id,
+      BearerCredential(authorization));
+  Q4T_CHECK(put.ok() && put.value.GetString("type") == "file");
+  auto read_preview = [&] {
+    return chatkit_detail::ReadAttachmentPreview(objects, access, owner.session,
+                                                 reserved_id, ticket, &bytes);
+  };
+  Q4T_CHECK(read_preview().http_status == 503 && bytes.empty());
+  detail::SetWebpWorkerEntryForTesting({});
+  Q4T_CHECK(read_preview().ok() && bytes.starts_with("\x89PNG"));
   return true;
 }
 #endif
@@ -1594,6 +1625,98 @@ Q4T_TEST(chatkit_upload_enforces_session_bytes_before_publication) {
   }
   auto listed = Files(objects).List(binary, Object());
   Q4T_CHECK(listed.ok() && listed.value.GetArray("data")->array.empty());
+  return true;
+}
+
+Q4T_TEST(
+    chatkit_reserved_image_preview_has_independent_authority_and_lifetime) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto access = Access();
+  const BinaryAccess binary{access.scope, access.deadline, access.cancelled};
+  auto session = Create(objects, access, 16, true);
+  chatkit_detail::Grant owner;
+  Q4T_CHECK(session.ok() &&
+            chatkit_detail::Redeem(objects, access,
+                                   session.value.GetString("client_secret"),
+                                   std::time(nullptr), &owner)
+                .ok());
+  const auto fixture_path = std::filesystem::path(__FILE__).parent_path() /
+                            "fixtures/file_images/original.png";
+  std::ifstream input(fixture_path, std::ios::binary);
+  Q4T_CHECK(input);
+  const std::string bytes(std::istreambuf_iterator<char>(input), {});
+  for (const bool revoke : {false, true}) {
+    auto reserved = chatkit_detail::ReserveAttachment(
+        objects, access, owner,
+        Object({{"name", String("sample.png")},
+                {"size", Number(bytes.size())},
+                {"mime_type", String("image/png")}}),
+        {kBinding, kIssuer}, "https://example.test");
+    Q4T_CHECK(reserved.ok() && reserved.value.GetString("type") == "image");
+    const auto id = reserved.value.GetString("id");
+    const auto& descriptor = *reserved.value.Find("upload_descriptor");
+    const auto url = reserved.value.GetString("preview_url");
+    const auto base = descriptor.GetString("url") + "/preview?ticket=";
+    Q4T_CHECK(url.starts_with(base));
+    const std::string token = url.substr(base.size());
+    const auto auth = descriptor.Find("headers")->GetString("Authorization");
+    const auto upload = BearerCredential(auth);
+    RealtimeClientTicket ticket;
+    Q4T_CHECK(
+        ReadRealtimeTicket(token, &ticket,
+                           ClientTicketAudience::kChatKitPreview) &&
+        VerifyRealtimeTicket(ticket, kBinding, kIssuer, std::time(nullptr)) &&
+        !VerifyRealtimeTicket(ticket, kBinding, kIssuer, ticket.expires_at));
+    Q4T_CHECK(!ReadRealtimeTicket(token, &ticket,
+                                  ClientTicketAudience::kChatKitUpload) &&
+              !ReadRealtimeTicket(upload, &ticket,
+                                  ClientTicketAudience::kChatKitPreview));
+    std::string result = "stale";
+    auto get = [&](const StateAccess& who, std::string_view session_id,
+                   std::string_view credential) {
+      return chatkit_detail::ReadAttachmentPreview(objects, who, session_id, id,
+                                                   credential, &result);
+    };
+    Q4T_CHECK(get(access, owner.session, token).http_status == 404 &&
+              result.empty());
+    chatkit_detail::ReservedFile file;
+    Q4T_CHECK(chatkit_detail::ReadReservation(objects, access, &owner, id,
+                                              token, &file)
+                  .http_status == 401);
+    BinaryStore store(objects);
+    BinaryStage stage;
+    Q4T_CHECK(store.Begin(binary, 1U << 20, 60, &stage).ok() &&
+              store.Append(binary, &stage, bytes).ok());
+    auto complete = chatkit_detail::PublishAttachment(
+        objects, binary, owner, &stage, "sample.png", "image/png", id, upload);
+    Q4T_CHECK(complete.ok() && complete.value.GetString("type") == "image" &&
+              !complete.value.Has("upload_descriptor"));
+    Q4T_CHECK(get(access, owner.session, token).ok() &&
+              result.starts_with("\x89PNG"));
+    std::string encoded;
+    Q4T_CHECK(io::EncodeBase64(result, 64U << 10, &encoded) &&
+              complete.value.GetString("preview_url") ==
+                  "data:image/png;base64," + encoded);
+    Q4T_CHECK(get(access, owner.session, upload).http_status == 404 &&
+              result.empty());
+    Q4T_CHECK(get(access, "cksess_other", token).http_status == 404);
+    Q4T_CHECK(get(Access("client:beta"), owner.session, token).http_status ==
+              404);
+    if (revoke) {
+      Q4T_CHECK(
+          HandleChatKit(objects, access, "POST",
+                        "/v1/chatkit/sessions/" + owner.session + "/cancel", "")
+              .ok());
+      Q4T_CHECK(get(access, owner.session, token).http_status == 401 &&
+                result.empty());
+    } else {
+      Q4T_CHECK(
+          chatkit_detail::RemoveAttachment(objects, access, owner, id).ok());
+      Q4T_CHECK(get(access, owner.session, token).http_status == 404 &&
+                result.empty());
+    }
+  }
   return true;
 }
 

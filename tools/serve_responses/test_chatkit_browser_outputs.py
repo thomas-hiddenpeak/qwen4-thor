@@ -44,6 +44,22 @@ class BrowserOutputTest(unittest.TestCase):
             self.assertFalse(self.valid(schema, dict(image, preview_url='https://elsewhere.test/')))
             self.assertFalse(self.valid(schema, dict(image, upload_descriptor={})))
 
+    def test_reservation_and_png_download_have_distinct_contracts(self):
+        reservation = self.results['attachments.create']
+        upload = dict(url='https://example.test/put', method='PUT',
+                      headers={'Authorization': 'Bearer write', 'Content-Type': 'image/png'})
+        resource = dict(id='file_image', type='image', name='image.png', mime_type='image/png',
+                        upload_descriptor=upload, preview_url='https://example.test/read')
+        self.assertTrue(self.valid(reservation, resource))
+        self.assertFalse(self.valid(reservation, {k:v for k,v in resource.items() if k!='preview_url'}))
+        self.assertTrue(self.valid(reservation, dict(
+            {k:v for k,v in resource.items() if k!='preview_url'}, type='file')))
+        path = '/v1/chatkit/attachments/{session_id}/{file_id}/preview'
+        op = self.spec['paths'][path]['get']
+        self.assertEqual(set(op['responses']['200']['content']), {'image/png'})
+        self.assertEqual({p['name'] for p in op['parameters']}, {'session_id', 'file_id', 'ticket'})
+        self.assertTrue(next(p for p in op['parameters'] if p['name']=='ticket')['required'])
+
     def test_json_bodies_are_selected_by_operation(self):
         empty_page = dict(data=[], has_more=False, after=None)
         for name in ('threads.list', 'items.list'):

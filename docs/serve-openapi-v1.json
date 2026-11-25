@@ -10727,7 +10727,7 @@
         "description": "Self-hosted browser endpoint. Requires a session client secret. Message submissions stream ChatKit events, history operations return JSON.",
         "x-q4t-result-by-request-type": {
           "attachments.create": {
-            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_reserved_document"
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_reserved_attachment"
           },
           "attachments.delete": {
             "$ref": "serve-application-v1.schema.json#/$defs/chatkit_empty_result"
@@ -10825,7 +10825,7 @@
         },
         "x-q4t-query-contract": "no query",
         "x-q4t-body-contract": "one multipart file",
-        "description": "Upload a document with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.",
+        "description": "Upload an attachment with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.",
         "requestBody": {
           "required": true,
           "content": {
@@ -10915,7 +10915,7 @@
         },
         "x-q4t-query-contract": "no query",
         "x-q4t-body-contract": "raw bytes of the reserved size and media type",
-        "description": "Complete the reserved document with its upload credential and the media type returned by attachments.create.",
+        "description": "Complete the reserved attachment with its upload credential and the media type returned by attachments.create.",
         "requestBody": {
           "required": true,
           "content": {
@@ -10927,6 +10927,85 @@
             }
           }
         }
+      }
+    },
+    "/v1/chatkit/attachments/{session_id}/{file_id}/preview": {
+      "get": {
+        "operationId": "get_v1_chatkit_attachments_session_id_file_id_preview",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^cksess_[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^file_[0-9a-f]{32}$"
+            }
+          },
+          {
+            "name": "ticket",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^ckpv_[A-Za-z0-9._-]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Completed raster preview",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "one attachment-scoped read ticket",
+        "x-q4t-body-contract": "empty body only",
+        "description": "Read the PNG from the reserved image URL after upload. The query ticket is bound to this file and the active session. Before publication or after file deletion the response is 404."
       }
     },
     "/v1/chatkit/sessions": {

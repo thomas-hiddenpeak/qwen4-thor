@@ -13,6 +13,7 @@ bool Hex64(std::string_view value) {
          value.find_first_not_of("0123456789abcdef") == value.npos;
 }
 std::string_view Prefix(ClientTicketAudience audience) {
+  if (audience == ClientTicketAudience::kChatKitPreview) return "ckpv_q4t1.";
   if (audience == ClientTicketAudience::kChatKitUpload) return "ckup_q4t1.";
   return audience == ClientTicketAudience::kChatKit ? kChatKitTicketPrefix
                                                    : kRealtimeTicketPrefix;
@@ -109,10 +110,9 @@ bool SignRealtimeTicket(std::string_view binding, std::string_view issuer,
                         std::string_view owner, std::string_view opaque,
                         int64_t expiry, std::string* token,
                         ClientTicketAudience audience) {
-  const std::string_view prefix =
-      audience == ClientTicketAudience::kChatKitUpload
-          ? "ckup_"
-          : (audience == ClientTicketAudience::kChatKit ? "cksec_" : "ek_");
+  const auto signed_prefix = Prefix(audience);
+  const auto prefix =
+      signed_prefix.substr(0, signed_prefix.size() - 5);  // drop "q4t1."
   if (!ValidClientId(owner) || !opaque.starts_with(prefix) ||
       !Hex64(opaque.substr(prefix.size())) || expiry < 1 || expiry > 9007199254740991LL)
     return false;

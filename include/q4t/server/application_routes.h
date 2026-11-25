@@ -539,11 +539,10 @@ struct ChatKitTransfer {
   std::string_view session, file;
 };
 
-inline ChatKitTransfer ParseChatKitTransfer(std::string_view method,
-                                           std::string_view target) {
+inline ChatKitTransfer ChatKitAttachmentPath(std::string_view target) {
   constexpr std::string_view prefix = "/v1/chatkit/attachments/";
   constexpr std::string_view hex = "0123456789abcdef";
-  if (method != "PUT" || !target.starts_with(prefix)) return {};
+  if (!target.starts_with(prefix)) return {};
   target.remove_prefix(prefix.size());
   const auto slash = target.find('/');
   if (slash == target.npos) return {};
@@ -554,6 +553,32 @@ inline ChatKitTransfer ParseChatKitTransfer(std::string_view method,
       file.substr(5).find_first_not_of(hex) != target.npos)
     return {};
   return {session, file};
+}
+
+inline ChatKitTransfer ParseChatKitTransfer(std::string_view method,
+                                            std::string_view target) {
+  return method == "PUT" ? ChatKitAttachmentPath(target) : ChatKitTransfer{};
+}
+
+// The native gateway forwards the ticket in a header and drops the query.
+// The public URL permits exactly one URL-safe ticket, with no decoding.
+inline ChatKitTransfer ParseChatKitPreview(std::string_view method,
+                                           std::string_view target) {
+  if (method != "GET") return {};
+  const auto mark = target.find('?');
+  auto path = target.substr(0, mark);
+  if (!path.ends_with("/preview")) return {};
+  if (mark != target.npos) {
+    const auto query = target.substr(mark + 1);
+    if (!query.starts_with("ticket=ckpv_") || query.size() > 200 ||
+        query.find_first_not_of(
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "0123456789._-",
+            7) != query.npos)
+      return {};
+  }
+  path.remove_suffix(8);
+  return ChatKitAttachmentPath(path);
 }
 
 inline bool IsChatKitUpload(std::string_view method, std::string_view target) {
@@ -718,7 +743,9 @@ inline bool IsAssistantObservation(std::string_view method,
 // Self-hosted ChatKit clients configure this POST URL for session-bound
 // messages and history. Project administration uses the separate REST routes.
 inline bool IsChatKitClient(std::string_view method, std::string_view path) {
-  return (method == "POST" && path == "/v1/chatkit") || IsChatKitUpload(method, path);
+  return (method == "POST" && path == "/v1/chatkit") ||
+         IsChatKitUpload(method, path) ||
+         !ParseChatKitPreview(method, path).file.empty();
 }
 
 enum class ChatKitRouteKind { kNone, kSessions, kCancel, kThreads, kThread, kItems };
