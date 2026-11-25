@@ -1,0 +1,21 @@
+{
+  "status": "verified_source_inventory",
+  "files": [
+    "src/server/agent_session.cpp",
+    "src/server/agent_session_http.cpp",
+    "src/server/agent_session_internal.h",
+    "src/server/agent_session_settings.cpp",
+    "src/server/agent_session_turn.cpp",
+    "src/server/contracts/openai_agent_session_types_v1.json",
+    "src/server/responses_item_shape.cpp",
+    "src/server/responses_state.cpp",
+    "tools/serve_recovery/profile_live_reuse.py",
+    "tools/serve_recovery/profile_record.py",
+    "tools/serve_responses/generate_item_types.mjs"
+  ],
+  "graph_sha256": "7ee8509a20198c94af1703b6889ade3ef9c5c40af754216791d363eecd53aeff",
+  "generator": "c9829aa9cdeb02e3e02b935e953558c3a85f79a1384d366a5020ac83cf38b50d",
+  "pinned_sdk": "7.47.0",
+  "typescript": "5.9.3",
+  "package_acceptance": "unissued"
+}
