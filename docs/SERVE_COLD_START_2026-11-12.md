@@ -1,5 +1,7 @@
 # R07：NVML 失能时的受控冷启动
 
+rev508 已完成只读预检，设备失能冷启动待维护窗口。[预检记录](evidence/serve-cold-driver-cpu-20261112/rev508-preflight.json)
+
 rev506 的独立冷启动计划已通过只读预检，实际设备失能测试待维护窗口。[冷启动计划](evidence/serve-cold-driver-cpu-20261112/rev506-preflight.json)
 
 rev504 的冷启动计划已与本次发行包绑定，并通过管理员只读核验。维护窗口待确认，届时需使用新计划中的服务 ID 和摘要。[当前计划](evidence/serve-cold-driver-cpu-20261112/rev504-preflight.json)
