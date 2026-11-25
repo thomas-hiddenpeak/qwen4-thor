@@ -1,0 +1,52 @@
+{
+  "stage": "targeted_cpu_verified",
+  "issued": false,
+  "official_schema": {
+    "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "issued_sha256": "a9dac7e81f76de67d3d30288313d6c9e2fd8a953e319dbc39b318b9c1be6bb26",
+    "proposed_sha256": "1eba98efb668a976528454f5f0130f03ec5e8708988b0b13dd5273dd5e0a18eb",
+    "affected_paths": [
+      "/assistants",
+      "/threads/{thread_id}/messages",
+      "/threads/{thread_id}/runs",
+      "/threads/{thread_id}/runs/{run_id}/steps"
+    ],
+    "nullable_chatkit_paths": 2,
+    "old_null_reproduced": true,
+    "exact_empty_representation": {
+      "object": "list",
+      "data": [],
+      "has_more": false,
+      "first_id": "",
+      "last_id": ""
+    }
+  },
+  "failed_before": {
+    "observed_responses": 2,
+    "evidence": "archived-sdk.json",
+    "endpoint": "GET /threads/{thread_id}/messages"
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 242,
+    "native_routes": 400,
+    "reviewed_source_anchors": 1373,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "cpu": {
+    "passed": 5,
+    "sources": {
+      "assistant-empty-cpu-01.log": "211b3404d373b8bef81684cdb59bc8ca18fe2b63a8c32de50738621a5a2f2cb7",
+      "assistant-run-empty-cpu-01.log": "40381a6127e8b5fc566d1594fe13763d62a74601174813010e1960f00389ada2"
+    }
+  },
+  "actual_run_and_step_http_writer": true,
+  "pending": [
+    "Official SDK over TLS against the updated binary",
+    "Issue the updated service package"
+  ]
+}

@@ -16,7 +16,7 @@
     "control_connection_reserve": 4,
     "draining_control_window_max_ms": 2000,
     "header_flood_guarantee": false,
-    "stream_usage": "if requested: null on choices chunks, object on final empty-choices chunk",
+    "stream_usage": "When requested, ordinary choice chunks use null and the final usage chunk carries usage. A moderation report may arrive in a separate empty-choices chunk.",
     "stream_error": "one error then DONE when writable; partial write failure closes without another terminal"
   },
   "oneOf": [
@@ -68,8 +68,30 @@
             "rejected_prediction_tokens": {
               "type": "integer",
               "minimum": 0
+            },
+            "audio_tokens": {
+              "type": "integer",
+              "minimum": 0
             }
           }
+        },
+        "q4t_audio_synthesis": {
+          "type": "object",
+          "properties": {
+            "input_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output_tokens": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "input_tokens",
+            "output_tokens"
+          ],
+          "additionalProperties": false
         }
       }
     },
@@ -202,6 +224,46 @@
                       "name",
                       "arguments"
                     ]
+                  },
+                  "audio": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 7,
+                            "maxLength": 256,
+                            "pattern": "^audio_",
+                            "not": {
+                              "pattern": "[^A-Za-z0-9_-]"
+                            }
+                          },
+                          "expires_at": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "data": {
+                            "type": "string",
+                            "minLength": 1,
+                            "contentEncoding": "base64"
+                          },
+                          "transcript": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                          "id",
+                          "expires_at",
+                          "data",
+                          "transcript"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   }
                 }
               },
@@ -210,7 +272,8 @@
                   "stop",
                   "length",
                   "tool_calls",
-                  "function_call"
+                  "function_call",
+                  "content_filter"
                 ]
               }
             }
@@ -251,6 +314,19 @@
             "fast",
             null
           ]
+        },
+        "moderation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/chatModeration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "q4t_moderation_usage": {
+          "$ref": "#/$defs/chatModerationUsage"
         }
       }
     },
@@ -286,7 +362,6 @@
             "required": [
               "index",
               "delta",
-              "finish_reason",
               "logprobs"
             ],
             "properties": {
@@ -315,6 +390,41 @@
                       }
                     },
                     "additionalProperties": false
+                  },
+                  "audio": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 7,
+                            "maxLength": 256,
+                            "pattern": "^audio_",
+                            "not": {
+                              "pattern": "[^A-Za-z0-9_-]"
+                            }
+                          },
+                          "expires_at": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "data": {
+                            "type": "string",
+                            "minLength": 1,
+                            "contentEncoding": "base64"
+                          },
+                          "transcript": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false,
+                        "minProperties": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   }
                 }
               },
@@ -324,12 +434,46 @@
                   "stop",
                   "length",
                   "tool_calls",
-                  "function_call"
+                  "function_call",
+                  "content_filter"
                 ]
               },
               "logprobs": {
                 "$ref": "#/$defs/logprobs"
               }
+            },
+            "if": {
+              "required": [
+                "delta"
+              ],
+              "properties": {
+                "delta": {
+                  "required": [
+                    "audio"
+                  ],
+                  "properties": {
+                    "audio": {
+                      "type": "object",
+                      "required": [
+                        "expires_at"
+                      ],
+                      "maxProperties": 1
+                    }
+                  }
+                }
+              }
+            },
+            "then": {
+              "not": {
+                "required": [
+                  "finish_reason"
+                ]
+              }
+            },
+            "else": {
+              "required": [
+                "finish_reason"
+              ]
             }
           }
         },
@@ -362,6 +506,19 @@
             "fast",
             null
           ]
+        },
+        "moderation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/chatModeration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "q4t_moderation_usage": {
+          "$ref": "#/$defs/chatModerationUsage"
         }
       },
       "if": {
@@ -372,14 +529,29 @@
         }
       },
       "then": {
-        "required": [
-          "usage"
-        ],
-        "properties": {
-          "usage": {
-            "$ref": "#/$defs/usage"
+        "anyOf": [
+          {
+            "required": [
+              "usage"
+            ],
+            "properties": {
+              "usage": {
+                "$ref": "#/$defs/usage"
+              }
+            }
+          },
+          {
+            "required": [
+              "moderation",
+              "q4t_moderation_usage"
+            ],
+            "properties": {
+              "moderation": {
+                "$ref": "#/$defs/chatModeration"
+              }
+            }
           }
-        }
+        ]
       }
     },
     "readiness": {
@@ -504,6 +676,181 @@
           }
         }
       }
+    },
+    "moderationCategoryMap": {
+      "type": "object",
+      "required": [
+        "harassment",
+        "harassment/threatening",
+        "hate",
+        "hate/threatening",
+        "illicit",
+        "illicit/violent",
+        "self-harm",
+        "self-harm/instructions",
+        "self-harm/intent",
+        "sexual",
+        "sexual/minors",
+        "violence",
+        "violence/graphic"
+      ],
+      "maxProperties": 13
+    },
+    "moderationReport": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "error"
+            },
+            "code": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          "required": [
+            "type",
+            "code",
+            "message"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "moderation_results"
+            },
+            "model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "results": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "moderation_result"
+                  },
+                  "model": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "categories": {
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/moderationCategoryMap"
+                      }
+                    ],
+                    "additionalProperties": {
+                      "type": "boolean"
+                    }
+                  },
+                  "category_scores": {
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/moderationCategoryMap"
+                      }
+                    ],
+                    "additionalProperties": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "category_applied_input_types": {
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/moderationCategoryMap"
+                      }
+                    ],
+                    "additionalProperties": {
+                      "type": "array",
+                      "maxItems": 2,
+                      "uniqueItems": true,
+                      "items": {
+                        "enum": [
+                          "text",
+                          "image"
+                        ]
+                      }
+                    }
+                  },
+                  "flagged": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "type",
+                  "model",
+                  "categories",
+                  "category_scores",
+                  "category_applied_input_types",
+                  "flagged"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "type",
+            "model",
+            "results"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "chatModeration": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/moderationReport"
+        },
+        "output": {
+          "$ref": "#/$defs/moderationReport"
+        }
+      },
+      "required": [
+        "input",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "chatModerationUsage": {
+      "type": "object",
+      "properties": {
+        "input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1024
+        },
+        "model_steps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        }
+      },
+      "required": [
+        "input_tokens",
+        "output_tokens",
+        "model_steps"
+      ],
+      "additionalProperties": false
     }
   }
 }

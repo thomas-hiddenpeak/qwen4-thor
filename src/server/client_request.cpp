@@ -47,6 +47,7 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
           (path == "/v1/models" || path == "/v1/capabilities")) ||
          ((method == "GET" || method == "DELETE") && IsModelDetailPath(path)) ||
          IsAgentEventSubmission(method, path) || IsMcpTunnelMetadata(method, path) ||
+         IsAssistantObservation(method, path) ||
          IsResponsesObservation(method, path) ||
          IsVectorStoreObservation(method, path) ||
          IsEvalObservation(method, path) || IsSafetyRead(method, path) ||

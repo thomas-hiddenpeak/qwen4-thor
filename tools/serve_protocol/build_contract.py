@@ -90,6 +90,7 @@ def schema_node():
 
 
 def chat_schema():
+    from tools.serve_protocol.voice_contract import speech_voice_schema
     from tools.serve_responses.web_contract import chat_options
     safe = dict(type="string", minLength=1, maxLength=64, pattern="^[A-Za-z0-9_-]+$")
     hex64 = dict(type="string", pattern="^[0-9a-f]{64}$")
@@ -131,11 +132,13 @@ def chat_schema():
         custom=obj(dict(name=safe, input=dict(type="string")), ("name", "input"))),
         ("id", "type", "custom")))
     legacy_call = obj(dict(name=safe, arguments=raw_arguments), ("name", "arguments"))
+    audio_id = dict(type="string", minLength=7, maxLength=256, pattern="^audio_",
+                    **{"not": {"pattern": "[^A-Za-z0-9_-]"}})
     message = obj(dict(role=dict(enum=["system", "developer", "user", "assistant", "tool", "function"]),
         content=content, name=dict(type=["string", "null"],
             **{"x-q4t-max-utf8-bytes": 4096}),
         refusal=dict(type=["string", "null"]),
-        audio=dict(type="null"),
+        audio=nullable(obj(dict(id=audio_id), ("id",))),
         annotations=nullable(dict(type="array", items=citation)),
         function_call=nullable(legacy_call),
         reasoning=dict(type=["string", "null"]), reasoning_content=dict(type=["string", "null"]),
@@ -148,11 +151,14 @@ def chat_schema():
                 dict(type="array", items={"not": present("type", dict(const="input_audio"))})])))),
         when(present("role", {"not": dict(const="assistant")}),
              forbid(["reasoning", "reasoning_content", "tool_calls", "refusal", "function_call"])),
+        when(present("role", {"not": dict(const="assistant")}),
+             dict(properties=dict(audio=dict(type="null")))),
         when(present("role", {"not": dict(const="tool")}), forbid(["tool_call_id"])),
         when(dict(allOf=[{"not": present("role", dict(const="function"))},
           {"not": dict(allOf=[present("role", dict(const="assistant")),
             dict(anyOf=[present("tool_calls", dict(type="array", minItems=1)),
                         present("refusal", dict(type="string")),
+                        present("audio", dict(type="object")),
                         present("function_call", dict(type="object"))])])}]),
             dict(required=["content"],
                  properties=dict(content=dict(type=["string", "array"])))),
@@ -225,9 +231,11 @@ def chat_schema():
         model=dict(type="string", **{"x-q4t-registered-model-or-alias": True}),
         prompt=dict(type="string", minLength=1),
         messages=dict(type="array", minItems=1, items=ref("message")),
-        modalities=nullable(dict(type="array", minItems=1, maxItems=1,
-            uniqueItems=True, items=dict(const="text"))),
-        audio=dict(type="null"),
+        modalities=nullable(dict(type="array", minItems=1, maxItems=2,
+            uniqueItems=True, items=dict(enum=["text", "audio"]))),
+        audio=nullable(obj(dict(voice=speech_voice_schema(),
+            format=dict(enum=["wav", "mp3", "aac", "flac", "opus", "pcm16"])),
+            ("voice", "format"))),
         max_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         max_completion_tokens=nullable(dict(type="integer", minimum=1, maximum=2147483647)),
         stream=dict(type=["boolean", "null"], default=False),
@@ -288,8 +296,8 @@ def chat_schema():
         parallel_tool_calls=dict(type="boolean", default=True))
     result = obj(properties)
     result.update({"$schema": DRAFT, "$id": "urn:q4t:serve-chat-request:v1",
-        "title": "Q4T Chat text and speech input request structure v1",
-        "description": "Text output with text or native ASR speech input. Required semantic and runtime checks are enumerated by x-q4t; schema validation alone is not admission or execution acceptance.",
+        "title": "Q4T Chat request structure v1",
+        "description": "Text and audio modalities with optional native ASR and speech synthesis. Required semantic and runtime checks are enumerated by x-q4t; schema validation alone is not admission or execution acceptance.",
         "$defs": dict(cacheBreakpoint=breakpoint, textPart=text_part, refusalPart=refusal_part,
                        audioPart=audio_part,
                        message=message, historyCall=call,
@@ -297,6 +305,9 @@ def chat_schema():
         "oneOf": [present("messages"), present("prompt")],
         "dependentRequired": dict(request_id=["cancel_token"], cancel_token=["request_id"]),
         "allOf": [
+            {"if": present("modalities", dict(type="array", contains=dict(const="audio"))),
+             "then": present("audio", dict(type="object")),
+             "else": dict(properties=dict(audio=dict(type="null")))},
             when(present("stream_options", dict(type="object")),
                  present("stream", dict(const=True))),
             when(present("verbosity"), dict(required=["messages"])),
@@ -466,7 +477,7 @@ def vision_schema():
         file_inputs="Chat file parts require actual PDF; original text and pages use common preparation, preflight and stored snapshot ownership",
         state_cache="actual source/processor identity, complete visual blocks, target state and three-axis RoPE/delta",
         media_chunked_prefill=True,
-        unsupported=["video_container_on_server", "audio_output", "MTP",
+        unsupported=["video_container_on_server", "MTP",
                      "multiple_execution_slots"])
     return result
 
@@ -505,7 +516,7 @@ def semantics():
             "src/server/chat_generation.cpp", "src/server/chat_choices.cpp",
             "src/server/chat_preflight.cpp", "src/server/batch_budget.cpp",
             "src/server/batch_preparation.cpp", "src/server/asr_service.cpp"],
-         "User input_audio requires canonical inline base64 with matching wav/mp3 headers and the configured native ASR backend. Up to8 clips share25MiB source bytes, the configured audio duration and ASR output budget, one request deadline and RPM lease. All real transcripts replace their source parts atomically as source-tagged JSON data frames in original order, preserving neighboring media/files and cache markers. The frame retains the audio modality and part boundary; recognized control-like strings are escaped as data. The main model consumes text transcripts, not acoustic features. Preparation input/output are charged once across choices and reported in q4t_audio_preparation; prompt audio_tokens are actual encoder positions, not duration estimates. JSON/SSE expose the same final-answer protocol; transcript chunks are not leaked as answer deltas. Batch reserves an explicitly inexact input upper bound, executes ASR only after durable start and never replays started work on recovery. Preflight validates sources and files but reports unresolved audio preparation and no exact context/usage claim. Audio-derived web search follows transcription. Speech synthesis, assistant audio history and Realtime remain implementation tasks; this text bridge is not those capabilities. Actual business and reversible release acceptance remain required."),
+         "User input_audio requires canonical inline base64 with matching wav/mp3 headers and the configured native ASR backend. Up to8 clips share25MiB source bytes, the configured audio duration and ASR output budget, one request deadline and RPM lease. All real transcripts replace their source parts atomically as source-tagged JSON data frames in original order, preserving neighboring media/files and cache markers. The frame retains the audio modality and part boundary; recognized control-like strings are escaped as data. The main model consumes text transcripts, not acoustic features. Preparation input/output are charged once across choices and reported in q4t_audio_preparation; prompt audio_tokens are actual encoder positions, not duration estimates. JSON/SSE expose the same final-answer protocol; transcript chunks are not leaked as answer deltas. Batch reserves an explicitly inexact input upper bound, executes ASR only after durable start and never replays started work on recovery. Preflight validates sources and files but reports unresolved audio preparation and no exact context/usage claim. Audio-derived web search follows transcription. Chat output uses the configured native speech engine. Assistant audio IDs resolve an unexpired transcript in the requesting client scope before prompt rendering."),
         ("chat-prompt-cache-controls", ["include/q4t/server/prompt_cache_policy.h",
             "src/server/prompt_cache_policy.cpp", "include/q4t/server/chat_plan.h",
             "src/server/chat_plan.cpp", "src/server/chat_contract.cpp",

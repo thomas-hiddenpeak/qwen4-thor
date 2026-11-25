@@ -1,0 +1,341 @@
+{
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "operations": 29,
+  "exact_status_operations": 20,
+  "groups": {
+    "skills": {
+      "actor_sha256": "f83595e86c5a77935dd70e7b53f9385feea87a129869947a744a1161943b09df",
+      "historical_actor": {},
+      "source": {
+        "skill-business-02/result.json": "b376bb5407f4e81b5091f1ab32a295ba433cc1b1729ae48bf24fe9b11cbf641b",
+        "skill-business-02/plan.json": "79a5ec9c66458fa3d89cd23d1cac3cba828624a24f2a19f6e07d4ed5e29a9663",
+        "skill-lease-02/exit.json": "6a1c2967c6dfd5eade311dacc6e28e7ae9b291bea138cbd945fec563ba797441",
+        "skill-business-02/create/run-wire.json": "bdfb0c2c3471e4f7fe36b02da14ee63757e2f0eb95c8b2af8e2eb5668f918744",
+        "skill-business-02/create/sdk-result.json": "357ef5ca95a3d86d6bc6a13cbef3a05219430cc2e5bc5cb91a64aba3edba98f0"
+      },
+      "successful_http_status": "200 asserted by the identified SDK actor",
+      "operations": [
+        "DELETE /skills/{skill_id}",
+        "DELETE /skills/{skill_id}/versions/{version}",
+        "GET /skills",
+        "GET /skills/{skill_id}",
+        "GET /skills/{skill_id}/versions",
+        "GET /skills/{skill_id}/versions/{version}",
+        "POST /skills",
+        "POST /skills/{skill_id}",
+        "POST /skills/{skill_id}/versions"
+      ],
+      "validated_bodies": [
+        {
+          "operation": "POST /skills",
+          "sha256": "4b3246e17b2f1708e39679ee3a69b20e087555fe86b31e4a746cd1e61c0fa762",
+          "schema_status": "200"
+        },
+        {
+          "operation": "POST /skills/{skill_id}/versions",
+          "sha256": "94b815462cf1866de72afb97f6584bcc510aa27a982accde7fa7443202c9b5da",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /skills/{skill_id}",
+          "sha256": "e940b8072945da71d59a99d4352d9f86b6d31cd699b681a3d3b2493fff0d854e",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /skills",
+          "sha256": "99ebb92c29f1c383b2bcb33165265c2010cd1f9e630975af9c0987395d49ecfe",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /skills",
+          "sha256": "84c05907c64a26e15586e0ef0fde82ff0fc0931854c7a22c4a769fb36f8d0127",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /skills/{skill_id}/versions",
+          "sha256": "f8c081a3cf2f86911505ed085e2da26c10c218775acd3287596c54b118c4e557",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /skills/{skill_id}/versions",
+          "sha256": "5721efe08bae9094a04f4cd0c2fe5f93590899e3bc6bc90fbb66d6c19f0575aa",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /skills/{skill_id}/versions/{version}",
+          "sha256": "94b815462cf1866de72afb97f6584bcc510aa27a982accde7fa7443202c9b5da",
+          "schema_status": "200"
+        },
+        {
+          "operation": "POST /skills/{skill_id}",
+          "sha256": "4923e99b49a11e6084820efd77f291d0db48577ff67bd586833081332ffdce0e",
+          "schema_status": "200"
+        },
+        {
+          "operation": "DELETE /skills/{skill_id}/versions/{version}",
+          "sha256": "998ff5e44dd5cec551cfdf87713e20f299914e56413a11a242cb093711a92404",
+          "schema_status": "200"
+        },
+        {
+          "operation": "DELETE /skills/{skill_id}",
+          "sha256": "48d32234399c4e08a4d779352e241fc6e97ca9367a49a27e4880345c3af84ac0",
+          "schema_status": "200"
+        }
+      ],
+      "discrepancies": []
+    },
+    "threads": {
+      "actor_sha256": "e8aa6612da1a5e62b1936d87c4bd1efb2f083aed7b6492420d93b29d5b024111",
+      "historical_actor": {},
+      "source": {
+        "threads-business-02/result.json": "799eaa96dbc08b2d6cc2a2dbd5beac414dff90b4b1e3138415edd4c2f83058eb",
+        "threads-business-02/plan.json": "f41cfd910e07443567bd7b771d9bae9e3bc3ee1ce56dd7a1bd9e3b059d0077ff",
+        "threads-business-lease-02/exit.json": "e54267a2252e1cc507b89b609754ec1ee871cf3ea66dc3bebc87ab6a78cac06c",
+        "threads-business-02/create/thread-wire.json": "a9ec301914ba51686017e9397331b384c31b504b289003f10856212898db3593",
+        "threads-business-02/create/sdk-result.json": "a5bcbb8d3322653653a406ff8937ddf751cfb36e12bf048585a099f28dac9824"
+      },
+      "successful_http_status": "2xx observed by fetch; exact code was not retained",
+      "operations": [
+        "DELETE /threads/{thread_id}",
+        "DELETE /threads/{thread_id}/messages/{message_id}",
+        "GET /threads/{thread_id}",
+        "GET /threads/{thread_id}/messages",
+        "GET /threads/{thread_id}/messages/{message_id}",
+        "POST /threads",
+        "POST /threads/{thread_id}",
+        "POST /threads/{thread_id}/messages",
+        "POST /threads/{thread_id}/messages/{message_id}"
+      ],
+      "validated_bodies": [
+        {
+          "operation": "POST /threads",
+          "sha256": "15f9a69de519c9b61d0d6990a251ecb48fbfa0b2b7d8f6213a3ba97089cd04f1",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /threads/{thread_id}/messages",
+          "sha256": "f4062a22eaa65271a1b85df4104592feed2f48f6c411582d259bf1bc78a7e0bf",
+          "schema_status": "200"
+        },
+        {
+          "operation": "POST /threads/{thread_id}/messages",
+          "sha256": "f22eed788d345e68c138938402097098a40a736674f9f8cab2a59b7ce38e9333",
+          "schema_status": "200"
+        },
+        {
+          "operation": "POST /threads/{thread_id}/messages",
+          "sha256": "298362544364688371e44f34f901d5423098e100b28a59d9ad32929fb98ffae1",
+          "schema_status": "200"
+        },
+        {
+          "operation": "POST /threads/{thread_id}/messages/{message_id}",
+          "sha256": "1b0878e08cd3f431807cde0ed25ec44dced4ecf465d829070a1899406eda502c",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /threads/{thread_id}/messages/{message_id}",
+          "sha256": "1b0878e08cd3f431807cde0ed25ec44dced4ecf465d829070a1899406eda502c",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /threads/{thread_id}/messages",
+          "sha256": "ad0cbb84702155a0061a02fb02fd1934c6a3b0ca66075ace1fcc7cc7d5a9c73a",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /threads/{thread_id}/messages",
+          "sha256": "f75fc25b672130f0ec938586bc7febaeccdd7f816f111e37cb6e132ca9b8ca07",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /threads/{thread_id}/messages",
+          "sha256": "f75fc25b672130f0ec938586bc7febaeccdd7f816f111e37cb6e132ca9b8ca07",
+          "schema_status": "200"
+        },
+        {
+          "operation": "POST /threads/{thread_id}",
+          "sha256": "10cb3388d9bd734bbba7e4cd6a25bb95c7865da562ccd499b95ad7e5ffbc18a3",
+          "schema_status": "200"
+        },
+        {
+          "operation": "GET /threads/{thread_id}",
+          "sha256": "10cb3388d9bd734bbba7e4cd6a25bb95c7865da562ccd499b95ad7e5ffbc18a3",
+          "schema_status": "200"
+        },
+        {
+          "operation": "POST /threads",
+          "sha256": "17e6234f43953d61e14930dfc2a460203e0813de0532cd1dfc2a071e50201dc5",
+          "schema_status": "200"
+        },
+        {
+          "operation": "DELETE /threads/{thread_id}/messages/{message_id}",
+          "sha256": "a5c5b396367a8f74d30737949ed65c6ed8c4f3846db0d9a7764a642dda763831",
+          "schema_status": "200"
+        },
+        {
+          "operation": "DELETE /threads/{thread_id}",
+          "sha256": "85086d2e280e83537091c45df60c3947c4b37a56cd13aa0d76f7e1ac37cfff93",
+          "schema_status": "200"
+        },
+        {
+          "operation": "DELETE /threads/{thread_id}",
+          "sha256": "d862c1d8aeb663c49b6afc84bfbf4836a7052bec8dbd9a0003be2a3ca049bc5d",
+          "schema_status": "200"
+        }
+      ],
+      "discrepancies": [
+        {
+          "operation": "GET /threads/{thread_id}/messages",
+          "constraints": [
+            {
+              "field": [
+                "first_id"
+              ],
+              "rule": "type"
+            },
+            {
+              "field": [
+                "last_id"
+              ],
+              "rule": "type"
+            }
+          ]
+        },
+        {
+          "operation": "GET /threads/{thread_id}/messages",
+          "constraints": [
+            {
+              "field": [
+                "first_id"
+              ],
+              "rule": "type"
+            },
+            {
+              "field": [
+                "last_id"
+              ],
+              "rule": "type"
+            }
+          ]
+        }
+      ]
+    },
+    "runs": {
+      "verified": false,
+      "reason": "Original actor bytes are unavailable at the recorded digest. No operation counted.",
+      "actor_sha256": "47169782104278fe04676afaffb938345ab8f0a551bbbc05f63f3a42adca45d6",
+      "operations": [],
+      "validated_bodies": [],
+      "discrepancies": []
+    },
+    "evals": {
+      "source": "meteor-business-01/create/sdk-observations.json",
+      "source_sha256": "bc0d7880bf482e021f1580dccff2318645e3ee109ae1fd527f114c88e0ca8956",
+      "successful_http_status": "Retained actual response status",
+      "operations": [
+        "GET /evals/{eval_id}/runs/{run_id}",
+        "GET /evals/{eval_id}/runs/{run_id}/output_items",
+        "POST /evals",
+        "POST /evals/{eval_id}/runs"
+      ],
+      "validated_bodies": [
+        {
+          "method": "POST",
+          "path": "/evals",
+          "status": 201,
+          "json_sha256": "bd650c4759e7da14d3e5ba2d935aab5d829c4103fd6685cad1a8953bc1af4c7b"
+        },
+        {
+          "method": "POST",
+          "path": "/evals/{eval_id}/runs",
+          "status": 201,
+          "json_sha256": "ad82305afb2fd227c2001972f82be6f569f607c6b892314de272261bdf4425e3"
+        },
+        {
+          "method": "GET",
+          "path": "/evals/{eval_id}/runs/{run_id}",
+          "status": 200,
+          "json_sha256": "d4d61fa935163990ba83fb8b86de49ec4703d7bdf89a1091aedc54f85e2e4876"
+        },
+        {
+          "method": "GET",
+          "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+          "status": 200,
+          "json_sha256": "c150ad631ec598e265ae4fd6fce3dd37fd2780e42a3173ea61bf7052334c978e"
+        }
+      ],
+      "discrepancies": []
+    },
+    "chatkit": {
+      "source": "webhook-src/docs/evidence/serve-chatkit-20261125/feedback.json",
+      "source_sha256": "162bb28a1b063cb97ccd592477b27a5118e99e9bcd22b5b0f733efa56660f7f4",
+      "successful_http_status": "Retained actual response status",
+      "operations": [
+        "DELETE /chatkit/threads/{thread_id}",
+        "GET /chatkit/threads",
+        "GET /chatkit/threads/{thread_id}",
+        "GET /chatkit/threads/{thread_id}/items",
+        "POST /agents",
+        "POST /chatkit/sessions",
+        "POST /chatkit/sessions/{session_id}/cancel"
+      ],
+      "validated_bodies": [
+        {
+          "method": "POST",
+          "path": "/agents",
+          "status": 201,
+          "json_sha256": "112e20baf5a78b8dd842f50646b19c048f53f16dd3276e360b0b1b46052389ac"
+        },
+        {
+          "method": "POST",
+          "path": "/chatkit/sessions",
+          "status": 200,
+          "json_sha256": "14b7bb45f92bb68beae2eedb629bff473b65e39d409346d28e10881fd0964b63"
+        },
+        {
+          "method": "POST",
+          "path": "/chatkit/sessions",
+          "status": 200,
+          "json_sha256": "129c6220850c7ca54fafa519761b7790ca82e005e668db71fb6cda60bec63e42"
+        },
+        {
+          "method": "GET",
+          "path": "/chatkit/threads/{thread_id}/items",
+          "status": 200,
+          "json_sha256": "0f6d061521401ddb175fc689e60e5bd74b797d9286d6a6d9da2f7d4cac8a1121"
+        },
+        {
+          "method": "GET",
+          "path": "/chatkit/threads",
+          "status": 200,
+          "json_sha256": "d822f52dc52181c4d4aabbb8e9575e03cf7120dc68e961a5531b2ad7cba77a24"
+        },
+        {
+          "method": "GET",
+          "path": "/chatkit/threads/{thread_id}",
+          "status": 200,
+          "json_sha256": "41293b9c64e71afbe86e036e66baebb690a96dd7c4690b1af00a234b7ad16f13"
+        },
+        {
+          "method": "GET",
+          "path": "/chatkit/threads/{thread_id}/items",
+          "status": 200,
+          "json_sha256": "0f6d061521401ddb175fc689e60e5bd74b797d9286d6a6d9da2f7d4cac8a1121"
+        },
+        {
+          "method": "POST",
+          "path": "/chatkit/sessions/{session_id}/cancel",
+          "status": 200,
+          "json_sha256": "afe581a73858863e0addc98e4d5b3d3a72a880c3a6498126e32b3ce7f72a6d6e"
+        },
+        {
+          "method": "DELETE",
+          "path": "/chatkit/threads/{thread_id}",
+          "status": 200,
+          "json_sha256": "efeb8546c390ecf73869269d286fdc863a76135bdde4b776a9b6d6adfd24740a"
+        }
+      ],
+      "discrepancies": []
+    }
+  }
+}

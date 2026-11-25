@@ -591,7 +591,8 @@ def tracing_enabled(capabilities):
 def format_for(profile, identity=None, capabilities=None, business_value=None):
     if 'live' in (capabilities or {}):
         from tools.serve_recovery import profile_live_reuse
-        return profile_live_reuse.format_for(capabilities)
+        receipts = (business_value or {}).get('live', {}).get('evidence_sha256', {})
+        return profile_live_reuse.format_for(capabilities, receipts)
     if tracing_enabled(capabilities):
         return TRACING_FORMAT
     if mcp_enabled(capabilities):
@@ -1649,7 +1650,7 @@ def validate(value, registry, name, digest):
                            'q4t-profile-business-v41', 'q4t-profile-business-v42', 'q4t-profile-business-v43', 'q4t-profile-business-v44',
                            'q4t-profile-business-v45', 'q4t-profile-business-v46', 'q4t-profile-business-v47',
                            'q4t-profile-business-v48', 'q4t-profile-business-v49', 'q4t-profile-business-v50',
-                           'q4t-profile-business-v51'):
+                           'q4t-profile-business-v51', 'q4t-profile-business-v52'):
         from tools.serve_recovery import profile_duplex_reuse
         observed = dict(observed, realtime_duplex=profile_duplex_reuse.unpack_text(
             observed['realtime_duplex']))

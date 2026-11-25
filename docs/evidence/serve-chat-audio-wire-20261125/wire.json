@@ -1,0 +1,78 @@
+{
+  "stage": "schema_verified",
+  "issued": false,
+  "binary_changes": 0,
+  "observations": {
+    "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "issued_openapi_sha256": "a9dac7e81f76de67d3d30288313d6c9e2fd8a953e319dbc39b318b9c1be6bb26",
+    "proposed_openapi_sha256": "4f22201deeefc2aabaecd2aa21bcf6cb3db7bc5791d49c8f68a219118a2f74ff",
+    "requests": [
+      {
+        "name": "chat-http-07/json.request.json",
+        "official_valid": true,
+        "issued_valid": false,
+        "candidate_valid": true
+      },
+      {
+        "name": "chat-http-07/history.request.json",
+        "official_valid": true,
+        "issued_valid": false,
+        "candidate_valid": true
+      },
+      {
+        "name": "chat-http-06/python.request.json",
+        "official_valid": true,
+        "issued_valid": false,
+        "candidate_valid": true
+      }
+    ],
+    "issued_rejected_native_history": true,
+    "validated_http_200_json": 3,
+    "official_response_conformance": true,
+    "sse": {
+      "chunks": 28,
+      "audio_chunks": 18,
+      "fields": [
+        "data",
+        "expires_at",
+        "id",
+        "transcript"
+      ],
+      "sdk_accepted": true,
+      "original_stage": "FAILED: later restart port was occupied",
+      "original_lease": "COMMAND_FAILED"
+    },
+    "evidence": {
+      "chat-http-07/json.request.json": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07",
+      "chat-http-07/history.request.json": "cd6d63514db6cbbd47786d786d9b559e1c29df44a00a4f9bfb9c78641be8f7ab",
+      "chat-http-06/python.request.json": "d34038366c154f440192a9cd2c9ecbff4bb452bb760860033c25c18453082dbd",
+      "chat-http-07/json.wire": "6a4a3d1462d00ece8c7c83e0f7fc59c53809a9b69d0bd42d3909a5023cf800c4",
+      "chat-http-07/history.wire": "0b482300929a2977f5c6f159986010bc895a296dae7fe8ed8037315c4d63f8b9",
+      "chat-http-07/stored-audio.wire": "6a4a3d1462d00ece8c7c83e0f7fc59c53809a9b69d0bd42d3909a5023cf800c4",
+      "chat-http-06/python.wire": "4df70264d4e84d77aaaa541c6837d7937a5aa625a5fb516ada6f946fe34e313b"
+    },
+    "model_starts": 0
+  },
+  "targeted_cases": 26,
+  "targeted_log_sha256": "9b616a9dd32675ec34127b559e86662afd8ba1c689d1e45d576839b654a58cdd",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 242,
+    "native_routes": 400,
+    "reviewed_source_anchors": 1373,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "sources": {
+    "tools/serve_protocol/build_contract.py": "e9bab700f9a37353e8087a14328583d559b98d84be009375b4af39626dc49c06",
+    "tools/serve_protocol/voice_contract.py": "b3ae3f8991164745142d63239c407cee1c4b66f69fe9fefd154099b6cddf1840",
+    "tools/serve_protocol/test_chat_audio.py": "d5d6077371fcc815b0e0425415e89194889894fbdbe636e7ac6b67bae8544a1c",
+    "docs/serve-transport-v1.schema.json": "7dfa9395db5759e1f993977d57afdc856b793642f40d3125289e5297a99cb0d5",
+    "docs/serve-message-profile-v3.schema.json": "32bf038bfd6e8055b3c7b99a9d24d0983baf26907499cb87928bd26138639e2e",
+    "docs/serve-application-v1.schema.json": "84356050a48bfc38e2749e90ca8800db5733fab6d91783c18eaf30f97c9e9247",
+    "docs/serve-openapi-bundle-v1.json": "4f22201deeefc2aabaecd2aa21bcf6cb3db7bc5791d49c8f68a219118a2f74ff"
+  }
+}

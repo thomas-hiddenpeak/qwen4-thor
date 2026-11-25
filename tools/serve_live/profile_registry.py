@@ -47,7 +47,8 @@ def prepare(source, manifest_sha256, stage, observations, output):
                             'Live observations changed the selected capacities')
             row = copy.deepcopy(old)
             capabilities = package.read(stage/name/'capabilities.json')
-            row.update(format=profile_live_reuse.format_for(capabilities), identity=identity,
+            row.update(format=profile_live_reuse.format_for(capabilities, item['evidence_sha256']),
+                       identity=identity,
                        capabilities=capabilities,
                        configuration=item['configuration'], startup_memory=item['startup_memory'],
                        environment=environment)
@@ -95,6 +96,7 @@ def prepare(source, manifest_sha256, stage, observations, output):
                   profile_live_reuse.WEBHOOK_RECORD: 'ACCEPT_WEBHOOK_PRIMARY_LIGHT',
                   profile_live_reuse.HOSTED_LIFECYCLE_RECORD: 'ACCEPT_HOSTED_ENVIRONMENT_LIFECYCLE_PRIMARY_LIGHT',
                   profile_live_reuse.PREPARATION_RECORD: 'ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT',
+                  profile_live_reuse.PAGINATION_RECORD: 'ACCEPT_ASSISTANT_PAGINATION_PRIMARY_LIGHT',
                   profile_live_reuse.UPLOAD_RECORD: 'ACCEPT_CHATKIT_UPLOAD_PRIMARY_LIGHT',
                   profile_live_reuse.FEEDBACK_RECORD: 'ACCEPT_CHATKIT_FEEDBACK_PRIMARY_LIGHT',
                   profile_live_reuse.METEOR_RECORD: 'ACCEPT_EVAL_METEOR_PRIMARY_LIGHT',

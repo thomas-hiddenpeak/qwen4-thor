@@ -1,6 +1,14 @@
 """HTTP declarations for the implemented speech, classification and socket endpoints."""
 
 
+def speech_voice_schema():
+    text = dict(type='string', minLength=1, maxLength=256,
+                **{'not': {'pattern': r'\u0000'}})
+    identifier = dict(type='object', properties={'id': text}, required=['id'],
+                      additionalProperties=False)
+    return dict(anyOf=[text, identifier])
+
+
 def add_voice_routes(paths, response, error):
     text = {'type': 'string'}
     ident = dict(type='string', pattern='^[A-Za-z0-9_-]{1,128}$')
@@ -37,8 +45,7 @@ def add_voice_routes(paths, response, error):
               body=content('application/json', decision('request')))
     speech = obj(dict(model=dict(type='string',minLength=1,maxLength=256),
         input=dict(type='string',minLength=1,maxLength=4096),
-        voice=dict(anyOf=[dict(type='string',minLength=1,maxLength=256),
-                          obj({'id':dict(type='string',minLength=1,maxLength=256)},['id'])]),
+        voice=speech_voice_schema(),
         instructions=dict(type='string',maxLength=4096),
         speed=dict(type='number',minimum=.25,maximum=4,default=1),
         response_format=dict(enum=['mp3','opus','aac','flac','wav','pcm'],default='mp3'),

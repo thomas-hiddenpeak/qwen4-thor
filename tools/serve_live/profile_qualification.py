@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'assistant_pagination_handoff' in plan:
+            from tools.serve_responses import assistant_pagination_profiles
+            profiles[name]['evidence_sha256'].update(assistant_pagination_profiles.verify(phase, plan, declared))
+            continue
         if ('two_phase_document_upload' in declared.get('chatkit', {}) or 'chatkit_upload_handoff' in plan):
             from tools.serve_responses import chatkit_upload_profiles
             profiles[name]['evidence_sha256'].update(chatkit_upload_profiles.verify(phase, plan, declared))

@@ -1,8 +1,25 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+管理员只读检查已确认 rev494 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev494-preflight.json)
+
+主包与独立回退包均已验收。模型进程退出及主包故障后，SDK 读回原始 Run、消息与步骤，两组各 8 个页面摘要保持一致，跨客户查询返回 404。发行核对 13 项受保护状态，默认服务保持停止。长稳计划已预检，实跑由用户安排。下一步继续检查其他入口的准入与实际响应。[验证记录](evidence/serve-assistant-pagination-20261125/delivery.json)
+
+主配置完成 6 × 7。轻配置读取同一 Run 的消息和步骤，随后到达末页。8 个对应页面响应摘要均与主配置相同。两端的另一个客户读原线程返回 404，独立 Chat 回答 42。专门的 C++ 测试同时覆盖数据槽、观测槽及取消。下一步验证受监护恢复与发行。[验证记录](evidence/serve-assistant-pagination-20261125/profiles.json)
+
+控制端口和原生网关已经把 Assistants 状态查询作为观测操作，核心客户准入遗漏了同一判断。已复用既有路由分类，保留查询配额、写入配额和专用取消名额。原 429 留档；在数据槽为 1 的真实配置上，SDK 完成整个 Run 并得到 42，12 个页面均满足实际响应合同。下一步重验发生失败的容量交接。[验证记录](evidence/serve-assistant-pagination-20261125/poll-admission.json)
+
+官方 Node SDK 经原生 TLS 建立线程并运行 6 × 7，模型回答 42。四类 Assistants 分页和 ChatKit 对照共 12 个 HTTP 200，均通过官方与候选 schema，末页和非空游标与对应资源一致。相同候选声明同步复核语音及内容过滤归档。下一步验证容量交接和可回退发行。[验证记录](evidence/serve-assistant-pagination-20261125/http.json)
+
 管理员只读检查已确认 rev492 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev492-preflight.json)
 
 两种容量和两项受监护故障实测均保留同一份文件与原对话。新会话取回文件并在原线程回答 157，另一客户回答 42。发布保持 STOPPED，受保护记录一致。24 小时计划通过预检，实跑由用户安排。下一步继续 SDK 空页和剩余媒体接口。[验证记录](evidence/serve-chatkit-20261125/upload-delivery.json)
+主配置会创建真实 Run，轻配置必须用同一客户读取相同线程、消息、步骤和末页。两端均核对另一客户的隔离与独立 Chat。53 项 CPU 检查通过，两份已发行 v51 记录均可完整重建，替换前驱、历史证据或能力会被拒绝。下一步执行实际 SDK 请求与容量交接。[验证记录](evidence/serve-assistant-pagination-20261125/profiles.json)
+
+已发行 schema 会拒绝被过滤的 Chat 回复，以及先于 token 用量到达的审核报告流式块。补齐 JSON、存储回读与流式结束原因、报告和分类用量。原始真机归档的四个 JSON 响应与两条 SSE 流（共 20 个块）都通过官方和候选声明；26 项针对性测试通过。下一步随分页和语音声明一起打包。[验证记录](evidence/serve-chat-audio-wire-20261125/moderation.json)
+
+rev490 的声明会拒绝真实语音生成请求和仅凭音频 ID 续聊的历史消息。更新了文本、视觉、存储消息与 OpenAPI 中的语音形状，SSE 的到期时间更新可以省略结束原因。3 条原始请求、3 个 HTTP 200 响应和 28 个流式块均通过官方及候选规范，26 项定向检查通过。原流式检查所在轮次后续端口重启失败仍单列。下一步随服务打包核对发行声明。[验证记录](evidence/serve-chat-audio-wire-20261125/wire.json)
+
+官方 schema 复核发现两条已记录的消息空页含有 null 游标。现已修正助手、消息、运行与步骤的空页返回，保留非空页首末对象 ID 和 ChatKit 可空游标。5 项本机测试通过，含运行与步骤的 HTTP 写出检查。下一步使用官方 SDK 通过原生 TLS 复核。[验证记录](evidence/serve-assistant-pagination-20261125/empty.json)
 
 轻配置在发出新的浏览器请求前核对了原文件与线程的完整存储摘要。新会话读取同一文件、继续原线程并答出 157，独立客户答出 42。v51 可还原已发行的 v50。下一步验证受监护的进程恢复及可回退发行。[验证记录](evidence/serve-chatkit-20261125/upload-profiles.json)
 

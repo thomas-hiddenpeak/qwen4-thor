@@ -1,0 +1,492 @@
+{
+  "status": "PASS",
+  "issued": false,
+  "engine": "655f31bf9864fd3c4d8f8f6625c5afb2ff551c80f6bb2091e2953be266fe20f7",
+  "protocol": "e31d62b2863ef05e336fa37864807f5359ae40dafdbd6be969d92d1ddc604cf3",
+  "ingress": "47efe94a638420a7e5cd24a6505597e8096545c3279f40ae7dd6298e1efcf8be",
+  "sdk": "7.47.0",
+  "driver_sha256": "3a46b24c6bc8fad41654fb0b282c3cd6c7bfcbde9915a5d4eeb2a97c2d262859",
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "openapi_sha256": "0ac3519cc82a283ee188e353d3105d6d5c5acc27277ca9fdb3b32ea76adc17aa",
+  "evidence": {
+    "operations": [
+      {
+        "method": "GET",
+        "path": "/assistants",
+        "status": 200,
+        "json_sha256": "6471d65ade05f7e13548d737a6a121c2c79f59c86bbac989e3973d3874fdd0a7"
+      },
+      {
+        "method": "GET",
+        "path": "/chatkit/threads",
+        "status": 200,
+        "json_sha256": "679f8f8fe85ab2c5339d5c01dace2a1c8ee188e96448044b4113dfd9ea8b9133"
+      },
+      {
+        "method": "GET",
+        "path": "/threads/{thread_id}/messages",
+        "status": 200,
+        "json_sha256": "6471d65ade05f7e13548d737a6a121c2c79f59c86bbac989e3973d3874fdd0a7"
+      },
+      {
+        "method": "GET",
+        "path": "/threads/{thread_id}/runs",
+        "status": 200,
+        "json_sha256": "6471d65ade05f7e13548d737a6a121c2c79f59c86bbac989e3973d3874fdd0a7"
+      },
+      {
+        "method": "GET",
+        "path": "/assistants",
+        "status": 200,
+        "json_sha256": "6e2f77d298dee881e057b55333f9863f881f5672e011234ce3759b7906f16aa7"
+      },
+      {
+        "method": "GET",
+        "path": "/assistants",
+        "status": 200,
+        "json_sha256": "6471d65ade05f7e13548d737a6a121c2c79f59c86bbac989e3973d3874fdd0a7"
+      },
+      {
+        "method": "GET",
+        "path": "/threads/{thread_id}/messages",
+        "status": 200,
+        "json_sha256": "d315672bc88f047179e5ba33f7b147920a7793197503fef7c6db05191c2468c8"
+      },
+      {
+        "method": "GET",
+        "path": "/threads/{thread_id}/messages",
+        "status": 200,
+        "json_sha256": "6471d65ade05f7e13548d737a6a121c2c79f59c86bbac989e3973d3874fdd0a7"
+      },
+      {
+        "method": "GET",
+        "path": "/threads/{thread_id}/runs",
+        "status": 200,
+        "json_sha256": "d6d2c947b31d65a4ea62776fc938098b16697b24be7abc7f5cce7bb7724a0201"
+      },
+      {
+        "method": "GET",
+        "path": "/threads/{thread_id}/runs",
+        "status": 200,
+        "json_sha256": "6471d65ade05f7e13548d737a6a121c2c79f59c86bbac989e3973d3874fdd0a7"
+      },
+      {
+        "method": "GET",
+        "path": "/threads/{thread_id}/runs/{run_id}/steps",
+        "status": 200,
+        "json_sha256": "dd75c7eb1e9a5b63f9f43f61cfefdfe9563da525229f34d1dadee6ed8059615b"
+      },
+      {
+        "method": "GET",
+        "path": "/threads/{thread_id}/runs/{run_id}/steps",
+        "status": 200,
+        "json_sha256": "6471d65ade05f7e13548d737a6a121c2c79f59c86bbac989e3973d3874fdd0a7"
+      }
+    ],
+    "answer": "42",
+    "controlled_starts": 1,
+    "seconds": 38.007,
+    "unchanged_default": true,
+    "release": "rev492",
+    "max_inflight": 1,
+    "max_control_inflight": 2
+  },
+  "archived_audio": {
+    "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "issued_openapi_sha256": "a9dac7e81f76de67d3d30288313d6c9e2fd8a953e319dbc39b318b9c1be6bb26",
+    "proposed_openapi_sha256": "0ac3519cc82a283ee188e353d3105d6d5c5acc27277ca9fdb3b32ea76adc17aa",
+    "requests": [
+      {
+        "name": "chat-http-07/json.request.json",
+        "official_valid": true,
+        "issued_valid": false,
+        "candidate_valid": true
+      },
+      {
+        "name": "chat-http-07/history.request.json",
+        "official_valid": true,
+        "issued_valid": false,
+        "candidate_valid": true
+      },
+      {
+        "name": "chat-http-06/python.request.json",
+        "official_valid": true,
+        "issued_valid": false,
+        "candidate_valid": true
+      }
+    ],
+    "issued_rejected_native_history": true,
+    "validated_http_200_json": 3,
+    "official_response_conformance": true,
+    "sse": {
+      "chunks": 28,
+      "audio_chunks": 18,
+      "fields": [
+        "data",
+        "expires_at",
+        "id",
+        "transcript"
+      ],
+      "sdk_accepted": true,
+      "original_stage": "FAILED: later restart port was occupied",
+      "original_lease": "COMMAND_FAILED"
+    },
+    "evidence": {
+      "chat-http-07/json.request.json": "1a28abd38c6b8f484f3d318be8e8bc564d5713418efc5dd8dba242649266ba07",
+      "chat-http-07/history.request.json": "cd6d63514db6cbbd47786d786d9b559e1c29df44a00a4f9bfb9c78641be8f7ab",
+      "chat-http-06/python.request.json": "d34038366c154f440192a9cd2c9ecbff4bb452bb760860033c25c18453082dbd",
+      "chat-http-07/json.wire": "6a4a3d1462d00ece8c7c83e0f7fc59c53809a9b69d0bd42d3909a5023cf800c4",
+      "chat-http-07/history.wire": "0b482300929a2977f5c6f159986010bc895a296dae7fe8ed8037315c4d63f8b9",
+      "chat-http-07/stored-audio.wire": "6a4a3d1462d00ece8c7c83e0f7fc59c53809a9b69d0bd42d3909a5023cf800c4",
+      "chat-http-06/python.wire": "4df70264d4e84d77aaaa541c6837d7937a5aa625a5fb516ada6f946fe34e313b"
+    },
+    "model_starts": 0
+  },
+  "archived_moderation": {
+    "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+    "archive_sha256": "da78a30426b8d46548845e996d9250a26fdfa178cde5cfe4f1ab8db14ad76ae8",
+    "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "issued_sha256": "a9dac7e81f76de67d3d30288313d6c9e2fd8a953e319dbc39b318b9c1be6bb26",
+    "candidate_sha256": "0ac3519cc82a283ee188e353d3105d6d5c5acc27277ca9fdb3b32ea76adc17aa",
+    "observations": [
+      {
+        "member": "modern-business-01/execution/approved-sse.wire",
+        "sha256": "6fe66c750be55f505352003df1158d9f9db407fc6b8dcbf5df3ab94f3c7b8037",
+        "status": 200,
+        "method": "post",
+        "path": "/chat/completions",
+        "sse": true,
+        "payloads": 10,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "modern-business-01/execution/blocked-input.wire",
+        "sha256": "4629d3914e376be96167fe470c533ae239e1f54576999961a3d18244b30b42e0",
+        "status": 200,
+        "method": "post",
+        "path": "/chat/completions",
+        "sse": false,
+        "payloads": 1,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "profiles-01/primary-blocked-stored.wire",
+        "sha256": "680b954faaf3b891f0768e37950be92357febc5bce954b91dafdedc04b97ebfb",
+        "status": 200,
+        "method": "get",
+        "path": "/chat/completions/{completion_id}",
+        "sse": false,
+        "payloads": 1,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "profiles-01/primary-blocked.wire",
+        "sha256": "680b954faaf3b891f0768e37950be92357febc5bce954b91dafdedc04b97ebfb",
+        "status": 200,
+        "method": "post",
+        "path": "/chat/completions",
+        "sse": false,
+        "payloads": 1,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "profiles-01/restart-primary-blocked-stored.wire",
+        "sha256": "680b954faaf3b891f0768e37950be92357febc5bce954b91dafdedc04b97ebfb",
+        "status": 200,
+        "method": "get",
+        "path": "/chat/completions/{completion_id}",
+        "sse": false,
+        "payloads": 1,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "retained-business-01/execution/approved-sse.wire",
+        "sha256": "57919a0b8aaf3e62b27d0362fd77ddb62a76f440af32b09ecc2f4dfa095b74b0",
+        "status": 200,
+        "method": "post",
+        "path": "/chat/completions",
+        "sse": true,
+        "payloads": 10,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      }
+    ],
+    "model_starts": 0
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/assistant_observation_device.py": "50e673a9baafd0f6782d0e9e419b247a4095dba178ca0f8620e673231c8369ac",
+    ".q4t-work/serve-responses-agents-20261123/assistant-pages-business-02/plan.json": "527f5039241de160ad3b8bb8c4948680c4e06e142cb22d30947844f1a03e1223",
+    ".q4t-work/serve-responses-agents-20261123/assistant-pages-business-02/result.json": "1d6e052a8a62b94aad8a110c6fe78f9d27851ee82cd4b29280b1de4d0b937b6a",
+    ".q4t-work/serve-responses-agents-20261123/assistant-pages-business-02/create/wire-receipts.json": "005adc018149af44349c16a2c3213a05c45a99a569e85036f9f032bb3cd1e46e",
+    ".q4t-work/serve-responses-agents-20261123/assistant-pages-business-02/create/sdk-result.json": "e899822f32532579245864a3e47127e48cfe3243f4c7058ab9a3fe6b5fde12d3",
+    ".q4t-work/serve-responses-agents-20261123/assistant-pages-business-02/create/serving-identity.json": "f7122f2d014152f7f82c78f58ce7d2178f2eb8ed46d5fd156c8e9d63be791ff9",
+    ".q4t-work/serve-responses-agents-20261123/ci-resource-fixture-src/.q4t-work/pagination-profiles-02/primary/result.json": "e42f2a69e9d91796a050e0a7cb7eec09e9c6d3aa7b84e9466f1cfa55468fe4e1"
+  },
+  "historical_chat_audit": {
+    "archives": 9,
+    "exchanges": 41,
+    "unique_wire_hashes": 36,
+    "payloads": 103,
+    "reasons": {},
+    "wires": [
+      {
+        "archive": "docs/evidence/serve-chat-annotations-business-20261117/business.tar.gz",
+        "member": "modern-business-01/execution/citation-sse.wire",
+        "sha256": "496269234fe2a23810cf6aeb76c1c53cd5a605178efbedb72a8bba6cbd073123",
+        "payloads": 19
+      },
+      {
+        "archive": "docs/evidence/serve-chat-annotations-business-20261117/business.tar.gz",
+        "member": "profiles-01/light-schema.wire",
+        "sha256": "1abaa3d0e2f2386f4d6eef2e69656701236bbd23737cd97b8e1dcfe3bd5b01cc",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-annotations-business-20261117/business.tar.gz",
+        "member": "profiles-01/light-tool-result.wire",
+        "sha256": "6afe60224de152d6006c98d66fbc5181a84725e8d1ec835a631153ebfae8ccf5",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-annotations-business-20261117/business.tar.gz",
+        "member": "profiles-01/light-tool.wire",
+        "sha256": "d07d8f0eeedd43dad3e1cfa08f3f0237e9c6c9f32026a04106ae7e2567e1bcbf",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-annotations-business-20261117/business.tar.gz",
+        "member": "profiles-01/primary-schema.wire",
+        "sha256": "5ae9445a7c016d76a9bdc627fac8787c428fbd307a8781bfd5c459fe5f59a416",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-annotations-business-20261117/business.tar.gz",
+        "member": "profiles-01/primary-tool-result.wire",
+        "sha256": "e32f8c2d4e9fb4248842c9830572bb53ecbf4886823d4ecd5436ad98bffb396c",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-annotations-business-20261117/business.tar.gz",
+        "member": "profiles-01/primary-tool.wire",
+        "sha256": "45bed664a93bee1a8f79170805681caff52462a6fd06f6f074fd47b8059b1f68",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-annotations-business-20261117/business.tar.gz",
+        "member": "retained-business-01/execution/citation-sse.wire",
+        "sha256": "0eced4fa59479c9ea99af54e624e991fe1fafffd18ef5a0ac869ca3c9d5af574",
+        "payloads": 19
+      },
+      {
+        "archive": "docs/evidence/serve-chat-cache-business-20261116/business.tar.gz",
+        "member": "business-02/default_implicit.wire",
+        "sha256": "6f119f8b6b5b2edad16902da81505d9f9cf8844d4481949106c0dbd4d400d545",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-cache-business-20261116/business.tar.gz",
+        "member": "business-02/target_hit.wire",
+        "sha256": "102d1a239165f012db59b938c0bd956bada4914e448e6e9e5e6ed92eb91a4a45",
+        "payloads": 9
+      },
+      {
+        "archive": "docs/evidence/serve-chat-cache-business-20261116/business.tar.gz",
+        "member": "business-02/target_write.wire",
+        "sha256": "db1ff8935528ebb03b81e2d83f3a3c80ff7d1b5f388972518d36c081a6d5a002",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-cache-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/light-schema.wire",
+        "sha256": "1b875f5dd8d7d05fe76ee846cd981f12ce351b3b9724cb6e924d18339e87a010",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-cache-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/light-tool-result.wire",
+        "sha256": "b716499d80708b349bd2ddcf7c85426db801f337d1d462ad1cbac105cdfcc499",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-cache-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/light-tool.wire",
+        "sha256": "4cf07107c6356bb9501f975a67a48e8dc72ce17af6c64b9af952f446bd88451f",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-cache-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/primary-schema.wire",
+        "sha256": "35df3a1fcc87e4dba0f8ae100805b43928d9caef09d6ed7988ce84b1654ea3ac",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-cache-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/primary-tool-result.wire",
+        "sha256": "e9cd1125e07ae6eb9fa1ac426d0e3ec46f4bdc73508952f1077f2a2dc9f064d2",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-cache-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/primary-tool.wire",
+        "sha256": "1977f367e0a8bcc47aaf9092558e2c5d5375ba55c3018fe77975eb8eb18eb4ce",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "modern-business-01/execution/approved-sse.wire",
+        "sha256": "6fe66c750be55f505352003df1158d9f9db407fc6b8dcbf5df3ab94f3c7b8037",
+        "payloads": 10
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "modern-business-01/execution/blocked-input.wire",
+        "sha256": "4629d3914e376be96167fe470c533ae239e1f54576999961a3d18244b30b42e0",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "modern-business-01/execution/scored-choices.wire",
+        "sha256": "e284391b311b2bddb64c7ca4098b933fec4e4c9e458fd1022649750a5f1bc1c8",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "modern-business-01/execution/stored-approved.wire",
+        "sha256": "f7cb8e702ca7795375ce23e86eadad46049431c98812b0cfe6d87853d84a86c7",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/light-schema-stored.wire",
+        "sha256": "eb30bf63c6ec94c2f8bc3e1debb74aa3836dfd2399a51138a5bd14389ae12989",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/light-schema.wire",
+        "sha256": "eb30bf63c6ec94c2f8bc3e1debb74aa3836dfd2399a51138a5bd14389ae12989",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/light-tool-result.wire",
+        "sha256": "6e49f0c8f5e63bee02f0d635f807bef63407088e06eb802ebbd3fb38540be86b",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/light-tool.wire",
+        "sha256": "85c6f44749f940d4f06541b6399881f4a46229d24b527680c327e68a159e222e",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/primary-blocked-stored.wire",
+        "sha256": "680b954faaf3b891f0768e37950be92357febc5bce954b91dafdedc04b97ebfb",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/primary-blocked.wire",
+        "sha256": "680b954faaf3b891f0768e37950be92357febc5bce954b91dafdedc04b97ebfb",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/primary-schema-stored.wire",
+        "sha256": "b3322c441bab6c144ce1ee3a4ce5a8329ddfd9cb47aad895be160b13bf4d8719",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/primary-schema.wire",
+        "sha256": "b3322c441bab6c144ce1ee3a4ce5a8329ddfd9cb47aad895be160b13bf4d8719",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/primary-tool-result.wire",
+        "sha256": "bb49c65a9a054db31ba4282d69403b00f338286979182f30dac42d7d932a22e0",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/primary-tool.wire",
+        "sha256": "6cb9c5a84b2cedece823f18a4819ea3acfc26e39ff7f0274ed1f515752f17a1f",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/restart-primary-blocked-stored.wire",
+        "sha256": "680b954faaf3b891f0768e37950be92357febc5bce954b91dafdedc04b97ebfb",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "profiles-01/restart-primary-schema-stored.wire",
+        "sha256": "b3322c441bab6c144ce1ee3a4ce5a8329ddfd9cb47aad895be160b13bf4d8719",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "retained-business-01/execution/approved-sse.wire",
+        "sha256": "57919a0b8aaf3e62b27d0362fd77ddb62a76f440af32b09ecc2f4dfa095b74b0",
+        "payloads": 10
+      },
+      {
+        "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+        "member": "retained-business-01/execution/stored-approved.wire",
+        "sha256": "ce22c12cc3211a45bbab79c1d40a2bd6988f8d1f09bb1e7749ef0bcb1971cc8a",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-style-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/light-schema.wire",
+        "sha256": "e9f9369ec913421949f86a4c2cb01d4f9197887245269c0e29715a9c6d15f380",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-style-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/light-tool-result.wire",
+        "sha256": "2914c3cec603fc1c0024cb423c9b2b3ef06c80fcb3056ef94751a1222a9529f2",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-style-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/light-tool.wire",
+        "sha256": "655cf684be483a4de8b59606af7d0e54c43d27c45ec477e6be223f0460376140",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-style-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/primary-schema.wire",
+        "sha256": "8a3c0025c42afc2f8d701855d38a98409d75f459ec9397580cccbf91a695cad4",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-style-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/primary-tool-result.wire",
+        "sha256": "4a3929bf0b6bdca2d724d5052a968d00e5cbdced809eed8e14183141d19aefbc",
+        "payloads": 1
+      },
+      {
+        "archive": "docs/evidence/serve-chat-style-profile-business-20261116/business.tar.gz",
+        "member": "profiles-01/primary-tool.wire",
+        "sha256": "3ba3553d974cceb1e0d3c2bd0024ded9bf1740fa0f398115b6f785920a530253",
+        "payloads": 1
+      }
+    ]
+  },
+  "prior_pilot": "evidence/serve-assistant-pagination-20261125/poll-admission.json"
+}
