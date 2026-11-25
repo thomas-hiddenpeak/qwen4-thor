@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+管理员只读检查已确认 rev502 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev502-preflight.json)
+
+同一 Guardian 在模型退出后重新启动服务；主网关失效后，一次探测切到已登记的独立包。两次故障后均取回原始调用 ID 与参数，JSON 和 SSE 均区分空值与字符串，独立 Chat 答 42。默认版本已停在 rev502，发布保护的 13 份记录保持一致，24 小时交接预检通过。[验证记录](evidence/serve-history-argument-types-20261125/delivery.json)
+
 两次候选启动都在首个模型启动前失败。相同登记的独立 CPU 校验用时 30.74 秒，超过 Guardian 的 30 秒事务时限。一次登记内只复用内容相同且已通过的历史证明后，用时 8.41 秒，许可摘要相同。24 项登记与恢复测试通过。下一步重新封包，按原时限验证实际启动和网关接管。[验证记录](evidence/serve-history-argument-types-20261125/registration-startup.json)
 
 主配置发出空值和同形字符串两次工具调用；轻配置取回前一配置持久化的两条记录，用同一调用 ID 和原始参数重新回答。两次启动中 JSON、SSE 以及客户隔离均通过，留下已发行的 rev500 恢复前驱。下一步验证故障接管与可回退发布。[验证记录](evidence/serve-history-argument-types-20261125/profiles.json)

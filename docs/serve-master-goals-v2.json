@@ -811,11 +811,12 @@
         "delivery": "evidence/serve-video-track-selection-20261125/delivery.json"
       },
       "typed_tool_history_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-history-argument-types-20261125/cpu.json",
         "native_token_evidence": "evidence/serve-history-argument-types-20261125/native-tokens.json",
         "business": "evidence/serve-history-argument-types-20261125/business.json",
-        "profiles": "evidence/serve-history-argument-types-20261125/profiles.json"
+        "profiles": "evidence/serve-history-argument-types-20261125/profiles.json",
+        "delivery": "evidence/serve-history-argument-types-20261125/delivery.json"
       }
     },
     {
@@ -1205,11 +1206,12 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "typed_tool_history_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-history-argument-types-20261125/cpu.json",
         "native_token_evidence": "evidence/serve-history-argument-types-20261125/native-tokens.json",
         "business": "evidence/serve-history-argument-types-20261125/business.json",
-        "profiles": "evidence/serve-history-argument-types-20261125/profiles.json"
+        "profiles": "evidence/serve-history-argument-types-20261125/profiles.json",
+        "delivery": "evidence/serve-history-argument-types-20261125/delivery.json"
       }
     },
     {
@@ -9129,8 +9131,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 500,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev500-preflight.json",
+        "revision": 502,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev502-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -9207,7 +9209,11 @@
         "model_starts": 0,
         "qualified_cold_run": false
       },
-      "typed_registration_startup_20261125": "evidence/serve-history-argument-types-20261125/registration-startup.json"
+      "typed_registration_startup_20261125": "evidence/serve-history-argument-types-20261125/registration-startup.json",
+      "typed_history_delivery_20261125": {
+        "revision": 502,
+        "receipt": "evidence/serve-history-argument-types-20261125/delivery.json"
+      }
     },
     {
       "id": "R09",
@@ -9504,7 +9510,11 @@
         "revision": 500,
         "receipt": "evidence/serve-video-track-selection-20261125/delivery.json"
       },
-      "typed_registration_startup_20261125": "evidence/serve-history-argument-types-20261125/registration-startup.json"
+      "typed_registration_startup_20261125": "evidence/serve-history-argument-types-20261125/registration-startup.json",
+      "typed_history_delivery_20261125": {
+        "revision": 502,
+        "receipt": "evidence/serve-history-argument-types-20261125/delivery.json"
+      }
     },
     {
       "id": "R10",
@@ -10688,7 +10698,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev500_delivered_remaining_deliveries",
+      "state": "rev502_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -11968,6 +11978,10 @@
       "video_track_delivery_20261125": {
         "revision": 500,
         "receipt": "evidence/serve-video-track-selection-20261125/delivery.json"
+      },
+      "typed_history_delivery_20261125": {
+        "revision": 502,
+        "receipt": "evidence/serve-history-argument-types-20261125/delivery.json"
       }
     },
     {
@@ -12463,6 +12477,10 @@
       "video_track_delivery_20261125": {
         "revision": 500,
         "receipt": "evidence/serve-video-track-selection-20261125/delivery.json"
+      },
+      "typed_history_delivery_20261125": {
+        "revision": 502,
+        "receipt": "evidence/serve-history-argument-types-20261125/delivery.json"
       }
     }
   ],
@@ -18577,6 +18595,13 @@
       "matching_success_sets": 219,
       "missing_declaration": 12,
       "evidence": "evidence/serve-video-track-selection-20261125/delivery.json"
+    },
+    "rev502": {
+      "required": 231,
+      "declared": 219,
+      "matching_success_sets": 219,
+      "missing_declaration": 12,
+      "evidence": "evidence/serve-history-argument-types-20261125/delivery.json"
     }
   },
   "agent_hosted_workspace_20261124": {
