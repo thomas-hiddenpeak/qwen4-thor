@@ -1,0 +1,29 @@
+{
+  "stage": "failed_device_comparison_explained",
+  "raw_comparison_passed": false,
+  "model_starts": 2,
+  "transcription_and_cancel_before_comparison": true,
+  "offline": {
+    "checks": {
+      "primary": {
+        "expected": "c8c4ac683d9694214cdcf2299c680f5630157d9a7c511c1ed9992cf6dadac6ee",
+        "reconstructed": "c8c4ac683d9694214cdcf2299c680f5630157d9a7c511c1ed9992cf6dadac6ee",
+        "port": 33905
+      },
+      "light": {
+        "expected": "228b24f6fc151717b911feb221d766e083d86a4bffb4de8cb65ac4c3ae21f69f",
+        "reconstructed": "228b24f6fc151717b911feb221d766e083d86a4bffb4de8cb65ac4c3ae21f69f",
+        "port": 41769
+      }
+    },
+    "path": "/v1/evals/eval_b599d3fe59a0382e5310708c9cde0e87/runs/evalrun_fe3880f714957856e7484a16f3bb1e1c/report",
+    "relative_digest": "c91304f5d915e222e4c8ee9445cd06a8f8e18f9c61191f9b2acbe86d818982b5",
+    "source_sha256": "de976a15607bd20d26002baed4eedd0ca9f771b1eb9e0971dadb1e85a2949004"
+  },
+  "initial_stderr_sha256": "cb3822b2e0a75fcd89545b78bf4b76d9583a6eefe825b4897560179329c28fd7",
+  "cpu_log_sha256": "24adda79e21044fef19cdc7f0606a9cd7770fc9a99c705a8622ee923c13bce5d",
+  "change": "Check the complete report URL at each actual origin. Compare every field across processes with only that validated origin removed. Retain both raw response digests.",
+  "pending": [
+    "Device verification of both origin checks and the invariant resource digest"
+  ]
+}

@@ -25,8 +25,15 @@ class DictationProfiles(unittest.TestCase):
         proof = package.read(profiles.PROOF)['sdk']
         row = dict(proof, canceled_run=dict(eval_id='eval_'+'a'*32, run_id='evalrun_'+'b'*32,
                                             status='canceled', foreign_status=404, sha256='c'*64))
-        profiles.check_result(row)
-        profiles.check_result(row, row)
+        base = 'https://127.0.0.1:4567/v1'
+        run = row['canceled_run']
+        row.update(report_url=f"{base}/evals/{run['eval_id']}/runs/{run['run_id']}/report",
+                   wire_sha256='e'*64)
+        profiles.check_result(row, base=base)
+        for changed in (row['report_url'].replace('4567', '4568'), row['report_url'] + '?other=1'):
+            with self.assertRaises(RuntimeError):
+                profiles.check_result(dict(row, report_url=changed), base=base)
+        profiles.check_result(row, row, base=base)
         for group, key, value in [('transcripts', 'webm', 'different'), ('inputs', 'wav', 'd'*64),
                                   ('canceled_run', 'run_id', 'evalrun_'+'d'*32),
                                   ('canceled_run', 'sha256', 'd'*64), ('canceled_run', 'foreign_status', 200),
@@ -34,9 +41,9 @@ class DictationProfiles(unittest.TestCase):
             candidate = copy.deepcopy(row)
             candidate[group][key] = value
             with self.subTest(group=group, key=key), self.assertRaises(RuntimeError):
-                profiles.check_result(candidate, row)
+                profiles.check_result(candidate, row, base=base)
         for i in range(len(row['observations'])):
             candidate = copy.deepcopy(row)
             del candidate['observations'][i]
             with self.subTest(index=i), self.assertRaises(RuntimeError):
-                profiles.check_result(candidate)
+                profiles.check_result(candidate, base=base)

@@ -37,7 +37,7 @@ def prepare(out, build, deployment):
     lifecycle.prepare_candidate(out, build, deployment, RELEASE, reuse.PAGINATION_REVIEWED, KEY, sources)
 
 
-def check_result(row, previous=None):
+def check_result(row, previous=None, *, base):
     fixtures = package.read(PROOF)['fixtures']
     clips = ('wav', 'webm')
     expected = fixtures['expected']
@@ -56,6 +56,9 @@ def check_result(row, previous=None):
                     re.fullmatch(r'[0-9a-f]{64}', run['sha256']) and
                     run['status'] == 'canceled' and run['foreign_status'] == 404,
                     'missing canceled Eval or tenant isolation')
+    report = f"{base}/evals/{run['eval_id']}/runs/{run['run_id']}/report"
+    package.require(row['report_url'] == report and re.fullmatch(r'[0-9a-f]{64}', row['wire_sha256']),
+                    'Eval report does not point at the serving origin and original job')
     if previous is not None:
         package.require(run == previous['canceled_run'], 'recovered Eval changed identity or content')
 
@@ -68,7 +71,7 @@ def exercise(out, params, env, previous=None):
                              stdout=subprocess.PIPE, stderr=err, timeout=160, env=env)
     package.require(run.returncode == 0, 'dictation or Eval client failed')
     row = json.loads(run.stdout)
-    check_result(row, previous)
+    check_result(row, previous, base=params['base'])
     return row
 
 
@@ -95,7 +98,7 @@ def verify(phase, plan, capabilities):
                     and expected['chatkit']['input_transcribe']['configured'],
                     'issued recovery capacity or declared ASR changed')
     previous = package.read(phase.parent/'primary'/RECEIPT) if name == 'light' else None
-    check_result(package.read(phase/RECEIPT), previous)
+    check_result(package.read(phase/RECEIPT), previous, base=f"https://127.0.0.1:{plan['public_port']}/v1")
     inherited = prior['business']['live']['evidence_sha256']
     package.require(COMMON <= inherited.keys() and reuse.PAGINATION_RECEIPT in inherited,
                     'missing issued Assistant pagination evidence')

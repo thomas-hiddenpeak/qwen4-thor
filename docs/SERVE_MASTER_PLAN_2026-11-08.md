@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+第一次主轻交接在比较取消记录的完整摘要时失败。用同一份磁盘记录，分别填入两个服务的真实 TLS 端口，可逐字复算两份原摘要。验收客户端现逐端校验完整报告 URL，保留原始摘要，再比较同一路径和其余全部字段。两个错误地址反例已通过 CPU 验证。[验证记录](evidence/serve-chatkit-composer-20261125/report-origin.json)
+
 客户端可从 chatkit.input_transcribe.configured 得知当前原生 ASR 是否可用。两项 C++ 回归覆盖启用与关闭，55 项配置迁移及交接检查覆盖既有能力、录音身份和取消运行。设备转写至此次构建的协议源差异只有能力声明。下一步在主、轻两套容量中核对实际发现值、同一取消记录和两种音频。[验证记录](evidence/serve-chatkit-composer-20261125/profiles.json)
 
 官方 SDK 签发的会话经原生 HTTPS 发送 WAV 和 WebM/Opus，两次均逐字返回“请查询当前项目版本号。”。音源为有记录的 2.88 秒合成语音，ASR 未收到原文。损坏编码、媒体类型不符、项目密钥和撤销的会话分别返回 400、415、401、401。另一客户 Chat 答 42，模型启动一次，42.302 秒，默认发行保持 rev494。[验证记录](evidence/serve-chatkit-composer-20261125/business.json)

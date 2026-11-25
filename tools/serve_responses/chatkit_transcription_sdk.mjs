@@ -78,11 +78,15 @@ async function canceledRun(previous) {
   assert.equal(stored.id, runId);
   assert.equal(stored.eval_id, evalId);
   await assert.rejects(peer.evals.runs.retrieve(runId, {eval_id: evalId}), err => err.status === 404);
+  const expectedUrl = plan.base + '/evals/' + evalId + '/runs/' + runId + '/report';
+  assert.equal(stored.report_url, expectedUrl);
+  const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+  const resource = {...stored, report_url: new URL(stored.report_url).pathname};
   const record = {eval_id: evalId, run_id: runId, status: stored.status, foreign_status: 404,
-    sha256: createHash('sha256').update(JSON.stringify(stored)).digest('hex')};
+    sha256: digest(resource)};
   if (previous) assert.deepEqual(record, previous);
-  return record;
+  return {canceled_run: record, report_url: stored.report_url, wire_sha256: digest(stored)};
 }
-const handoff = plan.handoff ? {canceled_run: await canceledRun(plan.previous)} : {};
+const handoff = plan.handoff ? await canceledRun(plan.previous) : {};
 process.stdout.write(JSON.stringify({...handoff, sdk: version, transcripts: {wav: wav.text, webm: webm.text},
   inputs: {wav: clips.wav.sha256, webm: clips.webm.sha256}, observations, independent}));
