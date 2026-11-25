@@ -1,0 +1,125 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 488,
+    "version_revision": 173,
+    "profile_revision": 63,
+    "previous_profile_revision": 62,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "7dfb9b72b077da248b1c2ec72f965d6b12f37fcd007a4e64460d19ff945f037c",
+    "fallback": "114408a95582e92e89c9a063bb77081987cc2b3693fc15bd3529f22a2aa13660",
+    "engine": "307515ad581c0c50be1f14beadeed1daa80ccc63330af61cb1af19d37b99387e",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "613023e81511e1169c3246bd4c06c4176b1594cb30b5d1294cf5017fcbbe73ce",
+  "recovery": {
+    "fallback": {
+      "seconds": 134.085,
+      "starts": 2,
+      "recovered": {
+        "sdk": "7.47.0",
+        "eval_id": "eval_dbcac105d3417951c4b04d2bf7a970bc",
+        "run_id": "evalrun_988ab1922022baca4e43fdf93868cdb9",
+        "output": "outputitem_a25347245ef9f573ef0ac6f6fd679908",
+        "model_answer": "157",
+        "scores": [
+          0.9814814814814815,
+          0.9814814814814815,
+          0,
+          0.8518518518518519
+        ],
+        "foreign_status": 404,
+        "independent_chat": "42"
+      },
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "seconds": 262.639,
+      "starts": 2,
+      "recovered": {
+        "sdk": "7.47.0",
+        "eval_id": "eval_eb998cb917260cc6e196974d4cb67448",
+        "run_id": "evalrun_673b73426202eac6b9fa984d68efd47d",
+        "output": "outputitem_d85060acc4985254b9370f16d5794bea",
+        "model_answer": "157",
+        "scores": [
+          0.9814814814814815,
+          0.9814814814814815,
+          0,
+          0.8518518518518519
+        ],
+        "foreign_status": 404,
+        "independent_chat": "42"
+      },
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "licenses": {
+    "wordnet/LICENSE": "e95e845ba95cedf3fb62c96f656ab2d71e4404f3aa84741f1ec2862741965c98",
+    "wordnet/README.md": "97bb7f99cdba513e8a07ea014fb336d6ef64297cd9e885b5b2677465029d41d7",
+    "nltk-porter/LICENSE.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "nltk-porter/README.md": "8dea3dbffdaef73332cd58c073907d544f185a28a7f4c3bc697a1de01e02a13a"
+  },
+  "soak": {
+    "source_commit": "ebf65f4ba487eeec50a29e6fedbb0ce8c9f5e2e5",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/meteor-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/meteor-client-primary-01/bundle",
+      "manifest_sha256": "7dfb9b72b077da248b1c2ec72f965d6b12f37fcd007a4e64460d19ff945f037c"
+    },
+    "revision": 488,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/meteor-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "ff0729a62f5c4c509d3f22ef4a7a0ee00e15878b85d80bbc5116101402f14ede",
+    "handoff_sha256": "6f0f77092ed94b130bef49fb0aa3fcffd6abd157f8ecbdf3b687195854019162",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "method_declarations": {
+    "matched": 217,
+    "required": 231,
+    "remaining": 14
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/meteor-delivery-delivery/plan.json": "14e8840bd235da4aefe87e73bd329973ed2af564bdabba05097044ba5a56fc33",
+    ".q4t-work/serve-responses-agents-20261123/meteor-delivery-delivery/result.json": "3b76e3b817359d6151246e5932cf46272110af9f593a8c98a456762337daf1ab",
+    ".q4t-work/serve-responses-agents-20261123/meteor-delivery-delivery/check.stdout": "2373e464d153f0942b0e12595c14acd4b4a694699908539255ea9e0a5de58606",
+    ".q4t-work/serve-responses-agents-20261123/meteor-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/meteor-delivery-delivery/version-status.stdout": "f140bcd5820e6c04c16016b9b26c3ed90aa5e44c2f7e5fe8b75fb4bade05d95c",
+    ".q4t-work/serve-responses-agents-20261123/meteor-delivery-day.json": "2eed272cf4cd21e9e1e348eef0ed862d71a6f91cb341b53d6aaa8cf8904f26da",
+    ".q4t-work/serve-responses-agents-20261123/meteor-release-methods.json": "322ea18e1ce8cf2a966369dc708e2d43ef13411f39840c43d297bbac47c36cf8",
+    ".q4t-work/serve-responses-agents-20261123/meteor-delivery-maintenance-01/result.json": "0e6bc0dd16175c11ad66c84aedf602fa047c1da02874aaf436b21f45e509bd29",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-evals-20261125/meteor-profiles.json": "9df3b50514a73cdcfa80e5a3aea679a2892cf0a08eb80bec5156152b3c67501f",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-evals-20261125/meteor.json": "d79aa3531c774470c4abb91a71df4b3d26b505332d714df7819a5808dd056136",
+    ".q4t-work/serve-responses-agents-20261123/meteor-maintenance-lease-01/exit.json": "683449bf294a7625ab795aa06b7077b585330d77fde878c6be3a74717358e7f3",
+    ".q4t-work/serve-responses-agents-20261123/meteor-publish-lease-01/exit.json": "c8d89486b277253ec4b794b771b46943cf628127864a3ac0132f7a21b5b629ef",
+    ".q4t-work/serve-responses-agents-20261123/meteor-fallback-lease-01/exit.json": "c0f5839d7e8cdde0d3b470c1ce21f43ed902d978f9d8809bf7dc1f835a5c7231",
+    ".q4t-work/serve-responses-agents-20261123/meteor-fallback-business-01/prepare-run.json": "5d6d2176d8745e24d85b3ba138f0aad058818d76ae83e2676feb4014ca9e869b",
+    ".q4t-work/serve-responses-agents-20261123/meteor-fallback-business-01/restore-run.json": "c9917c475f4309da5bd3af9206c1df59d2b8c4c4446f68ada24f8e1c89c2b9ea",
+    ".q4t-work/serve-responses-agents-20261123/meteor-fallback-business-01/result.json": "0e6ffaa971e2c41e87765bc28c907142663bfcca59d1496db6312374b9abd2aa",
+    ".q4t-work/serve-responses-agents-20261123/meteor-fallback-business-01/interruption.json": "865a2dc3df387a6993816543541d142b5d8c0b754749a725cb0932b9251035fc",
+    ".q4t-work/serve-responses-agents-20261123/meteor-fallback-business-01/chat-after.wire": "cc8b1b8f9a9957f36f4bbb40bb058e3a0191a26072a6e512314dead63295b8f9",
+    ".q4t-work/serve-responses-agents-20261123/meteor-client-fallback-01/origin.json": "8cd29cc80e90d2f0b79fa74071542bdf0b0cdb0866b0a870743ed4c895cbed5c",
+    ".q4t-work/serve-responses-agents-20261123/meteor-client-fallback-01/service.release.json": "82440efa8f5f3b9282448f8630cb28be22ecc066d2273003dfcff51fffd3c48c",
+    ".q4t-work/serve-responses-agents-20261123/meteor-client-fallback-01/service-acceptance.json": "a4bb1b02eb3c7e1a68e75350201a5438591da7f439387c5dd8f6e95d937ba6fd",
+    ".q4t-work/serve-responses-agents-20261123/meteor-primary-lease-01/exit.json": "6ad38b1b60fabdca9d21eae5e5d96efe7185efc3c7eede042a04538847ed8e90",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-meteor-01/prepare-run.json": "ac644bc44aa5c1ff29f66e4d6f8bec87fee3970781c89920ea7e88ad1abb0c37",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-meteor-01/restore-run.json": "8b1d70f76fa9a03a8445fa26d04a2d79018e3925772c16250d2f33b5660dfbe2",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-meteor-01/result.json": "1dc5f08aeeed3d7b05163643beb67612a3b595c82f367fbd48b4ca0c7d1bc356",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-meteor-01/interruption.json": "52e2b833ff5335bee9781921319181c9044918d3268bd0f6ac748c2a716c23ab",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-meteor-01/chat-after.wire": "cb85c8bd7c7545178c65e077630e6d76fc3e1eb23555c389857937b0a58e05e7",
+    ".q4t-work/serve-responses-agents-20261123/meteor-client-primary-01/origin.json": "7d411ddc2a8a7fadf4ab01da94e2e119b9b54439f09fd63b45589139a0ba308f",
+    ".q4t-work/serve-responses-agents-20261123/meteor-client-primary-01/service.release.json": "65e1606586baee5e9c7a7465d48df646300110c86411c354af6e7dd9d2298a70",
+    ".q4t-work/serve-responses-agents-20261123/meteor-client-primary-01/service-acceptance.json": "c9cd76e3cbfd04630df2dacde81794ba850058284b741778521d34b9e3277ac7",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-meteor-01/takeover.json": "021902e50c8610f2271e0d6d0e78997c875ae429f75b8d67d491150788ed406f"
+  }
+}
