@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'input_transcribe' in declared.get('chatkit', {}) or 'chatkit_dictation_handoff' in plan:
+            from tools.serve_responses import chatkit_dictation_profiles
+            profiles[name]['evidence_sha256'].update(chatkit_dictation_profiles.verify(phase, plan, declared))
+            continue
         if 'assistant_pagination_handoff' in plan:
             from tools.serve_responses import assistant_pagination_profiles
             profiles[name]['evidence_sha256'].update(assistant_pagination_profiles.verify(phase, plan, declared))

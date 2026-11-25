@@ -583,6 +583,10 @@ Q4T_TEST(
   Q4T_CHECK(present.Find("transcriptions")->GetBool("configured"));
   for (const auto* capabilities : {&absent, &present}) {
     const auto* transcription = capabilities->Find("transcriptions");
+    const auto* composer = capabilities->Find("chatkit")->Find("input_transcribe");
+    Q4T_CHECK(composer && composer->GetString("operation") == "input.transcribe");
+    Q4T_CHECK(composer->GetBool("configured") ==
+              transcription->GetBool("configured"));
     const auto* remaining = transcription->GetArray("remaining_native_work");
     Q4T_CHECK(remaining && remaining->array.size() == 1 &&
               remaining->array.front().type == Json::Type::kString &&

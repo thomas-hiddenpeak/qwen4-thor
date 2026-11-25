@@ -1,0 +1,40 @@
+{
+  "stage": "targeted_cpu_verified",
+  "issued": false,
+  "source_change_since_device": [
+    "src/server/chat_capabilities.cpp"
+  ],
+  "tests": {
+    "native": 2,
+    "profile": 55,
+    "audit": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 243,
+      "native_routes": 402,
+      "reviewed_source_anchors": 1374,
+      "mutation_checks": 40,
+      "errors": []
+    }
+  },
+  "build": {
+    "engine": "5a1efb607c24879a262da84c8ec6cf0f3458dcb0e3e596113e2353355bdd0393",
+    "ingress": "3fc018c2dcfd69433ddff22ac2b4e99cbba525e72f26d0e56433967f86d92d4a"
+  },
+  "logs": {
+    "discovery-cpu-02.log": "1a9e6e81e54e30c8dd5b9aff134d8570a8230e31f7f53e4d728af9abab59caa7",
+    "targeted-migration-cpu-02.log": "754be261f31d7e407eb3c21be319f1a29d6530526d5a2aa9ad71c836b4de0c91",
+    "discovery-cpu-01.log": "8d4feb17c518c0ea53f6f58b29cb17c77c05ef636fee1e926ad135e994d7fae9",
+    "prepare-01.log": "e4e06158c194e136589461eb5140911694dccbc19294dbcd95200f9e4bc54532"
+  },
+  "setup": [
+    "The first partial test link selected an entry point that referenced additional host fixtures. The successful link used the same-project test runner without those optional modes.",
+    "The first preflight required a tracked worker manifest missing from the sparse checkout; it was restored from Git."
+  ],
+  "pending": [
+    "Actual configured discovery, Chinese speech and canceled Eval across primary and light capacities",
+    "Managed delivery and rollback"
+  ]
+}

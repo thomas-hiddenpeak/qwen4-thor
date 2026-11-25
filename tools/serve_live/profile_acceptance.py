@@ -244,6 +244,9 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
+        if 'chatkit_dictation_handoff' in self.plan:
+            from tools.serve_responses import chatkit_dictation_profiles
+            chatkit_dictation_profiles.business(self, capabilities)
         if 'assistant_pagination_handoff' in self.plan:
             from tools.serve_responses import assistant_pagination_profiles
             assistant_pagination_profiles.business(self, capabilities)
