@@ -491,7 +491,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 candidate.chat.async_tool_call_ids,
                 candidate.chat.responses_tool_media,
                 candidate.chat.HeaderTools(), candidate.chat.tool_call_formats,
-                candidate.chat.prepared_source_data);
+                candidate.chat.prepared_source_data,
+                candidate.chat.compress_images);
             if (!measured) return measured;
             std::vector<uint32_t> tokens;
             ChatPromptBudget budget;
@@ -878,7 +879,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         &planning_error.code, api_cache ? &prompt_layout : nullptr, false,
         request_plan.async_tool_call_ids, request_plan.responses_tool_media,
         request_plan.HeaderTools(), request_plan.tool_call_formats,
-        request_plan.prepared_source_data);
+        request_plan.prepared_source_data, request_plan.compress_images);
   if (!s) {
     SendError(fd, 400, s.message(), {}, planning_error.code,
               planning_error.param);
@@ -988,7 +989,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         candidate_req, candidate.chat.constraints, &text, &media, &error->param,
         &error->code, nullptr, false, candidate.chat.async_tool_call_ids,
         candidate.chat.responses_tool_media, candidate.chat.HeaderTools(),
-        candidate.chat.tool_call_formats, candidate.chat.prepared_source_data);
+        candidate.chat.tool_call_formats, candidate.chat.prepared_source_data,
+        candidate.chat.compress_images);
     std::vector<uint32_t> tokens;
     ChatPromptBudget budget;
     auto config = planning_config;
@@ -1032,7 +1034,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         step_request, step.constraints, &prompt, &items, &planning_error.param,
         &planning_error.code, api_cache ? &prompt_layout : nullptr, false,
         step.async_tool_call_ids, step.responses_tool_media, step.HeaderTools(),
-        step.tool_call_formats, step.prepared_source_data);
+        step.tool_call_formats, step.prepared_source_data,
+        step.compress_images);
     if (status) {
       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer, cancelled);
       if (!lock.owns_lock())

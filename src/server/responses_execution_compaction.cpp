@@ -153,11 +153,13 @@ std::string ResponsesExecution::ResultJson() const {
   if (!plan_.finished || !compaction_completed_ ||
       snapshot.GetString("status") != "completed")
     throw std::logic_error("Compact result is not committed");
-  return OutputJson(
-      ResponsesPublicValue(Object({{"id", *snapshot.Find("id")},
-                                   {"object", String("response.compaction")},
-                                   {"created_at", *snapshot.Find("created_at")},
-                                   {"output", compaction_window_},
-                                   {"usage", *snapshot.Find("usage")}})));
+  auto resource = Object({{"id", *snapshot.Find("id")},
+                          {"object", String("response.compaction")},
+                          {"created_at", *snapshot.Find("created_at")},
+                          {"output", compaction_window_},
+                          {"usage", *snapshot.Find("usage")}});
+  if (const auto* image = snapshot.Find("image"))
+    Set(&resource, "image", *image);
+  return OutputJson(ResponsesPublicValue(std::move(resource)));
 }
 }  // namespace q4t::server

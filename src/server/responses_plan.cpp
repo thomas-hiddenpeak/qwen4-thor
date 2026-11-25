@@ -134,6 +134,50 @@ Status Reasoning(const Json& request, ResponsesEnvelope* result,
   return {};
 }
 
+// The native model normally preserves a single image's detail. For multiple
+// images in the same request, auto shares the visual context budget.
+bool MultipleImages(const Json& request) {
+  const auto* input = request.GetArray("input");
+  if (!input) return false;
+  size_t images = 0;
+  for (const auto& item : input->array) {
+    const auto* parts = item.GetArray("content");
+    if (!parts || item.GetString("role") != "user") continue;
+    for (const auto& part : parts->array) {
+      if (part.GetString("type") == "input_image" && ++images > 1) return true;
+    }
+  }
+  return false;
+}
+
+Status ImageOptions(const Json& request, bool media, ResponsesEnvelope* result,
+                    ChatPlanError* error) {
+  std::string policy = "auto";
+  if (const auto* image = request.Find("image")) {
+    auto status =
+        InputFields(*image, {"context_compression"}, &error->param, "image");
+    if (!status) return status;
+    if (const auto* field = image->Find("context_compression")) {
+      if (!field->IsString() ||
+          !OneOf(field->str, {"auto", "enabled", "disabled"}))
+        return Invalid(error, "image.context_compression",
+                       "invalid image context policy");
+      policy = field->str;
+    }
+  }
+  if (policy == "enabled" && !media)
+    return Invalid(error, "image.context_compression",
+                   "image compression requires a vision-enabled deployment");
+  result->compress_images =
+      media &&
+      (policy == "enabled" || (policy == "auto" && MultipleImages(request)));
+  if (request.Has("image") || result->compress_images)
+    Set(&result->options, "image",
+        Object({{"context_compression",
+                 String(result->compress_images ? "enabled" : "disabled")}}));
+  return {};
+}
+
 Status TextOptions(const Json& request, ResponsesEnvelope* result,
                    ChatPlanError* error) {
   auto format = Object({{"type", String("text")}});
@@ -255,12 +299,12 @@ Status NormalizeResponsesCompactRequest(const io::Json& request,
                                         io::Json* normalized,
                                         ChatPlanError* error) {
   *error = {};
-  auto status =
-      InputFields(request,
-                  {"model", "input", "instructions", "previous_response_id",
-                   "prompt_cache_key", "prompt_cache_options",
-                   "prompt_cache_retention", "service_tier"},
-                  &error->param, "");
+  auto status = InputFields(
+      request,
+      {"model", "input", "image", "instructions", "previous_response_id",
+       "prompt_cache_key", "prompt_cache_options", "prompt_cache_retention",
+       "service_tier"},
+      &error->param, "");
   if (!status) return status;
   if (!request.Has("model"))
     return Invalid(error, "model", "compact requires a model field");
@@ -292,6 +336,7 @@ Status ParseResponsesEnvelope(const io::Json& request,
                              "context_management",
                              "conversation",
                              "include",
+                             "image",
                              "input",
                              "instructions",
                              "max_output_tokens",
@@ -522,6 +567,8 @@ Status ParseResponsesEnvelope(const io::Json& request,
                            &result.options, error);
   if (!status) return status;
   result.multi_agent_beta = config.responses_multi_agent;
+  status = ImageOptions(request, config.allow_media, &result, error);
+  if (!status) return status;
   *envelope = std::move(result);
   return {};
 }
@@ -768,6 +815,7 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
     OptionErrorParam(error);
     return status;
   }
+  result.chat.compress_images = envelope.compress_images;
   result.chat.prepared_source_data =
       envelope.prepared_file_media ||
       (envelope.mcp_content.IsObject() && !envelope.mcp_content.object.empty()) ||

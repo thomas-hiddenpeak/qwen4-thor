@@ -503,6 +503,13 @@ def schema(graph):
 
     # output_text is added by the SDK after parsing; it is not a wire field.
     response = root('response')
+    image_policy = 'context_compression'
+    definitions['image_options'] = obj({image_policy: dict(enum=['auto', 'enabled', 'disabled'], default='auto')})
+    definitions['resolved_image_options'] = obj({image_policy: dict(enum=['enabled', 'disabled'])}, [image_policy])
+    for name in ('response_create', 'response_compact'):
+        root(name)['properties']['image'] = ref('image_options')
+    for name in ('response', 'compacted_response'):
+        root(name)['properties']['image'] = ref('resolved_image_options')
     response['required'].remove('output_text')
     response['properties']['store'] = dict(type='boolean')
     # Native auxiliary classification is separately disclosed and charged to

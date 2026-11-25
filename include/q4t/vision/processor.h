@@ -27,7 +27,9 @@
 namespace q4t {
 namespace vision {
 
-enum class ImageDetail { kAuto, kLow, kHigh, kOriginal };
+// kCompressedHigh is selected by the request planner after public detail
+// validation. The original four values also identify existing media cache keys.
+enum class ImageDetail { kAuto, kLow, kHigh, kOriginal, kCompressedHigh };
 
 // Processor config (from preprocessor_config.json).
 struct ProcessorConfig {

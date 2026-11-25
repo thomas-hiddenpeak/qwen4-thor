@@ -11,6 +11,8 @@
 #include "q4t/server/output_schema.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/token_logprobs.h"
+#include "q4t/server/responses_output.h"
+#include "q4t/vision/media_plan.h"
 #include "q4t/test.h"
 
 namespace {
@@ -85,6 +87,77 @@ Q4T_TEST(responses_plan_input_type_and_nullable_compact_adapter) {
             !normalized.Has("prompt_cache_options"));
   Q4T_CHECK(ParseResponsesEnvelope(normalized, Config(), &envelope, &error));
   Q4T_CHECK(envelope.options.GetString("model") == "base");
+  return true;
+}
+
+Q4T_TEST(responses_image_context_drives_geometry_and_preserves_detail_history) {
+  using namespace q4t::vision;
+  auto config = Config();
+  config.allow_media = true;
+  const std::string uri =
+      "data:image/png;base64,"
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAA"
+      "DElEQVR4nGNgYPgPAAEDAQAIicLsAAAAAElFTkSuQmCC";
+  auto input =
+      Read(std::string(R"([{"role":"user","content":[)") +
+           R"({"type":"input_image","detail":"auto","image_url":")" + uri +
+           R"("},{"type":"input_image","detail":"high","image_url":")" + uri +
+           R"("},{"type":"input_image","detail":"original","image_url":")" +
+           uri + R"("}]}])");
+  const auto saved = OutputJson(input);
+  ChatPlanError error;
+  ResponsesEnvelope env;
+  std::vector<uint64_t> token_counts;
+  for (const auto policy : {"disabled", "enabled", "auto"}) {
+    auto request = Read(
+        std::string(R"({"model":"base","image":{"context_compression":")") +
+        policy + R"("}})");
+    request.object.emplace_back("input", input);
+    Q4T_CHECK(ParseResponsesEnvelope(request, config, &env, &error));
+    const bool enabled = std::string_view(policy) != "disabled";
+    Q4T_CHECK(env.compress_images == enabled);
+    ResponsesGenerationPlan plan;
+    Q4T_CHECK(PrepareResponsesGeneration(env, input, config, &plan, &error));
+    Q4T_CHECK(OutputJson(*env.request.Find("input")) == saved);
+    std::string prompt;
+    std::vector<VisionItem> items;
+    Q4T_CHECK(PrepareChatPrompt(plan.generation_request, plan.chat.constraints,
+                                &prompt, &items, &error.param, &error.code,
+                                nullptr, false, {}, true, nullptr, {}, false,
+                                plan.chat.compress_images));
+    Q4T_CHECK(items.size() == 3 && items[2].detail == ImageDetail::kOriginal);
+    Q4T_CHECK(items[0].detail ==
+              (enabled ? ImageDetail::kLow : ImageDetail::kAuto));
+    Q4T_CHECK(items[1].detail ==
+              (enabled ? ImageDetail::kCompressedHigh : ImageDetail::kHigh));
+    ProcessorConfig processor;
+    processor.max_pixels = 4096 * 4096;
+    uint64_t total = 0;
+    for (const auto& item : items) {
+      MediaGeometry geom;
+      Q4T_CHECK(PlanMediaGeometry(MediaKind::kImage, 1536, 1536, 1, processor,
+                                  &geom, item.detail));
+      total += geom.merged_tokens;
+    }
+    token_counts.push_back(total);
+    ResponsesOutput response;
+    Q4T_CHECK(response.Init(env.options, "resp_image", 1));
+    Q4T_CHECK(response.Snapshot().Find("image")->GetString(
+                  "context_compression") == (enabled ? "enabled" : "disabled"));
+  }
+  Q4T_CHECK(token_counts[0] > token_counts[1] &&
+            token_counts[1] == token_counts[2]);
+  for (const auto invalid : {"null", "false", R"({"unknown":true})",
+                             R"({"context_compression":null})",
+                             R"({"context_compression":"low"})"}) {
+    Q4T_CHECK(!ParseResponsesEnvelope(
+        Read(std::string(R"({"input":"x","image":)") + invalid + "}"), config,
+        &env, &error));
+    Q4T_CHECK(error.param.starts_with("image"));
+  }
+  Q4T_CHECK(!ParseResponsesEnvelope(
+      Read(R"({"input":"x","image":{"context_compression":"enabled"}})"),
+      Config(), &env, &error));
   return true;
 }
 

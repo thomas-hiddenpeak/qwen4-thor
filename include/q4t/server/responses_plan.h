@@ -23,6 +23,7 @@ struct ResponsesEnvelope {
   bool stream = false;
   bool store = true;
   bool background = false;
+  bool compress_images = false;
   bool multi_agent_beta = false;
   bool obfuscation = true;
   bool logprobs = false;
