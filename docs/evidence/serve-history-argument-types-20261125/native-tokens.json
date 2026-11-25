@@ -1,0 +1,1521 @@
+{
+  "native_planner_rows": 43,
+  "retained_media_sources_excluded": [
+    "assistant.audio_reference",
+    "user.audio",
+    "user.combined_file_audio_image",
+    "user.file",
+    "user.image"
+  ],
+  "token_comparison": "C++ checkpoint tokenizer vs independent Python tokenizers on actual rendered bytes",
+  "native_probe": "07b798216a3db0af601bfd3df4bc00e96cd554920b8292c436fda0250a5da7dd",
+  "checkpoint_tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+  "rows": [
+    {
+      "name": "system.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "system",
+            "content": "x"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "ff50da01b841d17b3bf9300eddeb0f6ce6906074adc649a2311f6a641223cb7d",
+      "ids_sha256": "1ea2f8c112fea7f9ff728a5c59fe4ea40b18a5a84bafcf2122284ea235a1a943",
+      "tokens": 100
+    },
+    {
+      "name": "system.string.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "system",
+            "content": "x",
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "879c3dcdadfaa359ace8d9d62020b66c5954df64ebd4a79458a264bd20dbfd14",
+      "ids_sha256": "e1a2f301657a6387b6afa61c504fd0aa1ce0b189c247f2cf6a4d29fc38d011a8",
+      "tokens": 104
+    },
+    {
+      "name": "system.text",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "3d552c64069e98786c53d0153104d6b01a24ee93aa40fc16b51d06423789e8c2",
+      "ids_sha256": "3e469030ff5823a2051b77cc281d4475209264da53e938c54e90ce654c533d0a",
+      "tokens": 101
+    },
+    {
+      "name": "system.text.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ],
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "6ef26fecd324dd8174c312064353a0709d5efa62ec137482736f4858ad62d030",
+      "ids_sha256": "a3208daafb0c8930bb44bf4bcba66b09807172ecda548a73d683a7b631aca587",
+      "tokens": 105
+    },
+    {
+      "name": "system.two_text",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              },
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "37dc928e5195c007b2a2e0419fbd61db04e6672d7ddcbb74817741cacd4b55ee",
+      "ids_sha256": "9f2260586327d875d98f084a93c2b840bdcd6c19169e4867f845ab716814c22c",
+      "tokens": 103
+    },
+    {
+      "name": "system.two_text.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "system",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              },
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ],
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "e7bd2d9ad9572d9eb902bbf75a67177ef3f8135903377775703c1ba59d12c55e",
+      "ids_sha256": "c1ad2a45cd86b8d8725f2cf941c731021ae91553085cab2ef06962e24511e7b0",
+      "tokens": 107
+    },
+    {
+      "name": "developer.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "developer",
+            "content": "x"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "ff50da01b841d17b3bf9300eddeb0f6ce6906074adc649a2311f6a641223cb7d",
+      "ids_sha256": "1ea2f8c112fea7f9ff728a5c59fe4ea40b18a5a84bafcf2122284ea235a1a943",
+      "tokens": 100
+    },
+    {
+      "name": "developer.string.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "developer",
+            "content": "x",
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "879c3dcdadfaa359ace8d9d62020b66c5954df64ebd4a79458a264bd20dbfd14",
+      "ids_sha256": "e1a2f301657a6387b6afa61c504fd0aa1ce0b189c247f2cf6a4d29fc38d011a8",
+      "tokens": 104
+    },
+    {
+      "name": "developer.text",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "developer",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "3d552c64069e98786c53d0153104d6b01a24ee93aa40fc16b51d06423789e8c2",
+      "ids_sha256": "3e469030ff5823a2051b77cc281d4475209264da53e938c54e90ce654c533d0a",
+      "tokens": 101
+    },
+    {
+      "name": "developer.text.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "developer",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ],
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "6ef26fecd324dd8174c312064353a0709d5efa62ec137482736f4858ad62d030",
+      "ids_sha256": "a3208daafb0c8930bb44bf4bcba66b09807172ecda548a73d683a7b631aca587",
+      "tokens": 105
+    },
+    {
+      "name": "developer.two_text",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "developer",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              },
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "37dc928e5195c007b2a2e0419fbd61db04e6672d7ddcbb74817741cacd4b55ee",
+      "ids_sha256": "9f2260586327d875d98f084a93c2b840bdcd6c19169e4867f845ab716814c22c",
+      "tokens": 103
+    },
+    {
+      "name": "developer.two_text.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "developer",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              },
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ],
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "e7bd2d9ad9572d9eb902bbf75a67177ef3f8135903377775703c1ba59d12c55e",
+      "ids_sha256": "c1ad2a45cd86b8d8725f2cf941c731021ae91553085cab2ef06962e24511e7b0",
+      "tokens": 107
+    },
+    {
+      "name": "user.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "user",
+            "content": "x"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "9e14523cbcfe3a19192e363772a2edcd10781cdab64881d20dff810ccff4ca11",
+      "ids_sha256": "449fe24d17614b4fa13268d3aae7b290a7c9879eaf608922d98a0eca90e70329",
+      "tokens": 100
+    },
+    {
+      "name": "user.string.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "user",
+            "content": "x",
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "88656cbce2ac32bf79723e434884be1b7da369622ae82037469dcee8db68ba80",
+      "ids_sha256": "1569ef94d3b72bcea26dc4486acae26dd40e279b2795484ac2db4647c9a4b641",
+      "tokens": 104
+    },
+    {
+      "name": "user.text",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "bf97a4f6c87c3bb115b1095fd06670462d7f06c65952b3e701216b4fcea4b33d",
+      "ids_sha256": "692d5cf4d7c7916a5f59c76d959d81f399fad771ab7be2fc249364481b3c940b",
+      "tokens": 101
+    },
+    {
+      "name": "user.text.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ],
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "71a2e3bbf4bd783141dc9d1b01518f46515ed2a266e72211de6f72383a60aaa5",
+      "ids_sha256": "39bc020744db8ad517d5926b17a3b59f34d052fe15d90e4a9c060d3cd997ac68",
+      "tokens": 105
+    },
+    {
+      "name": "user.two_text",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              },
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "76ec9e5fabae654f2492a4af072d06036d5dac218bad42c0ac567e050e271f93",
+      "ids_sha256": "76a69dd3e587858557c210e57aad1aa726572a0eb3470d97c26c8dedee526e94",
+      "tokens": 103
+    },
+    {
+      "name": "user.two_text.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              },
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ],
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "ebabf907b7192ae9c409f4a9a9efd151e1be9a9384768260bd5fa10453f62572",
+      "ids_sha256": "649c22572c4e0f39ff6441b6015daa69002c32006266a393962aa6f3e5417123",
+      "tokens": 107
+    },
+    {
+      "name": "assistant.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": "x"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "2648dc3c71cc94eb17eee6a1847de3c2e22452a27da65202adb3c1dfcf1e5732",
+      "ids_sha256": "c4a7e4a5eddd17f9f949de69baa850ec6429b55db896b0985416c367dbac44ce",
+      "tokens": 104
+    },
+    {
+      "name": "assistant.string.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": "x",
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "3aab09042484e76aabf11e15a5b4dbccd4f67b3c1d5a1bf9bcf7660f493b0a85",
+      "ids_sha256": "4ce642b671935b77f151b263dfd0800911d2ad6e7fb0874efc5bcb2f70047e24",
+      "tokens": 108
+    },
+    {
+      "name": "assistant.text",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "0bc2dcefad59dbed6584559787ab9ec13e9ed0114ffecc3e1df46b45f449a5f6",
+      "ids_sha256": "02385f2451c762f1ecab133d20b266ddfd99ebdab6a8fbb4bcd5a811ff46e436",
+      "tokens": 105
+    },
+    {
+      "name": "assistant.text.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ],
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "1398024eb1cea2c8b66e1b57ee7e764784e0ecd9e0625efdf12ee942eada9ac6",
+      "ids_sha256": "a9759654eee97dc1814d0f067b10cbd10c7fec1eff767407a8f0b2cd0ed817ef",
+      "tokens": 109
+    },
+    {
+      "name": "assistant.two_text",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              },
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "0ed29b6bc05d0c74b1048950df3558afb7d6bec5238e7234eaaf8b8325c41cd3",
+      "ids_sha256": "5829f503f1d5389c983a60ab33aa34c53f13dd43ede03755a1aad5516657eed8",
+      "tokens": 107
+    },
+    {
+      "name": "assistant.two_text.named",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              },
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ],
+            "name": "发布"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "d9e4dfeab7569daeea1a6bb88bfc3caafe16c597898524d042683851625484ba",
+      "ids_sha256": "712f4706e1f5b2bd7d01831e7e476d9ff536af472654de496b3c89530538b167",
+      "tokens": 111
+    },
+    {
+      "name": "assistant.refusal_part",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "refusal",
+                "refusal": "cannot complete"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "dad12d4b3566642dd713cbf91d7a01e3db800cae844cd007cec248b028b7b5dd",
+      "ids_sha256": "26cc4c72e0def8d8ff4a667917a890fe015cba751e10b43599a03e97d89f2a98",
+      "tokens": 105
+    },
+    {
+      "name": "assistant.refusal_field",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "refusal": "cannot complete"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "dad12d4b3566642dd713cbf91d7a01e3db800cae844cd007cec248b028b7b5dd",
+      "ids_sha256": "26cc4c72e0def8d8ff4a667917a890fe015cba751e10b43599a03e97d89f2a98",
+      "tokens": 105
+    },
+    {
+      "name": "assistant.parallel_custom_function",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call_one",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"subject\":\"scope\"}"
+                }
+              },
+              {
+                "id": "call_c",
+                "type": "custom",
+                "custom": {
+                  "name": "raw_input",
+                  "input": "select"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_c",
+            "content": "found"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_one",
+            "content": "found"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "4602f0aba4c8e0979139293e9b47842ae32368b0a10fec8593eba81cde47dc6a",
+      "ids_sha256": "7ffdb27da717603867e12797213c2f4ffee9c3c1b078dd1946b5333d64606e97",
+      "tokens": 172
+    },
+    {
+      "name": "assistant.tool_missing_content",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "id": "call_one",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"subject\":\"scope\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_one",
+            "content": "found"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "d793e0521c19cadc15e2b8e859a5a1d92883ca3240cdc0d2c075ab15c597cd5a",
+      "ids_sha256": "8b801fbde655a626191e16a80047a28c4f87822c08465fdec95c1f516b613ae1",
+      "tokens": 138
+    },
+    {
+      "name": "assistant.tool_null_content",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call_one",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"subject\":\"scope\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_one",
+            "content": "found"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "d793e0521c19cadc15e2b8e859a5a1d92883ca3240cdc0d2c075ab15c597cd5a",
+      "ids_sha256": "8b801fbde655a626191e16a80047a28c4f87822c08465fdec95c1f516b613ae1",
+      "tokens": 138
+    },
+    {
+      "name": "assistant.custom",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call_c",
+                "type": "custom",
+                "custom": {
+                  "name": "raw_input",
+                  "input": "select"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_c",
+            "content": "found"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "034f9ec18c567561e605ad372609abe11f1f023f94e3129cd440602ac09af1b1",
+      "ids_sha256": "da75f1103184bffc3c4beb586885db56957e5d5dfc4943168ff3f8dbfefb39ad",
+      "tokens": 140
+    },
+    {
+      "name": "tool.two_text",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "id": "call_one",
+                "type": "function",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"subject\":\"scope\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_one",
+            "content": [
+              {
+                "type": "text",
+                "text": "history message"
+              },
+              {
+                "type": "text",
+                "text": "history message"
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "821481480addb51178cacfce22de3f1ead4e925ca3ab1b15f8714b002f81534b",
+      "ids_sha256": "280cbdd013e6d7e23bbab994a0614963e145433acb2df63dd0c9cc7777194386",
+      "tokens": 141
+    },
+    {
+      "name": "function.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "function_call": {
+              "name": "lookup",
+              "arguments": "{\"subject\":\"scope\"}"
+            }
+          },
+          {
+            "role": "function",
+            "name": "lookup",
+            "content": "found"
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "ec64b5aa6df002008290b9c50d237f33d6ec038a20635a378e42708c74f9e234",
+      "ids_sha256": "710f88b45c2b7af710f80c5f0909b20180f85d0c8505002bc7ac5969addbad3e",
+      "tokens": 143
+    },
+    {
+      "name": "function.null",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "read the project scope"
+          },
+          {
+            "role": "assistant",
+            "function_call": {
+              "name": "lookup",
+              "arguments": "{\"subject\":\"scope\"}"
+            }
+          },
+          {
+            "role": "function",
+            "name": "lookup",
+            "content": null
+          },
+          {
+            "role": "user",
+            "content": "read the project scope"
+          }
+        ]
+      },
+      "prompt_sha256": "85f4a31fa3809ec2acaa8a8a39f93283ed9a3aa5a7710a5b63d13ff7f25eba01",
+      "ids_sha256": "320961cc23bfc6a3999522c1d52e10a3b9a3e1690eae216dde2e4690bfcc2ac7",
+      "tokens": 141
+    },
+    {
+      "name": "typed.0.json",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": null}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "7a3e73186849f710783f9bc1c9c03d7bb5c25fdfb4f993f38b0122f0ae8be729",
+      "ids_sha256": "4214b2902c5d6f6aac3e1e3f6fb923a1c6fbc548f5ae403b50617a2d6adef3b5",
+      "tokens": 132
+    },
+    {
+      "name": "typed.0.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": \"null\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "c2d13888eedba9e3593b4ec8ab4d94e0e1baac952241f124d96889df37928436",
+      "ids_sha256": "b03ed0bcb419381786535a0af28eb2ea25e1ff8f3b7b57b6e938af1a85266050",
+      "tokens": 132
+    },
+    {
+      "name": "typed.1.json",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": true}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "011e2b5d7b783ba4977506a53b2e345a327979ea6f44f390696494f72a52d8bd",
+      "ids_sha256": "fe405fec03720018d4c6c762a683f363b178e6b5d938a7242ac8ae54fa4d8752",
+      "tokens": 132
+    },
+    {
+      "name": "typed.1.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": \"true\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "2d75e523b730c067af7d52bb48e434e5eedbcd659c3b09f3674561e4592e2dd2",
+      "ids_sha256": "3f4a35aa1e6ce554ff1c8715f147b0eb9d56989a79ec372f6619ed5221446989",
+      "tokens": 132
+    },
+    {
+      "name": "typed.2.json",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": 10}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "951161862957288b0b023e91b0b346584fb965757ec7f58f2229f317ea5c919a",
+      "ids_sha256": "808164995167c89a943672088d04700eb23852cb377f239160ac623d8328426c",
+      "tokens": 133
+    },
+    {
+      "name": "typed.2.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": \"10\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "2a44776a98668cf85e42e77e58a0a0257d3fab25d45e65db302caf463a2dc382",
+      "ids_sha256": "eb70604670191e7605b687736853d676c5e4acea03653bfc6ac19286eb07d6e5",
+      "tokens": 133
+    },
+    {
+      "name": "typed.3.json",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": [1]}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "dd2602885c1a7c4fff714cd97b3ed9e3166ffe919f05f8d389487cd253043009",
+      "ids_sha256": "97c573c18692b807318bad2ced975f5c5b9e2d26760412ef3568ac2554d43102",
+      "tokens": 134
+    },
+    {
+      "name": "typed.3.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": \"[1]\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "49db913ed41ffb4c77e6d87c1fb0e79bb69230868dfa37627fc690a3cf9a31fe",
+      "ids_sha256": "667826fa68aeeacc2a91ceba54225404c3e8dbb12fb823eacb3ba0689c475dfd",
+      "tokens": 134
+    },
+    {
+      "name": "typed.4.json",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": {\"x\": 1}}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "7757113f840d8172fa8e55f08395aafb5ca2be6f06e16f6a4789c64af95ede34",
+      "ids_sha256": "ce7e22cdd917a8ec4c32b55846fcba5810a0885ed8f88f7d5afa88bdf4ffa362",
+      "tokens": 137
+    },
+    {
+      "name": "typed.4.string",
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Read the stored project record."
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "id": "call_scope",
+                "function": {
+                  "name": "lookup",
+                  "arguments": "{\"selector\": \"{\\\"x\\\": 1}\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_scope",
+            "content": "project record"
+          }
+        ]
+      },
+      "prompt_sha256": "424b42d5f3b53c0bdd0ec22f238d64c07d70e707c66e5f662f528986f8062918",
+      "ids_sha256": "11491d5c2f6e7fbf2b8635b7f5b2c0fcc892c108d728ce7c67c4f2a6740c2a9e",
+      "tokens": 138
+    }
+  ],
+  "survey": {
+    "contract_method": "POST /v1/chat/completions",
+    "accepted": 38,
+    "rows": {
+      "system.string": {
+        "official": true,
+        "issued": true
+      },
+      "system.string.named": {
+        "official": true,
+        "issued": true
+      },
+      "system.text": {
+        "official": true,
+        "issued": true
+      },
+      "system.text.named": {
+        "official": true,
+        "issued": true
+      },
+      "system.two_text": {
+        "official": true,
+        "issued": true
+      },
+      "system.two_text.named": {
+        "official": true,
+        "issued": true
+      },
+      "developer.string": {
+        "official": true,
+        "issued": true
+      },
+      "developer.string.named": {
+        "official": true,
+        "issued": true
+      },
+      "developer.text": {
+        "official": true,
+        "issued": true
+      },
+      "developer.text.named": {
+        "official": true,
+        "issued": true
+      },
+      "developer.two_text": {
+        "official": true,
+        "issued": true
+      },
+      "developer.two_text.named": {
+        "official": true,
+        "issued": true
+      },
+      "user.string": {
+        "official": true,
+        "issued": true
+      },
+      "user.string.named": {
+        "official": true,
+        "issued": true
+      },
+      "user.text": {
+        "official": true,
+        "issued": true
+      },
+      "user.text.named": {
+        "official": true,
+        "issued": true
+      },
+      "user.two_text": {
+        "official": true,
+        "issued": true
+      },
+      "user.two_text.named": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.string": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.string.named": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.text": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.text.named": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.two_text": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.two_text.named": {
+        "official": true,
+        "issued": true
+      },
+      "user.image": {
+        "official": true,
+        "issued": true
+      },
+      "user.audio": {
+        "official": true,
+        "issued": true
+      },
+      "user.file": {
+        "official": true,
+        "issued": true
+      },
+      "user.combined_file_audio_image": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.refusal_part": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.refusal_field": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.audio_reference": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.parallel_custom_function": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.tool_missing_content": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.tool_null_content": {
+        "official": true,
+        "issued": true
+      },
+      "assistant.custom": {
+        "official": true,
+        "issued": true
+      },
+      "tool.two_text": {
+        "official": true,
+        "issued": true
+      },
+      "function.string": {
+        "official": true,
+        "issued": true
+      },
+      "function.null": {
+        "official": true,
+        "issued": true
+      }
+    },
+    "official_openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "package_openapi_sha256": "3740e9282c89f12abf460d0353a8fe6b6e7c4af735ad9a3a2548beede0ae55be"
+  },
+  "native_source": "21be4d34cccb0c2ed35944e4c5b97664b4b5199b099876ffd4762c5b41b3ce7c",
+  "renderer_source": "b49990fcc0e45e19ad18dc411e28bf4d05e640d0a8318ef30a0083bd725aba52",
+  "method": "Feed each request to q4t_preflight_probe with include_prompt and include_token_ids. Hash the UTF-8 prompt, encode it independently using the recorded checkpoint and tokenizers.Tokenizer.encode with add_special_tokens=False, compare every token and hash the JSON integer list encoded by Python json.dumps.",
+  "gpu_starts": 0,
+  "scope": "33 text and history message forms and five pairs of typed arguments entered the native production planner. For the five media-dependent message forms only the two request schemas were evaluated here."
+}

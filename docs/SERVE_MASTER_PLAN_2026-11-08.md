@@ -1,5 +1,21 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+管理员只读检查已确认 rev502 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev502-preflight.json)
+
+同一 Guardian 在模型退出后重新启动服务；主网关失效后，一次探测切到已登记的独立包。两次故障后均取回原始调用 ID 与参数，JSON 和 SSE 均区分空值与字符串，独立 Chat 答 42。默认版本已停在 rev502，发布保护的 13 份记录保持一致，24 小时交接预检通过。[验证记录](evidence/serve-history-argument-types-20261125/delivery.json)
+
+两次候选启动都在首个模型启动前失败。相同登记的独立 CPU 校验用时 30.74 秒，超过 Guardian 的 30 秒事务时限。一次登记内只复用内容相同且已通过的历史证明后，用时 8.41 秒，许可摘要相同。24 项登记与恢复测试通过。下一步重新封包，按原时限验证实际启动和网关接管。[验证记录](evidence/serve-history-argument-types-20261125/registration-startup.json)
+
+主配置发出空值和同形字符串两次工具调用；轻配置取回前一配置持久化的两条记录，用同一调用 ID 和原始参数重新回答。两次启动中 JSON、SSE 以及客户隔离均通过，留下已发行的 rev500 恢复前驱。下一步验证故障接管与可回退发布。[验证记录](evidence/serve-history-argument-types-20261125/profiles.json)
+
+53 项 CPU 检查通过。覆盖两份发行前驱的复原、拒绝串换类型与会话、错误资料计数，以及未审查配置不可登记。下一步由轻配置读取主配置已保存的两段工具历史并回放。[验证记录](evidence/serve-history-argument-types-20261125/profiles.json)
+
+模型经官方 Node SDK 两次发出项目资料查询，参数分别是空值和字符串 null。去掉工具声明并回填同一条真实资料后，JSON 和流式回答均给出正确类型及 157 条路径。持久化消息保留原始参数，跨客户读取返回 404。下一步核验两种恢复容量接管同一历史。[验证记录](evidence/serve-history-argument-types-20261125/business.json)
+
+43 次生产 CPU 预检使用了实际模型词表。33 种文本与历史消息完成规划和逐 token 独立对照，五对参数在去掉工具定义后均得到不同的 token 序列。额外五种依赖实际媒体的形状只比对了两套请求 schema。下一步经 HTTPS 执行真实资料工具并读取保存的历史。[验证记录](evidence/serve-history-argument-types-20261125/native-tokens.json)
+
+对五组仅类型不同的历史参数做了实际模板对照。缺少工具定义时，旧实现把字符串与同形的空值、布尔值、数字、数组和对象各渲染成相同字节。关闭额外字段的字符串 schema 下，历史错类型值也会与正确值重合。修复后每对均可区分，普通字符串、精确小数和旧格式对照同步通过。工具历史套件旧版 16/17、候选 17/17。下一步通过实际 HTTP 回放验证模型处理。[验证记录](evidence/serve-history-argument-types-20261125/cpu.json)
+
 PR 检查中，对象回收发生预期中断后，新的存储进程仍被夹具限制在 250 毫秒内完成只读恢复，导致超时。现只对注入中断的操作设置短时限，并断言恰好留下一条未回收记录。针对性主机用例连续三次通过。等待当前提交的远程检查。[验证记录](evidence/serve-video-track-selection-20261125/retention-ci.json)
 
 管理员只读检查已确认 rev500 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev500-preflight.json)

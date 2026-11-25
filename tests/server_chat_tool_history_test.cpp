@@ -409,6 +409,78 @@ Q4T_TEST(chat_tool_history_no_silent_argument_loss) {
   return true;
 }
 
+Q4T_TEST(chat_tool_history_preserves_types_in_flat_parameters) {
+  using namespace q4t::server;
+  const auto render = [](const std::string& value, const std::string& schema,
+                         std::string* prompt) {
+    Json args;
+    if (!q4t::io::ParseJson("{\"value\":" + value + "}", &args, true))
+      return false;
+    const auto arguments = OutputJson(args);
+    Json encoded;
+    encoded.type = Json::Type::kString;
+    encoded.str = arguments;
+    const auto call =
+        R"({"role":"assistant","tool_calls":[{"id":"a","type":"function",)"
+        R"("function":{"name":"lookup","arguments":)" +
+        OutputJson(encoded) + "}}]}";
+    Json request;
+    if (!ParseRequest(List({kUser, call, Result("a")}), &request)) return false;
+    if (!schema.empty()) {
+      Json tools;
+      if (!q4t::io::ParseJson(
+              R"([{"type":"function","function":{"name":"lookup","parameters":)"
+              R"({"type":"object","properties":{"value":{"type":)" +
+                  schema +
+                  R"(}},"required":["value"],"additionalProperties":false}}}])",
+              &tools, true))
+        return false;
+      request.object.emplace_back("tools", std::move(tools));
+    }
+    if (!ValidateChatContract(request, "m", false) ||
+        !RenderChatPrompt(request, {"q", "", "value"}, prompt))
+      return false;
+    const std::string marker =
+        "[Historical function call arguments as received]\n";
+    const auto offset = prompt->find(marker);
+    if (offset != prompt->npos) {
+      const auto start = offset + marker.size();
+      const auto end = prompt->find("<|im_end|>", start);
+      Json record;
+      if (end == prompt->npos ||
+          !q4t::io::ParseJson(prompt->substr(start, end - start), &record) ||
+          record.GetString("name") != "lookup" ||
+          record.GetString("arguments") != arguments)
+        return false;
+    }
+    return true;
+  };
+  for (const auto& [typed, text] :
+       std::vector<std::pair<std::string, std::string>>{
+           {"null", R"("null")"},
+           {"true", R"("true")"},
+           {"10", R"("10")"},
+           {"[1]", R"("[1]")"},
+           {R"({"x":1})", R"("{\"x\": 1}")"}}) {
+    for (const std::string schema :
+         {"", R"("string")", R"(["string","null"])"}) {
+      std::string typed_prompt, string_prompt;
+      Q4T_CHECK(render(typed, schema, &typed_prompt));
+      Q4T_CHECK(render(text, schema, &string_prompt));
+      Q4T_CHECK(typed_prompt != string_prompt);
+      if (schema == R"("string")")
+        Q4T_CHECK(string_prompt.find("<parameter=value>\n") !=
+                  string_prompt.npos);
+    }
+  }
+  std::string ordinary;
+  Q4T_CHECK(render(R"("release candidate")", "", &ordinary));
+  Q4T_CHECK(
+      ordinary.find("<parameter=value>\nrelease candidate\n</parameter>") !=
+      ordinary.npos);
+  return true;
+}
+
 Q4T_TEST(chat_tool_history_preserves_rejected_argument_text_for_repair) {
   const auto feedback = Result("a", "Please supply an integer.");
   for (const std::string arguments :

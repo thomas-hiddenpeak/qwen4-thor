@@ -1,0 +1,85 @@
+{
+  "stage": "registration_cpu_verified",
+  "issued": false,
+  "deadline_seconds": 30,
+  "affected_state": "stopped v56 typed-history registration",
+  "failures": {
+    "01": {
+      "result": {
+        "status": "FAIL",
+        "seconds": 301.45804564421996,
+        "model_starts": 0,
+        "stop_returncode": 0,
+        "supervisor_exit": 0,
+        "remaining": [],
+        "adopted_reaped": 0,
+        "ports_free": true,
+        "unchanged_default": true,
+        "receipt_sha256": "e66397dc4e6566e84e954a28dfb5eddbc826534b378ddce86d59c63108106a95"
+      },
+      "sha256": "0c33062237bfba24d085a94c8045b981233fe845b381b6550261d2c6e8656283"
+    },
+    "03": {
+      "result": {
+        "status": "FAIL",
+        "seconds": 421.9353098003194,
+        "model_starts": 0,
+        "stop_returncode": 0,
+        "supervisor_exit": 0,
+        "remaining": [],
+        "adopted_reaped": 0,
+        "ports_free": true,
+        "unchanged_default": true,
+        "receipt_sha256": "e66397dc4e6566e84e954a28dfb5eddbc826534b378ddce86d59c63108106a95"
+      },
+      "sha256": "8168afb823220dc53081c0c52504eb6d595f1bacf31a6f7fb734969a3911656f"
+    }
+  },
+  "diagnostic": {
+    "outer_waits_seconds": [
+      180,
+      300
+    ],
+    "startup_snapshots_sha256": "0137ec8ac8c43eca608dd5105e0deeb3d3393ab1328f58f98fabf9c5ad5c6728",
+    "lease02": {
+      "child_exit": 2,
+      "reason": "Relative driver path resolved from the lease wrapper working directory; no model or business driver ran.",
+      "sha256": "7875e27f161f7ae242b840ab8d0eada2b2535c2639120fe9a6c69001b71c826e"
+    }
+  },
+  "qualification": {
+    "before": {
+      "seconds": 30.7368,
+      "binding": "b1c3d111f4ad08563cc0d217e3765da5e0281d11a248d0ac497535b86a621e93",
+      "call_counts": {
+        "tools.serve_recovery.profile_record.read": 12,
+        "tools.serve_recovery.profile_live_reuse.validate": 10,
+        "tools.serve_recovery.profile_bundle.verify": 3,
+        "read_bundle": 3,
+        "tools.serve_recovery.version_contract.payload": 3,
+        "tools.serve_recovery.version_contract.compatible": 1
+      },
+      "raw_sha256": "6f3b3a6674a63b413e1cf7059c3553e3d820696f37f4b9d91e3321625e882cd3"
+    },
+    "after": {
+      "seconds": 8.4089,
+      "binding": "b1c3d111f4ad08563cc0d217e3765da5e0281d11a248d0ac497535b86a621e93",
+      "call_counts": {
+        "tools.serve_recovery.profile_record.read": 12,
+        "tools.serve_recovery.profile_live_reuse.validate": 2,
+        "tools.serve_recovery.profile_bundle.verify": 3,
+        "read_bundle": 3,
+        "tools.serve_recovery.version_contract.payload": 3,
+        "tools.serve_recovery.version_contract.compatible": 1
+      },
+      "raw_sha256": "a004196a9f83cf7be7ba5915fff0082bf8fc509c7e31fba80642fd36f91a53ff"
+    }
+  },
+  "cpu": {
+    "passed": 24,
+    "log_sha256": "7810f278ab955b047b981a57dfca7f8b472cd9fe10d570389db951435820ab5a"
+  },
+  "pending": [
+    "Real managed model restart, gateway takeover and stopped delivery with the fixed Python verifier."
+  ]
+}

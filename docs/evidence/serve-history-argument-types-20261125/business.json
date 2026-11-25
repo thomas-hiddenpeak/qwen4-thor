@@ -1,0 +1,65 @@
+{
+  "stage": "device_verified",
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 42.979,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "cases": [
+      {
+        "expected": "null",
+        "arguments": "{\"selector\":null}",
+        "call_id": "call_chatcmpl-auto-3e23dbc6f417397dd5adf39e06ee5c2b_0",
+        "id": "chatcmpl-auto-e8dcf298692d2c2d4b79a85ca096168f",
+        "answer": {
+          "selector_type": "null",
+          "required_paths": 157
+        },
+        "terminal": "stop",
+        "prompt_tokens": 323
+      },
+      {
+        "expected": "string",
+        "arguments": "{\"selector\":\"null\"}",
+        "call_id": "call_chatcmpl-auto-e5cacdc76a7bf43e79660293cc3cd790_0",
+        "id": "chatcmpl-auto-a4b4d1d4ced6844102245f7eb0c3d724",
+        "answer": {
+          "selector_type": "string",
+          "required_paths": 157
+        },
+        "terminal": "stop",
+        "prompt_tokens": 322
+      }
+    ],
+    "source_paths": 157,
+    "protected_peer": 404
+  },
+  "driver_sha256": "3ffd09f134f0b37f355649130baba33312b72a47e18c89d638e2b278ca8fe340",
+  "serving": {
+    "binary": "24a17b3e8a08c6ac10d1749d8c81e3149e6f0209c3fa17821bf1124692e25bdd",
+    "protocol_sha256": "e111f8b9bc3b81da5b7ebd448980a5c1347b26ec090d694d3f6705e45ec3c08f"
+  },
+  "changed_runtime_sources": [
+    "src/server/chat_template.cpp"
+  ],
+  "protected_release": {
+    "revision": 500,
+    "manifest": "8ff0add0f894d7837a75d6f09ba565b8d09e8c000cccad606a6644d2be150e5b"
+  },
+  "lease_sha256": "f45be82b6c918265ad18d261105b4f873b357851b4eb900f54070672b09e20a5",
+  "scope": "The model emitted both typed function calls. Both used the same read-only project scope source. JSON and SSE replay with the tool declaration omitted retained the original arguments in model-visible history and stored messages. Both tenants were checked.",
+  "sources": {
+    "typed-history-business-01/plan.json": "a7b0cbc0a09e58660e75193edee67554c592a05859a7b6cd921991bbebe7f410",
+    "typed-history-business-01/result.json": "861204d6c8dbc5fe3c21fd8a29d9b0578c563d0f603c1049961c533c9965e844",
+    "typed-history-business-01/create/serving-identity.json": "565c95aa955967e07ea7b7e50ff10b019a6a41024442bfe9a3b05507a10926e2",
+    "typed-history-business-01/create/sdk-result.json": "7ac12244c4aba15c060d90c25be44d3d14069a42238bd31ae4a217807b32cbb4",
+    "typed-history-business-01/create/sdk-observations.json": "6106c76c88ce330bf635879bd2667c53c13e0df8ad2634fd3ad01ae45b6285d5",
+    "typed_history_device_business.py": "9f83ad856bd53d88e8929a21b7732990b64ef470153a8921272021297ff2b78f"
+  }
+}

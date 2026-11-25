@@ -244,6 +244,9 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
+        if 'typed_history_handoff' in self.plan:
+            from tools.serve_protocol import typed_history_profiles
+            typed_history_profiles.business(self, capabilities)
         if 'alternate_track_handoff' in self.plan:
             from tools.serve_responses import video_track_profiles
             video_track_profiles.business(self, capabilities)

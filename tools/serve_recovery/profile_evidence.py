@@ -1,5 +1,7 @@
 """Verify retained profile observations and actual business result contracts."""
 import base64
+from contextlib import contextmanager
+from contextvars import ContextVar
 import hashlib
 import io
 import itertools
@@ -1624,6 +1626,37 @@ def business(value, identity, selected=None, capabilities=None):
             'qualified embedding shape or norm differs')
 
 
+# A version registration can contain copies of the same profile in the root,
+# selected model and fallback. Share only the pure historical proof check.
+# All file, registry, ingress, current observation and asset checks still run.
+_verified_live_records = ContextVar('verified_live_records', default=None)
+
+
+@contextmanager
+def qualification_scope():
+    token = _verified_live_records.set(set())
+    try:
+        yield
+    finally:
+        _verified_live_records.reset(token)
+
+
+def _validate_live_record(value):
+    from tools.serve_recovery import profile_live_reuse
+    seen = _verified_live_records.get()
+    if seen is None:
+        profile_live_reuse.validate(value)
+        return
+    # Hash the actual parsed record, including its history. A declared digest
+    # or a filesystem path cannot establish equality with an earlier record.
+    digest = profile_live_reuse.record_hash(value)
+    if digest not in seen:
+        profile_live_reuse.validate(value)
+        # Two capacities in each of the root, primary and fallback packages.
+        if len(seen) < 6:
+            seen.add(digest)
+
+
 def validate(value, registry, name, digest):
     ledger.keys(value, ('format', 'profile', 'identity', 'capacity', 'capabilities',
         'configuration', 'startup_memory', 'business', 'environment') +
@@ -1650,15 +1683,15 @@ def validate(value, registry, name, digest):
                            'q4t-profile-business-v41', 'q4t-profile-business-v42', 'q4t-profile-business-v43', 'q4t-profile-business-v44',
                            'q4t-profile-business-v45', 'q4t-profile-business-v46', 'q4t-profile-business-v47',
                            'q4t-profile-business-v48', 'q4t-profile-business-v49', 'q4t-profile-business-v50',
-                           'q4t-profile-business-v51', 'q4t-profile-business-v52', 'q4t-profile-business-v53', 'q4t-profile-business-v54', 'q4t-profile-business-v55'):
+                           'q4t-profile-business-v51', 'q4t-profile-business-v52', 'q4t-profile-business-v53', 'q4t-profile-business-v54', 'q4t-profile-business-v55',
+                           'q4t-profile-business-v56'):
         from tools.serve_recovery import profile_duplex_reuse
         observed = dict(observed, realtime_duplex=profile_duplex_reuse.unpack_text(
             observed['realtime_duplex']))
     business(observed, value['identity'], value['capacity'], value['capabilities'])
     if 'live' in value['capabilities']:
-        from tools.serve_recovery import profile_live_reuse
         ledger.require('reused_business' in value, 'Live business source missing')
-        profile_live_reuse.validate(value)
+        _validate_live_record(value)
     elif 'reused_business' in value:
         if value['reused_business'].get('format') == 'q4t-tracing-profile-source-reuse-v1':
             from tools.serve_recovery import profile_trace_reuse as verifier
