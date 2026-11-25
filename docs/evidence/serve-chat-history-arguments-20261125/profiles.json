@@ -1,0 +1,91 @@
+{
+  "stage": "qualified",
+  "status": "ACCEPT_HISTORY_ARGUMENTS_PRIMARY_LIGHT",
+  "issued": false,
+  "profiles": {
+    "primary": {
+      "seconds": 40.532,
+      "starts": 1,
+      "profile_sha256": "953bcf79d1190b8e7e138ffbd146ebed89d58a472ad792fcfd099717bdce772c",
+      "restored_predecessor": "94074d22b03e8ae3a0a61fac422291c0f229b348bce63a737f6ad56f80ccd1c8",
+      "observed": {
+        "sdk": "7.47.0",
+        "stored": "chatcmpl-auto-cc9dd69bd2dbd8d046f75cd3d9cbe5d4",
+        "source_call": "call_previous",
+        "corrected_call": "call_chatcmpl-auto-cc9dd69bd2dbd8d046f75cd3d9cbe5d4_0",
+        "corrected_arguments": {
+          "record": "scope"
+        },
+        "original_text": "{\"record\":",
+        "capability": {
+          "identified_results": "complete_unique_batch",
+          "unordered_text_results": true,
+          "unordered_media_results": false,
+          "legacy_without_ids": true,
+          "legacy_shape_validation": true,
+          "arguments": "object_or_original_identified_argument_text",
+          "unidentified_arguments": "required_object_or_json_object_text",
+          "non_mapping_text": "quoted_assistant_history",
+          "result_content": "required_string_or_array"
+        },
+        "peer_status": 404
+      }
+    },
+    "light": {
+      "seconds": 36.704,
+      "starts": 1,
+      "profile_sha256": "8480702068d8d07cc56c9ce3a9560ebf3b5725e5e585d53ad71c7134fd43888f",
+      "restored_predecessor": "edfd08a8083ef3e4a435bef3b9d415ad8ed57be3e7112981083444b13061a70a",
+      "observed": {
+        "sdk": "7.47.0",
+        "stored": "chatcmpl-auto-cc9dd69bd2dbd8d046f75cd3d9cbe5d4",
+        "source_call": "call_previous",
+        "corrected_call": "call_chatcmpl-auto-cc9dd69bd2dbd8d046f75cd3d9cbe5d4_0",
+        "corrected_arguments": {
+          "record": "scope"
+        },
+        "original_text": "{\"record\":",
+        "capability": {
+          "identified_results": "complete_unique_batch",
+          "unordered_text_results": true,
+          "unordered_media_results": false,
+          "legacy_without_ids": true,
+          "legacy_shape_validation": true,
+          "arguments": "object_or_original_identified_argument_text",
+          "unidentified_arguments": "required_object_or_json_object_text",
+          "non_mapping_text": "quoted_assistant_history",
+          "result_content": "required_string_or_array"
+        },
+        "peer_status": 404,
+        "response": "resp_d00ad678f2a1f6741e7a915e34a6d133",
+        "response_answer": "157",
+        "answer": "157",
+        "terminal": "stop"
+      }
+    }
+  },
+  "first_attempt": "The lease runner used the deployment working directory, so the relative test driver path did not resolve. This attempt started no model. The same prepared profiles ran with the absolute driver path in the next lease.",
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/acceptance.json": "6c06d216990981de14ee2c41023aadc89440610e73e3c7f0ee5cb43dbf4996fd",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-qualified-01/acceptance.json": "137d460f99a785a8484388da7987f0e6cec9f9cea80057b9acd056d0e30b720e",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-qualified-01/qualified/registry.json": "35f44093953e3e7cd4293d9310161565b35a932b6623160161acb3caa1a84552",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/profile-observations.json": "ba1bf5f6d60d28713602e5e6c2ff8a906ce38f58c720a808918c3b714692ebe6",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/lease/exit.json": "22eadf148d6de7c46e3d13d8f4f57abb127beaba0d984258a741c4fcaf259750",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/history-profile-pin-inventory.json": "f891319cf7bee128df18fbf0c739e00cc866155b89984d689af72370a3dde09e",
+    ".q4t-work/serve-responses-agents-20261123/history-profiles-lease-01/exit.json": "cfc0ddd194e09187a720966a179a080f87c53f717794d6f7d68bc9bf48336202",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/history-profile-device-01.log": "3ac0e000f1c480cf49a1bf9dc07133cdd1ff66b657a1d432103e5d3e8f0cd649",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/primary/plan.json": "1d2657037dd29b959654dde6f38fa4ba6df14c84c72f3eb3657c5dee9a7a21a5",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/primary/configuration.wire": "678d87262c1ccd82e8739a8066f21f6637238b479fc83b89d9fa2e4b03e6b95f",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/primary/result.json": "d4a6cb31122134491b89cdb73af3850369f58b2a9d28b0b860e413f5e61ee874",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/primary/cleanup.json": "730bd631c1baf35c0dca53d29488276f5f216b93c3d277fd89869393ca73629a",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/primary/history-arguments-handoff.json": "772012701ade4e6a43612da137b72f92b0d6541b94c72c0133af0cc51870ba6a",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/light/plan.json": "2cd85ac42f75c0dbe2eb3c7f11d275d3a998bc84d129afc66e22b5afa6e0b97f",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/light/configuration.wire": "15bc4f875b84f2b95c802d436538cbc086a0a27026a185321c0e72d5f3a6e846",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/light/result.json": "70c01cc2a0c2489ece0615499fc9a747c563e12fae146045ec2b7f10a3d18bf8",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/light/cleanup.json": "b6d9392a780038ac62ae698b7cd6d494b585311f4d954e8b343c0db1f9230ab1",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/history-profiles-01/light/history-arguments-handoff.json": "61854bfdec73685b3ed125ec28e16a7d09a03fd33b5f4262dda494c8947ebdf4"
+  },
+  "pending": [
+    "Managed model restart, fatal fallback and stopped publication"
+  ]
+}
