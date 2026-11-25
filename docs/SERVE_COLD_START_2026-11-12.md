@@ -1,5 +1,7 @@
 # R07：NVML 失能时的受控冷启动
 
+rev502 的冷启动计划已与本次发行包绑定，并通过管理员只读核验。维护窗口待确认，届时需使用新计划中的服务 ID 和摘要。[当前计划](evidence/serve-cold-driver-cpu-20261112/rev502-preflight.json)
+
 rev500 的冷启动计划已与本次发行包绑定，并通过管理员只读核验。维护窗口待确认，届时需使用新计划中的服务 ID 和摘要。[当前计划](evidence/serve-cold-driver-cpu-20261112/rev500-preflight.json)
 
 rev498 的冷启动计划已与本次发行包绑定，并通过管理员只读核验。维护窗口待确认，届时需使用新计划中的服务 ID 和摘要。[当前计划](evidence/serve-cold-driver-cpu-20261112/rev498-preflight.json)

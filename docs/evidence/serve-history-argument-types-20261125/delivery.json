@@ -1,0 +1,161 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 502,
+    "version_revision": 180,
+    "profile_revision": 70,
+    "previous_profile_revision": 69,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "6cef03abb1b3b0625e8c69c2f1763553006bcf0ad9d01f602b4761d50e7d457d",
+    "fallback": "c1bb79d46f65ea7e60303ebb13ec436aebc59a6e87e558f8b82f39f9a4c301ad",
+    "engine": "24a17b3e8a08c6ac10d1749d8c81e3149e6f0209c3fa17821bf1124692e25bdd",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "8ff0add0f894d7837a75d6f09ba565b8d09e8c000cccad606a6644d2be150e5b",
+  "recovery": {
+    "fallback": {
+      "seconds": 156.659,
+      "starts": 2,
+      "unchanged_default": true,
+      "clean": true,
+      "sdk": "7.47.0",
+      "recovered": [
+        {
+          "expected": "null",
+          "arguments": "{\"selector\":null}",
+          "call_id": "call_chatcmpl-auto-30e3e9ce8fa4e1e44d50060e51a8e1bc_0",
+          "id": "chatcmpl-auto-7e890b35e9aaa73ae668a6c89bdd8f60",
+          "answer": {
+            "selector_type": "null",
+            "required_paths": 157
+          },
+          "terminal": "stop",
+          "prompt_tokens": 323,
+          "recovered_from": "chatcmpl-auto-1a30652552d81ef828a1ce18c5667087"
+        },
+        {
+          "expected": "string",
+          "arguments": "{\"selector\":\"null\"}",
+          "call_id": "call_chatcmpl-auto-f5d335bdf8673a27c6d9c36fff74b738_0",
+          "id": "chatcmpl-auto-1b6455d3cc8498cdaea94928b9c4dedd",
+          "answer": {
+            "selector_type": "string",
+            "required_paths": 157
+          },
+          "terminal": "stop",
+          "prompt_tokens": 322,
+          "recovered_from": "chatcmpl-auto-32be86d3db531b8b3ce66cf78fbbddf8"
+        }
+      ],
+      "peer": 404,
+      "independent": "42",
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "seconds": 215.768,
+      "starts": 2,
+      "unchanged_default": true,
+      "clean": true,
+      "sdk": "7.47.0",
+      "recovered": [
+        {
+          "expected": "null",
+          "arguments": "{\"selector\":null}",
+          "call_id": "call_chatcmpl-auto-ada57541178661c458657c1d635cab05_0",
+          "id": "chatcmpl-auto-7f14e40486fa5ef3e972e0f55037245e",
+          "answer": {
+            "selector_type": "null",
+            "required_paths": 157
+          },
+          "terminal": "stop",
+          "prompt_tokens": 323,
+          "recovered_from": "chatcmpl-auto-cc38f70bf22717ad20fbab464e26a8f7"
+        },
+        {
+          "expected": "string",
+          "arguments": "{\"selector\":\"null\"}",
+          "call_id": "call_chatcmpl-auto-2ee9865e1908eb119ece04ce0640f3ce_0",
+          "id": "chatcmpl-auto-c93d3f4e62669b7a77f75f99e8319e35",
+          "answer": {
+            "selector_type": "string",
+            "required_paths": 157
+          },
+          "terminal": "stop",
+          "prompt_tokens": 322,
+          "recovered_from": "chatcmpl-auto-0886043543d2b184af8e844a8434a70d"
+        }
+      ],
+      "peer": 404,
+      "independent": "42",
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "soak": {
+    "source_commit": "d5fd607c6789cfcd62be0f5ef91b58aebcf55662",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/typed-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/typed-client-primary-02/bundle",
+      "manifest_sha256": "6cef03abb1b3b0625e8c69c2f1763553006bcf0ad9d01f602b4761d50e7d457d"
+    },
+    "revision": 502,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/typed-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "c1f846f073e73fc1ab078a33467570fd15949fb8159eac54948860d4a8c24aa0",
+    "handoff_sha256": "3ef77b4ba17c8b94785fbfe9e80d5464f82c6b003c7ff1f18ff7be37439cfbee",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "openapi_sha256": "3740e9282c89f12abf460d0353a8fe6b6e7c4af735ad9a3a2548beede0ae55be",
+  "method_declarations": {
+    "required": 231,
+    "matched": 219,
+    "remaining": 12
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/typed-delivery-delivery/result.json": "7ea1c51b3d2e3e601a69e46d1a614c145347965ba89045ddd25787ba85960140",
+    ".q4t-work/serve-responses-agents-20261123/typed-delivery-delivery/plan.json": "ba48c837f47fd4037419679ae6c7a19a3c396e0f057468e22fd7120ab914b1f9",
+    ".q4t-work/serve-responses-agents-20261123/typed-delivery-delivery/check.stdout": "7d4765a283c695f3da2a1699ffd30212469bfffaf7fcc6430d0ece9611561f86",
+    ".q4t-work/serve-responses-agents-20261123/typed-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/typed-delivery-delivery/version-status.stdout": "9a756b5afb779b01105258a6fd1ef38c149e487780db3ee25272cc7078caf867",
+    ".q4t-work/serve-responses-agents-20261123/history-types-src/docs/evidence/serve-history-argument-types-20261125/registration-startup.json": "61ec4c712a84f3578e08ec4bf38ae759c6886211f9a9997b4d9a8c4510306e8f",
+    ".q4t-work/serve-responses-agents-20261123/history-types-src/docs/evidence/serve-history-argument-types-20261125/business.json": "334739da3afcf7190d6b1b23a774fe8127e42cd0280b6270b47f419faf807541",
+    ".q4t-work/serve-responses-agents-20261123/history-types-src/docs/evidence/serve-history-argument-types-20261125/profiles.json": "c45c70894b4e17bdc35619218cbd7cb278beabc4800306603af48d12422cffab",
+    ".q4t-work/serve-responses-agents-20261123/typed-release-methods.json": "cb96d2fa4868f113ba8d81a950efadc7e15385cb8770c78d9a86c765799b85a7",
+    ".q4t-work/serve-responses-agents-20261123/typed-delivery-day.json": "6cd0a57effc9c4d2c00a23973b4504d27609fa3a944d8c15a7f3193b3e7e3b69",
+    ".q4t-work/serve-responses-agents-20261123/typed-delivery-maintenance-01/result.json": "5ec54ba4fa2e664f4d7ca61ae2da05bec5172817b2b601ce9920ba521553a4ec",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/previous-soak-retained-502.json": "dc56a12b0c47092b25098231842ca77c45afe67e08149f05d7ccb0df423f5604",
+    ".q4t-work/serve-responses-agents-20261123/typed-maintenance-lease-01/exit.json": "88bbc92155050b29ff9865282c0ab1654148e38549a26586b71bdc134c779e80",
+    ".q4t-work/serve-responses-agents-20261123/typed-publish-lease-01/exit.json": "03c7b279663682efc300921a8c55ce83fd6601773daea1d0a3df91ab2b189769",
+    ".q4t-work/serve-responses-agents-20261123/typed-fallback-lease-02/exit.json": "ac7c43943fa03e7a6da2e4f30b57adaedbb6399e72d4cb20b0131d9e6e1df347",
+    ".q4t-work/serve-responses-agents-20261123/typed-fallback-business-02/ready.json": "3427e11ed8bcc8865565e0d45e39361e8d1192df61bb9d5b15f5466829a703c9",
+    ".q4t-work/serve-responses-agents-20261123/typed-fallback-business-02/prepare-run.json": "6423475fc766be17340fedcd1a4c02dfd18d03d567ec76ce1d16ecb58f84b163",
+    ".q4t-work/serve-responses-agents-20261123/typed-fallback-business-02/restore-run.json": "0c2cdddd10ef21b5f189ee0a28fdc876fb7443a3808c79f85ce301dccf4e0b5d",
+    ".q4t-work/serve-responses-agents-20261123/typed-fallback-business-02/interruption.json": "f2cb6f17911bd8df022c9a5b32c6132f4e984eb1836c023c7219bc41cfb249d5",
+    ".q4t-work/serve-responses-agents-20261123/typed-fallback-business-02/result.json": "c8518ef4b6710ba7353d109b10aebdf155023c4d0235019585c432c540f7eeea",
+    ".q4t-work/serve-responses-agents-20261123/typed-fallback-business-02/chat-after.wire": "a639f5fe264714baf6c02898dba3edfab935c917a87e65b81185bad13abe9499",
+    ".q4t-work/serve-responses-agents-20261123/typed-client-fallback-02/origin.json": "609e2b3ae4817ed92c3e6b2acc6ebd810285e3198d79117c926c1005cf80567c",
+    ".q4t-work/serve-responses-agents-20261123/typed-client-fallback-02/service.release.json": "63fc49b516e600d7f3eb0b6f7f807a64745a133c226410c384786c3b73cb56e3",
+    ".q4t-work/serve-responses-agents-20261123/typed-client-fallback-02/service-acceptance.json": "067a700163d68cf84b8c7201f6955ee475e235c06d48a25d62195373facee4b5",
+    ".q4t-work/serve-responses-agents-20261123/typed-primary-lease-04/exit.json": "9cbc525c951c34ca464f15057d6edf0b42d29fa4f3d1d9462144c0237bddb74f",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-typed-04/ready.json": "3427e11ed8bcc8865565e0d45e39361e8d1192df61bb9d5b15f5466829a703c9",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-typed-04/prepare-run.json": "5c16c0e4e05aa6fa536b9217a89748b569180a749582b17bc214eca3ea41baf4",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-typed-04/restore-run.json": "024066c083e99b3c3e2545e50462075bbed93f4a02198d44a6f0305224ff42b4",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-typed-04/interruption.json": "693372d117f864c031fadda109d0b1a740491beee29e291554bf1f96b20ef61b",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-typed-04/result.json": "a6b6070f5dc6370c5d51715c59a5c63796377d23d296fe3eeb760d099cb94b76",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-typed-04/chat-after.wire": "8f7e3c957dc677ce519654ec6e74988a5b649c309cd1cbb83507c2aa7db1ee94",
+    ".q4t-work/serve-responses-agents-20261123/typed-client-primary-02/origin.json": "a053835eea9f8b3a1ca4cc6481818bea8fab6153502beaec932287f29001fa98",
+    ".q4t-work/serve-responses-agents-20261123/typed-client-primary-02/service.release.json": "dc8286ce1f172d0ead392a679a5e6d26b954cdcd7723b2db1f96d11683b7102b",
+    ".q4t-work/serve-responses-agents-20261123/typed-client-primary-02/service-acceptance.json": "484d48e7ff626aa54df84d1c6012376d0f525158883248863cb28e502077ad74",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-typed-04/takeover.json": "022422253804a942881e680ab8e3dea513fe914503acad4f91ca84d8aa17217e",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-typed-04/startup-progress.jsonl": "8fb599492f98d8c2d80404de413c28a3e658f63a7fed437e21953be8b2434ecb"
+  }
+}

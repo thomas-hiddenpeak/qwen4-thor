@@ -370,4 +370,35 @@ class RegistrationTests(unittest.TestCase):
         self.assertEqual((self.state/'ledger.json').read_bytes(),self.core_before)
 
 
-if __name__=='__main__':unittest.main()
+class QualificationScopeTests(unittest.TestCase):
+    def test_identical_records_only_share_verification_inside_one_registration(self):
+        from tools.serve_recovery import profile_evidence, profile_live_reuse
+        check = profile_evidence._validate_live_record
+        record = {'profile': 'primary', 'reused_business': {'history': [1, 2]}}
+        with mock.patch.object(profile_live_reuse, 'validate') as validate:
+            with profile_evidence.qualification_scope():
+                check(record)
+                check(copy.deepcopy(record))
+                self.assertEqual(validate.call_count, 1)
+                record['reused_business']['history'].append(3)
+                check(record)
+                self.assertEqual(validate.call_count, 2)
+            with profile_evidence.qualification_scope():
+                check(record)
+            check(record)
+            self.assertEqual(validate.call_count, 4)
+
+    def test_failure_never_authorizes_a_second_copy(self):
+        from tools.serve_recovery import profile_evidence, profile_live_reuse
+        record = {'profile': 'light', 'reused_business': {}}
+        with mock.patch.object(profile_live_reuse, 'validate',
+                               side_effect=ValueError('invalid history')) as validate:
+            with profile_evidence.qualification_scope():
+                for _ in range(2):
+                    with self.assertRaisesRegex(ValueError, 'invalid history'):
+                        profile_evidence._validate_live_record(record)
+            self.assertEqual(validate.call_count, 2)
+
+
+if __name__ == '__main__':
+    unittest.main()
