@@ -1,0 +1,106 @@
+{
+  "stage": "native_tls_sdk_business_passed",
+  "issued": false,
+  "baseline_release": 522,
+  "tested_source": "906f8aa9b3b9588d251805323b509b271c2f679f",
+  "fixture_sha256": {
+    "blue": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+    "green": "6ed3c88b09097c106f00b4b1c6108c436e291c42a428339a033b627f9f7ec2c9"
+  },
+  "engine": "12d1037f13c1a7c42c7a5b738ec5bdbb906ddf74c538bf0f5a8013db5044d10b",
+  "native_ingress": "7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb",
+  "sdk_driver": "b651265ddeebc6909080839e66a9d1410847636ecac886d67e6e5b57317962d1",
+  "sdk_outcome": {
+    "sdk": "7.47.0",
+    "observations": [
+      {
+        "id": "resp_78cba851ae4290505248655d0234c613",
+        "expected": "blue",
+        "image_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Blue",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "status": "completed",
+        "tokens": {
+          "input_tokens": 990,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 992
+        },
+        "peer": 404,
+        "streamed": false,
+        "streamed_text": "",
+        "refusal_delta": false,
+        "passed": true
+      },
+      {
+        "id": "resp_e0ee73fec0206759f084c7eb70edddd2",
+        "expected": "green",
+        "image_sha256": "6ed3c88b09097c106f00b4b1c6108c436e291c42a428339a033b627f9f7ec2c9",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Green",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "status": "completed",
+        "tokens": {
+          "input_tokens": 462,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 464
+        },
+        "peer": 404,
+        "streamed": true,
+        "streamed_text": "Green",
+        "refusal_delta": false,
+        "passed": true
+      }
+    ],
+    "refusal": {
+      "id": "resp_f377ca46cf123d41f0974c109752a12d",
+      "status": "completed",
+      "content": [
+        {
+          "type": "refusal",
+          "refusal": "\nI cannot disclose or reproduce the private demo marker.\n"
+        }
+      ],
+      "passed": true
+    },
+    "chat": "42",
+    "passed": true
+  },
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 61.189,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "lease_status": "COMPLETED",
+  "lease_receipt_sha256": "62421eca9bd3f6ed8e88f5b55d0df47afbf882b07da8de862292d41928db2c8c",
+  "scope": "Two generated solid-color PNGs, one real policy refusal with image input, a separate text Chat, owner retrieval and cross-client denials. Video template guidance is CPU-tested; no open-domain quality claim.",
+  "next": "Qualify the updated candidate through the managed release and recovery paths."
+}

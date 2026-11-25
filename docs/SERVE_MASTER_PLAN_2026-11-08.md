@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+普通视觉回答已通过真实 SDK 验证。相同蓝图在已发行程序中给出正确描述却被标成 refusal，候选通过原生 TLS 返回单词 Blue；另一张绿图通过 beta SSE 返回单词 Green。两者作为 output_text 保存、取回，跨客户均返回 404。要求披露测试标记的带图请求仍给出 refusal，独立 Chat 答 42。短验启动一次模型，耗时 61.189 秒。下一步验证托管包交接。[业务回执](evidence/serve-visual-answer-encoding-20261126/business.json)
+
 普通视觉回答曾把正确的蓝色描述发成 refusal。候选在已解析的图像和视频请求中为普通文本补充输出说明。工具、结构化格式和原始输出沿用原模板。原有非视觉用例及拒答分片、边界、来源检查共 8 项通过，新增用例在旧程序上失败；来源核验的 40 项变异检查通过。下一步以两张不同颜色的图像、真实拒答和独立 Chat 检验模型输出。[CPU 回执](evidence/serve-visual-answer-encoding-20261126/cpu.json)
 
 主配置使用完整图像识别蓝色，以 audio/opus 合成并保存客户文件。轻配置按原回答和文件 ID 读回相同音频，启用图像上下文压缩后输入从 1078 降至 550 tokens，又按 SDK 默认类型合成语音。两次独立 Chat 都回答 42，跨客户读取均返回 404。两套配置各启动一次，分别耗时 69.420 秒和 50.124 秒。两份 v66 资格记录可逐字节还原已发行的 v65 前驱，53 项针对性 CPU 检查通过。集成构建的内存拒绝退出码及真实监督器的等待、恢复也已验证。默认仍为 rev520，下一步检验托管包接手与发布。[配置交接](evidence/serve-image-speech-recovery-20261126/profiles.json) · [集成短验](evidence/serve-image-speech-recovery-20261126/combined.json)
