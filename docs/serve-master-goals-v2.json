@@ -1225,9 +1225,10 @@
         "delivery": "evidence/serve-history-argument-types-20261125/delivery.json"
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json"
       }
     },
     {
@@ -2726,9 +2727,10 @@
         "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json"
       }
     },
     {
@@ -3250,9 +3252,10 @@
         "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json"
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json"
       }
     },
     {
@@ -8003,9 +8006,10 @@
         "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json"
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json"
       }
     },
     {
@@ -10795,9 +10799,10 @@
         "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json"
       }
     },
     {
