@@ -32,10 +32,12 @@ ObjectReply Failure(GrammarFailure failure) {
 enum class Program { kJavaScript, kPython, kMeteor };
 
 ObjectReply Execute(const io::Json& input, const BinaryAccess& access,
-                    GrammarControl control, Program kind) {
+                    GrammarControl control, Program kind,
+                    const detail::ProgramProgress& progress = {}) {
   const bool python = kind != Program::kJavaScript;
   const bool meteor = kind == Program::kMeteor;
   const char* entry = python ? "--hosted-python-worker" : "--program-worker";
+  if (progress) entry = "--chatkit-action-worker";
   if (meteor) entry = "--eval-meteor-worker";
   const auto input_limit = python ? kPythonBytes : kInputBytes;
   const auto output_limit = python ? kPythonBytes : kOutputBytes;
@@ -63,6 +65,34 @@ ObjectReply Execute(const io::Json& input, const BinaryAccess& access,
       !worker->Transfer(const_cast<char*>(bytes.data()), size, true,
                         control.compile_deadline, control.cancelled))
     return Failure(worker->Failure());
+  if (progress) {
+    // A zero length ends the provisional frames. CollectOutput still verifies
+    // EOF and normal exit before exposing the final program response.
+    for (unsigned count = 0;; ++count) {
+      uint32_t length = 0;
+      if (!worker->Transfer(&length, sizeof(length), false,
+                            control.compile_deadline, control.cancelled))
+        return Failure(worker->Failure());
+      if (length == 0) break;
+      if (length > detail::kMaxActionProgressBytes * 6 + 2 ||
+          count >= detail::kMaxActionProgressFrames)
+        return Failure(GrammarFailure::kWorker);
+      std::string encoded(length, '\0');
+      if (!worker->Transfer(encoded.data(), length, false,
+                            control.compile_deadline, control.cancelled))
+        return Failure(worker->Failure());
+      Json text;
+      if (!io::ParseJson(encoded, &text, true, kApplicationJsonLimits) ||
+          !text.IsString() || text.str.size() > detail::kMaxActionProgressBytes)
+        return Error(502, "chatkit_action_invalid_result",
+                     "The workflow returned invalid progress text");
+      if (!progress(text.str)) return Failure(GrammarFailure::kCancelled);
+      uint8_t accepted = 1;
+      if (!worker->Transfer(&accepted, sizeof(accepted), true,
+                            control.compile_deadline, control.cancelled))
+        return Failure(worker->Failure());
+    }
+  }
   std::string output;
   if (!worker->CollectOutput(&output, output_limit, control.compile_deadline,
                              control.cancelled))
@@ -117,6 +147,12 @@ ObjectReply ExecuteProgramWorker(const io::Json& input,
   return Execute(input, access, std::move(control), Program::kJavaScript);
 }
 
+ObjectReply ExecuteActionWorker(const io::Json& input,
+                                const BinaryAccess& access,
+                                const detail::ProgramProgress& progress) {
+  return Execute(input, access, {}, Program::kJavaScript, progress);
+}
+
 ObjectReply ExecutePythonWorker(const io::Json& input,
                                 const BinaryAccess& access,
                                 GrammarControl control) {
@@ -133,7 +169,8 @@ int MaybeRunProgramWorker(int argc, char** argv) {
   const bool meteor = std::strcmp(argv[1], "--eval-meteor-worker") == 0;
   const bool python =
       meteor || std::strcmp(argv[1], "--hosted-python-worker") == 0;
-  if (!python && std::strcmp(argv[1], "--program-worker")) return -1;
+  const bool action = std::strcmp(argv[1], "--chatkit-action-worker") == 0;
+  if (!python && !action && std::strcmp(argv[1], "--program-worker")) return -1;
   if (!detail::EnterGrammarWorker(argc, argv)) return 2;
   try {
     uint64_t size = 0;
@@ -157,7 +194,23 @@ int MaybeRunProgramWorker(int argc, char** argv) {
     if (setenv("TZ", "UTC0", 1) != 0) return 4;
     tzset();
     if (!detail::EnterNativeDocumentSandbox()) return 4;
-    const auto output = OutputJson(detail::EvaluateProgram(input));
+    detail::ProgramProgress progress;
+    if (action) {
+      progress = [](std::string_view text) {
+        auto encoded = OutputJson(String(std::string(text)));
+        uint32_t size = static_cast<uint32_t>(encoded.size());
+        uint8_t accepted = 0;
+        return detail::WorkerTransfer(&size, sizeof(size), true) &&
+               detail::WorkerTransfer(encoded.data(), size, true) &&
+               detail::WorkerTransfer(&accepted, sizeof(accepted), false) &&
+               accepted == 1;
+      };
+    }
+    const auto output = OutputJson(detail::EvaluateProgram(input, progress));
+    if (action) {
+      uint32_t end = 0;
+      if (!detail::WorkerTransfer(&end, sizeof(end), true)) return 3;
+    }
     if (output.size() > kOutputBytes) return 3;
     return detail::WorkerTransfer(const_cast<char*>(output.data()),
                                   output.size(), true)

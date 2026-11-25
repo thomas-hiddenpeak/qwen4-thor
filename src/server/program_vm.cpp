@@ -36,6 +36,8 @@ struct Execution {
   size_t bytes = 0;
   size_t jobs = 0;
   size_t result_events = 0;
+  size_t progress_count = 0;
+  const ProgramProgress* progress = nullptr;
   std::string fault;
 };
 
@@ -152,6 +154,25 @@ JSValue Emit(JSContext* context, JSValueConst, int argc, JSValueConst* argv,
     run.output.array.push_back(
         Object({{"type", String(image ? "image" : "text")},
                 {"value", String(value)}}));
+    return JS_UNDEFINED;
+  } catch (...) {
+    return Fail(context, "program_memory_limit");
+  }
+}
+
+// Only streamed ChatKit handlers receive this function. Replies and durable
+// changes still go through the ordinary, checked program result.
+JSValue Progress(JSContext* context, JSValueConst, int argc,
+                 JSValueConst* argv) {
+  try {
+    auto& run = *static_cast<Execution*>(JS_GetContextOpaque(context));
+    std::string text;
+    if (argc != 1 || !JS_IsString(argv[0]) ||
+        !CopyString(context, argv[0], &text, kMaxActionProgressBytes) ||
+        run.progress_count >= kMaxActionProgressFrames ||
+        !(*run.progress)(text))
+      return Fail(context, "program_progress_failed");
+    ++run.progress_count;
     return JS_UNDEFINED;
   } catch (...) {
     return Fail(context, "program_memory_limit");
@@ -336,6 +357,11 @@ bool Install(Execution& run) {
     okay = JS_DefinePropertyValueStr(context, global, i ? "image" : "text",
                                      function, JS_PROP_ENUMERABLE) >= 0;
   }
+  if (okay && run.progress) {
+    auto function = JS_NewCFunction(context, Progress, "progress", 1);
+    okay = JS_DefinePropertyValueStr(context, global, "progress", function,
+                                     JS_PROP_ENUMERABLE) >= 0;
+  }
   JS_FreeValue(context, global);
   if (!okay) return false;
   const auto bootstrap = std::string(R"js((() => {
@@ -373,7 +399,8 @@ bool Install(Execution& run) {
 }
 }  // namespace
 
-io::Json EvaluateProgram(const io::Json& input) {
+io::Json EvaluateProgram(const io::Json& input,
+                         const ProgramProgress& progress) {
   auto response = Object({{"status", String("incomplete")},
                           {"error", String("program_invalid_state")},
                           {"calls", Array()},
@@ -391,6 +418,7 @@ io::Json EvaluateProgram(const io::Json& input) {
   }
   Execution run;
   run.input = &input;
+  if (progress) run.progress = &progress;
   run.context = context;
   JS_SetContextOpaque(context, &run);
   JS_SetInterruptHandler(runtime, Interrupt, &run);

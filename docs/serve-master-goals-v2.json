@@ -1252,6 +1252,13 @@
         "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json",
         "revision": 508,
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
+      },
+      "chatkit_browser_output_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "reference_event_names": 12,
+        "observed_event_names": 12,
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json"
       }
     },
     {
@@ -2772,6 +2779,13 @@
         "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json",
         "revision": 508,
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
+      },
+      "chatkit_browser_output_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "reference_event_names": 12,
+        "observed_event_names": 12,
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json"
       }
     },
     {
@@ -3325,6 +3339,13 @@
         "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json",
         "revision": 508,
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
+      },
+      "chatkit_browser_output_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "reference_event_names": 12,
+        "observed_event_names": 12,
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json"
       }
     },
     {
@@ -8110,6 +8131,13 @@
         "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json",
         "revision": 508,
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
+      },
+      "chatkit_browser_output_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "reference_event_names": 12,
+        "observed_event_names": 12,
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json"
       }
     },
     {
@@ -10929,6 +10957,13 @@
         "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json",
         "revision": 508,
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
+      },
+      "chatkit_browser_output_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "reference_event_names": 12,
+        "observed_event_names": 12,
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json"
       }
     },
     {

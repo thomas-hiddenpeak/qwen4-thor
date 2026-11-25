@@ -685,6 +685,7 @@ def current_surface(root):
                        root / "src/server/contracts/openai_eval_types_v1.json",
                        root / "cmake/chatkit_types.h.in",
                        root / "src/server/contracts/openai_chatkit_types_v1.json",
+                       root / "src/server/contracts/openai_chatkit_browser_output_v1.json",
                        root / "cmake/webhook_types.h.in",
                        root / "src/server/contracts/openai_webhook_types_v1.json",
                        root / "cmake/container_types.h.in", root / "cmake/skill_types.h.in",
