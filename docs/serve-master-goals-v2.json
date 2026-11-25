@@ -803,6 +803,10 @@
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
         "business": "evidence/serve-video-characters-20261125/business.json",
         "profiles": "evidence/serve-video-characters-20261125/profiles.json"
+      },
+      "application_page_limits_20261125": {
+        "stage": "targeted_schema_verified",
+        "receipt": "evidence/serve-application-query-20261125/page-limits.json"
       }
     },
     {
@@ -7872,6 +7876,10 @@
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
         "business": "evidence/serve-video-characters-20261125/business.json",
         "profiles": "evidence/serve-video-characters-20261125/profiles.json"
+      },
+      "application_page_limits_20261125": {
+        "stage": "targeted_schema_verified",
+        "receipt": "evidence/serve-application-query-20261125/page-limits.json"
       }
     },
     {

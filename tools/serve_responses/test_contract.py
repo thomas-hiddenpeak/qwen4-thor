@@ -177,6 +177,30 @@ class ApplicationContract(unittest.TestCase):
                 self.assertTrue(all(not validator.is_valid(n) for n in (0, 1.5, 101, '20', True)))
                 self.assertEqual(validator.is_valid(None), nullable)
 
+    def test_chatkit_and_eval_page_sizes_match_the_native_query_parser(self):
+        bundle = app.standalone_openapi(api.openapi())
+        paths = bundle['paths']
+        cases = {
+            '/v1/chatkit/threads': 'chatkit_thread_query',
+            '/v1/chatkit/threads/{thread_id}/items': 'chatkit_item_query',
+            '/v1/evals': 'eval_query',
+            '/v1/evals/{eval_id}/runs': 'eval_run_query',
+            '/v1/evals/{eval_id}/runs/{run_id}/output_items': 'eval_output_query',
+        }
+        for route, definition in cases.items():
+            with self.subTest(route=route):
+                params = paths[route]['get']['parameters']
+                param = next(item for item in params if item['name'] == 'limit')
+                self.assertFalse(param['required'])
+                self.assertEqual(param['schema']['default'], 20)
+                validator = Draft202012Validator(dict(components=bundle['components'], **param['schema']))
+                self.assertFalse(errors({}, definition))
+                for value in (-1, 0, 1, 1.5, 20, 100, 101, '20', True, None):
+                    accepted = type(value) is int and value >= 0 and (
+                        not route.startswith('/v1/chatkit/') or value <= 100)
+                    self.assertEqual(validator.is_valid(value), accepted)
+                    self.assertEqual(not errors({'limit': value}, definition), accepted)
+
     def test_skill_content_representations_uploads_and_zero_page(self):
         paths = api.openapi()['paths']
         for route, query in [('/v1/skills', 'skill_query'),
