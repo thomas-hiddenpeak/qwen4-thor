@@ -1254,12 +1254,14 @@
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
       },
       "chatkit_browser_output_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "reference_event_names": 12,
         "observed_event_names": 12,
         "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json",
-        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json"
+        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
+        "revision": 510,
+        "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       }
     },
     {
@@ -2782,12 +2784,14 @@
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
       },
       "chatkit_browser_output_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "reference_event_names": 12,
         "observed_event_names": 12,
         "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json",
-        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json"
+        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
+        "revision": 510,
+        "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       }
     },
     {
@@ -3302,20 +3306,15 @@
         "reference": 16,
         "declared": 16,
         "remaining": [],
-        "receipt": "evidence/serve-chatkit-actions-20261125/delivery.json",
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json",
         "candidate_declared": 16,
         "candidate_receipt": "evidence/serve-chatkit-actions-20261125/business.json",
-        "issued_revision": 508,
+        "issued_revision": 510,
         "issued_declared": 16,
         "candidate_remaining": [],
         "event_work": [
-          "per-operation output and SSE schemas",
-          "events during handler execution",
-          "notice",
-          "stream_options",
-          "thread.item.removed",
-          "thread.updated",
-          "additional thread item shapes"
+          "additional thread item kinds and nested item updates",
+          "ordinary model generation cancellation and disconnect semantics"
         ]
       },
       "chatkit_retry_20261125": {
@@ -3343,12 +3342,14 @@
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
       },
       "chatkit_browser_output_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "reference_event_names": 12,
         "observed_event_names": 12,
         "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json",
-        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json"
+        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
+        "revision": 510,
+        "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       }
     },
     {
@@ -8095,20 +8096,15 @@
         "reference": 16,
         "declared": 16,
         "remaining": [],
-        "receipt": "evidence/serve-chatkit-actions-20261125/delivery.json",
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json",
         "candidate_declared": 16,
         "candidate_receipt": "evidence/serve-chatkit-actions-20261125/business.json",
-        "issued_revision": 508,
+        "issued_revision": 510,
         "issued_declared": 16,
         "candidate_remaining": [],
         "event_work": [
-          "per-operation output and SSE schemas",
-          "events during handler execution",
-          "notice",
-          "stream_options",
-          "thread.item.removed",
-          "thread.updated",
-          "additional thread item shapes"
+          "additional thread item kinds and nested item updates",
+          "ordinary model generation cancellation and disconnect semantics"
         ]
       },
       "chatkit_retry_20261125": {
@@ -8136,12 +8132,14 @@
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
       },
       "chatkit_browser_output_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "reference_event_names": 12,
         "observed_event_names": 12,
         "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json",
-        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json"
+        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
+        "revision": 510,
+        "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       }
     },
     {
@@ -9758,6 +9756,10 @@
       "chatkit_actions_delivery_20261125": {
         "revision": 508,
         "receipt": "evidence/serve-chatkit-actions-20261125/delivery.json"
+      },
+      "chatkit_browser_delivery_20261125": {
+        "revision": 510,
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       }
     },
     {
@@ -10963,18 +10965,20 @@
         "delivery": "evidence/serve-chatkit-actions-20261125/delivery.json"
       },
       "chatkit_browser_output_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "reference_event_names": 12,
         "observed_event_names": 12,
         "receipt": "evidence/serve-chatkit-browser-output-20261125/business.json",
-        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json"
+        "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
+        "revision": 510,
+        "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev508_delivered_remaining_deliveries",
+      "state": "rev510_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12270,6 +12274,10 @@
       "chatkit_actions_delivery_20261125": {
         "revision": 508,
         "receipt": "evidence/serve-chatkit-actions-20261125/delivery.json"
+      },
+      "chatkit_browser_delivery_20261125": {
+        "revision": 510,
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       }
     },
     {
@@ -12781,6 +12789,10 @@
       "chatkit_actions_delivery_20261125": {
         "revision": 508,
         "receipt": "evidence/serve-chatkit-actions-20261125/delivery.json"
+      },
+      "chatkit_browser_delivery_20261125": {
+        "revision": 510,
+        "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       }
     }
   ],

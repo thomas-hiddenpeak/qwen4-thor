@@ -1,0 +1,288 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 510,
+    "version_revision": 184,
+    "profile_revision": 74,
+    "previous_profile_revision": 73,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "530ea87069b630ca2d7876093ba330ba32d4eb9bd08f6041ed83aa6c439ce780",
+    "fallback": "c79033fc7b4da69b03c1e828c93e964b6a6f2fe87e0b53b6dd0be55bd7db6cb2",
+    "engine": "16c04c1ad01570ba100ba221312915691296a7b4676dbb7ed39089f769e17181",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 508,
+  "previous_primary": "65a636677f473b8069041d2fd38ec87928f9c3c86ba26519fbe6404a3f503ac0",
+  "recovery": {
+    "primary": {
+      "seconds": 235.258,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "thread": "cthr_13778e89685c75e33b00621fd28e3ac1",
+        "user_item": "item_362df7a61e2b1a12e3fe08419a18274e",
+        "original_call": "call_resp_1aa044e7e9f72206b35290b9ce3c16a2_0",
+        "completed_call": "call_resp_1aa044e7e9f72206b35290b9ce3c16a2_0",
+        "form": "fc_e87e350e529210acc78f5a15044b57f6",
+        "widget": "item_68c598e7fe8996c4bfce7ba360e4f9d1",
+        "port": 18161,
+        "egress": false
+      },
+      "source": {
+        "workflow": "agent_f168d424a0a9dea610c3ca7214a6d885",
+        "file": "file_e0941a6d37c4241dde54bda5f217e496",
+        "thread": "cthr_13778e89685c75e33b00621fd28e3ac1",
+        "form": "fc_e87e350e529210acc78f5a15044b57f6",
+        "widget": "item_68c598e7fe8996c4bfce7ba360e4f9d1",
+        "call": "call_resp_1aa044e7e9f72206b35290b9ce3c16a2_0",
+        "user": "item_362df7a61e2b1a12e3fe08419a18274e"
+      },
+      "recovered": {
+        "answer": "508",
+        "title": "Verified 508",
+        "removed": "item_68c598e7fe8996c4bfce7ba360e4f9d1",
+        "answered_form": "fc_e87e350e529210acc78f5a15044b57f6",
+        "call": "call_resp_1aa044e7e9f72206b35290b9ce3c16a2_0",
+        "ids": [
+          "item_362df7a61e2b1a12e3fe08419a18274e",
+          "fc_e87e350e529210acc78f5a15044b57f6",
+          "msg_b6dafff6e432bb02e43c5ec6a079c83f"
+        ],
+        "events": [
+          "stream_options",
+          "progress_update",
+          "notice",
+          "thread.item.removed",
+          "thread.updated"
+        ],
+        "late_error": "error",
+        "peer": 404,
+        "missing": 404,
+        "duplicate": 409
+      },
+      "sdk": "7.47.0",
+      "independent": "42",
+      "ports_free": true,
+      "remaining": [],
+      "unchanged_default": true,
+      "lease_sha256": "c1914719d7aa9833fd05c9f1edf8fce32d814131859f1c512e19299e58389e44",
+      "before_sha256": "612c778e02f4f25f04431d0c4d2d5a2d9e8ec433e48c40f87c75f68f1a0a9518",
+      "after_sha256": "d613990f080ba2d076556073d4378761ce0687044bb3c5a9373f46646dbd02aa",
+      "gateway_takeover": {
+        "enabled": true,
+        "root_manifest_sha256": "530ea87069b630ca2d7876093ba330ba32d4eb9bd08f6041ed83aa6c439ce780",
+        "cycle_id": "9389dd22-7650-463e-b9e0-479906e4749a",
+        "selected": "fallback",
+        "launch_payload": "fallback",
+        "payload_manifest_sha256": "c79033fc7b4da69b03c1e828c93e964b6a6f2fe87e0b53b6dd0be55bd7db6cb2",
+        "fallback_consumed": true,
+        "protected": false,
+        "pending": false,
+        "payload_prepared": true,
+        "state_available": true,
+        "worker_pid": 39191,
+        "worker_start_ticks": 380657496,
+        "probe_pid": null,
+        "probe_count": 1,
+        "last_fault": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "fingerprint": "1f66803df5cf313255eab49b24ddcacbe35b39b19eea396da3ded2298a62c593",
+          "generation": 1,
+          "kind": "native_process_signal",
+          "payload_sha256": "530ea87069b630ca2d7876093ba330ba32d4eb9bd08f6041ed83aa6c439ce780",
+          "role": "gateway",
+          "signal": 6
+        },
+        "reason": "",
+        "role_launch_authority": false
+      }
+    },
+    "fallback": {
+      "seconds": 167.815,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "thread": "cthr_675cdc6b203c196ef34bd0dd69dd138f",
+        "user_item": "item_ef7a92a885abee2a3d32fd1cb0d31a3a",
+        "original_call": "call_resp_e65dfc85c01b6fe9572eee12085559f8_0",
+        "completed_call": "call_resp_e65dfc85c01b6fe9572eee12085559f8_0",
+        "form": "fc_2b7617e2175e1cd0b33c57e6502c332c",
+        "widget": "item_83b06eebc7c15286c413f57c8d789c98",
+        "port": 18161,
+        "egress": false
+      },
+      "source": {
+        "workflow": "agent_8d82a8a31bb41fde53f3411092e657c8",
+        "file": "file_b843640b7437e36bdcdcd997eb78ed29",
+        "thread": "cthr_675cdc6b203c196ef34bd0dd69dd138f",
+        "form": "fc_2b7617e2175e1cd0b33c57e6502c332c",
+        "widget": "item_83b06eebc7c15286c413f57c8d789c98",
+        "call": "call_resp_e65dfc85c01b6fe9572eee12085559f8_0",
+        "user": "item_ef7a92a885abee2a3d32fd1cb0d31a3a"
+      },
+      "recovered": {
+        "answer": "508",
+        "title": "Verified 508",
+        "removed": "item_83b06eebc7c15286c413f57c8d789c98",
+        "answered_form": "fc_2b7617e2175e1cd0b33c57e6502c332c",
+        "call": "call_resp_e65dfc85c01b6fe9572eee12085559f8_0",
+        "ids": [
+          "item_ef7a92a885abee2a3d32fd1cb0d31a3a",
+          "fc_2b7617e2175e1cd0b33c57e6502c332c",
+          "msg_43e7857d704685998fb25b2395c0b72c"
+        ],
+        "events": [
+          "stream_options",
+          "progress_update",
+          "notice",
+          "thread.item.removed",
+          "thread.updated"
+        ],
+        "late_error": "error",
+        "peer": 404,
+        "missing": 404,
+        "duplicate": 409
+      },
+      "sdk": "7.47.0",
+      "independent": "42",
+      "ports_free": true,
+      "remaining": [],
+      "unchanged_default": true,
+      "lease_sha256": "4afa1703315eefdf19c52f01dac258d37c60f1c52994de3ec8b52b7a4bea6dd7",
+      "before_sha256": "86179b9f2e5211a0d3c2cf2b5198e2af85464c120e80d0a6f3e0c6651b5fd34f",
+      "after_sha256": "e582562d5657ad6e4205c61f21cfd6feb0b0e53c3f746a6d0e3a160bec7ba0fe"
+    }
+  },
+  "browser_reference": 16,
+  "browser_declared": 16,
+  "browser_missing": [],
+  "browser_operations": [
+    "attachments.create",
+    "attachments.delete",
+    "input.transcribe",
+    "items.feedback",
+    "items.list",
+    "threads.add_client_tool_output",
+    "threads.add_structured_input",
+    "threads.add_user_message",
+    "threads.create",
+    "threads.custom_action",
+    "threads.delete",
+    "threads.get_by_id",
+    "threads.list",
+    "threads.retry_after_item",
+    "threads.sync_custom_action",
+    "threads.update"
+  ],
+  "issued_schema": {
+    "result_operations": [
+      "attachments.create",
+      "attachments.delete",
+      "input.transcribe",
+      "items.feedback",
+      "items.list",
+      "threads.delete",
+      "threads.get_by_id",
+      "threads.list",
+      "threads.sync_custom_action",
+      "threads.update"
+    ],
+    "stream_operations": [
+      "threads.add_client_tool_output",
+      "threads.add_structured_input",
+      "threads.add_user_message",
+      "threads.create",
+      "threads.custom_action",
+      "threads.retry_after_item"
+    ],
+    "wire": {
+      "official_revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+      "actual_event_kinds": [
+        "client_effect",
+        "error",
+        "notice",
+        "progress_update",
+        "stream_options",
+        "thread.created",
+        "thread.item.added",
+        "thread.item.done",
+        "thread.item.removed",
+        "thread.item.replaced",
+        "thread.item.updated",
+        "thread.updated"
+      ],
+      "strict_event_objects": 38,
+      "strict_json_replies": 9,
+      "operations": {
+        "threads.create": 1,
+        "threads.custom_action": 6,
+        "threads.sync_custom_action": 3,
+        "items.list": 1,
+        "threads.get_by_id": 4,
+        "threads.list": 1
+      },
+      "previous_counterexamples": 4,
+      "source_sha256": "d41b0962de13eee3e3f395372a6db0119c9bd1c967d9978381b313cfce086978",
+      "wire_sha256": "ccb62b64929b50cbae81d05163e4a74ec16d6517339aadc762f072e6beb908f9"
+    }
+  },
+  "remaining_behavior": [
+    "additional thread item kinds and nested item updates",
+    "ordinary model generation cancellation and disconnect semantics"
+  ],
+  "chatkit_license_sha256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1",
+  "openapi_sha256": "d41b0962de13eee3e3f395372a6db0119c9bd1c967d9978381b313cfce086978",
+  "application_sha256": "f299e878cd369bc27e10b2a83a5146235d2fdfd7e47ea3410f90a8088ab7d733",
+  "method_declarations": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "missing_declaration": 12
+  },
+  "query_defaults": {
+    "parameters": 173,
+    "explicit": 71,
+    "matching": 71,
+    "receipt_sha256": "51e23f904e48566edaaa4808dceb46943dcf0f24e33f66187b26c84214982613"
+  },
+  "soak": {
+    "source_commit": "a04be8a136b80a1c7237b58b449517a6937e6034",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/browser-output-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/browser-output-client-primary-01/bundle",
+      "manifest_sha256": "530ea87069b630ca2d7876093ba330ba32d4eb9bd08f6041ed83aa6c439ce780"
+    },
+    "revision": 510,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/browser-output-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "18939e8c6d3a72318a961713cc05a91b2fe1d115f9795004de9b904983363dd8",
+    "handoff_sha256": "b7a98b3e9cf78d24bfbbbab8500c1b4ab141f12c1e875f3d24fab4289fe410f5",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold_preflight": "evidence/serve-cold-driver-cpu-20261112/rev510-preflight.json",
+  "predecessor_and_implementation_main": {
+    "146": {
+      "merge": "cf41a1f753038913c9c6703246f5e196aac1924f",
+      "head": "f9bcdd1f9b5b290722a944381c03525c78aebeb9",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45625389913",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45625400151"
+      }
+    },
+    "147": {
+      "merge": "c99eebf29573f5167272801723ef36413a6d33cc",
+      "head": "3154b5170d65e7a7c25de6858c5111d217d29ed6",
+      "checks": {
+        "push": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45629622310",
+        "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45629751482"
+      }
+    }
+  }
+}

@@ -137,7 +137,7 @@ q4t safety publish --object-store-dir /srv/q4t/objects --client-id alpha < appro
 
 ## API 兼容矩阵
 
-ChatKit 的管理 SDK 与浏览器 POST 共用存储。rev506 已验证 21 条消息分页，也能从原用户消息重试，保留此前上下文及附件快照，通过原线程提交新生成的工具结果。当前 rev508 实现固定参考的全部 16 个浏览器操作名。新增结构化输入回填、流式和同步自定义动作，已验证同一工作流在模型和网关故障后继续。[rev508 发行回执](evidence/serve-chatkit-actions-20261125/delivery.json) [分页回执](evidence/serve-chatkit-page-defaults-20261125/business.json) [重试回执](evidence/serve-chatkit-retry-20261125/business.json) [恢复与发行](evidence/serve-chatkit-retry-20261125/delivery.json)
+ChatKit 的管理 SDK 与浏览器 POST 共用存储。rev506 已验证 21 条消息分页，也能从原用户消息重试，保留此前上下文及附件快照，通过原线程提交新生成的工具结果。rev508 首次实现固定参考的全部 16 个浏览器操作名。新增结构化输入回填、流式和同步自定义动作，已验证同一工作流在模型和网关故障后继续。[rev508 发行回执](evidence/serve-chatkit-actions-20261125/delivery.json) [分页回执](evidence/serve-chatkit-page-defaults-20261125/business.json) [重试回执](evidence/serve-chatkit-retry-20261125/business.json) [恢复与发行](evidence/serve-chatkit-retry-20261125/delivery.json)
 
 工作流可用 Agent metadata 的 `q4t_chatkit_structured_input_tool` 指定一个已注册函数。当该函数返回含 `inputs` 的有效提问参数时，浏览器收到带稳定 ID 的 `structured_input`，可用 `threads.add_structured_input` 回填选择或自由文本。管理 SDK 可按同一 ID 查看原函数调用及结果。历史工作流继续使用普通工具输出。该能力已在 rev508 发行。[业务回执](evidence/serve-chatkit-structured-20261125/business.json)
 
@@ -150,7 +150,7 @@ const value = String(actionContext.state_variables.revision);
 text({widget: {type: "Card", children: [{type: "Text", value}]}});
 ```
 
-工作流调用一次 `text` 提交状态和组件。同步动作返回 `updated_item` 或空值；流式动作可在工作者内调用 `progress("读取发行记录")`，浏览器收到进度后可以断开请求。每次动作最多发送 64 次实时进度，每次最多 4096 个 UTF-8 字节。结果中的 `progress` 和 `effects` 仍按原协议在提交后发出。结果可以附带 `notices`、字符串或空的 `title`，流式动作还可用 `remove_sender: true` 移除触发动作的组件。线程标题、组件和状态在同一修订上原子提交。写入冲突或无效结果在发出首条进度前返回 HTTP 错误，之后发出终止错误事件；此前已送达的进度不代表写入成功。rev508 声明所有操作名，候选进一步补齐了输出 schema 与上述行为。[动作与合同验收](evidence/serve-chatkit-browser-output-20261125/business.json)
+工作流调用一次 `text` 提交状态和组件。同步动作返回 `updated_item` 或空值；流式动作可在工作者内调用 `progress("读取发行记录")`，浏览器收到进度后可以断开请求。每次动作最多发送 64 次实时进度，每次最多 4096 个 UTF-8 字节。结果中的 `progress` 和 `effects` 仍按原协议在提交后发出。结果可以附带 `notices`、字符串或空的 `title`，流式动作还可用 `remove_sender: true` 移除触发动作的组件。线程标题、组件和状态在同一修订上原子提交。写入冲突或无效结果在发出首条进度前返回 HTTP 错误，之后发出终止错误事件；此前已送达的进度不代表写入成功。默认 rev510 已交付上述行为。10 个 JSON 操作、6 个 SSE 操作有分操作输出合同；业务回放覆盖 12 种事件，其他线程条目及嵌套更新形态仍需验收。[发行回执](evidence/serve-chatkit-browser-output-20261125/delivery.json)[动作与合同验收](evidence/serve-chatkit-browser-output-20261125/business.json)
 
 本项目支持的完整输入见[38字段schema](serve-chat-request-v1.schema.json)
 与[必需原生语义](serve-input-semantics-v1.json)；10条路由见
