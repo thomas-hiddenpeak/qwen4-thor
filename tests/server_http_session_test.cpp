@@ -120,6 +120,19 @@ Q4T_TEST(http_binary_stream_close_and_reuse_require_success_chunk) {
   return true;
 }
 
+Q4T_TEST(http_binary_stream_writes_negotiated_speech_types) {
+  for (const auto* type : {"audio/mpeg", "audio/aac", "audio/ogg", "audio/opus",
+                           "audio/flac", "audio/wav", "audio/pcm",
+                           "application/octet-stream"}) {
+    Pair pair;
+    HttpResponseContext context(pair.fd[0]);
+    Q4T_CHECK(BeginBinaryStreamResponse(pair.fd[0], type));
+    Q4T_CHECK(pair.Take().find(std::string("Content-Type: ") + type + "\r\n") !=
+              std::string::npos);
+  }
+  return true;
+}
+
 Q4T_TEST(http_binary_stream_failure_closes_without_json_or_success_chunk) {
   for (bool exception : {false, true}) {
     Pair pair;

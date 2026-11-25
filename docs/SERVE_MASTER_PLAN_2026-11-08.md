@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+语音合成已对官方 SDK 默认的 application/octet-stream 和显式 audio/opus 返回协商后的类型。audio/* 客户仍取得 audio/ogg，显式 SSE 收到音频增量与终态。四条原生 TLS 响应均由独立解码器识别为单声道 Opus 并解出非静默波形；不匹配和非法权重分别返回 406、400。首次真实请求暴露写出层漏列 audio/opus，已修复并保留 409 回执。可选托管 nginx 已能转发 Accept。第二次驱动在六个 HTTP 请求通过后遇到本机 FFmpeg 缺少裸 PCM 复用器，直接从保留字节解码为 WAV 完成校验，额外模型启动 0 次。下一步为整包交接。[语音回执](evidence/serve-speech-media-20261126/business.json)
+
 同一张 896×896 蓝色图片经官方 SDK、原生 TLS 分别走 stable 和 beta Responses。六选一的结构化结果都为 blue；启用上下文压缩后输入从 1078 降为 550 tokens，两边 compact 均保留原图，跨客户读取均返回 404。普通回答在 16 tokens 截断，给到 96 后用 25 tokens 完成，但正文仍被标为 refusal。两条普通结果均保留为质量失败；尚待整包交接。[业务回执](evidence/serve-responses-image-context-20261126/business.json)
 
 rev520 已发行 Agent 会话的结构化输出、缓存寿命和失败回合恢复。用官方 SDK 提交只要求整数的 schema，模型退出和主网关切换后，均沿用原会话、回合和条目 ID，读回发行号 518，下一回合答 42。原始失败回合字节一致，其他客户读取均返回 404。首次替换模型在统一内存低于启动门槛时退出，失败记录保留。发布核对 13 份受保护记录，生产期望为 STOPPED，发布时模型启动 0 次。24 小时运行计划已预检，由用户实跑。设备真实失能冷启动待维护窗口。[发行及恢复回执](evidence/serve-agent-structured-format-20261126/delivery.json)

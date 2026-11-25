@@ -170,7 +170,7 @@ class VoiceContract(unittest.TestCase):
         self.assertFalse(validate(dict(base,speed=4.01)))
         self.assertFalse(validate(dict(base,voice={})))
         types = speech['responses']['200']['content']
-        self.assertEqual(set(types),{'audio/wav','audio/pcm','audio/mpeg','audio/ogg','audio/flac','audio/aac','text/event-stream'})
+        self.assertEqual(set(types),{'audio/wav','audio/pcm','audio/mpeg','audio/ogg','audio/opus','audio/flac','audio/aac','application/octet-stream','text/event-stream'})
         consent = self.paths['/v1/audio/voice_consents']['post']['requestBody']['content']
         self.assertEqual(set(consent),{'multipart/form-data'})
         self.assertIn('recording',consent['multipart/form-data']['schema']['required'])

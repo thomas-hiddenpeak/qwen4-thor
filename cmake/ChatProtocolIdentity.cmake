@@ -952,6 +952,7 @@ set(protocol_inputs
   include/q4t/server/realtime_pcm.h
   include/q4t/server/realtime_audio_queue.h
   include/q4t/server/websocket_session.h
+  include/q4t/server/http_accept.h
   include/q4t/server/http_framing.h
   include/q4t/server/http_connection.h
   include/q4t/server/http_listener.h

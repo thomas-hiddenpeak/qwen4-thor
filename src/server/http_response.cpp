@@ -695,7 +695,8 @@ bool BeginBinaryStreamResponse(int fd, std::string_view content_type,
       *context->State() != ResponseState::kUnsent)
     return false;
   if (content_type != "audio/mpeg" && content_type != "audio/aac" &&
-      content_type != "audio/ogg" && content_type != "audio/flac" &&
+      content_type != "audio/ogg" && content_type != "audio/opus" &&
+      content_type != "audio/flac" &&
       content_type != "audio/wav" && content_type != "audio/pcm" &&
       content_type != "application/octet-stream")
     return false;
@@ -821,6 +822,8 @@ ErrorInfo ErrorForStatus(int status) {
     case 405:
       return {"Method Not Allowed", "invalid_request_error",
               "method_not_allowed"};
+    case 406:
+      return {"Not Acceptable", "invalid_request_error", "not_acceptable"};
     case 415:
       return {"Unsupported Media Type", "invalid_request_error",
               "unsupported_media_type"};

@@ -529,7 +529,8 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
              : (server::IsRealtimeCredentialTarget(path) ||
                 path == "/v1/chatkit/sessions")
                  ? "Authorization: Q4T-Issuer " + std::string(identity.IssuerDigest()) + "\r\n" : "") +
-           (server::IsSkillTarget(path) && !headers.accept.empty()
+           ((server::IsSkillTarget(path) || path == "/v1/audio/speech") &&
+                    !headers.accept.empty()
                 ? "Accept: " + headers.accept + "\r\n" : "") +
            (headers.content_type.empty()
                 ? ""

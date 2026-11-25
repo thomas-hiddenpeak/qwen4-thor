@@ -6297,6 +6297,11 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
+      },
+      "speech_response_media_20261126": {
+        "stage": "native_tls_sdk_and_independent_decode_verified",
+        "issued": false,
+        "receipt": "evidence/serve-speech-media-20261126/business.json"
       }
     },
     {

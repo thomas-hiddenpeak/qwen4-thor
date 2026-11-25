@@ -7,7 +7,8 @@
 #include "q4t/server/request_diagnostics.h"
 
 namespace q4t::server {
-void ChatServer::HandleSpeech(int fd, const std::string& body) {
+void ChatServer::HandleSpeech(int fd, const std::string& body,
+                              std::string_view accept) {
   using Clock = std::chrono::steady_clock;
   auto* http = detail::HttpResponseContext::Current(fd);
   const auto started = Clock::now();
@@ -51,6 +52,15 @@ void ChatServer::HandleSpeech(int fd, const std::string& body) {
       detail::SendError(fd, error.http_status, status.message(), {}, error.code,
                         error.param);
       return;
+    }
+    std::string_view content_type;
+    if (!request.sse) {
+      const auto status = NegotiateSpeechContentType(
+          request.format, accept, &content_type, &error);
+      if (!status) {
+        detail::SendError(fd, error.http_status, status.message(), {}, error.code);
+        return;
+      }
     }
     const auto id = detail::NewRequestId("tts_");
     control = requests_.Register(
@@ -141,7 +151,7 @@ void ChatServer::HandleSpeech(int fd, const std::string& body) {
             request.sse
                 ? detail::BeginStreamingResponse(fd, http->State(), write)
                 : detail::BeginBinaryStreamResponse(
-                      fd, SpeechContentType(request.format), write);
+                      fd, content_type, write);
         if (!started)
           return object_detail::Error(409, "response_write_failed",
                                       "Speech header failed");
@@ -185,7 +195,7 @@ void ChatServer::HandleSpeech(int fd, const std::string& body) {
       if (success) *http->State() = detail::ResponseState::kComplete;
     } else if (!http->Http11()) {
       success = detail::SendSimple(
-          fd, 200, "OK", finite, std::string(SpeechContentType(request.format)),
+          fd, 200, "OK", finite, std::string(content_type),
           write);
     } else {
       http->BeforeTerminal();
