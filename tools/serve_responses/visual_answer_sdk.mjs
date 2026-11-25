@@ -22,6 +22,16 @@ function message(fixture, question) {
   return {role:'user', content:[{type:'input_image', detail:'auto',
     image_url:'data:image/png;base64,'+bytes.toString('base64')}, {type:'input_text', text:question}]};
 }
+const restored = [];
+if (plan.previous) {
+  for (const prior of [...plan.previous.observations, plan.previous.refusal]) {
+    const saved = await owner.responses.retrieve(prior.id);
+    assert.equal(saved.id, prior.id);
+    assert.deepEqual(parts(saved), prior.content);
+    await assert.rejects(peer.responses.retrieve(prior.id), error => error.status === 404);
+    restored.push({id:saved.id, content:parts(saved), peer:404});
+  }
+}
 const observations = [];
 const question = 'What is the single solid color in this image? Answer with one English color word.';
 for (const [index, fixture] of plan.images.entries()) {
@@ -77,5 +87,5 @@ process.stderr.write(JSON.stringify(refusal)+'\n');
 const chat = await owner.chat.completions.create({model:plan.model, temperature:0, enable_thinking:false,
   max_completion_tokens:24, messages:[{role:'user',content:'Compute 17 plus 25. Reply only with the number.'}]});
 const answer = chat.choices[0].message;
-process.stdout.write(JSON.stringify({sdk:version, observations, refusal, invalid, null_user_identity:true, chat:answer.content,
+process.stdout.write(JSON.stringify({sdk:version, restored, observations, refusal, invalid, null_user_identity:true, chat:answer.content,
   passed:observations.every(row => row.passed) && refusal.passed && answer.content.trim() === '42' && !answer.refusal}));

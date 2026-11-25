@@ -8,7 +8,7 @@ from typing import Callable
 
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import agent_session_control_profiles as session_controls
-from tools.serve_responses import media_profiles
+from tools.serve_responses import media_profiles, visual_profiles
 from tools.serve_responses import chatkit_image_profiles as images
 from tools.serve_responses import chatkit_widget_profiles as widgets
 from tools.serve_responses import chatkit_workflow_profiles as workflows
@@ -162,6 +162,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if visual_profiles.KEY in plan:
+        return Handoff(visual_profiles.KEY, visual_profiles.RELEASE, visual_profiles.ACTOR,
+                       visual_profiles.RECEIPT, media_profiles.RECEIPT,
+                       reuse.MEDIA_HANDOFF_REVIEWED, visual_profiles.check)
     if media_profiles.KEY in plan:
         return Handoff(media_profiles.KEY, media_profiles.RELEASE, media_profiles.ACTOR,
                        media_profiles.RECEIPT, reuse.SESSION_CONTROL_RECEIPT,
@@ -197,6 +201,9 @@ def verify(phase, plan, capabilities):
     prior = profile_record.read(prior_file)
     name, change = plan['name'], plan[spec.key]
     expected = dict(prior['capabilities'], protocol_source_sha256=change['protocol'])
+    if spec.key == visual_profiles.KEY:
+        expected['template'] = dict(expected['template'],
+                                    renderer_source_sha256=package.sha(ROOT / 'src/server/chat_template.cpp'))
     package.require(package.sha(prior_file) == change['previous'] == spec.reviewed[name]
                     and plan['selected_sha256'] == change['release'] == package.read(spec.release)['publication']['primary']
                     and prior['capacity'] == plan['capacity'] and package.same_json(expected, capabilities),
@@ -215,6 +222,8 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
+    if spec.actor == visual_profiles.ACTOR:
+        params.update(visual_profiles.sdk_parameters(stage))
     if spec.actor == media_profiles.ACTOR:
         params.update(media_profiles.sdk_parameters(stage))
     if spec.actor == session_controls.STRUCTURED_ACTOR:

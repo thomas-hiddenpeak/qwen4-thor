@@ -70,7 +70,7 @@ def observations(directory, accepted):
         if {'chatkit_actions_handoff', 'chatkit_browser_output_handoff',
             'chatkit_generation_handoff', 'chatkit_workflow_handoff',
             'chatkit_image_handoff', 'chatkit_widget_handoff', 'agent_session_control_handoff',
-            'response_media_handoff'}.intersection(plan):
+            'response_media_handoff', 'visual_answer_handoff'}.intersection(plan):
             from tools.serve_responses import chatkit_actions_profiles
             profiles[name]['evidence_sha256'].update(chatkit_actions_profiles.verify(phase, plan, declared))
             continue

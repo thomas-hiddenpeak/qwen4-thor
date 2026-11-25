@@ -23,6 +23,14 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+VISUAL_ANSWER_RECORD = 'q4t-profile-business-v67'
+VISUAL_ANSWER_FORMAT = 'q4t-visual-answer-source-v1'
+VISUAL_ANSWER_RECEIPT = 'visual-answer-handoff.json'
+VISUAL_ANSWER_REVIEWED = {
+    'primary': '59d8f260fb2d4f987220e19f9ae46c141ce8f9ddce6817575eed296465d5dc01',
+    'light': '297d0c4e991ac54189ae2eaca2a09626c4f092ca7ad974dd53e023d5fce4b51a',
+}
+
 MEDIA_HANDOFF_RECORD = 'q4t-profile-business-v66'
 MEDIA_HANDOFF_FORMAT = 'q4t-response-media-source-v1'
 MEDIA_HANDOFF_RECEIPT = 'response-media-handoff.json'
@@ -426,7 +434,8 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 CHATKIT_IMAGE_RECORD: CHATKIT_IMAGE_FORMAT,
                 CHATKIT_WIDGET_RECORD: CHATKIT_WIDGET_FORMAT,
                 SESSION_CONTROL_RECORD: SESSION_CONTROL_FORMAT,
-                MEDIA_HANDOFF_RECORD: MEDIA_HANDOFF_FORMAT}
+                MEDIA_HANDOFF_RECORD: MEDIA_HANDOFF_FORMAT,
+                VISUAL_ANSWER_RECORD: VISUAL_ANSWER_FORMAT}
 # The registration migration packed the original duplex transcript. All
 # successors inherit it while the first three Live formats retained raw text.
 PACKED_DUPLEX_RECORDS = REUSE_FORMAT.keys() - {
@@ -440,6 +449,7 @@ SEPARATE_HISTORY_RECORDS = (
     TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD,
     CHATKIT_ACTIONS_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_WORKFLOW_RECORD,
     CHATKIT_IMAGE_RECORD, CHATKIT_WIDGET_RECORD, SESSION_CONTROL_RECORD, MEDIA_HANDOFF_RECORD,
+    VISUAL_ANSWER_RECORD,
 )
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
@@ -462,6 +472,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '152389cb1dabb141407f22525a5425ec82c4d54cb4acbd0bb5d3e9ba769a4a27':
+        '7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb',
     '9917de3f728c61679fa9a45242468a10f02dbc73f1d0405d689cf8b68888a179':
         '7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb',
     '5b0f2cce0ac0fdeeac3d897b029f0c3aa6d7b907adec6407054e32c4628345f9':
@@ -612,6 +624,11 @@ def format_for(capabilities, evidence=None):
                        and CHARACTER_RECEIPT in (evidence or {})
                        and format_for(prior, evidence) == COMPOSER_RECORD,
                        'character qualification requires a verified reference and the issued dictation handoff')
+        if VISUAL_ANSWER_RECEIPT in evidence:
+            previous = {k: v for k, v in evidence.items() if k != VISUAL_ANSWER_RECEIPT}
+            ledger.require(format_for(capabilities, previous) == MEDIA_HANDOFF_RECORD,
+                           'visual qualification requires the issued image and speech handoff')
+            return VISUAL_ANSWER_RECORD
         if MEDIA_HANDOFF_RECEIPT in evidence:
             previous = {k: v for k, v in evidence.items() if k != MEDIA_HANDOFF_RECEIPT}
             ledger.require(format_for(capabilities, previous) == SESSION_CONTROL_RECORD,
@@ -886,8 +903,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            VISUAL_ANSWER_RECORD: (MEDIA_HANDOFF_RECORD, MEDIA_HANDOFF_REVIEWED, None, VISUAL_ANSWER_RECEIPT),
             MEDIA_HANDOFF_RECORD: (SESSION_CONTROL_RECORD, SESSION_CONTROL_REVIEWED, None, MEDIA_HANDOFF_RECEIPT),
             SESSION_CONTROL_RECORD: (CHATKIT_WIDGET_RECORD, CHATKIT_WIDGET_REVIEWED, None, SESSION_CONTROL_RECEIPT),
             CHATKIT_WIDGET_RECORD: (CHATKIT_IMAGE_RECORD, CHATKIT_IMAGE_REVIEWED, None, CHATKIT_WIDGET_RECEIPT),
@@ -920,14 +938,14 @@ def attach(value, prior):
         }
         previous_format, reviewed, added, receipt = predecessors[value['format']]
         changed = {'protocol_source_sha256'}
-        if value['format'] == TYPED_HISTORY_RECORD:
+        if value['format'] in (TYPED_HISTORY_RECORD, VISUAL_ANSWER_RECORD):
             changed.add('template')
             renderer = after['template'].get('renderer_source_sha256')
             ledger.require(isinstance(renderer, str) and ledger.HASH.fullmatch(renderer)
                            and renderer != before['template']['renderer_source_sha256']
                            and ledger.canonical(dict(before['template'], renderer_source_sha256=renderer))
                            == ledger.canonical(after['template']),
-                           'only the qualified argument renderer can change')
+                           'only the qualified template renderer can change')
         if value['format'] == HISTORY_RECORD:
             changed.update(('template', 'tools'))
             template = dict(before['template'])
@@ -1149,6 +1167,7 @@ def previous_record(value):
     previous = codec.unpack(reuse['previous'])
     if separate_history:
         history_format, history_keys = {
+            VISUAL_ANSWER_RECORD: (MEDIA_HANDOFF_FORMAT, ('format', 'previous', 'history')),
             MEDIA_HANDOFF_RECORD: (SESSION_CONTROL_FORMAT, ('format', 'previous', 'history')),
             SESSION_CONTROL_RECORD: (CHATKIT_WIDGET_FORMAT, ('format', 'previous', 'history')),
             CHATKIT_WIDGET_RECORD: (CHATKIT_IMAGE_FORMAT, ('format', 'previous', 'history')),
@@ -1202,8 +1221,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            VISUAL_ANSWER_RECORD: (VISUAL_ANSWER_REVIEWED, MEDIA_HANDOFF_REVIEWED),
             MEDIA_HANDOFF_RECORD: (MEDIA_HANDOFF_REVIEWED, SESSION_CONTROL_REVIEWED),
             SESSION_CONTROL_RECORD: (SESSION_CONTROL_REVIEWED, CHATKIT_WIDGET_REVIEWED),
             CHATKIT_WIDGET_RECORD: (CHATKIT_WIDGET_REVIEWED, CHATKIT_IMAGE_REVIEWED),
