@@ -26,7 +26,8 @@ const messages = [
   {role: 'tool', tool_call_id: 'call_previous',
     content: 'The argument text ended before the record value. Retry with record set to scope.'}];
 const base = {model: p.model, reasoning_effort: 'none', temperature: 0, max_completion_tokens: 96};
-const repaired = await owner.chat.completions.create({...base, store: true, tools: [tool], messages,
+const repaired = p.previous ? await owner.chat.completions.retrieve(p.previous.stored) :
+  await owner.chat.completions.create({...base, store: true, tools: [tool], messages,
   tool_choice: {type: 'function', function: {name}}});
 const choice = repaired.choices[0];
 assert.equal(choice.finish_reason, 'tool_calls');
@@ -39,30 +40,36 @@ const saved = [];
 for await (const item of owner.chat.completions.messages.list(repaired.id, {order: 'asc'})) saved.push(item);
 assert.equal(saved.find(item => item.tool_calls?.[0]?.id === 'call_previous').tool_calls[0].function.arguments, raw);
 await assert.rejects(other.chat.completions.messages.list(repaired.id), err => err.status === 404);
-const count = JSON.parse(readFileSync(source)).counts.required_inference_or_application_service;
-const history = [...messages, {role: 'assistant', content: null, tool_calls: [call]},
-  {role: 'tool', tool_call_id: call.id, content: JSON.stringify({required_paths: count})}];
-const stream = await owner.chat.completions.create({...base, stream: true, tools: [tool], tool_choice: 'none', messages: history});
-let answer = '', terminal;
-for await (const part of stream) {
-  for (const item of part.choices) {
-    answer += item.delta.content ?? '';
-    if (item.finish_reason) terminal = item.finish_reason;
-  }
-}
-assert.equal(answer.trim(), String(count));
-assert.equal(terminal, 'stop');
-const response = await owner.responses.create({model: p.model, store: true,
-  reasoning: {effort: 'none'}, temperature: 0, max_output_tokens: 64,
-  input: [messages[0], {type: 'function_call', call_id: 'call_previous', name, arguments: raw},
-    {type: 'function_call_output', call_id: 'call_previous', output: messages[2].content},
-    {type: 'function_call', call_id: call.id, name, arguments: call.function.arguments},
-    {type: 'function_call_output', call_id: call.id, output: history.at(-1).content}]});
-assert.equal(response.output_text.trim(), String(count));
-const items = [];
-for await (const item of owner.responses.inputItems.list(response.id, {order: 'asc'})) items.push(item);
-assert.equal(items.find(item => item.type === 'function_call' && item.call_id === 'call_previous').arguments, raw);
-await assert.rejects(other.responses.inputItems.list(response.id), err => err.status === 404);
-process.stdout.write(JSON.stringify({sdk: version, stored: repaired.id, source_call: 'call_previous',
+const record = {sdk: version, stored: repaired.id, source_call: 'call_previous',
   corrected_call: call.id, corrected_arguments: JSON.parse(call.function.arguments),
-  original_text: raw, capability, response: response.id, response_answer: response.output_text.trim(), peer_status: 404, answer: answer.trim(), terminal}));
+  original_text: raw, capability, peer_status: 404};
+if (p.phase === 'primary') {
+  process.stdout.write(JSON.stringify(record));
+} else {
+  const count = JSON.parse(readFileSync(source)).counts.required_inference_or_application_service;
+  const history = [...messages, {role: 'assistant', content: null, tool_calls: [call]},
+    {role: 'tool', tool_call_id: call.id, content: JSON.stringify({required_paths: count})}];
+  const stream = await owner.chat.completions.create({...base, stream: true, tools: [tool], tool_choice: 'none', messages: history});
+  let answer = '', terminal;
+  for await (const part of stream) {
+    for (const item of part.choices) {
+      answer += item.delta.content ?? '';
+      if (item.finish_reason) terminal = item.finish_reason;
+    }
+  }
+  assert.equal(answer.trim(), String(count));
+  assert.equal(terminal, 'stop');
+  const response = await owner.responses.create({model: p.model, store: true,
+    reasoning: {effort: 'none'}, temperature: 0, max_output_tokens: 64,
+    input: [messages[0], {type: 'function_call', call_id: 'call_previous', name, arguments: raw},
+      {type: 'function_call_output', call_id: 'call_previous', output: messages[2].content},
+      {type: 'function_call', call_id: call.id, name, arguments: call.function.arguments},
+      {type: 'function_call_output', call_id: call.id, output: history.at(-1).content}]});
+  assert.equal(response.output_text.trim(), String(count));
+  const items = [];
+  for await (const item of owner.responses.inputItems.list(response.id, {order: 'asc'})) items.push(item);
+  assert.equal(items.find(item => item.type === 'function_call' && item.call_id === 'call_previous').arguments, raw);
+  await assert.rejects(other.responses.inputItems.list(response.id), err => err.status === 404);
+  process.stdout.write(JSON.stringify({...record, response: response.id,
+    response_answer: response.output_text.trim(), answer: answer.trim(), terminal}));
+}

@@ -67,6 +67,11 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if ('non_mapping_text' in declared.get('tools', {}).get('history', {})
+                or 'history_arguments_handoff' in plan):
+            from tools.serve_protocol import history_argument_profiles
+            profiles[name]['evidence_sha256'].update(history_argument_profiles.verify(phase, plan, declared))
+            continue
         if 'project_safety' in declared or 'project_safety_handoff' in plan:
             from tools.serve_responses import safety_profiles
             profiles[name]['evidence_sha256'].update(safety_profiles.verify(phase, plan, declared))

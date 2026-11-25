@@ -152,6 +152,42 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ledger.LedgerError):
                     live.previous_record(wrong)
 
+    def test_tool_history_extension_keeps_validation_and_issuer(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(project_safety=live.SAFETY_CAPABILITY,
+                   tools=dict(execution='client', history=live.ISSUED_TOOL_HISTORY))
+        new = dict(old, tools=dict(old['tools'], history=live.REPAIRED_TOOL_HISTORY))
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        self.assertFalse(migration.explicit_extension(dict(old, project_safety={}), new))
+        self.assertFalse(migration.explicit_extension(old, dict(new, tools=dict(
+            new['tools'], execution='server'))))
+        for key, changed in [('arguments', 'any'), ('unidentified_arguments', 'any'),
+                             ('non_mapping_text', 'executable'), ('legacy_shape_validation', 1)]:
+            with self.subTest(field=key):
+                history = dict(live.REPAIRED_TOOL_HISTORY, **{key: changed})
+                self.assertFalse(migration.explicit_extension(old,
+                    dict(new, tools=dict(old['tools'], history=history))))
+
+    def test_tool_history_restore_recovers_prior_mapping_contract(self):
+        from tools.serve_recovery import profile_live_reuse as live, profile_mcp_codec as codec
+        history = dict(format=live.SAFETY_FORMAT, previous=codec.pack({'reviewed': 47}),
+                       history=dict(format=live.COSINE_FORMAT, previous=codec.pack({'reviewed': 46})))
+        metadata = dict(format=live.SAFETY_RECORD, configuration={}, startup_memory={},
+                        environment={}, engine={}, ctimes={}, added=[], live={},
+                        capabilities={'tools': {'history': live.ISSUED_TOOL_HISTORY}})
+        current = dict(format=live.HISTORY_RECORD,
+                       capabilities={'tools': {'history': live.REPAIRED_TOOL_HISTORY}},
+                       identity={'model_assets': {}}, business={'live': {}},
+                       reused_business=dict(format=live.HISTORY_FORMAT, history=history,
+                                            previous=codec.pack(metadata)))
+        recovered = live.previous_record(current)
+        self.assertEqual(recovered['reused_business'], history)
+        self.assertEqual(recovered['capabilities']['tools']['history'], live.ISSUED_TOOL_HISTORY)
+        current['reused_business']['history'] = history['history']
+        with self.assertRaises(ledger.LedgerError):
+            live.previous_record(current)
+
     def test_project_safety_requires_reviewed_capacities_and_local_publication(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(evals=live.COSINE_EVALS, eval_embedding_grader=live.COSINE_GRADER)

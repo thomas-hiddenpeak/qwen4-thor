@@ -40,5 +40,16 @@
   "pending": [
     "Native TLS SDK repair, stored history and streamed final tool result",
     "Recoverable package qualification"
-  ]
+  ],
+  "recovery_preparation": {
+    "status": "cpu_verified_device_pending",
+    "format": "q4t-profile-business-v48",
+    "previous": "q4t-profile-business-v47",
+    "cpu_passed": 47,
+    "tests_sha256": "f9ce71a0116bf0483eab12fdb13a85b261b077a4319a92377d1f80cb45be7dfd",
+    "preparation_failure": {
+      "reason": "Read-only historical fixture was absent in the sparse checkout; materialized four tracked JSON files.",
+      "log_sha256": "e8f077774fd275ac4451b499e760a07f46139b1323575850f109afe6d37b4059"
+    }
+  }
 }
