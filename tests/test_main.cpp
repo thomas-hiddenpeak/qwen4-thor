@@ -36,6 +36,7 @@
 #include "q4t/server/speech_codec_stream.h"
 #include "q4t/server/asr_statistics.h"
 #include "q4t/server/file_legacy.h"
+#include "q4t/server/safety_records.h"
 #include "q4t/server/state_key_admin.h"
 int SipOwnerFixture(int argc, char** argv);
 int CacheIoFixture(int argc, char** argv);
@@ -133,6 +134,8 @@ int main(int argc, char** argv) {
   if (pdf_worker >= 0) return pdf_worker;
   const int legacy_worker = q4t::server::MaybeRunFileLegacyWorker(argc, argv);
   if (legacy_worker >= 0) return legacy_worker;
+  const int safety = q4t::server::MaybeRunSafetyCommand(argc, argv);
+  if (safety >= 0) return safety;
   const int state_keys = q4t::server::MaybeRunStateKeyCommand(argc, argv);
   if (state_keys >= 0) return state_keys;
   const int retention = q4t::server::MaybeRunStateRetentionCommand(argc, argv);

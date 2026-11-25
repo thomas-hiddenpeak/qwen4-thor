@@ -79,6 +79,30 @@ Bearer鉴权、模型/控制器/入口恢复无需nginx或systemd；Python控制
 | 告警、通知与私有留存 | 显式观察器、接收器、目的地及保留策略 | [12c](SERVE_NOTIFY_RESULT_2026-11-04.md)、[12e](SERVE_RETENTION_RESULT_2026-11-04.md)等本机短验；正式渠道按需验收 |
 | 持久项目任务 | 独立应用入口和显式TLS连接profile；原生Chat本身不持久化业务 | [当前交接](SERVE_CURRENT_TASK_RESULT_2026-11-05.md)：已存工具结果复用、永久保键、显式兼容迁移；UNKNOWN不自动重放 |
 
+## 项目安全记录
+
+具备此能力的版本提供 `GET /v1/safety/alerts/{id}` 和
+`GET /v1/safety/cases/{id}`。客户通过自己的 API Key 读取已审核的
+告警和案例。订阅 `safety.alert.created`、`safety.warning_issued` 或
+`safety.deactivation_issued` 后，通知中的 `data.id` 可用于查询。
+同一记录 ID 对其他客户返回 404。
+
+操作员在服务主机以 q4t 的运行身份提交已审核记录。对象目录选择具体服务，
+`--client-id` 指定已配置的客户。输入 JSON 包含 `resource`，字段与上面的
+公开响应一致。告警中的 `request_paused` 应取自实际的阻断登记结果。
+案例的 `notice.type` 记录已出具的警告或停用通知。这条命令不会发起停用操作。
+
+```bash
+q4t safety publish --object-store-dir /srv/q4t/objects --client-id alpha < approved.json
+```
+
+同一个客户重复提交相同的已审核记录会得到相同回执。改变内容并沿用原 ID
+会返回冲突。默认保留期从 `created_at` 起算 30 天，也可在输入外层用
+`record_expires_at` 指定 Unix 秒，受对象库的保留上限约束。零数据保留告警
+的 `reason` 为 null。若授权提供临时说明，同时提交
+`resource.detailed_explanation` 和 `explanation_expires_at`，服务将说明存于
+单独到期的对象中。说明到期后仍可读取在保留期内的告警摘要。
+
 ## API 兼容矩阵
 
 本项目支持的完整输入见[38字段schema](serve-chat-request-v1.schema.json)

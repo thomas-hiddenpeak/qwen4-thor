@@ -550,6 +550,15 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
     // The queue is retained up to its absolute delivery deadline, even
     // when the sender is disabled. Pending work must not pin an expired row.
     if (data.GetInt("deliver_before") <= 0) inspector.value.uncertain = true;
+  } else if (kind == "safety_alert" || kind == "safety_case") {
+    const auto* resource = data.Find("resource");
+    inspector.value.uncertain = !resource ||
+        data.GetString("format") != "q4t.safety.record.v1" ||
+        resource->GetString("object") !=
+            (kind == "safety_alert" ? "safety.alert" : "safety.case");
+  } else if (kind == "safety_detail") {
+    inspector.value.uncertain = data.GetString("format") != "q4t.safety.detail.v1" ||
+        !data.Find("text") || !data.Find("text")->IsString();
   } else if (kind == "webhook_endpoint") {
     const auto* endpoint = data.Find("resource");
     inspector.value.uncertain =

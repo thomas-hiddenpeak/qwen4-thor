@@ -9427,6 +9427,124 @@
         "x-q4t-body-contract": "empty body only"
       }
     },
+    "/v1/safety/alerts/{id}": {
+      "get": {
+        "operationId": "get_v1_safety_alerts_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 38
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/safety_alert"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
+    "/v1/safety/cases/{id}": {
+      "get": {
+        "operationId": "get_v1_safety_cases_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/safety_case"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "empty body only"
+      }
+    },
     "/v1/webhook_event_types": {
       "get": {
         "operationId": "get_v1_webhook_event_types",
@@ -57992,6 +58110,125 @@
               "first_id",
               "last_id",
               "has_more"
+            ],
+            "additionalProperties": false
+          },
+          "safety_case": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "integer",
+                "format": "unixtime"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "object": {
+                "const": "safety.case"
+              },
+              "entity_identifier": {
+                "type": "string"
+              },
+              "notice": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "warning",
+                      "deactivation"
+                    ]
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "created_at",
+              "reason",
+              "object",
+              "entity_identifier",
+              "notice"
+            ],
+            "additionalProperties": false
+          },
+          "safety_alert": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "integer",
+                "format": "unixtime"
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "object": {
+                "const": "safety.alert"
+              },
+              "model": {
+                "type": "string"
+              },
+              "request_id": {
+                "type": "string"
+              },
+              "response_id": {
+                "type": "string"
+              },
+              "request_paused": {
+                "type": "boolean"
+              },
+              "error_type": {
+                "enum": [
+                  "potentially_unintended_data_access",
+                  "potentially_unintended_data_transfer",
+                  "potentially_unintended_destructive_activity",
+                  "other"
+                ]
+              },
+              "detailed_explanation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "created_at",
+              "reason",
+              "object",
+              "model",
+              "request_id",
+              "response_id",
+              "request_paused",
+              "error_type"
             ],
             "additionalProperties": false
           },

@@ -32,6 +32,12 @@ inline std::string Digest(std::string_view text) {
 inline bool ValidId(std::string_view id) { return ValidApplicationId(id); }
 inline std::string Kind(ObjectKind kind) {
   switch (kind) {
+    case ObjectKind::kSafetyAlert:
+      return "safety_alert";
+    case ObjectKind::kSafetyCase:
+      return "safety_case";
+    case ObjectKind::kSafetyDetail:
+      return "safety_detail";
     case ObjectKind::kEvalRun:
       return "evalrun";
     case ObjectKind::kEvalOutput:
@@ -112,7 +118,7 @@ inline std::string Kind(ObjectKind kind) {
   return {};
 }
 inline bool ValidKind(std::string_view kind) {
-  for (int i = 0; i <= static_cast<int>(ObjectKind::kEvalOutput); ++i)
+  for (int i = 0; i <= static_cast<int>(ObjectKind::kSafetyDetail); ++i)
     if (kind == Kind(static_cast<ObjectKind>(i))) return true;
   return false;
 }

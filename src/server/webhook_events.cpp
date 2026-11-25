@@ -6,7 +6,7 @@
 namespace q4t::server::webhook_detail {
 namespace {
 using namespace object_detail;
-constexpr std::array<std::string_view, 20> kTypes = {
+constexpr std::array<std::string_view, 23> kTypes = {
     "response.completed",        "response.failed",
     "response.cancelled",        "response.incomplete",
     "batch.completed",           "batch.failed",
@@ -16,7 +16,9 @@ constexpr std::array<std::string_view, 20> kTypes = {
     "agent.session.failed",      "agent.session.action_required",
     "agent.environment.expired", "agent.environment.suspended",
     "agent.environment.failed",  "eval.run.succeeded",
-    "eval.run.failed",           "eval.run.canceled"};
+    "eval.run.failed",           "eval.run.canceled",
+    "safety.alert.created",      "safety.warning_issued",
+    "safety.deactivation_issued"};
 }  // namespace
 uint32_t EventBit(std::string_view name) {
   for (size_t i = 0; i < kTypes.size(); ++i)
@@ -40,11 +42,23 @@ uint32_t Subscriptions(const Json& data) {
 }
 bool IsEventSource(std::string_view kind) {
   return kind == "agent_session" || kind == "environment" || kind == "batch" ||
-         kind == "response" || kind == "evalrun";
+         kind == "response" || kind == "evalrun" || kind == "safety_case" ||
+         kind == "safety_alert";
 }
 
 std::string_view Transition(std::string_view kind, const Json& data,
                             bool creating) {
+  if (kind == "safety_alert" || kind == "safety_case") {
+    const auto* record = data.Find("resource");
+    if (!record || data.GetString("format") != "q4t.safety.record.v1") return {};
+    if (kind == "safety_alert")
+      return record->GetString("object") == "safety.alert" ? "safety.alert.created" : "";
+    const auto* notice = record->Find("notice");
+    if (!notice || record->GetString("object") != "safety.case") return {};
+    if (notice->GetString("type") == "warning") return "safety.warning_issued";
+    if (notice->GetString("type") == "deactivation") return "safety.deactivation_issued";
+    return {};
+  }
   if (kind == "agent_session") {
     const auto* session = data.Find("session");
     return creating && session &&
@@ -127,6 +141,10 @@ Json SamplePayload(std::string_view type, std::string_view suffix) {
   if (type.starts_with("agent.session."))
     return Object({{"id", String("agent_session_test_" + std::string(suffix))},
                    {"environment_type", String("none")}});
+  if (type == "safety.alert.created")
+    return Object({{"id", String("alert_" + Digest("test/" + std::string(suffix)).substr(0, 32))}});
+  if (type.starts_with("safety."))
+    return Object({{"id", String("C-test-" + std::string(suffix))}});
   std::string prefix = type.starts_with("batch.")      ? "batch_test_"
                        : type.starts_with("eval.run.") ? "evalrun_test_"
                        : type.starts_with("agent.environment.") ? "env_test_"

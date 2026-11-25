@@ -3150,6 +3150,24 @@
         "src/server/eval_runs.cpp",
         "tests/server_evals_test.cpp"
       ]
+    },
+    "GET /v1/safety/alerts/{id}": {
+      "semantics": "读取本项目已审核的安全告警或案例。",
+      "boundary": "发布仅限本机同 UID 操作员；API 按已认证客户查询，跨客户返回 404，临时说明单独到期。",
+      "evidence": [
+        "src/server/safety_records.cpp",
+        "src/server/state_key_admin.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "GET /v1/safety/cases/{id}": {
+      "semantics": "读取本项目已审核的安全告警或案例。",
+      "boundary": "发布仅限本机同 UID 操作员；API 按已认证客户查询，跨客户返回 404，临时说明单独到期。",
+      "evidence": [
+        "src/server/safety_records.cpp",
+        "src/server/state_key_admin.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3764,8 +3782,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "5860d81232d3dff2944b0b5d6ede818099209f59bfc299b17e7a0b3ee0b8e2d1",
-    "cmake/ChatProtocolIdentity.cmake": "0a72ad2c5032d10d77e8559096e66b6d448ea76e2ddad22ed4d832fdcc646596",
+    "CMakeLists.txt": "fe128a4160975437841c2a3e2ae714dd5a7b0d6a1bd228bbf5969e6fad8deede",
+    "cmake/ChatProtocolIdentity.cmake": "18d9bdabccf8b5a895bab12b44c215b56fb768862e45f8402bdc9052d5c0d361",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3856,7 +3874,7 @@
     "include/q4t/server/application_owner.h": "722cb383b3cbe48525c7444d852cac99d508679e7099ca9236aab50e8a38f87b",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "a6a7dc965ced629167bfe788b73667f9cca8886811b850e0675400bd10770bc7",
+    "include/q4t/server/application_routes.h": "a9cb89c8aacfd10a5465bc44646a9eb9c2b4b256006c2c673d5835bd525aa886",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -3926,6 +3944,7 @@
     "include/q4t/server/embedding_metadata.h": "e7038bd0374ff7fad77438b318cad440666a3d929172309b31bafe29fb28f9c7",
     "include/q4t/server/embeddings_execution.h": "0d7ed7709aacde156f590a913d2b0cc7245c09318c9af4705ec6f88cfc7a49e3",
     "include/q4t/server/embeddings_plan.h": "c29801b6005ec838b3f39fd52d6701e285f7a1923f791f4d4479a71334961ebe",
+    "include/q4t/server/eval_dispatcher.h": "74a35ffa238aad01c0d063b9acafb0433b65daf82b4a4426f07d34cb2e954614",
     "include/q4t/server/evals.h": "cbfab00fbd8373b156890d24124ce86e87b6377dbb0b42fbe1dfde49ebb2d515",
     "include/q4t/server/file_audio.h": "c10902ca8e194e2c04bde93b8ea2ea777c65722dbcbba45114f631dd84c8dc75",
     "include/q4t/server/file_document.h": "dc46dc5a20aae669c475c9d23b0d8bee7371de7e6d2fea68cbfa9acef600e344",
@@ -3948,7 +3967,7 @@
     "include/q4t/server/finite_response.h": "17b1938c2237083fad3a0832333e6df2ba36657819c71db13934bbf93e3f6012",
     "include/q4t/server/generation_style.h": "fd9285b66088c67005249059b023b30e9bc3bcf2f35e49b6a689df3fb7593845",
     "include/q4t/server/grammar_process.h": "5e3f0498408085cf750f070ae7adb242af273ae2ab01bc15982deb5a45a6b886",
-    "include/q4t/server/http_connection.h": "bbac723f357d89d2ec4f85af34e4ab6fd514a1b0cef660a346bea471ae50bb2e",
+    "include/q4t/server/http_connection.h": "cb5a3728324518fa6ef19fdac73ed2450dcf343de645725b49705af217683fd3",
     "include/q4t/server/http_framing.h": "ad1b6be246ba7428087524bba677beefcc07b6a0672832f2ecc5e16d88ff5791",
     "include/q4t/server/http_listener.h": "e7b0470de4f4cb4da7c5bcf3bcf2901a742e0c352fdbc59375d854409cf67520",
     "include/q4t/server/http_observation.h": "603f10404ef826dab21b6eb451723413b7794a5772c6215178552eef3b381072",
@@ -4007,7 +4026,7 @@
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "f5dd11a1415b894c8d0b0cd1b38bd04267a932662b7f05a7f84a50ae3061efe5",
-    "include/q4t/server/object_store.h": "401f15615d21b33b9cf932ce1d1bccf3df301fdfc6fcbfbdd715502a473355a5",
+    "include/q4t/server/object_store.h": "d936699c1653b00595826c37bbef09e14ecc695b25e6a51e777d8949ba376918",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -4098,6 +4117,7 @@
     "include/q4t/server/responses_tokens.h": "9b1fb8cbea6d9fe24e33fa8af6dd4be3bb90af780b40ee4249450cc007f98324",
     "include/q4t/server/responses_tool_search.h": "6f6e7bfaefa71ff621c2db1d24a6f0fff287e4d4e47968cb8665d081d6e8337f",
     "include/q4t/server/responses_web_search.h": "b1378c90e9f3be4aea864820b06682879693940e448e0d58ad3fa9bdcfa05f06",
+    "include/q4t/server/safety_records.h": "bd932c2c9bd8f920620c1bc7b3d0e44cbfa7e1fda59045042739af6a4ba5818b",
     "include/q4t/server/sampling.h": "85eb9ed0b00b1092e715f81c4fad9ab26b91c164f4bf575c9e0b21c585f85598",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/schema_decimal.h": "f6efd4f652918da2964a65813b6f8d9a972942ec5b02a5fb90b1ad8ad8bd8da0",
@@ -4245,7 +4265,7 @@
     "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
     "src/audio/vad_chunks.cpp": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "d32f8ca6ac1eccb7f542db994ebda86b0356a5895d46e0f6677743c094b52385",
+    "src/main.cpp": "2016d051921ea54b04b91ef0d431f1b24290fdd91ff9123651831830dba754a1",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "35f740f37bcb7fe5eb52f335e71f7d33d5ed498b470e8521acb89e5d0412a67f",
@@ -4365,7 +4385,7 @@
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
     "src/server/chat_audio_translation.cpp": "e0853dba46a7af885bd31863f5bcc1e6cb9b44af3d69aba8bea8af372ed5d6ce",
-    "src/server/chat_capabilities.cpp": "c6b46f848e81dd7b98b7b86c2ae9b0d1ad7b00118be4b16785ed0986c122ff19",
+    "src/server/chat_capabilities.cpp": "1f822f31069d66b7972b5658c7125f2d9cea69f88a99a9a3def02e334fd7c334",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -4375,7 +4395,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "3d7318c7f3721312adbab0b5927177da711d5c00244aca802ce596180def1672",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "d2aa7947e084027f1f4f44a17f7a170f0fbb719fb0f9e12166b7f47d497f970e",
+    "src/server/chat_http.cpp": "c4491e072d91c4629923bd6a212dfa0548ac284916cd132fc5f2996e0b67ee60",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -4433,7 +4453,7 @@
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_policy_admin.cpp": "5d1703539b6fa159e1ea9210698c0030f7170da054bbb069b4417ea3ad27a2ed",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
-    "src/server/client_request.cpp": "7ddaa6ee94c872cf54becdc613f27df728767ada842d2a34a6ec116c062e77df",
+    "src/server/client_request.cpp": "19dad6df0fbdaf85806f9f5a540b4a992befde93fa0918995d529bd36a8ba038",
     "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/container_execution.cpp": "0929782c4e1d506a9f18bf06cea18fa0f8c3bae6715fced9b23c9f6ae6045db6",
@@ -4471,6 +4491,22 @@
     "src/server/embedding_metadata.cpp": "ace571f57dcd0b2cc2389ae37f1582eda93835d5dac30881453b9a00932f0490",
     "src/server/embeddings_execution.cpp": "2f79fcedf3c4486fff96837ba528a55cd575ee8a898e011f214dd36c800a9fd6",
     "src/server/embeddings_plan.cpp": "04d1723b63377850f176c878842b93f2e268eefc36ecb9abcb23280c8deff4cd",
+    "src/server/eval_dispatcher.cpp": "673dd92db9eedc131779c1247a606609cf313c54b23295fdfdb39ec6a0cff2b1",
+    "src/server/eval_execution.cpp": "0e58d6ecb1da747c94e388b2c191933198c0f778971d499af00d486614771397",
+    "src/server/eval_grading.cpp": "f63c66e6cbaca91799eb59de90b6df68fd3661d1767dab994fc63cfb687fdd7e",
+    "src/server/eval_grading.h": "b930d460d56f3c0cab93050e281550ab148b11444639f3288e6f01489c02e627",
+    "src/server/eval_model_grading.cpp": "c15ea079a049a9bbf7ae6f7853524ee1f2f0a448eb0a974abca7a6b5d0b3e431",
+    "src/server/eval_model_grading.h": "e3b75e6de74ba127627b79b674f04d191164f1a022cc4c8aaec7ca26ee80641b",
+    "src/server/eval_report.cpp": "d1ad7c700ab1a3fd8d6a1a563c9f5d94d31ee03c5190b91ad57c267597c17360",
+    "src/server/eval_run_state.h": "0e0d10bb99b1e036d6d600a59594be9ffd1d634d24837db59cc59107122a0613",
+    "src/server/eval_runs.cpp": "9ee186f0dfaaa9cd807d403f52f11f364e0c3900a318da0d14109e61932b8fb9",
+    "src/server/eval_runs.h": "ddec3dc0ed126c66aee0a43615bdb0f2a8c71015124326f18829012aa0ce39f5",
+    "src/server/eval_sampling.cpp": "d773a301d8a91be192480581b34ddb72514650e69ee7a441ea72de52d548b9fc",
+    "src/server/eval_sampling.h": "1d749b008aa2bbbfe9a8be1c47683c7fbad18fba6816a228f29ae4c2ce904d5d",
+    "src/server/eval_similarity.cpp": "949bb9a869dd6a88c856978f821646ea162b0d10ed21ecd784a27eb8c6873e67",
+    "src/server/eval_stored_inputs.cpp": "747202919f60d14245fe3d447e93be6d2e4a39def14ced62ca8e36530a62dcf8",
+    "src/server/eval_trajectory.cpp": "f987057af07d67f07367c4e389d239e0612110f37b997f7c2eb0761d920b4f96",
+    "src/server/eval_trajectory.h": "d7d2b46efdc5d96144c33fcef1f04a088093fab6287029a76b1df0a6bbeb01d8",
     "src/server/evals.cpp": "d9f3a45d804992defc885c31d044eaa1cad7f87ad6cbce111132b9a31bef47be",
     "src/server/file_audio.cpp": "3123a206f9367824242797137efb4caddbf08c6f18dafa81df4d12c7b4aa2356",
     "src/server/file_audio_protocol.h": "7cde45b376ce72e1798039d79e474a1b21f96efa0dc869ad5c82f7cd5fa37999",
@@ -4533,7 +4569,7 @@
     "src/server/grammar_process.cpp": "67ddca7db2f6bcb0e2451c3775382dd63a87d3cc643b091c49a5d31a92622754",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "6426536badd61e4d2b8d29ff9ced689d69e91994e57b7cef4306af87035a92c9",
+    "src/server/http_request.cpp": "d7cea59d87563330520785c3d361dd207e9d35a48e06ff8c4997310dced85c4a",
     "src/server/http_response.cpp": "6be2c277addba721d42b2dec79e3756707748765a027282ce471bc006c53ac58",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "32b0bdb416abacabd175881e7091b05c11271ca6ac0bd83abdd1516bd0549438",
@@ -4614,8 +4650,8 @@
     "src/server/native_python.cpp": "109858208f4f462a61ef7397d794484eaf2ef5fd97afc8555445af740fd6f0b8",
     "src/server/native_python.h": "ca242b04a6270b905db65dfb1f541b3ea98d283c92dfee9049e7a055c7ebe5b1",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "4ce44bbf252094cdcec08be82b3c88495456c58a91dfbb62857c4db77a1a92e6",
-    "src/server/object_retention.cpp": "3653fd6a158a7c01d8ffb51567bf36ab0f7125ba470659cee8c72d01d92a5810",
+    "src/server/object_protocol.h": "900d3b564a9857071dbba399a10d7556a26059704a9b639292ba618a029bfa02",
+    "src/server/object_retention.cpp": "d5c5ad29986d45c3858d684390761769da0bafe1b3f0ee3628e845ac7e45719c",
     "src/server/object_store.cpp": "962fe79b440c51fcf19feec1be962a85badeae5f2ed87223d7d82517609d3629",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "2b0d9616e4ebd9b3ca84dadbc984ff338c97cacf209e2da9bbd5e57bb36acc49",
@@ -4741,6 +4777,8 @@
     "src/server/responses_web_execution.cpp": "edeaf5ec9829cd187fa084bac1ca8bc472133004aa1b9f88592bd129d87ba133",
     "src/server/responses_web_output.cpp": "5ab9383bf753bca5f529b044a6c12f1b523a522fc2030183383bc7296597235a",
     "src/server/responses_web_search.cpp": "34a5de8a8f1ef8aac754040305cf53d5e67efb31ecc60d40d5963baa4ef2b4a9",
+    "src/server/safety_cli.cpp": "22e1e7cc0b6a5f5f55a9f66f40f9bdb6af1374dae073c71101658f6ee50f314c",
+    "src/server/safety_records.cpp": "6a7b9291445c045c12bf8f4fadd4029daf8bfa028594ae5bff339f357a5b7f6d",
     "src/server/sampling.cpp": "b27733666708e0aa0be1ae6ae9d109d9b9500d3daca7a39dc56ec501dcbe1b8c",
     "src/server/schema_decimal.cpp": "3931972b1ecfd38b0574c6794f447f6b05d1ef78d65e0f73a61eabcb1c2dee2f",
     "src/server/schema_grammar.cpp": "075d6a282f2fc1cda861e3a0de4de132455af3efa9ed30b67b0ad9a5caf56cf2",
@@ -4787,7 +4825,7 @@
     "src/server/speech_output.cpp": "66554a5242fb3e041405395c816b4ae620371ad0f4ab440c4856b465895a8365",
     "src/server/speech_request.cpp": "45a7e6242e3d8e3d22271855306285ce4eaacf017e4b3423918ebe57742adfb4",
     "src/server/state_cipher.cpp": "057c45b2ad1007e3d9c8887218ea687eedc38ead904b8bddfaa5712fca928602",
-    "src/server/state_key_admin.cpp": "816ad3e48bfbec54fe2098f881f48133a2b86239a570fb29a601ac5cdadc18d1",
+    "src/server/state_key_admin.cpp": "1dce98f5ddcc5d20bf28da3b072b920297042b940f3871f87c6ba09f97b0f4e8",
     "src/server/state_key_cli.cpp": "5a9852a71edbbd1e27fbdc002204b8d1d5329b098b701750e504b5587dacb811",
     "src/server/state_retention_cli.cpp": "ba09eff3bb06975049ade23c6f86652fd60c8e0738ffb9f2884714214334c2a3",
     "src/server/structured_decoder.cpp": "7a63e79a3f7d47394ffeb3238f15fd017e2076b4c1ce340f8974eb25bd18dcfe",
@@ -4842,7 +4880,7 @@
     "src/server/web_search_fetch.cpp": "e477ebcc7abd243f437e9c2ad14cff2ce560702f424a8df74da65370c6ca5c55",
     "src/server/web_search_rank.cpp": "033f5498b89dec7fee33bf69c4012f4d43a916ad5a33e55f521ab991f6adde49",
     "src/server/webhook_dispatcher.cpp": "a070cefdc9cc0ca5fc66a1c549e3600bfc52e6c72a29483d54e2dd38b4f71040",
-    "src/server/webhook_events.cpp": "e275bdf4ca0f817ad36c6e9722d63909e5c725e147f795c9d12b48d3835d715e",
+    "src/server/webhook_events.cpp": "ef0753fb9ae6cbd5f0b2138a2a9eaa27536c9963adaf48416d57425e0cd80303",
     "src/server/webhook_events.h": "1c99b2b446681376e4cd4d900cf625d4436dba92b8d05c0ed044aea38a81e7de",
     "src/server/webhook_keys.cpp": "49e34361cab195c3a04d00e16dae78873f5cecad87f37f36c6ae2a6de504dc43",
     "src/server/webhook_keys.h": "9ed339e37b724e307942378369cc6babb2262ccce1a968aeb23aeb5abf24f628",
@@ -4868,7 +4906,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "744b421976281cca708f3986dfbd0359cb31d9b4a0ccd2ab98b17d43a1534cb9",
+    "src/service/ingress_main.cpp": "66ace8c88c9dd6ee5511fdea43960eb149ac2682c04b18259259ec1126986380",
     "src/service/ingress_proxy.cpp": "055dac272a2e0b7b008105215a9e2fb282ea432ec60a0da050a0d175d51b5d90",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -4898,7 +4936,7 @@
     "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "9146269bfc42a08b54f78a2ba16ca66c03d638e05bfdf261917431b8e48a282d",
+    "tools/serve_gateway/gateway.py": "d599adfe3d1252c5945e867f71bf67a6a937534004538df20408cc556a7e1ee3",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -5111,24 +5149,7 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
-    "include/q4t/server/eval_dispatcher.h": "74a35ffa238aad01c0d063b9acafb0433b65daf82b4a4426f07d34cb2e954614",
-    "src/server/eval_dispatcher.cpp": "673dd92db9eedc131779c1247a606609cf313c54b23295fdfdb39ec6a0cff2b1",
-    "src/server/eval_execution.cpp": "0e58d6ecb1da747c94e388b2c191933198c0f778971d499af00d486614771397",
-    "src/server/eval_grading.cpp": "f63c66e6cbaca91799eb59de90b6df68fd3661d1767dab994fc63cfb687fdd7e",
-    "src/server/eval_grading.h": "b930d460d56f3c0cab93050e281550ab148b11444639f3288e6f01489c02e627",
-    "src/server/eval_run_state.h": "0e0d10bb99b1e036d6d600a59594be9ffd1d634d24837db59cc59107122a0613",
-    "src/server/eval_runs.cpp": "9ee186f0dfaaa9cd807d403f52f11f364e0c3900a318da0d14109e61932b8fb9",
-    "src/server/eval_runs.h": "ddec3dc0ed126c66aee0a43615bdb0f2a8c71015124326f18829012aa0ce39f5",
-    "src/server/eval_sampling.cpp": "d773a301d8a91be192480581b34ddb72514650e69ee7a441ea72de52d548b9fc",
-    "src/server/eval_sampling.h": "1d749b008aa2bbbfe9a8be1c47683c7fbad18fba6816a228f29ae4c2ce904d5d",
-    "src/server/eval_stored_inputs.cpp": "747202919f60d14245fe3d447e93be6d2e4a39def14ced62ca8e36530a62dcf8",
-    "src/server/eval_similarity.cpp": "949bb9a869dd6a88c856978f821646ea162b0d10ed21ecd784a27eb8c6873e67",
-    "src/server/eval_model_grading.cpp": "c15ea079a049a9bbf7ae6f7853524ee1f2f0a448eb0a974abca7a6b5d0b3e431",
-    "src/server/eval_model_grading.h": "e3b75e6de74ba127627b79b674f04d191164f1a022cc4c8aaec7ca26ee80641b",
-    "src/server/eval_trajectory.cpp": "f987057af07d67f07367c4e389d239e0612110f37b997f7c2eb0761d920b4f96",
-    "src/server/eval_trajectory.h": "d7d2b46efdc5d96144c33fcef1f04a088093fab6287029a76b1df0a6bbeb01d8",
-    "src/server/eval_report.cpp": "d1ad7c700ab1a3fd8d6a1a563c9f5d94d31ee03c5190b91ad57c267597c17360"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -9519,6 +9540,40 @@
         "src/server/eval_runs.cpp",
         "src/server/eval_execution.cpp",
         "tests/server_evals_test.cpp"
+      ]
+    },
+    "GET /v1/safety/alerts/{id}": {
+      "semantics": "读取本项目已审核的安全告警或案例。",
+      "boundary": "发布仅限本机同 UID 操作员；API 按已认证客户查询，跨客户返回 404，临时说明单独到期。",
+      "evidence": [
+        "src/server/safety_records.cpp",
+        "src/server/state_key_admin.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "GET /v1/safety/cases/{id}": {
+      "semantics": "读取本项目已审核的安全告警或案例。",
+      "boundary": "发布仅限本机同 UID 操作员；API 按已认证客户查询，跨客户返回 404，临时说明单独到期。",
+      "evidence": [
+        "src/server/safety_records.cpp",
+        "src/server/state_key_admin.cpp",
+        "tests/server_webhook_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/safety/alerts/{id}": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/safety/cases/{id}": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
       ]
     }
   },

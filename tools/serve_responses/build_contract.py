@@ -157,6 +157,18 @@ def schema(graph):
         data=dict(type='array', items=ref('chatkit_thread')),
         first_id=nullable(dict(type='string')), last_id=nullable(dict(type='string')),
         has_more=dict(type='boolean')), ['object','data','first_id','last_id','has_more'])
+    safety_text = dict(type='string')
+    safety_base = dict(id=safety_text, created_at=dict(type='integer', format='unixtime'),
+                       reason=nullable(safety_text))
+    safety_case = dict(safety_base, object=dict(const='safety.case'),
+        entity_identifier=safety_text,
+        notice=obj(dict(type=dict(enum=['warning', 'deactivation'])), ['type']))
+    definitions['safety_case'] = obj(safety_case, safety_case)
+    safety_alert = dict(safety_base, object=dict(const='safety.alert'), model=safety_text,
+        request_id=safety_text, response_id=safety_text, request_paused=dict(type='boolean'),
+        error_type=dict(enum=['potentially_unintended_data_access', 'potentially_unintended_data_transfer',
+                              'potentially_unintended_destructive_activity', 'other']))
+    definitions['safety_alert'] = obj(dict(safety_alert, detailed_explanation=nullable(safety_text)), safety_alert)
     webhooks = json.loads((ROOT/'src/server/contracts/openai_webhook_types_v1.json').read_text())
     assert webhooks['profile'] == 'q4t-openai-webhook-types-v1'
     definitions.update(graph_definitions(webhooks, 'webhook_'))
@@ -690,6 +702,8 @@ def add_openapi(paths, response, error):
         ('/v1/agents/environments/templates/{environment_template_id}', 'get', None, 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'post', 'hosted_template_update', 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'delete', None, 'hosted_template_deleted', None),
+        ('/v1/safety/alerts/{id}', 'get', None, 'safety_alert', None),
+        ('/v1/safety/cases/{id}', 'get', None, 'safety_case', None),
         ('/v1/webhook_event_types', 'get', None, 'webhook_event_types', None),
         ('/v1/evals', 'get', None, 'eval_list', 'eval_query'),
         ('/v1/evals', 'post', 'eval_create', 'eval_eval', None),
@@ -782,6 +796,8 @@ def add_openapi(paths, response, error):
         parameters = [dict(name=part[1:-1], **{'in': 'path'}, required=True,
                            schema=dict(type='string', minLength=1))
                       for part in path.split('/') if part.startswith('{')]
+        if path.startswith('/v1/safety/'):
+            parameters[0]['schema']['maxLength'] = 38 if result == 'safety_alert' else 128
         if query:
             parameters += query_fields(query)
         query_contract = query or 'no query'

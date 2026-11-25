@@ -18237,5 +18237,10 @@
       "receipt": "docs/evidence/serve-evals-20261125/stored-chat-files.json",
       "issued": false
     }
+  },
+  "project_safety_20261125": {
+    "stage": "native_tls_verified",
+    "issued": false,
+    "receipt": "evidence/serve-project-safety-20261125/records.json"
   }
 }

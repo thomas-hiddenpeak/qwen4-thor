@@ -404,6 +404,8 @@ def current_surface(root):
                           ('/v1/threads/{thread_id}/messages/{message_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/assistants', ('GET', 'POST')),
                           ('/v1/assistants/{assistant_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/safety/alerts/{id}', ('GET',)),
+                          ('/v1/safety/cases/{id}', ('GET',)),
                           ('/v1/webhook_event_types', ('GET',)),
                           ('/v1/webhook_endpoints', ('POST', 'GET')),
                           ('/v1/webhook_endpoints/{webhook_endpoint_id}', ('GET', 'POST', 'DELETE')),
@@ -429,6 +431,10 @@ def current_surface(root):
         for method in methods:
             routes.append((path, method))
             native_routes.append((method, path, 'false' if method == 'POST' else 'true'))
+    if ('GetSafetyRecord(*objects_, access, method, path, body)' not in dispatch or
+            'server::IsSafetyRead(method, path)' not in native or
+            not all(path in application_routes for path in ('/v1/safety/alerts/', '/v1/safety/cases/'))):
+        raise ValueError('review project safety retrieval routing and scope')
     if 'ServeAgentSession(fd, *objects_' not in dispatch or (
             'ParseAgentSessionRoute(target).kind' not in application_routes or
             'server::IsAgentEventStream(method, path)' not in native or

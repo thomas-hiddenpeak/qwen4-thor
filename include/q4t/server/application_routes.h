@@ -734,6 +734,29 @@ inline bool IsChatKitObservation(std::string_view method, std::string_view targe
   return (method == "GET" || method == "DELETE") && ChatKitMethodAllowed(method, target);
 }
 
+struct SafetyRoute {
+  std::string_view id{};
+  bool alert = false;
+};
+
+inline SafetyRoute ParseSafetyRoute(std::string_view target) {
+  auto path = target.substr(0, target.find('?'));
+  constexpr std::string_view alerts = "/v1/safety/alerts/";
+  constexpr std::string_view cases = "/v1/safety/cases/";
+  const bool alert = path.starts_with(alerts);
+  if (!alert && !path.starts_with(cases)) return {};
+  const auto id = path.substr(alert ? alerts.size() : cases.size());
+  if (id.empty() || id.find_first_of("/#") != id.npos) return {};
+  return {id, alert};
+}
+
+inline bool IsSafetyTarget(std::string_view target) {
+  return !ParseSafetyRoute(target).id.empty();
+}
+inline bool IsSafetyRead(std::string_view method, std::string_view target) {
+  return method == "GET" && IsSafetyTarget(target);
+}
+
 enum class WebhookRouteKind { kNone, kCatalog, kCollection, kEndpoint, kRotate, kTest };
 struct WebhookRoute {
   WebhookRouteKind kind = WebhookRouteKind::kNone;

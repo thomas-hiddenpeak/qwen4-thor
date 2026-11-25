@@ -1,3 +1,4 @@
+#include "q4t/server/safety_records.h"
 #include "q4t/server/state_key_admin.h"
 
 #include <poll.h>
@@ -85,6 +86,7 @@ ObjectReply HandleStateKeyCommand(ObjectStore& objects, const Json& request,
                                   const StateAccess& access) {
   std::string bad;
   const auto action = request.GetString("action");
+  if (action == "safety_publish") return PublishSafetyRecord(objects, request, access);
   if (action == "retention_inspect" || action == "retention_collect") {
     const auto* version = request.Find("version");
     const auto* cutoff = request.Find("item_created_before");

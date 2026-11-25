@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 Node SDK 通过原生 TLS 读取本机操作员发布的项目告警和案例，两条 200 响应均通过冻结 OpenAPI 校验。告警关联真实 Responses 请求（答案 72），重复发布幂等，另一客户均收到 404，超长 ID 返回 400，独立 Chat 答出 42。一次模型启动，34.392 秒。下一步验证主轻配置交接和可回退发行。[验证记录](evidence/serve-project-safety-20261125/records.json)
+
+项目安全告警和案例现有两个只读接口。发布者通过本机同 UID 的操作员通道指定客户，重复提交同一记录只产生一次通知。临时说明单独到期，原告警摘要仍可读取。3 项原生记录测试、12 项通知回归、3 项 OpenAPI 用例和 1 项可选 nginx 路由用例通过。候选的成功状态声明为 217/231，余 14 个方法。下一步用真实请求、原生 TLS 及官方 SDK 验证。[验证记录](evidence/serve-project-safety-20261125/records.json)
+
 官方 Node SDK 经原生 TLS 上传一页项目 PDF，原 Chat 答出 157。先删源文件，再从历史 Chat 创建 Evals 并删除原对话，重放仍答 157，得 1 分。Python SDK 独立读回同一结果。另一客户读取返回 404，其 Chat 仍能答 42。此轮启动一次，用时 88.345 秒。下一步验证项目安全记录并完成组合交付。[验证记录](evidence/serve-evals-20261125/stored-chat-files.json)
 
 真实 PDF 已上传并从 Chat 读出 157。创建 Evals 运行时，SDK 用例把 stored_completions 配在 Responses 运行下，服务返回 400。已按冻结规范改用 completions 运行，保留原失败回执，下一步重验文件删除后的重放。[验证记录](evidence/serve-evals-20261125/stored-chat-files.json)

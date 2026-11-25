@@ -1,0 +1,81 @@
+{
+  "stage": "native_tls_verified",
+  "issued": false,
+  "methods": [
+    "GET /v1/safety/alerts/{id}",
+    "GET /v1/safety/cases/{id}"
+  ],
+  "scope": "authenticated project",
+  "operator": "same-UID live Unix command; stable review ID, create-only transaction",
+  "notifications": [
+    "safety.alert.created",
+    "safety.warning_issued",
+    "safety.deactivation_issued"
+  ],
+  "host_checks": {
+    "records": 3,
+    "webhooks": 12,
+    "openapi": 3,
+    "optional_nginx": 1
+  },
+  "receipts": {
+    "webhook-dev/safety-host-build-02.log": "d904e22d61862f65e6466bf280290050ab9cd99b32250613192a7115a8c5476b",
+    "webhook-dev/safety-records-01.log": "be764c5fb853ec273eb65beb38a5fe65e853af0b5c95280377befa6c52bf15d5",
+    "webhook-dev/safety-webhooks-01.log": "310313ee92b203cd6926cbbd9fe9a48950faf239d7c8a5f53ff1845d8099e160",
+    "webhook-dev/safety-contract-01.log": "98800759b13a22531fa06ec8930cf93cc9988685fc18b9f51f986a3477f8d7e8",
+    "webhook-dev/safety-nginx-01.log": "77c0af7040408c593cbf2d3591bdad17ed0b7b5411e97467d26729b4aac6f30c",
+    "webhook-dev/safety-inventory.json": "f891319cf7bee128df18fbf0c739e00cc866155b89984d689af72370a3dde09e",
+    "safety-candidate-methods.json": "c451cfbb4eb2548b1cb9a5a30c2d29e083ad1d73872d7bcd4d7fb1e4fdaca890",
+    "official-methods/openapi.json": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "safety-business-01/plan.json": "80068d9a46c43c5bf877e1dab707d120fce839cf98accb24cc0496820ccfc7a3",
+    "safety-business-01/result.json": "2d0e9c6ea5fb20e4fd46bd2ceaa106d25bdb748208669a4b85419378ca0a92a6",
+    "safety-business-01/create/sdk-observations.json": "cf0bd3783a7e1ac2a98846156f2b6871e05a87abd45a618bde1c9cdf6108e990",
+    "safety-business-01/create/sdk-result.json": "7be26abe6ff8bd0a76aff4aefb18dfea6fe21825a50b1e9a8db23031e9485679",
+    "safety-lease-01/exit.json": "2891223055e6edfc3d8c27773918386996cfe1c9e9acc6efc76ad1a3e275f2b9",
+    "safety_device_business.py": "0980f27d9f84b6318eb5c8bbe64098f9eaede6caf5d8d1d3381db943ff2feb50"
+  },
+  "candidate_declarations": {
+    "required": 231,
+    "matching": 217,
+    "missing": 14
+  },
+  "negative_checks": [
+    "foreign project",
+    "invalid action and overlong ID",
+    "altered duplicate",
+    "expired summary",
+    "temporary explanation expiry and independent summary",
+    "unapproved notice",
+    "optional frontend public mutations refused"
+  ],
+  "pending": [
+    "Reversible managed delivery and cross-profile persistence"
+  ],
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 34.392,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "independent_chat": "42",
+    "answer": "72",
+    "approved_alert": "alert_6645a245e5f840ccb207ca8fe636ee8e",
+    "reviewed_case": "C-e95bffb2-a244-4f54-b04e-35495239e128",
+    "approved_request": "req-bafd0d8c1706325a22e235d937574f23",
+    "source_response": "resp_b224300d4e6fc516e722f38f19ee233c",
+    "foreign_status": 404,
+    "excessive_id_status": 400,
+    "wire_objects": 2,
+    "driver_sha256": "d06c25e92292adc2749514fd3a79e73972c0d39aa33e22fa9ed6dbaf1aa6c9e1"
+  },
+  "candidate": {
+    "binary": "2e54a2adfbe1145a8d91c08b6ae86839bd75805c6e48775bf35ab128f648945f",
+    "ingress": "842072a374fdc040504d96c2a16746772621860237478a4088b1de3b2c10ff65",
+    "sdk_driver": "d06c25e92292adc2749514fd3a79e73972c0d39aa33e22fa9ed6dbaf1aa6c9e1"
+  }
+}
