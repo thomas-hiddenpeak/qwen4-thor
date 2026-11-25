@@ -26,7 +26,10 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 PAGINATION_RECORD = 'q4t-profile-business-v52'
 PAGINATION_FORMAT = 'q4t-assistant-pagination-source-v1'
 PAGINATION_RECEIPT = 'assistant-pagination-handoff.json'
-PAGINATION_REVIEWED = {}
+PAGINATION_REVIEWED = {
+    'primary': '10c882afa094a33b3608843a03eb90eb4a366c8f9b20d9100ed110f67b38e203',
+    'light': '2820381c6a1cc285b5df2c1bfe6aafaee42b3caf06092877c4b43d23d8c2673e',
+}
 UPLOAD_RECORD = 'q4t-profile-business-v51'
 UPLOAD_FORMAT = 'q4t-chatkit-upload-source-v1'
 UPLOAD_REVIEWED = {
@@ -320,6 +323,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '6b14a6aebbb7e7ab254ebf230440b3bcb79f09dcab616df314bd781c8722816e':
+        '47efe94a638420a7e5cd24a6505597e8096545c3279f40ae7dd6298e1efcf8be',
     '3b8c313babf2e7ff4e5c8988c55c6269fcf7f6ec2bf6ca15d797260822255ccd':
         '47efe94a638420a7e5cd24a6505597e8096545c3279f40ae7dd6298e1efcf8be',
     'ff4424db6d0bda8b460b607fb83ac6aba9ce6862b578a2dca8b252b96539f9e9':

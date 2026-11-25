@@ -361,6 +361,45 @@ Q4T_TEST(client_upload_parts_use_file_limit_and_cancel_reserved_lane) {
   return true;
 }
 
+Q4T_TEST(assistant_run_poll_uses_bounded_control_while_generation_is_active) {
+  ClientAdmission clients;
+  auto policy = RatePolicy(60, 1000);
+  policy.clients.front().max_inflight = 1;
+  policy.clients.front().max_control_inflight = 1;
+  Q4T_CHECK(clients.Configure(std::move(policy)));
+  const auto owner = clients.Authenticate("alpha", kSecret);
+  ClientLease model;
+  Q4T_CHECK(model.Acquire(clients, owner, ClientLane::kData));
+  HttpRequestHeaders headers;
+  headers.client_id = "alpha";
+  headers.gateway_token = kSecret;
+  ClientIdentity identity;
+  int status = 0;
+  const std::string runs = "/v1/threads/thread_a/runs";
+  const auto run = runs + "/run_a";
+  for (const auto& path : {runs, run, run + "/steps?order=asc",
+                           run + "/steps/step_a"}) {
+    ClientLease poll, full;
+    Q4T_CHECK(AdmitClientRequest("GET", path, &headers, clients, &poll,
+                                 &identity, &status));
+    Q4T_CHECK(poll.Holds(owner, ClientLane::kControl));
+    Q4T_CHECK(!AdmitClientRequest("GET", path, &headers, clients, &full,
+                                  &identity, &status));
+    Q4T_CHECK(status == 429);
+  }
+  for (const auto& path : {runs, run + "/submit_tool_outputs"}) {
+    ClientLease next;
+    Q4T_CHECK(!AdmitClientRequest("POST", path, &headers, clients, &next,
+                                  &identity, &status));
+    Q4T_CHECK(status == 429);
+  }
+  ClientLease cancel;
+  Q4T_CHECK(AdmitClientRequest("POST", run + "/cancel", &headers, clients,
+                               &cancel, &identity, &status));
+  Q4T_CHECK(cancel.Holds(owner, ClientLane::kCancel));
+  return true;
+}
+
 Q4T_TEST(agent_event_admission_can_cancel_a_busy_client_and_preserves_data_quota) {
   ClientAdmission clients;
   auto policy = RatePolicy(60, 1000);

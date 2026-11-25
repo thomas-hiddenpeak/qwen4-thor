@@ -3110,7 +3110,7 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/empty.json"
       },
       "assistant_pagination_handoff_20261125": {
-        "stage": "targeted_cpu_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json"
       },
       "upload_delivery_20261125": {
@@ -3120,6 +3120,11 @@
       "combined_chat_pages_20261125": {
         "stage": "sdk_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
+        "issued": false
+      },
+      "assistant_observation_admission_20261125": {
+        "stage": "http_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
         "issued": false
       }
     },
@@ -7745,12 +7750,17 @@
         "pending": "Publish corrected Chat response declarations alongside pagination and audio"
       },
       "assistant_pagination_handoff_20261125": {
-        "stage": "targeted_cpu_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json"
       },
       "combined_chat_pages_20261125": {
         "stage": "sdk_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
+        "issued": false
+      },
+      "assistant_observation_admission_20261125": {
+        "stage": "http_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
         "issued": false
       }
     },
@@ -7924,7 +7934,12 @@
         ],
         "implementation_acceptance": "retained_required_not_certified_by_scope_decision"
       },
-      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json"
+      "agent_session_saturated_admission_20261123": "docs/evidence/serve-agent-sessions-20261123/admission.json",
+      "assistant_observation_admission_20261125": {
+        "stage": "http_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
+        "issued": false
+      }
     },
     {
       "id": "N05",
@@ -10474,6 +10489,11 @@
       "upload_delivery_20261125": {
         "revision": 492,
         "receipt": "evidence/serve-chatkit-20261125/upload-delivery.json"
+      },
+      "assistant_observation_admission_20261125": {
+        "stage": "http_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
+        "issued": false
       }
     },
     {
@@ -11721,7 +11741,7 @@
         "receipt": "evidence/serve-chatkit-20261125/feedback-delivery.json"
       },
       "assistant_pagination_handoff_20261125": {
-        "stage": "targeted_cpu_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json"
       },
       "upload_delivery_20261125": {

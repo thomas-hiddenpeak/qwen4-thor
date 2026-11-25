@@ -1,5 +1,9 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+主配置完成 6 × 7。轻配置读取同一 Run 的消息和步骤，随后到达末页。8 个对应页面响应摘要均与主配置相同。两端的另一个客户读原线程返回 404，独立 Chat 回答 42。专门的 C++ 测试同时覆盖数据槽、观测槽及取消。下一步验证受监护恢复与发行。[验证记录](evidence/serve-assistant-pagination-20261125/profiles.json)
+
+控制端口和原生网关已经把 Assistants 状态查询作为观测操作，核心客户准入遗漏了同一判断。已复用既有路由分类，保留查询配额、写入配额和专用取消名额。原 429 留档；在数据槽为 1 的真实配置上，SDK 完成整个 Run 并得到 42，12 个页面均满足实际响应合同。下一步重验发生失败的容量交接。[验证记录](evidence/serve-assistant-pagination-20261125/poll-admission.json)
+
 官方 Node SDK 经原生 TLS 建立线程并运行 6 × 7，模型回答 42。四类 Assistants 分页和 ChatKit 对照共 12 个 HTTP 200，均通过官方与候选 schema，末页和非空游标与对应资源一致。相同候选声明同步复核语音及内容过滤归档。下一步验证容量交接和可回退发行。[验证记录](evidence/serve-assistant-pagination-20261125/http.json)
 
 管理员只读检查已确认 rev492 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev492-preflight.json)
