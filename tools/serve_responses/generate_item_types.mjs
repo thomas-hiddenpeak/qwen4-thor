@@ -444,6 +444,31 @@ if (mode === '--assistants') {
     }
   }
 }
+// Agent session HTTP options introduced after the pinned SDK.
+if (mode === '--agent-sessions') {
+  const append = node => nodes.push(node) - 1;
+  const primitive = kind => {
+    const index = nodes.findIndex(node => node.kind === kind);
+    if (index < 0) throw new Error('Missing session primitive ' + kind);
+    return index;
+  };
+  const nullable = type => append({kind: 'union', variants: [type, primitive('null')]});
+  const field = (name, type, optional = true) => ({name, optional, type});
+  const record = fields => append({kind: 'object', fields, additional: null});
+  const ttl = append({kind: 'union', variants: ['30m', '12h'].map(
+    value => append({kind: 'literal', value}))});
+  const request = nullable(record([{...field('ttl', ttl), bounds: {default: '30m'}}]));
+  const resource = nullable(record([field('ttl', ttl, false)]));
+  const stream = record([{...field('include_obfuscation', primitive('boolean')),
+                          bounds: {default: true}}]);
+  for (const root of ['create', 'update', 'resource']) {
+    const fields = nodes[roots[root]].fields;
+    if (fields.some(f => ['prompt_cache_options', 'stream_options'].includes(f.name)))
+      throw new Error('Review pinned SDK session controls');
+    fields.push(field('prompt_cache_options', root === 'resource' ? resource : request));
+    if (root === 'create') fields.push(field('stream_options', stream));
+  }
+}
 // The SDK takes eval_id in the options object and places it in the URL.
 if (mode === '--evals') {
   const query = nodes[roots.output_query];

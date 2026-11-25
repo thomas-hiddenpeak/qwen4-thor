@@ -3483,6 +3483,11 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
+      },
+      "agent_session_controls_20261126": {
+        "stage": "native_https_candidate",
+        "receipt": "evidence/serve-agent-session-controls-20261126/business.json",
+        "issued": false
       }
     },
     {
@@ -8363,6 +8368,11 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
+      },
+      "agent_session_controls_20261126": {
+        "stage": "native_https_candidate",
+        "receipt": "evidence/serve-agent-session-controls-20261126/business.json",
+        "issued": false
       }
     },
     {

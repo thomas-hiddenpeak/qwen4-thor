@@ -84954,12 +84954,30 @@
               },
               "vault_ids": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_61"
+              },
+              "prompt_cache_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_497"
+              },
+              "stream_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_500"
               }
             },
             "required": [
               "environment"
             ],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "dependentSchemas": {
+              "stream_options": {
+                "required": [
+                  "stream"
+                ],
+                "properties": {
+                  "stream": {
+                    "const": true
+                  }
+                }
+              }
+            }
           },
           "agent_session_1": {
             "anyOf": [
@@ -86487,6 +86505,9 @@
               },
               "spend_control": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_160"
+              },
+              "prompt_cache_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_497"
               }
             },
             "required": [],
@@ -86619,6 +86640,9 @@
               },
               "vault_ids": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_62"
+              },
+              "prompt_cache_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_499"
               }
             },
             "required": [
@@ -91441,6 +91465,76 @@
               "order": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
                 "default": "desc"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "agent_session_493": {
+            "const": "30m"
+          },
+          "agent_session_494": {
+            "const": "12h"
+          },
+          "agent_session_495": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_493"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_494"
+              }
+            ]
+          },
+          "agent_session_496": {
+            "type": "object",
+            "properties": {
+              "ttl": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_495",
+                "default": "30m"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "agent_session_497": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_496"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_4"
+              }
+            ]
+          },
+          "agent_session_498": {
+            "type": "object",
+            "properties": {
+              "ttl": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_495"
+              }
+            },
+            "required": [
+              "ttl"
+            ],
+            "additionalProperties": false
+          },
+          "agent_session_499": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_498"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_4"
+              }
+            ]
+          },
+          "agent_session_500": {
+            "type": "object",
+            "properties": {
+              "include_obfuscation": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_17",
+                "default": true
               }
             },
             "required": [],

@@ -3,6 +3,7 @@
 #include "q4t/server/agent_session.h"
 
 namespace q4t::server::agent_detail {
+void ApplyPromptCacheOptions(io::Json* session, const io::Json& request);
 ObjectReply SealAgentHttp(ObjectStore& objects, const StateAccess& access,
                           std::string_view session_id, const io::Json& settings,
                           std::string* sealed);

@@ -1596,6 +1596,25 @@ Q4T_TEST(agent_session_prepares_native_input_and_validates_public_snapshot) {
     Set(&bad, "input", Parse(invalid));
     Q4T_CHECK(begin(bad).http_status == 400);
   }
+  Set(&request, "stream_options", Parse(R"({"include_obfuscation":false})"));
+  Q4T_CHECK(begin(request).value.GetString("param") == "stream_options");
+  Set(&request, "stream", Parse("true"));
+  Set(&request, "prompt_cache_options", Parse("{}"));
+  Q4T_CHECK(Ok(begin(request)) && !start.session.Has("stream_options") &&
+            start.session.Find("prompt_cache_options")->GetString("ttl") == "30m");
+  for (const auto* invalid : {R"({"include_obfuscation":null})",
+                              R"({"include_obfuscation":"false"})", R"({"other":true})",
+                              "null"}) {
+    auto bad = request;
+    Set(&bad, "stream_options", Parse(invalid));
+    Q4T_CHECK(begin(bad).http_status == 400);
+  }
+  for (const auto* invalid : {R"({"ttl":"24h"})", R"({"ttl":null})",
+                              R"({"ttl":1800})", R"({"mode":"explicit"})"}) {
+    auto bad = request;
+    Set(&bad, "prompt_cache_options", Parse(invalid));
+    Q4T_CHECK(begin(bad).http_status == 400);
+  }
   Set(&request, "spend_control", Parse(R"({"limit":0})"));
   Q4T_CHECK(begin(request).http_status == 400);
   return true;
@@ -1817,6 +1836,8 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     Q4T_CHECK(Ok(saved) && saved.value.GetArray("tools")->array.size() == 2);
     auto request = Parse(R"({"agent_id":"unused","environment":{"type":"none"},
                              "input":"Find and call read_release"})");
+    if (replace)
+      Set(&request, "prompt_cache_options", Parse(R"({"ttl":"12h"})"));
     Set(&request, "agent_id", *saved.value.Find("id"));
     const auto now = std::time(nullptr);
     ResponsesExecution run(store);
@@ -1864,13 +1885,16 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     Q4T_CHECK(calls == 1);
     AgentEventCursor live;
     Q4T_CHECK(Ok(OpenAgentEventSubscription(store, id, Access(), &live)));
-    const auto update = replace
+    auto update = replace
         ? Parse(R"({"agent":{"tools":[{"type":"function","name":"read_release",
                "defer_loading":true,"description":"Replacement description",
                "parameters":{"type":"object","properties":{"build":{"type":"integer"}}}}]}})")
         : Parse(R"({"agent":{"tools":[]}})");
+    Set(&update, "prompt_cache_options",
+        replace ? Json{} : Parse(R"({"ttl":"12h"})"));
     auto changed = UpdateAgentSession(store, id, update, config, Access());
-    Q4T_CHECK(Ok(changed));
+    Q4T_CHECK(Ok(changed) && changed.value.Has("prompt_cache_options") != replace);
+    Q4T_CHECK(run.Envelope().cache.ttl_seconds == (replace ? 43200 : 1800));
     auto results = Parse(R"({"events":[{"type":"agent.session.input.tool_result",
       "turn_id":"turn","call_id":"call_release","success":true,"output":"rev452"}]})");
     Set(&results.object[0].second.array[0], "turn_id", *view.turn.Find("id"));
@@ -1879,6 +1903,8 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, results, "fill-release", config,
                                           Access(), resumed, &replay)) &&
               resumed.HasToolSearch() == replace);
+    Q4T_CHECK(resumed.Envelope().cache.ttl_seconds == run.Envelope().cache.ttl_seconds);
+    Q4T_CHECK(resumed.Envelope().request.Has("prompt_cache_options") == replace);
     const auto* active = resumed.Generation().generation_request.GetArray("tools");
     if (replace) {
       Q4T_CHECK(active && active->array.size() == 2);
@@ -1914,6 +1940,15 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, follow, "follow-release", config,
                                           Access(), next, &replay)) &&
               !next.HasToolSearch());
+    Q4T_CHECK(next.Envelope().cache.ttl_seconds == (replace ? 1800 : 43200));
+    Q4T_CHECK(next.Envelope().request.Has("prompt_cache_options") != replace);
+    const auto& configured = replace ? resumed.Envelope().cache : next.Envelope().cache;
+    const std::array points{
+        PromptCacheBoundary{1024, 0, PromptCacheBoundary::Kind::kEligibleMessage}};
+    PromptCachePlan cache;
+    Q4T_CHECK(configured.requested && PlanPromptCache(configured, points, 1200, &cache));
+    Q4T_CHECK(cache.writes.size() == 1 && cache.writes[0].ttl_seconds == 43200);
+
     const auto* remaining = next.Generation().generation_request.GetArray("tools");
     Q4T_CHECK(!remaining || remaining->array.empty());
   }

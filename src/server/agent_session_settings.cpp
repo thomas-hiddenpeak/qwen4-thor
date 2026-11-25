@@ -19,13 +19,14 @@ void Remove(Json* value, const std::string& name) {
                 [&](const auto& pair) { return pair.first == name; });
 }
 // Each revision contains only the settings that differ from the original.
-// A null spending override clears the original optional limit.
+// A null override clears an optional setting inherited from the original.
 void Apply(Json* result, const Json& changes) {
   for (const auto& [name, value] : changes.object) {
     if (name == "agent") {
       for (const auto& [key, item] : value.object)
         Set(&Field(*result, "agent"), key, item);
-    } else if (name == "spend_control" && value.IsNull()) {
+    } else if ((name == "spend_control" || name == "prompt_cache_options") &&
+               value.IsNull()) {
       Remove(result, name);
     } else {
       Set(result, name, value);
@@ -35,6 +36,16 @@ void Apply(Json* result, const Json& changes) {
 }  // namespace
 
 namespace agent_detail {
+void ApplyPromptCacheOptions(Json* session, const Json& request) {
+  if (const auto* options = request.Find("prompt_cache_options")) {
+    if (options->IsNull())
+      Remove(session, "prompt_cache_options");
+    else
+      Set(session, "prompt_cache_options",
+          Object({{"ttl", String(options->GetString("ttl", "30m"))}}));
+  }
+}
+
 ObjectReply SessionSettings(const Json& data, const Json* link) {
   const auto* seed = data.Find("session");
   const auto* agent = seed ? seed->Find("agent") : nullptr;
@@ -67,7 +78,8 @@ ObjectReply BindSessionSettings(Json* data, const Json& session, Json* link) {
       Set(&agent, key, value);
   }
   if (!agent.object.empty()) Set(&delta, "agent", std::move(agent));
-  for (const auto* key : {"metadata", "review", "spend_control", "environment"}) {
+  for (const auto* key : {"metadata", "review", "spend_control", "environment",
+                          "prompt_cache_options"}) {
     const auto* value = session.Find(key);
     if (changed(value, seed->Find(key)))
       Set(&delta, key, value ? *value : Json{});
@@ -152,6 +164,7 @@ ObjectReply UpdateAgentSession(ObjectStore& objects, const std::string& id,
     if (!normalized.ok()) return normalized;
     Set(&session, "metadata", std::move(normalized.value));
   }
+  agent_detail::ApplyPromptCacheOptions(&session, request);
   if (const auto* review = request.Find("review"))
     Set(&session, "review", *review);
   if (const auto* spend = request.Find("spend_control")) {
@@ -178,7 +191,8 @@ ObjectReply UpdateAgentSession(ObjectStore& objects, const std::string& id,
   auto projected =
       agent_detail::ProjectHistory(objects, data, id, "", access, &view, false);
   if (!projected.ok()) return projected;
-  for (const auto* key : {"agent", "metadata", "review", "spend_control"}) {
+  for (const auto* key : {"agent", "metadata", "review", "spend_control",
+                          "prompt_cache_options"}) {
     if (const auto* value = session.Find(key))
       Set(&view.session, key, *value);
     else

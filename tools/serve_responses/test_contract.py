@@ -206,6 +206,35 @@ class ApplicationContract(unittest.TestCase):
                 self.assertTrue(all(not validator.is_valid(n) for n in (0, 1.5, 101, '20', True)))
                 self.assertEqual(validator.is_valid(None), nullable)
 
+    def test_agent_session_cache_and_stream_controls(self):
+        base = dict(environment=dict(type='none'), input='42')
+        for stream in ({}, {'stream': False}, {'stream': True}):
+            for options in ({}, {'include_obfuscation': False},
+                            {'include_obfuscation': 'false'}, None):
+                with self.subTest(stream=stream, options=options):
+                    valid = stream.get('stream') and options in ({}, {'include_obfuscation': False})
+                    self.assertEqual(not errors(dict(base, **stream, stream_options=options),
+                                                'agent_session_create'), bool(valid))
+        for name, fields in [('agent_session_create', base), ('agent_session_update', {})]:
+            for value in (None, {}, {'ttl': '30m'}, {'ttl': '12h'}, {'ttl': None},
+                          {'ttl': '24h'}, {'ttl': 1800}, {'other': 1}):
+                with self.subTest(name=name, value=value):
+                    self.assertEqual(not errors(dict(fields, prompt_cache_options=value), name),
+                                     value in (None, {}, {'ttl': '30m'}, {'ttl': '12h'}))
+        self.assertTrue(errors({'stream_options': {}}, 'agent_session_update'))
+        create = resolve(SCHEMA['$defs']['agent_session_create'])['properties']
+        stream = resolve(create['stream_options'])['properties']['include_obfuscation']
+        self.assertIs(stream['default'], True)
+        def cache_record(properties):
+            variants = resolve(properties['prompt_cache_options'])['anyOf']
+            return next(resolve(v) for v in variants if resolve(v).get('type') == 'object')
+        request = cache_record(create)
+        public = cache_record(resolve(SCHEMA['$defs']['agent_session_resource'])['properties'])
+        self.assertEqual(request['properties']['ttl']['default'], '30m')
+        self.assertNotIn('ttl', request.get('required', []))
+        self.assertIn('ttl', public['required'])
+
+
     def test_chatkit_and_eval_page_sizes_match_the_native_query_parser(self):
         bundle = app.standalone_openapi(api.openapi())
         paths = bundle['paths']

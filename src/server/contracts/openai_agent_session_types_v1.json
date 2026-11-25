@@ -66,6 +66,16 @@
           "name": "vault_ids",
           "optional": true,
           "type": 61
+        },
+        {
+          "name": "prompt_cache_options",
+          "optional": true,
+          "type": 497
+        },
+        {
+          "name": "stream_options",
+          "optional": true,
+          "type": 500
         }
       ],
       "additional": null
@@ -1561,6 +1571,11 @@
           "name": "spend_control",
           "optional": true,
           "type": 160
+        },
+        {
+          "name": "prompt_cache_options",
+          "optional": true,
+          "type": 497
         }
       ],
       "additional": null
@@ -1716,6 +1731,11 @@
           "name": "vault_ids",
           "optional": false,
           "type": 62
+        },
+        {
+          "name": "prompt_cache_options",
+          "optional": true,
+          "type": 499
         }
       ],
       "additional": null
@@ -6499,6 +6519,74 @@
           "name": "order",
           "optional": true,
           "type": 252
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "literal",
+      "value": "30m"
+    },
+    {
+      "kind": "literal",
+      "value": "12h"
+    },
+    {
+      "kind": "union",
+      "variants": [
+        493,
+        494
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "ttl",
+          "optional": true,
+          "type": 495,
+          "bounds": {
+            "default": "30m"
+          }
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        496,
+        4
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "ttl",
+          "optional": false,
+          "type": 495
+        }
+      ],
+      "additional": null
+    },
+    {
+      "kind": "union",
+      "variants": [
+        498,
+        4
+      ]
+    },
+    {
+      "kind": "object",
+      "fields": [
+        {
+          "name": "include_obfuscation",
+          "optional": true,
+          "type": 17,
+          "bounds": {
+            "default": true
+          }
         }
       ],
       "additional": null
