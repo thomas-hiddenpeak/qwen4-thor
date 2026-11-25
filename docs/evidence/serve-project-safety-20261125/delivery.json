@@ -1,0 +1,150 @@
+{
+  "stage": "issued",
+  "maintenance_retry": "Initial validation harness timed out after 240 seconds while finalizing a reviewed registration archive. The supported idempotent apply resumed with the same sealed plan, device/inode and SHA-256, reported zero deletions and preserved selection policy.",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 484,
+    "version_revision": 171,
+    "profile_revision": 61,
+    "previous_profile_revision": 60,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "8cdcad1c4d4dd40b0cf7a40f4ccc234c24b538984da2cdd7ed16e88d301fff67",
+    "fallback": "3cd11909d4ffa1ded910a579c4f43fa6d70062cc096ae602a615939fa58a610b",
+    "engine": "2e54a2adfbe1145a8d91c08b6ae86839bd75805c6e48775bf35ab128f648945f",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "a5e061b8a33a550e104b320dca0dae24564f7ce364e143527bf45687bf229cef",
+  "recovery": {
+    "fallback": {
+      "seconds": 247.385,
+      "starts": 2,
+      "records": {
+        "approved_alert": "alert_33e83aace9624e0f96d5ae95532fda07",
+        "approved_request": "req-2d2e6e6ce8ca800ac5153f8e65677485",
+        "source_response": "resp_5ae30c083c6d9e1a12a13d0fdfb8c881",
+        "reviewed_case": "C-5bbd2734-bbf3-42e4-a21c-cf915010e683",
+        "foreign_status": 404,
+        "independent_chat": "42"
+      },
+      "document": {
+        "sdk": "7.47.0",
+        "independent_chat": "42",
+        "history_answer": "157",
+        "replay_answer": "157",
+        "score": 1,
+        "sha256": "39e3d3a8c6d54be05537d428a6fb56b6cad67e9eaef3531c7cf0a4af7f3e15cf",
+        "source_file": "file_793fbbc2f207de138fa9d5e70884fec6",
+        "response": "chatcmpl-auto-afa7483917ef610cd9becd703957a971",
+        "evaluation": "eval_8305c6d985ba11acfcfd31fb3ba7cfd6",
+        "run": "evalrun_cbc1482dc1923d8d94e8688e5aaaf4b6",
+        "output": "outputitem_3e7ebd6f8276d4c921cd1c1d24c0501a",
+        "source_deleted_before_selection": 404,
+        "response_deleted": 404,
+        "foreign_project": 404
+      },
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "seconds": 362.282,
+      "starts": 2,
+      "records": {
+        "approved_alert": "alert_a3db26eb385145c1b02290adb4bec606",
+        "approved_request": "req-10e257f5aac4f8ee699ae7cc9cc0a78c",
+        "source_response": "resp_3933df308f716e55de68409cb65db723",
+        "reviewed_case": "C-2215989f-7352-469c-aa34-3459cb397ced",
+        "foreign_status": 404,
+        "independent_chat": "42"
+      },
+      "document": {
+        "sdk": "7.47.0",
+        "independent_chat": "42",
+        "history_answer": "157",
+        "replay_answer": "157",
+        "score": 1,
+        "sha256": "39e3d3a8c6d54be05537d428a6fb56b6cad67e9eaef3531c7cf0a4af7f3e15cf",
+        "source_file": "file_c0161cd89e6ec78b1684b87b61cb34dc",
+        "response": "chatcmpl-auto-82582853d6dbcf094442d1611111ee53",
+        "evaluation": "eval_1486df1e1b5204efd58e839e54951d41",
+        "run": "evalrun_db4ce185b3cf66150b55f9a6a8de9964",
+        "output": "outputitem_314844d6a99a570ae21ecc8af7b513d2",
+        "source_deleted_before_selection": 404,
+        "response_deleted": 404,
+        "foreign_project": 404
+      },
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "soak": {
+    "source_commit": "0e41dc4ba9d104e8eea13efe4dd944bece4dd2bc",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/safety-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/safety-client-primary-01/bundle",
+      "manifest_sha256": "8cdcad1c4d4dd40b0cf7a40f4ccc234c24b538984da2cdd7ed16e88d301fff67"
+    },
+    "revision": 484,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/safety-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "a89afa03563db4fc7135bcc3a5f3ff0d70b5420a6e02327ab1eb621be7a76c26",
+    "handoff_sha256": "59f96a021ea3eddedefce2ac4353a16d85b2b2baba52d1138ed51c222660d19e",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "method_declarations": {
+    "matched": 217,
+    "required": 231,
+    "remaining": 14
+  },
+  "first_attempt": {
+    "status": "FAIL",
+    "cause": "The two validation clients requested two independent peer Chat completions inside its installed 1 RPM window. The second request returned 429 after the PDF evaluation. The bounded retry spaced its requests by 61 seconds using the same installed quota and the same fallback package."
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/safety-delivery-delivery/plan.json": "4170ff5301b77463b8ccb5545950c7518a5bffc4accef220908911f63aa72cdd",
+    ".q4t-work/serve-responses-agents-20261123/safety-delivery-delivery/result.json": "0b23d279ec3441075758f5e05296027222de898001258ed06e9260ad28ca6583",
+    ".q4t-work/serve-responses-agents-20261123/safety-delivery-delivery/check.stdout": "b2afe4a5ff8e56ceb375c3fee17be8d5a81624ebd5ecf784f42257d3789413b3",
+    ".q4t-work/serve-responses-agents-20261123/safety-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/safety-delivery-delivery/version-status.stdout": "5c5e929de273cbb768239c864bb998740dc56dd552f6cea26fcf486ccc64ee8f",
+    ".q4t-work/serve-responses-agents-20261123/safety-delivery-day.json": "f66199c8d555e917ce9884131ac382e20e946cf16f9012668ea2ee8e18bd0198",
+    ".q4t-work/serve-responses-agents-20261123/safety-release-methods.json": "c451cfbb4eb2548b1cb9a5a30c2d29e083ad1d73872d7bcd4d7fb1e4fdaca890",
+    ".q4t-work/serve-responses-agents-20261123/safety-delivery-maintenance-01/result.json": "d7cc746fbf97f8ffe0c31701c77b6193b84d0bc96140a6a1c4a8ed633bd0eb24",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-project-safety-20261125/profiles.json": "c533f660df03b734352fc36abfd21326bf92a4fa8709e8c0e08557cf7e38d854",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-project-safety-20261125/records.json": "69efc9faeffde2611feec239154b3b3d7db935e020032a94bd6d0c95094820ec",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-evals-20261125/stored-chat-files.json": "df8b803e0421f0e6ab7ec89e7105924f7629006693f1efd58f95a55ca3fccc4a",
+    ".q4t-work/serve-responses-agents-20261123/safety-maintenance-lease-02/exit.json": "8b51daaf79b02ba0f5aaa9d0f4992b986d386fae2c3df2a02c503fea23911d4f",
+    ".q4t-work/serve-responses-agents-20261123/safety-publish-lease-01/exit.json": "f150c252ffbedf7cd838d39d4b15536e1f3af801127c46a0cb8d6247552f96bd",
+    ".q4t-work/serve-responses-agents-20261123/safety-maintenance-lease-01/exit.json": "dae6e1dbcce360923df2cf2eab648bdb2070e38943c7a2b2d3ea0ff83d6ece96",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/safety-maintenance-device-01.log": "d48e10d3107edd470df151f2d524fc20c8885b9f40435effb56263779d7380fd",
+    ".q4t-work/serve-responses-agents-20261123/safety-delivery-maintenance-01/archive-versions/plan.json": "d6fa39f93df0e525779cbbb4a474a16acb81234841c578e4178f8d1d768ac122",
+    ".q4t-work/serve-responses-agents-20261123/safety-delivery-maintenance-01/versions-resume.stdout": "55b1819af1cd2f5e23e4c421c9c991cf489809785ca95be4e038ed0721d4375d",
+    ".q4t-work/serve-responses-agents-20261123/safety-fallback-lease-02/exit.json": "fbfe896e6703cc9d1b1f6b3248364e13b8615b560796659a2ddf2e5358cef769",
+    ".q4t-work/serve-responses-agents-20261123/safety-fallback-business-02/prepare-run.json": "dfaeec6e8a5706d6f5e7c28a3028b9669c045b42dc7e55a1af67a12d37ec1f97",
+    ".q4t-work/serve-responses-agents-20261123/safety-fallback-business-02/restore-run.json": "902ab97c7963979e795f686854e611c44b1333e2ffdbe1e5127791b8790bdb27",
+    ".q4t-work/serve-responses-agents-20261123/safety-fallback-business-02/result.json": "25fce4580c1d2ae96ceca7c6fdbfb0a8c197a0bb32b1e86a1b0bb28fe51c6f50",
+    ".q4t-work/serve-responses-agents-20261123/safety-fallback-business-02/interruption.json": "0ecaff7b8832cefe0aef6fbba9d2ec3e3ddd66905c262df0fff4a5fb38cbd1d9",
+    ".q4t-work/serve-responses-agents-20261123/safety-fallback-business-02/chat-after.wire": "1c0ea32dceccb23b9057748a6c4513d5ed429223afba5177bda5a51f17f3617d",
+    ".q4t-work/serve-responses-agents-20261123/safety-client-fallback-01/origin.json": "34e399b39924fe0805c8251dab77c3c2677f86428b0388c84a54ba234ec28f6c",
+    ".q4t-work/serve-responses-agents-20261123/safety-client-fallback-01/service.release.json": "71634a8d510fbc9747a36fdd7dfe423f745b5a31f9d398ccbda8101bbb3c2d65",
+    ".q4t-work/serve-responses-agents-20261123/safety-client-fallback-01/service-acceptance.json": "942fff6ac7a0ca2f8690af3586ac969004f58f372a1ce195d05bd1f211d8c245",
+    ".q4t-work/serve-responses-agents-20261123/safety-primary-lease-01/exit.json": "88e163496d73982b85eeb67f556d85a78c2aa2ffd773c1cb54d4c2fd1ee5b0b3",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-safety-01/prepare-run.json": "b31ae93ce2be4ced57051fe554a6c0537f2dc0273dcc7bcd1ae22feaa4d7a722",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-safety-01/restore-run.json": "6a6a7ff9ae46a7f8c74e48a8db1a005f1d06259dfd120cd8654e5f51580811d3",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-safety-01/result.json": "f93558f67f1f8418fef59646acd8e91a6b00fbf1ed3f7b4876a8cfc0e7cab9f9",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-safety-01/interruption.json": "df708eaa835fbe4251b3021588ba235ede42ffaff250797517aee413df893eec",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-safety-01/chat-after.wire": "c9d9e3f1750bf6d22cc7d6fc44705f06bde3b53c31e1e1b900f73a4d70d52b6c",
+    ".q4t-work/serve-responses-agents-20261123/safety-client-primary-01/origin.json": "5aae2fe25d4e1995fde695ce882e2ab1516fc32c1ef9c03fb50447223aab2085",
+    ".q4t-work/serve-responses-agents-20261123/safety-client-primary-01/service.release.json": "b171924a451df9a9dc8c2d5c11756ea03195ea28431531aafd7d8e37206d6c20",
+    ".q4t-work/serve-responses-agents-20261123/safety-client-primary-01/service-acceptance.json": "f2648c1263989e050f7d0e9d83d885ecfd36cb54d1341d655adf3c6e58d37985",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-safety-01/takeover.json": "48f8039ec1bd6fa9fb248134a4c1f69f476a034efc0800ee58ce8bcd1698a9ae",
+    ".q4t-work/serve-responses-agents-20261123/safety-fallback-business-01/result.json": "97c74146ef31992b997e9acd05549d4031ef6a0d2f2f53397bde17bb37864f3a",
+    ".q4t-work/serve-responses-agents-20261123/safety-fallback-business-01/restore/document-sdk.stderr": "f92fc5973e9ca98258d8e8fb706148615ee7fc250cf9849574ced95c83ecde38",
+    ".q4t-work/serve-responses-agents-20261123/safety-fallback-lease-01/exit.json": "65348b22570dff4dba71e1ca4faadf6b1f40cd55b3bf6d42633e55c1bf20f04c"
+  }
+}

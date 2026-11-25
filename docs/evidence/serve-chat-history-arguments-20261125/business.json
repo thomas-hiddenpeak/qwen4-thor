@@ -1,5 +1,5 @@
 {
-  "stage": "cpu_verified",
+  "stage": "device_verified",
   "issued": false,
   "official_schema": "ChatCompletionMessageToolCall.function.arguments is a string; a model can generate non-JSON argument text.",
   "official_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
@@ -38,8 +38,7 @@
     "history_argument_sdk.mjs": "71e156cae94c0c720a4342b0cbc62dae11b357712c5db0818f41b648a3ac452a"
   },
   "pending": [
-    "Native TLS SDK repair, stored history and streamed final tool result",
-    "Recoverable package qualification"
+    "Primary/light handoff, managed recovery and revertible publication"
   ],
   "recovery_preparation": {
     "status": "cpu_verified_device_pending",
@@ -50,6 +49,35 @@
     "preparation_failure": {
       "reason": "Read-only historical fixture was absent in the sparse checkout; materialized four tracked JSON files.",
       "log_sha256": "e8f077774fd275ac4451b499e760a07f46139b1323575850f109afe6d37b4059"
+    }
+  },
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 38.017,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ],
+    "sdk": "7.47.0",
+    "protected_manifest": "8cdcad1c4d4dd40b0cf7a40f4ccc234c24b538984da2cdd7ed16e88d301fff67",
+    "chat": "chatcmpl-auto-3eb815580dcb3b44cf779fb2e5cc0e92",
+    "original_call": "call_previous",
+    "corrected_call": "call_chatcmpl-auto-3eb815580dcb3b44cf779fb2e5cc0e92_0",
+    "original_text": "{\"record\":",
+    "corrected_arguments": {
+      "record": "scope"
+    },
+    "response": "resp_df942dd5a246ed6e780701973a9048e6",
+    "response_answer": "157",
+    "chat_answer": "157",
+    "sse_finish": "stop",
+    "foreign_status": 404,
+    "sources": {
+      ".q4t-work/serve-responses-agents-20261123/history-arguments-business-01/result.json": "121602fa84b33a0edeb9e42a899291d65b853b1ca89d6625c59d4ef22342e9b5",
+      ".q4t-work/serve-responses-agents-20261123/history-arguments-business-01/plan.json": "8a5697dc6bad91b037c0d518a70e571facead1d3f0a6cb9d002d703cb29763f4",
+      ".q4t-work/serve-responses-agents-20261123/history-arguments-business-01/create/sdk-result.json": "979595e5af0550ee93953254c29327ed5346b9093e766d99253b3ea1e40fb45c",
+      ".q4t-work/serve-responses-agents-20261123/history-arguments-lease-01/exit.json": "656c229b7556929a5599f1418a74337a7109375f4e9c616838c6a0d4ee182025"
     }
   }
 }

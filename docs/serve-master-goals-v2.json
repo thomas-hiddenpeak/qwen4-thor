@@ -766,6 +766,10 @@
         "evidence": "evidence/serve-evals-20261125/delivery.json",
         "revision": 480,
         "state": "issued_bounded_acceptance"
+      },
+      "project_safety_delivery_20261125": {
+        "publication": 484,
+        "receipt": "evidence/serve-project-safety-20261125/delivery.json"
       }
     },
     {
@@ -1122,8 +1126,9 @@
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
       },
       "invalid_historical_arguments_20261125": {
-        "stage": "cpu_verified",
-        "receipt": "evidence/serve-chat-history-arguments-20261125/business.json"
+        "stage": "profile_verified",
+        "receipt": "evidence/serve-chat-history-arguments-20261125/business.json",
+        "profiles": "evidence/serve-chat-history-arguments-20261125/profiles.json"
       }
     },
     {
@@ -2612,7 +2617,11 @@
         "manifest_sha256": "6c222213fa40dcf77abc9035e17e3f14c93e1146ff272e810cb2cf26ff5b252d",
         "delivery_evidence": "evidence/serve-web-search-delivery-20261117/README.md"
       },
-      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
+      "project_safety_delivery_20261125": {
+        "publication": 484,
+        "receipt": "evidence/serve-project-safety-20261125/delivery.json"
+      }
     },
     {
       "id": "A08",
@@ -7623,6 +7632,10 @@
         ],
         "canonical_default": "all_four_captures_on_each",
         "private_strict_mode": "known_nullability_divergence"
+      },
+      "project_safety_delivery_20261125": {
+        "publication": 484,
+        "receipt": "evidence/serve-project-safety-20261125/delivery.json"
       }
     },
     {
@@ -8832,7 +8845,12 @@
         "owner_cpu_tests": 2
       },
       "current_execution_prerequisite": "Refresh exact cold qualification against rev366 or then-current default; pending host/camera maintenance handoff remains required.",
-      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
+      "rev484_cold_preflight_20261125": {
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
+        "model_starts": 0,
+        "qualified_cold_run": false
+      }
     },
     {
       "id": "R08",
@@ -8900,7 +8918,12 @@
         "Cold and pressure composition beyond delivered normal-NVML resource subset"
       ],
       "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
-      "automation_capacity_handoff": "evidence/serve-agent-automations-20261124/profiles.json"
+      "automation_capacity_handoff": "evidence/serve-agent-automations-20261124/profiles.json",
+      "rev484_cold_preflight_20261125": {
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
+        "model_starts": 0,
+        "qualified_cold_run": false
+      }
     },
     {
       "id": "R09",
@@ -9155,6 +9178,15 @@
       "cosine_delivery_20261125": {
         "revision": 482,
         "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
+      },
+      "project_safety_delivery_20261125": {
+        "publication": 484,
+        "receipt": "evidence/serve-project-safety-20261125/delivery.json"
+      },
+      "rev484_cold_preflight_20261125": {
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
+        "model_starts": 0,
+        "qualified_cold_run": false
       }
     },
     {
@@ -10284,12 +10316,16 @@
       "cosine_delivery_20261125": {
         "revision": 482,
         "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
+      },
+      "project_safety_delivery_20261125": {
+        "publication": 484,
+        "receipt": "evidence/serve-project-safety-20261125/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev482_delivered_remaining_deliveries",
+      "state": "rev484_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -11513,6 +11549,10 @@
       "cosine_delivery_20261125": {
         "revision": 482,
         "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
+      },
+      "project_safety_delivery_20261125": {
+        "publication": 484,
+        "receipt": "evidence/serve-project-safety-20261125/delivery.json"
       }
     },
     {
@@ -11972,11 +12012,15 @@
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
+      },
+      "project_safety_delivery_20261125": {
+        "publication": 484,
+        "receipt": "evidence/serve-project-safety-20261125/delivery.json"
       }
     }
   ],
-  "next_task": "Validate stored tool histories and sampled tool-call grading, then complete outstanding graders, application routes and recovery compositions.",
-  "next": "验证带工具历史的 Evals 来源和采样工具调用评分，继续补齐评分器、其余推理和应用接口及恢复任务。",
+  "next_task": "Complete the historical function-argument repair loop, remaining grader and media/provenance methods, and the R07–R09 managed recovery compositions.",
+  "next": "完成历史函数参数错误后的真实重试；继续剩余评分器、图像／视频生成和来源验证接口，并推进 R07—R09 资源与恢复组合。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
@@ -18244,15 +18288,18 @@
       "stage": "native_tls_stored_chat_pdf_verified",
       "receipt": "docs/evidence/serve-evals-20261125/stored-chat-files.json",
       "issued": false
-    }
+    },
+    "stored_chat_files_delivery": "evidence/serve-project-safety-20261125/delivery.json"
   },
   "project_safety_20261125": {
-    "stage": "native_tls_verified",
-    "issued": false,
+    "stage": "issued",
+    "issued": true,
     "receipt": "evidence/serve-project-safety-20261125/records.json",
     "profiles": {
       "stage": "qualified",
       "receipt": "evidence/serve-project-safety-20261125/profiles.json"
-    }
+    },
+    "delivery": "evidence/serve-project-safety-20261125/delivery.json",
+    "revision": 484
   }
 }
