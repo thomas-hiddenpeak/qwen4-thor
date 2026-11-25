@@ -811,9 +811,10 @@
         "delivery": "evidence/serve-video-track-selection-20261125/delivery.json"
       },
       "typed_tool_history_20261125": {
-        "stage": "cpu_verified",
+        "stage": "device_verified",
         "evidence": "evidence/serve-history-argument-types-20261125/cpu.json",
-        "native_token_evidence": "evidence/serve-history-argument-types-20261125/native-tokens.json"
+        "native_token_evidence": "evidence/serve-history-argument-types-20261125/native-tokens.json",
+        "business": "evidence/serve-history-argument-types-20261125/business.json"
       }
     },
     {
@@ -1203,9 +1204,10 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "typed_tool_history_20261125": {
-        "stage": "cpu_verified",
+        "stage": "device_verified",
         "evidence": "evidence/serve-history-argument-types-20261125/cpu.json",
-        "native_token_evidence": "evidence/serve-history-argument-types-20261125/native-tokens.json"
+        "native_token_evidence": "evidence/serve-history-argument-types-20261125/native-tokens.json",
+        "business": "evidence/serve-history-argument-types-20261125/business.json"
       }
     },
     {

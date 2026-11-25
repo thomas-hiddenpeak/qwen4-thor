@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'typed_history_handoff' in plan:
+            from tools.serve_protocol import typed_history_profiles
+            profiles[name]['evidence_sha256'].update(typed_history_profiles.verify(phase, plan, declared))
+            continue
         if 'alternate_track_handoff' in plan:
             from tools.serve_responses import video_track_profiles
             profiles[name]['evidence_sha256'].update(video_track_profiles.verify(phase, plan, declared))

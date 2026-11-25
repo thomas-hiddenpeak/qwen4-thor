@@ -1,0 +1,28 @@
+{
+  "stage": "qualification_prepared",
+  "issued": false,
+  "prior_revision": 500,
+  "predecessors": {
+    "primary": {
+      "predecessor": "f8c40e77e4eb07b40db75cbb2dc6c7a335a890eba18edd9872f5e0bea72147e8",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_limit_rejected": 7,
+      "unreviewed_candidate_rejected": true
+    },
+    "light": {
+      "predecessor": "0f5f5681a84f223721d9c64aaab1276fcf10f293c04dbf078a97254fb3a4fbc1",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_limit_rejected": 7,
+      "unreviewed_candidate_rejected": true
+    }
+  },
+  "tests": {
+    "passed": 53,
+    "command": [
+      "tools.serve_recovery.test_profile_migration",
+      "tools.serve_protocol.test_typed_history_profiles"
+    ],
+    "log_sha256": "d65030fa642ffc4eb95cfea254a50ba8ada91318ec2727d3801713adf4e08db7"
+  },
+  "scope": "Both capacities use the same stored function call identities; the light profile fetches both primary completions and replays their original messages."
+}
