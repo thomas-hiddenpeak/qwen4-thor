@@ -799,10 +799,11 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
         "business": "evidence/serve-video-characters-20261125/business.json",
-        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json",
+        "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       },
       "application_page_limits_20261125": {
         "stage": "targeted_schema_verified",
@@ -2756,7 +2757,7 @@
         "Complete retained application methods and semantics, including media generation, safety records, grader backends, wider tool/media histories and hosted execution options. Hosted environments, subagents, automations, ChatKit and Evals have issued business-tested subsets."
       ],
       "retention_plan": "SERVE_APPLICATION_RETENTION_2026-11-10.md",
-      "next": "Complete managed agent session, turn, environment and related application state from the G00 scope mapping.",
+      "next": "Qualify durable state for generated video jobs, including ownership, asset retention and recovery.",
       "retention_cpu": {
         "cpp": 28,
         "driver_distinct": 4
@@ -3178,10 +3179,11 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
         "business": "evidence/serve-video-characters-20261125/business.json",
-        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json",
+        "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       }
     },
     {
@@ -3212,7 +3214,7 @@
         "Per-backend SDK, recovery and release composition"
       ],
       "multipart_component_evidence": "evidence/serve-multipart-cpu-20261110/README.md",
-      "next": "Implement useful native retrieval representation; continue media/backend, tool, recovery and all master tasks.",
+      "next": "Connect Batch image generation, image editing and video generation to the real A10 backends, then qualify per-line results, cancellation, tenant ownership and restart with the official SDK.",
       "binary_component_evidence": "docs/evidence/serve-binary-cpu-20261110/README.md",
       "http_stream_component_evidence": "docs/evidence/serve-http-body-stream-cpu-20261110/README.md",
       "files_core_component_evidence": "docs/evidence/serve-files-core-cpu-20261110/README.md",
@@ -3480,7 +3482,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement native Realtime tracing, Live, and all remaining required inference/application and reliability tasks. PR56 MCP is merged and rev416 remains STOPPED; preserve original quality failures and user-owned long-soak/listening.",
+      "next": "Implement the 12 remaining media methods listed in the rev498 receipt with actual image/video inference and provenance backends; also qualify the outstanding accepted-path media semantics.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -5936,10 +5938,11 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
         "business": "evidence/serve-video-characters-20261125/business.json",
-        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json",
+        "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       },
       "alternate_track_selection_20261125": {
         "stage": "cpu_verified",
@@ -7872,10 +7875,11 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
         "business": "evidence/serve-video-characters-20261125/business.json",
-        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json",
+        "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       },
       "application_page_limits_20261125": {
         "stage": "targeted_schema_verified",
@@ -9101,8 +9105,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 496,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev496-preflight.json",
+        "revision": 498,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev498-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -9466,6 +9470,10 @@
       "dictation_delivery_20261125": {
         "revision": 496,
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "video_character_delivery_20261125": {
+        "revision": 498,
+        "receipt": "evidence/serve-video-characters-20261125/delivery.json"
       }
     },
     {
@@ -10640,16 +10648,17 @@
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "video_character_reference_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
         "business": "evidence/serve-video-characters-20261125/business.json",
-        "profiles": "evidence/serve-video-characters-20261125/profiles.json"
+        "profiles": "evidence/serve-video-characters-20261125/profiles.json",
+        "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev496_delivered_remaining_deliveries",
+      "state": "rev498_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -11805,7 +11814,7 @@
         "all_master_tasks_active": true,
         "evidence": "evidence/serve-realtime-speech-delivery-20261120/README.md"
       },
-      "next": "Qualify the remaining grader families, validate package profiles and recovery, and publish the candidate. Continue all other plan tasks.",
+      "next": "Qualify the next application changes, group them into a recoverable release and preserve the user-owned day handoff.",
       "native_realtime_duplex_delivery_20261120": {
         "revision": 386,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
@@ -11921,6 +11930,10 @@
       "dictation_delivery_20261125": {
         "revision": 496,
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "video_character_delivery_20261125": {
+        "revision": 498,
+        "receipt": "evidence/serve-video-characters-20261125/delivery.json"
       }
     },
     {
@@ -12408,6 +12421,10 @@
       "dictation_delivery_20261125": {
         "revision": 496,
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "video_character_delivery_20261125": {
+        "revision": 498,
+        "receipt": "evidence/serve-video-characters-20261125/delivery.json"
       }
     }
   ],
@@ -18508,6 +18525,13 @@
       "matching_success_sets": 215,
       "missing_declaration": 16,
       "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
+    },
+    "rev498": {
+      "required": 231,
+      "declared": 219,
+      "matching_success_sets": 219,
+      "missing_declaration": 12,
+      "evidence": "evidence/serve-video-characters-20261125/delivery.json"
     }
   },
   "agent_hosted_workspace_20261124": {
