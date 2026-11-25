@@ -1,5 +1,9 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+管理员只读检查已确认 rev486 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev486-preflight.json)
+
+模型退出和主包故障后均恢复同一客户的原 Chat 及纠正后的函数调用，工具查询结果为 157。流式 Chat 正常结束，Responses 原样保留截断文本，其他客户读取返回 404。发布保持 STOPPED，独立回退包已登记，13 份受保护记录一致。24 小时预检完成，实跑交用户。下一步完成剩余评分和媒体接口。[验证记录](evidence/serve-chat-history-arguments-20261125/delivery.json)
+
 兼容矩阵更新了 ChatKit、Agents 工作区和 Code Interpreter 的发行边界。该说明引用已有的模型退出与独立回退实测，保留了两阶段上传和图片预览缺口。后续按正式客户端合同补齐。[验证记录](APPLICATION_SERVICE.md)
 
 候选主轻配置要求完整保留已发行的历史工具参数、余弦评分与行检查点，只增加 METEOR。48 项迁移用例通过，包括拒绝丢失旧评分器、关闭检查点或改变前驱历史。实际恢复评分行与独立回退包仍待设备验收。[验证记录](evidence/serve-evals-20261125/meteor.json)
