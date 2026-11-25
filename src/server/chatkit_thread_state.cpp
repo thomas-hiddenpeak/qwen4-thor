@@ -275,6 +275,12 @@ io::Json ClientItem(io::Json item) {
                    {"status", *form->Find("status")},
                    {"inputs", *form->Find("inputs")}});
   }
+  if (type == "widget") {
+    Json widget;
+    if (io::ParseJson(item.GetString("widget"), &widget, true,
+                      kApplicationJsonLimits))
+      Set(&item, "widget", std::move(widget));
+  }
   if (type == "client_tool_call") {
     Json arguments, output;
     io::ParseJson(item.GetString("arguments"), &arguments, true,

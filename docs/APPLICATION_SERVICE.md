@@ -141,6 +141,17 @@ ChatKit 的管理 SDK 与浏览器 POST 共用存储。rev506 已验证 21 条�
 
 工作流可用 Agent metadata 的 `q4t_chatkit_structured_input_tool` 指定一个已注册函数。当该函数返回含 `inputs` 的有效提问参数时，浏览器收到带稳定 ID 的 `structured_input`，可用 `threads.add_structured_input` 回填选择或自由文本。管理 SDK 可按同一 ID 查看原函数调用及结果。历史工作流继续使用普通工具输出。该能力已完成候选业务短验。[业务回执](evidence/serve-chatkit-structured-20261125/business.json)
 
+工作流可通过项目管理凭据上传 JSON 动作文件，并将其 Files ID 登记为 Agent metadata 的 `q4t_chatkit_actions_file`。文件中的 `actions` 是动作名到 JavaScript 源码的映射。签发 ChatKit 会话时按项目权限读取并固定代码；删除源文件后，已签发会话可继续使用该版本，新会话须有可读的部署文件。普通模型请求沿用原工作流。
+
+动作名由浏览器提交。处理程序在项目已有的隔离 JavaScript 工作者内运行，可以从 `actionContext` 读取 `action`、`sender`、`thread`、`state`、`state_variables` 和 `streaming`。例如，登记为 `show_release` 的处理程序可使用下列代码：
+
+```js
+const value = String(actionContext.state_variables.revision);
+text({widget: {type: "Card", children: [{type: "Text", value}]}});
+```
+
+处理程序调用一次 `text`，返回可选的 `widget` 和下一版 `state`。流式模式还能返回 `progress` 字符串数组及 `effects` 客户端事件数组。程序结束后，服务按原线程修订原子保存状态及组件，随后发送事件。同步调用返回 `updated_item` 或空值。带发送方 ID 的调用更新原组件，无发送方时可新增组件。无效输出返回 502；并发写入冲突返回 409，可重新读取线程。程序只能访问本次上下文，沿用现有 JavaScript 工作者的内存和执行时限。工作者执行期间实时发出事件，以及更多线程事件类型仍待实现。本次已验证两种调用、组件历史、组件后表单回填和失败隔离。[业务回执](evidence/serve-chatkit-actions-20261125/business.json)
+
 本项目支持的完整输入见[38字段schema](serve-chat-request-v1.schema.json)
 与[必需原生语义](serve-input-semantics-v1.json)；10条路由见
 [OpenAPI](serve-openapi-v1.json)。下表按调用者可见行为分组，不以静态

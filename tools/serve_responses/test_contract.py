@@ -143,6 +143,18 @@ class ApplicationContract(unittest.TestCase):
         self.assertTrue(errors(dict(limit=101), 'input_items_query'))
         self.assertTrue(errors(dict(starting_after=1), 'response_retrieve'))
 
+    def test_chatkit_custom_action_request_shapes(self):
+        for name in ('threads.custom_action', 'threads.sync_custom_action'):
+            def valid(params):
+                return not errors(dict(type=name, params=params), 'chatkit_client_request')
+            for payload in (None, [7], 'release', {'field':'revision'}):
+                self.assertTrue(valid(dict(thread_id='cthr_a', action=dict(type='lookup', payload=payload))))
+            self.assertTrue(valid(dict(thread_id='cthr_a', item_id=None, action=dict(type='show'))))
+            self.assertTrue(valid(dict(thread_id='cthr_a', item_id='item_1', action=dict(type='show'))))
+            for params in [dict(action={'type':'read'}), dict(thread_id='t', action={}),
+                           dict(thread_id='t', item_id=19, action={'type':'x'})]:
+                self.assertFalse(valid(params))
+
     def test_chatkit_browser_submits_structured_answers(self):
         def validate(value, **fields):
             params = dict(thread_id='cthr_a', item_id='fc_a', input=value, **fields)

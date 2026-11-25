@@ -3,6 +3,7 @@
 #include <ctime>
 
 #include "chatkit_credentials.h"
+#include "chatkit_actions.h"
 #include "object_protocol.h"
 #include "q4t/server/request_json.h"
 
@@ -75,9 +76,12 @@ ObjectReply Create(ObjectStore& objects, const StateAccess& access,
       workflow.GetString("version") != std::to_string(revision))
     return Error(404, "workflow_version_not_found",
                  "Workflow version not found");
-  const auto& definition = Child(deployed.value, "data");
+  auto& definition = Field(deployed.value, "data");
   if (revision < 1 || definition.GetString("id") != agent.id)
     return Error(503, "workflow_record_invalid", "Invalid stored workflow");
+
+  auto bound = chatkit_detail::BindActionFile(objects, access, &definition);
+  if (!bound.ok()) return bound;
 
   ObjectRequest session;
   session.operation = ObjectOperation::kPut;
