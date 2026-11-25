@@ -3025,6 +3025,10 @@
       "cosine_delivery_20261125": {
         "revision": 482,
         "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
+      },
+      "meteor_20261125": {
+        "stage": "lexical_oracle_verified",
+        "receipt": "evidence/serve-evals-20261125/meteor.json"
       }
     },
     {

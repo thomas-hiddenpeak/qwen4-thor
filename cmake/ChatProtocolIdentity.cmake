@@ -192,6 +192,10 @@ set(protocol_inputs
   src/server/native_python.cpp
   src/server/native_python.h
   src/server/workspace_python.py
+  src/server/eval_meteor.py
+  third_party/nltk-porter/porter.py
+  third_party/wordnet/meteor-3.0.zlib
+  cmake/eval_meteor.h.in
   cmake/workspace_python.h.in
   cmake/NativeProgrammatic.cmake
   third_party/quickjs/SOURCE.json
@@ -1251,6 +1255,11 @@ endif()
 configure_file("${CMAKE_CURRENT_LIST_DIR}/agent_session_types.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/agent_session_types_data.h" @ONLY)
 
+file(READ "${Q4T_PROTOCOL_ROOT}/third_party/nltk-porter/porter.py" Q4T_PORTER_PYTHON)
+file(READ "${Q4T_PROTOCOL_ROOT}/src/server/eval_meteor.py" Q4T_METEOR_PYTHON)
+file(READ "${Q4T_PROTOCOL_ROOT}/third_party/wordnet/meteor-3.0.zlib" Q4T_METEOR_LEXICON HEX)
+configure_file("${CMAKE_CURRENT_LIST_DIR}/eval_meteor.h.in"
+  "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/eval_meteor.h" @ONLY)
 file(READ "${Q4T_PROTOCOL_ROOT}/src/server/workspace_python.py" Q4T_WORKSPACE_PYTHON)
 configure_file("${CMAKE_CURRENT_LIST_DIR}/workspace_python.h.in"
   "${Q4T_CHAT_PROTOCOL_INCLUDE_DIR}/q4t/server/workspace_python.h" @ONLY)

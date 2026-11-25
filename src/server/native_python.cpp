@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <string>
 
+#include "q4t/server/eval_meteor.h"
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/workspace_python.h"
 
@@ -57,12 +58,14 @@ struct Python {
 };
 }  // namespace
 
-bool RunIsolatedPython(std::string_view request, std::string* result) {
+bool RunIsolatedPython(std::string_view request, std::string* result,
+                       bool meteor) {
   Python python{};
   if (!python.Load()) return false;
   python.set_path(L"/usr/lib/python3.12:/usr/lib/python3.12/lib-dynload");
   python.initialize(0);
-  if (python.run(kWorkspacePython, nullptr) != 0) return false;
+  if (python.run(meteor ? kMeteorPython : kWorkspacePython, nullptr) != 0)
+    return false;
   auto* main = python.module("__main__");
   auto* globals = main ? python.globals(main) : nullptr;
   if (!globals) return false;

@@ -494,7 +494,7 @@ std::string ChatCapabilitiesJson(
          R"("run_sources":["jsonl","completions","responses"],)"
          R"("stored_sources":["stored_completions","responses"],)"
          R"("graders":["string_check","text_similarity","python","label_model","score_model"],)"
-         R"("text_similarity":["fuzzy_match","bleu","gleu","rouge_1","rouge_2","rouge_3","rouge_4","rouge_5","rouge_l")" +
+         R"("text_similarity":["fuzzy_match","bleu","gleu","rouge_1","rouge_2","rouge_3","rouge_4","rouge_5","rouge_l","meteor")" +
          (native_embedding ? R"(,"cosine")" : "") + "]," +
          R"("python_profile":"local_default",)"
          R"("row_checkpoints":true,)"

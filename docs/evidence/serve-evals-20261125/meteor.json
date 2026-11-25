@@ -1,0 +1,65 @@
+{
+  "stage": "lexical_oracle_verified",
+  "issued": false,
+  "metric": "English METEOR using NLTK 3.9.2 alignment, its Porter stemmer and WordNet 3.0.",
+  "semantic_reference": "Whitespace-separated Unicode words with lowercasing; exact, stem and single-token lexical matches, followed by fragmentation penalty. Cloud tokenization and exact grader scores are not published.",
+  "upstream": {
+    "algorithm": "https://aclanthology.org/W05-0909/",
+    "oracle": "https://www.nltk.org/_modules/nltk/translate/meteor_score.html",
+    "wordnet": "https://wordnet.princeton.edu/license-and-commercial-use"
+  },
+  "corpus": {
+    "upstream_archive": "658b1ba191f5f98c2e9bae3e25c186013158f30ef779f191d2a44e5d25046dc8",
+    "oracle_archive": "cbda5ea6eef7f36a97a43d4a75f85e07fccbb4f23657d27b4ccbc93e2646ab59",
+    "pos": {
+      "noun": {
+        "entries": 82115,
+        "lexical_memberships_identical": true,
+        "rows_with_different_non_membership_columns": 0
+      },
+      "verb": {
+        "entries": 13767,
+        "lexical_memberships_identical": true,
+        "rows_with_different_non_membership_columns": 1
+      },
+      "adj": {
+        "entries": 18156,
+        "lexical_memberships_identical": true,
+        "rows_with_different_non_membership_columns": 0
+      },
+      "adv": {
+        "entries": 3621,
+        "lexical_memberships_identical": true,
+        "rows_with_different_non_membership_columns": 0
+      }
+    },
+    "packed_sha256": "fe649820402b5d695d52527419c0aafd378ecca06591b9cd3418ba3b2121ca9e",
+    "packed_bytes": 1572731,
+    "unpacked_bytes": 8132581,
+    "words": 153225,
+    "groups": 61177
+  },
+  "oracle": {
+    "examples": 264,
+    "wordnet_lookups": 341,
+    "max_absolute_error": 0,
+    "negative_budget": true
+  },
+  "dependencies": "The program and corpus are embedded. Only the existing disposable CPython 3.12 worker loads and grades user text. The serving process does not import NLTK or access a remote lexical service.",
+  "previous_checks": [
+    {
+      "stage": "corpus",
+      "note": "Original Princeton archive and NLTK archive differed in a verb hypernym pointer. All lexical members used by this scorer matched across every POS; the pointer is outside the scorer input."
+    },
+    {
+      "stage": "case",
+      "note": "An isolated dictionary lookup with an uppercase input differed from the independent reader. The lowercase lookup is now explicit; the rerun compared the same words and scores.",
+      "sha256": "1c7f0bf31833f8ee76ffdd7129e6a5327bf536baaa752811d8f14a2a74ef6de6"
+    }
+  ],
+  "pending": [
+    "Actual native worker tests: score threshold, capacity and cancellation",
+    "Official SDK over TLS, real model sample and cross-client read",
+    "Qualified profiles and usable rollback package"
+  ]
+}

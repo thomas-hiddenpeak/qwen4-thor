@@ -29,9 +29,14 @@ ObjectReply Failure(GrammarFailure failure) {
                    : "program_execution_unavailable",
                "Program executor unavailable");
 }
+enum class Program { kJavaScript, kPython, kMeteor };
+
 ObjectReply Execute(const io::Json& input, const BinaryAccess& access,
-                    GrammarControl control, bool python) {
+                    GrammarControl control, Program kind) {
+  const bool python = kind != Program::kJavaScript;
+  const bool meteor = kind == Program::kMeteor;
   const char* entry = python ? "--hosted-python-worker" : "--program-worker";
+  if (meteor) entry = "--eval-meteor-worker";
   const auto input_limit = python ? kPythonBytes : kInputBytes;
   const auto output_limit = python ? kPythonBytes : kOutputBytes;
   const auto bytes = OutputJson(input);
@@ -68,7 +73,21 @@ ObjectReply Execute(const io::Json& input, const BinaryAccess& access,
   limits.max_values = 512 * 1024;
   if (!io::ParseJson(output, &value, true, limits) || !value.IsObject())
     return Failure(GrammarFailure::kWorker);
-  if (python && input.Has("grader")) {
+  if (meteor) {
+    const auto* over = value.Find("over_budget");
+    const auto* score = value.Find("score");
+    const auto* work = value.Find("work");
+    if (!over || !over->IsBool() || !score || !work || !work->IsNumber() ||
+        value.object.size() != 3 ||
+        work->number != static_cast<double>(value.GetInt("work", -1)) ||
+        work->number < 0 ||
+        work->number > input.GetNumber("meteor_work_budget") ||
+        (value.GetBool("over_budget")
+             ? !score->IsNull()
+             : !score->IsNumber() ||
+                   !(score->number >= 0 && score->number <= 1)))
+      return Failure(GrammarFailure::kWorker);
+  } else if (python && input.Has("grader")) {
     const auto* score = value.Find("score");
     const auto* error = value.Find("error");
     if (!error || !error->IsBool() || !score || value.object.size() != 2 ||
@@ -95,18 +114,25 @@ ObjectReply Execute(const io::Json& input, const BinaryAccess& access,
 ObjectReply ExecuteProgramWorker(const io::Json& input,
                                  const BinaryAccess& access,
                                  GrammarControl control) {
-  return Execute(input, access, std::move(control), false);
+  return Execute(input, access, std::move(control), Program::kJavaScript);
 }
 
 ObjectReply ExecutePythonWorker(const io::Json& input,
                                 const BinaryAccess& access,
                                 GrammarControl control) {
-  return Execute(input, access, std::move(control), true);
+  return Execute(input, access, std::move(control), Program::kPython);
+}
+
+ObjectReply ExecuteMeteorWorker(const io::Json& input,
+                                const BinaryAccess& access) {
+  return Execute(input, access, {}, Program::kMeteor);
 }
 
 int MaybeRunProgramWorker(int argc, char** argv) {
   if (argc < 2) return -1;
-  const bool python = std::strcmp(argv[1], "--hosted-python-worker") == 0;
+  const bool meteor = std::strcmp(argv[1], "--eval-meteor-worker") == 0;
+  const bool python =
+      meteor || std::strcmp(argv[1], "--hosted-python-worker") == 0;
   if (!python && std::strcmp(argv[1], "--program-worker")) return -1;
   if (!detail::EnterGrammarWorker(argc, argv)) return 2;
   try {
@@ -118,7 +144,7 @@ int MaybeRunProgramWorker(int argc, char** argv) {
     if (!detail::WorkerTransfer(bytes.data(), bytes.size(), false)) return 3;
     if (python) {
       std::string result;
-      if (!detail::RunIsolatedPython(bytes, &result)) return 4;
+      if (!detail::RunIsolatedPython(bytes, &result, meteor)) return 4;
       return detail::WorkerTransfer(result.data(), result.size(), true) ? 0 : 3;
     }
     Json input;

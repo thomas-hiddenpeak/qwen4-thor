@@ -5,5 +5,6 @@
 
 namespace q4t::server::detail {
 // Called only once in a disposable, resource-limited worker after fd isolation.
-bool RunIsolatedPython(std::string_view request, std::string* result);
+bool RunIsolatedPython(std::string_view request, std::string* result,
+                       bool meteor = false);
 }  // namespace q4t::server::detail

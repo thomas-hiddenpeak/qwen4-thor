@@ -742,6 +742,34 @@ Q4T_TEST(evals_model_graders_resume_without_replacing_the_original_sample) {
   return true;
 }
 
+Q4T_TEST(evals_meteor_uses_scoped_lexical_worker_and_row_budget) {
+  auto compare = [](std::string candidate, std::string reference, size_t& work,
+                    bool cancelled = false) {
+    auto grader = Object({{"name", String("lexical")},
+                          {"evaluation_metric", String("meteor")},
+                          {"input", String(std::move(candidate))},
+                          {"reference", String(std::move(reference))}});
+    size_t bytes = 65536;
+    return eval_detail::GradeSimilarity(
+        grader, Object(), &bytes, &work,
+        {"alpha", std::chrono::steady_clock::now() + std::chrono::seconds(10),
+         [cancelled] { return cancelled; }});
+  };
+  size_t work = 65536;
+  auto result = compare("blue car", "blue auto", work);
+  Q4T_CHECK(result.ok());
+  Q4T_CHECK(result.value.GetNumber("score") == 0.9375);
+  Q4T_CHECK(work < 65536);
+  result = compare("green river", "blue auto", work);
+  Q4T_CHECK(result.ok() && result.value.GetNumber("score") == 0);
+  result = compare("blue car", "blue auto", work, true);
+  Q4T_CHECK(result.http_status == 499);
+  work = 1;
+  Q4T_CHECK(compare("blue car", "blue auto", work).http_status == 413 &&
+            work == 1);
+  return true;
+}
+
 Q4T_TEST(evals_text_similarity_matches_independent_lexical_oracles) {
   const auto row =
       Object({{"item", Object({{"reference", String("a b a b b c d")}})},
@@ -758,7 +786,7 @@ Q4T_TEST(evals_text_similarity_matches_independent_lexical_oracles) {
                 {"input", String(input)},
                 {"reference", String(reference)},
                 {"pass_threshold", std::move(threshold)}}),
-        row, &bytes, &work);
+        row, &bytes, &work, {});
   };
   // RapidFuzz normalized Indel, NLTK sentence BLEU/GLEU and Google rouge-score.
   for (const auto& [metric, expected] : std::array{

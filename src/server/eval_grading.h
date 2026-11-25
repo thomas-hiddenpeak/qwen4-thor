@@ -17,7 +17,8 @@ ObjectReply GradeCosine(
     const std::function<ObjectReply(const io::Json&)>& embed, io::Json* grade,
     io::Json* resource);
 ObjectReply GradeSimilarity(const io::Json& criterion, const io::Json& row,
-                            size_t* remaining, size_t* work);
+                            size_t* remaining, size_t* work,
+                            const StateAccess& access);
 ObjectReply GradeString(const io::Json& criterion, const io::Json& row,
                         size_t* remaining);
 }  // namespace q4t::server::eval_detail

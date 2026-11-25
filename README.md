@@ -1099,6 +1099,8 @@ Responses/Batch/Realtime组合继续按
 
 ## 许可证
 
+Evals 的英文 METEOR 指标使用 Princeton WordNet 3.0 同义词与词形数据，以及 NLTK 3.9.2 的 Porter 词干算法。评分复用隔离的 CPython 工作进程，词库随发行提供。[WordNet 来源与许可](third_party/licenses/wordnet/README.md) · [NLTK 来源与许可](third_party/licenses/nltk-porter/README.md)
+
 MIT (项目代码)。模型权重遵循其发布方条款。
 
 原生程序调用使用QuickJS 2026-06-04核心（MIT，Fabrice Bellard /

@@ -160,7 +160,7 @@ ObjectReply Score(const Json& criteria, const Json& row,
     else if (type == "python")
       result = GradePython(grader, row, access);
     else if (type == "text_similarity")
-      result = GradeSimilarity(grader, row, &budget, &comparison_work);
+      result = GradeSimilarity(grader, row, &budget, &comparison_work, access);
     else
       return BadInput("testing_criteria",
                       "Grader requires a separate execution provider");

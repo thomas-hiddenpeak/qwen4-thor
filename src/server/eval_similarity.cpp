@@ -9,6 +9,7 @@
 #include <unordered_map>
 
 #include "eval_run_state.h"
+#include "q4t/server/program_worker.h"
 #include "eval_model_grading.h"
 #include "q4t/model/embedding_config.h"
 
@@ -269,7 +270,8 @@ ObjectReply GradeCosine(const Json& criterion, const Json& row,
 }
 
 ObjectReply GradeSimilarity(const Json& criterion, const Json& row,
-                            size_t* bytes, size_t* work) {
+                            size_t* bytes, size_t* work,
+                            const StateAccess& access) {
   std::string input, reference;
   auto result = RenderText(criterion.GetString("input"), row,
                            "testing_criteria.input", bytes, &input);
@@ -278,9 +280,21 @@ ObjectReply GradeSimilarity(const Json& criterion, const Json& row,
                         "testing_criteria.reference", bytes, &reference);
   if (!result.ok()) return result;
   double score = 0;
-  result = Metric(criterion.GetString("evaluation_metric"), &input, &reference,
-                  work, &score);
-  if (!result.ok()) return result;
+  const auto metric = criterion.GetString("evaluation_metric");
+  if (metric == "meteor") {
+    auto request = Object({{"input", String(std::move(input))},
+                           {"reference", String(std::move(reference))},
+                           {"meteor_work_budget", Number(*work)}});
+    result = ExecuteMeteorWorker(
+        request, {access.scope, access.deadline, access.cancelled});
+    if (!result.ok()) return result;
+    if (result.value.GetBool("over_budget")) return TooMuch();
+    *work -= result.value.GetInt("work");
+    score = result.value.GetNumber("score");
+  } else {
+    result = Metric(metric, &input, &reference, work, &score);
+    if (!result.ok()) return result;
+  }
   Json value;
   value.type = Json::Type::kNumber;
   value.number = score;

@@ -13,6 +13,8 @@ ObjectReply ExecuteProgramWorker(const io::Json& input,
 ObjectReply ExecutePythonWorker(const io::Json& input,
                                 const BinaryAccess& access,
                                 GrammarControl control = {});
+ObjectReply ExecuteMeteorWorker(const io::Json& input,
+                                const BinaryAccess& access);
 int MaybeRunProgramWorker(int argc, char** argv);
 
 }  // namespace q4t::server
