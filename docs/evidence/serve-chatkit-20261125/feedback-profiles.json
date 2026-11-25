@@ -1,0 +1,90 @@
+{
+  "stage": "qualified",
+  "status": "ACCEPT_CHATKIT_FEEDBACK_PRIMARY_LIGHT",
+  "issued": false,
+  "profiles": {
+    "primary": {
+      "seconds": 39.773,
+      "starts": 1,
+      "profile_sha256": "b669f8e7ca99498b93481f15aab01544a42f8779ae81abf77cf3d10d0683953a",
+      "restored_predecessor": "d6c855feb1a35f78850a47153d5f619bf85fa9d390a14de9ab3682f78c20d658",
+      "observed": {
+        "sdk": "7.47.0",
+        "workflow": "agent_be284ebf2cd40ac9936475768dc75819",
+        "thread": "cthr_9e13d93db29fce26d9c1eb7188161b5d",
+        "items": [
+          "item_7f6eeaa40339fa2f4b5c184f60a0f8ba",
+          "msg_7bbc2319258ca270f5873a330871a06c"
+        ],
+        "expected_votes": [
+          "positive",
+          "negative"
+        ],
+        "model_answer": "488",
+        "entity_id": "q4t-current-release",
+        "browser_tag": true,
+        "sdk_mention": "@rev488",
+        "sibling": 404,
+        "peer": 404,
+        "missing_item": 404,
+        "revoked": 401,
+        "repeat": 200,
+        "public_rows_identical": true,
+        "store_sha256": "25dc3f56314b0dcea474e969db11263313cd1c12421b72a793ae8ae7d3bdc860"
+      }
+    },
+    "light": {
+      "seconds": 36.189,
+      "starts": 1,
+      "profile_sha256": "b8c53412e568c6a9e8cd60914c2a5050114310f0118ddfd5d6ebfa8f5e11b82f",
+      "restored_predecessor": "79cb68f51944eeca14ca6c5b30e39ab97ec7851d06f33141827b3377951dc965",
+      "observed": {
+        "sdk": "7.47.0",
+        "workflow": "agent_be284ebf2cd40ac9936475768dc75819",
+        "thread": "cthr_9e13d93db29fce26d9c1eb7188161b5d",
+        "items": [
+          "item_7f6eeaa40339fa2f4b5c184f60a0f8ba",
+          "msg_7bbc2319258ca270f5873a330871a06c"
+        ],
+        "expected_votes": [
+          "negative",
+          "positive"
+        ],
+        "model_answer": "488",
+        "continued": "488",
+        "entity_id": "q4t-current-release",
+        "browser_tag": true,
+        "sdk_mention": "@rev488",
+        "sibling": 404,
+        "peer": 404,
+        "missing_item": 404,
+        "revoked": 401,
+        "repeat": 200,
+        "public_rows_identical": true,
+        "store_sha256": "c0360f1a5c98c11428587187ce40299b4bb3cabf0c134d9286be9605c4a0c836",
+        "previous_store_sha256": "25dc3f56314b0dcea474e969db11263313cd1c12421b72a793ae8ae7d3bdc860"
+      }
+    }
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/acceptance.json": "ff4424db6d0bda8b460b607fb83ac6aba9ce6862b578a2dca8b252b96539f9e9",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-qualified-01/acceptance.json": "59c38c2aa1c3fa7ea524635b8c38e905e0503071ac6a4cbee2e7e20c5bead646",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-qualified-01/qualified/registry.json": "bb854257a16a683f776efe2f18b88467632f8d6d1b25d33c8d775892c28e457b",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/profile-observations.json": "2da92f8eee14c667b0b6e8a46055316db9c83eac5848803941128d27d2985692",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/lease/exit.json": "edcad50185eaee07b06361ce9a161eb574e797535bd6739284ef858731f42740",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/feedback-profile-pin-inventory.json": "4fe78948137b0946b1a7137595c52d6b92a1d75f1659a60cf31a20a0ba24683e",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/primary/plan.json": "9820d062e728a8f79004a808602c64590a8e20422ecf62f32e0051646baa4f47",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/primary/configuration.wire": "c7cea5809d6943be35902670642c8f7646c56068b4d1687654682c5273920b49",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/primary/result.json": "68142a4ec0fc8a82a6ae60cb70427ecf22f9121ed3ad6ae9eb90dc4c1b352296",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/primary/cleanup.json": "4a662b857311724c705f0ac58a5a1a5807c2b5155a070630498c357e742ad3f6",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/primary/chatkit-feedback-handoff.json": "7837b9baad30c2cdc299846fea18f748616cbb2253898fd5ec2b10f09103d1ae",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/light/plan.json": "da89b8a0c0b8a14a2f638cc8f9555aee566709be06ede7963affb1c6b0a8d855",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/light/configuration.wire": "7a5a85f477b56ff6d7e1681919fdf6ac5e555a128d48b3d6b310f55f36ecd991",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/light/result.json": "28065b8c8dac3eafa807f3a13c681fdfa09d670f6deb7d42f5b7e97bd6b5b750",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/light/cleanup.json": "16f137131cac90d875d6834db0cccabff3be44b2566a6aa594319cbbe0613dc6",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/feedback-profiles-01/light/chatkit-feedback-handoff.json": "119a31e1b4e8add635674e22e08b0fc500bda4c9709c72cffe19c11fc2a07d06"
+  },
+  "pending": [
+    "Model restart, independent fallback and stopped release"
+  ]
+}
